@@ -114,8 +114,6 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   rootTeamRunId: null,
   displayName: 'Standalone Agent',
   summary: 'prototype settings statistics UI',
-  workspaceName: 'autobyteus-workspace-superrepo',
-  workspaceRootPath: '/workspaces/autobyteus-workspace-superrepo',
   createdAt: '2041-07-01T10:30:00.000Z',
   createdTimeSource: 'FIRST_USAGE_OBSERVED',
   models: ['gpt-shared'],
@@ -146,8 +144,6 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   rootTeamRunId: 'team-run-987654321',
   displayName: 'Software Engineering Team',
   summary: 'investigate token costs',
-  workspaceName: 'autobyteus-workspace-superrepo',
-  workspaceRootPath: '/workspaces/autobyteus-workspace-superrepo',
   createdAt: '2041-07-01T11:00:00.000Z',
   createdTimeSource: 'RUN_HISTORY',
   models: ['gpt-shared', 'deepseek-v4-flash'],
@@ -159,9 +155,6 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
     memberAgentRunId: 'member-run-123456789',
     memberName: 'solution_designer',
     memberPath: ['solution_designer'],
-    agentDefinitionId: 'solution-designer',
-    createdAt: '2041-07-01T11:00:00.000Z',
-    createdTimeSource: 'FIRST_USAGE_OBSERVED',
     models: ['gpt-shared'],
     runtimeKinds: ['codex_app_server'],
     aggregate: buildAggregate({
@@ -185,9 +178,6 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
     memberAgentRunId: 'member-run-223456789',
     memberName: 'implementation_engineer',
     memberPath: ['implementation_engineer'],
-    agentDefinitionId: 'implementation-engineer',
-    createdAt: '2041-07-01T11:05:00.000Z',
-    createdTimeSource: 'RUN_HISTORY',
     models: ['deepseek-v4-flash'],
     runtimeKinds: ['autobyteus'],
     aggregate: buildAggregate({
@@ -217,6 +207,9 @@ describe('TokenUsageTaskStatisticsTable', () => {
   it('sorts task rows by created time by default and labels fallback timestamps', () => {
     const wrapper = mount(TokenUsageTaskStatisticsTable, { props: { rows } });
 
+    const headers = wrapper.findAll('thead th').map((header) => header.text());
+    expect(headers[0]!.toLowerCase()).not.toContain('created time');
+    expect(headers.at(-1)!.toLowerCase()).toContain('created time');
     const topRows = topLevelRowTexts(wrapper);
     expect(topRows[0]).toContain('Software Engineering Team');
     expect(topRows[1]).toContain('Standalone Agent');
@@ -234,6 +227,9 @@ describe('TokenUsageTaskStatisticsTable', () => {
     await wrapper.findAll('button').find((button) => button.text() === '▸')!.trigger('click');
     expect(wrapper.text()).toContain('↳ solution_designer');
     expect(wrapper.text()).toContain('↳ implementation_engineer');
+    expect(wrapper.text()).not.toContain('↳ architecture_reviewer');
+    expect(wrapper.text()).not.toContain('No usage in period');
+    expect(wrapper.text()).not.toContain('Team roster');
     expect(topLevelRowTexts(wrapper)).toHaveLength(2);
 
     await wrapper.findAll('button').find((button) => button.text().toLowerCase().includes('total cost'))!.trigger('click');

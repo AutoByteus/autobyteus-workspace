@@ -1,0 +1,237 @@
+{
+  "generatedAt": "2026-06-29T06:30:00.000Z",
+  "backend": "Electron embedded server http://127.0.0.1:29695/graphql",
+  "dateRange": {
+    "startTime": "2026-06-21T22:00:00.000Z",
+    "endTime": "2026-06-29T21:59:59.999Z"
+  },
+  "query": "tokenUsageTaskStatisticsInPeriod rows/members focused inspection",
+  "finding": "Expanded team members are currently event-derived only. When a team has metadata for six members but only solution_designer has usage events in the selected period, the GraphQL response returns one member instead of the full roster with zero/no-usage rows.",
+  "examples": [
+    {
+      "teamRunId": "software_engineering_team_06adab49fe4e484a969cca87c110d9ab",
+      "teamDisplayName": "Software Engineering Team",
+      "teamCreatedAt": "2026-06-28T08:01:29.626Z",
+      "teamSummary": "as you can see on the frontend, user is able to give a new path for the workspace. but the texts ...",
+      "returnedMemberCount": 1,
+      "returnedMembers": [
+        {
+          "memberName": "solution_designer",
+          "memberRouteKey": "solution_designer",
+          "memberAgentRunId": "solution_designer_8e05f37ba91a43b1beca3c7f42221969",
+          "totalTokens": 410863,
+          "estimatedApiTotalCost": 0.299106,
+          "usageReportCount": 3
+        }
+      ],
+      "metadataRosterCount": 6,
+      "metadataRoster": [
+        {
+          "memberName": "solution_designer",
+          "memberRouteKey": "solution_designer",
+          "memberRunId": "solution_designer_8e05f37ba91a43b1beca3c7f42221969",
+          "memberPath": [
+            "solution_designer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:solution-designer"
+        },
+        {
+          "memberName": "architecture_reviewer",
+          "memberRouteKey": "architecture_reviewer",
+          "memberRunId": "architecture_reviewer_95b97b4c91da4c8a826e92d7171e0437",
+          "memberPath": [
+            "architecture_reviewer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:architecture-reviewer"
+        },
+        {
+          "memberName": "implementation_engineer",
+          "memberRouteKey": "implementation_engineer",
+          "memberRunId": "implementation_engineer_b0f40a3d548843dbafb524b92977e2c5",
+          "memberPath": [
+            "implementation_engineer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:implementation-engineer"
+        },
+        {
+          "memberName": "code_reviewer",
+          "memberRouteKey": "code_reviewer",
+          "memberRunId": "code_reviewer_db5ede149d8a42818bfadbb019cd487b",
+          "memberPath": [
+            "code_reviewer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:code-reviewer"
+        },
+        {
+          "memberName": "api_e2e_engineer",
+          "memberRouteKey": "api_e2e_engineer",
+          "memberRunId": "api_e2e_engineer_dc8b0deb28b14a278d54376aaa2234a4",
+          "memberPath": [
+            "api_e2e_engineer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:api-e2e-engineer"
+        },
+        {
+          "memberName": "delivery_engineer",
+          "memberRouteKey": "delivery_engineer",
+          "memberRunId": "delivery_engineer_827816e6ccb64ca692c7f1ce7cba0a64",
+          "memberPath": [
+            "delivery_engineer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:delivery-engineer"
+        }
+      ],
+      "metadataPath": "/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_06adab49fe4e484a969cca87c110d9ab/team_run_metadata.json"
+    },
+    {
+      "teamRunId": "software_engineering_team_a03c3ef09df84a4fbb949d7edf06719c",
+      "teamDisplayName": "Software Engineering Team",
+      "teamCreatedAt": "2026-06-28T07:49:06.869Z",
+      "teamSummary": null,
+      "returnedMemberCount": 1,
+      "returnedMembers": [
+        {
+          "memberName": "solution_designer",
+          "memberRouteKey": "solution_designer",
+          "memberAgentRunId": "solution_designer_e75fa6636543460b845b458aa880d7a5",
+          "totalTokens": 1097094,
+          "estimatedApiTotalCost": 1.3640990000000002,
+          "usageReportCount": 7
+        }
+      ],
+      "metadataRosterCount": 6,
+      "metadataRoster": [
+        {
+          "memberName": "solution_designer",
+          "memberRouteKey": "solution_designer",
+          "memberRunId": "solution_designer_e75fa6636543460b845b458aa880d7a5",
+          "memberPath": [
+            "solution_designer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:solution-designer"
+        },
+        {
+          "memberName": "architecture_reviewer",
+          "memberRouteKey": "architecture_reviewer",
+          "memberRunId": "architecture_reviewer_d01e1fb1345e4323a4ffb3aaf0f5da8d",
+          "memberPath": [
+            "architecture_reviewer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:architecture-reviewer"
+        },
+        {
+          "memberName": "implementation_engineer",
+          "memberRouteKey": "implementation_engineer",
+          "memberRunId": "implementation_engineer_993979667d1840a59290bafd5bac5bcf",
+          "memberPath": [
+            "implementation_engineer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:implementation-engineer"
+        },
+        {
+          "memberName": "code_reviewer",
+          "memberRouteKey": "code_reviewer",
+          "memberRunId": "code_reviewer_8acd545dfe0345a291c93ee0fb765881",
+          "memberPath": [
+            "code_reviewer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:code-reviewer"
+        },
+        {
+          "memberName": "api_e2e_engineer",
+          "memberRouteKey": "api_e2e_engineer",
+          "memberRunId": "api_e2e_engineer_41125dee3ba64c53a9b3560b1f277ff0",
+          "memberPath": [
+            "api_e2e_engineer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:api-e2e-engineer"
+        },
+        {
+          "memberName": "delivery_engineer",
+          "memberRouteKey": "delivery_engineer",
+          "memberRunId": "delivery_engineer_18f921ac71fb4fabb6ffe8dd27bee4cd",
+          "memberPath": [
+            "delivery_engineer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:delivery-engineer"
+        }
+      ],
+      "metadataPath": "/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_a03c3ef09df84a4fbb949d7edf06719c/team_run_metadata.json"
+    },
+    {
+      "teamRunId": "software_engineering_team_bdf142d5a3d34a338816b942485ac51c",
+      "teamDisplayName": "Software Engineering Team",
+      "teamCreatedAt": "2026-06-28T04:10:45.827Z",
+      "teamSummary": "Our application support, if you look at the code base, we have Android, also have iOS. i have a q...",
+      "returnedMemberCount": 1,
+      "returnedMembers": [
+        {
+          "memberName": "solution_designer",
+          "memberRouteKey": "solution_designer",
+          "memberAgentRunId": "solution_designer_d1ba2abf026d46338791cb41f5f55466",
+          "totalTokens": 431266,
+          "estimatedApiTotalCost": 0.4995990000000001,
+          "usageReportCount": 2
+        }
+      ],
+      "metadataRosterCount": 6,
+      "metadataRoster": [
+        {
+          "memberName": "solution_designer",
+          "memberRouteKey": "solution_designer",
+          "memberRunId": "solution_designer_d1ba2abf026d46338791cb41f5f55466",
+          "memberPath": [
+            "solution_designer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:solution-designer"
+        },
+        {
+          "memberName": "architecture_reviewer",
+          "memberRouteKey": "architecture_reviewer",
+          "memberRunId": "architecture_reviewer_6b11d3030fdb430a8adc071fe2e95a19",
+          "memberPath": [
+            "architecture_reviewer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:architecture-reviewer"
+        },
+        {
+          "memberName": "implementation_engineer",
+          "memberRouteKey": "implementation_engineer",
+          "memberRunId": "implementation_engineer_371f0dcaf01448fea33295995aa7ffc1",
+          "memberPath": [
+            "implementation_engineer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:implementation-engineer"
+        },
+        {
+          "memberName": "code_reviewer",
+          "memberRouteKey": "code_reviewer",
+          "memberRunId": "code_reviewer_cef167005f11478e83b8a4af6d476265",
+          "memberPath": [
+            "code_reviewer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:code-reviewer"
+        },
+        {
+          "memberName": "api_e2e_engineer",
+          "memberRouteKey": "api_e2e_engineer",
+          "memberRunId": "api_e2e_engineer_7bde3e836a0e433980172765c8f3c13c",
+          "memberPath": [
+            "api_e2e_engineer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:api-e2e-engineer"
+        },
+        {
+          "memberName": "delivery_engineer",
+          "memberRouteKey": "delivery_engineer",
+          "memberRunId": "delivery_engineer_ce5c49d4243847b7b477d05543a6b7a7",
+          "memberPath": [
+            "delivery_engineer"
+          ],
+          "agentDefinitionId": "team-local-agent:software-engineering-team:delivery-engineer"
+        }
+      ],
+      "metadataPath": "/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_bdf142d5a3d34a338816b942485ac51c/team_run_metadata.json"
+    }
+  ]
+}

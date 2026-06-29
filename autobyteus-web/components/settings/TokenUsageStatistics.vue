@@ -24,10 +24,13 @@
             class="rounded-md border border-gray-300 p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
             :min="startDate"
           >
-          <div class="rounded-md bg-white px-3 py-2 text-sm text-gray-600 ring-1 ring-gray-200">
-            <span class="font-medium text-gray-800">{{ $t('settings.components.settings.TokenUsageStatistics.usageDuringPeriod') }}</span>
-            <span class="ml-2">{{ $t('settings.components.settings.TokenUsageStatistics.usageDuringPeriodHelp') }}</span>
-          </div>
+          <span
+            class="inline-flex items-center gap-1 text-xs font-medium text-gray-600"
+            :title="$t('settings.components.settings.TokenUsageStatistics.usageDuringPeriodHelp')"
+          >
+            {{ $t('settings.components.settings.TokenUsageStatistics.usageDuringPeriod') }}
+            <span aria-hidden="true" class="text-gray-400">ⓘ</span>
+          </span>
           <button
             class="ml-auto rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             :disabled="store.isLoading"

@@ -6,6 +6,7 @@ import {
 } from '~/graphql/queries/token_usage_statistics_queries';
 import type {
   TokenUsageCostSummaryAggregate,
+  TokenUsageCreatedTimeSource,
   TokenUsageRuntimeModelStatisticsRow,
   TokenUsageTaskMemberStatisticsRow,
   TokenUsageTaskStatisticsRow,
@@ -29,8 +30,7 @@ type AggregatePayload = Partial<TokenUsageCostSummaryAggregate> & {
   cacheState?: string | null;
 };
 
-type TaskMemberPayload = Omit<TokenUsageTaskMemberStatisticsRow, 'aggregate' | 'createdTimeSource'> & {
-  createdTimeSource?: string | null;
+type TaskMemberPayload = Omit<TokenUsageTaskMemberStatisticsRow, 'aggregate'> & {
   aggregate?: AggregatePayload | null;
 };
 
@@ -125,9 +125,10 @@ const normalizeAggregate = (payload?: AggregatePayload | null): TokenUsageCostSu
   observedModelProviders: normalizeArray(payload?.observedModelProviders),
 });
 
-const normalizeCreatedTimeSource = (value?: string | null): 'RUN_HISTORY' | 'FIRST_USAGE_OBSERVED' => (
-  value === 'RUN_HISTORY' ? 'RUN_HISTORY' : 'FIRST_USAGE_OBSERVED'
-);
+const normalizeCreatedTimeSource = (value?: string | null): TokenUsageCreatedTimeSource => {
+  if (value === 'RUN_HISTORY') return value;
+  return 'FIRST_USAGE_OBSERVED';
+};
 
 const normalizeTaskMember = (member: TaskMemberPayload): TokenUsageTaskMemberStatisticsRow => ({
   rowId: member.rowId,
@@ -135,9 +136,6 @@ const normalizeTaskMember = (member: TaskMemberPayload): TokenUsageTaskMemberSta
   memberAgentRunId: member.memberAgentRunId ?? null,
   memberName: member.memberName,
   memberPath: normalizeArray(member.memberPath),
-  agentDefinitionId: member.agentDefinitionId ?? null,
-  createdAt: member.createdAt,
-  createdTimeSource: normalizeCreatedTimeSource(member.createdTimeSource),
   models: normalizeArray(member.models),
   runtimeKinds: normalizeArray(member.runtimeKinds),
   aggregate: normalizeAggregate(member.aggregate),
@@ -150,8 +148,6 @@ const normalizeTaskRow = (row: TaskRowPayload): TokenUsageTaskStatisticsRow => (
   rootTeamRunId: row.rootTeamRunId ?? null,
   displayName: row.displayName,
   summary: row.summary ?? null,
-  workspaceName: row.workspaceName ?? null,
-  workspaceRootPath: row.workspaceRootPath ?? null,
   createdAt: row.createdAt,
   createdTimeSource: normalizeCreatedTimeSource(row.createdTimeSource),
   models: normalizeArray(row.models),

@@ -46,9 +46,6 @@ export interface TokenUsageTaskMemberStatisticsRow {
   memberAgentRunId: string | null;
   memberName: string;
   memberPath: string[];
-  agentDefinitionId: string | null;
-  createdAt: string;
-  createdTimeSource: TokenUsageCreatedTimeSource;
   models: string[];
   runtimeKinds: string[];
   aggregate: TokenUsageCostSummaryAggregate;
@@ -61,8 +58,6 @@ export interface TokenUsageTaskStatisticsRow {
   rootTeamRunId: string | null;
   displayName: string;
   summary: string | null;
-  workspaceName: string | null;
-  workspaceRootPath: string | null;
   createdAt: string;
   createdTimeSource: TokenUsageCreatedTimeSource;
   models: string[];

@@ -4,12 +4,36 @@ import type {
 } from "../../agent-execution/domain/agent-run-token-usage.js";
 import { buildTokenUsageRunSummary } from "../projections/token-usage-run-summary-adapter.js";
 import { SqlTokenUsageLedgerRepository } from "../repositories/sql/token-usage-ledger-repository.js";
+import { TokenUsageDisplayFieldCapturer } from "./token-usage-display-field-capturer.js";
+
+const hasMissingDisplayField = (event: TokenUsageUpdatedPayload): boolean => (
+  event.root_team_run_id
+    ? !event.team_name ||
+      !event.run_created_at ||
+      Boolean((event.member_agent_run_id || event.member_route_key) && !event.member_name)
+    : !event.agent_name || !event.run_created_at
+);
+
+const hasDisplayFieldChange = (
+  original: TokenUsageUpdatedPayload,
+  captured: TokenUsageUpdatedPayload,
+): boolean => (
+  original.team_name !== captured.team_name ||
+  original.agent_name !== captured.agent_name ||
+  original.run_summary !== captured.run_summary ||
+  original.run_created_at !== captured.run_created_at ||
+  original.member_name !== captured.member_name
+);
 
 export class TokenUsageLedgerStore {
-  constructor(private readonly repository = new SqlTokenUsageLedgerRepository()) {}
+  constructor(
+    private readonly repository = new SqlTokenUsageLedgerRepository(),
+    private readonly displayFieldCapturer = new TokenUsageDisplayFieldCapturer(),
+  ) {}
 
   async appendTokenUsageEvent(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
-    return this.repository.appendUsageEvent(payload);
+    const capturedPayload = await this.displayFieldCapturer.capture(payload);
+    return this.repository.appendUsageEvent(capturedPayload);
   }
 
   async getLatestCumulativeSnapshot(input: {
@@ -51,6 +75,31 @@ export class TokenUsageLedgerStore {
   }
 
   async listEventsInPeriod(startDate: Date, endDate: Date): Promise<TokenUsageUpdatedPayload[]> {
-    return this.repository.listEventsInPeriod({ startDate, endDate });
+    const events = await this.repository.listEventsInPeriod({ startDate, endDate });
+    return this.backfillMissingDisplayFields(events);
+  }
+
+  private async backfillMissingDisplayFields(
+    events: TokenUsageUpdatedPayload[],
+  ): Promise<TokenUsageUpdatedPayload[]> {
+    const backfilledEvents: TokenUsageUpdatedPayload[] = [];
+    for (const event of events) {
+      if (!hasMissingDisplayField(event)) {
+        backfilledEvents.push(event);
+        continue;
+      }
+      try {
+        const captured = await this.displayFieldCapturer.capture(event);
+        if (!hasDisplayFieldChange(event, captured)) {
+          backfilledEvents.push(event);
+          continue;
+        }
+        backfilledEvents.push(await this.repository.updateUsageEventDisplayFields(captured));
+      } catch (error) {
+        console.warn("Failed to backfill token usage display fields:", error);
+        backfilledEvents.push(event);
+      }
+    }
+    return backfilledEvents;
   }
 }

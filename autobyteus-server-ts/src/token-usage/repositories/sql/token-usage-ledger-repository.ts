@@ -25,6 +25,13 @@ const normalizeDate = (value: string | Date | null | undefined): Date => {
   return new Date();
 };
 
+const normalizeNullableDate = (value: string | Date | null | undefined): Date | null => {
+  if (value === null || value === undefined) return null;
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
 const toCreateInput = (payload: TokenUsageUpdatedPayload): Prisma.TokenUsageLedgerEventCreateInput => ({
   usageEventId: payload.usage_event_id,
   idempotencyKey: payload.idempotency_key,
@@ -44,6 +51,11 @@ const toCreateInput = (payload: TokenUsageUpdatedPayload): Prisma.TokenUsageLedg
   taskAgentInstanceId: payload.task_agent_instance_id,
   taskAgentRunId: payload.task_agent_run_id,
   taskId: payload.task_id,
+  teamName: payload.team_name,
+  agentName: payload.agent_name,
+  runSummary: payload.run_summary,
+  runCreatedAt: normalizeNullableDate(payload.run_created_at),
+  memberName: payload.member_name,
   runtimeKind: payload.runtime_kind,
   modelProvider: payload.model_provider,
   modelIdentifier: payload.model_identifier,
@@ -142,6 +154,11 @@ export const toDomainPayload = (record: PrismaTokenUsageLedgerEvent): TokenUsage
     task_agent_instance_id: record.taskAgentInstanceId,
     task_agent_run_id: record.taskAgentRunId,
     task_id: record.taskId,
+    team_name: record.teamName,
+    agent_name: record.agentName,
+    run_summary: record.runSummary,
+    run_created_at: record.runCreatedAt?.toISOString() ?? null,
+    member_name: record.memberName,
     runtime_kind: record.runtimeKind,
     model_provider: record.modelProvider,
     model_identifier: record.modelIdentifier,
@@ -226,6 +243,20 @@ export class SqlTokenUsageLedgerRepository {
       }
       throw error;
     }
+  }
+
+  async updateUsageEventDisplayFields(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
+    const updated = await prisma.tokenUsageLedgerEvent.update({
+      where: { usageEventId: payload.usage_event_id },
+      data: {
+        teamName: payload.team_name,
+        agentName: payload.agent_name,
+        runSummary: payload.run_summary,
+        runCreatedAt: normalizeNullableDate(payload.run_created_at),
+        memberName: payload.member_name,
+      },
+    });
+    return toDomainPayload(updated);
   }
 
   async findLatestCumulativeSnapshot(input: {

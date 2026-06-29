@@ -97,11 +97,12 @@ describe('TokenUsageStatistics settings page', () => {
     vi.clearAllMocks();
   });
 
-  it('defaults to By Task, renders static usage-period help, and fetches dates without range mode', async () => {
+  it('defaults to By Task, renders compact usage-period affordance, and fetches dates without range mode', async () => {
     const wrapper = await mountPage();
 
     expect(wrapper.text()).toContain('Usage during period');
-    expect(wrapper.text()).toContain('Usage during period help');
+    expect(wrapper.text()).not.toContain('Usage during period help');
+    expect(wrapper.find('[title]').attributes('title')).toBe('Usage during period help');
     expect(wrapper.text()).toMatch(/By task/i);
     expect(wrapper.text()).toMatch(/By model/i);
     expect(wrapper.text()).not.toContain('Tasks created in period');

@@ -7,32 +7,6 @@ const mockStore = {
   listEventsInPeriod: vi.fn(),
 };
 
-const mockEnricher = {
-  enrichAgentRun: vi.fn(async (input: { runId: string; firstObservedAt: string; fallbackAgentDefinitionId?: string | null }) => ({
-    displayName: input.fallbackAgentDefinitionId ?? input.runId,
-    summary: `summary:${input.runId}`,
-    workspaceName: "workspace-a",
-    workspaceRootPath: "/workspace/a",
-    createdAt: input.runId.includes("old") ? "2026-06-27T08:00:00.000Z" : input.firstObservedAt,
-    createdTimeSource: "RUN_HISTORY" as const,
-  })),
-  enrichTeamRun: vi.fn(async (input: { teamRunId: string; firstObservedAt: string }) => ({
-    displayName: `Team ${input.teamRunId}`,
-    summary: `summary:${input.teamRunId}`,
-    workspaceName: "workspace-a",
-    workspaceRootPath: "/workspace/a",
-    createdAt: input.teamRunId.includes("new") ? "2026-06-29T10:00:00.000Z" : input.firstObservedAt,
-    createdTimeSource: "RUN_HISTORY" as const,
-  })),
-  enrichMember: vi.fn(async (input: { memberRouteKey: string | null; memberAgentRunId: string | null; firstObservedAt: string }) => ({
-    memberName: input.memberRouteKey ?? input.memberAgentRunId ?? "member",
-    memberPath: input.memberRouteKey ? [input.memberRouteKey] : [],
-    agentDefinitionId: "member-agent",
-    createdAt: input.firstObservedAt,
-    createdTimeSource: "FIRST_USAGE_OBSERVED" as const,
-  })),
-};
-
 const buildEvent = (input: {
   model: string | null;
   inputTokens: number | null;
@@ -51,6 +25,12 @@ const buildEvent = (input: {
   memberRouteKey?: string | null;
   observedAt?: string;
   agentDefinitionId?: string | null;
+  teamName?: string | null;
+  agentName?: string | null;
+  runSummary?: string | null;
+  runCreatedAt?: string | null;
+  memberName?: string | null;
+  memberPath?: string[] | null;
 }): TokenUsageUpdatedPayload => {
   const runId = input.runId ?? `stats_${input.model ?? "unknown"}`;
   return {
@@ -62,7 +42,13 @@ const buildEvent = (input: {
         root_team_run_id: input.rootTeamRunId ?? null,
         member_agent_run_id: input.memberAgentRunId ?? null,
         member_route_key: input.memberRouteKey ?? null,
+        member_path: input.memberPath ?? null,
         agent_definition_id: input.agentDefinitionId ?? null,
+        team_name: input.teamName ?? null,
+        agent_name: input.agentName ?? null,
+        run_summary: input.runSummary ?? null,
+        run_created_at: input.runCreatedAt ?? null,
+        member_name: input.memberName ?? null,
         runtime_kind: input.runtimeKind ?? "codex_app_server",
         model_identifier: input.model,
         reported_input_tokens: input.inputTokens,
@@ -95,14 +81,11 @@ const buildEvent = (input: {
   };
 };
 
-const provider = () => new TokenUsageStatisticsProvider(mockStore as never, mockEnricher as never);
+const provider = () => new TokenUsageStatisticsProvider(mockStore as never);
 
 describe("TokenUsageStatisticsProvider", () => {
   beforeEach(() => {
     mockStore.listEventsInPeriod.mockReset();
-    mockEnricher.enrichAgentRun.mockClear();
-    mockEnricher.enrichTeamRun.mockClear();
-    mockEnricher.enrichMember.mockClear();
   });
 
   it("gets nullable total cost via ledger events without turning missing price into zero", async () => {
@@ -188,9 +171,62 @@ describe("TokenUsageStatisticsProvider", () => {
 
   it("groups task statistics by team run and standalone run without duplicating team members", async () => {
     mockStore.listEventsInPeriod.mockResolvedValue([
-      buildEvent({ runId: "member-a", rootTeamRunId: "team-new", memberAgentRunId: "member-a", memberRouteKey: "designer", model: "gpt-5", inputTokens: 100, outputTokens: 10, inputCost: 1, outputCost: 0.1, totalCost: 1.1, status: "estimated", currency: "USD", observedAt: "2026-06-29T10:05:00.000Z" }),
-      buildEvent({ runId: "member-b", rootTeamRunId: "team-new", memberAgentRunId: "member-b", memberRouteKey: "builder", model: "gpt-5", inputTokens: 50, outputTokens: 5, inputCost: 0.5, outputCost: 0.05, totalCost: 0.55, status: "estimated", currency: "USD", observedAt: "2026-06-29T10:10:00.000Z" }),
-      buildEvent({ runId: "agent-old", agentDefinitionId: "Research Agent", model: "deepseek", inputTokens: 25, outputTokens: 4, inputCost: 0.02, outputCost: 0.01, totalCost: 0.03, status: "estimated", currency: "USD", observedAt: "2026-06-27T08:00:00.000Z" }),
+      buildEvent({
+        runId: "member-a",
+        rootTeamRunId: "team-new",
+        memberAgentRunId: "member-a",
+        memberRouteKey: "designer",
+        memberName: "Solution Designer",
+        memberPath: ["designer"],
+        teamName: "Team New",
+        runSummary: "Build a feature",
+        runCreatedAt: "2026-06-29T10:00:00.000Z",
+        model: "gpt-5",
+        inputTokens: 100,
+        outputTokens: 10,
+        inputCost: 1,
+        outputCost: 0.1,
+        totalCost: 1.1,
+        status: "estimated",
+        currency: "USD",
+        observedAt: "2026-06-29T10:05:00.000Z",
+      }),
+      buildEvent({
+        runId: "member-b",
+        rootTeamRunId: "team-new",
+        memberAgentRunId: "member-b",
+        memberRouteKey: "builder",
+        memberName: "Implementation Engineer",
+        memberPath: ["builder"],
+        teamName: "Team New",
+        runSummary: "Build a feature",
+        runCreatedAt: "2026-06-29T10:00:00.000Z",
+        model: "gpt-5",
+        inputTokens: 50,
+        outputTokens: 5,
+        inputCost: 0.5,
+        outputCost: 0.05,
+        totalCost: 0.55,
+        status: "estimated",
+        currency: "USD",
+        observedAt: "2026-06-29T10:10:00.000Z",
+      }),
+      buildEvent({
+        runId: "agent-old",
+        agentDefinitionId: "research-agent",
+        agentName: "Research Agent",
+        runSummary: "Standalone analysis",
+        runCreatedAt: "2026-06-27T08:00:00.000Z",
+        model: "deepseek",
+        inputTokens: 25,
+        outputTokens: 4,
+        inputCost: 0.02,
+        outputCost: 0.01,
+        totalCost: 0.03,
+        status: "estimated",
+        currency: "USD",
+        observedAt: "2026-06-27T08:00:00.000Z",
+      }),
     ]);
 
     const result = await provider().getTaskStatisticsInPeriod(
@@ -201,9 +237,86 @@ describe("TokenUsageStatisticsProvider", () => {
     expect(result.rows.map((row) => row.rowId)).toEqual(["team:team-new", "agent:agent-old"]);
     const team = result.rows[0]!;
     expect(team.rowKind).toBe("TEAM_RUN");
+    expect(team.displayName).toBe("Team New");
+    expect(team.summary).toBe("Build a feature");
+    expect(team.createdAt).toBe("2026-06-29T10:00:00.000Z");
+    expect(team.createdTimeSource).toBe("RUN_HISTORY");
     expect(team.aggregate.gross_input_tokens).toBe(150);
     expect(team.aggregate.estimated_api_total_cost).toBeCloseTo(1.65, 10);
     expect(team.members.map((member) => member.memberRouteKey).sort()).toEqual(["builder", "designer"]);
+    expect(team.members.map((member) => member.memberName).sort()).toEqual([
+      "Implementation Engineer",
+      "Solution Designer",
+    ]);
     expect(result.rows.some((row) => row.rowId === "agent:member-a")).toBe(false);
+    expect(result.rows[1]).toMatchObject({
+      rowId: "agent:agent-old",
+      displayName: "Research Agent",
+      summary: "Standalone analysis",
+      createdAt: "2026-06-27T08:00:00.000Z",
+    });
+  });
+
+  it("keeps expanded team rows usage-derived and omits no-usage roster members", async () => {
+    mockStore.listEventsInPeriod.mockResolvedValue([
+      buildEvent({
+        runId: "member-designer",
+        rootTeamRunId: "team-usage",
+        memberAgentRunId: "member-designer",
+        memberRouteKey: "solution_designer",
+        memberName: "solution_designer",
+        memberPath: ["solution_designer"],
+        teamName: "Usage Team",
+        runCreatedAt: "2026-06-29T09:00:00.000Z",
+        model: "gpt-5.5",
+        inputTokens: 100,
+        outputTokens: 10,
+        inputCost: 1,
+        outputCost: 0.1,
+        totalCost: 1.1,
+        status: "estimated",
+        currency: "USD",
+        observedAt: "2026-06-29T10:05:00.000Z",
+      }),
+      buildEvent({
+        runId: "legacy-run",
+        rootTeamRunId: "team-usage",
+        memberAgentRunId: "legacy-run",
+        memberRouteKey: "legacy_member",
+        model: "legacy-model",
+        inputTokens: 7,
+        outputTokens: 3,
+        inputCost: 0.07,
+        outputCost: 0.03,
+        totalCost: 0.1,
+        status: "estimated",
+        currency: "USD",
+        observedAt: "2026-06-29T10:20:00.000Z",
+      }),
+    ]);
+
+    const result = await provider().getTaskStatisticsInPeriod(
+      new Date("2026-06-29T00:00:00.000Z"),
+      new Date("2026-06-30T00:00:00.000Z"),
+    );
+
+    const team = result.rows[0]!;
+    expect(team.aggregate.estimated_api_total_cost).toBeCloseTo(1.2, 10);
+    expect(team.members.map((member) => member.memberRouteKey).sort()).toEqual([
+      "legacy_member",
+      "solution_designer",
+    ]);
+    expect(team.members.some((member) => member.memberRouteKey === "architecture_reviewer")).toBe(false);
+    expect(team.members.some((member) => member.aggregate.usage_report_count === 0)).toBe(false);
+    expect(team.members.find((member) => member.memberRouteKey === "solution_designer")).toMatchObject({
+      memberName: "solution_designer",
+      aggregate: expect.objectContaining({ usage_report_count: 1, gross_input_tokens: 100 }),
+    });
+    expect(team.members.find((member) => member.memberRouteKey === "legacy_member")).toMatchObject({
+      memberRouteKey: "legacy_member",
+      memberAgentRunId: "legacy-run",
+      memberName: "legacy_member",
+      aggregate: expect.objectContaining({ gross_input_tokens: 7 }),
+    });
   });
 });

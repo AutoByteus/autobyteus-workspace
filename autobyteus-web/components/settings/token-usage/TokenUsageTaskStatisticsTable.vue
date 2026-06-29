@@ -4,11 +4,6 @@
       <thead class="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
         <tr>
           <th class="px-3 py-3">
-            <button class="font-semibold" @click="toggleSort('createdAt')">
-              {{ $t('settings.components.settings.TokenUsageStatistics.createdTime') }} {{ sortIndicator('createdAt') }}
-            </button>
-          </th>
-          <th class="px-3 py-3">
             <button class="font-semibold" @click="toggleSort('task')">
               {{ $t('settings.components.settings.TokenUsageStatistics.taskRun') }} {{ sortIndicator('task') }}
             </button>
@@ -38,17 +33,16 @@
             </button>
           </th>
           <th class="px-3 py-3">{{ $t('settings.components.settings.TokenUsageStatistics.status') }}</th>
+          <th class="px-3 py-3">
+            <button class="font-semibold" @click="toggleSort('createdAt')">
+              {{ $t('settings.components.settings.TokenUsageStatistics.createdTime') }} {{ sortIndicator('createdAt') }}
+            </button>
+          </th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100 bg-white">
         <template v-for="row in sortedRows" :key="row.rowId">
           <tr class="align-top hover:bg-gray-50">
-            <td class="px-3 py-3 whitespace-nowrap">
-              <div>{{ formatter.formatCreatedAt(row.createdAt) }}</div>
-              <div v-if="row.createdTimeSource === 'FIRST_USAGE_OBSERVED'" class="text-xs text-amber-600">
-                {{ $t('settings.components.settings.TokenUsageStatistics.firstUsageObserved') }}
-              </div>
-            </td>
             <td class="px-3 py-3 min-w-[20rem]">
               <div class="flex items-start gap-2">
                 <button
@@ -95,6 +89,12 @@
               </button>
             </td>
             <td class="px-3 py-3"><span :class="formatter.statusClass(row.aggregate.apiCostStatus)">{{ formatter.formatStatus(row.aggregate.apiCostStatus) }}</span></td>
+            <td class="px-3 py-3 whitespace-nowrap">
+              <div>{{ formatter.formatCreatedAt(row.createdAt) }}</div>
+              <div v-if="createdTimeSourceLabel(row.createdTimeSource)" class="text-xs text-amber-600">
+                {{ createdTimeSourceLabel(row.createdTimeSource) }}
+              </div>
+            </td>
           </tr>
           <tr v-if="detailRows.has(row.rowId)" class="bg-blue-50/30">
             <td colspan="11" class="px-3 py-3">
@@ -104,12 +104,6 @@
           <template v-if="expandedRows.has(row.rowId)">
             <template v-for="member in row.members" :key="member.rowId">
               <tr class="align-top bg-gray-50/60 hover:bg-gray-100/60">
-                <td class="px-3 py-3 whitespace-nowrap pl-8">
-                  <div>{{ formatter.formatCreatedAt(member.createdAt) }}</div>
-                  <div v-if="member.createdTimeSource === 'FIRST_USAGE_OBSERVED'" class="text-xs text-amber-600">
-                    {{ $t('settings.components.settings.TokenUsageStatistics.firstUsageObserved') }}
-                  </div>
-                </td>
                 <td class="px-3 py-3 min-w-[20rem] pl-8">
                   <div class="font-medium text-gray-900">↳ {{ member.memberName }}</div>
                   <div class="text-xs text-gray-500">{{ memberMetadata(member) }}</div>
@@ -133,6 +127,9 @@
                   </button>
                 </td>
                 <td class="px-3 py-3"><span :class="formatter.statusClass(member.aggregate.apiCostStatus)">{{ formatter.formatStatus(member.aggregate.apiCostStatus) }}</span></td>
+                <td class="px-3 py-3 whitespace-nowrap">
+                  <span class="text-gray-400">—</span>
+                </td>
               </tr>
               <tr v-if="detailRows.has(member.rowId)" class="bg-blue-50/30">
                 <td colspan="11" class="px-3 py-3 pl-10">
@@ -212,11 +209,18 @@ const rowTypeLabel = (rowKind: TokenUsageTaskStatisticsRow['rowKind']): string =
     : $t('settings.components.settings.TokenUsageStatistics.agent')
 );
 
+const createdTimeSourceLabel = (source: TokenUsageTaskStatisticsRow['createdTimeSource']): string => {
+  if (source === 'FIRST_USAGE_OBSERVED') {
+    return $t('settings.components.settings.TokenUsageStatistics.firstUsageObserved');
+  }
+  return '';
+};
+
 const rowMetadata = (row: TokenUsageTaskStatisticsRow): string => {
   const id = row.rootTeamRunId
     ? $t('settings.components.settings.TokenUsageStatistics.teamIdSuffix', { id: shortId(row.rootTeamRunId) })
     : $t('settings.components.settings.TokenUsageStatistics.runIdSuffix', { id: shortId(row.runId) });
-  return [row.workspaceName, id].filter(Boolean).join(' · ');
+  return id;
 };
 
 const memberMetadata = (member: TokenUsageTaskMemberStatisticsRow): string => {

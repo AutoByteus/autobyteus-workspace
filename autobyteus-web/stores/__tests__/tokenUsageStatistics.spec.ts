@@ -63,8 +63,6 @@ describe('tokenUsageStatistics store', () => {
               rootTeamRunId: 'team-newer',
               displayName: 'Software Engineering Team',
               summary: 'investigate token costs',
-              workspaceName: 'autobyteus-workspace-superrepo',
-              workspaceRootPath: '/workspaces/autobyteus-workspace-superrepo',
               createdAt: '2041-07-01T11:00:00.000Z',
               createdTimeSource: 'RUN_HISTORY',
               models: ['gpt-shared'],
@@ -76,12 +74,9 @@ describe('tokenUsageStatistics store', () => {
                 memberAgentRunId: 'member-designer',
                 memberName: 'designer',
                 memberPath: ['designer'],
-                agentDefinitionId: 'solution-designer',
-                createdAt: '2041-07-01T11:00:00.000Z',
-                createdTimeSource: 'FIRST_USAGE_OBSERVED',
                 models: ['gpt-shared'],
                 runtimeKinds: ['codex_app_server'],
-                aggregate: aggregate({ grossInputTokens: 100, outputTokens: 10, estimatedApiTotalCost: 1.1, usageReportCount: 1 }),
+                aggregate: aggregate({ grossInputTokens: 40, outputTokens: 5, estimatedApiTotalCost: 0.4, usageReportCount: 1 }),
               }],
             }],
           },
@@ -141,8 +136,8 @@ describe('tokenUsageStatistics store', () => {
     expect(store.getTaskRows[0]!.members[0]).toMatchObject({
       memberRouteKey: 'designer',
       memberAgentRunId: 'member-designer',
-      createdTimeSource: 'FIRST_USAGE_OBSERVED',
-      aggregate: expect.objectContaining({ estimatedApiTotalCost: 1.1 }),
+      memberName: 'designer',
+      aggregate: expect.objectContaining({ estimatedApiTotalCost: 0.4, usageReportCount: 1 }),
     });
 
     expect(store.getModelRows.map((row) => row.rowId)).toEqual([

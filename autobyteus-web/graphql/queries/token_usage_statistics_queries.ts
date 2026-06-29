@@ -50,8 +50,6 @@ export const GET_TOKEN_USAGE_TASK_STATISTICS = gql`
         rootTeamRunId
         displayName
         summary
-        workspaceName
-        workspaceRootPath
         createdAt
         createdTimeSource
         models
@@ -65,9 +63,6 @@ export const GET_TOKEN_USAGE_TASK_STATISTICS = gql`
           memberAgentRunId
           memberName
           memberPath
-          agentDefinitionId
-          createdAt
-          createdTimeSource
           models
           runtimeKinds
           aggregate {

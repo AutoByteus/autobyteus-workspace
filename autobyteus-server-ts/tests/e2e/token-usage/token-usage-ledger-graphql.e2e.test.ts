@@ -19,6 +19,8 @@ const buildEvent = (input: {
   runId: string;
   rootTeamRunId?: string | null;
   memberRouteKey?: string | null;
+  teamRunPath?: string[] | null;
+  memberPath?: string[] | null;
   observedAt: string;
   inputTokenSemantic?: TokenUsageUpdatedPayload['input_token_semantic'];
   grossInputTokens: number;
@@ -55,6 +57,11 @@ const buildEvent = (input: {
   latestPromptTokens?: number | null;
   effectiveContextWindowTokens?: number | null;
   contextWindowUsagePercent?: number | null;
+  teamName?: string | null;
+  agentName?: string | null;
+  runSummary?: string | null;
+  runCreatedAt?: string | null;
+  memberName?: string | null;
 }) => {
   createdRunIds.add(input.runId);
   if (input.rootTeamRunId) createdTeamRunIds.add(input.rootTeamRunId);
@@ -72,7 +79,9 @@ const buildEvent = (input: {
       idempotency_key: `graphql-ledger:${randomUUID()}`,
       observed_at: input.observedAt,
       root_team_run_id: input.rootTeamRunId ?? null,
+      team_run_path: input.teamRunPath ?? null,
       member_agent_run_id: input.rootTeamRunId ? input.runId : null,
+      member_path: input.memberPath ?? null,
       member_route_key: input.memberRouteKey ?? null,
       runtime_kind: input.runtimeKind ?? 'codex_app_server',
       ingestion_kind: input.ingestionKind ?? 'codex_thread_token_usage',
@@ -113,6 +122,11 @@ const buildEvent = (input: {
       latest_prompt_tokens: input.latestPromptTokens ?? null,
       effective_context_window_tokens: input.effectiveContextWindowTokens ?? null,
       context_window_usage_percent: input.contextWindowUsagePercent ?? null,
+      team_name: input.teamName ?? null,
+      agent_name: input.agentName ?? null,
+      run_summary: input.runSummary ?? null,
+      run_created_at: input.runCreatedAt ?? null,
+      member_name: input.memberName ?? null,
     },
   });
 };
@@ -529,11 +543,16 @@ describe('token usage ledger GraphQL projections', () => {
       model: 'gpt-shared',
       runtimeKind: 'codex_app_server',
       missingPriceDimensions: ['cache_creation_price'],
+      agentName: 'GraphQL Standalone Agent',
+      runSummary: 'Prototype task statistics',
+      runCreatedAt: '2041-07-01T10:20:00.000Z',
     }));
     await store.appendTokenUsageEvent(buildEvent({
       runId: designerMemberRunId,
       rootTeamRunId: newerTeamRunId,
       memberRouteKey: 'designer',
+      teamRunPath: ['software_engineering_team'],
+      memberPath: ['planning_team', 'designer'],
       observedAt: '2041-07-01T11:00:00.000Z',
       grossInputTokens: 100,
       standardInputTokens: 60,
@@ -549,11 +568,17 @@ describe('token usage ledger GraphQL projections', () => {
       status: 'estimated',
       model: 'gpt-shared',
       runtimeKind: 'codex_app_server',
+      teamName: 'GraphQL Engineering Team',
+      runSummary: 'Ship task statistics',
+      runCreatedAt: '2041-07-01T10:58:00.000Z',
+      memberName: 'GraphQL Designer',
     }));
     await store.appendTokenUsageEvent(buildEvent({
       runId: builderMemberRunId,
       rootTeamRunId: newerTeamRunId,
       memberRouteKey: 'builder',
+      teamRunPath: ['software_engineering_team'],
+      memberPath: ['implementation_team', 'builder'],
       observedAt: '2041-07-01T11:05:00.000Z',
       grossInputTokens: 60,
       standardInputTokens: 60,
@@ -567,6 +592,10 @@ describe('token usage ledger GraphQL projections', () => {
       status: 'estimated',
       model: 'gpt-shared',
       runtimeKind: 'autobyteus',
+      teamName: 'GraphQL Engineering Team',
+      runSummary: 'Ship task statistics',
+      runCreatedAt: '2041-07-01T10:58:00.000Z',
+      memberName: 'GraphQL Builder',
     }));
 
     const query = `
@@ -578,6 +607,7 @@ describe('token usage ledger GraphQL projections', () => {
             runId
             rootTeamRunId
             displayName
+            summary
             createdAt
             createdTimeSource
             models
@@ -603,8 +633,7 @@ describe('token usage ledger GraphQL projections', () => {
               memberRouteKey
               memberAgentRunId
               memberName
-              createdAt
-              createdTimeSource
+              memberPath
               models
               runtimeKinds
               aggregate {
@@ -663,9 +692,10 @@ describe('token usage ledger GraphQL projections', () => {
       rowKind: 'TEAM_RUN',
       runId: null,
       rootTeamRunId: newerTeamRunId,
-      displayName: 'Unknown team run',
-      createdAt: '2041-07-01T11:00:00.000Z',
-      createdTimeSource: 'FIRST_USAGE_OBSERVED',
+      displayName: 'GraphQL Engineering Team',
+      summary: 'Ship task statistics',
+      createdAt: '2041-07-01T10:58:00.000Z',
+      createdTimeSource: 'RUN_HISTORY',
       models: ['gpt-shared'],
       runtimeKinds: ['autobyteus', 'codex_app_server'],
     });
@@ -690,9 +720,8 @@ describe('token usage ledger GraphQL projections', () => {
       expect.objectContaining({
         memberRouteKey: 'designer',
         memberAgentRunId: designerMemberRunId,
-        memberName: 'designer',
-        createdAt: '2041-07-01T11:00:00.000Z',
-        createdTimeSource: 'FIRST_USAGE_OBSERVED',
+        memberName: 'GraphQL Designer',
+        memberPath: ['planning_team', 'designer'],
         models: ['gpt-shared'],
         runtimeKinds: ['codex_app_server'],
         aggregate: expect.objectContaining({
@@ -705,7 +734,8 @@ describe('token usage ledger GraphQL projections', () => {
       expect.objectContaining({
         memberRouteKey: 'builder',
         memberAgentRunId: builderMemberRunId,
-        memberName: 'builder',
+        memberName: 'GraphQL Builder',
+        memberPath: ['implementation_team', 'builder'],
         runtimeKinds: ['autobyteus'],
         aggregate: expect.objectContaining({
           grossInputTokens: 60,
@@ -721,9 +751,10 @@ describe('token usage ledger GraphQL projections', () => {
       rowKind: 'AGENT_RUN',
       runId: standaloneRunId,
       rootTeamRunId: null,
-      displayName: 'Unknown agent run',
-      createdAt: '2041-07-01T10:30:00.000Z',
-      createdTimeSource: 'FIRST_USAGE_OBSERVED',
+      displayName: 'GraphQL Standalone Agent',
+      summary: 'Prototype task statistics',
+      createdAt: '2041-07-01T10:20:00.000Z',
+      createdTimeSource: 'RUN_HISTORY',
       models: ['gpt-shared'],
       runtimeKinds: ['codex_app_server'],
       members: [],

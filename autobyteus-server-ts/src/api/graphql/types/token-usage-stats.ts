@@ -178,15 +178,6 @@ export class TokenUsageTaskMemberStatisticsRowGraphql {
   @Field(() => [String])
   memberPath!: string[];
 
-  @Field(() => String, { nullable: true })
-  agentDefinitionId?: string | null;
-
-  @Field(() => String)
-  createdAt!: string;
-
-  @Field(() => String)
-  createdTimeSource!: string;
-
   @Field(() => [String])
   models!: string[];
 
@@ -216,12 +207,6 @@ export class TokenUsageTaskStatisticsRowGraphql {
 
   @Field(() => String, { nullable: true })
   summary?: string | null;
-
-  @Field(() => String, { nullable: true })
-  workspaceName?: string | null;
-
-  @Field(() => String, { nullable: true })
-  workspaceRootPath?: string | null;
 
   @Field(() => String)
   createdAt!: string;
@@ -419,9 +404,6 @@ const toTaskMemberRow = (
   memberAgentRunId: row.memberAgentRunId,
   memberName: row.memberName,
   memberPath: row.memberPath,
-  agentDefinitionId: row.agentDefinitionId,
-  createdAt: row.createdAt,
-  createdTimeSource: row.createdTimeSource,
   models: row.models,
   runtimeKinds: row.runtimeKinds,
   aggregate: toTokenUsageCostSummaryAggregateGraphql(row.aggregate),
@@ -434,8 +416,6 @@ const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRo
   rootTeamRunId: row.rootTeamRunId,
   displayName: row.displayName,
   summary: row.summary,
-  workspaceName: row.workspaceName,
-  workspaceRootPath: row.workspaceRootPath,
   createdAt: row.createdAt,
   createdTimeSource: row.createdTimeSource,
   models: row.models,
