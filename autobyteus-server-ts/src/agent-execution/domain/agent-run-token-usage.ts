@@ -87,6 +87,11 @@ export interface TokenUsageUpdatedPayload {
   task_agent_instance_id: string | null;
   task_agent_run_id: string | null;
   task_id: string | null;
+  team_name: string | null;
+  agent_name: string | null;
+  run_summary: string | null;
+  run_created_at: string | null;
+  member_name: string | null;
   runtime_kind: TokenUsageRuntimeKind;
   model_provider: string | null;
   model_identifier: string | null;
@@ -284,6 +289,11 @@ export const createTokenUsageUpdatedPayload = (input: {
     task_agent_instance_id: asString(source.task_agent_instance_id),
     task_agent_run_id: asString(source.task_agent_run_id),
     task_id: asString(source.task_id),
+    team_name: asString(source.team_name),
+    agent_name: asString(source.agent_name),
+    run_summary: asString(source.run_summary),
+    run_created_at: asString(source.run_created_at),
+    member_name: asString(source.member_name),
     runtime_kind: runtimeKind,
     model_provider: asString(source.model_provider) ?? asString(usage?.model_provider),
     model_identifier: asString(source.model_identifier) ?? asString(usage?.model_identifier),

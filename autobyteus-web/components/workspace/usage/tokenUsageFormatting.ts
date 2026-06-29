@@ -1,6 +1,6 @@
 import type { TokenUsageApiCostStatus, TokenUsageRunSummary } from '~/types/tokenUsageMeter';
 
-export type TokenUsageTranslator = (key: string, params?: Record<string, unknown>) => string;
+export type TokenUsageTranslator = (key: string, params?: Record<string, string | number>) => string;
 
 export const createTokenUsageFormatter = (t: TokenUsageTranslator) => {
   const formatInteger = (value: number): string => new Intl.NumberFormat().format(value);
