@@ -13,6 +13,7 @@ import {
   TOOL_CONTINUATION_MODE_METADATA_KEY,
   TOOL_HISTORY_ONLY_CONTINUATION_MODE,
 } from '../../../../src/agent/message/tool-continuation-metadata.js';
+import { SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY } from '../../../../src/agent/message/system-task-notification-metadata.js';
 import { AgentTurn } from '../../../../src/agent/agent-turn.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { BaseLLM, type LLMInvocationOptions } from '../../../../src/llm/base.js';
@@ -139,6 +140,37 @@ describe('AgentInputPipeline', () => {
       content: 'system task update'
     });
     expect(String(result.llmUserMessage.content)).toContain('system task update');
+  });
+
+  it('suppresses only the generic system task notifier when explicit metadata requests suppression', async () => {
+    const { context, turn } = makeContextAndTurn();
+    const processor = {
+      getName: () => 'append-processor',
+      getOrder: () => 10,
+      process: vi.fn(async (message: AgentInputUserMessage) =>
+        new AgentInputUserMessage(`${message.content} processed`, message.senderType, message.contextFiles, message.metadata)
+      )
+    };
+    context.config.inputProcessors = [processor as any];
+    const notifier = {
+      notifyAgentDataSystemTaskNotificationReceived: vi.fn()
+    };
+    const pipeline = new AgentInputPipeline();
+    const event = new UserMessageReceivedEvent(
+      new AgentInputUserMessage('suppressed system task update', SenderType.SYSTEM, null, {
+        sender_id: 'system.task_delegation',
+        [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true
+      })
+    );
+
+    const result = await pipeline.processForLlm(event, context, turn, {
+      startsNewTurn: true,
+      notifier: notifier as any
+    });
+
+    expect(notifier.notifyAgentDataSystemTaskNotificationReceived).not.toHaveBeenCalled();
+    expect(processor.process).toHaveBeenCalledOnce();
+    expect(String(result.llmUserMessage.content)).toContain('suppressed system task update processed');
   });
 
   it('converts inter-agent messages with sender id and strict recipient input shape', async () => {

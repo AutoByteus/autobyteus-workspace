@@ -17,6 +17,7 @@ import { buildTaskAgentInstanceIdentity } from "./task-agent-instance-identity.j
 import { TaskDelegationEventPublisher } from "./task-delegation-event-publisher.js";
 import { TaskDelegationWorkPacketRenderer } from "./task-delegation-work-packet-renderer.js";
 import { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
+import { markTaskDelegationSystemTaskNotificationMetadata } from "./task-delegation-system-message-visibility.js";
 
 type DelegatorReplySelector = {
   recipientName: string | null;
@@ -149,14 +150,14 @@ export class TaskDelegationActivationCoordinator {
       this.renderer.render([record]),
       SenderType.SYSTEM,
       null,
-      {
+      markTaskDelegationSystemTaskNotificationMetadata({
         sender_id: "system.task_delegation",
         team_run_id: this.ledger.teamRunId,
         task_id: record.taskId,
         task_ids: [record.taskId],
         execution_kind: record.execution?.kind ?? null,
         ...metadata,
-      },
+      }),
     );
   }
 

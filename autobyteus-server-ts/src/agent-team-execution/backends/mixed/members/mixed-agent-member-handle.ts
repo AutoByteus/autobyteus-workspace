@@ -33,6 +33,10 @@ import {
   buildInterAgentDeliveryInputMessage,
 } from "../../../services/inter-agent-message-runtime-builders.js";
 import { buildTeamMemberInputEventPayload } from "../../../services/team-member-input-event-builder.js";
+import {
+  buildTaskDelegationSystemTaskNotificationEvent,
+  isTaskDelegationSystemTaskNotificationMessage,
+} from "../../../task-delegation/task-delegation-system-message-visibility.js";
 import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
 import type { MixedTeamRunContext, MixedAgentMemberContext } from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
@@ -103,7 +107,11 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       const result = await run.postUserMessage(message);
       this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
       if (result.accepted) {
-        this.publishMemberInput(message);
+        if (isTaskDelegationSystemTaskNotificationMessage(message)) {
+          run.emitLocalEvent(buildTaskDelegationSystemTaskNotificationEvent(run.runId, message));
+        } else {
+          this.publishMemberInput(message);
+        }
       } else {
         this.publishCommandStatus("error", result.message ?? null);
       }
