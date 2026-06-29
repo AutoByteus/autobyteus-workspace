@@ -134,18 +134,21 @@ Runtime projection is explicit and uses the same manifest/service boundary:
 
 All task-delegation tool calls must be bound to an active team run and current
 member identity. `delegate_task` creates one internal delegation ledger record
-from explicit `target: { kind: "member" | "team", name }`, ready-to-run rich
-`description`, and optional `reference_files` work-packet inputs. Member targets
-start one task-agent instance; team targets start one task-scoped child team run
-whose ingress coordinator receives the work packet while the logical team
-remains the accountable task owner. Multiple independent tasks and sequential
-follow-up work are delegated through additional `delegate_task` calls. Bound
-task-agents and task-team ingress contexts submit reviewable output with
-`submit_task_result`; the tool accepts only `message` and optional
-`reference_files` because the task is inferred from the caller's bound execution
-context. Original delegators review the latest pending submission with
+from explicit `target: { kind: "member" | "team", name }`, ready-to-run
+task-centered `description` content (objective, context, constraints, done
+conditions, expected output, and reference guidance), and optional
+`reference_files` work-packet inputs. Member targets start one task-agent
+instance; team targets start one task-scoped child team run whose ingress
+coordinator receives the work packet while the logical team remains the
+accountable task owner. Multiple independent tasks and sequential follow-up work
+are delegated through additional `delegate_task` calls. Bound task-agents and
+task-team ingress contexts submit reviewable output with `submit_task_result`;
+the tool accepts only `message` and optional `reference_files` because the task
+is inferred from the caller's bound execution context.
+
+The task review owner reviews the latest pending submission with
 `review_task_result`, using `decision="accept"` to finalize or
-`decision="request_revision"` plus a message to send system revision
+`decision="request_revision"` plus a task-result `comment` for revision
 instructions. `send_message_to` remains available for ordinary
 communication/handoffs only; it is not task result/review/acceptance, and
 communication recipients are not automatically delegation targets.

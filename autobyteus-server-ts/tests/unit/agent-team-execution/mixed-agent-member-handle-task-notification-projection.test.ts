@@ -149,12 +149,14 @@ describe("MixedAgentMemberHandle task-delegation notification projection", () =>
   it("projects accepted stamped task-delegation system messages as one local system notification without member-input echo", async () => {
     const { handle, publishedEvents, backends } = buildHandle();
     const message = new AgentInputUserMessage(
-      "Your team has been activated as accountable task target.",
+      "Runtime task packet with lifecycle guidance.",
       SenderType.SYSTEM,
       null,
       markTaskDelegationSystemTaskNotificationMetadata({
         sender_id: "system.task_delegation",
         message_type: "task_team_delegation_work_packet",
+      }, {
+        displayContent: "New delegated task.\n\nTask ID: task_0001",
       }),
     );
 
@@ -171,7 +173,34 @@ describe("MixedAgentMemberHandle task-delegation notification projection", () =>
           runId: "worker-run-1",
           payload: {
             sender_id: "system.task_delegation",
-            content: "Your team has been activated as accountable task target.",
+            content: "New delegated task.\n\nTask ID: task_0001",
+          },
+        }),
+      }),
+    ]);
+  });
+
+  it("falls back to raw runtime content for stamped task-delegation messages without display metadata", async () => {
+    const { handle, publishedEvents } = buildHandle();
+    const message = new AgentInputUserMessage(
+      "Runtime-only stamped task notification.",
+      SenderType.SYSTEM,
+      null,
+      markTaskDelegationSystemTaskNotificationMetadata({
+        sender_id: "system.task_delegation",
+        message_type: "task_revision_requested",
+      }),
+    );
+
+    await expect(handle.postMessage(message)).resolves.toMatchObject({ accepted: true });
+
+    expect(agentNotificationEvents(publishedEvents)).toEqual([
+      expect.objectContaining({
+        agentEvent: expect.objectContaining({
+          eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
+          payload: {
+            sender_id: "system.task_delegation",
+            content: "Runtime-only stamped task notification.",
           },
         }),
       }),

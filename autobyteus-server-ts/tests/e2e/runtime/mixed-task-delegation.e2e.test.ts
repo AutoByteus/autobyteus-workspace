@@ -291,6 +291,25 @@ const payloadContent = (message: WsMessage): string =>
 const hasAllSnippets = (content: string, snippets: readonly string[]): boolean =>
   snippets.every((snippet) => content.includes(snippet));
 
+const TASK_NOTIFICATION_FORBIDDEN_VISIBLE_SNIPPETS = [
+  "target_agent_run_id",
+  "task_agent_run_id",
+  "task_team_run_id",
+  "Task-agent run",
+  "Task-team run ID",
+  "task_team_instance_id",
+  "Ingress coordinator",
+  "Execution kind",
+  "Lifecycle instructions",
+  "Submission ID",
+  "Review ID",
+  "Reviewed submission ID",
+  "submit_task_result",
+  "review_task_result",
+  "send_message_to",
+  "```json",
+] as const;
+
 const waitForSingleTaskNotificationSurface = async (
   messages: WsMessage[],
   startIndex: number,
@@ -298,6 +317,7 @@ const waitForSingleTaskNotificationSurface = async (
     agentName: string;
     memberRouteKey: string;
     contentSnippets: readonly string[];
+    forbiddenContentSnippets?: readonly string[];
     label: string;
     timeoutMs?: number;
   },
@@ -308,13 +328,17 @@ const waitForSingleTaskNotificationSurface = async (
     message.payload.member_route_key === input.memberRouteKey &&
     hasAllSnippets(payloadContent(message), input.contentSnippets);
 
-  await waitForMessageAfter(
+  const notification = await waitForMessageAfter(
     messages,
     startIndex,
     matchesNotification,
     `${input.label} system task notification`,
     input.timeoutMs ?? 120_000,
   );
+  const notificationContent = payloadContent(notification);
+  for (const forbidden of input.forbiddenContentSnippets ?? []) {
+    expect(notificationContent).not.toContain(forbidden);
+  }
 
   // Give the target runtime a short chance to emit the legacy duplicate surface
   // before asserting the final visible event set for this task packet.
@@ -517,18 +541,19 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     const initialResultToken = `LIVE_MIXED_TASK_DELEGATION_INITIAL_RESULT_${unique}`;
     const revisionToken = `LIVE_MIXED_TASK_DELEGATION_REVISED_${unique}`;
     const revisionRequestMessage = `Revision requested: submit the revised result with content "${revisionToken}".`;
+    const acceptanceComment = `Accepted live result ${unique}.`;
 
     const coordinatorAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-coordinator-${unique}`,
       description: "AutoByteus coordinator for live task delegation and revision feedback E2E.",
       toolNames: ["delegate_task", "review_task_result"],
-      instructions: `If the user asks you to call delegate_task with exact JSON arguments, call delegate_task exactly once with those exact arguments and do not call any other tool. After the framework notifies you of the first submitted task result, call review_task_result exactly once with the task_id from the notification, decision="request_revision", and message=${JSON.stringify(revisionRequestMessage)}. After the framework notifies you of the revised submitted task result containing "${revisionToken}", call review_task_result exactly once with the task_id from the notification and decision="accept". Do not delegate additional tasks. Do not explore the environment.`,
+      instructions: `If the user asks you to call delegate_task with exact JSON arguments, call delegate_task exactly once with those exact arguments and do not call any other tool. After the framework notifies you of the first submitted task result, call review_task_result exactly once with the task_id from the notification, decision="request_revision", and comment=${JSON.stringify(revisionRequestMessage)}. After the framework notifies you of the revised submitted task result containing "${revisionToken}", call review_task_result exactly once with the task_id from the notification, decision="accept", and comment=${JSON.stringify(acceptanceComment)}. Do not delegate additional tasks. Do not explore the environment.`,
     });
     const workerAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-worker-${unique}`,
       description: "Codex worker for live task delegation revision feedback E2E.",
       toolNames: ["submit_task_result"],
-      instructions: `When you receive the initial delegated task work packet, immediately call submit_task_result exactly once with message="${initialResultToken}" and reference_files=[]. If you later receive a revision request containing "${revisionToken}", call submit_task_result exactly once with message="${revisionToken}" and reference_files=[]. Do not run shell commands or create files.`,
+      instructions: `When you receive the initial delegated task work packet, immediately call submit_task_result exactly once with message="${initialResultToken}" and reference_files=[]. Do not wait for another user message and do not reply in prose instead of calling the tool. If you later receive a revision request containing "${revisionToken}", call submit_task_result exactly once with message="${revisionToken}" and reference_files=[]. Do not run shell commands or create files.`,
     });
 
     const teamDefinition = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
@@ -578,7 +603,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
 
     const delegateArgs = {
       target: { kind: "member", name: "worker" },
-      description: `Handle this delegated validation task by submitting result message ${initialResultToken}. Result condition: call submit_task_result once with message="${initialResultToken}" and reference_files=[].`,
+      description: `Produce exactly one delegated task result whose content is "${initialResultToken}". Use no reference files. Do this immediately without reading files or writing prose.`,
     };
     const connection = await openTeamSocket(teamRunId);
     try {
@@ -621,6 +646,12 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         agentName: "worker",
         memberRouteKey: "worker",
         contentSnippets: [`Task ID: ${taskId}`, delegateArgs.description],
+        forbiddenContentSnippets: [
+          ...TASK_NOTIFICATION_FORBIDDEN_VISIBLE_SNIPPETS,
+          taskAgentRunId,
+          "coordinator",
+          "worker",
+        ],
         label: "worker activation",
       });
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
@@ -639,7 +670,14 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       await waitForSingleTaskNotificationSurface(connection.messages, startIndex, {
         agentName: "coordinator",
         memberRouteKey: "coordinator",
-        contentSnippets: ["Task result submitted for review.", `Task ID: ${taskId}`, initialResultToken],
+        contentSnippets: ["A task result is ready for review.", `Task ID: ${taskId}`, initialResultToken],
+        forbiddenContentSnippets: [
+          ...TASK_NOTIFICATION_FORBIDDEN_VISIBLE_SNIPPETS,
+          taskAgentRunId,
+          `${taskId}_submission_0001`,
+          "coordinator",
+          "worker",
+        ],
         label: "coordinator result-submitted",
       });
 
@@ -647,7 +685,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       const revisionReviewArgs = {
         task_id: taskId,
         decision: "request_revision",
-        message: revisionRequestMessage,
+        comment: revisionRequestMessage,
       };
       const revisionReviewInvocationId = await approveToolAndWait(connection.socket, connection.messages, revisionStartIndex, {
         agentName: "coordinator",
@@ -658,7 +696,8 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         argumentPredicate: (args) =>
           args.task_id === revisionReviewArgs.task_id &&
           args.decision === revisionReviewArgs.decision &&
-          args.message === revisionReviewArgs.message,
+          args.comment === revisionReviewArgs.comment &&
+          !Object.prototype.hasOwnProperty.call(args, "message"),
         timeoutMs: 240_000,
       });
       const postRevisionApprovalIndex = connection.messages.findIndex((message) =>
@@ -677,6 +716,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
           message.payload.reviewId === `${taskId}_review_0001` &&
           message.payload.reviewedSubmissionId === `${taskId}_submission_0001` &&
           message.payload.decision === "request_revision" &&
+          message.payload.comment === revisionRequestMessage &&
           message.payload.status === "active" &&
           message.payload.terminal === false,
         "task result reviewed revision event", 120_000,
@@ -684,7 +724,15 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       await waitForSingleTaskNotificationSurface(connection.messages, revisionStartIndex, {
         agentName: "worker",
         memberRouteKey: "worker",
-        contentSnippets: ["Revision requested for delegated task.", `Task ID: ${taskId}`, revisionRequestMessage],
+        contentSnippets: ["This task needs revision.", `Task ID: ${taskId}`, revisionRequestMessage],
+        forbiddenContentSnippets: [
+          ...TASK_NOTIFICATION_FORBIDDEN_VISIBLE_SNIPPETS,
+          taskAgentRunId,
+          `${taskId}_submission_0001`,
+          `${taskId}_review_0001`,
+          "coordinator",
+          "worker",
+        ],
         label: "worker revision-requested",
       });
       await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
@@ -702,7 +750,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       );
 
       const acceptStartIndex = postRevisionApprovalIndex;
-      const acceptReviewArgs = { task_id: taskId, decision: "accept" };
+      const acceptReviewArgs = { task_id: taskId, decision: "accept", comment: acceptanceComment };
       await approveToolAndWait(connection.socket, connection.messages, acceptStartIndex, {
         agentName: "coordinator",
         toolName: "review_task_result",
@@ -711,7 +759,9 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         label: "coordinator review_task_result accept",
         argumentPredicate: (args) =>
           args.task_id === acceptReviewArgs.task_id &&
-          args.decision === acceptReviewArgs.decision,
+          args.decision === acceptReviewArgs.decision &&
+          args.comment === acceptReviewArgs.comment &&
+          !Object.prototype.hasOwnProperty.call(args, "message"),
         timeoutMs: 240_000,
       });
       await waitForMessageAfter(connection.messages, acceptStartIndex, (message) =>
@@ -725,9 +775,22 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
           message.payload.reviewId === `${taskId}_review_0002` &&
           message.payload.reviewedSubmissionId === `${taskId}_submission_0002` &&
           message.payload.decision === "accept" &&
+          message.payload.comment === acceptanceComment &&
           message.payload.status === "accepted" &&
           message.payload.terminal === true,
         "task result reviewed accept event", 120_000,
+      );
+      await waitForMessageAfter(connection.messages, acceptStartIndex, (message) =>
+        message.type === "TASK_DELEGATION_EVENT" &&
+          message.payload.event_type === "TASK_DELEGATION_STATUS_UPDATED" &&
+          message.payload.taskId === taskId &&
+          message.payload.latestReviewId === `${taskId}_review_0002` &&
+          message.payload.reviewedSubmissionId === `${taskId}_submission_0002` &&
+          message.payload.status === "accepted" &&
+          message.payload.acceptanceComment === acceptanceComment &&
+          !Object.prototype.hasOwnProperty.call(message.payload, "acceptanceMessage") &&
+          message.payload.terminal === true,
+        "task status accepted comment event", 120_000,
       );
       await waitForMessageAfter(connection.messages, acceptStartIndex, (message) =>
         message.type === "AGENT_STATUS" &&

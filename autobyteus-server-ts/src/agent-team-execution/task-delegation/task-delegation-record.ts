@@ -87,7 +87,7 @@ export type TaskResultReviewDecision =
 export type ReviewTaskResultInput = {
   task_id: string;
   decision: TaskResultReviewDecision;
-  message?: string | null;
+  comment?: string | null;
   reference_files?: string[];
 };
 
@@ -104,7 +104,7 @@ export type TaskResultReview = {
   reviewId: string;
   reviewedSubmissionId: string;
   decision: TaskResultReviewDecision;
-  message: string | null;
+  comment: string | null;
   referenceFiles: string[];
   reviewer: TaskDelegationDelegatorIdentity;
   reviewedAt: string;
@@ -148,7 +148,7 @@ export type TaskDelegationRecord = {
   pendingSubmissionId: string | null;
   resultSubmissions: TaskResultSubmission[];
   resultReviews: TaskResultReview[];
-  acceptanceMessage: string | null;
+  acceptanceComment: string | null;
   acceptedAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -199,7 +199,7 @@ export type TaskDelegationStatusUpdatePayload = {
   latestSubmissionId: string | null;
   latestReviewId: string | null;
   reviewedSubmissionId: string | null;
-  acceptanceMessage: string | null;
+  acceptanceComment: string | null;
   acceptedAt: string | null;
   updatedAt: string;
   terminal: boolean;
@@ -249,6 +249,7 @@ export type TaskDelegationResultReviewedPayload = {
   reviewId: string;
   reviewedSubmissionId: string;
   decision: TaskResultReviewDecision;
+  comment: string | null;
   reviewedAt: string;
   updatedAt: string;
   terminal: boolean;

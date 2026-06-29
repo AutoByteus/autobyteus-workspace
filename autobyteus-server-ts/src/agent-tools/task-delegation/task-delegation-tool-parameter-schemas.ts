@@ -35,7 +35,7 @@ export const buildDelegateTaskParameterSchema = (): ParameterSchema => new Param
   new ParameterDefinition({
     name: "description",
     type: ParameterType.STRING,
-    description: "Complete ready-to-run work-packet body with objective, context, scope, constraints, done conditions, and expected output guidance.",
+    description: "Complete task details: objective, context, scope, constraints, done conditions, expected output, and reference guidance for the task itself.",
     required: true,
   }),
   new ParameterDefinition({
@@ -69,7 +69,7 @@ export const buildReviewTaskResultParameterSchema = (): ParameterSchema =>
     new ParameterDefinition({
       name: "task_id",
       type: ParameterType.STRING,
-      description: "Required generated Task ID whose latest pending submission is being reviewed. Only the original delegator may review.",
+      description: "Required generated Task ID whose latest pending submission is being reviewed. Only the task review owner may review.",
       required: true,
     }),
     new ParameterDefinition({
@@ -80,9 +80,9 @@ export const buildReviewTaskResultParameterSchema = (): ParameterSchema =>
       required: true,
     }),
     new ParameterDefinition({
-      name: "message",
+      name: "comment",
       type: ParameterType.STRING,
-      description: "Required when decision is request_revision; optional acceptance note when decision is accept.",
+      description: "Task-result review comment. Required when decision is request_revision; optional acceptance feedback when decision is accept.",
       required: false,
     }),
     new ParameterDefinition({

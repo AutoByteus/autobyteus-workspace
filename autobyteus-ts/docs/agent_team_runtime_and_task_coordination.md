@@ -101,22 +101,24 @@ fresh task-team run identity rather than reusing the completed run.
 
 Activated task-agent and task-team executions receive a system work packet that
 contains the task label, target identity, rich description, reference files,
-concrete runtime identity (`target_agent_run_id` or `task_team_run_id`), and
-lifecycle instructions. The packet explicitly tells the execution target not to
-poll for tasks; all necessary task details are pushed with the activation.
+and lifecycle instructions. Runtime identities remain backend metadata/event
+details for routing and diagnostics; the task packet body is centered on the
+task itself. The packet explicitly tells the execution target not to poll for
+tasks; all necessary task details are pushed with the activation.
 
 Task-agents and task-team ingress contexts submit reviewable output with
 `submit_task_result({ message, reference_files? })`. The task is inferred from
 the bound execution context, so the model must not pass task selectors such as
 `task_id`, `task_name`, `member_name`, or status fields. Successful submission
 records a stable submission id, moves the task to `awaiting_review`, and
-system-notifies the original delegator.
+system-notifies the task review owner.
 
-Original delegators review the latest pending submission with
-`review_task_result({ task_id, decision, message?, reference_files? })`.
-`decision="request_revision"` requires a non-empty message and system-notifies
-that same task execution instance. `decision="accept"` marks the task accepted
-and requests safe settlement for the task-agent or task-team execution. Every
+The task review owner reviews the latest pending submission with
+`review_task_result({ task_id, decision, comment?, reference_files? })`.
+`decision="request_revision"` requires a non-empty task-result comment and
+system-notifies the same task execution instance. `decision="accept"` marks
+the task accepted and requests safe settlement for the task-agent or task-team
+execution. Every
 review records the reviewed submission id so multi-cycle result/revision history
 is explicit.
 
@@ -131,8 +133,9 @@ Server-owned task delegation is event-driven rather than model-polled:
 - accepted work-packet activations emit `TASK_DELEGATION_ACTIVATED`;
 - result submissions emit `TASK_DELEGATION_RESULT_SUBMITTED` and a status
   projection containing the pending submission id;
-- delegator reviews emit `TASK_DELEGATION_RESULT_REVIEWED` and a status
-  projection containing `reviewId` and `reviewedSubmissionId`;
+- task-review decisions emit `TASK_DELEGATION_RESULT_REVIEWED` and a status
+  projection containing `reviewId`, `reviewedSubmissionId`, review `comment`,
+  and `acceptanceComment` when the acceptance path includes feedback;
 - system notification delivery failure does not roll back valid lifecycle state;
   tool results return `notification_delivered` and deterministic `warnings[]`.
 

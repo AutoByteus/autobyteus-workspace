@@ -63,8 +63,9 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
   member-input echo surface. Activation work packets, result-submitted notices,
   and revision-requested notices that are stamped by the task-delegation
   subsystem are still delivered to the runtime/model, but accepted mixed leaf
-  delivery projects exactly one live `SYSTEM_TASK_NOTIFICATION` event for the
-  target conversation and does not also emit `MEMBER_INPUT_MESSAGE`. The
+  delivery projects exactly one live `SYSTEM_TASK_NOTIFICATION` event using the
+  task-delegation display-content metadata for the target conversation and does
+  not also emit `MEMBER_INPUT_MESSAGE`. The
   AutoByteus runtime honors the paired generic suppression metadata so it does
   not emit a second runtime-originated system-task notification for the same
   server-owned payload.
