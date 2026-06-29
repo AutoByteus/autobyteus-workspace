@@ -1,9 +1,10 @@
 ## What's New
-- System task notifications now appear in the normal chat message flow instead of as a separate alert-style panel.
+- Team Active Tasks now shows delegated task context in the Team tab with a left-side navigator for task summaries, responsible agents or task teams, team members, references, and technical details.
 
 ## Improvements
-- Notification content now uses standard message markdown formatting, so multiline task details and reference lists read more naturally beside agent replies.
-- Notification accessibility and test semantics are preserved without showing a noisy title, icon, purple card, or monospace panel.
+- Task reference rows are easier to read and select, with previews opening in the right-side detail pane.
+- The task detail pane now stays focused on task content or reference preview, while focus actions remain on the relevant actor/member rows.
 
 ## Fixes
-- Removed the oversized purple notification presentation that made frontend task notifications feel visually out of place.
+- Removed active-task context from the global Workspaces tree so it remains a workspace/run/team/member navigation surface.
+- Avoided duplicated task status, waiting, focus, actor, reference-list, and technical-detail controls in the right-side task detail pane.
