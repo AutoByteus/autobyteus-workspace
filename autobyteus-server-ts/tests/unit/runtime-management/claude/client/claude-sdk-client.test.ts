@@ -119,6 +119,31 @@ describe("ClaudeSdkClient", () => {
     });
   });
 
+  it("forwards stderr diagnostics callback to Claude SDK query options when provided", async () => {
+    const client = new ClaudeSdkClient();
+    const queryMock = createMockQuery();
+    const queryFn = vi.fn(async (_input: unknown) => queryMock);
+    const stderr = vi.fn();
+
+    client.setCachedModuleForTesting({
+      query: queryFn,
+    });
+
+    await client.startQueryTurn({
+      prompt: "diagnostic turn",
+      model: "haiku",
+      workingDirectory: "/tmp/claude-client-stderr",
+      stderr,
+    });
+
+    expect(queryFn).toHaveBeenCalledWith({
+      prompt: "diagnostic turn",
+      options: expect.objectContaining({
+        stderr,
+      }),
+    });
+  });
+
   it("uses user settings-source policy for model discovery", async () => {
     const client = new ClaudeSdkClient();
     const control = {
