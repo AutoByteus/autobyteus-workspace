@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/api-e2e-coverage-investigation.md`
 - Current Execution Round: 2
 - Trigger: Full refresh Round 5 code review passed and requested API/E2E coverage investigation/execution after power-off recovery.
 - Prior Round Reviewed: Round 1 at this canonical report path was reviewed. Its durable coverage additions are now existing coverage; its result is superseded by the Round 5 full-refresh implementation review and this Round 2 execution.
@@ -31,7 +31,7 @@ Execution followed the current Round 5 requirements/design package, the implemen
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -80,7 +80,7 @@ Evidence:
 
 ## Platform / Runtime Targets
 
-- Host/worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis`
+- Host/worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Backend: `autobyteus-server-ts`, Prisma SQLite test DB at `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`, Vitest 4, Node 22.
 - Frontend: `autobyteus-web`, Nuxt/Vitest happy-dom tests.
 - No real external LLM provider/runtime invocation was required for this historical projection/UI validation.
@@ -134,7 +134,7 @@ Out of scope:
 
 Updated during this API/E2E round:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts`
   - Added helper support for existing path fields and the five Round 5 display fields: `team_name`, `agent_name`, `run_summary`, `run_created_at`, and `member_name`.
   - Updated task-statistics GraphQL query to include top-level `summary` and member `memberPath`.
   - Removed stale member `createdAt` and `createdTimeSource` query/assertions.
@@ -150,7 +150,7 @@ Updated during this API/E2E round:
 
 - Repository-resident durable coverage added, updated, or removed this round: `Yes`
 - Paths added or updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts`
 - Paths removed: None
 - If `Yes`, returned through `code_reviewer` before delivery: `Pending` — this handoff must route to `code_reviewer`.
 - Post-API/E2E coverage code review artifact: Pending.
