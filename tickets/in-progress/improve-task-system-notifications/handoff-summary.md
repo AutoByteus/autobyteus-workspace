@@ -7,20 +7,23 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications`
 - Ticket branch: `codex/improve-task-system-notifications`
 - Finalization target/base: `origin/personal` / `personal`
-- Current integrated base checked: `origin/personal` at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`
-- User verification required before: moving ticket to `tickets/done`, committing, pushing, merging to `personal`, cleanup, or any release/deployment step.
+- Current integrated base checked: `origin/personal` at `7790cb0065b79ced2db8fb29d435a2591ab9faf8`
+- Current local ticket-branch head: `83ad353d4312e087cd12364116267af7cfb520ff`
+- User verification required before: moving ticket to `tickets/done`, final delivery-artifact commit, pushing, merging to `personal`, cleanup, or any release/deployment step.
 
 ## Delivery Integration Refresh
 
-- Fetch command: `git -C /Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications fetch origin personal`
-- Fetch result: passed on 2026-06-29.
-- Latest tracked remote base: `origin/personal` at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`
-- Ticket branch `HEAD` before delivery edits: `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`
-- Base advanced since reviewed/validated state: No.
-- Integration method: Already current; no merge/rebase was needed.
-- Checkpoint commit: Not needed because no base commits were integrated and no merge risk was introduced.
-- Post-integration rerun: No full executable rerun required because the fetched remote base did not advance and no merge changed the validated code state.
-- Delivery verification after docs sync: `git diff --check` passed.
+- Initial fetch command: `git -C /Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications fetch origin personal`
+- Initial fetch result: passed on 2026-06-29 with the branch current at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`.
+- Latest tracked remote advanced during delivery to: `origin/personal` at `7790cb0065b79ced2db8fb29d435a2591ab9faf8`.
+- Safety checkpoint commit: `f5296fc0fa5d7569295782f7321394973ff05893` (`checkpoint: improve task system notifications delivery state`). This was a delivery safety checkpoint, not repository finalization.
+- Integration method: Merge.
+- Integration command: `git -C /Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications merge --no-edit origin/personal`
+- Integration result: completed with merge commit `83ad353d4312e087cd12364116267af7cfb520ff`; no conflicts.
+- Branch relation after merge: ticket branch is ahead of `origin/personal` by 2 local commits and behind by 0.
+- Post-integration executable rerun: targeted task-delegation unit tests passed (4 files / 25 tests).
+- Post-integration build check: first `tsc` attempt exposed stale generated Prisma client types from the newly integrated token-usage migration; after `pnpm -C autobyteus-server-ts exec prisma generate`, `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` passed.
+- Delivery verification after integrated-state docs/artifact updates: `git diff --check` passed.
 
 ## Implemented Behavior Summary
 
@@ -62,17 +65,20 @@ Upstream reviewed/passed evidence from the cumulative package:
 - Targeted stale-symbol greps found no actionable legacy/compatibility hits.
 - Post-API/E2E coverage-code re-review passed with no findings.
 
-Delivery-stage verification:
+Delivery-stage integrated-state verification:
 
-- Fetched `origin/personal` and confirmed branch base already current at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`.
-- No base merge/rebase was needed; therefore no post-merge code rerun was required.
-- `git diff --check` passed after delivery docs/artifact updates.
+- Fetched latest `origin/personal` and merged the advanced base `7790cb0065b79ced2db8fb29d435a2591ab9faf8` into the ticket branch.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/agent-team-execution/member-run-instruction-composer.test.ts` — passed; 4 files / 25 tests.
+- `pnpm -C autobyteus-server-ts exec prisma generate` — passed; refreshed generated Prisma types required by the integrated token-usage migration.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed after Prisma generation.
+- `git diff --check` — passed.
 
 ## Residual Risks / Notes
 
 - Live E2E depends on local LM Studio and Codex model availability; final pass used available `gpt-5.5` after transient unavailable/timeout attempts with other models.
 - Exact notification copy is now centralized and tested, but product tone can still be iterated in the renderer if future UX feedback asks for different phrasing.
 - The field rename is intentionally breaking: `review_task_result.message` -> `review_task_result.comment`, and `acceptanceMessage` -> `acceptanceComment`. No compatibility alias was introduced.
+- A local safety checkpoint commit and merge commit now exist on the ticket branch; they are not pushed and not finalization. Final artifact updates in this handoff remain uncommitted until user verification.
 - No release/deployment has been run yet; release notes are prepared only for a later explicit release path.
 
 ## Cumulative Artifact Package
@@ -94,7 +100,7 @@ Delivery-stage verification:
 1. Refresh `origin/personal` again.
 2. If the target advanced, protect delivery-owned edits, re-integrate, rerun required checks, update artifacts if needed, and request renewed verification if the handoff state materially changes.
 3. Move ticket folder from `tickets/in-progress/improve-task-system-notifications` to `tickets/done/improve-task-system-notifications`.
-4. Commit the ticket branch intentionally.
+4. Commit the final delivery-artifact/ticket-state updates on the ticket branch.
 5. Push the ticket branch.
 6. Update local `personal` from `origin/personal`, merge the ticket branch into `personal`, and push `personal`.
 7. Run release/deployment only if explicitly requested or in scope at finalization time.

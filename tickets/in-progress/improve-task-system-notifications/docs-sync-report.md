@@ -4,9 +4,9 @@
 
 - Ticket: `improve-task-system-notifications`
 - Trigger: Delivery-stage docs sync after post-API/E2E coverage-code re-review pass for task-delegation notification copy and `review_task_result.comment` rename.
-- Bootstrap base reference: `origin/personal` at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`
-- Integrated base reference used for docs sync: `origin/personal` fetched on 2026-06-29 at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`
-- Post-integration verification reference: no base merge was needed because `HEAD`, `origin/personal`, and `FETCH_HEAD` all resolved to `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`; delivery docs edits were checked with `git diff --check` after sync.
+- Bootstrap base reference: `origin/personal` initially recorded at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`
+- Integrated base reference used for docs sync: `origin/personal` at `7790cb0065b79ced2db8fb29d435a2591ab9faf8`
+- Post-integration verification reference: safety checkpoint `f5296fc0fa5d7569295782f7321394973ff05893`, merge commit `83ad353d4312e087cd12364116267af7cfb520ff`; targeted task-delegation unit tests passed, `pnpm -C autobyteus-server-ts exec prisma generate` refreshed generated Prisma types required by the newly integrated base migration, `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` passed, and `git diff --check` passed.
 
 ## Why Docs Were Updated
 
@@ -24,7 +24,7 @@
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md` | Native-runtime boundary doc for server-managed team/task delegation. | Updated | Documented runtime ids as metadata/events, `review_task_result.comment`, `acceptanceComment`, and task review-owner notifications. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md` | MCP tool family doc for provider-facing agent tools. | Updated | Added the canonical review feedback field name for MCP-projected task-delegation tools. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/autobyteus-server-ts/docs/modules/codex_integration.md` | Codex live validation notes for mixed-runtime task delegation. | Updated | Added that the live E2E protects task-centered notification display content and `review_task_result.comment`; refreshed the example command to the passing env shape. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/autobyteus-server-ts/docs/modules/agent_communication.md` | Ordinary `send_message_to` routing doc, to check whether task-delegation rename/display behavior affected communication contracts. | No change | Ordinary communication selectors and message semantics are unchanged; docs remain accurate. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/autobyteus-server-ts/docs/modules/agent_communication.md` | Ordinary `send_message_to` routing doc, to check whether task-delegation rename/display behavior affected communication contracts. | No change | Ordinary communication selectors and message semantics are unchanged; docs remain accurate after the latest base merge. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/autobyteus-server-ts/docs/modules/agent_artifacts.md` | Reference-file serving doc, to check whether task-delegation reference file behavior changed. | No change | Reference-file serving and routes were unaffected; task-delegation docs already mention reference-file propagation. |
 
 ## Docs Updated
@@ -67,7 +67,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed against the fetched latest `origin/personal` integrated state. `git diff --check` passed after docs/report edits. Delivery remains pre-verification; ticket move, commit, push, target-branch merge, cleanup, and any release/deployment work are intentionally pending explicit user verification.
+- Notes: Docs sync completed and then re-checked after the delivery-stage merge of the latest `origin/personal`. Post-merge targeted task-delegation unit tests, TypeScript build after Prisma client regeneration, and `git diff --check` passed. Delivery remains pre-verification; ticket move, final delivery-artifact commit, push, target-branch merge, cleanup, and any release/deployment work are intentionally pending explicit user verification.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
