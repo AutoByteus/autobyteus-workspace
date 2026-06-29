@@ -18,4 +18,8 @@ export type {
   ContextFileReferenceSectionOptions,
   ContextFileUriResolver
 } from './context-file-reference-section.js';
+export {
+  SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY,
+  shouldSuppressSystemTaskNotification
+} from './system-task-notification-metadata.js';
 export { buildLLMUserMessage } from './multimodal-message-builder.js';

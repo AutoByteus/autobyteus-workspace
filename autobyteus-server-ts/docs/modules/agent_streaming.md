@@ -59,6 +59,15 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
   external-channel ingress remains on `EXTERNAL_USER_MESSAGE`; internal
   team/member accepted-input echoes must not be projected through the
   external-channel message boundary.
+- Server-owned task-delegation system messages are the explicit exception to the
+  member-input echo surface. Activation work packets, result-submitted notices,
+  and revision-requested notices that are stamped by the task-delegation
+  subsystem are still delivered to the runtime/model, but accepted mixed leaf
+  delivery projects exactly one live `SYSTEM_TASK_NOTIFICATION` event for the
+  target conversation and does not also emit `MEMBER_INPUT_MESSAGE`. The
+  AutoByteus runtime honors the paired generic suppression metadata so it does
+  not emit a second runtime-originated system-task notification for the same
+  server-owned payload.
 - `INTERRUPT_GENERATION` is a control request, not a send-readiness signal. Clients should leave the affected run/member in a sending or interrupted-in-flight state until the backend stream emits the terminal lifecycle/status projection (`TURN_COMPLETED`, `AGENT_STATUS { status: "idle", can_interrupt: false }`, or an error path) for that turn. Claude Agent SDK sessions in particular emit that projection only after their active query has been aborted/closed and the per-turn cleanup task has settled, so same-run follow-up chat does not reuse stale SDK process resources.
 - Segment order and segment identity are backend-owned. WebSocket handlers forward `SEGMENT_*` events in runtime emission order for both single-agent and team streams; clients should append/coalesce only when the backend-provided `segment_type` and `id` identify the same provider text or tool segment, not by turn-level heuristics or provider-specific UI repair logic.
 - `turn_id` is the canonical turn field for all outbound `SEGMENT_*` payloads. Native AutoByteus conversion strips segment-level `turnId` aliases; the WebSocket mapper normalizes any tolerated legacy alias back to `turn_id` before clients see it.

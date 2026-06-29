@@ -215,6 +215,17 @@ The happy path is push-based:
     unbinds it from `TaskTeamActiveRunDirectory`. Future delegations to the same
     logical team remain topology-based and allocate fresh task-team run identity.
 
+Task-delegation work packets and lifecycle follow-up notifications are still
+delivered as runtime/model input, but their visible live transcript projection is
+server-owned. Constructors stamp those `SenderType.SYSTEM` messages as
+task-delegation system task notifications and request generic AutoByteus system
+task-notification suppression. After an accepted mixed leaf delivery, the member
+boundary forwards the input to the runtime and emits one local
+`SYSTEM_TASK_NOTIFICATION` event for the target conversation instead of also
+publishing a `MEMBER_INPUT` echo. Ordinary user messages and inter-agent
+deliveries continue to use `MEMBER_INPUT`; task-delegation notification
+messages must not use both live surfaces for the same payload.
+
 `TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the
 domain stream and are flattened to WebSocket `TASK_DELEGATION_EVENT` messages.
 Current event types include `TASK_DELEGATION_ACTIVATED`,
