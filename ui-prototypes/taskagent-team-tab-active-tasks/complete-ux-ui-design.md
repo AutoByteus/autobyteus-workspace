@@ -43,8 +43,8 @@ Activity-style header changes apply to both Messages and Active Tasks section he
 For a selected task, the right pane order is:
 
 1. Compact target/status/Focus header with no task-kind badge.
-2. Task body text rendered cleanly.
-3. Task-team member focus rows, only for TaskTeam tasks.
+2. Task-team member focus rows, only for TaskTeam tasks, so member focus targets are visible before long task bodies.
+3. Task body text rendered cleanly.
 4. Optional `Technical details` disclosure.
 
 Reference file rows are primary, but they live in the **left task navigator** under the selected task, matching the Messages interaction pattern. Clicking a reference row changes the whole right pane into a file preview. Do not change the actual Messages UI to achieve this.
@@ -339,8 +339,8 @@ This task reference cannot be read from the current environment.
 | `T-001` | Select/open team run | Workspace | Messages default | Messages expanded with left Activity-style chevron; message content/detail selected; Active Tasks collapsed with `N tasks`. |
 | `T-002` | Click Active Tasks header | Messages default | Active Tasks split | Active Tasks opens; Messages collapses via Activity-style header affordance; Active Tasks leading chevron rotates. |
 | `T-003` | Click Messages header | Active Tasks split | Messages default | Messages opens using Activity-style left chevron header; Active Tasks collapses. |
-| `T-004` | Select task item | Active Tasks split | Task detail | Left task selection moves; right pane shows compact header, task body, member rows if TaskTeam. |
-| `T-005` | Select TaskTeam item | Task detail | TaskTeam detail | Shows compact TaskTeam header, task body, member focus rows. |
+| `T-004` | Select task item | Active Tasks split | Task detail | Left task selection moves; right pane shows compact header, member rows if TaskTeam, then task body. |
+| `T-005` | Select TaskTeam item | Task detail | TaskTeam detail | Shows compact TaskTeam header, member focus rows, then task body. |
 | `T-006` | Click left-navigator reference row | Task detail | Reference preview | File row selected; whole right pane shows loading then content/error. |
 | `T-007` | Click selected task row | Reference preview | Task detail | Right pane returns to selected task body. |
 | `T-008` | Click Focus target/member | Task detail | Same task detail | Workspace focus updates; selected task remains visible. |
@@ -363,7 +363,7 @@ This task reference cannot be read from the current environment.
 - Reference rows appear under the selected task in the left navigator, like Messages.
 - Right task detail does not duplicate reference rows by default.
 - Clicking a left-navigator reference row switches the whole right pane to read-only file preview with no task-specific Back button; clicking the task row returns to task detail.
-- TaskTeam detail includes member focus rows.
+- TaskTeam detail includes member focus rows immediately below the compact header/status area and before the task body.
 - Active Tasks never renders Approve/Deny controls.
 - Technical details is collapsed, secondary, and never the reference-file access point.
 - Implementation engineer must run the Electron-backed UI, inspect visually, compare Active Tasks to Messages/Activity, verify Messages itself did not change, and iterate until Active Tasks looks good.
