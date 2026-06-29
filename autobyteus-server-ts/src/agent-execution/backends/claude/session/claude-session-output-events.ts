@@ -50,6 +50,53 @@ export const isClaudeTurnTerminalChunk = (chunk: unknown): boolean => {
   return asString(payload?.type)?.toLowerCase() === "result";
 };
 
+const AUTHENTICATION_FAILURE_MARKERS = [
+  "authentication_failed",
+  "not logged in",
+  "please run /login",
+] as const;
+
+const resolveResultErrorText = (payload: Record<string, unknown>): string | null =>
+  asString(payload.result) ??
+  asString(payload.message) ??
+  asString(payload.error_message) ??
+  asString(payload.error) ??
+  null;
+
+export const resolveClaudeTurnTerminalError = (
+  chunk: unknown,
+): { code: string; message: string } | null => {
+  if (!isClaudeTurnTerminalChunk(chunk)) {
+    return null;
+  }
+  const payload = asObject(chunk);
+  if (!payload) {
+    return null;
+  }
+  const errorText = resolveResultErrorText(payload);
+  const errorCode = asString(payload.error) ?? asString(payload.code);
+  const searchable = [errorCode, errorText]
+    .filter((value): value is string => Boolean(value))
+    .join("\n")
+    .toLowerCase();
+  const isAuthenticationFailure = AUTHENTICATION_FAILURE_MARKERS.some((marker) =>
+    searchable.includes(marker),
+  );
+  const isErrorResult =
+    payload.is_error === true ||
+    Boolean(errorCode) ||
+    isAuthenticationFailure;
+  if (!isErrorResult) {
+    return null;
+  }
+  return {
+    code: isAuthenticationFailure
+      ? "CLAUDE_RUNTIME_AUTHENTICATION_FAILED"
+      : "CLAUDE_RUNTIME_RESULT_ERROR",
+    message: errorText ?? errorCode ?? "Claude runtime returned an error result.",
+  };
+};
+
 export const buildClaudeProviderCompactionEvent = (input: {
   chunk: unknown;
   turnId: string;

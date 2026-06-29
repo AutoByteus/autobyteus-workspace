@@ -43,7 +43,7 @@ export class ClaudeAgentRunContext {
   }
 
   get autoExecuteTools(): boolean {
-    return this.sessionConfig.permissionMode === "bypassPermissions";
+    return this.sessionConfig.autoExecuteTools;
   }
 }
 
