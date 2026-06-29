@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-spec.md`
 - Current Review Round: 5
 - Trigger: Round 5 final field-policy package after the user clarified that Settings > Token Statistics is a usage/cost report, not a live roster viewer, and that self-contained historical statistics require only five new display fields on top of existing ledger facts.
 - Prior Review Round Reviewed: Round 4 was paused with no active pass/fail decision. Round 3's pass was suspended after deeper self-contained-data discussion. Round 5 supersedes the Round 3 roster-complete/no-usage direction and the Round 4 broader display-context direction.

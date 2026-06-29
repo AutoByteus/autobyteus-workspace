@@ -4,20 +4,20 @@
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
 - Review Mode: **Round 5 coverage-code refresh re-review** — API/E2E changed repository-resident durable coverage after the prior full refresh implementation review. This pass is intentionally scoped to the changed durable coverage and directly related implementation evidence, but it rechecks that coverage against the authoritative Round 5 architecture, review criteria, and Didan/shared design principles rather than treating the coverage diff as a rubber stamp.
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/requirements.md`
 - Current Review Round: 5
 - Trigger: API/E2E passed for the current Round 5 implementation but updated repository-resident durable coverage, requiring code review before delivery.
 - Prior Review Round Reviewed: Round 4 full refresh implementation review; no unresolved findings.
 - Latest Authoritative Round: 5
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
-- Round 5 Field Policy Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-rework-round5-final-field-policy.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/implementation-handoff.md`
-- API/E2E Coverage Investigation Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/api-e2e-coverage-investigation.md`
-- API/E2E Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
+- Round 5 Field Policy Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-rework-round5-final-field-policy.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/implementation-handoff.md`
+- API/E2E Coverage Investigation Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/api-e2e-coverage-investigation.md`
+- API/E2E Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`; API/E2E reports `Pass`.
-- Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`; updated `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts`.
+- Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`; updated `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts`.
 
 Round rules:
 - Round 5 field policy remains the authoritative design direction.
@@ -38,9 +38,9 @@ Round rules:
 
 Reviewed updated durable coverage and directly related implementation evidence for the Round 5 token statistics redesign:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/api/graphql/types/token-usage-stats.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/token-usage/providers/statistics-provider.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/api/graphql/types/token-usage-stats.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/token-usage/providers/statistics-provider.ts`
 - API/E2E investigation and execution reports listed above.
 
 Round 5 commitments specifically rechecked:
@@ -160,9 +160,9 @@ Changed implementation source files after API/E2E: none.
 - Docs impact: `Yes`
 - Why: Delivery must finalize docs/state against the integrated branch after API/E2E. The Round 5 behavior, GraphQL generated artifact state, and known broad typecheck baseline should be explicitly recorded or handled.
 - Likely areas:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/docs/modules/token_usage.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/docs/settings.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/generated/graphql.ts` finalization decision / no-impact note.
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/token_usage.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/generated/graphql.ts` finalization decision / no-impact note.
 
 ## Classification
 

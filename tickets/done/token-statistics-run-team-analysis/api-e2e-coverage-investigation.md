@@ -2,20 +2,20 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/code-review-report.md`
 - Current Investigation Round: 2
 - Trigger: Full refresh code review passed for the authoritative Round 5 implementation and requested API/E2E coverage investigation/execution after a power-off interruption.
 - Prior Investigation Reviewed: Round 1 at this canonical path was reviewed and is superseded where it described earlier coverage updates before the Round 5 full-refresh implementation review. The Round 1 durable coverage additions are now existing repository-resident coverage, not new additions for this round.
-- Latest Authoritative Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/api-e2e-coverage-investigation.md`
+- Latest Authoritative Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/api-e2e-coverage-investigation.md`
 
 ## Current Requirement And Design Basis
 
-The current authoritative Round 5 basis is the requirements/design package plus `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-rework-round5-final-field-policy.md` and the full refresh code review report. Settings > Token Statistics is a usage/cost report, not a live team roster viewer. It must default to `By Task`, keep `By Model` as secondary runtime/model diagnostics, use observed usage-period filtering with a compact `Usage during period` affordance, and expose no `rangeMode` or `Tasks created in period` selector.
+The current authoritative Round 5 basis is the requirements/design package plus `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-rework-round5-final-field-policy.md` and the full refresh code review report. Settings > Token Statistics is a usage/cost report, not a live team roster viewer. It must default to `By Task`, keep `By Model` as secondary runtime/model diagnostics, use observed usage-period filtering with a compact `Usage during period` affordance, and expose no `rangeMode` or `Tasks created in period` selector.
 
 Round 5 requires exactly five new self-contained persisted display fields for Settings task rows: `teamName`, `agentName`, `runSummary`, `runCreatedAt`, and `memberName`. Existing ledger fields remain authoritative for run/team/member grouping, paths, runtime/model identity, token/cache/reasoning facts, costs, currency/status, and missing-price dimensions. `TokenUsageStatisticsProvider` owns Settings projections; GraphQL maps provider DTOs only; frontend store/components render and sort without local price math.
 
@@ -111,7 +111,7 @@ The implementation handoff's `Legacy / Compatibility Removal Check` was read. It
    - `pnpm -C autobyteus-web exec vitest run components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts stores/__tests__/tokenUsageStatistics.spec.ts components/settings/__tests__/TokenUsageStatistics.spec.ts components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts`
 4. Run static/quality checks and probes: `git diff --check`, forbidden-term scan, server TypeScript/build, built schema, web guards/localization/Nuxt prepare, codegen compatibility probe, and broad web typecheck with token-statistics grep if time permits.
 5. Restore temporary generated/codegen artifacts after probes unless a real reviewed source change is required.
-6. Write/update `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/api-e2e-execution-coverage-report.md` with latest evidence.
+6. Write/update `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/api-e2e-execution-coverage-report.md` with latest evidence.
 7. Because repository-resident durable coverage will be updated after the full refresh code review, route the cumulative package back to `code_reviewer` on pass.
 
 ## Investigation Decision

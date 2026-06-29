@@ -12,7 +12,7 @@ During user verification of the Electron build produced from `codex/token-statis
 
 - Embedded Electron backend queried: `http://127.0.0.1:29695/graphql`
 - Query: `tokenUsageTaskStatisticsInPeriod(startTime: "2026-06-21T22:00:00.000Z", endTime: "2026-06-29T21:59:59.999Z")`
-- Focused evidence artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json`
+- Focused evidence artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json`
 
 Key example:
 
@@ -51,12 +51,12 @@ After pausing architecture review for discussion, the user also clarified two UI
 
 ## Artifacts Updated
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-spec.md`
-- UI prototype spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/ui-prototypes/token-statistics-task-cost/ui-prototype-spec.md`
-- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/ui-prototypes/token-statistics-task-cost/ui-behavior-test-matrix.md`
-- Probe evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-spec.md`
+- UI prototype spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/token-statistics-task-cost/ui-prototype-spec.md`
+- UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/token-statistics-task-cost/ui-behavior-test-matrix.md`
+- Probe evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json`
 
 ## Required Backend Design Changes
 

@@ -22,10 +22,10 @@ User observed that the Settings > Token Statistics page groups by LLM model, but
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git monorepo
-- Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis
-- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis
+- Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis
 - Current Branch: codex/token-statistics-run-team-analysis
-- Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis
+- Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
 - Bootstrap Base Branch: origin/personal
 - Remote Refresh Result: `git fetch origin --prune` succeeded on 2026-06-28.
 - Task Branch: codex/token-statistics-run-team-analysis
@@ -49,7 +49,7 @@ User observed that the Settings > Token Statistics page groups by LLM model, but
 | 2026-06-29 | Architecture review report | `tickets/done/token-statistics-run-team-analysis/design-review-report.md` | Round 1 architecture review. | Failed with AR-001 range-mode artifact conflict and AR-002 run-summary-specific shared aggregate contract. | Rework completed in `design-rework-round2.md`. |
 | 2026-06-29 | Runtime probe | `curl -H 'content-type: application/json' --data @/tmp/token_task_query.json http://127.0.0.1:29695/graphql` | Reproduce user-reported Electron Settings > Token Statistics `By Task` team-expansion issue using the embedded Electron server backend. | GraphQL response for several Software Engineering Team runs returned only one expanded member (`solution_designer`) when only that member had period usage events. | Design/provider rework required. |
 | 2026-06-29 | Data inspection | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_06adab49fe4e484a969cca87c110d9ab/team_run_metadata.json` and related team metadata files | Compare GraphQL child rows with persisted team roster metadata. | Metadata for `software_engineering_team_06adab49fe4e484a969cca87c110d9ab` contains six leaf agent members while GraphQL returned only `solution_designer`. This initially looked like missing roster data, but the user later accepted usage-derived member rows and rejected no-usage roster rows for MVP. | Round 5 field policy supersedes roster-complete expansion. |
-| 2026-06-29 | Focused evidence artifact | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json` | Preserve concise reproduction evidence without storing the full GraphQL payload. | Captures three Software Engineering Team examples where returned member count is `1` and metadata roster count is `6`. | Include in handoff package. |
+| 2026-06-29 | Focused evidence artifact | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json` | Preserve concise reproduction evidence without storing the full GraphQL payload. | Captures three Software Engineering Team examples where returned member count is `1` and metadata roster count is `6`. | Include in handoff package. |
 
 ## Current Behavior / Current Flow
 
@@ -92,7 +92,7 @@ Setup:
 - User had an Electron build running from this ticket branch.
 - Embedded backend was listening at `http://127.0.0.1:29695/graphql`.
 - Queried `tokenUsageTaskStatisticsInPeriod(startTime: "2026-06-21T22:00:00.000Z", endTime: "2026-06-29T21:59:59.999Z")`, matching the visible one-week Settings date range.
-- Durable focused evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json`.
+- Durable focused evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json`.
 
 Observed:
 
@@ -175,11 +175,11 @@ No external sources consulted.
 
 ## Notes For Architect Reviewer
 
-Design spec has been revised again after user verification at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-spec.md`.
+Design spec has been revised again after user verification at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-spec.md`.
 
-Round 1 rework notes are at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-rework-round2.md`.
+Round 1 rework notes are at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-rework-round2.md`.
 
-Post-user-verification rework notes are at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-rework-round3-user-verification.md`.
+Post-user-verification rework notes are at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-rework-round3-user-verification.md`.
 
 Key review focus:
 

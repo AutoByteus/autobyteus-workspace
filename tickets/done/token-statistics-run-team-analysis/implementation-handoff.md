@@ -2,18 +2,18 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
-- Round 5 field-policy rework: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-rework-round5-final-field-policy.md`
-- Supporting UI prototype spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/ui-prototypes/token-statistics-task-cost/ui-prototype-spec.md`
-- Supporting UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/ui-prototypes/token-statistics-task-cost/ui-behavior-test-matrix.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
+- Round 5 field-policy rework: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-rework-round5-final-field-policy.md`
+- Supporting UI prototype spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/token-statistics-task-cost/ui-prototype-spec.md`
+- Supporting UI behavior matrix: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/token-statistics-task-cost/ui-behavior-test-matrix.md`
 - Superseded/historical context, still relevant for reviewer awareness:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-rework-round2.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-rework-round3-user-verification.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-rework-round4-self-contained-display-context.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-rework-round2.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-rework-round3-user-verification.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-rework-round4-self-contained-display-context.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/user-verification-member-roster-probe.json`
 
 ## What Changed
 
@@ -31,34 +31,34 @@
 ## Key Files Or Areas
 
 - Persistence and payload fields:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/prisma/schema.prisma`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/prisma/migrations/20260629120000_add_token_usage_display_fields/migration.sql`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run-token-usage.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/prisma/schema.prisma`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/prisma/migrations/20260629120000_add_token_usage_display_fields/migration.sql`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-execution/domain/agent-run-token-usage.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts`
 - Token-usage provider/projection changes:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/token-usage/providers/token-usage-display-field-capturer.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/token-usage/providers/token-usage-ledger-store.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/token-usage/providers/statistics-provider.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/token-usage/domain/statistics-models.ts`
-  - Removed `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/token-usage/providers/token-usage-run-history-enricher.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/token-usage/providers/token-usage-display-field-capturer.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/token-usage/providers/token-usage-ledger-store.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/token-usage/providers/statistics-provider.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/token-usage/domain/statistics-models.ts`
+  - Removed `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/token-usage/providers/token-usage-run-history-enricher.ts`
 - GraphQL/frontend Settings statistics changes:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/src/api/graphql/types/token-usage-stats.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/graphql/queries/token_usage_statistics_queries.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/generated/graphql.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/types/tokenUsageStatistics.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/stores/tokenUsageStatistics.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/components/settings/TokenUsageStatistics.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/components/settings/token-usage/TokenUsageTaskStatisticsTable.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/api/graphql/types/token-usage-stats.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/graphql/queries/token_usage_statistics_queries.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/generated/graphql.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/types/tokenUsageStatistics.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/tokenUsageStatistics.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/TokenUsageStatistics.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/token-usage/TokenUsageTaskStatisticsTable.vue`
 - Focused implementation coverage updated/added:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/integration/token-usage/providers/token-usage-display-field-capturer.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts`
 - Durable docs touched to remove stale roster/workspace wording:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-server-ts/docs/modules/token_usage.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/docs/settings.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/docs/agent_execution_architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/token_usage.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
 
 ## Important Assumptions
 
@@ -72,7 +72,7 @@
 ## Known Risks
 
 - Broad frontend `nuxi typecheck` remains red from repository-wide baseline issues outside the focused token-statistics check scope; see checks below.
-- Manual update of `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/autobyteus-web/generated/graphql.ts` was required because project codegen depends on a live backend GraphQL base URL.
+- Manual update of `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/generated/graphql.ts` was required because project codegen depends on a live backend GraphQL base URL.
 - Opportunistic display-field backfill on period reads adds metadata lookups for legacy events missing core display fields; large ranges already carry accepted in-memory-read risk and should be revisited if performance regresses.
 - Existing legacy rows without run-history metadata may still show fallback labels by design.
 - API/E2E coverage and realistic environment validation are still downstream-owned.

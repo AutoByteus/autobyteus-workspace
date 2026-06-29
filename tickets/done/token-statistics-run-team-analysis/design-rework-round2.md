@@ -4,7 +4,7 @@
 
 Architecture review round 1 failed with two Design Impact findings in:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-run-team-analysis/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-run-team-analysis/design-review-report.md`
 
 ## AR-001 Resolution — MVP Range UI Conflict
 
