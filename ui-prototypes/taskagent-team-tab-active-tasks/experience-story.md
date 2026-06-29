@@ -103,11 +103,11 @@ A user is supervising a TaskAgent or TaskAgent-team run from the right-side Team
 - System behavior:
   - when `focus_team` -> workspace focuses the task team.
   - when `focus_member` -> workspace focuses that member.
-  - when `open_technical_details` -> secondary IDs appear below the member list.
+  - when `open_technical_details` -> secondary IDs appear below the task body.
   - when `select_task_reference` -> right pane switches to file preview -> go to `task_reference_preview`.
 - Cognitive objective: connect one delegated team task to the team and its members without making the user parse technical run data.
 - Cognition controls:
-  - chunking: task body first, then member focus list, then technical disclosure.
+  - chunking: member focus list first for TaskTeam tasks, then task body, then technical disclosure.
   - progressive disclosure: IDs stay hidden until requested.
   - clarity guardrails: reference files remain left navigation items, not a repeated right-side section.
 - States to prototype: default, loading, error.
@@ -146,7 +146,7 @@ A user is supervising a TaskAgent or TaskAgent-team run from the right-side Team
 | `T-002` | `open_active_tasks` | `team_tab_default` | `active_tasks_master_detail` | Active Tasks expands; first available task selected. |
 | `T-003` | `collapse_active_tasks` | `active_tasks_master_detail` | `team_tab_default` | Active Tasks collapses and count remains visible. |
 | `T-004` | `select_task` TaskAgent | `active_tasks_master_detail` | `task_agent_detail` | Left task selected; references, if any, appear nested under it; right pane shows task body. |
-| `T-005` | `select_task` TaskTeam | `active_tasks_master_detail` | `task_team_detail` | Left team task selected; references nested under it; right pane shows body, team focus, member focus rows. |
+| `T-005` | `select_task` TaskTeam | `active_tasks_master_detail` | `task_team_detail` | Left team task selected; references nested under it; right pane shows team focus, member focus rows, then body. |
 | `T-006` | `select_task_reference` | `task_agent_detail` or `task_team_detail` | `task_reference_preview` | Reference row highlighted; whole right pane switches to loading then file content/error. |
 | `T-007` | `select_task` on the selected task row | `task_reference_preview` | `task_agent_detail` or `task_team_detail` | Right pane returns to selected task body. |
 | `T-008` | `focus_agent` | `task_agent_detail` | `task_agent_detail` | Workspace focuses agent; Team tab selection remains. |

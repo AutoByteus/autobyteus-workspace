@@ -112,11 +112,11 @@ TaskTeam detail shape:
 Study Group                                        [Awaiting review]
                                                         [Focus]
 
-Review the implementation against the approved design and verify...
-
 solution_designer                                      [Focus]
 implementation_engineer                                [Focus]
 code_reviewer                                          [Focus]
+
+Review the implementation against the approved design and verify...
 
 > Technical details
 ```
@@ -124,8 +124,8 @@ code_reviewer                                          [Focus]
 Rules:
 - There is no separate second row such as `Review implementation [Focus team]`.
 - The target/group/team name, status, and generic `Focus` action stay in one compact header/action area.
-- The task body remains the main reading content.
-- Member rows are visible because focusing a member is a primary user action.
+- The task body remains clean reading content and follows TaskTeam member focus rows so member targets are not hidden below long descriptions.
+- Member rows appear before the task body because focusing a member is a primary user action and should stay discoverable with long descriptions.
 - References remain nested under the selected task in the left navigator; they are not duplicated in this right detail by default.
 
 ## 8) Reference Preview Right Detail

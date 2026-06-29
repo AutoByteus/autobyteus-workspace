@@ -263,11 +263,25 @@ describe('TeamActiveTasksSection', () => {
     await wrapper.get('[data-test="task-team-active-task-row"] [data-test="active-task-select-row"]').trigger('click');
 
     const memberRow = wrapper.get('[data-test="active-task-member-row"]');
+    const orderedDetailParts = Array.from(
+      wrapper.get('[data-test="active-task-task-detail"]').element.querySelectorAll('[data-test="active-task-member-row"], [data-test="active-task-task-body"]'),
+    ).map((element) => element.getAttribute('data-test'));
+
+    expect(orderedDetailParts).toEqual(['active-task-member-row', 'active-task-task-body']);
     expect(memberRow.text()).toContain('solution_designer');
     expect(memberRow.text()).toContain('Focus');
 
     await memberRow.trigger('click');
     expect(wrapper.emitted('select-member')?.[0]).toEqual(['task-team-run-1/solution_designer']);
+  });
+
+  it('does not render task-team member focus rows for task-agent entries', async () => {
+    const wrapper = mountSubject();
+
+    await wrapper.get('[data-test="task-agent-active-task-row"] [data-test="active-task-select-row"]').trigger('click');
+
+    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Draft the implementation handoff.');
+    expect(wrapper.find('[data-test="active-task-member-row"]').exists()).toBe(false);
   });
 
   it('shows the empty active task state', () => {

@@ -101,13 +101,7 @@
               </button>
             </div>
 
-            <MarkdownRenderer
-              :content="selectedEntry.taskDescription || $t('workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable')"
-              class="team-active-task-markdown text-[0.9375rem] leading-6 text-slate-700"
-              data-test="active-task-task-body"
-            />
-
-            <div v-if="selectedEntry.kind === 'task_team' && selectedEntry.members.length" class="mt-5 space-y-2">
+            <div v-if="selectedEntry.kind === 'task_team' && selectedEntry.members.length" class="mb-5 space-y-2">
               <button
                 v-for="member in selectedEntry.members"
                 :key="member.node.memberRouteKey"
@@ -130,6 +124,12 @@
                 </span>
               </button>
             </div>
+
+            <MarkdownRenderer
+              :content="selectedEntry.taskDescription || $t('workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable')"
+              class="team-active-task-markdown text-[0.9375rem] leading-6 text-slate-700"
+              data-test="active-task-task-body"
+            />
 
             <details v-if="technicalRows.length || technicalInput" class="mt-5 rounded-md border border-slate-200 bg-slate-50" data-test="active-task-technical-details">
               <summary class="cursor-pointer px-3 py-2 text-xs font-semibold text-slate-600">
