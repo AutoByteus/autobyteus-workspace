@@ -6,9 +6,9 @@ Approved by user on 2026-06-29 for team workflow kickoff. Ready for `architectur
 
 ## Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/design-spec.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/design-spec.md`
 
 ## Current-State Read
 

@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/code-review-report.md`
 - Current Investigation Round: 2
 - Trigger: User challenged the initial live-gated E2E skip and requested enabled E2E execution.
 - Prior Investigation Reviewed: Round 1 concluded existing durable coverage was adequate and live E2E was skipped because flags were unset. That conclusion is superseded for the live mixed task-delegation E2E path.

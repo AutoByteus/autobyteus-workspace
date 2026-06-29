@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review request from `solution_designer` after user-approved requirements and user-approved design.
 - Prior Review Round Reviewed: N/A

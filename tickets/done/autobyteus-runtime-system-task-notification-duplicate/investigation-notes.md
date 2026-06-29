@@ -29,7 +29,7 @@ Screenshot observation:
 
 - Project Type (`Git`/`Non-Git`): Git superrepo
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate`
 - Current Branch: `personal` in original checkout; dedicated task branch below for authoritative work.
 - Current Worktree / Working Directory: Original request landed in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`; authoritative task worktree is `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate`.
 - Bootstrap Base Branch: `origin/personal`
@@ -69,7 +69,7 @@ Screenshot observation:
 | 2026-06-28 | Prior Ticket | `tickets/done/self-evolving-harness-feasibility/design-review-report.md`; `tickets/done/self-evolving-harness-feasibility/api-e2e-validation-report.md` | Reuse accepted notification boundary guidance | Prior accepted design says runtime-neutral local `AgentRunEventType.SYSTEM_TASK_NOTIFICATION` is canonical UI notification path and `postUserMessage(... SenderType.SYSTEM ...)` must not be used merely for UI rendering. API/E2E evidence verified no notification copy in target runtime raw trace for that feature. | Yes: apply same boundary rule to server-owned task notification UI projection while preserving task packet as real model input. |
 | 2026-06-28 | Code | `autobyteus-server-ts/src/self-evolution/services/self-evolution-target-notification-service.ts` | Inspect implementation pattern for runtime-neutral notification | Service uses `activeRun.emitLocalEvent({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, ... })` without injecting runtime input. | No |
 | 2026-06-29 | Other | User approval message: "approve... after you finish the design first ask me for review. dont send for architecture reviewer" | Record requirements approval and review-gate instruction | Requirements approved; design must stop for user review before architecture reviewer. | Yes: wait for user review before handoff. |
-| 2026-06-29 | Spec | `tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/design-spec.md` | Capture target ownership, data-flow spines, file responsibilities, and migration sequence | Design uses explicit task-delegation visibility metadata, runtime notification suppression metadata, accepted projection as one local `SYSTEM_TASK_NOTIFICATION`, and no frontend content dedupe. | No: user approved design on 2026-06-29. |
+| 2026-06-29 | Spec | `tickets/done/autobyteus-runtime-system-task-notification-duplicate/design-spec.md` | Capture target ownership, data-flow spines, file responsibilities, and migration sequence | Design uses explicit task-delegation visibility metadata, runtime notification suppression metadata, accepted projection as one local `SYSTEM_TASK_NOTIFICATION`, and no frontend content dedupe. | No: user approved design on 2026-06-29. |
 | 2026-06-29 | Other | User design approval/kickoff message: "i agree with your unified solution proposal. now you can kickoff the task. make sure follow design principles and design examples" | Record design approval and permission to enter team workflow | Design approved; proceed to architecture reviewer with design-principles/design-examples guidance observed. | No |
 | 2026-06-29 | Other | `send_message_to(recipient_name="architecture_reviewer", message_type="design_review_request")` | Deliver approved design package to architecture reviewer | Handoff succeeded with requirements, investigation notes, and design spec reference files. | No |
 
@@ -176,6 +176,6 @@ Screenshot observation:
 
 - User initially requested a stop for user design review, then approved the unified solution and asked to kick off the task on 2026-06-29.
 - Requirements were approved by user on 2026-06-29.
-- Design spec approved by user on 2026-06-29 and prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/in-progress/autobyteus-runtime-system-task-notification-duplicate/design-spec.md`.
+- Design spec approved by user on 2026-06-29 and prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-system-task-notification-duplicate/tickets/done/autobyteus-runtime-system-task-notification-duplicate/design-spec.md`.
 - Recommended design direction: establish explicit task-delegation system-message visibility metadata, suppress AutoByteus generic runtime notification for those stamped messages, project accepted task-delegation system messages as one local `AgentRunEventType.SYSTEM_TASK_NOTIFICATION`, and suppress their member-input echo.
 - Reuse existing `AgentRunEventType.SYSTEM_TASK_NOTIFICATION` transport and web `SystemTaskNotificationSegment` rather than adding a new visual primitive.
