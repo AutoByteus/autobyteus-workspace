@@ -14,7 +14,7 @@ import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { ClaudeAgentRunContext } from "../backends/claude/backend/claude-agent-run-context.js";
 import {
   buildClaudeSessionConfig,
-  resolveClaudePermissionMode,
+  DEFAULT_CLAUDE_PERMISSION_MODE,
 } from "../backends/claude/session/claude-session-config.js";
 import { CodexAgentRunContext } from "../backends/codex/backend/codex-agent-run-context.js";
 import { buildCodexThreadConfig } from "../backends/codex/thread/codex-thread-config.js";
@@ -245,7 +245,8 @@ export class AgentRunManager {
         sessionConfig: buildClaudeSessionConfig({
           model: config.llmModelIdentifier,
           workingDirectory: ".",
-          permissionMode: resolveClaudePermissionMode(config.autoExecuteTools),
+          permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
+          autoExecuteTools: config.autoExecuteTools,
         }),
         configuredToolExposure: buildConfiguredAgentToolExposure([]),
         memberTeamContext: config.memberTeamContext,

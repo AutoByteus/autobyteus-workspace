@@ -326,16 +326,23 @@ headless runs.
     starts/resumes Codex with an effective `danger-full-access` sandbox even if
     the saved full-access setting is off. Leave auto-approve off when you want
     visible approval prompts.
-- Claude Agent SDK runtime: `CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions`
-  - Supported values: `default`, `plan`, `acceptEdits`, `bypassPermissions`
-  - Default: `default`
-  - The parser also accepts `bypass-permissions` and `bypass_permissions`
+- Claude Agent SDK runtime: standard standalone and team-member launches use
+  Claude Code provider `permissionMode: "default"`.
+  - AutoByteus run launch `autoExecuteTools=true` is a separate per-run approval
+    policy. For Claude Agent SDK runs, it auto-approves permission callbacks
+    through AutoByteus orchestration; it does not switch Claude Code into
+    `bypassPermissions`.
+  - Do not use `bypassPermissions` as the Docker/root steady-state launch mode.
+    Claude Code rejects its dangerous skip-permissions mode when the process runs
+    with root/sudo privileges.
+  - If a future feature needs explicit Claude provider permission modes such as
+    `plan`, `acceptEdits`, or `bypassPermissions`, treat that as a separate
+    provider-level setting with runtime validation, not as auto-approve behavior.
 
 Example:
 
 ```bash
 CODEX_APP_SERVER_SANDBOX=danger-full-access \
-CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions \
 pnpm -C autobyteus-server-ts dev
 ```
 

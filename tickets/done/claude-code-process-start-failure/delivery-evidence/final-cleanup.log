@@ -1,0 +1,31 @@
+Cleanup started: 2026-06-29
+Dedicated worktree: /home/autobyteus/workspace/autobyteus-workspace
+Remote branch before cleanup:
+1f27381127cb99f83d005673958e74c12cdf2a44	refs/heads/codex/claude-code-process-start-failure
+Deleting remote branch...
+/usr/bin/gh auth git-credential get: 1: /usr/bin/gh: not found
+/usr/bin/gh auth git-credential store: 1: /usr/bin/gh: not found
+remote: 
+remote: GitHub found 580 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (14 critical, 237 high, 279 moderate, 50 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ - [deleted]           codex/claude-code-process-start-failure
+Removing dedicated worktree...
+Deleting local branch...
+Deleted branch codex/claude-code-process-start-failure (was 1f273811).
+Pruning worktrees...
+Worktree list after cleanup:
+worktree /home/autobyteus/workspace/autobyteus-workspace
+HEAD 6d16e259cf778c9ed62614fdbff797a898ad3ca1
+branch refs/heads/personal
+
+worktree /home/autobyteus/workspace/.codex/worktrees/mcp-circular-result-investigation
+HEAD 008a6eeaeb8363368cda293ce4fa9fb61ebe92c2
+branch refs/heads/codex/mcp-circular-result-investigation
+
+worktree /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker
+HEAD 40a8060ade8766a0b2f66b013a30e99350636d4b
+branch refs/heads/codex/mcp-tool-exposure-docker
+
+Cleanup completed: 2026-06-29

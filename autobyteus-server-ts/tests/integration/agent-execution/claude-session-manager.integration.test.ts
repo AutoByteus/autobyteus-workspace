@@ -12,7 +12,7 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import { ClaudeAgentRunContext } from "../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import {
   buildClaudeSessionConfig,
-  resolveClaudePermissionMode,
+  DEFAULT_CLAUDE_PERMISSION_MODE,
 } from "../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { ClaudeSessionEventName } from "../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
@@ -90,7 +90,8 @@ const createRunContext = (input: {
       sessionConfig: buildClaudeSessionConfig({
         model: input.modelIdentifier,
         workingDirectory: input.workspaceRoot,
-        permissionMode: resolveClaudePermissionMode(input.autoExecuteTools),
+        permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
+        autoExecuteTools: input.autoExecuteTools,
       }),
       configuredToolExposure: buildConfiguredAgentToolExposure([]),
     }),
