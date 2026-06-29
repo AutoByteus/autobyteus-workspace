@@ -3,7 +3,7 @@
 ## Delivery Status
 
 - Ticket: `team-active-task-member-order`
-- Current status: `Verified; repository finalization in progress`
+- Current status: `Finalized on personal; release skipped by request`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order`
 - Branch: `codex/team-active-task-member-order`
 - Finalization target: `personal` / `origin/personal`
@@ -60,36 +60,32 @@ Long-lived docs updated:
 
 Docs sync report:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/docs-sync-report.md`
 
 
 ## Local Electron Build For User Testing
 
 - README/build guidance reviewed: `autobyteus-web/README.md` documents `pnpm build:electron:mac`; local macOS no-notarization builds can set `NO_TIMESTAMP=1 APPLE_TEAM_ID=`.
-- Command run from `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/autobyteus-web`:
+- Command run before finalization from the dedicated ticket worktree's `autobyteus-web` directory:
   - `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac`
 - Result: passed.
 - Build flavor/version/arch: `AutoByteus_personal` / `1.3.85` / `macos-arm64`.
-- Signing/notarization: skipped locally (`APPLE_SIGNING_IDENTITY=` and `NO_TIMESTAMP=1`); this is a local test build, not a release artifact.
-- Artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.85.dmg` — 382 MB — SHA256 `55584e9883e20439016e7503043e3411242ff2d69709539bbf1031d95555c4f0`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.85.zip` — 379 MB — SHA256 `58df31f4b9c73ec6105831e2582ae86f979ebe70416c05a1ba2fb08e5c5d606d`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.85.dmg.blockmap` — SHA256 `5f2e99be5f5e7cbbf1843501fe68ae97036a7617bca971024a34894df7217cf3`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.85.zip.blockmap` — SHA256 `24df431384c424ed1202f4abb08cb065aa74e0de31cf56f29b1d92243abe0a76`
+- Signing/notarization: skipped locally (`APPLE_SIGNING_IDENTITY=` and `NO_TIMESTAMP=1`); this was a local test build, not a release artifact.
+- The dedicated ticket worktree was removed during final cleanup, so those local test artifacts were not retained in the repository.
 
 ## Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/code-review-report.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/api-e2e-execution-coverage-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/release-deployment-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/handoff-summary.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/code-review-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/api-e2e-execution-coverage-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/release-deployment-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/handoff-summary.md`
 
 ## User Verification And Finalization Request
 
@@ -97,3 +93,16 @@ Docs sync report:
 - Ticket archived to `tickets/done/team-active-task-member-order/` before the final ticket-branch commit.
 - Release/version bump/deployment: explicitly skipped by user request; no new version will be released for this ticket.
 - Repository finalization, push/merge, and cleanup results are recorded in `release-deployment-report.md`.
+
+## Finalization Results
+
+- Ticket branch commit: `ab194d80512d` (`fix(team): move task member focus rows before body`).
+- Ticket branch push: completed to `origin/codex/team-active-task-member-order`.
+- Target branch: `personal` / `origin/personal`.
+- Merge into target: completed with merge commit `61f7e6dbd9d0` (`merge: team active task member order`).
+- Target push: completed to `origin/personal`.
+- Release/version bump/deployment: skipped by explicit user request; no new version was released.
+- Dedicated ticket worktree cleanup: completed; `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order` was removed.
+- Worktree prune: completed.
+- Local ticket branch cleanup: completed.
+- Remote ticket branch cleanup: completed.

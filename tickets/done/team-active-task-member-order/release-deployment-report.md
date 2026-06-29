@@ -6,7 +6,7 @@ Repository finalization only. User explicitly requested finalization with no new
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff summarizes delivered UI reorder, validation, docs sync, and the verification hold.
 
@@ -36,7 +36,7 @@ Repository finalization only. User explicitly requested finalization with no new
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/agent_artifacts.md`; `autobyteus-web/docs/agent_execution_architecture.md`; `autobyteus-web/docs/settings.md`; `ui-prototypes/taskagent-team-tab-active-tasks/complete-ux-ui-design.md`; `ui-prototypes/taskagent-team-tab-active-tasks/experience-story.md`; `ui-prototypes/taskagent-team-tab-active-tasks/ui-behavior-test-matrix.md`; `ui-prototypes/taskagent-team-tab-active-tasks/ui-design-spec.md`
 - No-impact rationale (if applicable): N/A
@@ -44,7 +44,7 @@ Repository finalization only. User explicitly requested finalization with no new
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order/tickets/done/team-active-task-member-order`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-active-task-member-order`
 
 ## Version / Tag / Release Commit
 
@@ -54,17 +54,17 @@ No version bump, tag, or release commit will be prepared. User explicitly reques
 
 - Bootstrap context source: `investigation-notes.md` recorded task branch `codex/team-active-task-member-order`, base `origin/personal`, and finalization target `personal`.
 - Ticket branch: `codex/team-active-task-member-order`
-- Ticket branch commit result: Pending user verification.
-- Ticket branch push result: Pending user verification.
+- Ticket branch commit result: `Completed` — `ab194d80512d` (`fix(team): move task member focus rows before body`).
+- Ticket branch push result: `Completed` — pushed to `origin/codex/team-active-task-member-order`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`; final pre-finalization refresh found `origin/personal` still at the verified base `b7a8b5cc3d87`.
-- Target branch update result: Pending user verification.
-- Merge into target result: Pending user verification.
-- Push target branch result: Pending user verification.
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` — `personal` was refreshed from `origin/personal` before merge.
+- Merge into target result: `Completed` — merge commit `61f7e6dbd9d0` (`merge: team active task member order`).
+- Push target branch result: `Completed` — pushed `personal` to `origin/personal`.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -78,11 +78,11 @@ No version bump, tag, or release commit will be prepared. User explicitly reques
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order`
-- Worktree cleanup result: `Pending final merge`
-- Worktree prune result: `Pending final merge`
-- Local ticket branch cleanup result: `Pending final merge`
-- Remote branch cleanup result: `Pending final merge`
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order` (removed)
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
 - Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
@@ -120,4 +120,4 @@ Rollback by reverting the ticket branch commit(s) if user verification shows Tas
 
 ## Final Status
 
-User verification received. Ticket archived. Repository finalization is in progress; release/deployment is explicitly skipped.
+Repository finalization completed on `personal` and pushed to `origin/personal`. Release/version bump/deployment was explicitly skipped by user request. Ticket worktree and ticket branches were cleaned up.
