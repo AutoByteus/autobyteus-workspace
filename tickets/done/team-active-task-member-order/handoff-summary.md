@@ -4,8 +4,8 @@
 
 - Ticket: `team-active-task-member-order`
 - Current status: `Finalized on personal; release skipped by request`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order`
-- Branch: `codex/team-active-task-member-order`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-active-task-member-order` (removed after finalization)
+- Branch: `codex/team-active-task-member-order` (pushed, merged, then deleted locally and remotely)
 - Finalization target: `personal` / `origin/personal`
 - Ticket state: archived under `tickets/done/team-active-task-member-order/` after explicit user verification.
 
