@@ -79,8 +79,9 @@ read-only surfaces:
   does not own a task-specific Back-to-task control, and reuses the same
   raw/Markdown/media/PDF, CSV, and Excel `FileViewer` paths without changing
   message-owned reference UX. Returning from a task reference preview is owned
-  by task selection in `TeamActiveTasksSection.vue`: selecting the task row
-  clears the selected reference and shows the task body again.
+  by the Active Tasks navigator and section-local task/reference selection:
+  selecting the task summary clears the selected reference and shows the task
+  body again.
 
 For Phone Access, protected REST resources must be loaded through the authorized
 transport/object-URL helpers so the paired mobile bearer credential is attached.

@@ -17,8 +17,8 @@ Communication reference rows.
 
 Task-delegation `reference_files` are also outside the Artifacts tab, but they
 are not Team Communication rows. They are task-owned reference rows carried on
-`TASK_DELEGATION_EVENT` metadata and rendered inside the Team tab `Tasks`
-master/detail surface.
+`TASK_DELEGATION_EVENT` metadata, rendered in the Team tab Active Tasks left
+navigator, and previewed in the right task detail pane.
 
 ## Agent Artifacts
 
@@ -118,8 +118,9 @@ Rules:
 
 ## Task Delegation References
 
-The Team tab `Tasks` section owns task-delegation references for active
-delegated tasks:
+The Team tab Active Tasks section owns task-delegation references for active
+delegated tasks. Reference rows live in the left task navigator, while selected
+reference content renders in the right detail pane:
 
 ```ts
 interface TeamReferenceFile {
@@ -137,14 +138,16 @@ Rules:
   derived from explicit task-delegation `reference_files` on the task ledger
   record. The Tasks UI does not parse Team Communication messages or raw
   Markdown/prose for paths.
-- The left Tasks navigator shows reference rows only under the selected task.
-  Selecting a reference switches the whole right detail pane from task body to
-  file preview and Back returns to the task body.
+- The left Active Tasks navigator shows reference rows under each task's
+  responsible agent/team context, after optional task-team members. Selecting a
+  reference updates the section-local task/reference selection and switches the
+  right detail pane from task body to file preview. Selecting the task summary
+  clears the selected reference and shows the task body again.
 - Reference content opens by task-owned identity:
   `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`.
 - Primary visible Tasks UI hides raw task ids and task-kind badges; those values
-  belong in the collapsed Technical details block, not in the main reference
-  picker.
+  belong in the collapsed Technical details block in the left navigator, not in
+  the main actor/member rows or right detail body.
 - Tasks is status/read/focus oriented. It never owns Approve/Deny controls or
   approval command target construction; pending approval remains Activity-owned.
 
@@ -176,10 +179,12 @@ flowchart LR
   W --> S
 
   X[TASK_DELEGATION_EVENT] --> Y[team task execution projection]
-  Y --> Z[Team tab: Tasks]
-  Z --> AA[TeamTaskReferenceViewer]
-  AA --> AB[TeamReferenceFileViewer]
-  AB --> AC[REST: task reference content route]
+  Y --> Z[Team tab: Active Tasks section]
+  Z --> ZA[TeamActiveTaskNavigator reference rows]
+  Z --> AA[TeamActiveTaskDetailPane]
+  AA --> AB[TeamTaskReferenceViewer]
+  AB --> AC[TeamReferenceFileViewer]
+  AC --> AD[REST: task reference content route]
 ```
 
 ## Frontend Owners
@@ -199,9 +204,10 @@ flowchart LR
 | Mobile Team messages | `autobyteus-web/components/mobile/MobileTeamMessages.vue` | Renders the focused member's Team Communication messages in the mobile shell and exposes each structured reference file as a tappable phone row. |
 | Mobile Team reference wrapper | `autobyteus-web/components/mobile/MobileTeamReferenceViewer.vue` | Wraps `TeamCommunicationReferenceViewer` in a full-screen mobile surface, passes message-owned identity through, and disables rich HTML preview for mobile. |
 | Team reference presentation helper | `autobyteus-web/utils/teamCommunication/referenceFilePresentation.ts` | Centralizes reference display-name and icon selection so desktop and mobile Team Communication rows do not duplicate file-type presentation policy. |
-| Team Tasks section | `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` | Owns the Tasks master/detail state, selected task/reference, right-pane header/waiting notice, TaskTeam member focus rows before the task body, task body rendering, and explicit Focus controls. |
-| Team Tasks row | `autobyteus-web/components/workspace/team/TeamActiveTaskRow.vue` | Renders compact task navigator rows and selected-task reference rows. |
-| Task reference route wrapper | `autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue` | Builds the task-owned content route from `teamRunId + taskId + referenceId` and supplies Back-to-task behavior. |
+| Team Tasks section | `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` | Owns the Team-tab Active Tasks split layout, section-local selected task/reference state, left-pane resizing, empty state, and actor/member focus emits. |
+| Team Tasks navigator | `autobyteus-web/components/workspace/team/TeamActiveTaskNavigator.vue` | Renders compact task navigator items in the order summary, responsible agent/team, indented members, task-owned reference rows, and collapsed technical metadata. |
+| Team active-task detail pane | `autobyteus-web/components/workspace/team/TeamActiveTaskDetailPane.vue` | Renders the selected task body or selected task-owned reference preview, plus waiting-for-Activity copy and the generic Focus control. |
+| Task reference route wrapper | `autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue` | Builds the task-owned content route from `teamRunId + taskId + referenceId` for the selected right-side reference preview. |
 | Task reference preview shell | `autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue` | Route-agnostic read-only Team reference shell used for task references; delegates raw/preview/media/PDF/CSV/Excel rendering to `FileViewer`. |
 | Generic Team reference type/presentation | `autobyteus-web/types/teamReferenceFile.ts`, `autobyteus-web/utils/teamReferences/*` | Shared task-reference file model and file-type/name/icon presentation for the Tasks surface. |
 
@@ -231,7 +237,7 @@ paths rather than an unauthenticated static HTML preview path.
 Task-delegation reference previews use `TeamTaskReferenceViewer` and
 `TeamReferenceFileViewer`. The route identity is task-owned
 (`teamRunId + taskId + referenceId`), not message-owned, and the preview occupies
-the Tasks right pane with an explicit Back-to-task affordance. The generic task
-reference shell uses authorized fetch/object URLs and the shared read-only
-`FileViewer` modes for text/Markdown, protected media, PDF, CSV, and Excel
-content.
+the Active Tasks right pane until the task navigator selects the task summary or
+another reference. The generic task reference shell uses authorized fetch/object
+URLs and the shared read-only `FileViewer` modes for text/Markdown, protected
+media, PDF, CSV, and Excel content.

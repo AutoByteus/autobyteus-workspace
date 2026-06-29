@@ -184,21 +184,31 @@ frontend clones scoped child member nodes/contexts under the task-team root and
 drops task-team scoped events that lack a task-team run id instead of guessing
 from the structural route.
 
-The right-side Team tab owns delegated task visibility through its `Tasks`
-section instead of a center active-task strip. `TeamOverviewPanel` owns the
-Messages/Tasks accordion state, opens Messages by default, and resets to
-Messages when the active team run changes. Messages and Tasks use the same
-left-side disclosure affordance; Tasks starts collapsed with a localized human
-count. `TeamActiveTasksSection` and `TeamActiveTaskRow` derive task-agent and
-task-team entries from the transient projection nodes in `AgentTeamContext`,
-while `runHistoryTeamRows` filters those task-scoped nodes out of stable left
-navigation. Opening Tasks shows a left navigator of target/status/description
-rows and, for the selected task, nested reference-file rows. The right pane owns
-the selected task header, waiting-for-Activity status copy, explicit generic
-`Focus` controls, task-team member focus rows placed before long task bodies,
-task reference previews, and a collapsed Technical details block for task type,
-task id, execution run id,
-target metadata, and raw task arguments. Primary visible Tasks UI intentionally
+The right-side Team tab owns delegated task visibility through its Active Tasks
+section instead of a center active-task strip or global Workspaces-tree active
+task host. `TeamOverviewPanel` owns the local Messages/Tasks accordion state,
+opens Messages by default, and resets to Messages when the active team run
+changes. `TeamActiveTasksSection` derives task-agent and task-team entries from
+the transient projection nodes in `AgentTeamContext`, owns the Team-tab split
+layout and section-local task/reference selection, and renders the left
+navigator plus right detail pane.
+
+Inside that section, `TeamActiveTaskNavigator` renders each task navigator item
+in the durable order: text-only task summary, responsible agent or task-team row
+with the shared tiny `StatusDot`, indented task-team member rows with status
+dots, task-owned reference rows, and collapsed Technical details for task type,
+task id, execution run id, target metadata, and raw task arguments. Summary and
+reference clicks update only the section-local task/reference detail selection;
+they must not focus the center conversation/composer or replace it with a task
+team card. Explicit actor/member rows still emit the existing focus behavior for
+that target. `TeamActiveTaskDetailPane` renders the selected task body or the
+selected task-owned reference preview, plus the generic `Focus` control and
+waiting-for-Activity status copy.
+
+The global Workspaces/run-history tree remains a workspace/run/team/member
+navigation surface only. It may reuse the shared status-dot presentation for
+workspace rows, but it must not render active-task summary blocks, task reference
+rows, or active-task Technical details. Primary visible Tasks UI intentionally
 hides `Task Agent` / `Task Team` badges, raw ids, duplicate right-side reference
 lists, and `Focus agent` / `Focus team` wording. Tasks is not an approval action
 surface: pending approval remains status-only here, and Activity remains the
