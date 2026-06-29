@@ -332,15 +332,35 @@ describe("TaskDelegationService", () => {
     expect(backend.taskAgentStarts[0]!.message.content).not.toContain(["mark", "task", "completed"].join("_"));
     expect(backend.taskAgentStarts[0]!.message.content).not.toContain(["accept", "task"].join("_"));
 
-    const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ tasks: Array<{ executionKind: string; executionRunId: string; status: string; description: string }> }>;
+    const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ tasks: Array<{ executionKind: string; executionRunId: string; status: string; description: string; referenceFiles: Array<{ referenceId: string; path: string }>; taskArguments: { reference_files?: string[] } }> }>;
     expect(activated).toHaveLength(2);
     expect(activated[0]!.tasks[0]).toMatchObject({
       executionKind: "task_agent",
       executionRunId: "worker_00000000000000000000000000000001",
       status: "active",
       description: "Draft the implementation note.",
+      referenceFiles: [expect.objectContaining({ path: "/tmp/source.md" })],
+      taskArguments: expect.objectContaining({ reference_files: ["/tmp/source.md"] }),
     });
     expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("worker_00000000000000000000000000000001")?.taskId).toBe("task_0001");
+  });
+
+
+  it("resolves task-owned reference files by task identity without message IDs", async () => {
+    const backend = new FakeTeamRunBackend();
+    const service = createService(backend);
+
+    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Use the attached source.", ["/tmp/source.md"]));
+    const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ tasks: Array<{ referenceFiles: Array<{ referenceId: string; path: string }> }> }>;
+    const reference = activated[0]!.tasks[0]!.referenceFiles[0]!;
+
+    expect(service.resolveTaskReference({ taskId: "task_0001", referenceId: reference.referenceId })).toEqual(
+      expect.objectContaining({
+        record: expect.objectContaining({ taskId: "task_0001" }),
+        reference: expect.objectContaining({ path: "/tmp/source.md" }),
+      }),
+    );
+    expect(service.resolveTaskReference({ taskId: "task_0001", referenceId: "missing" })).toBeNull();
   });
 
   it("delegates to an explicit team target and binds a task-team execution instance", async () => {

@@ -1,0 +1,42 @@
+{
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T05-46-24-053Z-claude-token-accounting-live-probe.json",
+  "runId": "claude_token_accounting_probe_a7720a04_3da5_41ef_2a87cb7cbd0b44a1b02843d302bf1ac1",
+  "llmModelIdentifier": "sonnet",
+  "counts": {
+    "rawChunkRecords": 153,
+    "resultRecords": 3,
+    "usageBearingRawRecords": 3,
+    "tokenUsageMessages": 3,
+    "ledgerRows": 3,
+    "turns": 3
+  },
+  "conclusion": {
+    "hasMultipleUsageBearingChunksPerTurn": false,
+    "usageEventsEqualTerminalResults": true,
+    "ledgerRowsEqualTokenUsageMessages": true,
+    "allTokenUsageScopes": [
+      "per_turn"
+    ],
+    "rawResultUsageDiffersFromModelUsage": false
+  },
+  "resultUsageVsModelUsageDeltas": [
+    {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheCreation": 0
+    },
+    {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheCreation": 0
+    },
+    {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheCreation": 0
+    }
+  ]
+}

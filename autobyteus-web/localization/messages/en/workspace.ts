@@ -102,9 +102,31 @@ const messages = {
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "Approval required",
   "workspace.components.workspace.team.TeamActiveTasksSection.active_tasks":
-    "Active Tasks",
+    "Tasks",
   "workspace.components.workspace.team.TeamActiveTasksSection.active_count":
     "Active",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular":
+    "task",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural":
+    "tasks",
+  "workspace.components.workspace.team.TeamActiveTasksSection.focus_agent":
+    "Focus agent",
+  "workspace.components.workspace.team.TeamActiveTasksSection.focus_team":
+    "Focus team",
+  "workspace.components.workspace.team.TeamActiveTasksSection.focus":
+    "Focus",
+  "workspace.components.workspace.team.TeamActiveTasksSection.technical_details":
+    "Technical details",
+  "workspace.components.workspace.team.TeamActiveTasksSection.select_task":
+    "Select a task to read it.",
+  "workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice":
+    "Waiting for user action in Activity.",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target_kind":
+    "Target kind",
+  "workspace.components.workspace.team.TeamActiveTasksSection.task_type":
+    "Task type",
+  "workspace.components.workspace.team.TeamActiveTasksSection.target":
+    "Target",
   "workspace.components.workspace.team.TeamActiveTasksSection.empty":
     "No active delegated tasks",
   "workspace.components.workspace.team.TeamActiveTasksSection.task_agent":
@@ -113,23 +135,14 @@ const messages = {
     "Task Team",
   "workspace.components.workspace.team.TeamActiveTasksSection.approval_required":
     "Approval required",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task": "Task",
-  "workspace.components.workspace.team.TeamActiveTasksSection.status": "Status",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target": "Target",
   "workspace.components.workspace.team.TeamActiveTasksSection.task_id":
     "Task ID",
   "workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id":
     "Agent run ID",
   "workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id":
     "Agent team run ID",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target_member":
-    "member",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target_team":
-    "team",
   "workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable":
     "Task description unavailable",
-  "workspace.components.workspace.team.TeamActiveTasksSection.open_conversation":
-    "Open conversation",
   "workspace.components.workspace.team.TeamActiveTasksSection.members":
     "Members",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":

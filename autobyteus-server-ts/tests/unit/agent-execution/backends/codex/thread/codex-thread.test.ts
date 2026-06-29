@@ -853,7 +853,7 @@ describe("CodexThread turn payload", () => {
 });
 
 describe("CodexThread token usage readiness", () => {
-  it("marks running-turn token usage ready when the thread becomes idle", () => {
+  it("queues Codex cumulative snapshot updates immediately without waiting for idle", () => {
     const { thread } = createThread(true);
 
     thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
@@ -866,6 +866,11 @@ describe("CodexThread token usage readiness", () => {
       threadId: "thread-1",
       turnId: "turn-usage-1",
       tokenUsage: {
+        total: {
+          totalTokens: 150,
+          inputTokens: 100,
+          outputTokens: 50,
+        },
         last: {
           totalTokens: 15,
           inputTokens: 10,
@@ -874,44 +879,39 @@ describe("CodexThread token usage readiness", () => {
       },
     } as never);
 
-    expect(thread.getReadyTurnTokenUsages()).toEqual([]);
-
-    thread.handleAppServerNotification(CodexThreadEventName.THREAD_STATUS_CHANGED, {
-      threadId: "thread-1",
-      status: {
-        type: "idle",
-      },
-    } as never);
-
-    expect(thread.getReadyTurnTokenUsages()).toEqual([
-      {
+    expect(thread.getReadyTokenUsageUpdates()).toEqual([
+      expect.objectContaining({
         turnId: "turn-usage-1",
-        usage: expect.objectContaining({
-          turnId: "turn-usage-1",
-          runtime_kind: "codex_app_server",
-          ingestion_kind: "codex_thread_token_usage",
-          usage_scope: "per_turn",
-          snapshot_series_key: null,
-          idempotency_key: "codex_token_usage:run-auto:thread-1:turn-usage-1:per_turn:10:5:15",
-          reported_input_tokens: 10,
-          reported_output_tokens: 5,
-          reported_total_tokens: 15,
-          input_token_semantic: "gross_includes_cache",
-          cache_state: "not_reported",
-          latest_prompt_tokens: 10,
-          effective_context_window_tokens: null,
-          context_window_usage_percent: null,
-          model_provider: "OPENAI",
-          model_identifier: "gpt-5.4-mini",
-          model_value: "gpt-5.4-mini",
-          raw_usage_json: { totalTokens: 15, inputTokens: 10, outputTokens: 5 },
-          quality_flags: [],
+        runtime_kind: "codex_app_server",
+        ingestion_kind: "codex_thread_token_usage",
+        usage_scope: "cumulative_snapshot",
+        snapshot_series_key: "codex_thread:thread-1",
+        idempotency_key: "codex_token_usage:run-auto:thread-1:turn-usage-1:cumulative_snapshot:100:x:50:x:150",
+        reported_input_tokens: 100,
+        reported_output_tokens: 50,
+        reported_total_tokens: 150,
+        input_token_semantic: "gross_includes_cache",
+        cache_state: "not_reported",
+        latest_prompt_tokens: 10,
+        effective_context_window_tokens: null,
+        context_window_usage_percent: null,
+        model_provider: "OPENAI",
+        model_identifier: "gpt-5.4-mini",
+        model_value: "gpt-5.4-mini",
+        raw_usage_json: { totalTokens: 150, inputTokens: 100, outputTokens: 50 },
+        raw_event_json: expect.objectContaining({
+          autobyteus_cumulative_snapshot_provider_delta_tokens: expect.objectContaining({
+            reported_input_tokens: 10,
+            reported_output_tokens: 5,
+            reported_total_tokens: 15,
+          }),
         }),
-      },
+        quality_flags: [],
+      }),
     ]);
   });
 
-  it("maps Codex app-server cache, reasoning, and context fields into canonical token usage", () => {
+  it("maps Codex app-server total fields into cumulative snapshots and last fields into provider-delta metadata", () => {
     const { thread } = createThread(true);
 
     thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
@@ -925,6 +925,13 @@ describe("CodexThread token usage readiness", () => {
       turnId: "turn-usage-rich-1",
       tokenUsage: {
         modelContextWindow: 128000,
+        total: {
+          totalTokens: 240,
+          inputTokens: 160,
+          cachedInputTokens: 60,
+          outputTokens: 80,
+          reasoningOutputTokens: 30,
+        },
         last: {
           totalTokens: 24,
           inputTokens: 16,
@@ -935,47 +942,82 @@ describe("CodexThread token usage readiness", () => {
       },
     } as never);
 
-    thread.handleAppServerNotification(CodexThreadEventName.THREAD_STATUS_CHANGED, {
-      threadId: "thread-1",
-      status: {
-        type: "idle",
-      },
-    } as never);
-
-    expect(thread.getReadyTurnTokenUsages()).toEqual([
-      {
+    expect(thread.getReadyTokenUsageUpdates()).toEqual([
+      expect.objectContaining({
         turnId: "turn-usage-rich-1",
-        usage: expect.objectContaining({
-          turnId: "turn-usage-rich-1",
-          usage_scope: "per_turn",
-          snapshot_series_key: null,
-          reported_input_tokens: 16,
-          reported_output_tokens: 8,
-          reported_total_tokens: 24,
-          input_token_semantic: "gross_includes_cache",
-          cache_read_input_tokens: 6,
-          cache_state: "positive",
-          reasoning_output_tokens: 3,
-          latest_prompt_tokens: 16,
-          effective_context_window_tokens: 128000,
-          context_window_usage_percent: 0.0125,
-          raw_usage_json: {
-            totalTokens: 24,
-            inputTokens: 16,
-            cachedInputTokens: 6,
-            outputTokens: 8,
-            reasoningOutputTokens: 3,
-          },
-          raw_event_json: expect.objectContaining({
-            tokenUsage: expect.objectContaining({ modelContextWindow: 128000 }),
+        usage_scope: "cumulative_snapshot",
+        snapshot_series_key: "codex_thread:thread-1",
+        reported_input_tokens: 160,
+        reported_output_tokens: 80,
+        reported_total_tokens: 240,
+        input_token_semantic: "gross_includes_cache",
+        cache_read_input_tokens: 60,
+        cache_state: "positive",
+        reasoning_output_tokens: 30,
+        latest_prompt_tokens: 16,
+        effective_context_window_tokens: 128000,
+        context_window_usage_percent: 0.0125,
+        raw_usage_json: {
+          totalTokens: 240,
+          inputTokens: 160,
+          cachedInputTokens: 60,
+          outputTokens: 80,
+          reasoningOutputTokens: 30,
+        },
+        raw_event_json: expect.objectContaining({
+          tokenUsage: expect.objectContaining({ modelContextWindow: 128000 }),
+          autobyteus_cumulative_snapshot_provider_delta_tokens: expect.objectContaining({
+            reported_input_tokens: 16,
+            cache_read_input_tokens: 6,
+            reasoning_output_tokens: 3,
           }),
-          quality_flags: [],
         }),
-      },
+        quality_flags: [],
+      }),
     ]);
   });
 
-  it("marks late token usage ready after turn completion", () => {
+  it("queues multiple same-turn cumulative advancements instead of overwriting by turn id", () => {
+    const { thread } = createThread(true);
+
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
+      turn: {
+        id: "turn-usage-multi-1",
+      },
+    } as never);
+
+    for (const [index, totalInput, lastInput] of [
+      [1, 1000, 100],
+      [2, 1150, 150],
+      [3, 1300, 150],
+    ] as const) {
+      thread.handleAppServerNotification(CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED, {
+        threadId: "thread-1",
+        turnId: "turn-usage-multi-1",
+        tokenUsage: {
+          total: {
+            totalTokens: totalInput + 50 + index,
+            inputTokens: totalInput,
+            cachedInputTokens: totalInput - 10,
+            outputTokens: 50 + index,
+            reasoningOutputTokens: index,
+          },
+          last: {
+            totalTokens: lastInput + 1,
+            inputTokens: lastInput,
+            cachedInputTokens: lastInput - 5,
+            outputTokens: 1,
+            reasoningOutputTokens: 1,
+          },
+        },
+      } as never);
+    }
+
+    expect(thread.getReadyTokenUsageUpdates()).toHaveLength(3);
+    expect(thread.getReadyTokenUsageUpdates().map((usage) => usage.reported_input_tokens)).toEqual([1000, 1150, 1300]);
+  });
+
+  it("keeps late token usage as an immediately consumable cumulative snapshot after turn completion", () => {
     const { thread } = createThread(true);
 
     thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
@@ -994,6 +1036,11 @@ describe("CodexThread token usage readiness", () => {
       threadId: "thread-1",
       turnId: "turn-usage-late-1",
       tokenUsage: {
+        total: {
+          totalTokens: 180,
+          inputTokens: 110,
+          outputTokens: 70,
+        },
         last: {
           totalTokens: 18,
           inputTokens: 11,
@@ -1002,30 +1049,26 @@ describe("CodexThread token usage readiness", () => {
       },
     } as never);
 
-    expect(thread.getReadyTurnTokenUsages()).toEqual([
-      {
+    expect(thread.getReadyTokenUsageUpdates()).toEqual([
+      expect.objectContaining({
         turnId: "turn-usage-late-1",
-        usage: expect.objectContaining({
-          turnId: "turn-usage-late-1",
-          usage_scope: "per_turn",
-          snapshot_series_key: null,
-          reported_input_tokens: 11,
-          reported_output_tokens: 7,
-          reported_total_tokens: 18,
-          input_token_semantic: "gross_includes_cache",
-          cache_state: "not_reported",
-          latest_prompt_tokens: 11,
-          effective_context_window_tokens: null,
-          context_window_usage_percent: null,
-          raw_usage_json: { totalTokens: 18, inputTokens: 11, outputTokens: 7 },
-          quality_flags: [],
-        }),
-      },
+        usage_scope: "cumulative_snapshot",
+        snapshot_series_key: "codex_thread:thread-1",
+        reported_input_tokens: 110,
+        reported_output_tokens: 70,
+        reported_total_tokens: 180,
+        input_token_semantic: "gross_includes_cache",
+        cache_state: "not_reported",
+        latest_prompt_tokens: 11,
+        effective_context_window_tokens: null,
+        context_window_usage_percent: null,
+        raw_usage_json: { totalTokens: 180, inputTokens: 110, outputTokens: 70 },
+        quality_flags: [],
+      }),
     ]);
   });
 
-
-  it("models Codex total fallback as a cumulative snapshot with raw event metadata", () => {
+  it("flags provider-delta metadata missing when a Codex cumulative total has no last payload", () => {
     const { thread } = createThread(true);
 
     thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
@@ -1047,43 +1090,37 @@ describe("CodexThread token usage readiness", () => {
         },
       },
     } as never);
-    thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
-      threadId: "thread-total-1",
-      turn: { id: "turn-usage-total-1" },
-    } as never);
 
-    expect(thread.getReadyTurnTokenUsages()).toEqual([
-      {
+    expect(thread.getReadyTokenUsageUpdates()).toEqual([
+      expect.objectContaining({
         turnId: "turn-usage-total-1",
-        usage: expect.objectContaining({
+        usage_scope: "cumulative_snapshot",
+        snapshot_series_key: "codex_thread:thread-total-1",
+        idempotency_key: "codex_token_usage:codex-usage-event-total-1:run-auto:thread-total-1:turn-usage-total-1:cumulative_snapshot:1100:700:300:120:1400",
+        reported_input_tokens: 1100,
+        reported_output_tokens: 300,
+        reported_total_tokens: 1400,
+        input_token_semantic: "gross_includes_cache",
+        cache_read_input_tokens: 700,
+        cache_state: "positive",
+        reasoning_output_tokens: 120,
+        latest_prompt_tokens: 1100,
+        effective_context_window_tokens: 200000,
+        context_window_usage_percent: 0.5499999999999999,
+        raw_usage_json: {
+          totalTokens: 1400,
+          inputTokens: 1100,
+          cachedInputTokens: 700,
+          outputTokens: 300,
+          reasoningOutputTokens: 120,
+        },
+        raw_event_json: expect.objectContaining({
+          threadId: "thread-total-1",
           turnId: "turn-usage-total-1",
-          usage_scope: "cumulative_snapshot",
-          snapshot_series_key: "codex_thread:thread-total-1",
-          idempotency_key: "codex_token_usage:codex-usage-event-total-1",
-          reported_input_tokens: 1100,
-          reported_output_tokens: 300,
-          reported_total_tokens: 1400,
-          input_token_semantic: "gross_includes_cache",
-          cache_read_input_tokens: 700,
-          cache_state: "positive",
-          reasoning_output_tokens: 120,
-          latest_prompt_tokens: 1100,
-          effective_context_window_tokens: 200000,
-          context_window_usage_percent: 0.5499999999999999,
-          raw_usage_json: {
-            totalTokens: 1400,
-            inputTokens: 1100,
-            cachedInputTokens: 700,
-            outputTokens: 300,
-            reasoningOutputTokens: 120,
-          },
-          raw_event_json: expect.objectContaining({
-            threadId: "thread-total-1",
-            turnId: "turn-usage-total-1",
-            tokenUsage: expect.objectContaining({ modelContextWindow: 200000 }),
-          }),
+          tokenUsage: expect.objectContaining({ modelContextWindow: 200000 }),
         }),
-      },
+        quality_flags: ["cumulative_snapshot_provider_delta_missing"],
+      }),
     ]);
   });
 });

@@ -18,11 +18,13 @@ import {
   type TaskDelegationContext,
   type TaskDelegationNotificationDeliveryOutcome,
   type TaskDelegationRecord,
+  type TaskDelegationReferenceFilePayload,
 } from "./task-delegation-record.js";
 import { getTaskDelegationTargetName } from "./task-delegation-target.js";
 import { TaskDelegationSettlementCoordinator } from "./task-delegation-settlement-coordinator.js";
 import { TaskTeamSettlementCoordinator } from "./task-team-settlement-coordinator.js";
 import { getTaskDelegationRunRegistry, type TaskDelegationRunRegistry } from "./task-delegation-run-registry.js";
+import { buildTaskDelegationReferenceFiles } from "./task-delegation-reference-file.js";
 
 export type TaskDelegationServiceOptions = {
   agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
@@ -86,6 +88,20 @@ export class TaskDelegationService {
 
   hasOpenWork(): boolean {
     return this.ledger.listRecords().some((record) => record.status !== "accepted");
+  }
+
+  resolveTaskReference(input: {
+    taskId: string;
+    referenceId: string;
+  }): { record: TaskDelegationRecord; reference: TaskDelegationReferenceFilePayload } | null {
+    const taskId = input.taskId.trim();
+    const referenceId = input.referenceId.trim();
+    if (!taskId || !referenceId) return null;
+    const record = this.ledger.getRecord(taskId);
+    if (!record) return null;
+    const reference = buildTaskDelegationReferenceFiles(record)
+      .find((candidate) => candidate.referenceId === referenceId) ?? null;
+    return reference ? { record, reference } : null;
   }
 
   async delegateTask(

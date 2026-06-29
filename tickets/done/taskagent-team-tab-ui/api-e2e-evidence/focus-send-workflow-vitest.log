@@ -1,0 +1,18 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/taskagent-team-tab-ui/autobyteus-web
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests) 61ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  14:31:17
+   Duration  4.42s (transform 2.37s, setup 3.66s, collect 167ms, tests 61ms, environment 178ms, prepare 145ms)

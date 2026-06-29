@@ -10,11 +10,14 @@ import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamOverviewPanel.messages': 'Messages',
   'workspace.components.workspace.team.TeamOverviewPanel.messages_count': 'Messages',
-  'workspace.components.workspace.team.TeamActiveTasksSection.active_tasks': 'Active Tasks',
+  'workspace.components.workspace.team.TeamActiveTasksSection.active_tasks': 'Tasks',
   'workspace.components.workspace.team.TeamActiveTasksSection.active_count': 'Active',
+  'workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular': 'task',
+  'workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural': 'tasks',
   'workspace.components.workspace.team.TeamActiveTasksSection.empty': 'No active delegated tasks',
   'workspace.components.workspace.team.TeamActiveTasksSection.task_agent': 'Task Agent',
   'workspace.components.workspace.team.TeamActiveTasksSection.task_team': 'Task Team',
+  'workspace.components.workspace.team.TeamActiveTasksSection.approval_required': 'Approval required',
 };
 
 const TeamCommunicationPanelStub = defineComponent({
@@ -158,8 +161,44 @@ describe('TeamOverviewPanel.vue', () => {
     expect(wrapper.text()).not.toContain('Task Plan');
     expect(wrapper.text()).not.toContain('No task plan yet');
     expect(wrapper.get('[data-test="team-messages-header"]').text()).toContain('1 Messages');
-    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('0 Active');
-    expect(wrapper.find('[data-test="team-communication-panel"]').isVisible()).toBe(true);
+    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('0 tasks');
+    expect(wrapper.find('[data-test="team-messages-disclosure"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-active-tasks-disclosure"]').exists()).toBe(true);
+    expect(wrapper.get('[data-test="team-messages-header"]').text()).not.toMatch(/[▾▸]/);
+    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).not.toMatch(/[▾▸]/);
+    expect(wrapper.find('[data-test="team-communication-panel"]').attributes('style') ?? '').not.toContain('display: none');
+    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
+  });
+
+  it('keeps Team tab section expansion parent-owned with Messages open first', async () => {
+    const wrapper = mountSubject();
+
+    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('style') ?? '').not.toContain('display: none');
+    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
+
+    await wrapper.get('[data-test="team-active-tasks-header"]').trigger('click');
+    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('style')).toContain('display: none');
+    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style') ?? '').not.toContain('display: none');
+
+    await wrapper.get('[data-test="team-messages-header"]').trigger('click');
+    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('style') ?? '').not.toContain('display: none');
+    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
+  });
+
+  it('resets Messages open when the selected team run changes without taking over message identity', async () => {
+    const wrapper = mountSubject();
+
+    await wrapper.get('[data-test="team-active-tasks-header"]').trigger('click');
+    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style') ?? '').not.toContain('display: none');
+
+    seedFocusedSubteam();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[data-test="team-messages-header"]').text()).toContain('1 Messages');
+    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('style') ?? '').not.toContain('display: none');
+    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
+    const panel = wrapper.getComponent({ name: 'TeamCommunicationPanel' });
+    expect(panel.props('teamRunId')).toBe('team-subteam');
   });
 
   it('counts and passes route/path identity for a focused subteam without a member run id', () => {

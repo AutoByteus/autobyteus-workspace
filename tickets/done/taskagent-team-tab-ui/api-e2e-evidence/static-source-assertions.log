@@ -1,0 +1,21 @@
+## old trailing disclosure glyphs in changed Team components
+PASS: no matches
+
+## old right-panel active-tasks clamp / center conversation shortcut
+PASS: no matches
+
+## Tasks approval controls or approval API ownership
+PASS: no matches
+
+## primary visible task-kind copy in Tasks components
+PASS: no matches
+
+## task reference viewer message-owned route terms
+PASS: no matches
+
+## task reference viewer task-owned REST route
+autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue:31:  return `${restBaseUrl}/team-runs/${encodeURIComponent(props.teamRunId)}/task-delegations/${encodeURIComponent(props.taskId)}/references/${encodeURIComponent(props.reference.referenceId)}/content`;
+autobyteus-server-ts/src/api/rest/task-delegation.ts:31:    "/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content",
+PASS: required match found
+
+PASS: removed approval helper autobyteus-web/utils/teamActiveTaskApprovals.ts is absent

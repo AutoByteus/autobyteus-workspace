@@ -163,6 +163,40 @@ describe('buildClaudeTokenUsageEvent', () => {
     }));
   });
 
+  it('flags usage versus modelUsage token divergence without changing selected usage source', () => {
+    const event = buildClaudeTokenUsageEvent({
+      chunk: {
+        type: 'result',
+        model: 'claude-sonnet-4-6',
+        usage: {
+          input_tokens: 1000,
+          output_tokens: 80,
+          cache_read_input_tokens: 20,
+        },
+        modelUsage: {
+          'claude-sonnet-4-6': {
+            inputTokens: 1200,
+            outputTokens: 90,
+            cacheReadInputTokens: 20,
+          },
+        },
+      },
+      runId: 'run-claude-mismatch',
+      turnId: 'turn-claude-mismatch',
+      sessionId: 'session-claude-mismatch',
+      model: 'claude-sonnet-4-6',
+    });
+
+    expect(event?.params).toEqual(expect.objectContaining({
+      usage_scope: 'per_turn',
+      reported_input_tokens: 1000,
+      reported_output_tokens: 80,
+      reported_total_tokens: 1080,
+      cache_read_input_tokens: 20,
+      quality_flags: ['claude_usage_model_usage_mismatch'],
+    }));
+  });
+
   it('uses modelUsage/model_usage variants and flags missing reported dimensions', () => {
     const event = buildClaudeTokenUsageEvent({
       chunk: {

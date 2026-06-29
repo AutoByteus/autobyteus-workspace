@@ -317,6 +317,8 @@ const buildTaskAgentNode = (
     taskExecutionStatus: existingNode?.taskExecutionStatus ?? null,
     taskLabel: existingNode?.taskLabel ?? null,
     taskDescription: existingNode?.taskDescription ?? null,
+    taskReferenceFiles: existingNode?.taskReferenceFiles ? existingNode.taskReferenceFiles.map((reference) => ({ ...reference })) : [],
+    taskArguments: existingNode?.taskArguments ?? null,
     taskTargetKind: existingNode?.taskTargetKind ?? null,
     taskTargetName: existingNode?.taskTargetName ?? null,
   };

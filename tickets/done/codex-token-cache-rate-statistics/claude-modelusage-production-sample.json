@@ -1,0 +1,93 @@
+{
+  "generatedAt": "2026-06-28T05:47:42.380131Z",
+  "database": "/Users/normy/.autobyteus/server-data/db/production.db",
+  "sampleSize": 2,
+  "rowsWithModelUsage": 2,
+  "rowsWhereModelUsageDiffersFromRawUsage": 2,
+  "entries": [
+    {
+      "usage_event_id": "5ea971df-fb8f-412f-be88-80e9b5fdd6dd",
+      "run_id": "daily_assistant_9517b4aa0eeb45fca395f63e2e969095",
+      "turn_id": "daily_assistant_9517b4aa0eeb45fca395f63e2e969095:turn:1782618013918",
+      "observed_at": 1782618017071,
+      "usage_scope": "per_turn",
+      "model_identifier": "deepseek-v4-flash",
+      "result_num_turns": 1,
+      "result_total_cost_usd": 0.14306500000000003,
+      "result_stop_reason": "end_turn",
+      "ledger_reported": {
+        "input": 26595,
+        "output": 89,
+        "total": 26684,
+        "cacheRead": 0,
+        "cacheCreation": 0,
+        "reasoning": null
+      },
+      "raw_usage": {
+        "input_tokens": 26595,
+        "output_tokens": 89,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "modelUsageModels": [
+        "deepseek-v4-flash"
+      ],
+      "modelUsageTotals": {
+        "inputTokens": 27728,
+        "outputTokens": 177,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "costUSD": 0.14306500000000003
+      },
+      "modelUsageMinusUsage": {
+        "input": 1133,
+        "output": 88,
+        "cacheRead": 0,
+        "cacheCreation": 0
+      },
+      "differs": true
+    },
+    {
+      "usage_event_id": "d64e91ea-b2e8-47ce-b803-e1984f04a637",
+      "run_id": "codex_4e406cdc260f4d5c8bb3a59500d2a159",
+      "turn_id": "codex_4e406cdc260f4d5c8bb3a59500d2a159:turn:1782464153746",
+      "observed_at": 1782464262425,
+      "usage_scope": "per_turn",
+      "model_identifier": "deepseek-v4-flash",
+      "result_num_turns": 4,
+      "result_total_cost_usd": 0.5919399999999999,
+      "result_stop_reason": "end_turn",
+      "ledger_reported": {
+        "input": 35793,
+        "output": 13776,
+        "total": 49569,
+        "cacheRead": 111360,
+        "cacheCreation": 0,
+        "reasoning": null
+      },
+      "raw_usage": {
+        "input_tokens": 35793,
+        "output_tokens": 13776,
+        "cache_read_input_tokens": 111360,
+        "cache_creation_input_tokens": 0
+      },
+      "modelUsageModels": [
+        "deepseek-v4-flash"
+      ],
+      "modelUsageTotals": {
+        "inputTokens": 36237,
+        "outputTokens": 14203,
+        "cacheReadInputTokens": 111360,
+        "cacheCreationInputTokens": 0,
+        "costUSD": 0.5919399999999999
+      },
+      "modelUsageMinusUsage": {
+        "input": 444,
+        "output": 427,
+        "cacheRead": 0,
+        "cacheCreation": 0
+      },
+      "differs": true
+    }
+  ]
+}

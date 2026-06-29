@@ -51,6 +51,24 @@ export type TaskDelegationTaskInput = {
   reference_files?: string[];
 };
 
+export type TaskDelegationReferenceFileType =
+  | "file"
+  | "image"
+  | "audio"
+  | "video"
+  | "pdf"
+  | "csv"
+  | "excel"
+  | "other";
+
+export type TaskDelegationReferenceFilePayload = {
+  referenceId: string;
+  path: string;
+  type: TaskDelegationReferenceFileType;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type DelegateTaskInput = TaskDelegationTaskInput;
 
 export type SubmitTaskResultInput = {
@@ -123,6 +141,7 @@ export type TaskDelegationRecord = {
   target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
   referenceFiles: string[];
+  taskArguments: TaskDelegationTaskInput;
   execution: TaskExecutionInstance | null;
   delegatorReplyRecipientName: string | null;
   delegatorReplyTargetAgentRunId: string | null;
@@ -156,6 +175,8 @@ export type TaskDelegationActivationPayload = {
     taskLabel: string;
     description: string;
     status: TaskDelegationStatus;
+    referenceFiles: TaskDelegationReferenceFilePayload[];
+    taskArguments: TaskDelegationTaskInput;
     executionKind: TaskExecutionInstance["kind"];
     executionRunId: string | null;
   }>;
@@ -169,6 +190,8 @@ export type TaskDelegationStatusUpdatePayload = {
   description: string;
   target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
+  referenceFiles: TaskDelegationReferenceFilePayload[];
+  taskArguments: TaskDelegationTaskInput;
   execution: TaskExecutionInstance | null;
   previousStatus: TaskDelegationStatus;
   status: TaskDelegationStatus;
@@ -200,6 +223,8 @@ export type TaskDelegationResultSubmittedPayload = {
   description: string;
   target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
+  referenceFiles: TaskDelegationReferenceFilePayload[];
+  taskArguments: TaskDelegationTaskInput;
   execution: TaskExecutionInstance | null;
   previousStatus: TaskDelegationStatus;
   status: TaskDelegationStatus;
@@ -216,6 +241,8 @@ export type TaskDelegationResultReviewedPayload = {
   description: string;
   target: TaskDelegationTarget;
   delegator: TaskDelegationDelegatorIdentity;
+  referenceFiles: TaskDelegationReferenceFilePayload[];
+  taskArguments: TaskDelegationTaskInput;
   execution: TaskExecutionInstance | null;
   previousStatus: TaskDelegationStatus;
   status: TaskDelegationStatus;

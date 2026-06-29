@@ -197,6 +197,8 @@ export const ensureTaskTeamExecutionProjection = (
     taskTimeline: existing?.taskTimeline ? [...existing.taskTimeline] : [],
     taskLabel: existing?.taskLabel ?? null,
     taskDescription: existing?.taskDescription ?? null,
+    taskReferenceFiles: existing?.taskReferenceFiles ? existing.taskReferenceFiles.map((reference) => ({ ...reference })) : [],
+    taskArguments: existing?.taskArguments ?? null,
     taskTargetKind: existing?.taskTargetKind ?? null,
     taskTargetName: existing?.taskTargetName ?? null,
   };

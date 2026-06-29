@@ -1,0 +1,1308 @@
+{
+  "ok": true,
+  "probe": "codex_token_accounting_live_probe",
+  "model": "gpt-5.5",
+  "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+  "nonce": "2999b709_7d0",
+  "completed_at": "2026-06-28T04:05:58.694Z",
+  "prompt_shape": {
+    "baseline": "direct no-tool response",
+    "tool_probe": "one user turn requesting exactly two separate shell/run_bash file reads before final answer"
+  },
+  "files": {
+    "fileAPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-token-accounting-probe-workspace-S7K7pu/probe-a-2999b709_7d0.txt",
+    "fileBPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-token-accounting-probe-workspace-S7K7pu/probe-b-2999b709_7d0.txt",
+    "markerA": "ACCOUNTING_PROBE_A_2999b709_7d0",
+    "markerB": "ACCOUNTING_PROBE_B_2999b709_7d0"
+  },
+  "rounds": [
+    {
+      "label": "baseline_direct",
+      "websocketTokenUsageMessages": [
+        {
+          "usage_event_id": "3379ac57-31b8-4030-8eab-cbeb62481370",
+          "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-3969-7461-80c4-c9dc72e59d66:per_turn:10851:15:10866",
+          "observed_at": "2026-06-28T04:05:22.080Z",
+          "run_id": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+          "turn_id": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "root_team_run_id": null,
+          "team_run_path": null,
+          "member_agent_run_id": null,
+          "member_path": null,
+          "member_route_key": null,
+          "agent_definition_id": "codex-token-accounting-live-probe-2999b709-7d0",
+          "workspace_id": "agent_ws_e0c068718d71b7a97cba0404edc97ff854394418fb57636a960106a178c1ea17",
+          "task_agent_instance_id": null,
+          "task_agent_run_id": null,
+          "task_id": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.5",
+          "model_value": "gpt-5.5",
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "per_turn",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 10851,
+          "reported_output_tokens": 15,
+          "reported_total_tokens": 10866,
+          "accounting_input_tokens": 10851,
+          "accounting_output_tokens": 15,
+          "accounting_total_tokens": 10866,
+          "standard_input_tokens": 5859,
+          "cache_miss_input_tokens": 5859,
+          "cache_read_input_tokens": 4992,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 10851,
+          "billable_output_tokens": 15,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 5,
+          "output_price_per_million": 30,
+          "cached_input_read_price_per_million": 0.5,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.5",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.5",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.5",
+            "model_value": "gpt-5.5",
+            "canonical_name": "gpt-5.5",
+            "currency": "USD",
+            "input_price_per_million": 5,
+            "output_price_per_million": 30,
+            "cached_input_read_price_per_million": 0.5,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.5",
+          "selected_pricing_tier_id": null,
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.031791,
+          "estimated_api_standard_input_cost": 0.029294999999999998,
+          "estimated_api_cache_read_input_cost": 0.002496,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.00045,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.032241,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 10851,
+          "meter_delta_output_tokens": 15,
+          "meter_delta_total_tokens": 10866,
+          "run_summary_after_event": null,
+          "latest_prompt_tokens": 10851,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.199303405572755,
+          "raw_usage_json": {
+            "totalTokens": 10866,
+            "inputTokens": 10851,
+            "cachedInputTokens": 4992,
+            "outputTokens": 15,
+            "reasoningOutputTokens": 0
+          },
+          "raw_event_json": {
+            "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+            "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 10866,
+                "inputTokens": 10851,
+                "cachedInputTokens": 4992,
+                "outputTokens": 15,
+                "reasoningOutputTokens": 0
+              },
+              "last": {
+                "totalTokens": 10866,
+                "inputTokens": 10851,
+                "cachedInputTokens": 4992,
+                "outputTokens": 15,
+                "reasoningOutputTokens": 0
+              },
+              "modelContextWindow": 258400
+            }
+          },
+          "quality_flags": []
+        }
+      ],
+      "recordCalls": [
+        {
+          "index": 0,
+          "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+          "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+          "statusBefore": "RUNNING",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "usageScope": "per_turn",
+          "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-3969-7461-80c4-c9dc72e59d66:per_turn:10851:15:10866",
+          "capturedUsage": {
+            "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+            "runtime_kind": "codex_app_server",
+            "ingestion_kind": "codex_thread_token_usage",
+            "usage_scope": "per_turn",
+            "snapshot_series_key": null,
+            "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-3969-7461-80c4-c9dc72e59d66:per_turn:10851:15:10866",
+            "reported_input_tokens": 10851,
+            "reported_output_tokens": 15,
+            "reported_total_tokens": 10866,
+            "cache_read_input_tokens": 4992,
+            "reasoning_output_tokens": 0,
+            "input_token_semantic": "gross_includes_cache",
+            "cache_state": "positive",
+            "latest_prompt_tokens": 10851,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.199303405572755,
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.5",
+            "model_value": "gpt-5.5",
+            "raw_usage_json": {
+              "totalTokens": 10866,
+              "inputTokens": 10851,
+              "cachedInputTokens": 4992,
+              "outputTokens": 15,
+              "reasoningOutputTokens": 0
+            },
+            "raw_event_json": {
+              "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+              "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+              "tokenUsage": {
+                "total": {
+                  "totalTokens": 10866,
+                  "inputTokens": 10851,
+                  "cachedInputTokens": 4992,
+                  "outputTokens": 15,
+                  "reasoningOutputTokens": 0
+                },
+                "last": {
+                  "totalTokens": 10866,
+                  "inputTokens": 10851,
+                  "cachedInputTokens": 4992,
+                  "outputTokens": 15,
+                  "reasoningOutputTokens": 0
+                },
+                "modelContextWindow": 258400
+              }
+            },
+            "quality_flags": []
+          },
+          "last": {
+            "inputTokens": 10851,
+            "cachedInputTokens": 4992,
+            "outputTokens": 15,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10866
+          },
+          "total": {
+            "inputTokens": 10851,
+            "cachedInputTokens": 4992,
+            "outputTokens": 15,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10866
+          },
+          "totalDeltaVsPreviousRecordCall": null,
+          "unaccountedTotalDeltaVsLast": null
+        }
+      ],
+      "messageTypes": [
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_STATUS",
+        "AGENT_COMMAND_ACK",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_END",
+        "TURN_COMPLETED",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "TOKEN_USAGE_UPDATED"
+      ]
+    },
+    {
+      "label": "tool_heavy_two_shell_commands",
+      "websocketTokenUsageMessages": [
+        {
+          "usage_event_id": "bff63d09-dc76-4c76-a690-0e3722d2fe2d",
+          "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11349:32:11381",
+          "observed_at": "2026-06-28T04:05:46.605Z",
+          "run_id": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+          "turn_id": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "root_team_run_id": null,
+          "team_run_path": null,
+          "member_agent_run_id": null,
+          "member_path": null,
+          "member_route_key": null,
+          "agent_definition_id": "codex-token-accounting-live-probe-2999b709-7d0",
+          "workspace_id": "agent_ws_e0c068718d71b7a97cba0404edc97ff854394418fb57636a960106a178c1ea17",
+          "task_agent_instance_id": null,
+          "task_agent_run_id": null,
+          "task_id": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.5",
+          "model_value": "gpt-5.5",
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "per_turn",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 11349,
+          "reported_output_tokens": 32,
+          "reported_total_tokens": 11381,
+          "accounting_input_tokens": 11349,
+          "accounting_output_tokens": 32,
+          "accounting_total_tokens": 11381,
+          "standard_input_tokens": 213,
+          "cache_miss_input_tokens": 213,
+          "cache_read_input_tokens": 11136,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 11349,
+          "billable_output_tokens": 32,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 5,
+          "output_price_per_million": 30,
+          "cached_input_read_price_per_million": 0.5,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.5",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.5",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.5",
+            "model_value": "gpt-5.5",
+            "canonical_name": "gpt-5.5",
+            "currency": "USD",
+            "input_price_per_million": 5,
+            "output_price_per_million": 30,
+            "cached_input_read_price_per_million": 0.5,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.5",
+          "selected_pricing_tier_id": null,
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.006633,
+          "estimated_api_standard_input_cost": 0.001065,
+          "estimated_api_cache_read_input_cost": 0.005568,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.0009599999999999999,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.007593,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 11349,
+          "meter_delta_output_tokens": 32,
+          "meter_delta_total_tokens": 11381,
+          "run_summary_after_event": null,
+          "latest_prompt_tokens": 11349,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.3920278637770895,
+          "raw_usage_json": {
+            "totalTokens": 11381,
+            "inputTokens": 11349,
+            "cachedInputTokens": 11136,
+            "outputTokens": 32,
+            "reasoningOutputTokens": 0
+          },
+          "raw_event_json": {
+            "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+            "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 44675,
+                "inputTokens": 44450,
+                "cachedInputTokens": 37376,
+                "outputTokens": 225,
+                "reasoningOutputTokens": 0
+              },
+              "last": {
+                "totalTokens": 11381,
+                "inputTokens": 11349,
+                "cachedInputTokens": 11136,
+                "outputTokens": 32,
+                "reasoningOutputTokens": 0
+              },
+              "modelContextWindow": 258400
+            }
+          },
+          "quality_flags": []
+        }
+      ],
+      "recordCalls": [
+        {
+          "index": 1,
+          "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "statusBefore": "RUNNING",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "usageScope": "per_turn",
+          "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11050:89:11139",
+          "capturedUsage": {
+            "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+            "runtime_kind": "codex_app_server",
+            "ingestion_kind": "codex_thread_token_usage",
+            "usage_scope": "per_turn",
+            "snapshot_series_key": null,
+            "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11050:89:11139",
+            "reported_input_tokens": 11050,
+            "reported_output_tokens": 89,
+            "reported_total_tokens": 11139,
+            "cache_read_input_tokens": 10624,
+            "reasoning_output_tokens": 0,
+            "input_token_semantic": "gross_includes_cache",
+            "cache_state": "positive",
+            "latest_prompt_tokens": 11050,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.276315789473684,
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.5",
+            "model_value": "gpt-5.5",
+            "raw_usage_json": {
+              "totalTokens": 11139,
+              "inputTokens": 11050,
+              "cachedInputTokens": 10624,
+              "outputTokens": 89,
+              "reasoningOutputTokens": 0
+            },
+            "raw_event_json": {
+              "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+              "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+              "tokenUsage": {
+                "total": {
+                  "totalTokens": 22005,
+                  "inputTokens": 21901,
+                  "cachedInputTokens": 15616,
+                  "outputTokens": 104,
+                  "reasoningOutputTokens": 0
+                },
+                "last": {
+                  "totalTokens": 11139,
+                  "inputTokens": 11050,
+                  "cachedInputTokens": 10624,
+                  "outputTokens": 89,
+                  "reasoningOutputTokens": 0
+                },
+                "modelContextWindow": 258400
+              }
+            },
+            "quality_flags": []
+          },
+          "last": {
+            "inputTokens": 11050,
+            "cachedInputTokens": 10624,
+            "outputTokens": 89,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11139
+          },
+          "total": {
+            "inputTokens": 21901,
+            "cachedInputTokens": 15616,
+            "outputTokens": 104,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 22005
+          },
+          "totalDeltaVsPreviousRecordCall": null,
+          "unaccountedTotalDeltaVsLast": null
+        },
+        {
+          "index": 2,
+          "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "statusBefore": "RUNNING",
+          "hadPendingBefore": true,
+          "readyBefore": false,
+          "usageScope": "per_turn",
+          "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11200:89:11289",
+          "capturedUsage": {
+            "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+            "runtime_kind": "codex_app_server",
+            "ingestion_kind": "codex_thread_token_usage",
+            "usage_scope": "per_turn",
+            "snapshot_series_key": null,
+            "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11200:89:11289",
+            "reported_input_tokens": 11200,
+            "reported_output_tokens": 89,
+            "reported_total_tokens": 11289,
+            "cache_read_input_tokens": 10624,
+            "reasoning_output_tokens": 0,
+            "input_token_semantic": "gross_includes_cache",
+            "cache_state": "positive",
+            "latest_prompt_tokens": 11200,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.3343653250774,
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.5",
+            "model_value": "gpt-5.5",
+            "raw_usage_json": {
+              "totalTokens": 11289,
+              "inputTokens": 11200,
+              "cachedInputTokens": 10624,
+              "outputTokens": 89,
+              "reasoningOutputTokens": 0
+            },
+            "raw_event_json": {
+              "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+              "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+              "tokenUsage": {
+                "total": {
+                  "totalTokens": 33294,
+                  "inputTokens": 33101,
+                  "cachedInputTokens": 26240,
+                  "outputTokens": 193,
+                  "reasoningOutputTokens": 0
+                },
+                "last": {
+                  "totalTokens": 11289,
+                  "inputTokens": 11200,
+                  "cachedInputTokens": 10624,
+                  "outputTokens": 89,
+                  "reasoningOutputTokens": 0
+                },
+                "modelContextWindow": 258400
+              }
+            },
+            "quality_flags": []
+          },
+          "last": {
+            "inputTokens": 11200,
+            "cachedInputTokens": 10624,
+            "outputTokens": 89,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11289
+          },
+          "total": {
+            "inputTokens": 33101,
+            "cachedInputTokens": 26240,
+            "outputTokens": 193,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 33294
+          },
+          "totalDeltaVsPreviousRecordCall": {
+            "inputTokens": 11200,
+            "cachedInputTokens": 10624,
+            "outputTokens": 89,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11289
+          },
+          "unaccountedTotalDeltaVsLast": {
+            "inputTokens": 0,
+            "cachedInputTokens": 0,
+            "outputTokens": 0,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 0
+          }
+        },
+        {
+          "index": 3,
+          "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "statusBefore": "RUNNING",
+          "hadPendingBefore": true,
+          "readyBefore": false,
+          "usageScope": "per_turn",
+          "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11349:32:11381",
+          "capturedUsage": {
+            "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+            "runtime_kind": "codex_app_server",
+            "ingestion_kind": "codex_thread_token_usage",
+            "usage_scope": "per_turn",
+            "snapshot_series_key": null,
+            "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11349:32:11381",
+            "reported_input_tokens": 11349,
+            "reported_output_tokens": 32,
+            "reported_total_tokens": 11381,
+            "cache_read_input_tokens": 11136,
+            "reasoning_output_tokens": 0,
+            "input_token_semantic": "gross_includes_cache",
+            "cache_state": "positive",
+            "latest_prompt_tokens": 11349,
+            "effective_context_window_tokens": 258400,
+            "context_window_usage_percent": 4.3920278637770895,
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.5",
+            "model_value": "gpt-5.5",
+            "raw_usage_json": {
+              "totalTokens": 11381,
+              "inputTokens": 11349,
+              "cachedInputTokens": 11136,
+              "outputTokens": 32,
+              "reasoningOutputTokens": 0
+            },
+            "raw_event_json": {
+              "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+              "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+              "tokenUsage": {
+                "total": {
+                  "totalTokens": 44675,
+                  "inputTokens": 44450,
+                  "cachedInputTokens": 37376,
+                  "outputTokens": 225,
+                  "reasoningOutputTokens": 0
+                },
+                "last": {
+                  "totalTokens": 11381,
+                  "inputTokens": 11349,
+                  "cachedInputTokens": 11136,
+                  "outputTokens": 32,
+                  "reasoningOutputTokens": 0
+                },
+                "modelContextWindow": 258400
+              }
+            },
+            "quality_flags": []
+          },
+          "last": {
+            "inputTokens": 11349,
+            "cachedInputTokens": 11136,
+            "outputTokens": 32,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11381
+          },
+          "total": {
+            "inputTokens": 44450,
+            "cachedInputTokens": 37376,
+            "outputTokens": 225,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 44675
+          },
+          "totalDeltaVsPreviousRecordCall": {
+            "inputTokens": 11349,
+            "cachedInputTokens": 11136,
+            "outputTokens": 32,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11381
+          },
+          "unaccountedTotalDeltaVsLast": {
+            "inputTokens": 0,
+            "cachedInputTokens": 0,
+            "outputTokens": 0,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 0
+          }
+        }
+      ],
+      "messageTypes": [
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_STATUS",
+        "AGENT_COMMAND_ACK",
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "TOOL_LOG",
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "TOOL_LOG",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_END",
+        "AGENT_STATUS",
+        "TOKEN_USAGE_UPDATED",
+        "TURN_COMPLETED",
+        "AGENT_STATUS"
+      ]
+    }
+  ],
+  "allRecordTurnTokenUsageCalls": [
+    {
+      "index": 0,
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+      "statusBefore": "RUNNING",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "usageScope": "per_turn",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-3969-7461-80c4-c9dc72e59d66:per_turn:10851:15:10866",
+      "capturedUsage": {
+        "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+        "runtime_kind": "codex_app_server",
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "per_turn",
+        "snapshot_series_key": null,
+        "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-3969-7461-80c4-c9dc72e59d66:per_turn:10851:15:10866",
+        "reported_input_tokens": 10851,
+        "reported_output_tokens": 15,
+        "reported_total_tokens": 10866,
+        "cache_read_input_tokens": 4992,
+        "reasoning_output_tokens": 0,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_state": "positive",
+        "latest_prompt_tokens": 10851,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 4.199303405572755,
+        "model_provider": "OPENAI",
+        "model_identifier": "gpt-5.5",
+        "model_value": "gpt-5.5",
+        "raw_usage_json": {
+          "totalTokens": 10866,
+          "inputTokens": 10851,
+          "cachedInputTokens": 4992,
+          "outputTokens": 15,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+          "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 10866,
+              "inputTokens": 10851,
+              "cachedInputTokens": 4992,
+              "outputTokens": 15,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 10866,
+              "inputTokens": 10851,
+              "cachedInputTokens": 4992,
+              "outputTokens": 15,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          }
+        },
+        "quality_flags": []
+      },
+      "last": {
+        "inputTokens": 10851,
+        "cachedInputTokens": 4992,
+        "outputTokens": 15,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10866
+      },
+      "total": {
+        "inputTokens": 10851,
+        "cachedInputTokens": 4992,
+        "outputTokens": 15,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10866
+      },
+      "totalDeltaVsPreviousRecordCall": null,
+      "unaccountedTotalDeltaVsLast": null
+    },
+    {
+      "index": 1,
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "statusBefore": "RUNNING",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "usageScope": "per_turn",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11050:89:11139",
+      "capturedUsage": {
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "runtime_kind": "codex_app_server",
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "per_turn",
+        "snapshot_series_key": null,
+        "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11050:89:11139",
+        "reported_input_tokens": 11050,
+        "reported_output_tokens": 89,
+        "reported_total_tokens": 11139,
+        "cache_read_input_tokens": 10624,
+        "reasoning_output_tokens": 0,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_state": "positive",
+        "latest_prompt_tokens": 11050,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 4.276315789473684,
+        "model_provider": "OPENAI",
+        "model_identifier": "gpt-5.5",
+        "model_value": "gpt-5.5",
+        "raw_usage_json": {
+          "totalTokens": 11139,
+          "inputTokens": 11050,
+          "cachedInputTokens": 10624,
+          "outputTokens": 89,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 22005,
+              "inputTokens": 21901,
+              "cachedInputTokens": 15616,
+              "outputTokens": 104,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 11139,
+              "inputTokens": 11050,
+              "cachedInputTokens": 10624,
+              "outputTokens": 89,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          }
+        },
+        "quality_flags": []
+      },
+      "last": {
+        "inputTokens": 11050,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11139
+      },
+      "total": {
+        "inputTokens": 21901,
+        "cachedInputTokens": 15616,
+        "outputTokens": 104,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 22005
+      },
+      "totalDeltaVsPreviousRecordCall": {
+        "inputTokens": 11050,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11139
+      },
+      "unaccountedTotalDeltaVsLast": {
+        "inputTokens": 0,
+        "cachedInputTokens": 0,
+        "outputTokens": 0,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 0
+      }
+    },
+    {
+      "index": 2,
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "statusBefore": "RUNNING",
+      "hadPendingBefore": true,
+      "readyBefore": false,
+      "usageScope": "per_turn",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11200:89:11289",
+      "capturedUsage": {
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "runtime_kind": "codex_app_server",
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "per_turn",
+        "snapshot_series_key": null,
+        "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11200:89:11289",
+        "reported_input_tokens": 11200,
+        "reported_output_tokens": 89,
+        "reported_total_tokens": 11289,
+        "cache_read_input_tokens": 10624,
+        "reasoning_output_tokens": 0,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_state": "positive",
+        "latest_prompt_tokens": 11200,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 4.3343653250774,
+        "model_provider": "OPENAI",
+        "model_identifier": "gpt-5.5",
+        "model_value": "gpt-5.5",
+        "raw_usage_json": {
+          "totalTokens": 11289,
+          "inputTokens": 11200,
+          "cachedInputTokens": 10624,
+          "outputTokens": 89,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 33294,
+              "inputTokens": 33101,
+              "cachedInputTokens": 26240,
+              "outputTokens": 193,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 11289,
+              "inputTokens": 11200,
+              "cachedInputTokens": 10624,
+              "outputTokens": 89,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          }
+        },
+        "quality_flags": []
+      },
+      "last": {
+        "inputTokens": 11200,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11289
+      },
+      "total": {
+        "inputTokens": 33101,
+        "cachedInputTokens": 26240,
+        "outputTokens": 193,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 33294
+      },
+      "totalDeltaVsPreviousRecordCall": {
+        "inputTokens": 11200,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11289
+      },
+      "unaccountedTotalDeltaVsLast": {
+        "inputTokens": 0,
+        "cachedInputTokens": 0,
+        "outputTokens": 0,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 0
+      }
+    },
+    {
+      "index": 3,
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "statusBefore": "RUNNING",
+      "hadPendingBefore": true,
+      "readyBefore": false,
+      "usageScope": "per_turn",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11349:32:11381",
+      "capturedUsage": {
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "runtime_kind": "codex_app_server",
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "per_turn",
+        "snapshot_series_key": null,
+        "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11349:32:11381",
+        "reported_input_tokens": 11349,
+        "reported_output_tokens": 32,
+        "reported_total_tokens": 11381,
+        "cache_read_input_tokens": 11136,
+        "reasoning_output_tokens": 0,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_state": "positive",
+        "latest_prompt_tokens": 11349,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 4.3920278637770895,
+        "model_provider": "OPENAI",
+        "model_identifier": "gpt-5.5",
+        "model_value": "gpt-5.5",
+        "raw_usage_json": {
+          "totalTokens": 11381,
+          "inputTokens": 11349,
+          "cachedInputTokens": 11136,
+          "outputTokens": 32,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 44675,
+              "inputTokens": 44450,
+              "cachedInputTokens": 37376,
+              "outputTokens": 225,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 11381,
+              "inputTokens": 11349,
+              "cachedInputTokens": 11136,
+              "outputTokens": 32,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          }
+        },
+        "quality_flags": []
+      },
+      "last": {
+        "inputTokens": 11349,
+        "cachedInputTokens": 11136,
+        "outputTokens": 32,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11381
+      },
+      "total": {
+        "inputTokens": 44450,
+        "cachedInputTokens": 37376,
+        "outputTokens": 225,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 44675
+      },
+      "totalDeltaVsPreviousRecordCall": {
+        "inputTokens": 11349,
+        "cachedInputTokens": 11136,
+        "outputTokens": 32,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11381
+      },
+      "unaccountedTotalDeltaVsLast": {
+        "inputTokens": 0,
+        "cachedInputTokens": 0,
+        "outputTokens": 0,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 0
+      }
+    }
+  ],
+  "overwrittenPendingCalls": [
+    {
+      "index": 2,
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "statusBefore": "RUNNING",
+      "hadPendingBefore": true,
+      "readyBefore": false,
+      "usageScope": "per_turn",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11200:89:11289",
+      "capturedUsage": {
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "runtime_kind": "codex_app_server",
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "per_turn",
+        "snapshot_series_key": null,
+        "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11200:89:11289",
+        "reported_input_tokens": 11200,
+        "reported_output_tokens": 89,
+        "reported_total_tokens": 11289,
+        "cache_read_input_tokens": 10624,
+        "reasoning_output_tokens": 0,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_state": "positive",
+        "latest_prompt_tokens": 11200,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 4.3343653250774,
+        "model_provider": "OPENAI",
+        "model_identifier": "gpt-5.5",
+        "model_value": "gpt-5.5",
+        "raw_usage_json": {
+          "totalTokens": 11289,
+          "inputTokens": 11200,
+          "cachedInputTokens": 10624,
+          "outputTokens": 89,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 33294,
+              "inputTokens": 33101,
+              "cachedInputTokens": 26240,
+              "outputTokens": 193,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 11289,
+              "inputTokens": 11200,
+              "cachedInputTokens": 10624,
+              "outputTokens": 89,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          }
+        },
+        "quality_flags": []
+      },
+      "last": {
+        "inputTokens": 11200,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11289
+      },
+      "total": {
+        "inputTokens": 33101,
+        "cachedInputTokens": 26240,
+        "outputTokens": 193,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 33294
+      },
+      "totalDeltaVsPreviousRecordCall": {
+        "inputTokens": 11200,
+        "cachedInputTokens": 10624,
+        "outputTokens": 89,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11289
+      },
+      "unaccountedTotalDeltaVsLast": {
+        "inputTokens": 0,
+        "cachedInputTokens": 0,
+        "outputTokens": 0,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 0
+      }
+    },
+    {
+      "index": 3,
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "statusBefore": "RUNNING",
+      "hadPendingBefore": true,
+      "readyBefore": false,
+      "usageScope": "per_turn",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11349:32:11381",
+      "capturedUsage": {
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "runtime_kind": "codex_app_server",
+        "ingestion_kind": "codex_thread_token_usage",
+        "usage_scope": "per_turn",
+        "snapshot_series_key": null,
+        "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11349:32:11381",
+        "reported_input_tokens": 11349,
+        "reported_output_tokens": 32,
+        "reported_total_tokens": 11381,
+        "cache_read_input_tokens": 11136,
+        "reasoning_output_tokens": 0,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_state": "positive",
+        "latest_prompt_tokens": 11349,
+        "effective_context_window_tokens": 258400,
+        "context_window_usage_percent": 4.3920278637770895,
+        "model_provider": "OPENAI",
+        "model_identifier": "gpt-5.5",
+        "model_value": "gpt-5.5",
+        "raw_usage_json": {
+          "totalTokens": 11381,
+          "inputTokens": 11349,
+          "cachedInputTokens": 11136,
+          "outputTokens": 32,
+          "reasoningOutputTokens": 0
+        },
+        "raw_event_json": {
+          "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 44675,
+              "inputTokens": 44450,
+              "cachedInputTokens": 37376,
+              "outputTokens": 225,
+              "reasoningOutputTokens": 0
+            },
+            "last": {
+              "totalTokens": 11381,
+              "inputTokens": 11349,
+              "cachedInputTokens": 11136,
+              "outputTokens": 32,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          }
+        },
+        "quality_flags": []
+      },
+      "last": {
+        "inputTokens": 11349,
+        "cachedInputTokens": 11136,
+        "outputTokens": 32,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11381
+      },
+      "total": {
+        "inputTokens": 44450,
+        "cachedInputTokens": 37376,
+        "outputTokens": 225,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 44675
+      },
+      "totalDeltaVsPreviousRecordCall": {
+        "inputTokens": 11349,
+        "cachedInputTokens": 11136,
+        "outputTokens": 32,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11381
+      },
+      "unaccountedTotalDeltaVsLast": {
+        "inputTokens": 0,
+        "cachedInputTokens": 0,
+        "outputTokens": 0,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 0
+      }
+    }
+  ],
+  "unreconciledPositive": [],
+  "ledgerRows": [
+    {
+      "observedAt": "2026-06-28T04:05:22.080Z",
+      "usageEventId": "3379ac57-31b8-4030-8eab-cbeb62481370",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-3969-7461-80c4-c9dc72e59d66:per_turn:10851:15:10866",
+      "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+      "usageScope": "per_turn",
+      "accountingInputTokens": 10851,
+      "cacheReadInputTokens": 4992,
+      "standardInputTokens": 5859,
+      "accountingOutputTokens": 15,
+      "reasoningOutputTokens": 0,
+      "rawUsageJson": {
+        "totalTokens": 10866,
+        "inputTokens": 10851,
+        "cachedInputTokens": 4992,
+        "outputTokens": 15,
+        "reasoningOutputTokens": 0
+      },
+      "rawEventJson": {
+        "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+        "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+        "tokenUsage": {
+          "total": {
+            "totalTokens": 10866,
+            "inputTokens": 10851,
+            "cachedInputTokens": 4992,
+            "outputTokens": 15,
+            "reasoningOutputTokens": 0
+          },
+          "last": {
+            "totalTokens": 10866,
+            "inputTokens": 10851,
+            "cachedInputTokens": 4992,
+            "outputTokens": 15,
+            "reasoningOutputTokens": 0
+          },
+          "modelContextWindow": 258400
+        }
+      }
+    },
+    {
+      "observedAt": "2026-06-28T04:05:46.605Z",
+      "usageEventId": "bff63d09-dc76-4c76-a690-0e3722d2fe2d",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8:019f0c67-3803-7422-987b-115cbd631245:019f0c67-85c7-7843-b54f-51267f1b41e5:per_turn:11349:32:11381",
+      "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+      "usageScope": "per_turn",
+      "accountingInputTokens": 11349,
+      "cacheReadInputTokens": 11136,
+      "standardInputTokens": 213,
+      "accountingOutputTokens": 32,
+      "reasoningOutputTokens": 0,
+      "rawUsageJson": {
+        "totalTokens": 11381,
+        "inputTokens": 11349,
+        "cachedInputTokens": 11136,
+        "outputTokens": 32,
+        "reasoningOutputTokens": 0
+      },
+      "rawEventJson": {
+        "threadId": "019f0c67-3803-7422-987b-115cbd631245",
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "tokenUsage": {
+          "total": {
+            "totalTokens": 44675,
+            "inputTokens": 44450,
+            "cachedInputTokens": 37376,
+            "outputTokens": 225,
+            "reasoningOutputTokens": 0
+          },
+          "last": {
+            "totalTokens": 11381,
+            "inputTokens": 11349,
+            "cachedInputTokens": 11136,
+            "outputTokens": 32,
+            "reasoningOutputTokens": 0
+          },
+          "modelContextWindow": 258400
+        }
+      }
+    }
+  ],
+  "websocketTokenUsageCount": 2,
+  "recordTurnTokenUsageCallCount": 4,
+  "ledgerRowCount": 2,
+  "conclusion": "Potential undercount/reconciliation issue observed: either pending usage was overwritten before persistence or cumulative total deltas exceeded the accounted last payload."
+}
