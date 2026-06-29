@@ -15,6 +15,7 @@ import type { TaskDelegationMemberIdentity } from "./task-delegation-target.js";
 import { getTaskDelegationTargetName } from "./task-delegation-target.js";
 import { buildTaskAgentInstanceIdentity } from "./task-agent-instance-identity.js";
 import { TaskDelegationEventPublisher } from "./task-delegation-event-publisher.js";
+import { TaskDelegationVisibleNotificationRenderer } from "./task-delegation-visible-notification-renderer.js";
 import { TaskDelegationWorkPacketRenderer } from "./task-delegation-work-packet-renderer.js";
 import { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
 import { markTaskDelegationSystemTaskNotificationMetadata } from "./task-delegation-system-message-visibility.js";
@@ -31,6 +32,7 @@ export class TaskDelegationActivationCoordinator {
     private readonly ledger: TaskDelegationLedger,
     private readonly taskAgentDirectory: TaskAgentDirectory,
     private readonly renderer = new TaskDelegationWorkPacketRenderer(),
+    private readonly visibleNotificationRenderer = new TaskDelegationVisibleNotificationRenderer(),
     private readonly eventPublisher = new TaskDelegationEventPublisher(),
     private readonly agentRunIdentityAllocator: AgentRunIdentityAllocatorLike = AgentRunIdentityAllocator.getInstance(),
     private readonly taskTeamRunIdentityFactory = new TaskTeamRunIdentityFactory(agentRunIdentityAllocator),
@@ -157,6 +159,8 @@ export class TaskDelegationActivationCoordinator {
         task_ids: [record.taskId],
         execution_kind: record.execution?.kind ?? null,
         ...metadata,
+      }, {
+        displayContent: this.visibleNotificationRenderer.renderActivation(record),
       }),
     );
   }

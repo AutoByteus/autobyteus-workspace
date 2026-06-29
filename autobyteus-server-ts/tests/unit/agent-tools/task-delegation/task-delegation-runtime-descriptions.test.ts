@@ -78,7 +78,12 @@ describe("task delegation runtime descriptions", () => {
     ]);
     expect(findParameter(delegateSchema, "tasks")).toBeUndefined();
     expect(findParameter(delegateSchema, "target")?.required).toBe(true);
-    expect(findParameter(delegateSchema, "description")?.description).toContain("Complete ready-to-run work-packet body");
+    const delegateDescription = findParameter(delegateSchema, "description")?.description ?? "";
+    expect(delegateDescription).toContain("Complete task details");
+    expect(delegateDescription).toContain("objective");
+    expect(delegateDescription).toContain("done conditions");
+    expect(delegateDescription).toContain("task itself");
+    expect(delegateDescription).not.toMatch(/message to|send/i);
     expect(JSON.stringify(delegateSchema)).not.toContain("Do not pass");
     expect(JSON.stringify(delegateSchema)).not.toContain("completion_criteria");
   });
@@ -94,9 +99,16 @@ describe("task delegation runtime descriptions", () => {
     const reviewEntry = getTaskDelegationToolManifestEntry(REVIEW_TASK_RESULT_TOOL_NAME);
     expect(reviewEntry.description).toContain("latest pending result submission");
     expect(reviewEntry.description).toContain("request_revision");
+    expect(reviewEntry.description).toContain("task-result comment");
+    expect(reviewEntry.description).not.toContain("non-empty message");
     const schema = buildReviewTaskResultParameterSchema();
-    expect(schema.parameters.map((parameter) => parameter.name)).toEqual(["task_id", "decision", "message", "reference_files"]);
+    expect(schema.parameters.map((parameter) => parameter.name)).toEqual(["task_id", "decision", "comment", "reference_files"]);
     expect(findParameter(schema, "decision")?.enumValues).toEqual(["accept", "request_revision"]);
+    const commentDescription = findParameter(schema, "comment")?.description ?? "";
+    expect(commentDescription).toContain("Task-result review comment");
+    expect(commentDescription).toContain("revision");
+    expect(commentDescription).toContain("acceptance feedback");
+    expect(commentDescription).not.toMatch(/message to|send/i);
   });
 
   it("projects pure task tools through Agent Tools MCP adapter definitions", () => {

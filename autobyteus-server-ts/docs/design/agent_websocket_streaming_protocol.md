@@ -207,9 +207,12 @@ external-channel message boundary.
 Server-owned task-delegation `SenderType.SYSTEM` work packets and lifecycle
 notifications are not normal accepted-input echoes. They are stamped by the
 task-delegation subsystem, delivered to the target runtime/model, and projected
-once as a local `SYSTEM_TASK_NOTIFICATION` for the target conversation. The
-WebSocket stream must therefore expose the visible task-delegation notification
-through the system-notification surface and must not also emit a
+once as a local `SYSTEM_TASK_NOTIFICATION` for the target conversation using the
+stamped task-centered display content. Activation display content uses the same
+`You have a new task.` template for member and team targets and does not expose
+target kind/name labels. The WebSocket stream must therefore expose the visible
+task-delegation notification through the system-notification surface and must
+not also emit a
 `MEMBER_INPUT_MESSAGE` with the same payload. AutoByteus runtime input receives
 generic system-task-notification suppression metadata for these stamped messages
 so runtime-originated notification conversion cannot create a second live

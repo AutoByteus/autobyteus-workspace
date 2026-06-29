@@ -25,14 +25,14 @@ const SubmitTaskResultInputSchema = z.object({
 const ReviewTaskResultInputSchema = z.object({
   task_id: nonEmptyString("task_id"),
   decision: z.enum(["accept", "request_revision"]),
-  message: z.string().trim().optional().nullable(),
+  comment: z.string().trim().optional().nullable(),
   reference_files: z.array(nonEmptyString("reference_files item")).default([]),
 }).strict().superRefine((value, context) => {
-  if (value.decision === "request_revision" && !value.message?.trim()) {
+  if (value.decision === "request_revision" && !value.comment?.trim()) {
     context.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "message is required for request_revision",
-      path: ["message"],
+      message: "comment is required for request_revision",
+      path: ["comment"],
     });
   }
 });

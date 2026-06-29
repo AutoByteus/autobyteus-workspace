@@ -226,7 +226,9 @@ manifests:
   workspace root, run id, and sender identity used by media execution.
 - Task-delegation tools reuse the task-delegation manifest and
   `TaskDelegationToolService`. They are available only for sessions with an
-  active `MemberTeamContext`.
+  active `MemberTeamContext`; review feedback uses the canonical
+  `review_task_result.comment` field rather than the ordinary-message
+  `message` field.
 - `publish_artifacts` reuses the published-artifact contract and
   `PublishedArtifactPublicationService`. It publishes against the owning active
   run id and uses session execution context as fallback runtime context for
