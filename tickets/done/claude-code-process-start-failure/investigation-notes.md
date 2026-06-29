@@ -25,7 +25,7 @@ Screenshot reference: `/home/autobyteus/data/memory/agent_teams/software_enginee
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure`
-- Task Artifact Folder: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/in-progress/claude-code-process-start-failure`
+- Task Artifact Folder: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure`
 - Current Branch: `codex/claude-code-process-start-failure`
 - Current Worktree / Working Directory: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure`
 - Bootstrap Base Branch: `origin/personal`

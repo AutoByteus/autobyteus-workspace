@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/in-progress/claude-code-process-start-failure/requirements.md`
-- Upstream Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/in-progress/claude-code-process-start-failure/investigation-notes.md`
-- Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/in-progress/claude-code-process-start-failure/design-spec.md`
+- Upstream Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/requirements.md`
+- Upstream Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/investigation-notes.md`
+- Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-spec.md`
 - Current Review Round: 1
 - Trigger: Revised design package after 2026-06-29 user clarification requiring `permissionMode: "default"` plus complete inside/outside-workspace permission coverage.
 - Prior Review Round Reviewed: None; no prior canonical architecture review report existed in the task artifact folder.
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/in-progress/claude-code-process-start-failure/design-spec.md` as the authoritative design. The design correctly treats the reported failure as a boundary/ownership issue: AutoByteus `autoExecuteTools` is a run-level approval policy, while Claude SDK `permissionMode` is provider process policy. The design removes the unsafe implicit mapping to `bypassPermissions`, preserves approval through `ClaudeSessionToolUseCoordinator`/SDK `canUseTool`, adds process/terminal diagnostics, and records the newly clarified permission coverage requirements.
+Reviewed `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-spec.md` as the authoritative design. The design correctly treats the reported failure as a boundary/ownership issue: AutoByteus `autoExecuteTools` is a run-level approval policy, while Claude SDK `permissionMode` is provider process policy. The design removes the unsafe implicit mapping to `bypassPermissions`, preserves approval through `ClaudeSessionToolUseCoordinator`/SDK `canUseTool`, adds process/terminal diagnostics, and records the newly clarified permission coverage requirements.
 
 ## Task Design Health Assessment Verdict
 
