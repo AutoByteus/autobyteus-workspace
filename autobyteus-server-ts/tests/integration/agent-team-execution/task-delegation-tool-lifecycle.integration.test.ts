@@ -687,7 +687,9 @@ describe("task delegation tool lifecycle integration", () => {
     });
     expect(harness.backend.taskAgentStarts[0]?.message.content).toContain("submit_task_result");
     expect(harness.backend.taskAgentStarts[0]?.message.content).toContain("review_task_result");
-    expect(harness.backend.taskAgentStarts[0]?.message.content).toContain("task-delegation-codex-run__worker__task_0001");
+    expect(harness.backend.taskAgentStarts[0]?.message.content).toContain("Task ID: task_0001");
+    expect(harness.backend.taskAgentStarts[0]?.message.content).not.toContain("target_agent_run_id");
+    expect(harness.backend.taskAgentStarts[0]?.message.content).not.toContain("task-delegation-codex-run__worker__task_0001");
     expect(harness.backend.taskAgentStarts[0]?.message.content).not.toContain(["mark", "task", "completed"].join("_"));
     expect(harness.backend.taskAgentStarts[0]?.message.content).not.toContain(["accept", "task"].join("_"));
 
@@ -760,8 +762,10 @@ describe("task delegation tool lifecycle integration", () => {
       status: "active",
       activation_accepted: true,
     }));
-    expect(harness.backend.taskAgentStarts[1]?.message.content).toContain("Original delegator task-agent run: task-delegation-codex-run__worker__task_0001");
-    expect(harness.backend.taskAgentStarts[1]?.message.content).toContain(parentTaskAgent.taskAgentRunId);
+    expect(harness.backend.taskAgentStarts[1]?.message.content).toContain("Task ID: task_0002");
+    expect(harness.backend.taskAgentStarts[1]?.message.content).toContain("Child reviewer task from parent task-agent.");
+    expect(harness.backend.taskAgentStarts[1]?.message.content).not.toContain("Original delegator");
+    expect(harness.backend.taskAgentStarts[1]?.message.content).not.toContain(parentTaskAgent.taskAgentRunId);
 
     await executeSubmitTaskResultAsTaskAgent(harness, "task_0002", { message: "child result" });
     expect(harness.backend.messages.at(-1)).toMatchObject({
@@ -855,7 +859,7 @@ describe("task delegation tool lifecycle integration", () => {
     await expect(executeCoordinatorReview(harness, {
       task_id: "task_0001",
       decision: "request_revision",
-      message: "Please revise the team result.",
+      comment: "Please revise the team result.",
     })).resolves.toMatchObject({
       task_id: "task_0001",
       status: "active",

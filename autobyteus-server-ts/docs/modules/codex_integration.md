@@ -384,8 +384,11 @@ conversation is being applied.
   should skip when live flags are absent. To exercise the live path, run with a
   working LMStudio Qwen model and Codex `gpt-5.5`; use exact `LMSTUDIO_MODEL_ID`
   pinning for deterministic provider-native tool calls, or omit it to use the
-  `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment fallback. Example:
-  `RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_MODEL_ID='<loaded-lmstudio-model-id>' CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts -t "AutoByteus coordinator delegates work and reviews a concrete Codex task-agent result/revision cycle" --no-file-parallelism`.
+  `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment fallback. This proof also
+  protects task-centered `SYSTEM_TASK_NOTIFICATION` display content, uniform
+  member/team activation copy, no duplicate member-input echo, and the canonical
+  `review_task_result.comment` review field. Example:
+  `RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_CODEX_E2E=1 APP_ENV=test LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-27b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --reporter=dot`.
 - These live probes are intentionally opt-in and require the matching local
   runtime prerequisites; they must not become default CI prerequisites.
 

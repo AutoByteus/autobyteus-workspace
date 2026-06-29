@@ -316,6 +316,9 @@ describe("member-run-instruction-composer", () => {
     expect(enabled.runtimeInstruction).toContain("Available lifecycle tools for this workflow are `delegate_task`, `submit_task_result`, and `review_task_result`.");
     expect(enabled.runtimeInstruction).toContain("Task execution targets submit reviewable results with `submit_task_result`");
     expect(enabled.runtimeInstruction).toContain("reviews submitted results with `review_task_result`");
+    expect(enabled.runtimeInstruction).toContain("The `description` is task-centered content");
+    expect(enabled.runtimeInstruction).toContain("non-empty `comment` with task-result feedback");
+    expect(enabled.runtimeInstruction).not.toContain("revision decisions require a non-empty message");
     expect(enabled.runtimeInstruction).not.toContain("do not pass delegator");
     expect(enabled.runtimeInstruction).not.toContain("completion_criteria");
     expect(enabled.runtimeInstruction).toContain("`send_message_to` remains ordinary agent message delivery only");

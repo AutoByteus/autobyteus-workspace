@@ -57,6 +57,7 @@ export class TaskDelegationService {
       this.taskAgentDirectory,
       undefined,
       undefined,
+      undefined,
       options.agentRunIdentityAllocator,
     );
     this.eventPublisher = new TaskDelegationEventPublisher();
@@ -197,14 +198,14 @@ export class TaskDelegationService {
     const existing = this.ledger.getRecord(taskId);
     if (!existing) throw new TaskDelegationError("TASK_NOT_FOUND", `Delegated task '${taskId}' was not found.`);
     this.assertOriginalDelegator(context, existing);
-    const message = input.decision === "request_revision"
-      ? this.normalizeRequiredMessage(input.message ?? "", "message")
-      : this.inputResolver.normalizeStatusMessage(input.message ?? null);
+    const comment = input.decision === "request_revision"
+      ? this.normalizeRequiredMessage(input.comment ?? "", "comment")
+      : this.inputResolver.normalizeStatusMessage(input.comment ?? null);
     const referenceFiles = this.inputResolver.normalizeReferenceFiles(input.reference_files);
     const transition = this.ledger.reviewResult({
       taskId,
       decision: input.decision,
-      message,
+      comment,
       referenceFiles,
       reviewer: context.caller,
     });
@@ -285,17 +286,17 @@ export class TaskDelegationService {
     const caller = context.caller;
     const callerLogicalRoute = caller.logicalMemberRouteKey?.trim() || caller.memberRouteKey.trim();
     if (record.delegator.memberRouteKey !== callerLogicalRoute || record.delegator.memberName !== caller.memberName) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Only original delegator '${record.delegator.memberName}' may review delegated task '${record.taskId}'.`);
+      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Only task review owner '${record.delegator.memberName}' may review delegated task '${record.taskId}'.`);
     }
     if (record.delegator.taskAgentRunId) {
       this.assertTaskAgentDelegatorIdentity(context, record);
       return;
     }
     if (caller.taskAgentRunId?.trim()) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Task-agent caller is not the original delegator/reviewer for delegated task '${record.taskId}'.`);
+      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Task-agent caller is not the task review owner for delegated task '${record.taskId}'.`);
     }
     if (record.delegator.memberRunId !== caller.memberRunId) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Caller run '${caller.memberRunId}' is not the original delegator run for delegated task '${record.taskId}'.`);
+      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Caller run '${caller.memberRunId}' is not the task review owner run for delegated task '${record.taskId}'.`);
     }
   }
 
@@ -303,7 +304,7 @@ export class TaskDelegationService {
     const caller = context.caller;
     const expected = record.delegator;
     if (caller.taskAgentRunId !== expected.taskAgentRunId || caller.taskId !== expected.taskId || caller.memberRunId !== expected.taskAgentRunId) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Caller task-agent identity is not the original delegator for delegated task '${record.taskId}'.`);
+      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Caller task-agent identity is not the task review owner for delegated task '${record.taskId}'.`);
     }
     this.assertActiveTaskAgentCaller(context);
   }

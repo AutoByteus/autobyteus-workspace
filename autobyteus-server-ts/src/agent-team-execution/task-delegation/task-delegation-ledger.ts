@@ -110,7 +110,7 @@ export class TaskDelegationLedger {
       pendingSubmissionId: null,
       resultSubmissions: [],
       resultReviews: [],
-      acceptanceMessage: null,
+      acceptanceComment: null,
       acceptedAt: null,
       createdAt: now,
       updatedAt: now,
@@ -225,7 +225,7 @@ export class TaskDelegationLedger {
   reviewResult(input: {
     taskId: string;
     decision: TaskResultReviewDecision;
-    message: string | null;
+    comment: string | null;
     referenceFiles: string[];
     reviewer: TaskDelegationDelegatorIdentity;
   }): TaskResultReviewTransition {
@@ -248,7 +248,7 @@ export class TaskDelegationLedger {
       reviewId: `${record.taskId}_review_${String(sequence).padStart(4, "0")}`,
       reviewedSubmissionId: pendingSubmissionId,
       decision: input.decision,
-      message: input.message,
+      comment: input.comment,
       referenceFiles: [...input.referenceFiles],
       reviewer: cloneDelegatorIdentity(input.reviewer),
       reviewedAt: now,
@@ -259,7 +259,7 @@ export class TaskDelegationLedger {
     if (input.decision === "request_revision") record.status = "active";
     else {
       record.status = "accepted";
-      record.acceptanceMessage = input.message;
+      record.acceptanceComment = input.comment;
       record.acceptedAt = now;
       record.terminalAt = now;
     }
