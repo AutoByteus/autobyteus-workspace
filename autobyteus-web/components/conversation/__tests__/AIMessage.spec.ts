@@ -58,6 +58,41 @@ describe('AIMessage.vue', () => {
     expect(wrapper.text()).toContain('SN');
   });
 
+  it('dispatches system task notification segments to the notification component', () => {
+    const notificationSegment = {
+      type: 'system_task_notification' as const,
+      senderId: 'system_task_runner',
+      content: 'You have a new task.',
+    };
+    const messageWithNotificationSegment: AIMessageType = {
+      ...baseMessage,
+      segments: [notificationSegment],
+    };
+
+    const wrapper = mount(AIMessage, {
+      props: {
+        message: messageWithNotificationSegment,
+        runId: 'agent-1',
+        agentName: 'Reflective Storyteller',
+        messageIndex: 0,
+      },
+      global: {
+        stubs: {
+          ...globalStubs,
+          SystemTaskNotificationSegment: {
+            name: 'SystemTaskNotificationSegment',
+            props: ['segment'],
+            template: '<div data-test="system-task-notification-stub">{{ segment.content }}</div>',
+          },
+        },
+      },
+    });
+
+    const systemTaskNotificationSegment = wrapper.getComponent({ name: 'SystemTaskNotificationSegment' });
+    expect(systemTaskNotificationSegment.props('segment')).toEqual(notificationSegment);
+    expect(wrapper.get('[data-test="system-task-notification-stub"]').text()).toBe('You have a new task.');
+  });
+
   it('passes sender display name to inter-agent segment when mapping exists', () => {
     const messageWithInterAgentSegment: AIMessageType = {
       ...baseMessage,
