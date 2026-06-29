@@ -156,7 +156,7 @@ describe("MixedAgentMemberHandle task-delegation notification projection", () =>
         sender_id: "system.task_delegation",
         message_type: "task_team_delegation_work_packet",
       }, {
-        displayContent: "New delegated task.\n\nTask ID: task_0001",
+        displayContent: "You have a new task.\n\nTask ID: task_0001",
       }),
     );
 
@@ -173,7 +173,7 @@ describe("MixedAgentMemberHandle task-delegation notification projection", () =>
           runId: "worker-run-1",
           payload: {
             sender_id: "system.task_delegation",
-            content: "New delegated task.\n\nTask ID: task_0001",
+            content: "You have a new task.\n\nTask ID: task_0001",
           },
         }),
       }),

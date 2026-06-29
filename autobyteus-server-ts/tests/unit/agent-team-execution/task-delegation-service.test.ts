@@ -283,6 +283,10 @@ const taskDelegationPayloads = (
 
 const expectNoInternalNotificationDetails = (content: string): void => {
   for (const forbidden of [
+    "New delegated task",
+    "New delegated team task",
+    "Accountable team",
+    "Logical member",
     "target_agent_run_id",
     "task_agent_run_id",
     "task_team_run_id",
@@ -371,10 +375,17 @@ describe("TaskDelegationService", () => {
       [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
     }));
     const activationDisplay = getTaskDelegationSystemTaskNotificationDisplayContent(backend.taskAgentStarts[0]!.message);
-    expect(activationDisplay).toContain("New delegated task.");
-    expect(activationDisplay).toContain("Task ID: task_0001");
-    expect(activationDisplay).toContain("Draft the implementation note.");
-    expect(activationDisplay).toContain("/tmp/source.md");
+    expect(activationDisplay).toBe([
+      "You have a new task.",
+      "",
+      "Task ID: task_0001",
+      "",
+      "Task:",
+      "Draft the implementation note.",
+      "",
+      "Reference files:",
+      "- /tmp/source.md",
+    ].join("\n"));
     expect(activationDisplay).not.toContain("coordinator");
     expectNoInternalNotificationDetails(activationDisplay!);
 
@@ -467,12 +478,19 @@ describe("TaskDelegationService", () => {
       [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
     }));
     const teamActivationDisplay = getTaskDelegationSystemTaskNotificationDisplayContent(start.message);
-    expect(teamActivationDisplay).toContain("New delegated team task.");
-    expect(teamActivationDisplay).toContain("Task ID: task_0001");
-    expect(teamActivationDisplay).toContain("Accountable team:");
-    expect(teamActivationDisplay).toContain("design_team");
-    expect(teamActivationDisplay).toContain("Coordinate the design review.");
+    expect(teamActivationDisplay).toBe([
+      "You have a new task.",
+      "",
+      "Task ID: task_0001",
+      "",
+      "Task:",
+      "Coordinate the design review.",
+      "",
+      "Reference files:",
+      "- None specified",
+    ].join("\n"));
     expect(teamActivationDisplay).not.toContain("coordinator");
+    expect(teamActivationDisplay).not.toContain("design_team");
     expectNoInternalNotificationDetails(teamActivationDisplay!);
 
     const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ target: { kind: string }; tasks: Array<{ executionKind: string; executionRunId: string; description: string }> }>;
@@ -512,11 +530,20 @@ describe("TaskDelegationService", () => {
     });
     expect(backend.taskAgentStarts[0]!.message.content).toContain("Task review owner: Lead Coordinator");
     const displayContent = getTaskDelegationSystemTaskNotificationDisplayContent(backend.taskAgentStarts[0]!.message);
-    expect(displayContent).toContain("New delegated task.");
-    expect(displayContent).toContain("Task ID: task_0001");
-    expect(displayContent).toContain("Use visible names.");
+    expect(displayContent).toBe([
+      "You have a new task.",
+      "",
+      "Task ID: task_0001",
+      "",
+      "Task:",
+      "Use visible names.",
+      "",
+      "Reference files:",
+      "- None specified",
+    ].join("\n"));
     expect(displayContent).not.toContain("Lead Coordinator");
     expect(displayContent).not.toContain("coordinator");
+    expect(displayContent).not.toContain("Worker Agent");
   });
 
   it("submits, revises, submits again, accepts latest pending submission, and settles after idle", async () => {

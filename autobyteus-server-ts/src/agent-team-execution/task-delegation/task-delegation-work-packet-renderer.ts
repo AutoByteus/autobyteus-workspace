@@ -1,5 +1,4 @@
 import type { TaskDelegationRecord } from "./task-delegation-record.js";
-import { getTaskDelegationTargetName } from "./task-delegation-target.js";
 
 const renderList = (items: readonly string[]): string =>
   items.length > 0 ? items.map((item) => `- ${item}`).join("\n") : "- None specified";
@@ -40,14 +39,10 @@ export class TaskDelegationWorkPacketRenderer {
     const title = total > 1
       ? `Task ${index + 1} label: ${record.taskLabel}`
       : `Task label: ${record.taskLabel}`;
-    const targetName = getTaskDelegationTargetName(record.target);
     return [
       title,
       `Task ID: ${record.taskId}`,
       `Task review owner: ${record.delegator.memberName}`,
-      record.target.kind === "team"
-        ? `Accountable team target: ${targetName}`
-        : `Logical member: ${targetName}`,
       "Description:",
       record.description,
       "Reference files:",

@@ -65,7 +65,8 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
   subsystem are still delivered to the runtime/model, but accepted mixed leaf
   delivery projects exactly one live `SYSTEM_TASK_NOTIFICATION` event using the
   task-delegation display-content metadata for the target conversation and does
-  not also emit `MEMBER_INPUT_MESSAGE`. The
+  not also emit `MEMBER_INPUT_MESSAGE`. Activation display content is uniform for
+  member and team targets and does not expose target kind/name labels. The
   AutoByteus runtime honors the paired generic suppression metadata so it does
   not emit a second runtime-originated system-task notification for the same
   server-owned payload.

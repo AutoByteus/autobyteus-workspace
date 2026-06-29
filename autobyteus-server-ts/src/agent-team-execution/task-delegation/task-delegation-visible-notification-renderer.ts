@@ -3,7 +3,6 @@ import type {
   TaskResultReview,
   TaskResultSubmission,
 } from "./task-delegation-record.js";
-import { getTaskDelegationTargetName } from "./task-delegation-target.js";
 
 const renderReferenceFiles = (referenceFiles: readonly string[]): string =>
   referenceFiles.length > 0
@@ -12,15 +11,11 @@ const renderReferenceFiles = (referenceFiles: readonly string[]): string =>
 
 export class TaskDelegationVisibleNotificationRenderer {
   renderActivation(record: TaskDelegationRecord): string {
-    const targetLines = record.target.kind === "team"
-      ? ["Accountable team:", getTaskDelegationTargetName(record.target), ""]
-      : [];
-
     return [
-      record.target.kind === "team" ? "New delegated team task." : "New delegated task.",
+      "You have a new task.",
       "",
       `Task ID: ${record.taskId}`,
-      ...targetLines,
+      "",
       "Task:",
       record.description,
       "",

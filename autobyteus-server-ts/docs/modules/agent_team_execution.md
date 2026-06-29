@@ -171,19 +171,20 @@ The happy path is push-based:
    topology-derived and are not inferred from communication recipients.
 3. For a member target, activation binds a concrete task-agent execution in the
    `TaskAgentDirectory`, starts one task-agent instance through
-   `TeamRun.startTaskAgentInstance(...)`, and sends a work packet that includes
-   the task id, task-centered `description`, optional reference files, and
+   `TeamRun.startTaskAgentInstance(...)`, and sends a task-centered work packet
+   that includes the task id, `description`, optional reference files, and
    instructions to use `submit_task_result` for reviewable output. Runtime
-   identifiers remain in backend metadata/events for routing and diagnostics,
-   not in the task packet body by default.
+   identifiers and target labels remain in backend metadata/events for routing
+   and diagnostics, not in the task packet body by default.
 4. For a team target, activation materializes a `TaskTeamInstanceIdentity` and
    child team-run config, starts one task-scoped child team run through
    `TeamRun.startTaskTeamInstance(...)`, binds the active child run in
-   `TaskTeamActiveRunDirectory`, and sends the work packet to the child team's
-   ingress coordinator/representative. The packet metadata includes
-   `execution_kind: "task_team"`, `task_team_run_id`, and
+   `TaskTeamActiveRunDirectory`, and sends the same task-centered work-packet
+   shape to the child team's ingress coordinator/representative. The packet
+   metadata includes `execution_kind: "task_team"`, `task_team_run_id`, and
    `task_team_instance_id`; the accountable owner remains the logical team
-   target, not the ingress coordinator.
+   target, but team/accountable labels stay in metadata/events rather than the
+   runtime packet body or visible activation copy.
 5. Accepted activations mark the record `active`, mark the exact execution run
    reachable, and emit `TASK_DELEGATION_ACTIVATED`; rejected activations roll
    the record back to `not_started`, unregister the starting execution, and are
@@ -222,12 +223,15 @@ server-owned. Constructors stamp those `SenderType.SYSTEM` messages as
 task-delegation system task notifications and request generic AutoByteus system
 task-notification suppression. Each in-scope constructor also stamps
 task-centered display content so the transcript notification can omit internal
-runtime ids, tool protocol text, and sender/delegator/reviewer framing while the
-runtime input remains actionable. After an accepted mixed leaf delivery, the
-member boundary forwards the input to the runtime and emits one local
-`SYSTEM_TASK_NOTIFICATION` event for the target conversation instead of also
-publishing a `MEMBER_INPUT` echo. Ordinary user messages and inter-agent
-deliveries continue to use `MEMBER_INPUT`; task-delegation notification
+runtime ids, tool protocol text, sender/delegator/reviewer framing, target kind,
+and target/accountable-team labels while the runtime input remains actionable.
+Activation display content uses one uniform template for member and team targets
+(`You have a new task.` plus task id, task description, and reference files), so
+team-target activation must not expose `New delegated team task`, `Accountable
+team`, logical member labels, or ingress/child-run details. After an accepted
+mixed leaf delivery, the member boundary forwards the input to the runtime and
+emits one local `SYSTEM_TASK_NOTIFICATION` event for the target conversation
+instead of also publishing a `MEMBER_INPUT` echo. Ordinary user messages and inter-agent deliveries continue to use `MEMBER_INPUT`; task-delegation notification
 messages must not use both live surfaces for the same payload.
 
 `TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the

@@ -39,7 +39,7 @@ Separate task-delegation display notification content from runtime/model message
 
 The target behavior is:
 
-- Visible `SYSTEM_TASK_NOTIFICATION.content` is concise, natural, and task/review focused, not sender/receiver-message focused.
+- Visible `SYSTEM_TASK_NOTIFICATION.content` is concise, natural, and task/review focused, not sender/receiver-message focused and not target-kind focused. Agent-target and team-target activations use the same visible template.
 - Runtime/model input remains actionable, but avoids internal ids unless the recipient needs that field for a supported action.
 - Task-delegation metadata/events/tool results still retain internal identifiers required for routing, correlation, diagnostics, warnings, and status projection.
 - `review_task_result` free-text uses `comment` everywhere in the model-facing tool boundary and task-review domain model.
@@ -108,7 +108,7 @@ The target behavior is:
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | A delegator calls `delegate_task`; the service creates/binds a record, activation starts a task-agent or task-team run, and a stamped system input carries both actionable model content and separate task-centered visible content metadata. The mixed member boundary emits only the visible task content as `SYSTEM_TASK_NOTIFICATION`, without sender/delegator framing. | Tool call, task record, activation coordinator, execution target, system notification | `TaskDelegationService` | Display renderer, metadata stamping, no-duplicate projection |
+| DS-001 | A delegator calls `delegate_task`; the service creates/binds a record, activation starts a task-agent or task-team run, and a stamped system input carries both actionable model content and separate task-centered visible content metadata. The mixed member boundary emits only the visible task content as `SYSTEM_TASK_NOTIFICATION`, without sender/delegator framing and without member/team target-kind framing. | Tool call, task record, activation coordinator, execution target, system notification | `TaskDelegationService` | Display renderer, metadata stamping, no-duplicate projection |
 | DS-002 | A worker/team submits a result; the ledger records it and dispatcher notifies the delegator with actionable review instructions plus a clean display summary of the result. | Tool call, ledger submission, dispatcher, delegator target | `TaskDelegationService` | Display renderer, routing target resolution, warning outcome |
 | DS-003 | A delegator requests revision using `comment`; the ledger records the review and dispatcher notifies the task execution target with actionable revision instructions plus a clean visible summary. | Tool call, ledger review, dispatcher, task execution target | `TaskDelegationService` | Display renderer, target resolution, warning outcome |
 | DS-004 | The model-facing schema accepts `comment`, strict parsing rejects `message`, service normalizes `comment`, and ledger records review comments under review-domain names. | Schema, parser, service, ledger, review record | `TaskDelegationToolService` at boundary, `TaskDelegationService` for lifecycle | Manifest/prompt docs, tests, event payload names |
@@ -171,7 +171,7 @@ The target behavior is:
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
 | --- | --- | --- | --- | --- | --- |
-| Visible notification text rendering | DS-001, DS-002, DS-003, DS-005 | Task-delegation lifecycle owner | Compose concise task-centered task/review display text without sender/receiver framing | Keeps UI copy out of runtime packet renderers and frontend | Runtime content and UI display remain coupled or ordinary-message framing leaks into task workflows. |
+| Visible notification text rendering | DS-001, DS-002, DS-003, DS-005 | Task-delegation lifecycle owner | Compose concise task-centered task/review display text without sender/receiver framing and without agent/team target-kind framing | Keeps UI copy out of runtime packet renderers and frontend | Runtime content and UI display remain coupled, or ordinary-message/target-kind framing leaks into task workflows. |
 | Metadata stamping and display content selection | DS-005 | Task-delegation visibility helper | Mark messages, store display content, build local event payload | One canonical projection boundary | Scattered metadata reads across mixed backends. |
 | Tool schema/comment rename and descriptions | DS-004 | Tool boundary | Define canonical model-facing argument names and task-centered field descriptions | Removes ambiguity with `send_message_to` and ordinary messages | Dual alias behavior or prompt/schema mismatch. |
 | Delivery outcome warnings | DS-002, DS-003 | Notification dispatcher | Preserve non-transactional delivery warnings | Lifecycle state must not roll back on notification failure | Warnings leak into display copy or disappear. |
@@ -328,7 +328,7 @@ Forbidden:
 
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
-| Activation visible content | `You have a new delegated task.\n\nTask ID: task_0001\nTask: Draft the implementation note.\n\nReference files:\n- /tmp/source.md` | `You received a delegated task from Coordinator...` or `You have been activated as task agent target_agent_run_id=...` | Shows task-centered display copy without sender framing or internal runtime details. |
+| Activation visible content | `You have a new task.\n\nTask ID: task_0001\nTask: Draft the implementation note.\n\nReference files:\n- /tmp/source.md` | `New delegated team task.`, `Accountable team: DesignTeam`, `You received a delegated task from Coordinator...`, or `You have been activated as task agent target_agent_run_id=...` | Shows one uniform task-centered display copy for agent and team targets without sender, target-kind, or internal runtime details. |
 | Result-submitted visible content | `A task result is ready for review.\n\nTask ID: task_0001\nSubmitted result:\nImplemented the requested work.` | `Worker submitted...` or `Submission ID: ... Execution kind: task_agent ...` | Reviewers care about task/result, not sender framing or backend correlation ids. |
 | Revision-request visible content | `This task needs revision.\n\nTask ID: task_0001\nReview comment:\nPlease add tests.` | `Coordinator requested...` or `Review ID: ... Reviewed submission ID: ... Execution kind: ...` | Worker/team needs task feedback, not reviewer framing or ledger ids. |
 | Tool field descriptions | `description: Complete task details: objective, context, constraints, done conditions, expected output, and reference guidance.` / `comment: Task-result review comment. Required when requesting revision; optional acceptance feedback.` | `message: Message to send to the task receiver.` | Prevents prompt/schema wording from reintroducing sender/receiver mental model. |
@@ -387,7 +387,7 @@ Layering follows ownership: frontend does not bypass backend notification owners
 
 - Text display content remains a single string instead of introducing structured notification cards. This keeps the change backend-local and matches existing frontend contract.
 - The projection helper keeps a fallback to `message.content` for defensive safety. This is not a compatibility path for new task-delegation constructors; all in-scope constructors must provide display content.
-- Runtime/model content may still mention `submit_task_result` / `review_task_result` where the model needs to act, but visible content must not include protocol examples or internal ids.
+- Runtime/model content may still mention `submit_task_result` / `review_task_result` where the model needs to act, but visible content must not include protocol examples, target-kind labels, or internal ids.
 
 ## Risks
 
@@ -399,7 +399,7 @@ Layering follows ownership: frontend does not bypass backend notification owners
 
 - Keep routing and ledger state-transition behavior unchanged except for field names.
 - Do not add frontend heuristics for task-delegation notifications.
-- Do not include sender/delegator/reviewer names by default in receiver-facing visible display strings. Do not include `submissionId`, `reviewId`, `executionKind`, `taskAgentRunId`, `taskTeamRunId`, or `taskTeamInstanceId` in visible display strings.
+- Do not include sender/delegator/reviewer names by default in receiver-facing visible display strings. Do not include target-kind labels such as `team task`, `Accountable team`, or `Logical member`. Do not include `submissionId`, `reviewId`, `executionKind`, `taskAgentRunId`, `taskTeamRunId`, or `taskTeamInstanceId` in visible display strings.
 - Keep `taskId` visible in activation/result/revision notifications.
 - Keep internal ids in metadata/events/tool results where current code needs them for correlation, warnings, or status projection.
 - Prefer test assertions that verify both positive useful content and negative internal-detail absence.

@@ -18,6 +18,7 @@
 
 User reports that backend currently supports delegate task and review-task-result/sub-review task results, but the system notification message for these flows sounds unnatural and exposes too much internal detail. The message delivered to the other agent sounds natural; the system notification for delegate task/review task result does not. User asks to analyze how notification delivery/generation works and improve the notification behavior, considering delegation can target an agent team or a single agent.
 
+- User testing of the Electron build showed `Accountable team` still appears in the system notification for team-target activation. Code inspection found `TaskDelegationVisibleNotificationRenderer.renderActivation` intentionally adds `Accountable team:` for team targets and unit tests require it. This proves the previous requirement wording was still ambiguous; requirements/design now explicitly require one uniform activation visible template for agent and team targets and prohibit target-kind labels such as `New delegated team task`, `Accountable team`, and `Logical member`.
 - User clarified a task-oriented product principle: the task receiver does not need sender/delegator identity in the notification body because the receiver's job is to work from the task and submit a task result. Review comments and task descriptions should also be task-centered, not framed as ordinary messages from one agent to another. Requirements now include schema/manifest/runtime-instruction wording updates for `delegate_task.description` and `review_task_result.comment`.
 - User clarified that agents generally do not benefit from seeing submission ids, review ids, execution kind, task-agent run ids, task-team run ids, or routing/debug identifiers in task/review notifications. Actionable agent-facing content should focus on task content, task id when needed for a tool call or correlation, review comments/instructions, decision/status, visible names, and reference files. User confirmed `review_task_result.message` to `comment` is in scope for this ticket, not merely a recommendation.
 
@@ -25,7 +26,7 @@ User reports that backend currently supports delegate task and review-task-resul
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/in-progress/improve-task-system-notifications`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications`
 - Current Branch: `codex/improve-task-system-notifications`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications`
 - Bootstrap Base Branch: `origin/personal`

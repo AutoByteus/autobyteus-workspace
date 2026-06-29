@@ -100,11 +100,14 @@ fresh task-team run identity rather than reusing the completed run.
 ### Result submission and review
 
 Activated task-agent and task-team executions receive a system work packet that
-contains the task label, target identity, rich description, reference files,
-and lifecycle instructions. Runtime identities remain backend metadata/event
-details for routing and diagnostics; the task packet body is centered on the
-task itself. The packet explicitly tells the execution target not to poll for
-tasks; all necessary task details are pushed with the activation.
+contains the task label, rich description, reference files, and lifecycle
+instructions. Runtime identities, target kind, and target/accountable-team labels
+remain backend metadata/event details for routing and diagnostics; the task
+packet body and visible activation notification are centered on the task itself.
+The visible activation template is uniform for member and team targets (`You have
+a new task.` plus task id, task description, and reference files). The packet
+explicitly tells the execution target not to poll for tasks; all necessary task
+details are pushed with the activation.
 
 Task-agents and task-team ingress contexts submit reviewable output with
 `submit_task_result({ message, reference_files? })`. The task is inferred from
