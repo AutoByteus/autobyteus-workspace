@@ -1,75 +1,195 @@
-import { TokenUsageStats } from "../domain/models.js";
-import { TokenUsageLedgerStore } from "./token-usage-ledger-store.js";
+import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 import type {
-  TokenUsageApiCostStatus,
-  TokenUsageUpdatedPayload,
-} from "../../agent-execution/domain/agent-run-token-usage.js";
+  TokenUsageRuntimeModelStatisticsRow,
+  TokenUsageTaskMemberStatisticsRow,
+  TokenUsageTaskStatisticsResult,
+  TokenUsageTaskStatisticsRow,
+} from "../domain/statistics-models.js";
+import {
+  buildTokenUsageCostSummaryAggregate,
+  normalizeTokenUsageModelIdentifier,
+  normalizeTokenUsageRuntimeKind,
+} from "../projections/token-usage-cost-summary-aggregate.js";
+import { TokenUsageRunHistoryEnricher } from "./token-usage-run-history-enricher.js";
+import { TokenUsageLedgerStore } from "./token-usage-ledger-store.js";
 
-const addNullableCost = (current: number | null, next: number | null): number | null => {
-  if (current === null && next === null) return null;
-  return (current ?? 0) + (next ?? 0);
+type EventGroups = Map<string, TokenUsageUpdatedPayload[]>;
+
+const pushGroupedEvent = (
+  groups: EventGroups,
+  key: string,
+  event: TokenUsageUpdatedPayload,
+): void => {
+  const events = groups.get(key) ?? [];
+  events.push(event);
+  groups.set(key, events);
 };
 
-const summarizeCostStatus = (events: TokenUsageUpdatedPayload[]): TokenUsageApiCostStatus => {
-  if (events.length === 0) return "price_missing";
-  const statuses = new Set(events.map((event) => event.api_cost_status));
-  return statuses.size === 1 ? events[0]!.api_cost_status : "mixed";
-};
+const firstObservedAt = (events: TokenUsageUpdatedPayload[]): string => (
+  events.reduce<string | null>((earliest, event) => {
+    if (!earliest) return event.observed_at;
+    return event.observed_at.localeCompare(earliest) < 0 ? event.observed_at : earliest;
+  }, null) ?? new Date(0).toISOString()
+);
 
-const currencySummary = (events: TokenUsageUpdatedPayload[]): { currency: string | null; mixed: boolean } => {
-  const currencies = Array.from(new Set(events.map((event) => event.currency).filter((value): value is string => Boolean(value))));
-  if (currencies.length > 1) return { currency: null, mixed: true };
-  return { currency: currencies[0] ?? null, mixed: false };
-};
+const latestEvent = (events: TokenUsageUpdatedPayload[]): TokenUsageUpdatedPayload | null => (
+  events.reduce<TokenUsageUpdatedPayload | null>((latest, event) => {
+    if (!latest) return event;
+    return event.observed_at.localeCompare(latest.observed_at) >= 0 ? event : latest;
+  }, null)
+);
 
-const sumCost = (
-  events: TokenUsageUpdatedPayload[],
-  select: (event: TokenUsageUpdatedPayload) => number | null,
-): number | null => events.reduce((sum, event) => addNullableCost(sum, select(event)), null as number | null);
+const memberGroupKey = (event: TokenUsageUpdatedPayload): string => (
+  event.member_agent_run_id ?? event.member_route_key ?? event.run_id
+);
 
-const groupByModel = (records: TokenUsageUpdatedPayload[]): Map<string, TokenUsageUpdatedPayload[]> => {
-  const statsByModel = new Map<string, TokenUsageUpdatedPayload[]>();
-  for (const record of records) {
-    const modelKey = record.model_identifier ?? record.model_value ?? "unknown";
-    const events = statsByModel.get(modelKey) ?? [];
-    events.push(record);
-    statsByModel.set(modelKey, events);
-  }
-  return statsByModel;
-};
+const sortRowsByCreatedAtDesc = <T extends { createdAt: string; rowId: string }>(rows: T[]): T[] => (
+  [...rows].sort((a, b) => b.createdAt.localeCompare(a.createdAt) || a.rowId.localeCompare(b.rowId))
+);
 
 export class TokenUsageStatisticsProvider {
-  constructor(private readonly store = new TokenUsageLedgerStore()) {}
+  constructor(
+    private readonly store = new TokenUsageLedgerStore(),
+    private readonly enricher = new TokenUsageRunHistoryEnricher(),
+  ) {}
 
   async getTotalCost(startDate: Date, endDate: Date): Promise<number | null> {
     const records = await this.store.listEventsInPeriod(startDate, endDate);
-    if (currencySummary(records).mixed) return null;
-    return sumCost(records, (record) => record.estimated_api_total_cost);
+    return buildTokenUsageCostSummaryAggregate(records).estimated_api_total_cost;
   }
 
-  async getStatisticsPerModel(
+  async getTaskStatisticsInPeriod(
     startDate: Date,
     endDate: Date,
-  ): Promise<Record<string, TokenUsageStats>> {
+  ): Promise<TokenUsageTaskStatisticsResult> {
     const records = await this.store.listEventsInPeriod(startDate, endDate);
-    const statsByModel = new Map<string, TokenUsageStats>();
+    const teamGroups: EventGroups = new Map();
+    const standaloneAgentGroups: EventGroups = new Map();
 
-    for (const [model, events] of groupByModel(records)) {
-      const { currency, mixed } = currencySummary(events);
-      statsByModel.set(model, new TokenUsageStats({
-        promptTokens: events.reduce((sum, record) => sum + (record.accounting_input_tokens ?? 0), 0),
-        assistantTokens: events.reduce((sum, record) => sum + (record.accounting_output_tokens ?? 0), 0),
-        reasoningTokens: events.reduce((sum, record) => sum + (record.reasoning_output_tokens ?? 0), 0),
-        promptTokenCost: mixed ? null : sumCost(events, (record) => record.estimated_api_input_cost),
-        assistantTokenCost: mixed ? null : sumCost(events, (record) => record.estimated_api_output_cost),
-        reasoningTokenCost: mixed ? null : sumCost(events, (record) => record.estimated_api_reasoning_output_cost),
-        totalCost: mixed ? null : sumCost(events, (record) => record.estimated_api_total_cost),
-        currency,
-        apiCostStatus: mixed ? "mixed" : summarizeCostStatus(events),
-        eventCount: events.length,
-      }));
+    for (const record of records) {
+      if (record.root_team_run_id) {
+        pushGroupedEvent(teamGroups, record.root_team_run_id, record);
+      } else {
+        pushGroupedEvent(standaloneAgentGroups, record.run_id, record);
+      }
     }
 
-    return Object.fromEntries(statsByModel.entries());
+    const rows = await Promise.all([
+      ...Array.from(teamGroups.entries()).map(([teamRunId, events]) => this.buildTeamRow(teamRunId, events)),
+      ...Array.from(standaloneAgentGroups.entries()).map(([runId, events]) => this.buildStandaloneAgentRow(runId, events)),
+    ]);
+
+    return { rows: sortRowsByCreatedAtDesc(rows) };
+  }
+
+  async getStatisticsPerRuntimeModel(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<TokenUsageRuntimeModelStatisticsRow[]> {
+    const records = await this.store.listEventsInPeriod(startDate, endDate);
+    const groups: EventGroups = new Map();
+
+    for (const record of records) {
+      const runtimeKind = normalizeTokenUsageRuntimeKind(record.runtime_kind);
+      const modelIdentifier = normalizeTokenUsageModelIdentifier(record);
+      pushGroupedEvent(groups, `${runtimeKind}\u0000${modelIdentifier}`, record);
+    }
+
+    return Array.from(groups.entries()).map(([key, events]) => {
+      const [runtimeKind = "Unknown", modelIdentifier = "Unknown"] = key.split("\u0000");
+      return {
+        rowId: `runtime-model:${runtimeKind}:${modelIdentifier}`,
+        runtimeKind,
+        modelIdentifier,
+        aggregate: buildTokenUsageCostSummaryAggregate(events),
+      };
+    }).sort((a, b) => (
+      (b.aggregate.estimated_api_total_cost ?? -1) - (a.aggregate.estimated_api_total_cost ?? -1) ||
+      a.runtimeKind.localeCompare(b.runtimeKind) ||
+      a.modelIdentifier.localeCompare(b.modelIdentifier)
+    ));
+  }
+
+  private async buildStandaloneAgentRow(
+    runId: string,
+    events: TokenUsageUpdatedPayload[],
+  ): Promise<TokenUsageTaskStatisticsRow> {
+    const aggregate = buildTokenUsageCostSummaryAggregate(events);
+    const latest = latestEvent(events);
+    const metadata = await this.enricher.enrichAgentRun({
+      runId,
+      firstObservedAt: firstObservedAt(events),
+      fallbackAgentDefinitionId: latest?.agent_definition_id ?? null,
+      fallbackWorkspaceId: latest?.workspace_id ?? null,
+    });
+
+    return {
+      rowId: `agent:${runId}`,
+      rowKind: "AGENT_RUN",
+      runId,
+      rootTeamRunId: null,
+      ...metadata,
+      models: aggregate.observed_model_identifiers,
+      runtimeKinds: aggregate.observed_runtime_kinds,
+      aggregate,
+      members: [],
+    };
+  }
+
+  private async buildTeamRow(
+    teamRunId: string,
+    events: TokenUsageUpdatedPayload[],
+  ): Promise<TokenUsageTaskStatisticsRow> {
+    const aggregate = buildTokenUsageCostSummaryAggregate(events);
+    const metadata = await this.enricher.enrichTeamRun({
+      teamRunId,
+      firstObservedAt: firstObservedAt(events),
+    });
+    const memberGroups = new Map<string, TokenUsageUpdatedPayload[]>();
+    for (const event of events) {
+      pushGroupedEvent(memberGroups, memberGroupKey(event), event);
+    }
+    const members = await Promise.all(
+      Array.from(memberGroups.entries()).map(([key, memberEvents]) => this.buildTeamMemberRow(teamRunId, key, memberEvents)),
+    );
+
+    return {
+      rowId: `team:${teamRunId}`,
+      rowKind: "TEAM_RUN",
+      runId: null,
+      rootTeamRunId: teamRunId,
+      ...metadata,
+      models: aggregate.observed_model_identifiers,
+      runtimeKinds: aggregate.observed_runtime_kinds,
+      aggregate,
+      members: sortRowsByCreatedAtDesc(members),
+    };
+  }
+
+  private async buildTeamMemberRow(
+    teamRunId: string,
+    groupKey: string,
+    events: TokenUsageUpdatedPayload[],
+  ): Promise<TokenUsageTaskMemberStatisticsRow> {
+    const aggregate = buildTokenUsageCostSummaryAggregate(events);
+    const latest = latestEvent(events);
+    const metadata = await this.enricher.enrichMember({
+      rootTeamRunId: teamRunId,
+      memberAgentRunId: latest?.member_agent_run_id ?? latest?.run_id ?? null,
+      memberRouteKey: latest?.member_route_key ?? null,
+      memberPath: latest?.member_path ?? null,
+      fallbackAgentDefinitionId: latest?.agent_definition_id ?? null,
+      firstObservedAt: firstObservedAt(events),
+    });
+
+    return {
+      rowId: `team:${teamRunId}:member:${groupKey}`,
+      memberRouteKey: latest?.member_route_key ?? null,
+      memberAgentRunId: latest?.member_agent_run_id ?? latest?.run_id ?? null,
+      ...metadata,
+      models: aggregate.observed_model_identifiers,
+      runtimeKinds: aggregate.observed_runtime_kinds,
+      aggregate,
+    };
   }
 }
