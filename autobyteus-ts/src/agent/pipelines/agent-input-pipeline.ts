@@ -3,6 +3,7 @@ import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
 import { SenderType } from '../sender-type.js';
 import { getToolContinuationMode } from '../message/tool-continuation-metadata.js';
+import { shouldSuppressSystemTaskNotification } from '../message/system-task-notification-metadata.js';
 import { sortProcessors } from './processor-pipeline-runner.js';
 import type { LLMUserMessage } from '../../llm/user-message.js';
 import type { AgentContext } from '../context/agent-context.js';
@@ -94,7 +95,10 @@ export class AgentInputPipeline {
       );
     }
 
-    if (originalMessage.senderType === SenderType.SYSTEM) {
+    if (
+      originalMessage.senderType === SenderType.SYSTEM &&
+      !shouldSuppressSystemTaskNotification(originalMessage.metadata)
+    ) {
       options.notifier?.notifyAgentDataSystemTaskNotificationReceived({
         sender_id: originalMessage.metadata?.sender_id ?? 'system',
         content: originalMessage.content

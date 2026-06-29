@@ -11,6 +11,7 @@ import type {
   TaskResultReview,
   TaskResultSubmission,
 } from "./task-delegation-record.js";
+import { markTaskDelegationSystemTaskNotificationMetadata } from "./task-delegation-system-message-visibility.js";
 
 const renderReferenceFiles = (referenceFiles: readonly string[]): string =>
   referenceFiles.length > 0
@@ -74,7 +75,7 @@ export class TaskDelegationNotificationDispatcher {
     content: string;
     metadata: Record<string, unknown>;
   }): Promise<TaskDelegationNotificationDeliveryOutcome> {
-    const message = new AgentInputUserMessage(input.content, SenderType.SYSTEM, null, {
+    const message = new AgentInputUserMessage(input.content, SenderType.SYSTEM, null, markTaskDelegationSystemTaskNotificationMetadata({
       ...input.metadata,
       sender_id: "system.task_delegation",
       team_run_id: input.teamRun.runId,
@@ -83,7 +84,7 @@ export class TaskDelegationNotificationDispatcher {
       target_member_route_key: input.target.memberRouteKey,
       target_task_agent_run_id: input.target.kind === "member" ? input.target.taskAgentRunId : null,
       target_task_team_run_id: input.target.kind === "task_team" ? input.target.taskTeamRunId : null,
-    });
+    }));
 
     try {
       const result = input.target.kind === "task_team"

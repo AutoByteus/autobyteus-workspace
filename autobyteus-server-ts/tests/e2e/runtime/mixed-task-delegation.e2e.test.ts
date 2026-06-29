@@ -271,6 +271,68 @@ const extractTargetAgentRunIdFromActivation = (message: WsMessage): string => {
   throw new Error(`Activation payload did not include current task-agent execution run id: ${JSON.stringify(message.payload)}`);
 };
 
+const shouldDisableDeepSeekThinkingForRequiredToolChoice = (modelIdentifier: string): boolean =>
+  modelIdentifier.toLowerCase().includes("deepseek-v4");
+
+const buildCoordinatorLlmConfig = (modelIdentifier: string): Record<string, unknown> => {
+  const config: Record<string, unknown> = {
+    temperature: 0,
+    tool_choice: "required",
+  };
+  if (shouldDisableDeepSeekThinkingForRequiredToolChoice(modelIdentifier)) {
+    config.extra_params = { thinking_type: "disabled" };
+  }
+  return config;
+};
+
+const payloadContent = (message: WsMessage): string =>
+  typeof message.payload.content === "string" ? message.payload.content : "";
+
+const hasAllSnippets = (content: string, snippets: readonly string[]): boolean =>
+  snippets.every((snippet) => content.includes(snippet));
+
+const waitForSingleTaskNotificationSurface = async (
+  messages: WsMessage[],
+  startIndex: number,
+  input: {
+    agentName: string;
+    memberRouteKey: string;
+    contentSnippets: readonly string[];
+    label: string;
+    timeoutMs?: number;
+  },
+): Promise<void> => {
+  const matchesNotification = (message: WsMessage): boolean =>
+    message.type === "SYSTEM_TASK_NOTIFICATION" &&
+    message.payload.agent_name === input.agentName &&
+    message.payload.member_route_key === input.memberRouteKey &&
+    hasAllSnippets(payloadContent(message), input.contentSnippets);
+
+  await waitForMessageAfter(
+    messages,
+    startIndex,
+    matchesNotification,
+    `${input.label} system task notification`,
+    input.timeoutMs ?? 120_000,
+  );
+
+  // Give the target runtime a short chance to emit the legacy duplicate surface
+  // before asserting the final visible event set for this task packet.
+  await wait(1_000);
+
+  const window = messages.slice(startIndex);
+  const notificationMatches = window.filter(matchesNotification);
+  expect(notificationMatches).toHaveLength(1);
+
+  const duplicateMemberInputs = window.filter((message) =>
+    message.type === "MEMBER_INPUT_MESSAGE" &&
+    message.payload.agent_name === input.agentName &&
+    message.payload.member_route_key === input.memberRouteKey &&
+    hasAllSnippets(payloadContent(message), input.contentSnippets),
+  );
+  expect(duplicateMemberInputs).toEqual([]);
+};
+
 describeLive("Live mixed-runtime task delegation e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
@@ -496,10 +558,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
           skillAccessMode: "NONE",
           runtimeKind: RuntimeKind.AUTOBYTEUS,
           workspaceRootPath,
-          llmConfig: {
-            temperature: 0,
-            tool_choice: "required",
-          },
+          llmConfig: buildCoordinatorLlmConfig(autoByteusModel),
         },
         { memberName: "worker", agentDefinitionId: workerAgentDefinitionId, llmModelIdentifier: codexModel, autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: RuntimeKind.CODEX_APP_SERVER, workspaceRootPath },
       ] } },
@@ -558,11 +617,17 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       );
       const taskId = (activation.payload.taskIds as string[])[0];
       const taskAgentRunId = extractTargetAgentRunIdFromActivation(activation);
+      await waitForSingleTaskNotificationSurface(connection.messages, startIndex, {
+        agentName: "worker",
+        memberRouteKey: "worker",
+        contentSnippets: [`Task ID: ${taskId}`, delegateArgs.description],
+        label: "worker activation",
+      });
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
         message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "submit_task_result",
         "worker submit_task_result initial submit success", 240_000,
       );
-      const submittedEvent = await waitForMessageAfter(connection.messages, startIndex, (message) =>
+      await waitForMessageAfter(connection.messages, startIndex, (message) =>
         message.type === "TASK_DELEGATION_EVENT" &&
           message.payload.event_type === "TASK_DELEGATION_RESULT_SUBMITTED" &&
           message.payload.taskId === taskId &&
@@ -571,14 +636,20 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
           message.payload.status === "awaiting_review",
         "task result submitted event", 120_000,
       );
+      await waitForSingleTaskNotificationSurface(connection.messages, startIndex, {
+        agentName: "coordinator",
+        memberRouteKey: "coordinator",
+        contentSnippets: ["Task result submitted for review.", `Task ID: ${taskId}`, initialResultToken],
+        label: "coordinator result-submitted",
+      });
 
-      const revisionStartIndex = connection.messages.indexOf(submittedEvent) + 1;
+      const revisionStartIndex = startIndex;
       const revisionReviewArgs = {
         task_id: taskId,
         decision: "request_revision",
         message: revisionRequestMessage,
       };
-      await approveToolAndWait(connection.socket, connection.messages, revisionStartIndex, {
+      const revisionReviewInvocationId = await approveToolAndWait(connection.socket, connection.messages, revisionStartIndex, {
         agentName: "coordinator",
         toolName: "review_task_result",
         targetMemberRouteKey: "coordinator",
@@ -590,6 +661,11 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
           args.message === revisionReviewArgs.message,
         timeoutMs: 240_000,
       });
+      const postRevisionApprovalIndex = connection.messages.findIndex((message) =>
+        message.type === "TOOL_APPROVED" &&
+        message.payload.agent_name === "coordinator" &&
+        resolveInvocationId(message.payload) === revisionReviewInvocationId,
+      ) + 1;
       await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
         message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "coordinator" && message.payload.tool_name === "review_task_result",
         "coordinator review_task_result revision success", 240_000,
@@ -605,11 +681,17 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
           message.payload.terminal === false,
         "task result reviewed revision event", 120_000,
       );
+      await waitForSingleTaskNotificationSurface(connection.messages, revisionStartIndex, {
+        agentName: "worker",
+        memberRouteKey: "worker",
+        contentSnippets: ["Revision requested for delegated task.", `Task ID: ${taskId}`, revisionRequestMessage],
+        label: "worker revision-requested",
+      });
       await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
         message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "submit_task_result",
         "worker revised submit_task_result success", 240_000,
       );
-      const revisedSubmittedEvent = await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
+      await waitForMessageAfter(connection.messages, revisionStartIndex, (message) =>
         message.type === "TASK_DELEGATION_EVENT" &&
           message.payload.event_type === "TASK_DELEGATION_RESULT_SUBMITTED" &&
           message.payload.taskId === taskId &&
@@ -619,7 +701,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         "worker revised result submitted event", 120_000,
       );
 
-      const acceptStartIndex = connection.messages.indexOf(revisedSubmittedEvent) + 1;
+      const acceptStartIndex = postRevisionApprovalIndex;
       const acceptReviewArgs = { task_id: taskId, decision: "accept" };
       await approveToolAndWait(connection.socket, connection.messages, acceptStartIndex, {
         agentName: "coordinator",

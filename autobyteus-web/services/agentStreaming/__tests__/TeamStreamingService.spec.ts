@@ -1110,6 +1110,7 @@ describe('TeamStreamingService', () => {
     );
 
     expect(workerConversation.messages).toHaveLength(1);
+    expect(workerConversation.messages[0].segments).toHaveLength(1);
     expect(workerConversation.messages[0].segments).toContainEqual({
       type: 'system_task_notification',
       senderId: 'system.self_evolution',

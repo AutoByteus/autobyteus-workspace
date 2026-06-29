@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY } from "autobyteus-ts/agent/message/system-task-notification-metadata.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -31,6 +32,7 @@ import {
 import { TASK_DELEGATION_TOOL_NAME_LIST } from "../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { clearTaskTeamActiveRunDirectory } from "../../../src/agent-team-execution/task-delegation/task-team-active-run-directory.js";
+import { TASK_DELEGATION_SYSTEM_TASK_NOTIFICATION_METADATA_KEY } from "../../../src/agent-team-execution/task-delegation/task-delegation-system-message-visibility.js";
 
 class FakeTeamRunBackend implements TeamRunBackend {
   readonly runId = "team-run-1";
@@ -331,6 +333,17 @@ describe("TaskDelegationService", () => {
     expect(backend.taskAgentStarts[0]!.message.content).toContain("review_task_result");
     expect(backend.taskAgentStarts[0]!.message.content).not.toContain(["mark", "task", "completed"].join("_"));
     expect(backend.taskAgentStarts[0]!.message.content).not.toContain(["accept", "task"].join("_"));
+    expect(backend.taskAgentStarts[0]!.message.metadata).toEqual(expect.objectContaining({
+      sender_id: "system.task_delegation",
+      team_run_id: "team-run-1",
+      task_id: "task_0001",
+      task_ids: ["task_0001"],
+      execution_kind: "task_agent",
+      target_agent_run_id: "worker_00000000000000000000000000000001",
+      message_type: "task_delegation_work_packet",
+      [TASK_DELEGATION_SYSTEM_TASK_NOTIFICATION_METADATA_KEY]: true,
+      [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
+    }));
 
     const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ tasks: Array<{ executionKind: string; executionRunId: string; status: string; description: string; referenceFiles: Array<{ referenceId: string; path: string }>; taskArguments: { reference_files?: string[] } }> }>;
     expect(activated).toHaveLength(2);
@@ -404,6 +417,18 @@ describe("TaskDelegationService", () => {
     expect(start.teamConfig.memberRunId).toBe(start.identity.taskTeamRunId);
     expect(start.message.content).toContain("Your team has been activated as accountable task target team:design_team");
     expect(start.message.content).toContain(`Task-team run ID: ${start.identity.taskTeamRunId}`);
+    expect(start.message.metadata).toEqual(expect.objectContaining({
+      sender_id: "system.task_delegation",
+      team_run_id: "team-run-1",
+      task_id: "task_0001",
+      task_ids: ["task_0001"],
+      execution_kind: "task_team",
+      task_team_run_id: start.identity.taskTeamRunId,
+      task_team_instance_id: "task_team_task_0001",
+      message_type: "task_team_delegation_work_packet",
+      [TASK_DELEGATION_SYSTEM_TASK_NOTIFICATION_METADATA_KEY]: true,
+      [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
+    }));
 
     const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ target: { kind: string }; tasks: Array<{ executionKind: string; executionRunId: string; description: string }> }>;
     expect(activated[0]).toMatchObject({
@@ -470,6 +495,20 @@ describe("TaskDelegationService", () => {
     expect(backend.postedMessages[0]!.target).toEqual({ kind: "route_key", memberRouteKey: "coordinator" });
     expect(backend.postedMessages[0]!.message.content).toContain("review_task_result");
     expect(backend.postedMessages[0]!.message.content).toContain("task_0001_submission_0001");
+    expect(backend.postedMessages[0]!.message.metadata).toEqual(expect.objectContaining({
+      sender_id: "system.task_delegation",
+      team_run_id: "team-run-1",
+      input_origin: "task_delegation_notification",
+      task_notification_type: "result_submitted",
+      task_id: "task_0001",
+      submission_id: "task_0001_submission_0001",
+      message_type: "task_result_submitted",
+      target_member_route_key: "coordinator",
+      target_task_agent_run_id: null,
+      target_task_team_run_id: null,
+      [TASK_DELEGATION_SYSTEM_TASK_NOTIFICATION_METADATA_KEY]: true,
+      [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
+    }));
 
     const revision = await service.reviewTaskResult(buildContext(), {
       task_id: "task_0001",
@@ -490,6 +529,21 @@ describe("TaskDelegationService", () => {
     expect(backend.postedMessages[1]).toMatchObject({ targetMemberRunId: "worker_00000000000000000000000000000001" });
     expect(backend.postedMessages[1]!.target).toEqual({ kind: "route_key", memberRouteKey: "worker" });
     expect(backend.postedMessages[1]!.message.content).toContain("submit_task_result");
+    expect(backend.postedMessages[1]!.message.metadata).toEqual(expect.objectContaining({
+      sender_id: "system.task_delegation",
+      team_run_id: "team-run-1",
+      input_origin: "task_delegation_notification",
+      task_notification_type: "revision_requested",
+      task_id: "task_0001",
+      review_id: "task_0001_review_0001",
+      reviewed_submission_id: "task_0001_submission_0001",
+      message_type: "task_revision_requested",
+      target_member_route_key: "worker",
+      target_task_agent_run_id: "worker_00000000000000000000000000000001",
+      target_task_team_run_id: null,
+      [TASK_DELEGATION_SYSTEM_TASK_NOTIFICATION_METADATA_KEY]: true,
+      [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
+    }));
 
     const resubmitted = await service.submitTaskResult(buildContext(taskAgentCaller), {
       message: "Added tests.",
