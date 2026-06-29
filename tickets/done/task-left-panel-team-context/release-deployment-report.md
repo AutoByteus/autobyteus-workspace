@@ -2,131 +2,149 @@
 
 ## Release / Publication / Deployment Scope
 
-User verification has been received with the instruction to finalize and release a new version. This pre-finalization report records Final Round-4 delivery integration, docs sync, successful latest-base Electron packaging, curated release notes, and the planned repository finalization/release path.
+This ticket delivered the final Round-4 Team-owned active-task context UX, durable docs sync, repository finalization into `personal`, and a requested new workspace release. User verification was received on 2026-06-29 with the instruction: `now finalize and release a new version`.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary was regenerated for the final Round-4 Team-owned design after the latest tracked base refresh, docs sync, and successful Electron build.
+- Notes: Handoff summary was updated through finalization, release, release verification, and cleanup.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal` at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`
-- Latest tracked remote base reference checked: `origin/personal` at `1ef2fa8ba29117f9e159130b57b7a04f8efb2393` after `git fetch origin personal`
+- Latest tracked remote base reference checked before user verification handoff: `origin/personal` at `1ef2fa8ba29117f9e159130b57b7a04f8efb2393`
 - Base advanced since bootstrap or previous refresh: `Yes`
 - New base commits integrated into the ticket branch: `Yes`
 - Local checkpoint commit result: `Completed` — final Round-4 candidate checkpoint `e36a17a2a506e175c93433eea356df780c561bf4`
 - Integration method: `Merge`
-- Integration result: `Completed` — latest merge commit `f1f2199b04a531c59514e3d9372d28573c58a952`
+- Integration result: `Completed` — latest base merge commit `f1f2199b04a531c59514e3d9372d28573c58a952`
 - Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
 - No-rerun rationale (only if no new base commits were integrated): N/A
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
-- Blocker (if applicable): None
+- Blocker (if applicable): N/A
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification reference: 2026-06-29 user message: `now finalize and release a new version`.
-- Renewed verification required after later re-integration: `No` at this handoff; required if `origin/personal` advances again before finalization and materially changes the handoff state.
+- Renewed verification required after later re-integration: `No`; `origin/personal` did not advance after the user-verified latest-base Electron handoff.
 - Renewed verification received: `Not needed`
 - Renewed verification reference: N/A
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/agent_artifacts.md`, `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/settings.md`
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: N/A — blocked on explicit user verification.
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/`
 
 ## Version / Tag / Release Commit
 
-A new patch release is requested after repository finalization. Current package version before release is `1.3.88`; planned next release is `1.3.89` unless the release helper detects a newer remote version before release.
+- Release version: `1.3.89`
+- Release tag: `v1.3.89`
+- Release commit: `6e14b33be1bca7bc2c759610c29608b2a0f647af` (`chore(release): bump workspace release version to 1.3.89`)
+- Annotated tag object: `642b1b575ff1bd4c01b23c282da34878370c4704`
+- Tag peeled commit: `6e14b33be1bca7bc2c759610c29608b2a0f647af`
+- Release helper synchronized:
+  - `autobyteus-web/package.json` from `1.3.88` to `1.3.89`,
+  - `autobyteus-message-gateway/package.json` from `1.3.88` to `1.3.89`,
+  - `.github/release-notes/release-notes.md`,
+  - `autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json`.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/investigation-notes.md`
 - Ticket branch: `codex/task-left-panel-team-context`
-- Ticket branch commit result: Pending explicit user verification; local checkpoint/merge commits exist, while docs sync and delivery artifacts remain local until finalization.
-- Ticket branch push result: Not run; blocked on explicit user verification.
+- Ticket branch commit result: `Completed` at `2b222903d7d622df9bbd822722d2b6a243bb9c86` (`docs(delivery): finalize team active task context`)
+- Ticket branch push result: `Completed`; `origin/codex/task-left-panel-team-context` was pushed before target merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A — verification not yet received.
-- Delivery-owned edits protected before re-integration: `Not needed` before current handoff; will reassess after user verification.
-- Re-integration before final merge result: `Not needed` before current handoff; required refresh will run after user verification.
-- Target branch update result: Not run; blocked on explicit user verification.
-- Merge into target result: Not run; blocked on explicit user verification.
-- Push target branch result: Not run; blocked on explicit user verification.
-- Repository finalization status: `Blocked`
-- Blocker (if applicable): Pending execution of final commit, ticket-branch push, target merge, and target push.
+- Target advanced after user verification: `No`; `origin/personal` remained `1ef2fa8ba29117f9e159130b57b7a04f8efb2393` when refreshed before finalization.
+- Delivery-owned edits protected before re-integration: `Not needed`; target did not advance after verification.
+- Re-integration before final merge result: `Not needed`; target did not advance beyond the verified integrated state.
+- Target branch update result: `Completed`; local `personal` was current with `origin/personal` before merge.
+- Merge into target result: `Completed`; local `personal` fast-forwarded from `1ef2fa8ba29117f9e159130b57b7a04f8efb2393` to ticket commit `2b222903d7d622df9bbd822722d2b6a243bb9c86`.
+- Push target branch result: `Completed`; `origin/personal` was pushed after ticket merge, then pushed again by the release helper to release commit `6e14b33be1bca7bc2c759610c29608b2a0f647af`.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: `Documented Command`
-- Method reference / command: planned `pnpm release 1.3.89 -- --release-notes tickets/done/task-left-panel-team-context/release-notes.md` after repository finalization
-- Release/publication/deployment result: `Blocked`
-- Release notes handoff result: `Prepared`
+- Method reference / command: `pnpm release 1.3.89 -- --release-notes tickets/done/task-left-panel-team-context/release-notes.md`
+- Release/publication/deployment result: `Completed`; release helper pushed `origin/personal` and annotated tag `v1.3.89`.
+- Release notes handoff result: `Used`
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context`
-- Worktree cleanup result: `Blocked`
-- Worktree prune result: `Blocked`
-- Local ticket branch cleanup result: `Blocked`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup must wait until repository finalization is complete and safe.
+- Worktree cleanup result: `Completed`; dedicated ticket worktree removed after release verification.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`; local `codex/task-left-panel-team-context` deleted after merge/release verification.
+- Remote branch cleanup result: `Completed`; `origin/codex/task-left-panel-team-context` deleted after merge/release verification.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A; pre-verification handoff is complete, while repository finalization is intentionally held for user verification.
+- Why final handoff could not complete: N/A; finalization, release, verification, and cleanup completed.
 
 ## Release Notes Summary
 
-- Release notes artifact created before release: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/release-notes.md`
-- Archived release notes artifact used for release/publication: Pending ticket archival.
+- Release notes artifact created before release: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-None before user verification. No deployment-specific environment was touched.
+- Release helper run: `pnpm release 1.3.89 -- --release-notes tickets/done/task-left-panel-team-context/release-notes.md`. This pushed tag `v1.3.89`, which started the configured GitHub release workflows for desktop, Android APK, iOS App Store Connect/TestFlight, messaging gateway, and server Docker.
+- GitHub Release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.89
 
 ## Environment Or Migration Notes
 
-No database, backend API, migration, runtime lifecycle, installer, or deployment environment change is included in this ticket. The feature is a frontend UI/state/docs change plus a local Electron package for user verification.
+- No database, backend API, migration, runtime lifecycle, installer, or deployment environment change was introduced by this ticket.
+- The release workflow published the normal workspace release artifacts for version `1.3.89`.
+- During finalization/release, unrelated untracked files in the main `personal` worktree were temporarily stashed for release-helper cleanliness and restored afterward; they were not included in any finalization or release commit.
+- A temporary ticket-worktree clean-build stash created during delivery was dropped during cleanup because it was not part of the reviewed, user-tested, or released state.
 
 ## Verification Checks
 
-Latest delivery refresh checks after merging `origin/personal` at `1ef2fa8ba29117f9e159130b57b7a04f8efb2393`:
-
-- `pnpm --filter autobyteus run build:electron:mac` — passed; log at `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/delivery-evidence/electron-build-macos-round4-latest-origin-personal-20260629-170310.log`.
-- Build command included `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, server preparation/build, Nuxt Electron generation, Electron TypeScript transpilation, and macOS DMG/ZIP packaging.
-- Packaged artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.88.dmg`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.88.zip`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-
-Earlier Final Round-4 evidence remains authoritative for the UX behavior:
-
-- Focused Vitest passed, 8 files / 71 tests.
-- `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, `git diff --check`, whitespace check, obsolete production-reference search, and right-detail focus production absence search passed.
-- Real browser smoke verified the Team tab Active Tasks left navigator/right detail ownership and zero active-task context in the global Workspaces tree.
-- Full `nuxi typecheck` remains known-not-useful for this repo state due Node heap OOM in Round-4 API/E2E; changed-path grep found no hits.
+- Delivery finalization refresh: `git fetch origin personal --tags` — passed; latest tracked `origin/personal` stayed at `1ef2fa8ba29117f9e159130b57b7a04f8efb2393` before finalization.
+- Ticket final whitespace/integrity check: `git diff --check` — passed after docs sync, release notes, delivery artifacts, and ticket archival.
+- Latest-base Electron build before user verification: `pnpm --filter autobyteus run build:electron:mac` — passed; log at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/delivery-evidence/electron-build-macos-round4-latest-origin-personal-20260629-170310.log`.
+- Earlier Final Round-4 API/E2E evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/api-e2e-execution-coverage-report.md` records focused Vitest, guard, audit, whitespace/obsolete-reference searches, and real browser smoke passing.
+- Release command log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/release-command-20260629.log`.
+- Release verification log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/release-verification-20260629.log`.
+- Cleanup log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-left-panel-team-context/final-cleanup-20260629.log`.
 
 ## Rollback Criteria
 
-Before finalization, rollback is local-only: reset or discard the ticket branch/worktree. After finalization, rollback should revert the final merge commit if user verification later finds the Team-owned Active Tasks navigator breaks task summary selection, actor/member focus, right-side reference preview, or the global Workspaces-tree exclusion.
+Rollback should revert the ticket commit if Team tab Active Tasks no longer owns delegated task context, if active-task summaries/references/Technical details reappear in the global Workspaces tree, if actor/member focus rows stop focusing the correct task-agent/task-team target, if the right detail pane regains duplicated actor/status/waiting/focus/reference-list/technical controls, or if selected task-owned reference previews stop rendering in the right detail pane.
+
+## Release Publication Verification
+
+- GitHub release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.89
+- GitHub Release state: published, non-draft, non-prerelease; published at `2026-06-29T17:27:46Z`.
+- GitHub Release asset count: `21`, including desktop macOS ARM64/x64 DMG+ZIP artifacts and updater metadata, Windows EXE and updater metadata, Linux x64/ARM64 AppImages and updater metadata, Android release APK and checksum, message gateway package/checksum/metadata, and release manifest.
+- Tag-triggered workflow results:
+  - Desktop Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28390460267.
+  - Android APK Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28390460276.
+  - iOS App Store Connect Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28390460219.
+  - Release Messaging Gateway: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28390460240.
+  - Server Docker Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28390460227.
+- Docker publication verification: `docker buildx imagetools inspect autobyteus/autobyteus-server:1.3.89` resolved a multi-platform manifest list for `linux/amd64` and `linux/arm64`; digest `sha256:1c6a02d49879f267e78d420650b5aeb2fa7527ec59fbbbc12d2b08ef6b5399aa`.
 
 ## Final Status
 
-Final Round-4 latest-base user verification was received. Repository finalization and release execution are in progress; this report will be refreshed after release publication and cleanup.
+Finalization complete. Ticket artifacts are archived, `personal` was updated and pushed, release `v1.3.89` was created and published, all tag-triggered release workflows completed successfully, release publication was verified, and the dedicated ticket worktree/local+remote ticket branches were cleaned up.
