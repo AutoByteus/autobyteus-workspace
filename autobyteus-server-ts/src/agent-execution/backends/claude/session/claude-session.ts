@@ -19,25 +19,18 @@ import {
   type ClaudeActiveTurnExecution,
 } from "./claude-active-turn-execution.js";
 import { resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
-import {
-  buildClaudeProviderCompactionEvent,
-  isClaudeTurnTerminalChunk,
-} from "./claude-session-output-events.js";
+import { buildClaudeProviderCompactionEvent, isClaudeTurnTerminalChunk, resolveClaudeTurnTerminalError } from "./claude-session-output-events.js";
+import { ClaudeProcessDiagnostics, enrichClaudeRuntimeErrorWithDiagnostics, formatClaudeRuntimeError } from "./claude-process-diagnostics.js";
 import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
 import { emitClaudeTokenUsageEvent } from "./claude-session-token-usage.js";
 import { processOrderedClaudeContentBlocks } from "./claude-session-content-block-processor.js";
 import { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
-import {
-  getAgentToolMcpSessionService,
-} from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
 import type { ClaudeSessionDependencies, ClaudeSessionStateInput } from "./claude-session-state-input.js";
 
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
-
-const formatClaudeRuntimeError = (error: unknown): string =>
-  error instanceof Error ? error.stack ?? error.message : String(error);
 
 type ClaudeSessionTurnExecutionInput = { turnId: string; content: string; abortController: AbortController };
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
@@ -427,44 +420,40 @@ export class ClaudeSession {
     const mcpServers = await buildClaudeSessionMcpServerConfig({
       agentToolsMcpDescriptor,
     });
-    const query = await this.dependencies.sdkClient.startQueryTurn({
-      prompt: turnInput,
-      sessionId: this.resolveProviderSessionIdForResume(),
-      model: this.model,
-      workingDirectory: this.workingDirectory,
-      mcpServers,
-      allowedTools: toolingOptions.allowedTools,
-      permissionMode: this.permissionMode,
-      abortController: options.abortController,
-      ...(this.permissionMode !== "bypassPermissions"
-        ? {
-            canUseTool: (
-              toolName: string,
-              input: Record<string, unknown>,
-              toolOptions: { toolUseID?: string },
-            ) =>
-              this.dependencies.toolingCoordinator.handleToolPermissionCheck(
-                this.runContext,
-                toolName,
-                input,
-                toolOptions,
-              ),
-          }
-        : {
-            autoExecuteTools: true,
-          }),
-    });
-    if (activeTurn) {
-      activeTurn.query = query;
-    }
-    this.dependencies.activeQueriesByRunId.set(this.runId, query);
-
+    const processDiagnostics = new ClaudeProcessDiagnostics();
+    let query: ClaudeActiveTurnExecution["query"] = null;
     const textProjector = new ClaudeTextSegmentProjector({
       turnId: options.turnId,
       getSessionId: () => this.sessionId,
       emitEvent: (event) => this.emitRuntimeEvent(event),
     });
     try {
+      query = await this.dependencies.sdkClient.startQueryTurn({
+        prompt: turnInput,
+        sessionId: this.resolveProviderSessionIdForResume(),
+        model: this.model,
+        workingDirectory: this.workingDirectory,
+        mcpServers,
+        allowedTools: toolingOptions.allowedTools,
+        permissionMode: this.permissionMode,
+        abortController: options.abortController,
+        stderr: (data: string) => processDiagnostics.append(data),
+        canUseTool: (
+          toolName: string,
+          input: Record<string, unknown>,
+          toolOptions: { toolUseID?: string },
+        ) =>
+          this.dependencies.toolingCoordinator.handleToolPermissionCheck(
+            this.runContext,
+            toolName,
+            input,
+            toolOptions,
+          ),
+      });
+      if (activeTurn) {
+        activeTurn.query = query;
+      }
+      this.dependencies.activeQueriesByRunId.set(this.runId, query);
       if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
         return;
       }
@@ -490,6 +479,11 @@ export class ClaudeSession {
           this.emitRuntimeEvent(compactionEvent);
         }
         const isTerminalChunk = isClaudeTurnTerminalChunk(chunk);
+        const terminalError = resolveClaudeTurnTerminalError(chunk);
+        if (terminalError) {
+          emitClaudeTokenUsageEvent(chunk, this.runId, options.turnId, this.sessionId, this.model, (event) => this.emitRuntimeEvent(event));
+          throw new Error(`${terminalError.code}: ${terminalError.message}`);
+        }
         const processedOrderedContent = processOrderedClaudeContentBlocks({
           chunk,
           textProjector,
@@ -506,6 +500,8 @@ export class ClaudeSession {
           break;
         }
       }
+    } catch (error) {
+      throw enrichClaudeRuntimeErrorWithDiagnostics(error, processDiagnostics);
     } finally {
       if (activeTurn) {
         if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
@@ -513,9 +509,11 @@ export class ClaudeSession {
         } else {
           this.closeActiveTurnQuery(activeTurn);
         }
-      } else {
+      } else if (query) {
         this.dependencies.activeQueriesByRunId.delete(this.runId);
         this.dependencies.sdkClient.closeQuery(query);
+      } else {
+        this.dependencies.activeQueriesByRunId.delete(this.runId);
       }
     }
 

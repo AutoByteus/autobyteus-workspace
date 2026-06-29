@@ -47,6 +47,8 @@ export type ClaudeSdkCanUseTool = (
   options: ClaudeSdkCanUseToolOptions,
 ) => Promise<Record<string, unknown>>;
 
+export type ClaudeSdkStderrCallback = (data: string) => void;
+
 export type ClaudeSdkStartQueryTurnOptions = {
   prompt: string;
   sessionId?: string | null;
@@ -58,6 +60,7 @@ export type ClaudeSdkStartQueryTurnOptions = {
   permissionMode?: ClaudeSdkPermissionMode;
   autoExecuteTools?: boolean;
   canUseTool?: ClaudeSdkCanUseTool;
+  stderr?: ClaudeSdkStderrCallback;
   abortController?: AbortController;
 };
 
@@ -375,6 +378,7 @@ export class ClaudeSdkClient {
       ...(options.sessionId ? { resume: options.sessionId } : {}),
       ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),
       ...(options.abortController ? { abortController: options.abortController } : {}),
+      ...(options.stderr ? { stderr: options.stderr } : {}),
       settingSources,
       ...(options.canUseTool
         ? { canUseTool: options.canUseTool }

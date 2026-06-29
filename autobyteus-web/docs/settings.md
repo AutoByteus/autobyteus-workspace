@@ -194,9 +194,10 @@ task-team entries from the transient projection nodes in `AgentTeamContext`,
 while `runHistoryTeamRows` filters those task-scoped nodes out of stable left
 navigation. Opening Tasks shows a left navigator of target/status/description
 rows and, for the selected task, nested reference-file rows. The right pane owns
-the selected task body, waiting-for-Activity status copy, explicit generic
-`Focus` controls, task-team member focus rows, task reference previews, and a
-collapsed Technical details block for task type, task id, execution run id,
+the selected task header, waiting-for-Activity status copy, explicit generic
+`Focus` controls, task-team member focus rows placed before long task bodies,
+task reference previews, and a collapsed Technical details block for task type,
+task id, execution run id,
 target metadata, and raw task arguments. Primary visible Tasks UI intentionally
 hides `Task Agent` / `Task Team` badges, raw ids, duplicate right-side reference
 lists, and `Focus agent` / `Focus team` wording. Tasks is not an approval action
