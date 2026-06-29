@@ -25,10 +25,10 @@ User reports that backend currently supports delegate task and review-task-resul
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications`
 - Current Branch: `codex/improve-task-system-notifications`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` completed successfully on 2026-06-29.
 - Task Branch: `codex/improve-task-system-notifications` created from `origin/personal`.
@@ -43,7 +43,7 @@ User reports that backend currently supports delegate task and review-task-resul
 | --- | --- | --- | --- | --- | --- |
 | 2026-06-29 | Command | `pwd && git rev-parse --show-toplevel && git status --short --branch && git remote -v && git symbolic-ref refs/remotes/origin/HEAD || true && git branch --show-current` from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` | Bootstrap repo context | Superrepo on `personal`, tracking `origin/personal`; remote default is `origin/personal`; unrelated untracked files present in shared checkout. | No |
 | 2026-06-29 | Command | `git fetch origin --prune && git worktree list --porcelain` | Refresh tracked refs and find reusable task worktree | Remote refresh succeeded; no existing worktree for this task found. | No |
-| 2026-06-29 | Command | `git worktree add -b codex/improve-task-system-notifications /Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications origin/personal` | Create dedicated task branch/worktree | Dedicated branch/worktree created successfully at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`. | No |
+| 2026-06-29 | Command | `git worktree add -b codex/improve-task-system-notifications /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create dedicated task branch/worktree | Dedicated branch/worktree created successfully at `b633fa774a1909b89abcb4fdff6a6d5bb04c768c`. | No |
 | 2026-06-29 | Command | `rg -n "delegate_task|submit_task_result|review_task_result|TaskNotification|system task|notification_delivered|TASK_DELEGATION|task result|TaskDelegation|review task" autobyteus-server-ts/src autobyteus-server-ts/tests autobyteus-ts/src autobyteus-ts/tests --glob '!**/dist/**' -S` | Locate task-delegation and notification code paths | Found server-owned task delegation under `autobyteus-server-ts/src/agent-team-execution/task-delegation`, tool wrappers under `autobyteus-server-ts/src/agent-tools/task-delegation`, system-task-notification infrastructure in `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts`, and UI pass-through handlers in `autobyteus-web/services/agentStreaming`. | No |
 | 2026-06-29 | Code | `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts` | Understand lifecycle owner and notification call sites | `delegateTask` creates records and calls activation coordinator; `publishSubmissionTransition` records result and calls `notifyResultSubmitted`; `reviewTaskResult` calls `notifyRevisionRequested` for revision requests; acceptance does not send a system notification. | No |
 | 2026-06-29 | Code | `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts` | Understand activation message creation for member/team targets | `buildWorkPacketMessage` creates a `SenderType.SYSTEM` `AgentInputUserMessage` with `TaskDelegationWorkPacketRenderer.render([record])` as content and task-delegation/suppression metadata. Member targets start task-agent instances; team targets start task-team instances. | No |

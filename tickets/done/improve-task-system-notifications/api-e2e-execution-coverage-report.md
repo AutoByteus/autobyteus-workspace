@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/design-spec.md`
-- Requirement Gap Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/requirement-gap-rework.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/design-spec.md`
+- Requirement Gap Rework Note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/requirement-gap-rework.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/api-e2e-coverage-investigation.md`
 - Current Execution Round: 2
 - Trigger: Round-3 API/E2E validation after code-review pass for the Electron-discovered requirement-gap correction: uniform member/team activation notification copy plus `review_task_result.comment` rename validation.
 - Prior Round Reviewed: Round 1 API/E2E artifacts at this path and the coverage investigation were read as stale historical context only; round 3 supersedes them.
@@ -24,7 +24,7 @@
 
 ## Execution Basis
 
-Execution followed the updated coverage investigation at `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/api-e2e-coverage-investigation.md`.
+Execution followed the updated coverage investigation at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/api-e2e-coverage-investigation.md`.
 
 Current behavior proven:
 
@@ -36,7 +36,7 @@ Current behavior proven:
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -130,7 +130,7 @@ Out of scope:
 
 ## Execution Setup / Environment
 
-Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications` on branch `codex/improve-task-system-notifications`.
+Commands were run from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` on branch `codex/improve-task-system-notifications`.
 
 Live E2E final environment:
 
@@ -147,7 +147,7 @@ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delega
 
 Updated durable E2E coverage in:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`
 
 Specific updates:
 
@@ -167,15 +167,15 @@ Specific updates:
 
 - Repository-resident durable coverage added, updated, or removed this round: `Yes`
 - Paths added or updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`
 - Paths removed: None
 - If `Yes`, returned through `code_reviewer` before delivery: `Pending; this report recommends and sends the package to code_reviewer.`
 - Post-API/E2E coverage code review artifact: Pending code-review follow-up.
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/api-e2e-execution-coverage-report.md`
 - Final live E2E temporary log: `/tmp/mixed-task-delegation-e2e-round3-1782735252.log`
 
 ## Temporary Execution Methods / Scaffolding

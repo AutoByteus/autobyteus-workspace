@@ -2,16 +2,16 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/design-spec.md`
-- Requirement Gap Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/requirement-gap-rework.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/design-spec.md`
+- Requirement Gap Rework Note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/requirement-gap-rework.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/code-review-report.md`
 - Current Investigation Round: 2
 - Trigger: Round-3 code-review pass after Electron-discovered requirement-gap rework for uniform task-delegation activation notification copy.
-- Prior Investigation Reviewed: Round 1 API/E2E artifacts at this path and `/Users/normy/autobyteus_org/autobyteus-worktrees/improve-task-system-notifications/tickets/done/improve-task-system-notifications/api-e2e-execution-coverage-report.md` were read as historical context only. They predate the round-3 rework and are superseded for final validation.
+- Prior Investigation Reviewed: Round 1 API/E2E artifacts at this path and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/improve-task-system-notifications/api-e2e-execution-coverage-report.md` were read as historical context only. They predate the round-3 rework and are superseded for final validation.
 - Latest Authoritative Investigation: Round 2
 
 ## Current Requirement And Design Basis
