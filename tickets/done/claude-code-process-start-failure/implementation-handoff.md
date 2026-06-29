@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/requirements.md`
-- Investigation notes: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/investigation-notes.md`
-- Design spec: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-spec.md`
-- Design review report: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-review-report.md`
-- Code review report (Round 1 local fix request): `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/code-review-report.md`
+- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/requirements.md`
+- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/investigation-notes.md`
+- Design spec: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/design-spec.md`
+- Design review report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/design-review-report.md`
+- Code review report (Round 1 local fix request): `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/code-review-report.md`
 
 ## What Changed
 

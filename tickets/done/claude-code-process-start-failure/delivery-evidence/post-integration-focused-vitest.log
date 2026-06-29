@@ -1,8 +1,8 @@
 
- RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts
+ RUN  v4.0.18 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
 
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
 
 Applying migration `20260203074245_init`
 Applying migration `20260208094000_add_external_channel_tables`
@@ -103,8 +103,8 @@ AgentFactory (Singleton) initialized.
 (Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects sending a new turn while another turn is already active
 Platform detection: Windows=false
-App root directory: /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts
-App data directory: /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts
+App root directory: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
 No Autobyteus server hosts configured. Skipping Autobyteus image model discovery.
 No Autobyteus server hosts configured. Skipping Autobyteus audio model discovery.
 
@@ -114,14 +114,14 @@ Claude Code diagnostics:
 Authorization: Bearer [redacted]
 ANTHROPIC_API_KEY=[redacted]
 --dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
-    at enrichClaudeRuntimeErrorWithDiagnostics (/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
-    at ClaudeSession.executeTurn (/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:504:13)
-    at runTurn (/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:168:9)
+    at enrichClaudeRuntimeErrorWithDiagnostics (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSession.executeTurn (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:504:13)
+    at runTurn (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:168:9)
 
 stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
 Claude runtime turn failed for run 'run-1': Error: CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login
-    at ClaudeSession.executeTurn (/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:485:17)
-    at runTurn (/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:168:9)
+    at ClaudeSession.executeTurn (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:485:17)
+    at runTurn (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:168:9)
 
  ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (18 tests) 73ms
 stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts
@@ -149,8 +149,8 @@ AgentFactory (Singleton) initialized.
 (Use `node --trace-warnings ...` to show where the warning was created)
 stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
 Platform detection: Windows=false
-App root directory: /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts
-App data directory: /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts
+App root directory: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
 AgentRunManager initialized.
 
 stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory

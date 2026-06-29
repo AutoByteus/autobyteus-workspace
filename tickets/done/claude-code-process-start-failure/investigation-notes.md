@@ -24,10 +24,10 @@ Screenshot reference: `/home/autobyteus/data/memory/agent_teams/software_enginee
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure`
-- Task Artifact Folder: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure`
+- Task Workspace Root: `/home/autobyteus/workspace/autobyteus-workspace`
+- Task Artifact Folder: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure`
 - Current Branch: `codex/claude-code-process-start-failure`
-- Current Worktree / Working Directory: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure`
+- Current Worktree / Working Directory: `/home/autobyteus/workspace/autobyteus-workspace`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch --prune origin` succeeded on 2026-06-28; `origin/personal` advanced to `4938681a487331349cb04936c7977350b25d222d`.
 - Task Branch: `codex/claude-code-process-start-failure` created from `origin/personal` at `4938681a487331349cb04936c7977350b25d222d`.
@@ -43,7 +43,7 @@ Screenshot reference: `/home/autobyteus/data/memory/agent_teams/software_enginee
 | 2026-06-28 | Command | `pwd; ls -la; find .. -maxdepth 2 -name .git -type d -print` | Discover workspace and repo layout | Root repository is `/home/autobyteus/workspace/autobyteus-workspace`; several sibling git repos exist | No |
 | 2026-06-28 | Command | `git status --short --branch && git remote -v && git branch -vv && git symbolic-ref refs/remotes/origin/HEAD || true && git worktree list` | Identify current branch, remotes, base branch, and worktrees | Shared checkout on `personal`, remote default `origin/personal`; existing unrelated worktrees | No |
 | 2026-06-28 | Command | `git fetch --prune origin && git rev-parse origin/personal && git rev-parse personal` | Refresh latest tracked remote before branch creation | Fetch succeeded; `origin/personal` is `4938681a...`; local `personal` was older `b9e046f...` | No |
-| 2026-06-28 | Command | `git worktree add -b codex/claude-code-process-start-failure /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure origin/personal` | Create dedicated ticket worktree/branch from latest base | Worktree and branch created at latest `origin/personal` | No |
+| 2026-06-28 | Command | `git worktree add -b codex/claude-code-process-start-failure /home/autobyteus/workspace/autobyteus-workspace origin/personal` | Create dedicated ticket worktree/branch from latest base | Worktree and branch created at latest `origin/personal` | No |
 | 2026-06-28 | Data | User screenshot at `/home/autobyteus/data/memory/agent_teams/software_engineering_team_458d56da9c67428cae0dced36413acee/solution_designer_03a2ed0542c14aa8bd9eb7cf6b84b394/context_files/ctx_9f7987383348__image.png` | Establish observed failure and visible terminal state | UI error says `Claude Code process exited with code 1`; terminal shows Claude Code v2.1.195 login prompt | No |
 | 2026-06-28 | Code | `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts` | Inspect SDK query option construction | Passes `pathToClaudeCodeExecutable`, `permissionMode`, `cwd`, `env`, `disallowedTools`, `allowedTools`, `mcpServers`, `settingSources`, and optionally `canUseTool`/`autoExecuteTools` to SDK | Modify for stderr diagnostics if design accepted |
 | 2026-06-28 | Code | `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-config.ts` | Inspect auto approval to permission mapping | `resolveClaudePermissionMode(autoExecuteTools)` returns `"bypassPermissions"` for true and `"default"` otherwise | Must change |

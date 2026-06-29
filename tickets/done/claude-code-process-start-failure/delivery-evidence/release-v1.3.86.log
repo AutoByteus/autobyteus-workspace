@@ -1,0 +1,27 @@
+
+> autobyteus-workspace@ release /home/autobyteus/workspace/autobyteus-workspace
+> bash scripts/desktop-release.sh release 1.3.86 -- --release-notes tickets/done/claude-code-process-start-failure/release-notes.md
+
+Updating autobyteus-web/package.json: 1.3.85 -> 1.3.86
+Updating autobyteus-message-gateway/package.json: 1.3.85 -> 1.3.86
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.3.86
+[32mSynced default release manifest: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.3.86[0m
+[32mServer version: 0.1.1[0m
+[personal 6d16e259] chore(release): bump workspace release version to 1.3.86
+ 4 files changed, 14 insertions(+), 14 deletions(-)
+ rewrite .github/release-notes/release-notes.md (99%)
+/usr/bin/gh auth git-credential get: 1: /usr/bin/gh: not found
+/usr/bin/gh auth git-credential store: 1: /usr/bin/gh: not found
+remote: 
+remote: GitHub found 580 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (14 critical, 237 high, 279 moderate, 50 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To https://github.com/AutoByteus/autobyteus-workspace.git
+   3d41d5f7..6d16e259  personal -> personal
+/usr/bin/gh auth git-credential get: 1: /usr/bin/gh: not found
+/usr/bin/gh auth git-credential store: 1: /usr/bin/gh: not found
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ * [new tag]           v1.3.86 -> v1.3.86
+Release complete and pushed: branch 'personal', tag 'v1.3.86'.

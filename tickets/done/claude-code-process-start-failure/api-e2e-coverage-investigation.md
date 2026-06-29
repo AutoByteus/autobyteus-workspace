@@ -2,16 +2,16 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/requirements.md`
-- Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/investigation-notes.md`
-- Design Spec: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-spec.md`
-- Design Review Report: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-review-report.md`
-- Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/implementation-handoff.md`
-- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/code-review-report.md`
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/requirements.md`
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/investigation-notes.md`
+- Design Spec: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/design-spec.md`
+- Design Review Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/design-review-report.md`
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/implementation-handoff.md`
+- Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/code-review-report.md`
 - Current Investigation Round: 3
 - Trigger: Code review Round 2 passed; proceeded with API/E2E. Round 3 update adds repository-resident live Claude auto-approve E2E coverage after user clarified on 2026-06-29 that the proof must exercise frontend/WebSocket-visible no-approval behavior for multiple Claude auto-approve use cases, including configured workspace and outside-workspace writes/deletes/shell actions.
 - Prior Investigation Reviewed: Rounds 1-2 in this same artifact path.
-- Latest Authoritative Investigation: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/api-e2e-coverage-investigation.md`
+- Latest Authoritative Investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/api-e2e-coverage-investigation.md`
 
 ## Current Requirement And Design Basis
 

@@ -1,9 +1,9 @@
 
-> autobyteus-server-ts@0.1.1 prebuild /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts
+> autobyteus-server-ts@0.1.1 prebuild /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
 > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
 
 
-> autobyteus-server-ts@0.1.1 prepare:shared /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts
+> autobyteus-server-ts@0.1.1 prepare:shared /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
 > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
 
 Scope: 3 of 11 workspace projects
@@ -23,11 +23,11 @@ Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
 
 
-> autobyteus-server-ts@0.1.1 build /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts
+> autobyteus-server-ts@0.1.1 build /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
 > pnpm run build:full
 
 
-> autobyteus-server-ts@0.1.1 build:full /home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts
+> autobyteus-server-ts@0.1.1 build:full /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
 > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
 
 Successfully registered tool definition: 'read_file'

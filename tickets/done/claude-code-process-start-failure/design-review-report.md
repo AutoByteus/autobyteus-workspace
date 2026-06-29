@@ -2,14 +2,14 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/requirements.md`
-- Upstream Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/investigation-notes.md`
-- Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-spec.md`
+- Upstream Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/requirements.md`
+- Upstream Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/investigation-notes.md`
+- Reviewed Design Spec: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/design-spec.md`
 - Current Review Round: 1
 - Trigger: Revised design package after 2026-06-29 user clarification requiring `permissionMode: "default"` plus complete inside/outside-workspace permission coverage.
 - Prior Review Round Reviewed: None; no prior canonical architecture review report existed in the task artifact folder.
 - Latest Authoritative Round: 1
-- Current-State Evidence Basis: Requirements/investigation/design package; current source at `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure` commit `4938681a487331349cb04936c7977350b25d222d`; spot-check of current code showing `resolveClaudePermissionMode(true) => "bypassPermissions"`, `ClaudeAgentRunContext.autoExecuteTools` derived from provider mode, `ClaudeSession` bypass branch, terminal-result helper treating all `type: "result"` chunks as terminal, and `ClaudeSdkClient` defaulting provider permission mode to `default`; official Claude docs spot-check for root/sudo bypass refusal, sandbox default false, and `canUseTool` permission callback semantics.
+- Current-State Evidence Basis: Requirements/investigation/design package; current source at `/home/autobyteus/workspace/autobyteus-workspace` commit `4938681a487331349cb04936c7977350b25d222d`; spot-check of current code showing `resolveClaudePermissionMode(true) => "bypassPermissions"`, `ClaudeAgentRunContext.autoExecuteTools` derived from provider mode, `ClaudeSession` bypass branch, terminal-result helper treating all `type: "result"` chunks as terminal, and `ClaudeSdkClient` defaulting provider permission mode to `default`; official Claude docs spot-check for root/sudo bypass refusal, sandbox default false, and `canUseTool` permission callback semantics.
 
 ## Round History
 
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-spec.md` as the authoritative design. The design correctly treats the reported failure as a boundary/ownership issue: AutoByteus `autoExecuteTools` is a run-level approval policy, while Claude SDK `permissionMode` is provider process policy. The design removes the unsafe implicit mapping to `bypassPermissions`, preserves approval through `ClaudeSessionToolUseCoordinator`/SDK `canUseTool`, adds process/terminal diagnostics, and records the newly clarified permission coverage requirements.
+Reviewed `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/design-spec.md` as the authoritative design. The design correctly treats the reported failure as a boundary/ownership issue: AutoByteus `autoExecuteTools` is a run-level approval policy, while Claude SDK `permissionMode` is provider process policy. The design removes the unsafe implicit mapping to `bypassPermissions`, preserves approval through `ClaudeSessionToolUseCoordinator`/SDK `canUseTool`, adds process/terminal diagnostics, and records the newly clarified permission coverage requirements.
 
 ## Task Design Health Assessment Verdict
 

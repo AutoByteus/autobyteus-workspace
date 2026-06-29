@@ -21,21 +21,21 @@
 - Reran server build after integration: passed.
 - Updated durable docs in `README.md` and `autobyteus-server-ts/README.md` to remove stale `CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions` launch guidance and document default provider mode / separate AutoByteus approval policy.
 - Produced preliminary delivery artifacts:
-  - `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/docs-sync-report.md`
-  - `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/handoff-summary.md`
-  - `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/release-deployment-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/docs-sync-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/handoff-summary.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/release-deployment-report.md`
 
 ## Inconsistency Found
 
 The initial API/E2E handoff to delivery stated that coverage investigation and execution were complete, with in-scope validation passed and no repository-resident durable coverage edits in API/E2E.
 
-During delivery, the worktree showed `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/api-e2e-coverage-investigation.md` modified from the checkpointed Round 1 content into a Round 2 live-E2E update:
+During delivery, the worktree showed `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/api-e2e-coverage-investigation.md` modified from the checkpointed Round 1 content into a Round 2 live-E2E update:
 
 - `Current Investigation Round: 2`
 - The trigger says Round 2 added real live Claude E2E execution after user clarification on 2026-06-29.
 - The execution plan now requires live Claude session manager, live team roundtrip, and GraphQL runtime E2E commands with `RUN_CLAUDE_E2E=1`.
 
-However, `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/api-e2e-execution-coverage-report.md` still records:
+However, `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/api-e2e-execution-coverage-report.md` still records:
 
 - `Current Execution Round: 1`
 - `Latest Authoritative Round: 1`

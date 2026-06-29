@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/requirements.md`
+- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/requirements.md`
 - Current Review Round: 3
 - Trigger: API/E2E Round 3 added repository-resident durable live Claude E2E coverage after prior code review and returned for required coverage-code review before delivery resumes.
 - Prior Review Round Reviewed: Rounds 1-2 in this same report path.
 - Latest Authoritative Round: 3
-- Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/investigation-notes.md`
-- Design Spec Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-spec.md`
-- Design Review Report Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/investigation-notes.md`
+- Design Spec Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/design-spec.md`
+- Design Review Report Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes` — API/E2E added a live Claude-only scenario in `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`.
 
@@ -29,11 +29,11 @@
 Round 3 scope was limited to the API/E2E coverage-code re-review entry point:
 
 - Reviewed changed repository-resident durable coverage:
-  - `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
+  - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
 - Reviewed directly related coverage artifacts:
-  - `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/api-e2e-coverage-investigation.md`
-  - `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/api-e2e-execution-coverage-report.md`
-  - `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/delivery-reroute-api-e2e-artifact-inconsistency.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/api-e2e-coverage-investigation.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/api-e2e-execution-coverage-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/delivery-reroute-api-e2e-artifact-inconsistency.md`
 - Considered delivery docs changes only as downstream context; the coverage-code review decision is about the API/E2E-authored durable coverage and execution artifact consistency.
 
 Local review check run:
@@ -146,7 +146,7 @@ No unresolved findings in Round 3.
 
 - Docs impact: `Yes`
 - Why: The implementation changes the documented Claude auto-approval/permission-mode behavior; delivery has already started docs sync and should refresh/finalize those artifacts after this re-review.
-- Files or areas likely affected: `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/README.md`, `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/autobyteus-server-ts/README.md`, `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/docs-sync-report.md`, `/home/autobyteus/workspace/.codex/worktrees/claude-code-process-start-failure/tickets/done/claude-code-process-start-failure/handoff-summary.md`.
+- Files or areas likely affected: `/home/autobyteus/workspace/autobyteus-workspace/README.md`, `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/README.md`, `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/docs-sync-report.md`, `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/claude-code-process-start-failure/handoff-summary.md`.
 
 ## Classification
 
