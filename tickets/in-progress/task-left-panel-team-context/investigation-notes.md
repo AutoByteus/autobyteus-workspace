@@ -3,18 +3,35 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Initial investigation in progress
-- Investigation Goal: Assess the proposed UX change and identify current frontend owners/components/data flows for task summary, right-side Team/Tasks tabs, and work tree team/member status rendering.
+- Current Status: Design-impact reroute investigated; requirements/design correction completed for re-review
+- Investigation Goal: Correct the active task UI container after browser review showed the previous design placed the task context in the wrong left surface.
 - Scope Classification (`Small`/`Medium`/`Large`): Medium
-- Scope Classification Rationale: Likely frontend component/data-composition change; may require component reuse and status data mapping across task navigation and work tree surfaces.
-- Scope Summary: Move or mirror active agent/team context under task summary on the left-side task area, with work-tree-consistent team/member styling and live status.
-- Primary Questions To Resolve: Which component owns left task summary? Which component owns right tabs? Which component owns work tree team/member rendering? Is a reusable team member tree renderer already available?
+- Scope Classification Rationale: Frontend component/data-composition change with cleanup of wrongly introduced cross-surface coupling.
+- Scope Summary: Preserve the Team active-task master/detail UI and insert responsible agent/team/member context into each task navigator item, while removing the wrong global Workspaces-tree embedding.
+- Primary Questions Resolved: The authoritative host is `TeamActiveTasksSection`, not the global Workspaces tree. The global tree must not render task summaries, references, or technical details.
 
 ## Request Context
 
-User wants analysis of a frontend UX proposal: current Team and Tasks tabs on the right-side panel focus agent/team context there, but the user feels task-related agent/team context would be more alive and discoverable if shown on the left side beneath the short task description/summary. Desired structure resembles the work tree screenshot but with task summary first, then agent/team, then members.
+The user requested a more live task UI by showing the responsible agent/team and members directly under the active task summary/short description, using the same small status-dot visual language as the Workspaces tree. Through clarification, the intended hierarchy is:
 
-Reference image: `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_05adf8f38e4b4ed1802251c8b346d606/solution_designer_52e7f4f1caf343ccac2ab0dd0c2a946b/context_files/ctx_0604b708d182__image.png`.
+```text
+Task summary / short description        ← text only; click shows content on right
+
+● Software Engineering Team             ← no indent; responsible agent/team row; status dot
+  ● solution_designer                   ← member row; status dot
+  ● architecture_reviewer               ← member row; status dot
+  ● implementation_engineer             ← member row; status dot
+
+  References                            ← file names stay on the left
+    file-a.md                           ← click opens content/preview on right
+    screenshot.png
+
+  Technical details                     ← compact/collapsed metadata on the left
+```
+
+Important clarified meaning: “left side” means the left navigator column of the existing active task master/detail UI, not the global Workspaces/run-history tree.
+
+Reference image for status-dot style: `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_05adf8f38e4b4ed1802251c8b346d606/solution_designer_52e7f4f1caf343ccac2ab0dd0c2a946b/context_files/ctx_0604b708d182__image.png`.
 
 ## Environment Discovery / Bootstrap Context
 
@@ -29,77 +46,94 @@ Reference image: `/Users/normy/.autobyteus/server-data/memory/agent_teams/softwa
 - Expected Base Branch (if known): `origin/personal`
 - Expected Finalization Target (if known): `personal`
 - Bootstrap Blockers: None
-- Notes For Downstream Agents: User currently asked for analysis/opinion; requirements are not approved for implementation.
+- Notes For Downstream Agents: This is a reroute correction. Previous implementation matched the earlier reviewed design, but the earlier reviewed design used the wrong host container.
 
 ## Source Log
 
 | Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| 2026-06-29 | Command | `pwd && git rev-parse --show-toplevel && git status --short --branch` | Resolve repo and branch state before investigation | Root repo at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, current shared branch `personal` with unrelated untracked files | No |
-| 2026-06-29 | Command | `git remote -v && git symbolic-ref refs/remotes/origin/HEAD && git worktree list --porcelain` | Resolve base branch and worktree availability | Remote default/integration branch resolved as `origin/personal`; no exact existing worktree for this task | No |
-| 2026-06-29 | Command | `git fetch origin && git worktree add -b codex/task-left-panel-team-context /Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context origin/personal` | Create dedicated task worktree/branch from latest tracked base | Worktree and branch created successfully at HEAD `b633fa77` | No |
-| 2026-06-29 | Code | `autobyteus-web/components/AppLeftPanel.vue` | Locate left-side shell owner | Left panel is split between primary navigation and `WorkspaceAgentRunsTreePanel`; the work tree is already the lower left navigation/context surface | No |
-| 2026-06-29 | Code | `autobyteus-web/components/layout/RightSideTabs.vue`; `autobyteus-web/composables/useRightSideTabs.ts` | Locate right tab owner and tab visibility | `teamMembers` tab is labeled Team and only visible for selected teams; selection watcher auto-switches to `teamMembers` for teams and `progress` for single agents | No |
-| 2026-06-29 | Code | `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue` | Locate current right-side team/task experience | Team tab contains Messages and `TeamActiveTasksSection`; active task visibility is currently inside the right panel | No |
-| 2026-06-29 | Code | `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue`; `TeamActiveTaskRow.vue`; `autobyteus-web/utils/teamActiveTaskEntries.ts` | Understand active task data and UI | Active task entries are derived from `AgentTeamContext.memberTree`; each entry has task summary/description, target kind/name, status, reference files, and task-team members | No |
-| 2026-06-29 | Code | `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`; `workspaceHistorySectionContracts.ts` | Understand screenshot/work tree structure and reusable styling | Work tree currently renders workspace -> agent/team definition -> run summary -> team members using status dots, avatars, indentation, selected row highlighting, relative time, and click-to-select/focus actions | No |
-| 2026-06-29 | Code | `autobyteus-web/composables/useWorkspaceHistoryTreeState.ts`; `autobyteus-web/stores/runHistoryStore.ts` | Understand status and projection ownership | Status class mapping and expansion state live in `useWorkspaceHistoryTreeState`; `runHistoryStore.getTeamNodes()` builds `TeamTreeNode` projections from persisted history plus live `AgentTeamContext` | No |
-| 2026-06-29 | Other | User clarification in chat | Confirm product intent | User clarified full content should remain on the right; only team/agent/member context should move/show under the left task summary, with work-tree-like status colors and clickability | No |
-| 2026-06-29 | Other | User status-dot clarification in chat | Confirm exact status affordance | User clarified status should be the same very small left-side circle/dot icon from the work tree, not a large label/badge | No |
-| 2026-06-29 | Other | User task-summary status correction in chat | Correct status placement | User clarified the task summary row should remain text-only; status dots belong to agent team and team member rows, not the task summary itself | No |
-| 2026-06-29 | Other | User team-root indentation correction in chat | Correct hierarchy presentation | User clarified the responsible team row itself should not be indented under the task summary; indentation should start with team members | No |
-| 2026-06-29 | Other | User live-feeling UX rationale in chat | Capture product rationale | User emphasized that blue/green status dots make agents feel visibly working/alive and improve the experience | No |
-| 2026-06-29 | Other | User reference-file placement clarification in chat | Correct content boundary | User clarified reference file names/rows should remain under the left agent/team context and open content/preview on the right, matching current implementation | No |
-| 2026-06-29 | Other | User technical-details placement idea in chat | Capture possible scope addition | User suggested technical details may also belong on the left side; recommendation is compact/collapsible metadata on left while main content/preview stays right | No |
-| 2026-06-29 | Code | `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` lines 103-117, 183-239, 289-304 | Investigate exact current workspace status-dot rendering | Agent run, team definition/team run, and team member rows render a tiny `h-2 w-2 rounded-full` span before row text; team/member rows use the same compact left-dot visual style shown in the reference image | No |
-| 2026-06-29 | Code | `autobyteus-web/composables/useWorkspaceHistoryTreeState.ts` lines 340-370 | Investigate current status color semantics | Team status: Initializing amber pulse, Running blue pulse, Idle green, Error red, Offline gray; agent/member status uses same mapping except default/offline gray | No |
-| 2026-06-29 | Code | `autobyteus-web/components/workspace/team/TeamActiveTaskRow.vue` lines 26-44 | Verify current reference file left-navigation behavior | Active task reference rows already render in the left navigator with file icons/name and emit `select-reference`; selected reference styling is local | No |
-| 2026-06-29 | Code | `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` lines 69-147 and 203-217 | Verify current right detail and technical detail behavior | Reference selection switches the right pane to `TeamTaskReferenceViewer`; technical details currently render in the right task detail pane as `<details>` with `technicalRows` and JSON input | No |
-| 2026-06-29 | Code | `autobyteus-web/utils/teamActiveTaskEntries.ts` lines 14-31 and 99-134 | Verify active task projection fields | `ActiveTaskEntry` already has target, status/statusLabel, reference files, task IDs/arguments, and task-team members; new left tree can reuse this projection | No |
-| 2026-06-29 | Test | `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts` lines 1421-1435 | Check existing status-dot coverage | Tests assert active rows render `.bg-blue-500.animate-pulse`; coverage can be extended for extracted/shared status dot behavior | Yes |
-| 2026-06-29 | Test | `autobyteus-web/components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts` lines 187-224 | Check current reference/technical detail coverage | Tests assert references are in the left navigator, reference click switches right pane, and technical details currently render on the right; these tests must be updated for the new left technical-detail placement | Yes |
-| 2026-06-29 | Doc | `design-review-report.md` | Review architecture failure | Architecture review found DS-002 missing an owner/flow for making right active-task detail visible when left task/reference rows are clicked | Yes, design revised |
-| 2026-06-29 | Code | `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue` lines 53-64 and 76-110 | Validate right detail visibility gate | `expandedSection` is local, defaults to `messages`, and collapses `TeamActiveTasksSection` unless `expandedSection === 'activeTasks'` | Yes, add/extract section visibility owner |
-| 2026-06-29 | Code | `autobyteus-web/composables/useRightPanel.ts` | Validate right panel activation API | Right panel exposes `toggleRightPanel` but no idempotent `openRightPanel`; activation should not toggle blindly | Yes, design adds `openRightPanel()` |
-| 2026-06-29 | Code | `autobyteus-web/composables/useRightSideTabs.ts` | Validate right tab activation API | Existing `setActiveTab('teamMembers')` can select the Team tab once selectedType is team | No |
+| 2026-06-29 | Command | `pwd && git rev-parse --show-toplevel && git status --short --branch` | Resolve repo and branch state before investigation | Dedicated task worktree is `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context` on `codex/task-left-panel-team-context` | No |
+| 2026-06-29 | Code | `autobyteus-web/components/AppLeftPanel.vue` | Locate global left panel owner | Left app shell hosts primary navigation plus Workspaces tree | No |
+| 2026-06-29 | Code | `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` | Locate global Workspaces tree orchestration | Wrong implementation added active-task bindings here; corrected design must remove those | Yes |
+| 2026-06-29 | Code | `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` | Locate global Workspaces tree row renderer | Wrong implementation rendered `TeamActiveTaskContextTree` under expanded live team runs; corrected design forbids this host | Yes |
+| 2026-06-29 | Code | `autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts` | Locate global tree props/contracts | Wrong implementation added active-task contract surface; corrected design removes it | Yes |
+| 2026-06-29 | Code | `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue` | Locate Team tab owner | Hosts Messages and `TeamActiveTasksSection`; should remain the shell for team task UI | Yes |
+| 2026-06-29 | Code | `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` | Locate active task UI owner | Baseline component already had the intended left navigator/right detail split; corrected design restores this owner and changes row content/order | Yes |
+| 2026-06-29 | Code | `origin/personal:autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` | Compare pre-change task UI | Original active task UI already rendered a split with left task rows and right detail/reference preview | Yes |
+| 2026-06-29 | Code | `origin/personal:autobyteus-web/components/workspace/team/TeamActiveTaskRow.vue` | Compare pre-change left task row | Original row rendered target/status chip, description, and reference rows, but not the requested responsible agent/team/member status-dot hierarchy | Yes |
+| 2026-06-29 | Code | `autobyteus-web/utils/teamActiveTaskEntries.ts` | Verify data source | `ActiveTaskEntry` already has description, target kind/name, status/status label, references, task IDs/arguments, and task-team members | No |
+| 2026-06-29 | Code | `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` and `autobyteus-web/composables/useWorkspaceHistoryTreeState.ts` | Verify status-dot visual semantics | Workspaces tree uses tiny circular dots with blue animated running, green idle, amber initializing, red error, gray offline/inactive | No |
+| 2026-06-29 | Code | `autobyteus-web/components/workspace/team/TeamActiveTaskContextTree.vue` | Inspect wrong implementation component | Row structure is close to requested hierarchy but was mounted in the wrong global-tree host and coupled to cross-surface selection | Yes |
+| 2026-06-29 | Code | `autobyteus-web/stores/teamActiveTaskSelectionStore.ts`, `teamOverviewSectionStore.ts`, `composables/useTeamActiveTaskRightDetailActivation.ts` | Inspect wrong cross-surface coordination | These were needed only because the previous design split navigation into global tree and detail into Team tab; corrected design can use local section state | Yes |
+| 2026-06-29 | Doc | `api-e2e-design-impact-reroute.md` | Review reroute classification | Reroute correctly classified mismatch as design/requirements impact, not bounded implementation bug | No |
+| 2026-06-29 | Image | `browser-evidence/design-impact-current-browser-ui.png` | Inspect current browser state | Active-task block appears deeply embedded in global Workspaces tree; center shows focused subteam/composer; right Team tab shows task detail | No |
+| 2026-06-29 | Image | `ctx_6d1f64063a16__image.png` | Inspect user-reviewed browser state | Shows global-tree active-task block and Teams section collapsed/visible mismatch; confirms container confusion | No |
+| 2026-06-29 | Image | `ctx_38352508f924__image.png` | Inspect previous/baseline browser context | Shows Team tab active Tasks detail on right while global Workspaces list is separate; supports keeping task UI in Team active-task surface | No |
+| 2026-06-29 | Other | User clarification in chat with exact desired hierarchy | Resolve product intent | User explicitly stated the UI should mostly keep the task interface and only insert agent/team context below each task summary before references/technical details | No |
 
 ## Current Behavior / Current Flow
 
-- Current entrypoint or first observable boundary: Desktop shell left panel (`AppLeftPanel.vue`) owns the left work tree; right panel (`RightSideTabs.vue`) owns the Team tab and mounts `TeamOverviewPanel.vue`.
-- Current execution flow: Selecting a team in the work tree selects/hydrates the team run, expands the team row, and the right tab watcher switches to Team. The Team tab defaults to Messages because `TeamOverviewPanel` owns local `expandedSection = 'messages'`; active delegated task content is hidden until `expandedSection === 'activeTasks'`.
-- Ownership or boundary observations: The left work tree and right Team tab both render team/member concepts today, but with different component shapes. The work tree owns navigation/status hierarchy; `TeamActiveTasksSection` owns active task navigator/detail selection locally inside the right panel; `TeamOverviewPanel` owns active-task section visibility locally and therefore must be included in the target activation flow.
-- Current behavior summary: The screenshot's hierarchy corresponds to the work tree style: team/team definition -> task/run summary -> members. The status icon under the workspace tree is a tiny `h-2 w-2 rounded-full` span placed before agent/team/member row text and colored by `useWorkspaceHistoryTreeState`. Active delegated task context currently exists in the right Team tab: reference file names are already on the left navigator and selected reference content opens on the right, while technical details still live in the right detail pane.
+### Baseline Task UI Before Wrong Design
+
+- `TeamOverviewPanel.vue` hosts Messages and `TeamActiveTasksSection.vue` inside the Team tab.
+- `TeamActiveTasksSection.vue` derives `ActiveTaskEntry[]` from `deriveActiveTaskEntries(teamContext)`.
+- It renders a left active-task navigator and a right detail pane.
+- The old left row had task/target info and reference file names; clicking a reference opened `TeamTaskReferenceViewer` on the right.
+- Technical details lived in the right detail pane.
+
+### Wrong Implemented Flow On Current Task Branch
+
+- `WorkspaceAgentRunsTreePanel.vue` computes/provides active-task bindings.
+- `WorkspaceHistoryWorkspaceSection.vue` renders `TeamActiveTaskContextTree` under expanded live team runs in the global Workspaces tree.
+- `teamActiveTaskSelectionStore.ts`, `teamOverviewSectionStore.ts`, and `useTeamActiveTaskRightDetailActivation.ts` coordinate selection/activation across global left tree and right Team tab.
+- Browser evidence shows this produces a confusing UI: active task navigation inside global Workspaces tree, center focused subteam/composer, and right Team Messages/Tasks detail.
+
+### Corrected Target Flow
+
+- `TeamOverviewPanel.vue` continues to host the Team Messages/Tasks shell.
+- `TeamActiveTasksSection.vue` owns the active task master/detail split and local selected task/reference state.
+- The left navigator item renders the exact required order: summary -> responsible agent/team -> members -> references -> technical details.
+- The right detail pane renders selected task body or selected reference content/preview.
+- The global Workspaces tree renders no active-task summary blocks, reference rows, or technical details.
 
 ## Design Health Assessment Evidence
 
-- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Feature / behavior change
-- Candidate root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Duplicated Policy Or Coordination / File Placement Or Responsibility Drift risk
-- Refactor posture evidence summary: Implementation should extract/share the workspace status-dot mapping and split active-task navigator/detail ownership; otherwise left/right task navigation and status semantics will duplicate and drift.
+- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Feature / behavior change with reroute correction
+- Candidate root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue / File Placement Or Responsibility Drift
+- Refactor posture evidence summary: Corrected implementation must undo wrong cross-surface coordination and restore active-task ownership to the Team active-task section.
 
 | Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
 | --- | --- | --- | --- |
-| User request and screenshot | Work tree has an existing team/member visual hierarchy and status dots | Left task context should reuse the same style/status semantics where possible | Yes |
-| `TeamActiveTasksSection.vue` | Active task selection/details are owned locally in the right panel | Moving task navigation left requires either a shared active-task selection owner or a compact left-only focus action | Yes |
-| `WorkspaceHistoryWorkspaceSection.vue` | Current team run tree already supports team/member click-to-select and live status styling | Best target UX should extend/reuse this left-side navigation language rather than create a new unrelated task tab look | No |
-| `teamActiveTaskEntries.ts` | `ActiveTaskEntry` already exposes summary/description, target, status, run id, and members | Backend changes likely not required for the proposed first iteration | No |
+| User hierarchy clarification | User placed responsible team/members between task summary and references | This is a row-content/order change within the task navigator | No |
+| `origin/personal:TeamActiveTasksSection.vue` | Existing task UI already has left navigator/right detail split | Reuse/restore this owner instead of creating a global-tree host | Yes |
+| Current branch screenshot | Active-task block in Workspaces tree is visually wrong and confusing | Remove global-tree active-task embedding | Yes |
+| `teamActiveTaskEntries.ts` | Existing projection contains needed data | Backend changes are not expected | No |
+| Status-dot work tree code | Existing tiny-dot semantics are available | Extract/reuse status-dot presentation without moving task ownership into the tree | Yes |
 
 ## Relevant Files / Components
 
 | Path / Component | Current Responsibility | Finding / Observation | Design / Ownership Implication |
 | --- | --- | --- | --- |
-| `autobyteus-web/components/AppLeftPanel.vue` | Shell left panel layout | Contains primary navigation plus `WorkspaceAgentRunsTreePanel` | The proposed placement fits this existing left navigation/context owner |
-| `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` | Work tree orchestration, tree state/actions/avatar bindings | Wires tree projection/status/avatar/action contracts into `WorkspaceHistoryWorkspaceSection` | New task context rows should likely be fed from this owner or nearby composed state |
-| `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` | Renders workspace/agent/team run/member rows | Contains current screenshot style and click semantics | Candidate to host the compact task-first context under selected/expanded team rows, or to share row components with a new task context component |
-| `autobyteus-web/components/layout/RightSideTabs.vue` | Right panel tab shell | Team tab is selected automatically for selected teams | If left gains live task context, right Team tab should remain detail/inspector rather than primary navigation |
-| `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue` | Right-side team overview | Combines Messages and Active Tasks sections | Should remain useful for details/messages, not duplicate left status tree ownership |
-| `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` | Active task right-side navigator/detail pane | Derives entries and owns selected task/reference locally | If left controls selected task detail, selection state should be lifted/shared |
-| `autobyteus-web/utils/teamActiveTaskEntries.ts` | Active task entry projection from `AgentTeamContext` | Already has the task-first data needed for the proposed structure | Good input for left-side task context projection |
-| `autobyteus-web/composables/useWorkspaceHistoryTreeState.ts` | Work tree expansion/selection/status classes | `teamStatusClass` and `runStatusClass` own the blue/green/gray/red dot semantics used by screenshot rows | Extract/share status mapping so left active-task context and existing work tree cannot drift |
+| `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue` | Team tab shell for Messages and active Tasks | Correct high-level container for task UI | Keep; avoid broad cross-surface controller responsibilities |
+| `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` | Active task section | Correct owner for task split layout and selected task/reference state | Restore/enhance as master/detail coordinator |
+| `autobyteus-web/components/workspace/team/TeamActiveTaskContextTree.vue` | Wrong implementation's row renderer | Row hierarchy is useful, host/coupling is wrong | Rename/repurpose under Team active-task navigator or replace with clearer file |
+| `autobyteus-web/components/workspace/team/TeamActiveTaskDetailPane.vue` | Wrong implementation's right detail pane | Useful detail rendering, but should not own global-store selection | Make pure props-driven detail pane |
+| `autobyteus-web/utils/teamActiveTaskEntries.ts` | Active task entry projection | Has needed task/actor/member/reference/metadata fields | Reuse as data source |
+| `autobyteus-web/utils/teamActiveTaskTechnicalDetails.ts` | Technical metadata projection | Useful extraction from wrong implementation | Keep and use for left compact details |
+| `autobyteus-web/components/workspace/common/StatusDot.vue` | Shared status-dot display | Useful extraction from wrong implementation | Keep if dependency is UI-only and reusable |
+| `autobyteus-web/utils/workspaceStatusDotPresentation.ts` | Shared status-dot class mapping | Useful extraction from Workspaces tree semantics | Keep; status semantics must not duplicate |
+| `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` | Global Workspaces tree orchestrator | Wrong implementation added active task bindings | Remove active-task knowledge/imports |
+| `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` | Global Workspaces tree renderer | Wrong implementation rendered active-task context | Remove active-task rendering |
+| `autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts` | Global tree contract types | Wrong implementation added active-task contract | Remove active-task contract |
+| `autobyteus-web/stores/teamActiveTaskSelectionStore.ts` | Wrong cross-surface selection store | Only needed because selection left global tree and detail right Team tab were separated | Remove unless a remaining same-section need is proven |
+| `autobyteus-web/stores/teamOverviewSectionStore.ts` | Wrong cross-surface section visibility store | Only needed for global-tree clicks opening Team tasks | Remove/revert unless another caller needs it |
+| `autobyteus-web/composables/useTeamActiveTaskRightDetailActivation.ts` | Wrong cross-surface activation command | Only needed for global-tree task/ref clicks | Remove |
 
 ## Runtime / Probe Findings
 
 | Date | Method (`Repro`/`Trace`/`Probe`/`Script`/`Test`/`Setup`) | Exact Command / Method | Observation | Implication |
 | --- | --- | --- | --- | --- |
+| 2026-06-29 | Browser smoke evidence from API/E2E | `http://127.0.0.1:3010/workspace` with `Nested Classroom Test Team` fixture | Current branch displays active task context under global Workspaces tree | Confirms corrected design must be re-routed before delivery |
 
 ## External / Public Source Findings
 
@@ -107,39 +141,40 @@ None.
 
 ## Reproduction / Environment Setup
 
-- Required services, mocks, emulators, or fixtures: Not needed for design investigation; code and unit test read were sufficient.
-- Required config, feature flags, env vars, or accounts: None for design investigation.
+- Required services, mocks, emulators, or fixtures: API/E2E used the `Nested Classroom Test Team` fixture and frontend at `http://127.0.0.1:3010/workspace`.
+- Required config, feature flags, env vars, or accounts: None identified for design correction.
 - External repos, samples, or artifacts cloned/downloaded for investigation: None.
-- Setup commands that materially affected the investigation: Dedicated worktree creation above.
+- Setup commands that materially affected the investigation: Dedicated worktree creation from `origin/personal` during original bootstrap.
 - Cleanup notes for temporary investigation-only setup: None.
 
 ## Findings From Code / Docs / Data / Logs
 
-- The proposal fits the existing left-panel responsibility: `AppLeftPanel` already reserves the lower left region for workspace/run/team hierarchy.
-- The screenshot style is not a separate asset; it is embedded in `WorkspaceHistoryWorkspaceSection.vue` with status-class callbacks supplied by `useWorkspaceHistoryTreeState`. Direct duplication would be risky because status color semantics could drift.
-- `TeamActiveTasksSection` has the task-first data (`ActiveTaskEntry`) needed for the user's proposed summary -> assignee/team -> members structure, but it currently owns that selection inside the right panel.
-- A first implementation likely does not need backend changes: active task projections already include target kind/name, task description, task status, task agent/team run ids, and task-team member children.
-- The main design decision is whether left-side task rows are only a compact live/focus preview or become the canonical active-task selector that also drives the right-side detail pane.
-- Current status-dot UI should be treated as an existing owned pattern: `h-2 w-2 rounded-full`, `mr-1.5`/`mr-2`, with class mapping from `useWorkspaceHistoryTreeState`.
-- Current active-task reference-file name rows already belong to the left navigator; the target design should preserve that behavior while changing where the navigator lives.
-- Current technical details are right-side detail content; the target design should move their row rendering left and keep selected task body/reference preview on the right.
-- Architecture review exposed an additional current-state gate: selection alone will not show right detail because `TeamOverviewPanel` may remain on Messages or another right tab; target design now needs a separate right-detail activation owner.
+- The user's requested hierarchy maps naturally to the existing active task navigator row, not to the global Workspaces tree.
+- The old `TeamActiveTasksSection.vue` already had the left/right task split; the corrected implementation should restore that architecture and adjust row content/order.
+- The wrong implementation's `TeamActiveTaskContextTree.vue` contains useful row-level rendering ideas but must not be hosted by history components or depend on cross-surface selection stores.
+- Shared status-dot extraction is still valuable as a presentation reuse, provided it remains independent of history/task stores.
+- Technical detail projection extraction is still valuable; technical details should render in the left navigator below references.
+- Cross-surface stores/composables introduced for global tree -> right Team activation are now design debt for this corrected scope.
 
 ## Constraints / Dependencies / Compatibility Facts
 
-- Left panel width is constrained; task descriptions should be compact (one or two lines) with right-side/center detail preserved.
-- Right Team tab currently also contains Messages; it should not be removed as part of an initial navigation/context improvement.
-- Status semantics differ between task execution status, team runtime status, and agent/member runtime status; row UI must not imply they are the same source.
-- Existing tests cover `WorkspaceHistoryWorkspaceSection`, `TeamActiveTasksSection`, `TeamOverviewPanel`, and right-side tab behavior; coverage updates would be expected if implementation proceeds.
+- Clean-cut correction is required: do not keep both the wrong global-tree active-task UI and the corrected task-navigator UI.
+- The global Workspaces tree may reuse shared dot components but must not depend on active task entries or selection.
+- The right detail pane should not duplicate actor/member roster or left-side technical details.
+- Task-summary/reference clicks must not focus the center subteam/composer; explicit actor/member row clicks may reuse existing focus behavior.
+- Existing unit tests for Team active tasks and Workspaces tree should be updated to verify both positive row hierarchy and negative global-tree absence.
 
 ## Open Unknowns / Risks
 
-- Exact current component ownership for task list/navigation versus work tree status rendering.
-- Whether live status data is already available on the left-side task list view.
-- Product decision resolved: keep right-side Team/Tasks surface as content/detail/preview; move compact navigation/context rows left.
-- Design-impact resolution: left task/reference clicks must trigger both selection and a right-detail activation command that opens the right panel, selects the Team tab, and shows the activeTasks section.
-- Technical detail rows may need truncation/copy affordances if IDs are long in the narrow left panel.
+- Visual density of long task descriptions plus member rows plus reference rows in a narrow navigator needs browser verification.
+- If the existing Team Messages/Tasks shell remains collapsed on Messages by default, product may later choose a default-active Tasks behavior; this is separate from the corrected host/container requirement.
+- If actor runtime status and task execution status diverge, the compact actor/team/member rows should show actor runtime status while the right detail may show task execution status text.
 
 ## Notes For Architect Reviewer
 
-No design handoff yet; requirements are draft and awaiting user direction.
+Please review this as a material design correction. The prior approved design used the wrong host container. The corrected design should be evaluated for:
+
+- whether `TeamActiveTasksSection` is the clear owner of task navigation/detail state;
+- whether global Workspaces tree active-task coupling is fully removed;
+- whether the exact row order is unambiguous;
+- whether cross-surface stores/composables introduced by the wrong design are removed unless a remaining concrete need is proven.

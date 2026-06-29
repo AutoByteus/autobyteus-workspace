@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-1 border-l border-slate-100 pl-2" data-test="team-active-task-context-tree">
+  <div class="space-y-1 border-l border-slate-100 pl-2" data-test="team-active-task-navigator">
     <article
       v-for="entry in entries"
       :key="entry.node.memberRouteKey"
@@ -11,7 +11,7 @@
         type="button"
         data-test="left-active-task-summary-row"
         class="w-full rounded px-2 py-1 text-left text-xs font-medium leading-5 transition-colors hover:bg-white/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-        :class="isEntrySelected(entry) ? 'text-indigo-900' : 'text-slate-800'"
+        :class="isEntrySelected(entry) && !isReferenceSelectedForEntry(entry) ? 'text-indigo-900' : 'text-slate-800'"
         :title="taskSummary(entry)"
         @click="$emit('select-task', entry.node.memberRouteKey)"
       >
@@ -45,7 +45,7 @@
           data-test="left-active-task-member-row"
           class="flex min-w-0 items-center rounded px-2 py-1 text-left text-xs transition-colors hover:bg-white/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
           :class="focusedMemberRouteKey === member.node.memberRouteKey ? 'bg-indigo-100 text-indigo-900' : 'text-slate-600'"
-          :style="{ marginLeft: `${(member.depth + 1) * 12}px`, width: `calc(100% - ${(member.depth + 1) * 12}px)` }"
+          :style="memberRowStyle(member.depth)"
           :title="member.displayName"
           @click="$emit('select-member', member.node.memberRouteKey)"
         >
@@ -105,11 +105,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import type { ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';
-import type { TeamActiveTaskSelection } from '~/stores/teamActiveTaskSelectionStore';
 import {
   referenceFileIcon,
   referenceFileName,
@@ -119,11 +117,16 @@ import {
   buildActiveTaskTechnicalRows,
 } from '~/utils/teamActiveTaskTechnicalDetails';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   entries: ActiveTaskEntry[];
-  selection: TeamActiveTaskSelection | null;
+  selectedTaskRouteKey?: string | null;
+  selectedReferenceId?: string | null;
   focusedMemberRouteKey?: string | null;
-}>();
+}>(), {
+  selectedTaskRouteKey: null,
+  selectedReferenceId: null,
+  focusedMemberRouteKey: null,
+});
 
 defineEmits<{
   (e: 'select-task', memberRouteKey: string): void;
@@ -131,37 +134,36 @@ defineEmits<{
   (e: 'select-member', memberRouteKey: string): void;
 }>();
 
-const effectiveSelectedMemberRouteKey = computed(() => {
-  const selectedMemberRouteKey = props.selection?.memberRouteKey ?? '';
-  return props.entries.some((entry) => entry.node.memberRouteKey === selectedMemberRouteKey)
-    ? selectedMemberRouteKey
-    : props.entries[0]?.node.memberRouteKey ?? null;
-});
-
-const effectiveSelectedReferenceId = computed(() => {
-  const selectedEntry = props.entries.find((entry) => entry.node.memberRouteKey === effectiveSelectedMemberRouteKey.value) ?? null;
-  const selectedReferenceId = props.selection?.referenceId ?? '';
-  return selectedEntry?.taskReferenceFiles.some((reference) => reference.referenceId === selectedReferenceId)
-    ? selectedReferenceId
-    : null;
-});
-
 const taskSummary = (entry: ActiveTaskEntry): string => (
   entry.taskDescription || entry.taskLabel || entry.targetDisplayName || 'Task description unavailable'
 );
 
 const isEntrySelected = (entry: ActiveTaskEntry): boolean => (
-  effectiveSelectedMemberRouteKey.value === entry.node.memberRouteKey
+  props.selectedTaskRouteKey === entry.node.memberRouteKey
 );
 
 const isReferenceSelected = (entry: ActiveTaskEntry, referenceId: string): boolean => (
-  isEntrySelected(entry) && effectiveSelectedReferenceId.value === referenceId
+  isEntrySelected(entry) && props.selectedReferenceId === referenceId
+);
+
+const isReferenceSelectedForEntry = (entry: ActiveTaskEntry): boolean => (
+  isEntrySelected(entry)
+  && Boolean(props.selectedReferenceId)
+  && entry.taskReferenceFiles.some((reference) => reference.referenceId === props.selectedReferenceId)
 );
 
 const initials = (displayName: string): string => {
   const words = displayName.trim().split(/[\s_-]+/).filter(Boolean);
   const value = words.slice(0, 2).map((word) => word[0]?.toUpperCase()).join('');
   return value || '•';
+};
+
+const memberRowStyle = (depth: number): Record<string, string> => {
+  const indent = (depth + 1) * 12;
+  return {
+    marginLeft: `${indent}px`,
+    width: `calc(100% - ${indent}px)`,
+  };
 };
 
 const technicalRowsFor = (entry: ActiveTaskEntry) => buildActiveTaskTechnicalRows(entry);

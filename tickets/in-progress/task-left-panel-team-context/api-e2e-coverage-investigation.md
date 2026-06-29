@@ -6,119 +6,130 @@
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/design-spec.md`
 - Supporting Product Analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/analysis-recommendation.md`
+- Solution Design-Impact Rework: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/solution-design-impact-rework.md`
+- API/E2E Design-Impact Reroute: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/api-e2e-design-impact-reroute.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/code-review-report.md`
-- Current Investigation Round: 1
-- Trigger: Code-review handoff for API/E2E and executable coverage investigation of left-side active task/team context UX.
-- Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: Round 1
+- Current Investigation Round: 2
+- Trigger: Round-3 corrected implementation review passed; API/E2E must validate the corrected Team-owned active-task UX after the prior global Workspaces-tree design was rejected and superseded.
+- Prior Investigation Reviewed: Round 1, now superseded by `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/api-e2e-design-impact-reroute.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/solution-design-impact-rework.md`.
+- Latest Authoritative Investigation: Round 2
 
 ## Current Requirement And Design Basis
 
-The approved behavior keeps full task body, selected reference preview, messages, and deeper inspection on the right Team surface while moving compact active-task navigation/context to the left workspace tree under expanded live team runs. The left task block must render a text-only task summary row, a responsible single-agent or task-team root actor row with the shared tiny status dot, indented task-team member rows with the same status-dot language, reference file-name rows that select right-side previews, and compact left technical metadata collapsed by default. Left task or reference clicks must select the task/reference and make the right-side detail visible by opening the right panel, selecting the Team tab, and expanding Active Tasks even when Messages was previously visible. Actor/member clicks must focus the same underlying target as existing workspace team focus behavior. The implementation handoff's Legacy / Compatibility Removal Check reports no backward-compatibility mechanisms, no retained old right-side navigator/local selection path, and clean removal of `TeamActiveTaskRow.vue` from source; code review confirms the same.
+The current approved behavior preserves the existing Team tab active-task master/detail layout. The active task UI lives inside `TeamActiveTasksSection.vue`: a left task navigator and a right task/reference detail pane. The global Workspaces/run-history tree remains a workspace/run/team/member navigation surface only and must not render active-task summaries, active-task reference rows, or active-task technical details.
+
+Inside the Team Active Tasks left navigator, each active task item must render in this order: text-only task summary/short description; responsible agent/team actor row with the shared tiny status dot and no root indentation; optional indented team-member rows with the same status-dot language; References label and file-name rows; collapsed compact Technical details. Clicking a task summary or reference row updates only the Team active-task right detail/reference pane and must not focus the center composer/subteam. Clicking explicit actor/team/member rows may use the existing Team focus behavior. The right detail pane must show selected task content or selected reference preview, without duplicating the left roster or left technical metadata.
+
+The implementation handoff's Legacy / Compatibility Removal Check reports no backward-compatibility mechanisms, no old global-tree active-task host retained, no cross-surface active-task selection store, no section store, no right-detail activation composable, and no compatibility branch. Code review Round 3 independently verified the same removal and found no blocking findings.
 
 ## Changed Behavior Summary
 
 | Behavior / Boundary | Change Type (`Added`/`Changed`/`Removed`/`Preserved`/`Unclear`) | Upstream Evidence | Coverage Consequence |
 | --- | --- | --- | --- |
-| Left active-task context under expanded live team runs | Added | `REQ-001`, `REQ-003`, `REQ-004`, `AC-001`, `AC-002`; design DS-001; implementation handoff "Moved active-task navigation/context into the left workspace tree" | Needs durable component coverage for both single-agent and task-team layouts plus focused executable coverage through the workspace tree. |
-| Text-only task summary with no status dot | Changed | `REQ-008`, `AC-009`; design guidance forbids status dot on summary row | Existing task-team workspace test partially covers; add direct layout coverage for single-agent/task-team rows. |
-| Shared tiny actor/team/member status dots | Changed / Preserved | `REQ-007`, `AC-004`, `AC-008`; design DS-004; code-review status-dot extraction pass | Existing status utility test is valid; direct left-context coverage should assert the dot is on actor/member rows and not the task summary. |
-| Right Team tab remains detail surface only | Changed / Preserved | `REQ-006`, `AC-006`; design removal plan; implementation handoff removed right navigator and technical details from right pane | Existing `TeamActiveTasksSection` and workflow tests remain valid; execute them. |
-| Left task/reference click activates visible right detail | Added | `REQ-002`, `AC-003`, `AC-011`; design DS-002; design review AR-001 resolution | Existing workspace test covers selection and Active Tasks store activation but does not assert right panel visibility or Team tab. Update durable test. Existing detail-pane tests prove task body/reference rendering from selection. |
-| Actor/member focus from left task context | Preserved / Changed entrypoint | `REQ-005`, `AC-005`; design DS-003; implementation handoff focus hints | Existing workspace and workflow tests remain valid; execute them. |
-| References remain left rows and right previews | Changed placement / Preserved content surface | `REQ-009`, `AC-011`; product analysis reference placement; implementation handoff | Existing detail preview test remains valid; workspace test should retain left reference click selection/activation assertion. |
-| Technical metadata moves left collapsed by default | Changed / Removed from right | `REQ-010`, `AC-012`; design removal plan; implementation handoff | Existing right-pane absence assertions are valid; add direct left-context details coverage. |
-| Old right-side active-task navigator and local selection refs | Removed | Design Legacy Removal Policy; implementation handoff Removed; code review no legacy retention | Existing absence assertions are valid; no stale coverage to remove. |
-| Durable docs still mention old navigator | Preserved docs debt | Code review Docs-Impact Verdict | Out of API/E2E scope; delivery docs sync must handle after coverage review. |
+| Active-task hierarchy is hosted inside the Team tab Active Tasks left navigator | Changed | `REQ-001`, corrected design DS-001, implementation handoff summary, code review Round 3 | Execute durable Team navigator/section tests and browser smoke against the Team tab Tasks section. |
+| Global Workspaces tree must not host active-task summaries, references, or technical details | Removed / Preserved boundary | `REQ-002`, `REQ-020`, `AC-010`, `AC-015`, solution rework answers 1 and 4 | Execute negative durable Workspaces-tree coverage and browser smoke after expanding a live team run. |
+| Task summary row is text-only and first | Changed | `REQ-003`, `REQ-004`, `AC-001`, `AC-005` | Execute component coverage for no dot/avatar on summary and correct row order. |
+| Actor/team/member rows use shared tiny status-dot semantics | Added / Preserved presentation | `REQ-009`, `REQ-011`, `REQ-018`, `AC-012` | Execute `TeamActiveTaskNavigator.spec.ts` and `workspaceStatusDotPresentation.spec.ts`; inspect browser DOM/visual state. |
+| References remain left file-name rows and right preview content | Changed placement / Preserved behavior | `REQ-013`, `REQ-014`, `AC-008`, corrected analysis addendum | Execute Team section reference preview tests; browser fixture may not have references, so record fixture coverage limit if none exist. |
+| Technical details move to collapsed compact left metadata | Changed / Removed from right detail | `REQ-015`, `REQ-016`, `AC-009` | Execute navigator/section tests and inspect browser collapsed details element. |
+| Task summary/reference clicks do not focus center composer/subteam | Changed interaction boundary | `REQ-006`, `REQ-012`, `AC-006`, `AC-007`, design DS-002 | Execute Team section and focus workflow tests; browser smoke compares focus state before/after summary/reference clicks where possible. |
+| Explicit actor/team/member rows keep existing focus behavior | Preserved through new entrypoint | `REQ-012`, `AC-007`, design DS-002 | Execute Team section/focus workflow tests and browser click on task-team/member row. |
+| Prior cross-surface selection/activation path is removed | Removed | Design removal plan; implementation boundary notes; code review dead-reference search | Verify deleted files remain gone and no obsolete imports are present; no compatibility coverage should be retained. |
+| Prior API/E2E Round-1 global-tree coverage/artifacts | Removed / Superseded | API/E2E reroute and solution design-impact rework | Treat old global-tree-positive coverage as stale/replaced; execute corrected coverage only. |
 
 ## Existing Durable Coverage Inventory
 
 | Path / Scenario | Current Assertion Or Intent | Related Requirement / Acceptance Criteria / Design | Validity Decision (`Still Valid`/`Needs Update`/`Stale / Remove`/`Replace`/`Out Of Scope`/`Unclear`) | Evidence | Action |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts` — `renders active task context under an expanded live team and activates right detail from left clicks` | Mounts left workspace tree with live team context; renders task-team summary/actor/member/reference; asserts no summary dot; reference click selects shared reference and opens Active Tasks section; member click focuses child member | `AC-002`, `AC-003`, `AC-005`, `AC-009`, `AC-011`; DS-001/DS-002/DS-003 | Needs Update | Scenario is still required and currently valid, but right panel visibility and Team tab activation are part of `AC-003` and are not asserted. | Update this durable scenario to set Messages/default state and a closed right panel before left click, then assert `useRightPanel().isRightPanelVisible === true`, `useRightSideTabs().activeTab === 'teamMembers'`, and Active Tasks section store is active. |
-| `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts` — existing workspace/team/member selection and status row tests | Verifies workspace/team rows, expansion, persisted-member hydration, status indicators, and member selection behavior | Existing workspace focus behavior reused by `REQ-005`; status conventions reused by `REQ-007` | Still Valid | Requirements preserve workspace selection/focus conventions and status visual language. | Execute targeted file; no removal. |
-| `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts` | Regression coverage for team selection, expansion, and draft cleanup | Workspace tree host remains the left-context owner; existing tree behavior must not regress | Still Valid | Design keeps `WorkspaceAgentRunsTreePanel` as left-tree orchestrator. | Execute targeted file; no update planned. |
-| `autobyteus-web/components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts` | Verifies right active-task section is controlled by parent collapse state, renders detail pane from shared selection, removes old navigator/resizer/reference rows/technical details, shows selected right reference preview, emits focus, falls back on stale selection, and empty state | `REQ-006`, `AC-006`, `AC-011`; removal/decommission plan; DS-002 | Still Valid | Right side remains detail-only; old navigator assertions are intentionally negative and current. | Execute targeted file; no update planned. |
-| `autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts` | Verifies Messages-first default, parent-owned Messages/Tasks expansion through store, and selected-team reset behavior | `REQ-002`, `AC-003`; design AR-001 resolution and `teamOverviewSectionStore` ownership | Still Valid | Requirements preserve Messages and require explicit Active Tasks activation after left clicks. | Execute targeted file; no update planned. |
-| `autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts` | Verifies focus from active task detail to task-agent target and send-message path; verifies shared task-team selection without reintroducing right-side member navigation or technical details | `REQ-005`, `REQ-006`; DS-003; removal plan | Still Valid | Focus behavior and no-old-navigator assertions remain required. | Execute targeted file; no update planned. |
-| `autobyteus-web/composables/__tests__/useRightPanel.spec.ts` | Verifies idempotent `openRightPanel()` and width behavior | Design DS-002 activation must use idempotent open action | Still Valid | `useTeamActiveTaskRightDetailActivation` depends on `openRightPanel()`; no compatibility toggle allowed. | Execute targeted file. |
-| `autobyteus-web/composables/__tests__/useRightSideTabs.spec.ts` and `components/layout/__tests__/RightSideTabs.spec.ts` | Verifies existing right tab shell behavior around tab visibility/focus | DS-002 uses existing tab owner to select Team tab | Still Valid | Right tab owner is reused, not replaced. | Execute targeted files. |
-| `autobyteus-web/composables/__tests__/useWorkspaceHistoryTreeState.spec.ts` | Verifies tree expansion/selection state | DS-001 host under expanded team rows; existing expansion behavior must remain | Still Valid | Left context appears only under expanded live teams. | Execute targeted file. |
-| `autobyteus-web/utils/__tests__/workspaceStatusDotPresentation.spec.ts` | Verifies shared base dot class and agent/team status color mapping | `REQ-007`, `AC-004`, `AC-008`; DS-004 | Still Valid | Code review confirms workspace rows now use extracted mapping. | Execute targeted file. |
-| `autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts`, `stores/__tests__/agentTeamRunStore.spec.ts`, `utils/__tests__/teamActiveExecutionMembers.spec.ts` | Broader active execution/focus behavior and active-execution bar behavior | Indirectly related to task-team status/focus, but not changed left-context UX | Out Of Scope | They do not assert the changed left/right task-context boundary. | Do not execute for this focused round unless a failure points there. |
-| `autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts` | Existing focused input/interrupt behavior in a Vitest e2e-named spec | Unrelated to left active-task context | Out Of Scope | Search shows no Playwright/Cypress/browser E2E suite for this surface; repository coverage is component/integration Vitest. | No action for this task. |
+| `autobyteus-web/components/workspace/team/__tests__/TeamActiveTaskNavigator.spec.ts` | Direct single-agent and task-team navigator layout: text-only summary, root actor/team row, indented members, shared dots, references, collapsed technical metadata, select/focus emits | `AC-001` through `AC-005`, `AC-008`, `AC-009`, `AC-012`; DS-001/DS-003 | Still Valid | New corrected Team-owned navigator is the intended host; tests assert the exact row hierarchy. | Execute. |
+| `autobyteus-web/components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts` | Section owns local active-task split, selected task/reference state, reference refresh, split resize, right detail body/preview, summary/reference non-focus, actor/member focus emits, empty state | `REQ-001`, `REQ-005`, `REQ-006`, `REQ-014`, `REQ-016`, `AC-006`, `AC-008`, `AC-013`, `AC-014` | Still Valid | Implementation handoff says section is the corrected owner; code review passed coverage quality. | Execute. |
+| `autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts` | Focuses task target from Tasks and verifies task-team summary selection does not focus or reintroduce right-side member navigation | `REQ-006`, `REQ-012`, `AC-006`, `AC-007` | Still Valid | Existing workspace team focus behavior is intentionally reused only for actor/member controls. | Execute. |
+| `autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts` | Messages/Tasks section expansion is local to Team overview; Messages opens first on team-run reset; focused subteam identity is preserved | Corrected design answer 4; `REQ-001`; deferred default-opening risk | Still Valid | Section visibility store was removed; local Team overview ownership is intentional. | Execute. |
+| `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts` — negative active-task context under expanded live team | Ensures global Workspaces tree still renders workspace/team/member rows but does not render active-task navigator/summary/reference/technical detail selectors | `REQ-002`, `REQ-020`, `AC-010`, `AC-011`, `AC-015`; DS-004 | Still Valid | Corrected requirements explicitly forbid the prior global-tree host; code review noted this scenario. | Execute. |
+| `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts` — broader workspace/team/member behavior | Verifies existing workspace/team/member navigation, expansion, status rows, selection, delete/archive behavior | `AC-011`; DS-004 | Still Valid | Global tree remains workspace/run/team/member navigation only. | Execute targeted file. |
+| `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts` | Regression coverage for team top-row selection/hydration, expanded teams, draft cleanup | DS-004 | Still Valid | Existing global tree behavior must not regress while removing active-task detail ownership. | Execute. |
+| `autobyteus-web/composables/__tests__/useRightPanel.spec.ts` | Right panel width/clamping behavior after removed `openRightPanel()` API | Implementation handoff: `openRightPanel()` removed because wrong activation path is gone | Still Valid | `useRightPanel.ts` changed; remaining behavior still must pass. | Execute. |
+| `autobyteus-web/utils/__tests__/workspaceStatusDotPresentation.spec.ts` | Shared dot class/status color mapping | `REQ-018`, `AC-012`, DS-003 | Still Valid | Shared presentation remains a valid cross-surface primitive; not a selection/host owner. | Execute. |
+| `autobyteus-web/components/workspace/team/__tests__/TeamActiveTaskContextTree.spec.ts` | Prior Round-1 direct coverage for the wrong global-tree-named component | Superseded design; removal plan | Stale / Remove | Corrected code deletes `TeamActiveTaskContextTree.vue` and this spec; code review verified obsolete references are gone. | No API/E2E edit needed after code review; verify deletion remains. |
+| Prior `WorkspaceAgentRunsTreePanel.spec.ts` positive scenario for rendering active-task context under expanded live team | Old Round-1 assertion that global Workspaces tree hosts task context and opens Team tab/right panel from global-tree clicks | Superseded by `REQ-002`, `REQ-020`, `AC-010`, `AC-015` | Replace | API/E2E reroute and solution rework identify this as the rejected design. | Replacement is the current negative Workspaces-tree absence scenario plus Team-owned navigator/section tests. |
+| `autobyteus-web/composables/__tests__/useRightSideTabs.spec.ts` / `components/layout/__tests__/RightSideTabs.spec.ts` | Right tab shell behavior used by the old global-tree activation path | Superseded DS-002 no longer opens right panel from global tree | Out Of Scope | Current corrected implementation does not change these files or require a global activation command. | Do not execute unless a browser/runtime finding points there. |
+| Broader active-execution/backend/store tests outside the changed UI boundary | General active execution, team communication, backend state, API data models | Backend/runtime status model explicitly out of scope | Out Of Scope | Task is frontend UI ownership/rendering over existing `AgentTeamContext` projection. | Do not execute for this focused round. |
 
 ## Stale Or Obsolete Coverage Decisions
 
 | Path / Scenario | Obsolete Assertion | Why It Is Obsolete | Upstream Evidence | Replacement Coverage | No-Replacement Rationale |
 | --- | --- | --- | --- | --- | --- |
-| None | N/A | No existing durable test asserts the old right navigator as desired behavior. Existing old-selector assertions are negative removal checks and remain valid. | Design removal/decommission plan; implementation handoff; code review legacy verdict | N/A | N/A |
+| `autobyteus-web/components/workspace/team/__tests__/TeamActiveTaskContextTree.spec.ts` | Tests a component name/shape from the prior global-tree host path | The corrected Team-owned implementation uses `TeamActiveTaskNavigator.vue` and deletes `TeamActiveTaskContextTree.vue` | `REQ-002`, `REQ-020`, solution rework, implementation handoff removed/decommissioned list, code review dead-reference search | `autobyteus-web/components/workspace/team/__tests__/TeamActiveTaskNavigator.spec.ts` | N/A |
+| Prior positive global-tree active-task scenario in `WorkspaceAgentRunsTreePanel.spec.ts` | Active task summary/reference/technical detail rows appear under expanded live team runs | User rejected this browser shape; corrected requirements explicitly forbid it | API/E2E design-impact reroute; solution-design-impact rework; `AC-010`, `AC-015` | Negative Workspaces-tree absence scenario plus Team-owned navigator/section coverage | N/A |
+| Prior ticket-level API/E2E Round-1 investigation/execution content | Declares global Workspaces-tree active-task embedding as approved coverage | Superseded by design-impact reroute and corrected requirements | `/api-e2e-design-impact-reroute.md`, `/solution-design-impact-rework.md` | This Round-2 investigation and forthcoming execution report | N/A |
 
 ## Durable Coverage To Add
 
 | Scenario ID | Behavior / Boundary | Requirement / Acceptance Criteria / Design Evidence | Planned Artifact / Path | Why Durable Coverage Is Needed |
 | --- | --- | --- | --- | --- |
-| COV-ADD-001 | Direct left-context layout for single-agent and task-team active tasks, including text-only summary, actor/member dots, root actor alignment, member indentation, references, collapsed/truncated technical metadata | `AC-001`, `AC-002`, `AC-004`, `AC-007`, `AC-009`, `AC-010`, `AC-012`; design DS-001/DS-004 | Add `autobyteus-web/components/workspace/team/__tests__/TeamActiveTaskContextTree.spec.ts` | Existing durable coverage exercises a task-team context through the workspace tree but does not directly cover the single-agent left layout or collapsed technical metadata behavior. A component-level test is the correct durable boundary for narrow-panel row semantics. |
+| None in API/E2E Round 2 | N/A | N/A | N/A | Corrected durable coverage was already implemented before code-review Round 3 and passed code review. API/E2E will execute it rather than changing repository-resident tests. |
 
 ## Durable Coverage To Update
 
 | Scenario ID | Existing Path / Scenario | Required Update | Requirement / Acceptance Criteria / Design Evidence | Notes |
 | --- | --- | --- | --- | --- |
-| COV-UPD-001 | `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts` — active task context / left click activation scenario | Assert default Messages section before click, close the right panel before click, then after left reference click assert the right panel is open, active right tab is `teamMembers`, shared reference selection is set, and Active Tasks section is active | `REQ-002`, `AC-003`, `AC-011`; design DS-002 and design-review AR-001 resolution | Keeps coverage at the real left workspace tree entrypoint without adding a full browser harness that the repository does not currently provide. |
+| None in API/E2E Round 2 | N/A | N/A | N/A | No coverage code edits are planned after Round-3 code review. |
 
 ## Durable Coverage To Remove
 
 | Existing Path / Scenario | Removal Reason | Requirement / Acceptance Criteria / Design Evidence | Replacement Or No-Replacement Decision |
 | --- | --- | --- | --- |
-| None | N/A | N/A | N/A |
+| None in API/E2E Round 2 | Prior stale coverage removals were already made by implementation and reviewed by code review. | Implementation handoff and code review Round 3 | Execute current state and verify no obsolete references remain. |
 
 ## Temporary Executable Validation Plan
 
 | Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven | Why This Should Not Remain As Durable Coverage |
 | --- | --- | --- | --- |
-| TEMP-EXEC-001 | Focused targeted Vitest execution for changed team/workspace/composable/status tests after durable coverage edits | Current repository-resident coverage for left context, right detail, focus, status, and right activation passes under Nuxt/happy-dom runtime | This is command execution evidence, not extra code. |
-| TEMP-EXEC-002 | `nuxi typecheck` attempted with changed-file grep if it still fails | Confirms whether known repo-wide typecheck failures include the changed implementation/coverage files | Typecheck command is a validation method; no durable probe is needed. |
-| TEMP-EXEC-003 | Guard/audit commands and `git diff --check` | Confirms boundary/localization/whitespace constraints after coverage edits | Command evidence only. |
+| TEMP-EXEC-001 | Focused Vitest execution for the current valid team/history/right-panel/status tests | Current durable coverage for Team-owned active-task navigator, right detail, Workspaces-tree absence, focus behavior, and status-dot semantics passes under repository test runtime | Command evidence only. |
+| TEMP-EXEC-002 | `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, `git diff --check`, and untracked navigator whitespace check | Boundary/localization/whitespace constraints are still satisfied after the corrected implementation | Command evidence only. |
+| TEMP-EXEC-003 | `nuxi typecheck` attempted with captured log and changed-path grep if it remains blocked by known repo-wide issues | Confirms whether full TypeScript failures implicate changed active-task/history/right-panel files | Command/log evidence only. |
+| TEMP-EXEC-004 | Real browser smoke using the running frontend at `http://127.0.0.1:3010/workspace` and the user's `Nested Classroom Test Team` fixture against the Electron-started backend | Confirms the corrected live/hydrated UI placement: active-task context appears in Team tab Active Tasks navigator; global Workspaces tree stays workspace/run/team/member only; summary/reference/focus interactions behave visibly | Browser evidence is runtime validation for this task, not repository-resident coverage code. |
 
 ## Not Tested / Infeasible / Deferred
 
 | Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- |
-| Full real browser visual screenshot at actual desktop panel widths | The repository does not expose a Playwright/Cypress browser E2E suite or script for this surface; current durable UI tests use Nuxt/happy-dom component/integration mounting. | Visual pixel regressions outside class/DOM semantics may escape component tests. | Record limitation in execution report; delivery/user can request a browser visual pass if product requires pixel-level evidence. |
-| Live backend/WebSocket team run with real delegated tasks | Scope is frontend UX over existing projected `AgentTeamContext`; upstream explicitly excludes backend runtime status model changes. | Fixture shape could miss backend projection anomalies, but `deriveActiveTaskEntries()` is already covered by existing fixtures. | No escalation unless tests reveal projection mismatch. |
+| Live reference preview if the current nested classroom fixture exposes no active-task reference files | The user-provided fixture task may be a simple token task with no references | Browser smoke may not exercise reference preview on live data; durable component tests still cover reference preview and refresh with fixtures | Record fixture limitation in execution report; no escalation unless requirements demand live reference fixture creation. |
+| Pixel-perfect visual comparison across all desktop sizes | No repository Playwright/Cypress visual baseline suite is present for this surface | Small truncation/spacing regressions could escape DOM/component assertions | Browser screenshots at current/narrow panel widths plus component resize coverage reduce risk; delivery/user can request broader visual QA. |
+| Backend/runtime status model changes | Upstream explicitly excludes backend runtime status model changes unless frontend data is insufficient | Projection anomalies could appear only in rare backend states | Real browser smoke against a live team fixture exercises current projection enough for this frontend task. |
 
 ## Ambiguities Or Reroute Triggers
 
 | Issue | Classification (`Requirement Gap`/`Design Impact`/`Unclear`/`Local Fix`) | Evidence | Recommended Recipient |
 | --- | --- | --- | --- |
-| None currently | N/A | Upstream requirements/design/code review agree on the ownership model and no compatibility/legacy source behavior was observed during investigation. | N/A |
+| None currently | N/A | Corrected requirements/design/code review agree on Team-owned active-task UI and global-tree non-hosting. No compatibility/legacy source behavior was observed in static inspection. | N/A |
 
 ## Execution Plan
 
-1. Add direct durable component coverage for `TeamActiveTaskContextTree.vue` single-agent/task-team/narrow metadata scenarios (`COV-ADD-001`).
-2. Update the existing workspace-tree active-task activation test to assert right-panel open, Team tab activation, default Messages-to-Active-Tasks transition, and reference selection (`COV-UPD-001`).
-3. Run focused Vitest coverage for the changed and relevant existing files:
-   - `components/workspace/team/__tests__/TeamActiveTaskContextTree.spec.ts`
-   - `components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts`
-   - `components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts`
+1. Execute the valid focused durable coverage set:
+   - `components/workspace/team/__tests__/TeamActiveTaskNavigator.spec.ts`
    - `components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts`
    - `components/workspace/team/__tests__/TeamOverviewPanel.spec.ts`
    - `components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
-   - `components/layout/__tests__/RightSideTabs.spec.ts`
+   - `components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts`
+   - `components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts`
    - `composables/__tests__/useRightPanel.spec.ts`
-   - `composables/__tests__/useRightSideTabs.spec.ts`
-   - `composables/__tests__/useWorkspaceHistoryTreeState.spec.ts`
    - `utils/__tests__/workspaceStatusDotPresentation.spec.ts`
-4. Run `pnpm --filter autobyteus run guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, and `git diff --check`.
-5. Attempt `pnpm --filter autobyteus exec nuxi typecheck`; if it fails as known, grep output for changed source/test paths and record changed-file impact.
-6. Update this investigation if findings alter validity decisions, then write the execution coverage report. Because repository-resident durable coverage will be added/updated, route the cumulative package back to `code_reviewer` for coverage-code review on pass.
+2. Run boundary/localization/audit/diff/whitespace checks.
+3. Attempt full `nuxi typecheck`, capture API/E2E log, and grep for changed active-task/history/right-panel paths if it fails due known repo-wide issues.
+4. Run a real browser smoke against the running local frontend/backend using the `Nested Classroom Test Team` fixture. Capture screenshots into `/Users/normy/autobyteus_org/autobyteus-worktrees/task-left-panel-team-context/tickets/in-progress/task-left-panel-team-context/browser-evidence/` and record DOM/visual observations for:
+   - global Workspaces tree expanded on the nested team does not contain active-task context selectors or task summary/reference/technical rows;
+   - Team tab Active Tasks section contains the `team-active-task-navigator` and right `active-task-detail-pane`;
+   - task-team layout shows summary -> actor/team -> members -> Technical details, with summary/reference selection not refocusing center and actor/member row click retaining focus behavior;
+   - narrow-panel scenario keeps left metadata/reference rows truncated/collapsed rather than breaking layout.
+5. Update the canonical execution coverage report. If no repository-resident durable coverage is added/updated/removed during API/E2E, route to `delivery_engineer`; if coverage code changes become necessary, route to `code_reviewer`.
 
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes`
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: N/A
-- Notes: No stale durable coverage requires removal. The current test suite is valid but has two focused gaps: direct single-agent/narrow left-context coverage and explicit left-click right-panel/Team-tab activation assertions. Address those as durable coverage before final execution.
+- Notes: The prior Round-1 global-tree API/E2E plan is superseded. Current valid coverage already exists after corrected implementation/code review. API/E2E will execute existing reviewed coverage plus real browser smoke; no post-code-review durable coverage edits are planned unless execution reveals a concrete gap.

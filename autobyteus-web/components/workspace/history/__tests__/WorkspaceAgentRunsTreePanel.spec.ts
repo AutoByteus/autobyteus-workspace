@@ -3,11 +3,6 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick } from 'vue';
 import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useTeamActiveTaskSelectionStore } from '~/stores/teamActiveTaskSelectionStore';
-import { useTeamOverviewSectionStore } from '~/stores/teamOverviewSectionStore';
-import { useRightPanel } from '~/composables/useRightPanel';
-import { useRightSideTabs } from '~/composables/useRightSideTabs';
 
 const flushPromises = async () => {
   await Promise.resolve();
@@ -1192,59 +1187,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ]);
   });
 
-  it('renders active task context under an expanded live team and activates right detail from left clicks', async () => {
-    const taskTeamMember = {
-      memberKind: 'agent',
-      memberName: 'implementation_engineer',
-      displayName: 'implementation_engineer',
-      memberPath: ['task-team-run-1', 'implementation_engineer'],
-      memberRouteKey: 'task-team-run-1/implementation_engineer',
-      agentDefinitionId: 'impl-def',
-      currentStatus: 'idle',
-      isTaskTeamChildProjection: true,
-    };
-    const taskTeamNode = {
-      memberKind: 'agent_team',
-      memberName: 'Software Engineering Team · task_0001',
-      displayName: 'Software Engineering Team · task_0001',
-      memberPath: ['task-team-run-1'],
-      memberRouteKey: 'task-team-run-1',
-      memberRunId: 'task-team-run-1',
-      teamDefinitionId: 'software-team',
-      teamRunId: 'task-team-run-1',
-      children: [taskTeamMember],
-      isTaskTeamInstance: true,
-      taskTeamRunId: 'task-team-run-1',
-      taskId: 'task_0001',
-      taskDescription: 'Implement the left-side active task context.',
-      taskReferenceFiles: [
-        {
-          referenceId: 'task-reference:0:/tmp/design-spec.md',
-          path: '/tmp/design-spec.md',
-          type: 'file',
-          createdAt: '2026-05-30T00:00:00.000Z',
-          updatedAt: '2026-05-30T00:00:00.000Z',
-        },
-      ],
-      taskArguments: { description: 'Implement the left-side active task context.' },
-      taskTargetKind: 'team',
-      taskTargetName: 'Software Engineering Team',
-      taskExecutionStatus: 'active',
-      currentStatus: 'running',
-    };
-    useAgentTeamContextsStore().addTeamContext({
-      teamRunId: 'team-1',
-      config: { teamDefinitionName: 'Team Alpha' },
-      memberTree: [taskTeamNode],
-      memberNodesByRouteKey: new Map<string, any>([
-        ['task-team-run-1', taskTeamNode],
-        ['task-team-run-1/implementation_engineer', taskTeamMember],
-      ]),
-      leafAgentContextsByRouteKey: new Map(),
-      focusedMemberRouteKey: 'task-team-run-1',
-      currentStatus: 'running',
-      isSubscribed: false,
-    } as any);
+  it('keeps the global Workspaces tree free of active-task context under an expanded live team', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
         teamRunId: 'team-1',
@@ -1257,18 +1200,21 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         isActive: true,
         currentStatus: 'running',
         deleteLifecycle: 'CLEANUP_PENDING',
-        focusedMemberRouteKey: 'task-team-run-1',
-        members: [],
-        memberTree: [],
+        focusedMemberRouteKey: 'implementation_engineer',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberKind: 'agent',
+            memberRouteKey: 'implementation_engineer',
+            memberName: 'implementation_engineer',
+            displayName: 'implementation_engineer',
+            currentStatus: 'running',
+            workspaceRootPath: '/ws/a',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+          },
+        ],
       },
     ];
-
-    const rightPanel = useRightPanel();
-    const rightTabs = useRightSideTabs();
-    if (rightPanel.isRightPanelVisible.value) {
-      rightPanel.toggleRightPanel();
-    }
-    rightTabs.setActiveTab('terminal');
 
     const wrapper = mountComponent();
     await flushPromises();
@@ -1276,32 +1222,14 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
     await flushPromises();
 
-    expect(rightPanel.isRightPanelVisible.value).toBe(false);
-    expect(rightTabs.activeTab.value).toBe('terminal');
-    expect(useTeamOverviewSectionStore().getActiveSection('team-1')).toBe('messages');
-    expect(wrapper.get('[data-test="team-active-task-context-tree"]').text()).toContain('Implement the left-side active task context.');
-    expect(wrapper.get('[data-test="left-active-task-actor-row"]').text()).toContain('Software Engineering Team');
-    expect(wrapper.get('[data-test="left-active-task-member-row"]').text()).toContain('implementation_engineer');
-    expect(wrapper.get('[data-test="left-active-task-reference-row"]').text()).toContain('design-spec.md');
-    expect(wrapper.find('[data-test="left-active-task-summary-row"] span.inline-block').exists()).toBe(false);
-
-    await wrapper.get('[data-test="left-active-task-reference-row"]').trigger('click');
-    await flushPromises();
-
-    expect(useTeamActiveTaskSelectionStore().getSelection('team-1')).toEqual({
-      memberRouteKey: 'task-team-run-1',
-      referenceId: 'task-reference:0:/tmp/design-spec.md',
-    });
-    expect(useTeamOverviewSectionStore().getActiveSection('team-1')).toBe('activeTasks');
-    expect(rightPanel.isRightPanelVisible.value).toBe(true);
-    expect(rightTabs.activeTab.value).toBe('teamMembers');
-
-    await wrapper.get('[data-test="left-active-task-member-row"]').trigger('click');
-    await flushPromises();
-
-    expect(useAgentTeamContextsStore().getTeamContextById('team-1')?.focusedMemberRouteKey)
-      .toBe('task-team-run-1/implementation_engineer');
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-implementation_engineer"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-active-task-context-tree"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-active-task-navigator"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-summary-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-reference-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-technical-details"]').exists()).toBe(false);
   });
+
 
   it('renders delete action for inactive team history rows', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [

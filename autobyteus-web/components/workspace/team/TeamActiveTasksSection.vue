@@ -41,21 +41,49 @@
         </p>
       </div>
 
-      <TeamActiveTaskDetailPane
-        v-else
-        :team-context="teamContext"
-        class="h-full"
-        @select-member="$emit('select-member', $event)"
-      />
+      <div v-else class="flex h-full min-h-0 overflow-hidden" data-test="team-active-tasks-split">
+        <aside
+          class="min-h-0 shrink-0 overflow-y-auto border-r border-slate-200 pb-2"
+          :style="{ width: `${leftPaneWidth}px` }"
+          data-test="team-active-tasks-navigator"
+        >
+          <TeamActiveTaskNavigator
+            :entries="activeTaskEntries"
+            :selected-task-route-key="selectedTaskRouteKey"
+            :selected-reference-id="selectedReferenceId"
+            :focused-member-route-key="teamContext.focusedMemberRouteKey ?? null"
+            @select-task="selectTask"
+            @select-reference="selectReference"
+            @select-member="emitFocus"
+          />
+        </aside>
+
+        <div
+          class="w-1 shrink-0 cursor-col-resize bg-gray-100 transition-colors hover:bg-blue-200"
+          role="separator"
+          aria-orientation="vertical"
+          data-test="team-active-tasks-resize-handle"
+          @mousedown="startResize"
+        />
+
+        <TeamActiveTaskDetailPane
+          :selected-entry="selectedEntry"
+          :selected-reference="selectedReference"
+          :reference-refresh-signal="referenceRefreshSignal"
+          @select-member="emitFocus"
+        />
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
 import { deriveActiveTaskEntries, type ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';
 import TeamActiveTaskDetailPane from '~/components/workspace/team/TeamActiveTaskDetailPane.vue';
+import TeamActiveTaskNavigator from '~/components/workspace/team/TeamActiveTaskNavigator.vue';
 
 const props = withDefaults(defineProps<{
   teamContext: AgentTeamContext;
@@ -64,10 +92,80 @@ const props = withDefaults(defineProps<{
   collapsed: false,
 });
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'toggle'): void;
   (e: 'select-member', memberRouteKey: string): void;
 }>();
 
+const selectedTaskRouteKey = ref<string | null>(null);
+const selectedReferenceId = ref<string | null>(null);
+const referenceRefreshSignal = ref(0);
+const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
+  initialWidth: 248,
+  minWidth: 168,
+  maxWidth: 360,
+});
+
 const activeTaskEntries = computed<ActiveTaskEntry[]>(() => deriveActiveTaskEntries(props.teamContext));
+const selectedEntry = computed(() => (
+  activeTaskEntries.value.find((entry) => entry.node.memberRouteKey === selectedTaskRouteKey.value) ?? null
+));
+const selectedReference = computed(() => (
+  selectedEntry.value?.taskReferenceFiles.find((reference) => reference.referenceId === selectedReferenceId.value) ?? null
+));
+const activeTaskSelectionSignature = computed(() => activeTaskEntries.value
+  .map((entry) => `${entry.node.memberRouteKey}:${entry.taskReferenceFiles.map((reference) => reference.referenceId).join(',')}`)
+  .join('\n'));
+
+watch(() => props.teamContext.teamRunId, () => {
+  selectedTaskRouteKey.value = null;
+  selectedReferenceId.value = null;
+  referenceRefreshSignal.value = 0;
+});
+
+watch(
+  () => [props.teamContext.teamRunId, activeTaskSelectionSignature.value],
+  () => {
+    if (!activeTaskEntries.value.length) {
+      selectedTaskRouteKey.value = null;
+      selectedReferenceId.value = null;
+      return;
+    }
+
+    if (!selectedEntry.value) {
+      selectedTaskRouteKey.value = activeTaskEntries.value[0].node.memberRouteKey;
+      selectedReferenceId.value = null;
+      return;
+    }
+
+    if (selectedReferenceId.value && !selectedReference.value) {
+      selectedReferenceId.value = null;
+    }
+  },
+  { immediate: true },
+);
+
+const selectTask = (memberRouteKey: string): void => {
+  if (!activeTaskEntries.value.some((entry) => entry.node.memberRouteKey === memberRouteKey)) {
+    return;
+  }
+  selectedTaskRouteKey.value = memberRouteKey;
+  selectedReferenceId.value = null;
+};
+
+const selectReference = (payload: { memberRouteKey: string; referenceId: string }): void => {
+  const entry = activeTaskEntries.value.find((candidate) => candidate.node.memberRouteKey === payload.memberRouteKey);
+  if (!entry || !entry.taskReferenceFiles.some((reference) => reference.referenceId === payload.referenceId)) {
+    return;
+  }
+
+  if (selectedTaskRouteKey.value === payload.memberRouteKey && selectedReferenceId.value === payload.referenceId) {
+    referenceRefreshSignal.value += 1;
+  }
+
+  selectedTaskRouteKey.value = payload.memberRouteKey;
+  selectedReferenceId.value = payload.referenceId;
+};
+
+const emitFocus = (memberRouteKey: string): void => emit('select-member', memberRouteKey);
 </script>

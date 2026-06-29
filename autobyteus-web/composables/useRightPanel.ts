@@ -60,13 +60,6 @@ const rightPanelWidth = computed(() => {
 
 export function useRightPanel() {
   /**
-   * Idempotently opens the right panel.
-   */
-  const openRightPanel = () => {
-    isRightPanelVisible.value = true
-  }
-
-  /**
    * Toggles the visibility of the right panel.
    */
   const toggleRightPanel = () => {
@@ -125,7 +118,6 @@ export function useRightPanel() {
   return {
     isRightPanelVisible,
     rightPanelWidth,
-    openRightPanel,
     toggleRightPanel,
     setRightPanelWorkspaceWidth,
     initDragRightPanel,

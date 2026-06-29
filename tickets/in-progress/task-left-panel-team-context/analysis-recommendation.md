@@ -133,3 +133,24 @@ For a single-agent task, the same structure sits under the agent row.
 ## Technical Details Placement
 
 Moving technical details to the left can make sense because they are metadata/navigation context rather than the main content. The right side should stay focused on readable task content, messages, and selected reference previews. Technical details should be compact and preferably collapsed by default because the left panel is narrow. Avoid letting IDs or JSON blobs visually compete with the live agent/team status roster.
+
+---
+
+## Design-Impact Correction Addendum — 2026-06-29
+
+The earlier recommendation to move compact task context to the “left side” must be read as the **left navigator inside the active task UI**, not the global Workspaces/run-history tree.
+
+Corrected product recommendation:
+
+- Keep the existing Team active-task master/detail UI.
+- In each left navigator task item, render:
+  1. task summary / short description as text only;
+  2. responsible agent or agent team row with tiny status dot and no extra team-level indent;
+  3. indented member rows with tiny status dots if the responsible target is a team;
+  4. References label and file-name rows;
+  5. compact/collapsed Technical details.
+- The right detail pane continues to show the selected task body or selected reference content/preview.
+- Do not render active-task summary blocks, references, or technical details inside the global Workspaces tree.
+- Task summary/reference clicks should not focus the center subteam/composer; only explicit actor/member row clicks should invoke focus behavior.
+
+This addendum supersedes any reading of the prior analysis that suggested `WorkspaceAgentRunsTreePanel.vue` or `WorkspaceHistoryWorkspaceSection.vue` should host active-task context.

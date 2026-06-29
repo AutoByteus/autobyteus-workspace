@@ -314,16 +314,6 @@
                   </span>
                 </button>
 
-                <TeamActiveTaskContextTree
-                  v-if="activeTaskEntriesForTeam(team).length"
-                  class="mt-1"
-                  :entries="activeTaskEntriesForTeam(team)"
-                  :selection="activeTasks.selectionForTeam(team.teamRunId)"
-                  :focused-member-route-key="activeTasks.focusedMemberRouteKeyForTeam(team.teamRunId)"
-                  @select-task="activeTasks.onSelectTask(team, $event)"
-                  @select-reference="activeTasks.onSelectReference(team, $event.memberRouteKey, $event.referenceId)"
-                  @select-member="activeTasks.onFocusMember(team, $event)"
-                />
               </div>
             </div>
           </div>
@@ -337,9 +327,7 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
-import TeamActiveTaskContextTree from '~/components/workspace/team/TeamActiveTaskContextTree.vue';
 import type {
-  WorkspaceHistoryActiveTaskBindings,
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
   WorkspaceHistorySectionState,
@@ -357,7 +345,6 @@ const props = defineProps<{
   workspaceTeamHistoryGroups: TeamRunHistoryDefinitionGroup[];
   state: WorkspaceHistorySectionState;
   avatars: WorkspaceHistoryAvatarBindings;
-  activeTasks: WorkspaceHistoryActiveTaskBindings;
   actions: WorkspaceHistorySectionActions;
 }>();
 
@@ -367,8 +354,6 @@ const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGro
     props.workspaceTeams,
   ),
 );
-
-const activeTaskEntriesForTeam = (team: TeamTreeNode) => props.activeTasks.entriesForTeam(team.teamRunId);
 
 const flattenTeamMembers = (team: TeamTreeNode): TeamTreeNode['members'] => {
   const flatten = (members: TeamTreeNode['memberTree']): TeamTreeNode['members'] =>

@@ -11,7 +11,6 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
-import { useTeamActiveTaskSelectionStore } from '~/stores/teamActiveTaskSelectionStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
@@ -328,15 +327,20 @@ describe('Team Tasks Focus + send-message workflow', () => {
     });
   });
 
-  it('uses shared task selection for task-team right detail without reintroducing right-side member navigation', async () => {
-    const { wrapper } = mountWorkflow();
-    useTeamActiveTaskSelectionStore().selectTask('team-1', 'task-team-run-1');
+  it('selects task-team summaries inside Tasks without focusing or reintroducing right-side member navigation', async () => {
+    const { wrapper, teamContextsStore } = mountWorkflow();
     await expandTasks(wrapper);
     await flushPromises();
     await nextTick();
 
+    await wrapper.get('[data-test="left-task-team-context"] [data-test="left-active-task-summary-row"]').trigger('click');
+    await flushPromises();
+    await nextTick();
+
+    expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('coordinator');
     expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.find('[data-test="task-team-active-task-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-task-team-context"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="active-task-member-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="active-task-technical-details"]').exists()).toBe(false);
   });

@@ -48,45 +48,24 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { useTeamActiveTaskSelectionStore } from '~/stores/teamActiveTaskSelectionStore';
-import { deriveActiveTaskEntries, type ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';
+import { computed } from 'vue';
+import type { TeamReferenceFile } from '~/types/teamReferenceFile';
+import type { ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import TeamTaskReferenceViewer from '~/components/workspace/team/TeamTaskReferenceViewer.vue';
 
-const props = defineProps<{
-  teamContext: AgentTeamContext;
-}>();
+const props = withDefaults(defineProps<{
+  selectedEntry: ActiveTaskEntry | null;
+  selectedReference?: TeamReferenceFile | null;
+  referenceRefreshSignal?: number;
+}>(), {
+  selectedReference: null,
+  referenceRefreshSignal: 0,
+});
 
 defineEmits<{
   (e: 'select-member', memberRouteKey: string): void;
 }>();
-
-const selectionStore = useTeamActiveTaskSelectionStore();
-const activeTaskEntries = computed<ActiveTaskEntry[]>(() => deriveActiveTaskEntries(props.teamContext));
-const selection = computed(() => selectionStore.getSelection(props.teamContext.teamRunId));
-const selectedEntry = computed(() => {
-  const selectedMemberRouteKey = selection.value?.memberRouteKey ?? '';
-  return activeTaskEntries.value.find((entry) => entry.node.memberRouteKey === selectedMemberRouteKey)
-    ?? activeTaskEntries.value[0]
-    ?? null;
-});
-const selectedReference = computed(() => {
-  const referenceId = selection.value?.referenceId ?? '';
-  return selectedEntry.value?.taskReferenceFiles.find((reference) => reference.referenceId === referenceId) ?? null;
-});
-const referenceRefreshSignal = ref(0);
-
-watch(selection, (nextSelection, previousSelection) => {
-  if (
-    nextSelection?.referenceId
-    && nextSelection.memberRouteKey === previousSelection?.memberRouteKey
-    && nextSelection.referenceId === previousSelection.referenceId
-  ) {
-    referenceRefreshSignal.value += 1;
-  }
-});
 
 const usefulStatusLabel = (statusLabel: string | null | undefined): string | null => {
   const normalized = statusLabel?.trim() ?? '';
@@ -95,6 +74,6 @@ const usefulStatusLabel = (statusLabel: string | null | undefined): string | nul
   if (key === 'active' || key === 'unknown') return null;
   return normalized;
 };
-const selectedStatusLabel = computed(() => selectedEntry.value ? usefulStatusLabel(selectedEntry.value.statusLabel) : null);
+const selectedStatusLabel = computed(() => (props.selectedEntry ? usefulStatusLabel(props.selectedEntry.statusLabel) : null));
 const isWaitingStatus = (statusLabel: string): boolean => /waiting|approval|input|action/i.test(statusLabel);
 </script>

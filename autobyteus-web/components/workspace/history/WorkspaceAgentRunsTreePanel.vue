@@ -78,7 +78,6 @@
           :workspace-team-history-groups="workspaceTeamHistoryGroups(workspaceNode.workspaceRootPath)"
           :state="sectionState"
           :avatars="sectionAvatarBindings"
-          :active-tasks="sectionActiveTaskBindings"
           :actions="sectionActions"
         />
       </div>
@@ -115,7 +114,6 @@ import { Icon } from '@iconify/vue';
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
 import WorkspaceHistoryWorkspaceSection from '~/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue';
 import type {
-  WorkspaceHistoryActiveTaskBindings,
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
   WorkspaceHistorySectionState,
@@ -128,8 +126,6 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useTeamActiveTaskSelectionStore } from '~/stores/teamActiveTaskSelectionStore';
 import { useToasts } from '~/composables/useToasts';
 import { pickFolderPath } from '~/composables/useNativeFolderDialog';
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
@@ -139,10 +135,7 @@ import { useWorkspaceHistoryWorkspaceCreation } from '~/composables/useWorkspace
 import { useWorkspaceHistoryWorkspaceRemoval } from '~/composables/useWorkspaceHistoryWorkspaceRemoval';
 import { useWorkspaceHistoryMutations } from '~/composables/useWorkspaceHistoryMutations';
 import { useLocalization } from '~/composables/useLocalization';
-import { useTeamActiveTaskRightDetailActivation } from '~/composables/useTeamActiveTaskRightDetailActivation';
-import { deriveActiveTaskEntries } from '~/utils/teamActiveTaskEntries';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import type { TeamTreeNode } from '~/stores/runHistoryTypes';
 
 const emit = defineEmits<{
   (e: 'run-selected', payload: { type: 'agent'; runId: string }): void;
@@ -160,9 +153,6 @@ const teamRunStore = useAgentTeamRunStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
-const teamContextsStore = useAgentTeamContextsStore();
-const activeTaskSelectionStore = useTeamActiveTaskSelectionStore();
-const { activateTeamTaskDetail } = useTeamActiveTaskRightDetailActivation();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
 const { t } = useLocalization();
@@ -337,55 +327,6 @@ const sectionState: WorkspaceHistorySectionState = {
   canTerminateTeam: treeState.canTerminateTeam,
 };
 
-
-const activeTaskEntriesForTeam = (teamRunId: string) => {
-  const teamContext = teamContextsStore.getTeamContextById(teamRunId);
-  return teamContext ? deriveActiveTaskEntries(teamContext) : [];
-};
-
-const ensureTeamSelectedForActiveTask = async (team: TeamTreeNode): Promise<void> => {
-  const isAlreadySelectedTeam = selectionStore.selectedType === 'team'
-    && selectionStore.selectedRunId === team.teamRunId;
-
-  if (isAlreadySelectedTeam) {
-    treeState.setTeamExpanded(team.teamRunId, true);
-    return;
-  }
-
-  await onSelectTeam(team);
-};
-
-const selectActiveTask = async (team: TeamTreeNode, memberRouteKey: string): Promise<void> => {
-  await ensureTeamSelectedForActiveTask(team);
-  activeTaskSelectionStore.selectTask(team.teamRunId, memberRouteKey);
-  activateTeamTaskDetail(team.teamRunId);
-};
-
-const selectActiveTaskReference = async (
-  team: TeamTreeNode,
-  memberRouteKey: string,
-  referenceId: string,
-): Promise<void> => {
-  await ensureTeamSelectedForActiveTask(team);
-  activeTaskSelectionStore.selectReference(team.teamRunId, memberRouteKey, referenceId);
-  activateTeamTaskDetail(team.teamRunId);
-};
-
-const focusActiveTaskMember = async (team: TeamTreeNode, memberRouteKey: string): Promise<void> => {
-  await ensureTeamSelectedForActiveTask(team);
-  await teamContextsStore.focusMemberAndEnsureHydrated(team.teamRunId, memberRouteKey);
-};
-
-const sectionActiveTaskBindings: WorkspaceHistoryActiveTaskBindings = {
-  entriesForTeam: activeTaskEntriesForTeam,
-  selectionForTeam: (teamRunId: string) => activeTaskSelectionStore.getSelection(teamRunId),
-  focusedMemberRouteKeyForTeam: (teamRunId: string) => (
-    teamContextsStore.getTeamContextById(teamRunId)?.focusedMemberRouteKey ?? null
-  ),
-  onSelectTask: selectActiveTask,
-  onSelectReference: selectActiveTaskReference,
-  onFocusMember: focusActiveTaskMember,
-};
 
 const sectionAvatarBindings: WorkspaceHistoryAvatarBindings = {
   showAgentAvatar,

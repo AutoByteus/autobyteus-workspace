@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
-import TeamActiveTaskContextTree from '../TeamActiveTaskContextTree.vue';
+import TeamActiveTaskNavigator from '../TeamActiveTaskNavigator.vue';
 
 const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamActiveTasksSection.technical_details': 'Technical details',
@@ -12,10 +12,11 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamActiveTasksSection.target': 'Target',
 };
 
-const mountSubject = (entries: any[], props: Record<string, unknown> = {}) => mount(TeamActiveTaskContextTree, {
+const mountSubject = (entries: any[], props: Record<string, unknown> = {}) => mount(TeamActiveTaskNavigator, {
   props: {
     entries,
-    selection: null,
+    selectedTaskRouteKey: null,
+    selectedReferenceId: null,
     focusedMemberRouteKey: null,
     ...props,
   },
@@ -111,13 +112,11 @@ const taskTeamEntry = {
   taskTargetName: 'Software Engineering Team',
 };
 
-describe('TeamActiveTaskContextTree', () => {
+describe('TeamActiveTaskNavigator', () => {
   it('renders a single-agent task as text-only summary plus one root actor row with collapsed metadata', async () => {
     const wrapper = mountSubject([singleAgentEntry], {
-      selection: {
-        memberRouteKey: 'team-run__worker__task_0001',
-        referenceId: 'task-reference:0:/tmp/requirements.md',
-      },
+      selectedTaskRouteKey: 'team-run__worker__task_0001',
+      selectedReferenceId: 'task-reference:0:/tmp/requirements.md',
     });
 
     expect(wrapper.find('[data-test="left-task-agent-context"]').exists()).toBe(true);

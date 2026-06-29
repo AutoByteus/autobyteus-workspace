@@ -1,8 +1,6 @@
 import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import type { ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';
-import type { TeamActiveTaskSelection } from '~/stores/teamActiveTaskSelectionStore';
 
 export interface WorkspaceHistorySectionState {
   selectedRunId: string | null;
@@ -47,16 +45,6 @@ export interface WorkspaceHistoryAvatarBindings {
   onTeamMemberAvatarError: (member: TeamMemberTreeRow) => void;
   getTeamMemberDisplayName: (member: TeamMemberTreeRow) => string;
   getTeamMemberInitials: (member: TeamMemberTreeRow) => string;
-}
-
-
-export interface WorkspaceHistoryActiveTaskBindings {
-  entriesForTeam: (teamRunId: string) => ActiveTaskEntry[];
-  selectionForTeam: (teamRunId: string) => TeamActiveTaskSelection | null;
-  focusedMemberRouteKeyForTeam: (teamRunId: string) => string | null;
-  onSelectTask: (team: TeamTreeNode, memberRouteKey: string) => Promise<void> | void;
-  onSelectReference: (team: TeamTreeNode, memberRouteKey: string, referenceId: string) => Promise<void> | void;
-  onFocusMember: (team: TeamTreeNode, memberRouteKey: string) => Promise<void> | void;
 }
 
 export interface WorkspaceHistorySectionActions {
