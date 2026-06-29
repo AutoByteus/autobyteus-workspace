@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-This ticket is a frontend conversation-segment presentation change plus focused durable coverage and one long-lived frontend architecture documentation update. Delivery has completed latest-base refresh, docs sync, and pre-verification handoff preparation. Repository finalization, ticket archival, branch push/merge, cleanup, and any release/deployment action are intentionally not started until explicit user verification is received.
+This ticket delivered a frontend conversation-segment presentation change, focused durable coverage, one long-lived frontend architecture documentation update, repository finalization into `personal`, and a requested new workspace release. User verification was received on 2026-06-29 with the instruction: “the task is done. lets finalize and release a new version”.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/notification-segment-message-style/tickets/done/notification-segment-message-style/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/notification-segment-message-style/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary was created after delivery confirmed latest tracked `origin/personal` matched the ticket branch base and after delivery docs sync completed.
+- Notes: Handoff summary was updated through finalization, release, release verification, and cleanup.
 
 ## Initial Delivery Integration Refresh
 
@@ -16,124 +16,135 @@ This ticket is a frontend conversation-segment presentation change plus focused 
 - Latest tracked remote base reference checked: `origin/personal` at `aad9721f5683a539368fe8c2d12758b37b13510d` after `git fetch origin personal` on 2026-06-29.
 - Base advanced since bootstrap or previous refresh: `No` relative to the API/E2E handoff/reviewed candidate.
 - New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed`; no merge/rebase integration was required and finalization commits are blocked until explicit user verification.
+- Local checkpoint commit result: `Not needed`; no merge/rebase integration was required.
 - Integration method: `Already current`
 - Integration result: `Completed`; ticket branch `HEAD` matched latest tracked `origin/personal` before delivery-owned docs/artifact edits.
-- Post-integration executable checks rerun: `No`
+- Post-integration executable checks rerun: `No` before user verification.
 - Post-integration verification result: `Passed`; no new base commits were integrated, and delivery `git diff --check` passed before and after docs sync edits.
-- No-rerun rationale (only if no new base commits were integrated): Latest tracked `origin/personal` did not advance beyond the reviewed/API-E2E validated candidate (`aad9721f5683a539368fe8c2d12758b37b13510d`), so the upstream focused Nuxt/API/E2E/browser/guard evidence remains applicable. Delivery additionally ran `git diff --check` before and after docs sync.
+- No-rerun rationale (only if no new base commits were integrated): Latest tracked `origin/personal` did not advance beyond the reviewed/API-E2E validated candidate (`aad9721f5683a539368fe8c2d12758b37b13510d`), so upstream focused Nuxt/API/E2E/browser/guard evidence remained applicable. Delivery additionally ran `git diff --check` before and after docs sync.
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`; branch includes uncommitted ticket/source/docs changes over `origin/personal` at `aad9721f5683a539368fe8c2d12758b37b13510d` and no remote-base merge/rebase is pending.
+- Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): N/A
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification reference: 2026-06-29 user message: “the task is done. lets finalize and release a new version”.
-- Renewed verification required after later re-integration: `No` at this time; no later re-integration has occurred.
+- Renewed verification required after later re-integration: `No`; finalization target did not advance after verification.
 - Renewed verification received: `Not needed`
 - Renewed verification reference: N/A
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/notification-segment-message-style/tickets/done/notification-segment-message-style/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/notification-segment-message-style/docs-sync-report.md`
 - Docs sync result: `Updated`
-- Docs updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/notification-segment-message-style/autobyteus-web/docs/agent_execution_architecture.md`
+- Docs updated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/notification-segment-message-style/tickets/done/notification-segment-message-style/`.
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/notification-segment-message-style/`
 
 ## Version / Tag / Release Commit
 
-- No version bump, tag, release commit, or release-notes artifact has been created.
-- No release/publication/deployment action is requested or appropriate before user verification.
+- Release version: `1.3.88`
+- Release tag: `v1.3.88`
+- Release commit: `220c28d448a00895fe264a60568ab6136be5f680` (`chore(release): bump workspace release version to 1.3.88`).
+- Annotated tag object: `ec167bbd572c68b578908152c9b2874000890b8e`.
+- Tag peeled commit: `220c28d448a00895fe264a60568ab6136be5f680`.
+- Release helper synchronized:
+  - `autobyteus-web/package.json` from `1.3.87` to `1.3.88`,
+  - `autobyteus-message-gateway/package.json` from `1.3.87` to `1.3.88`,
+  - `.github/release-notes/release-notes.md`,
+  - `autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json`.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/notification-segment-message-style/tickets/done/notification-segment-message-style/investigation-notes.md` records `Bootstrap Base Branch: origin/personal` and `Expected Finalization Target: personal`.
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/notification-segment-message-style/investigation-notes.md` records `Bootstrap Base Branch: origin/personal` and `Expected Finalization Target: personal`.
 - Ticket branch: `codex/notification-segment-message-style`
-- Ticket branch commit result: `Pending`; archived ticket and release notes are ready for the final ticket commit.
-- Ticket branch push result: `Pending`; will push after the final ticket commit.
+- Ticket branch commit result: `Completed` at `ea814d523d29eadc6b03afd7000df61a56e5cdcf` (`fix(web): render task notifications as normal messages`).
+- Ticket branch push result: `Completed`; `origin/codex/notification-segment-message-style` was pushed before target merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A; verification not yet received.
-- Delivery-owned edits protected before re-integration: `Not needed` at this time.
-- Re-integration before final merge result: `Not needed` at this time; will refresh `origin/personal` again after user verification before finalization.
-- Target branch update result: `Not started`
-- Merge into target result: `Not started`
-- Push target branch result: `Not started`
-- Repository finalization status: `Pending`; user verification is received, ticket archival is complete, and final commit/push/merge remain to be performed.
-- Blocker (if applicable): N/A; user verification has been received. Remaining steps are in progress.
+- Target advanced after user verification: `No`; `origin/personal` remained `aad9721f5683a539368fe8c2d12758b37b13510d` after `git fetch origin personal --tags`.
+- Delivery-owned edits protected before re-integration: `Not needed`; target did not advance.
+- Re-integration before final merge result: `Not needed`; target did not advance beyond the verified integrated state.
+- Target branch update result: `Completed`; local `personal` was current with `origin/personal` before merge.
+- Merge into target result: `Completed`; local `personal` fast-forwarded from `aad9721f5683a539368fe8c2d12758b37b13510d` to ticket commit `ea814d523d29eadc6b03afd7000df61a56e5cdcf`.
+- Push target branch result: `Completed`; `origin/personal` was pushed after ticket merge, then pushed again by the release helper to release commit `220c28d448a00895fe264a60568ab6136be5f680`.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
 
-- Applicable: `Yes`; user requested a new version in the verification message.
-- Method: N/A
-- Method reference / command: N/A
-- Release/publication/deployment result: `Pending`; repository finalization must complete before running the documented release helper.
-- Release notes handoff result: `Pending`; release notes created at `/Users/normy/autobyteus_org/autobyteus-worktrees/notification-segment-message-style/tickets/done/notification-segment-message-style/release-notes.md`.
+- Applicable: `Yes`
+- Method: `Documented Command`
+- Method reference / command: `pnpm release 1.3.88 -- --release-notes tickets/done/notification-segment-message-style/release-notes.md`
+- Release/publication/deployment result: `Completed`; release helper pushed `origin/personal` and annotated tag `v1.3.88`.
+- Release notes handoff result: `Used`
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/notification-segment-message-style`
-- Worktree cleanup result: `Pending` until repository finalization and release work complete.
-- Worktree prune result: `Pending` until repository finalization and release work complete.
-- Local ticket branch cleanup result: `Pending` until repository finalization and release work complete.
-- Remote branch cleanup result: `Not required` at this stage; no remote ticket branch has been pushed during pre-verification hold.
-- Blocker (if applicable): N/A; user verification has been received. Remaining steps are in progress.
+- Worktree cleanup result: `Completed`; dedicated ticket worktree removed after release verification.
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed`; local `codex/notification-segment-message-style` deleted after merge/release verification.
+- Remote branch cleanup result: `Completed`; `origin/codex/notification-segment-message-style` deleted after merge/release verification.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A for engineering blockers; only the required user-verification hold remains.
+- Why final handoff could not complete: N/A; finalization, release, verification, and cleanup completed.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `Yes`; created after the user added an explicit release request in the verification message and before ticket archival/finalization.
-- Archived release notes artifact used for release/publication: N/A
+- Release notes artifact created before release: `Yes`; release was requested in the verification/finalization message and notes were created before ticket archival/finalization.
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/notification-segment-message-style/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-- None run.
+- Release helper run: `pnpm release 1.3.88 -- --release-notes tickets/done/notification-segment-message-style/release-notes.md`. This pushed tag `v1.3.88`, which started the configured GitHub release workflows for desktop, Android APK, iOS App Store Connect/TestFlight, messaging gateway, and server Docker.
+- GitHub Release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.88
 
 ## Environment Or Migration Notes
 
-- No backend API, database schema, storage migration, environment variable, Electron packaging, or deployment environment changes.
-- Frontend dependency/generated environment was already hydrated by upstream API/E2E for validation. Delivery did not install new dependencies.
+- No backend API, database schema, storage migration, environment variable, Electron packaging, or deployment environment changes were introduced by this ticket.
+- The release workflow published the normal workspace release artifacts for the version bump.
+- During release helper execution, unrelated untracked files in the main `personal` worktree were temporarily stashed and then restored; they were not included in any finalization or release commit.
 
 ## Verification Checks
 
 - Delivery integration refresh: `git fetch origin personal` — passed; latest tracked `origin/personal` stayed at `aad9721f5683a539368fe8c2d12758b37b13510d`.
 - Delivery pre-docs whitespace/integrity check: `git diff --check` — passed.
-- Delivery final docs/artifact whitespace/integrity check: `git diff --check` — passed after docs sync and handoff/report creation; passed again after user-verification addenda and ticket archival.
+- Delivery final docs/artifact whitespace/integrity checks: `git diff --check` — passed after docs sync and handoff/report creation; passed again after user-verification addenda and ticket archival.
 - Final focused validation after user verification: `pnpm -C autobyteus-web test:nuxt components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts components/conversation/__tests__/AIMessage.spec.ts services/agentStreaming/handlers/__tests__/systemTaskNotificationHandler.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --run` — passed, 5 files / 59 tests.
-- Upstream API/E2E evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/notification-segment-message-style/tickets/done/notification-segment-message-style/api-e2e-execution-coverage-report.md` records successful Nuxt prepare, focused Nuxt suite (5 files / 59 tests), temporary feed probe, Chrome/Playwright browser probe, localization guards, web boundary guard, and `git diff --check`.
+- Upstream API/E2E evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/notification-segment-message-style/api-e2e-execution-coverage-report.md` records successful Nuxt prepare, focused Nuxt suite (5 files / 59 tests), temporary feed probe, Chrome/Playwright browser probe, localization guards, web boundary guard, and `git diff --check`.
+- Release command log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/notification-segment-message-style/release-command-20260629.log`.
+- Release verification log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/notification-segment-message-style/release-verification-20260629.log`.
+- Cleanup log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/notification-segment-message-style/final-cleanup-20260629.log`.
 
 ## Rollback Criteria
 
-Before finalization, stop and route if user verification or a new integrated-base check shows any of the following:
+Rollback should revert the ticket commit if task/system notifications stop preserving `SYSTEM_TASK_NOTIFICATION` payload sender/content, regain the old purple card/title/emoji/pre/monospace presentation, lose readable markdown flow for multiline/list-like task notifications, lose the semantic/accessibility hooks without a deliberate replacement, or regress other `AIMessage.vue` segment dispatch behavior.
 
-- `SYSTEM_TASK_NOTIFICATION` no longer creates `system_task_notification` AI message segments with preserved sender/content.
-- Notification content renders inside `<pre>` or regains purple/card-like alert styling, visible `System Task Notification` heading, inbox emoji, or monospace body treatment.
-- Notification content loses readable multiline/list/markdown rendering for representative task notification templates.
-- Semantic/accessibility hooks (`system-task-notification`, test id, `role="note"`, accessible label) are removed without a deliberate replacement.
-- Other `AIMessage.vue` segment types regress.
+## Release Publication Verification
+
+- GitHub release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.88
+- GitHub Release state: published, non-draft, non-prerelease; published at `2026-06-29T14:30:58Z`.
+- GitHub Release asset count: `21`, including desktop macOS ARM64/x64 DMG+ZIP artifacts and updater metadata, Windows EXE and updater metadata, Linux x64/ARM64 AppImages and updater metadata, Android release APK and checksum, message gateway package/checksum/metadata, and release manifest.
+- Tag-triggered workflow results:
+  - Desktop Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472730.
+  - Android APK Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472710.
+  - iOS App Store Connect Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472797.
+  - Release Messaging Gateway: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472816.
+  - Server Docker Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472721.
+- Docker publication verification: `docker buildx imagetools inspect autobyteus/autobyteus-server:1.3.88` resolved a multi-platform manifest list for `linux/amd64` and `linux/arm64`; digest `sha256:0ed029eae74fcc07e6503f68f321c6244a30729be714456a1b1989e18ff1fb4a`.
 
 ## Final Status
 
-Pre-verification delivery handoff is ready. Latest tracked base was refreshed and found current, docs sync is complete, final `git diff --check` passed, and the ticket is held for explicit user verification before archival, commit/push/merge, release/deployment decisions, or cleanup.
-
-
-## User Verification / Release Approval Addendum — 2026-06-29
-
-- User verification received: `Yes`; reference: “the task is done. lets finalize and release a new version”.
-- Finalization target refresh after verification: `git fetch origin personal --tags` passed and `origin/personal` remained `aad9721f5683a539368fe8c2d12758b37b13510d`.
-- Target advanced after user verification: `No`.
-- Renewed verification required: `No`.
-- Release notes artifact prepared before archival: `/Users/normy/autobyteus_org/autobyteus-worktrees/notification-segment-message-style/tickets/done/notification-segment-message-style/release-notes.md`.
+Finalization complete. Ticket artifacts are archived, `personal` was updated and pushed, release `v1.3.88` was created and published, all tag-triggered release workflows completed successfully, release publication was verified, and the dedicated ticket worktree/local+remote ticket branches were cleaned up.
