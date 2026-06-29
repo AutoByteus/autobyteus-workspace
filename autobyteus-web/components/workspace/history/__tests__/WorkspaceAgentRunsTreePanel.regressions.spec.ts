@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
 import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
 
 const flushPromises = async () => {
@@ -227,6 +228,7 @@ vi.mock('~/composables/useToasts', () => ({
 
 describe('WorkspaceAgentRunsTreePanel regressions', () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     vi.clearAllMocks();
     runHistoryState.loading = false;
     runHistoryState.error = null;

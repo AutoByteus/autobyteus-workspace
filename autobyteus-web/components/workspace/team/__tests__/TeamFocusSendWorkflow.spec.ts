@@ -11,6 +11,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
+import { useTeamActiveTaskSelectionStore } from '~/stores/teamActiveTaskSelectionStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
@@ -327,37 +328,16 @@ describe('Team Tasks Focus + send-message workflow', () => {
     });
   });
 
-  it('focuses a task-team member from Tasks, sends to that focused member, renders the message, and keeps Messages identity updated', async () => {
-    const { wrapper, teamContextsStore, activeContextStore, sendMessageSpy } = mountWorkflow();
+  it('uses shared task selection for task-team right detail without reintroducing right-side member navigation', async () => {
+    const { wrapper } = mountWorkflow();
+    useTeamActiveTaskSelectionStore().selectTask('team-1', 'task-team-run-1');
     await expandTasks(wrapper);
-
-    await wrapper.get('[data-test="task-team-active-task-row"] [data-test="active-task-select-row"]').trigger('click');
-    await wrapper.get('[data-test="active-task-member-row"]').trigger('click');
     await flushPromises();
     await nextTick();
 
-    expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('task-team-run-1/solution_designer');
-    expect(activeContextStore.activeAgentContext?.state.runId).toBe('task-team-run-1::solution_designer');
-    expect(wrapper.get('[data-test="agent-event-monitor"]').attributes('data-run-id')).toBe('task-team-run-1::solution_designer');
-    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('data-focused-route-key')).toBe('task-team-run-1/solution_designer');
-    expect(wrapper.get('[data-test="team-messages-header"]').text()).toContain('1 Messages');
-
-    await sendViaComposer(wrapper, 'Please review the implementation from the focused member.');
-
-    const focusedMemberContext = teamContextsStore.activeTeamContext?.leafAgentContextsByRouteKey.get('task-team-run-1/solution_designer');
-    expect(focusedMemberContext?.state.conversation.messages.at(-1)).toEqual(expect.objectContaining({
-      type: 'user',
-      text: 'Please review the implementation from the focused member.',
-    }));
-    expect(wrapper.get('[data-test="conversation-message"]').text()).toContain('Please review the implementation from the focused member.');
-    expect(sendMessageSpy).toHaveBeenCalledTimes(1);
-    expect(sendMessageSpy.mock.calls[0][0]).toBe('Please review the implementation from the focused member.');
-    expect(sendMessageSpy.mock.calls[0][1]).toEqual({
-      segments: [
-        { kind: 'member', memberRouteKey: 'SoftwareEngineeringTeam' },
-        { kind: 'task_team', taskTeamRunId: 'task-team-run-1' },
-        { kind: 'member', memberRouteKey: 'solution_designer' },
-      ],
-    });
+    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
+    expect(wrapper.find('[data-test="task-team-active-task-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="active-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="active-task-technical-details"]').exists()).toBe(false);
   });
 });

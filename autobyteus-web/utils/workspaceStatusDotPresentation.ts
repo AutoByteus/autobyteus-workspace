@@ -1,0 +1,33 @@
+import type { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+
+export const workspaceStatusDotBaseClass = 'inline-block h-2 w-2 flex-shrink-0 rounded-full';
+
+const normalizeStatus = (status: AgentStatus | AgentTeamStatus | string | null | undefined): string => (
+  typeof status === 'string' ? status.trim().toLowerCase() : ''
+);
+
+const statusDotClassByValue = (status: string, fallbackClass: string): string => {
+  switch (status) {
+    case 'initializing':
+      return 'bg-amber-500 animate-pulse';
+    case 'running':
+      return 'bg-blue-500 animate-pulse';
+    case 'idle':
+      return 'bg-green-500';
+    case 'error':
+      return 'bg-red-500';
+    case 'offline':
+      return 'bg-gray-400';
+    default:
+      return fallbackClass;
+  }
+};
+
+export const agentStatusDotClass = (
+  status: AgentStatus | string | null | undefined,
+): string => statusDotClassByValue(normalizeStatus(status), 'bg-gray-400');
+
+export const teamStatusDotClass = (
+  status: AgentTeamStatus | string | null | undefined,
+): string => statusDotClassByValue(normalizeStatus(status), 'bg-gray-300');

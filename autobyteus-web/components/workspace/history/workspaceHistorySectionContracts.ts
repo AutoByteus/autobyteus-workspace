@@ -1,11 +1,11 @@
 import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
-import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
+import type { ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';
+import type { TeamActiveTaskSelection } from '~/stores/teamActiveTaskSelectionStore';
 
 export interface WorkspaceHistorySectionState {
   selectedRunId: string | null;
-  activeStatusClass: string;
   isRunTerminating: (runId: string) => boolean;
   isTeamTerminating: (teamRunId: string) => boolean;
   isRunDeleting: (runId: string) => boolean;
@@ -23,8 +23,6 @@ export interface WorkspaceHistorySectionState {
   isTeamDefinitionExpanded: (workspaceId: string, groupKey: string) => boolean;
   toggleTeamDefinition: (workspaceId: string, groupKey: string) => void;
   isTeamExpanded: (teamRunId: string) => boolean;
-  runStatusClass: (status: AgentStatus) => string;
-  teamStatusClass: (status: AgentTeamStatus) => string;
   canTerminateTeam: (status: AgentTeamStatus) => boolean;
 }
 
@@ -49,6 +47,16 @@ export interface WorkspaceHistoryAvatarBindings {
   onTeamMemberAvatarError: (member: TeamMemberTreeRow) => void;
   getTeamMemberDisplayName: (member: TeamMemberTreeRow) => string;
   getTeamMemberInitials: (member: TeamMemberTreeRow) => string;
+}
+
+
+export interface WorkspaceHistoryActiveTaskBindings {
+  entriesForTeam: (teamRunId: string) => ActiveTaskEntry[];
+  selectionForTeam: (teamRunId: string) => TeamActiveTaskSelection | null;
+  focusedMemberRouteKeyForTeam: (teamRunId: string) => string | null;
+  onSelectTask: (team: TeamTreeNode, memberRouteKey: string) => Promise<void> | void;
+  onSelectReference: (team: TeamTreeNode, memberRouteKey: string, referenceId: string) => Promise<void> | void;
+  onFocusMember: (team: TeamTreeNode, memberRouteKey: string) => Promise<void> | void;
 }
 
 export interface WorkspaceHistorySectionActions {

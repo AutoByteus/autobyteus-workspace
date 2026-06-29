@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
 import TeamActiveTasksSection from '../TeamActiveTasksSection.vue';
+import { useTeamActiveTaskSelectionStore } from '~/stores/teamActiveTaskSelectionStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const labels: Record<string, string> = {
@@ -8,21 +10,11 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular': 'task',
   'workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural': 'tasks',
   'workspace.components.workspace.team.TeamActiveTasksSection.empty': 'No active delegated tasks',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_agent': 'Task Agent',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_team': 'Task Team',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_id': 'Task ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id': 'Agent run ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id': 'Agent team run ID',
   'workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable': 'Task description unavailable',
-  'workspace.components.workspace.team.TeamActiveTasksSection.focus_agent': 'Focus agent',
-  'workspace.components.workspace.team.TeamActiveTasksSection.focus_team': 'Focus team',
   'workspace.components.workspace.team.TeamActiveTasksSection.focus': 'Focus',
   'workspace.components.workspace.team.TeamActiveTasksSection.technical_details': 'Technical details',
   'workspace.components.workspace.team.TeamActiveTasksSection.select_task': 'Select a task to read it.',
   'workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice': 'Waiting for user action in Activity.',
-  'workspace.components.workspace.team.TeamActiveTasksSection.target_kind': 'Target kind',
-  'workspace.components.workspace.team.TeamActiveTasksSection.target': 'Target',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_type': 'Task type',
 };
 
 const buildTeamContext = () => {
@@ -163,6 +155,7 @@ const mountSubject = (teamContext = buildTeamContext(), props: Record<string, un
 
 describe('TeamActiveTasksSection', () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     vi.clearAllMocks();
   });
 
@@ -181,107 +174,59 @@ describe('TeamActiveTasksSection', () => {
 
     await wrapper.setProps({ collapsed: false });
     expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style') ?? '').not.toContain('display: none');
-    expect(wrapper.find('[data-test="team-active-tasks-split"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="active-task-detail-pane"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-active-tasks-navigator"]').exists()).toBe(false);
   });
 
-  it('opens into master/detail, selects first task, and shows task refs only in the left navigator', () => {
+  it('renders the right detail pane from shared active-task selection without a local navigator or technical metadata', () => {
     const wrapper = mountSubject();
 
-    expect(wrapper.get('[data-test="task-agent-active-task-row"]').text()).not.toContain('Task Agent');
-    expect(wrapper.get('[data-test="task-team-active-task-row"]').text()).not.toContain('Task Team');
-    expect(wrapper.get('[data-test="task-agent-active-task-row"]').text()).toContain('worker');
-    expect(wrapper.get('[data-test="task-agent-active-task-row"]').text()).toContain('Draft the implementation handoff.');
-    expect(wrapper.get('[data-test="task-agent-active-task-row"]').text()).not.toContain('task_0001');
-    expect(wrapper.get('[data-test="task-team-active-task-row"]').text()).not.toContain('task_0002');
-    expect(wrapper.find('[data-test="task-agent-active-task-row"] [data-test="active-task-status-chip"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="task-team-active-task-row"] [data-test="active-task-status-chip"]').text()).toContain('Awaiting review');
-    expect(wrapper.get('[data-test="task-team-active-task-row"] [data-test="active-task-reference-row"]').text()).toContain('design-spec.md');
     expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
     expect(wrapper.get('[data-test="active-task-focus-primary"]').text()).toBe('Focus');
-    expect(wrapper.get('[data-test="active-task-task-detail"]').text()).not.toContain('Task Team');
-    expect(wrapper.get('[data-test="active-task-task-detail"]').text()).not.toContain('Task Agent');
-    expect(wrapper.get('[data-test="active-task-technical-details"]').text()).toContain('Technical details');
-    expect(wrapper.get('[data-test="active-task-detail-pane"]').find('[data-test="active-task-reference-row"]').exists()).toBe(false);
-    expect(wrapper.text()).not.toContain('Task brief');
-    expect(wrapper.text()).not.toContain('Reference files');
-    expect(wrapper.find('[data-test="active-task-approve-tool"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="active-task-deny-tool"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-active-tasks-navigator"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-active-tasks-resize-handle"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="active-task-technical-details"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="active-task-reference-row"]').exists()).toBe(false);
   });
 
-  it('switches the whole right pane to a task-owned reference preview and returns to task body', async () => {
+  it('switches the right detail by reading the shared selected task', () => {
+    useTeamActiveTaskSelectionStore().selectTask('team-run', 'team-run__worker__task_0001');
+
     const wrapper = mountSubject();
 
-    await wrapper.get('[data-test="active-task-reference-row"]').trigger('click');
+    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Draft the implementation handoff.');
+    expect(wrapper.find('[data-test="active-task-reference-preview"]').exists()).toBe(false);
+  });
+
+  it('shows a selected task-owned reference preview on the right', () => {
+    useTeamActiveTaskSelectionStore().selectReference(
+      'team-run',
+      'task-team-run-1',
+      'task-reference:0:/tmp/design-spec.md',
+    );
+
+    const wrapper = mountSubject();
 
     expect(wrapper.get('[data-test="task-reference-viewer"]').text()).toContain('/tmp/design-spec.md');
     expect(wrapper.get('[data-test="task-reference-viewer"]').text()).toContain('team-run');
     expect(wrapper.get('[data-test="task-reference-viewer"]').text()).toContain('task_0002');
     expect(wrapper.find('[data-test="active-task-task-body"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="viewer-back"]').exists()).toBe(false);
-
-    await wrapper.get('[data-test="task-team-active-task-row"] [data-test="active-task-select-row"]').trigger('click');
-    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
   });
 
-  it('adds a message-style horizontal split resize handle for the task navigator', async () => {
+  it('focus buttons emit focus requests without owning left navigation state', async () => {
     const wrapper = mountSubject();
-    const navigator = wrapper.get('[data-test="team-active-tasks-navigator"]');
-    const handle = wrapper.get('[data-test="team-active-tasks-resize-handle"]');
-
-    expect(handle.attributes('role')).toBe('separator');
-    expect(handle.attributes('aria-orientation')).toBe('vertical');
-    expect(navigator.attributes('style')).toContain('width: 248px');
-
-    await handle.trigger('mousedown', { clientX: 200 });
-    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 500 }));
-    await wrapper.vm.$nextTick();
-    expect(navigator.attributes('style')).toContain('width: 360px');
-    window.dispatchEvent(new MouseEvent('mouseup'));
-
-    await handle.trigger('mousedown', { clientX: 500 });
-    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 100 }));
-    await wrapper.vm.$nextTick();
-    expect(navigator.attributes('style')).toContain('width: 168px');
-    window.dispatchEvent(new MouseEvent('mouseup'));
-  });
-
-  it('selects tasks for reading without focusing; explicit focus buttons emit focus requests', async () => {
-    const wrapper = mountSubject();
-
-    await wrapper.get('[data-test="task-team-active-task-row"] [data-test="active-task-select-row"]').trigger('click');
-
-    expect(wrapper.emitted('select-member')).toBeUndefined();
-    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.get('[data-test="active-task-focus-primary"]').text()).toBe('Focus');
 
     await wrapper.get('[data-test="active-task-focus-primary"]').trigger('click');
+
     expect(wrapper.emitted('select-member')?.[0]).toEqual(['task-team-run-1']);
   });
 
-  it('renders task-team member focus rows as primary controls', async () => {
-    const wrapper = mountSubject();
-    await wrapper.get('[data-test="task-team-active-task-row"] [data-test="active-task-select-row"]').trigger('click');
+  it('falls back to the first task if shared selection points at a disappeared task', () => {
+    useTeamActiveTaskSelectionStore().selectTask('team-run', 'missing-task');
 
-    const memberRow = wrapper.get('[data-test="active-task-member-row"]');
-    const orderedDetailParts = Array.from(
-      wrapper.get('[data-test="active-task-task-detail"]').element.querySelectorAll('[data-test="active-task-member-row"], [data-test="active-task-task-body"]'),
-    ).map((element) => element.getAttribute('data-test'));
-
-    expect(orderedDetailParts).toEqual(['active-task-member-row', 'active-task-task-body']);
-    expect(memberRow.text()).toContain('solution_designer');
-    expect(memberRow.text()).toContain('Focus');
-
-    await memberRow.trigger('click');
-    expect(wrapper.emitted('select-member')?.[0]).toEqual(['task-team-run-1/solution_designer']);
-  });
-
-  it('does not render task-team member focus rows for task-agent entries', async () => {
     const wrapper = mountSubject();
 
-    await wrapper.get('[data-test="task-agent-active-task-row"] [data-test="active-task-select-row"]').trigger('click');
-
-    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Draft the implementation handoff.');
-    expect(wrapper.find('[data-test="active-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
   });
 
   it('shows the empty active task state', () => {

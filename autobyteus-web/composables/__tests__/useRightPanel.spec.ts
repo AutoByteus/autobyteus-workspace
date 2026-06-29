@@ -14,6 +14,24 @@ const dispatchMouseUp = (): void => {
 }
 
 describe('useRightPanel', () => {
+
+  it('idempotently opens the right panel without toggling it closed', async () => {
+    const { useRightPanel } = await loadSubject()
+    const panel = useRightPanel()
+
+    expect(panel.isRightPanelVisible.value).toBe(true)
+    panel.openRightPanel()
+    expect(panel.isRightPanelVisible.value).toBe(true)
+
+    panel.toggleRightPanel()
+    expect(panel.isRightPanelVisible.value).toBe(false)
+
+    panel.openRightPanel()
+    expect(panel.isRightPanelVisible.value).toBe(true)
+    panel.openRightPanel()
+    expect(panel.isRightPanelVisible.value).toBe(true)
+  })
+
   it('clamps actual width to the registered workspace while preserving preferred width for restoration', async () => {
     const { useRightPanel } = await loadSubject()
     const panel = useRightPanel()

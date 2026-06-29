@@ -53,11 +53,11 @@
     <div
       v-if="activeTeamContext"
       class="flex flex-col transition-all duration-300 ease-in-out"
-      :class="expandedSection === 'activeTasks' ? 'min-h-0 flex-1' : 'flex-none'"
+      :class="activeTasksExpanded ? 'min-h-0 flex-1' : 'flex-none'"
     >
       <TeamActiveTasksSection
         :team-context="activeTeamContext"
-        :collapsed="expandedSection !== 'activeTasks'"
+        :collapsed="!activeTasksExpanded"
         class="h-full"
         @toggle="toggleSection('activeTasks')"
         @select-member="focusActiveTaskMember"
@@ -67,20 +67,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
+import { useTeamOverviewSectionStore, type TeamOverviewSection } from '~/stores/teamOverviewSectionStore';
 import TeamCommunicationPanel from '~/components/workspace/team/TeamCommunicationPanel.vue';
 import TeamActiveTasksSection from '~/components/workspace/team/TeamActiveTasksSection.vue';
 
-type TeamSection = 'messages' | 'activeTasks';
-
 const teamContextsStore = useAgentTeamContextsStore();
 const teamCommunicationStore = useTeamCommunicationStore();
-const expandedSection = ref<TeamSection | null>('messages');
+const teamOverviewSectionStore = useTeamOverviewSectionStore();
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const activeTeamRunId = computed(() => activeTeamContext.value?.teamRunId || '');
-const messagesExpanded = computed(() => expandedSection.value === 'messages');
+const activeSection = computed(() => teamOverviewSectionStore.getActiveSection(activeTeamRunId.value));
+const messagesExpanded = computed(() => activeSection.value === 'messages');
+const activeTasksExpanded = computed(() => activeSection.value === 'activeTasks');
 const focusedMemberContext = computed(() => teamContextsStore.focusedMemberContext);
 const focusedMemberNode = computed(() => teamContextsStore.focusedMemberNode);
 const focusedMemberCommunicationRunId = computed(() => (
@@ -99,14 +100,12 @@ const messageCount = computed(() => {
   }).messages.length;
 });
 
-watch(activeTeamRunId, (nextRunId, previousRunId) => {
-  if (nextRunId && nextRunId !== previousRunId) {
-    expandedSection.value = 'messages';
+const toggleSection = (section: TeamOverviewSection) => {
+  const teamRunId = activeTeamRunId.value;
+  if (!teamRunId) {
+    return;
   }
-});
-
-const toggleSection = (section: TeamSection) => {
-  expandedSection.value = expandedSection.value === section ? null : section;
+  teamOverviewSectionStore.toggleSection(teamRunId, section);
 };
 
 const focusActiveTaskMember = async (memberRouteKey: string) => {

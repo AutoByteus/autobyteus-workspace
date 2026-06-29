@@ -111,10 +111,7 @@
             @click="actions.onSelectRun(run)"
           >
             <div class="min-w-0 flex items-center">
-              <span
-                class="mr-2 inline-block h-2 w-2 flex-shrink-0 rounded-full"
-                :class="state.runStatusClass(run.currentStatus)"
-              />
+              <StatusDot class="mr-2" kind="agent" :status="run.currentStatus" />
               <span class="truncate">
                 {{ formatRunLabel(run.summary) }}
               </span>
@@ -192,10 +189,7 @@
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
               :class="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key) ? 'rotate-0' : '-rotate-90'"
             />
-            <span
-              class="mr-1.5 inline-block h-2 w-2 flex-shrink-0 rounded-full"
-              :class="state.teamStatusClass(group.status)"
-            />
+            <StatusDot class="mr-1.5" kind="team" :status="group.status" />
             <span
               class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
             >
@@ -232,10 +226,7 @@
                     :class="state.isTeamExpanded(team.teamRunId) ? 'rotate-0' : '-rotate-90'"
                     data-test="workspace-team-run-disclosure"
                   />
-                  <span
-                    class="mr-1.5 inline-block h-2 w-2 flex-shrink-0 rounded-full"
-                    :class="state.teamStatusClass(team.currentStatus)"
-                  />
+                  <StatusDot class="mr-1.5" kind="team" :status="team.currentStatus" />
                   <span class="truncate font-medium">{{ formatTeamRunLabel(team) }}</span>
                 </button>
 
@@ -298,10 +289,7 @@
                   @click="actions.onSelectTeamMember(member)"
                 >
                   <div class="flex min-w-0 items-center">
-                    <span
-                      class="mr-1.5 inline-block h-2 w-2 flex-shrink-0 rounded-full"
-                      :class="state.runStatusClass(member.currentStatus)"
-                    />
+                    <StatusDot class="mr-1.5" kind="agent" :status="member.currentStatus" />
                     <span
                       class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
                     >
@@ -325,6 +313,17 @@
                     {{ state.formatRelativeTime(team.lastActivityAt) }}
                   </span>
                 </button>
+
+                <TeamActiveTaskContextTree
+                  v-if="activeTaskEntriesForTeam(team).length"
+                  class="mt-1"
+                  :entries="activeTaskEntriesForTeam(team)"
+                  :selection="activeTasks.selectionForTeam(team.teamRunId)"
+                  :focused-member-route-key="activeTasks.focusedMemberRouteKeyForTeam(team.teamRunId)"
+                  @select-task="activeTasks.onSelectTask(team, $event)"
+                  @select-reference="activeTasks.onSelectReference(team, $event.memberRouteKey, $event.referenceId)"
+                  @select-member="activeTasks.onFocusMember(team, $event)"
+                />
               </div>
             </div>
           </div>
@@ -337,7 +336,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
+import StatusDot from '~/components/workspace/common/StatusDot.vue';
+import TeamActiveTaskContextTree from '~/components/workspace/team/TeamActiveTaskContextTree.vue';
 import type {
+  WorkspaceHistoryActiveTaskBindings,
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
   WorkspaceHistorySectionState,
@@ -355,6 +357,7 @@ const props = defineProps<{
   workspaceTeamHistoryGroups: TeamRunHistoryDefinitionGroup[];
   state: WorkspaceHistorySectionState;
   avatars: WorkspaceHistoryAvatarBindings;
+  activeTasks: WorkspaceHistoryActiveTaskBindings;
   actions: WorkspaceHistorySectionActions;
 }>();
 
@@ -364,6 +367,8 @@ const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGro
     props.workspaceTeams,
   ),
 );
+
+const activeTaskEntriesForTeam = (team: TeamTreeNode) => props.activeTasks.entriesForTeam(team.teamRunId);
 
 const flattenTeamMembers = (team: TeamTreeNode): TeamTreeNode['members'] => {
   const flatten = (members: TeamTreeNode['memberTree']): TeamTreeNode['members'] =>

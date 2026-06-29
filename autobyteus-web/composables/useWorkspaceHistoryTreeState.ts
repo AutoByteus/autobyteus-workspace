@@ -1,5 +1,4 @@
 import { computed, ref, watch } from 'vue';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { buildWorkspaceTeamDefinitionDisplayGroups } from '~/components/workspace/history/workspaceHistoryTeamDefinitionGroups';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
@@ -30,7 +29,6 @@ export const useWorkspaceHistoryTreeState = (params: {
   const observedSelectionKey = ref<string | null>(null);
   const revealAppliedForObservedKey = ref(false);
   const pendingRevealKey = ref<string | null>(null);
-  const activeStatusClass = 'bg-blue-500 animate-pulse';
 
   const workspaceNodes = computed(() => params.runHistoryStore.getTreeNodes());
 
@@ -337,39 +335,6 @@ export const useWorkspaceHistoryTreeState = (params: {
     { immediate: true },
   );
 
-  const teamStatusClass = (status: AgentTeamStatus): string => {
-    switch (status) {
-      case AgentTeamStatus.Initializing:
-        return 'bg-amber-500 animate-pulse';
-      case AgentTeamStatus.Running:
-        return 'bg-blue-500 animate-pulse';
-      case AgentTeamStatus.Idle:
-        return 'bg-green-500';
-      case AgentTeamStatus.Error:
-        return 'bg-red-500';
-      case AgentTeamStatus.Offline:
-        return 'bg-gray-400';
-      default:
-        return 'bg-gray-300';
-    }
-  };
-
-  const runStatusClass = (status: AgentStatus): string => {
-    switch (status) {
-      case AgentStatus.Initializing:
-        return 'bg-amber-500 animate-pulse';
-      case AgentStatus.Running:
-        return 'bg-blue-500 animate-pulse';
-      case AgentStatus.Idle:
-        return 'bg-green-500';
-      case AgentStatus.Error:
-        return 'bg-red-500';
-      case AgentStatus.Offline:
-      default:
-        return 'bg-gray-400';
-    }
-  };
-
   const canTerminateTeam = (status: AgentTeamStatus): boolean =>
     status !== AgentTeamStatus.Offline;
 
@@ -391,7 +356,6 @@ export const useWorkspaceHistoryTreeState = (params: {
   };
 
   return {
-    activeStatusClass,
     workspaceNodes,
     selectedRunId,
     workspaceTeams,
@@ -409,8 +373,6 @@ export const useWorkspaceHistoryTreeState = (params: {
     isTeamExpanded,
     setTeamExpanded,
     toggleTeam,
-    runStatusClass,
-    teamStatusClass,
     canTerminateTeam,
     expandedWorkspaceIds,
     pruneWorkspace,
