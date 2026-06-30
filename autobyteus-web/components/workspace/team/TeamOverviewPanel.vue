@@ -72,6 +72,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import TeamCommunicationPanel from '~/components/workspace/team/TeamCommunicationPanel.vue';
 import TeamActiveTasksSection from '~/components/workspace/team/TeamActiveTasksSection.vue';
+import { deriveActiveTaskEntries } from '~/utils/teamActiveTaskEntries';
 
 type TeamOverviewSection = 'messages' | 'activeTasks';
 
@@ -80,8 +81,22 @@ const teamCommunicationStore = useTeamCommunicationStore();
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const activeTeamRunId = computed(() => activeTeamContext.value?.teamRunId || '');
 const expandedSection = ref<TeamOverviewSection | null>('messages');
+const lastAutoOpenedTaskSignatureKey = ref('');
 const messagesExpanded = computed(() => expandedSection.value === 'messages');
 const activeTasksExpanded = computed(() => expandedSection.value === 'activeTasks');
+const activeTaskEntries = computed(() => {
+  const teamContext = activeTeamContext.value;
+  return teamContext ? deriveActiveTaskEntries(teamContext) : [];
+});
+const activeTaskSignature = computed(() => activeTaskEntries.value
+  .map((entry) => [
+    entry.kind,
+    entry.node.memberRouteKey,
+    entry.taskId ?? '',
+    entry.runId ?? '',
+  ].join(':'))
+  .sort()
+  .join('|'));
 const focusedMemberContext = computed(() => teamContextsStore.focusedMemberContext);
 const focusedMemberNode = computed(() => teamContextsStore.focusedMemberNode);
 const focusedMemberCommunicationRunId = computed(() => (
@@ -100,11 +115,44 @@ const messageCount = computed(() => {
   }).messages.length;
 });
 
-watch(activeTeamRunId, (nextRunId, previousRunId) => {
-  if (nextRunId && nextRunId !== previousRunId) {
-    expandedSection.value = 'messages';
-  }
-});
+watch(
+  [activeTeamRunId, activeTaskSignature],
+  ([nextRunId, nextSignature], previousValues) => {
+    const previousRunId = previousValues?.[0] ?? '';
+    const runChanged = nextRunId !== previousRunId;
+    const nextSignatureKey = nextRunId && nextSignature
+      ? `${nextRunId}::${nextSignature}`
+      : '';
+
+    if (!nextRunId) {
+      lastAutoOpenedTaskSignatureKey.value = '';
+      return;
+    }
+
+    if (runChanged) {
+      if (nextSignature) {
+        expandedSection.value = 'activeTasks';
+        lastAutoOpenedTaskSignatureKey.value = nextSignatureKey;
+        return;
+      }
+
+      lastAutoOpenedTaskSignatureKey.value = '';
+      expandedSection.value = 'messages';
+      return;
+    }
+
+    if (nextSignature && nextSignatureKey !== lastAutoOpenedTaskSignatureKey.value) {
+      expandedSection.value = 'activeTasks';
+      lastAutoOpenedTaskSignatureKey.value = nextSignatureKey;
+      return;
+    }
+
+    if (!nextSignature) {
+      lastAutoOpenedTaskSignatureKey.value = '';
+    }
+  },
+  { immediate: true },
+);
 
 const toggleSection = (section: TeamOverviewSection) => {
   expandedSection.value = expandedSection.value === section ? null : section;

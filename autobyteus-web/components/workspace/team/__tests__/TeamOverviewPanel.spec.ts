@@ -27,32 +27,60 @@ const TeamCommunicationPanelStub = defineComponent({
   template: '<div data-test="team-communication-panel" />',
 });
 
-const seedActiveTeam = () => {
-  const memberTree = [{
+const buildTaskAgentNode = (taskId: string, runId = `${taskId}-run`) => ({
+  memberKind: 'agent',
+  memberName: `Implementation Engineer · ${taskId}`,
+  displayName: `Implementation Engineer · ${taskId}`,
+  memberPath: ['implementation_engineer', runId],
+  memberRouteKey: `implementation_engineer__${taskId}`,
+  memberRunId: runId,
+  agentDefinitionId: 'implementation-engineer-def',
+  isTaskAgentInstance: true,
+  taskAgentRunId: runId,
+  taskId,
+  taskDescription: 'Implement the requested change.',
+  taskReferenceFiles: [],
+  taskArguments: {},
+  taskTargetKind: 'member',
+  taskTargetName: 'Implementation Engineer',
+  logicalMemberRouteKey: 'implementation_engineer',
+  taskExecutionStatus: 'active',
+  currentStatus: 'running',
+});
+
+const seedActiveTeam = (options: { taskIds?: string[]; teamRunId?: string } = {}) => {
+  const teamRunId = options.teamRunId ?? 'team-1';
+  const implementationEngineer = {
     memberKind: 'agent',
     memberName: 'implementation_engineer',
     displayName: 'Implementation Engineer',
     memberPath: ['implementation_engineer'],
     memberRouteKey: 'implementation_engineer',
     agentDefinitionId: 'implementation-engineer-def',
-  }];
+  };
+  const taskNodes = (options.taskIds ?? []).map((taskId) => buildTaskAgentNode(taskId));
+  const memberTree = [implementationEngineer, ...taskNodes];
   useAgentTeamContextsStore().addTeamContext({
-    teamRunId: 'team-1',
+    teamRunId,
     config: { teamDefinitionName: 'Engineering Team' },
     memberTree,
-    memberNodesByRouteKey: new Map(memberTree.map((member) => [member.memberRouteKey, member])),
-    leafAgentContextsByRouteKey: new Map([
-      ['implementation_engineer', { state: { runId: 'impl-run' } }],
+    memberNodesByRouteKey: new Map<string, any>(memberTree.map((member) => [member.memberRouteKey, member])),
+    leafAgentContextsByRouteKey: new Map<string, any>([
+      ['implementation_engineer', { state: { runId: 'impl-run', currentStatus: 'idle' } }],
+      ...taskNodes.map((member) => [
+        member.memberRouteKey,
+        { state: { runId: member.memberRunId, currentStatus: 'running' } },
+      ] as const),
     ]),
     focusedMemberRouteKey: 'implementation_engineer',
     currentStatus: 'idle',
     isSubscribed: false,
   } as any);
-  useAgentSelectionStore().$patch({ selectedRunId: 'team-1', selectedType: 'team' });
-  useTeamCommunicationStore().replaceProjection('team-1', [
+  useAgentSelectionStore().$patch({ selectedRunId: teamRunId, selectedType: 'team' });
+  useTeamCommunicationStore().replaceProjection(teamRunId, [
     {
       messageId: 'message-1',
-      teamRunId: 'team-1',
+      teamRunId,
       senderRunId: 'impl-run',
       senderMemberName: 'Implementation Engineer',
       receiverRunId: 'reviewer-run',
@@ -146,6 +174,12 @@ const mountSubject = () => mount(TeamOverviewPanel, {
   },
 });
 
+const activeTasksBodyIsVisible = (wrapper: ReturnType<typeof mountSubject>): boolean =>
+  !(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style') ?? '').includes('display: none');
+
+const messagesPanelIsVisible = (wrapper: ReturnType<typeof mountSubject>): boolean =>
+  !(wrapper.get('[data-test="team-communication-panel"]').attributes('style') ?? '').includes('display: none');
+
 describe('TeamOverviewPanel.vue', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -167,23 +201,90 @@ describe('TeamOverviewPanel.vue', () => {
     expect(wrapper.find('[data-test="team-active-tasks-disclosure"]').exists()).toBe(true);
     expect(wrapper.get('[data-test="team-messages-header"]').text()).not.toMatch(/[▾▸]/);
     expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).not.toMatch(/[▾▸]/);
-    expect(wrapper.find('[data-test="team-communication-panel"]').attributes('style') ?? '').not.toContain('display: none');
-    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
+    expect(messagesPanelIsVisible(wrapper)).toBe(true);
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(false);
   });
 
   it('keeps Team tab section expansion parent-owned with Messages open first', async () => {
     const wrapper = mountSubject();
 
-    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('style') ?? '').not.toContain('display: none');
-    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
+    expect(messagesPanelIsVisible(wrapper)).toBe(true);
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(false);
 
     await wrapper.get('[data-test="team-active-tasks-header"]').trigger('click');
-    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('style')).toContain('display: none');
-    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style') ?? '').not.toContain('display: none');
+    expect(messagesPanelIsVisible(wrapper)).toBe(false);
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(true);
 
     await wrapper.get('[data-test="team-messages-header"]').trigger('click');
-    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('style') ?? '').not.toContain('display: none');
-    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
+    expect(messagesPanelIsVisible(wrapper)).toBe(true);
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(false);
+  });
+
+  it('opens Tasks immediately when the selected team already has active task entries', () => {
+    seedActiveTeam({ taskIds: ['task_0001'] });
+
+    const wrapper = mountSubject();
+
+    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('1 task');
+    expect(messagesPanelIsVisible(wrapper)).toBe(false);
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(true);
+  });
+
+  it('opens Tasks when active task entries appear while mounted', async () => {
+    const wrapper = mountSubject();
+
+    expect(messagesPanelIsVisible(wrapper)).toBe(true);
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(false);
+
+    const teamContext = useAgentTeamContextsStore().activeTeamContext as any;
+    const taskNode = buildTaskAgentNode('task_0001');
+    teamContext.memberTree = [...teamContext.memberTree, taskNode];
+    teamContext.memberNodesByRouteKey = new Map([
+      ...teamContext.memberNodesByRouteKey,
+      [taskNode.memberRouteKey, taskNode],
+    ]);
+    teamContext.leafAgentContextsByRouteKey = new Map([
+      ...teamContext.leafAgentContextsByRouteKey,
+      [taskNode.memberRouteKey, { state: { runId: taskNode.memberRunId, currentStatus: 'running' } }],
+    ]);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('1 task');
+    expect(messagesPanelIsVisible(wrapper)).toBe(false);
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(true);
+  });
+
+  it('preserves manual collapse for the same task set but reopens for a new task identity', async () => {
+    seedActiveTeam({ taskIds: ['task_0001'] });
+    const wrapper = mountSubject();
+
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(true);
+
+    await wrapper.get('[data-test="team-active-tasks-header"]').trigger('click');
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(false);
+
+    const teamContext = useAgentTeamContextsStore().activeTeamContext as any;
+    const existingTask = teamContext.memberTree.find((member: any) =>
+      member.memberRouteKey === 'implementation_engineer__task_0001');
+    existingTask.taskExecutionStatus = 'waiting_for_user';
+    await wrapper.vm.$nextTick();
+
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(false);
+
+    const nextTaskNode = buildTaskAgentNode('task_0002');
+    teamContext.memberTree = [...teamContext.memberTree, nextTaskNode];
+    teamContext.memberNodesByRouteKey = new Map([
+      ...teamContext.memberNodesByRouteKey,
+      [nextTaskNode.memberRouteKey, nextTaskNode],
+    ]);
+    teamContext.leafAgentContextsByRouteKey = new Map([
+      ...teamContext.leafAgentContextsByRouteKey,
+      [nextTaskNode.memberRouteKey, { state: { runId: nextTaskNode.memberRunId, currentStatus: 'running' } }],
+    ]);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('2 tasks');
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(true);
   });
 
   it('resets Messages open when the selected team run changes without taking over message identity', async () => {
@@ -200,6 +301,20 @@ describe('TeamOverviewPanel.vue', () => {
     expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
     const panel = wrapper.getComponent({ name: 'TeamCommunicationPanel' });
     expect(panel.props('teamRunId')).toBe('team-subteam');
+  });
+
+  it('opens Tasks when the selected team run changes to another run with active task entries', async () => {
+    const wrapper = mountSubject();
+
+    expect(messagesPanelIsVisible(wrapper)).toBe(true);
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(false);
+
+    seedActiveTeam({ teamRunId: 'team-2', taskIds: ['task_2001'] });
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('1 task');
+    expect(messagesPanelIsVisible(wrapper)).toBe(false);
+    expect(activeTasksBodyIsVisible(wrapper)).toBe(true);
   });
 
   it('counts and passes route/path identity for a focused subteam without a member run id', () => {
