@@ -23,6 +23,16 @@ export interface WorkspaceHistorySectionState {
   toggleTeamDefinition: (workspaceId: string, groupKey: string) => void;
   isTeamExpanded: (teamRunId: string) => boolean;
   getLiveTeamContext: (teamRunId: string) => AgentTeamContext | null;
+  isTeamMemberExpanded: (
+    workspaceId: string,
+    teamRunId: string,
+    memberRouteKey: string,
+  ) => boolean;
+  toggleTeamMember: (
+    workspaceId: string,
+    teamRunId: string,
+    memberRouteKey: string,
+  ) => void;
   canTerminateTeam: (status: AgentTeamStatus) => boolean;
 }
 
@@ -56,9 +66,13 @@ export interface WorkspaceHistorySectionActions {
   onTerminateRun: (runId: string) => Promise<void> | void;
   onArchiveRun: (run: RunTreeRow) => Promise<void> | void;
   onDeleteRun: (run: RunTreeRow) => void;
-  onSelectTeam: (team: TeamTreeNode) => Promise<void> | void;
   onTerminateTeam: (teamRunId: string) => Promise<void> | void;
   onArchiveTeam: (team: TeamTreeNode) => Promise<void> | void;
   onDeleteTeam: (team: TeamTreeNode) => void;
-  onSelectTeamMember: (member: TeamMemberFocusTarget) => Promise<void> | void;
+  onSelectTeam: (team: TeamTreeNode, workspaceId?: string) => Promise<void> | void;
+  onSelectTeamMember: (
+    member: TeamMemberFocusTarget,
+    workspaceId?: string,
+    memberTree?: readonly TeamMemberTreeRow[],
+  ) => Promise<void> | void;
 }

@@ -280,7 +280,10 @@ const mountWorkflow = () => {
 };
 
 const expandTasks = async (wrapper: ReturnType<typeof mount>) => {
-  await wrapper.get('[data-test="team-active-tasks-header"]').trigger('click');
+  const tasksBody = wrapper.get('[data-test="team-active-tasks-body"]');
+  if ((tasksBody.attributes('style') ?? '').includes('display: none')) {
+    await wrapper.get('[data-test="team-active-tasks-header"]').trigger('click');
+  }
   await nextTick();
 };
 

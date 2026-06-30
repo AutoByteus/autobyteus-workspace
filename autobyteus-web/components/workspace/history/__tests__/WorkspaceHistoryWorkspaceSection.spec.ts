@@ -109,6 +109,8 @@ const mountSubject = (options: {
     toggleTeamDefinition: vi.fn(),
     isTeamExpanded: () => true,
     getLiveTeamContext: () => liveContext,
+    isTeamMemberExpanded: () => false,
+    toggleTeamMember: vi.fn(),
     canTerminateTeam: () => true,
   };
 
@@ -176,11 +178,15 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
 
     await transientRow.trigger('click');
 
-    expect(actions.onSelectTeamMember).toHaveBeenCalledWith(expect.objectContaining({
-      teamRunId: 'team-run-1',
-      memberRouteKey: 'task-agent-run-1',
-      kind: 'transient_execution',
-    }));
+    expect(actions.onSelectTeamMember).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: 'team-run-1',
+        memberRouteKey: 'task-agent-run-1',
+        kind: 'transient_execution',
+      }),
+      'workspace:/ws/a',
+      expect.any(Array),
+    );
   });
 
   it('renders task-team root and scoped child transient rows without task detail content', () => {

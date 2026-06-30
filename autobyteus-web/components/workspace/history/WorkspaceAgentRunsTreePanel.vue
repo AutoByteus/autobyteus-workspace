@@ -261,6 +261,7 @@ const {
   selectionStore,
   setTeamExpanded: treeState.setTeamExpanded,
   toggleTeam: treeState.toggleTeam,
+  expandTeamMemberAncestors: treeState.expandTeamMemberAncestors,
   emitRunSelected: (payload) => {
     if (payload.type === 'agent') {
       emit('run-selected', { type: 'agent', runId: payload.runId });
@@ -327,6 +328,8 @@ const sectionState: WorkspaceHistorySectionState = {
   toggleTeamDefinition: treeState.toggleTeamDefinition,
   isTeamExpanded: treeState.isTeamExpanded,
   getLiveTeamContext: (teamRunId: string) => agentTeamContextsStore.getTeamContextById(teamRunId) ?? null,
+  isTeamMemberExpanded: treeState.isTeamMemberExpanded,
+  toggleTeamMember: treeState.toggleTeamMember,
   canTerminateTeam: treeState.canTerminateTeam,
 };
 
