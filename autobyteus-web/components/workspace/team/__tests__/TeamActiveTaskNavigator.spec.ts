@@ -121,6 +121,10 @@ describe('TeamActiveTaskNavigator', () => {
 
     expect(wrapper.find('[data-test="left-task-agent-context"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="left-task-team-context"]').exists()).toBe(false);
+    const navigator = wrapper.get('[data-test="team-active-task-navigator"]');
+    expect(navigator.classes()).toContain('pb-1');
+    expect(navigator.classes()).not.toContain('pl-2');
+    expect(navigator.classes()).not.toContain('border-l');
 
     const summary = wrapper.get('[data-test="left-active-task-summary-row"]');
     expect(summary.text()).toContain('Draft the implementation handoff');

@@ -8,6 +8,7 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular': 'task',
   'workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural': 'tasks',
   'workspace.components.workspace.team.TeamActiveTasksSection.empty': 'No active delegated tasks',
+  'workspace.components.workspace.team.TeamActiveTasksSection.empty_detail': 'Delegated work will appear here automatically.',
   'workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable': 'Task description unavailable',
   'workspace.components.workspace.team.TeamActiveTasksSection.focus': 'Focus',
   'workspace.components.workspace.team.TeamActiveTasksSection.technical_details': 'Technical details',
@@ -292,6 +293,9 @@ describe('TeamActiveTasksSection', () => {
     });
 
     expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('0 tasks');
-    expect(wrapper.get('[data-test="team-active-tasks-empty"]').text()).toContain('No active delegated tasks');
+    const emptyState = wrapper.get('[data-test="team-active-tasks-empty"]');
+    expect(emptyState.text()).toContain('No active delegated tasks');
+    expect(emptyState.text()).toContain('Delegated work will appear here automatically.');
+    expect(emptyState.classes()).not.toContain('border-dashed');
   });
 });

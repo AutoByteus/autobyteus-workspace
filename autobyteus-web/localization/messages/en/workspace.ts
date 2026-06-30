@@ -129,6 +129,8 @@ const messages = {
     "Target",
   "workspace.components.workspace.team.TeamActiveTasksSection.empty":
     "No active delegated tasks",
+  "workspace.components.workspace.team.TeamActiveTasksSection.empty_detail":
+    "Delegated work will appear here automatically.",
   "workspace.components.workspace.team.TeamActiveTasksSection.task_agent":
     "Task Agent",
   "workspace.components.workspace.team.TeamActiveTasksSection.task_team":

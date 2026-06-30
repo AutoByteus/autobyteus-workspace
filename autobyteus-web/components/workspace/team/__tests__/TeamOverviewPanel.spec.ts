@@ -15,6 +15,7 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular': 'task',
   'workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural': 'tasks',
   'workspace.components.workspace.team.TeamActiveTasksSection.empty': 'No active delegated tasks',
+  'workspace.components.workspace.team.TeamActiveTasksSection.empty_detail': 'Delegated work will appear here automatically.',
   'workspace.components.workspace.team.TeamActiveTasksSection.task_agent': 'Task Agent',
   'workspace.components.workspace.team.TeamActiveTasksSection.task_team': 'Task Team',
   'workspace.components.workspace.team.TeamActiveTasksSection.approval_required': 'Approval required',

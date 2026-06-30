@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-1 border-l border-slate-100 pl-2" data-test="team-active-task-navigator">
+  <div class="pb-1" data-test="team-active-task-navigator">
     <article
       v-for="entry in entries"
       :key="entry.node.memberRouteKey"

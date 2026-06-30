@@ -35,10 +35,16 @@
     </button>
 
     <div v-show="!collapsed" data-test="team-active-tasks-body" class="min-h-0 flex-1 overflow-hidden">
-      <div v-if="activeTaskEntries.length === 0" class="flex h-full items-center justify-center p-6">
-        <p data-test="team-active-tasks-empty" class="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs text-slate-500">
-          {{ $t('workspace.components.workspace.team.TeamActiveTasksSection.empty') }}
-        </p>
+      <div v-if="activeTaskEntries.length === 0" class="flex h-full flex-1 items-center justify-center bg-white p-6 text-center">
+        <div data-test="team-active-tasks-empty" class="max-w-[260px] px-4 py-8">
+          <Icon icon="heroicons:clipboard-document-list" class="mx-auto h-9 w-9 text-gray-300" aria-hidden="true" />
+          <p class="mt-3 text-sm font-semibold text-gray-700">
+            {{ $t('workspace.components.workspace.team.TeamActiveTasksSection.empty') }}
+          </p>
+          <p class="mt-1 text-xs leading-5 text-gray-500">
+            {{ $t('workspace.components.workspace.team.TeamActiveTasksSection.empty_detail') }}
+          </p>
+        </div>
       </div>
 
       <div v-else class="flex h-full min-h-0 overflow-hidden" data-test="team-active-tasks-split">
@@ -78,6 +84,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { Icon } from '@iconify/vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
 import { deriveActiveTaskEntries, type ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';

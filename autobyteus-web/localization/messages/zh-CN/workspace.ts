@@ -128,6 +128,8 @@ const messages = {
     "目标",
   "workspace.components.workspace.team.TeamActiveTasksSection.empty":
     "暂无活跃委派任务",
+  "workspace.components.workspace.team.TeamActiveTasksSection.empty_detail":
+    "委派的工作会自动显示在这里。",
   "workspace.components.workspace.team.TeamActiveTasksSection.task_agent":
     "任务智能体",
   "workspace.components.workspace.team.TeamActiveTasksSection.task_team":
