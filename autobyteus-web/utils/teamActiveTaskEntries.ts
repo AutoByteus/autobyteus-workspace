@@ -5,12 +5,6 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 
 export type ActiveTaskEntryKind = 'task_agent' | 'task_team';
 
-export interface ActiveTaskMemberTarget {
-  node: TeamMemberNode;
-  depth: number;
-  displayName: string;
-}
-
 export interface ActiveTaskEntry {
   kind: ActiveTaskEntryKind;
   node: TeamMemberNode;
@@ -28,7 +22,6 @@ export interface ActiveTaskEntry {
   runId: string | null;
   status: AgentStatus;
   statusLabel: string;
-  members: ActiveTaskMemberTarget[];
 }
 
 const idPreview = (value: string | null | undefined): string => {
@@ -79,23 +72,6 @@ const collectTaskNodes = (nodes: readonly TeamMemberNode[]): TeamMemberNode[] =>
   ])
 );
 
-const flattenMembers = (
-  nodes: readonly TeamMemberNode[],
-  depth = 0,
-): ActiveTaskMemberTarget[] => nodes.flatMap((node) => {
-  if (node.isTaskAgentInstance) {
-    return [];
-  }
-  return [
-    {
-      node,
-      depth,
-      displayName: node.displayName || node.memberName || node.memberRouteKey,
-    },
-    ...(node.memberKind === 'agent_team' ? flattenMembers(node.children, depth + 1) : []),
-  ];
-});
-
 export const deriveActiveTaskEntries = (
   teamContext: AgentTeamContext,
 ): ActiveTaskEntry[] => collectTaskNodes(teamContext.memberTree)
@@ -129,6 +105,5 @@ export const deriveActiveTaskEntries = (
       runId,
       status: context?.state.currentStatus ?? node.currentStatus ?? AgentStatus.Initializing,
       statusLabel: formatStatus(taskExecutionStatus ?? context?.state.currentStatus ?? node.currentStatus),
-      members: isTaskTeam && node.memberKind === 'agent_team' ? flattenMembers(node.children) : [],
     };
   });

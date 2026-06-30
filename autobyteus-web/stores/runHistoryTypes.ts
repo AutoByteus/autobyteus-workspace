@@ -178,6 +178,11 @@ export interface TeamMemberTreeRow {
   children: TeamMemberTreeRow[];
 }
 
+export interface TeamMemberFocusTarget {
+  teamRunId: string;
+  memberRouteKey: string;
+}
+
 export interface TeamTreeNode {
   teamRunId: string;
   teamDefinitionId: string;
