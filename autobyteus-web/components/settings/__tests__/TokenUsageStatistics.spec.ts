@@ -6,7 +6,6 @@ import TokenUsageStatistics from '../TokenUsageStatistics.vue';
 const { storeSlot, messages } = vi.hoisted(() => ({
   storeSlot: { store: null as any },
   messages: {
-    token_usage_statistics: 'Token Statistics',
     select_date_range: 'Select date range',
     rangeSeparator: 'to',
     usageDuringPeriod: 'Usage during period',
@@ -100,6 +99,9 @@ describe('TokenUsageStatistics settings page', () => {
   it('defaults to By Task, renders compact usage-period affordance, and fetches dates without range mode', async () => {
     const wrapper = await mountPage();
 
+    expect(wrapper.find('h2').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Token Statistics');
+    expect(wrapper.text()).toContain('Select date range');
     expect(wrapper.text()).toContain('Usage during period');
     expect(wrapper.text()).not.toContain('Usage during period help');
     expect(wrapper.find('[title]').attributes('title')).toBe('Usage during period help');

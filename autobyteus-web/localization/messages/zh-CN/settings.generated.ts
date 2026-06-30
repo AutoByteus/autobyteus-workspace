@@ -89,7 +89,6 @@ const messages = {
   'settings.components.settings.TokenUsageStatistics.prompt_tokens': '提示标记',
   'settings.components.settings.TokenUsageStatistics.prompt_tokens_cost': '提示代币成本',
   'settings.components.settings.TokenUsageStatistics.select_date_range': '选择日期范围：',
-  'settings.components.settings.TokenUsageStatistics.token_usage_statistics': 'Token 统计',
   'settings.components.settings.TokenUsageStatistics.total_cost': '总成本',
   'settings.components.settings.VoiceInputExtensionCard.audio_source': '音源',
   'settings.components.settings.VoiceInputExtensionCard.enable_voice_input_to_run_a': '启用语音输入以运行麦克风测试。',
@@ -190,7 +189,6 @@ const messages = {
   'settings.pages.settings.mcp_servers': 'MCP服务器',
   'settings.pages.settings.select_a_category_to_configure_settings': '选择一个类别来配置设置。',
   'settings.pages.settings.server_settings': '服务器设置',
-  'settings.pages.settings.token_usage_statistics': 'Token 统计',
 } satisfies TranslationCatalog;
 
 export default messages;

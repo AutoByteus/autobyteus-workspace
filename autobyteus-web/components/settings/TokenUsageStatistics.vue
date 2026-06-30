@@ -1,9 +1,5 @@
 <template>
   <div class="token-usage-statistics h-full flex flex-col overflow-hidden">
-    <div class="flex items-center justify-between px-8 pt-8 pb-4 flex-shrink-0">
-      <h2 class="text-xl font-semibold text-gray-900">{{ $t('settings.components.settings.TokenUsageStatistics.token_usage_statistics') }}</h2>
-    </div>
-
     <div class="flex-1 overflow-auto p-8">
       <div class="mb-6 rounded-lg border border-gray-100 bg-gray-50 p-4">
         <div class="flex flex-wrap items-center gap-4">
