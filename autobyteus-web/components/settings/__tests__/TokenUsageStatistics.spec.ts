@@ -6,17 +6,17 @@ import TokenUsageStatistics from '../TokenUsageStatistics.vue';
 const { storeSlot, messages } = vi.hoisted(() => ({
   storeSlot: { store: null as any },
   messages: {
-    select_date_range: 'Select date range',
+    groupingSelectAriaLabel: 'Result grouping',
+    groupingTask: 'Task',
+    groupingModel: 'Model',
+    startDateAriaLabel: 'Start date',
+    endDateAriaLabel: 'End date',
     rangeSeparator: 'to',
-    usageDuringPeriod: 'Usage during period',
-    usageDuringPeriodHelp: 'Shows token usage ledger events observed in the selected dates.',
     loadingStatistics: 'Loading…',
     fetchStatistics: 'Fetch Statistics',
-    byTask: 'By Task',
-    byModel: 'By Model',
     loadingStatisticsLong: 'Loading token usage statistics…',
     noTaskUsage: 'No agent or team usage found for this date range.',
-    tryWiderRangeOrByModel: 'Try a wider date range or switch to By Model.',
+    tryWiderRangeOrModel: 'Try a wider date range or switch to Model.',
     noModelUsage: 'No runtime/model usage found for this date range.',
     selectDatesAlert: 'Please select both start and end dates.',
   } as Record<string, string>,
@@ -96,17 +96,19 @@ describe('TokenUsageStatistics settings page', () => {
     vi.clearAllMocks();
   });
 
-  it('defaults to By Task, renders compact usage-period affordance, and fetches dates without range mode', async () => {
+  it('renders the compact grouping/date/fetch control card and fetches dates without grouping arguments', async () => {
     const wrapper = await mountPage();
 
     expect(wrapper.find('h2').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('Token Statistics');
-    expect(wrapper.text()).toContain('Select date range');
-    expect(wrapper.text()).toContain('Usage during period');
-    expect(wrapper.text()).not.toContain('Usage during period help');
-    expect(wrapper.find('[title]').attributes('title')).toBe('Usage during period help');
-    expect(wrapper.text()).toMatch(/By task/i);
-    expect(wrapper.text()).toMatch(/By model/i);
+    expect(wrapper.text()).not.toContain('Select date range');
+    expect(wrapper.text()).not.toContain('Usage during period');
+    expect(wrapper.text()).not.toMatch(/By task/i);
+    expect(wrapper.text()).not.toMatch(/By model/i);
+    expect(wrapper.text()).not.toContain('Group by');
+    expect(wrapper.find('[title]').exists()).toBe(false);
+    expect(wrapper.find('button.border-b-2').exists()).toBe(false);
+    expect(wrapper.findAll('button')).toHaveLength(1);
     expect(wrapper.text()).not.toContain('Tasks created in period');
     expect(wrapper.text()).not.toContain('rangeMode');
     expect(wrapper.find('[data-test="task-table"]').exists()).toBe(true);
@@ -114,24 +116,37 @@ describe('TokenUsageStatistics settings page', () => {
     expect(storeSlot.store.fetchStatistics).toHaveBeenCalledWith('2026-06-22', '2026-06-29');
     expect(storeSlot.store.fetchStatistics.mock.calls[0]).toHaveLength(2);
 
+    const controlTags = wrapper
+      .findAll('select, input[type="date"], button')
+      .map((control) => control.element.tagName.toLowerCase());
+    expect(controlTags).toEqual(['select', 'input', 'input', 'button']);
+
+    const groupingSelect = wrapper.find('select');
+    expect(groupingSelect.attributes('aria-label')).toBe('Result grouping');
+    expect((groupingSelect.element as HTMLSelectElement).value).toBe('task');
+    expect(Array.from((groupingSelect.element as HTMLSelectElement).options).map((option) => option.text)).toEqual(['Task', 'Model']);
+
     const [startInput, endInput] = wrapper.findAll('input[type="date"]');
+    expect(startInput!.attributes('aria-label')).toBe('Start date');
+    expect(endInput!.attributes('aria-label')).toBe('End date');
     expect((startInput!.element as HTMLInputElement).value).toBe('2026-06-22');
     expect((endInput!.element as HTMLInputElement).value).toBe('2026-06-29');
 
-    await buttonByText(wrapper, 'By Model')!.trigger('click');
+    await groupingSelect.setValue('model');
+    expect((groupingSelect.element as HTMLSelectElement).value).toBe('model');
     expect(wrapper.find('[data-test="task-table"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="model-table"]').exists()).toBe(true);
     expect((startInput!.element as HTMLInputElement).value).toBe('2026-06-22');
     expect((endInput!.element as HTMLInputElement).value).toBe('2026-06-29');
   });
 
-  it('uses the edited shared date range for both tabs when fetching', async () => {
+  it('uses the edited shared date range when switching grouping before fetching', async () => {
     const wrapper = await mountPage();
     const [startInput, endInput] = wrapper.findAll('input[type="date"]');
 
     await startInput!.setValue('2026-06-21');
     await endInput!.setValue('2026-06-28');
-    await buttonByText(wrapper, 'By Model')!.trigger('click');
+    await wrapper.find('select').setValue('model');
     await buttonByText(wrapper, 'Fetch Statistics')!.trigger('click');
 
     expect(storeSlot.store.fetchStatistics).toHaveBeenLastCalledWith('2026-06-21', '2026-06-28');
@@ -143,12 +158,12 @@ describe('TokenUsageStatistics settings page', () => {
     storeSlot.store = createStore({ taskRows: [], modelRows: [] });
     const wrapper = await mountPage();
 
-    expect(wrapper.text()).toContain('No task usage');
-    expect(wrapper.text()).toContain('Try wider range or by model');
+    expect(wrapper.text()).toContain('No agent or team usage found for this date range.');
+    expect(wrapper.text()).toContain('Try a wider date range or switch to Model.');
     expect(wrapper.find('[data-test="task-table"]').exists()).toBe(false);
 
-    await buttonByText(wrapper, 'By Model')!.trigger('click');
-    expect(wrapper.text()).toContain('No model usage');
+    await wrapper.find('select').setValue('model');
+    expect(wrapper.text()).toContain('No runtime/model usage found for this date range.');
     expect(wrapper.find('[data-test="model-table"]').exists()).toBe(false);
   });
 });

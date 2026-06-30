@@ -88,7 +88,6 @@ const messages = {
   'settings.components.settings.TokenUsageStatistics.no_data_available_for_the_selected': 'No data available for the selected date range.',
   'settings.components.settings.TokenUsageStatistics.prompt_tokens': 'Prompt Tokens',
   'settings.components.settings.TokenUsageStatistics.prompt_tokens_cost': 'Prompt Tokens Cost',
-  'settings.components.settings.TokenUsageStatistics.select_date_range': 'Select Date Range:',
   'settings.components.settings.TokenUsageStatistics.total_cost': 'Total Cost',
   'settings.components.settings.VoiceInputExtensionCard.audio_source': 'Audio source',
   'settings.components.settings.VoiceInputExtensionCard.enable_voice_input_to_run_a': 'Enable Voice Input to run a microphone test.',

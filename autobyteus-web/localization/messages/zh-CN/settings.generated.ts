@@ -88,7 +88,6 @@ const messages = {
   'settings.components.settings.TokenUsageStatistics.no_data_available_for_the_selected': '所选日期范围内没有可用数据。',
   'settings.components.settings.TokenUsageStatistics.prompt_tokens': '提示标记',
   'settings.components.settings.TokenUsageStatistics.prompt_tokens_cost': '提示代币成本',
-  'settings.components.settings.TokenUsageStatistics.select_date_range': '选择日期范围：',
   'settings.components.settings.TokenUsageStatistics.total_cost': '总成本',
   'settings.components.settings.VoiceInputExtensionCard.audio_source': '音源',
   'settings.components.settings.VoiceInputExtensionCard.enable_voice_input_to_run_a': '启用语音输入以运行麦克风测试。',
