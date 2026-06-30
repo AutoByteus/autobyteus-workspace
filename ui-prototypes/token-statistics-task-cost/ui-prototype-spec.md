@@ -16,24 +16,22 @@ The model table remains available as a secondary diagnostic view for runtime/mod
 
 ## Information Architecture
 
-### Page title
+### Page identity
 
-`Token Statistics`
+The selected Settings sidebar item remains the visible page identity: `Token Statistics`.
+Do not render a second visible `Token Statistics` page title/header at the top of the main content area.
 
 ### Top controls
 
-1. Date range picker.
-2. Compact range meaning affordance near the date picker:
-   - visible label: `Usage during period`
-   - optional info tooltip: `Uses token usage observed in the selected dates; long-running tasks may show partial period cost.`
-   - do **not** render a full-width explanatory paragraph/box.
-   - do **not** render a dropdown, selector, or `Tasks created in period` option in MVP.
-3. Primary action: `Fetch Statistics`.
-4. View tabs:
-   - `By Task` (default)
-   - `By Model`
+Use one compact filter/control card with controls in this order:
 
-## Default View: By Task
+1. Result grouping select with visible options `Task` (default) and `Model`.
+2. Start date and end date inputs.
+3. Primary action: `Fetch Statistics`.
+
+Visible control copy should stay minimal: do **not** show `Usage during period`, `Select Date Range:`, `Group by:`, `By Task`, `By Model`, a separate lower tab row, a full explanatory paragraph/box, or a `Tasks created in period` selector in MVP. Use ARIA/non-visible labels when controls need accessible names.
+
+## Default Grouping: Task
 
 ### Goal
 
@@ -44,7 +42,7 @@ Show one top-level row per task-level unit:
 
 Team rows are expandable. Expansion shows **usage-derived member rows only**: members that emitted token-usage ledger events in the selected date range. The page is a usage/cost report, not a roster viewer, so inactive/no-usage team members are omitted in MVP.
 
-Concrete row examples, expanded team examples, cost-breakdown examples, fallback timestamp examples, repeated-run chronology examples, and the preserved `By Model` example are specified normatively in the requirements doc section `Required UI Example Data`.
+Concrete row examples, expanded team examples, cost-breakdown examples, fallback timestamp examples, repeated-run chronology examples, and the preserved `Model` grouping example are specified normatively in the requirements doc section `Required UI Example Data`.
 
 ### Table columns
 
@@ -141,9 +139,9 @@ When a row is expanded or a cost cell/detail affordance is clicked, show a compa
 
 Same cost composition and input/output breakdown, without member rows.
 
-## Secondary View: By Model
+## Secondary Grouping: Model
 
-Keep current model diagnostics as a tab labelled `By Model`.
+Keep current model diagnostics available through the top grouping select option labelled `Model`.
 
 Use case:
 
@@ -178,8 +176,8 @@ If runtime is unavailable for legacy rows, show `Unknown`, not a blank cell.
 
 ### Empty
 
-- For `By Task`: `No agent or team usage found for this date range.`
-- Help text: `Try a wider date range or switch to By Model.`
+- For `Task`: `No agent or team usage found for this date range.`
+- Help text: `Try a wider date range or switch to Model.`
 
 ### Partial pricing
 
@@ -223,8 +221,8 @@ Recommended after MVP:
 
 | Interaction | Behavior |
 | --- | --- |
-| Click `By Task` | Shows task/team run rows; default view. |
-| Click `By Model` | Shows runtime/model grouped diagnostics table. |
+| Select `Task` | Shows task/team run rows; default grouping. |
+| Select `Model` | Shows runtime/model grouped diagnostics table. |
 | Click team chevron | Expands/collapses usage-derived member rows. |
 | Click a cost cell | Opens/expands breakdown details. |
 | Hover/click pricing status | Shows missing dimensions / mixed reasons. |
@@ -313,17 +311,17 @@ Important backend constraints:
 
 ### MVP
 
-- Add tabs: `By Task` and `By Model`.
-- Default to `By Task`.
-- Render `Usage during period` only as a compact date-range label/tooltip, not as a paragraph/box.
+- Add one compact grouping select with visible options `Task` and `Model`; do not add a separate tab row.
+- Default to `Task`.
+- Do not render visible `Usage during period`, `Select Date Range:`, or `Group by:` copy.
 - Query task rows by usage observed during date range.
 - Show expandable team rows with usage-derived member rows.
 - Add only the five self-contained display fields needed by the UI: `teamName`, `agentName`, `runSummary`, `runCreatedAt`, `memberName`.
-- Keep existing model statistics under `By Model`, grouped by runtime/model pair.
+- Keep existing model statistics under the `Model` grouping, grouped by runtime/model pair.
 
 ### Later
 
-- Add `Tasks created in period` mode for full task-cost analysis as a future selectable range mode.
+- Add an explicit created-time filtering mode in the future only if a backend contract is designed; do not repurpose the current observed-period date range.
 - Add CSV/export/import tooling.
 - Add row click-through to run history.
 - Add per-turn/per-model detail inside a task row.

@@ -202,7 +202,7 @@ These local spines matter because the layout change must not alter date lifecycl
 | `autobyteus-web/components/settings/TokenUsageStatistics.vue` | Token Statistics UI | Component boundary | Replace tab row/helper labels with clean filter card ordered grouping select -> dates -> fetch | One component owns this screen's controls | Store and table components |
 | `autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts` | Token Statistics UI tests | Component test boundary | Assert no duplicate title, no usage helper, no visible `Select Date Range:`, no old tab row, select has `Task` / `Model`, behavior unchanged | Existing tests already cover this screen | Existing mocks |
 | Localization catalogs | Localization | Settings UI text boundary | Remove stale old-layout copy; add non-visible/accessibility labels if needed | Existing localization ownership | N/A |
-| `tickets/in-progress/token-statistics-remove-header/text-ui-filter-control-design.md` | Task artifact | Design reference | Normative text UI for implementation/review | User requested explicit text UI | N/A |
+| `tickets/done/token-statistics-remove-header/text-ui-filter-control-design.md` | Task artifact | Design reference | Normative text UI for implementation/review | User requested explicit text UI | N/A |
 
 ## Ownership Boundaries
 

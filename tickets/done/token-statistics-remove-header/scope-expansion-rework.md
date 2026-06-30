@@ -25,13 +25,13 @@ The date range and grouping selector both belong to the token statistics control
 
 ## Upstream Artifacts To Revise
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/requirements.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/investigation-notes.md`
-- Design spec produced after expanded requirements approval: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/design-spec.md`.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/requirements.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/investigation-notes.md`
+- Design spec produced after expanded requirements approval: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/design-spec.md`.
 
 ## Delivery Artifacts To Treat As Superseded Until Updated
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/docs-sync-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/handoff-summary.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/release-deployment-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/handoff-summary.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/release-deployment-report.md`
 - The delivery edits in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/ui-prototypes/token-statistics-task-cost/` should be revisited after the new design/implementation lands.

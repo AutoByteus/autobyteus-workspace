@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/design-spec.md`
 - Current Review Round: 1
 - Trigger: Revised design package after user-approved scope expansion on 2026-06-30.
 - Prior Review Round Reviewed: N/A
@@ -21,7 +21,7 @@
 
 The revised design correctly scopes the change as a local Token Statistics UI-structure cleanup: replace the separate lower `By Task` / `By Model` tab row plus redundant helper copy with one compact top filter/control card ordered as grouping select -> date range -> fetch action. It preserves the earlier duplicate title removal, keeps settings-shell navigation ownership unchanged, and keeps token statistics store/query/table behavior unchanged.
 
-Supporting normative text UI reference reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/text-ui-filter-control-design.md`.
+Supporting normative text UI reference reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/text-ui-filter-control-design.md`.
 
 ## Task Design Health Assessment Verdict
 
@@ -123,7 +123,7 @@ Supporting normative text UI reference reviewed: `/Users/normy/autobyteus_org/au
 | `autobyteus-web/components/settings/TokenUsageStatistics.vue` | Pass | Pass | Low | Pass | Existing component placement remains correct. |
 | `autobyteus-web/components/settings/token-usage/` | Pass | Pass | Low | Pass | Result-table subcomponents remain unchanged. |
 | `autobyteus-web/localization/messages/` | Pass | Pass | Low | Pass | Existing localization folder remains correct. |
-| `tickets/in-progress/token-statistics-remove-header/` | Pass | Pass | Low | Pass | Correct task artifact location. |
+| `tickets/done/token-statistics-remove-header/` | Pass | Pass | Low | Pass | Correct task artifact location. |
 | `ui-prototypes/token-statistics-task-cost/` | Pass | Pass | Low | Pass | Correct durable prototype/docs location for delivery sync. |
 
 ## Existing Capability / Subsystem Reuse Verdict

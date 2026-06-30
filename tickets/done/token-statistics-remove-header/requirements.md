@@ -80,7 +80,7 @@ Rationale: The code change is still localized to the Token Statistics component/
 
 A text-based UI design for the filter/control area is maintained at:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/in-progress/token-statistics-remove-header/text-ui-filter-control-design.md`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-remove-header/tickets/done/token-statistics-remove-header/text-ui-filter-control-design.md`
 
 This artifact is normative for the expanded layout intent: one clean filter/control card ordered as grouping select -> date range -> fetch action; grouping options visibly read `Task` and `Model`; no separate lower `By Task` / `By Model` tab row; no visible `Usage during period`; no visible `Group by:`; no visible `Select Date Range:`.
 

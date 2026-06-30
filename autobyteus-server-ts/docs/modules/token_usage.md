@@ -234,7 +234,7 @@ be reintroduced as compatibility writers.
   first observed ledger timestamp and marks `createdTimeSource` so the frontend
   can label it as first usage observed rather than true task creation.
 - `usageStatisticsInPeriod(startTime, endTime)` remains the secondary
-  diagnostics projection for Settings > Token Statistics By Model. It now groups
+  diagnostics projection for the Settings > Token Statistics `Model` grouping. It groups
   by runtime/model pair so the same model used through different runtimes is not
   collapsed into one ambiguous row. Legacy display aliases such as `inputTokens`
   / `outputTokens` are backed by the same cache-aware aggregate contract; do not
@@ -268,11 +268,14 @@ The frontend treats token usage as display-only state:
   estimated API costs, price status, model/runtime metadata, latest prompt
   context pressure, and focused-member totals;
 - Settings > Token Statistics uses `tokenUsageStatisticsStore` and the
-  historical statistics queries. It defaults to a By Task view for task/team cost
-  understanding, keeps By Model as a runtime/model diagnostics tab, and displays
-  a static `Usage during period` explanation that matches the observed-usage
-  GraphQL filter.
-- The By Task table shows task/run identity, type, runtime,
+  historical statistics queries. The selected Settings sidebar item remains the
+  page identity, while the main content starts with one compact filter/control
+  card ordered as grouping select (`Task` / `Model`), date range, and
+  `Fetch Statistics`. It defaults to the `Task` grouping for task/team cost
+  understanding and keeps `Model` as a runtime/model diagnostics grouping.
+  The frontend does not render `Usage during period`, `Select Date Range:`,
+  `Group by:`, or a separate `By Task` / `By Model` tab row.
+- The Task grouping table shows task/run identity, type, runtime,
   model(s), token totals, input/output/total cost, status, nested team members,
   created time as the last visible column, and a cost breakdown. Team expansion
   is usage-derived for the selected period: inactive roster members are not
@@ -330,9 +333,9 @@ live update aggregation, GraphQL hydration replacement, Token Meter hierarchy,
 cache-aware input rows, price-status labels, reasoning-output display, latest
 prompt fields, and the right-side tab label. Settings > Token Statistics also
 has focused backend GraphQL E2E coverage plus frontend store/component coverage
-for By Task default behavior, no `rangeMode`, nested team members, first-usage
+for Task default grouping, no `rangeMode`, nested team members, first-usage
 created-time fallback, runtime/model grouping, status/cost-breakdown display,
-and By Model runtime diagnostics.
+and Model runtime diagnostics.
 
 ## Runtime E2E Coverage
 
