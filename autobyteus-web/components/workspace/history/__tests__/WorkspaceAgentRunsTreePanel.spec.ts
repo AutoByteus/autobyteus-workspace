@@ -437,6 +437,73 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     }
   };
 
+  const seedNestedTeamRun = (focusedMemberRouteKey = 'coordinator') => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedMemberRouteKey,
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberKind: 'agent',
+            memberRouteKey: 'coordinator',
+            memberName: 'Coordinator',
+            displayName: 'Coordinator',
+            memberRunId: 'coordinator-run',
+            workspaceRootPath: '/ws/a',
+            summary: 'Coordinator summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+          {
+            teamRunId: 'team-1',
+            memberKind: 'agent_team',
+            memberRouteKey: 'engineering_org',
+            memberPath: ['engineering_org'],
+            memberName: 'Engineering Org',
+            displayName: 'Engineering Org',
+            memberRunId: 'engineering-org-run',
+            teamDefinitionId: 'engineering-org-def',
+            workspaceRootPath: '/ws/a',
+            summary: 'Engineering org summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+            children: [
+              {
+                teamRunId: 'team-1',
+                memberKind: 'agent',
+                memberRouteKey: 'engineering_org/implementation_engineer',
+                memberPath: ['engineering_org', 'implementation_engineer'],
+                memberName: 'Implementation Engineer',
+                displayName: 'Implementation Engineer',
+                memberRunId: 'implementation-run',
+                workspaceRootPath: '/ws/a',
+                summary: 'Implementation summary',
+                lastActivityAt: '2026-01-01T02:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                isActive: false,
+                deleteLifecycle: 'READY',
+              },
+            ],
+          },
+        ],
+      },
+    ];
+  };
+
   it('loads workspace list without eager history tree on mount', async () => {
     mountComponent();
     await flushPromises();
@@ -685,6 +752,127 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       'text-gray-400',
     ]));
     expect(wrapper.find('[data-test="workspace-team-member-team-1-super_agent"]').exists()).toBe(true);
+  });
+
+  it('renders nested team members collapsed by default with a disclosure control', async () => {
+    seedNestedTeamRun();
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-coordinator"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(false);
+
+    const disclosure = wrapper.get(
+      '[data-test="workspace-team-member-disclosure"][data-member-route-key="engineering_org"]',
+    );
+    expect(disclosure.attributes('aria-expanded')).toBe('false');
+  });
+
+  it('toggles nested team member disclosure without selecting the member', async () => {
+    seedNestedTeamRun();
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
+    await flushPromises();
+    runHistoryStoreMock.selectTreeRun.mockClear();
+
+    const disclosure = wrapper.get(
+      '[data-test="workspace-team-member-disclosure"][data-member-route-key="engineering_org"]',
+    );
+    await disclosure.trigger('click');
+    await flushPromises();
+
+    expect(disclosure.attributes('aria-expanded')).toBe('true');
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(true);
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
+
+    await disclosure.trigger('click');
+    await flushPromises();
+
+    expect(disclosure.attributes('aria-expanded')).toBe('false');
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(false);
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
+  });
+
+  it('selects a nested team row from the row body', async () => {
+    seedNestedTeamRun();
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
+    await flushPromises();
+    runHistoryStoreMock.selectTreeRun.mockClear();
+
+    await wrapper.get('[data-test="workspace-team-member-team-1-engineering_org"]').trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: 'team-1',
+        memberRouteKey: 'engineering_org',
+      }),
+    );
+  });
+
+  it('keeps an expanded nested child visible after selecting it', async () => {
+    seedNestedTeamRun();
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
+    await flushPromises();
+
+    await wrapper
+      .get('[data-test="workspace-team-member-disclosure"][data-member-route-key="engineering_org"]')
+      .trigger('click');
+    await flushPromises();
+
+    const childSelector = '[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]';
+    expect(wrapper.find(childSelector).exists()).toBe(true);
+    await wrapper.get(childSelector).trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: 'team-1',
+        memberRouteKey: 'engineering_org/implementation_engineer',
+      }),
+    );
+    expect(wrapper.find(childSelector).exists()).toBe(true);
+  });
+
+  it('expands nested ancestors when a team row opens a focused nested member', async () => {
+    seedNestedTeamRun('engineering_org/implementation_engineer');
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: 'team-1',
+        memberRouteKey: 'engineering_org/implementation_engineer',
+      }),
+    );
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(true);
+    expect(
+      wrapper
+        .get('[data-test="workspace-team-member-disclosure"][data-member-route-key="engineering_org"]')
+        .attributes('aria-expanded'),
+    ).toBe('true');
   });
 
   it('refreshes expanded workspace history quietly on the background interval while mounted', async () => {

@@ -186,12 +186,21 @@ from the structural route.
 
 The right-side Team tab owns delegated task visibility through its Active Tasks
 section instead of a center active-task strip or global Workspaces-tree active
-task host. `TeamOverviewPanel` owns the local Messages/Tasks accordion state,
-opens Messages by default, and resets to Messages when the active team run
-changes. `TeamActiveTasksSection` derives task-agent and task-team entries from
-the transient projection nodes in `AgentTeamContext`, owns the Team-tab split
-layout and section-local task/reference selection, and renders the left
-navigator plus right detail pane.
+task host. `TeamOverviewPanel` owns the local Messages/Tasks accordion state.
+Messages remains the default for a selected team run with no active task
+entries, but the panel opens Tasks automatically when the selected team run
+already has active task entries or when a new active-task identity appears while
+the same run is mounted. The auto-open signature is derived from the same
+`deriveActiveTaskEntries(...)` entries consumed by `TeamActiveTasksSection`,
+keyed by task kind, member route, task id, and execution run id, so unrelated
+messages or refreshes do not open Tasks. A user may still collapse Tasks for the
+same task set; the panel reopens only for a different active-task signature or a
+selected-run change to a run that has active tasks. When the selected team run
+changes and there are no active tasks, the panel opens Messages.
+`TeamActiveTasksSection` derives task-agent and task-team entries from the
+transient projection nodes in `AgentTeamContext`, owns the Team-tab split layout
+and section-local task/reference selection, and renders the left navigator plus
+right detail pane.
 
 Inside that section, `TeamActiveTaskNavigator` renders each task navigator item
 in the durable order: text-only task summary, responsible agent or task-team row
@@ -338,9 +347,10 @@ current expansion state.
   standalone chevron size, shape, and gray color. The row button remains the
   single interaction boundary, and team-run rows expose `aria-expanded` so
   visual, keyboard, and assistive-technology state stay in sync.
-- Manual workspace, agent-group, team-definition-group, and team-run expansion
-  choices are kept in component-local tree state and are not reset by quiet
-  history refreshes while the history panel remains mounted.
+- Manual workspace, agent-group, team-definition-group, team-run, and nested
+  team-member/subteam expansion choices are kept in component-local tree state
+  and are not reset by quiet history refreshes while the history panel remains
+  mounted.
 - Newly added workspaces are explicitly opened after creation so the add flow
   still lands the user in the workspace they just created.
 - Quiet refreshes update already-loaded workspace history without falling back
@@ -349,17 +359,26 @@ current expansion state.
 When an existing run or team run is selected before its history ancestry is
 visible, `useWorkspaceHistoryTreeState(...)` performs a one-shot selected-path
 reveal. The reveal expands only the selected run/team's workspace and containing
-agent or team-definition group, and for selected team runs also opens that team
-run's member row. After the selected path has been revealed for the stable
-selection key, later quiet refreshes must not reopen the same path if the user
-manually collapses it.
+agent or team-definition group, and for selected team runs opens the matching
+team-run row. After the selected path has been revealed for the stable selection
+key, later quiet refreshes must not reopen the same path if the user manually
+collapses it. When a user opens/selects a team run that has a focused nested
+member, or selects a nested member row directly,
+`useWorkspaceHistorySelectionActions(...)` asks
+`useWorkspaceHistoryTreeState(...)` to expand only the subteam ancestors
+needed to keep that nested focus visible.
 
 For team-run member rows, selection state uses roster/history visual focus, not
-active-execution command focus. Clicking a member row whose route key exists in
-the team's `memberTree` should keep that route key selected in the history tree
-and Focus display even when the member is offline or has no active runtime
-context. Live/hydrated team-context merges must preserve the persisted history
-row's workspace grouping and use this roster focus for selected-row
+active-execution command focus. The Workspace history tree renders recursive
+`memberTree` structure when available, with `team.members` only as the flat
+fallback. Nested `agent_team` member rows appear as subteam rows with a Team
+badge and their own disclosure control; they are collapsed by default, expand
+children recursively with indentation, and the disclosure toggles children
+without selecting the row body. Clicking a member or subteam row whose route key
+exists in the team's `memberTree` should keep that route key selected in the
+history tree and Focus display even when the member is offline or has no active
+runtime context. Live/hydrated team-context merges must preserve the persisted
+history row's workspace grouping and use this roster focus for selected-row
 highlighting; the shared composer remains active-execution-owned separately.
 
 ### Workspace Removal From The Sidebar

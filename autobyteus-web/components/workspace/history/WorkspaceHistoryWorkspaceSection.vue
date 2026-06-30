@@ -218,7 +218,7 @@
                   class="flex min-w-0 flex-1 items-center text-left"
                   :data-test="`workspace-team-row-${team.teamRunId}`"
                   :aria-expanded="state.isTeamExpanded(team.teamRunId)"
-                  @click="actions.onSelectTeam(team)"
+                  @click="actions.onSelectTeam(team, workspaceNode.workspaceId)"
                 >
                   <Icon
                     icon="heroicons:chevron-down-20-solid"
@@ -278,41 +278,73 @@
               </div>
 
               <div v-if="state.isTeamExpanded(team.teamRunId)" class="ml-3 space-y-0.5">
-                <button
-                  v-for="member in flattenTeamMembers(team)"
-                  :key="member.memberRouteKey"
-                  type="button"
-                  class="flex w-full items-center justify-between rounded-md px-2 py-1 text-left text-sm transition-colors"
-                  :class="member.memberRouteKey === team.focusedMemberRouteKey ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
-                  :style="{ marginLeft: `${member.memberPath.length > 1 ? 12 : 0}px` }"
-                  :data-test="`workspace-team-member-${team.teamRunId}-${member.memberRouteKey}`"
-                  @click="actions.onSelectTeamMember(member)"
+                <div
+                  v-for="row in visibleTeamMemberRows(team)"
+                  :key="row.member.memberRouteKey"
+                  class="flex w-full cursor-pointer items-center rounded-md text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                  :class="row.member.memberRouteKey === team.focusedMemberRouteKey ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
+                  :style="{ marginLeft: `${row.depth * 12}px` }"
+                  :data-test="`workspace-team-member-${team.teamRunId}-${row.member.memberRouteKey}`"
+                  role="button"
+                  tabindex="0"
+                  @click="selectTeamMember(team, row.member)"
+                  @keydown.enter="selectTeamMember(team, row.member)"
+                  @keydown.space.prevent="selectTeamMember(team, row.member)"
                 >
-                  <div class="flex min-w-0 items-center">
-                    <StatusDot class="mr-1.5" kind="agent" :status="member.currentStatus" />
-                    <span
-                      class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
-                    >
-                      <img
-                        v-if="avatars.showTeamMemberAvatar(member)"
-                        :src="avatars.getTeamMemberAvatarUrl(member)"
-                        :alt="`${avatars.getTeamMemberDisplayName(member)} avatar`"
-                        class="h-full w-full object-cover"
-                        @error="avatars.onTeamMemberAvatarError(member)"
-                      >
-                      <span v-else>{{ avatars.getTeamMemberInitials(member) }}</span>
-                    </span>
-                    <span class="truncate">{{ member.displayName || avatars.getTeamMemberDisplayName(member) }}</span>
-                    <span
-                      v-if="member.memberKind === 'agent_team'"
-                      class="ml-1 rounded bg-slate-100 px-1 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
-                    >Team</span>
-                  </div>
+                  <button
+                    v-if="row.hasChildren"
+                    type="button"
+                    class="ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                    data-test="workspace-team-member-disclosure"
+                    :data-team-run-id="team.teamRunId"
+                    :data-member-route-key="row.member.memberRouteKey"
+                    :aria-expanded="state.isTeamMemberExpanded(workspaceNode.workspaceId, team.teamRunId, row.member.memberRouteKey)"
+                    @click.stop="state.toggleTeamMember(workspaceNode.workspaceId, team.teamRunId, row.member.memberRouteKey)"
+                    @keydown.enter.stop
+                    @keydown.space.stop
+                  >
+                    <Icon
+                      icon="heroicons:chevron-down-20-solid"
+                      class="h-3.5 w-3.5 transition-transform"
+                      :class="state.isTeamMemberExpanded(workspaceNode.workspaceId, team.teamRunId, row.member.memberRouteKey) ? 'rotate-0' : '-rotate-90'"
+                      aria-hidden="true"
+                    />
+                  </button>
+                  <span
+                    v-else
+                    class="ml-2 mr-1 h-3.5 w-3.5 flex-shrink-0"
+                    aria-hidden="true"
+                  />
 
-                  <span class="ml-2 text-xs text-gray-400">
-                    {{ state.formatRelativeTime(team.lastActivityAt) }}
-                  </span>
-                </button>
+                  <div class="flex min-w-0 flex-1 items-center justify-between py-1 pr-2">
+                    <div class="flex min-w-0 items-center">
+                      <StatusDot class="mr-1.5" kind="agent" :status="row.member.currentStatus" />
+                      <span
+                        class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
+                      >
+                        <img
+                          v-if="avatars.showTeamMemberAvatar(row.member)"
+                          :src="avatars.getTeamMemberAvatarUrl(row.member)"
+                          :alt="`${avatars.getTeamMemberDisplayName(row.member)} avatar`"
+                          class="h-full w-full object-cover"
+                          @error="avatars.onTeamMemberAvatarError(row.member)"
+                        >
+                        <span v-else>{{ avatars.getTeamMemberInitials(row.member) }}</span>
+                      </span>
+                      <span class="truncate">{{ row.member.displayName || avatars.getTeamMemberDisplayName(row.member) }}</span>
+                      <span
+                        v-if="row.member.memberKind === 'agent_team'"
+                        class="ml-1 rounded bg-slate-100 px-1 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
+                      >Team</span>
+                    </div>
+
+                    <span
+                      class="ml-2 flex-shrink-0 text-xs text-gray-400"
+                    >
+                      {{ state.formatRelativeTime(team.lastActivityAt) }}
+                    </span>
+                  </div>
+                </div>
 
               </div>
             </div>
@@ -336,7 +368,11 @@ import {
   buildWorkspaceTeamDefinitionDisplayGroups,
   type WorkspaceHistoryTeamDefinitionDisplayGroup,
 } from '~/components/workspace/history/workspaceHistoryTeamDefinitionGroups';
-import type { TeamRunHistoryDefinitionGroup, TeamTreeNode } from '~/stores/runHistoryTypes';
+import type {
+  TeamMemberTreeRow,
+  TeamRunHistoryDefinitionGroup,
+  TeamTreeNode,
+} from '~/stores/runHistoryTypes';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 const props = defineProps<{
@@ -355,10 +391,53 @@ const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGro
   ),
 );
 
-const flattenTeamMembers = (team: TeamTreeNode): TeamTreeNode['members'] => {
-  const flatten = (members: TeamTreeNode['memberTree']): TeamTreeNode['members'] =>
-    members.flatMap((member) => [member, ...flatten(member.children)]);
-  return flatten(team.memberTree.length > 0 ? team.memberTree : team.members);
+interface VisibleTeamMemberRow {
+  member: TeamMemberTreeRow;
+  depth: number;
+  hasChildren: boolean;
+}
+
+const rootTeamMembers = (team: TeamTreeNode): readonly TeamMemberTreeRow[] =>
+  team.memberTree.length > 0 ? team.memberTree : team.members;
+
+const visibleTeamMemberRows = (team: TeamTreeNode): VisibleTeamMemberRow[] => {
+  const collect = (
+    members: readonly TeamMemberTreeRow[],
+    depth: number,
+  ): VisibleTeamMemberRow[] => members.flatMap((member) => {
+    const hasChildren = member.memberKind === 'agent_team' && member.children.length > 0;
+    const row: VisibleTeamMemberRow = {
+      member,
+      depth,
+      hasChildren,
+    };
+
+    if (!hasChildren || !props.state.isTeamMemberExpanded(
+      props.workspaceNode.workspaceId,
+      team.teamRunId,
+      member.memberRouteKey,
+    )) {
+      return [row];
+    }
+
+    return [
+      row,
+      ...collect(member.children, depth + 1),
+    ];
+  });
+
+  return collect(rootTeamMembers(team), 0);
+};
+
+const selectTeamMember = (
+  team: TeamTreeNode,
+  member: TeamMemberTreeRow,
+): Promise<void> | void => {
+  return props.actions.onSelectTeamMember(
+    member,
+    props.workspaceNode.workspaceId,
+    rootTeamMembers(team),
+  );
 };
 
 const USER_REQUIREMENT_PREFIX = /^\s*(?:\*\*)?\s*(?:\[\s*user requirement\s*\]|user requirement)\s*(?:\*\*)?\s*[:\-]?\s*/i;
