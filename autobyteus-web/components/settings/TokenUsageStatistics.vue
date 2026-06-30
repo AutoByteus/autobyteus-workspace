@@ -1,85 +1,64 @@
 <template>
   <div class="token-usage-statistics h-full flex flex-col overflow-hidden">
-    <div class="flex items-center justify-between px-8 pt-8 pb-4 flex-shrink-0">
-      <h2 class="text-xl font-semibold text-gray-900">{{ $t('settings.components.settings.TokenUsageStatistics.token_usage_statistics') }}</h2>
-    </div>
-
     <div class="flex-1 overflow-auto p-8">
       <div class="mb-6 rounded-lg border border-gray-100 bg-gray-50 p-4">
-        <div class="flex flex-wrap items-center gap-4">
-          <label for="token-usage-start-date" class="block text-sm font-medium text-gray-700">
-            {{ $t('settings.components.settings.TokenUsageStatistics.select_date_range') }}
-          </label>
+        <div class="flex flex-wrap items-center gap-3">
+          <select
+            id="token-usage-grouping"
+            v-model="selectedGrouping"
+            class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:border-blue-500 focus:ring-blue-500"
+            :aria-label="t('settings.components.settings.TokenUsageStatistics.groupingSelectAriaLabel')"
+          >
+            <option value="task">{{ t('settings.components.settings.TokenUsageStatistics.groupingTask') }}</option>
+            <option value="model">{{ t('settings.components.settings.TokenUsageStatistics.groupingModel') }}</option>
+          </select>
           <input
             id="token-usage-start-date"
             v-model="startDate"
             type="date"
             class="rounded-md border border-gray-300 p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+            :aria-label="t('settings.components.settings.TokenUsageStatistics.startDateAriaLabel')"
             :max="endDate"
           >
-          <div class="text-gray-400">{{ $t('settings.components.settings.TokenUsageStatistics.rangeSeparator') }}</div>
+          <div class="text-gray-400">{{ t('settings.components.settings.TokenUsageStatistics.rangeSeparator') }}</div>
           <input
+            id="token-usage-end-date"
             v-model="endDate"
             type="date"
             class="rounded-md border border-gray-300 p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+            :aria-label="t('settings.components.settings.TokenUsageStatistics.endDateAriaLabel')"
             :min="startDate"
           >
-          <span
-            class="inline-flex items-center gap-1 text-xs font-medium text-gray-600"
-            :title="$t('settings.components.settings.TokenUsageStatistics.usageDuringPeriodHelp')"
-          >
-            {{ $t('settings.components.settings.TokenUsageStatistics.usageDuringPeriod') }}
-            <span aria-hidden="true" class="text-gray-400">ⓘ</span>
-          </span>
           <button
             class="ml-auto rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             :disabled="store.isLoading"
             @click="fetchStatistics"
           >
-            {{ store.isLoading ? $t('settings.components.settings.TokenUsageStatistics.loadingStatistics') : $t('settings.components.settings.TokenUsageStatistics.fetchStatistics') }}
+            {{ store.isLoading ? t('settings.components.settings.TokenUsageStatistics.loadingStatistics') : t('settings.components.settings.TokenUsageStatistics.fetchStatistics') }}
           </button>
         </div>
       </div>
 
-      <div class="mb-6 flex border-b border-gray-200">
-        <button
-          type="button"
-          class="border-b-2 px-4 py-2 text-sm font-medium"
-          :class="activeTab === 'task' ? 'border-blue-600 text-blue-700' : 'border-transparent text-gray-500 hover:text-gray-700'"
-          @click="activeTab = 'task'"
-        >
-          {{ $t('settings.components.settings.TokenUsageStatistics.byTask') }}
-        </button>
-        <button
-          type="button"
-          class="border-b-2 px-4 py-2 text-sm font-medium"
-          :class="activeTab === 'model' ? 'border-blue-600 text-blue-700' : 'border-transparent text-gray-500 hover:text-gray-700'"
-          @click="activeTab = 'model'"
-        >
-          {{ $t('settings.components.settings.TokenUsageStatistics.byModel') }}
-        </button>
-      </div>
-
       <div v-if="store.isLoading" class="flex flex-col items-center justify-center gap-3 py-20 text-gray-600">
         <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-        <div>{{ $t('settings.components.settings.TokenUsageStatistics.loadingStatisticsLong') }}</div>
+        <div>{{ t('settings.components.settings.TokenUsageStatistics.loadingStatisticsLong') }}</div>
       </div>
 
       <div v-else-if="store.getError" class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
         {{ store.getError }}
       </div>
 
-      <div v-else-if="activeTab === 'task' && store.getTaskRows.length === 0" class="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
-        <div class="font-medium text-gray-900">{{ $t('settings.components.settings.TokenUsageStatistics.noTaskUsage') }}</div>
-        <div class="mt-1 text-sm">{{ $t('settings.components.settings.TokenUsageStatistics.tryWiderRangeOrByModel') }}</div>
+      <div v-else-if="selectedGrouping === 'task' && store.getTaskRows.length === 0" class="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
+        <div class="font-medium text-gray-900">{{ t('settings.components.settings.TokenUsageStatistics.noTaskUsage') }}</div>
+        <div class="mt-1 text-sm">{{ t('settings.components.settings.TokenUsageStatistics.tryWiderRangeOrModel') }}</div>
       </div>
 
-      <div v-else-if="activeTab === 'model' && store.getModelRows.length === 0" class="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
-        <div class="font-medium text-gray-900">{{ $t('settings.components.settings.TokenUsageStatistics.noModelUsage') }}</div>
+      <div v-else-if="selectedGrouping === 'model' && store.getModelRows.length === 0" class="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
+        <div class="font-medium text-gray-900">{{ t('settings.components.settings.TokenUsageStatistics.noModelUsage') }}</div>
       </div>
 
       <TokenUsageTaskStatisticsTable
-        v-else-if="activeTab === 'task'"
+        v-else-if="selectedGrouping === 'task'"
         :rows="store.getTaskRows"
       />
       <TokenUsageModelStatisticsTable
@@ -98,14 +77,14 @@ import TokenUsageModelStatisticsTable from './token-usage/TokenUsageModelStatist
 import TokenUsageTaskStatisticsTable from './token-usage/TokenUsageTaskStatisticsTable.vue';
 
 const store = useTokenUsageStatisticsStore();
-const { t: $t } = useLocalization();
+const { t } = useLocalization();
 const startDate = ref('');
 const endDate = ref('');
-const activeTab = ref<'task' | 'model'>('task');
+const selectedGrouping = ref<'task' | 'model'>('task');
 
 const fetchStatistics = async (): Promise<void> => {
   if (!startDate.value || !endDate.value) {
-    alert($t('settings.components.settings.TokenUsageStatistics.selectDatesAlert'));
+    alert(t('settings.components.settings.TokenUsageStatistics.selectDatesAlert'));
     return;
   }
   try {
