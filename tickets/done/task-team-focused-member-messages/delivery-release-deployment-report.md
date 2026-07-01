@@ -8,7 +8,7 @@ Release is in scope after user verification. The requested release version is `1
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff reflects the latest-base integration refresh, address-first Team Communication behavior, docs sync, verification evidence, residual environment-gated checks, and the required user-verification hold.
+- Notes: Handoff reflects the latest-base integration refresh, address-first Team Communication behavior, docs sync, verification evidence, user verification, repository finalization, and v1.3.91 release trigger evidence.
 
 ## Initial Delivery Integration Refresh
 
@@ -58,7 +58,13 @@ Release is in scope after user verification. The requested release version is `1
 
 ## Version / Tag / Release Commit
 
-Release notes were created from the verified behavior and archived with the ticket. Planned release: `1.3.91` / `v1.3.91` after repository finalization.
+Release notes were created from the verified behavior and archived with the ticket. Release completed locally and pushed: `1.3.91` / `v1.3.91`.
+
+- Release commit: `e104b263634f3533c5f890651fb47976a9c22dc0`
+- Release tag: `v1.3.91`
+- Package versions updated: `autobyteus-web/package.json` `1.3.91`; `autobyteus-message-gateway/package.json` `1.3.91`
+- Curated release notes synced to `.github/release-notes/release-notes.md`
+- Managed messaging gateway release manifest synced to `v1.3.91`
 
 Local test build output only:
 
@@ -71,17 +77,17 @@ Local test build output only:
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/investigation-notes.md`
 - Ticket branch: `codex/task-team-focused-member-messages`
-- Ticket branch commit result: `Pending` — ticket has been archived and release notes created; final ticket-branch commit is in progress.
-- Ticket branch push result: `Pending`
+- Ticket branch commit result: `Completed` — `325efa93a7a62569c9e46d75644a4414fd36d8db` (`chore(ticket): finalize team communication address messages`).
+- Ticket branch push result: `Completed` — pushed `codex/task-team-focused-member-messages` to origin.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: `Pending`
-- Merge into target result: `Pending`
-- Push target branch result: `Pending`
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` — local `personal` was refreshed from `origin/personal` before merge.
+- Merge into target result: `Completed` — merge commit `d3f8a84268c4f9b3d1a9149133968201370a7647`.
+- Push target branch result: `Completed` — `personal` pushed to `origin/personal`.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -89,18 +95,18 @@ Local test build output only:
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `pnpm release 1.3.91 -- --release-notes tickets/done/task-team-focused-member-messages/release-notes.md`
-- Release/publication/deployment result: `Pending`
-- Release notes handoff result: `Pending`
+- Release/publication/deployment result: `Completed` for local version/tag release step; GitHub release workflows are triggered and were `in_progress` at handoff.
+- Release notes handoff result: `Used`
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages`
-- Worktree cleanup result: `Pending finalization/release completion`
-- Worktree prune result: `Pending finalization/release completion`
-- Local ticket branch cleanup result: `Pending finalization/release completion`
-- Remote branch cleanup result: `Not required` at this stage
-- Blocker (if applicable): Cleanup is intentionally deferred until repository finalization is complete and safe.
+- Worktree cleanup result: `Not performed` — dedicated ticket worktree preserved because it contains the local unsigned Electron test build used for verification.
+- Worktree prune result: `Completed` — temporary release worktree was removed and worktrees pruned.
+- Local ticket branch cleanup result: `Not performed` — retained for audit alongside the preserved ticket worktree.
+- Remote branch cleanup result: `Not required` — retained for audit.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -116,7 +122,13 @@ Local test build output only:
 
 ## Deployment Steps
 
-None performed.
+Tag push started the release workflows. Workflow status at handoff:
+
+- Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534195458 (`in_progress` at handoff)
+- Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534194734 (`in_progress` at handoff)
+- iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534195290 (`in_progress` at handoff)
+- Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534194759 (`in_progress` at handoff)
+- Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534196145 (`in_progress` at handoff)
 
 ## Environment Or Migration Notes
 
@@ -162,4 +174,15 @@ Rollback or rework if user/manual verification shows Team Messages still omit va
 
 ## Final Status
 
-`User verification received. Ticket archived. Repository finalization and v1.3.91 release are in progress.`
+`Repository finalization complete. v1.3.91 release commit and tag pushed; release workflows are running.`
+
+
+## Release Workflow Trigger Evidence
+
+The `v1.3.91` tag push triggered these GitHub Actions runs, all observed as `in_progress` at handoff:
+
+- Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534195458 (`in_progress` at handoff)
+- Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534194734 (`in_progress` at handoff)
+- iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534195290 (`in_progress` at handoff)
+- Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534194759 (`in_progress` at handoff)
+- Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534196145 (`in_progress` at handoff)

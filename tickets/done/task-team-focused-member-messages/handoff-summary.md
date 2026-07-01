@@ -4,7 +4,7 @@
 
 Delivery-stage latest-base integration refresh, post-integration verification, durable docs sync, local Electron test build, and user verification are complete. The ticket has been archived to `tickets/done/task-team-focused-member-messages` for finalization.
 
-User verification was received on 2026-07-01: “its working lets finalize and release a new version. follow finalization guidelines”. A new release is requested; the planned release version is `1.3.91` / tag `v1.3.91`, using the documented repository release helper after repository finalization.
+User verification was received on 2026-07-01: “its working lets finalize and release a new version. follow finalization guidelines”. Repository finalization is complete and release `v1.3.91` was created with the documented release helper. The pushed tag started the release workflows; they were still running at final handoff.
 
 ## Integrated State
 
@@ -132,6 +132,22 @@ Finalization direction:
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/docs-sync-report.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/delivery-release-deployment-report.md`
 
-## Current Finalization Status
+## Release And Finalization Status
 
-User verification received. Ticket archived. Repository finalization and release are in progress; final commit/push/merge/tag evidence will be recorded in the delivery report.
+Repository finalization and release trigger are complete:
+
+- Ticket branch finalization commit: `325efa93a7a62569c9e46d75644a4414fd36d8db`
+- Merge to `personal`: `d3f8a84268c4f9b3d1a9149133968201370a7647`
+- Release commit: `e104b263634f3533c5f890651fb47976a9c22dc0`
+- Release tag: `v1.3.91`
+- Package versions: `autobyteus-web` `1.3.91`; `autobyteus-message-gateway` `1.3.91`
+
+Release workflows triggered by the tag push:
+
+- Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534195458 (`in_progress` at handoff)
+- Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534194734 (`in_progress` at handoff)
+- iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534195290 (`in_progress` at handoff)
+- Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534194759 (`in_progress` at handoff)
+- Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28534196145 (`in_progress` at handoff)
+
+The dedicated ticket worktree is preserved because it contains the local unsigned Electron test build used for verification.
