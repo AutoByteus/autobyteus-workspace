@@ -1,10 +1,10 @@
 ## What's New
-- Added live delegated task-agent and task-team execution rows directly in the left Workspaces tree, including nested task-team children and a clear eight-dot transient execution marker.
+- Team Messages now use the same focused target addressing model as team message sending, so task-team and task-agent conversations can be opened from the exact focused execution row.
 
 ## Improvements
-- Kept Team → Tasks focused on task content: clean task summaries, selectable task references, task body/reference preview, and collapsed technical details without duplicate execution-status UI.
-- Preserved stable team/member hierarchy behavior while making transient task-team rows independently expandable, focusable, and removable after task completion.
+- Team Communication now stores sender and receiver identity as `ConversationTargetAddress` values, keeping persistent members, static nested members, delegated task teams, and delegated task agents on one consistent address model.
+- Existing flat Team Communication projection files are migrated into the new address-first shape instead of being handled by runtime compatibility branches.
 
 ## Fixes
-- Fixed stale or noisy delegated-task presentation by removing redundant status dots, status labels, actor/member hierarchy rows, and the extra visible References heading from the right Team → Tasks navigator.
-- Fixed transient cleanup so completed delegated tasks disappear from Workspaces and the active task count returns to zero.
+- Fixed focused Team Messages showing empty or stale conversations for members inside delegated task-team executions.
+- Fixed cross-run leakage risk for repeated delegated task-team member names by matching exact task-team/task-agent address segments rather than display names or route-key fallbacks.
