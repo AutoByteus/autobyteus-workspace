@@ -12,7 +12,7 @@
   - Where are task agents/teams currently rendered and what owns their state? Resolved.
   - What code/history moved them from the workspace tree into the Tasks tab? Resolved.
   - Can workspace-tree visibility solve discoverability without reintroducing confusion? Yes, if limited to inline transient execution-node rows with explicit temporary styling, not full task detail or ordinary member rows.
-  - What visual/semantic treatment should temporary task targets use? Inline execution rows that use dotted/dashed circle/avatar treatment plus a light ghost background where durable rows use solid circles; no full task-context block and no ordinary durable-member styling.
+  - What visual/semantic treatment should temporary task targets use? Inline execution rows that use dotted/dashed leading status circle treatment plus a light ghost background where durable rows use solid leading status circles; no full task-context block and no ordinary durable-member styling.
   - What tests/docs are likely impacted? Workspaces-tree tests, Team active task tests, right-tab/overview activation tests, docs around delegated task visibility.
 
 ## Request Context
@@ -132,7 +132,7 @@ No external sources used; this is an internal product/code investigation.
 
 ## Clarification Update (2026-06-30)
 
-The user clarified that the desired change is not a separate `Live delegated tasks` group/card and not a full task-context move. The task itself remains on the right side under Team -> Tasks. Only the task-agent/task-agent-team execution rows should move to the global Workspaces tree, in their original/logical place under the relevant team/member hierarchy, with a dotted/dashed circle/avatar visual effect that communicates temporariness without visible `Temp` wording.
+The user clarified that the desired change is not a separate `Live delegated tasks` group/card and not a full task-context move. The task itself remains on the right side under Team -> Tasks. Only the task-agent/task-agent-team execution rows should move to the global Workspaces tree, in their original/logical place under the relevant team/member hierarchy, with a dotted/dashed leading status circle visual effect that communicates temporariness without visible `Temp` wording.
 
 Additional code confirmation:
 
@@ -162,7 +162,7 @@ A deeper history check found an older, simpler Workspaces-tree behavior before t
 - This older approach did not require a special Workspaces task-context component. It inherited the normal Workspaces member row renderer, which explains why temporary task agents felt like normal durable rows.
 - `d0c2f995` later added `isTransientTaskProjectionNode()` filtering to remove those projections from normal Workspaces rows before the Team-tab active-task UI direction.
 
-Design implication: the current design should be closer to the older direct inline placement than to `6d772875`, but with a crucial fix: do not make transient projections ordinary `TeamMemberTreeRow` output. Instead, compose renderer-facing display rows that preserve `memberTree` order while giving task-agent/task-team rows a transient row kind, dotted/dashed circle/avatar, and light ghost background.
+Design implication: the current design should be closer to the older direct inline placement than to `6d772875`, but with a crucial fix: do not make transient projections ordinary `TeamMemberTreeRow` output. Instead, compose renderer-facing display rows that preserve `memberTree` order while giving task-agent/task-team rows a transient row kind, dotted/dashed leading status circle, and light ghost background.
 
 
 ### Current-state facts
@@ -192,7 +192,7 @@ A full return to old global-tree rendering is not recommended. After clarificati
 
 ## Open Unknowns / Risks
 
-- Visual treatment approved by user on 2026-06-30: use dotted/dashed circle/avatar plus light ghost background instead of the durable solid circle/avatar; avoid visible `Temp` wording by default; keep tooltip/aria text for accessibility if needed.
+- Visual treatment approved by user on 2026-06-30: use dotted/dashed leading status circle plus light ghost background instead of the durable solid leading status circle; avoid visible `Temp` wording by default; keep tooltip/aria text for accessibility if needed.
 - Need ensure multiple transient execution rows remain readable inline. Recommended first implementation: render rows in runtime order and rely on normal tree indentation; do not add a separate task list/card.
 - Need decide exact right-side pruning behavior for actor/member rows. Recommended: keep task summary/references/technical details in Team Tasks and avoid duplicated primary execution-node rows there.
 - Dependency installation is absent in this fresh worktree; tests could not be run during investigation.
@@ -202,3 +202,35 @@ A full return to old global-tree rendering is not recommended. After clarificati
 Proposed design spec path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/tickets/in-progress/task-agents-workspace-tree-ux/design-spec.md`. The design has been revised to inline transient task-agent/task-team execution rows in the Workspaces tree rather than adding a separate live-task group.
 
 If approved, the design should be reviewed for boundary safety: global Workspaces tree may host inline transient task-agent/task-team execution rows, but right Team Tasks must remain the task content/detail owner and stable member rows must not absorb task projection nodes as ordinary durable rows. Pay special attention to the display-row union so it preserves runtime placement without restoring the old full global context tree.
+
+## Electron Implementation Review Finding (2026-07-01)
+
+User-provided screenshot showed the implemented transient rows with redundant circular markers: a normal solid status dot, an extra dotted initials/avatar circle, and a trailing dotted marker. This came from ambiguous earlier wording (`dotted circle/avatar`) that could be interpreted as adding a new dotted avatar instead of changing the status dot itself.
+
+Clarified design requirement: the dotted/dashed circle is the leading status indicator itself. Transient rows should have exactly one visible dotted/dashed circular marker, in the leading status-dot slot, plus light ghost background. No extra dotted initials/avatar circle and no trailing dotted marker.
+
+## Transient Task-Team Disclosure Finding (2026-07-01)
+
+Source review:
+
+- `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`
+- `autobyteus-web/utils/workspaceTeamExecutionDisplayRows.ts`
+- `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts`
+
+Existing persistent team/member behavior:
+
+- Persistent team run rows are collapsed by default after the team-definition group is opened.
+- Nested persistent `agent_team` member rows with children are collapsed by default.
+- Expansion is user-controlled through disclosure state exposed by the Workspaces tree section state boundary.
+
+Current transient implementation risk:
+
+- `buildWorkspaceTeamExecutionDisplayRows()` visits a transient `task_team` and immediately appends its visited child rows.
+- `visibleTeamExecutionRows()` currently treats only stable `agent_team` display rows as expandable/collapsible through `stableRowHasChildren(...)`.
+- Therefore transient task-team children can appear by default, which differs from persistent agent-team behavior.
+
+Clarified design requirement:
+
+- A transient task-team row should be visible at its hierarchy position but collapsed by default.
+- Its child rows should appear only after the user expands that transient task-team row.
+- Expansion state should be keyed by transient row identity, preferably using the existing `teamRunId + memberRouteKey` expansion state shape if safe.

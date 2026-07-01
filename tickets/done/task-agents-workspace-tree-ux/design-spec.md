@@ -63,8 +63,8 @@ Runtime live tree
 Left Workspaces tree:
 
 ```text
-● stable member/team                          solid circle/avatar
-◌ transient task-agent/task-team              dotted/dashed circle/avatar + light ghost background
+● stable member/team                          solid leading status circle
+◌ transient task-agent/task-team              dotted/dashed leading status circle + light ghost background
 ```
 
 Right Team -> Tasks:
@@ -148,7 +148,7 @@ Right Team -> Tasks:
 | DS-TWU-002 | The Workspaces tree is the execution focus surface. Clicking any stable or transient execution row selects/focuses the corresponding member route key. | Workspaces row, selection action, team context store | Team context focus owner | Route-key validation, local live context reuse |
 | DS-TWU-003 | Right Team Tasks derives task entries and renders task detail/content only. It should no longer present task-agent/task-team member hierarchy as the main left/right task navigator identity. | `deriveActiveTaskEntries`, Team active task section/detail components | Team active task detail owner | Multiple task selection, references, technical details |
 | DS-TWU-004 | Cleanup removes projection nodes; derived left rows and right task entries both disappear without stored duplicates. | Projection cleanup, live context, derived rows/details | Runtime projection lifecycle | No caches, stale selection fallback |
-| DS-TWU-005 | Renderer branches by row kind: stable rows get existing solid circle; transient rows get dotted circle and light ghost background. | Display row, renderer component/branch | Workspaces renderer | CSS/accessibility/i18n |
+| DS-TWU-005 | Renderer branches by row kind: stable rows get existing solid leading status circle; transient rows get dotted circle and light ghost background. | Display row, renderer component/branch | Workspaces renderer | CSS/accessibility/i18n |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -369,7 +369,7 @@ A compact layout is preferred: one display adapter plus one optional transient r
 
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
-| Left row semantics | `● worker` stable, `◌ worker · task_0001` dotted/ghost transient | Both rows rendered with the same solid circle | Fixes original ambiguity. |
+| Left row semantics | `● worker` stable, `◌ worker · task_0001` dotted/ghost transient | Both rows rendered with the same solid leading status circle | Fixes original ambiguity. |
 | Architecture split | Workspaces row focuses execution; right panel shows task detail | Right panel and left tree both show execution hierarchy | Prevents duplicated ownership. |
 | Data model | Display row union over stable rows + live nodes | Removing transient filter from stable row builder | Keeps durable/transient semantics clean. |
 | Global tree content | Identity rows only | Summary/references/technical details in Workspaces tree | Avoids later full-context mistake. |
@@ -396,7 +396,7 @@ A compact layout is preferred: one display adapter plus one optional transient r
 1. Add `workspaceTeamExecutionDisplayRows` with a discriminated union that preserves original inline placement from live `memberTree` while using stable rows for durable row fields.
 2. Wire `WorkspaceAgentRunsTreePanel.vue` / section contracts to provide display rows per team.
 3. Update `WorkspaceHistoryWorkspaceSection.vue` to render display rows and extract `WorkspaceTransientExecutionRow.vue` if the transient branch is more than trivial.
-4. Implement dotted/dashed circle/avatar plus light ghost background for transient rows; keep durable rows visually unchanged.
+4. Implement dotted/dashed leading status circle plus light ghost background for transient rows; keep durable rows visually unchanged.
 5. Ensure transient row clicks use existing team member focus behavior.
 6. Refactor `TeamActiveTaskNavigator.vue` / `TeamActiveTasksSection.vue` so right Team -> Tasks renders task detail/content only and does not duplicate execution hierarchy as primary rows.
 7. Update tests for:
@@ -431,3 +431,121 @@ A compact layout is preferred: one display adapter plus one optional transient r
 - Treat Workspaces transient rows as execution identity/focus rows only.
 - Treat right Team Tasks as task detail/content only.
 - Prefer pure helpers and discriminated unions over ad hoc component branching.
+
+## Addendum: Concrete Transient Row Anatomy (2026-07-01)
+
+This addendum resolves implementation ambiguity found during Electron review. It is normative for implementation.
+
+### Required Row Anatomy
+
+A transient execution row in the Workspaces tree must have this visual structure:
+
+```text
+[transient status dot] [display name]                         [optional relative time only if stable rows also show it]
+```
+
+Example:
+
+```text
+◌ StudentStudyGroup · task_0003
+◌ student_one
+◌ student_two
+```
+
+The transient row must **not** have this structure:
+
+```text
+● [dotted initials/avatar] StudentStudyGroup · task_0003 [trailing dotted circle]
+```
+
+### Required Element Semantics
+
+| Slot | Stable durable row | Transient execution row | Notes |
+| --- | --- | --- | --- |
+| Leading status indicator | Solid colored `StatusDot` | Dotted/dashed/hollow status dot in the same leading position | This is the only visible dotted circle. |
+| Avatar / initials circle | Existing durable avatar/initials where stable rows currently show it | Omit by default for transient rows | Do not add a second dotted initials/avatar circle. |
+| Row background | Normal stable row background | Light ghost background | Keep subtle. |
+| Row border | Existing stable row border/none | Optional very subtle border only if needed | Full dashed card border is not required and may be too noisy. |
+| Trailing indicator | Existing stable row trailing content, usually relative time | No transient-specific trailing dotted marker | Do not add right-side dotted circle. |
+| Visible text label | Stable row name/team chip | Display name only; no visible `Temp`/`Temporary` label by default | Tooltip/aria text is allowed. |
+
+### Required DOM / Testable Constraints
+
+Implementation and tests must enforce:
+
+- exactly one visible circular transient marker per transient row;
+- that marker is the leading status indicator;
+- no dashed/dotted initials/avatar marker;
+- no trailing dashed/dotted marker;
+- no visible `Temporary task execution` text in the row body;
+- transient row has a light ghost background class;
+- transient row remains focus/selectable through existing team member focus behavior.
+
+### Preferred Implementation Shape
+
+Prefer extending the existing status-dot system instead of adding ad hoc extra circles:
+
+- Add `variant?: 'solid' | 'transient'` or equivalent to `StatusDot.vue`; or
+- Add a small focused `WorkspaceTransientStatusDot.vue` if changing shared `StatusDot` is too broad.
+
+The transient status dot should preserve status meaning as far as practical, for example:
+
+- running: blue dashed/hollow dot;
+- idle/active-success: green dashed/hollow dot;
+- offline: gray dashed/hollow dot;
+- error: red dashed/hollow dot.
+
+Do not add a separate avatar circle merely to carry initials. The row display name already carries identity.
+
+### Example Acceptable Markup Shape
+
+Illustrative only; implementation may vary while preserving the constraints:
+
+```vue
+<button class="... bg-indigo-50/40 ..." data-test="workspace-team-transient-execution-row">
+  <span data-test="workspace-transient-status-dot" class="h-2 w-2 rounded-full border border-dashed border-blue-500 bg-transparent" />
+  <span class="truncate">StudentStudyGroup · task_0003</span>
+</button>
+```
+
+Forbidden illustrative shape:
+
+```vue
+<button>
+  <StatusDot />
+  <span class="rounded-full border-dashed">SS</span>
+  <span>StudentStudyGroup · task_0003</span>
+  <span class="rounded-full border-dashed" />
+</button>
+```
+
+### Task-Team Default Disclosure Behavior
+
+Transient task-team rows must follow the same default expansion semantics as persistent nested agent-team/member rows:
+
+```text
+Initial render:
+◌ StudentStudyGroup · task_0003        [collapsed disclosure]
+
+After user expands that transient task-team row:
+◌ StudentStudyGroup · task_0003        [expanded disclosure]
+  ◌ student_one
+  ◌ student_two
+```
+
+Normative constraints:
+
+- A transient `task_team` row with child rows is visible at its placement point, but its children are hidden by default.
+- Child rows become visible only after the user expands that transient task-team row.
+- The user can collapse the transient task-team row again, hiding its children.
+- Expansion state must be keyed by the transient execution row identity, e.g. `teamRunId + memberRouteKey` or the existing team-member expansion key if it already includes both dimensions.
+- Expansion state must not be keyed only by persistent team definition/name, because two task-team executions from the same team definition may exist at the same time.
+- This disclosure state belongs to the left Workspaces tree execution-identity renderer; it must not move task detail/content ownership back into the left tree.
+
+Implementation guidance:
+
+- Update the display-row visibility filtering so `hasChildren` is true for transient task-team rows with children, not only for stable `agent_team` rows.
+- Reuse the existing Workspaces tree disclosure styling and state contract when possible so transient task teams behave like normal nested teams.
+- If the existing `state.isTeamMemberExpanded(workspaceId, teamRunId, memberRouteKey)` / `toggleTeamMember(...)` key shape can safely address transient member route keys, use it instead of adding a parallel transient-only expansion store.
+- If a separate expansion helper is necessary, keep it inside the Workspaces tree state owner and expose it through the same section state boundary; do not let `WorkspaceTransientExecutionRow.vue` own global expansion state.
+- Add tests for both initial collapsed state and user-driven expand/collapse.

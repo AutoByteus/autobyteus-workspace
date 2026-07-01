@@ -15,8 +15,8 @@ The earlier/original Workspaces-tree implementation was directionally right beca
 
 Approved visual language:
 
-- durable row: existing solid circle/avatar, normal background;
-- transient task-agent/task-team row: dotted/dashed circle/avatar plus light ghost background;
+- durable row: existing solid leading status circle, normal background;
+- transient task-agent/task-team row: dotted/dashed leading status circle plus light ghost background;
 - no visible `Temp`/`Temporary` wording by default; tooltip/aria text may exist for accessibility.
 
 ## Investigation Findings
@@ -46,7 +46,7 @@ Approved visual language:
 2. Add a renderer-facing Workspaces display-row layer that composes:
    - stable durable rows from existing stable row projection;
    - transient task execution rows from live `AgentTeamContext.memberTree` projection nodes.
-3. Render transient rows inline in the Workspaces tree at the same logical placement the original implementation had, but with distinct visuals: dotted/dashed circle/avatar plus light ghost background.
+3. Render transient rows inline in the Workspaces tree at the same logical placement the original implementation had, but with distinct visuals: dotted/dashed leading status circle plus light ghost background.
 4. Do not render a separate `Live delegated tasks` group/card.
 5. Do not restore `TeamActiveTaskContextTree` or any full task-context block in the Workspaces tree.
 6. Refactor right Team -> Tasks so it shows task detail/content only, message-style. It may still list/select active tasks by task detail/summary when multiple tasks exist, but it must not be the primary place for task-agent/task-team execution hierarchy.
@@ -62,7 +62,7 @@ Rationale: The change crosses Workspaces display-row construction, Workspaces ro
 
 - `UC-TWU-001`: User sees a transient task-agent row inline under/near the logical member that spawned it.
 - `UC-TWU-002`: User sees a transient task-team row inline under/near the logical structural team, with scoped transient child rows when present.
-- `UC-TWU-003`: User can distinguish durable vs transient rows through solid circle vs dotted/dashed circle plus light ghost background.
+- `UC-TWU-003`: User can distinguish durable vs transient rows through solid leading status circle vs dotted/dashed leading status circle plus light ghost background.
 - `UC-TWU-004`: User clicks a transient execution row in the Workspaces tree and focuses that task-agent/task-team/member in the center workspace.
 - `UC-TWU-005`: User reads task details/content on the right Team -> Tasks surface, message-style, without duplicated execution hierarchy there.
 - `UC-TWU-006`: Transient rows disappear from the Workspaces tree when runtime projection cleanup removes them.
@@ -79,8 +79,8 @@ Rationale: The change crosses Workspaces display-row construction, Workspaces ro
 
 - `REQ-TWU-001`: The global Workspaces tree must render active task-agent execution rows inline at their logical live runtime position.
 - `REQ-TWU-002`: The global Workspaces tree must render active task-team execution rows inline at their logical live runtime position, including scoped child rows when present.
-- `REQ-TWU-003`: Durable rows must keep the existing solid circle/avatar and normal background semantics.
-- `REQ-TWU-004`: Transient task execution rows must use dotted/dashed circle/avatar plus light ghost background.
+- `REQ-TWU-003`: Durable rows must keep the existing solid leading status circle and normal background semantics.
+- `REQ-TWU-004`: Transient task execution rows must use dotted/dashed leading status circle plus light ghost background.
 - `REQ-TWU-005`: Transient task execution rows must not be represented as ordinary durable `TeamMemberTreeRow` history rows.
 - `REQ-TWU-006`: The right Team -> Tasks section must remain the owner for task detail/content, such as task body/summary, references, technical details, and selected task detail.
 - `REQ-TWU-007`: The right Team -> Tasks section must not retain the task-agent/task-team execution hierarchy as its primary visible identity UI after those rows move left.
@@ -93,7 +93,7 @@ Rationale: The change crosses Workspaces display-row construction, Workspaces ro
 
 - `AC-TWU-001`: Given a task-agent projection exists in live `AgentTeamContext.memberTree`, the Workspaces tree shows it inline under/near the logical member, not in a separate task group.
 - `AC-TWU-002`: Given a task-team projection exists, the Workspaces tree shows it inline under/near the logical structural team and renders scoped child rows beneath it.
-- `AC-TWU-003`: Given stable and transient rows are visible together, stable rows use solid circle/avatar while transient rows use dotted/dashed circle/avatar plus light ghost background.
+- `AC-TWU-003`: Given stable and transient rows are visible together, stable rows use solid leading status circle while transient rows use dotted/dashed leading status circle plus light ghost background.
 - `AC-TWU-004`: Given stable and transient rows are visible together, transient rows have explicit row kind/data-test markers and are not produced as ordinary durable history rows.
 - `AC-TWU-005`: Given the user clicks a transient row, existing team member focus behavior focuses that task execution target.
 - `AC-TWU-006`: Given the right Team -> Tasks section is open, it shows task detail/content and does not duplicate the left-side execution hierarchy as primary rows.
@@ -156,3 +156,26 @@ Rationale: The change crosses Workspaces display-row construction, Workspaces ro
 ## Approval Status
 
 Approved product direction from user on 2026-06-30. Redesign requested to strictly follow design principles and produce the cleanest architecture boundary: left Workspaces tree owns transient execution identity/hierarchy; right Team -> Tasks owns task detail/content only.
+
+## Addendum: Concrete Visual Requirements (2026-07-01)
+
+The transient-row visual requirement is now explicit:
+
+- `REQ-TWU-012`: A transient execution row must have exactly one visible dotted/dashed circular marker.
+- `REQ-TWU-013`: That marker must be the leading status indicator in the same slot where stable rows show the solid status dot.
+- `REQ-TWU-014`: A transient execution row must not render an additional dotted/dashed initials/avatar circle.
+- `REQ-TWU-015`: A transient execution row must not render a trailing dotted/dashed circle or transient marker at the far right.
+- `REQ-TWU-016`: A transient execution row must not show visible `Temp`, `Temporary`, or `Temporary task execution` text by default; accessibility-only text or tooltip is allowed.
+- `REQ-TWU-017`: A transient execution row must retain the light ghost background.
+- `REQ-TWU-018`: A transient task-team row that has child member rows must be collapsed by default, matching the existing persistent agent-team row behavior.
+- `REQ-TWU-019`: Expanding or collapsing a transient task-team row must be a user-controlled disclosure action; rendering the transient task-team row must not automatically expose its children.
+- `REQ-TWU-020`: A transient task-team row's collapsed/expanded state must be keyed by that transient execution row identity, not by only the persistent team definition, so two simultaneous task-team executions do not share expansion state accidentally.
+
+Additional acceptance criteria:
+
+- `AC-TWU-010`: Component tests assert one and only one visible transient circular marker per transient row.
+- `AC-TWU-011`: Component tests assert no dashed/dotted initials/avatar marker exists on transient rows.
+- `AC-TWU-012`: Component tests assert no trailing dashed/dotted marker exists on transient rows.
+- `AC-TWU-013`: Component tests assert the transient marker occupies the leading status-dot slot.
+- `AC-TWU-014`: Component tests assert a transient task-team root row is visible but its child rows are hidden before the user expands that task-team row.
+- `AC-TWU-015`: Component tests assert clicking the transient task-team disclosure expands its child rows and clicking again collapses them without changing right-side task detail ownership.
