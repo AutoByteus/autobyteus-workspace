@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
+import { reactive } from 'vue';
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
@@ -89,6 +90,9 @@ const mountSubject = (options: {
     onDeleteTeam: vi.fn(),
     onSelectTeamMember: vi.fn(),
   };
+  const expandedTeamMembers = reactive<Record<string, boolean>>({});
+  const expansionKey = (workspaceId: string, teamRunId: string, memberRouteKey: string) =>
+    `${workspaceId}::${teamRunId}::${memberRouteKey}`;
   const state = {
     selectedRunId: null,
     isRunTerminating: () => false,
@@ -109,8 +113,12 @@ const mountSubject = (options: {
     toggleTeamDefinition: vi.fn(),
     isTeamExpanded: () => true,
     getLiveTeamContext: () => liveContext,
-    isTeamMemberExpanded: () => false,
-    toggleTeamMember: vi.fn(),
+    isTeamMemberExpanded: vi.fn((workspaceId: string, teamRunId: string, memberRouteKey: string) =>
+      Boolean(expandedTeamMembers[expansionKey(workspaceId, teamRunId, memberRouteKey)])),
+    toggleTeamMember: vi.fn((workspaceId: string, teamRunId: string, memberRouteKey: string) => {
+      const key = expansionKey(workspaceId, teamRunId, memberRouteKey);
+      expandedTeamMembers[key] = !expandedTeamMembers[key];
+    }),
     canTerminateTeam: () => true,
   };
 
@@ -171,10 +179,19 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     expect(transientRow.attributes('data-transient-kind')).toBe('task_agent');
     expect(transientRow.attributes('data-member-route-key')).toBe('task-agent-run-1');
     expect(transientRow.attributes('style')).toContain('margin-left: 12px');
-    expect(transientRow.classes()).toEqual(expect.arrayContaining(['border-dashed', 'bg-indigo-50/40']));
+    expect(transientRow.classes()).toContain('bg-indigo-50/40');
     expect(transientRow.classes()).toContain('ring-indigo-200');
+    expect(transientRow.findAll('.rounded-full')).toHaveLength(1);
+    expect(transientRow.findAll('.border-dashed')).toHaveLength(1);
+    const statusDot = transientRow.get('[data-test="workspace-transient-status-dot"]');
+    expect(statusDot.classes()).toEqual(expect.arrayContaining([
+      'rounded-full',
+      'border-dashed',
+      'border-blue-500',
+      'bg-transparent',
+    ]));
     expect(transientRow.text()).toContain('worker · task_0001');
-    expect(transientRow.text()).toContain('Temporary task execution');
+    expect(transientRow.text()).not.toContain('Temporary');
 
     await transientRow.trigger('click');
 
@@ -189,7 +206,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     );
   });
 
-  it('renders task-team root and scoped child transient rows without task detail content', () => {
+  it('keeps transient task-team children collapsed until the row disclosure is toggled', async () => {
     const worker = stableMember('worker');
     const reviewLead = stableMember('SoftwareEngineeringTeam/review_lead', {
       memberPath: ['SoftwareEngineeringTeam', 'review_lead'],
@@ -265,15 +282,36 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
       },
     });
 
-    const transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
-    expect(transientRows).toHaveLength(2);
+    let transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
+    expect(transientRows).toHaveLength(1);
     expect(transientRows[0].attributes('data-transient-kind')).toBe('task_team');
     expect(transientRows[0].attributes('data-member-route-key')).toBe('task-team-run-1');
     expect(transientRows[0].text()).toContain('Software Engineering Team · task_0002');
+    expect(wrapper.find('[data-member-route-key="task-team-run-1/review_lead"]').exists()).toBe(false);
+
+    const disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
+    expect(disclosure.attributes('aria-expanded')).toBe('false');
+
+    await disclosure.trigger('click');
+    await wrapper.vm.$nextTick();
+    transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
+    expect(transientRows).toHaveLength(2);
+    for (const transientRow of transientRows) {
+      expect(transientRow.findAll('.rounded-full')).toHaveLength(1);
+      expect(transientRow.findAll('.border-dashed')).toHaveLength(1);
+      expect(transientRow.get('[data-test="workspace-transient-status-dot"]').exists()).toBe(true);
+    }
     expect(transientRows[1].attributes('data-transient-kind')).toBe('task_team_child');
     expect(transientRows[1].attributes('data-member-route-key')).toBe('task-team-run-1/review_lead');
     expect(transientRows[1].attributes('style')).toContain('margin-left: 12px');
     expect(transientRows[1].text()).toContain('review_lead');
+    expect(disclosure.attributes('aria-expanded')).toBe('true');
+
+    await disclosure.trigger('click');
+    await wrapper.vm.$nextTick();
+    transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
+    expect(transientRows).toHaveLength(1);
+    expect(wrapper.find('[data-member-route-key="task-team-run-1/review_lead"]').exists()).toBe(false);
 
     const renderedText = wrapper.text();
     expect(renderedText).not.toContain('Review design body should stay on the right.');

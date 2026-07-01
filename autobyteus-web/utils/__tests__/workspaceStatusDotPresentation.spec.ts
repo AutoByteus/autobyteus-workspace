@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   agentStatusDotClass,
+  agentTransientStatusDotClass,
   teamStatusDotClass,
+  teamTransientStatusDotClass,
   workspaceStatusDotBaseClass,
 } from '~/utils/workspaceStatusDotPresentation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -28,5 +30,13 @@ describe('workspaceStatusDotPresentation', () => {
     expect(teamStatusDotClass(AgentTeamStatus.Error)).toBe('bg-red-500');
     expect(teamStatusDotClass(AgentTeamStatus.Offline)).toBe('bg-gray-400');
     expect(teamStatusDotClass('unexpected')).toBe('bg-gray-300');
+  });
+
+  it('maps transient statuses to dashed hollow workspace tree dot colors', () => {
+    expect(agentTransientStatusDotClass(AgentStatus.Running)).toBe('border border-dashed border-blue-500 bg-transparent animate-pulse');
+    expect(agentTransientStatusDotClass(AgentStatus.Idle)).toBe('border border-dashed border-green-500 bg-transparent');
+    expect(agentTransientStatusDotClass('unexpected')).toBe('border border-dashed border-gray-400 bg-transparent');
+    expect(teamTransientStatusDotClass(AgentTeamStatus.Error)).toBe('border border-dashed border-red-500 bg-transparent');
+    expect(teamTransientStatusDotClass('unexpected')).toBe('border border-dashed border-gray-300 bg-transparent');
   });
 });

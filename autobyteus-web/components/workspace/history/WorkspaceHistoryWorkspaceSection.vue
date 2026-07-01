@@ -351,7 +351,10 @@
                     v-else
                     :row="displayRow.row"
                     :focused="displayRow.row.memberRouteKey === focusedTeamMemberRouteKey(team)"
+                    :has-children="displayRow.hasChildren"
+                    :expanded="isTeamDisplayRowExpanded(team, displayRow.row)"
                     @select="(row) => selectTeamDisplayRow(team, row)"
+                    @toggle="(row) => toggleTeamDisplayRow(team, row)"
                   />
                 </template>
 
@@ -424,10 +427,6 @@ const teamExecutionRowsByTeamRunId = computed(() => new Map(
   ]),
 ));
 
-const teamExecutionRows = (team: TeamTreeNode): WorkspaceTeamExecutionDisplayRow[] => (
-  teamExecutionRowsByTeamRunId.value.get(team.teamRunId) ?? []
-);
-
 const stableRowHasChildren = (
   row: WorkspaceTeamExecutionDisplayRow,
 ): row is WorkspaceStableMemberDisplayRow => (
@@ -436,11 +435,44 @@ const stableRowHasChildren = (
   && row.row.children.length > 0
 );
 
+const transientRowHasChildren = (
+  row: WorkspaceTeamExecutionDisplayRow,
+  index: number,
+  rows: readonly WorkspaceTeamExecutionDisplayRow[],
+): boolean => row.kind === 'transient_execution'
+  && row.transientKind === 'task_team'
+  && (rows[index + 1]?.depth ?? -1) > row.depth;
+
+const teamDisplayRowHasChildren = (
+  row: WorkspaceTeamExecutionDisplayRow,
+  index: number,
+  rows: readonly WorkspaceTeamExecutionDisplayRow[],
+): boolean => stableRowHasChildren(row) || transientRowHasChildren(row, index, rows);
+
+const isTeamDisplayRowExpanded = (
+  team: TeamTreeNode,
+  row: WorkspaceTeamExecutionDisplayRow,
+): boolean => props.state.isTeamMemberExpanded(
+  props.workspaceNode.workspaceId,
+  team.teamRunId,
+  row.memberRouteKey,
+);
+
+const toggleTeamDisplayRow = (
+  team: TeamTreeNode,
+  row: WorkspaceTeamExecutionDisplayRow,
+): void => props.state.toggleTeamMember(
+  props.workspaceNode.workspaceId,
+  team.teamRunId,
+  row.memberRouteKey,
+);
+
 const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[] => {
   const visibleRows: VisibleTeamExecutionRow[] = [];
+  const rows = teamExecutionRowsByTeamRunId.value.get(team.teamRunId) ?? [];
   let collapsedDepth: number | null = null;
 
-  for (const row of teamExecutionRows(team)) {
+  for (const [index, row] of rows.entries()) {
     if (collapsedDepth !== null) {
       if (row.depth > collapsedDepth) {
         continue;
@@ -448,17 +480,10 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
       collapsedDepth = null;
     }
 
-    const hasChildren = stableRowHasChildren(row);
+    const hasChildren = teamDisplayRowHasChildren(row, index, rows);
     visibleRows.push({ row, hasChildren });
 
-    if (
-      hasChildren
-      && !props.state.isTeamMemberExpanded(
-        props.workspaceNode.workspaceId,
-        team.teamRunId,
-        row.memberRouteKey,
-      )
-    ) {
+    if (hasChildren && !isTeamDisplayRowExpanded(team, row)) {
       collapsedDepth = row.depth;
     }
   }
