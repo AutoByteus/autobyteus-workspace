@@ -10,6 +10,10 @@ import {
   ServerMessageType,
 } from "../../../../src/services/agent-streaming/models.js";
 
+const memberAddress = (memberRouteKey: string) => ({
+  segments: [{ kind: "member" as const, memberRouteKey }],
+});
+
 describe("AgentTeamStreamHandler", () => {
   const createTeamRun = (overrides: Record<string, unknown> = {}) => ({
     runId: "team-1",
@@ -111,7 +115,7 @@ describe("AgentTeamStreamHandler", () => {
     expect(message.payload.agent_id).toBe("agent-xyz");
   });
 
-  it("projects canonical team communication events to the flattened websocket payload", () => {
+  it("projects canonical team communication events to the address-first websocket payload", () => {
     const handler = new AgentTeamStreamHandler(
       undefined,
       createTeamRunService(null) as any,
@@ -124,33 +128,8 @@ describe("AgentTeamStreamHandler", () => {
       data: {
         messageId: "message-1",
         teamRunId: "team-1",
-        sender: {
-          memberKind: "agent",
-          memberName: "program_manager",
-          memberPath: ["program_manager"],
-          memberRouteKey: "program_manager",
-          memberRunId: "program-manager-run",
-        },
-        receiver: {
-          memberKind: "agent",
-          memberName: "review_lead",
-          memberPath: ["BuildSquad", "review_lead"],
-          memberRouteKey: "BuildSquad/review_lead",
-          memberRunId: "review-lead-run",
-          representedSubTeam: {
-            memberKind: "agent_team",
-            memberName: "BuildSquad",
-            memberPath: ["BuildSquad"],
-            memberRouteKey: "BuildSquad",
-            memberRunId: "build-squad-run",
-            teamDefinitionId: "build-squad-definition",
-            address: {
-              teamRunId: "team-1",
-              memberPath: ["BuildSquad"],
-              memberRouteKey: "BuildSquad",
-            },
-          },
-        },
+        senderAddress: memberAddress("program_manager"),
+        receiverAddress: memberAddress("BuildSquad/review_lead"),
         content: "Reply with exactly token.",
         messageType: "frontend_parent_to_subteam",
         referenceFiles: [],
@@ -162,39 +141,19 @@ describe("AgentTeamStreamHandler", () => {
     expect(message.payload).toMatchObject({
       messageId: "message-1",
       teamRunId: "team-1",
-      senderRunId: "program-manager-run",
-      senderMemberKind: "agent",
-      senderMemberName: "program_manager",
-      senderMemberPath: ["program_manager"],
-      senderMemberRouteKey: "program_manager",
-      receiverRunId: "review-lead-run",
-      receiverMemberKind: "agent",
-      receiverMemberName: "review_lead",
-      receiverMemberPath: ["BuildSquad", "review_lead"],
-      receiverMemberRouteKey: "BuildSquad/review_lead",
-      receiverRepresentedSubTeam: {
-        memberKind: "agent_team",
-        memberName: "BuildSquad",
-        memberPath: ["BuildSquad"],
-        memberRouteKey: "BuildSquad",
-        memberRunId: "build-squad-run",
-        teamDefinitionId: "build-squad-definition",
-        address: {
-          teamRunId: "team-1",
-          memberPath: ["BuildSquad"],
-          memberRouteKey: "BuildSquad",
-        },
-      },
+      senderAddress: memberAddress("program_manager"),
+      receiverAddress: memberAddress("BuildSquad/review_lead"),
       content: "Reply with exactly token.",
       messageType: "frontend_parent_to_subteam",
       referenceFiles: [],
       createdAt: "2026-05-13T06:00:00.000Z",
-      updatedAt: "2026-05-13T06:00:00.000Z",
       source_path: ["program_manager"],
       source_route_key: "program_manager",
     });
     expect(message.payload.sender).toBeUndefined();
     expect(message.payload.receiver).toBeUndefined();
+    expect(message.payload.senderRunId).toBeUndefined();
+    expect(message.payload.receiverRunId).toBeUndefined();
   });
 
   it("maps member input events to member input messages with canonical nested source identity", () => {

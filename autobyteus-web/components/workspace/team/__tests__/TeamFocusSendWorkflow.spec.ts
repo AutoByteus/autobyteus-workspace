@@ -191,14 +191,12 @@ const WorkflowHarness = defineComponent({
 
 const TeamCommunicationPanelStub = defineComponent({
   name: 'TeamCommunicationPanel',
-  props: ['teamRunId', 'focusedMemberRunId', 'focusedMemberRouteKey', 'focusedMemberPath', 'focusedMemberKind'],
+  props: ['teamRunId', 'focusedAddress'],
   template: `
     <div
       data-test="team-communication-panel"
       :data-team-run-id="teamRunId"
-      :data-focused-run-id="focusedMemberRunId"
-      :data-focused-route-key="focusedMemberRouteKey"
-      :data-focused-kind="focusedMemberKind"
+      :data-focused-address="JSON.stringify(focusedAddress)"
     />
   `,
 });
@@ -216,21 +214,17 @@ const mountWorkflow = () => {
   communicationStore.replaceProjection('team-1', [
     {
       messageId: 'message-for-task-team-member',
-      teamRunId: 'team-1',
-      senderRunId: 'task-team-run-1::solution_designer',
-      senderMemberKind: 'agent',
-      senderMemberName: 'Solution Designer',
-      senderMemberPath: ['task-team-run-1', 'solution_designer'],
-      senderMemberRouteKey: 'task-team-run-1/solution_designer',
-      receiverRunId: 'coordinator-run',
-      receiverMemberKind: 'agent',
-      receiverMemberName: 'Coordinator',
-      receiverMemberPath: ['coordinator'],
-      receiverMemberRouteKey: 'coordinator',
+      senderAddress: {
+        segments: [
+          { kind: 'member', memberRouteKey: 'BuildSquad' },
+          { kind: 'task_team', taskTeamRunId: 'task-team-run-1' },
+          { kind: 'member', memberRouteKey: 'solution_designer' },
+        ],
+      },
+      receiverAddress: { segments: [{ kind: 'member', memberRouteKey: 'coordinator' }] },
       content: 'Existing focused-member message.',
       messageType: 'handoff',
       createdAt: '2026-06-28T00:00:00.000Z',
-      updatedAt: '2026-06-28T00:00:00.000Z',
       referenceFiles: [],
     },
   ]);
@@ -311,7 +305,9 @@ describe('Team Tasks Focus + send-message workflow', () => {
     expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('coordinator');
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('coordinator-run');
     expect(wrapper.get('[data-test="agent-event-monitor"]').attributes('data-run-id')).toBe('coordinator-run');
-    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('data-focused-route-key')).toBe('coordinator');
+    expect(JSON.parse(wrapper.get('[data-test="team-communication-panel"]').attributes('data-focused-address') || 'null')).toEqual({
+      segments: [{ kind: 'member', memberRouteKey: 'coordinator' }],
+    });
     expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Draft the implementation handoff.');
     expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
 

@@ -126,6 +126,38 @@ const samePath = (value: unknown, expected: string[]): boolean =>
   value.length === expected.length &&
   value.every((entry, index) => entry === expected[index]);
 
+const memberAddressMatches = (value: unknown, expectedMemberRouteKey: string): boolean => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return false;
+  }
+  const segments = (value as { segments?: unknown }).segments;
+  return (
+    Array.isArray(segments) &&
+    segments.length === 1 &&
+    segments[0] !== null &&
+    typeof segments[0] === "object" &&
+    !Array.isArray(segments[0]) &&
+    (segments[0] as Record<string, unknown>).kind === "member" &&
+    (segments[0] as Record<string, unknown>).memberRouteKey === expectedMemberRouteKey
+  );
+};
+
+const hasRemovedTeamCommunicationFlatFields = (payload: Record<string, unknown>): boolean => [
+  "senderMemberKind",
+  "senderMemberName",
+  "senderMemberPath",
+  "senderMemberRouteKey",
+  "receiverMemberKind",
+  "receiverMemberName",
+  "receiverMemberPath",
+  "receiverMemberRouteKey",
+  "senderRepresentedSubTeam",
+  "receiverRepresentedSubTeam",
+  "senderRunId",
+  "receiverRunId",
+  "taskTeamScope",
+].some((field) => field in payload);
+
 const waitForMessageAfter = async (
   messages: WsMessage[],
   startIndex: number,
@@ -765,33 +797,15 @@ Rules:
           (message) =>
             message.type === "TEAM_COMMUNICATION_MESSAGE" &&
             samePath(message.payload.source_path, ["program_manager"]) &&
-            message.payload.senderMemberKind === "agent" &&
-            message.payload.senderMemberName === "program_manager" &&
-            samePath(message.payload.senderMemberPath, ["program_manager"]) &&
-            message.payload.senderMemberRouteKey === "program_manager" &&
-            message.payload.receiverMemberKind === "agent" &&
-            message.payload.receiverMemberName === "review_lead" &&
-            samePath(message.payload.receiverMemberPath, [
-              "BuildSquad",
-              "review_lead",
-            ]) &&
-            message.payload.receiverMemberRouteKey ===
-              "BuildSquad/review_lead" &&
-            typeof message.payload.receiverRepresentedSubTeam === "object" &&
-            !Array.isArray(message.payload.receiverRepresentedSubTeam) &&
-            (
-              message.payload.receiverRepresentedSubTeam as Record<
-                string,
-                unknown
-              >
-            ).memberName === "BuildSquad" &&
-            (
-              message.payload.receiverRepresentedSubTeam as Record<
-                string,
-                unknown
-              >
-            ).memberRouteKey === "BuildSquad" &&
-            message.payload.receiver === undefined &&
+            memberAddressMatches(
+              message.payload.senderAddress,
+              "program_manager",
+            ) &&
+            memberAddressMatches(
+              message.payload.receiverAddress,
+              "BuildSquad/review_lead",
+            ) &&
+            !hasRemovedTeamCommunicationFlatFields(message.payload) &&
             message.payload.content ===
               `Reply with exactly ${parentToSubteamToken} and nothing else.`,
           "parent communication event to represented child receiver",

@@ -21,6 +21,10 @@ import {
   buildTeamMemberInputDedupeKey,
   buildTeamMemberInputMessageId,
 } from "../../../services/team-member-input-event-builder.js";
+import {
+  cloneConversationTargetAddress,
+  type ConversationTargetAddress,
+} from "../../../domain/conversation-target-address.js";
 import type { MixedTeamRunContext, MixedTeamMemberContext } from "../mixed-team-run-context.js";
 import type { PersistentMemberRegistryAccess } from "../members/mixed-persistent-member-registry.js";
 import type { TaskAgentInstanceDeliveryAccess } from "../members/mixed-task-agent-instance-registry.js";
@@ -30,6 +34,7 @@ import {
   type ResolvedTeamMessageRecipient,
 } from "./team-message-recipient-resolver.js";
 import { normalizeMixedParentBoundaryDeliveryIntent } from "../mixed-parent-boundary-delivery-intent.js";
+import { buildTeamCommunicationAddressForParticipant } from "./team-communication-address-builder.js";
 
 const isOperationResult = (
   value: MixedTeamMemberContext | AgentOperationResult | ResolvedTeamMessageRecipient,
@@ -100,14 +105,33 @@ export class TeamMemberDeliveryCoordinator {
       intent.sender.participant,
       senderContext,
     );
+    const senderAddress = this.resolveSenderAddress(intent, senderParticipant);
+    const receiverAddress = buildTeamCommunicationAddressForParticipant({
+      participant: resolvedRecipient.endpoint.participant,
+      taskTeamInstance: this.options.teamContext.runtimeContext.taskTeamInstance,
+    });
     return {
       ...intent,
       sender: buildDeliveryEndpointForParticipant(senderParticipant, intent.sender.selector),
+      senderAddress,
       recipient: resolvedRecipient.endpoint,
+      receiverAddress,
       resolvedTargetKind: resolvedRecipient.targetKind,
       targetAgentRunId: resolvedRecipient.targetAgentRunId,
       taskId: resolvedRecipient.targetKind === "task_agent_run" ? resolvedRecipient.taskId : null,
     };
+  }
+
+  private resolveSenderAddress(
+    intent: InterAgentMessageDeliveryIntent,
+    senderParticipant: InterAgentMessageParticipant,
+  ): ConversationTargetAddress {
+    return intent.senderAddress
+      ? cloneConversationTargetAddress(intent.senderAddress)
+      : buildTeamCommunicationAddressForParticipant({
+          participant: senderParticipant,
+          taskTeamInstance: this.options.teamContext.runtimeContext.taskTeamInstance,
+        });
   }
 
   private attachRecipientInputTrace(
@@ -142,12 +166,10 @@ export class TeamMemberDeliveryCoordinator {
   ): TeamRunCommunicationEventPayload {
     const createdAt = new Date().toISOString();
     const messageType = request.messageType?.trim() || "agent_message";
-    const sender = request.sender.participant;
-    const recipient = request.recipient.participant;
     const messageId = buildTeamCommunicationMessageId({
       teamRunId: request.teamRunId,
-      senderRunId: sender.memberRunId,
-      receiverRunId: recipient.memberRunId,
+      senderAddress: request.senderAddress,
+      receiverAddress: request.receiverAddress,
       messageType,
       content: request.content,
       createdAt,
@@ -156,8 +178,8 @@ export class TeamMemberDeliveryCoordinator {
     return {
       messageId,
       teamRunId: request.teamRunId,
-      sender,
-      receiver: recipient,
+      senderAddress: request.senderAddress,
+      receiverAddress: request.receiverAddress,
       content: request.content,
       messageType,
       referenceFiles: buildInterAgentMessageReferenceFileEntries({
@@ -219,6 +241,7 @@ export class TeamMemberDeliveryCoordinator {
       normalizeMixedParentBoundaryDeliveryIntent({
         intent,
         parentBoundary,
+        taskTeamInstance: this.options.teamContext.runtimeContext.taskTeamInstance,
       }),
     );
   }

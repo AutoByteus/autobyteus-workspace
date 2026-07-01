@@ -22,30 +22,29 @@ describe("Team communication API integration", () => {
 
   const getMemoryDir = (): string => path.join(appDataDir, "memory");
 
-  const seedTeamCommunicationRun = async (input: {
-    teamRunId: string;
-    messageId: string;
-    readableReferencePath: string;
-    missingReferencePath: string;
-    directoryReferencePath: string;
-  }): Promise<void> => {
-    const teamDir = path.join(getMemoryDir(), "agent_teams", input.teamRunId);
+  const memberAddress = (memberRouteKey: string) => ({
+    segments: [{ kind: "member" as const, memberRouteKey }],
+  });
+
+  const seedTeamRunMetadata = async (teamRunId: string): Promise<string> => {
+    const teamDir = path.join(getMemoryDir(), "agent_teams", teamRunId);
     await fs.mkdir(teamDir, { recursive: true });
     await fs.writeFile(
       path.join(teamDir, "team_run_metadata.json"),
       JSON.stringify(
         {
-          teamRunId: input.teamRunId,
+          teamRunId,
           teamDefinitionId: "team-def-1",
           teamDefinitionName: "Team Communication Validation",
           coordinatorMemberRouteKey: "solution_designer",
-          runVersion: 1,
           createdAt: timestamp,
           updatedAt: timestamp,
           archivedAt: null,
-          memberMetadata: [
+          memberTree: [
             {
+              memberKind: "agent",
               memberRouteKey: "solution_designer",
+              memberPath: ["solution_designer"],
               memberName: "Solution Designer",
               memberRunId: "sender-run-1",
               runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -59,7 +58,9 @@ describe("Team communication API integration", () => {
               applicationExecutionContext: null,
             },
             {
+              memberKind: "agent",
               memberRouteKey: "implementation_engineer",
+              memberPath: ["implementation_engineer"],
               memberName: "Implementation Engineer",
               memberRunId: "receiver-run-1",
               runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -79,23 +80,30 @@ describe("Team communication API integration", () => {
       ),
       "utf-8",
     );
+    return teamDir;
+  };
+
+  const seedTeamCommunicationRun = async (input: {
+    teamRunId: string;
+    messageId: string;
+    readableReferencePath: string;
+    missingReferencePath: string;
+    directoryReferencePath: string;
+  }): Promise<void> => {
+    const teamDir = await seedTeamRunMetadata(input.teamRunId);
     await fs.writeFile(
       path.join(teamDir, "team_communication_messages.json"),
       JSON.stringify(
         {
-          version: 1,
+          teamRunId: input.teamRunId,
           messages: [
             {
               messageId: input.messageId,
-              teamRunId: input.teamRunId,
-              senderRunId: "sender-run-1",
-              senderMemberName: "Solution Designer",
-              receiverRunId: "receiver-run-1",
-              receiverMemberName: "Implementation Engineer",
+              senderAddress: memberAddress("solution_designer"),
+              receiverAddress: memberAddress("implementation_engineer"),
               content: `Please review the attached file at ${input.readableReferencePath}; it should stay plain text in message content.`,
               messageType: "handoff",
               createdAt: timestamp,
-              updatedAt: timestamp,
               referenceFiles: [
                 {
                   referenceId: "ref-readable",
@@ -126,6 +134,36 @@ describe("Team communication API integration", () => {
                   updatedAt: timestamp,
                 },
               ],
+            },
+          ],
+        },
+        null,
+        2,
+      ),
+      "utf-8",
+    );
+  };
+
+  const seedLegacyFlatTeamCommunicationRun = async (teamRunId: string): Promise<void> => {
+    const teamDir = await seedTeamRunMetadata(teamRunId);
+    await fs.writeFile(
+      path.join(teamDir, "team_communication_messages.json"),
+      JSON.stringify(
+        {
+          version: 1,
+          messages: [
+            {
+              messageId: "legacy-message-1",
+              teamRunId,
+              senderRunId: "sender-run-1",
+              senderMemberName: "Solution Designer",
+              receiverRunId: "receiver-run-1",
+              receiverMemberName: "Implementation Engineer",
+              content: "This old flat row must not be hydrated by runtime fallback.",
+              messageType: "handoff",
+              createdAt: timestamp,
+              updatedAt: timestamp,
+              referenceFiles: [],
             },
           ],
         },
@@ -210,9 +248,8 @@ describe("Team communication API integration", () => {
     const data = await execGraphql<{
       getTeamCommunicationMessages: Array<{
         messageId: string;
-        teamRunId: string;
-        senderRunId: string;
-        receiverRunId: string;
+        senderAddress: { segments: Array<{ kind: string; memberRouteKey?: string | null }> };
+        receiverAddress: { segments: Array<{ kind: string; memberRouteKey?: string | null }> };
         content: string;
         messageType: string;
         referenceFiles: Array<{ referenceId: string; path: string; type: string }>;
@@ -221,9 +258,24 @@ describe("Team communication API integration", () => {
       `query GetTeamCommunicationMessages($teamRunId: String!) {
         getTeamCommunicationMessages(teamRunId: $teamRunId) {
           messageId
-          teamRunId
-          senderRunId
-          receiverRunId
+          senderAddress {
+            segments {
+              kind
+              memberRouteKey
+              memberPath
+              taskTeamRunId
+              taskAgentRunId
+            }
+          }
+          receiverAddress {
+            segments {
+              kind
+              memberRouteKey
+              memberPath
+              taskTeamRunId
+              taskAgentRunId
+            }
+          }
           content
           messageType
           referenceFiles {
@@ -239,9 +291,16 @@ describe("Team communication API integration", () => {
     expect(data.getTeamCommunicationMessages).toEqual([
       expect.objectContaining({
         messageId,
-        teamRunId,
-        senderRunId: "sender-run-1",
-        receiverRunId: "receiver-run-1",
+        senderAddress: expect.objectContaining({
+          segments: [
+            expect.objectContaining({ kind: "member", memberRouteKey: "solution_designer" }),
+          ],
+        }),
+        receiverAddress: expect.objectContaining({
+          segments: [
+            expect.objectContaining({ kind: "member", memberRouteKey: "implementation_engineer" }),
+          ],
+        }),
         messageType: "handoff",
         content: expect.stringContaining(readableReferencePath),
         referenceFiles: expect.arrayContaining([
@@ -250,6 +309,26 @@ describe("Team communication API integration", () => {
         ]),
       }),
     ]);
+    expect(data.getTeamCommunicationMessages[0]).not.toHaveProperty("teamRunId");
+    expect(data.getTeamCommunicationMessages[0]).not.toHaveProperty("senderRunId");
+    expect(data.getTeamCommunicationMessages[0]).not.toHaveProperty("receiverRunId");
+
+    const legacyFieldResponse = await app.inject({
+      method: "POST",
+      url: "/graphql",
+      payload: {
+        query: `query LegacyTeamCommunicationFields($teamRunId: String!) {
+          getTeamCommunicationMessages(teamRunId: $teamRunId) {
+            senderRunId
+          }
+        }`,
+        variables: { teamRunId },
+      },
+    });
+    expect([200, 400]).toContain(legacyFieldResponse.statusCode);
+    expect(
+      (legacyFieldResponse.json() as GraphqlResponse<unknown>).errors?.[0]?.message,
+    ).toContain("senderRunId");
 
     const contentResponse = await app.inject({
       method: "GET",
@@ -288,6 +367,40 @@ describe("Team communication API integration", () => {
     });
     expect(unknownReferenceResponse.statusCode).toBe(404);
     expect(unknownReferenceResponse.json()).toEqual(expect.objectContaining({ code: "REFERENCE_NOT_FOUND" }));
+  });
+
+  it("does not hydrate unmigrated old flat projections through a runtime compatibility fallback", async () => {
+    const teamRunId = `team-legacy-flat-${Date.now()}`;
+    await seedLegacyFlatTeamCommunicationRun(teamRunId);
+
+    const data = await execGraphql<{
+      getTeamCommunicationMessages: Array<{
+        messageId: string;
+        senderAddress: { segments: Array<{ kind: string; memberRouteKey?: string | null }> };
+        receiverAddress: { segments: Array<{ kind: string; memberRouteKey?: string | null }> };
+      }>;
+    }>(
+      `query GetTeamCommunicationMessages($teamRunId: String!) {
+        getTeamCommunicationMessages(teamRunId: $teamRunId) {
+          messageId
+          senderAddress {
+            segments {
+              kind
+              memberRouteKey
+            }
+          }
+          receiverAddress {
+            segments {
+              kind
+              memberRouteKey
+            }
+          }
+        }
+      }`,
+      { teamRunId },
+    );
+
+    expect(data.getTeamCommunicationMessages).toEqual([]);
   });
 
   it("maps unreadable reference content failures to a graceful 403 REST response", async () => {

@@ -9,6 +9,8 @@ import {
   selectorFromMemberPath,
 } from "../../domain/team-run-member-identity.js";
 import type { MixedParentBoundaryContext } from "./mixed-team-run-context.js";
+import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
+import { buildTeamCommunicationAddressForParticipant } from "./delivery/team-communication-address-builder.js";
 
 const pathStartsWith = (
   path: readonly string[],
@@ -20,6 +22,7 @@ const pathStartsWith = (
 export const normalizeMixedParentBoundaryDeliveryIntent = (input: {
   intent: InterAgentMessageDeliveryIntent;
   parentBoundary: MixedParentBoundaryContext | null;
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
 }): InterAgentMessageDeliveryIntent => {
   const { intent, parentBoundary } = input;
   if (!parentBoundary) {
@@ -45,9 +48,20 @@ export const normalizeMixedParentBoundaryDeliveryIntent = (input: {
     }),
     representedSubTeam: parentBoundary.representedSubTeam,
   };
+  const taskTeamInstance = input.taskTeamInstance ?? null;
+  const senderAddress = taskTeamInstance
+    ? intent.senderAddress ?? buildTeamCommunicationAddressForParticipant({
+        participant: sender,
+        taskTeamInstance,
+      })
+    : buildTeamCommunicationAddressForParticipant({
+        participant: nestedSender,
+        taskTeamInstance: null,
+      });
   return {
     ...intent,
     teamRunId: parentBoundary.parentTeamRunId,
+    senderAddress,
     sender: buildDeliveryEndpointForParticipant(
       nestedSender,
       selectorFromMemberPath(nestedSenderPath),

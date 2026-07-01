@@ -32,10 +32,6 @@ export class TeamCommunicationMessageProcessor implements AgentRunEventProcessor
       }
       const message = normalizeTeamCommunicationMessage(event.payload, {
         teamRunId,
-        receiverRunId:
-          readString(event.payload.receiver_run_id)
-          ?? readString(event.payload.receiverRunId)
-          ?? event.runId,
       });
       if (!message) {
         logger.warn(
@@ -46,8 +42,9 @@ export class TeamCommunicationMessageProcessor implements AgentRunEventProcessor
 
       derivedEvents.push({
         eventType: AgentRunEventType.TEAM_COMMUNICATION_MESSAGE,
-        runId: message.receiverRunId,
+        runId: event.runId,
         payload: {
+          teamRunId,
           ...message,
           referenceFiles: message.referenceFiles.map((reference) => ({ ...reference })),
         },
