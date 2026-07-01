@@ -8,13 +8,13 @@
 - Web package path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web`
 - Ticket branch: `codex/session-discovery-ui`
 - Finalization target: `origin/personal` / `personal`
-- Current status: `Ready for renewed user verification; finalization held by policy`
+- Current status: `Local ticket branch committed; remote ticket-branch push blocked by GitHub permissions; mainline merge deferred by user instruction`
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff captures delivered session-first history UI scope, user-verification polish rounds, latest-base integration, validation evidence, docs sync, residual risks, and the explicit user-verification hold.
+- Notes: Handoff captures delivered session-first history UI scope, user-verification polish rounds, latest-base integration, validation evidence, docs sync, residual risks, user approval, ticket-branch commit status, push blocker, and the explicit mainline merge deferral.
 
 ## Initial Delivery Integration Refresh
 
@@ -35,12 +35,12 @@
 ## Verification / Acceptance
 
 - Verification owner: `User`
-- Initial explicit user completion/verification received: `No`
+- Initial explicit user completion/verification received: `Yes`
 - Product Manager acceptance status: `N/A`
-- Initial verification / acceptance reference: User previously confirmed the session-first list was visible, then requested UI polish and arrow/status-dot alignment; latest integrated/polished state now requires renewed user verification.
+- Initial verification / acceptance reference: User previously confirmed the session-first list was visible, then requested UI polish and arrow/status-dot alignment.
 - Renewed verification required after later re-integration: `Yes`
-- Renewed verification received: `No`
-- Renewed verification / acceptance reference: `Pending user verification of this refreshed handoff`
+- Renewed verification received: `Yes`
+- Renewed verification / acceptance reference: user said `我觉得这一版很好，检查通过`, then clarified `可以push到branch，但是不要合并到main` on 2026-07-01. Interpreted as authorization to commit/push the ticket branch only while deferring mainline merge.
 
 ## Docs Sync Result
 
@@ -54,28 +54,28 @@
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `N/A — still in /tickets/in-progress/session-discovery-ui until user verification`
+- Archived ticket path: `N/A — still in /tickets/in-progress/session-discovery-ui because user requested ticket-branch push only and no mainline merge yet`
 
 ## Version / Tag / Release Commit
 
-- Not started. No version bump, tag, release-specific commit, publication, or deployment is in scope before user verification.
+- Not started. No version bump, tag, release-specific commit, publication, or deployment is in scope for the user-requested ticket-branch-only handoff.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/investigation-notes.md`
 - Ticket branch: `codex/session-discovery-ui`
-- Ticket branch commit result: `Checkpoint and integration merge only` (`817ef8df`, `9d8475e2895d4fba1b2b24ae21acc1c01b2a8901`); final delivery commit not started pending user verification.
-- Ticket branch push result: `Not started — waiting for user verification`
+- Ticket branch commit result: `Completed locally` — source/docs checkpoint `b26e9c9b` (`chore(ticket): checkpoint session discovery UI branch handoff`) on `codex/session-discovery-ui`, after checkpoint `817ef8df` and integration merge `9d8475e2895d4fba1b2b24ae21acc1c01b2a8901`; this delivery blocker report update is committed on top of that checkpoint.
+- Ticket branch push result: `Blocked` — attempted `git push -u origin HEAD:refs/heads/codex/session-discovery-ui`; GitHub returned `403` (`Permission to AutoByteus/autobyteus-workspace.git denied to bingqinz-cmu-S26`). Remote branch `origin/codex/session-discovery-ui` was not created.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `N/A — no verification yet for latest alignment state`
+- Target advanced after verification / acceptance: `No` — `origin/personal` remained `57185192d4b93840dab1fb7134604b1716a600a8` and is an ancestor of local ticket-branch `HEAD`.
 - Delivery-owned edits protected before re-integration: `Completed` via checkpoint commit `817ef8df`
 - Re-integration before final merge result: `Completed` via merge commit `9d8475e2895d4fba1b2b24ae21acc1c01b2a8901`
-- Target branch update result: `Not started — waiting for user verification`
-- Merge into target result: `Not started — waiting for user verification`
-- Push target branch result: `Not started — waiting for user verification`
+- Target branch update result: `Deferred by user instruction` — no checkout, merge, or push of `personal`/mainline was attempted.
+- Merge into target result: `Deferred by user instruction` — user explicitly requested no merge to mainline/default branch yet.
+- Push target branch result: `Deferred by user instruction` — no target branch push was attempted.
 - Repository finalization status: `Blocked`
-- Blocker (if applicable): `Explicit user verification/completion is required before ticket archival, final commit, push, merge, release, deployment, or cleanup for this one-off run.`
+- Blocker (if applicable): ticket-branch push is blocked by GitHub write-permission failure; mainline/default branch merge is intentionally deferred by user instruction.
 
 ## Release / Publication / Deployment
 
@@ -92,8 +92,8 @@
 - Worktree cleanup result: `Blocked`
 - Worktree prune result: `Blocked`
 - Local ticket branch cleanup result: `Blocked`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): `Cleanup must wait until user verification and repository finalization are complete.`
+- Remote branch cleanup result: `Blocked`
+- Blocker (if applicable): Cleanup must wait until ticket-branch push succeeds and the user later authorizes mainline finalization; keep local branch `codex/session-discovery-ui` available for retry.
 
 ## Product Manager Iteration Acceptance Callback
 
@@ -157,4 +157,4 @@
 
 ## Final Status
 
-- `Ready for renewed user verification; repository finalization held` — latest tracked `origin/personal` is integrated, docs are refreshed to final alignment behavior, delivery smoke checks passed, and no archival/push/merge/release/deployment/cleanup has been performed pending explicit user verification.
+- `Blocked after local ticket-branch commit` — user verification was received and user authorized ticket-branch push only, with no mainline merge. Local ticket branch `codex/session-discovery-ui` contains source/docs checkpoint `b26e9c9b` plus this delivery blocker report update; `origin/personal` remains unmodified and no merge/push to mainline was attempted. Remote ticket-branch push is blocked by GitHub `403` permissions for the active credentials. Retry `git push -u origin HEAD:refs/heads/codex/session-discovery-ui` from `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui` once credentials with write access are available.
