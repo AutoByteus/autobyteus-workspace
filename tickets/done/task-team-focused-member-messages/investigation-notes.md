@@ -14,7 +14,7 @@
 The user asked to work on:
 
 ```text
-/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages
+/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages
 ```
 
 During clarification, the user identified that the Team Communication message is fundamentally:
@@ -31,7 +31,7 @@ On 2026-07-01 the user also corrected an important design error: normal applicat
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages`
 - Current Branch: `codex/task-team-focused-member-messages`
 - Expected Base Branch: `origin/personal`
 - Recorded Base Commit: `51ece107f0c7bfa501fac32a8709220078bb1932`

@@ -4,11 +4,11 @@ This handoff supersedes the earlier Round 1 implementation handoff. It reflects 
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/design-review-report.md`
-- Code review report requiring local fixes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/code-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/design-review-report.md`
+- Code review report requiring local fixes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/code-review-report.md`
 
 ## What Changed
 

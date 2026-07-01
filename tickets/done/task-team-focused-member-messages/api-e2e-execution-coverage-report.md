@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/api-e2e-coverage-investigation.md`
 - Current Execution Round: 1
 - Trigger: API/E2E execution after coverage investigation Round 1 and durable coverage updates for stale address-first Team Communication API/E2E assertions.
 - Prior Round Reviewed: N/A
@@ -22,11 +22,11 @@
 
 ## Execution Basis
 
-Executed the coverage plan from `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/api-e2e-coverage-investigation.md` against the review-passed implementation. The basis was the approved address-first Team Communication model, no runtime old-flat fallback, app-data migration ownership for old projection files, exact focused-address matching, and reference-file preservation.
+Executed the coverage plan from `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/api-e2e-coverage-investigation.md` against the review-passed implementation. The basis was the approved address-first Team Communication model, no runtime old-flat fallback, app-data migration ownership for old projection files, exact focused-address matching, and reference-file preservation.
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -156,8 +156,8 @@ Final execution covered targeted server API/integration/unit, targeted frontend 
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/api-e2e-execution-coverage-report.md`
 
 ## Temporary Execution Methods / Scaffolding
 

@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/design-spec.md`
 - Current Review Round: 2
 - Trigger: Corrected architecture review after user rejected runtime/read-time compatibility for old flat Team Communication projection data; app-data migration is now in scope.
 - Prior Review Round Reviewed: Round 1 in this report path.
@@ -20,7 +20,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/in-progress/task-team-focused-member-messages/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-focused-member-messages/tickets/done/task-team-focused-member-messages/design-spec.md`
 
 ## Task Design Health Assessment Verdict
 

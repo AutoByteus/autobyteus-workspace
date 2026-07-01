@@ -222,6 +222,11 @@ instead of encoding runtime ids into route-key strings. Draft context files,
 finalized attachment ownership, and optimistic local user messages use the
 resolver's local target key, while outbound team chat sends
 `SEND_MESSAGE.conversation_target_address` as the backend routing contract.
+The Team Messages perspective uses the same focused
+`ConversationTargetAddress` and exact normalized address equality against
+address-first `senderAddress` / `receiverAddress` message fields, so focused
+task-team and task-agent rows do not rely on display-name or route-key fallback
+matching.
 Missing or stale focused members and incomplete runtime identity fail validation
 instead of silently retargeting; the active-execution safety fallback is only
 used for task-agent-only logical-member conversations that should not receive

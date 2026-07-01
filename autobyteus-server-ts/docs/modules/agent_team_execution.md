@@ -351,10 +351,11 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   `BuildSquad/review_lead -> program_manager` records the sender as the leaf
   representative and delivers recipient input to the parent member without
   exposing unrelated ancestors or sibling internals.
-- Communication projections preserve sender/receiver `memberKind`,
-  `memberPath`, `memberRouteKey`, and optional `representedSubTeam` metadata so
-  representative messages can display the responsible subteam while retaining
-  the actual leaf participant path.
+- Communication projections preserve sender/receiver `ConversationTargetAddress`
+  values so representative, task-team, task-agent, and static nested-member
+  messages retain their concrete participant identity through `member`,
+  `task_team`, and `task_agent` segments instead of a parallel flat
+  sender/receiver model.
 - Leaf member input is emitted as a separate member-input event with stable
   message/dedupe identity. For inter-agent delivery into a child team, this
   event is what lets the child coordinator transcript show the inbound

@@ -64,17 +64,27 @@ Team Communication owns message references for accepted `recipient_name`
 deliveries:
 
 ```ts
+interface TeamCommunicationProjection {
+  teamRunId: string;
+  messages: TeamCommunicationMessage[];
+}
+
+interface ConversationTargetAddress {
+  segments: ConversationTargetSegment[];
+}
+
+type ConversationTargetSegment =
+  | { kind: 'member'; memberRouteKey?: string; memberPath?: string[] }
+  | { kind: 'task_team'; taskTeamRunId: string }
+  | { kind: 'task_agent'; taskAgentRunId: string };
+
 interface TeamCommunicationMessage {
   messageId: string;
-  teamRunId: string;
-  senderRunId: string;
-  senderMemberName?: string | null;
-  receiverRunId: string;
-  receiverMemberName?: string | null;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
   content: string;
   messageType: string;
   createdAt: string;
-  updatedAt: string;
   referenceFiles: TeamCommunicationReferenceFile[];
 }
 
@@ -93,6 +103,19 @@ Rules:
   Communication messages. The live/store authority is the derived
   `TEAM_COMMUNICATION_MESSAGE`; direct exact-run messages without team projection
   fields are ignored by this store.
+- The durable projection stores `teamRunId` once at
+  `agent_teams/<teamRunId>/team_communication_messages.json`; each message uses
+  `senderAddress` and `receiverAddress` instead of duplicating sender/receiver
+  run ids, member paths, route keys, represented-subteam metadata, or
+  task-team-scope wrappers.
+- Focused Team Messages compare the focused member's normalized
+  `ConversationTargetAddress` with each message's `senderAddress` and
+  `receiverAddress`. Task-agent and task-team executions are represented by
+  explicit `task_agent` / `task_team` segments, not encoded into member labels.
+- Old flat Team Communication projection files are converted by the registered
+  app-data migration before normal runtime reads. Runtime, GraphQL hydration,
+  WebSocket payloads, and the frontend store do not keep a read-time legacy
+  compatibility path for old flat sender/receiver fields.
 - Reference rows come only from explicit `payload.reference_files` /
   `payload.reference_file_entries`; message prose is not scanned and raw paths
   are not linkified.
@@ -101,7 +124,7 @@ Rules:
 - Reference content opens by message-owned identity:
   `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 - The focused member sees sent/received message perspectives in the Team tab.
-  The left list hierarchy is `Sent` / `Received` -> counterpart member name ->
+  The left list hierarchy is `Sent` / `Received` -> counterpart address label ->
   message -> reference file, without repeated `To` / `From` group prefixes.
 - Team Communication rows are compact, email-like rows. The row shell is a
   non-interactive container; message summaries and reference-file rows are
