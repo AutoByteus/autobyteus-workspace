@@ -477,10 +477,15 @@ off payload.
 Editable primary/global agent and team launch config initializes **Advanced**
 from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**
 by default so users can see defaults such as Codex `reasoning_effort: "medium"`
-or DeepSeek `reasoning_effort: "high"`. Effective **Thinking** OFF or
-unavailable leaves **Advanced** collapsed initially, but still openable.
-Toggling a supported **Thinking** control ON opens **Advanced** automatically;
-toggling OFF after inspection does not force-collapse the section.
+or DeepSeek `reasoning_effort: "high"`. The workspace team-run defaults editor
+can opt in to inline the only visible non-thinking advanced row when Thinking is
+on, avoiding a one-row **Advanced** disclosure while preserving the same
+schema-driven controls. Effective **Thinking** OFF or unavailable leaves
+**Advanced** collapsed initially, but still openable. Toggling a supported
+**Thinking** control ON opens **Advanced** automatically; toggling OFF after
+inspection does not force-collapse the section. Fixed or non-disable-capable
+Thinking states are displayed as neutral disabled rows rather than highlighted
+enabled switches, and schemas with no Thinking support render no Thinking row.
 
 Compact member override rows may stay collapsed to avoid expanding large team
 forms. They still display inherited/effective defaults when expanded, and

@@ -1,29 +1,120 @@
 <template>
   <div class="space-y-4">
-    <div>
-      <label class="mb-1 block text-sm font-medium text-gray-700">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.team_definition') }}</label>
-      <div class="block w-full cursor-not-allowed select-none rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 shadow-sm">
-        {{ teamDefinition.name }}
+    <div
+      class="space-y-4"
+      data-test="team-definition-group"
+    >
+      <h3 class="text-sm font-semibold text-slate-900">
+        {{ $t('workspace.components.workspace.config.TeamRunConfigForm.team_definition') }}
+      </h3>
+
+      <div class="space-y-4 pl-3">
+        <div
+          class="block w-full cursor-not-allowed select-none rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600 shadow-sm"
+          data-test="team-definition-name-card"
+        >
+          {{ teamDefinition.name }}
+        </div>
+
+        <TeamRunDefaultsSummary
+          :state="runDefaultsSummary.state"
+          :runtime-label="runDefaultsSummary.runtimeLabel"
+          :model-identifier="runDefaultsSummary.modelIdentifier"
+          :model-config-entries="runDefaultsSummary.modelConfigEntries"
+          :model-config-changed-from-definition="runDefaultsSummary.modelConfigChangedFromDefinition"
+          :auto-execute-tools="config.autoExecuteTools"
+          :expanded="runDefaultsExpanded"
+          :read-only="isFormReadOnly"
+          @toggle="toggleRunDefaultsExpanded"
+        >
+          <template #expanded>
+            <div class="space-y-5">
+              <RuntimeModelConfigFields
+                :runtime-kind="config.runtimeKind"
+                :llm-model-identifier="config.llmModelIdentifier"
+                :llm-config="config.llmConfig"
+                :disabled="isFormReadOnly"
+                :read-only="isFormReadOnly"
+                :runtime-selection-locked="runtimeSelectionLocked"
+                :model-label="$t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global')"
+                :advanced-initially-expanded="readOnlyMode"
+                :missing-historical-config="missingHistoricalGlobalConfig"
+                :inline-single-advanced-row-when-thinking-on="true"
+                id-prefix="team-run"
+                @update:runtime-kind="updateRuntimeKind"
+                @update:llm-model-identifier="updateLlmModelIdentifier"
+                @update:llm-config="updateLlmConfig"
+              />
+
+              <div
+                class="rounded-md border border-slate-200 bg-white px-3 py-3"
+                data-test="team-auto-execute-card"
+              >
+                <div
+                  class="flex items-center justify-between gap-4"
+                  data-test="team-auto-execute-title-row"
+                >
+                  <label for="team-auto-execute" class="block text-sm font-semibold text-slate-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</label>
+                  <button
+                    id="team-auto-execute"
+                    type="button"
+                    class="relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    :class="config.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
+                    @click="updateAutoExecute(!config.autoExecuteTools)"
+                    :disabled="isFormReadOnly"
+                  >
+                    <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</span>
+                    <span
+                      aria-hidden="true"
+                      class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                      :class="config.autoExecuteTools ? 'translate-x-5' : 'translate-x-0'"
+                    />
+                  </button>
+                </div>
+                <p
+                  class="mt-1 text-xs leading-relaxed text-gray-500"
+                  data-test="team-auto-execute-description"
+                >
+                  {{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help') }}
+                </p>
+              </div>
+            </div>
+          </template>
+        </TeamRunDefaultsSummary>
+
+        <div v-if="leafMembers.length > 0" class="space-y-3">
+          <TeamMemberOverridesSummary
+            :total-members="memberOverridesSummary.totalMembers"
+            :active-override-count="memberOverridesSummary.activeOverrideCount"
+            :active-override-names="memberOverridesSummary.activeOverrideNames"
+            :hidden-override-count="memberOverridesSummary.hiddenOverrideCount"
+            :expanded="overridesExpanded"
+            :read-only="isFormReadOnly"
+            @toggle="toggleOverridesExpanded"
+          />
+
+          <div
+            v-if="overridesExpanded"
+            class="mt-3"
+            data-test="team-member-overrides-editor"
+          >
+            <MemberOverrideTree
+              :member-nodes="memberTree"
+              :config="config"
+              :global-runtime-kind="config.runtimeKind"
+              :global-llm-model="config.llmModelIdentifier"
+              :global-llm-config="config.llmConfig"
+              :global-auto-execute-tools="config.autoExecuteTools"
+              :coordinator-member-route-key="coordinatorMemberRouteKey"
+              :disabled="isFormReadOnly"
+              :advanced-initially-expanded="readOnlyMode"
+              :read-only-mode="readOnlyMode"
+              @update:override="handleOverrideUpdate"
+            />
+          </div>
+        </div>
       </div>
     </div>
-
-    <RuntimeModelConfigFields
-      :runtime-kind="config.runtimeKind"
-      :llm-model-identifier="config.llmModelIdentifier"
-      :llm-config="config.llmConfig"
-      :disabled="isFormReadOnly"
-      :read-only="isFormReadOnly"
-      :runtime-selection-locked="runtimeSelectionLocked"
-      :runtime-help-text="$t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by')"
-      :model-label="$t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global')"
-      :model-help-text="$t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
-      :advanced-initially-expanded="readOnlyMode"
-      :missing-historical-config="missingHistoricalGlobalConfig"
-      id-prefix="team-run"
-      @update:runtime-kind="updateRuntimeKind"
-      @update:llm-model-identifier="updateLlmModelIdentifier"
-      @update:llm-config="updateLlmConfig"
-    />
 
     <div class="mt-8">
       <WorkspaceSelector
@@ -35,58 +126,6 @@
         @select-existing="handleSelectExisting"
         @workspace-input-change="handleWorkspaceInputChange"
       />
-    </div>
-
-    <div v-if="leafMembers.length > 0" class="mt-4">
-      <button
-        type="button"
-        @click="overridesExpanded = !overridesExpanded"
-        class="w-full text-left text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
-      >
-        <span class="mr-1 inline-block transition-transform duration-200" :class="overridesExpanded ? 'rotate-90' : ''">
-          <span class="i-heroicons-chevron-right-20-solid h-4 w-4"></span>
-        </span>
-        Team Members Override ({{ leafMembers.length }})
-      </button>
-
-      <div v-show="overridesExpanded" class="mt-3">
-        <MemberOverrideTree
-          :member-nodes="memberTree"
-          :config="config"
-          :global-runtime-kind="config.runtimeKind"
-          :global-llm-model="config.llmModelIdentifier"
-          :global-llm-config="config.llmConfig"
-          :coordinator-member-route-key="coordinatorMemberRouteKey"
-          :disabled="isFormReadOnly"
-          :advanced-initially-expanded="readOnlyMode"
-          :read-only-mode="readOnlyMode"
-          @update:override="handleOverrideUpdate"
-        />
-      </div>
-    </div>
-
-    <div class="mt-4 flex items-center justify-between gap-4 py-2">
-      <div class="min-w-0">
-        <label for="team-auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</label>
-        <p class="mt-1 text-xs leading-relaxed text-gray-500">
-          {{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help') }}
-        </p>
-      </div>
-      <button
-        id="team-auto-execute"
-        type="button"
-        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        :class="config.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
-        @click="updateAutoExecute(!config.autoExecuteTools)"
-        :disabled="isFormReadOnly"
-      >
-        <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</span>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-          :class="config.autoExecuteTools ? 'translate-x-5' : 'translate-x-0'"
-        />
-      </button>
     </div>
 
     <div>
@@ -118,13 +157,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue'
+import { computed, ref, toRef, watch } from 'vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { SkillAccessMode } from '~/types/agent/AgentRunConfig'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import MemberOverrideTree from './MemberOverrideTree.vue'
+import TeamRunDefaultsSummary from './TeamRunDefaultsSummary.vue'
+import TeamMemberOverridesSummary from './TeamMemberOverridesSummary.vue'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync'
 import {
@@ -137,6 +178,10 @@ import {
   hasExplicitMemberRuntimeOverride,
   hasMeaningfulMemberOverride,
 } from '~/utils/teamRunConfigUtils'
+import {
+  buildTeamMemberOverridesPresentation,
+  buildTeamRunDefaultsPresentation,
+} from '~/utils/teamRunConfigPresentation'
 
 interface WorkspaceLoadingState {
   isLoading: boolean
@@ -158,7 +203,8 @@ const emit = defineEmits<{
 }>()
 
 const teamDefinitionStore = useAgentTeamDefinitionStore()
-const overridesExpanded = ref(true)
+const runDefaultsExpanded = ref(true)
+const overridesExpanded = ref(props.readOnly === true)
 const readOnlyMode = computed(() => props.readOnly === true)
 const isFormReadOnly = computed(() => props.config.isLocked || readOnlyMode.value)
 const missingHistoricalGlobalConfig = computed(() =>
@@ -173,6 +219,18 @@ const memberTree = computed(() =>
   }),
 )
 const leafMembers = computed(() => flattenLeafAgentMemberNodes(memberTree.value))
+const runDefaultsSummary = computed(() =>
+  buildTeamRunDefaultsPresentation({
+    config: props.config,
+    defaultLaunchConfig: props.teamDefinition.defaultLaunchConfig,
+  }),
+)
+const memberOverridesSummary = computed(() =>
+  buildTeamMemberOverridesPresentation({
+    leafMembers: leafMembers.value,
+    memberOverrides: props.config.memberOverrides,
+  }),
+)
 const coordinatorMemberRouteKey = computed(() => {
   const coordinatorMemberName = props.teamDefinition.coordinatorMemberName?.trim() || ''
   if (!coordinatorMemberName) return ''
@@ -180,6 +238,28 @@ const coordinatorMemberRouteKey = computed(() => {
 })
 
 useTeamRunRuntimeCatalogSync(toRef(props, 'config'))
+
+const resetDisclosureStateForContext = (isReadOnly: boolean) => {
+  runDefaultsExpanded.value = true
+  overridesExpanded.value = isReadOnly
+}
+
+watch([
+  readOnlyMode,
+  () => props.config,
+  () => props.config.teamDefinitionId,
+  () => props.teamDefinition.id,
+], ([isReadOnly]) => {
+  resetDisclosureStateForContext(isReadOnly)
+})
+
+const toggleRunDefaultsExpanded = () => {
+  runDefaultsExpanded.value = !runDefaultsExpanded.value
+}
+
+const toggleOverridesExpanded = () => {
+  overridesExpanded.value = !overridesExpanded.value
+}
 
 const handleOverrideUpdate = (memberRouteKey: string, override: MemberConfigOverride | null) => {
   if (isFormReadOnly.value) return

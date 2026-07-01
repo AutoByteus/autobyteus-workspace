@@ -6,16 +6,16 @@
       <p v-if="readOnlyReason" :class="descriptionClass">{{ readOnlyReason }}</p>
     </div>
     <div class="flex items-center">
-      <button 
-        type="button" 
-        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        :class="enabled ? 'bg-blue-600' : 'bg-gray-200'"
+      <button
+        type="button"
+        class="relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        :class="[trackClass, disabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer']"
         @click="emitEnabled(!enabled)"
         :disabled="disabled"
       >
         <span class="sr-only">{{ $t('workspace.components.workspace.config.ModelConfigBasic.use_setting') }}</span>
-        <span 
-          aria-hidden="true" 
+        <span
+          aria-hidden="true"
           class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
           :class="enabled ? 'translate-x-5' : 'translate-x-0'"
         />
@@ -34,6 +34,7 @@ const props = defineProps<{
   description?: string;
   readOnlyReason?: string;
   compact?: boolean;
+  neutralEnabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -51,6 +52,11 @@ const descriptionClass = computed(() =>
     ? 'text-[0.625rem] text-gray-500'
     : 'text-xs text-gray-500'
 );
+
+const trackClass = computed(() => {
+  if (!props.enabled) return 'bg-gray-200';
+  return props.neutralEnabled ? 'bg-gray-300' : 'bg-blue-600';
+});
 
 const emitEnabled = (value: boolean) => {
   if (props.disabled) return;

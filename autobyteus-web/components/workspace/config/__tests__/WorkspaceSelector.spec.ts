@@ -48,7 +48,7 @@ describe('WorkspaceSelector', () => {
     workspaceStoreMock.allWorkspaces = [];
     workspaceStoreMock.fetchAllWorkspaces = vi.fn().mockResolvedValue([]);
     windowNodeContextStoreMock.isEmbeddedWindow.value = false;
-    
+
     // Reset window.electronAPI mock
     delete (window as any).electronAPI;
     window.history.pushState({}, '', '/');
@@ -118,7 +118,8 @@ describe('WorkspaceSelector', () => {
     expect(input.exists()).toBe(true);
     expect((input.element as HTMLInputElement).value).toBe('/tmp/ProjectA');
     expect(input.attributes('disabled')).toBeDefined();
-    expect(wrapper.text()).toContain('Workspace: /tmp/ProjectA');
+    expect(wrapper.text()).not.toContain('Workspace: /tmp/ProjectA');
+    expect(wrapper.text()).not.toContain('Workspace: Temp Workspace');
   });
 
   it('does not fetch workspaces or emit selection in locked display mode', async () => {
@@ -220,7 +221,7 @@ describe('WorkspaceSelector', () => {
       canceled: false,
       path: '/selected/folder/path',
     });
-    
+
     (window as any).electronAPI = {
       showFolderDialog: mockShowFolderDialog,
     };
@@ -249,7 +250,7 @@ describe('WorkspaceSelector', () => {
       canceled: true,
       path: null,
     });
-    
+
     (window as any).electronAPI = {
       showFolderDialog: mockShowFolderDialog,
     };
@@ -378,5 +379,31 @@ describe('WorkspaceSelector', () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.text()).toContain('Workspace path is invalid');
+  });
+
+  it('renders Existing/New as a compact left-aligned pill with a strong selected state', async () => {
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'temp-ws', name: 'Temp Workspace', absolutePath: '/tmp/default' },
+    ];
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        workspaceId: 'temp-ws',
+      },
+    });
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    const tablist = wrapper.get('[role="tablist"]');
+    const existingTab = wrapper.findAll('[role="tab"]').find((tab) => tab.text().includes('Existing'));
+
+    expect(tablist.classes()).toContain('inline-flex');
+    expect(tablist.classes()).toContain('rounded-full');
+    expect(existingTab?.classes()).toContain('bg-blue-700');
+    expect(existingTab?.classes()).toContain('text-white');
+    expect(wrapper.text()).not.toContain('Workspace: Temp Workspace');
   });
 });

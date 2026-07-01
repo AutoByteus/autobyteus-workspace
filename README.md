@@ -296,11 +296,14 @@ such as `llmConfig.reasoning_effort = "high"`.
 
 The launch UI displays valid schema defaults as effective values without writing
 them into `llmConfig`. For example, a Codex model whose catalog default is
-`reasoning_effort = "medium"` shows **Thinking** on, opens **Advanced** by
-default, and displays `Reasoning Effort = medium` while the launch config can
-remain unset. If a Codex schema does not advertise an off/`none` value, the UI
-keeps that enabled state read-only instead of emitting an unsupported disable
-payload.
+`reasoning_effort = "medium"` shows **Thinking** on and displays
+`Reasoning Effort = medium` while the launch config can remain unset. Most
+launch forms open **Advanced** by default for this state; the workspace team-run
+defaults editor can inline the only visible non-thinking advanced row instead of
+showing a one-row **Advanced** disclosure. If a Codex schema does not advertise
+an off/`none` value, the UI keeps that enabled state read-only instead of
+emitting an unsupported disable payload and renders the switch with neutral
+disabled styling rather than a highlighted enabled state.
 
 Fast mode applies to new or restored Codex sessions and subsequent turns through
 the Codex App Server `serviceTier` request field. Leaving the control at

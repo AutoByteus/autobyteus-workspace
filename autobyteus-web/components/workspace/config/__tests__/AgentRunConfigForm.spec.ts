@@ -137,6 +137,8 @@ describe('AgentRunConfigForm', () => {
     expect(wrapper.find('.searchable-select-stub').exists()).toBe(true)
     expect(wrapper.find('.workspace-selector-stub').exists()).toBe(true)
     expect(wrapper.find('select#agent-run-runtime-kind').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Selects the runtime backend used for')
+    expect(wrapper.text()).toContain('Select a model')
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('autobyteus')
   })
 

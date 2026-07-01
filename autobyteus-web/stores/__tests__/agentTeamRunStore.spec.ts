@@ -1165,6 +1165,169 @@ describe('agentTeamRunStore', () => {
     }));
   });
 
+  it('materializes complete member configs when launching a compact defaults-only temporary team', async () => {
+    const workspaceMetadata = {
+      workspaceId: 'agent_ws_compact_defaults',
+      workspaceRootPath: '/tmp/CompactDefaultsTeam',
+      displayName: 'CompactDefaultsTeam',
+      kind: 'filesystem' as const,
+    };
+    const focusedMember = {
+      isSending: false,
+      state: {
+        runId: 'temp-team-compact::planner',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-06-30T00:00:00.000Z',
+        },
+      },
+    };
+    const teamContext = {
+      teamRunId: 'temp-team-compact',
+      focusedMemberRouteKey: 'planner',
+      isSubscribed: false,
+      config: {
+        teamDefinitionId: 'team-def-compact',
+        teamDefinitionName: 'Compact Defaults Team',
+        runtimeKind: 'autobyteus',
+        workspaceId: workspaceMetadata.workspaceId,
+        workspaceMetadata,
+        llmModelIdentifier: 'gpt-5.4',
+        llmConfig: { reasoning_effort: 'high' },
+        autoExecuteTools: true,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {},
+      },
+      memberTree: [
+        buildAgentNode('planner', 'agent-planner'),
+        buildAgentNode('builder', 'agent-builder'),
+      ],
+      leafAgentContextsByRouteKey: new Map([['planner', focusedMember]]),
+    };
+
+    teamDefinitionStoreMock.getAgentTeamDefinitionById.mockReturnValue({
+      id: 'team-def-compact',
+      nodes: [
+        { memberName: 'planner', refType: 'AGENT', ref: 'agent-planner' },
+        { memberName: 'builder', refType: 'AGENT', ref: 'agent-builder' },
+      ],
+    });
+
+    setActiveTeamContext(teamContext);
+    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
+      teamRunId === 'team-compact-1' ? { ...teamContext, teamRunId: 'team-compact-1' } : null,
+    );
+
+    mockMutate.mockResolvedValue({
+      data: {
+        createAgentTeamRun: {
+          success: true,
+          teamRunId: 'team-compact-1',
+          message: 'ok',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useAgentTeamRunStore();
+    await store.sendMessageToFocusedMember('launch compact defaults', []);
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          input: expect.objectContaining({
+            teamDefinitionId: 'team-def-compact',
+            memberConfigs: [
+              expect.objectContaining({
+                memberName: 'planner',
+                memberRouteKey: 'planner',
+                agentDefinitionId: 'agent-planner',
+                runtimeKind: 'autobyteus',
+                llmModelIdentifier: 'gpt-5.4',
+                llmConfig: { reasoning_effort: 'high' },
+                autoExecuteTools: true,
+                skillAccessMode: 'PRELOADED_ONLY',
+                workspaceId: workspaceMetadata.workspaceId,
+                workspaceRootPath: workspaceMetadata.workspaceRootPath,
+              }),
+              expect.objectContaining({
+                memberName: 'builder',
+                memberRouteKey: 'builder',
+                agentDefinitionId: 'agent-builder',
+                runtimeKind: 'autobyteus',
+                llmModelIdentifier: 'gpt-5.4',
+                llmConfig: { reasoning_effort: 'high' },
+                autoExecuteTools: true,
+                skillAccessMode: 'PRELOADED_ONLY',
+                workspaceId: workspaceMetadata.workspaceId,
+                workspaceRootPath: workspaceMetadata.workspaceRootPath,
+              }),
+            ],
+          }),
+        },
+      }),
+    );
+    expect(teamContextsStoreMock.promoteTemporaryTeamRunId).toHaveBeenCalledWith(
+      'temp-team-compact',
+      'team-compact-1',
+    );
+    expect(mockSendMessage).toHaveBeenCalledWith('launch compact defaults', {
+      segments: [{ kind: 'member', memberRouteKey: 'planner' }],
+    }, [], [], expect.objectContaining({
+      messageId: expect.stringMatching(/^client_/),
+      dedupeKey: expect.stringContaining('member_input:'),
+    }));
+  });
+
+  it('blocks temporary team launch before GraphQL when no default team model is configured', async () => {
+    const focusedMember = {
+      isSending: false,
+      state: {
+        runId: 'temp-team-missing-model::planner',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-06-30T00:00:00.000Z',
+        },
+      },
+    };
+    const teamContext = {
+      teamRunId: 'temp-team-missing-model',
+      focusedMemberRouteKey: 'planner',
+      isSubscribed: false,
+      config: {
+        teamDefinitionId: 'team-def-missing-model',
+        teamDefinitionName: 'Missing Model Team',
+        runtimeKind: 'autobyteus',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: '',
+        llmConfig: null,
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {},
+      },
+      memberTree: [
+        buildAgentNode('planner', 'agent-planner'),
+      ],
+      leafAgentContextsByRouteKey: new Map([['planner', focusedMember]]),
+    };
+
+    teamDefinitionStoreMock.getAgentTeamDefinitionById.mockReturnValue({
+      id: 'team-def-missing-model',
+      nodes: [
+        { memberName: 'planner', refType: 'AGENT', ref: 'agent-planner' },
+      ],
+    });
+    setActiveTeamContext(teamContext);
+
+    const store = useAgentTeamRunStore();
+
+    await expect(
+      store.sendMessageToFocusedMember('launch without model', []),
+    ).rejects.toThrow('A default team model is required before running this team.');
+    expect(mockMutate).not.toHaveBeenCalled();
+    expect(mockSendMessage).not.toHaveBeenCalled();
+  });
+
   it('reconciles temporary team member contexts to backend member run IDs before streaming direct sends', async () => {
     const focusedMember = {
       isSending: false,

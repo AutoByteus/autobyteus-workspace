@@ -19,6 +19,66 @@ const messages = {
     "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.title":
+    "Team run defaults",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.status_team_defaults":
+    "Using team defaults",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.status_changed":
+    "Changed for this launch",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.status_model_required":
+    "Model required",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.defaults_description":
+    "Most runs can use the runtime, model, and LLM settings from the selected team definition.",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.changed_description":
+    "This launch has run-level runtime, model, or LLM config changes from the team definition.",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.missing_model_description":
+    "Choose a model for this run or update the team definition default before launching.",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.runtime":
+    "Runtime",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.model":
+    "Model",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.llm_config":
+    "LLM config",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.no_model_selected":
+    "No model selected",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.llm_config_changed":
+    "Changed",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.no_custom_model_config":
+    "No custom model config",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.edit_team_default":
+    "Edit Team Default",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.inspect_team_default":
+    "Inspect Team Default",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.hide_team_default":
+    "Hide Team Default",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.auto_approve_on":
+    "Auto approve on",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.auto_approve_off":
+    "Auto approve off",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.title":
+    "Team member overrides",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.member_singular":
+    "member",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.member_plural":
+    "members",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.override_singular":
+    "override",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.override_plural":
+    "overrides",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.all_using_team_defaults":
+    "All using team defaults",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.defaults_description":
+    "Leaf members inherit the team run defaults unless you open member overrides.",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.overrides_description":
+    "Active member overrides are hidden until opened, but listed here so launch differences stay visible.",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.more":
+    "more",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.edit_member_overrides":
+    "Edit member overrides",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.inspect_member_overrides":
+    "Inspect member overrides",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.hide_member_overrides":
+    "Hide member overrides",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "Coordinator",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
@@ -32,11 +92,59 @@ const messages = {
   "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
     "Choose a compatible member model",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
-    "Auto-execute: Use global",
+    "Use global",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
     "Auto-execute: ON",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
     "Auto-execute: OFF",
+  "workspace.components.workspace.config.RunConfigPanel.launch_summary":
+    "Launch summary",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.member_singular":
+    "member",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.member_plural":
+    "members",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.runtime":
+    "Runtime",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.model":
+    "Model",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.no_model":
+    "No model",
+  "workspace.components.workspace.config.MemberOverrideItem.agent_member":
+    "Agent",
+  "workspace.components.workspace.config.MemberOverrideItem.using_team_defaults":
+    "Using team defaults",
+  "workspace.components.workspace.config.MemberOverrideItem.no_member_overrides":
+    "No member overrides",
+  "workspace.components.workspace.config.MemberOverrideItem.member_override_details":
+    "Member override details",
+  "workspace.components.workspace.config.MemberOverrideItem.member_override_details_help":
+    "Override only the fields that should differ from the team run defaults.",
+  "workspace.components.workspace.config.MemberOverrideItem.reset_to_default":
+    "Reset to default",
+  "workspace.components.workspace.config.MemberOverrideItem.field_overridden":
+    "Overridden",
+  "workspace.components.workspace.config.MemberOverrideItem.runtime_field":
+    "Runtime",
+  "workspace.components.workspace.config.MemberOverrideItem.model_field":
+    "Model",
+  "workspace.components.workspace.config.MemberOverrideItem.model_config_field":
+    "Model config",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_field":
+    "Auto approve",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_override":
+    "Auto Approve Override",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_override_help":
+    "Use global follows team Auto approve tools.",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_yes":
+    "Yes",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_no":
+    "No",
+  "workspace.components.workspace.config.MemberOverrideItem.global_auto_approve_on":
+    "Team auto approve is currently on.",
+  "workspace.components.workspace.config.MemberOverrideItem.global_auto_approve_off":
+    "Team auto approve is currently off.",
+  "workspace.components.workspace.config.MemberOverrideItem.model_config_override":
+    "Model config override",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "Agent",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":

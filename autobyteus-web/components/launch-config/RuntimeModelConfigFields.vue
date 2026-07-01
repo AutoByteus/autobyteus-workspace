@@ -54,6 +54,7 @@
       :id-prefix="idPrefix"
       :advanced-initially-expanded="advancedInitiallyExpanded"
       :missing-historical-config="missingHistoricalConfig"
+      :inline-single-advanced-row-when-thinking-on="inlineSingleAdvancedRowWhenThinkingOnComputed"
       @update:config="updateModelConfig"
     />
   </div>
@@ -92,6 +93,7 @@ const props = defineProps<{
   idPrefix?: string
   advancedInitiallyExpanded?: boolean
   missingHistoricalConfig?: boolean
+  inlineSingleAdvancedRowWhenThinkingOn?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -113,6 +115,9 @@ const blankRuntimeLabelText = computed(
 )
 const modelPlaceholderText = computed(() => props.modelPlaceholder ?? 'Select a model')
 const runtimeFieldId = computed(() => `${props.idPrefix ?? 'launch'}-runtime-kind`)
+const inlineSingleAdvancedRowWhenThinkingOnComputed = computed(
+  () => props.inlineSingleAdvancedRowWhenThinkingOn === true,
+)
 
 const {
   availableProviderGroups,

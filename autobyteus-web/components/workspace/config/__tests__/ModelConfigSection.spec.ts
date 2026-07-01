@@ -117,11 +117,11 @@ describe('ModelConfigSection', () => {
   it('does NOT reset configuration when switching agents (context switch)', async () => {
     const configA = { thinking_enabled: true };
     const configB = { temperature: 0.5 };
-    
+
     const wrapper = mount(ModelConfigSection, {
       props: {
         modelId: 'claude',
-        modelConfig: configA, 
+        modelConfig: configA,
         schema: {
           thinking_enabled: { type: 'boolean', default: true }
         }
@@ -255,7 +255,10 @@ describe('ModelConfigSection', () => {
     const toggle = wrapper.get('[data-testid="advanced-params-toggle"]');
 
     expect(thinkingRow.props('enabled')).toBe(true);
+    expect(thinkingRow.props('neutralEnabled')).toBe(true);
     expect(thinkingRow.get('button').element.disabled).toBe(true);
+    expect(thinkingRow.get('button').classes()).toContain('bg-gray-300');
+    expect(thinkingRow.get('button').classes()).not.toContain('bg-blue-600');
     expect(toggle.attributes('aria-expanded')).toBe('true');
     expect(reasoningSelect.isVisible()).toBe(true);
     expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium');
@@ -270,6 +273,88 @@ describe('ModelConfigSection', () => {
     expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({
       reasoning_effort: 'high',
     });
+  });
+
+  it('inlines one advanced row only when opted in and thinking is on', async () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: null,
+        inlineSingleAdvancedRowWhenThinkingOn: true,
+        schema: {
+          reasoning_effort: {
+            type: 'string',
+            title: 'Reasoning Effort',
+            enum: ['low', 'medium', 'high', 'xhigh'],
+            default: 'medium',
+          },
+        },
+      },
+    });
+
+    await flushPromises();
+
+    const reasoningSelect = wrapper.get('select#config-reasoning_effort');
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]');
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' });
+
+    expect(thinkingRow.props('enabled')).toBe(true);
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false);
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none');
+    expect(reasoningSelect.isVisible()).toBe(true);
+    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium');
+  });
+
+  it('keeps the advanced disclosure for the opt-in path when thinking is off', () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: null,
+        inlineSingleAdvancedRowWhenThinkingOn: true,
+        schema: {
+          reasoning_effort: {
+            type: 'string',
+            title: 'Reasoning Effort',
+            enum: ['none', 'low', 'medium', 'high'],
+            default: 'none',
+          },
+        },
+      },
+    });
+
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]');
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]');
+
+    expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(false);
+    expect(advancedToggle.attributes('aria-expanded')).toBe('false');
+    expect(advancedContainer.attributes('style')).toContain('display: none');
+  });
+
+  it('keeps the advanced disclosure for the opt-in path when multiple advanced rows remain', () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: null,
+        inlineSingleAdvancedRowWhenThinkingOn: true,
+        schema: {
+          reasoning_effort: {
+            type: 'string',
+            title: 'Reasoning Effort',
+            enum: ['low', 'medium', 'high', 'xhigh'],
+            default: 'medium',
+          },
+          service_tier: {
+            type: 'string',
+            title: 'Fast mode',
+            enum: ['fast'],
+          },
+        },
+      },
+    });
+
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]');
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]');
+
+    expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(true);
+    expect(advancedToggle.attributes('aria-expanded')).toBe('true');
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none');
   });
 
   it('keeps compact effort-only reasoning controls collapsed but shows the effective default when expanded', async () => {
@@ -294,7 +379,9 @@ describe('ModelConfigSection', () => {
     const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' });
 
     expect(thinkingRow.props('enabled')).toBe(true);
+    expect(thinkingRow.props('neutralEnabled')).toBe(true);
     expect(thinkingRow.get('button').element.disabled).toBe(true);
+    expect(thinkingRow.get('button').classes()).toContain('bg-gray-300');
     expect(toggle.attributes('aria-expanded')).toBe('false');
     expect(advancedContainer.attributes('style')).toContain('display: none');
     expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium');
@@ -622,12 +709,14 @@ describe('ModelConfigSection', () => {
         readOnly: true,
         missingHistoricalConfig: true,
         advancedInitiallyExpanded: true,
+        inlineSingleAdvancedRowWhenThinkingOn: true,
         schema: {
-          reasoning_effort: { type: 'string', enum: ['none', 'low', 'medium', 'high'] },
+          reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'], default: 'medium' },
         },
       },
     });
 
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(true);
     expect(wrapper.get('[data-testid="missing-historical-config-basic"]').text()).toContain('Not recorded for this historical run');
     expect(wrapper.get('[data-testid="missing-historical-config-value"]').text()).toContain('Not recorded for this historical run');
     expect(wrapper.find('select').exists()).toBe(false);

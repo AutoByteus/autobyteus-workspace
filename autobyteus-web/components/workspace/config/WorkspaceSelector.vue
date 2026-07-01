@@ -1,18 +1,18 @@
 <template>
   <div>
     <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('workspace.components.workspace.config.WorkspaceSelector.workspace_directory') }}</label>
-    
+
     <!-- Mode Toggle -->
-    <div class="flex rounded-lg bg-gray-100 p-1 mb-3" role="tablist">
+    <div class="mb-3 inline-flex rounded-full border border-slate-200 bg-slate-50 p-1" role="tablist">
       <button
         type="button"
         @click="mode = 'existing'"
         :disabled="existingDisabled || isInteractionDisabled"
-        class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+        class="rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
         :class="[
-          mode === 'existing' 
-            ? 'bg-white text-blue-700 shadow-sm' 
-            : 'text-gray-600 hover:text-gray-900',
+          mode === 'existing'
+            ? 'bg-blue-700 text-white shadow-sm'
+            : 'text-slate-600 hover:bg-white hover:text-slate-900',
           existingDisabled || isInteractionDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
         ]"
         role="tab"
@@ -27,11 +27,11 @@
         type="button"
         @click="mode = 'new'"
         :disabled="isInteractionDisabled"
-        class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+        class="rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
         :class="[
-          mode === 'new' 
-            ? 'bg-white text-blue-700 shadow-sm' 
-            : 'text-gray-600 hover:text-gray-900',
+          mode === 'new'
+            ? 'bg-blue-700 text-white shadow-sm'
+            : 'text-slate-600 hover:bg-white hover:text-slate-900',
           isInteractionDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
         ]"
         role="tab"
@@ -84,7 +84,7 @@
         </button>
       </div>
     </div>
-    
+
     <!-- Helper Text Area -->
     <div v-if="showHelperTextArea" class="mt-2.5">
       <p v-if="workspaceLocked && !error" class="text-sm text-amber-600 flex items-center">
@@ -96,12 +96,7 @@
         <span class="i-heroicons-exclamation-circle-20-solid h-5 w-5 mr-2 flex-shrink-0"></span>
         {{ error }}
       </p>
-      
-      <p v-else-if="showSuccessMessage" class="text-sm text-green-600 flex items-center font-medium">
-        <span class="i-heroicons-check-circle-20-solid h-5 w-5 mr-2 flex-shrink-0 text-green-500"></span>
-        {{ successMessage }}
-      </p>
-      
+
       <p v-else-if="mode === 'existing'" class="text-sm text-gray-500 flex items-center">
         <span v-if="existingDisabled" class="text-amber-600 flex items-center">
           <span class="i-heroicons-information-circle-20-solid h-4 w-4 mr-1.5"></span>{{ $t('workspace.components.workspace.config.WorkspaceSelector.no_workspaces_loaded_yet_switch_to') }}</span>
@@ -147,7 +142,6 @@ const canBrowseForFolder = computed(() => canUseLocalFolderPicker({
 // Local state
 const mode = ref<'existing' | 'new'>('new');
 const tempPath = ref(props.initialPath || '');
-const successMessage = ref<string | null>(null);
 const isInteractionDisabled = computed(() => (props.disabled ?? false) || (props.workspaceLocked ?? false));
 const workspaceLocked = computed(() => props.workspaceLocked === true);
 const workspaceLockedMessageToUse = computed(() => {
@@ -157,7 +151,7 @@ const workspaceLockedMessageToUse = computed(() => {
 // Computed
 const workspaceOptions = computed(() => {
   const tempId = workspaceStore.tempWorkspaceId;
-  
+
   // Get all non-temp workspaces
   const regularWorkspaces = workspaceStore.allWorkspaces
     .filter(ws => ws.workspaceId !== tempId)
@@ -166,7 +160,7 @@ const workspaceOptions = computed(() => {
       name: ws.name,
       description: ws.absolutePath || ''
     }));
-  
+
   // Put temp workspace at top with special styling
   if (workspaceStore.tempWorkspace) {
     return [
@@ -178,7 +172,7 @@ const workspaceOptions = computed(() => {
       ...regularWorkspaces
     ];
   }
-  
+
   return regularWorkspaces;
 });
 
@@ -189,14 +183,9 @@ const selectedWorkspace = computed(() => {
   return workspaceStore.workspaces[props.workspaceId] || null;
 });
 const trimmedPendingPath = computed(() => tempPath.value.trim());
-const showSuccessMessage = computed(() =>
-  Boolean(successMessage.value) &&
-  (mode.value === 'existing' || isInteractionDisabled.value),
-);
 const showHelperTextArea = computed(() =>
   workspaceLocked.value ||
   Boolean(props.error) ||
-  showSuccessMessage.value ||
   mode.value === 'existing',
 );
 const emitWorkspaceInput = () => {
@@ -208,17 +197,14 @@ const emitWorkspaceInput = () => {
 
 const updateDisplayOnlyState = () => {
   if (props.workspaceId && selectedWorkspace.value) {
-    successMessage.value = `Workspace: ${selectedWorkspace.value.name}`;
     mode.value = 'existing';
     return;
   }
   if (props.initialPath) {
     tempPath.value = props.initialPath;
-    successMessage.value = `Workspace: ${props.initialPath}`;
     mode.value = 'new';
     return;
   }
-  successMessage.value = null;
   mode.value = 'new';
 };
 
@@ -248,26 +234,24 @@ onMounted(async () => {
   } catch {
     // Ignore errors (e.g., no Apollo client in tests)
   }
-  
+
   // Auto-select temp workspace if no workspace currently selected
   const autoSelected = maybeAutoSelectDefaultWorkspace();
   if (autoSelected) {
     return; // Skip further mode logic, we've auto-selected
   }
-  
+
   // Set initial mode based on whether workspaces exist
   if (workspaceOptions.value.length > 0) {
     mode.value = 'existing';
   } else {
     mode.value = 'new';
   }
-  
-  // If we already have a selected workspace, show success
+
+  // If we already have a selected workspace, reflect its mode without adding redundant success copy.
   if (props.workspaceId && selectedWorkspace.value) {
-    successMessage.value = `Workspace: ${selectedWorkspace.value.name}`;
     mode.value = 'existing';
   } else if (props.initialPath) {
-    successMessage.value = `Workspace: ${props.initialPath}`;
     mode.value = 'new';
   }
 });
@@ -279,12 +263,12 @@ watch(() => props.workspaceId, (newId) => {
     return;
   }
   if (newId && workspaceStore.workspaces[newId]) {
-    const ws = workspaceStore.workspaces[newId];
-    successMessage.value = `Workspace: ${ws.name}`;
+    mode.value = 'existing';
     return;
   }
   if (newId && props.initialPath) {
-    successMessage.value = `Workspace: ${props.initialPath}`;
+    tempPath.value = props.initialPath;
+    mode.value = 'new';
     return;
   }
   maybeAutoSelectDefaultWorkspace();
@@ -297,9 +281,6 @@ watch(() => props.initialPath, (newPath) => {
   if (isInteractionDisabled.value) {
     updateDisplayOnlyState();
     return;
-  }
-  if (props.workspaceId && newPath && !selectedWorkspace.value) {
-    successMessage.value = `Workspace: ${newPath}`;
   }
 });
 
@@ -326,17 +307,9 @@ watch(isInteractionDisabled, (disabled) => {
   }
 });
 
-// Clear success message when mode changes or error occurs
-watch([mode, () => props.error], () => {
-  if (props.error) {
-    successMessage.value = null;
-  }
-});
-
 // Handlers
 const handleExistingSelect = (workspaceId: string) => {
   if (isInteractionDisabled.value) return;
-  successMessage.value = null;
   emit('select-existing', workspaceId);
 };
 
@@ -347,7 +320,6 @@ const handleBrowse = async () => {
   const selectedPath = await pickFolderPath();
   if (selectedPath) {
     tempPath.value = selectedPath;
-    successMessage.value = null;
   }
 };
 

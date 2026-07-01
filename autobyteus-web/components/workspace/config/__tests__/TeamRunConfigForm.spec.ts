@@ -23,6 +23,11 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
 const mockTeamDef = {
   id: 'team-1',
   name: 'Test Team',
+  defaultLaunchConfig: {
+    runtimeKind: 'autobyteus',
+    llmModelIdentifier: 'gpt-5.4',
+    llmConfig: null,
+  },
   nodes: [
     { memberName: 'Member A', refType: 'AGENT', ref: 'agent-a' },
     { memberName: 'Member B', refType: 'AGENT', ref: 'agent-b' },
@@ -33,11 +38,30 @@ const mockTeamDef = {
 const nestedTeamDef = {
   id: 'team-nested',
   name: 'Nested Team',
+  defaultLaunchConfig: {
+    runtimeKind: 'autobyteus',
+    llmModelIdentifier: 'gpt-5.4',
+    llmConfig: null,
+  },
   nodes: [
     { memberName: 'program_manager', refType: 'AGENT', ref: 'agent-pm' },
     { memberName: 'BuildSquad', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
   ],
   coordinatorMemberName: 'program_manager',
+}
+
+const alternateTeamDef = {
+  id: 'team-2',
+  name: 'Other Team',
+  defaultLaunchConfig: {
+    runtimeKind: 'autobyteus',
+    llmModelIdentifier: 'gpt-5.4',
+    llmConfig: null,
+  },
+  nodes: [
+    { memberName: 'Other Member', refType: 'AGENT', ref: 'agent-other' },
+  ],
+  coordinatorMemberName: 'Other Member',
 }
 
 const mockConfig = {
@@ -149,6 +173,27 @@ describe('TeamRunConfigForm', () => {
               ],
             },
           },
+          {
+            modelIdentifier: 'gpt-5.5-effort-only',
+            name: 'GPT-5.5 Effort Only',
+            value: 'gpt-5.5-effort-only',
+            canonicalName: 'gpt-5.5-effort-only',
+            providerId: 'OPENAI',
+            providerName: 'OpenAI',
+            providerType: 'OPENAI',
+            runtime: 'codex_app_server',
+            configSchema: {
+              parameters: [
+                {
+                  name: 'reasoning_effort',
+                  type: 'string',
+                  title: 'Reasoning Effort',
+                  default_value: 'medium',
+                  enum_values: ['low', 'medium', 'high', 'xhigh'],
+                },
+              ],
+            },
+          },
           { modelIdentifier: 'gpt-5.3-codex', name: 'GPT-5.3 Codex', value: 'gpt-5.3-codex', canonicalName: 'gpt-5.3-codex', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api' },
         ],
       },
@@ -251,7 +296,7 @@ describe('TeamRunConfigForm', () => {
           MemberOverrideItem: {
             name: 'MemberOverrideItem',
             template: '<div class="member-override-item-stub"></div>',
-            props: ['memberName', 'memberRouteKey', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
+            props: ['memberName', 'memberRouteKey', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig', 'globalAutoExecuteTools'],
             emits: ['update:override'],
           },
         },
@@ -260,16 +305,192 @@ describe('TeamRunConfigForm', () => {
     return { wrapper, config }
   }
 
-  it('renders runtime selector and member override entries', () => {
+  const openRunDefaults = async (wrapper: any) => {
+    const toggle = wrapper.get('[data-test="team-run-defaults-edit"]')
+    if (toggle.attributes('aria-expanded') !== 'true') {
+      await toggle.trigger('click')
+    }
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+  }
+
+  const openMemberOverrides = async (wrapper: any) => {
+    await wrapper.get('[data-test="team-member-overrides-edit"]').trigger('click')
+    await wrapper.vm.$nextTick()
+  }
+
+  it('renders team definition group with defaults open and member overrides collapsed by default', () => {
     const { wrapper } = buildWrapper()
 
     expect(wrapper.text()).toContain('Test Team')
+    const teamGroup = wrapper.get('[data-test="team-definition-group"]')
+    const workspaceSelector = wrapper.getComponent({ name: 'WorkspaceSelector' })
+    expect(teamGroup.element.compareDocumentPosition(workspaceSelector.element) & 4).toBeTruthy()
+    expect(teamGroup.classes()).not.toContain('border')
+    expect(teamGroup.find('[data-test="team-definition-name-card"]').exists()).toBe(true)
+    expect(teamGroup.find('[data-test="team-run-defaults-summary"]').exists()).toBe(true)
+    expect(teamGroup.find('[data-test="team-member-overrides-summary"]').exists()).toBe(true)
+    expect(wrapper.get('[data-test="team-run-defaults-runtime"]').text()).toBe('AutoByteus')
+    expect(wrapper.get('[data-test="team-run-defaults-model"]').text()).toBe('gpt-5.4')
+    expect(wrapper.get('[data-test="team-run-defaults-auto-approve"]').text()).toContain('Auto approve off')
+    expect(wrapper.get('[data-test="team-run-defaults-edit"]').attributes('aria-expanded')).toBe('true')
     expect(wrapper.find('select#team-run-runtime-kind').exists()).toBe(true)
+    expect(wrapper.get('[data-test="team-run-defaults-summary"]').find('[data-test="team-run-defaults-editor"]').exists()).toBe(true)
+    expect(wrapper.get('[data-test="team-run-defaults-llm-config-empty"]').text()).toContain('No custom model config')
+    expect(wrapper.get('[data-test="team-member-count"]').text()).toContain('2')
+    const memberSummary = wrapper.get('[data-test="team-member-overrides-summary"]')
+    expect(memberSummary.classes()).toContain('border-indigo-200')
+    expect(memberSummary.classes()).toContain('bg-indigo-50/80')
+    expect(memberSummary.classes()).not.toContain('bg-slate-50/80')
+    expect(wrapper.get('[data-test="team-member-overrides-edit"]').attributes('aria-expanded')).toBe('false')
+    expect(wrapper.find('[data-test="team-member-overrides-editor"]').exists()).toBe(false)
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
+    expect(items).toHaveLength(0)
+  })
+
+  it('keeps run defaults open and opens member override editors on demand', async () => {
+    const { wrapper } = buildWrapper()
+
+    expect(wrapper.get('[data-test="team-run-defaults-edit"]').attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('select#team-run-runtime-kind').exists()).toBe(true)
+    const autoApprove = wrapper.get('button#team-auto-execute')
+    const memberOverrides = wrapper.get('[data-test="team-member-overrides-summary"]')
+    expect(autoApprove.element.compareDocumentPosition(memberOverrides.element) & 4).toBeTruthy()
+
+    await openMemberOverrides(wrapper)
+    expect(wrapper.get('[data-test="team-member-overrides-edit"]').attributes('aria-expanded')).toBe('true')
+
     const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
     expect(items).toHaveLength(2)
     expect(items[0].props('memberName')).toBe('Member A')
     expect(items[0].props('globalRuntimeKind')).toBe('autobyteus')
     expect(items[0].props('globalLlmModel')).toBe('gpt-5.4')
+  })
+
+  it('aligns team auto approve toggle with the title row, with description below', () => {
+    const { wrapper } = buildWrapper()
+
+    const card = wrapper.get('[data-test="team-auto-execute-card"]')
+    const titleRow = wrapper.get('[data-test="team-auto-execute-title-row"]')
+    const description = wrapper.get('[data-test="team-auto-execute-description"]')
+
+    expect(card.classes()).not.toContain('flex')
+    expect(card.classes()).not.toContain('items-center')
+    expect(titleRow.classes()).toContain('flex')
+    expect(titleRow.classes()).toContain('items-center')
+    expect(titleRow.find('label[for="team-auto-execute"]').exists()).toBe(true)
+    expect(titleRow.find('button#team-auto-execute').exists()).toBe(true)
+    expect(titleRow.find('[data-test="team-auto-execute-description"]').exists()).toBe(false)
+    expect(titleRow.element.compareDocumentPosition(description.element) & 4).toBeTruthy()
+  })
+
+  it('uses exact team-default action copy when the defaults editor is collapsed', async () => {
+    const { wrapper } = buildWrapper()
+
+    expect(wrapper.text()).not.toContain('Change run default')
+
+    await wrapper.get('[data-test="team-run-defaults-edit"]').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.get('[data-test="team-run-defaults-edit"]').attributes('aria-expanded')).toBe('false')
+    expect(wrapper.get('[data-test="team-run-defaults-edit"]').text()).toContain('Edit team default')
+    expect(wrapper.text()).not.toContain('Change run default')
+  })
+
+  it('suppresses team-default runtime and model helper paragraphs', () => {
+    const { wrapper } = buildWrapper()
+
+    expect(wrapper.text()).not.toContain('Selects the runtime backend used by this team run.')
+    expect(wrapper.text()).not.toContain('This model will be used by all members unless overridden.')
+    expect(wrapper.get('label[for="team-run-runtime-kind"]').text()).toContain('Runtime')
+    expect(wrapper.text()).toContain('Default llm model global')
+  })
+
+  it('resets disclosures when a reused read-only form becomes a new editable config', async () => {
+    const { wrapper } = buildWrapper({
+      llmConfig: { reasoning_effort: 'high' },
+    }, mockTeamDef, { readOnly: true })
+
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('select#team-run-runtime-kind').exists()).toBe(true)
+    expect(wrapper.find('[data-test="team-member-overrides-editor"]').exists()).toBe(true)
+
+    await wrapper.setProps({
+      readOnly: false,
+      config: {
+        ...mockConfig,
+        memberOverrides: {},
+      },
+    })
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.get('[data-test="team-run-defaults-edit"]').attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('select#team-run-runtime-kind').exists()).toBe(true)
+    expect(wrapper.get('[data-test="team-member-overrides-edit"]').attributes('aria-expanded')).toBe('false')
+    expect(wrapper.find('[data-test="team-member-overrides-editor"]').exists()).toBe(false)
+  })
+
+  it('resets disclosures when an expanded draft is replaced by another editable team draft', async () => {
+    const { wrapper } = buildWrapper()
+
+    await openMemberOverrides(wrapper)
+    expect(wrapper.find('select#team-run-runtime-kind').exists()).toBe(true)
+    expect(wrapper.find('[data-test="team-member-overrides-editor"]').exists()).toBe(true)
+
+    await wrapper.setProps({
+      config: {
+        ...mockConfig,
+        teamDefinitionId: 'team-2',
+        teamDefinitionName: 'Other Team',
+        memberOverrides: {},
+      },
+      teamDefinition: alternateTeamDef,
+    })
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.text()).toContain('Other Team')
+    expect(wrapper.get('[data-test="team-run-defaults-edit"]').attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('select#team-run-runtime-kind').exists()).toBe(true)
+    expect(wrapper.get('[data-test="team-member-overrides-edit"]').attributes('aria-expanded')).toBe('false')
+    expect(wrapper.find('[data-test="team-member-overrides-editor"]').exists()).toBe(false)
+  })
+
+  it('shows a model-required summary action when no run model is configured', () => {
+    const { wrapper } = buildWrapper({
+      llmModelIdentifier: '',
+    })
+
+    expect(wrapper.get('[data-test="team-run-defaults-status"]').text()).toContain('Status model required')
+    expect(wrapper.get('[data-test="team-run-defaults-model"]').text()).toContain('No model selected')
+    expect(wrapper.find('select#team-run-runtime-kind').exists()).toBe(true)
+  })
+
+  it('shows concrete llmConfig entries in the defaults summary', () => {
+    const { wrapper } = buildWrapper({
+      llmConfig: { service_tier: 'fast', reasoning_effort: 'high' },
+    })
+
+    expect(wrapper.get('[data-test="team-run-defaults-status"]').text()).toContain('Status changed')
+    const entries = wrapper.findAll('[data-test="team-run-defaults-llm-config-entry"]')
+    expect(entries.map((entry) => entry.text())).toEqual([
+      'reasoning_effort: high',
+      'service_tier: fast',
+    ])
+  })
+
+  it('shows active member override names while the member editor is collapsed', () => {
+    const { wrapper } = buildWrapper({
+      memberOverrides: {
+        'Member B': {
+          agentDefinitionId: 'agent-b',
+          runtimeKind: 'claude_agent_sdk',
+        },
+      },
+    })
+
+    expect(wrapper.find('[data-test="team-member-overrides-editor"]').exists()).toBe(false)
+    expect(wrapper.get('[data-test="team-member-override-count"]').text()).toContain('1')
+    expect(wrapper.get('[data-test="team-member-override-names"]').text()).toContain('Member B')
   })
 
   it('loads models for the team runtime and syncs runtime catalogs for explicit member runtimes', async () => {
@@ -299,6 +520,7 @@ describe('TeamRunConfigForm', () => {
       llmModelIdentifier: 'gpt-5.4',
     })
 
+    await openRunDefaults(wrapper)
     await wrapper.find('select#team-run-runtime-kind').setValue('codex_app_server')
     await wrapper.vm.$nextTick()
 
@@ -315,6 +537,7 @@ describe('TeamRunConfigForm', () => {
       llmConfig: null,
     })
 
+    await openRunDefaults(wrapper)
     await wrapper.vm.$nextTick()
     await flushPromises()
 
@@ -324,7 +547,9 @@ describe('TeamRunConfigForm', () => {
     const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
 
     expect(thinkingRow.props('enabled')).toBe(true)
+    expect(thinkingRow.props('neutralEnabled')).toBe(true)
     expect(thinkingRow.get('button').element.disabled).toBe(true)
+    expect(thinkingRow.get('button').classes()).toContain('bg-gray-300')
     expect(advancedToggle.attributes('aria-expanded')).toBe('true')
     expect(reasoningSelect.isVisible()).toBe(true)
     expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
@@ -339,6 +564,29 @@ describe('TeamRunConfigForm', () => {
     expect(config.llmConfig).toEqual({ reasoning_effort: 'xhigh' })
   })
 
+  it('inlines a single thinking-on advanced row in the team defaults editor', async () => {
+    const { wrapper } = buildWrapper({
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.5-effort-only',
+      llmConfig: null,
+    })
+
+    await openRunDefaults(wrapper)
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
+    const reasoningSelect = wrapper.get('select#team-run-reasoning_effort')
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
+
+    expect(thinkingRow.props('enabled')).toBe(true)
+    expect(thinkingRow.props('neutralEnabled')).toBe(true)
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
+    expect(reasoningSelect.isVisible()).toBe(true)
+    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
+  })
+
   it('starts team-global advanced collapsed for OpenAI Responses off defaults', async () => {
     const { wrapper, config } = buildWrapper({
       runtimeKind: 'autobyteus',
@@ -346,6 +594,7 @@ describe('TeamRunConfigForm', () => {
       llmConfig: null,
     })
 
+    await openRunDefaults(wrapper)
     await wrapper.vm.$nextTick()
     await flushPromises()
 
@@ -379,6 +628,7 @@ describe('TeamRunConfigForm', () => {
       },
     })
 
+    await openRunDefaults(wrapper)
     await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
     await wrapper.vm.$nextTick()
 
@@ -410,6 +660,7 @@ describe('TeamRunConfigForm', () => {
       },
     })
 
+    await openRunDefaults(wrapper)
     await wrapper.find('select#team-run-runtime-kind').setValue('codex_app_server')
     await wrapper.vm.$nextTick()
 
@@ -427,6 +678,7 @@ describe('TeamRunConfigForm', () => {
   it('renders nested leaf overrides under their subteam group and keeps route-key override identity', async () => {
     const { wrapper } = buildWrapper({}, nestedTeamDef)
     await wrapper.vm.$nextTick()
+    await openMemberOverrides(wrapper)
 
     const groups = wrapper.findAll('[data-test="member-override-group"]')
     expect(groups).toHaveLength(1)
@@ -469,7 +721,7 @@ describe('TeamRunConfigForm', () => {
     expect(wrapper.find('select#team-skill-access-mode').element.disabled).toBe(true)
     expect(wrapper.findComponent({ name: 'WorkspaceSelector' }).props('disabled')).toBe(true)
 
-    const overrideDisclosure = wrapper.find('button.w-full')
+    const overrideDisclosure = wrapper.get('[data-test="team-member-overrides-edit"]')
     expect(overrideDisclosure.attributes('disabled')).toBeUndefined()
 
     const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })

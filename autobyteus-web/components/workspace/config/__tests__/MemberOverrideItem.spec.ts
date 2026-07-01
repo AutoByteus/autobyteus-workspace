@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { nextTick } from 'vue'
+import { defineComponent, nextTick } from 'vue'
 import MemberOverrideItem from '../MemberOverrideItem.vue'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
@@ -197,9 +197,176 @@ describe('MemberOverrideItem', () => {
     globalRuntimeKind: 'autobyteus',
     globalLlmModel: 'gpt-5.4',
     globalLlmConfig: { thinking_level: 5 },
+    globalAutoExecuteTools: false,
     disabled: false,
     isCoordinator: false,
   }
+
+  it('renders the leaf row collapsed by default and expands without blocking the disclosure in editable mode', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: defaultProps,
+    })
+
+    await nextTick()
+
+    const editor = wrapper.get('[data-test="member-override-editor"]')
+    expect(wrapper.get('[data-test="member-override-row"]').attributes('aria-expanded')).toBe('false')
+    expect(editor.attributes('style')).toContain('display: none')
+    expect(wrapper.get('[data-test="member-override-status"]').text()).toContain('Using team defaults')
+
+    await wrapper.get('[data-test="member-override-row"]').trigger('click')
+
+    expect(wrapper.get('[data-test="member-override-row"]').attributes('aria-expanded')).toBe('true')
+    expect(editor.attributes('style') ?? '').not.toContain('display: none')
+  })
+
+  it('marks only explicitly overridden member fields in the collapsed row and expanded editor', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        override: {
+          agentDefinitionId: 'agent-reviewer',
+          runtimeKind: 'codex_app_server',
+          autoExecuteTools: true,
+        },
+      },
+    })
+
+    await nextTick()
+
+    const summaryIndicators = wrapper
+      .findAll('[data-test="member-override-field-indicator"]')
+      .map((indicator) => indicator.text())
+
+    expect(summaryIndicators).toEqual(['Runtime field', 'Auto approve field'])
+    expect(wrapper.get('[data-test="member-override-status"]').text()).toContain('Overridden')
+    expect(wrapper.find('[data-test="member-override-field-indicator-empty"]').exists()).toBe(false)
+
+    await wrapper.get('[data-test="member-override-row"]').trigger('click')
+
+    expect(wrapper.get('[data-test="member-override-runtime-field"]').text()).toContain('Field overridden')
+    expect(wrapper.get('[data-test="member-override-auto-approve-field"]').text()).toContain('Field overridden')
+    expect(wrapper.get('[data-test="member-override-model-field"]').text()).not.toContain('Field overridden')
+    expect(wrapper.get('[data-test="member-override-model-config-field"]').text()).not.toContain('Field overridden')
+  })
+
+  it('keeps multiple member override cards independently expandable', async () => {
+    const updateOverride = vi.fn()
+    const Harness = defineComponent({
+      components: { MemberOverrideItem },
+      setup() {
+        return {
+          first: {
+            ...defaultProps,
+            memberName: 'Reviewer',
+            memberRouteKey: 'reviewer',
+          },
+          second: {
+            ...defaultProps,
+            memberName: 'Writer',
+            memberRouteKey: 'writer',
+            agentDefinitionId: 'agent-writer',
+          },
+          updateOverride,
+        }
+      },
+      template: `
+        <div>
+          <MemberOverrideItem v-bind="first" @update:override="updateOverride" />
+          <MemberOverrideItem v-bind="second" @update:override="updateOverride" />
+        </div>
+      `,
+    })
+
+    const wrapper = mount(Harness)
+    await nextTick()
+
+    const rows = wrapper.findAll('[data-test="member-override-row"]')
+    const editors = wrapper.findAll('[data-test="member-override-editor"]')
+    expect(rows).toHaveLength(2)
+    expect(editors[0].attributes('style')).toContain('display: none')
+    expect(editors[1].attributes('style')).toContain('display: none')
+
+    await rows[0].trigger('click')
+    await rows[1].trigger('click')
+
+    expect(rows[0].attributes('aria-expanded')).toBe('true')
+    expect(rows[1].attributes('aria-expanded')).toBe('true')
+    expect(editors[0].attributes('style') ?? '').not.toContain('display: none')
+    expect(editors[1].attributes('style') ?? '').not.toContain('display: none')
+
+    await rows[0].trigger('click')
+
+    expect(rows[0].attributes('aria-expanded')).toBe('false')
+    expect(rows[1].attributes('aria-expanded')).toBe('true')
+    expect(editors[0].attributes('style')).toContain('display: none')
+    expect(editors[1].attributes('style') ?? '').not.toContain('display: none')
+  })
+
+  it('maps Auto Approve Override Use global, Yes, and No to undefined, true, and false storage', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: defaultProps,
+    })
+
+    await nextTick()
+    const select = wrapper.get('#override-auto-reviewer')
+
+    await select.setValue('yes')
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      'reviewer',
+      {
+        agentDefinitionId: 'agent-reviewer',
+        autoExecuteTools: true,
+      },
+    ])
+
+    await wrapper.setProps({
+      override: {
+        agentDefinitionId: 'agent-reviewer',
+        autoExecuteTools: true,
+      },
+    })
+    await select.setValue('no')
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      'reviewer',
+      {
+        agentDefinitionId: 'agent-reviewer',
+        autoExecuteTools: false,
+      },
+    ])
+
+    await wrapper.setProps({
+      override: {
+        agentDefinitionId: 'agent-reviewer',
+        autoExecuteTools: false,
+      },
+    })
+    await select.setValue('global')
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual(['reviewer', null])
+  })
+
+  it('resets a member override to team defaults when enabled and never mutates when disabled', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        override: {
+          agentDefinitionId: 'agent-reviewer',
+          runtimeKind: 'codex_app_server',
+        },
+      },
+    })
+
+    await wrapper.get('[data-test="member-override-row"]').trigger('click')
+    await wrapper.get('[data-test="member-override-reset"]').trigger('click')
+
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual(['reviewer', null])
+
+    await wrapper.setProps({ disabled: true })
+    const beforeDisabledClickCount = wrapper.emitted('update:override')?.length ?? 0
+    await wrapper.get('[data-test="member-override-reset"]').trigger('click')
+
+    expect(wrapper.emitted('update:override')?.length ?? 0).toBe(beforeDisabledClickCount)
+  })
 
   it('renders a blocking warning when a runtime override breaks inherited global model availability', async () => {
     const wrapper = mount(MemberOverrideItem, {

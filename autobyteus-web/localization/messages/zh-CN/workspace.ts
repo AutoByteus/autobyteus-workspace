@@ -19,6 +19,66 @@ const messages = {
     "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.title":
+    "团队运行默认设置",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.status_team_defaults":
+    "使用团队默认设置",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.status_changed":
+    "本次运行已更改",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.status_model_required":
+    "需要模型",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.defaults_description":
+    "大多数运行可以直接使用所选团队定义中的运行时、模型和 LLM 设置。",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.changed_description":
+    "本次启动包含不同于团队定义的运行时、模型或 LLM 配置更改。",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.missing_model_description":
+    "启动前请为本次运行选择模型，或更新团队定义默认值。",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.runtime":
+    "运行时",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.model":
+    "模型",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.llm_config":
+    "LLM 配置",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.no_model_selected":
+    "未选择模型",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.llm_config_changed":
+    "已更改",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.no_custom_model_config":
+    "无自定义模型配置",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.edit_team_default":
+    "编辑团队默认值",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.inspect_team_default":
+    "查看团队默认值",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.hide_team_default":
+    "隐藏团队默认值",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.auto_approve_on":
+    "自动批准开启",
+  "workspace.components.workspace.config.TeamRunDefaultsSummary.auto_approve_off":
+    "自动批准关闭",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.title":
+    "团队成员覆盖设置",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.member_singular":
+    "名成员",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.member_plural":
+    "名成员",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.override_singular":
+    "项覆盖",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.override_plural":
+    "项覆盖",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.all_using_team_defaults":
+    "全部使用团队默认值",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.defaults_description":
+    "叶子成员默认继承团队运行设置；需要时可打开成员覆盖设置。",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.overrides_description":
+    "活跃的成员覆盖默认隐藏，但会在此列出，避免启动差异被忽略。",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.more":
+    "更多",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.edit_member_overrides":
+    "编辑成员覆盖设置",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.inspect_member_overrides":
+    "检查成员覆盖设置",
+  "workspace.components.workspace.config.TeamMemberOverridesSummary.hide_member_overrides":
+    "隐藏成员覆盖设置",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "协调者",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
@@ -32,11 +92,59 @@ const messages = {
   "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
     "选择兼容的成员模型",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
-    "自动执行：使用全局设置",
+    "使用全局设置",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
     "自动执行：开启",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
     "自动执行：关闭",
+  "workspace.components.workspace.config.RunConfigPanel.launch_summary":
+    "启动摘要",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.member_singular":
+    "名成员",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.member_plural":
+    "名成员",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.runtime":
+    "运行时",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.model":
+    "模型",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.no_model":
+    "未选择模型",
+  "workspace.components.workspace.config.MemberOverrideItem.agent_member":
+    "智能体",
+  "workspace.components.workspace.config.MemberOverrideItem.using_team_defaults":
+    "使用团队默认值",
+  "workspace.components.workspace.config.MemberOverrideItem.no_member_overrides":
+    "无成员覆盖",
+  "workspace.components.workspace.config.MemberOverrideItem.member_override_details":
+    "成员覆盖详情",
+  "workspace.components.workspace.config.MemberOverrideItem.member_override_details_help":
+    "只覆盖需要不同于团队运行默认值的字段。",
+  "workspace.components.workspace.config.MemberOverrideItem.reset_to_default":
+    "重置为默认值",
+  "workspace.components.workspace.config.MemberOverrideItem.field_overridden":
+    "已覆盖",
+  "workspace.components.workspace.config.MemberOverrideItem.runtime_field":
+    "运行时",
+  "workspace.components.workspace.config.MemberOverrideItem.model_field":
+    "模型",
+  "workspace.components.workspace.config.MemberOverrideItem.model_config_field":
+    "模型配置",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_field":
+    "自动批准",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_override":
+    "自动批准覆盖",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_override_help":
+    "使用全局设置会跟随团队“自动批准工具”。",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_yes":
+    "是",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_no":
+    "否",
+  "workspace.components.workspace.config.MemberOverrideItem.global_auto_approve_on":
+    "团队自动批准当前为开启。",
+  "workspace.components.workspace.config.MemberOverrideItem.global_auto_approve_off":
+    "团队自动批准当前为关闭。",
+  "workspace.components.workspace.config.MemberOverrideItem.model_config_override":
+    "模型配置覆盖",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "智能体",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":

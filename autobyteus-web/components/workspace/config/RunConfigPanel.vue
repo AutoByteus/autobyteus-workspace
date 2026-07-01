@@ -51,6 +51,10 @@
     </div>
 
     <div v-if="!isSelectionMode && ((effectiveAgentConfig && activeAgentDefinition) || (effectiveTeamConfig && activeTeamDefinition))" class="border-t border-gray-200 bg-gray-50 px-4 py-3">
+      <TeamRunLaunchSummary
+        v-if="isTeamActive && teamRunLaunchSummary"
+        :summary="teamRunLaunchSummary"
+      />
       <button
         @click="handleRun"
         :disabled="isRunDisabled"
@@ -86,8 +90,14 @@ import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { useRightSideTabs } from '~/composables/useRightSideTabs'
 import AgentRunConfigForm from './AgentRunConfigForm.vue'
 import TeamRunConfigForm from './TeamRunConfigForm.vue'
+import TeamRunLaunchSummary from './TeamRunLaunchSummary.vue'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import {
+  buildTeamMemberTreeFromDefinition,
+  flattenLeafAgentMemberNodes,
+} from '~/utils/teamDefinitionMembers'
+import { buildTeamRunLaunchSummaryPresentation } from '~/utils/teamRunConfigPresentation'
 
 const selectionStore = useAgentSelectionStore()
 const runConfigStore = useAgentRunConfigStore()
@@ -139,6 +149,23 @@ const activeAgentDefinition = computed(() => {
 const activeTeamDefinition = computed(() => {
   if (!effectiveTeamConfig.value?.teamDefinitionId) return null
   return teamDefinitionStore.getAgentTeamDefinitionById(effectiveTeamConfig.value.teamDefinitionId) || null
+})
+
+const activeTeamLeafMemberCount = computed(() => {
+  if (!activeTeamDefinition.value) return 0
+  const memberTree = buildTeamMemberTreeFromDefinition(activeTeamDefinition.value, {
+    getTeamDefinitionById: (teamDefinitionId: string) =>
+      teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
+  })
+  return flattenLeafAgentMemberNodes(memberTree).length
+})
+
+const teamRunLaunchSummary = computed(() => {
+  if (!effectiveTeamConfig.value || !activeTeamDefinition.value) return null
+  return buildTeamRunLaunchSummaryPresentation({
+    config: effectiveTeamConfig.value,
+    leafMemberCount: activeTeamLeafMemberCount.value,
+  })
 })
 
 const isWorkspaceLockedForSelectedAgentRun = computed(() => {

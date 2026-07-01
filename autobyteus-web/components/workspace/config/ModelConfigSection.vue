@@ -19,9 +19,8 @@
         :disabled="thinkingToggleDisabled"
         :label="thinkingLabel"
         :description="thinkingDescription"
-        :read-only-reason="thinkingControlState.enabled && !thinkingControlState.canDisable
-          ? $t('workspace.components.workspace.config.ModelConfigSection.thinking_configuration_not_available_for_this_model')
-          : undefined"
+        :read-only-reason="thinkingReadOnlyReason"
+        :neutral-enabled="thinkingNeutralEnabled"
         :compact="compact"
       />
     </template>
@@ -44,7 +43,7 @@
       </button>
     </div>
 
-    <!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <!-- Schema-driven advanced parameters. Some opt-in single-row thinking schemas render directly. -->
     <div
       v-if="hasAdvancedSchema"
       v-show="!usesAdvancedDisclosure || showAdvancedParams"
@@ -69,6 +68,7 @@
 import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
+import { useLocalization } from '~/composables/useLocalization';
 import {
   applyThinkingToggle,
   getThinkingControlState,
@@ -90,12 +90,14 @@ const props = defineProps<{
   thinkingDescription?: string;
   advancedInitiallyExpanded?: boolean;
   missingHistoricalConfig?: boolean;
+  inlineSingleAdvancedRowWhenThinkingOn?: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: 'update:config', value: Record<string, unknown> | null): void;
 }>();
 
+const { t: $t } = useLocalization();
 const showAdvancedParams = ref(false);
 
 const hasSchema = computed(() => !!props.schema && Object.keys(props.schema).length > 0);
@@ -112,8 +114,18 @@ const advancedSchema = computed<UiModelConfigSchema>(() => {
   );
 });
 
-const hasAdvancedSchema = computed(() => Object.keys(advancedSchema.value).length > 0);
-const usesAdvancedDisclosure = computed(() => hasAdvancedSchema.value);
+const advancedSchemaKeys = computed(() => Object.keys(advancedSchema.value));
+const hasAdvancedSchema = computed(() => advancedSchemaKeys.value.length > 0);
+const hasSingleAdvancedRow = computed(() => advancedSchemaKeys.value.length === 1);
+const shouldInlineSingleAdvancedRow = computed(() =>
+  props.inlineSingleAdvancedRowWhenThinkingOn === true &&
+  thinkingControlState.value.enabled === true &&
+  hasSingleAdvancedRow.value &&
+  !showMissingHistoricalConfig.value,
+);
+const usesAdvancedDisclosure = computed(() =>
+  hasAdvancedSchema.value && !shouldInlineSingleAdvancedRow.value,
+);
 const shouldDefaultAdvancedOpen = computed(() =>
   props.advancedInitiallyExpanded === true ||
   (
@@ -150,6 +162,14 @@ const thinkingToggleDisabled = computed(() => {
     ? !thinkingControlState.value.canDisable
     : !thinkingControlState.value.canEnable;
 });
+const thinkingNeutralEnabled = computed(() =>
+  thinkingControlState.value.enabled && !thinkingControlState.value.canDisable,
+);
+const thinkingReadOnlyReason = computed(() => (
+  thinkingNeutralEnabled.value
+    ? $t('workspace.components.workspace.config.ModelConfigSection.thinking_configuration_not_available_for_this_model')
+    : undefined
+));
 
 const thinkingEnabled = computed({
   get() {
@@ -229,6 +249,8 @@ watch(
     props.compact,
     props.readOnly,
     props.missingHistoricalConfig,
+    props.inlineSingleAdvancedRowWhenThinkingOn,
+    shouldInlineSingleAdvancedRow.value,
   ],
   () => {
     showAdvancedParams.value = shouldDefaultAdvancedOpen.value;

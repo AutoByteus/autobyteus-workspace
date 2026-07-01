@@ -18,13 +18,18 @@ The Agent Teams list can also present a server-configured **Featured teams** sec
 - `components/launch-config/DefinitionLaunchPreferencesSection.vue`
 - `components/launch-config/RuntimeModelConfigFields.vue`
 - `components/workspace/config/TeamRunConfigForm.vue`
+- `components/workspace/config/TeamRunDefaultsSummary.vue`
+- `components/workspace/config/TeamMemberOverridesSummary.vue`
 - `components/workspace/config/MemberOverrideItem.vue`
+- `components/workspace/config/TeamRunLaunchSummary.vue`
+- `components/workspace/config/WorkspaceSelector.vue`
 - `components/workspace/config/RunConfigPanel.vue`
 - `components/agentTeams/form/useAgentTeamDefinitionFormState.ts`
 - `components/agentTeams/form/AgentTeamMemberDetailsPanel.vue`
 - `stores/teamRunConfigStore.ts`
 - `stores/agentTeamContextsStore.ts`
 - `stores/agentTeamRunStore.ts`
+- `utils/teamRunConfigPresentation.ts`
 - `utils/teamRunConfigUtils.ts`
 - `utils/teamRunLaunchReadiness.ts`
 - `utils/teamRunMemberConfigBuilder.ts`
@@ -112,12 +117,54 @@ targets.
 
 That surface owns:
 
-- the team-level default runtime/model/config selection,
-- shared workspace / auto-execute / skill-access fields,
-- a recursive member override tree for nested team definitions, with subteam
-  group rows and leaf-member override controls keyed by backend
-  `memberRouteKey`, and
+- a borderless `Team Definition` section that keeps the selected team name,
+  team run defaults, and team member overrides together before the workspace
+  selector,
+- a team-level runtime/model/config summary paired with the existing default
+  runtime/model editor plus team `Auto approve tools`, which is expanded by
+  default for editable drafts and read-only inspection,
+- a compact member override summary plus an explicit disclosure for the
+  recursive member override tree for nested team definitions, with subteam group
+  rows and leaf-member override controls keyed by backend `memberRouteKey`,
+- shared workspace and skill-access fields after the team definition section,
+  with a compact workspace Existing/New segmented pill, and
+- a compact team-only launch summary in the sticky footer that shows leaf member
+  count, runtime, and model before `Run Team`, and
 - runtime-scoped model catalog loading for the team default plus any explicit member runtime overrides.
+
+New editable team runs show `TeamRunDefaultsSummary.vue` and the existing
+`RuntimeModelConfigFields.vue` editor inside the `Team Definition` group by
+default. The summary compares the current run defaults against the selected
+team's persisted `defaultLaunchConfig`, including normalized `llmConfig`, and
+labels the state as using team defaults, changed for this launch, or missing the
+required model. It also renders concrete normalized `llmConfig` key/value chips
+in deterministic key order. Empty config is shown explicitly as `No custom model
+config`, and long or nested values are compacted in the chip while preserving
+the full rendered value in the chip title. The editable summary action uses the
+exact localized copy `Edit Team Default`; old `Change run defaults` copy is not
+rendered. `RuntimeModelConfigFields.vue` remains the only runtime/model editing
+surface; the team defaults instance omits the small runtime/model helper
+paragraphs while preserving shared helper support for other callers and runtime
+unavailable warnings. The summary stays display-only and only emits disclosure
+toggles.
+
+`WorkspaceSelector.vue` remains the shared workspace owner for agent and team
+run forms. Its mode selector is a compact, left-aligned Existing/New pill, and
+it no longer renders redundant green selected-workspace success text; locked
+workspace notices, validation errors, and existing/new guidance remain visible.
+
+New editable team runs also show `TeamMemberOverridesSummary.vue` directly after
+the team run defaults with a stronger blue/indigo non-warning accent background.
+It lists the total leaf-member count, shows when all members are using team
+defaults, and names active per-member overrides while the recursive editor is
+collapsed. Opening the disclosure renders recursive subteam groups plus compact
+one-line leaf member rows. Each leaf row owns its own expand/collapse state, so
+multiple member detail cards can remain open at the same time. The expanded
+details show field-level override indicators for runtime, model, model config,
+and auto approve, expose `Reset to default`, and use an explicit
+`Auto Approve Override` selector. `Use global` omits
+`MemberConfigOverride.autoExecuteTools` and follows the team `Auto approve
+tools` toggle; `Yes` stores `true`; `No` stores `false`.
 
 `MemberOverrideTree.vue` owns nested grouping and forwards leaf updates to
 `MemberOverrideItem.vue`, the authoritative row owner for per-member launch
@@ -131,15 +178,21 @@ overrides. Each leaf member can:
 
 Member `llmConfig` values use the same schema-driven shape as the team default.
 The team-global model config initializes **Advanced** from effective **Thinking**
-state: ON opens by default, while OFF or unavailable starts collapsed. Compact
-member override rows stay collapsed until the user expands or explicitly
-configures that member. Inherited member controls may display effective schema
-defaults such as a reasoning effort value, but display-only defaults do not
-create member overrides. Explicit member-local runtime/model selections that
-resolve to an effective-ON model may open only that member's **Advanced**
-controls. For Codex members, `service_tier: "fast"` is valid only while the
-selected or inherited Codex model schema exposes **Fast mode**; stale values are
-cleared when the owning runtime/model context changes.
+state: ON opens by default, while OFF or unavailable starts collapsed. When the
+team defaults editor opts in and Thinking is effectively on with exactly one
+visible non-thinking advanced row, `ModelConfigSection.vue` renders that row
+directly without an **Advanced** toggle. Compact member override rows stay
+collapsed until the user expands or explicitly configures that member, and they
+do not opt in to the direct single-row behavior. Inherited member controls may
+display effective schema defaults such as a reasoning effort value, but
+display-only defaults do not create member overrides. Explicit member-local
+runtime/model selections that resolve to an effective-ON model may open only
+that member's **Advanced** controls. For Codex members, `service_tier: "fast"`
+is valid only while the selected or inherited Codex model schema exposes **Fast
+mode**; stale values are cleared when the owning runtime/model context changes.
+Fixed or non-disable-capable Thinking states render as neutral disabled rows
+instead of highlighted enabled switches, while models without Thinking schema
+support render no Thinking row.
 
 When the runtime override changes, the row clears incompatible explicit model/config state instead of leaking stale member-only configuration into the next launch.
 

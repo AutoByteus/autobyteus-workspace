@@ -121,7 +121,31 @@ vi.mock('~/stores/agentDefinitionStore', () => ({
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => ({
-    getAgentTeamDefinitionById: (id: string) => ({ id, name: 'Team ' + id, nodes: [] }),
+    getAgentTeamDefinitionById: (id: string) => {
+      if (id === 'team-def-1') {
+        return {
+          id,
+          name: 'Team ' + id,
+          coordinatorMemberName: 'program_manager',
+          nodes: [
+            { memberName: 'program_manager', refType: 'AGENT', ref: 'agent-pm' },
+            { memberName: 'BuildSquad', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
+          ],
+        }
+      }
+      if (id === 'sub-team-1') {
+        return {
+          id,
+          name: 'Sub Team',
+          coordinatorMemberName: 'review_lead',
+          nodes: [
+            { memberName: 'review_lead', refType: 'AGENT', ref: 'agent-review' },
+            { memberName: 'qa_specialist', refType: 'AGENT', ref: 'agent-qa' },
+          ],
+        }
+      }
+      return { id, name: 'Team ' + id, nodes: [] }
+    },
   }),
 }))
 
@@ -223,6 +247,29 @@ describe('RunConfigPanel', () => {
     })
 
     expect(wrapper.findComponent(TeamRunConfigForm).exists()).toBe(true)
+  })
+
+  it('renders a compact team-only launch summary with nested leaf member count', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const store = useTeamRunConfigStore() as any
+    store.config = {
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team team-def-1',
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.4',
+      workspaceId: 'ws-1',
+    } as any
+    store.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    expect(wrapper.get('[data-test="team-run-launch-summary-members"]').text()).toContain('3')
+    expect(wrapper.get('[data-test="team-run-launch-summary-runtime"]').text()).toContain('Codex App Server')
+    expect(wrapper.get('[data-test="team-run-launch-summary-model"]').text()).toContain('gpt-5.4')
   })
 
   it('triggers team run on button click when launch readiness passes', async () => {

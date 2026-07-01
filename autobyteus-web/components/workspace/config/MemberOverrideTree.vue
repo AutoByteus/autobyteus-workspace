@@ -24,6 +24,7 @@
             :global-runtime-kind="globalRuntimeKind"
             :global-llm-model="globalLlmModel"
             :global-llm-config="globalLlmConfig"
+            :global-auto-execute-tools="globalAutoExecuteTools"
             :coordinator-member-route-key="coordinatorMemberRouteKey"
             :disabled="disabled"
             :advanced-initially-expanded="advancedInitiallyExpanded"
@@ -43,6 +44,7 @@
         :global-runtime-kind="globalRuntimeKind"
         :global-llm-model="globalLlmModel"
         :global-llm-config="globalLlmConfig"
+        :global-auto-execute-tools="globalAutoExecuteTools"
         :is-coordinator="node.memberRouteKey === coordinatorMemberRouteKey"
         :disabled="disabled"
         :advanced-initially-expanded="advancedInitiallyExpanded"
@@ -67,6 +69,7 @@ const props = defineProps<{
   globalRuntimeKind: string;
   globalLlmModel: string;
   globalLlmConfig?: Record<string, unknown> | null;
+  globalAutoExecuteTools: boolean;
   coordinatorMemberRouteKey: string;
   disabled: boolean;
   advancedInitiallyExpanded?: boolean;
