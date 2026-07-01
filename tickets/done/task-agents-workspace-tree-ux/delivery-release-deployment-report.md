@@ -114,9 +114,9 @@ Production release was initiated by pushing tag `v1.3.90`, which started the doc
    - DMG SHA-256: `0efb7309ef0a671e79b9fe3ebe9b7a3193141bb2734555b402b0c719b07a22c5`
    - ZIP SHA-256: `89ea544ae73e0194a70ca2efa7d1dbcb4404655718fcac1e662453c5b13db2e9`
 
-Release workflow observations after pushing `v1.3.90`:
+Release workflow observations after pushing `v1.3.90` and rechecking before final handoff:
 
-- Release Messaging Gateway: in progress — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28501663940
+- Release Messaging Gateway: completed / success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28501663940
 - Desktop Release: in progress — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28501663936
 - iOS App Store Connect Release: in progress — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28501663885
 - Server Docker Release: in progress — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28501663862
@@ -155,4 +155,4 @@ Before finalization, if user verification finds that transient Workspaces rows a
 
 ## Final Status
 
-Completed. Ticket branch was finalized and merged to `personal`, release `v1.3.90` was tagged and pushed, tag-triggered GitHub release workflows were started, and ticket worktree/local/remote branch cleanup was completed. The release workflows were still running at final handoff observation; monitor the linked GitHub Actions runs for asset publication completion.
+Completed. Ticket branch was finalized and merged to `personal`, release `v1.3.90` was tagged and pushed, tag-triggered GitHub release workflows were started, and ticket worktree/local/remote branch cleanup was completed. At final handoff observation, Release Messaging Gateway had completed successfully and the Desktop, iOS, Server Docker, and Android release workflows were still in progress; monitor the linked GitHub Actions runs for asset publication completion.
