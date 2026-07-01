@@ -1,10 +1,10 @@
 ## What's New
-- Team Active Tasks now shows delegated task context in the Team tab with a left-side navigator for task summaries, responsible agents or task teams, team members, references, and technical details.
+- Added live delegated task-agent and task-team execution rows directly in the left Workspaces tree, including nested task-team children and a clear eight-dot transient execution marker.
 
 ## Improvements
-- Task reference rows are easier to read and select, with previews opening in the right-side detail pane.
-- The task detail pane now stays focused on task content or reference preview, while focus actions remain on the relevant actor/member rows.
+- Kept Team → Tasks focused on task content: clean task summaries, selectable task references, task body/reference preview, and collapsed technical details without duplicate execution-status UI.
+- Preserved stable team/member hierarchy behavior while making transient task-team rows independently expandable, focusable, and removable after task completion.
 
 ## Fixes
-- Removed active-task context from the global Workspaces tree so it remains a workspace/run/team/member navigation surface.
-- Avoided duplicated task status, waiting, focus, actor, reference-list, and technical-detail controls in the right-side task detail pane.
+- Fixed stale or noisy delegated-task presentation by removing redundant status dots, status labels, actor/member hierarchy rows, and the extra visible References heading from the right Team → Tasks navigator.
+- Fixed transient cleanup so completed delegated tasks disappear from Workspaces and the active task count returns to zero.
