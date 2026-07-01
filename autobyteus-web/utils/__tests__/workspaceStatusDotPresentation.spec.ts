@@ -32,11 +32,11 @@ describe('workspaceStatusDotPresentation', () => {
     expect(teamStatusDotClass('unexpected')).toBe('bg-gray-300');
   });
 
-  it('maps transient statuses to dashed hollow workspace tree dot colors', () => {
-    expect(agentTransientStatusDotClass(AgentStatus.Running)).toBe('border border-dashed border-blue-500 bg-transparent animate-pulse');
-    expect(agentTransientStatusDotClass(AgentStatus.Idle)).toBe('border border-dashed border-green-500 bg-transparent');
-    expect(agentTransientStatusDotClass('unexpected')).toBe('border border-dashed border-gray-400 bg-transparent');
-    expect(teamTransientStatusDotClass(AgentTeamStatus.Error)).toBe('border border-dashed border-red-500 bg-transparent');
-    expect(teamTransientStatusDotClass('unexpected')).toBe('border border-dashed border-gray-300 bg-transparent');
+  it('maps transient statuses to thick dotted hollow workspace tree dot colors', () => {
+    expect(agentTransientStatusDotClass(AgentStatus.Running)).toBe('border-2 border-dotted border-blue-500 bg-transparent animate-pulse');
+    expect(agentTransientStatusDotClass(AgentStatus.Idle)).toBe('border-2 border-dotted border-green-500 bg-transparent');
+    expect(agentTransientStatusDotClass('unexpected')).toBe('border-2 border-dotted border-gray-400 bg-transparent');
+    expect(teamTransientStatusDotClass(AgentTeamStatus.Error)).toBe('border-2 border-dotted border-red-500 bg-transparent');
+    expect(teamTransientStatusDotClass('unexpected')).toBe('border-2 border-dotted border-gray-300 bg-transparent');
   });
 });

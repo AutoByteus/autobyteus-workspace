@@ -182,11 +182,12 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     expect(transientRow.classes()).toContain('bg-indigo-50/40');
     expect(transientRow.classes()).toContain('ring-indigo-200');
     expect(transientRow.findAll('.rounded-full')).toHaveLength(1);
-    expect(transientRow.findAll('.border-dashed')).toHaveLength(1);
+    expect(transientRow.findAll('.border-dotted')).toHaveLength(1);
     const statusDot = transientRow.get('[data-test="workspace-transient-status-dot"]');
     expect(statusDot.classes()).toEqual(expect.arrayContaining([
       'rounded-full',
-      'border-dashed',
+      'border-2',
+      'border-dotted',
       'border-blue-500',
       'bg-transparent',
     ]));
@@ -298,8 +299,8 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     expect(transientRows).toHaveLength(2);
     for (const transientRow of transientRows) {
       expect(transientRow.findAll('.rounded-full')).toHaveLength(1);
-      expect(transientRow.findAll('.border-dashed')).toHaveLength(1);
-      expect(transientRow.get('[data-test="workspace-transient-status-dot"]').exists()).toBe(true);
+      expect(transientRow.findAll('.border-dotted')).toHaveLength(1);
+      expect(transientRow.get('[data-test="workspace-transient-status-dot"]').classes()).toContain('border-2');
     }
     expect(transientRows[1].attributes('data-transient-kind')).toBe('task_team_child');
     expect(transientRows[1].attributes('data-member-route-key')).toBe('task-team-run-1/review_lead');

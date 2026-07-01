@@ -28,15 +28,15 @@ const statusDotClassByValue = (status: string, fallbackClass: string): string =>
 const transientStatusDotClassByValue = (status: string, fallbackClass: string): string => {
   switch (status) {
     case 'initializing':
-      return 'border border-dashed border-amber-500 bg-transparent animate-pulse';
+      return 'border-2 border-dotted border-amber-500 bg-transparent animate-pulse';
     case 'running':
-      return 'border border-dashed border-blue-500 bg-transparent animate-pulse';
+      return 'border-2 border-dotted border-blue-500 bg-transparent animate-pulse';
     case 'idle':
-      return 'border border-dashed border-green-500 bg-transparent';
+      return 'border-2 border-dotted border-green-500 bg-transparent';
     case 'error':
-      return 'border border-dashed border-red-500 bg-transparent';
+      return 'border-2 border-dotted border-red-500 bg-transparent';
     case 'offline':
-      return 'border border-dashed border-gray-400 bg-transparent';
+      return 'border-2 border-dotted border-gray-400 bg-transparent';
     default:
       return fallbackClass;
   }
@@ -54,12 +54,12 @@ export const agentTransientStatusDotClass = (
   status: AgentStatus | string | null | undefined,
 ): string => transientStatusDotClassByValue(
   normalizeStatus(status),
-  'border border-dashed border-gray-400 bg-transparent',
+  'border-2 border-dotted border-gray-400 bg-transparent',
 );
 
 export const teamTransientStatusDotClass = (
   status: AgentTeamStatus | string | null | undefined,
 ): string => transientStatusDotClassByValue(
   normalizeStatus(status),
-  'border border-dashed border-gray-300 bg-transparent',
+  'border-2 border-dotted border-gray-300 bg-transparent',
 );
