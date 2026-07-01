@@ -721,7 +721,7 @@ describe("task delegation tool lifecycle integration", () => {
     });
 
     await expect(executeCoordinatorReview(harness, { task_id: "task_0001", decision: "accept" }))
-      .resolves.toEqual({ task_id: "task_0001", status: "accepted", decision: "accept" });
+      .resolves.toEqual({ task_id: "task_0001", status: "accepted" });
     await vi.waitFor(() => {
       expect(harness.backend.taskAgentSettlementAttempts).toEqual([
         expect.objectContaining({
@@ -734,7 +734,7 @@ describe("task delegation tool lifecycle integration", () => {
 
     await executeSubmitTaskResultAsTaskAgent(harness, "task_0002", { message: "second result" });
     await expect(executeCoordinatorReview(harness, { task_id: "task_0002", decision: "accept" }))
-      .resolves.toEqual({ task_id: "task_0002", status: "accepted", decision: "accept" });
+      .resolves.toEqual({ task_id: "task_0002", status: "accepted" });
     expect(harness.backend.taskAgentSettlementAttempts).toHaveLength(1);
     publishIdleEvent(harness.backend, "task_0002");
     await vi.waitFor(() => {
@@ -777,11 +777,12 @@ describe("task delegation tool lifecycle integration", () => {
     });
 
     await expect(executeTaskAgentReview(harness, "task_0001", { task_id: "task_0002", decision: "accept" }))
-      .resolves.toEqual({ task_id: "task_0002", status: "accepted", decision: "accept" });
+      .resolves.toEqual({ task_id: "task_0002", status: "accepted" });
     const reviewPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_RESULT_REVIEWED")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
     expect(reviewPayload).toMatchObject({
       taskId: "task_0002",
       status: "accepted",
+      decision: "accept",
       reviewedSubmissionId: "task_0002_submission_0001",
       execution: expect.objectContaining({
         kind: "task_agent",
@@ -863,7 +864,6 @@ describe("task delegation tool lifecycle integration", () => {
     })).resolves.toEqual({
       task_id: "task_0001",
       status: "active",
-      decision: "request_revision",
     });
     expect(harness.backend.taskTeamPosts).toEqual([
       expect.objectContaining({
@@ -889,7 +889,6 @@ describe("task delegation tool lifecycle integration", () => {
     })).resolves.toEqual({
       task_id: "task_0001",
       status: "accepted",
-      decision: "accept",
     });
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(harness.backend.taskTeamSettlements).toHaveLength(0);

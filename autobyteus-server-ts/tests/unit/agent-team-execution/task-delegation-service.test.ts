@@ -585,7 +585,6 @@ describe("TaskDelegationService", () => {
     expect(revision).toEqual({
       task_id: "task_0001",
       status: "active",
-      decision: "request_revision",
     });
     expect(backend.postedMessages[1]).toMatchObject({ targetMemberRunId: "worker_00000000000000000000000000000001" });
     expect(backend.postedMessages[1]!.target).toEqual({ kind: "route_key", memberRouteKey: "worker" });
@@ -634,12 +633,11 @@ describe("TaskDelegationService", () => {
     expect(accepted).toEqual({
       task_id: "task_0001",
       status: "accepted",
-      decision: "accept",
     });
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toHaveLength(2);
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_REVIEWED")).toEqual([
-      expect.objectContaining({ reviewId: "task_0001_review_0001", reviewedSubmissionId: "task_0001_submission_0001", status: "active", description: "Do work.", comment: "Please add tests." }),
-      expect.objectContaining({ reviewId: "task_0001_review_0002", reviewedSubmissionId: "task_0001_submission_0002", status: "accepted", description: "Do work.", comment: "Accepted" }),
+      expect.objectContaining({ reviewId: "task_0001_review_0001", reviewedSubmissionId: "task_0001_submission_0001", status: "active", decision: "request_revision", description: "Do work.", comment: "Please add tests." }),
+      expect.objectContaining({ reviewId: "task_0001_review_0002", reviewedSubmissionId: "task_0001_submission_0002", status: "accepted", decision: "accept", description: "Do work.", comment: "Accepted" }),
     ]);
     expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("worker_00000000000000000000000000000001")?.taskId).toBe("task_0001");
 
@@ -697,7 +695,6 @@ describe("TaskDelegationService", () => {
     expect(revision).toEqual({
       task_id: "task_0001",
       status: "active",
-      decision: "request_revision",
       message: "No recipient",
     });
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_REVIEWED")).toEqual([
@@ -705,6 +702,7 @@ describe("TaskDelegationService", () => {
         reviewId: "task_0001_review_0001",
         reviewedSubmissionId: "task_0001_submission_0001",
         status: "active",
+        decision: "request_revision",
       }),
     ]);
   });

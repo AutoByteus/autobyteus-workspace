@@ -265,13 +265,10 @@ export type ReviewTaskResultResult =
   | {
       task_id: string;
       status: "accepted";
-      decision: "accept";
-      message?: string;
     }
   | {
       task_id: string;
       status: "active";
-      decision: "request_revision";
       message?: string;
     };
 

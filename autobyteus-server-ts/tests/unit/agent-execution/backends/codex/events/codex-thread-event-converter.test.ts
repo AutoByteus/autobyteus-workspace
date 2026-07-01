@@ -852,7 +852,6 @@ describe("CodexThreadEventConverter", () => {
     const reviewResult = {
       task_id: "task_0001",
       status: "accepted",
-      decision: "accept",
     };
 
     const converted = converter.convert({

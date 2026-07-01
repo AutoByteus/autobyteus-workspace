@@ -213,7 +213,6 @@ export class TaskDelegationService {
       return {
         task_id: updated.taskId,
         status: "active",
-        decision: input.decision,
         ...(notificationMessage ? { message: notificationMessage } : {}),
       };
     }
@@ -226,7 +225,6 @@ export class TaskDelegationService {
     return {
       task_id: updated.taskId,
       status: "accepted",
-      decision: input.decision,
     };
   }
 

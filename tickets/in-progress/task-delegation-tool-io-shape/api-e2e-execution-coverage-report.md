@@ -10,36 +10,29 @@
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape/tickets/in-progress/task-delegation-tool-io-shape/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape/tickets/in-progress/task-delegation-tool-io-shape/code-review-report.md`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape/tickets/in-progress/task-delegation-tool-io-shape/api-e2e-coverage-investigation.md`
-- Current Execution Round: 2
-- Trigger: Refined API/E2E execution after code-review pass for the three-tool public result cleanup.
-- Prior Round Reviewed: Yes. Round 1 covered only `delegate_task` and `review_task_result`; it is superseded/stale after the `submit_task_result` requirement reset.
-- Latest Authoritative Round: 2
-
-Round rules:
-- Reuse the same scenario IDs across reruns for the same scenarios.
-- Create new scenario IDs only for newly discovered coverage.
+- Current Execution Round: 3
+- Trigger: Round-3 code-review pass after public `review_task_result.decision` was removed from the accepted/revision public result shapes.
+- Prior Round Reviewed: Yes. Earlier API/E2E report content in this canonical file was stale from earlier public result contracts and is superseded by this round-3 report.
+- Latest Authoritative Round: Round 3 in this file.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial API/E2E execution after first code-review pass | N/A | No task-specific failures; known full typecheck baseline TS6059 reproduced. | Superseded | No | Covered only `delegate_task` and `review_task_result`; stale after refined `submit_task_result` scope. |
-| 2 | Refined API/E2E execution after three-tool code-review pass | Prior stale scope explicitly re-investigated and replaced | No task-specific failures. Known full typecheck baseline TS6059 reproduced. | Pass | Yes | Focused durable tests and build-config TypeScript check passed; live E2E file skipped by local environment gating. |
+| 1 | Earlier two-tool public result cleanup | N/A | No task-specific failures; full typecheck baseline TS6059 persisted | Superseded | No | Earlier scope did not cover final three-tool contract. |
+| 2 | Refined three-tool scope including minimal `submit_task_result` | No unresolved task-specific failures; full typecheck baseline TS6059 persisted | No task-specific failures | Superseded | No | Superseded because public review `decision` was later removed in round 3. |
+| 3 | Latest code-review pass for delegate/submit/review minimal outputs and no public review `decision` | Yes. Prior task-specific checks re-run; full typecheck baseline reclassified. | No task-specific failures | Pass | Yes | Existing durable coverage remains sufficient; no API/E2E-authored durable coverage edits. |
 
 ## Execution Basis
 
-Execution followed the refreshed coverage investigation decisions in `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape/tickets/in-progress/task-delegation-tool-io-shape/api-e2e-coverage-investigation.md`.
+Round 3 validates the review-passed implementation against the approved current contract:
 
-The validated refined behavior is the reviewed public tool result cleanup for all three task lifecycle tools:
-
-- minimal successful `delegate_task` result for member/team targets;
-- minimal activation-failure `delegate_task` result with concise `message`;
-- minimal successful `submit_task_result` result for task-agent and task-team ingress callers;
-- concise public `submit_task_result.message` only for reviewer/delegator notification delivery failure after the submission is recorded;
-- minimal `review_task_result` accept/revision result;
-- concise public `review_task_result.message` only for revision notification delivery failure;
-- unchanged parser/input schemas and hard-error paths;
-- preserved internal event/notification/websocket richness.
+- `delegate_task` public output is only `{ task_id, status: "active" }` on successful activation, or `{ task_id, status: "not_started", message }` on activation failure.
+- `submit_task_result` public output is only `{ task_id, status: "awaiting_review" }`, with optional concise `message` only when notification delivery fails after the submission is recorded.
+- `review_task_result` public output no longer includes `decision`; accept returns `{ task_id, status: "accepted" }`, request-revision returns `{ task_id, status: "active" }`, and revision-notification failure returns `{ task_id, status: "active", message }`.
+- Internal events, audit/review records, notification metadata, websocket payloads, route identities, run ids, submission ids, and internal review decisions remain rich.
+- Hard failures remain error-path behavior.
+- No backward-compatible public aliases, dual public result shapes, legacy verbose fields, or review-decision public echo should remain.
 
 ## Pre-Execution Coverage Investigation
 
@@ -47,22 +40,22 @@ The validated refined behavior is the reviewed public tool result cleanup for al
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
-- Stale or obsolete coverage found: `Yes` — prior API/E2E artifact content was stale for the refined scope and has been replaced in place; review-passed repository tests no longer contain stale public submit-result assertions.
+- Stale or obsolete coverage found: `Yes` — prior API/E2E artifact content and old public review-result expectations were stale; current review-passed source/tests no longer retain stale repository-resident assertions.
 - New durable coverage needed: `No`
 - Reroute required from investigation: `No`
-- Notes: No repository-resident durable coverage was added, updated, or removed during API/E2E round 2.
+- Notes: The investigation found existing reviewed service, integration, provider-converter, and gated live-E2E coverage sufficient for round 3. No repository-resident durable coverage was added, updated, or removed during API/E2E.
 
 ## Existing Durable Coverage Decision Summary
 
 | Path / Scenario | Validity Decision (`Still Valid`/`Needs Update`/`Stale / Remove`/`Replace`/`Out Of Scope`/`Unclear`) | Action Taken | Evidence |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts` | Still Valid | Executed in focused Vitest run. | Exact minimal public delegate/submit/review assertions, activation failure, submit notification failure, revision notification failure, parser strictness, internal-rich event/metadata assertions passed. |
-| `autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts` | Still Valid | Executed in focused Vitest run. | Manifest parser/execute + tool-service lifecycle coverage for member target, task-agent child, task-team target/ingress submit, revision/acceptance, activation failure, and websocket event projection passed. |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts` | Still Valid | Executed in focused Vitest run. | Codex Agent Tools MCP delegate/review envelope projection to minimal direct result passed. |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts` | Still Valid | Executed in focused Vitest run. | Claude Agent Tools MCP task-delegation envelope projection to minimal direct result passed. |
-| `autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` | Still Valid | Executed as environment-gated file; locally skipped. | Vitest loaded the file and reported `1 skipped`, `2 skipped`; live external E2E flags were not enabled locally. |
-| Prior API/E2E artifact content for the earlier two-tool scope | Replace | Replaced in place by this round-2 investigation/report. | Code review explicitly marked prior API/E2E artifacts stale for refined three-tool scope. |
-| Docs/prior delivery artifacts | Out Of Scope | Not edited by API/E2E. | Documentation sync and final delivery artifacts remain delivery-owned for the refined scope. |
+| `autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts` — delegate success/failure, submit success/failure, review accept/revision/failure, parser strictness, internal-rich events | Still Valid | Re-run in focused final Vitest command. | Exact public result assertions match round-3 shapes; internal event assertions retain submission ids and review decisions. |
+| `autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts` — manifest/parser/tool lifecycle for member, task-agent, and task-team flows | Still Valid | Re-run in focused final Vitest command. | Executes tool parser/facade/service boundary and websocket/internal event projection; public review results omit `decision`. |
+| `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts` — MCP envelope projection for task delegation results | Still Valid | Re-run in focused final Vitest command. | Converter fixture for `review_task_result` projects minimal public object without `decision` and strips MCP envelope fields. |
+| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts` — generic MCP envelope projection | Still Valid | Re-run in focused final Vitest command. | Generic direct-result projection remains valid for minimal task lifecycle tool results. |
+| `autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` — live mixed runtime E2E | Still Valid | Re-run file for load/skip evidence. | File loaded successfully and skipped locally because live E2E flags were absent; it remains durable gated E2E coverage. |
+| Prior API/E2E report content in this task folder | Replace | Overwrote canonical investigation/report paths with round-3 content. | Code review explicitly marked earlier API/E2E artifacts stale for the latest public result shape. |
+| Documentation/prior delivery artifacts with stale public review-result wording | Out Of Scope | No API/E2E edit. Delivery must refresh docs/handoff after validation. | Code review round 3 called out stale durable docs as delivery-owned. |
 
 ## Compatibility / Legacy Scope Check
 
@@ -72,93 +65,61 @@ The validated refined behavior is the reviewed public tool result cleanup for al
 - If compatibility-related invalid scope was observed, reroute classification used: N/A
 - Upstream recipient notified: N/A
 
-Evidence: public DTOs and service returns no longer expose old verbose public delegate/submit/review fields. Remaining assertions for run ids, submission ids, review ids, notification metadata, or route keys are internal-rich payload assertions, not compatibility coverage for public output.
-
 ## Execution Surfaces / Modes
 
-- Service-level executable coverage (`TaskDelegationService`).
-- Tool manifest/parser + tool service integration coverage.
-- Internal event and websocket payload projection coverage through integration helpers.
-- Provider/MCP result-envelope projection coverage for Codex and Claude converters.
-- Environment-gated live E2E file load/skip check.
-- TypeScript build-config check.
+- Service/unit executable coverage for task delegation lifecycle result projection and internal payload preservation.
+- Integration executable coverage for tool manifest/parser/facade/service lifecycle and websocket/internal event projection.
+- Provider converter executable coverage for Agent Tools MCP JSON-result projection into public tool-call results.
+- Environment-gated live mixed-runtime E2E file load/skip check.
+- TypeScript build check for changed source under build config.
+- Full project typecheck rerun to confirm the known baseline TS6059 failure remains unrelated to this task.
 
 ## Platform / Runtime Targets
 
-- Local macOS/Darwin worktree under `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape`.
-- Node/pnpm workspace execution through `pnpm -C autobyteus-server-ts`.
-- Vitest `v4.0.18`.
-- Prisma Client generated from `autobyteus-server-ts/prisma/schema.prisma`; generated Prisma Client `v5.22.0`.
-- Test database reset by Vitest setup at `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`.
+- Host: local macOS worktree at `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape`.
+- Package manager/runtime: `pnpm`, Node-based TypeScript/Vitest project.
+- Database for focused tests: SQLite test database reset by the Vitest/Prisma test harness.
+- Prisma Client: generated from `autobyteus-server-ts/prisma/schema.prisma` before final execution.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
-- No installer, updater, restart, schema migration, or cross-version upgrade behavior is in scope.
-- Test setup ran the repository's Prisma test database reset/migration path before Vitest runs.
+No installer, updater, restart, data migration, or native desktop lifecycle behavior is in scope. Test harness database migrations were applied successfully during focused Vitest and gated E2E startup.
 
 ## Coverage Matrix
 
-| Scenario ID | Surface | Behavior Proven | Command / Evidence | Result |
-| --- | --- | --- | --- | --- |
-| APIE2E-SETUP | Environment setup | Prisma client available for tests. | `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma` | Pass |
-| APIE2E-000 | Static whitespace | No whitespace errors in implementation/artifacts. | `git diff --check` | Pass |
-| APIE2E-001 | Existing durable unit/integration/provider tests | Public delegate/submit/review outputs minimal; parser stability; hard-error paths; internal-rich payloads preserved; MCP projection minimal. | Focused Vitest command; 4 files / 96 tests passed. | Pass |
-| APIE2E-002 | Environment-gated live E2E file | Live E2E durable artifact is loadable; local environment did not enable live execution. | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`; 1 file / 2 tests skipped. | Pass with local skip |
-| APIE2E-003 | Source TypeScript build config | Changed source compiles under build config. | `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` | Pass |
-| APIE2E-004 | Full repo typecheck baseline classification | Known `tsconfig.json` rootDir/tests include mismatch still blocks full typecheck before task-specific signal. | `pnpm -C autobyteus-server-ts typecheck` exited 2 with TS6059 for files under `tests` not under `src` rootDir. | Known baseline failure, not task-specific |
+| Scenario ID | Requirement / Boundary | Coverage Artifact / Command | Result |
+| --- | --- | --- | --- |
+| APIE2E-001 | Exact minimal `delegate_task`, `submit_task_result`, and `review_task_result` public shapes; concise notification failure messages; hard error paths; internal rich events/metadata preserved. | Focused Vitest for service, integration, Codex converter, and Claude converter tests. | Pass: 4 files / 96 tests. |
+| APIE2E-002 | Durable live mixed-runtime E2E remains loadable for member/task-team runtime delegation flow. | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` | Pass/Skipped: 1 file skipped / 2 tests skipped because live flags absent. |
+| APIE2E-003 | Changed source compiles under source build config. | `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` | Pass, exit 0. |
+| APIE2E-004 | Full typecheck baseline classification. | `pnpm -C autobyteus-server-ts typecheck` | Known baseline failure, exit 2, TS6059 rootDir/tests include mismatch before task-specific signal. |
+| APIE2E-005 | Whitespace/patch hygiene. | `git diff --check` | Pass, exit 0. |
+| APIE2E-006 | Prisma client availability for executable checks. | `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma` | Pass, exit 0. |
 
 ## Test Scope
 
-Final executed focused tests:
-
-```text
-pnpm -C autobyteus-server-ts exec vitest run \
-  tests/unit/agent-team-execution/task-delegation-service.test.ts \
-  tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts \
-  tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts \
-  tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts
-```
-
-Result:
-
-```text
-Test Files  4 passed (4)
-Tests       96 passed (96)
-```
-
-Additional E2E load/skip check:
-
-```text
-pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
-```
-
-Result:
-
-```text
-Test Files  1 skipped (1)
-Tests       2 skipped (2)
-```
+Executed focused durable coverage that directly exercises the changed public tool result boundary and the internal-rich preservation boundary. The round intentionally did not broaden repository-resident test code because the investigation found current reviewed durable coverage sufficient and no current behavior gap.
 
 ## Execution Setup / Environment
 
-Commands executed from `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape`:
+Commands were executed from `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape`.
 
-1. `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma` — passed.
-2. `git diff --check` — passed.
-3. Focused Vitest command listed above — passed, 4 files / 96 tests.
-4. `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` — passed with local skip, 1 file / 2 tests skipped.
-5. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
-6. `pnpm -C autobyteus-server-ts typecheck` — failed on known baseline TS6059 `rootDir`/`tests` include mismatch.
+1. `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma`
+2. `git diff --check`
+3. `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts`
+4. `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`
+5. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+6. `pnpm -C autobyteus-server-ts typecheck`
 
 ## Tests Implemented Or Updated
 
-None during API/E2E round 2.
+None during API/E2E. Existing reviewed durable tests already cover the round-3 behavior.
 
 ## Tests Removed As Stale Or Obsolete
 
 | Path / Scenario | Obsolete Assertion | Upstream Evidence | Replacement Coverage Or No-Replacement Rationale |
 | --- | --- | --- | --- |
-| None by API/E2E | N/A | N/A | Implementation had already removed old public submit-result assertions before refined code review. |
+| None in repository-resident source/tests during API/E2E | N/A | N/A | N/A |
 
 ## Durable Coverage Changed In The Codebase
 
@@ -170,93 +131,86 @@ None during API/E2E round 2.
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape/tickets/in-progress/task-delegation-tool-io-shape/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape/tickets/in-progress/task-delegation-tool-io-shape/api-e2e-execution-coverage-report.md`
+No durable execution harnesses or temporary scripts were added. Non-durable local command logs were captured under `/tmp` for this run only and are not part of the handoff artifact package.
 
 ## Temporary Execution Methods / Scaffolding
 
-None. No temporary test files, scripts, harnesses, or probes were created.
+No temporary repository scaffolding was created. Commands used existing durable tests and compiler/project tooling.
 
 ## Dependencies Mocked Or Emulated
 
-- Existing unit/integration tests use repository fake team-run backends and in-process harnesses.
-- Existing live E2E depends on external model/runtime flags and was skipped locally because those flags were not enabled.
+The focused service/integration tests use the repository's existing mocks/test harnesses for task agents, notifications, event publishing, and SQLite database reset. No new mocks or emulators were introduced by API/E2E.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Prior two-tool API/E2E artifact scope | Stale after requirement reset | Replaced by refreshed round-2 investigation and execution report covering `delegate_task`, `submit_task_result`, and `review_task_result`. | This report and `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-tool-io-shape/tickets/in-progress/task-delegation-tool-io-shape/api-e2e-coverage-investigation.md`. | Not an implementation failure; scope supersession. |
-| 1 | Full `pnpm -C autobyteus-server-ts typecheck` TS6059 baseline | Known baseline / not task-specific | Reproduced; remains non-task-specific. | First failures are test files under `autobyteus-server-ts/tests` outside rootDir `autobyteus-server-ts/src`. | No reroute for this task. |
+| 1/2 | Earlier API/E2E artifacts reflected older public result shapes. | Stale evidence after scope refinement. | Replaced by round-3 coverage investigation and this round-3 execution report. | Current artifacts explicitly cover no public `review_task_result.decision`. | Earlier artifacts must not be used as final evidence. |
+| 1/2/code review | Full `pnpm -C autobyteus-server-ts typecheck` failed on TS6059 rootDir/test include mismatch. | Known baseline/non-task-specific failure. | Rechecked; still exits 2 on TS6059 for files under `autobyteus-server-ts/tests` not under `rootDir` `src`. | First current failure: `tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts` matched by include pattern `tests` but outside rootDir `src`. | Build-source `tsc -p tsconfig.build.json --noEmit` passes, so no task-specific TypeScript failure observed. |
 
 ## Scenarios Checked
 
-- `delegate_task` member success returns exactly `{ task_id, status: "active" }`.
-- `delegate_task` team success returns exactly `{ task_id, status: "active" }`.
-- `delegate_task` activation failure returns exactly `{ task_id, status: "not_started", message }`.
-- `submit_task_result` task-agent success returns exactly `{ task_id, status: "awaiting_review" }`.
-- `submit_task_result` task-team ingress success returns exactly `{ task_id, status: "awaiting_review" }`.
-- `submit_task_result` notification failure returns concise public `message` without `submission_id`, `notification_delivered`, raw `warnings`, route keys, or run ids.
-- `review_task_result` accept returns exactly `{ task_id, status: "accepted", decision: "accept" }`.
-- `review_task_result` revision success returns exactly `{ task_id, status: "active", decision: "request_revision" }`.
-- `review_task_result` revision notification failure returns concise public `message` without warning-array exposure.
-- Parser/default/strictness behavior is unchanged for all three lifecycle tools.
-- Hard service errors continue using error path.
-- Internal rich events/notifications/websocket projection retain run ids, submission ids, review ids, notification metadata, and routing identities.
-- Provider MCP result projection returns direct minimal result, not raw MCP envelope fields.
-- Source compiles under `tsconfig.build.json`.
+- `delegate_task` member and team target success public result is exact minimal `{ task_id, status: "active" }` while internal run ids/metadata/event payloads remain rich.
+- `delegate_task` activation failure returns `not_started` plus concise public `message` and does not publish active lifecycle state for rejected tasks.
+- `submit_task_result` task-agent and task-team ingress success returns exact `{ task_id, status: "awaiting_review" }` without `submission_id`, `notification_delivered`, raw warnings, route keys, or run ids.
+- `submit_task_result` notification failure records the submission and returns only concise public `message`; internal submitted event retains `submissionId`/routing metadata.
+- `review_task_result` accept returns exact `{ task_id, status: "accepted" }` and internal reviewed event retains `decision: "accept"`.
+- `review_task_result` request-revision returns exact `{ task_id, status: "active" }` and internal reviewed event retains `decision: "request_revision"`.
+- `review_task_result` revision-notification failure returns exact `{ task_id, status: "active", message }` without public `decision`, raw warnings, route keys, or run ids.
+- Review input parser still requires/accepts `decision`; removed public `decision` does not remove the internal review decision model.
+- Provider converter fixtures project MCP JSON text envelopes into direct minimal public result objects and strip MCP envelope fields.
+- Environment-gated live mixed task delegation E2E file remains loadable and skips cleanly when live flags are absent.
 
 ## Passed
 
-- `git diff --check`.
-- `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma`.
-- Focused Vitest command: 4 files / 96 tests passed.
-- Environment-gated live E2E file loaded and skipped cleanly: 1 file / 2 tests skipped.
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`.
+- `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma` — exit 0; Prisma Client v5.22.0 generated.
+- `git diff --check` — exit 0.
+- Focused Vitest command — exit 0; `Test Files 4 passed (4)`, `Tests 96 passed (96)`.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` — exit 0; `Test Files 1 skipped (1)`, `Tests 2 skipped (2)` due absent live E2E flags.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — exit 0.
 
 ## Failed
 
-- No task-specific API/E2E failure found.
-- Known baseline: `pnpm -C autobyteus-server-ts typecheck` exits 2 with TS6059 because `tsconfig.json` includes `tests` while `rootDir` is `src`; this was already recorded by implementation handoff and code review and is not introduced by this task.
+- `pnpm -C autobyteus-server-ts typecheck` — exit 2 on baseline TS6059 rootDir/tests include mismatch. This is not task-specific and matches code-review/implementation-handoff baseline classification. The failure occurs before any task-specific signal; build-source `tsc -p tsconfig.build.json --noEmit` passes.
 
 ## Not Tested / Out Of Scope
 
-- Live LMStudio/Codex model execution for `mixed-task-delegation.e2e.test.ts` was not executed locally because the required E2E environment flags were absent. The file remains durable coverage and skipped cleanly.
-- Exact public `submit_task_result` payload assertion in live websocket E2E remains out of scope for this round; exact shape is covered by service and manifest/tool lifecycle integration.
-- Documentation sync is delivery-owned.
-- Integrated branch refresh/final delivery artifacts are delivery-owned.
+- Live multi-runtime LMStudio/Codex E2E execution with real external model/server flags. The durable live E2E file was loaded and skipped cleanly because `RUN_MIXED_TASK_DELEGATION_E2E`, `RUN_LMSTUDIO_E2E`, and `RUN_CODEX_E2E` were not configured in this local environment.
+- Exact public `review_task_result` payload inspection inside the live websocket E2E. Exact public result shape is covered by service, integration tool lifecycle, and provider converter tests; live E2E remains broader orchestration coverage.
+- Durable docs synchronization. Code review noted stale docs; delivery owns docs refresh after API/E2E validation.
 
 ## Blocked
 
-None for API/E2E sign-off. The full typecheck baseline failure is an existing repository configuration issue, not a blocker for this task-specific validation.
+None. The live provider E2E remained environment-gated and skipped by design; this is recorded as not-tested/out-of-scope locally, not a blocker.
 
 ## Cleanup Performed
 
-- No temporary scaffolding was created.
-- No repository-resident durable coverage files were modified during API/E2E round 2.
-- Test database reset was performed by existing Vitest setup.
+No temporary repository files or scaffolding required cleanup.
 
 ## Classification
 
-- `Local Fix`: N/A
-- `Design Impact`: N/A
-- `Requirement Gap`: N/A
-- `Unclear`: N/A
+- `Local Fix`: Not applicable.
+- `Design Impact`: Not applicable.
+- `Requirement Gap`: Not applicable.
+- `Unclear`: Not applicable.
 
-No reroute classification is required because no task-specific failure or ambiguity was found.
+No API/E2E failure reroute is required.
 
 ## Recommended Recipient
 
 `delivery_engineer`
 
+Rationale: Round-3 API/E2E validation passed for the review-passed implementation, and API/E2E did not add, update, or remove repository-resident durable coverage after code review. Delivery should perform the integrated refresh and durable documentation synchronization, including stale docs called out by code review.
+
 ## Evidence / Notes
 
-- API/E2E did not add, update, or remove repository-resident durable coverage, so a post-API/E2E code-review loop is not required.
-- Full typecheck baseline failure starts with TS6059 examples such as `tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts` not under rootDir `autobyteus-server-ts/src`, due to `tests` being matched by `tsconfig.json` include.
-- Prior delivery docs/report artifacts in the task folder may exist from the superseded two-tool pass; delivery should refresh them against this refined three-tool API/E2E result.
+- Focused Vitest stderr included expected task-notification delivery warnings from failure-path tests: `TASK_NOTIFICATION_DELIVERY_FAILED` for `result_submitted` and `revision_requested`. These are expected assertions for concise public notification-failure messaging and do not indicate failed tests.
+- Full typecheck failure is the existing TS6059 baseline caused by `tsconfig.json` including `tests` while `rootDir` is `src`; first current error cites `autobyteus-server-ts/tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts` outside rootDir.
+- No compatibility wrapper, dual public shape, public review-decision echo, or legacy verbose public field was observed in the inspected changed source/tests.
+- Prior API/E2E artifacts in this canonical report path are replaced by this round-3 content and should not be used as final evidence for the current scope.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Focused durable coverage and build-config TypeScript checks passed for the refined three-tool public result cleanup. The live E2E artifact skipped cleanly under local gating. The known full typecheck TS6059 baseline was reproduced and remains non-task-specific. Proceed to delivery for integrated refresh and docs/final handoff sync.
+- Notes: Round-3 current behavior is validated by existing durable service/integration/provider coverage plus build/source checks. No repository-resident durable coverage changes were made during API/E2E, so no coverage-code re-review is required before delivery.

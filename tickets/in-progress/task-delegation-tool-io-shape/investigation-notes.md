@@ -58,6 +58,7 @@ Downstream follow-up on 2026-07-01: after initial implementation/code review, th
 | 2026-07-01 | Code | `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts` after initial implementation | Inspect current result construction. | `publishSubmissionTransition` still returns `submission_id`, `notification_delivered`, and raw warning array. Existing `notificationWarningMessage` helper can be reused to map delivery failure to concise `message`. | Design submit result mapping in service. |
 | 2026-07-01 | Command | `rg -n "submission_id|notification_delivered|warnings|submitTaskResult|submit_task_result" ...tests...` | Identify affected tests. | Unit/integration tests assert old submit result fields in task-agent and task-team ingress paths. | Downstream implementation must update tests while retaining internal metadata/event assertions. |
 | 2026-07-01 | User Approval | Conversation: user confirmed `submit_task_result` input is already clean and approved continuing to review/kickoff. | Approve refined package before architecture review. | Refined scope is approved: keep submit input unchanged; simplify submit output to `{ task_id, status: "awaiting_review" }` plus optional `message` only when notification delivery fails. | Route revised package to architecture review. |
+| 2026-07-01 | User Clarification | Conversation and screenshot of `review_task_result` output containing `decision`. | Clarify whether `decision` belongs in public review output. | User confirmed `decision` should be removed because the calling agent already supplied the decision and the result is sent back to that same agent. `status` is the meaningful resulting state. | Update requirements/design and notify architecture reviewer that prior handoff is superseded. |
 
 ## Current Behavior / Current Flow
 
@@ -234,7 +235,7 @@ Field assessment:
 | --- | --- | --- |
 | `task_id` | Yes | Confirms what was reviewed. |
 | `status` | Yes | `active` means revision requested; `accepted` means finalized. |
-| `decision` | Maybe | Echoes input but useful confirmation. |
+| `decision` | No | It only echoes the caller-selected input. The caller agent made the decision and already knows it; `status` is the meaningful resulting state. |
 | `warnings` | Conditional | Useful only when non-empty, especially notification failure. |
 | `review_id` | Likely no | Internal audit/debug id; not used in normal next actions. |
 | `reviewed_submission_id` | Likely no | Internal audit/debug id; the reviewer only needs task-level lifecycle. |
@@ -261,7 +262,6 @@ type SubmitTaskResultToolResult = {
 type ReviewTaskResultToolResult = {
   task_id: string;
   status: "active" | "accepted";
-  decision: "accept" | "request_revision";
   message?: string; // only on notification/lifecycle delivery failure
 };
 ```
@@ -271,6 +271,7 @@ Important distinction: keep rich internal/event payloads unchanged because front
 User-approved wording/semantics:
 - Do not call task activation failure "rejection"; the task target is not choosing to reject delegated work in the product model.
 - Prefer `message?: string` over `warning?: string` or `error?: string` because the tool call may succeed while a side-effect delivery issue needs to be reported.
+- Do not return `decision` from `review_task_result`; it is a caller-selected input echo and is redundant with the resulting task `status`.
 - Hard failures should still use the existing tool error path, not successful results with `message`.
 
 ## Constraints / Dependencies / Compatibility Facts
@@ -285,4 +286,4 @@ User-approved wording/semantics:
 
 ## Notes For Architect Reviewer
 
-No architecture review requested yet; investigation-only.
+Architecture review is requested for the refined scope after user approval. The latest package supersedes the earlier submit-result handoff because it also removes `decision` from the `review_task_result` public result.

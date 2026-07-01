@@ -63,12 +63,12 @@ type SubmitTaskResultResult = {
 
 Runtime output must omit `message` when notification delivery succeeds. If result submission is recorded but reviewer/delegator notification delivery fails, `message` contains the concise delivery failure reason.
 
-Target `review_task_result` public result remains:
+Target `review_task_result` public result is tightened further to remove the caller-selected `decision` echo:
 
 ```ts
 type ReviewTaskResultResult =
-  | { task_id: string; status: "accepted"; decision: "accept"; message?: string }
-  | { task_id: string; status: "active"; decision: "request_revision"; message?: string };
+  | { task_id: string; status: "accepted" }
+  | { task_id: string; status: "active"; message?: string };
 ```
 
 `message` semantics:
@@ -77,6 +77,7 @@ type ReviewTaskResultResult =
 - `submit_task_result`: present only when the submission records successfully but reviewer/delegator notification delivery fails.
 - `review_task_result`: present only when the review records successfully but revision notification delivery fails.
 - Hard tool failures still use the existing error payload path.
+- `review_task_result` does not return `decision`; the caller already chose the decision, and `status` is the meaningful resulting state.
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -86,7 +87,7 @@ type ReviewTaskResultResult =
 - Refactor needed now (`Yes`/`No`/`Deferred`/`Unclear`): Yes, small in-place refactor.
 - Evidence: Public tool results should be task-centered. `submit_task_result` still exposes `submission_id`, `notification_delivered`, and raw `warnings`, which are internal lifecycle/audit details. This is inconsistent with the already-approved meaningful-result cleanup for delegate/review.
 - Design response: Keep authoritative task lifecycle ownership in `TaskDelegationService`; change `SubmitTaskResultResult` and `publishSubmissionTransition` public return mapping. Preserve internal event/notification/ledger richness.
-- Refactor rationale: The public result DTOs should be semantically tight: task id, status, decision where applicable, and optional message only when meaningful.
+- Refactor rationale: The public result DTOs should be semantically tight: task id, status, and optional message only when meaningful. Caller-selected decisions should not be echoed.
 - Intentional deferrals and residual risk, if any: None for task lifecycle public result cleanup; all three lifecycle tool public outputs are now in scope.
 
 ## Terminology
@@ -109,7 +110,7 @@ type ReviewTaskResultResult =
 - Obsolete public fields in scope:
   - `delegate_task`: `target`, `execution_kind`, `task_agent_run_id`, `task_team_run_id`, `activation_accepted`, `message: null` on success.
   - `submit_task_result`: `submission_id`, `notification_delivered`, `warnings`.
-  - `review_task_result`: `review_id`, `reviewed_submission_id`, `notification_delivered`, `settlement_requested`, `warnings`.
+  - `review_task_result`: `decision`, `review_id`, `reviewed_submission_id`, `notification_delivered`, `settlement_requested`, `warnings`.
 - Do not keep compatibility wrappers, aliases, or duplicate old/new result shapes.
 
 ## Data-Flow Spine Inventory
@@ -135,7 +136,7 @@ type ReviewTaskResultResult =
 | --- | --- | --- | --- | --- |
 | DS-001 | The caller provides target and task description. The parser validates input, the tool service routes to the correct team-run service, the task service creates and activates the task, then projects only task id/status/message to the caller. | Tool call, parser/manifest, tool service, task service, activation coordinator, public result | `TaskDelegationService` | Target resolution, run identity allocation, internal event publication. |
 | DS-002 | The task execution submits a result. The task service resolves the bound task, records the submission, publishes internal state, notifies the reviewer/delegator, then returns only task id/status/message. | Tool call, parser/manifest, task service, ledger submission transition, notification, public result | `TaskDelegationService` | Task-agent/task-team context routing, notification delivery, internal event publication. |
-| DS-003 | The reviewer submits a decision for a pending task. The task service authorizes the reviewer, records the review, publishes internal state, performs notification/settlement side effects, then returns only task id/status/decision/message. | Tool call, parser/manifest, task service, ledger review transition, notification/settlement, public result | `TaskDelegationService` | Notification delivery, settlement coordinator, internal event publication. |
+| DS-003 | The reviewer submits a decision for a pending task. The task service authorizes the reviewer, records the review, publishes internal state, performs notification/settlement side effects, then returns only task id/status/message. | Tool call, parser/manifest, task service, ledger review transition, notification/settlement, public result | `TaskDelegationService` | Notification delivery, settlement coordinator, internal event publication. |
 | DS-004 | Internal transitions continue emitting rich records for runtime and UI consumers; those fields do not leak back through normal public tool results. | Lifecycle transition, event publisher, notification dispatcher, stream/projector consumers | `TaskDelegationEventPublisher` / `TaskDelegationNotificationDispatcher` | Event payload shape, metadata, diagnostics, frontend projection. |
 
 ## Spine Actors / Main-Line Nodes
@@ -178,6 +179,7 @@ type ReviewTaskResultResult =
 | `SubmitTaskResultResult.submission_id` | Internal audit/correlation id; reviewer uses `task_id`. | Internal submitted event/notification metadata retains submission id. | In This Change | Tests should obtain submission ids from events/metadata when needed. |
 | `SubmitTaskResultResult.notification_delivered` | Side-effect telemetry; success is noisy. | Optional public `message` only on delivery failure. | In This Change | Keep notification outcome internally. |
 | `SubmitTaskResultResult.warnings` array | Internal warning object includes route/run ids and is empty on success. | Optional concise `message`. | In This Change | Do not expose route/run ids publicly. |
+| `ReviewTaskResultResult.decision` | Echoes caller input; status already communicates the resulting state. | Status only. | In This Change | Remove from public result; keep decision in internal review/event payloads. |
 | `ReviewTaskResultResult.review_id`, `reviewed_submission_id` | Internal audit ids; not needed for agent continuation. | Internal review/event payloads retain ids. | Already implemented / retain | Keep event coverage. |
 | `ReviewTaskResultResult.notification_delivered` | Side-effect telemetry; success/null is noisy. | Optional public `message` only on delivery failure. | Already implemented / retain | Do not expose route/run ids in public message. |
 | `ReviewTaskResultResult.settlement_requested` | Internal lifecycle scheduling; agent should not act on it. | Internal settlement coordinators/events. | Already implemented / retain | Acceptance still triggers settlement request. |
@@ -249,10 +251,10 @@ Why it matters: status must come from the authoritative ledger record after acti
 
 | Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `task-delegation-record.ts` | Agent-team task delegation | DTO/type owner | Tighten `SubmitTaskResultResult` public result shape; retain already-tight delegate/review shapes and internal DTOs. | Existing DTO owner for task delegation. | Existing task status/decision types. |
-| `task-delegation-service.ts` | Agent-team task delegation | Lifecycle/public result owner | Return minimal public submit result and derive optional `message`; retain delegate/review minimal projection. | Existing authoritative lifecycle service. | Existing notification outcome helper. |
-| Unit/integration/e2e tests | Test suites | Coverage owner | Update submit public-result expectations; preserve internal submission id/metadata assertions. | Existing focused coverage. | N/A |
-| Docs under `autobyteus-server-ts/docs` / `autobyteus-ts/docs` | Documentation | Durable behavior docs | Update statements that claim submit/review tool results expose `notification_delivered` / `warnings[]` / submission ids. | Existing docs mention old result fields. | N/A |
+| `task-delegation-record.ts` | Agent-team task delegation | DTO/type owner | Tighten `SubmitTaskResultResult` public result shape and remove `decision` from `ReviewTaskResultResult`; keep internal DTOs rich. | Existing DTO owner for task delegation. | Existing task status types; internal decision type remains for records/events. |
+| `task-delegation-service.ts` | Agent-team task delegation | Lifecycle/public result owner | Return minimal public submit result and derive optional `message`; remove `decision` from public review returns. | Existing authoritative lifecycle service. | Existing notification outcome helper. |
+| Unit/integration/e2e tests | Test suites | Coverage owner | Update submit public-result expectations and review public-result expectations; preserve internal submission id/decision/metadata assertions. | Existing focused coverage. | N/A |
+| Docs under `autobyteus-server-ts/docs` / `autobyteus-ts/docs` | Documentation | Durable behavior docs | Update statements that claim submit/review tool results expose `notification_delivered` / `warnings[]` / submission ids / decision echoes. | Existing docs mention old result fields. | N/A |
 
 ## Reusable Owned Structures Check
 
@@ -267,7 +269,7 @@ Why it matters: status must come from the authoritative ledger record after acti
 | --- | --- | --- | --- | --- |
 | `DelegateTaskResult` | Yes | Yes | Low | Keep only `task_id`, `status`, optional `message`. |
 | `SubmitTaskResultResult` | Yes after change | Yes | Low | Keep only `task_id`, `status`, optional `message`. |
-| `ReviewTaskResultResult` | Yes | Yes | Low | Keep only `task_id`, `status`, `decision`, optional `message`. |
+| `ReviewTaskResultResult` | Yes after change | Yes | Low | Keep only `task_id`, `status`, optional `message`; remove caller-selected `decision` echo. |
 | Internal event payload DTOs | Yes | N/A | Low | Preserve rich fields because they serve routing/audit/projection. |
 | `TaskDelegationWarning` | Yes internally | N/A | Low | Keep for internal outcomes; do not expose in submit/review public results. |
 
@@ -275,12 +277,12 @@ Why it matters: status must come from the authoritative ledger record after acti
 
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts` | Agent-team task delegation | DTO/type owner | Update `SubmitTaskResultResult` to minimal public result type. Preserve internal record/event/notification DTOs. | Existing task delegation type owner. | Existing status aliases. |
-| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts` | Agent-team task delegation | Authoritative lifecycle service | Build minimal public submit result; include `message` only for notification delivery failure. | Existing owner sees all required lifecycle outcomes. | Existing notification outcome helper. |
-| `autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts` | Tests | Unit lifecycle coverage | Update submit public service result expectations; keep internal metadata/event assertions. | Existing focused tests. | N/A |
-| `autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts` | Tests | Integration tool lifecycle coverage | Update submit result expectations for task-agent and task-team ingress paths. | Existing integration coverage. | N/A |
-| `autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` and provider converter tests if affected | Tests | Runtime/API/E2E coverage | Update any assertions or fixtures that include old verbose submit public result fields. | Existing runtime coverage. | N/A |
-| Relevant docs found by `rg` | Documentation | Durable docs | Update old statements that tool results expose notification/warning/submission fields. | Existing docs ownership. | N/A |
+| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts` | Agent-team task delegation | DTO/type owner | Update `SubmitTaskResultResult` to minimal public result type and remove `decision` from `ReviewTaskResultResult`. Preserve internal record/event/notification DTOs. | Existing task delegation type owner. | Existing status aliases; internal review decision type. |
+| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts` | Agent-team task delegation | Authoritative lifecycle service | Build minimal public submit result; include `message` only for notification delivery failure; remove `decision` from public review returns. | Existing owner sees all required lifecycle outcomes. | Existing notification outcome helper. |
+| `autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts` | Tests | Unit lifecycle coverage | Update submit/review public service result expectations; keep internal metadata/event assertions. | Existing focused tests. | N/A |
+| `autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts` | Tests | Integration tool lifecycle coverage | Update submit result expectations for task-agent and task-team ingress paths, plus review result expectations without `decision`. | Existing integration coverage. | N/A |
+| `autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` and provider converter tests if affected | Tests | Runtime/API/E2E coverage | Update any assertions or fixtures that include old verbose submit public result fields or review decision echo. | Existing runtime coverage. | N/A |
+| Relevant docs found by `rg` | Documentation | Durable docs | Update old statements that tool results expose notification/warning/submission fields or review decision echoes. | Existing docs ownership. | N/A |
 
 ## Ownership Boundaries
 
@@ -334,7 +336,7 @@ Forbidden:
 | `review_task_result` input | Yes | Yes | Low | None. |
 | `DelegateTaskResult` | Yes | Yes | Low | Already minimal. |
 | `SubmitTaskResultResult` | Yes after change | Yes | Low | Remove old verbose fields. |
-| `ReviewTaskResultResult` | Yes | Yes | Low | Already minimal. |
+| `ReviewTaskResultResult` | Yes after change | Yes | Low | Remove `decision`; keep only task id/status/message. |
 
 ## Main Domain Subject Naming Check
 
@@ -342,7 +344,7 @@ Forbidden:
 | --- | --- | --- | --- | --- |
 | `DelegateTaskResult` | Keep | Yes | Low | Keep public-result meaning only. |
 | `SubmitTaskResultResult` | Keep existing awkward name for scope minimization | Partially | Low | Rename not required; avoid widening scope. |
-| `ReviewTaskResultResult` | Keep existing awkward name for scope minimization | Partially | Low | Rename not required; avoid widening scope. |
+| `ReviewTaskResultResult` | Keep existing awkward name for scope minimization | Partially | Low | Rename not required; remove redundant decision field. |
 | `message` | Optional public advisory field | Yes | Low | Use for activation failure or notification/lifecycle issue only. |
 
 ## Applied Patterns (If Any)
@@ -376,8 +378,8 @@ Forbidden:
 | Activation failure result | `{ "task_id": "task_0001", "status": "not_started", "message": "Task activation failed." }` | `{ "activation_accepted": false, "message": "Rejected" }` | Avoids target-rejection language. |
 | Successful submit result | `{ "task_id": "task_0001", "status": "awaiting_review" }` | `{ "submission_id": "task_0001_submission_0001", "notification_delivered": true, "warnings": [] }` | Submission/audit/notification internals stay hidden. |
 | Submit notification failure | `{ "task_id": "task_0001", "status": "awaiting_review", "message": "No recipient" }` | `{ "warnings": [{ "target_member_route_key": ..., "target_task_agent_run_id": ... }] }` | Message gives useful information without leaking routing internals. |
-| Successful review accept | `{ "task_id": "task_0001", "status": "accepted", "decision": "accept" }` | `{ "review_id": ..., "settlement_requested": true, "warnings": [] }` | Settlement/audit internals stay hidden. |
-| Revision notification failure | `{ "task_id": "task_0001", "status": "active", "decision": "request_revision", "message": "No recipient" }` | `{ "warnings": [{ "target_member_route_key": ..., "target_task_agent_run_id": ... }] }` | Message gives useful information without leaking routing internals. |
+| Successful review accept | `{ "task_id": "task_0001", "status": "accepted" }` | `{ "task_id": "task_0001", "status": "accepted", "decision": "accept" }` | The caller chose `accept`; the return should not echo it. |
+| Revision notification failure | `{ "task_id": "task_0001", "status": "active", "message": "No recipient" }` | `{ "task_id": "task_0001", "status": "active", "decision": "request_revision", "warnings": [...] }` | Message gives useful information without leaking routing internals or echoing input. |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -387,6 +389,7 @@ Forbidden:
 | Tool-layer post-processing to strip service result | Avoids changing service return DTO | Rejected | Service is authoritative boundary and should return correct public shape. |
 | Add feature flag for verbose result | Debug convenience | Rejected | Use internal events/logs/debug history for verbose data, not normal public result. |
 | Preserve `warnings` array for submit/review failures | Existing shape already available | Rejected | Public result uses concise `message`; internal warning remains internal. |
+| Preserve `decision` on `review_task_result` | It can confirm which branch ran | Rejected | Remove it because it only echoes caller input; `status` is the meaningful resulting state. |
 
 ## Derived Layering (If Useful)
 
@@ -397,20 +400,21 @@ Forbidden:
 
 ## Migration / Refactor Sequence
 
-1. Preserve existing minimal `DelegateTaskResult` and `ReviewTaskResultResult` shapes.
-2. Update `SubmitTaskResultResult` in `task-delegation-record.ts` to `{ task_id: string; status: "awaiting_review"; message?: string }`.
-3. Update `TaskDelegationService.publishSubmissionTransition`:
+1. Preserve existing minimal `DelegateTaskResult` shape.
+2. Tighten `ReviewTaskResultResult` further by removing `decision`; keep `task_id`, `status`, and optional `message` only for revision notification delivery failure.
+3. Update `SubmitTaskResultResult` in `task-delegation-record.ts` to `{ task_id: string; status: "awaiting_review"; message?: string }`.
+4. Update `TaskDelegationService.publishSubmissionTransition`:
    - return `{ task_id, status: "awaiting_review" }` when notification delivery succeeds;
    - include `message` from notification warning when notification delivery fails;
    - do not return `submission_id`, `notification_delivered`, or `warnings`.
-4. Keep internal event publisher, notification metadata, ledger record, and result-submitted payload behavior unchanged except where type compile errors require explicitly retaining internal DTOs.
-5. Update unit/integration/e2e tests that assert public submit results.
-6. Retain or strengthen tests that assert internal rich event/metadata fields such as `submissionId` remain present.
-7. Update durable docs that describe old submit/review public result fields.
+5. Keep internal event publisher, notification metadata, ledger record, and result-submitted payload behavior unchanged except where type compile errors require explicitly retaining internal DTOs.
+6. Update unit/integration/e2e tests that assert public submit results.
+7. Retain or strengthen tests that assert internal rich event/metadata fields such as `submissionId` remain present.
+8. Update durable docs that describe old submit/review public result fields.
 
 ## Key Tradeoffs
 
-- The public tool result becomes consistent across all task lifecycle tools, but external consumers relying on verbose submit fields will need to use internal event/history surfaces instead.
+- The public tool result becomes consistent across all task lifecycle tools, but external consumers relying on verbose submit/review fields will need to use internal event/history surfaces instead.
 - Keeping public result projection inside `TaskDelegationService` avoids facade stripping, but it makes the service responsible for a small output-shaping concern. This is appropriate because the service owns lifecycle semantics and sees notification outcomes.
 
 ## Risks
@@ -427,5 +431,6 @@ Forbidden:
 - Use the existing `notificationWarningMessage` helper for submit notification failure messages if suitable.
 - Successful submit results should not contain `message: null`, `message: undefined`, `submission_id`, `notification_delivered`, or `warnings: []`.
 - For submit notification failure, map `TaskDelegationWarning.message` to public `message`; do not expose `target_member_route_key`, `target_task_agent_run_id`, or `target_task_team_run_id`.
+- Remove `decision` from `ReviewTaskResultResult` and `TaskDelegationService.reviewTaskResult` public returns, but preserve `decision` in internal `TaskResultReview` and `TaskDelegationResultReviewedPayload`.
 - Preserve all rich fields in `TaskDelegationResultSubmittedPayload`, notification metadata, and websocket stream payloads.
 - After code changes, run focused task delegation unit/integration tests first, then rerun affected provider/event/runtime tests according to downstream coverage investigation.
