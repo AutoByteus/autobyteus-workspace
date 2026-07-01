@@ -379,14 +379,8 @@ describe("ClaudeSessionEventConverter", () => {
   it("normalizes Agent Tools MCP task-delegation envelopes to canonical task results", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
     const taskResult = {
-      target: { kind: "team", name: "StudentStudyGroup" },
       task_id: "task_0001",
-      execution_kind: "task_team",
-      task_agent_run_id: null,
-      task_team_run_id: "studentstudygroup_run_1",
       status: "active",
-      activation_accepted: true,
-      message: null,
     };
 
     const [completed] = converter.convert({

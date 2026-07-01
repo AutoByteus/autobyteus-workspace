@@ -603,6 +603,19 @@ const findTaskAgentIdentity = (
   return identity;
 };
 
+const findTaskTeamIdentity = (
+  backend: ManagedCodexTeamBackend,
+  taskId: string,
+): TaskTeamInstanceIdentity => {
+  const identity = backend.taskTeamStarts.find(
+    (start) => start.identity.taskId === taskId,
+  )?.identity;
+  if (!identity) {
+    throw new Error(`Missing task-team identity for ${taskId}.`);
+  }
+  return identity;
+};
+
 const taskDelegationEvents = (backend: ManagedCodexTeamBackend, eventType: TeamRunTaskDelegationEventPayload["eventType"]): TeamRunEvent[] =>
   backend.publishedEvents.filter((event) =>
     event.eventSourceType === TeamRunEventSourceType.TASK_DELEGATION &&
@@ -659,26 +672,14 @@ describe("task delegation tool lifecycle integration", () => {
     const createdDraft = await executeDelegateTask(harness, draftDelegationInput);
     const createdReview = await executeDelegateTask(harness, reviewDelegationInput);
 
-    expect(createdDraft).toEqual(expect.objectContaining({
-      target: { kind: "member", name: "worker" },
+    expect(createdDraft).toEqual({
       task_id: "task_0001",
-      execution_kind: "task_agent",
-      task_agent_run_id: "task-delegation-codex-run__worker__task_0001",
-      task_team_run_id: null,
       status: "active",
-      activation_accepted: true,
-      message: null,
-    }));
-    expect(createdReview).toEqual(expect.objectContaining({
-      target: { kind: "member", name: "worker" },
+    });
+    expect(createdReview).toEqual({
       task_id: "task_0002",
-      execution_kind: "task_agent",
-      task_agent_run_id: "task-delegation-codex-run__worker__task_0002",
-      task_team_run_id: null,
       status: "active",
-      activation_accepted: true,
-      message: null,
-    }));
+    });
     expect(harness.backend.taskAgentStarts[0]).toMatchObject({
       identity: expect.objectContaining({ taskId: "task_0001" }),
       message: expect.objectContaining({
@@ -714,7 +715,7 @@ describe("task delegation tool lifecycle integration", () => {
     expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toHaveLength(1);
 
     await expect(executeCoordinatorReview(harness, { task_id: "task_0001", decision: "accept" }))
-      .resolves.toMatchObject({ status: "accepted", decision: "accept", reviewed_submission_id: "task_0001_submission_0001", settlement_requested: true });
+      .resolves.toEqual({ task_id: "task_0001", status: "accepted", decision: "accept" });
     await vi.waitFor(() => {
       expect(harness.backend.taskAgentSettlementAttempts).toEqual([
         expect.objectContaining({
@@ -727,7 +728,7 @@ describe("task delegation tool lifecycle integration", () => {
 
     await executeSubmitTaskResultAsTaskAgent(harness, "task_0002", { message: "second result" });
     await expect(executeCoordinatorReview(harness, { task_id: "task_0002", decision: "accept" }))
-      .resolves.toMatchObject({ status: "accepted", decision: "accept", reviewed_submission_id: "task_0002_submission_0001", settlement_requested: true });
+      .resolves.toEqual({ task_id: "task_0002", status: "accepted", decision: "accept" });
     expect(harness.backend.taskAgentSettlementAttempts).toHaveLength(1);
     publishIdleEvent(harness.backend, "task_0002");
     await vi.waitFor(() => {
@@ -754,14 +755,10 @@ describe("task delegation tool lifecycle integration", () => {
       "task_0001",
       memberDelegationInput("reviewer", "Child reviewer task from parent task-agent."),
     );
-    expect(childCreated).toEqual(expect.objectContaining({
-      target: { kind: "member", name: "reviewer" },
+    expect(childCreated).toEqual({
       task_id: "task_0002",
-      execution_kind: "task_agent",
-      task_agent_run_id: "task-delegation-codex-run__reviewer__task_0002",
       status: "active",
-      activation_accepted: true,
-    }));
+    });
     expect(harness.backend.taskAgentStarts[1]?.message.content).toContain("Task ID: task_0002");
     expect(harness.backend.taskAgentStarts[1]?.message.content).toContain("Child reviewer task from parent task-agent.");
     expect(harness.backend.taskAgentStarts[1]?.message.content).not.toContain("Original delegator");
@@ -774,7 +771,7 @@ describe("task delegation tool lifecycle integration", () => {
     });
 
     await expect(executeTaskAgentReview(harness, "task_0001", { task_id: "task_0002", decision: "accept" }))
-      .resolves.toMatchObject({ status: "accepted", decision: "accept", settlement_requested: true });
+      .resolves.toEqual({ task_id: "task_0002", status: "accepted", decision: "accept" });
     const reviewPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_RESULT_REVIEWED")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
     expect(reviewPayload).toMatchObject({
       taskId: "task_0002",
@@ -804,15 +801,11 @@ describe("task delegation tool lifecycle integration", () => {
       target: { kind: "team", name: "design_team" },
       description: "Coordinate a feature design as the accountable team.",
     });
-    expect(created).toMatchObject({
-      target: { kind: "team", name: "design_team" },
+    expect(created).toEqual({
       task_id: "task_0001",
-      execution_kind: "task_team",
-      task_agent_run_id: null,
       status: "active",
-      activation_accepted: true,
     });
-    const firstTaskTeamRunId = created.task_team_run_id;
+    const firstTaskTeamRunId = findTaskTeamIdentity(harness.backend, "task_0001").taskTeamRunId;
     expect(firstTaskTeamRunId).toMatch(/^design_team_[a-f0-9]{32}$/);
     const firstTaskTeam = harness.backend.getTaskTeamChild(firstTaskTeamRunId!);
     expect(firstTaskTeam).not.toBeNull();
@@ -833,12 +826,9 @@ describe("task delegation tool lifecycle integration", () => {
       firstIngressContext,
       memberDelegationInput("implementer", "Implement the child team design check."),
     );
-    expect(childCreated).toMatchObject({
-      target: { kind: "member", name: "implementer" },
+    expect(childCreated).toEqual({
       task_id: "task_0001",
-      execution_kind: "task_agent",
       status: "active",
-      activation_accepted: true,
     });
     expect(firstTaskTeam!.backend.taskAgentStarts).toHaveLength(1);
 
@@ -860,12 +850,10 @@ describe("task delegation tool lifecycle integration", () => {
       task_id: "task_0001",
       decision: "request_revision",
       comment: "Please revise the team result.",
-    })).resolves.toMatchObject({
+    })).resolves.toEqual({
       task_id: "task_0001",
       status: "active",
       decision: "request_revision",
-      notification_delivered: true,
-      settlement_requested: false,
     });
     expect(harness.backend.taskTeamPosts).toEqual([
       expect.objectContaining({
@@ -888,11 +876,10 @@ describe("task delegation tool lifecycle integration", () => {
     await expect(executeCoordinatorReview(harness, {
       task_id: "task_0001",
       decision: "accept",
-    })).resolves.toMatchObject({
+    })).resolves.toEqual({
       task_id: "task_0001",
       status: "accepted",
       decision: "accept",
-      settlement_requested: true,
     });
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(harness.backend.taskTeamSettlements).toHaveLength(0);
@@ -940,14 +927,11 @@ describe("task delegation tool lifecycle integration", () => {
       target: { kind: "team", name: "design_team" },
       description: "Coordinate a follow-up feature design.",
     });
-    expect(secondCreated).toMatchObject({
-      target: { kind: "team", name: "design_team" },
+    expect(secondCreated).toEqual({
       task_id: "task_0002",
-      execution_kind: "task_team",
       status: "active",
-      activation_accepted: true,
     });
-    const secondTaskTeamRunId = secondCreated.task_team_run_id;
+    const secondTaskTeamRunId = findTaskTeamIdentity(harness.backend, "task_0002").taskTeamRunId;
     expect(secondTaskTeamRunId).toMatch(/^design_team_[a-f0-9]{32}$/);
     expect(secondTaskTeamRunId).not.toBe(firstTaskTeamRunId);
     const secondTaskTeam = harness.backend.getTaskTeamChild(secondTaskTeamRunId!);
@@ -989,25 +973,15 @@ describe("task delegation tool lifecycle integration", () => {
     const rejected = await executeDelegateTask(harness, draftDelegationInput);
     const accepted = await executeDelegateTask(harness, reviewDelegationInput);
 
-    expect(rejected).toEqual(expect.objectContaining({
-      target: { kind: "member", name: "worker" },
+    expect(rejected).toEqual({
       task_id: "task_0001",
       status: "not_started",
-      execution_kind: null,
-      task_agent_run_id: null,
-      task_team_run_id: null,
-      activation_accepted: false,
       message: "worker route rejected task activation",
-    }));
-    expect(accepted).toEqual(expect.objectContaining({
-      target: { kind: "member", name: "worker" },
+    });
+    expect(accepted).toEqual({
       task_id: "task_0002",
       status: "active",
-      execution_kind: "task_agent",
-      task_agent_run_id: "task-delegation-codex-run__worker__task_0002",
-      task_team_run_id: null,
-      activation_accepted: true,
-    }));
+    });
     expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_ACTIVATED")).toHaveLength(1);
     const activationPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_ACTIVATED")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
     expect(activationPayload).toMatchObject({ taskIds: ["task_0002"] });

@@ -322,26 +322,14 @@ describe("TaskDelegationService", () => {
     const first = await service.delegateTask(buildContext(), delegateMemberTask("worker", "Draft the implementation note.", ["/tmp/source.md"]));
     const second = await service.delegateTask(buildContext(), delegateMemberTask("worker", "Review the tests."));
 
-    expect(first).toEqual(expect.objectContaining({
-      target: { kind: "member", name: "worker" },
+    expect(first).toEqual({
       task_id: "task_0001",
-      execution_kind: "task_agent",
-      task_agent_run_id: "worker_00000000000000000000000000000001",
-      task_team_run_id: null,
       status: "active",
-      activation_accepted: true,
-      message: null,
-    }));
-    expect(second).toEqual(expect.objectContaining({
-      target: { kind: "member", name: "worker" },
+    });
+    expect(second).toEqual({
       task_id: "task_0002",
-      execution_kind: "task_agent",
-      task_agent_run_id: "worker_00000000000000000000000000000002",
-      task_team_run_id: null,
       status: "active",
-      activation_accepted: true,
-      message: null,
-    }));
+    });
     expect(backend.taskAgentStarts).toHaveLength(2);
     expect(backend.taskAgentStarts[0]!.identity).toMatchObject({
       taskAgentRunId: "worker_00000000000000000000000000000001",
@@ -432,15 +420,10 @@ describe("TaskDelegationService", () => {
       },
     );
 
-    expect(created).toEqual(expect.objectContaining({
-      target: { kind: "team", name: "design_team" },
+    expect(created).toEqual({
       task_id: "task_0001",
-      execution_kind: "task_team",
-      task_agent_run_id: null,
-      task_team_run_id: expect.stringMatching(/^design_team_[a-f0-9]{32}$/),
       status: "active",
-      activation_accepted: true,
-    }));
+    });
     expect(backend.taskAgentStarts).toHaveLength(0);
     expect(backend.taskTeamStarts).toHaveLength(1);
     const start = backend.taskTeamStarts[0]!;
@@ -523,8 +506,7 @@ describe("TaskDelegationService", () => {
       delegateMemberTask("Worker Agent", "Use visible names."),
     );
 
-    expect(created).toMatchObject({
-      target: { kind: "member", name: "Worker Agent" },
+    expect(created).toEqual({
       task_id: "task_0001",
       status: "active",
     });
@@ -607,11 +589,6 @@ describe("TaskDelegationService", () => {
       task_id: "task_0001",
       status: "active",
       decision: "request_revision",
-      review_id: "task_0001_review_0001",
-      reviewed_submission_id: "task_0001_submission_0001",
-      notification_delivered: true,
-      settlement_requested: false,
-      warnings: [],
     });
     expect(backend.postedMessages[1]).toMatchObject({ targetMemberRunId: "worker_00000000000000000000000000000001" });
     expect(backend.postedMessages[1]!.target).toEqual({ kind: "route_key", memberRouteKey: "worker" });
@@ -658,11 +635,6 @@ describe("TaskDelegationService", () => {
       task_id: "task_0001",
       status: "accepted",
       decision: "accept",
-      review_id: "task_0001_review_0002",
-      reviewed_submission_id: "task_0001_submission_0002",
-      notification_delivered: null,
-      settlement_requested: true,
-      warnings: [],
     });
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toHaveLength(2);
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_REVIEWED")).toEqual([
@@ -711,6 +683,37 @@ describe("TaskDelegationService", () => {
     ).rejects.toMatchObject({ code: "TASK_NOT_ACTIVE_FOR_RESULT" });
   });
 
+  it("returns only a concise message when revision notification delivery fails", async () => {
+    const backend = new FakeTeamRunBackend();
+    const service = createService(backend);
+    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Do work."));
+    const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
+    await service.submitTaskResult(buildContext(taskAgentCaller), {
+      message: "Ready for review.",
+    });
+    backend.postMessageResults = [{ accepted: false, code: "TARGET_UNAVAILABLE", message: "No recipient" }];
+
+    const revision = await service.reviewTaskResult(buildContext(), {
+      task_id: "task_0001",
+      decision: "request_revision",
+      comment: "Please revise.",
+    });
+
+    expect(revision).toEqual({
+      task_id: "task_0001",
+      status: "active",
+      decision: "request_revision",
+      message: "No recipient",
+    });
+    expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_REVIEWED")).toEqual([
+      expect.objectContaining({
+        reviewId: "task_0001_review_0001",
+        reviewedSubmissionId: "task_0001_submission_0001",
+        status: "active",
+      }),
+    ]);
+  });
+
   it("keeps rejected activations not_started and does not publish active exact-run targets", async () => {
     const backend = new FakeTeamRunBackend();
     backend.taskAgentStartResults = [{ accepted: false, code: "REJECTED", message: "No" }];
@@ -718,16 +721,11 @@ describe("TaskDelegationService", () => {
 
     const created = await service.delegateTask(buildContext(), delegateMemberTask("worker", "Cannot start."));
 
-    expect(created).toEqual(expect.objectContaining({
-      target: { kind: "member", name: "worker" },
+    expect(created).toEqual({
       task_id: "task_0001",
-      execution_kind: null,
-      task_agent_run_id: null,
-      task_team_run_id: null,
       status: "not_started",
-      activation_accepted: false,
       message: "No",
-    }));
+    });
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED")).toEqual([]);
     expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("worker_00000000000000000000000000000001")).toBeNull();
   });
@@ -740,16 +738,11 @@ describe("TaskDelegationService", () => {
     const created = await service.delegateTask(buildContext(), delegateMemberTask("worker", "Start throws."));
 
     expect(backend.taskAgentStarts).toHaveLength(1);
-    expect(created).toEqual(expect.objectContaining({
-      target: { kind: "member", name: "worker" },
+    expect(created).toEqual({
       task_id: "task_0001",
-      execution_kind: null,
-      task_agent_run_id: null,
-      task_team_run_id: null,
       status: "not_started",
-      activation_accepted: false,
       message: "task-agent post failed",
-    }));
+    });
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED")).toEqual([]);
     expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("worker_00000000000000000000000000000001")).toBeNull();
   });

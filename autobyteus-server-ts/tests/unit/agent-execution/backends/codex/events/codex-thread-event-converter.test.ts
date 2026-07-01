@@ -785,14 +785,8 @@ describe("CodexThreadEventConverter", () => {
   it("normalizes Agent Tools MCP delegate_task completion envelopes into direct task results", () => {
     const converter = new CodexThreadEventConverter("run-1");
     const taskResult = {
-      target: { kind: "team", name: "StudentStudyGroup" },
       task_id: "task_0001",
-      execution_kind: "task_team",
-      task_agent_run_id: null,
-      task_team_run_id: "studentstudygroup_run_1",
       status: "active",
-      activation_accepted: true,
-      message: null,
     };
 
     const converted = converter.convert({
@@ -856,14 +850,9 @@ describe("CodexThreadEventConverter", () => {
   it("normalizes Agent Tools MCP review_task_result completion envelopes into direct task results", () => {
     const converter = new CodexThreadEventConverter("run-1");
     const reviewResult = {
-      active: false,
       task_id: "task_0001",
-      accepted: true,
-      decision: "accepted",
-      review_id: "review_0001",
-      notification_sent: true,
-      settled: true,
-      warnings: [],
+      status: "accepted",
+      decision: "accept",
     };
 
     const converted = converter.convert({
@@ -874,8 +863,8 @@ describe("CodexThreadEventConverter", () => {
         tool_name: "mcp__autobyteus_agent_tools__review_task_result",
         arguments: {
           task_id: "task_0001",
-          decision: "accepted",
-          review_notes: "Looks good.",
+          decision: "accept",
+          comment: "Looks good.",
         },
         result: {
           content: [

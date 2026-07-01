@@ -20,7 +20,6 @@ import {
   type TaskDelegationRecord,
   type TaskDelegationReferenceFilePayload,
 } from "./task-delegation-record.js";
-import { getTaskDelegationTargetName } from "./task-delegation-target.js";
 import { TaskDelegationSettlementCoordinator } from "./task-delegation-settlement-coordinator.js";
 import { TaskTeamSettlementCoordinator } from "./task-team-settlement-coordinator.js";
 import { getTaskDelegationRunRegistry, type TaskDelegationRunRegistry } from "./task-delegation-run-registry.js";
@@ -116,22 +115,16 @@ export class TaskDelegationService {
     const record = this.ledger.createRecord(createInput);
     const activationResult = await this.activationCoordinator.activateTask(this.teamRun, record.taskId);
     const currentRecord = this.ledger.getRecord(record.taskId) ?? record;
+    if (activationResult.accepted && currentRecord.status === "active") {
+      return {
+        task_id: currentRecord.taskId,
+        status: "active",
+      };
+    }
     return {
-      target: {
-        kind: currentRecord.target.kind,
-        name: getTaskDelegationTargetName(currentRecord.target),
-      },
       task_id: currentRecord.taskId,
-      execution_kind: currentRecord.execution?.kind ?? null,
-      task_agent_run_id: currentRecord.execution?.kind === "task_agent"
-        ? currentRecord.execution.taskAgentInstance.taskAgentRunId
-        : null,
-      task_team_run_id: currentRecord.execution?.kind === "task_team"
-        ? currentRecord.execution.taskTeamInstance.taskTeamRunId
-        : null,
-      status: currentRecord.status,
-      activation_accepted: activationResult.accepted,
-      message: activationResult.message ?? null,
+      status: "not_started",
+      message: this.activationFailureMessage(activationResult.message),
     };
   }
 
@@ -216,30 +209,24 @@ export class TaskDelegationService {
     if (input.decision === "request_revision") {
       const notificationOutcome = await this.notificationDispatcher.notifyRevisionRequested({ teamRun: this.teamRun, record: updated, review });
       this.logNotificationWarning(notificationOutcome);
+      const notificationMessage = this.notificationWarningMessage(notificationOutcome);
       return {
         task_id: updated.taskId,
         status: "active",
         decision: input.decision,
-        review_id: review.reviewId,
-        reviewed_submission_id: review.reviewedSubmissionId,
-        notification_delivered: notificationOutcome.delivered,
-        settlement_requested: false,
-        warnings: notificationOutcome.warning ? [notificationOutcome.warning] : [],
+        ...(notificationMessage ? { message: notificationMessage } : {}),
       };
     }
 
-    const settlementRequested = updated.execution?.kind === "task_team"
-      ? this.taskTeamSettlementCoordinator.requestSettlement(updated.execution.taskTeamInstance)
-      : this.settlementCoordinator.requestSettlement(updated.execution?.kind === "task_agent" ? updated.execution.taskAgentInstance : null);
+    if (updated.execution?.kind === "task_team") {
+      this.taskTeamSettlementCoordinator.requestSettlement(updated.execution.taskTeamInstance);
+    } else {
+      this.settlementCoordinator.requestSettlement(updated.execution?.kind === "task_agent" ? updated.execution.taskAgentInstance : null);
+    }
     return {
       task_id: updated.taskId,
       status: "accepted",
       decision: input.decision,
-      review_id: review.reviewId,
-      reviewed_submission_id: review.reviewedSubmissionId,
-      notification_delivered: null,
-      settlement_requested: settlementRequested,
-      warnings: [],
     };
   }
 
@@ -355,5 +342,14 @@ export class TaskDelegationService {
 
   private logNotificationWarning(outcome: TaskDelegationNotificationDeliveryOutcome): void {
     if (outcome.warning) console.warn("TaskDelegationService: task notification delivery failed", outcome.warning);
+  }
+
+  private activationFailureMessage(message: string | null | undefined): string {
+    return message?.trim() || "Task activation failed.";
+  }
+
+  private notificationWarningMessage(outcome: TaskDelegationNotificationDeliveryOutcome): string | null {
+    if (!outcome.warning) return null;
+    return outcome.warning.message.trim() || "Task notification delivery failed.";
   }
 }
