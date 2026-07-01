@@ -707,12 +707,18 @@ describe("task delegation tool lifecycle integration", () => {
     publishIdleEvent(harness.backend, "task_0001");
     expect(harness.backend.taskAgentSettlementAttempts).toEqual([]);
     await expect(executeSubmitTaskResultAsTaskAgent(harness, "task_0001", { message: "first result" }))
-      .resolves.toMatchObject({ status: "awaiting_review", submission_id: "task_0001_submission_0001", notification_delivered: true });
+      .resolves.toEqual({ task_id: "task_0001", status: "awaiting_review" });
     expect(harness.backend.messages.at(-1)).toMatchObject({
       targetRouteKey: "coordinator",
       targetMemberRunId: null,
     });
     expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toHaveLength(1);
+    const firstSubmissionPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_RESULT_SUBMITTED")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
+    expect(firstSubmissionPayload).toMatchObject({
+      taskId: "task_0001",
+      status: "awaiting_review",
+      submissionId: "task_0001_submission_0001",
+    });
 
     await expect(executeCoordinatorReview(harness, { task_id: "task_0001", decision: "accept" }))
       .resolves.toEqual({ task_id: "task_0001", status: "accepted", decision: "accept" });
@@ -834,17 +840,21 @@ describe("task delegation tool lifecycle integration", () => {
 
     await expect(executeSubmitTaskResultWithContext(harness, firstIngressContext, {
       message: "Team draft result.",
-    })).resolves.toMatchObject({
+    })).resolves.toEqual({
       task_id: "task_0001",
       status: "awaiting_review",
-      submission_id: "task_0001_submission_0001",
-      notification_delivered: true,
     });
     expect(harness.backend.messages.at(-1)).toMatchObject({
       targetRouteKey: "coordinator",
       targetMemberRunId: null,
     });
     expect(taskDelegationEvents(harness.backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toHaveLength(1);
+    const teamSubmissionPayload = (taskDelegationEvents(harness.backend, "TASK_DELEGATION_RESULT_SUBMITTED")[0]?.data as TeamRunTaskDelegationEventPayload).payload as Record<string, unknown>;
+    expect(teamSubmissionPayload).toMatchObject({
+      taskId: "task_0001",
+      status: "awaiting_review",
+      submissionId: "task_0001_submission_0001",
+    });
 
     await expect(executeCoordinatorReview(harness, {
       task_id: "task_0001",

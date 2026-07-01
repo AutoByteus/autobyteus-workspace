@@ -258,9 +258,7 @@ export type TaskDelegationResultReviewedPayload = {
 export type SubmitTaskResultResult = {
   task_id: string;
   status: "awaiting_review";
-  submission_id: string;
-  notification_delivered: boolean;
-  warnings: TaskDelegationWarning[];
+  message?: string;
 };
 
 export type ReviewTaskResultResult =

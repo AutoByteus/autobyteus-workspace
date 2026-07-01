@@ -254,12 +254,11 @@ export class TaskDelegationService {
     this.eventPublisher.publishStatusUpdated({ teamRun: this.teamRun, teamRunId: this.teamRun.runId, previousStatus, record: updated });
     const notificationOutcome = await this.notificationDispatcher.notifyResultSubmitted({ teamRun: this.teamRun, record: updated, submission });
     this.logNotificationWarning(notificationOutcome);
+    const notificationMessage = this.notificationWarningMessage(notificationOutcome);
     return {
       task_id: updated.taskId,
       status: "awaiting_review",
-      submission_id: submission.submissionId,
-      notification_delivered: notificationOutcome.delivered,
-      warnings: notificationOutcome.warning ? [notificationOutcome.warning] : [],
+      ...(notificationMessage ? { message: notificationMessage } : {}),
     };
   }
 

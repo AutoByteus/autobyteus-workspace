@@ -545,9 +545,6 @@ describe("TaskDelegationService", () => {
     expect(submitted).toEqual({
       task_id: "task_0001",
       status: "awaiting_review",
-      submission_id: "task_0001_submission_0001",
-      notification_delivered: true,
-      warnings: [],
     });
     expect(backend.postedMessages[0]).toMatchObject({ targetMemberRunId: null });
     expect(backend.postedMessages[0]!.target).toEqual({ kind: "route_key", memberRouteKey: "coordinator" });
@@ -624,7 +621,10 @@ describe("TaskDelegationService", () => {
     const resubmitted = await service.submitTaskResult(buildContext(taskAgentCaller), {
       message: "Added tests.",
     });
-    expect(resubmitted.submission_id).toBe("task_0001_submission_0002");
+    expect(resubmitted).toEqual({
+      task_id: "task_0001",
+      status: "awaiting_review",
+    });
 
     const accepted = await service.reviewTaskResult(buildContext(), {
       task_id: "task_0001",
@@ -651,7 +651,7 @@ describe("TaskDelegationService", () => {
     expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("worker_00000000000000000000000000000001")).toBeNull();
   });
 
-  it("commits result submission and returns deterministic warning when notification delivery fails", async () => {
+  it("commits result submission and returns a concise message when notification delivery fails", async () => {
     const backend = new FakeTeamRunBackend();
     backend.postMessageResults = [{ accepted: false, code: "TARGET_UNAVAILABLE", message: "No recipient" }];
     const service = createService(backend);
@@ -662,22 +662,17 @@ describe("TaskDelegationService", () => {
       message: "Done despite notification failure.",
     });
 
-    expect(submitted).toMatchObject({
+    expect(submitted).toEqual({
       task_id: "task_0001",
       status: "awaiting_review",
-      submission_id: "task_0001_submission_0001",
-      notification_delivered: false,
-      warnings: [
-        expect.objectContaining({
-          code: "TASK_NOTIFICATION_DELIVERY_FAILED",
-          notification_type: "result_submitted",
-          task_id: "task_0001",
-          target_member_route_key: "coordinator",
-          message: "No recipient",
-        }),
-      ],
+      message: "No recipient",
     });
-    expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toHaveLength(1);
+    expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toEqual([
+      expect.objectContaining({
+        submissionId: "task_0001_submission_0001",
+        status: "awaiting_review",
+      }),
+    ]);
     await expect(
       service.submitTaskResult(buildContext(taskAgentCaller), { message: "Duplicate while awaiting." }),
     ).rejects.toMatchObject({ code: "TASK_NOT_ACTIVE_FOR_RESULT" });
