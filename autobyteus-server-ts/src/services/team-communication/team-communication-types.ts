@@ -1,4 +1,4 @@
-import type { TeamMemberAddress } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
+import type { ConversationTargetAddress } from "../../agent-team-execution/domain/conversation-target-address.js";
 
 export type TeamCommunicationReferenceFileType =
   | "file"
@@ -18,45 +18,22 @@ export interface TeamCommunicationReferenceFile {
   updatedAt: string;
 }
 
-export interface TeamCommunicationRepresentedSubTeam {
-  memberKind: "agent_team";
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  teamDefinitionId: string;
-  childTeamRunId?: string | null;
-  address: TeamMemberAddress;
-}
-
 export interface TeamCommunicationMessage {
   messageId: string;
-  teamRunId: string;
-  senderRunId: string;
-  senderMemberKind?: "agent" | "agent_team" | null;
-  senderMemberName?: string | null;
-  senderMemberPath?: string[] | null;
-  senderMemberRouteKey?: string | null;
-  senderRepresentedSubTeam?: TeamCommunicationRepresentedSubTeam | null;
-  receiverRunId: string;
-  receiverMemberKind?: "agent" | "agent_team" | null;
-  receiverMemberName?: string | null;
-  receiverMemberPath?: string[] | null;
-  receiverMemberRouteKey?: string | null;
-  receiverRepresentedSubTeam?: TeamCommunicationRepresentedSubTeam | null;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
   content: string;
   messageType: string;
   createdAt: string;
-  updatedAt: string;
   referenceFiles: TeamCommunicationReferenceFile[];
 }
 
 export interface TeamCommunicationProjection {
-  version: 1;
+  teamRunId: string;
   messages: TeamCommunicationMessage[];
 }
 
 export const EMPTY_TEAM_COMMUNICATION_PROJECTION: TeamCommunicationProjection = {
-  version: 1,
+  teamRunId: "",
   messages: [],
 };

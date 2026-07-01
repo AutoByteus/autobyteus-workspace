@@ -1,19 +1,22 @@
 import {
   TeamRunEventSourceType,
   type TeamRunAgentEventPayload,
-  type TeamCommunicationParticipant,
   type TeamRunCommunicationEventPayload,
   type TeamRunEvent,
 } from "../../../domain/team-run-event.js";
+import { AgentRunEventType } from "../../../../agent-execution/domain/agent-run-event.js";
 import {
   cloneTaskTeamInstanceIdentity,
   type TaskTeamInstanceIdentity,
 } from "../../../domain/task-team-instance.js";
-import {
-  buildTeamMemberAddress,
-  type TeamRepresentedSubTeam,
-} from "../../../domain/inter-agent-message-delivery.js";
 import { buildMemberRouteKeyFromPath } from "../../../domain/team-run-member-identity.js";
+import {
+  cloneConversationTargetSegment,
+  normalizeConversationTargetAddress,
+  type ConversationTargetAddress,
+  type ConversationTargetMemberSegment,
+  type ConversationTargetSegment,
+} from "../../../domain/conversation-target-address.js";
 
 const pathStartsWith = (path: readonly string[], prefix: readonly string[]): boolean =>
   path.length >= prefix.length && prefix.every((segment, index) => path[index] === segment);
@@ -21,77 +24,91 @@ const pathStartsWith = (path: readonly string[], prefix: readonly string[]): boo
 const prefixPath = (path: readonly string[], prefix: readonly string[], isAlreadyParentRooted: boolean): string[] =>
   isAlreadyParentRooted && pathStartsWith(path, prefix) ? [...path] : [...prefix, ...path];
 
-const prefixRepresentedSubTeam = (input: {
-  parentTeamRunId: string;
-  sourcePrefix: string[];
-  representedSubTeam: TeamRepresentedSubTeam;
-}): TeamRepresentedSubTeam => {
-  const memberPath = prefixPath(
-    input.representedSubTeam.memberPath,
-    input.sourcePrefix,
-    input.representedSubTeam.address.teamRunId === input.parentTeamRunId,
-  );
-  const memberRouteKey = buildMemberRouteKeyFromPath(memberPath);
+const memberSegmentRouteKey = (segment: ConversationTargetMemberSegment): string => {
+  if (typeof segment.memberRouteKey === "string" && segment.memberRouteKey.trim()) {
+    return segment.memberRouteKey.trim();
+  }
+  const memberPath = Array.isArray(segment.memberPath)
+    ? segment.memberPath.map((part) => part.trim()).filter(Boolean)
+    : [];
+  return memberPath.length > 0 ? buildMemberRouteKeyFromPath(memberPath) : "";
+};
+
+const prefixMemberSegment = (
+  segment: ConversationTargetMemberSegment,
+  sourcePrefix: string[],
+): ConversationTargetMemberSegment => {
+  const routeKey = memberSegmentRouteKey(segment);
+  if (sourcePrefix.length === 0) {
+    return { kind: "member", memberRouteKey: routeKey };
+  }
+  const memberPath = Array.isArray(segment.memberPath) && segment.memberPath.length > 0
+    ? segment.memberPath
+    : routeKey.split("/");
   return {
-    ...input.representedSubTeam,
-    memberPath,
-    memberRouteKey,
-    address: buildTeamMemberAddress({
-      teamRunId: input.parentTeamRunId,
-      memberPath,
-      memberRouteKey,
-    }),
+    kind: "member",
+    memberRouteKey: buildMemberRouteKeyFromPath([...sourcePrefix, ...memberPath]),
   };
 };
 
-const prefixParticipant = (input: {
-  parentTeamRunId: string;
+const addressHasTaskTeamSegment = (
+  address: ConversationTargetAddress,
+  taskTeamInstance?: TaskTeamInstanceIdentity | null,
+): boolean => Boolean(
+  taskTeamInstance?.taskTeamRunId &&
+  address.segments.some((segment) =>
+    segment.kind === "task_team" && segment.taskTeamRunId === taskTeamInstance.taskTeamRunId),
+);
+
+const prefixConversationAddress = (input: {
+  address: ConversationTargetAddress;
   sourcePrefix: string[];
-  participant: TeamCommunicationParticipant;
-}): TeamCommunicationParticipant => {
-  const participantAddress = input.participant.address ?? null;
-  const isAlreadyParentRooted = participantAddress?.teamRunId === input.parentTeamRunId;
-  const memberPath = prefixPath(
-    input.participant.memberPath,
-    input.sourcePrefix,
-    isAlreadyParentRooted,
-  );
-  const memberRouteKey = buildMemberRouteKeyFromPath(memberPath);
-  return {
-    ...input.participant,
-    memberPath,
-    memberRouteKey,
-    address: buildTeamMemberAddress({
-      teamRunId: input.parentTeamRunId,
-      memberPath,
-      memberRouteKey,
-    }),
-    representedSubTeam: input.participant.representedSubTeam
-      ? prefixRepresentedSubTeam({
-          parentTeamRunId: input.parentTeamRunId,
-          sourcePrefix: input.sourcePrefix,
-          representedSubTeam: input.participant.representedSubTeam,
-        })
-      : null,
-  };
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
+}): ConversationTargetAddress => {
+  const normalized = normalizeConversationTargetAddress(input.address);
+  if (addressHasTaskTeamSegment(normalized, input.taskTeamInstance)) {
+    return { segments: normalized.segments.map(cloneConversationTargetSegment) };
+  }
+  const segments: ConversationTargetSegment[] = normalized.segments.map((segment, index) => (
+    index === 0 && segment.kind === "member"
+      ? prefixMemberSegment(segment, input.sourcePrefix)
+      : cloneConversationTargetSegment(segment)
+  ));
+  return { segments };
+};
+
+const maybePrefixConversationAddress = (input: {
+  address: unknown;
+  sourcePrefix: string[];
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
+}): ConversationTargetAddress | unknown => {
+  if (!input.address || typeof input.address !== "object" || Array.isArray(input.address)) {
+    return input.address;
+  }
+  return prefixConversationAddress({
+    address: input.address as ConversationTargetAddress,
+    sourcePrefix: input.sourcePrefix,
+    taskTeamInstance: input.taskTeamInstance,
+  });
 };
 
 const prefixCommunicationPayload = (input: {
   parentTeamRunId: string;
   sourcePrefix: string[];
   payload: TeamRunCommunicationEventPayload;
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
 }): TeamRunCommunicationEventPayload => ({
   ...input.payload,
   teamRunId: input.parentTeamRunId,
-  sender: prefixParticipant({
-    parentTeamRunId: input.parentTeamRunId,
+  senderAddress: prefixConversationAddress({
+    address: input.payload.senderAddress,
     sourcePrefix: input.sourcePrefix,
-    participant: input.payload.sender,
+    taskTeamInstance: input.taskTeamInstance,
   }),
-  receiver: prefixParticipant({
-    parentTeamRunId: input.parentTeamRunId,
+  receiverAddress: prefixConversationAddress({
+    address: input.payload.receiverAddress,
     sourcePrefix: input.sourcePrefix,
-    participant: input.payload.receiver,
+    taskTeamInstance: input.taskTeamInstance,
   }),
 });
 
@@ -99,16 +116,39 @@ const prefixAgentPayload = (input: {
   sourcePrefix: string[];
   payload: TeamRunAgentEventPayload;
   isAlreadyParentRooted: boolean;
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
 }): TeamRunAgentEventPayload => {
   const memberPath = prefixPath(
     input.payload.memberPath,
     input.sourcePrefix,
     input.isAlreadyParentRooted,
   );
+  const agentEventPayload = input.payload.agentEvent.eventType === AgentRunEventType.TEAM_COMMUNICATION_MESSAGE
+    && input.payload.agentEvent.payload
+    && typeof input.payload.agentEvent.payload === "object"
+    && !Array.isArray(input.payload.agentEvent.payload)
+    ? {
+        ...input.payload.agentEvent.payload,
+        senderAddress: maybePrefixConversationAddress({
+          address: (input.payload.agentEvent.payload as { senderAddress?: unknown }).senderAddress,
+          sourcePrefix: input.sourcePrefix,
+          taskTeamInstance: input.taskTeamInstance,
+        }),
+        receiverAddress: maybePrefixConversationAddress({
+          address: (input.payload.agentEvent.payload as { receiverAddress?: unknown }).receiverAddress,
+          sourcePrefix: input.sourcePrefix,
+          taskTeamInstance: input.taskTeamInstance,
+        }),
+      }
+    : input.payload.agentEvent.payload;
   return {
     ...input.payload,
     memberPath,
     memberRouteKey: buildMemberRouteKeyFromPath(memberPath),
+    agentEvent: {
+      ...input.payload.agentEvent,
+      payload: agentEventPayload,
+    },
   };
 };
 
@@ -126,17 +166,19 @@ export const prefixMixedSubTeamEvent = (input: {
   );
   const data =
     input.event.eventSourceType === TeamRunEventSourceType.COMMUNICATION
-      ? prefixCommunicationPayload({
-          parentTeamRunId: input.parentTeamRunId,
-          sourcePrefix: input.sourcePrefix,
-          payload: input.event.data as TeamRunCommunicationEventPayload,
-        })
-      : input.event.eventSourceType === TeamRunEventSourceType.AGENT
-        ? prefixAgentPayload({
+        ? prefixCommunicationPayload({
+            parentTeamRunId: input.parentTeamRunId,
             sourcePrefix: input.sourcePrefix,
-            payload: input.event.data as TeamRunAgentEventPayload,
-            isAlreadyParentRooted,
+            payload: input.event.data as TeamRunCommunicationEventPayload,
+            taskTeamInstance: input.taskTeamInstance ?? input.event.taskTeamInstance ?? null,
           })
+      : input.event.eventSourceType === TeamRunEventSourceType.AGENT
+          ? prefixAgentPayload({
+              sourcePrefix: input.sourcePrefix,
+              payload: input.event.data as TeamRunAgentEventPayload,
+              isAlreadyParentRooted,
+              taskTeamInstance: input.taskTeamInstance ?? input.event.taskTeamInstance ?? null,
+            })
         : input.event.data;
 
   return {

@@ -1,12 +1,20 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
 import {
+  conversationTargetAddressDebugString,
+  normalizeConversationTargetAddress,
+  type ConversationTargetAddress,
+} from "../../agent-team-execution/domain/conversation-target-address.js";
+import {
   isAgentRunFilePathAbsolute,
   normalizeAgentRunFilePathDisplay,
 } from "../../agent-execution/domain/agent-run-file-path-identity.js";
 
 const normalizeIdentityPart = (value: string | null | undefined): string =>
   (value ?? "").trim();
+
+const normalizeAddressIdentityPart = (address: ConversationTargetAddress): string =>
+  conversationTargetAddressDebugString(normalizeConversationTargetAddress(address));
 
 export const normalizeTeamCommunicationReferencePath = (value: string): string =>
   normalizeAgentRunFilePathDisplay(value);
@@ -16,16 +24,16 @@ export const isAbsoluteTeamCommunicationReferencePath = (value: string): boolean
 
 export const buildTeamCommunicationMessageId = (input: {
   teamRunId: string;
-  senderRunId: string;
-  receiverRunId: string;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
   messageType: string;
   content: string;
   createdAt: string;
 }): string => {
   const hashInput = [
     normalizeIdentityPart(input.teamRunId),
-    normalizeIdentityPart(input.senderRunId),
-    normalizeIdentityPart(input.receiverRunId),
+    normalizeAddressIdentityPart(input.senderAddress),
+    normalizeAddressIdentityPart(input.receiverAddress),
     normalizeIdentityPart(input.messageType),
     normalizeIdentityPart(input.createdAt),
     input.content,

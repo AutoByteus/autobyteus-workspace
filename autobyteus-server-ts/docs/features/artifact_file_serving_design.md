@@ -35,10 +35,11 @@ metadata and do not create Team Communication reference rows.
 1. `send_message_to(recipient_name=...)` accepts natural `content` plus optional
    explicit `reference_files` absolute local paths.
 2. Accepted team-route delivery emits one `INTER_AGENT_MESSAGE` payload with
-   message id, sender/receiver identity, content, message type, team projection
-   fields, and structured reference metadata. Nested teams use path-aware and representative-aware
-   participant identity: `memberKind`, `memberPath`, `memberRouteKey`, and
-   optional `representedSubTeam`.
+   message id, address-first sender/receiver identity, content, message type,
+   team projection fields, and structured reference metadata. Nested static
+   members, task-team executions, and task-agent executions use canonical
+   `ConversationTargetAddress` segments in `senderAddress` and
+   `receiverAddress` rather than flat participant fields.
 3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
    events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
 4. `TeamCommunicationService` observes derived `TEAM_COMMUNICATION_MESSAGE`
@@ -83,5 +84,6 @@ agent_teams/<teamRunId>/team_communication_messages.json
 
 Both projections store metadata only. Current filesystem bytes are read on demand
 when the user opens a preview. Team Communication metadata is message-owned and
-participant-path-aware; it is not scoped to the receiver run id and it should not
-be mirrored into member Artifacts rows.
+address-first; it is not scoped to the receiver run id and it should not be
+mirrored into member Artifacts rows. Old flat Team Communication projection files
+are rewritten by app-data migration before current runtime/API/store reads.

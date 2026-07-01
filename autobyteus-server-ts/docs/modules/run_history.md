@@ -211,7 +211,7 @@ Team persisted files:
   cleanup migration
 - member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`, with deeper child team run ids appended in `teamRunPath` order
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical team/member directory, for example `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
-- team communication projection: `memory/agent_teams/<teamRunId>/team_communication_messages.json`
+- team communication projection: `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
 
 Important identity/storage rules:
 
@@ -382,12 +382,16 @@ team communication events are processor input; derived
 hydration reads that projection through `getTeamCommunicationMessages(teamRunId)`,
 and referenced content opens by persisted message-owned identity at
 `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
-The projection stores sender and receiver `memberKind`, `memberPath`,
-`memberRouteKey`, and optional `representedSubTeam` metadata. Messages to a
-subteam representative remain attributable to the actual leaf path while showing
-the represented subteam, and child-to-parent reports keep the sender's subteam
-representation in restored Team Messages. The member Artifacts tab must not
-hydrate those reference files as Sent/Received artifact rows.
+The projection stores `teamRunId` once at the projection level and each message
+stores `senderAddress` and `receiverAddress` as canonical
+`ConversationTargetAddress` values. Messages to static nested members,
+task-team roots, task-team child members, and delegated task-agent executions
+remain attributable to their concrete address segments without duplicating flat
+sender/receiver run ids, member paths, route keys, represented-subteam fields,
+or task-team-scope wrappers. Old flat Team Communication files are converted by
+the app-data migration path before current runtime/API/store hydration. The
+member Artifacts tab must not hydrate those reference files as Sent/Received
+artifact rows.
 
 The `agent-memory` subsystem no longer owns the canonical replay DTO. It supplies
 raw traces and memory-inspector views only; run-history is the only subsystem

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GetRunFileChanges, ListWorkspaceRunHistory } from '../runHistoryQueries';
+import { GetRunFileChanges, GetTeamCommunicationMessages, ListWorkspaceRunHistory } from '../runHistoryQueries';
 
 describe('GetRunFileChanges query', () => {
   it('requests inline content for live buffered file-change hydration without legacy artifact ids', () => {
@@ -31,5 +31,24 @@ describe('ListWorkspaceRunHistory query', () => {
     expect(teamRunsBlock).not.toContain('lastActivityAt');
     expect(teamRunsBlock).not.toContain('lastKnownStatus');
     expect(teamRunsBlock).not.toContain('deleteLifecycle');
+  });
+});
+
+describe('GetTeamCommunicationMessages query', () => {
+  it('requests address-first sender and receiver fields without removed flat participant identity', () => {
+    const source = GetTeamCommunicationMessages.loc?.source.body ?? '';
+
+    expect(source).toContain('getTeamCommunicationMessages');
+    expect(source).toContain('senderAddress');
+    expect(source).toContain('receiverAddress');
+    expect(source).toContain('segments');
+    expect(source).toContain('memberRouteKey');
+    expect(source).toContain('taskTeamRunId');
+    expect(source).toContain('taskAgentRunId');
+    expect(source).not.toContain('senderRunId');
+    expect(source).not.toContain('receiverRunId');
+    expect(source).not.toContain('senderMemberRouteKey');
+    expect(source).not.toContain('receiverMemberRouteKey');
+    expect(source).not.toContain('taskTeamScope');
   });
 });
