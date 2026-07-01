@@ -146,6 +146,8 @@ const messages = {
     "任务描述不可用",
   "workspace.components.workspace.team.TeamActiveTasksSection.members":
     "成员",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
+    "临时任务执行",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "向此子团队发送消息",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

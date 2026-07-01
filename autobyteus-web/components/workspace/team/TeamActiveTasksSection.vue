@@ -57,10 +57,8 @@
             :entries="activeTaskEntries"
             :selected-task-route-key="selectedTaskRouteKey"
             :selected-reference-id="selectedReferenceId"
-            :focused-member-route-key="teamContext.focusedMemberRouteKey ?? null"
             @select-task="selectTask"
             @select-reference="selectReference"
-            @select-member="emitFocus"
           />
         </aside>
 
@@ -98,9 +96,8 @@ const props = withDefaults(defineProps<{
   collapsed: false,
 });
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'toggle'): void;
-  (e: 'select-member', memberRouteKey: string): void;
 }>();
 
 const selectedTaskRouteKey = ref<string | null>(null);
@@ -173,5 +170,4 @@ const selectReference = (payload: { memberRouteKey: string; referenceId: string 
   selectedReferenceId.value = payload.referenceId;
 };
 
-const emitFocus = (memberRouteKey: string): void => emit('select-member', memberRouteKey);
 </script>

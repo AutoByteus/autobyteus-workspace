@@ -123,6 +123,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -150,6 +151,7 @@ const workspaceStore = useWorkspaceStore();
 const selectionStore = useAgentSelectionStore();
 const agentRunStore = useAgentRunStore();
 const teamRunStore = useAgentTeamRunStore();
+const agentTeamContextsStore = useAgentTeamContextsStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -325,6 +327,7 @@ const sectionState: WorkspaceHistorySectionState = {
   isTeamDefinitionExpanded: treeState.isTeamDefinitionExpanded,
   toggleTeamDefinition: treeState.toggleTeamDefinition,
   isTeamExpanded: treeState.isTeamExpanded,
+  getLiveTeamContext: (teamRunId: string) => agentTeamContextsStore.getTeamContextById(teamRunId) ?? null,
   isTeamMemberExpanded: treeState.isTeamMemberExpanded,
   toggleTeamMember: treeState.toggleTeamMember,
   canTerminateTeam: treeState.canTerminateTeam,

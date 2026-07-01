@@ -17,7 +17,6 @@ const mountSubject = (entries: any[], props: Record<string, unknown> = {}) => mo
     entries,
     selectedTaskRouteKey: null,
     selectedReferenceId: null,
-    focusedMemberRouteKey: null,
     ...props,
   },
   global: {
@@ -39,7 +38,6 @@ const singleAgentEntry = {
     memberRouteKey: 'team-run__worker__task_0001',
     currentStatus: 'running',
   },
-  members: [],
   status: 'running',
   statusLabel: 'active',
   targetDisplayName: 'worker',
@@ -74,19 +72,6 @@ const taskTeamEntry = {
     memberRouteKey: 'task-team-run-1',
     currentStatus: 'running',
   },
-  members: [
-    {
-      depth: 0,
-      displayName: 'solution_designer',
-      node: {
-        memberKind: 'agent',
-        memberName: 'solution_designer',
-        displayName: 'solution_designer',
-        memberRouteKey: 'task-team-run-1/solution_designer',
-        currentStatus: 'idle',
-      },
-    },
-  ],
   status: 'running',
   statusLabel: 'awaiting_review',
   targetDisplayName: 'Software Engineering Team',
@@ -113,77 +98,49 @@ const taskTeamEntry = {
 };
 
 describe('TeamActiveTaskNavigator', () => {
-  it('renders a single-agent task as text-only summary plus one root actor row with collapsed metadata', async () => {
+  it('renders task detail summary, message-style references, and collapsed metadata without actor hierarchy rows', async () => {
     const wrapper = mountSubject([singleAgentEntry], {
       selectedTaskRouteKey: 'team-run__worker__task_0001',
       selectedReferenceId: 'task-reference:0:/tmp/requirements.md',
     });
 
-    expect(wrapper.find('[data-test="left-task-agent-context"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="left-task-team-context"]').exists()).toBe(false);
-    const navigator = wrapper.get('[data-test="team-active-task-navigator"]');
-    expect(navigator.classes()).toContain('pb-1');
-    expect(navigator.classes()).not.toContain('pl-2');
-    expect(navigator.classes()).not.toContain('border-l');
-
-    const summary = wrapper.get('[data-test="left-active-task-summary-row"]');
-    expect(summary.text()).toContain('Draft the implementation handoff');
-    expect(summary.classes()).toEqual(expect.arrayContaining(['text-gray-600']));
-    expect(summary.classes()).not.toContain('text-blue-700');
-    expect(summary.find('span').classes()).toEqual(expect.arrayContaining(['line-clamp-2', 'whitespace-pre-line', 'text-sm', 'leading-5']));
-    expect(summary.find('span.inline-block').exists()).toBe(false);
-
-    const actor = wrapper.get('[data-test="left-active-task-actor-row"]');
-    expect(actor.text()).toContain('worker');
-    expect(actor.attributes('style') ?? '').toBe('');
-    expect(actor.find('span.inline-block').classes()).toEqual(expect.arrayContaining(['h-2', 'w-2', 'rounded-full', 'bg-blue-500', 'animate-pulse']));
+    expect(wrapper.find('[data-test="team-task-detail-agent-entry"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-task-detail-team-entry"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
 
-    expect(wrapper.get('[data-test="left-active-task-references"]').text()).toContain('References');
-    const reference = wrapper.get('[data-test="left-active-task-reference-row"]');
+    const summary = wrapper.get('[data-test="team-active-task-summary-row"]');
+    expect(summary.text()).toContain('Draft the implementation handoff');
+    expect(summary.text()).not.toContain('active');
+    expect(summary.find('.line-clamp-2').classes()).toEqual(expect.arrayContaining(['whitespace-pre-line', 'text-sm', 'leading-5']));
+
+    expect(wrapper.get('[data-test="team-active-task-references"]').text()).not.toContain('References');
+    const reference = wrapper.get('[data-test="team-active-task-reference-row"]');
     expect(reference.text()).toContain('requirements.md');
     expect(reference.classes()).toEqual(expect.arrayContaining(['text-sm', 'gap-2', 'text-blue-700']));
     await reference.trigger('click');
     expect(wrapper.emitted('select-reference')?.[0]).toEqual([{ memberRouteKey: 'team-run__worker__task_0001', referenceId: 'task-reference:0:/tmp/requirements.md' }]);
 
-    const details = wrapper.get('[data-test="left-active-task-technical-details"]');
+    const details = wrapper.get('[data-test="team-active-task-technical-details"]');
     expect(details.element.tagName).toBe('DETAILS');
     expect(details.attributes('open')).toBeUndefined();
     expect(details.text()).toContain('Technical details');
-    expect(details.get('summary').classes()).toEqual(expect.arrayContaining(['text-xs', 'text-gray-500', 'hover:text-gray-700']));
     expect(wrapper.get('[data-test="active-task-id"]').text()).toBe('task_0001');
     expect(wrapper.get('[data-test="active-task-run-id"]').text()).toBe('task-agent-run-1');
     expect(wrapper.get('[data-test="active-task-technical-input"]').classes()).toEqual(expect.arrayContaining(['max-h-28', 'overflow-auto']));
   });
 
-  it('renders a task-team root unindented and indents only member rows with shared status dots', async () => {
-    const wrapper = mountSubject([taskTeamEntry], {
-      focusedMemberRouteKey: 'task-team-run-1/solution_designer',
-    });
+  it('selects task-team detail summaries without emitting member focus', async () => {
+    const wrapper = mountSubject([taskTeamEntry]);
 
-    const summary = wrapper.get('[data-test="left-active-task-summary-row"]');
-    expect(summary.text()).toContain('Review the implementation as a team.');
-    expect(summary.find('span.inline-block').exists()).toBe(false);
+    expect(wrapper.get('[data-test="team-task-detail-team-entry"]').text()).toContain('Review the implementation as a team.');
+    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-members"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
 
-    const actor = wrapper.get('[data-test="left-active-task-actor-row"]');
-    expect(actor.text()).toContain('Software Engineering Team');
-    expect(actor.text()).toContain('Team');
-    expect(actor.attributes('style') ?? '').toBe('');
-    expect(actor.find('span.inline-block').classes()).toEqual(expect.arrayContaining(['bg-blue-500', 'animate-pulse']));
-
-    const member = wrapper.get('[data-test="left-active-task-member-row"]');
-    expect(member.text()).toContain('solution_designer');
-    expect(member.attributes('style')).toContain('margin-left: 12px');
-    expect(member.attributes('style')).toContain('width: calc(100% - 12px)');
-    expect(member.classes()).toEqual(expect.arrayContaining(['bg-blue-100', 'text-blue-900']));
-    expect(member.find('span.inline-block').classes()).toEqual(expect.arrayContaining(['bg-green-500']));
-
-    await summary.trigger('click');
-    await actor.trigger('click');
-    await member.trigger('click');
+    await wrapper.get('[data-test="team-active-task-summary-row"]').trigger('click');
 
     expect(wrapper.emitted('select-task')?.[0]).toEqual(['task-team-run-1']);
-    expect(wrapper.emitted('select-member')?.[0]).toEqual(['task-team-run-1']);
-    expect(wrapper.emitted('select-member')?.[1]).toEqual(['task-team-run-1/solution_designer']);
+    expect(wrapper.emitted('select-member')).toBeUndefined();
   });
 });

@@ -60,7 +60,6 @@
         :collapsed="!activeTasksExpanded"
         class="h-full"
         @toggle="toggleSection('activeTasks')"
-        @select-member="focusActiveTaskMember"
       />
     </div>
   </div>
@@ -158,11 +157,4 @@ const toggleSection = (section: TeamOverviewSection) => {
   expandedSection.value = expandedSection.value === section ? null : section;
 };
 
-const focusActiveTaskMember = async (memberRouteKey: string) => {
-  const teamRunId = activeTeamContext.value?.teamRunId;
-  if (!teamRunId) {
-    return;
-  }
-  await teamContextsStore.focusMemberAndEnsureHydrated(teamRunId, memberRouteKey);
-};
 </script>

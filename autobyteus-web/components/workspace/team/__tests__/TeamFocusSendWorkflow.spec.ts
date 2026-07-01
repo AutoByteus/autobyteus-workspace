@@ -300,33 +300,34 @@ describe('Team Tasks Focus + send-message workflow', () => {
     vi.clearAllMocks();
   });
 
-  it('focuses a task target from Tasks, sends to that focused target, and renders the submitted message', async () => {
+  it('selects task details from Tasks without changing the focused send target', async () => {
     const { wrapper, teamContextsStore, activeContextStore, sendMessageSpy } = mountWorkflow();
     await expandTasks(wrapper);
 
-    await wrapper.get('[data-test="left-task-agent-context"] [data-test="left-active-task-actor-row"]').trigger('click');
+    await wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
     await flushPromises();
     await nextTick();
 
-    expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('team-run__worker__task_0001');
-    expect(activeContextStore.activeAgentContext?.state.runId).toBe('task-agent-run-1');
-    expect(wrapper.get('[data-test="agent-event-monitor"]').attributes('data-run-id')).toBe('task-agent-run-1');
-    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('data-focused-route-key')).toBe('team-run__worker__task_0001');
+    expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('coordinator');
+    expect(activeContextStore.activeAgentContext?.state.runId).toBe('coordinator-run');
+    expect(wrapper.get('[data-test="agent-event-monitor"]').attributes('data-run-id')).toBe('coordinator-run');
+    expect(wrapper.get('[data-test="team-communication-panel"]').attributes('data-focused-route-key')).toBe('coordinator');
+    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Draft the implementation handoff.');
+    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
 
-    await sendViaComposer(wrapper, 'Please continue the task-agent draft.');
+    await sendViaComposer(wrapper, 'Please continue the coordinator work.');
 
-    const taskAgentContext = teamContextsStore.activeTeamContext?.leafAgentContextsByRouteKey.get('team-run__worker__task_0001');
-    expect(taskAgentContext?.state.conversation.messages.at(-1)).toEqual(expect.objectContaining({
+    const coordinatorContext = teamContextsStore.activeTeamContext?.leafAgentContextsByRouteKey.get('coordinator');
+    expect(coordinatorContext?.state.conversation.messages.at(-1)).toEqual(expect.objectContaining({
       type: 'user',
-      text: 'Please continue the task-agent draft.',
+      text: 'Please continue the coordinator work.',
     }));
-    expect(wrapper.get('[data-test="conversation-message"]').text()).toContain('Please continue the task-agent draft.');
+    expect(wrapper.get('[data-test="conversation-message"]').text()).toContain('Please continue the coordinator work.');
     expect(sendMessageSpy).toHaveBeenCalledTimes(1);
-    expect(sendMessageSpy.mock.calls[0][0]).toBe('Please continue the task-agent draft.');
+    expect(sendMessageSpy.mock.calls[0][0]).toBe('Please continue the coordinator work.');
     expect(sendMessageSpy.mock.calls[0][1]).toEqual({
       segments: [
-        { kind: 'member', memberRouteKey: 'worker' },
-        { kind: 'task_agent', taskAgentRunId: 'task-agent-run-1' },
+        { kind: 'member', memberRouteKey: 'coordinator' },
       ],
     });
   });
@@ -337,14 +338,15 @@ describe('Team Tasks Focus + send-message workflow', () => {
     await flushPromises();
     await nextTick();
 
-    await wrapper.get('[data-test="left-task-team-context"] [data-test="left-active-task-summary-row"]').trigger('click');
+    await wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
     await flushPromises();
     await nextTick();
 
     expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('coordinator');
     expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.find('[data-test="left-task-team-context"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-task-detail-team-entry"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="active-task-member-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="active-task-technical-details"]').exists()).toBe(false);
   });
