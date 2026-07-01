@@ -181,16 +181,17 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     expect(transientRow.attributes('style')).toContain('margin-left: 12px');
     expect(transientRow.classes()).toContain('bg-indigo-50/40');
     expect(transientRow.classes()).toContain('ring-indigo-200');
-    expect(transientRow.findAll('.rounded-full')).toHaveLength(1);
-    expect(transientRow.findAll('.border-dotted')).toHaveLength(1);
+    expect(transientRow.findAll('[data-test="workspace-transient-status-dot"]')).toHaveLength(1);
     const statusDot = transientRow.get('[data-test="workspace-transient-status-dot"]');
+    expect(statusDot.element.tagName.toLowerCase()).toBe('svg');
     expect(statusDot.classes()).toEqual(expect.arrayContaining([
-      'rounded-full',
-      'border-2',
-      'border-dotted',
-      'border-blue-500',
-      'bg-transparent',
+      'h-3',
+      'w-3',
+      'text-blue-700',
     ]));
+    const statusRing = statusDot.get('circle');
+    expect(statusRing.attributes('stroke-width')).toBe('2.35');
+    expect(statusRing.attributes('stroke-dasharray')).toBe('0.2 3.25');
     expect(transientRow.text()).toContain('worker · task_0001');
     expect(transientRow.text()).not.toContain('Temporary');
 
@@ -298,9 +299,10 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
     expect(transientRows).toHaveLength(2);
     for (const transientRow of transientRows) {
-      expect(transientRow.findAll('.rounded-full')).toHaveLength(1);
-      expect(transientRow.findAll('.border-dotted')).toHaveLength(1);
-      expect(transientRow.get('[data-test="workspace-transient-status-dot"]').classes()).toContain('border-2');
+      const statusDots = transientRow.findAll('[data-test="workspace-transient-status-dot"]');
+      expect(statusDots).toHaveLength(1);
+      expect(statusDots[0].element.tagName.toLowerCase()).toBe('svg');
+      expect(statusDots[0].get('circle').attributes('stroke-dasharray')).toBe('0.2 3.25');
     }
     expect(transientRows[1].attributes('data-transient-kind')).toBe('task_team_child');
     expect(transientRows[1].attributes('data-member-route-key')).toBe('task-team-run-1/review_lead');

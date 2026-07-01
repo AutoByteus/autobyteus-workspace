@@ -1,5 +1,24 @@
 <template>
+  <svg
+    v-if="props.variant === 'transient'"
+    :class="[workspaceTransientStatusDotBaseClass, dotClass]"
+    viewBox="0 0 12 12"
+    aria-hidden="true"
+  >
+    <circle
+      cx="6"
+      cy="6"
+      r="4.15"
+      fill="rgba(255,255,255,0.72)"
+      stroke="currentColor"
+      stroke-width="2.35"
+      stroke-linecap="round"
+      stroke-dasharray="0.2 3.25"
+      vector-effect="non-scaling-stroke"
+    />
+  </svg>
   <span
+    v-else
     :class="[workspaceStatusDotBaseClass, dotClass]"
     aria-hidden="true"
   />
@@ -14,6 +33,7 @@ import {
   agentStatusDotClass,
   teamTransientStatusDotClass,
   teamStatusDotClass,
+  workspaceTransientStatusDotBaseClass,
   workspaceStatusDotBaseClass,
   type WorkspaceStatusDotVariant,
 } from '~/utils/workspaceStatusDotPresentation';

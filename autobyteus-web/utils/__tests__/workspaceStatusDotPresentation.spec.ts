@@ -4,6 +4,7 @@ import {
   agentTransientStatusDotClass,
   teamStatusDotClass,
   teamTransientStatusDotClass,
+  workspaceTransientStatusDotBaseClass,
   workspaceStatusDotBaseClass,
 } from '~/utils/workspaceStatusDotPresentation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -12,6 +13,7 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 describe('workspaceStatusDotPresentation', () => {
   it('keeps the shared tiny workspace dot class shape', () => {
     expect(workspaceStatusDotBaseClass).toBe('inline-block h-2 w-2 flex-shrink-0 rounded-full');
+    expect(workspaceTransientStatusDotBaseClass).toBe('inline-block h-3 w-3 flex-shrink-0');
   });
 
   it('maps agent statuses to the workspace tree dot colors', () => {
@@ -32,11 +34,11 @@ describe('workspaceStatusDotPresentation', () => {
     expect(teamStatusDotClass('unexpected')).toBe('bg-gray-300');
   });
 
-  it('maps transient statuses to thick dotted hollow workspace tree dot colors', () => {
-    expect(agentTransientStatusDotClass(AgentStatus.Running)).toBe('border-2 border-dotted border-blue-500 bg-transparent animate-pulse');
-    expect(agentTransientStatusDotClass(AgentStatus.Idle)).toBe('border-2 border-dotted border-green-500 bg-transparent');
-    expect(agentTransientStatusDotClass('unexpected')).toBe('border-2 border-dotted border-gray-400 bg-transparent');
-    expect(teamTransientStatusDotClass(AgentTeamStatus.Error)).toBe('border-2 border-dotted border-red-500 bg-transparent');
-    expect(teamTransientStatusDotClass('unexpected')).toBe('border-2 border-dotted border-gray-300 bg-transparent');
+  it('maps transient statuses to darker SVG ring colors', () => {
+    expect(agentTransientStatusDotClass(AgentStatus.Running)).toBe('text-blue-700 animate-pulse');
+    expect(agentTransientStatusDotClass(AgentStatus.Idle)).toBe('text-green-700');
+    expect(agentTransientStatusDotClass('unexpected')).toBe('text-gray-600');
+    expect(teamTransientStatusDotClass(AgentTeamStatus.Error)).toBe('text-red-700');
+    expect(teamTransientStatusDotClass('unexpected')).toBe('text-gray-500');
   });
 });

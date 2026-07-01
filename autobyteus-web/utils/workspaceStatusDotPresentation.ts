@@ -2,6 +2,7 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 export const workspaceStatusDotBaseClass = 'inline-block h-2 w-2 flex-shrink-0 rounded-full';
+export const workspaceTransientStatusDotBaseClass = 'inline-block h-3 w-3 flex-shrink-0';
 export type WorkspaceStatusDotVariant = 'solid' | 'transient';
 
 const normalizeStatus = (status: AgentStatus | AgentTeamStatus | string | null | undefined): string => (
@@ -28,15 +29,15 @@ const statusDotClassByValue = (status: string, fallbackClass: string): string =>
 const transientStatusDotClassByValue = (status: string, fallbackClass: string): string => {
   switch (status) {
     case 'initializing':
-      return 'border-2 border-dotted border-amber-500 bg-transparent animate-pulse';
+      return 'text-amber-700 animate-pulse';
     case 'running':
-      return 'border-2 border-dotted border-blue-500 bg-transparent animate-pulse';
+      return 'text-blue-700 animate-pulse';
     case 'idle':
-      return 'border-2 border-dotted border-green-500 bg-transparent';
+      return 'text-green-700';
     case 'error':
-      return 'border-2 border-dotted border-red-500 bg-transparent';
+      return 'text-red-700';
     case 'offline':
-      return 'border-2 border-dotted border-gray-400 bg-transparent';
+      return 'text-gray-600';
     default:
       return fallbackClass;
   }
@@ -54,12 +55,12 @@ export const agentTransientStatusDotClass = (
   status: AgentStatus | string | null | undefined,
 ): string => transientStatusDotClassByValue(
   normalizeStatus(status),
-  'border-2 border-dotted border-gray-400 bg-transparent',
+  'text-gray-600',
 );
 
 export const teamTransientStatusDotClass = (
   status: AgentTeamStatus | string | null | undefined,
 ): string => transientStatusDotClassByValue(
   normalizeStatus(status),
-  'border-2 border-dotted border-gray-300 bg-transparent',
+  'text-gray-500',
 );
