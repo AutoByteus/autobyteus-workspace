@@ -188,8 +188,10 @@ describe('TeamActiveTasksSection', () => {
 
     expect(wrapper.get('[data-test="team-task-detail-agent-entry"]').text()).toContain('Draft the implementation handoff.');
     expect(wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('task_0001');
+    expect(wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('active');
     expect(wrapper.get('[data-test="team-task-detail-team-entry"]').text()).toContain('Review the implementation as a team.');
     expect(wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('task_0002');
+    expect(wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('awaiting_review');
     expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="left-active-task-members"]').exists()).toBe(false);

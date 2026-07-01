@@ -14,23 +14,10 @@
         :title="taskSummary(entry)"
         @click="$emit('select-task', entry.node.memberRouteKey)"
       >
-        <span class="flex min-w-0 items-start gap-2">
-          <StatusDot
-            class="mt-1.5"
-            :kind="entry.kind === 'task_team' ? 'team' : 'agent'"
-            :status="entry.status"
-          />
-          <span class="min-w-0 flex-1">
-            <span class="line-clamp-2 whitespace-pre-line text-sm leading-5">{{ taskSummary(entry) }}</span>
-            <span class="mt-1 block truncate text-[0.6875rem] uppercase tracking-wide text-slate-400">
-              {{ entry.statusLabel }}
-            </span>
-          </span>
-        </span>
+        <span class="line-clamp-2 whitespace-pre-line text-sm leading-5">{{ taskSummary(entry) }}</span>
       </button>
 
-      <div v-if="entry.taskReferenceFiles.length" class="space-y-1 px-3 pb-2 pl-9" data-test="team-active-task-references">
-        <p class="px-1 text-xs font-semibold uppercase tracking-wide text-gray-500">References</p>
+      <div v-if="entry.taskReferenceFiles.length" class="space-y-1 px-3 pb-2" data-test="team-active-task-references">
         <button
           v-for="reference in entry.taskReferenceFiles"
           :key="reference.referenceId"
@@ -74,7 +61,6 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import type { ActiveTaskEntry } from '~/utils/teamActiveTaskEntries';
 import {
   referenceFileIcon,

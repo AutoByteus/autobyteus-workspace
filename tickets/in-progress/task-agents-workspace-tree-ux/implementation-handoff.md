@@ -137,3 +137,19 @@
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 Required. Implementation-scoped unit/component checks passed, but API/E2E coverage investigation and execution still need to validate the live projection lifecycle, real click-to-focus path, cleanup disappearance, and integrated left/right UX split.
+
+## Rework Addendum: Clean Right Team Tasks Summary Rows (2026-07-01)
+
+- User reviewed the right Team -> Tasks panel and clarified that the leading blue status dot plus visible `ACTIVE`/status text in the task summary row made the task content area feel redundant and less clean.
+- This was handled as a local implementation fix because the approved boundary already states: left Workspaces tree owns execution identity/status awareness; right Team -> Tasks owns task detail/content in a message-style layout.
+- `TeamActiveTaskNavigator.vue` now renders the task summary directly without a leading `StatusDot` and without a visible uppercase status label in the summary row.
+- Task references remain below the summary in a message-style reference list; the extra `References` heading was removed to better match the existing Team Messages reference-row style.
+- The right side still keeps task technical metadata behind the existing collapsed `Technical details` disclosure and still does not render actor/member execution hierarchy rows or emit member-focus actions.
+- Rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/tickets/in-progress/task-agents-workspace-tree-ux/implementation-team-tasks-clean-summary-rework-note.md`
+- Focused validation run after this cleanup:
+  - `pnpm exec nuxi prepare`
+  - `pnpm test:nuxt run components/workspace/team/__tests__/TeamActiveTaskNavigator.spec.ts components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts`
+  - `git diff --check`
+  - `pnpm guard:web-boundary`
+  - `pnpm guard:localization-boundary`
+  - `pnpm audit:localization-literals`

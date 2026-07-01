@@ -98,7 +98,7 @@ const taskTeamEntry = {
 };
 
 describe('TeamActiveTaskNavigator', () => {
-  it('renders task detail summary, references, and collapsed metadata without actor hierarchy rows', async () => {
+  it('renders task detail summary, message-style references, and collapsed metadata without actor hierarchy rows', async () => {
     const wrapper = mountSubject([singleAgentEntry], {
       selectedTaskRouteKey: 'team-run__worker__task_0001',
       selectedReferenceId: 'task-reference:0:/tmp/requirements.md',
@@ -111,10 +111,10 @@ describe('TeamActiveTaskNavigator', () => {
 
     const summary = wrapper.get('[data-test="team-active-task-summary-row"]');
     expect(summary.text()).toContain('Draft the implementation handoff');
-    expect(summary.text()).toContain('active');
+    expect(summary.text()).not.toContain('active');
     expect(summary.find('.line-clamp-2').classes()).toEqual(expect.arrayContaining(['whitespace-pre-line', 'text-sm', 'leading-5']));
 
-    expect(wrapper.get('[data-test="team-active-task-references"]').text()).toContain('References');
+    expect(wrapper.get('[data-test="team-active-task-references"]').text()).not.toContain('References');
     const reference = wrapper.get('[data-test="team-active-task-reference-row"]');
     expect(reference.text()).toContain('requirements.md');
     expect(reference.classes()).toEqual(expect.arrayContaining(['text-sm', 'gap-2', 'text-blue-700']));
