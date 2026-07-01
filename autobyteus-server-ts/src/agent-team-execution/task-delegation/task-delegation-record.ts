@@ -205,16 +205,16 @@ export type TaskDelegationStatusUpdatePayload = {
   terminal: boolean;
 };
 
-export type DelegateTaskResult = {
-  target: { kind: TaskDelegationTarget["kind"]; name: string };
-  task_id: string;
-  execution_kind: TaskExecutionInstance["kind"] | null;
-  task_agent_run_id: string | null;
-  task_team_run_id: string | null;
-  status: TaskDelegationStatus;
-  activation_accepted: boolean;
-  message: string | null;
-};
+export type DelegateTaskResult =
+  | {
+      task_id: string;
+      status: "active";
+    }
+  | {
+      task_id: string;
+      status: "not_started";
+      message: string;
+    };
 
 export type TaskDelegationResultSubmittedPayload = {
   teamRunId: string;
@@ -258,21 +258,19 @@ export type TaskDelegationResultReviewedPayload = {
 export type SubmitTaskResultResult = {
   task_id: string;
   status: "awaiting_review";
-  submission_id: string;
-  notification_delivered: boolean;
-  warnings: TaskDelegationWarning[];
+  message?: string;
 };
 
-export type ReviewTaskResultResult = {
-  task_id: string;
-  status: "active" | "accepted";
-  decision: TaskResultReviewDecision;
-  review_id: string;
-  reviewed_submission_id: string;
-  notification_delivered: boolean | null;
-  settlement_requested: boolean;
-  warnings: TaskDelegationWarning[];
-};
+export type ReviewTaskResultResult =
+  | {
+      task_id: string;
+      status: "accepted";
+    }
+  | {
+      task_id: string;
+      status: "active";
+      message?: string;
+    };
 
 export class TaskDelegationError extends Error {
   constructor(

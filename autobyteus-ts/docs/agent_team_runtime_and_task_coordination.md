@@ -96,6 +96,9 @@ independent tasks are represented by multiple `delegate_task` calls. For
 sequential follow-up work, the coordinator reviews task A's submitted result and
 then calls `delegate_task` again for task B; a later team-target task receives a
 fresh task-team run identity rather than reusing the completed run.
+The public `delegate_task` result returns only the task id and
+`status: "active"` after successful activation; activation failure returns the
+task id, `status: "not_started"`, and a concise failure `message`.
 
 ### Result submission and review
 
@@ -114,16 +117,24 @@ Task-agents and task-team ingress contexts submit reviewable output with
 the bound execution context, so the model must not pass task selectors such as
 `task_id`, `task_name`, `member_name`, or status fields. Successful submission
 records a stable submission id, moves the task to `awaiting_review`, and
-system-notifies the task review owner.
+system-notifies the task review owner. The public submission result returns only
+the task id and `status: "awaiting_review"` unless notification delivery fails
+after the submission is recorded, in which case it adds only a concise
+`message`.
 
 The task review owner reviews the latest pending submission with
 `review_task_result({ task_id, decision, comment?, reference_files? })`.
 `decision="request_revision"` requires a non-empty task-result comment and
 system-notifies the same task execution instance. `decision="accept"` marks
 the task accepted and requests safe settlement for the task-agent or task-team
-execution. Every
-review records the reviewed submission id so multi-cycle result/revision history
-is explicit.
+execution. Every review records the reviewed submission id so multi-cycle
+result/revision history is explicit. The public review result returns only the
+task id and resulting
+status: `status: "accepted"` for acceptance or `status: "active"` for a revision
+request. A non-fatal revision-notification failure adds only a concise
+`message`; review ids, reviewed submission ids, caller-selected decisions,
+settlement bookkeeping, notification booleans, and raw warning objects remain
+internal lifecycle/event details.
 
 `send_message_to` remains available for ordinary teammate communication and
 handoffs. It is not the task result, revision, acceptance, or finalization
@@ -140,7 +151,8 @@ Server-owned task delegation is event-driven rather than model-polled:
   projection containing `reviewId`, `reviewedSubmissionId`, review `comment`,
   and `acceptanceComment` when the acceptance path includes feedback;
 - system notification delivery failure does not roll back valid lifecycle state;
-  tool results return `notification_delivered` and deterministic `warnings[]`.
+  public submission/revision results surface only a concise `message`, while
+  deterministic notification warning details remain internal.
 
 Task-agent events carry explicit `task_agent_instance_id`, `task_agent_run_id`,
 and `task_id`. Task-team root events carry `execution_kind: "task_team"`,

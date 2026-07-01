@@ -185,10 +185,11 @@ The happy path is push-based:
    `task_team_instance_id`; the accountable owner remains the logical team
    target, but team/accountable labels stay in metadata/events rather than the
    runtime packet body or visible activation copy.
-5. Accepted activations mark the record `active`, mark the exact execution run
-   reachable, and emit `TASK_DELEGATION_ACTIVATED`; rejected activations roll
-   the record back to `not_started`, unregister the starting execution, and are
-   returned to the tool caller as the direct `delegate_task` activation outcome.
+5. Successful activations mark the record `active`, mark the exact execution run
+   reachable, and emit `TASK_DELEGATION_ACTIVATED`; failed activations leave
+   the record `not_started`, unregister the starting execution, and return the
+   activation-failure reason to the tool caller without framing the target as
+   rejecting work.
 6. The bound task-agent or task-team ingress context calls `submit_task_result`.
    The ledger records a distinct submission id, moves the task to
    `awaiting_review`, sets `pendingSubmissionId`, emits
@@ -202,8 +203,10 @@ The happy path is push-based:
    and requests safe settlement.
 8. Notification delivery is non-transactional after valid lifecycle mutation:
    committed state and events remain authoritative even if the system input is
-   rejected. Tool results expose `notification_delivered` and deterministic
-   `warnings[]` with `TASK_NOTIFICATION_DELIVERY_FAILED` when delivery fails.
+   rejected. Public `submit_task_result` and revision-request
+   `review_task_result` calls still succeed for the recorded lifecycle change,
+   but return only a concise public `message` when notification delivery fails;
+   raw notification warning objects and route/run ids remain internal.
 9. Task-agent settlement waits for an idle/offline event from the bound
    task-agent run, verifies there is no non-terminal assigned work or child
    delegation owned by that run, protects the coordinator by default, and calls
@@ -233,6 +236,25 @@ mixed leaf delivery, the member boundary forwards the input to the runtime and
 emits one local `SYSTEM_TASK_NOTIFICATION` event for the target conversation
 instead of also publishing a `MEMBER_INPUT` echo. Ordinary user messages and inter-agent deliveries continue to use `MEMBER_INPUT`; task-delegation notification
 messages must not use both live surfaces for the same payload.
+
+Agent-facing task-delegation tool results are intentionally smaller than the
+internal lifecycle events:
+
+- Successful `delegate_task` returns only `task_id` and `status: "active"`;
+  activation failure returns `task_id`, `status: "not_started"`, and a concise
+  `message`.
+- Successful `submit_task_result` returns only `task_id` and
+  `status: "awaiting_review"`; if reviewer/delegator notification delivery
+  fails after the submission is recorded, the result adds only a concise
+  `message`.
+- Successful `review_task_result` returns only `task_id` and the resulting
+  `status` (`"accepted"` for accept, `"active"` for revision). A non-fatal
+  revision-notification delivery failure adds a concise `message`.
+
+Internal execution identities, submission/review ids, review decisions,
+settlement state, and notification warning objects remain available through
+ledger, event, notification, and websocket payloads rather than through public
+tool results.
 
 `TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the
 domain stream and are flattened to WebSocket `TASK_DELEGATION_EVENT` messages.
