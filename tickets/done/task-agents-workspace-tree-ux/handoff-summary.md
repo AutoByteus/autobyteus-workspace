@@ -2,11 +2,11 @@
 
 ## Status
 
-User verification received on 2026-07-01: “the task is done. lets finalize and release a new version. follow finalization guidelines”. The branch was current with the latest tracked `origin/personal`, the post-cleanup source state passed Code Review Round 7 and API/E2E Round 6, durable docs were refreshed, and a fresh local macOS Electron package build completed for testing before finalization began.
+Finalized and released. User verification was received on 2026-07-01, the ticket was archived, the implementation was merged to `personal`, release `v1.3.90` was tagged and pushed, and tag-triggered GitHub release workflows were started. The dedicated ticket worktree and ticket branches were cleaned up after finalization.
 
 ## Integrated Branch State
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/task-agents-workspace-tree-ux`
 - Bootstrap base: `origin/personal` at `b3a2b15393bbf16fefccce9174b982a641bd42dc`
 - Latest tracked base checked for this delivery refresh: `origin/personal` at `4331f1013cbefbf6409d6c45b269ee31ca9da562`
@@ -41,12 +41,12 @@ User verification received on 2026-07-01: “the task is done. lets finalize and
 
 ## Docs Sync
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/tickets/done/task-agents-workspace-tree-ux/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-agents-workspace-tree-ux/docs-sync-report.md`
 - Long-lived docs updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/autobyteus-web/docs/agent_execution_architecture.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/autobyteus-web/docs/settings.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/autobyteus-web/docs/agent_teams.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/autobyteus-web/docs/agent_artifacts.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_teams.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_artifacts.md`
 
 ## Validation Summary
 
@@ -70,7 +70,7 @@ Delivery refresh and package validation:
 
 - `git fetch origin --prune` — passed on 2026-07-01.
 - Latest tracked base already integrated/current; no new base commits required a delivery merge.
-- README build guidance reviewed in `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/autobyteus-web/README.md` lines 227-250.
+- README build guidance reviewed in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md` lines 227-250.
 - Fresh local macOS Electron build command passed from `autobyteus-web`: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac`.
 - The Electron build included guard checks, localization audit, server preparation, mobile/static generation, Electron renderer generation, Electron TypeScript transpilation, native module rebuild, and `electron-builder` macOS arm64 DMG/ZIP packaging.
 - Non-blocking build output included the known localization module-type warning, Vite chunk-size warnings, pnpm peer/deprecation warnings during server deploy, and skipped macOS code signing because identity was explicitly null for the local no-notarization build.
@@ -78,11 +78,11 @@ Delivery refresh and package validation:
 
 ## Local Electron Test Build
 
-Fresh artifacts produced for local macOS arm64 testing:
+Fresh artifacts were produced for local macOS arm64 testing before finalization, then removed with the dedicated ticket worktree cleanup:
 
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.89.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.89.zip`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.89.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.89.zip`
 
 Checksums:
 
@@ -102,8 +102,8 @@ Latest Round 6 browser artifacts:
 
 Explicit dot-ring implementation artifacts:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/tickets/done/task-agents-workspace-tree-ux/transient-explicit-dot-ring-visual.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/tickets/done/task-agents-workspace-tree-ux/transient-explicit-dot-ring-visual-metrics.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-agents-workspace-tree-ux/transient-explicit-dot-ring-visual.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-agents-workspace-tree-ux/transient-explicit-dot-ring-visual-metrics.json`
 
 ## Known Limitations / Non-Gates
 
@@ -115,4 +115,4 @@ Explicit dot-ring implementation artifacts:
 
 ## Finalization State
 
-User verification was received and the ticket has been archived under `tickets/done/task-agents-workspace-tree-ux/`. Repository finalization and release version `1.3.90` are in progress under the delivery workflow; see `delivery-release-deployment-report.md` for the authoritative finalization/release outcome.
+Repository finalization completed. Ticket branch finalization commit: `3bf0ce629437db33002efba862c653f442f97bb3`. Release commit: `ef491ddc9dcd27012f20e26ab33d920532c73262`. Release tag: `v1.3.90`. See `delivery-release-deployment-report.md` for workflow URLs and cleanup details.
