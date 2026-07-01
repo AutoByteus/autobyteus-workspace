@@ -10,8 +10,16 @@ export const hydrateTeamCommunicationMessages = (
   useTeamCommunicationStore().replaceProjection(teamRunId, messages);
 };
 
+interface TeamCommunicationHydrationClient {
+  query: <TData>(options: {
+    query: unknown;
+    variables: Record<string, unknown>;
+    fetchPolicy: string;
+  }) => Promise<{ data?: TData; errors?: Array<{ message: string }> }>;
+}
+
 export const fetchAndHydrateTeamCommunicationForTeam = async (params: {
-  client: any;
+  client: TeamCommunicationHydrationClient;
   teamRunId: string;
 }): Promise<void> => {
   try {

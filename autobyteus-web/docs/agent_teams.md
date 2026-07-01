@@ -275,6 +275,11 @@ instead of encoding runtime ids into route-key strings. Draft context files,
 finalized attachment ownership, and optimistic local user messages use the
 resolver's local target key, while outbound team chat sends
 `SEND_MESSAGE.conversation_target_address` as the backend routing contract.
+The Team Messages perspective uses the same focused
+`ConversationTargetAddress` and exact normalized address equality against
+address-first `senderAddress` / `receiverAddress` message fields, so focused
+task-team and task-agent rows do not rely on display-name or route-key fallback
+matching.
 Missing or stale focused members and incomplete runtime identity fail validation
 instead of silently retargeting; the active-execution safety fallback is only
 used for task-agent-only logical-member conversations that should not receive
@@ -356,9 +361,19 @@ that are distinct from the structural `agent_team` member. Child-member events
 inside a task-team run must carry `task_team_run_id` plus relative child route
 or path fields, and the client scopes those child nodes/contexts under the
 concrete task-team run. Logical member/team parents remain part of the stable
-team topology. Active-execution focus, send/approval targeting, interrupt, and
-run-open hydration use explicit task execution identity instead of parsing
-generated run-id formats or guessing from structural team names.
+team topology. The Workspaces tree renders those live task projections inline as
+transient execution identity rows with explicit stable/transient display
+semantics: a ghost row background, exactly one leading explicit eight-dot SVG
+ring status marker, no extra dotted avatar/trailing marker, and no visible
+temporary label. Transient task-team children are revealed only through the
+execution row's own identity-keyed disclosure. Team → Active Tasks remains the
+clean task body/reference/technical-detail surface: summary rows show task text
+without a leading status dot or visible status label, reference rows are
+selectable without a separate visible `References` heading, and actor/member
+hierarchy, focus controls, and approval controls stay out of the right pane.
+Active-execution focus, send/approval targeting, interrupt, and run-open
+hydration use explicit task execution identity instead of parsing generated
+run-id formats or guessing from structural team names.
 
 Subteam focus is a real UI state. Focusing a subteam such as `BuildSquad`
 shows the subteam Team Messages perspective, while focusing a leaf such as

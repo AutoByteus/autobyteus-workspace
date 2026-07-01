@@ -183,25 +183,27 @@ describe('TeamActiveTasksSection', () => {
     expect(wrapper.find('[data-test="team-active-tasks-navigator"]').exists()).toBe(true);
   });
 
-  it('renders the team-owned left navigator hierarchy and a props-driven right detail pane', () => {
+  it('renders task detail navigation without duplicating execution hierarchy rows', () => {
     const wrapper = mountSubject();
 
-    expect(wrapper.get('[data-test="left-task-agent-context"]').text()).toContain('Draft the implementation handoff.');
-    expect(wrapper.get('[data-test="left-task-agent-context"]').text()).toContain('worker');
-    expect(wrapper.get('[data-test="left-task-agent-context"] [data-test="left-active-task-summary-row"]').text()).not.toContain('task_0001');
-    expect(wrapper.get('[data-test="left-task-team-context"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.get('[data-test="left-task-team-context"] [data-test="left-active-task-summary-row"]').text()).not.toContain('task_0002');
-    expect(wrapper.get('[data-test="left-task-team-context"] [data-test="left-active-task-actor-row"]').text()).toContain('software_engineering_team');
-    expect(wrapper.get('[data-test="left-active-task-member-row"]').text()).toContain('solution_designer');
-    expect(wrapper.get('[data-test="left-active-task-references"]').text()).toContain('design-spec.md');
-    expect(wrapper.get('[data-test="left-active-task-technical-details"]').text()).toContain('Technical details');
+    expect(wrapper.get('[data-test="team-task-detail-agent-entry"]').text()).toContain('Draft the implementation handoff.');
+    expect(wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('task_0001');
+    expect(wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('active');
+    expect(wrapper.get('[data-test="team-task-detail-team-entry"]').text()).toContain('Review the implementation as a team.');
+    expect(wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('task_0002');
+    expect(wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('awaiting_review');
+    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-members"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="team-active-task-references"]').text()).toContain('design-spec.md');
+    expect(wrapper.get('[data-test="team-active-task-technical-details"]').text()).toContain('Technical details');
 
     expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
     expect(wrapper.find('[data-test="active-task-focus-primary"]').exists()).toBe(false);
     expect(wrapper.get('[data-test="active-task-task-detail"]').text()).not.toContain('software_engineering_team');
     expect(wrapper.get('[data-test="active-task-task-detail"]').text()).not.toContain('Task Team');
     expect(wrapper.find('[data-test="active-task-technical-details"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="active-task-detail-pane"]').find('[data-test="left-active-task-reference-row"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="active-task-detail-pane"]').find('[data-test="team-active-task-reference-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="active-task-member-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="active-task-approve-tool"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="active-task-deny-tool"]').exists()).toBe(false);
@@ -209,7 +211,7 @@ describe('TeamActiveTasksSection', () => {
 
   it('switches the whole right pane to a task-owned reference preview and refreshes repeated reference selections', async () => {
     const wrapper = mountSubject();
-    const reference = wrapper.findAll('[data-test="left-active-task-reference-row"]')[0];
+    const reference = wrapper.findAll('[data-test="team-active-task-reference-row"]')[0];
 
     await reference.trigger('click');
 
@@ -227,11 +229,11 @@ describe('TeamActiveTasksSection', () => {
 
   it('returns from reference preview to task body when a summary row is selected', async () => {
     const wrapper = mountSubject();
-    const reference = wrapper.findAll('[data-test="left-active-task-reference-row"]')[0];
+    const reference = wrapper.findAll('[data-test="team-active-task-reference-row"]')[0];
     await reference.trigger('click');
     expect(wrapper.find('[data-test="active-task-reference-preview"]').exists()).toBe(true);
 
-    await wrapper.get('[data-test="left-task-team-context"] [data-test="left-active-task-summary-row"]').trigger('click');
+    await wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
     expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
     expect(wrapper.find('[data-test="active-task-reference-preview"]').exists()).toBe(false);
   });
@@ -258,30 +260,25 @@ describe('TeamActiveTasksSection', () => {
     window.dispatchEvent(new MouseEvent('mouseup'));
   });
 
-  it('selects task summaries for reading without focusing; explicit actor rows emit focus requests', async () => {
+  it('selects task summaries for reading without focusing execution targets', async () => {
     const wrapper = mountSubject();
 
-    await wrapper.get('[data-test="left-task-agent-context"] [data-test="left-active-task-summary-row"]').trigger('click');
+    await wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
 
     expect(wrapper.emitted('select-member')).toBeUndefined();
     expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Draft the implementation handoff.');
-
-    await wrapper.get('[data-test="left-task-agent-context"] [data-test="left-active-task-actor-row"]').trigger('click');
-    expect(wrapper.emitted('select-member')?.[0]).toEqual(['team-run__worker__task_0001']);
+    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="active-task-focus-primary"]').exists()).toBe(false);
   });
 
-  it('emits focus only from task-team actor/member rows, not from task-team summary selection', async () => {
+  it('keeps task-team summary selection detail-only with no member navigation', async () => {
     const wrapper = mountSubject();
 
-    await wrapper.get('[data-test="left-task-team-context"] [data-test="left-active-task-summary-row"]').trigger('click');
+    await wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
     expect(wrapper.emitted('select-member')).toBeUndefined();
-
-    await wrapper.get('[data-test="left-task-team-context"] [data-test="left-active-task-actor-row"]').trigger('click');
-    await wrapper.get('[data-test="left-active-task-member-row"]').trigger('click');
-
-    expect(wrapper.emitted('select-member')?.[0]).toEqual(['task-team-run-1']);
-    expect(wrapper.emitted('select-member')?.[1]).toEqual(['task-team-run-1/solution_designer']);
+    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
   });
 
   it('shows the empty active task state', () => {

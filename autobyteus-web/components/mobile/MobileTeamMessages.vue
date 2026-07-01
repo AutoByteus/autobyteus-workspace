@@ -70,6 +70,7 @@ import {
   referenceFileIcon,
   referenceFileName,
 } from '~/utils/teamCommunication/referenceFilePresentation';
+import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -89,17 +90,14 @@ const activeTeamContext = computed(() => {
   if (selectionStore.selectedType !== 'team' || selectionStore.selectedRunId !== props.context.teamRunId) return null;
   return teamContextsStore.getTeamContextById(props.context.teamRunId) ?? null;
 });
-const focusedMemberContext = computed(() => teamContextsStore.focusedMemberContext);
-const focusedMemberNode = computed(() => teamContextsStore.focusedMemberNode);
 const messages = computed(() => {
   const team = activeTeamContext.value;
   if (!team) return [];
-  return teamCommunicationStore.getPerspectiveForMember(team.teamRunId, {
-    memberRunId: focusedMemberContext.value?.state.runId || focusedMemberNode.value?.memberRunId || null,
-    memberRouteKey: focusedMemberNode.value?.memberRouteKey || null,
-    memberPath: focusedMemberNode.value?.memberPath || null,
-    memberKind: focusedMemberNode.value?.memberKind || null,
-  }).messages;
+  const focusedAddress = resolveTeamConversationTargetAddressResult(team, {
+    allowSubteam: true,
+    allowActiveExecutionSafetyFallback: true,
+  }).target?.address ?? null;
+  return teamCommunicationStore.getPerspectiveForAddress(team.teamRunId, focusedAddress).messages;
 });
 
 function openReference(
@@ -121,11 +119,7 @@ function messageLabel(message: TeamCommunicationPerspectiveMessage): string {
 }
 
 function counterpart(message: TeamCommunicationPerspectiveMessage): string {
-  const name = message.counterpartMemberPath?.filter(Boolean).join(' / ')
-    || message.counterpartMemberRouteKey
-    || message.counterpartMemberName
-    || message.counterpartRunId
-    || 'teammate';
+  const name = message.counterpartLabel || 'teammate';
   return message.direction === 'sent' ? `To ${name}` : `From ${name}`;
 }
 

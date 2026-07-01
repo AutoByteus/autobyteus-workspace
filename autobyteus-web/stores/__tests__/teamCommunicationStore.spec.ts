@@ -1,313 +1,234 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useTeamCommunicationStore } from '../teamCommunicationStore';
+import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+
+const member = (memberRouteKey: string): ConversationTargetAddress => ({
+  segments: [{ kind: 'member', memberRouteKey }],
+});
+
+const taskAgent = (memberRouteKey: string, taskAgentRunId: string): ConversationTargetAddress => ({
+  segments: [
+    { kind: 'member', memberRouteKey },
+    { kind: 'task_agent', taskAgentRunId },
+  ],
+});
+
+const taskTeamRoot = (logicalTeamRouteKey: string, taskTeamRunId: string): ConversationTargetAddress => ({
+  segments: [
+    { kind: 'member', memberRouteKey: logicalTeamRouteKey },
+    { kind: 'task_team', taskTeamRunId },
+  ],
+});
+
+const taskTeamChild = (
+  logicalTeamRouteKey: string,
+  taskTeamRunId: string,
+  childRouteKey: string,
+): ConversationTargetAddress => ({
+  segments: [
+    { kind: 'member', memberRouteKey: logicalTeamRouteKey },
+    { kind: 'task_team', taskTeamRunId },
+    { kind: 'member', memberRouteKey: childRouteKey },
+  ],
+});
+
+const taskTeamChildTaskAgent = (
+  logicalTeamRouteKey: string,
+  taskTeamRunId: string,
+  childRouteKey: string,
+  taskAgentRunId: string,
+): ConversationTargetAddress => ({
+  segments: [
+    { kind: 'member', memberRouteKey: logicalTeamRouteKey },
+    { kind: 'task_team', taskTeamRunId },
+    { kind: 'member', memberRouteKey: childRouteKey },
+    { kind: 'task_agent', taskAgentRunId },
+  ],
+});
 
 describe('teamCommunicationStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
   });
 
-  it('hydrates and groups focused-member sent and received messages by counterpart', () => {
+  it('hydrates and groups focused-member sent and received messages by counterpart address', () => {
     const store = useTeamCommunicationStore();
 
     store.replaceProjection('team-1', [
       {
         messageId: 'message-sent',
-        teamRunId: 'team-1',
-        senderRunId: 'focused-run',
-        senderMemberName: 'Focused',
-        receiverRunId: 'reviewer-run',
-        receiverMemberName: 'Reviewer',
+        senderAddress: member('focused'),
+        receiverAddress: member('reviewer'),
         content: 'Please review the implementation.',
         messageType: 'handoff',
         createdAt: '2026-04-08T00:00:01.000Z',
-        updatedAt: '2026-04-08T00:00:01.000Z',
         referenceFiles: [{ referenceId: 'ref-1', path: '/tmp/implementation.md', type: 'file', createdAt: '2026-04-08T00:00:01.000Z', updatedAt: '2026-04-08T00:00:01.000Z' }],
       },
       {
         messageId: 'message-received',
-        teamRunId: 'team-1',
-        senderRunId: 'designer-run',
-        senderMemberName: 'Designer',
-        receiverRunId: 'focused-run',
-        receiverMemberName: 'Focused',
+        senderAddress: member('designer'),
+        receiverAddress: member('focused'),
         content: 'Please implement the reviewed design.',
         messageType: 'assignment',
         createdAt: '2026-04-08T00:00:02.000Z',
-        updatedAt: '2026-04-08T00:00:02.000Z',
         referenceFiles: [],
       },
     ]);
 
-    const perspective = store.getPerspectiveForMember('team-1', 'focused-run');
+    const perspective = store.getPerspectiveForAddress('team-1', member('focused'));
 
     expect(perspective.sentGroups).toEqual([
       expect.objectContaining({
-        counterpartRunId: 'reviewer-run',
-        counterpartMemberName: 'Reviewer',
+        counterpartKey: 'member:reviewer',
+        counterpartLabel: 'reviewer',
         messages: [expect.objectContaining({ messageId: 'message-sent', direction: 'sent' })],
       }),
     ]);
     expect(perspective.receivedGroups).toEqual([
       expect.objectContaining({
-        counterpartRunId: 'designer-run',
-        counterpartMemberName: 'Designer',
+        counterpartKey: 'member:designer',
+        counterpartLabel: 'designer',
         messages: [expect.objectContaining({ messageId: 'message-received', direction: 'received' })],
       }),
     ]);
     expect(perspective.messages.map((message) => message.messageId)).toEqual(['message-received', 'message-sent']);
   });
 
-  it('matches a focused subteam perspective by route and path without a member run id', () => {
-    const store = useTeamCommunicationStore();
-
-    store.replaceProjection('team-1', [
-      {
-        messageId: 'message-to-build-squad',
-        teamRunId: 'team-1',
-        senderRunId: 'pm-run',
-        senderMemberKind: 'agent',
-        senderMemberName: 'program_manager',
-        senderMemberPath: ['program_manager'],
-        senderMemberRouteKey: 'program_manager',
-        receiverRunId: 'internal-child-team-run',
-        receiverMemberKind: 'agent_team',
-        receiverMemberName: 'BuildSquad',
-        receiverMemberPath: ['BuildSquad'],
-        receiverMemberRouteKey: 'BuildSquad',
-        content: 'Please coordinate this build.',
-        messageType: 'assignment',
-        createdAt: '2026-04-08T00:00:03.000Z',
-        updatedAt: '2026-04-08T00:00:03.000Z',
-        referenceFiles: [],
-      },
-    ]);
-
-    const perspective = store.getPerspectiveForMember('team-1', {
-      memberKind: 'agent_team',
-      memberRouteKey: 'BuildSquad',
-      memberPath: ['BuildSquad'],
-    });
-
-    expect(perspective.receivedGroups).toEqual([
-      expect.objectContaining({
-        counterpartMemberRouteKey: 'program_manager',
-        messages: [expect.objectContaining({ messageId: 'message-to-build-squad', direction: 'received' })],
-      }),
-    ]);
-    expect(perspective.messages.map((message) => message.messageId)).toEqual(['message-to-build-squad']);
-  });
-
-  it('matches a nested leaf by route/path when the runtime run id is stale', () => {
+  it('matches static nested members by exact normalized address', () => {
     const store = useTeamCommunicationStore();
 
     store.replaceProjection('team-1', [
       {
         messageId: 'message-to-review-lead',
-        teamRunId: 'team-1',
-        senderRunId: 'pm-run',
-        senderMemberKind: 'agent',
-        senderMemberName: 'program_manager',
-        senderMemberPath: ['program_manager'],
-        senderMemberRouteKey: 'program_manager',
-        receiverRunId: 'new-review-run',
-        receiverMemberKind: 'agent',
-        receiverMemberName: 'review_lead',
-        receiverMemberPath: ['BuildSquad', 'review_lead'],
-        receiverMemberRouteKey: 'BuildSquad/review_lead',
+        senderAddress: member('program_manager'),
+        receiverAddress: member('BuildSquad/review_lead'),
         content: 'Please review this implementation.',
         messageType: 'handoff',
         createdAt: '2026-04-08T00:00:04.000Z',
-        updatedAt: '2026-04-08T00:00:04.000Z',
         referenceFiles: [],
       },
     ]);
 
-    const perspective = store.getPerspectiveForMember('team-1', {
-      memberRunId: 'stale-review-run',
-      memberKind: 'agent',
-      memberRouteKey: 'BuildSquad/review_lead',
-      memberPath: ['BuildSquad', 'review_lead'],
-    });
+    const perspective = store.getPerspectiveForAddress('team-1', member('BuildSquad/review_lead'));
 
     expect(perspective.messages).toEqual([
       expect.objectContaining({
         messageId: 'message-to-review-lead',
         direction: 'received',
-        counterpartMemberRouteKey: 'program_manager',
+        counterpartKey: 'member:program_manager',
       }),
     ]);
   });
 
-  it('matches represented-subteam communication when the visible participant is the child representative leaf', () => {
+  it('matches task-agent messages by member plus task_agent segment', () => {
     const store = useTeamCommunicationStore();
 
     store.replaceProjection('team-1', [
       {
-        messageId: 'message-to-review-lead-representing-build-squad',
-        teamRunId: 'team-1',
-        senderRunId: 'pm-run',
-        senderMemberKind: 'agent',
-        senderMemberName: 'program_manager',
-        senderMemberPath: ['program_manager'],
-        senderMemberRouteKey: 'program_manager',
-        receiverRunId: 'review-run',
-        receiverMemberKind: 'agent',
-        receiverMemberName: 'review_lead',
-        receiverMemberPath: ['BuildSquad', 'review_lead'],
-        receiverMemberRouteKey: 'BuildSquad/review_lead',
-        receiverRepresentedSubTeam: {
-          memberKind: 'agent_team',
-          memberName: 'BuildSquad',
-          memberPath: ['BuildSquad'],
-          memberRouteKey: 'BuildSquad',
-          memberRunId: 'build-squad-run',
-          teamDefinitionId: 'build-squad-team',
-          address: {
-            teamRunId: 'team-1',
-            memberPath: ['BuildSquad'],
-            memberRouteKey: 'BuildSquad',
-          },
-        },
-        content: 'Please coordinate the child team.',
+        messageId: 'message-to-task-agent',
+        senderAddress: member('program_manager'),
+        receiverAddress: taskAgent('implementation_engineer', 'task-agent-run-1'),
+        content: 'Please handle delegated work.',
         messageType: 'assignment',
         createdAt: '2026-04-08T00:00:05.000Z',
-        updatedAt: '2026-04-08T00:00:05.000Z',
         referenceFiles: [],
       },
     ]);
 
-    const subteamPerspective = store.getPerspectiveForMember('team-1', {
-      memberKind: 'agent_team',
-      memberRouteKey: 'BuildSquad',
-      memberPath: ['BuildSquad'],
-    });
-    expect(subteamPerspective.messages).toEqual([
-      expect.objectContaining({
-        messageId: 'message-to-review-lead-representing-build-squad',
-        direction: 'received',
-        counterpartMemberRouteKey: 'program_manager',
-      }),
-    ]);
-
-    const senderPerspective = store.getPerspectiveForMember('team-1', {
-      memberKind: 'agent',
-      memberRouteKey: 'program_manager',
-      memberPath: ['program_manager'],
-    });
-    expect(senderPerspective.sentGroups).toEqual([
-      expect.objectContaining({
-        counterpartMemberRouteKey: 'BuildSquad/review_lead',
-        counterpartRepresentedSubTeam: expect.objectContaining({
-          memberRouteKey: 'BuildSquad',
-        }),
-      }),
-    ]);
+    expect(store.getPerspectiveForAddress('team-1', taskAgent('implementation_engineer', 'task-agent-run-1')).messages)
+      .toEqual([expect.objectContaining({ messageId: 'message-to-task-agent', direction: 'received' })]);
+    expect(store.getPerspectiveForAddress('team-1', member('implementation_engineer')).messages).toEqual([]);
   });
 
-  it('normalizes represented-subteam metadata from live websocket payloads', () => {
+  it('matches task-team root messages by member plus task_team segment', () => {
     const store = useTeamCommunicationStore();
 
-    store.upsertFromBackendPayload({
-      messageId: 'live-message-1',
-      teamRunId: 'team-1',
-      senderRunId: 'pm-run',
-      senderMemberKind: 'agent',
-      senderMemberName: 'program_manager',
-      senderMemberPath: ['program_manager'],
-      senderMemberRouteKey: 'program_manager',
-      receiverRunId: 'review-run',
-      receiverMemberKind: 'agent',
-      receiverMemberName: 'review_lead',
-      receiverMemberPath: ['BuildSquad', 'review_lead'],
-      receiverMemberRouteKey: 'BuildSquad/review_lead',
-      receiverRepresentedSubTeam: {
-        memberKind: 'agent_team',
-        memberName: 'BuildSquad',
-        memberPath: ['BuildSquad'],
-        memberRouteKey: 'BuildSquad',
-        memberRunId: 'build-squad-run',
-        teamDefinitionId: 'build-squad-team',
-        address: {
-          teamRunId: 'team-1',
-          memberPath: ['BuildSquad'],
-          memberRouteKey: 'BuildSquad',
-        },
+    store.replaceProjection('team-parent', [
+      {
+        messageId: 'message-to-task-team-root',
+        senderAddress: member('program_manager'),
+        receiverAddress: taskTeamRoot('BuildSquad', 'task-team-run-1'),
+        content: 'Please coordinate the delegated team.',
+        messageType: 'assignment',
+        createdAt: '2026-04-08T00:00:05.500Z',
+        referenceFiles: [],
       },
-      content: 'Live represented message.',
-      messageType: 'assignment',
-      createdAt: '2026-04-08T00:00:06.000Z',
-      updatedAt: '2026-04-08T00:00:06.000Z',
-      referenceFiles: [],
-    });
-
-    expect(store.getMessagesForTeam('team-1')).toEqual([
-      expect.objectContaining({
-        messageId: 'live-message-1',
-        receiverRepresentedSubTeam: expect.objectContaining({
-          memberRouteKey: 'BuildSquad',
-        }),
-      }),
     ]);
+
+    expect(store.getPerspectiveForAddress('team-parent', taskTeamRoot('BuildSquad', 'task-team-run-1')).messages)
+      .toEqual([expect.objectContaining({ messageId: 'message-to-task-team-root', direction: 'received' })]);
+    expect(store.getPerspectiveForAddress('team-parent', member('BuildSquad')).messages).toEqual([]);
   });
 
-  it('shows child-internal communication under the parent team run by nested route/path', () => {
+  it('isolates concurrent task-team child runs by exact task_team segment', () => {
     const store = useTeamCommunicationStore();
 
-    store.upsertFromBackendPayload({
-      messageId: 'child-internal-message',
-      teamRunId: 'team-parent',
-      senderRunId: 'review-run',
-      senderMemberKind: 'agent',
-      senderMemberName: 'review_lead',
-      senderMemberPath: ['BuildSquad', 'review_lead'],
-      senderMemberRouteKey: 'BuildSquad/review_lead',
-      receiverRunId: 'qa-run',
-      receiverMemberKind: 'agent',
-      receiverMemberName: 'qa_specialist',
-      receiverMemberPath: ['BuildSquad', 'qa_specialist'],
-      receiverMemberRouteKey: 'BuildSquad/qa_specialist',
-      content: 'Please test this.',
-      messageType: 'child_internal',
-      createdAt: '2026-04-08T00:00:07.000Z',
-      updatedAt: '2026-04-08T00:00:07.000Z',
-      referenceFiles: [],
-    });
+    store.replaceProjection('team-parent', [
+      {
+        messageId: 'run-1-message',
+        senderAddress: member('program_manager'),
+        receiverAddress: taskTeamChild('BuildSquad', 'task-team-run-1', 'review_lead'),
+        content: 'Run 1 only.',
+        messageType: 'assignment',
+        createdAt: '2026-04-08T00:00:06.000Z',
+        referenceFiles: [],
+      },
+      {
+        messageId: 'run-2-message',
+        senderAddress: member('program_manager'),
+        receiverAddress: taskTeamChild('BuildSquad', 'task-team-run-2', 'review_lead'),
+        content: 'Run 2 only.',
+        messageType: 'assignment',
+        createdAt: '2026-04-08T00:00:07.000Z',
+        referenceFiles: [],
+      },
+    ]);
 
-    expect(store.getMessagesForTeam('team-parent')).toEqual([
-      expect.objectContaining({
-        messageId: 'child-internal-message',
-        teamRunId: 'team-parent',
-      }),
-    ]);
-    const qaPerspective = store.getPerspectiveForMember('team-parent', {
-      memberKind: 'agent',
-      memberRouteKey: 'BuildSquad/qa_specialist',
-      memberPath: ['BuildSquad', 'qa_specialist'],
-    });
-    expect(qaPerspective.messages).toEqual([
-      expect.objectContaining({
-        messageId: 'child-internal-message',
-        direction: 'received',
-        counterpartMemberRouteKey: 'BuildSquad/review_lead',
-      }),
-    ]);
+    const perspective = store.getPerspectiveForAddress(
+      'team-parent',
+      taskTeamChild('BuildSquad', 'task-team-run-1', 'review_lead'),
+    );
+
+    expect(perspective.messages.map((message) => message.messageId)).toEqual(['run-1-message']);
   });
 
-  it('upserts live derived team communication payloads with reference files', () => {
+  it('matches task-agent messages inside task-team children by the full address', () => {
+    const store = useTeamCommunicationStore();
+
+    store.replaceProjection('team-parent', [
+      {
+        messageId: 'message-to-nested-task-agent',
+        senderAddress: member('program_manager'),
+        receiverAddress: taskTeamChildTaskAgent('BuildSquad', 'task-team-run-1', 'implementer', 'task-agent-run-9'),
+        content: 'Please handle the delegated subtask inside the task team.',
+        messageType: 'assignment',
+        createdAt: '2026-04-08T00:00:08.000Z',
+        referenceFiles: [],
+      },
+    ]);
+
+    expect(store.getPerspectiveForAddress(
+      'team-parent',
+      taskTeamChildTaskAgent('BuildSquad', 'task-team-run-1', 'implementer', 'task-agent-run-9'),
+    ).messages).toEqual([
+      expect.objectContaining({ messageId: 'message-to-nested-task-agent', direction: 'received' }),
+    ]);
+    expect(store.getPerspectiveForAddress('team-parent', taskTeamChild('BuildSquad', 'task-team-run-1', 'implementer')).messages)
+      .toEqual([]);
+  });
+
+  it('upserts live address-first payloads with reference files', () => {
     const store = useTeamCommunicationStore();
 
     store.upsertFromBackendPayload({
       messageId: 'message-1',
       teamRunId: 'team-1',
-      senderRunId: 'sender-run',
-      senderMemberName: 'Sender',
-      receiverRunId: 'receiver-run',
-      receiverMemberName: 'Receiver',
+      senderAddress: member('sender'),
+      receiverAddress: member('receiver'),
       content: 'Please inspect the attachment.',
       messageType: 'handoff',
       createdAt: '2026-04-08T00:00:00.000Z',
-      updatedAt: '2026-04-08T00:00:00.000Z',
       referenceFiles: [
         {
           referenceId: 'ref-1',
@@ -322,6 +243,8 @@ describe('teamCommunicationStore', () => {
     expect(store.getMessagesForTeam('team-1')).toEqual([
       expect.objectContaining({
         messageId: 'message-1',
+        senderAddress: member('sender'),
+        receiverAddress: member('receiver'),
         referenceFiles: [expect.objectContaining({ referenceId: 'ref-1', path: '/tmp/report.md' })],
       }),
     ]);

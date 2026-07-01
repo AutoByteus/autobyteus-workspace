@@ -38,7 +38,7 @@ function seedTeamContext(): void {
     config: { teamDefinitionId: 'team-def-1', workspaceId: 'workspace-1' },
     memberTree: [leadNode],
     memberNodesByRouteKey: new Map([['lead', leadNode]]),
-    leafAgentContextsByRouteKey: new Map(),
+    leafAgentContextsByRouteKey: new Map([['lead', { state: { runId: 'lead-run' } }]]),
     coordinatorMemberRouteKey: 'lead',
     historicalHydration: null,
     focusedMemberRouteKey: 'lead',
@@ -52,17 +52,11 @@ function seedReferenceMessage(): void {
   useTeamCommunicationStore().replaceProjection('team-1', [
     {
       messageId: 'message-1',
-      teamRunId: 'team-1',
-      senderRunId: 'designer-run',
-      senderMemberName: 'Solution Designer',
-      receiverRunId: 'lead-run',
-      receiverMemberName: 'Lead',
-      receiverMemberPath: ['lead'],
-      receiverMemberRouteKey: 'lead',
+      senderAddress: { segments: [{ kind: 'member', memberRouteKey: 'solution_designer' }] },
+      receiverAddress: { segments: [{ kind: 'member', memberRouteKey: 'lead' }] },
       content: 'Please review the attached design. Raw /tmp/design-spec.md stays prose.',
       messageType: 'handoff',
       createdAt: '2026-04-12T10:00:00.000Z',
-      updatedAt: '2026-04-12T10:00:00.000Z',
       referenceFiles: [
         { referenceId: 'ref-1', path: '/tmp/design-spec.md', type: 'file', createdAt: '2026-04-12T10:00:00.000Z', updatedAt: '2026-04-12T10:00:00.000Z' },
         { referenceId: 'ref-2', path: '/tmp/diagram.png', type: 'image', createdAt: '2026-04-12T10:00:00.000Z', updatedAt: '2026-04-12T10:00:00.000Z' },

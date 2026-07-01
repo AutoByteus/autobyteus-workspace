@@ -64,17 +64,27 @@ Team Communication owns message references for accepted `recipient_name`
 deliveries:
 
 ```ts
+interface TeamCommunicationProjection {
+  teamRunId: string;
+  messages: TeamCommunicationMessage[];
+}
+
+interface ConversationTargetAddress {
+  segments: ConversationTargetSegment[];
+}
+
+type ConversationTargetSegment =
+  | { kind: 'member'; memberRouteKey?: string; memberPath?: string[] }
+  | { kind: 'task_team'; taskTeamRunId: string }
+  | { kind: 'task_agent'; taskAgentRunId: string };
+
 interface TeamCommunicationMessage {
   messageId: string;
-  teamRunId: string;
-  senderRunId: string;
-  senderMemberName?: string | null;
-  receiverRunId: string;
-  receiverMemberName?: string | null;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
   content: string;
   messageType: string;
   createdAt: string;
-  updatedAt: string;
   referenceFiles: TeamCommunicationReferenceFile[];
 }
 
@@ -93,6 +103,19 @@ Rules:
   Communication messages. The live/store authority is the derived
   `TEAM_COMMUNICATION_MESSAGE`; direct exact-run messages without team projection
   fields are ignored by this store.
+- The durable projection stores `teamRunId` once at
+  `agent_teams/<teamRunId>/team_communication_messages.json`; each message uses
+  `senderAddress` and `receiverAddress` instead of duplicating sender/receiver
+  run ids, member paths, route keys, represented-subteam metadata, or
+  task-team-scope wrappers.
+- Focused Team Messages compare the focused member's normalized
+  `ConversationTargetAddress` with each message's `senderAddress` and
+  `receiverAddress`. Task-agent and task-team executions are represented by
+  explicit `task_agent` / `task_team` segments, not encoded into member labels.
+- Old flat Team Communication projection files are converted by the registered
+  app-data migration before normal runtime reads. Runtime, GraphQL hydration,
+  WebSocket payloads, and the frontend store do not keep a read-time legacy
+  compatibility path for old flat sender/receiver fields.
 - Reference rows come only from explicit `payload.reference_files` /
   `payload.reference_file_entries`; message prose is not scanned and raw paths
   are not linkified.
@@ -101,7 +124,7 @@ Rules:
 - Reference content opens by message-owned identity:
   `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 - The focused member sees sent/received message perspectives in the Team tab.
-  The left list hierarchy is `Sent` / `Received` -> counterpart member name ->
+  The left list hierarchy is `Sent` / `Received` -> counterpart address label ->
   message -> reference file, without repeated `To` / `From` group prefixes.
 - Team Communication rows are compact, email-like rows. The row shell is a
   non-interactive container; message summaries and reference-file rows are
@@ -138,20 +161,24 @@ Rules:
   derived from explicit task-delegation `reference_files` on the task ledger
   record. The Tasks UI does not parse Team Communication messages or raw
   Markdown/prose for paths.
-- The left Active Tasks navigator shows reference rows under each task's
-  responsible agent/team context, after optional task-team members. Reference
-  rows use the shared file presentation, a visible selected state, and enough
-  spacing to read as task-owned navigation rather than raw metadata. Selecting a
-  reference updates the section-local task/reference selection and switches the
-  right detail pane from task body to file preview. Selecting the task summary
-  clears the selected reference and shows the task body again.
+- The left Active Tasks navigator shows a clean task-summary row followed by any
+  task-owned reference rows; it does not duplicate the Workspaces execution
+  hierarchy, status dot/status label, actor/member rows, or a separate visible
+  `References` heading. Reference rows use the shared file presentation, a
+  visible selected state, and enough spacing to read as task-owned navigation
+  rather than raw metadata. Selecting a reference updates the section-local
+  task/reference selection and switches the right detail pane from task body to
+  file preview. Selecting the task summary clears the selected reference and
+  shows the task body again.
 - Reference content opens by task-owned identity:
   `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`.
 - Primary visible Tasks UI hides raw task ids and task-kind badges; those values
   belong in the collapsed Technical details block in the left navigator, not in
-  the main actor/member rows or right detail body.
-- Tasks is status/read/focus oriented. It never owns Approve/Deny controls or
-  approval command target construction; pending approval remains Activity-owned.
+  the main summary/reference rows or right detail body.
+- Tasks is task-content navigation and readback oriented. It never owns
+  Approve/Deny controls, approval command target construction, execution focus
+  controls, or visible execution-status summary markers; pending approval remains
+  Activity-owned.
 
 ## Data Flow
 
@@ -206,8 +233,8 @@ flowchart LR
 | Mobile Team messages | `autobyteus-web/components/mobile/MobileTeamMessages.vue` | Renders the focused member's Team Communication messages in the mobile shell and exposes each structured reference file as a tappable phone row. |
 | Mobile Team reference wrapper | `autobyteus-web/components/mobile/MobileTeamReferenceViewer.vue` | Wraps `TeamCommunicationReferenceViewer` in a full-screen mobile surface, passes message-owned identity through, and disables rich HTML preview for mobile. |
 | Team reference presentation helper | `autobyteus-web/utils/teamCommunication/referenceFilePresentation.ts` | Centralizes reference display-name and icon selection so desktop and mobile Team Communication rows do not duplicate file-type presentation policy. |
-| Team Tasks section | `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` | Owns the Team-tab Active Tasks split layout, section-local selected task/reference state, left-pane resizing, empty state, and actor/member focus emits. |
-| Team Tasks navigator | `autobyteus-web/components/workspace/team/TeamActiveTaskNavigator.vue` | Renders compact task navigator items in the order summary, responsible agent/team, indented members, task-owned reference rows, and collapsed technical metadata. |
+| Team Tasks section | `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue` | Owns the Team-tab Active Tasks split layout, section-local selected task/reference state, left-pane resizing, and empty state; it does not own actor/member focus emits. |
+| Team Tasks navigator | `autobyteus-web/components/workspace/team/TeamActiveTaskNavigator.vue` | Renders compact task navigator items in the order clean task summary, task-owned reference rows, and collapsed technical metadata; execution status/hierarchy stays in Workspaces. |
 | Team active-task detail pane | `autobyteus-web/components/workspace/team/TeamActiveTaskDetailPane.vue` | Renders only the selected task body or selected task-owned reference preview; focus controls, actor/member rows, status/waiting copy, reference rows, and Technical details stay in the left Active Tasks navigator or Activity surface. |
 | Task reference route wrapper | `autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue` | Builds the task-owned content route from `teamRunId + taskId + referenceId` for the selected right-side reference preview. |
 | Task reference preview shell | `autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue` | Route-agnostic read-only Team reference shell used for task references; delegates raw/preview/media/PDF/CSV/Excel rendering to `FileViewer`. |

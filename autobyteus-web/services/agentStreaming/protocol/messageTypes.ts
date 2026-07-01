@@ -257,40 +257,14 @@ export interface TeamCommunicationReferenceFilePayload {
   updatedAt: string;
 }
 
-export interface TeamCommunicationRepresentedSubTeamPayload {
-  memberKind: 'agent_team';
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  teamDefinitionId: string;
-  childTeamRunId?: string | null;
-  address: {
-    teamRunId: string;
-    memberPath: string[];
-    memberRouteKey: string;
-  };
-}
-
 export interface TeamCommunicationMessagePayload {
   messageId: string;
   teamRunId: string;
-  senderRunId: string;
-  senderMemberName?: string | null;
-  senderMemberKind?: 'agent' | 'agent_team' | null;
-  senderMemberPath?: string[] | null;
-  senderMemberRouteKey?: string | null;
-  senderRepresentedSubTeam?: TeamCommunicationRepresentedSubTeamPayload | null;
-  receiverRunId: string;
-  receiverMemberName?: string | null;
-  receiverMemberKind?: 'agent' | 'agent_team' | null;
-  receiverMemberPath?: string[] | null;
-  receiverMemberRouteKey?: string | null;
-  receiverRepresentedSubTeam?: TeamCommunicationRepresentedSubTeamPayload | null;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
   content: string;
   messageType: string;
   createdAt: string;
-  updatedAt: string;
   referenceFiles: TeamCommunicationReferenceFilePayload[];
   source_path?: string[];
   source_route_key?: string;

@@ -1,23 +1,30 @@
 import { defineStore } from 'pinia';
 import type { TeamCommunicationMessagePayload } from '~/services/agentStreaming/protocol/messageTypes';
-
+import type {
+  ConversationTargetAddress,
+  ConversationTargetSegment,
+} from '~/types/agent/ConversationTargetAddress';
+import {
+  buildConversationTargetKey,
+  cloneConversationTargetSegments,
+  normalizeConversationRouteKey,
+  routeKeyFromConversationPath,
+} from '~/utils/teamConversationTargetSegments';
 import type {
   TeamCommunicationDirection,
-  TeamCommunicationMemberAddress,
-  TeamCommunicationMemberKind,
   TeamCommunicationMessage,
-  TeamCommunicationParticipantSelector,
   TeamCommunicationPerspective,
   TeamCommunicationPerspectiveGroup,
   TeamCommunicationPerspectiveMessage,
   TeamCommunicationReferenceFile,
   TeamCommunicationReferenceFileType,
-  TeamCommunicationRepresentedSubTeam,
 } from './teamCommunicationTypes';
 
 interface TeamCommunicationState {
   messagesByTeam: Map<string, TeamCommunicationMessage[]>;
 }
+
+type RawTeamCommunicationMessage = TeamCommunicationMessage & Record<string, unknown>;
 
 const normalizePath = (value: string): string => value.replace(/\\/g, '/').trim();
 
@@ -50,53 +57,55 @@ const inferType = (filePath: string): TeamCommunicationReferenceFileType => {
 const readString = (value: unknown): string | null =>
   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
 
-const readMemberKind = (value: unknown): TeamCommunicationMemberKind | null =>
-  value === 'agent' || value === 'agent_team' ? value : null;
-
 const readStringPath = (value: unknown): string[] | null => {
   if (!Array.isArray(value)) return null;
   const path = value.map((entry) => readString(entry)).filter((entry): entry is string => Boolean(entry));
   return path.length > 0 ? path : null;
 };
 
-const readMemberAddress = (value: unknown): TeamCommunicationMemberAddress | null => {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-  const record = value as Record<string, unknown>;
-  const teamRunId = readString(record.teamRunId ?? record.team_run_id);
-  const memberPath = readStringPath(record.memberPath ?? record.member_path);
-  const memberRouteKey = normalizeRouteKey(record.memberRouteKey as string | null | undefined)
-    ?? normalizeRouteKey(record.member_route_key as string | null | undefined);
-  if (!teamRunId || !memberPath || !memberRouteKey) return null;
-  return { teamRunId, memberPath, memberRouteKey };
-};
-
-const readRepresentedSubTeam = (value: unknown): TeamCommunicationRepresentedSubTeam | null => {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-  const record = value as Record<string, unknown>;
-  const memberName = readString(record.memberName);
-  const memberPath = readStringPath(record.memberPath);
-  const memberRouteKey = normalizeRouteKey(record.memberRouteKey as string | null | undefined);
-  const memberRunId = readString(record.memberRunId);
-  const teamDefinitionId = readString(record.teamDefinitionId);
-  const childTeamRunId = readString(record.childTeamRunId ?? record.child_team_run_id);
-  const address = readMemberAddress(record.address);
-  if (!memberName || !memberPath || !memberRouteKey || !memberRunId || !teamDefinitionId || !address) return null;
-  return {
-    memberKind: 'agent_team',
-    memberName,
-    memberPath,
-    memberRouteKey,
-    memberRunId,
-    teamDefinitionId,
-    childTeamRunId,
-    address,
-  };
-};
-
 const timestampOrNow = (value: unknown): string => readString(value) ?? new Date().toISOString();
 
+const asRecord = (value: unknown): Record<string, unknown> | null => (
+  value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : null
+);
+
+const normalizeMemberSegment = (record: Record<string, unknown>): ConversationTargetSegment | null => {
+  const memberRouteKey = normalizeConversationRouteKey(readString(record.memberRouteKey) ?? readString(record.member_route_key));
+  const memberPath = readStringPath(record.memberPath ?? record.member_path);
+  const pathRouteKey = routeKeyFromConversationPath(memberPath);
+  if (memberRouteKey && pathRouteKey && memberRouteKey !== pathRouteKey) return null;
+  if (memberRouteKey) return { kind: 'member', memberRouteKey };
+  if (memberPath) return { kind: 'member', memberPath };
+  return null;
+};
+
+const normalizeSegment = (value: unknown): ConversationTargetSegment | null => {
+  const record = asRecord(value);
+  if (!record) return null;
+  const kind = readString(record.kind);
+  if (kind === 'member') return normalizeMemberSegment(record);
+  if (kind === 'task_team') {
+    const taskTeamRunId = normalizeConversationRouteKey(readString(record.taskTeamRunId) ?? readString(record.task_team_run_id));
+    return taskTeamRunId ? { kind: 'task_team', taskTeamRunId } : null;
+  }
+  if (kind === 'task_agent') {
+    const taskAgentRunId = normalizeConversationRouteKey(readString(record.taskAgentRunId) ?? readString(record.task_agent_run_id));
+    return taskAgentRunId ? { kind: 'task_agent', taskAgentRunId } : null;
+  }
+  return null;
+};
+
+const normalizeAddress = (value: unknown): ConversationTargetAddress | null => {
+  const record = asRecord(value);
+  const rawSegments = record?.segments;
+  if (!Array.isArray(rawSegments)) return null;
+  const segments = rawSegments.map(normalizeSegment);
+  if (segments.length === 0 || segments.some((segment) => !segment)) return null;
+  return { segments: cloneConversationTargetSegments(segments as ConversationTargetSegment[]) };
+};
+
 const normalizeReferenceEntry = (
-  rawReference: any,
+  rawReference: unknown,
   fallback: { index: number; timestamp: string },
 ): TeamCommunicationReferenceFile | null => {
   if (typeof rawReference === 'string') {
@@ -110,17 +119,16 @@ const normalizeReferenceEntry = (
       updatedAt: fallback.timestamp,
     };
   }
-  if (!rawReference || typeof rawReference !== 'object' || Array.isArray(rawReference)) {
-    return null;
-  }
-  const normalizedPath = normalizePath(String(rawReference.path || ''));
+  const record = asRecord(rawReference);
+  if (!record) return null;
+  const normalizedPath = normalizePath(String(record.path || ''));
   if (!normalizedPath) return null;
   return {
-    referenceId: readString(rawReference.referenceId) || `reference:${fallback.index}:${normalizedPath}`,
+    referenceId: readString(record.referenceId) || `reference:${fallback.index}:${normalizedPath}`,
     path: normalizedPath,
-    type: normalizeType(rawReference.type) ?? inferType(normalizedPath),
-    createdAt: timestampOrNow(rawReference.createdAt || fallback.timestamp),
-    updatedAt: timestampOrNow(rawReference.updatedAt || rawReference.createdAt || fallback.timestamp),
+    type: normalizeType(record.type as string | null | undefined) ?? inferType(normalizedPath),
+    createdAt: timestampOrNow(record.createdAt || fallback.timestamp),
+    updatedAt: timestampOrNow(record.updatedAt || record.createdAt || fallback.timestamp),
   };
 };
 
@@ -142,64 +150,32 @@ const normalizeReferenceFiles = (
 };
 
 const normalizeMessage = (
-  teamRunId: string,
-  message: TeamCommunicationMessage,
-): TeamCommunicationMessage => {
-  const createdAt = timestampOrNow(message.createdAt);
+  message: RawTeamCommunicationMessage,
+): TeamCommunicationMessage | null => {
+  const senderAddress = normalizeAddress(message.senderAddress ?? message.sender_address);
+  const receiverAddress = normalizeAddress(message.receiverAddress ?? message.receiver_address);
+  if (!senderAddress || !receiverAddress || typeof message.content !== 'string') return null;
+  const createdAt = timestampOrNow(message.createdAt ?? message.created_at);
+  const messageId = readString(message.messageId ?? message.message_id);
+  if (!messageId) return null;
   return {
-    messageId: message.messageId,
-    teamRunId,
-    senderRunId: message.senderRunId,
-    senderMemberKind: message.senderMemberKind ?? null,
-    senderMemberName: message.senderMemberName ?? null,
-    senderMemberPath: message.senderMemberPath ?? null,
-    senderMemberRouteKey: message.senderMemberRouteKey ?? null,
-    senderRepresentedSubTeam: message.senderRepresentedSubTeam ?? null,
-    receiverRunId: message.receiverRunId,
-    receiverMemberKind: message.receiverMemberKind ?? null,
-    receiverMemberName: message.receiverMemberName ?? null,
-    receiverMemberPath: message.receiverMemberPath ?? null,
-    receiverMemberRouteKey: message.receiverMemberRouteKey ?? null,
-    receiverRepresentedSubTeam: message.receiverRepresentedSubTeam ?? null,
+    messageId,
+    senderAddress,
+    receiverAddress,
     content: message.content,
-    messageType: message.messageType || 'agent_message',
+    messageType: readString(message.messageType ?? message.message_type) || 'agent_message',
     createdAt,
-    updatedAt: timestampOrNow(message.updatedAt || createdAt),
-    referenceFiles: normalizeReferenceFiles(message.referenceFiles, createdAt),
+    referenceFiles: normalizeReferenceFiles(message.referenceFiles ?? message.reference_files, createdAt),
   };
 };
 
 const normalizeMessageFromPayload = (
   payload: TeamCommunicationMessagePayload,
-): TeamCommunicationMessage | null => {
-  const teamRunId = readString(payload.teamRunId);
-  const senderRunId = readString(payload.senderRunId);
-  const receiverRunId = readString(payload.receiverRunId);
-  if (!teamRunId || !senderRunId || !receiverRunId || typeof payload.content !== 'string') {
-    return null;
-  }
-  const createdAt = timestampOrNow(payload.createdAt);
-  return normalizeMessage(teamRunId, {
-    messageId: readString(payload.messageId) || `${teamRunId}:${senderRunId}:${receiverRunId}:${createdAt}`,
-    teamRunId,
-    senderRunId,
-    senderMemberKind: readMemberKind(payload.senderMemberKind),
-    senderMemberName: payload.senderMemberName ?? null,
-    senderMemberPath: readStringPath(payload.senderMemberPath),
-    senderMemberRouteKey: payload.senderMemberRouteKey ?? null,
-    senderRepresentedSubTeam: readRepresentedSubTeam(payload.senderRepresentedSubTeam),
-    receiverRunId,
-    receiverMemberKind: readMemberKind(payload.receiverMemberKind),
-    receiverMemberName: payload.receiverMemberName ?? null,
-    receiverMemberPath: readStringPath(payload.receiverMemberPath),
-    receiverMemberRouteKey: payload.receiverMemberRouteKey ?? null,
-    receiverRepresentedSubTeam: readRepresentedSubTeam(payload.receiverRepresentedSubTeam),
-    content: payload.content,
-    messageType: payload.messageType || 'agent_message',
-    createdAt,
-    updatedAt: timestampOrNow(payload.updatedAt || createdAt),
-    referenceFiles: normalizeReferenceFiles(payload.referenceFiles, createdAt),
-  });
+): { teamRunId: string; message: TeamCommunicationMessage } | null => {
+  const teamRunId = readString(payload.teamRunId ?? (payload as any).team_run_id);
+  if (!teamRunId) return null;
+  const message = normalizeMessage(payload as unknown as RawTeamCommunicationMessage);
+  return message ? { teamRunId, message } : null;
 };
 
 const ensureTeamMessages = (
@@ -216,22 +192,11 @@ const applyMessageSnapshot = (
   target: TeamCommunicationMessage,
   source: TeamCommunicationMessage,
 ): void => {
-  target.senderRunId = source.senderRunId;
-  target.senderMemberKind = source.senderMemberKind ?? null;
-  target.senderMemberName = source.senderMemberName ?? null;
-  target.senderMemberPath = source.senderMemberPath ?? null;
-  target.senderMemberRouteKey = source.senderMemberRouteKey ?? null;
-  target.senderRepresentedSubTeam = source.senderRepresentedSubTeam ?? null;
-  target.receiverRunId = source.receiverRunId;
-  target.receiverMemberKind = source.receiverMemberKind ?? null;
-  target.receiverMemberName = source.receiverMemberName ?? null;
-  target.receiverMemberPath = source.receiverMemberPath ?? null;
-  target.receiverMemberRouteKey = source.receiverMemberRouteKey ?? null;
-  target.receiverRepresentedSubTeam = source.receiverRepresentedSubTeam ?? null;
+  target.senderAddress = { segments: cloneConversationTargetSegments(source.senderAddress.segments) };
+  target.receiverAddress = { segments: cloneConversationTargetSegments(source.receiverAddress.segments) };
   target.content = source.content;
   target.messageType = source.messageType;
   target.createdAt = target.createdAt || source.createdAt;
-  target.updatedAt = source.updatedAt;
   target.referenceFiles = source.referenceFiles.map((reference) => ({ ...reference }));
 };
 
@@ -244,195 +209,53 @@ const compareMessagesDesc = (
   return left.messageId.localeCompare(right.messageId);
 };
 
-const normalizeRouteKey = (value: string | null | undefined): string | null =>
-  readString(value)?.replace(/\\/g, '/').replace(/\/{2,}/g, '/').replace(/^\/+|\/+$/g, '') || null;
-
-const normalizeParticipantPath = (value: string[] | null | undefined): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const path = value.map((segment) => readString(segment)).filter((segment): segment is string => Boolean(segment));
-  return path.length > 0 ? path : null;
-};
-
-const routeKeyFromPath = (path: string[] | null): string | null =>
-  path && path.length > 0 ? normalizeRouteKey(path.join('/')) : null;
-
-const pathsEqual = (left: string[] | null, right: string[] | null): boolean =>
-  Boolean(left && right && left.length === right.length && left.every((segment, index) => segment === right[index]));
-
-const normalizeParticipantSelector = (
-  selector: string | TeamCommunicationParticipantSelector,
-): Required<TeamCommunicationParticipantSelector> | null => {
-  if (typeof selector === 'string') {
-    const memberRunId = readString(selector);
-    return memberRunId
-      ? { memberRunId, memberKind: null, memberPath: null, memberRouteKey: null }
-      : null;
-  }
-
-  const memberPath = normalizeParticipantPath(selector.memberPath);
-  const memberRouteKey = normalizeRouteKey(selector.memberRouteKey) ?? routeKeyFromPath(memberPath);
-  const memberRunId = readString(selector.memberRunId);
-  const memberKind = readMemberKind(selector.memberKind);
-
-  if (!memberRunId && !memberRouteKey && !memberPath && !memberKind) {
-    return null;
-  }
-
-  return {
-    memberRunId,
-    memberKind,
-    memberPath,
-    memberRouteKey,
-  };
-};
-
-const participantKindMatches = (
-  selectorKind: TeamCommunicationMemberKind | null,
-  messageKind: TeamCommunicationMemberKind | null | undefined,
-): boolean => !selectorKind || !messageKind || selectorKind === messageKind;
-
-const participantMatches = (
-  selector: Required<TeamCommunicationParticipantSelector>,
-  participant: {
-    runId: string;
-    memberKind?: TeamCommunicationMemberKind | null;
-    memberPath?: string[] | null;
-    memberRouteKey?: string | null;
-    representedSubTeam?: TeamCommunicationRepresentedSubTeam | null;
-  },
-): boolean => {
-  if (participantKindMatches(selector.memberKind, participant.memberKind)) {
-    const participantPath = normalizeParticipantPath(participant.memberPath ?? null);
-    const participantRouteKey = normalizeRouteKey(participant.memberRouteKey) ?? routeKeyFromPath(participantPath);
-
-    if (pathsEqual(selector.memberPath, participantPath)) {
-      return true;
+export const formatTeamCommunicationAddressLabel = (address: ConversationTargetAddress): string => (
+  address.segments.map((segment) => {
+    if (segment.kind === 'member') {
+      return normalizeConversationRouteKey(segment.memberRouteKey) || routeKeyFromConversationPath(segment.memberPath) || 'member';
     }
-
-    if (selector.memberRouteKey && participantRouteKey) {
-      return selector.memberRouteKey === participantRouteKey;
-    }
-
-    if (selector.memberRunId && selector.memberRunId === participant.runId) {
-      return true;
-    }
-  }
-
-  const represented = participant.representedSubTeam ?? null;
-  if (represented) {
-    if (!participantKindMatches(selector.memberKind, 'agent_team')) {
-      return false;
-    }
-    const representedPath = normalizeParticipantPath(represented.memberPath);
-    const representedRouteKey = normalizeRouteKey(represented.memberRouteKey) ?? routeKeyFromPath(representedPath);
-    if (pathsEqual(selector.memberPath, representedPath)) {
-      return true;
-    }
-    if (selector.memberRouteKey && representedRouteKey) {
-      return selector.memberRouteKey === representedRouteKey;
-    }
-    if (selector.memberRunId && selector.memberRunId === represented.memberRunId) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-const messageSenderMatches = (
-  message: TeamCommunicationMessage,
-  selector: Required<TeamCommunicationParticipantSelector>,
-): boolean => participantMatches(selector, {
-  runId: message.senderRunId,
-  memberKind: message.senderMemberKind,
-  memberPath: message.senderMemberPath,
-  memberRouteKey: message.senderMemberRouteKey,
-  representedSubTeam: message.senderRepresentedSubTeam,
-});
-
-const messageReceiverMatches = (
-  message: TeamCommunicationMessage,
-  selector: Required<TeamCommunicationParticipantSelector>,
-): boolean => participantMatches(selector, {
-  runId: message.receiverRunId,
-  memberKind: message.receiverMemberKind,
-  memberPath: message.receiverMemberPath,
-  memberRouteKey: message.receiverMemberRouteKey,
-  representedSubTeam: message.receiverRepresentedSubTeam,
-});
+    if (segment.kind === 'task_team') return `task team ${segment.taskTeamRunId}`;
+    return `task agent ${segment.taskAgentRunId}`;
+  }).join(' › ')
+);
 
 const buildPerspectiveMessage = (
   message: TeamCommunicationMessage,
   direction: TeamCommunicationDirection,
-): TeamCommunicationPerspectiveMessage => ({
-  ...message,
-  direction,
-  counterpartRunId: direction === 'sent' ? message.receiverRunId : message.senderRunId,
-  counterpartMemberKind: direction === 'sent'
-    ? (message.receiverMemberKind ?? null)
-    : (message.senderMemberKind ?? null),
-  counterpartMemberName: direction === 'sent'
-    ? (message.receiverMemberName ?? null)
-    : (message.senderMemberName ?? null),
-  counterpartMemberPath: direction === 'sent'
-    ? (message.receiverMemberPath ?? null)
-    : (message.senderMemberPath ?? null),
-  counterpartMemberRouteKey: direction === 'sent'
-    ? (message.receiverMemberRouteKey ?? null)
-    : (message.senderMemberRouteKey ?? null),
-  counterpartRepresentedSubTeam: direction === 'sent'
-    ? (message.receiverRepresentedSubTeam ?? null)
-    : (message.senderRepresentedSubTeam ?? null),
-  message,
-});
+): TeamCommunicationPerspectiveMessage => {
+  const counterpartAddress = direction === 'sent' ? message.receiverAddress : message.senderAddress;
+  const counterpartKey = buildConversationTargetKey(counterpartAddress);
+  return {
+    ...message,
+    direction,
+    counterpartAddress: { segments: cloneConversationTargetSegments(counterpartAddress.segments) },
+    counterpartKey,
+    counterpartLabel: formatTeamCommunicationAddressLabel(counterpartAddress),
+    message,
+  };
+};
 
 const groupPerspectiveMessages = (
   messages: TeamCommunicationPerspectiveMessage[],
 ): TeamCommunicationPerspectiveGroup[] => {
   const groupsByCounterpart = new Map<string, TeamCommunicationPerspectiveGroup>();
   messages.forEach((message) => {
-    const key = message.counterpartMemberRouteKey
-      || message.counterpartMemberPath?.join('/')
-      || message.counterpartRunId
-      || message.counterpartMemberName
-      || 'unknown';
-    if (!groupsByCounterpart.has(key)) {
-      groupsByCounterpart.set(key, {
-        counterpartRunId: message.counterpartRunId,
-        counterpartMemberKind: message.counterpartMemberKind,
-        counterpartMemberName: message.counterpartMemberName,
-        counterpartMemberPath: message.counterpartMemberPath,
-        counterpartMemberRouteKey: message.counterpartMemberRouteKey,
-        counterpartRepresentedSubTeam: message.counterpartRepresentedSubTeam,
+    if (!groupsByCounterpart.has(message.counterpartKey)) {
+      groupsByCounterpart.set(message.counterpartKey, {
+        counterpartAddress: message.counterpartAddress,
+        counterpartKey: message.counterpartKey,
+        counterpartLabel: message.counterpartLabel,
         messages: [],
       });
     }
-    groupsByCounterpart.get(key)!.messages.push(message);
+    groupsByCounterpart.get(message.counterpartKey)!.messages.push(message);
   });
 
   return Array.from(groupsByCounterpart.values())
-    .map((group) => ({
-      ...group,
-      messages: group.messages.sort(compareMessagesDesc),
-    }))
+    .map((group) => ({ ...group, messages: group.messages.sort(compareMessagesDesc) }))
     .sort((left, right) => {
-      const leftLatest = left.messages[0]?.createdAt || '';
-      const rightLatest = right.messages[0]?.createdAt || '';
-      const byCreatedAt = rightLatest.localeCompare(leftLatest);
-      if (byCreatedAt !== 0) return byCreatedAt;
-      return (
-        left.counterpartMemberRouteKey ||
-        left.counterpartMemberPath?.join('/') ||
-        left.counterpartMemberName ||
-        left.counterpartRunId
-      ).localeCompare(
-        right.counterpartMemberRouteKey ||
-        right.counterpartMemberPath?.join('/') ||
-        right.counterpartMemberName ||
-        right.counterpartRunId,
-      );
+      const byCreatedAt = (right.messages[0]?.createdAt || '').localeCompare(left.messages[0]?.createdAt || '');
+      return byCreatedAt !== 0 ? byCreatedAt : left.counterpartKey.localeCompare(right.counterpartKey);
     });
 };
 
@@ -445,21 +268,22 @@ export const useTeamCommunicationStore = defineStore('teamCommunication', {
     getMessagesForTeam: (state) => (teamRunId: string): TeamCommunicationMessage[] =>
       [...(state.messagesByTeam.get(teamRunId) || [])].sort(compareMessagesDesc),
 
-    getPerspectiveForMember: (state) => (
+    getPerspectiveForAddress: (state) => (
       teamRunId: string,
-      participantSelector: string | TeamCommunicationParticipantSelector,
+      address: ConversationTargetAddress | null | undefined,
     ): TeamCommunicationPerspective => {
-      const selector = normalizeParticipantSelector(participantSelector);
-      if (!teamRunId || !selector) {
+      const normalizedAddress = normalizeAddress(address);
+      if (!teamRunId || !normalizedAddress) {
         return { sentGroups: [], receivedGroups: [], messages: [] };
       }
 
+      const addressKey = buildConversationTargetKey(normalizedAddress);
       const teamMessages = state.messagesByTeam.get(teamRunId) || [];
       const sent = teamMessages
-        .filter((message) => messageSenderMatches(message, selector))
+        .filter((message) => buildConversationTargetKey(message.senderAddress) === addressKey)
         .map((message) => buildPerspectiveMessage(message, 'sent'));
       const received = teamMessages
-        .filter((message) => messageReceiverMatches(message, selector))
+        .filter((message) => buildConversationTargetKey(message.receiverAddress) === addressKey)
         .map((message) => buildPerspectiveMessage(message, 'received'));
       const sentGroups = groupPerspectiveMessages(sent);
       const receivedGroups = groupPerspectiveMessages(received);
@@ -479,28 +303,31 @@ export const useTeamCommunicationStore = defineStore('teamCommunication', {
     replaceProjection(teamRunId: string, messages: TeamCommunicationMessage[]) {
       this.messagesByTeam.set(
         teamRunId,
-        messages.map((message) => normalizeMessage(teamRunId, message)),
+        messages
+          .map((message) => normalizeMessage(message as RawTeamCommunicationMessage))
+          .filter((message): message is TeamCommunicationMessage => Boolean(message)),
       );
     },
 
-    upsertMessage(message: TeamCommunicationMessage) {
-      const normalized = normalizeMessage(message.teamRunId, message);
-      const messages = ensureTeamMessages(this, normalized.teamRunId);
+    upsertMessage(teamRunId: string, message: TeamCommunicationMessage) {
+      const normalized = normalizeMessage(message as RawTeamCommunicationMessage);
+      if (!normalized) return null;
+      const messages = ensureTeamMessages(this, teamRunId);
       const existing = messages.find((entry) => entry.messageId === normalized.messageId) || null;
       if (!existing) {
         messages.push(normalized);
         return normalized;
       }
-      if (normalized.updatedAt.localeCompare(existing.updatedAt) >= 0) {
+      if (normalized.createdAt.localeCompare(existing.createdAt) >= 0) {
         applyMessageSnapshot(existing, normalized);
       }
       return existing;
     },
 
     upsertFromBackendPayload(payload: TeamCommunicationMessagePayload) {
-      const message = normalizeMessageFromPayload(payload);
-      if (!message) return null;
-      return this.upsertMessage(message);
+      const normalized = normalizeMessageFromPayload(payload);
+      if (!normalized) return null;
+      return this.upsertMessage(normalized.teamRunId, normalized.message);
     },
 
     clearTeam(teamRunId: string) {

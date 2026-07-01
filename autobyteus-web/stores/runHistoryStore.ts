@@ -471,7 +471,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     },
 
     async selectTreeRun(
-      row: RunTreeRow | import('~/stores/runHistoryTypes').TeamMemberTreeRow,
+      row: RunTreeRow | import('~/stores/runHistoryTypes').TeamMemberFocusTarget,
     ): Promise<void> {
       await selectTreeRunFromHistory(this, row);
     },

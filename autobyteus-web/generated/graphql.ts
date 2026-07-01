@@ -2076,34 +2076,15 @@ export type StreamableHttpMcpServerConfigInput = {
   url: Scalars['String']['input'];
 };
 
-export type TeamCommunicationMemberAddressObject = {
-  __typename?: 'TeamCommunicationMemberAddressObject';
-  memberPath: Array<Scalars['String']['output']>;
-  memberRouteKey: Scalars['String']['output'];
-  teamRunId: Scalars['String']['output'];
-};
-
 export type TeamCommunicationMessageObject = {
   __typename?: 'TeamCommunicationMessageObject';
   content: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   messageId: Scalars['String']['output'];
   messageType: Scalars['String']['output'];
-  receiverMemberKind?: Maybe<Scalars['String']['output']>;
-  receiverMemberName?: Maybe<Scalars['String']['output']>;
-  receiverMemberPath?: Maybe<Array<Scalars['String']['output']>>;
-  receiverMemberRouteKey?: Maybe<Scalars['String']['output']>;
-  receiverRepresentedSubTeam?: Maybe<TeamCommunicationRepresentedSubTeamObject>;
-  receiverRunId: Scalars['String']['output'];
+  receiverAddress: TeamCommunicationTargetAddressObject;
   referenceFiles: Array<TeamCommunicationReferenceFileObject>;
-  senderMemberKind?: Maybe<Scalars['String']['output']>;
-  senderMemberName?: Maybe<Scalars['String']['output']>;
-  senderMemberPath?: Maybe<Array<Scalars['String']['output']>>;
-  senderMemberRouteKey?: Maybe<Scalars['String']['output']>;
-  senderRepresentedSubTeam?: Maybe<TeamCommunicationRepresentedSubTeamObject>;
-  senderRunId: Scalars['String']['output'];
-  teamRunId: Scalars['String']['output'];
-  updatedAt: Scalars['String']['output'];
+  senderAddress: TeamCommunicationTargetAddressObject;
 };
 
 export type TeamCommunicationReferenceFileObject = {
@@ -2115,16 +2096,18 @@ export type TeamCommunicationReferenceFileObject = {
   updatedAt: Scalars['String']['output'];
 };
 
-export type TeamCommunicationRepresentedSubTeamObject = {
-  __typename?: 'TeamCommunicationRepresentedSubTeamObject';
-  address: TeamCommunicationMemberAddressObject;
-  childTeamRunId?: Maybe<Scalars['String']['output']>;
-  memberKind: Scalars['String']['output'];
-  memberName: Scalars['String']['output'];
-  memberPath: Array<Scalars['String']['output']>;
-  memberRouteKey: Scalars['String']['output'];
-  memberRunId: Scalars['String']['output'];
-  teamDefinitionId: Scalars['String']['output'];
+export type TeamCommunicationTargetAddressObject = {
+  __typename?: 'TeamCommunicationTargetAddressObject';
+  segments: Array<TeamCommunicationTargetSegmentObject>;
+};
+
+export type TeamCommunicationTargetSegmentObject = {
+  __typename?: 'TeamCommunicationTargetSegmentObject';
+  kind: Scalars['String']['output'];
+  memberPath?: Maybe<Array<Scalars['String']['output']>>;
+  memberRouteKey?: Maybe<Scalars['String']['output']>;
+  taskAgentRunId?: Maybe<Scalars['String']['output']>;
+  taskTeamRunId?: Maybe<Scalars['String']['output']>;
 };
 
 export type TeamMember = {
@@ -3298,7 +3281,7 @@ export type GetTeamCommunicationMessagesQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamCommunicationMessagesQuery = { __typename?: 'Query', getTeamCommunicationMessages: Array<{ __typename?: 'TeamCommunicationMessageObject', messageId: string, teamRunId: string, senderRunId: string, senderMemberKind?: string | null, senderMemberName?: string | null, senderMemberPath?: Array<string> | null, senderMemberRouteKey?: string | null, receiverRunId: string, receiverMemberKind?: string | null, receiverMemberName?: string | null, receiverMemberPath?: Array<string> | null, receiverMemberRouteKey?: string | null, content: string, messageType: string, createdAt: string, updatedAt: string, senderRepresentedSubTeam?: { __typename?: 'TeamCommunicationRepresentedSubTeamObject', memberKind: string, memberName: string, memberPath: Array<string>, memberRouteKey: string, memberRunId: string, teamDefinitionId: string, childTeamRunId?: string | null, address: { __typename?: 'TeamCommunicationMemberAddressObject', teamRunId: string, memberPath: Array<string>, memberRouteKey: string } } | null, receiverRepresentedSubTeam?: { __typename?: 'TeamCommunicationRepresentedSubTeamObject', memberKind: string, memberName: string, memberPath: Array<string>, memberRouteKey: string, memberRunId: string, teamDefinitionId: string, childTeamRunId?: string | null, address: { __typename?: 'TeamCommunicationMemberAddressObject', teamRunId: string, memberPath: Array<string>, memberRouteKey: string } } | null, referenceFiles: Array<{ __typename?: 'TeamCommunicationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }> }> };
+export type GetTeamCommunicationMessagesQuery = { __typename?: 'Query', getTeamCommunicationMessages: Array<{ __typename?: 'TeamCommunicationMessageObject', messageId: string, content: string, messageType: string, createdAt: string, senderAddress: { __typename?: 'TeamCommunicationTargetAddressObject', segments: Array<{ __typename?: 'TeamCommunicationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, receiverAddress: { __typename?: 'TeamCommunicationTargetAddressObject', segments: Array<{ __typename?: 'TeamCommunicationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, referenceFiles: Array<{ __typename?: 'TeamCommunicationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }> }> };
 
 export type GetAgentRunResumeConfigQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -7768,49 +7751,27 @@ export const GetTeamCommunicationMessagesDocument = gql`
     query GetTeamCommunicationMessages($teamRunId: String!) {
   getTeamCommunicationMessages(teamRunId: $teamRunId) {
     messageId
-    teamRunId
-    senderRunId
-    senderMemberKind
-    senderMemberName
-    senderMemberPath
-    senderMemberRouteKey
-    senderRepresentedSubTeam {
-      memberKind
-      memberName
-      memberPath
-      memberRouteKey
-      memberRunId
-      teamDefinitionId
-      childTeamRunId
-      address {
-        teamRunId
-        memberPath
+    senderAddress {
+      segments {
+        kind
         memberRouteKey
+        memberPath
+        taskTeamRunId
+        taskAgentRunId
       }
     }
-    receiverRunId
-    receiverMemberKind
-    receiverMemberName
-    receiverMemberPath
-    receiverMemberRouteKey
-    receiverRepresentedSubTeam {
-      memberKind
-      memberName
-      memberPath
-      memberRouteKey
-      memberRunId
-      teamDefinitionId
-      childTeamRunId
-      address {
-        teamRunId
-        memberPath
+    receiverAddress {
+      segments {
+        kind
         memberRouteKey
+        memberPath
+        taskTeamRunId
+        taskAgentRunId
       }
     }
     content
     messageType
     createdAt
-    updatedAt
     referenceFiles {
       referenceId
       path

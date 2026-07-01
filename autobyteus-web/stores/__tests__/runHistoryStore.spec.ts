@@ -2521,6 +2521,78 @@ describe('runHistoryStore', () => {
     expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
   });
 
+  it('selectTreeRun focuses a live transient task-agent target through the local team context', async () => {
+    const store = useRunHistoryStore();
+    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
+    const workerNode = {
+      memberKind: 'agent',
+      memberRouteKey: 'worker',
+      memberPath: ['worker'],
+      memberName: 'worker',
+      displayName: 'Worker',
+      memberRunId: 'worker-run',
+      agentDefinitionId: 'worker-def',
+    };
+    const taskAgentNode = {
+      memberKind: 'agent',
+      memberRouteKey: 'task-agent-run-1',
+      memberPath: ['worker', 'task-agent-run-1'],
+      memberName: 'worker · task_0001',
+      displayName: 'worker · task_0001',
+      memberRunId: 'task-agent-run-1',
+      agentDefinitionId: 'worker-def',
+      isTaskAgentInstance: true,
+      taskAgentRunId: 'task-agent-run-1',
+      taskId: 'task_0001',
+      logicalMemberRouteKey: 'worker',
+    };
+
+    teamContextsStoreMock.teams.set('team-1', {
+      teamRunId: 'team-1',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        memberOverrides: {},
+        isLocked: true,
+      },
+      coordinatorMemberRouteKey: 'worker',
+      memberTree: [workerNode, taskAgentNode],
+      memberNodesByRouteKey: new Map([
+        ['worker', workerNode],
+        ['task-agent-run-1', taskAgentNode],
+      ]),
+      leafAgentContextsByRouteKey: new Map([
+        ['task-agent-run-1', {
+          config: { workspaceId: 'ws-1', agentDefinitionName: 'Worker' },
+          state: {
+            runId: 'task-agent-run-1',
+            currentStatus: 'running',
+            conversation: { messages: [] },
+          },
+        }],
+      ]),
+      focusedMemberRouteKey: 'worker',
+      currentStatus: 'running',
+      isSubscribed: true,
+    });
+
+    await store.selectTreeRun({
+      teamRunId: 'team-1',
+      memberRouteKey: 'task-agent-run-1',
+    });
+
+    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
+    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'task-agent-run-1');
+    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
+    expect(store.selectedTeamRunId).toBe('team-1');
+    expect(store.selectedTeamMemberRouteKey).toBe('task-agent-run-1');
+    expect(teamContextsStoreMock.teams.get('team-1')?.focusedMemberRouteKey).toBe('task-agent-run-1');
+  });
+
   it('selectTreeRun keeps a clicked roster member as visual focus instead of active-execution-normalizing to coordinator', async () => {
     const store = useRunHistoryStore();
     const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
