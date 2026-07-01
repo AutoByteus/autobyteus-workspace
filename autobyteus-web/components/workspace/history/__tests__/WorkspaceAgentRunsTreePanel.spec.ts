@@ -812,6 +812,35 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(teamRunDisclosure.classes()).not.toContain('border');
     expect(teamRunDisclosure.classes()).not.toContain('shadow-sm');
 
+    const teamLeadingLane = teamRow.get('[data-test="workspace-session-leading-lane"]');
+    expect(teamLeadingLane.classes()).toEqual(expect.arrayContaining([
+      'h-5',
+      'items-center',
+      'mr-2',
+    ]));
+    expect(teamRow.find('[data-test="workspace-session-disclosure-placeholder"]').exists()).toBe(false);
+    const teamStatusLane = teamRow.get('[data-test="workspace-session-status-dot"]');
+    expect(teamStatusLane.classes()).toEqual(expect.arrayContaining([
+      'ml-1.5',
+      'h-3.5',
+      'w-2',
+      'items-center',
+      'justify-center',
+    ]));
+    expect(teamStatusLane.classes()).not.toContain('h-9');
+
+    const agentRow = wrapper.get('[data-session-key="agent:run-1"]');
+    const agentPlaceholder = agentRow.get('[data-test="workspace-session-disclosure-placeholder"]');
+    expect(agentPlaceholder.classes()).toEqual(expect.arrayContaining([
+      'h-3.5',
+      'w-3.5',
+      'flex-shrink-0',
+    ]));
+    expect(agentRow.get('[data-test="workspace-session-leading-lane"]').classes())
+      .toEqual(expect.arrayContaining(['h-5', 'items-center', 'mr-2']));
+    expect(agentRow.get('[data-test="workspace-session-status-dot"]').classes())
+      .toEqual(expect.arrayContaining(['ml-1.5', 'h-3.5', 'w-2']));
+
     await teamRow.trigger('click');
     await flushPromises();
 

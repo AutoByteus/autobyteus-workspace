@@ -11,39 +11,48 @@
     :aria-expanded="session.kind === 'team' ? state.isSessionExpanded(session.sessionKey) : undefined"
     @click="actions.onSelectSession(session, workspaceId)"
   >
-    <button
-      v-if="session.kind === 'team'"
-      type="button"
-      class="mr-1 mt-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-      :data-session-key="session.sessionKey"
-      :aria-expanded="state.isSessionExpanded(session.sessionKey)"
-      @click.stop="state.toggleSession(session.sessionKey)"
-      @keydown.enter.stop
-      @keydown.space.stop
+    <span
+      class="mr-2 flex h-5 flex-shrink-0 items-center"
+      data-test="workspace-session-leading-lane"
     >
-      <Icon
-        icon="heroicons:chevron-down-20-solid"
-        class="h-3.5 w-3.5 text-gray-400 transition-transform"
-        :class="state.isSessionExpanded(session.sessionKey) ? 'rotate-0' : '-rotate-90'"
-        data-test="workspace-team-run-disclosure"
+      <button
+        v-if="session.kind === 'team'"
+        type="button"
+        class="inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        :data-session-key="session.sessionKey"
+        :aria-expanded="state.isSessionExpanded(session.sessionKey)"
+        @click.stop="state.toggleSession(session.sessionKey)"
+        @keydown.enter.stop
+        @keydown.space.stop
+      >
+        <Icon
+          icon="heroicons:chevron-down-20-solid"
+          class="h-3.5 w-3.5 text-gray-400 transition-transform"
+          :class="state.isSessionExpanded(session.sessionKey) ? 'rotate-0' : '-rotate-90'"
+          data-test="workspace-team-run-disclosure"
+          aria-hidden="true"
+        />
+      </button>
+      <span
+        v-else
+        class="inline-flex h-3.5 w-3.5 flex-shrink-0"
+        data-test="workspace-session-disclosure-placeholder"
         aria-hidden="true"
       />
-    </button>
-    <span
-      v-else
-      class="mr-1 mt-1 h-3.5 w-3.5 flex-shrink-0"
-      aria-hidden="true"
-    />
+      <span
+        class="ml-1.5 inline-flex h-3.5 w-2 flex-shrink-0 items-center justify-center"
+        data-test="workspace-session-status-dot"
+        aria-hidden="true"
+      >
+        <StatusDot :kind="session.kind" :status="session.status" />
+      </span>
+    </span>
 
     <button
       type="button"
-      class="flex min-w-0 flex-1 items-start text-left"
+      class="min-w-0 flex-1 text-left"
       @click.stop="actions.onSelectSession(session, workspaceId)"
     >
-      <span class="mr-2 flex h-9 flex-shrink-0 items-center" aria-hidden="true">
-        <StatusDot :kind="session.kind" :status="session.status" />
-      </span>
-
       <span class="min-w-0 flex-1">
         <span class="block truncate font-medium">{{ session.displayLabel.title }}</span>
         <span class="block truncate text-xs" :class="isSelected ? 'text-indigo-700' : 'text-gray-500'">

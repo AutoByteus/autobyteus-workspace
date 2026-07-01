@@ -8,6 +8,7 @@
 - Design review report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-review-report.md`
 - Delivery/user verification local-fix rework request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-rework.md`
 - Delivery latest-base integration conflict blocker: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-base-integration-conflict-blocker.md`
+- Delivery/user verification arrow/status alignment rework request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-arrow-dot-alignment-rework.md`
 
 ## What Changed
 
@@ -156,6 +157,28 @@ Integration-scoped checks run after conflict resolution:
 2. `pnpm exec vitest run stores/__tests__/runHistoryStore.spec.ts` — passed, 58 tests.
 3. `pnpm exec nuxi prepare` — passed.
 4. `pnpm exec nuxi typecheck` — still exits 1 due broad existing repository type errors outside this change. Changed-path grep in `/tmp/session-discovery-integrated-typecheck.log` returned no matches for the session-discovery/workspace-history files after fixes.
+
+
+## Arrow / Status Dot Alignment Rework Update (2026-07-01)
+
+Renewed delivery/user verification requested one more Workspaces session-row alignment polish pass. This supersedes the earlier full two-line status-dot centering behavior for session rows: arrows and status dots now align to the title/session-name row only.
+
+What changed:
+
+- `WorkspaceHistorySessionRow.vue` now uses a fixed leading lane for every session row.
+- Expandable team rows render the disclosure arrow in that fixed lane; standalone agent rows render an equal-width invisible placeholder in the same lane.
+- The status dot sits in a fixed-width lane immediately to the right of the arrow/placeholder with a constant `ml-1.5` gap.
+- The leading lane is `h-5 items-center`, matching the title row line height, so arrow and status dot align to the title row rather than the combined title+subtitle height.
+- Prior accepted polish remains intact: no session/member initials chips, `Team Name (N)` team subtitle, compact member guide/reduced indentation, session-first list, transient execution rows, and existing selection/action behavior.
+- `WorkspaceAgentRunsTreePanel.spec.ts` now asserts the fixed leading lane, equal non-expandable placeholder, status lane spacing, and removal of the prior `h-9` full-row-centering status lane.
+
+Implementation-scoped checks run after this rework:
+
+1. `pnpm exec vitest run stores/__tests__/runHistorySessionProjection.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts components/__tests__/AppLeftPanel.spec.ts utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts utils/__tests__/workspaceStatusDotPresentation.spec.ts` — passed, 80 tests.
+2. `pnpm exec vitest run stores/__tests__/runHistoryStore.spec.ts` — passed, 58 tests.
+3. `pnpm exec nuxi prepare` — passed.
+4. `pnpm exec nuxi typecheck` — still exits 1 due broad existing repository errors outside this change. Changed-path grep in `/tmp/session-discovery-arrow-dot-typecheck.log` returned no matches for the session-discovery/workspace-history files.
+5. `git diff --check` — passed.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
