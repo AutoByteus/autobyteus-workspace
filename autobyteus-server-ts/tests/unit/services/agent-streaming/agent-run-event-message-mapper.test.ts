@@ -323,8 +323,9 @@ describe("AgentRunEventMessageMapper", () => {
       payload: {
         messageId: "message-1",
         teamRunId: "team-1",
-        senderRunId: "sender-run-1",
-        receiverRunId: "receiver-run-1",
+        senderAddress: { segments: [{ kind: "member", memberRouteKey: "sender" }] },
+        receiverAddress: { segments: [{ kind: "member", memberRouteKey: "receiver" }] },
+        createdAt: "2026-04-08T00:00:00.000Z",
         content: "Please review the attached report.",
         messageType: "handoff",
         referenceFiles: [{ referenceId: "ref-1", path: "/tmp/report.md" }],
@@ -337,8 +338,9 @@ describe("AgentRunEventMessageMapper", () => {
     expect(message.payload).toEqual({
       messageId: "message-1",
       teamRunId: "team-1",
-      senderRunId: "sender-run-1",
-      receiverRunId: "receiver-run-1",
+      senderAddress: { segments: [{ kind: "member", memberRouteKey: "sender" }] },
+      receiverAddress: { segments: [{ kind: "member", memberRouteKey: "receiver" }] },
+      createdAt: "2026-04-08T00:00:00.000Z",
       content: "Please review the attached report.",
       messageType: "handoff",
       referenceFiles: [{ referenceId: "ref-1", path: "/tmp/report.md" }],

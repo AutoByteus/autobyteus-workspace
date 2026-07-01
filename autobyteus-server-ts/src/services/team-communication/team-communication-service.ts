@@ -129,26 +129,14 @@ export class TeamCommunicationService {
     const message = normalizeTeamCommunicationMessage({
       messageId: payload.messageId,
       teamRunId,
-      senderRunId: payload.sender.memberRunId,
-      senderMemberKind: payload.sender.memberKind,
-      senderMemberName: payload.sender.memberName,
-      senderMemberPath: payload.sender.memberPath,
-      senderMemberRouteKey: payload.sender.memberRouteKey,
-      senderRepresentedSubTeam: payload.sender.representedSubTeam,
-      receiverRunId: payload.receiver.memberRunId,
-      receiverMemberKind: payload.receiver.memberKind,
-      receiverMemberName: payload.receiver.memberName,
-      receiverMemberPath: payload.receiver.memberPath,
-      receiverMemberRouteKey: payload.receiver.memberRouteKey,
-      receiverRepresentedSubTeam: payload.receiver.representedSubTeam,
+      senderAddress: payload.senderAddress,
+      receiverAddress: payload.receiverAddress,
       content: payload.content,
       messageType: payload.messageType,
       createdAt: payload.createdAt,
-      updatedAt: payload.createdAt,
       referenceFileEntries: payload.referenceFiles,
     }, {
       teamRunId,
-      receiverRunId: payload.receiver.memberRunId,
       timestampFallback: payload.createdAt,
     });
     if (!message) {
@@ -167,7 +155,6 @@ export class TeamCommunicationService {
   ): Promise<void> {
     const message = normalizeTeamCommunicationMessage(event.payload, {
       teamRunId,
-      receiverRunId: event.runId,
     });
     if (!message) {
       logger.warn(
@@ -184,6 +171,7 @@ export class TeamCommunicationService {
     message: TeamCommunicationMessage,
   ): Promise<void> {
     const projection = await this.loadProjection(teamRunId);
+    projection.teamRunId = teamRunId;
     const upsertAction = this.upsertMessage(projection, message);
     if (upsertAction === "unchanged") {
       return;
@@ -194,7 +182,7 @@ export class TeamCommunicationService {
     const projectionPath = getTeamCommunicationProjectionPath(teamMemoryDir);
     await this.projectionStore.writeProjection(teamMemoryDir, projection);
     logger.info(
-      `${LOG_PREFIX} projection ${upsertAction} teamRunId=${teamRunId} messageId=${message.messageId} senderRunId=${message.senderRunId} receiverRunId=${message.receiverRunId} referenceCount=${message.referenceFiles.length} projectionPath=${projectionPath}`,
+      `${LOG_PREFIX} projection ${upsertAction} teamRunId=${teamRunId} messageId=${message.messageId} referenceCount=${message.referenceFiles.length} projectionPath=${projectionPath}`,
     );
   }
 
@@ -238,7 +226,7 @@ export class TeamCommunicationService {
       projection.messages.push(incoming);
       return "inserted";
     }
-    if (incoming.updatedAt.localeCompare(existing.updatedAt) < 0) {
+    if (incoming.createdAt.localeCompare(existing.createdAt) < 0) {
       return "unchanged";
     }
 
@@ -246,7 +234,6 @@ export class TeamCommunicationService {
       ...existing,
       ...incoming,
       createdAt: existing.createdAt || incoming.createdAt,
-      updatedAt: incoming.updatedAt,
       referenceFiles: incoming.referenceFiles,
     };
     if (JSON.stringify(existing) === JSON.stringify(nextMessage)) {

@@ -42,10 +42,7 @@
       <TeamCommunicationPanel
         v-show="messagesExpanded"
         :team-run-id="activeTeamContext?.teamRunId || ''"
-        :focused-member-run-id="focusedMemberCommunicationRunId"
-        :focused-member-route-key="focusedMemberCommunicationRouteKey"
-        :focused-member-path="focusedMemberCommunicationPath"
-        :focused-member-kind="focusedMemberCommunicationKind"
+        :focused-address="focusedCommunicationAddress"
         class="min-h-0 flex-1"
       />
     </section>
@@ -60,7 +57,6 @@
         :collapsed="!activeTasksExpanded"
         class="h-full"
         @toggle="toggleSection('activeTasks')"
-        @select-member="focusActiveTaskMember"
       />
     </div>
   </div>
@@ -73,6 +69,7 @@ import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import TeamCommunicationPanel from '~/components/workspace/team/TeamCommunicationPanel.vue';
 import TeamActiveTasksSection from '~/components/workspace/team/TeamActiveTasksSection.vue';
 import { deriveActiveTaskEntries } from '~/utils/teamActiveTaskEntries';
+import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
 
 type TeamOverviewSection = 'messages' | 'activeTasks';
 
@@ -97,22 +94,17 @@ const activeTaskSignature = computed(() => activeTaskEntries.value
   ].join(':'))
   .sort()
   .join('|'));
-const focusedMemberContext = computed(() => teamContextsStore.focusedMemberContext);
-const focusedMemberNode = computed(() => teamContextsStore.focusedMemberNode);
-const focusedMemberCommunicationRunId = computed(() => (
-  focusedMemberContext.value?.state.runId || focusedMemberNode.value?.memberRunId || ''
-));
-const focusedMemberCommunicationRouteKey = computed(() => focusedMemberNode.value?.memberRouteKey || '');
-const focusedMemberCommunicationPath = computed(() => focusedMemberNode.value?.memberPath || []);
-const focusedMemberCommunicationKind = computed(() => focusedMemberNode.value?.memberKind || null);
+const focusedCommunicationAddress = computed(() => {
+  const teamContext = activeTeamContext.value;
+  if (!teamContext) return null;
+  return resolveTeamConversationTargetAddressResult(teamContext, {
+    allowSubteam: true,
+    allowActiveExecutionSafetyFallback: true,
+  }).target?.address ?? null;
+});
 const messageCount = computed(() => {
   const teamRunId = activeTeamRunId.value;
-  return teamCommunicationStore.getPerspectiveForMember(teamRunId, {
-    memberRunId: focusedMemberCommunicationRunId.value,
-    memberRouteKey: focusedMemberCommunicationRouteKey.value,
-    memberPath: focusedMemberCommunicationPath.value,
-    memberKind: focusedMemberCommunicationKind.value,
-  }).messages.length;
+  return teamCommunicationStore.getPerspectiveForAddress(teamRunId, focusedCommunicationAddress.value).messages.length;
 });
 
 watch(
@@ -158,11 +150,4 @@ const toggleSection = (section: TeamOverviewSection) => {
   expandedSection.value = expandedSection.value === section ? null : section;
 };
 
-const focusActiveTaskMember = async (memberRouteKey: string) => {
-  const teamRunId = activeTeamContext.value?.teamRunId;
-  if (!teamRunId) {
-    return;
-  }
-  await teamContextsStore.focusMemberAndEnsureHydrated(teamRunId, memberRouteKey);
-};
 </script>

@@ -147,6 +147,8 @@ const messages = {
     "Task description unavailable",
   "workspace.components.workspace.team.TeamActiveTasksSection.members":
     "Members",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
+    "Temporary task execution",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

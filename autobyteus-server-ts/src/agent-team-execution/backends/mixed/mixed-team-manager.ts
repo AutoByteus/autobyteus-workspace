@@ -387,6 +387,7 @@ export class MixedTeamManager implements TeamManager {
       normalizeMixedParentBoundaryDeliveryIntent({
         intent,
         parentBoundary,
+        taskTeamInstance: this.teamContext?.runtimeContext.taskTeamInstance ?? null,
       }),
     );
   }

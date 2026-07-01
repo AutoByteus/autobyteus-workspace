@@ -3,88 +3,90 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `session-discovery-ui`
-- Scope: Delivery integration refresh, docs sync, and user-verification handoff for reviewed/validated session-first workspace history sidebar redesign.
+- Scope: Delivery resume after API/E2E Round 2 pass for the user-verification Local Fix rework.
 - Worktree: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui`
 - Web package path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web`
 - Ticket branch: `codex/session-discovery-ui`
 - Finalization target: `origin/personal` / `personal`
-- Current status: `Ready for user verification; finalization held by policy`
+- Current status: `Blocked — latest-base integration conflicts require implementation rework`
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/handoff-summary.md`
-- Handoff summary status: `Updated`
-- Notes: Handoff captures delivered session-first history UI scope, validation evidence, docs sync, residual risks, and the explicit user-verification hold.
+- Handoff summary status: `Blocked`
+- Notes: Prior handoff summary is stale after the Local Fix rework and cannot be truthfully refreshed until the latest `origin/personal` integration conflicts are resolved.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal` at `4331f1013cbefbf6409d6c45b269ee31ca9da562`
-- Latest tracked remote base reference checked: `origin/personal` at `4331f1013cbefbf6409d6c45b269ee31ca9da562` after `git fetch origin --prune` on 2026-06-30 21:54 PDT
-- Base advanced since bootstrap or previous refresh: `No`
+- Latest tracked remote base reference checked: `origin/personal` at `57185192d4b93840dab1fb7134604b1716a600a8` after `git fetch origin --prune` on 2026-07-01
+- Base advanced since bootstrap or previous refresh: `Yes`
 - New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed`
-- Integration method: `Already current`
-- Integration result: `Completed`
-- Post-integration executable checks rerun: `Yes`
-- Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): `N/A` — delivery reran a focused smoke anyway.
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
-- Blocker (if applicable): `None for handoff; repository finalization remains held until user verification.`
+- Local checkpoint commit result: `Completed` (`817ef8df` — `checkpoint session discovery ui before delivery base refresh`)
+- Integration method: `Merge`
+- Integration result: `Blocked` — `git merge --no-edit origin/personal` produced conflicts.
+- Post-integration executable checks rerun: `No`
+- Post-integration verification result: `Blocked`
+- No-rerun rationale (only if no new base commits were integrated): `N/A`
+- Delivery edits started only after integrated state was current: `No` — integration is blocked before docs/handoff refresh.
+- Handoff state current with latest tracked remote base: `No`
+- Blocker (if applicable): Merge conflicts in:
+  - `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`
+  - `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`
+  - `autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts`
+  - `autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts`
 
 ## Verification / Acceptance
 
 - Verification owner: `User`
 - Initial explicit user completion/verification received: `No`
 - Product Manager acceptance status: `N/A`
-- Initial verification / acceptance reference: `Pending user verification of this handoff`
-- Renewed verification required after later re-integration: `No`
-- Renewed verification received: `Not needed`
+- Initial verification / acceptance reference: User previously confirmed the session-first list was visible, then requested Local Fix UI polish; Round 2 API/E2E passed that rework, but delivery latest-base integration is now blocked.
+- Renewed verification required after later re-integration: `Yes`
+- Renewed verification received: `No`
 - Renewed verification / acceptance reference: `N/A`
 
 ## Docs Sync Result
 
 - Docs sync artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/docs-sync-report.md`
-- Docs sync result: `Updated`
-- Docs updated:
-  - `autobyteus-web/docs/agent_execution_architecture.md`
-  - `autobyteus-web/docs/settings.md`
+- Docs sync result: `Blocked`
+- Docs updated: `Not updated in this delivery resume because latest-base integration produced source conflicts before docs refresh could truthfully proceed.`
 - No-impact rationale (if applicable): `N/A`
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `N/A — still in /tickets/in-progress/session-discovery-ui until user verification`
+- Archived ticket path: `N/A — still in /tickets/in-progress/session-discovery-ui`
 
 ## Version / Tag / Release Commit
 
-- Not started. No version bump, tag, release-specific commit, publication, or deployment is in scope before user verification.
+- Not started. No version bump, tag, release-specific commit, publication, or deployment is in scope while integration is blocked.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/investigation-notes.md`
 - Ticket branch: `codex/session-discovery-ui`
-- Ticket branch commit result: `Not started — waiting for user verification`
-- Ticket branch push result: `Not started — waiting for user verification`
+- Ticket branch commit result: `Checkpoint only` (`817ef8df`; not a finalization commit)
+- Ticket branch push result: `Not started — blocked before verification/finalization`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `N/A — no verification yet`
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not needed yet`
-- Target branch update result: `Not started — waiting for user verification`
-- Merge into target result: `Not started — waiting for user verification`
-- Push target branch result: `Not started — waiting for user verification`
+- Target advanced after verification / acceptance: `N/A — no verification/finalization yet`
+- Delivery-owned edits protected before re-integration: `Completed` via local checkpoint commit `817ef8df`
+- Re-integration before final merge result: `Blocked`
+- Target branch update result: `Not started`
+- Merge into target result: `Not started`
+- Push target branch result: `Not started`
 - Repository finalization status: `Blocked`
-- Blocker (if applicable): `Explicit user verification/completion is required before ticket archival, final commit, push, merge, release, deployment, or cleanup for this one-off run.`
+- Blocker (if applicable): Latest-base integration conflicts require implementation-owned source reconciliation.
 
 ## Release / Publication / Deployment
 
 - Applicable: `No`
 - Method: `Other`
-- Method reference / command: `No release/publication/deployment requested for this verification handoff`
-- Release/publication/deployment result: `Not required`
+- Method reference / command: `No release/publication/deployment while delivery is blocked`
+- Release/publication/deployment result: `Blocked`
 - Release notes handoff result: `Not required`
-- Blocker (if applicable): `N/A`
+- Blocker (if applicable): Same as repository finalization blocker.
 
 ## Post-Finalization Cleanup
 
@@ -93,7 +95,7 @@
 - Worktree prune result: `Blocked`
 - Local ticket branch cleanup result: `Blocked`
 - Remote branch cleanup result: `Not required`
-- Blocker (if applicable): `Cleanup must wait until user verification and repository finalization are complete.`
+- Blocker (if applicable): Cleanup must wait until integration, verification, and repository finalization are complete.
 
 ## Product Manager Iteration Acceptance Callback
 
@@ -111,13 +113,13 @@
 - Next iteration owner: `product_manager`
 - Next iteration status: `N/A`
 - Next Product Feature Brief path / message reference: `N/A`
-- Notes: This run entered through the normal Software Engineering Team as a one-off request; Product Manager acceptance callback is not required.
+- Notes: One-off Software Engineering Team run; Product Manager callback is not required.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: `Local Fix`
 - Recommended recipient: `implementation_engineer`
-- Why final handoff could not complete: User verification found follow-up UI polish requirements for the Workspaces session list: remove session/member initials circles, simplify team subtitles, reduce indentation with a subtle guide line, and vertically center session status dots. See `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-rework.md`.
+- Why final handoff could not complete: `origin/personal` advanced by 25 commits. Delivery created checkpoint commit `817ef8df` and attempted to merge `origin/personal` at `57185192d4b93840dab1fb7134604b1716a600a8`, but source conflicts occurred in Workspaces history implementation files. See `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-base-integration-conflict-blocker.md`.
 
 ## Release Notes Summary
 
@@ -127,31 +129,24 @@
 
 ## Deployment Steps
 
-- None. No deployment path was requested or applicable before user verification.
+- None. Delivery is blocked before deployment/release scope.
 
 ## Environment Or Migration Notes
 
-- No database schema, backend API, filesystem migration, native app lifecycle, updater, installer, or service restart work is required.
-- Frontend history UI now uses a client-side session projection over existing standalone and team history data.
-- Backend persisted/generated session-title support remains deferred; existing explicit `displayTitle`/`sessionTitle` fields are honored when present in source rows.
+- No environment or migration notes can be finalized until the ticket branch is integrated with latest `origin/personal`.
 
 ## Verification Checks
 
-- Delivery refresh: `git fetch origin --prune` — passed; `origin/personal` remained `4331f1013cbefbf6409d6c45b269ee31ca9da562`.
-- Delivery smoke: `pnpm exec nuxi prepare` — passed.
-- Delivery smoke: `pnpm exec vitest run stores/__tests__/runHistorySessionProjection.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts` — passed, 2 files / 56 tests.
-- Delivery hygiene: `git diff --check` — passed.
-- Upstream full targeted session-history suite: passed, 72 tests.
-- Upstream run-history store suite: passed, 57 tests.
-- Upstream static obsolete-path grep: passed.
-- Upstream broad typecheck: non-blocking fail due unrelated/pre-existing repo errors; changed-path grep found no modified session-history/AppLeftPanel/store matches.
+- Delivery refresh: `git fetch origin --prune` — passed.
+- Local checkpoint: `git add -A && git commit -m "checkpoint session discovery ui before delivery base refresh"` — completed as `817ef8df`.
+- Delivery integration attempt: `git merge --no-edit origin/personal` — blocked by source conflicts; merge aborted.
+- Post-integration executable checks: not run because integration did not complete.
 
 ## Rollback Criteria
 
-- Before finalization: revise or discard the ticket worktree/branch changes if user verification fails or requested behavior changes.
-- After future finalization: revert the eventual ticket-branch merge/commit from `personal` if the session-first sidebar redesign must be backed out.
-- No schema, migration, or release artifact rollback is currently required because repository finalization and release have not been performed.
+- Before conflict resolution: reset/discard the local checkpoint only if implementation intentionally restarts from a clean latest-base branch; otherwise use checkpoint `817ef8df` as the preserved reviewed candidate for conflict reconciliation.
+- After future finalization: revert the eventual ticket merge/commit from `personal` if the session-first sidebar redesign must be backed out.
 
 ## Final Status
 
-- `Ready for user verification; repository finalization held` — latest tracked `origin/personal` was checked and matched the reviewed base, long-lived docs were updated, delivery smoke checks passed, and no archival/push/merge/release/deployment/cleanup has been performed pending explicit user verification.
+- `Blocked — rerouted to implementation_engineer` because latest-base integration produced source conflicts before docs sync/final handoff could proceed.

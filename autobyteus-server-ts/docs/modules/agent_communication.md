@@ -33,10 +33,12 @@ Team Communication projection:
 
 - recipient input is delivered through the resolved member/team handle;
 - accepted `INTER_AGENT_MESSAGE` events carry the team context needed by the Team
-  Communication processor;
+  Communication processor to build address-first `senderAddress` and
+  `receiverAddress` values;
 - `reference_files` become Team Communication child references persisted under
   the team run; and
-- frontend Team tab sent/received perspectives hydrate from that projection.
+- frontend Team tab sent/received perspectives hydrate from that projection and
+  match the focused member by exact normalized `ConversationTargetAddress`.
 
 Team-owned internals may still use their own task-agent/recovery machinery for
 task-delegation workflows, but the public `recipient_name` selector is the only

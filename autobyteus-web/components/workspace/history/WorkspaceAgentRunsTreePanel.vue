@@ -120,6 +120,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useToasts } from '~/composables/useToasts';
 import { pickFolderPath } from '~/composables/useNativeFolderDialog';
@@ -143,6 +144,7 @@ const workspaceStore = useWorkspaceStore();
 const selectionStore = useAgentSelectionStore();
 const agentRunStore = useAgentRunStore();
 const teamRunStore = useAgentTeamRunStore();
+const agentTeamContextsStore = useAgentTeamContextsStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
@@ -292,6 +294,7 @@ const sectionState: WorkspaceHistorySectionState = {
   toggleWorkspace: onToggleWorkspace,
   isSessionExpanded: treeState.isSessionExpanded,
   toggleSession: treeState.toggleSession,
+  getLiveTeamContext: (teamRunId: string) => agentTeamContextsStore.getTeamContextById(teamRunId) ?? null,
   isTeamMemberExpanded: treeState.isTeamMemberExpanded,
   toggleTeamMember: treeState.toggleTeamMember,
   canTerminateTeam: treeState.canTerminateTeam,

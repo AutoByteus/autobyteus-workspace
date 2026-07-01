@@ -184,13 +184,27 @@ frontend clones scoped child member nodes/contexts under the task-team root and
 drops task-team scoped events that lack a task-team run id instead of guessing
 from the structural route.
 
-The right-side Team tab owns delegated task visibility through its Active Tasks
-section instead of a center active-task strip or global Workspaces-tree active
-task host. `TeamOverviewPanel` owns the local Messages/Tasks accordion state.
-Messages remains the default for a selected team run with no active task
-entries, but the panel opens Tasks automatically when the selected team run
-already has active task entries or when a new active-task identity appears while
-the same run is mounted. The auto-open signature is derived from the same
+Delegated task visibility is intentionally split across two surfaces. The
+global Workspaces/run-history tree owns live execution identity and hierarchy:
+it composes stable history rows with pure renderer-only transient display rows
+from `AgentTeamContext.memberTree`, keeps durable members visually solid, and
+renders task-agent, task-team root, and task-team child executions inline with
+explicit transient row kinds. A transient row has a light ghost background and
+exactly one visible transient marker in the leading status-dot slot: an
+explicit eight-dot SVG ring (`h-2.5 w-2.5`) whose eight `currentColor` circles
+preserve status color semantics. It must not use the superseded CSS dotted-border
+or dashed-stroke marker treatments, add a second dotted initials/avatar marker,
+add a trailing marker, or show visible `Temp` / `Temporary` copy in the row body.
+Selecting either a stable or transient Workspaces row uses the existing
+team-member focus path and route-key identity. The right-side Team tab owns task
+detail/content through its Active Tasks section; it is not the primary execution
+hierarchy or status surface.
+
+`TeamOverviewPanel` owns the local Messages/Tasks accordion state. Messages
+remains the default for a selected team run with no active task entries, but the
+panel opens Tasks automatically when the selected team run already has active
+task entries or when a new active-task identity appears while the same run is
+mounted. The auto-open signature is derived from the same
 `deriveActiveTaskEntries(...)` entries consumed by `TeamActiveTasksSection`,
 keyed by task kind, member route, task id, and execution run id, so unrelated
 messages or refreshes do not open Tasks. A user may still collapse Tasks for the
@@ -199,44 +213,51 @@ selected-run change to a run that has active tasks. When the selected team run
 changes and there are no active tasks, the panel opens Messages.
 `TeamActiveTasksSection` derives task-agent and task-team entries from the
 transient projection nodes in `AgentTeamContext`, owns the Team-tab split layout
-and section-local task/reference selection, and renders the left navigator plus
-right detail pane.
+and section-local task/reference selection, and renders a task-detail navigator
+plus detail pane.
 
-Inside that section, `TeamActiveTaskNavigator` renders each task navigator item
-in the durable order: text-only task summary, responsible agent or task-team row
-with the shared tiny `StatusDot`, indented task-team member rows with status
-dots, task-owned reference rows with visible selected state, and collapsed
-Technical details for task type, task id, execution run id, target metadata, and
-raw task arguments. Summary and reference clicks update only the section-local
-task/reference detail selection; they must not focus the center
-conversation/composer or replace it with a task team card. Explicit actor/member
-rows are the only task UI controls that emit the existing focus behavior for that
-target. `TeamActiveTaskDetailPane` is content/reference-only: it renders the
-selected task body or selected task-owned reference preview and intentionally does
-not duplicate the actor/team heading, status chip, waiting notice, `Focus`
-button, actor/member roster, reference list, or Technical details in the right
-pane.
+Inside that section, `TeamActiveTaskNavigator` renders task-content navigation
+only: clean text task summaries without a leading status dot or visible status
+label, task-owned reference rows with visible selected state and no separate
+visible `References` heading, and collapsed Technical details for task type,
+task id, execution run id, target metadata, and raw task arguments. Summary and
+reference clicks update only the section-local task/reference detail selection;
+they must not focus the center conversation/composer, replace it with a task
+team card, or repeat the Workspaces execution hierarchy. It must not render
+responsible actor/member hierarchy rows, `Focus agent` / `Focus team` controls,
+approval controls, leading summary status dots, or visible summary status copy
+such as `ACTIVE` / `RUNNING`.
+`TeamActiveTaskDetailPane` is content/reference-only: it renders the selected
+task body or selected task-owned reference preview and intentionally does not
+duplicate the actor/team heading, status chip, waiting notice, focus controls,
+actor/member roster, reference list, or Technical details in the right pane.
 
-The global Workspaces/run-history tree remains a workspace/run/team/member
-navigation surface only. It may reuse the shared status-dot presentation for
-workspace rows, but it must not render active-task summary blocks, task reference
-rows, or active-task Technical details. Primary visible Tasks UI intentionally
-hides `Task Agent` / `Task Team` badges, raw ids, duplicate right-side reference
-lists, and `Focus agent` / `Focus team` wording. Tasks is not an approval action
-surface: pending approval remains status-only here, and Activity remains the
-owner for Approve/Deny controls and approval command routing. Task reference
-files come from task-delegation event metadata and open in the Tasks right pane
-through the task-owned reference route; Messages remains message-owned and its
-content/reference UX is not routed through task identity. The center workspace
-remains the focused conversation/event/composer surface and must not render
-`TeamActiveTaskExecutionsBar` or any replacement center list.
+The global Workspaces/run-history tree remains the navigation and execution-focus
+surface for workspaces, runs, teams, durable members, and live transient
+execution identities. It may reuse the shared status-dot presentation for
+workspace rows and stable member rows, but transient task executions must remain
+display-row projections rather than ordinary durable `TeamMemberTreeRow` history
+rows. Transient task-team roots with child rows are collapsed by default; their
+user-controlled disclosure state is keyed by the transient execution row identity
+so simultaneous task-team executions do not accidentally share expansion state.
+Workspaces must not render active-task summary blocks, task reference rows, raw
+task arguments, approval controls, or active-task Technical details. Tasks is not
+an approval action surface: pending approval can appear only as non-actionable
+task context or technical metadata there, and Activity remains the owner for
+Approve/Deny controls and approval command routing. Task reference files come
+from task-delegation event metadata and open in the Tasks right pane through the
+task-owned reference route; Messages remains message-owned and its
+content/reference UX is not routed through task identity.
+The center workspace remains the focused conversation/event/composer surface and
+must not render `TeamActiveTaskExecutionsBar` or any replacement center list.
 
-Running and awaiting-acceptance task executions must remain visible in Team →
-Active Tasks after active team reopen/hydration, even when server resume
-metadata only lists stable logical coordinator/member rows. Run-open hydration
-therefore restores concrete task executions from live projection/identity
-instead of collapsing them into the logical member or team parent. Stream
-routing is projection-first: task-team root/scoped child identity wins before
+Running and awaiting-acceptance task executions must remain visible as
+Workspaces transient identity rows and as Team → Active Tasks detail entries
+after active team reopen/hydration, even when server resume metadata only lists
+stable logical coordinator/member rows. Run-open hydration therefore restores
+concrete task executions from live projection/identity instead of collapsing them
+into the logical member or team parent.
+Stream routing is projection-first: task-team root/scoped child identity wins before
 task-agent identity, then exact logical route/path identity, then compatible
 run-id fallback. The frontend must not recreate the removed `isTaskAgentRunId`
 generated-run-id heuristic or any other run-id-format parser as a routing
@@ -671,9 +692,9 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
 2.  **Team Communication (`TeamCommunicationStore`)**:
-    - Listens to accepted team-route `INTER_AGENT_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
-    - Owns the canonical team-level message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_name` deliveries.
-    - Exposes focused-member sent/received message perspectives grouped by counterpart member.
+    - Listens to derived `TEAM_COMMUNICATION_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
+    - Owns the canonical team-level address-first message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_name` deliveries.
+    - Exposes focused-member sent/received message perspectives by comparing the focused `ConversationTargetAddress` with each message's `senderAddress` and `receiverAddress`, grouped by counterpart address label.
     - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
     - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
     - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.

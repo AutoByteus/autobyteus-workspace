@@ -41,13 +41,11 @@ describe("TeamCommunicationContentService", () => {
         return {
           message: {
             messageId: "message-1",
-            teamRunId: "team-1",
-            senderRunId: "sender-run-1",
-            receiverRunId: "receiver-run-1",
+            senderAddress: { segments: [{ kind: "member", memberRouteKey: "sender" }] },
+            receiverAddress: { segments: [{ kind: "member", memberRouteKey: "receiver" }] },
             content: "Please review.",
             messageType: "handoff",
             createdAt: "2026-04-08T00:00:00.000Z",
-            updatedAt: "2026-04-08T00:00:00.000Z",
             referenceFiles: [],
           },
           reference: {

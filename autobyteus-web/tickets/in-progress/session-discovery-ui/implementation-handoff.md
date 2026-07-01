@@ -7,6 +7,7 @@
 - Design spec: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-spec.md`
 - Design review report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-review-report.md`
 - Delivery/user verification local-fix rework request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-rework.md`
+- Delivery latest-base integration conflict blocker: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-base-integration-conflict-blocker.md`
 
 ## What Changed
 
@@ -133,6 +134,28 @@ Implementation-scoped checks only:
 - Active agent/team rows expose terminate actions; inactive history rows expose archive/delete actions; draft rows expose local remove actions.
 - Legacy summaries such as `**[User Requirement]** Build the demo fruit shop` render without the wrapper, and wrapper-only summaries fall back to untitled labels.
 - Session ordering remains active-first, then inactive recency order.
+
+
+## Latest-Base Integration Conflict Resolution Update (2026-07-01)
+
+Delivery reported that `origin/personal` advanced from `4331f1013cbefbf6409d6c45b269ee31ca9da562` to `57185192d4b93840dab1fb7134604b1716a600a8`, and that `git merge --no-edit origin/personal` conflicted in workspace-history source files. Implementation resolved the integration on top of `origin/personal` at `57185192d4b93840dab1fb7134604b1716a600a8`.
+
+Resolution summary:
+
+- Kept the session-first Workspaces history surface as authoritative: `WorkspaceAgentRunsTreePanel.vue` still feeds `workspaceSessions(...)` into `WorkspaceHistoryWorkspaceSection.vue`.
+- Preserved Round 2 UI polish behavior: no session source avatar/initials chips, no member initials/avatar chips, `Team Name (N)` subtitles, subtle member guide/reduced indentation, and two-line-centered session status dots.
+- Integrated the latest-base transient task execution display work into the session-first expanded team-member rows instead of restoring the old team-definition grouped rendering.
+- Added `getLiveTeamContext(teamRunId)` to the workspace-history section state contract so expanded session team rows can render live transient task-agent/task-team rows from the latest base.
+- Updated `useWorkspaceHistorySelectionActions` to keep session expansion semantics while allowing team member selection targets that come from either stable persisted members or transient execution display rows.
+- Updated `WorkspaceTransientExecutionRow.vue` indentation/status-dot spacing to match the reduced-indentation Round 2 visual treatment.
+- Updated `WorkspaceHistoryWorkspaceSection.spec.ts` to exercise transient execution rows through the session-first section contract.
+
+Integration-scoped checks run after conflict resolution:
+
+1. `pnpm exec vitest run stores/__tests__/runHistorySessionProjection.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts components/__tests__/AppLeftPanel.spec.ts utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts utils/__tests__/workspaceStatusDotPresentation.spec.ts` — passed, 80 tests.
+2. `pnpm exec vitest run stores/__tests__/runHistoryStore.spec.ts` — passed, 58 tests.
+3. `pnpm exec nuxi prepare` — passed.
+4. `pnpm exec nuxi typecheck` — still exits 1 due broad existing repository type errors outside this change. Changed-path grep in `/tmp/session-discovery-integrated-typecheck.log` returned no matches for the session-discovery/workspace-history files after fixes.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 

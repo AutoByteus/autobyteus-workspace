@@ -1433,7 +1433,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ]);
   });
 
-  it('keeps the global Workspaces tree free of active-task context under an expanded live team', async () => {
+  it('keeps the global Workspaces tree free of active-task detail and full-context UI under an expanded live team', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
         teamRunId: 'team-1',

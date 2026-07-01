@@ -157,49 +157,27 @@ export const GetTeamCommunicationMessages = gql`
   query GetTeamCommunicationMessages($teamRunId: String!) {
     getTeamCommunicationMessages(teamRunId: $teamRunId) {
       messageId
-      teamRunId
-      senderRunId
-      senderMemberKind
-      senderMemberName
-      senderMemberPath
-      senderMemberRouteKey
-      senderRepresentedSubTeam {
-        memberKind
-        memberName
-        memberPath
-        memberRouteKey
-        memberRunId
-        teamDefinitionId
-        childTeamRunId
-        address {
-          teamRunId
-          memberPath
+      senderAddress {
+        segments {
+          kind
           memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
         }
       }
-      receiverRunId
-      receiverMemberKind
-      receiverMemberName
-      receiverMemberPath
-      receiverMemberRouteKey
-      receiverRepresentedSubTeam {
-        memberKind
-        memberName
-        memberPath
-        memberRouteKey
-        memberRunId
-        teamDefinitionId
-        childTeamRunId
-        address {
-          teamRunId
-          memberPath
+      receiverAddress {
+        segments {
+          kind
           memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
         }
       }
       content
       messageType
       createdAt
-      updatedAt
       referenceFiles {
         referenceId
         path

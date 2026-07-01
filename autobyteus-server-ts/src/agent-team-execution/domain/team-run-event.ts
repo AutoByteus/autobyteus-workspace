@@ -3,7 +3,7 @@ import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-p
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
 import type { TaskTeamInstanceIdentity } from "./task-team-instance.js";
-import type { TeamMemberAddress, TeamRepresentedSubTeam } from "./inter-agent-message-delivery.js";
+import type { ConversationTargetAddress } from "./conversation-target-address.js";
 import { buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
 
 export enum TeamRunEventSourceType {
@@ -48,23 +48,11 @@ export type TeamCommunicationReferenceFile = {
   updatedAt: string;
 };
 
-export type TeamCommunicationParticipant = {
-  memberKind: "agent" | "agent_team";
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  address?: TeamMemberAddress | null;
-  platformRunId?: string | null;
-  teamDefinitionId?: string | null;
-  representedSubTeam?: TeamRepresentedSubTeam | null;
-};
-
 export type TeamRunCommunicationEventPayload = {
   messageId: string;
   teamRunId: string;
-  sender: TeamCommunicationParticipant;
-  receiver: TeamCommunicationParticipant;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
   content: string;
   messageType: string;
   referenceFiles: TeamCommunicationReferenceFile[];

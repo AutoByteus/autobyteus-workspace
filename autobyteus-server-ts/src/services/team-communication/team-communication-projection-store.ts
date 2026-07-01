@@ -29,7 +29,7 @@ export class TeamCommunicationProjectionStore {
     try {
       const parsed = JSON.parse(await fs.readFile(projectionPath, "utf-8")) as TeamCommunicationProjection;
       return {
-        version: 1,
+        teamRunId: typeof parsed?.teamRunId === "string" ? parsed.teamRunId : "",
         messages: Array.isArray(parsed?.messages) ? parsed.messages : [],
       };
     } catch (error) {
@@ -56,7 +56,7 @@ export class TeamCommunicationProjectionStore {
     try {
       await fs.writeFile(
         tempProjectionPath,
-        JSON.stringify({ version: 1, messages: projection.messages }, null, 2),
+        JSON.stringify({ teamRunId: projection.teamRunId, messages: projection.messages }, null, 2),
         "utf-8",
       );
       await fs.rename(tempProjectionPath, projectionPath);

@@ -82,7 +82,7 @@ export class TeamCommunicationProjectionService {
 
     const metadata = await this.metadataService.readMetadata(normalizedTeamRunId);
     if (!metadata) {
-      return { version: 1 as const, messages: [] };
+      return { teamRunId: normalizedTeamRunId, messages: [] };
     }
 
     return normalizeTeamCommunicationProjection(

@@ -161,12 +161,17 @@ Content route ownership stays split:
   identity.
 
 The focused frontend member decides whether a message is shown in the sent or
-received Team Communication perspective; sender/receiver identity is metadata on
-the message, not a receiver-owned route or projection owner. For represented
-subteam communication, `represented_sub_team` / `representedSubTeam` metadata
-travels with the sender or receiver participant so parent-to-representative and
-upward-report rows can display the responsible subteam while preserving the
-actual leaf path.
+received Team Communication perspective by deriving that focused node's
+`ConversationTargetAddress` and comparing normalized address keys against each
+message's `senderAddress` and `receiverAddress`. Sender/receiver identity is
+message metadata, not a receiver-owned route or projection owner. Static nested
+members, task-team roots, members inside task-team executions, and delegated
+task-agent executions are represented by `member`, `task_team`, and
+`task_agent` address segments. Current runtime/API/stream payloads do not expose
+old flat Team Communication participant fields such as sender/receiver run ids,
+member paths/route keys, represented-subteam fields, or task-team-scope
+wrappers; old flat projection files are converted by app-data migration before
+normal runtime reads.
 
 Team events expose path-aware member identity:
 

@@ -23,8 +23,12 @@ const labels: Record<string, string> = {
 
 const TeamCommunicationPanelStub = defineComponent({
   name: 'TeamCommunicationPanel',
-  props: ['teamRunId', 'focusedMemberRunId', 'focusedMemberRouteKey', 'focusedMemberPath', 'focusedMemberKind'],
+  props: ['teamRunId', 'focusedAddress'],
   template: '<div data-test="team-communication-panel" />',
+});
+
+const memberAddress = (memberRouteKey: string) => ({
+  segments: [{ kind: 'member' as const, memberRouteKey }],
 });
 
 const buildTaskAgentNode = (taskId: string, runId = `${taskId}-run`) => ({
@@ -80,15 +84,11 @@ const seedActiveTeam = (options: { taskIds?: string[]; teamRunId?: string } = {}
   useTeamCommunicationStore().replaceProjection(teamRunId, [
     {
       messageId: 'message-1',
-      teamRunId,
-      senderRunId: 'impl-run',
-      senderMemberName: 'Implementation Engineer',
-      receiverRunId: 'reviewer-run',
-      receiverMemberName: 'Code Reviewer',
+      senderAddress: memberAddress('implementation_engineer'),
+      receiverAddress: memberAddress('code_reviewer'),
       content: 'Please review this.',
       messageType: 'handoff',
       createdAt: '2026-04-12T10:00:00.000Z',
-      updatedAt: '2026-04-12T10:00:00.000Z',
       referenceFiles: [],
     },
   ]);
@@ -143,21 +143,11 @@ const seedFocusedSubteam = () => {
   useTeamCommunicationStore().replaceProjection('team-subteam', [
     {
       messageId: 'message-to-build-squad',
-      teamRunId: 'team-subteam',
-      senderRunId: 'pm-run',
-      senderMemberKind: 'agent',
-      senderMemberName: 'program_manager',
-      senderMemberPath: ['program_manager'],
-      senderMemberRouteKey: 'program_manager',
-      receiverRunId: 'internal-child-team-run',
-      receiverMemberKind: 'agent_team',
-      receiverMemberName: 'BuildSquad',
-      receiverMemberPath: ['BuildSquad'],
-      receiverMemberRouteKey: 'BuildSquad',
+      senderAddress: memberAddress('program_manager'),
+      receiverAddress: memberAddress('BuildSquad'),
       content: 'Please coordinate this build.',
       messageType: 'assignment',
       createdAt: '2026-04-12T10:00:00.000Z',
-      updatedAt: '2026-04-12T10:00:00.000Z',
       referenceFiles: [],
     },
   ]);
@@ -325,9 +315,6 @@ describe('TeamOverviewPanel.vue', () => {
 
     expect(wrapper.get('[data-test="team-messages-header"]').text()).toContain('1 Messages');
     expect(panel.props('teamRunId')).toBe('team-subteam');
-    expect(panel.props('focusedMemberRunId')).toBe('');
-    expect(panel.props('focusedMemberRouteKey')).toBe('BuildSquad');
-    expect(panel.props('focusedMemberPath')).toEqual(['BuildSquad']);
-    expect(panel.props('focusedMemberKind')).toBe('agent_team');
+    expect(panel.props('focusedAddress')).toEqual(memberAddress('BuildSquad'));
   });
 });

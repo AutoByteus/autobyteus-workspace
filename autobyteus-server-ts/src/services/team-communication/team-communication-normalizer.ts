@@ -2,11 +2,14 @@ import {
   EMPTY_TEAM_COMMUNICATION_PROJECTION,
   type TeamCommunicationMessage,
   type TeamCommunicationProjection,
-  type TeamCommunicationRepresentedSubTeam,
   type TeamCommunicationReferenceFile,
   type TeamCommunicationReferenceFileType,
 } from "./team-communication-types.js";
-import type { TeamMemberAddress } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
+import {
+  normalizeConversationTargetAddress,
+  type ConversationTargetAddress,
+  type ConversationTargetSegment,
+} from "../../agent-team-execution/domain/conversation-target-address.js";
 import {
   buildTeamCommunicationMessageId,
   buildTeamCommunicationReferenceId,
@@ -33,14 +36,8 @@ const normalizeRequiredString = (value: unknown): string | null => {
   return trimmed.length > 0 ? trimmed : null;
 };
 
-const normalizeOptionalString = (value: unknown): string | null =>
-  normalizeRequiredString(value);
-
 const normalizeTimestamp = (value: unknown, fallback: string): string =>
   normalizeRequiredString(value) ?? fallback;
-
-const normalizeMemberKind = (value: unknown): "agent" | "agent_team" | null =>
-  value === "agent" || value === "agent_team" ? value : null;
 
 const normalizeMemberPath = (value: unknown): string[] | null => {
   if (!Array.isArray(value) || !value.every((entry) => typeof entry === "string")) {
@@ -50,46 +47,11 @@ const normalizeMemberPath = (value: unknown): string[] | null => {
   return path.length > 0 ? path : null;
 };
 
-const normalizeTeamMemberAddress = (value: unknown): TeamMemberAddress | null => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
-  }
-  const record = value as Record<string, unknown>;
-  const teamRunId = normalizeRequiredString(record.teamRunId ?? record.team_run_id);
-  const memberPath = normalizeMemberPath(record.memberPath ?? record.member_path);
-  const memberRouteKey = normalizeRequiredString(record.memberRouteKey ?? record.member_route_key);
-  if (!teamRunId || !memberPath || !memberRouteKey) {
-    return null;
-  }
-  return { teamRunId, memberPath, memberRouteKey };
-};
-
-const normalizeRepresentedSubTeam = (value: unknown): TeamCommunicationRepresentedSubTeam | null => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
-  }
-  const record = value as Record<string, unknown>;
-  const memberName = normalizeRequiredString(record.memberName ?? record.member_name);
-  const memberPath = normalizeMemberPath(record.memberPath ?? record.member_path);
-  const memberRouteKey = normalizeRequiredString(record.memberRouteKey ?? record.member_route_key);
-  const memberRunId = normalizeRequiredString(record.memberRunId ?? record.member_run_id);
-  const teamDefinitionId = normalizeRequiredString(record.teamDefinitionId ?? record.team_definition_id);
-  const childTeamRunId = normalizeOptionalString(record.childTeamRunId ?? record.child_team_run_id);
-  const address = normalizeTeamMemberAddress(record.address);
-  if (!memberName || !memberPath || !memberRouteKey || !memberRunId || !teamDefinitionId || !address) {
-    return null;
-  }
-  return {
-    memberKind: "agent_team",
-    memberName,
-    memberPath,
-    memberRouteKey,
-    memberRunId,
-    teamDefinitionId,
-    childTeamRunId,
-    address,
-  };
-};
+const asRecord = (value: unknown): Record<string, unknown> | null => (
+  value && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : null
+);
 
 export const inferTeamCommunicationReferenceFileType = (
   filePath: string,
@@ -218,11 +180,72 @@ const normalizeReferenceFiles = (
   });
 };
 
+const readAddressRecord = (
+  rawEntry: Record<string, unknown>,
+  camelKey: "senderAddress" | "receiverAddress",
+  snakeKey: "sender_address" | "receiver_address",
+): Record<string, unknown> | null =>
+  asRecord(rawEntry[camelKey]) ?? asRecord(rawEntry[snakeKey]);
+
+const parseSegment = (value: unknown): ConversationTargetSegment | null => {
+  const record = asRecord(value);
+  if (!record) return null;
+  const kind = normalizeRequiredString(record.kind);
+  if (kind === "member") {
+    const memberRouteKey =
+      normalizeRequiredString(record.memberRouteKey)
+      ?? normalizeRequiredString(record.member_route_key);
+    const memberPath = normalizeMemberPath(record.memberPath) ?? normalizeMemberPath(record.member_path);
+    return {
+      kind: "member",
+      ...(memberRouteKey ? { memberRouteKey } : {}),
+      ...(memberPath ? { memberPath } : {}),
+    };
+  }
+  if (kind === "task_team") {
+    const taskTeamRunId =
+      normalizeRequiredString(record.taskTeamRunId)
+      ?? normalizeRequiredString(record.task_team_run_id);
+    return taskTeamRunId ? { kind: "task_team", taskTeamRunId } : null;
+  }
+  if (kind === "task_agent") {
+    const taskAgentRunId =
+      normalizeRequiredString(record.taskAgentRunId)
+      ?? normalizeRequiredString(record.task_agent_run_id);
+    return taskAgentRunId ? { kind: "task_agent", taskAgentRunId } : null;
+  }
+  return null;
+};
+
+const normalizeProjectionAddress = (address: ConversationTargetAddress): ConversationTargetAddress => ({
+  segments: normalizeConversationTargetAddress(address).segments,
+});
+
+const normalizeAddress = (value: Record<string, unknown> | null): ConversationTargetAddress | null => {
+  const rawSegments = value?.segments;
+  if (!Array.isArray(rawSegments) || rawSegments.length === 0) return null;
+  const segments = rawSegments.map(parseSegment);
+  if (segments.some((segment) => !segment)) return null;
+  try {
+    return normalizeProjectionAddress({ segments: segments as ConversationTargetSegment[] });
+  } catch {
+    return null;
+  }
+};
+
+const normalizeMessageAddress = (
+  rawEntry: Record<string, unknown>,
+  prefix: "sender" | "receiver",
+): ConversationTargetAddress | null => normalizeAddress(readAddressRecord(
+  rawEntry,
+  prefix === "sender" ? "senderAddress" : "receiverAddress",
+  prefix === "sender" ? "sender_address" : "receiver_address",
+));
+
 export const normalizeTeamCommunicationMessage = (
   rawEntry: Record<string, unknown>,
   options: {
     teamRunId?: string | null;
-    receiverRunId?: string | null;
     timestampFallback?: string;
   } = {},
 ): TeamCommunicationMessage | null => {
@@ -231,21 +254,15 @@ export const normalizeTeamCommunicationMessage = (
     normalizeRequiredString(rawEntry.teamRunId)
     ?? normalizeRequiredString(rawEntry.team_run_id)
     ?? normalizeRequiredString(options.teamRunId);
-  const senderRunId =
-    normalizeRequiredString(rawEntry.senderRunId)
-    ?? normalizeRequiredString(rawEntry.sender_agent_id)
-    ?? normalizeRequiredString(rawEntry.sender_run_id);
-  const receiverRunId =
-    normalizeRequiredString(rawEntry.receiverRunId)
-    ?? normalizeRequiredString(rawEntry.receiver_run_id)
-    ?? normalizeRequiredString(options.receiverRunId);
+  const senderAddress = normalizeMessageAddress(rawEntry, "sender");
+  const receiverAddress = normalizeMessageAddress(rawEntry, "receiver");
   const content = typeof rawEntry.content === "string" ? rawEntry.content : null;
   const messageType =
     normalizeRequiredString(rawEntry.messageType)
     ?? normalizeRequiredString(rawEntry.message_type)
     ?? "agent_message";
 
-  if (!teamRunId || !senderRunId || !receiverRunId || content === null) {
+  if (!teamRunId || !senderAddress || !receiverAddress || content === null) {
     return null;
   }
 
@@ -258,54 +275,20 @@ export const normalizeTeamCommunicationMessage = (
     ?? normalizeRequiredString(rawEntry.message_id)
     ?? buildTeamCommunicationMessageId({
       teamRunId,
-      senderRunId,
-      receiverRunId,
+      senderAddress,
+      receiverAddress,
       messageType,
       content,
       createdAt,
     });
-  const updatedAt = normalizeTimestamp(rawEntry.updatedAt ?? rawEntry.updated_at, createdAt);
 
   return {
     messageId,
-    teamRunId,
-    senderRunId,
-    senderMemberKind:
-      normalizeMemberKind(rawEntry.senderMemberKind)
-      ?? normalizeMemberKind(rawEntry.sender_member_kind),
-    senderMemberName:
-      normalizeOptionalString(rawEntry.senderMemberName)
-      ?? normalizeOptionalString(rawEntry.sender_agent_name),
-    senderMemberPath:
-      normalizeMemberPath(rawEntry.senderMemberPath)
-      ?? normalizeMemberPath(rawEntry.sender_member_path),
-    senderMemberRouteKey:
-      normalizeOptionalString(rawEntry.senderMemberRouteKey)
-      ?? normalizeOptionalString(rawEntry.sender_member_route_key),
-    senderRepresentedSubTeam:
-      normalizeRepresentedSubTeam(rawEntry.senderRepresentedSubTeam)
-      ?? normalizeRepresentedSubTeam(rawEntry.sender_represented_subteam),
-    receiverRunId,
-    receiverMemberKind:
-      normalizeMemberKind(rawEntry.receiverMemberKind)
-      ?? normalizeMemberKind(rawEntry.receiver_member_kind),
-    receiverMemberName:
-      normalizeOptionalString(rawEntry.receiverMemberName)
-      ?? normalizeOptionalString(rawEntry.receiver_agent_name)
-      ?? normalizeOptionalString(rawEntry.recipient_role_name),
-    receiverMemberPath:
-      normalizeMemberPath(rawEntry.receiverMemberPath)
-      ?? normalizeMemberPath(rawEntry.receiver_member_path),
-    receiverMemberRouteKey:
-      normalizeOptionalString(rawEntry.receiverMemberRouteKey)
-      ?? normalizeOptionalString(rawEntry.receiver_member_route_key),
-    receiverRepresentedSubTeam:
-      normalizeRepresentedSubTeam(rawEntry.receiverRepresentedSubTeam)
-      ?? normalizeRepresentedSubTeam(rawEntry.receiver_represented_subteam),
+    senderAddress,
+    receiverAddress,
     content,
     messageType,
     createdAt,
-    updatedAt,
     referenceFiles: normalizeReferenceFiles(rawEntry, {
       teamRunId,
       messageId,
@@ -315,11 +298,15 @@ export const normalizeTeamCommunicationMessage = (
 };
 
 export const normalizeTeamCommunicationProjection = (
-  projection: { messages?: unknown } | null | undefined,
+  projection: { teamRunId?: unknown; messages?: unknown } | null | undefined,
   options: {
     teamRunId?: string | null;
   } = {},
 ): TeamCommunicationProjection => {
+  const teamRunId =
+    normalizeRequiredString(projection?.teamRunId)
+    ?? normalizeRequiredString(options.teamRunId)
+    ?? EMPTY_TEAM_COMMUNICATION_PROJECTION.teamRunId;
   const messagesById = new Map<string, TeamCommunicationMessage>();
   const rawMessages = Array.isArray(projection?.messages)
     ? (projection.messages as Record<string, unknown>[])
@@ -330,19 +317,19 @@ export const normalizeTeamCommunicationProjection = (
       continue;
     }
 
-    const message = normalizeTeamCommunicationMessage(rawMessage, options);
+    const message = normalizeTeamCommunicationMessage(rawMessage, { teamRunId });
     if (!message) {
       continue;
     }
 
     const existing = messagesById.get(message.messageId);
-    if (!existing || message.updatedAt.localeCompare(existing.updatedAt) >= 0) {
+    if (!existing || message.createdAt.localeCompare(existing.createdAt) >= 0) {
       messagesById.set(message.messageId, message);
     }
   }
 
   return {
-    ...EMPTY_TEAM_COMMUNICATION_PROJECTION,
+    teamRunId,
     messages: Array.from(messagesById.values()),
   };
 };
@@ -350,25 +337,35 @@ export const normalizeTeamCommunicationProjection = (
 export const cloneTeamCommunicationProjection = (
   projection: TeamCommunicationProjection,
 ): TeamCommunicationProjection => ({
-  version: 1,
+  teamRunId: projection.teamRunId,
   messages: projection.messages.map((message) => ({
     ...message,
-    senderRepresentedSubTeam: message.senderRepresentedSubTeam ? {
-      ...message.senderRepresentedSubTeam,
-      memberPath: [...message.senderRepresentedSubTeam.memberPath],
-      address: {
-        ...message.senderRepresentedSubTeam.address,
-        memberPath: [...message.senderRepresentedSubTeam.address.memberPath],
-      },
-    } : null,
-    receiverRepresentedSubTeam: message.receiverRepresentedSubTeam ? {
-      ...message.receiverRepresentedSubTeam,
-      memberPath: [...message.receiverRepresentedSubTeam.memberPath],
-      address: {
-        ...message.receiverRepresentedSubTeam.address,
-        memberPath: [...message.receiverRepresentedSubTeam.address.memberPath],
-      },
-    } : null,
+    senderAddress: {
+      segments: message.senderAddress.segments.map((segment) => (
+        segment.kind === "member"
+          ? {
+              kind: "member" as const,
+              ...(segment.memberRouteKey ? { memberRouteKey: segment.memberRouteKey } : {}),
+              ...(segment.memberPath ? { memberPath: [...segment.memberPath] } : {}),
+            }
+          : segment.kind === "task_team"
+            ? { kind: "task_team" as const, taskTeamRunId: segment.taskTeamRunId }
+            : { kind: "task_agent" as const, taskAgentRunId: segment.taskAgentRunId }
+      )),
+    },
+    receiverAddress: {
+      segments: message.receiverAddress.segments.map((segment) => (
+        segment.kind === "member"
+          ? {
+              kind: "member" as const,
+              ...(segment.memberRouteKey ? { memberRouteKey: segment.memberRouteKey } : {}),
+              ...(segment.memberPath ? { memberPath: [...segment.memberPath] } : {}),
+            }
+          : segment.kind === "task_team"
+            ? { kind: "task_team" as const, taskTeamRunId: segment.taskTeamRunId }
+            : { kind: "task_agent" as const, taskAgentRunId: segment.taskAgentRunId }
+      )),
+    },
     referenceFiles: message.referenceFiles.map((reference) => ({ ...reference })),
   })),
 });

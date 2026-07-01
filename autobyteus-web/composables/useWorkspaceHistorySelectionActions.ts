@@ -1,9 +1,9 @@
-import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import { toWorkspaceHistorySessionKey, type WorkspaceHistorySessionRow } from '~/stores/runHistorySessionProjection';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 
 interface RunHistorySelectionStoreLike {
-  selectTreeRun: (row: RunTreeRow | TeamMemberTreeRow) => Promise<void>;
+  selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget) => Promise<void>;
 }
 
 interface SelectionStoreLike {
@@ -104,7 +104,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
   };
 
   const onSelectTeamMember = async (
-    member: TeamMemberTreeRow,
+    member: TeamMemberFocusTarget,
     workspaceId = '',
     memberTree: readonly TeamMemberTreeRow[] = [],
   ): Promise<void> => {
