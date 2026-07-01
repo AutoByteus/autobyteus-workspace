@@ -25,7 +25,7 @@
   - Actor rows, task-team member hierarchy rows, and right-side focus emits were removed.
   - `ActiveTaskEntry.members` and its flattening helper were removed as dead execution-hierarchy read-model data.
 - Updated localization for accessible temporary execution text.
-- Updated focused unit/component tests around display-row mapping, Workspaces transient row rendering/focus identity, right-side detail-only task UI, run-history selection, and existing stable row filtering.
+- Updated focused unit/component tests around display-row mapping, Workspaces transient row rendering/focus identity, right-side detail-only task UI, run-history selection, existing stable row filtering, and explicit transient dotted-ring status-marker anatomy.
 
 ## Key Files Or Areas
 
@@ -33,6 +33,8 @@
 - `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`
 - `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`
 - `autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue`
+- `autobyteus-web/components/workspace/common/StatusDot.vue`
+- `autobyteus-web/utils/workspaceStatusDotPresentation.ts`
 - `autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts`
 - `autobyteus-web/components/workspace/team/TeamActiveTaskNavigator.vue`
 - `autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue`
@@ -60,7 +62,7 @@
 
 ## Known Risks
 
-- Visual contrast for the dashed/ghost treatment was validated by unit/component assertions, not by browser visual review.
+- Visual contrast for the transient dotted-ring marker has now been browser-checked against the Electron-started backend; final product acceptance is still user/UI review dependent.
 - Broad `tsc --noEmit --project tsconfig.json` is not currently a useful full-repo check in this worktree: it exits with existing project-wide `.vue` module-resolution/type issues across many unrelated tests and files. Focused Vitest and guards passed.
 - Downstream API/E2E coverage still needs to validate real runtime projection cleanup and click-to-focus behavior against live app state.
 
@@ -113,11 +115,24 @@
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- With a live task-agent projection, confirm the left Workspaces tree shows a dashed/ghost transient row inline under/near its logical member and clicking it focuses the task agent in the center workspace.
+- With a live task-agent projection, confirm the left Workspaces tree shows a dotted-ring/ghost transient row inline under/near its logical member and clicking it focuses the task agent in the center workspace.
 - With a live task-team projection, confirm the left Workspaces tree shows the task-team root near the structural team and scoped child projection rows beneath it.
+- Confirm transient Workspaces rows use exactly one explicit dotted-ring leading status marker and that it remains visually clear at normal Workspaces tree scale.
 - Confirm transient Workspaces rows disappear when runtime projection cleanup removes backing nodes.
 - Confirm Workspaces tree never renders task body, references, raw task arguments, technical details, or approval controls.
 - Confirm right Team -> Tasks shows task summary/body/references/technical details and no actor/member execution hierarchy rows.
+
+
+## Rework Addendum: Transient Dotted Status Icon Visual Validation (2026-07-01)
+
+- Replaced the transient status marker implementation again after browser visual review showed the prior SVG dashed-stroke ring read as scattered dots rather than dots forming a circle at 10-12 px.
+- `StatusDot.vue` now renders transient markers as an explicit eight-dot SVG ring (`8` small `currentColor` circles around the circumference) instead of relying on CSS dotted borders or SVG `stroke-dasharray`.
+- Kept the transient marker in a near-normal status slot size (`h-2.5 w-2.5`) so it is only slightly larger than the durable `h-2 w-2` solid dot, not a separate avatar-sized marker.
+- Removed transient marker opacity pulsing so the dotted ring does not become visually faint during screenshots or normal use; status meaning remains encoded by the darker status color.
+- Browser visual verification was run against the Electron-started backend server at `http://127.0.0.1:29695` using the frontend dev server started per `autobyteus-web/README.md` (`pnpm dev`) with `BACKEND_NODE_BASE_URL=http://127.0.0.1:29695`.
+- Live visual scenario used `Nested Classroom Test Team`, `Codex App Server`, and `GPT-5.5`, then delegated a task to `StudentStudyGroup` to create a real transient task-team row.
+- Visual evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/tickets/in-progress/task-agents-workspace-tree-ux/transient-explicit-dot-ring-visual.png`
+- DOM/size evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agents-workspace-tree-ux/tickets/in-progress/task-agents-workspace-tree-ux/transient-explicit-dot-ring-visual-metrics.json` shows the transient marker renders as `10 x 10` px with `8` explicit SVG dot circles, while adjacent durable stable dots remain `8 x 8` px.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 

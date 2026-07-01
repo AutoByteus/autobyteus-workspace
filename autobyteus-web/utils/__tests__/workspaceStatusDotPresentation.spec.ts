@@ -13,7 +13,7 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 describe('workspaceStatusDotPresentation', () => {
   it('keeps the shared tiny workspace dot class shape', () => {
     expect(workspaceStatusDotBaseClass).toBe('inline-block h-2 w-2 flex-shrink-0 rounded-full');
-    expect(workspaceTransientStatusDotBaseClass).toBe('inline-block h-3 w-3 flex-shrink-0');
+    expect(workspaceTransientStatusDotBaseClass).toBe('inline-block h-2.5 w-2.5 flex-shrink-0');
   });
 
   it('maps agent statuses to the workspace tree dot colors', () => {
@@ -34,8 +34,8 @@ describe('workspaceStatusDotPresentation', () => {
     expect(teamStatusDotClass('unexpected')).toBe('bg-gray-300');
   });
 
-  it('maps transient statuses to darker SVG ring colors', () => {
-    expect(agentTransientStatusDotClass(AgentStatus.Running)).toBe('text-blue-700 animate-pulse');
+  it('maps transient statuses to darker SVG dot-ring colors without opacity pulsing', () => {
+    expect(agentTransientStatusDotClass(AgentStatus.Running)).toBe('text-blue-700');
     expect(agentTransientStatusDotClass(AgentStatus.Idle)).toBe('text-green-700');
     expect(agentTransientStatusDotClass('unexpected')).toBe('text-gray-600');
     expect(teamTransientStatusDotClass(AgentTeamStatus.Error)).toBe('text-red-700');

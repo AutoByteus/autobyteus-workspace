@@ -2,7 +2,7 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 export const workspaceStatusDotBaseClass = 'inline-block h-2 w-2 flex-shrink-0 rounded-full';
-export const workspaceTransientStatusDotBaseClass = 'inline-block h-3 w-3 flex-shrink-0';
+export const workspaceTransientStatusDotBaseClass = 'inline-block h-2.5 w-2.5 flex-shrink-0';
 export type WorkspaceStatusDotVariant = 'solid' | 'transient';
 
 const normalizeStatus = (status: AgentStatus | AgentTeamStatus | string | null | undefined): string => (
@@ -29,9 +29,9 @@ const statusDotClassByValue = (status: string, fallbackClass: string): string =>
 const transientStatusDotClassByValue = (status: string, fallbackClass: string): string => {
   switch (status) {
     case 'initializing':
-      return 'text-amber-700 animate-pulse';
+      return 'text-amber-700';
     case 'running':
-      return 'text-blue-700 animate-pulse';
+      return 'text-blue-700';
     case 'idle':
       return 'text-green-700';
     case 'error':

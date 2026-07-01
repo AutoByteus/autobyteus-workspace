@@ -185,13 +185,14 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     const statusDot = transientRow.get('[data-test="workspace-transient-status-dot"]');
     expect(statusDot.element.tagName.toLowerCase()).toBe('svg');
     expect(statusDot.classes()).toEqual(expect.arrayContaining([
-      'h-3',
-      'w-3',
+      'h-2.5',
+      'w-2.5',
       'text-blue-700',
     ]));
-    const statusRing = statusDot.get('circle');
-    expect(statusRing.attributes('stroke-width')).toBe('2.35');
-    expect(statusRing.attributes('stroke-dasharray')).toBe('0.2 3.25');
+    const statusRingDots = statusDot.findAll('circle');
+    expect(statusRingDots).toHaveLength(8);
+    expect(statusRingDots[0].attributes('fill')).toBe('currentColor');
+    expect(statusRingDots[0].attributes('r')).toBe('0.95');
     expect(transientRow.text()).toContain('worker · task_0001');
     expect(transientRow.text()).not.toContain('Temporary');
 
@@ -302,7 +303,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
       const statusDots = transientRow.findAll('[data-test="workspace-transient-status-dot"]');
       expect(statusDots).toHaveLength(1);
       expect(statusDots[0].element.tagName.toLowerCase()).toBe('svg');
-      expect(statusDots[0].get('circle').attributes('stroke-dasharray')).toBe('0.2 3.25');
+      expect(statusDots[0].findAll('circle')).toHaveLength(8);
     }
     expect(transientRows[1].attributes('data-transient-kind')).toBe('task_team_child');
     expect(transientRows[1].attributes('data-member-route-key')).toBe('task-team-run-1/review_lead');

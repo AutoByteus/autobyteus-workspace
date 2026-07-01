@@ -4,17 +4,15 @@
     :class="[workspaceTransientStatusDotBaseClass, dotClass]"
     viewBox="0 0 12 12"
     aria-hidden="true"
+    shape-rendering="geometricPrecision"
   >
     <circle
-      cx="6"
-      cy="6"
-      r="4.15"
-      fill="rgba(255,255,255,0.72)"
-      stroke="currentColor"
-      stroke-width="2.35"
-      stroke-linecap="round"
-      stroke-dasharray="0.2 3.25"
-      vector-effect="non-scaling-stroke"
+      v-for="dot in transientRingDots"
+      :key="`${dot.cx}-${dot.cy}`"
+      :cx="dot.cx"
+      :cy="dot.cy"
+      r="0.95"
+      fill="currentColor"
     />
   </svg>
   <span
@@ -37,6 +35,17 @@ import {
   workspaceStatusDotBaseClass,
   type WorkspaceStatusDotVariant,
 } from '~/utils/workspaceStatusDotPresentation';
+
+const transientRingDots = [
+  { cx: 6, cy: 1.95 },
+  { cx: 8.85, cy: 3.15 },
+  { cx: 10.05, cy: 6 },
+  { cx: 8.85, cy: 8.85 },
+  { cx: 6, cy: 10.05 },
+  { cx: 3.15, cy: 8.85 },
+  { cx: 1.95, cy: 6 },
+  { cx: 3.15, cy: 3.15 },
+] as const;
 
 const props = withDefaults(defineProps<{
   kind?: 'agent' | 'team';
