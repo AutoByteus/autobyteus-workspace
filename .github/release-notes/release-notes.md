@@ -1,10 +1,12 @@
 ## What's New
-- Team Messages now use the same focused target addressing model as team message sending, so task-team and task-agent conversations can be opened from the exact focused execution row.
+- Delegated agent and team tasks now persist as durable task records, so accepted, active, and awaiting-review work remains visible after frontend reloads, backend restarts, and task runtime cleanup.
+- Team run history now reloads delegated tasks through a dedicated task records query, including task content, status, task-run identity, submitted results, reviews, and task-owned reference files.
 
 ## Improvements
-- Team Communication now stores sender and receiver identity as `ConversationTargetAddress` values, keeping persistent members, static nested members, delegated task teams, and delegated task agents on one consistent address model.
-- Existing flat Team Communication projection files are migrated into the new address-first shape instead of being handled by runtime compatibility branches.
+- Team tab Tasks now uses persisted delegated-task records as the primary display source and uses live task-agent/task-team runtime rows only as enrichment while they are active.
+- Nested task-team delegations now keep task records and task ids rooted in the parent team run, so child-team work remains visible from the root run history.
+- Task reference previews now fall back to persisted task records when the active task runtime is gone, while staying separate from Team Communication and Agent Artifact references.
 
 ## Fixes
-- Fixed focused Team Messages showing empty or stale conversations for members inside delegated task-team executions.
-- Fixed cross-run leakage risk for repeated delegated task-team member names by matching exact task-team/task-agent address segments rather than display names or route-key fallbacks.
+- Fixed delegated task rows disappearing after task-agent/task-team settlement, app reload, or machine restart.
+- Fixed stale active-task UI naming in the changed Team tab task display path by using delegated-task terminology consistently.
