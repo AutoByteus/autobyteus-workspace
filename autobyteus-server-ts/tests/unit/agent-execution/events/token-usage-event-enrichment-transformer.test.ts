@@ -33,6 +33,16 @@ const runContext = new AgentRunContext({
       memberPath: ['planner', 'worker'],
       memberRouteKey: 'planner.worker',
       memberRunId: 'member-run-1',
+      tokenUsageExecutionScope: {
+        rootTeamRunId: 'team-run-1',
+        teamScopeAddress: { segments: [] },
+        currentRunAddress: {
+          segments: [
+            { kind: 'member', memberRouteKey: 'planner.worker' },
+            { kind: 'task_agent', taskAgentRunId: 'task-agent-run-1' },
+          ],
+        },
+      },
       taskAgentInstance: {
         taskAgentInstanceId: 'task-agent-instance-1',
         taskAgentRunId: 'task-agent-run-1',
@@ -126,8 +136,13 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
     expect(payload.run_id).toBe('member-run-1');
     expect(payload.runtime_kind).toBe(RuntimeKind.CODEX_APP_SERVER);
     expect(payload.root_team_run_id).toBe('team-run-1');
+    expect(payload.execution_address).toEqual({
+      segments: [
+        { kind: 'member', memberRouteKey: 'planner.worker' },
+        { kind: 'task_agent', taskAgentRunId: 'task-agent-run-1' },
+      ],
+    });
     expect(payload.member_agent_run_id).toBe('member-run-1');
-    expect(payload.member_path).toEqual(['planner', 'worker']);
     expect(payload.member_route_key).toBe('planner.worker');
     expect(payload.agent_definition_id).toBe('agent-def-1');
     expect(payload.workspace_id).toBe('workspace-1');

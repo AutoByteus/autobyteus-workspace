@@ -4,9 +4,8 @@ export const TOKEN_USAGE_RUN_SUMMARY_FIELDS = gql`
   fragment TokenUsageRunSummaryFields on TokenUsageRunSummaryGraphql {
     runId
     rootTeamRunId
-    teamRunPath
+    executionAddress
     memberAgentRunId
-    memberPath
     memberRouteKey
     agentDefinitionId
     workspaceId

@@ -41,32 +41,44 @@ export const TOKEN_USAGE_COST_SUMMARY_AGGREGATE_FIELDS = gql`
 
 export const GET_TOKEN_USAGE_TASK_STATISTICS = gql`
   ${TOKEN_USAGE_COST_SUMMARY_AGGREGATE_FIELDS}
+  fragment TokenUsageTaskStatisticsRowFields on TokenUsageTaskStatisticsRowGraphql {
+    rowId
+    rowKind
+    runId
+    rootTeamRunId
+    memberRouteKey
+    memberAgentRunId
+    taskAgentRunId
+    taskTeamRunId
+    taskId
+    executionAddress
+    displayName
+    summary
+    createdAt
+    createdTimeSource
+    models
+    runtimeKinds
+    aggregate {
+      ...TokenUsageCostSummaryAggregateFields
+    }
+  }
   query GetTokenUsageTaskStatisticsInPeriod($startTime: DateTime!, $endTime: DateTime!) {
     tokenUsageTaskStatisticsInPeriod(startTime: $startTime, endTime: $endTime) {
       rows {
-        rowId
-        rowKind
-        runId
-        rootTeamRunId
-        displayName
-        summary
-        createdAt
-        createdTimeSource
-        models
-        runtimeKinds
-        aggregate {
-          ...TokenUsageCostSummaryAggregateFields
-        }
-        members {
-          rowId
-          memberRouteKey
-          memberAgentRunId
-          memberName
-          memberPath
-          models
-          runtimeKinds
-          aggregate {
-            ...TokenUsageCostSummaryAggregateFields
+        ...TokenUsageTaskStatisticsRowFields
+        children {
+          ...TokenUsageTaskStatisticsRowFields
+          children {
+            ...TokenUsageTaskStatisticsRowFields
+            children {
+              ...TokenUsageTaskStatisticsRowFields
+              children {
+                ...TokenUsageTaskStatisticsRowFields
+                children {
+                  ...TokenUsageTaskStatisticsRowFields
+                }
+              }
+            }
           }
         }
       }

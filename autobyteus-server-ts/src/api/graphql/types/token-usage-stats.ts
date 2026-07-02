@@ -1,4 +1,5 @@
 import { Arg, Field, Float, Int, ObjectType, Query, Resolver } from "type-graphql";
+import { GraphQLJSON } from "graphql-scalars";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
 import type {
   TokenUsageCostSummaryAggregate,
@@ -9,7 +10,6 @@ import type {
 } from "../../../token-usage/domain/token-usage-unit-price-summary.js";
 import type {
   TokenUsageRuntimeModelStatisticsRow,
-  TokenUsageTaskMemberStatisticsRow,
   TokenUsageTaskStatisticsRow,
 } from "../../../token-usage/domain/statistics-models.js";
 import { TokenUsageLedgerStore } from "../../../token-usage/providers/token-usage-ledger-store.js";
@@ -164,14 +164,11 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
   @Field(() => String, { nullable: true })
   rootTeamRunId?: string | null;
 
-  @Field(() => [String], { nullable: true })
-  teamRunPath?: string[] | null;
+  @Field(() => GraphQLJSON, { nullable: true })
+  executionAddress?: unknown | null;
 
   @Field(() => String, { nullable: true })
   memberAgentRunId?: string | null;
-
-  @Field(() => [String], { nullable: true })
-  memberPath?: string[] | null;
 
   @Field(() => String, { nullable: true })
   memberRouteKey?: string | null;
@@ -202,33 +199,6 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
 }
 
 @ObjectType()
-export class TokenUsageTaskMemberStatisticsRowGraphql {
-  @Field(() => String)
-  rowId!: string;
-
-  @Field(() => String, { nullable: true })
-  memberRouteKey?: string | null;
-
-  @Field(() => String, { nullable: true })
-  memberAgentRunId?: string | null;
-
-  @Field(() => String)
-  memberName!: string;
-
-  @Field(() => [String])
-  memberPath!: string[];
-
-  @Field(() => [String])
-  models!: string[];
-
-  @Field(() => [String])
-  runtimeKinds!: string[];
-
-  @Field(() => TokenUsageCostSummaryAggregateGraphql)
-  aggregate!: TokenUsageCostSummaryAggregateGraphql;
-}
-
-@ObjectType()
 export class TokenUsageTaskStatisticsRowGraphql {
   @Field(() => String)
   rowId!: string;
@@ -241,6 +211,24 @@ export class TokenUsageTaskStatisticsRowGraphql {
 
   @Field(() => String, { nullable: true })
   rootTeamRunId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  memberRouteKey?: string | null;
+
+  @Field(() => String, { nullable: true })
+  memberAgentRunId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  taskAgentRunId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  taskTeamRunId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  taskId?: string | null;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  executionAddress?: unknown | null;
 
   @Field(() => String)
   displayName!: string;
@@ -263,8 +251,8 @@ export class TokenUsageTaskStatisticsRowGraphql {
   @Field(() => TokenUsageCostSummaryAggregateGraphql)
   aggregate!: TokenUsageCostSummaryAggregateGraphql;
 
-  @Field(() => [TokenUsageTaskMemberStatisticsRowGraphql])
-  members!: TokenUsageTaskMemberStatisticsRowGraphql[];
+  @Field(() => [TokenUsageTaskStatisticsRowGraphql])
+  children!: TokenUsageTaskStatisticsRowGraphql[];
 }
 
 @ObjectType()
@@ -443,9 +431,8 @@ const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): To
   ...toTokenUsageCostSummaryAggregateGraphql(summaryAggregate(summary)),
   runId: summary.run_id,
   rootTeamRunId: summary.root_team_run_id,
-  teamRunPath: summary.team_run_path,
+  executionAddress: summary.execution_address,
   memberAgentRunId: summary.member_agent_run_id,
-  memberPath: summary.member_path,
   memberRouteKey: summary.member_route_key,
   agentDefinitionId: summary.agent_definition_id,
   workspaceId: summary.workspace_id,
@@ -457,24 +444,17 @@ const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): To
   latestRuntimeKind: summary.latest_runtime_kind,
 });
 
-const toTaskMemberRow = (
-  row: TokenUsageTaskMemberStatisticsRow,
-): TokenUsageTaskMemberStatisticsRowGraphql => ({
-  rowId: row.rowId,
-  memberRouteKey: row.memberRouteKey,
-  memberAgentRunId: row.memberAgentRunId,
-  memberName: row.memberName,
-  memberPath: row.memberPath,
-  models: row.models,
-  runtimeKinds: row.runtimeKinds,
-  aggregate: toTokenUsageCostSummaryAggregateGraphql(row.aggregate),
-});
-
 const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRowGraphql => ({
   rowId: row.rowId,
   rowKind: row.rowKind,
   runId: row.runId,
   rootTeamRunId: row.rootTeamRunId,
+  memberRouteKey: row.memberRouteKey,
+  memberAgentRunId: row.memberAgentRunId,
+  taskAgentRunId: row.taskAgentRunId,
+  taskTeamRunId: row.taskTeamRunId,
+  taskId: row.taskId,
+  executionAddress: row.executionAddress,
   displayName: row.displayName,
   summary: row.summary,
   createdAt: row.createdAt,
@@ -482,7 +462,7 @@ const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRo
   models: row.models,
   runtimeKinds: row.runtimeKinds,
   aggregate: toTokenUsageCostSummaryAggregateGraphql(row.aggregate),
-  members: row.members.map(toTaskMemberRow),
+  children: row.children.map(toTaskRow),
 });
 
 const toUsageStatistics = (row: TokenUsageRuntimeModelStatisticsRow): UsageStatistics => ({

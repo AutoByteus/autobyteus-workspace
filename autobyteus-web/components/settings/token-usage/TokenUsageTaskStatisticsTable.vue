@@ -41,103 +41,66 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100 bg-white">
-        <template v-for="row in sortedRows" :key="row.rowId">
-          <tr class="align-top hover:bg-gray-50">
-            <td class="px-3 py-3 min-w-[20rem]">
+        <template v-for="entry in visibleRows" :key="entry.row.rowId">
+          <tr :class="entry.depth > 0 ? 'align-top bg-gray-50/60 hover:bg-gray-100/60' : 'align-top hover:bg-gray-50'">
+            <td class="px-3 py-3 min-w-[20rem]" :style="{ paddingLeft: `${0.75 + entry.depth * 1.25}rem` }">
               <div class="flex items-start gap-2">
                 <button
-                  v-if="row.members.length"
+                  v-if="entry.row.children.length"
                   class="mt-0.5 rounded text-gray-500 hover:text-gray-900"
                   type="button"
-                  :aria-label="expandedRows.has(row.rowId) ? $t('settings.components.settings.TokenUsageStatistics.collapseTeam') : $t('settings.components.settings.TokenUsageStatistics.expandTeam')"
-                  @click="toggleExpanded(row.rowId)"
+                  :aria-label="expandedRows.has(entry.row.rowId) ? $t('settings.components.settings.TokenUsageStatistics.collapseTeam') : $t('settings.components.settings.TokenUsageStatistics.expandTeam')"
+                  @click="toggleExpanded(entry.row.rowId)"
                 >
-                  {{ expandedRows.has(row.rowId) ? '▾' : '▸' }}
+                  {{ expandedRows.has(entry.row.rowId) ? '▾' : '▸' }}
                 </button>
                 <span v-else class="w-3" />
                 <div>
-                  <div class="font-medium text-gray-900">{{ row.displayName }}</div>
-                  <div v-if="row.summary" class="text-xs text-gray-600">“{{ row.summary }}”</div>
-                  <div class="text-xs text-gray-500">{{ rowMetadata(row) }}</div>
+                  <div class="font-medium text-gray-900">{{ entry.depth > 0 ? '↳ ' : '' }}{{ entry.row.displayName }}</div>
+                  <div v-if="entry.row.summary" class="text-xs text-gray-600">“{{ entry.row.summary }}”</div>
+                  <div class="text-xs text-gray-500">{{ rowMetadata(entry.row) }}</div>
                 </div>
               </div>
             </td>
-            <td class="px-3 py-3"><span class="rounded bg-gray-100 px-2 py-1 text-xs font-medium">{{ rowTypeLabel(row.rowKind) }}</span></td>
-            <td class="px-3 py-3">{{ formatter.formatDistinctValues(row.runtimeKinds, 'runtime') }}</td>
-            <td class="px-3 py-3">{{ formatter.formatDistinctValues(row.models, 'model') }}</td>
+            <td class="px-3 py-3"><span class="rounded bg-gray-100 px-2 py-1 text-xs font-medium">{{ rowTypeLabel(entry.row.rowKind) }}</span></td>
+            <td class="px-3 py-3">{{ formatter.formatDistinctValues(entry.row.runtimeKinds, 'runtime') }}</td>
+            <td class="px-3 py-3">{{ formatter.formatDistinctValues(entry.row.models, 'model') }}</td>
             <td class="px-3 py-3 text-right tabular-nums">
-              <div>{{ formatter.formatCompactInteger(row.aggregate.grossInputTokens) }}</div>
-              <div class="text-xs text-gray-500">{{ formatter.cacheSubline(row.aggregate) }}</div>
+              <div>{{ formatter.formatCompactInteger(entry.row.aggregate.grossInputTokens) }}</div>
+              <div class="text-xs text-gray-500">{{ formatter.cacheSubline(entry.row.aggregate) }}</div>
             </td>
             <td class="px-3 py-3 text-right tabular-nums">
-              <div>{{ formatter.formatCompactInteger(row.aggregate.outputTokens) }}</div>
-              <div v-if="formatter.thinkingSubline(row.aggregate)" class="text-xs text-gray-500">{{ formatter.thinkingSubline(row.aggregate) }}</div>
+              <div>{{ formatter.formatCompactInteger(entry.row.aggregate.outputTokens) }}</div>
+              <div v-if="formatter.thinkingSubline(entry.row.aggregate)" class="text-xs text-gray-500">{{ formatter.thinkingSubline(entry.row.aggregate) }}</div>
             </td>
             <td class="px-3 py-3 text-right tabular-nums">
-              <button class="hover:underline" @click="toggleDetails(row.rowId)">
-                {{ formatter.formatCostCell(row.aggregate.estimatedApiInputCost, row.aggregate.currency, row.aggregate.apiCostStatus) }}
+              <button class="hover:underline" @click="toggleDetails(entry.row.rowId)">
+                {{ formatter.formatCostCell(entry.row.aggregate.estimatedApiInputCost, entry.row.aggregate.currency, entry.row.aggregate.apiCostStatus) }}
               </button>
             </td>
             <td class="px-3 py-3 text-right tabular-nums">
-              <button class="hover:underline" @click="toggleDetails(row.rowId)">
-                {{ formatter.formatCostCell(row.aggregate.estimatedApiOutputCost, row.aggregate.currency, row.aggregate.apiCostStatus) }}
+              <button class="hover:underline" @click="toggleDetails(entry.row.rowId)">
+                {{ formatter.formatCostCell(entry.row.aggregate.estimatedApiOutputCost, entry.row.aggregate.currency, entry.row.aggregate.apiCostStatus) }}
               </button>
             </td>
             <td class="px-3 py-3 text-right font-semibold tabular-nums">
-              <button class="hover:underline" @click="toggleDetails(row.rowId)">
-                {{ formatter.formatCostCell(row.aggregate.estimatedApiTotalCost, row.aggregate.currency, row.aggregate.apiCostStatus) }}
+              <button class="hover:underline" @click="toggleDetails(entry.row.rowId)">
+                {{ formatter.formatCostCell(entry.row.aggregate.estimatedApiTotalCost, entry.row.aggregate.currency, entry.row.aggregate.apiCostStatus) }}
               </button>
             </td>
-            <td class="px-3 py-3"><span :class="formatter.statusClass(row.aggregate.apiCostStatus)">{{ formatter.formatStatus(row.aggregate.apiCostStatus) }}</span></td>
+            <td class="px-3 py-3"><span :class="formatter.statusClass(entry.row.aggregate.apiCostStatus)">{{ formatter.formatStatus(entry.row.aggregate.apiCostStatus) }}</span></td>
             <td class="px-3 py-3 whitespace-nowrap">
-              <div>{{ formatter.formatCreatedAt(row.createdAt) }}</div>
-              <div v-if="createdTimeSourceLabel(row.createdTimeSource)" class="text-xs text-amber-600">
-                {{ createdTimeSourceLabel(row.createdTimeSource) }}
+              <div>{{ formatter.formatCreatedAt(entry.row.createdAt) }}</div>
+              <div v-if="createdTimeSourceLabel(entry.row.createdTimeSource)" class="text-xs text-amber-600">
+                {{ createdTimeSourceLabel(entry.row.createdTimeSource) }}
               </div>
             </td>
           </tr>
-          <tr v-if="detailRows.has(row.rowId)" class="bg-blue-50/30">
-            <td colspan="11" class="px-3 py-3">
-              <TokenUsageCostBreakdown :aggregate="row.aggregate" />
+          <tr v-if="detailRows.has(entry.row.rowId)" class="bg-blue-50/30">
+            <td colspan="11" class="px-3 py-3" :style="{ paddingLeft: `${1 + entry.depth * 1.25}rem` }">
+              <TokenUsageCostBreakdown :aggregate="entry.row.aggregate" />
             </td>
           </tr>
-          <template v-if="expandedRows.has(row.rowId)">
-            <template v-for="member in row.members" :key="member.rowId">
-              <tr class="align-top bg-gray-50/60 hover:bg-gray-100/60">
-                <td class="px-3 py-3 min-w-[20rem] pl-8">
-                  <div class="font-medium text-gray-900">↳ {{ member.memberName }}</div>
-                  <div class="text-xs text-gray-500">{{ memberMetadata(member) }}</div>
-                </td>
-                <td class="px-3 py-3"><span class="rounded bg-white px-2 py-1 text-xs font-medium">{{ $t('settings.components.settings.TokenUsageStatistics.member') }}</span></td>
-                <td class="px-3 py-3">{{ formatter.formatDistinctValues(member.runtimeKinds, 'runtime') }}</td>
-                <td class="px-3 py-3">{{ formatter.formatDistinctValues(member.models, 'model') }}</td>
-                <td class="px-3 py-3 text-right tabular-nums">
-                  <div>{{ formatter.formatCompactInteger(member.aggregate.grossInputTokens) }}</div>
-                  <div class="text-xs text-gray-500">{{ formatter.cacheSubline(member.aggregate) }}</div>
-                </td>
-                <td class="px-3 py-3 text-right tabular-nums">
-                  <div>{{ formatter.formatCompactInteger(member.aggregate.outputTokens) }}</div>
-                  <div v-if="formatter.thinkingSubline(member.aggregate)" class="text-xs text-gray-500">{{ formatter.thinkingSubline(member.aggregate) }}</div>
-                </td>
-                <td class="px-3 py-3 text-right tabular-nums"><button class="hover:underline" @click="toggleDetails(member.rowId)">{{ formatter.formatCostCell(member.aggregate.estimatedApiInputCost, member.aggregate.currency, member.aggregate.apiCostStatus) }}</button></td>
-                <td class="px-3 py-3 text-right tabular-nums"><button class="hover:underline" @click="toggleDetails(member.rowId)">{{ formatter.formatCostCell(member.aggregate.estimatedApiOutputCost, member.aggregate.currency, member.aggregate.apiCostStatus) }}</button></td>
-                <td class="px-3 py-3 text-right font-semibold tabular-nums">
-                  <button class="hover:underline" @click="toggleDetails(member.rowId)">
-                    {{ formatter.formatCostCell(member.aggregate.estimatedApiTotalCost, member.aggregate.currency, member.aggregate.apiCostStatus) }}
-                  </button>
-                </td>
-                <td class="px-3 py-3"><span :class="formatter.statusClass(member.aggregate.apiCostStatus)">{{ formatter.formatStatus(member.aggregate.apiCostStatus) }}</span></td>
-                <td class="px-3 py-3 whitespace-nowrap">
-                  <span class="text-gray-400">—</span>
-                </td>
-              </tr>
-              <tr v-if="detailRows.has(member.rowId)" class="bg-blue-50/30">
-                <td colspan="11" class="px-3 py-3 pl-10">
-                  <TokenUsageCostBreakdown :aggregate="member.aggregate" />
-                </td>
-              </tr>
-            </template>
-          </template>
         </template>
       </tbody>
     </table>
@@ -147,11 +110,16 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
-import type { TokenUsageSortDirection, TokenUsageTaskMemberStatisticsRow, TokenUsageTaskSortKey, TokenUsageTaskStatisticsRow } from '~/types/tokenUsageStatistics';
+import type { TokenUsageSortDirection, TokenUsageTaskSortKey, TokenUsageTaskStatisticsRow } from '~/types/tokenUsageStatistics';
 import TokenUsageCostBreakdown from './TokenUsageCostBreakdown.vue';
 import { createTokenUsageStatisticsFormatter, shortId } from './tokenUsageStatisticsUi';
 
 const props = defineProps<{ rows: TokenUsageTaskStatisticsRow[] }>();
+
+type VisibleTaskRow = {
+  row: TokenUsageTaskStatisticsRow;
+  depth: number;
+};
 
 const { t: $t } = useLocalization();
 const formatter = createTokenUsageStatisticsFormatter($t);
@@ -179,6 +147,25 @@ const sortedRows = computed(() => [...props.rows].sort((a, b) => {
   return String(aValue).localeCompare(String(bValue)) * multiplier || a.rowId.localeCompare(b.rowId);
 }));
 
+const appendVisibleRows = (
+  output: VisibleTaskRow[],
+  rows: TokenUsageTaskStatisticsRow[],
+  depth: number,
+): void => {
+  for (const row of rows) {
+    output.push({ row, depth });
+    if (expandedRows.has(row.rowId)) {
+      appendVisibleRows(output, row.children, depth + 1);
+    }
+  }
+};
+
+const visibleRows = computed(() => {
+  const rows: VisibleTaskRow[] = [];
+  appendVisibleRows(rows, sortedRows.value, 0);
+  return rows;
+});
+
 const toggleSort = (key: TokenUsageTaskSortKey): void => {
   if (sortKey.value === key) {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
@@ -203,11 +190,13 @@ const toggleDetails = (rowId: string): void => {
   else detailRows.add(rowId);
 };
 
-const rowTypeLabel = (rowKind: TokenUsageTaskStatisticsRow['rowKind']): string => (
-  rowKind === 'TEAM_RUN'
-    ? $t('settings.components.settings.TokenUsageStatistics.team')
-    : $t('settings.components.settings.TokenUsageStatistics.agent')
-);
+const rowTypeLabel = (rowKind: TokenUsageTaskStatisticsRow['rowKind']): string => {
+  if (rowKind === 'TEAM_RUN') return $t('settings.components.settings.TokenUsageStatistics.team');
+  if (rowKind === 'AGENT_RUN') return $t('settings.components.settings.TokenUsageStatistics.agent');
+  if (rowKind === 'TASK_TEAM_RUN') return $t('settings.components.settings.TokenUsageStatistics.taskTeam');
+  if (rowKind === 'TASK_AGENT_RUN') return $t('settings.components.settings.TokenUsageStatistics.taskAgent');
+  return $t('settings.components.settings.TokenUsageStatistics.member');
+};
 
 const createdTimeSourceLabel = (source: TokenUsageTaskStatisticsRow['createdTimeSource']): string => {
   if (source === 'FIRST_USAGE_OBSERVED') {
@@ -217,17 +206,21 @@ const createdTimeSourceLabel = (source: TokenUsageTaskStatisticsRow['createdTime
 };
 
 const rowMetadata = (row: TokenUsageTaskStatisticsRow): string => {
-  const id = row.rootTeamRunId
-    ? $t('settings.components.settings.TokenUsageStatistics.teamIdSuffix', { id: shortId(row.rootTeamRunId) })
-    : $t('settings.components.settings.TokenUsageStatistics.runIdSuffix', { id: shortId(row.runId) });
-  return id;
-};
-
-const memberMetadata = (member: TokenUsageTaskMemberStatisticsRow): string => {
-  const id = member.memberAgentRunId
-    ? $t('settings.components.settings.TokenUsageStatistics.memberRunIdSuffix', { id: shortId(member.memberAgentRunId) })
-    : shortId(member.memberRouteKey);
-  const path = member.memberPath.length ? member.memberPath.join(' / ') : '';
-  return [path, id].filter(Boolean).join(' · ');
+  if (row.rowKind === 'TEAM_RUN' && row.rootTeamRunId) {
+    return $t('settings.components.settings.TokenUsageStatistics.teamIdSuffix', { id: shortId(row.rootTeamRunId) });
+  }
+  if (row.rowKind === 'TASK_TEAM_RUN' && row.taskTeamRunId) {
+    return $t('settings.components.settings.TokenUsageStatistics.taskTeamRunIdSuffix', { id: shortId(row.taskTeamRunId) });
+  }
+  if (row.rowKind === 'TASK_AGENT_RUN' && row.taskAgentRunId) {
+    return $t('settings.components.settings.TokenUsageStatistics.taskAgentRunIdSuffix', { id: shortId(row.taskAgentRunId) });
+  }
+  if (row.rowKind === 'MEMBER_RUN') {
+    if (row.memberAgentRunId) {
+      return $t('settings.components.settings.TokenUsageStatistics.memberRunIdSuffix', { id: shortId(row.memberAgentRunId) });
+    }
+    return shortId(row.memberRouteKey);
+  }
+  return $t('settings.components.settings.TokenUsageStatistics.runIdSuffix', { id: shortId(row.runId) });
 };
 </script>

@@ -14,6 +14,7 @@ import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 import { MixedSubTeamMemberContext, type MixedTeamRunContext } from "../mixed-team-run-context.js";
 import { prefixMixedSubTeamEvent } from "../events/mixed-team-event-bridge.js";
 import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
+import { getTokenUsageExecutionAddressBuilder } from "../../../services/token-usage-execution-address-builder.js";
 import type { TaskTeamActiveRunDirectory } from "../../../task-delegation/task-team-active-run-directory.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 
@@ -30,6 +31,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
   private childRun: TeamRun | null = null;
   private unsubscribe: (() => void) | null = null;
   private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
+  private readonly tokenUsageAddressBuilder = getTokenUsageExecutionAddressBuilder();
 
   constructor(private readonly options: {
     parentContext: TeamRunContext<MixedTeamRunContext>;
@@ -194,6 +196,10 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
         deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       },
       taskTeamInstance: identity,
+      tokenUsageTeamScope: this.tokenUsageAddressBuilder.buildTaskTeamScope({
+        parentScope: this.options.parentContext.runtimeContext.tokenUsageTeamScope,
+        taskTeamInstance: identity,
+      }),
     });
     this.context.childTeamRunId = this.childRun.runId;
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;

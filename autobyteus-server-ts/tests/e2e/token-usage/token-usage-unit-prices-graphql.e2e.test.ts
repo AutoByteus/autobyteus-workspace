@@ -9,6 +9,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { createTokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenUsageLedgerStore } from "../../../src/token-usage/providers/token-usage-ledger-store.js";
 import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
+import type { TokenUsageExecutionAddress } from "../../../src/token-usage/domain/execution-address.js";
 
 const prisma = new PrismaClient();
 const store = new TokenUsageLedgerStore();
@@ -74,8 +75,7 @@ const buildEvent = (input: {
   observedAt: string;
   rootTeamRunId?: string | null;
   memberRouteKey?: string | null;
-  memberPath?: string[] | null;
-  teamRunPath?: string[] | null;
+  executionAddress?: TokenUsageExecutionAddress | null;
   grossInputTokens: number;
   standardInputTokens?: number | null;
   cacheReadTokens?: number | null;
@@ -138,8 +138,7 @@ const buildEvent = (input: {
       root_team_run_id: input.rootTeamRunId ?? null,
       member_agent_run_id: input.rootTeamRunId ? input.runId : null,
       member_route_key: input.memberRouteKey ?? null,
-      member_path: input.memberPath ?? null,
-      team_run_path: input.teamRunPath ?? null,
+      execution_address: input.executionAddress ?? null,
       runtime_kind: input.runtimeKind ?? "codex_app_server",
       ingestion_kind: "codex_thread_token_usage",
       usage_scope: "per_turn",
@@ -268,7 +267,7 @@ describe("token usage unit-price GraphQL hydration", () => {
       runId: memberOneRunId,
       rootTeamRunId: teamRunId,
       memberRouteKey: "designer",
-      memberPath: ["designer"],
+      executionAddress: { segments: [{ kind: "member", memberRouteKey: "designer" }] },
       observedAt: "2042-07-02T09:10:00.000Z",
       grossInputTokens: 100,
       standardInputTokens: 100,
@@ -284,7 +283,7 @@ describe("token usage unit-price GraphQL hydration", () => {
       runId: memberTwoRunId,
       rootTeamRunId: teamRunId,
       memberRouteKey: "builder",
-      memberPath: ["builder"],
+      executionAddress: { segments: [{ kind: "member", memberRouteKey: "builder" }] },
       observedAt: "2042-07-02T09:11:00.000Z",
       grossInputTokens: 80,
       standardInputTokens: 80,
@@ -385,9 +384,11 @@ describe("token usage unit-price GraphQL hydration", () => {
           rows {
             rowId
             aggregate { ...AggregateFields }
-            members {
+            children {
+              rowKind
               memberAgentRunId
               memberRouteKey
+              executionAddress
               aggregate { ...AggregateFields }
             }
           }
@@ -410,7 +411,13 @@ describe("token usage unit-price GraphQL hydration", () => {
         rows: Array<{
           rowId: string;
           aggregate: AggregateResult;
-          members: Array<{ memberAgentRunId: string | null; memberRouteKey: string | null; aggregate: AggregateResult }>;
+          children: Array<{
+            rowKind: string;
+            memberAgentRunId: string | null;
+            memberRouteKey: string | null;
+            executionAddress: TokenUsageExecutionAddress | null;
+            aggregate: AggregateResult;
+          }>;
         }>;
       };
       runtimeStats: Array<{ runtimeKind: string; llmModel: string; aggregate: AggregateResult }>;
@@ -461,7 +468,12 @@ describe("token usage unit-price GraphQL hydration", () => {
     const teamTaskRow = result.taskStats.rows.find((row) => row.rowId === `team:${teamRunId}`);
     expect(teamTaskRow?.aggregate.unitPrices.standardInput).toEqual(unitPrice("mixed", null));
     expect(teamTaskRow?.aggregate.unitPrices.output).toEqual(unitPrice("single", 30));
-    const builderMember = teamTaskRow?.members.find((member) => member.memberAgentRunId === memberTwoRunId);
+    const builderMember = teamTaskRow?.children.find((member) => member.memberAgentRunId === memberTwoRunId);
+    expect(builderMember).toMatchObject({
+      rowKind: "MEMBER_RUN",
+      memberRouteKey: "builder",
+      executionAddress: { segments: [{ kind: "member", memberRouteKey: "builder" }] },
+    });
     expect(builderMember?.aggregate.unitPrices.standardInput).toEqual(unitPrice("single", 6));
     expect(builderMember?.aggregate.unitPrices.output).toEqual(unitPrice("single", 30));
 

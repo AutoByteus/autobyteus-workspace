@@ -110,10 +110,9 @@ vi.mock('~/composables/useLocalization', () => ({
 const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsageRunSummary => ({
   runId: 'run-1',
   rootTeamRunId: null,
-  teamRunPath: null,
+  executionAddress: null,
   memberAgentRunId: null,
-  memberPath: null,
-  memberRouteKey: null,
+    memberRouteKey: null,
   agentDefinitionId: null,
   workspaceId: null,
   grossInputTokens: 1000,

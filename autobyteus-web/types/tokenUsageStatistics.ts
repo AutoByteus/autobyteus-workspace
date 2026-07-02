@@ -1,7 +1,8 @@
 import type { TokenUsageApiCostStatus, TokenUsageCacheState } from '~/types/tokenUsageMeter';
+import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
 
 export type TokenUsageCreatedTimeSource = 'RUN_HISTORY' | 'FIRST_USAGE_OBSERVED';
-export type TokenUsageTaskRowKind = 'TEAM_RUN' | 'AGENT_RUN';
+export type TokenUsageTaskRowKind = 'TEAM_RUN' | 'AGENT_RUN' | 'MEMBER_RUN' | 'TASK_TEAM_RUN' | 'TASK_AGENT_RUN';
 
 export interface TokenUsageCostSummaryAggregate {
   grossInputTokens: number;
@@ -40,22 +41,17 @@ export interface TokenUsageCostSummaryAggregate {
   observedModelProviders: string[];
 }
 
-export interface TokenUsageTaskMemberStatisticsRow {
-  rowId: string;
-  memberRouteKey: string | null;
-  memberAgentRunId: string | null;
-  memberName: string;
-  memberPath: string[];
-  models: string[];
-  runtimeKinds: string[];
-  aggregate: TokenUsageCostSummaryAggregate;
-}
-
 export interface TokenUsageTaskStatisticsRow {
   rowId: string;
   rowKind: TokenUsageTaskRowKind;
   runId: string | null;
   rootTeamRunId: string | null;
+  memberRouteKey: string | null;
+  memberAgentRunId: string | null;
+  taskAgentRunId: string | null;
+  taskTeamRunId: string | null;
+  taskId: string | null;
+  executionAddress: ConversationTargetAddress | null;
   displayName: string;
   summary: string | null;
   createdAt: string;
@@ -63,7 +59,7 @@ export interface TokenUsageTaskStatisticsRow {
   models: string[];
   runtimeKinds: string[];
   aggregate: TokenUsageCostSummaryAggregate;
-  members: TokenUsageTaskMemberStatisticsRow[];
+  children: TokenUsageTaskStatisticsRow[];
 }
 
 export interface TokenUsageRuntimeModelStatisticsRow {

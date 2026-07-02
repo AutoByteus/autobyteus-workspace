@@ -23,6 +23,8 @@ export class TokenUsageContextEnricher {
     }
 
     const taskAgentInstance = memberContext?.taskAgentInstance ?? null;
+    const taskTeamInstance = memberContext?.taskTeamInstance ?? null;
+    const executionScope = memberContext?.tokenUsageExecutionScope ?? null;
     return {
       ...payload,
       run_id: runContext.runId,
@@ -30,14 +32,13 @@ export class TokenUsageContextEnricher {
       workspace_id: config.workspaceId ?? payload.workspace_id,
       runtime_kind: config.runtimeKind,
       model_identifier: payload.model_identifier ?? config.llmModelIdentifier,
-      root_team_run_id: memberContext?.teamRunId ?? payload.root_team_run_id,
-      team_run_path: payload.team_run_path,
+      root_team_run_id: executionScope?.rootTeamRunId || memberContext?.teamRunId || payload.root_team_run_id,
+      execution_address: executionScope?.currentRunAddress ?? payload.execution_address,
       member_agent_run_id: memberContext ? (memberContext.memberRunId || runContext.runId) : payload.member_agent_run_id,
-      member_path: memberContext ? [...memberContext.memberPath] : payload.member_path,
       member_route_key: memberContext?.memberRouteKey ?? payload.member_route_key,
       task_agent_instance_id: taskAgentInstance?.taskAgentInstanceId ?? payload.task_agent_instance_id,
       task_agent_run_id: taskAgentInstance?.taskAgentRunId ?? payload.task_agent_run_id,
-      task_id: taskAgentInstance?.taskId ?? payload.task_id,
+      task_id: taskAgentInstance?.taskId ?? taskTeamInstance?.taskId ?? payload.task_id,
       quality_flags: Array.from(qualityFlags),
     };
   }

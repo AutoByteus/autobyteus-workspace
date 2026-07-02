@@ -25,8 +25,8 @@ export interface TokenUsageUpdatedPayload {
   turn_id?: string | null;
   llm_call_id?: string | null;
   root_team_run_id?: string | null;
+  execution_address?: TokenUsageExecutionAddress | null;
   member_agent_run_id?: string | null;
-  member_path?: string[] | null;
   member_route_key?: string | null;
   agent_definition_id?: string | null;
   workspace_id?: string | null;
@@ -77,9 +77,8 @@ export interface TokenUsageUpdatedPayload {
 export interface TokenUsageRunSummary {
   runId: string;
   rootTeamRunId: string | null;
-  teamRunPath: string[] | null;
+  executionAddress: TokenUsageExecutionAddress | null;
   memberAgentRunId: string | null;
-  memberPath: string[] | null;
   memberRouteKey: string | null;
   agentDefinitionId: string | null;
   workspaceId: string | null;
@@ -121,4 +120,13 @@ export interface TokenUsageRunSummary {
   latestRuntimeKind: string | null;
   usageReportCount: number;
   updatedAt: string | null;
+}
+
+export type TokenUsageExecutionAddressSegment =
+  | { kind: 'member'; memberRouteKey: string }
+  | { kind: 'task_team'; taskTeamRunId: string }
+  | { kind: 'task_agent'; taskAgentRunId: string };
+
+export interface TokenUsageExecutionAddress {
+  segments: TokenUsageExecutionAddressSegment[];
 }

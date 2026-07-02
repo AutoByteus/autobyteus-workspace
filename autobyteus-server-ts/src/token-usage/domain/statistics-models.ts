@@ -1,7 +1,13 @@
 import type { TokenUsageCostSummaryAggregate } from "../projections/token-usage-cost-summary-aggregate.js";
+import type { TokenUsageExecutionAddress } from "./execution-address.js";
 
 export type TokenUsageCreatedTimeSource = "RUN_HISTORY" | "FIRST_USAGE_OBSERVED";
-export type TokenUsageTaskStatisticsRowKind = "TEAM_RUN" | "AGENT_RUN";
+export type TokenUsageTaskStatisticsRowKind =
+  | "TEAM_RUN"
+  | "AGENT_RUN"
+  | "MEMBER_RUN"
+  | "TASK_TEAM_RUN"
+  | "TASK_AGENT_RUN";
 
 export interface TokenUsageTaskRowDisplayMetadata {
   displayName: string;
@@ -10,26 +16,21 @@ export interface TokenUsageTaskRowDisplayMetadata {
   createdTimeSource: TokenUsageCreatedTimeSource;
 }
 
-export interface TokenUsageTaskMemberStatisticsRow {
-  rowId: string;
-  memberRouteKey: string | null;
-  memberAgentRunId: string | null;
-  memberName: string;
-  memberPath: string[];
-  models: string[];
-  runtimeKinds: string[];
-  aggregate: TokenUsageCostSummaryAggregate;
-}
-
 export interface TokenUsageTaskStatisticsRow extends TokenUsageTaskRowDisplayMetadata {
   rowId: string;
   rowKind: TokenUsageTaskStatisticsRowKind;
   runId: string | null;
   rootTeamRunId: string | null;
+  memberRouteKey: string | null;
+  memberAgentRunId: string | null;
+  taskAgentRunId: string | null;
+  taskTeamRunId: string | null;
+  taskId: string | null;
+  executionAddress: TokenUsageExecutionAddress | null;
   models: string[];
   runtimeKinds: string[];
   aggregate: TokenUsageCostSummaryAggregate;
-  members: TokenUsageTaskMemberStatisticsRow[];
+  children: TokenUsageTaskStatisticsRow[];
 }
 
 export interface TokenUsageTaskStatisticsResult {

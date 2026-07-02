@@ -6,6 +6,8 @@ import type {
   TeamRepresentedSubTeam,
 } from "../../domain/inter-agent-message-delivery.js";
 import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
+import type { TokenUsageTeamExecutionScope } from "../../domain/token-usage-execution-scope.js";
+import { cloneTokenUsageTeamExecutionScope } from "../../domain/token-usage-execution-scope.js";
 import type {
   TeamAgentMemberRuntimeContext,
   TeamMemberRuntimeContext,
@@ -97,6 +99,7 @@ export type MixedTeamRunContextInput = {
   memberContexts: MixedTeamMemberContext[];
   parentBoundary?: MixedParentBoundaryContext | null;
   taskTeamInstance?: TaskTeamInstanceIdentity | null;
+  tokenUsageTeamScope?: TokenUsageTeamExecutionScope | null;
 };
 
 export class MixedTeamRunContext {
@@ -104,12 +107,16 @@ export class MixedTeamRunContext {
   readonly memberContexts: MixedTeamMemberContext[];
   readonly parentBoundary: MixedParentBoundaryContext | null;
   readonly taskTeamInstance: TaskTeamInstanceIdentity | null;
+  readonly tokenUsageTeamScope: TokenUsageTeamExecutionScope;
 
   constructor(input: MixedTeamRunContextInput) {
     this.coordinatorMemberRouteKey = input.coordinatorMemberRouteKey;
     this.memberContexts = [...input.memberContexts];
     this.parentBoundary = input.parentBoundary ?? null;
     this.taskTeamInstance = input.taskTeamInstance ?? null;
+    this.tokenUsageTeamScope = input.tokenUsageTeamScope
+      ? cloneTokenUsageTeamExecutionScope(input.tokenUsageTeamScope)
+      : { rootTeamRunId: "", teamScopeAddress: { segments: [] } };
   }
 }
 

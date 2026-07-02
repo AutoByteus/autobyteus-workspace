@@ -6,6 +6,8 @@ import {
   type InputTokenSemantic,
 } from "../../token-usage/domain/token-usage-component-basis.js";
 import type { TokenUsageUnitPrices } from "../../token-usage/domain/token-usage-unit-price-summary.js";
+import type { TokenUsageExecutionAddress } from "../../token-usage/domain/execution-address.js";
+import { normalizeTokenUsageExecutionAddress } from "../../token-usage/domain/execution-address.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
 export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | string;
@@ -25,9 +27,8 @@ export type TokenUsageApiCostStatus =
 export interface TokenUsageRunSummaryPayload {
   run_id: string;
   root_team_run_id: string | null;
-  team_run_path: string[] | null;
+  execution_address: TokenUsageExecutionAddress | null;
   member_agent_run_id: string | null;
-  member_path: string[] | null;
   member_route_key: string | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
@@ -80,9 +81,8 @@ export interface TokenUsageUpdatedPayload {
   llm_call_id: string | null;
   call_sequence: number | null;
   root_team_run_id: string | null;
-  team_run_path: string[] | null;
+  execution_address: TokenUsageExecutionAddress | null;
   member_agent_run_id: string | null;
-  member_path: string[] | null;
   member_route_key: string | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
@@ -272,6 +272,13 @@ export const createTokenUsageUpdatedPayload = (input: {
   if (inputTokenSemantic === "unknown") qualityFlags.add("input_token_semantic_unknown");
   const cacheStateSource = source.cache_state ?? usage?.cache_state;
   const cacheState = isCacheState(cacheStateSource) ? cacheStateSource : "unknown";
+  const executionAddressSource = source.execution_address ?? source.executionAddress;
+  const executionAddress = executionAddressSource === undefined || executionAddressSource === null
+    ? null
+    : normalizeTokenUsageExecutionAddress(executionAddressSource);
+  if (executionAddressSource !== undefined && executionAddressSource !== null && !executionAddress) {
+    qualityFlags.add("execution_address_invalid");
+  }
 
   return {
     usage_event_id: usageEventId,
@@ -282,9 +289,8 @@ export const createTokenUsageUpdatedPayload = (input: {
     llm_call_id: asString(source.llm_call_id),
     call_sequence: asNonNegativeInt(source.call_sequence),
     root_team_run_id: asString(source.root_team_run_id),
-    team_run_path: asStringArray(source.team_run_path),
+    execution_address: executionAddress,
     member_agent_run_id: asString(source.member_agent_run_id),
-    member_path: asStringArray(source.member_path),
     member_route_key: asString(source.member_route_key),
     agent_definition_id: asString(source.agent_definition_id),
     workspace_id: asString(source.workspace_id),

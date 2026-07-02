@@ -22,9 +22,8 @@ import {
 const emptySummary = (runId: string): TokenUsageRunSummary => ({
   runId,
   rootTeamRunId: null,
-  teamRunPath: null,
+  executionAddress: null,
   memberAgentRunId: null,
-  memberPath: null,
   memberRouteKey: null,
   agentDefinitionId: null,
   workspaceId: null,
@@ -182,8 +181,8 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return {
       ...summary,
       rootTeamRunId: payload.root_team_run_id ?? summary.rootTeamRunId,
+      executionAddress: payload.execution_address ?? summary.executionAddress,
       memberAgentRunId: payload.member_agent_run_id ?? summary.memberAgentRunId,
-      memberPath: payload.member_path ?? summary.memberPath,
       memberRouteKey: payload.member_route_key ?? summary.memberRouteKey,
       agentDefinitionId: payload.agent_definition_id ?? summary.agentDefinitionId,
       workspaceId: payload.workspace_id ?? summary.workspaceId,

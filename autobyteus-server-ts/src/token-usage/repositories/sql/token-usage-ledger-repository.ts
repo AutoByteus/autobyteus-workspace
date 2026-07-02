@@ -1,5 +1,6 @@
 import { PrismaClient, type Prisma, type TokenUsageLedgerEvent as PrismaTokenUsageLedgerEvent } from "@prisma/client";
 import type { TokenUsageUpdatedPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
+import { normalizeTokenUsageExecutionAddress } from "../../domain/execution-address.js";
 import { isCacheState, isInputTokenSemantic } from "../../domain/token-usage-component-basis.js";
 
 const prisma = new PrismaClient();
@@ -42,9 +43,8 @@ const toCreateInput = (payload: TokenUsageUpdatedPayload): Prisma.TokenUsageLedg
   llmCallId: payload.llm_call_id,
   callSequence: payload.call_sequence,
   rootTeamRunId: payload.root_team_run_id,
-  teamRunPathJson: toJsonString(payload.team_run_path),
+  executionAddressJson: toJsonString(payload.execution_address),
   memberAgentRunId: payload.member_agent_run_id,
-  memberPathJson: toJsonString(payload.member_path),
   memberRouteKey: payload.member_route_key,
   agentDefinitionId: payload.agent_definition_id,
   workspaceId: payload.workspace_id,
@@ -145,9 +145,8 @@ export const toDomainPayload = (record: PrismaTokenUsageLedgerEvent): TokenUsage
     llm_call_id: record.llmCallId,
     call_sequence: record.callSequence,
     root_team_run_id: record.rootTeamRunId,
-    team_run_path: parseJson(record.teamRunPathJson) as string[] | null,
+    execution_address: normalizeTokenUsageExecutionAddress(parseJson(record.executionAddressJson)),
     member_agent_run_id: record.memberAgentRunId,
-    member_path: parseJson(record.memberPathJson) as string[] | null,
     member_route_key: record.memberRouteKey,
     agent_definition_id: record.agentDefinitionId,
     workspace_id: record.workspaceId,
