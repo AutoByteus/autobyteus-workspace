@@ -3,8 +3,8 @@
 ## Summary Meta
 
 - Ticket: `session-discovery-ui`
-- Last Updated: `2026-07-01 16:56 PDT`
-- Current Status: `Local ticket branch committed; remote ticket-branch push blocked by GitHub permissions; mainline merge deferred by user instruction`
+- Last Updated: `2026-07-02 00:41 PDT`
+- Current Status: `Ticket branch pushed to origin; mainline merge deferred by user instruction`
 - Worktree: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui`
 - Web package path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web`
 - Ticket branch: `codex/session-discovery-ui`
@@ -147,13 +147,13 @@
 - Ticket branch: `codex/session-discovery-ui`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Completed locally on ticket branch` — source/docs checkpoint `b26e9c9b` (`chore(ticket): checkpoint session discovery UI branch handoff`) includes source, docs, ticket artifacts, and the arrow/status-dot rework artifact; this push-blocker report update is committed on top of that checkpoint.
-- Push status: `Blocked` — attempted `git push -u origin HEAD:refs/heads/codex/session-discovery-ui`; GitHub returned `403` (`Permission to AutoByteus/autobyteus-workspace.git denied to bingqinz-cmu-S26`). Remote ticket branch was not created.
+- Commit status: `Completed locally on ticket branch` — source/docs checkpoint `b26e9c9b` (`chore(ticket): checkpoint session discovery UI branch handoff`) includes source, docs, ticket artifacts, and the arrow/status-dot rework artifact; the delivery status report updates are committed on top of that checkpoint.
+- Push status: `Completed` — `git push -u origin HEAD:refs/heads/codex/session-discovery-ui` succeeded on 2026-07-02; remote ticket branch `origin/codex/session-discovery-ui` was created and upstream tracking was set.
 - Merge status: `Deferred by user instruction` — no merge to `personal`/mainline was attempted.
 - Release/publication/deployment status: `Not required / not started`
-- Worktree cleanup status: `Not started — mainline merge deferred and ticket branch push is blocked`
-- Local branch cleanup status: `Not started — keep local ticket branch for retry once credentials are available`
+- Worktree cleanup status: `Not started — mainline merge deferred by user instruction`
+- Local branch cleanup status: `Not started — keep local ticket branch until user authorizes mainline finalization or cleanup`
 - Blockers / notes:
-  - push blocker: current GitHub credentials lack write permission to `AutoByteus/autobyteus-workspace.git` for creating/updating `origin/codex/session-discovery-ui`.
   - user constraint: do not merge or push `personal`/mainline yet.
-  - retry command once credentials with write access are available: `git push -u origin HEAD:refs/heads/codex/session-discovery-ui` from `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui`.
+  - ticket branch is available at `origin/codex/session-discovery-ui`.
+  - when the user later authorizes mainline finalization, refresh `origin/personal` again before merge, then archive/finalize through the normal delivery flow.
