@@ -16,10 +16,6 @@ import {
   cloneTaskDelegationMemberIdentity,
   cloneTaskDelegationTeamIdentity,
 } from "./task-delegation-target.js";
-import type {
-  CreateTaskDelegationRecordInput,
-  TaskDelegationLedger,
-} from "./task-delegation-ledger.js";
 
 export const normalizeRequiredTaskDelegationString = (
   value: string,
@@ -48,10 +44,7 @@ const isTeamMember = (member: TaskDelegationContextMember): member is TaskDelega
   member.memberKind === "agent_team";
 
 export class TaskDelegationInputResolver {
-  constructor(
-    private readonly teamRunId: string,
-    private readonly ledger: TaskDelegationLedger,
-  ) {}
+  constructor(private readonly teamRunId: string) {}
 
   assertContext(context: TaskDelegationContext): void {
     const contextTeamRunId = normalizeRequiredTaskDelegationString(context.teamRunId, "teamRunId");
@@ -71,11 +64,12 @@ export class TaskDelegationInputResolver {
   buildCreateInput(
     context: TaskDelegationContext,
     input: DelegateTaskInput,
-  ): CreateTaskDelegationRecordInput {
+    taskId: string,
+  ) {
     const task = this.normalizeTaskInput(input);
     const target = this.resolveTarget(context, task.target);
     return {
-      taskId: this.ledger.reserveTaskId(),
+      taskId,
       task,
       target,
       delegator: cloneTaskDelegationDelegatorIdentity(context.caller),

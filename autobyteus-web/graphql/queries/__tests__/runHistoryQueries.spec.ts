@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GetRunFileChanges, GetTeamCommunicationMessages, ListWorkspaceRunHistory } from '../runHistoryQueries';
+import { GetRunFileChanges, GetTaskDelegationRecords, GetTeamCommunicationMessages, ListWorkspaceRunHistory } from '../runHistoryQueries';
 
 describe('GetRunFileChanges query', () => {
   it('requests inline content for live buffered file-change hydration without legacy artifact ids', () => {
@@ -50,5 +50,31 @@ describe('GetTeamCommunicationMessages query', () => {
     expect(source).not.toContain('senderMemberRouteKey');
     expect(source).not.toContain('receiverMemberRouteKey');
     expect(source).not.toContain('taskTeamScope');
+  });
+});
+
+describe('GetTaskDelegationRecords query', () => {
+  it('requests durable address-first task records with updates and references', () => {
+    const source = GetTaskDelegationRecords.loc?.source.body ?? '';
+
+    expect(source).toContain('getTaskDelegationRecords');
+    expect(source).toContain('taskId');
+    expect(source).toContain('status');
+    expect(source).toContain('senderAddress');
+    expect(source).toContain('receiverAddress');
+    expect(source).toContain('receiverTargetKind');
+    expect(source).toContain('taskRun');
+    expect(source).toContain('updates');
+    expect(source).toContain('submissionId');
+    expect(source).toContain('reviewId');
+    expect(source).toContain('reviewedSubmissionId');
+    expect(source).toContain('referenceFiles');
+    expect(source).toContain('memberRouteKey');
+    expect(source).toContain('taskTeamRunId');
+    expect(source).toContain('taskAgentRunId');
+    expect(source).not.toContain('pendingSubmissionId');
+    expect(source).not.toContain('target {');
+    expect(source).not.toContain('ingress');
+    expect(source).not.toContain('coordinator');
   });
 });

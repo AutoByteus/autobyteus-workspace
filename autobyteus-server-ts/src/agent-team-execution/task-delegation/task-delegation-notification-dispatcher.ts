@@ -3,20 +3,21 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { TeamRun } from "../domain/team-run.js";
 import { selectorFromMemberRouteKey } from "../domain/team-run-member-identity.js";
+import type { ActiveTaskDelegationRecordEntry } from "./task-delegation-active-entry.js";
 import type {
   TaskDelegationNotificationDeliveryOutcome,
   TaskDelegationNotificationType,
-  TaskDelegationRecord,
   TaskDelegationWarning,
+  TaskReferenceFile,
   TaskResultReview,
   TaskResultSubmission,
 } from "./task-delegation-record.js";
 import { markTaskDelegationSystemTaskNotificationMetadata } from "./task-delegation-system-message-visibility.js";
 import { TaskDelegationVisibleNotificationRenderer } from "./task-delegation-visible-notification-renderer.js";
 
-const renderReferenceFiles = (referenceFiles: readonly string[]): string =>
+const renderReferenceFiles = (referenceFiles: readonly TaskReferenceFile[]): string =>
   referenceFiles.length > 0
-    ? referenceFiles.map((referenceFile) => `- ${referenceFile}`).join("\n")
+    ? referenceFiles.map((referenceFile) => `- ${referenceFile.path}`).join("\n")
     : "- None specified";
 
 const renderOperationResultMessage = (result: AgentOperationResult): string =>
@@ -33,18 +34,18 @@ export class TaskDelegationNotificationDispatcher {
 
   async notifyResultSubmitted(input: {
     teamRun: TeamRun;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
     submission: TaskResultSubmission;
   }): Promise<TaskDelegationNotificationDeliveryOutcome> {
     return this.deliver({
       teamRun: input.teamRun,
-      record: input.record,
-      target: this.resolveDelegatorTarget(input.record),
+      entry: input.entry,
+      target: this.resolveDelegatorTarget(input.entry),
       notificationType: "result_submitted",
-      content: this.renderResultSubmitted(input.record, input.submission),
-      displayContent: this.visibleNotificationRenderer.renderResultSubmitted(input.record, input.submission),
+      content: this.renderResultSubmitted(input.entry, input.submission),
+      displayContent: this.visibleNotificationRenderer.renderResultSubmitted(input.entry, input.submission),
       metadata: {
-        task_id: input.record.taskId,
+        task_id: input.entry.record.taskId,
         submission_id: input.submission.submissionId,
         execution_kind: input.submission.execution.kind,
         message_type: "task_result_submitted",
@@ -54,21 +55,21 @@ export class TaskDelegationNotificationDispatcher {
 
   async notifyRevisionRequested(input: {
     teamRun: TeamRun;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
     review: TaskResultReview;
   }): Promise<TaskDelegationNotificationDeliveryOutcome> {
     return this.deliver({
       teamRun: input.teamRun,
-      record: input.record,
-      target: this.resolveExecutionTarget(input.record),
+      entry: input.entry,
+      target: this.resolveExecutionTarget(input.entry),
       notificationType: "revision_requested",
-      content: this.renderRevisionRequested(input.record, input.review),
-      displayContent: this.visibleNotificationRenderer.renderRevisionRequested(input.record, input.review),
+      content: this.renderRevisionRequested(input.entry, input.review),
+      displayContent: this.visibleNotificationRenderer.renderRevisionRequested(input.entry, input.review),
       metadata: {
-        task_id: input.record.taskId,
+        task_id: input.entry.record.taskId,
         review_id: input.review.reviewId,
         reviewed_submission_id: input.review.reviewedSubmissionId,
-        execution_kind: input.record.execution?.kind ?? null,
+        execution_kind: input.entry.taskRunExecution.kind,
         message_type: "task_revision_requested",
       },
     });
@@ -76,7 +77,7 @@ export class TaskDelegationNotificationDispatcher {
 
   private async deliver(input: {
     teamRun: TeamRun;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
     target: NotificationTarget;
     notificationType: TaskDelegationNotificationType;
     content: string;
@@ -109,42 +110,39 @@ export class TaskDelegationNotificationDispatcher {
             input.target.taskAgentRunId,
           );
       if (result.accepted) return this.delivered(input.notificationType, input.target);
-      return this.rejected(input.notificationType, input.record, input.target, renderOperationResultMessage(result));
+      return this.rejected(input.notificationType, input.entry, input.target, renderOperationResultMessage(result));
     } catch (error) {
       return this.rejected(
         input.notificationType,
-        input.record,
+        input.entry,
         input.target,
         error instanceof Error ? error.message : String(error),
       );
     }
   }
 
-  private resolveDelegatorTarget(record: TaskDelegationRecord): NotificationTarget {
-    const taskAgentRunId = record.delegator.taskAgentRunId?.trim() || null;
+  private resolveDelegatorTarget(entry: ActiveTaskDelegationRecordEntry): NotificationTarget {
+    const taskAgentRunId = entry.reviewOwner.taskAgentRunId?.trim() || null;
     return {
       kind: "member",
-      memberRouteKey: record.delegator.logicalMemberRouteKey?.trim() || record.delegator.memberRouteKey,
+      memberRouteKey: entry.reviewOwner.logicalMemberRouteKey?.trim() || entry.reviewOwner.memberRouteKey,
       taskAgentRunId,
     };
   }
 
-  private resolveExecutionTarget(record: TaskDelegationRecord): NotificationTarget {
-    if (record.execution?.kind === "task_agent") {
+  private resolveExecutionTarget(entry: ActiveTaskDelegationRecordEntry): NotificationTarget {
+    if (entry.taskRunExecution.kind === "task_agent") {
       return {
         kind: "member",
-        memberRouteKey: record.execution.taskAgentInstance.logicalMember.memberRouteKey,
-        taskAgentRunId: record.execution.taskAgentInstance.taskAgentRunId,
+        memberRouteKey: entry.taskRunExecution.taskAgentInstance.logicalMember.memberRouteKey,
+        taskAgentRunId: entry.taskRunExecution.taskAgentInstance.taskAgentRunId,
       };
     }
-    if (record.execution?.kind === "task_team") {
-      return {
-        kind: "task_team",
-        memberRouteKey: record.execution.taskTeamInstance.logicalTeam.memberRouteKey,
-        taskTeamRunId: record.execution.taskTeamInstance.taskTeamRunId,
-      };
-    }
-    throw new Error(`Task '${record.taskId}' has no bound execution instance.`);
+    return {
+      kind: "task_team",
+      memberRouteKey: entry.taskRunExecution.taskTeamInstance.logicalTeam.memberRouteKey,
+      taskTeamRunId: entry.taskRunExecution.taskTeamInstance.taskTeamRunId,
+    };
   }
 
   private delivered(
@@ -163,14 +161,14 @@ export class TaskDelegationNotificationDispatcher {
 
   private rejected(
     notificationType: TaskDelegationNotificationType,
-    record: TaskDelegationRecord,
+    entry: ActiveTaskDelegationRecordEntry,
     target: NotificationTarget,
     reason: string,
   ): TaskDelegationNotificationDeliveryOutcome {
     const warning: TaskDelegationWarning = {
       code: "TASK_NOTIFICATION_DELIVERY_FAILED",
       notification_type: notificationType,
-      task_id: record.taskId,
+      task_id: entry.record.taskId,
       target_member_route_key: target.memberRouteKey,
       target_task_agent_run_id: target.kind === "member" ? target.taskAgentRunId : null,
       target_task_team_run_id: target.kind === "task_team" ? target.taskTeamRunId : null,
@@ -186,16 +184,16 @@ export class TaskDelegationNotificationDispatcher {
     };
   }
 
-  private renderResultSubmitted(record: TaskDelegationRecord, submission: TaskResultSubmission): string {
+  private renderResultSubmitted(entry: ActiveTaskDelegationRecordEntry, submission: TaskResultSubmission): string {
     return [
       "Task result submitted for review.",
       "",
-      `Task ID: ${record.taskId}`,
+      `Task ID: ${entry.record.taskId}`,
       "Task:",
-      record.description,
+      entry.record.content,
       "",
       "Submitted result:",
-      submission.message,
+      submission.content,
       "",
       "Reference files:",
       renderReferenceFiles(submission.referenceFiles),
@@ -206,16 +204,16 @@ export class TaskDelegationNotificationDispatcher {
     ].join("\n");
   }
 
-  private renderRevisionRequested(record: TaskDelegationRecord, review: TaskResultReview): string {
+  private renderRevisionRequested(entry: ActiveTaskDelegationRecordEntry, review: TaskResultReview): string {
     return [
       "Revision requested for delegated task.",
       "",
-      `Task ID: ${record.taskId}`,
+      `Task ID: ${entry.record.taskId}`,
       "Task:",
-      record.description,
+      entry.record.content,
       "",
       "Review comment:",
-      review.comment ?? "",
+      review.content ?? "",
       "",
       "Reference files:",
       renderReferenceFiles(review.referenceFiles),

@@ -1,21 +1,21 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
-import TeamActiveTaskNavigator from '../TeamActiveTaskNavigator.vue';
+import TeamDelegatedTaskNavigator from '../TeamDelegatedTaskNavigator.vue';
 
 const labels: Record<string, string> = {
-  'workspace.components.workspace.team.TeamActiveTasksSection.technical_details': 'Technical details',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_type': 'Task type',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_id': 'Task ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id': 'Agent run ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id': 'Agent team run ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.target_kind': 'Target kind',
-  'workspace.components.workspace.team.TeamActiveTasksSection.target': 'Target',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.technical_details': 'Technical details',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_type': 'Task type',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_id': 'Task ID',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.agent_run_id': 'Agent run ID',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.agent_team_run_id': 'Agent team run ID',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.target_kind': 'Target kind',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.target': 'Target',
 };
 
-const mountSubject = (entries: any[], props: Record<string, unknown> = {}) => mount(TeamActiveTaskNavigator, {
+const mountSubject = (entries: any[], props: Record<string, unknown> = {}) => mount(TeamDelegatedTaskNavigator, {
   props: {
     entries,
-    selectedTaskRouteKey: null,
+    selectedEntryKey: null,
     selectedReferenceId: null,
     ...props,
   },
@@ -31,6 +31,7 @@ const mountSubject = (entries: any[], props: Record<string, unknown> = {}) => mo
 
 const singleAgentEntry = {
   kind: 'task_agent',
+  entryKey: 'task:task_0001',
   node: {
     memberKind: 'agent',
     memberName: 'worker',
@@ -65,6 +66,7 @@ const singleAgentEntry = {
 
 const taskTeamEntry = {
   kind: 'task_team',
+  entryKey: 'task:task_0002',
   node: {
     memberKind: 'agent_team',
     memberName: 'Software Engineering Team · task_0002',
@@ -97,50 +99,50 @@ const taskTeamEntry = {
   taskTargetName: 'Software Engineering Team',
 };
 
-describe('TeamActiveTaskNavigator', () => {
+describe('TeamDelegatedTaskNavigator', () => {
   it('renders task detail summary, message-style references, and collapsed metadata without actor hierarchy rows', async () => {
     const wrapper = mountSubject([singleAgentEntry], {
-      selectedTaskRouteKey: 'team-run__worker__task_0001',
+      selectedEntryKey: 'task:task_0001',
       selectedReferenceId: 'task-reference:0:/tmp/requirements.md',
     });
 
-    expect(wrapper.find('[data-test="team-task-detail-agent-entry"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="team-task-detail-team-entry"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-delegated-task-agent-entry"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-delegated-task-team-entry"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-member-row"]').exists()).toBe(false);
 
-    const summary = wrapper.get('[data-test="team-active-task-summary-row"]');
+    const summary = wrapper.get('[data-test="team-delegated-task-summary-row"]');
     expect(summary.text()).toContain('Draft the implementation handoff');
     expect(summary.text()).not.toContain('active');
     expect(summary.find('.line-clamp-2').classes()).toEqual(expect.arrayContaining(['whitespace-pre-line', 'text-sm', 'leading-5']));
 
-    expect(wrapper.get('[data-test="team-active-task-references"]').text()).not.toContain('References');
-    const reference = wrapper.get('[data-test="team-active-task-reference-row"]');
+    expect(wrapper.get('[data-test="team-delegated-task-references"]').text()).not.toContain('References');
+    const reference = wrapper.get('[data-test="team-delegated-task-reference-row"]');
     expect(reference.text()).toContain('requirements.md');
     expect(reference.classes()).toEqual(expect.arrayContaining(['text-sm', 'gap-2', 'text-blue-700']));
     await reference.trigger('click');
-    expect(wrapper.emitted('select-reference')?.[0]).toEqual([{ memberRouteKey: 'team-run__worker__task_0001', referenceId: 'task-reference:0:/tmp/requirements.md' }]);
+    expect(wrapper.emitted('select-reference')?.[0]).toEqual([{ entryKey: 'task:task_0001', referenceId: 'task-reference:0:/tmp/requirements.md' }]);
 
-    const details = wrapper.get('[data-test="team-active-task-technical-details"]');
+    const details = wrapper.get('[data-test="team-delegated-task-technical-details"]');
     expect(details.element.tagName).toBe('DETAILS');
     expect(details.attributes('open')).toBeUndefined();
     expect(details.text()).toContain('Technical details');
-    expect(wrapper.get('[data-test="active-task-id"]').text()).toBe('task_0001');
-    expect(wrapper.get('[data-test="active-task-run-id"]').text()).toBe('task-agent-run-1');
-    expect(wrapper.get('[data-test="active-task-technical-input"]').classes()).toEqual(expect.arrayContaining(['max-h-28', 'overflow-auto']));
+    expect(wrapper.get('[data-test="delegated-task-id"]').text()).toBe('task_0001');
+    expect(wrapper.get('[data-test="delegated-task-run-id"]').text()).toBe('task-agent-run-1');
+    expect(wrapper.get('[data-test="delegated-task-technical-input"]').classes()).toEqual(expect.arrayContaining(['max-h-28', 'overflow-auto']));
   });
 
   it('selects task-team detail summaries without emitting member focus', async () => {
     const wrapper = mountSubject([taskTeamEntry]);
 
-    expect(wrapper.get('[data-test="team-task-detail-team-entry"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-members"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="team-delegated-task-team-entry"]').text()).toContain('Review the implementation as a team.');
+    expect(wrapper.find('[data-test="left-delegated-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-members"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-member-row"]').exists()).toBe(false);
 
-    await wrapper.get('[data-test="team-active-task-summary-row"]').trigger('click');
+    await wrapper.get('[data-test="team-delegated-task-summary-row"]').trigger('click');
 
-    expect(wrapper.emitted('select-task')?.[0]).toEqual(['task-team-run-1']);
+    expect(wrapper.emitted('select-task')?.[0]).toEqual(['task:task_0002']);
     expect(wrapper.emitted('select-member')).toBeUndefined();
   });
 });

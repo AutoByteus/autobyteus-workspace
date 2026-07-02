@@ -189,6 +189,96 @@ export const GetTeamCommunicationMessages = gql`
   }
 `;
 
+
+
+export const GetTaskDelegationRecords = gql`
+  query GetTaskDelegationRecords($teamRunId: String!) {
+    getTaskDelegationRecords(teamRunId: $teamRunId) {
+      taskId
+      status
+      senderAddress {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      receiverAddress {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      receiverTargetKind
+      content
+      referenceFiles {
+        referenceId
+        path
+        type
+        createdAt
+        updatedAt
+      }
+      taskRun {
+        address {
+          parentTeamRunId
+          segments {
+            kind
+            memberRouteKey
+            memberPath
+            taskTeamRunId
+            taskAgentRunId
+          }
+        }
+        startedAt
+      }
+      updates {
+        kind
+        submissionId
+        reviewId
+        reviewedSubmissionId
+        decision
+        senderAddress {
+          parentTeamRunId
+          segments {
+            kind
+            memberRouteKey
+            memberPath
+            taskTeamRunId
+            taskAgentRunId
+          }
+        }
+        receiverAddress {
+          parentTeamRunId
+          segments {
+            kind
+            memberRouteKey
+            memberPath
+            taskTeamRunId
+            taskAgentRunId
+          }
+        }
+        content
+        referenceFiles {
+          referenceId
+          path
+          type
+          createdAt
+          updatedAt
+        }
+        createdAt
+      }
+      createdAt
+    }
+  }
+`;
+
 export const GetAgentRunResumeConfig = gql`
   query GetAgentRunResumeConfig($runId: String!) {
     getAgentRunResumeConfig(runId: $runId) {
