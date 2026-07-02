@@ -12,6 +12,12 @@ import type {
   TokenUsageRunSummary,
   TokenUsageUpdatedPayload,
 } from '~/types/tokenUsageMeter';
+import {
+  emptyUnitPrices,
+  forceMixedUnitPrices,
+  mergeUnitPrices,
+  unitPricesOrEmpty,
+} from '~/stores/tokenUsageUnitPriceSummary';
 
 const emptySummary = (runId: string): TokenUsageRunSummary => ({
   runId,
@@ -51,6 +57,7 @@ const emptySummary = (runId: string): TokenUsageRunSummary => ({
   missingPriceDimensions: [],
   pricingPolicyKey: null,
   selectedPricingTierId: null,
+  unitPrices: emptyUnitPrices(),
   latestPromptTokens: null,
   effectiveContextWindowTokens: null,
   contextWindowUsagePercent: null,
@@ -124,11 +131,12 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   }
 
   function upsertSummary(summary: TokenUsageRunSummary): void {
-    runSummaries[summary.runId] = summary;
-    if (summary.rootTeamRunId) {
-      teamSummaries[summary.rootTeamRunId] = summary.rootTeamRunId === summary.runId
-        ? summary
-        : (teamSummaries[summary.rootTeamRunId] ?? summary);
+    const normalizedSummary = { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
+    runSummaries[normalizedSummary.runId] = normalizedSummary;
+    if (normalizedSummary.rootTeamRunId) {
+      teamSummaries[normalizedSummary.rootTeamRunId] = normalizedSummary.rootTeamRunId === normalizedSummary.runId
+        ? normalizedSummary
+        : (teamSummaries[normalizedSummary.rootTeamRunId] ?? normalizedSummary);
     }
   }
 
@@ -154,6 +162,22 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     const standardInputTokens = summary.standardInputTokens + standardDelta;
     const cacheReadInputTokens = summary.cacheReadInputTokens + cacheReadDelta;
     const cacheCreationInputTokens = summary.cacheCreationInputTokens + cacheCreationDelta;
+    const cacheCreation5mInputTokens = summary.cacheCreation5mInputTokens + cacheCreation5mDelta;
+    const cacheCreation1hInputTokens = summary.cacheCreation1hInputTokens + cacheCreation1hDelta;
+    const outputTokens = summary.outputTokens + outputDelta;
+    const reasoningOutputTokens = summary.reasoningOutputTokens + reasoningDelta;
+    const mergedUnitPrices = mergeUnitPrices(unitPricesOrEmpty(summary.unitPrices), payload);
+    const unitPrices = currencyMerge.mixed
+      ? forceMixedUnitPrices({
+        standardInputTokens,
+        cacheReadInputTokens,
+        cacheCreationInputTokens,
+        cacheCreation5mInputTokens,
+        cacheCreation1hInputTokens,
+        outputTokens,
+        reasoningOutputTokens,
+      })
+      : mergedUnitPrices;
 
     return {
       ...summary,
@@ -168,10 +192,10 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       cacheMissInputTokens: summary.cacheMissInputTokens + cacheMissDelta,
       cacheReadInputTokens,
       cacheCreationInputTokens,
-      cacheCreation5mInputTokens: summary.cacheCreation5mInputTokens + cacheCreation5mDelta,
-      cacheCreation1hInputTokens: summary.cacheCreation1hInputTokens + cacheCreation1hDelta,
-      outputTokens: summary.outputTokens + outputDelta,
-      reasoningOutputTokens: summary.reasoningOutputTokens + reasoningDelta,
+      cacheCreation5mInputTokens,
+      cacheCreation1hInputTokens,
+      outputTokens,
+      reasoningOutputTokens,
       billableOutputTokens: summary.billableOutputTokens + billableOutputDelta,
       totalTokens: summary.totalTokens + totalDelta,
       cacheReadInputTokenRate: rate(cacheReadInputTokens, grossInputTokens),
@@ -192,6 +216,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       missingPriceDimensions: mergeUniqueStrings(summary.missingPriceDimensions, payload.missing_price_dimensions),
       pricingPolicyKey: payload.pricing_policy_key ?? summary.pricingPolicyKey,
       selectedPricingTierId: payload.selected_pricing_tier_id ?? summary.selectedPricingTierId,
+      unitPrices,
       latestPromptTokens: payload.latest_prompt_tokens ?? summary.latestPromptTokens,
       effectiveContextWindowTokens: payload.effective_context_window_tokens ?? summary.effectiveContextWindowTokens,
       contextWindowUsagePercent: payload.context_window_usage_percent ?? summary.contextWindowUsagePercent,
@@ -221,24 +246,30 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     const client = getApolloClient();
     const { data } = await client.query({ query: GET_AGENT_RUN_TOKEN_USAGE_SUMMARY, variables: { runId }, fetchPolicy: 'network-only' });
     const summary = data?.getAgentRunTokenUsageSummary as TokenUsageRunSummary | undefined;
-    if (summary) runSummaries[summary.runId] = summary;
-    return summary ?? null;
+    if (!summary) return null;
+    const normalizedSummary = { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
+    runSummaries[normalizedSummary.runId] = normalizedSummary;
+    return normalizedSummary;
   }
 
   async function fetchTeamRunSummary(teamRunId: string): Promise<TokenUsageRunSummary | null> {
     const client = getApolloClient();
     const { data } = await client.query({ query: GET_TEAM_RUN_TOKEN_USAGE_SUMMARY, variables: { teamRunId }, fetchPolicy: 'network-only' });
     const summary = data?.getTeamRunTokenUsageSummary as TokenUsageRunSummary | undefined;
-    if (summary) teamSummaries[teamRunId] = summary;
-    return summary ?? null;
+    if (!summary) return null;
+    const normalizedSummary = { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
+    teamSummaries[teamRunId] = normalizedSummary;
+    return normalizedSummary;
   }
 
   async function fetchTeamMemberSummary(input: { teamRunId: string; memberAgentRunId?: string | null; memberRouteKey?: string | null }): Promise<TokenUsageRunSummary | null> {
     const client = getApolloClient();
     const { data } = await client.query({ query: GET_TEAM_MEMBER_TOKEN_USAGE_SUMMARY, variables: input, fetchPolicy: 'network-only' });
     const summary = data?.getTeamMemberTokenUsageSummary as TokenUsageRunSummary | undefined;
-    if (summary) runSummaries[summary.runId] = summary;
-    return summary ?? null;
+    if (!summary) return null;
+    const normalizedSummary = { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
+    runSummaries[normalizedSummary.runId] = normalizedSummary;
+    return normalizedSummary;
   }
 
   const hasAnyUsage = computed(() => Object.keys(runSummaries).length > 0 || Object.keys(teamSummaries).length > 0);

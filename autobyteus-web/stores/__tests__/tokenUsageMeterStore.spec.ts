@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { useTokenUsageMeterStore } from '../tokenUsageMeterStore';
 import { handleTokenUsageUpdated } from '~/services/agentStreaming/handlers/tokenUsageHandler';
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { TokenUsageUpdatedPayload } from '~/types/tokenUsageMeter';
+import type { TokenUsageRunSummary, TokenUsageUpdatedPayload } from '~/types/tokenUsageMeter';
 
 const buildContext = (runId = 'run-context-1'): AgentContext => ({
   state: { runId },
@@ -38,6 +38,12 @@ const buildPayload = (overrides: Partial<TokenUsageUpdatedPayload> = {}): TokenU
     meter_delta_input_tokens: grossInput,
     meter_delta_output_tokens: output,
     meter_delta_total_tokens: total,
+    input_price_per_million: 5,
+    output_price_per_million: 30,
+    cached_input_read_price_per_million: cacheRead > 0 ? 0.5 : null,
+    cached_input_write_price_per_million: cacheCreation > 0 ? 6 : null,
+    cached_input_write_5m_price_per_million: null,
+    cached_input_write_1h_price_per_million: null,
     estimated_api_input_cost: 0.001,
     estimated_api_standard_input_cost: 0.001,
     estimated_api_cache_read_input_cost: null,
@@ -83,6 +89,10 @@ describe('tokenUsageMeterStore', () => {
       estimatedApiTotalCost: 0.003,
       currency: 'USD',
       apiCostStatus: 'estimated',
+      unitPrices: {
+        standardInput: { status: 'single', pricePerMillion: 5 },
+        output: { status: 'single', pricePerMillion: 30 },
+      },
       usageReportCount: 1,
       latestModelIdentifier: 'gpt-5.4-mini',
       latestRuntimeKind: 'codex_app_server',
@@ -146,6 +156,10 @@ describe('tokenUsageMeterStore', () => {
       totalTokens: 75,
       estimatedApiTotalCost: 0.002,
       apiCostStatus: 'mixed',
+      unitPrices: {
+        standardInput: { status: 'partial_missing', pricePerMillion: 5 },
+        output: { status: 'partial_missing', pricePerMillion: 30 },
+      },
       usageReportCount: 2,
     });
   });
@@ -213,7 +227,99 @@ describe('tokenUsageMeterStore', () => {
       estimatedApiTotalCost: null,
       currency: null,
       apiCostStatus: 'mixed',
+      unitPrices: {
+        standardInput: { status: 'mixed', pricePerMillion: null },
+        output: { status: 'mixed', pricePerMillion: null },
+      },
     });
+  });
+
+  it('marks live unit prices as mixed only when positive-token component prices differ', () => {
+    const store = useTokenUsageMeterStore();
+
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'unit-price-first',
+      idempotency_key: 'unit-price-first-key',
+      input_price_per_million: 5,
+      output_price_per_million: 30,
+    }));
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'unit-price-zero-token-churn',
+      idempotency_key: 'unit-price-zero-token-churn-key',
+      meter_delta_input_tokens: 0,
+      meter_delta_output_tokens: 0,
+      meter_delta_total_tokens: 0,
+      standard_input_tokens: 0,
+      cache_miss_input_tokens: 0,
+      billable_output_tokens: 0,
+      input_price_per_million: 99,
+      output_price_per_million: 99,
+    }));
+    expect(store.getRunSummary('run-1')?.unitPrices.standardInput).toEqual({ status: 'single', pricePerMillion: 5 });
+    expect(store.getRunSummary('run-1')?.unitPrices.output).toEqual({ status: 'single', pricePerMillion: 30 });
+
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'unit-price-different-input',
+      idempotency_key: 'unit-price-different-input-key',
+      input_price_per_million: 6,
+      output_price_per_million: 30,
+    }));
+
+    expect(store.getRunSummary('run-1')?.unitPrices.standardInput).toEqual({ status: 'mixed', pricePerMillion: null });
+    expect(store.getRunSummary('run-1')?.unitPrices.output).toEqual({ status: 'single', pricePerMillion: 30 });
+  });
+
+
+  it('keeps live event unit prices aligned with equivalent hydrated summaries', () => {
+    const store = useTokenUsageMeterStore();
+    const expectedUnitPrices = {
+      standardInput: { status: 'single' as const, pricePerMillion: 5 },
+      cacheReadInput: { status: 'single' as const, pricePerMillion: 0.5 },
+      cacheCreationInput: { status: 'single' as const, pricePerMillion: 6 },
+      cacheCreation5mInput: { status: 'single' as const, pricePerMillion: 3 },
+      cacheCreation1hInput: { status: 'single' as const, pricePerMillion: 4 },
+      output: { status: 'single' as const, pricePerMillion: 30 },
+      reasoningOutput: { status: 'single' as const, pricePerMillion: 30 },
+    };
+
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'unit-price-convergence-event',
+      idempotency_key: 'unit-price-convergence-key',
+      run_id: 'unit-price-convergence-run',
+      meter_delta_input_tokens: 155,
+      standard_input_tokens: 100,
+      cache_miss_input_tokens: 100,
+      cache_read_input_tokens: 30,
+      cache_creation_input_tokens: 25,
+      cache_creation_5m_input_tokens: 8,
+      cache_creation_1h_input_tokens: 12,
+      meter_delta_output_tokens: 40,
+      meter_delta_total_tokens: 195,
+      billable_output_tokens: 40,
+      reasoning_output_tokens: 6,
+      cached_input_read_price_per_million: 0.5,
+      cached_input_write_price_per_million: 6,
+      cached_input_write_5m_price_per_million: 3,
+      cached_input_write_1h_price_per_million: 4,
+      estimated_api_cache_read_input_cost: 0.000015,
+      estimated_api_cache_creation_input_cost: 0.00003,
+      estimated_api_cache_creation_5m_input_cost: 0.000024,
+      estimated_api_cache_creation_1h_input_cost: 0.000048,
+      estimated_api_reasoning_output_cost: 0.00018,
+    }));
+
+    const liveSummary = store.getRunSummary('unit-price-convergence-run');
+    expect(liveSummary?.unitPrices).toEqual(expectedUnitPrices);
+
+    const hydratedSummary: TokenUsageRunSummary = {
+      ...liveSummary!,
+      usageReportCount: 1,
+      updatedAt: '2026-06-24T10:00:00.000Z',
+      unitPrices: expectedUnitPrices,
+    };
+    store.upsertSummary(hydratedSummary);
+
+    expect(store.getRunSummary('unit-price-convergence-run')?.unitPrices).toEqual(liveSummary?.unitPrices);
   });
 
   it('lets ledger-backed reload summaries replace provisional live summaries', () => {
@@ -261,6 +367,15 @@ describe('tokenUsageMeterStore', () => {
       missingPriceDimensions: [],
       pricingPolicyKey: null,
       selectedPricingTierId: null,
+      unitPrices: {
+        standardInput: { status: 'missing', pricePerMillion: null },
+        cacheReadInput: { status: 'not_applicable', pricePerMillion: null },
+        cacheCreationInput: { status: 'not_applicable', pricePerMillion: null },
+        cacheCreation5mInput: { status: 'not_applicable', pricePerMillion: null },
+        cacheCreation1hInput: { status: 'not_applicable', pricePerMillion: null },
+        output: { status: 'missing', pricePerMillion: null },
+        reasoningOutput: { status: 'not_applicable', pricePerMillion: null },
+      },
       latestPromptTokens: 200,
       effectiveContextWindowTokens: 1000,
       contextWindowUsagePercent: 20,

@@ -1,5 +1,21 @@
 export type TokenUsageApiCostStatus = 'estimated' | 'price_missing' | 'partial_price_missing' | 'mixed' | 'local_no_api_bill';
 export type TokenUsageCacheState = 'positive' | 'zero_reported' | 'not_reported' | 'unsupported_or_local' | 'unknown';
+export type TokenUsageUnitPriceSummaryStatus = 'single' | 'mixed' | 'missing' | 'partial_missing' | 'not_applicable' | 'local_no_api_bill';
+
+export interface TokenUsageUnitPriceSummary {
+  status: TokenUsageUnitPriceSummaryStatus;
+  pricePerMillion: number | null;
+}
+
+export interface TokenUsageUnitPrices {
+  standardInput: TokenUsageUnitPriceSummary;
+  cacheReadInput: TokenUsageUnitPriceSummary;
+  cacheCreationInput: TokenUsageUnitPriceSummary;
+  cacheCreation5mInput: TokenUsageUnitPriceSummary;
+  cacheCreation1hInput: TokenUsageUnitPriceSummary;
+  output: TokenUsageUnitPriceSummary;
+  reasoningOutput: TokenUsageUnitPriceSummary;
+}
 
 export interface TokenUsageUpdatedPayload {
   usage_event_id: string;
@@ -32,6 +48,12 @@ export interface TokenUsageUpdatedPayload {
   meter_delta_input_tokens?: number | null;
   meter_delta_output_tokens?: number | null;
   meter_delta_total_tokens?: number | null;
+  input_price_per_million?: number | null;
+  output_price_per_million?: number | null;
+  cached_input_read_price_per_million?: number | null;
+  cached_input_write_price_per_million?: number | null;
+  cached_input_write_5m_price_per_million?: number | null;
+  cached_input_write_1h_price_per_million?: number | null;
   estimated_api_input_cost?: number | null;
   estimated_api_standard_input_cost?: number | null;
   estimated_api_cache_read_input_cost?: number | null;
@@ -90,6 +112,7 @@ export interface TokenUsageRunSummary {
   missingPriceDimensions: string[];
   pricingPolicyKey: string | null;
   selectedPricingTierId: string | null;
+  unitPrices: TokenUsageUnitPrices;
   latestPromptTokens: number | null;
   effectiveContextWindowTokens: number | null;
   contextWindowUsagePercent: number | null;

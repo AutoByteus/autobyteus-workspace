@@ -5,6 +5,7 @@ import {
   type CacheState,
   type InputTokenSemantic,
 } from "../../token-usage/domain/token-usage-component-basis.js";
+import type { TokenUsageUnitPrices } from "../../token-usage/domain/token-usage-unit-price-summary.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
 export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | string;
@@ -59,6 +60,7 @@ export interface TokenUsageRunSummaryPayload {
   missing_price_dimensions: string[];
   pricing_policy_key: string | null;
   selected_pricing_tier_id: string | null;
+  unit_prices: TokenUsageUnitPrices;
   latest_prompt_tokens: number | null;
   effective_context_window_tokens: number | null;
   context_window_usage_percent: number | null;

@@ -61,6 +61,7 @@ export const buildTokenUsageRunSummary = (
     missing_price_dimensions: aggregate.missing_price_dimensions,
     pricing_policy_key: aggregate.pricing_policy_key,
     selected_pricing_tier_id: aggregate.selected_pricing_tier_id,
+    unit_prices: aggregate.unit_prices,
     latest_prompt_tokens: latest?.latest_prompt_tokens ?? null,
     effective_context_window_tokens: latest?.effective_context_window_tokens ?? null,
     context_window_usage_percent: latest?.context_window_usage_percent ?? null,
