@@ -2,13 +2,13 @@
 
 ## Status
 
-- Delivery state: User verified on 2026-07-02 and requested finalization plus a new release; repository finalization/release in progress.
+- Delivery state: User verified on 2026-07-02; ticket archived, finalized into `personal`, released as `v1.3.92`, release workflows passed, and cleanup completed.
 - Ticket branch: `codex/persist-agent-tasks`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks`
+- Dedicated ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks` — removed during post-finalization cleanup.
 - Finalization target/base branch: `origin/personal` / local `personal`
 - Latest tracked base checked for delivery: `origin/personal` at `57185192d4b93840dab1fb7134604b1716a600a8` (`docs(delivery): record v1.3.91 release finalization`) after `git fetch origin personal` on 2026-07-02.
 - Integration method/result: Already current with latest tracked remote base; no merge/rebase and no local checkpoint commit were needed before docs sync.
-- Handoff state: Source changes, durable coverage changes, docs sync, browser evidence, and delivery artifacts are present in the ticket worktree. Ticket archived under `tickets/done`; repository finalization and release are being completed after explicit user verification.
+- Handoff state: Source changes, durable coverage changes, docs sync, browser evidence, and delivery artifacts are archived under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks`; repository finalization, release, workflow verification, and cleanup are complete.
 
 ## Implemented Behavior Summary
 
@@ -27,73 +27,73 @@
 
 Backend source:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-active-entry.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-persistence-scope.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-address-builder.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/agent-team-execution/task-delegation/records/`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-reference-content-service.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/api/graphql/types/task-delegation.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/src/api/graphql/schema.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-record.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-active-entry.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-persistence-scope.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-address-builder.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-ledger.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/records/`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-reference-content-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/api/graphql/types/task-delegation.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/api/graphql/schema.ts`
 
 Frontend source:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/stores/taskDelegationTypes.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/stores/taskDelegationStore.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/graphql/queries/runHistoryQueries.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/stores/runHistoryTypes.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/utils/teamDelegatedTaskEntries.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/utils/teamDelegatedTaskTechnicalDetails.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/TeamDelegatedTasksSection.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/TeamDelegatedTaskNavigator.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/TeamDelegatedTaskDetailPane.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/TeamOverviewPanel.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/localization/messages/en/workspace.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/localization/messages/zh-CN/workspace.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/taskDelegationTypes.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/taskDelegationStore.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/graphql/queries/runHistoryQueries.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/runHistoryTypes.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/teamDelegatedTaskEntries.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/teamDelegatedTaskTechnicalDetails.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamDelegatedTasksSection.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamDelegatedTaskNavigator.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamDelegatedTaskDetailPane.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamOverviewPanel.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/en/workspace.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/zh-CN/workspace.ts`
 
 Tests / durable coverage:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-records-service.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-address-builder.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-reference-content-service.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/tests/unit/api/task-delegation-route.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/graphql/queries/__tests__/runHistoryQueries.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/utils/__tests__/teamDelegatedTaskEntries.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-records-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-address-builder.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-reference-content-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/api/task-delegation-route.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/graphql/queries/__tests__/runHistoryQueries.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/__tests__/teamDelegatedTaskEntries.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamDelegatedTasksSection.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts`
 
 Removed/replaced stale frontend display paths:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/TeamActiveTaskNavigator.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/components/workspace/team/TeamActiveTaskDetailPane.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/utils/teamActiveTaskEntries.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/utils/teamActiveTaskTechnicalDetails.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamActiveTasksSection.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamActiveTaskNavigator.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/TeamActiveTaskDetailPane.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/teamActiveTaskEntries.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/teamActiveTaskTechnicalDetails.ts`
 - Corresponding stale `TeamActiveTask*` specs were replaced by `TeamDelegatedTask*` specs.
 
 ## Long-Lived Docs Updated During Delivery
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/docs/modules/agent_team_execution.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/docs/modules/run_history.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-server-ts/docs/modules/agent_artifacts.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/docs/agent_artifacts.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/docs/agent_execution_architecture.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/docs/settings.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/docs/content_rendering.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/docs/agent_teams.md`
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_team_execution.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/run_history.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_artifacts.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_artifacts.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/content_rendering.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_teams.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/docs-sync-report.md`
 - Docs sync result: `Updated`.
 
 ## Delivery Integration Refresh
@@ -109,18 +109,18 @@ Removed/replaced stale frontend display paths:
 
 ## Reviewed / Validated Evidence
 
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/design-review-report.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/design-review-report.md`
   - Latest authoritative round: 3.
   - Decision: Pass.
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/code-review-report.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/code-review-report.md`
   - Latest authoritative round: 6 (`Post-API/E2E Coverage-Code Re-Review`).
   - Review decision: Pass; score `9.4/10` (`94/100`); open findings: none.
   - Reviewer reran `git diff --check` — Passed.
   - Reviewer reran backend targeted coverage — Passed (`6` files, `28` tests).
   - Reviewer reran frontend targeted coverage — Passed (`9` files, `127` tests).
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/api-e2e-coverage-investigation.md`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/api-e2e-coverage-investigation.md`
   - Round 2 investigation completed; existing and updated coverage classified as valid/current for the final delegated-task persistence behavior.
-- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/api-e2e-execution-coverage-report.md`
+- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/api-e2e-execution-coverage-report.md`
   - Latest authoritative result: Pass.
   - Backend targeted coverage passed (`6` files, `28` tests).
   - Frontend targeted coverage passed (`9` files, `127` tests).
@@ -129,27 +129,27 @@ Removed/replaced stale frontend display paths:
   - Existing live mixed-runtime E2E was observed and skipped by explicit env gate.
   - README-guided browser validation with corrected private `Nested Classroom Test Team`, Codex runtime, and `gpt-5.5` passed.
 - Browser evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/browser-validation-evidence.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/post-restart-task-records.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/data/memory/agent_teams/nested_classroom_test_team_ed52f5232e99434397281d85a03e5af6/task_delegation_records.json`
-  - Screenshots under `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/screenshots/`.
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/browser-validation-evidence.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/post-restart-task-records.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/data/memory/agent_teams/nested_classroom_test_team_ed52f5232e99434397281d85a03e5af6/task_delegation_records.json`
+  - Screenshots under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/screenshots/`.
 - Delivery check after docs/artifact prep:
   - `git diff --check` — Passed.
 
 ## Local Electron Test Build Verification
 
-- README read: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/README.md`
+- README read: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`
   - Documented macOS build command: `pnpm build:electron:mac`.
   - Documented local no-notarization/no-timestamp environment: `NO_TIMESTAMP=1 APPLE_TEAM_ID=`.
   - README states Electron builds include integrated backend preparation and output to `electron-dist`.
-- Build command run from `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web`:
+- Build command run from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web`:
   - `NO_TIMESTAMP=1 APPLE_TEAM_ID= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac`
 - Result: `Passed`
 - Build version/flavor/arch: `1.3.91`, `personal`, macOS ARM64.
 - Signing/notarization: skipped locally because signing identity was `null`; `NO_TIMESTAMP=1` disabled timestamping and `APPLE_TEAM_ID` was empty.
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/electron-test-build-report.md`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/electron-build-mac.log`
-- Local artifacts:
+- Build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/electron-test-build-report.md`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/electron-build-mac.log`
+- Local artifacts from the temporary ticket worktree build (the binaries were user-test artifacts and were removed with the dedicated worktree; hashes are retained here):
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.91.dmg` — 401,199,790 bytes — SHA256 `b4b57cfee35671024d018ef833201f328d005b4405e8b4639d987d9703ea51c2`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.91.zip` — 396,992,601 bytes — SHA256 `bfe8cb9b7433155259843fafa197d4c6efb36f5a682c1e96c04eb49516ac7785`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.91.dmg.blockmap` — 417,696 bytes — SHA256 `121769fdbeed3ee53aafde287bf1e299117fe8069d6999620b743ec9babfa214`
@@ -174,30 +174,51 @@ Removed/replaced stale frontend display paths:
 - Existing live mixed-runtime E2E remains skipped unless explicit runtime env gates are set; deterministic integration and corrected browser validation covered the persistence/readback boundaries for this ticket.
 - Live browser validation logged two non-blocking `TaskTeamSettlementCoordinator` cleanup warnings during task-team settlement; visible acceptance, durable JSON, delegated-task UI, and post-restart GraphQL readback passed.
 - Broad server/web typecheck limitations remain pre-existing and documented upstream; targeted tests and production builds passed.
-- No release, deployment, or version bump has been requested or performed at this pre-verification stage.
+- Release/deployment completed as `v1.3.92`; this final artifact update is docs/log evidence only and intentionally does not require another release/version bump.
 
 ## Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/code-review-report.md`
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/api-e2e-coverage-investigation.md`
-- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/api-e2e-execution-coverage-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/release-deployment-report.md`
-- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/electron-test-build-report.md`
-- Electron test build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/electron-build-mac.log`
-- Browser validation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/browser-validation-evidence.md`
-- Post-restart GraphQL readback: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/post-restart-task-records.json`
-- Durable browser-run records JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/data/memory/agent_teams/nested_classroom_test_team_ed52f5232e99434397281d85a03e5af6/task_delegation_records.json`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/code-review-report.md`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/api-e2e-coverage-investigation.md`
+- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/api-e2e-execution-coverage-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/release-deployment-report.md`
+- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/electron-test-build-report.md`
+- Electron test build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/electron-build-mac.log`
+- Browser validation evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/browser-validation-evidence.md`
+- Post-restart GraphQL readback: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/post-restart-task-records.json`
+- Durable browser-run records JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/browser-smoke/run-20260702-114201-nested-live/data/memory/agent_teams/nested_classroom_test_team_ed52f5232e99434397281d85a03e5af6/task_delegation_records.json`
+
+## Finalization And Release Result
+
+- User verification received: `Yes` on 2026-07-02 — “now it works. lets finalize and release a new version”.
+- Ticket archival: completed under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks`.
+- Final ticket commit: `89686ef475c9f39c332cecfff4f976303741db5c` (`feat(task-delegation): persist delegated task records`).
+- Ticket branch push: completed to `origin/codex/persist-agent-tasks` before merge.
+- Finalization target: `personal`.
+- Merge/push: local `personal` fast-forwarded to the ticket commit and pushed to `origin/personal`.
+- Release version/tag: `1.3.92` / `v1.3.92`.
+- Release commit: `d5039026af825a2a74586d14dffc97c5b0cadc31` (`chore(release): bump workspace release version to 1.3.92`).
+- Tag object: `5e162fb41fd68c196924f6e44cd61ac5218edba5`; tag target: `d5039026af825a2a74586d14dffc97c5b0cadc31`.
+- Release helper log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/release-v1.3.92.log`.
+- Release workflow status evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/release-workflow-status-v1.3.92.log`.
+- Successful `v1.3.92` workflows:
+  - Release Messaging Gateway — `28584168661`
+  - Android APK Release — `28584168674`
+  - iOS App Store Connect Release — `28584168693`
+  - Desktop Release — `28584168660`
+  - Server Docker Release — `28584168666`
+- Cleanup: completed; dedicated ticket worktree and local/remote ticket branches were removed. Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks/final-cleanup.log`.
 
 ## User Verification And Finalization
 
 - User verification received: `Yes` — user confirmed on 2026-07-02: "now it works. lets finalize and release a new version".
 - Required user action: Completed; finalization and release were requested.
-- Repository finalization: In progress after user verification.
-- Ticket archival: Completed under `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks/tickets/done/persist-agent-tasks` before final commit.
-- Release/deployment: New version release requested by user; release path in progress.
+- Repository finalization: Completed; ticket commit `89686ef475c9f39c332cecfff4f976303741db5c` was fast-forward merged into `personal` and pushed.
+- Ticket archival: Completed under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-agent-tasks` before final commit.
+- Release/deployment: Completed as `v1.3.92`; all tag-triggered workflows passed.
