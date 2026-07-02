@@ -88,14 +88,30 @@
             <div class="mt-4 border-t border-slate-100 pt-3">
               <button
                 type="button"
-                class="flex w-full items-center justify-between gap-3 rounded-lg px-1 py-2 text-left text-sm font-semibold text-blue-700 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                class="flex w-full items-center gap-2 rounded-lg px-1 py-2 text-left text-sm font-semibold text-blue-700 transition-colors hover:bg-gray-50 active:bg-gray-100 focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-gray-300"
                 data-test="calculation-details-toggle"
                 :aria-expanded="calculationDetailsExpanded"
                 :aria-controls="calculationDetailsPanelId"
                 @click="calculationDetailsExpanded = !calculationDetailsExpanded"
               >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="shrink-0 text-gray-500 transition-transform duration-300 transform"
+                  :class="calculationDetailsExpanded ? '' : '-rotate-90'"
+                  aria-hidden="true"
+                  data-test="calculation-details-chevron"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
                 <span>{{ $t('shell.tokenUsage.calculationDetails') }}</span>
-                <span aria-hidden="true">{{ calculationDetailsExpanded ? '▾' : '▸' }}</span>
               </button>
 
               <div

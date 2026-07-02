@@ -244,7 +244,18 @@ describe('TokenUsageMeterPanel', () => {
     expect(wrapper.find('[title="Included in output tokens and estimated output cost."]').exists()).toBe(true);
     expect(wrapper.find('[title="Latest provider prompt/current context; not a run total."]').exists()).toBe(true);
     expect(wrapper.find('[title="Run-total cached input divided by run-total gross input."]').exists()).toBe(true);
-    expect(wrapper.get('[data-test="calculation-details-toggle"]').text()).toContain('Calculation details');
+    const calculationToggle = wrapper.get('[data-test="calculation-details-toggle"]');
+    const calculationChevron = calculationToggle.get('[data-test="calculation-details-chevron"]');
+    expect(calculationToggle.text()).toContain('Calculation details');
+    expect(calculationToggle.classes()).not.toContain('hover:bg-blue-50');
+    expect(calculationToggle.classes()).not.toContain('hover:text-blue-800');
+    expect(calculationToggle.classes()).not.toContain('focus:ring-blue-500');
+    expect(calculationToggle.classes()).not.toContain('focus-visible:ring-slate-300');
+    expect(calculationToggle.classes()).toContain('hover:bg-gray-50');
+    expect(calculationToggle.classes()).toContain('active:bg-gray-100');
+    expect(calculationToggle.classes()).toContain('focus-visible:outline-gray-300');
+    expect(calculationChevron.classes()).toContain('-rotate-90');
+    expect((calculationToggle.element.firstElementChild as Element | null)?.getAttribute('data-test')).toBe('calculation-details-chevron');
     expect(wrapper.find('[data-test="calculation-details-panel"]').exists()).toBe(false);
   });
 
@@ -261,6 +272,7 @@ describe('TokenUsageMeterPanel', () => {
 
     const panel = wrapper.get('[data-test="calculation-details-panel"]');
     expect(wrapper.get('[data-test="calculation-details-toggle"]').attributes('aria-expanded')).toBe('true');
+    expect(wrapper.get('[data-test="calculation-details-chevron"]').classes()).not.toContain('-rotate-90');
     expect(panel.text()).toContain('Estimated API cost is calculated from server-accounted token components.');
     expect(panel.text()).toContain('Formula: tokens ÷ 1,000,000 × unit price.');
     expect(panel.text()).toContain('Uncached input');

@@ -128,3 +128,75 @@ Additional checks run for this local fix:
 - Codegen idempotency rerun against the same schema — Passed; generated file SHA remained `3570b4edb29af7bca449f106cf176245bf85706604df014bac74e4c4ac3e40ae`.
 - `pnpm -C autobyteus-web exec vitest run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — Passed, 13 tests across 2 files.
 - `git diff --check` — Passed.
+
+## Latest-Base Integration Local Fix Addendum — 2026-07-02
+
+Delivery merged latest `origin/personal` (`d5039026af82`) into the ticket branch with merge commit `2e48945c4b95`, then rerouted another `Local Fix` because integrated-state GraphQL codegen changed tracked generated output after Round 3 review.
+
+The integrated generated output in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency/autobyteus-web/generated/graphql.ts` has been adopted. The additional generated diff is from newly merged base task-delegation GraphQL schema/documents (`TaskDelegationRecordObject`, `getTaskDelegationRecords`, and `GetTaskDelegationRecords` generated query/composable output), while the previously reviewed Token Meter `unitPrices` generated output remains present.
+
+Details and command evidence are recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency/tickets/in-progress/token-meter-unit-price-transparency/implementation-local-fix-integrated-codegen-note.md`.
+
+Additional checks run for this integrated local fix:
+
+- Verified `/tmp/autobyteus-token-meter-integrated-schema.graphql` contains both `getTaskDelegationRecords` and Token Meter `unitPrices` markers.
+- Verified `autobyteus-web/generated/graphql.ts` contains both `GetTaskDelegationRecords` generated output and Token Meter `unitPrices` generated output.
+- `BACKEND_GRAPHQL_BASE_URL=/tmp/autobyteus-token-meter-integrated-schema.graphql pnpm -C autobyteus-web codegen` — Passed.
+- Integrated codegen idempotency rerun against the same schema — Passed; generated file SHA remained `3d9359fe16283c50bad417266a26fc27b0561fd2eb9b53834a269b932ef4d01f`.
+- `git diff --check` — Passed.
+
+## User Feedback Local Fix Addendum — Calculation Details Chevron — 2026-07-02
+
+User feedback noted that the `Calculation details` chevron was too far away when rendered at the far right of the disclosure row and requested the Activity section chevron style.
+
+The Token Meter disclosure now places the chevron before the `Calculation details` label and uses the same inline SVG stroke/rotation pattern as `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency/autobyteus-web/components/progress/ActivityFeed.vue`: downward when expanded, `-rotate-90` when collapsed. The full row remains clickable and retains `aria-expanded` / `aria-controls`.
+
+Details and command evidence are recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency/tickets/in-progress/token-meter-unit-price-transparency/implementation-local-fix-calculation-chevron-note.md`.
+
+Additional checks run for this UI local fix:
+
+- `pnpm -C autobyteus-web exec vitest run components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — Passed, 6 tests.
+- `pnpm -C autobyteus-web exec vitest run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — Passed, 13 tests across 2 files.
+- `git diff --check` — Passed.
+
+## User Feedback Local Fix Addendum — Calculation Details Interaction Polish — 2026-07-02
+
+User follow-up feedback noted that after clicking `Calculation details`, the blue focus border and blue background made the disclosure feel visually overwhelming now that the leading chevron provides the affordance.
+
+The disclosure button now removes the blue hover background, blue click/focus ring, and text-only hover effect. The row stays visually clean for mouse interaction; the chevron rotation/open-collapse state is the primary interaction feedback. A neutral keyboard-only `focus-visible` outline remains so focus indication is not suppressed.
+
+Details and command evidence are recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency/tickets/in-progress/token-meter-unit-price-transparency/implementation-local-fix-calculation-toggle-interaction-note.md`.
+
+Additional checks run for this UI interaction local fix:
+
+- `pnpm -C autobyteus-web exec vitest run components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — Passed, 6 tests.
+- `pnpm -C autobyteus-web exec vitest run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — Passed, 13 tests across 2 files.
+- `git diff --check` — Passed.
+
+## Code Review Local Fix Addendum — CR-006-001 Focus Accessibility — 2026-07-02
+
+Code review Round 6 found `CR-006-001`: after removing the blue hover/focus treatment, the `Calculation details` button still had `focus:outline-none` without replacement focus styling, suppressing visible keyboard focus.
+
+The fix preserves the user-requested clean mouse interaction while restoring accessibility: the button still has no blue hover background, no blue click/focus ring, and no text-only hover effect, but now has a neutral keyboard-only `focus-visible` outline (`focus-visible:outline-slate-300`). Component tests were updated to stop requiring bare `focus:outline-none`, keep asserting the heavy blue classes are absent, and assert the neutral keyboard focus path is present.
+
+Details and command evidence are recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency/tickets/in-progress/token-meter-unit-price-transparency/implementation-local-fix-cr006-focus-note.md`.
+
+Checks run for this code-review local fix:
+
+- `pnpm -C autobyteus-web exec vitest run components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — Passed, 6 tests.
+- `pnpm -C autobyteus-web exec vitest run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — Passed, 13 tests across 2 files.
+- `git diff --check` — Passed.
+
+## User Feedback Local Fix Addendum — Calculation Details Neutral Hover/Press — 2026-07-02
+
+User follow-up feedback accepted a clean neutral gray hover/press effect similar to the Activity section, while keeping blue border/background effects removed and keeping the chevron as the primary affordance.
+
+The disclosure button now uses neutral row feedback (`hover:bg-gray-50`, `active:bg-gray-100`) and a neutral keyboard-only focus outline (`focus-visible:outline-gray-300`). It still has no blue hover background, no blue focus/click ring, and no text-only blue hover effect.
+
+Details and command evidence are recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency/tickets/in-progress/token-meter-unit-price-transparency/implementation-local-fix-calculation-toggle-gray-hover-note.md`.
+
+Checks run for this UI local fix:
+
+- `pnpm -C autobyteus-web exec vitest run components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — Passed, 6 tests.
+- `pnpm -C autobyteus-web exec vitest run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts` — Passed, 13 tests across 2 files.
+- `git diff --check` — Passed.

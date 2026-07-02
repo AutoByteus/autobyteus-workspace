@@ -1527,6 +1527,7 @@ export type Query = {
   getSearchConfig: SearchConfig;
   getSelfEvolutionRunRecord?: Maybe<GraphqlSelfEvolutionRunRecord>;
   getServerSettings: Array<ServerSetting>;
+  getTaskDelegationRecords: Array<TaskDelegationRecordObject>;
   getTeamCommunicationMessages: Array<TeamCommunicationMessageObject>;
   getTeamMemberRunMemoryView: AgentMemoryView;
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
@@ -1662,6 +1663,11 @@ export type QueryGetRunProjectionArgs = {
 
 export type QueryGetSelfEvolutionRunRecordArgs = {
   evolutionRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetTaskDelegationRecordsArgs = {
+  teamRunId: Scalars['String']['input'];
 };
 
 
@@ -2074,6 +2080,64 @@ export type StreamableHttpMcpServerConfigInput = {
   headers?: InputMaybe<Scalars['JSON']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
   url: Scalars['String']['input'];
+};
+
+export type TaskDelegationRecordObject = {
+  __typename?: 'TaskDelegationRecordObject';
+  content: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
+  receiverAddress: TaskDelegationTargetAddressObject;
+  receiverTargetKind: Scalars['String']['output'];
+  referenceFiles: Array<TaskDelegationReferenceFileObject>;
+  senderAddress: TaskDelegationTargetAddressObject;
+  status: Scalars['String']['output'];
+  taskId: Scalars['String']['output'];
+  taskRun?: Maybe<TaskDelegationTaskRunObject>;
+  updates: Array<TaskDelegationUpdateObject>;
+};
+
+export type TaskDelegationReferenceFileObject = {
+  __typename?: 'TaskDelegationReferenceFileObject';
+  createdAt: Scalars['String']['output'];
+  path: Scalars['String']['output'];
+  referenceId: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
+};
+
+export type TaskDelegationTargetAddressObject = {
+  __typename?: 'TaskDelegationTargetAddressObject';
+  parentTeamRunId?: Maybe<Scalars['String']['output']>;
+  segments: Array<TaskDelegationTargetSegmentObject>;
+};
+
+export type TaskDelegationTargetSegmentObject = {
+  __typename?: 'TaskDelegationTargetSegmentObject';
+  kind: Scalars['String']['output'];
+  memberPath?: Maybe<Array<Scalars['String']['output']>>;
+  memberRouteKey?: Maybe<Scalars['String']['output']>;
+  taskAgentRunId?: Maybe<Scalars['String']['output']>;
+  taskTeamRunId?: Maybe<Scalars['String']['output']>;
+};
+
+export type TaskDelegationTaskRunObject = {
+  __typename?: 'TaskDelegationTaskRunObject';
+  address: TaskDelegationTargetAddressObject;
+  startedAt: Scalars['String']['output'];
+};
+
+export type TaskDelegationUpdateObject = {
+  __typename?: 'TaskDelegationUpdateObject';
+  content?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
+  decision?: Maybe<Scalars['String']['output']>;
+  kind: Scalars['String']['output'];
+  receiverAddress: TaskDelegationTargetAddressObject;
+  referenceFiles: Array<TaskDelegationReferenceFileObject>;
+  reviewId?: Maybe<Scalars['String']['output']>;
+  reviewedSubmissionId?: Maybe<Scalars['String']['output']>;
+  senderAddress: TaskDelegationTargetAddressObject;
+  submissionId?: Maybe<Scalars['String']['output']>;
 };
 
 export type TeamCommunicationMessageObject = {
@@ -3301,6 +3365,13 @@ export type GetTeamCommunicationMessagesQueryVariables = Exact<{
 
 
 export type GetTeamCommunicationMessagesQuery = { __typename?: 'Query', getTeamCommunicationMessages: Array<{ __typename?: 'TeamCommunicationMessageObject', messageId: string, content: string, messageType: string, createdAt: string, senderAddress: { __typename?: 'TeamCommunicationTargetAddressObject', segments: Array<{ __typename?: 'TeamCommunicationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, receiverAddress: { __typename?: 'TeamCommunicationTargetAddressObject', segments: Array<{ __typename?: 'TeamCommunicationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, referenceFiles: Array<{ __typename?: 'TeamCommunicationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }> }> };
+
+export type GetTaskDelegationRecordsQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetTaskDelegationRecordsQuery = { __typename?: 'Query', getTaskDelegationRecords: Array<{ __typename?: 'TaskDelegationRecordObject', taskId: string, status: string, receiverTargetKind: string, content: string, createdAt: string, senderAddress: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, receiverAddress: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, referenceFiles: Array<{ __typename?: 'TaskDelegationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }>, taskRun?: { __typename?: 'TaskDelegationTaskRunObject', startedAt: string, address: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> } } | null, updates: Array<{ __typename?: 'TaskDelegationUpdateObject', kind: string, submissionId?: string | null, reviewId?: string | null, reviewedSubmissionId?: string | null, decision?: string | null, content?: string | null, createdAt: string, senderAddress: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, receiverAddress: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, referenceFiles: Array<{ __typename?: 'TaskDelegationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }> }> }> };
 
 export type GetAgentRunResumeConfigQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -7854,6 +7925,116 @@ export function useGetTeamCommunicationMessagesLazyQuery(variables?: GetTeamComm
   return VueApolloComposable.useLazyQuery<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>(GetTeamCommunicationMessagesDocument, variables, options);
 }
 export type GetTeamCommunicationMessagesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>;
+export const GetTaskDelegationRecordsDocument = gql`
+    query GetTaskDelegationRecords($teamRunId: String!) {
+  getTaskDelegationRecords(teamRunId: $teamRunId) {
+    taskId
+    status
+    senderAddress {
+      parentTeamRunId
+      segments {
+        kind
+        memberRouteKey
+        memberPath
+        taskTeamRunId
+        taskAgentRunId
+      }
+    }
+    receiverAddress {
+      parentTeamRunId
+      segments {
+        kind
+        memberRouteKey
+        memberPath
+        taskTeamRunId
+        taskAgentRunId
+      }
+    }
+    receiverTargetKind
+    content
+    referenceFiles {
+      referenceId
+      path
+      type
+      createdAt
+      updatedAt
+    }
+    taskRun {
+      address {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      startedAt
+    }
+    updates {
+      kind
+      submissionId
+      reviewId
+      reviewedSubmissionId
+      decision
+      senderAddress {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      receiverAddress {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      content
+      referenceFiles {
+        referenceId
+        path
+        type
+        createdAt
+        updatedAt
+      }
+      createdAt
+    }
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetTaskDelegationRecordsQuery__
+ *
+ * To run a query within a Vue component, call `useGetTaskDelegationRecordsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTaskDelegationRecordsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTaskDelegationRecordsQuery({
+ *   teamRunId: // value for 'teamRunId'
+ * });
+ */
+export function useGetTaskDelegationRecordsQuery(variables: GetTaskDelegationRecordsQueryVariables | VueCompositionApi.Ref<GetTaskDelegationRecordsQueryVariables> | ReactiveFunction<GetTaskDelegationRecordsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>(GetTaskDelegationRecordsDocument, variables, options);
+}
+export function useGetTaskDelegationRecordsLazyQuery(variables?: GetTaskDelegationRecordsQueryVariables | VueCompositionApi.Ref<GetTaskDelegationRecordsQueryVariables> | ReactiveFunction<GetTaskDelegationRecordsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>(GetTaskDelegationRecordsDocument, variables, options);
+}
+export type GetTaskDelegationRecordsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>;
 export const GetAgentRunResumeConfigDocument = gql`
     query GetAgentRunResumeConfig($runId: String!) {
   getAgentRunResumeConfig(runId: $runId) {

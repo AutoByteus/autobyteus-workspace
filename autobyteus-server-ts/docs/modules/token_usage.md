@@ -254,9 +254,23 @@ cumulative snapshots. Run, team, member, and statistics GraphQL shapes include
 the cache-aware/component summary contract: gross input, standard input, cache
 read/write tokens, cache rates, output/reasoning/billable output, nullable
 component costs, `apiCostStatus`, missing price dimensions, policy/tier
-metadata, latest prompt/context-window fields, model/runtime identity, and
-`usageReportCount`. Clients must treat those fields as server-owned summary
-data, not as a prompt to recalculate prices locally.
+metadata, component `unitPrices`, latest prompt/context-window fields,
+model/runtime identity, and `usageReportCount`. Clients must treat those fields
+as server-owned summary data, not as a prompt to recalculate prices locally.
+
+`unitPrices` is the display-safe explanation of the unit-price basis used by
+the summary. It reports a `{ status, pricePerMillion }` summary for standard
+input, cache-read input, cache-write input, cache-write 5m/1h subtype buckets,
+output, and reasoning output. A `single` status means one trusted unit price can
+explain the positive tokens in that component; `mixed` means the aggregate spans
+different component-relevant prices, providers, models, currencies, or local
+and paid rows; `missing` / `partial_missing` means trusted pricing was absent
+for all or some relevant rows; `not_applicable` means the component has no
+positive tokens; and `local_no_api_bill` means no provider API unit price
+applies. Zero-token rows do not make a unit price look mixed. Reasoning output
+uses the output unit price when the pricing owner exposes reasoning/thinking as
+an output sub-breakdown, and it remains included in output cost rather than
+being added as a separate total.
 
 ## Frontend Contract
 
@@ -283,7 +297,7 @@ The frontend treats token usage as display-only state:
   member usage must not be double-counted as standalone top-level agent rows.
 - `TokenUsageMeterPanel` presents the approved Token Meter hierarchy:
   `Latest prompt`, `Gross input`, `Output`, `Total estimate`,
-  `Input breakdown`, and `Pricing details`.
+  `Input breakdown`, `Pricing details`, and collapsed `Calculation details`.
 - `Gross input` is cumulative input sent to providers. It may include discounted
   cache-hit tokens and must not be labeled as full-price input or as the latest
   active context size.
@@ -294,9 +308,15 @@ The frontend treats token usage as display-only state:
 - `Pricing details` renders model/runtime, `apiCostStatus`, missing dimensions,
   and `usageReportCount` as `Usage reports` / model calls. Raw `events` is not a
   primary Token Meter label.
+- `Calculation details` renders server-provided component unit prices and the
+  explanatory formula `tokens ÷ 1,000,000 × unit price`, with explicit
+  `varies by call`, `unpriced`, `partially missing`, and local/no-bill labels
+  instead of frontend catalog lookups or fake blended rates.
 - The Output card shows reasoning/thinking tokens only when the server summary
   reports positive `reasoningOutputTokens`; those tokens are already included in
-  output tokens and estimated output cost.
+  output tokens and estimated output cost. Calculation details labels their unit
+  price as the output price / included in output cost so users do not
+  double-count thinking.
 - Unknown latest-prompt/context-window pressure is hidden rather than rendered
   as a noisy empty card. Context pressure appears only when a numeric percentage
   and effective context window are present;
@@ -327,12 +347,14 @@ These browser proofs are one-off delivery evidence rather than a committed
 browser or screenshot automation harness. Current durable regression coverage
 for the token-usage contract comes from GraphQL E2E coverage for cached gross
 input, provider-specific component semantics, local/no-bill, custom missing
-price, mixed-currency aggregate behavior, model-list regressions, and the
-runtime-native Codex/Claude field baseline. Frontend store/component tests cover
-live update aggregation, GraphQL hydration replacement, Token Meter hierarchy,
-cache-aware input rows, price-status labels, reasoning-output display, latest
-prompt fields, and the right-side tab label. Settings > Token Statistics also
-has focused backend GraphQL E2E coverage plus frontend store/component coverage
+price, mixed-currency aggregate behavior, model-list regressions, unit-price
+hydration across run/team/member/statistics summaries, and the runtime-native
+Codex/Claude field baseline. Frontend store/component tests cover live update
+aggregation, live/hydrated unit-price convergence, GraphQL hydration
+replacement, Token Meter hierarchy, calculation details, cache-aware input rows,
+price-status labels, reasoning-output display, latest prompt fields, and the
+right-side tab label. Settings > Token Statistics also has focused backend
+GraphQL E2E coverage plus frontend store/component coverage
 for Task default grouping, no `rangeMode`, nested team members, first-usage
 created-time fallback, runtime/model grouping, status/cost-breakdown display,
 and Model runtime diagnostics.
