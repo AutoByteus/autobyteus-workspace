@@ -86,14 +86,15 @@
 
       <button
         type="button"
-        class="inline-flex shrink-0 items-center justify-center rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        class="inline-grid shrink-0 grid-cols-[1rem_auto_1rem] items-center justify-items-center gap-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         :aria-expanded="expanded ? 'true' : 'false'"
         data-test="team-run-defaults-edit"
         @click="$emit('toggle')"
       >
-        <span>{{ $t(actionLabelKey) }}</span>
+        <span class="h-4 w-4" aria-hidden="true"></span>
+        <span class="text-center leading-5">{{ $t(actionLabelKey) }}</span>
         <span
-          class="i-heroicons-chevron-down-20-solid ml-1 h-4 w-4 transition-transform duration-200"
+          class="i-heroicons-chevron-down-20-solid h-4 w-4 transition-transform duration-200"
           :class="expanded ? 'rotate-180' : ''"
           aria-hidden="true"
         ></span>

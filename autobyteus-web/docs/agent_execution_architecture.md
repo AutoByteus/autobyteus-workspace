@@ -498,24 +498,31 @@ off payload.
 Editable primary/global agent and team launch config initializes **Advanced**
 from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**
 by default so users can see defaults such as Codex `reasoning_effort: "medium"`
-or DeepSeek `reasoning_effort: "high"`. The workspace team-run defaults editor
-can opt in to inline the only visible non-thinking advanced row when Thinking is
-on, avoiding a one-row **Advanced** disclosure while preserving the same
-schema-driven controls. Effective **Thinking** OFF or unavailable leaves
-**Advanced** collapsed initially, but still openable. Toggling a supported
-**Thinking** control ON opens **Advanced** automatically; toggling OFF after
-inspection does not force-collapse the section. Fixed or non-disable-capable
-Thinking states are displayed as neutral disabled rows rather than highlighted
-enabled switches, and schemas with no Thinking support render no Thinking row.
+or DeepSeek `reasoning_effort: "high"`. Launch-edit surfaces explicitly opt in
+to provider-aware Thinking defaulting: when a schema supports Thinking and no
+explicit persisted thinking state exists, desktop agent launch, team defaults,
+mobile launch, and member override model-config surfaces default Thinking ON.
+Explicit OFF/current states remain authoritative, and read-only, disabled, or
+missing historical configs do not emit default mutations. Team defaults use flat advanced display so lower fields such
+as **Reasoning Effort** and **Fast mode** are visible under **Thinking** without
+an **Advanced** disclosure. Toggling a supported **Thinking** control ON opens
+**Advanced** automatically for non-flat callers; toggling OFF after inspection
+does not force-collapse the section. Fixed or non-disable-capable Thinking states
+are displayed as neutral disabled rows rather than highlighted enabled switches,
+and schemas with no Thinking support render no Thinking row.
 
 Compact member override rows may stay collapsed to avoid expanding large team
-forms. They still display inherited/effective defaults when expanded, and
-explicit member-local runtime or model selections that resolve to an effective-ON
-model can open only that member's **Advanced** controls. Display-only inherited
-or schema-default values must not create member overrides. Non-thinking
-runtime/model parameters render through the same advanced schema component; for
-Codex, a fast-capable model can therefore expose `service_tier` with the
-user-facing label **Fast mode** beside reasoning settings.
+forms. Collapsed default rows show `Using team defaults` without a redundant
+`No member overrides` chip, and expanded/focused styling applies to the whole
+card. They still display inherited/effective defaults when expanded, but member
+override model-config sections flatten simple non-thinking advanced fields under
+**Thinking** instead of requiring a separate **Advanced** disclosure. Display-only
+inherited or schema-default values must not create member overrides. When no
+editable model-config schema is available for the effective member model, the row
+renders explicit unavailable/no-options copy rather than a title-only section.
+Non-thinking runtime/model parameters render through the same advanced schema
+component; for Codex, a fast-capable model can therefore expose `service_tier`
+with the user-facing label **Fast mode** beside reasoning settings.
 
 
 ### Self-Evolution Manual Composer Action

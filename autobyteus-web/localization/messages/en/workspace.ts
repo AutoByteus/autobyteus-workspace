@@ -109,6 +109,26 @@ const messages = {
     "Model",
   "workspace.components.workspace.config.TeamRunLaunchSummary.no_model":
     "No model",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.auto_approve":
+    "Auto approve",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.on":
+    "On",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.off":
+    "Off",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.workspace":
+    "Workspace",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.workspace_existing":
+    "Existing",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.workspace_new":
+    "New",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.workspace_required":
+    "Required",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.override_one":
+    "1 override: {name}",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.override_two":
+    "2 overrides: {first}, {second}",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.override_count":
+    "{count} overrides",
   "workspace.components.workspace.config.MemberOverrideItem.agent_member":
     "Agent",
   "workspace.components.workspace.config.MemberOverrideItem.using_team_defaults":
@@ -121,6 +141,10 @@ const messages = {
     "Override only the fields that should differ from the team run defaults.",
   "workspace.components.workspace.config.MemberOverrideItem.reset_to_default":
     "Reset to default",
+  "workspace.components.workspace.config.MemberOverrideItem.confirm_reset_to_default":
+    "Confirm reset",
+  "workspace.components.workspace.config.MemberOverrideItem.cancel_reset":
+    "Cancel",
   "workspace.components.workspace.config.MemberOverrideItem.field_overridden":
     "Overridden",
   "workspace.components.workspace.config.MemberOverrideItem.runtime_field":
@@ -135,6 +159,8 @@ const messages = {
     "Auto Approve Override",
   "workspace.components.workspace.config.MemberOverrideItem.auto_approve_override_help":
     "Use global follows team Auto approve tools.",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_use_global":
+    "Use global",
   "workspace.components.workspace.config.MemberOverrideItem.auto_approve_yes":
     "Yes",
   "workspace.components.workspace.config.MemberOverrideItem.auto_approve_no":
@@ -145,6 +171,10 @@ const messages = {
     "Team auto approve is currently off.",
   "workspace.components.workspace.config.MemberOverrideItem.model_config_override":
     "Model config override",
+  "workspace.components.workspace.config.MemberOverrideItem.no_model_config_options":
+    "No configurable model options for this model.",
+  "workspace.components.workspace.config.MemberOverrideItem.model_config_unavailable":
+    "Model config options are unavailable until a compatible member model is selected.",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "Agent",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":

@@ -170,14 +170,77 @@ describe('teamRunConfigPresentation', () => {
         ...baseConfig,
         runtimeKind: 'codex_app_server',
         llmModelIdentifier: 'gpt-5.4',
+        autoExecuteTools: true,
       },
-      leafMemberCount: 3,
+      leafMembers: [
+        leafMember('program_manager', ['program_manager']),
+        leafMember('BuildSquad/review_lead', ['BuildSquad', 'review_lead']),
+        leafMember('BuildSquad/qa_specialist', ['BuildSquad', 'qa_specialist']),
+      ],
+      workspace: { mode: 'existing', name: 'Temp Workspace' },
     })
 
     expect(summary).toEqual({
       memberCount: 3,
       runtimeLabel: 'Codex App Server',
       modelIdentifier: 'gpt-5.4',
+      autoApproveEnabled: true,
+      workspace: { mode: 'existing', name: 'Temp Workspace' },
+      memberOverrideTag: null,
     })
+  })
+
+  it('builds localization-safe override tag facts and route keys for one or two overrides', () => {
+    const summary = buildTeamRunLaunchSummaryPresentation({
+      config: {
+        ...baseConfig,
+        memberOverrides: {
+          program_manager: { agentDefinitionId: 'agent-program_manager', autoExecuteTools: true },
+          'BuildSquad/review_lead': { agentDefinitionId: 'agent-review_lead', runtimeKind: 'claude_agent_sdk' },
+        },
+      },
+      leafMembers: [
+        leafMember('program_manager', ['program_manager']),
+        leafMember('BuildSquad/review_lead', ['BuildSquad', 'review_lead']),
+      ],
+      workspace: { mode: 'new', path: '/tmp/project' },
+    })
+
+    expect(summary.memberOverrideTag).toEqual({
+      count: 2,
+      routeKeys: ['BuildSquad/review_lead', 'program_manager'],
+      visibleNames: ['BuildSquad / review_lead', 'program_manager'],
+    })
+    expect(summary.memberOverrideTag).not.toHaveProperty('label')
+  })
+
+  it('limits override tag visible names for more than two overrides', () => {
+    const summary = buildTeamRunLaunchSummaryPresentation({
+      config: {
+        ...baseConfig,
+        memberOverrides: {
+          program_manager: { agentDefinitionId: 'agent-program_manager', autoExecuteTools: true },
+          'BuildSquad/review_lead': { agentDefinitionId: 'agent-review_lead', runtimeKind: 'claude_agent_sdk' },
+          'BuildSquad/qa_specialist': { agentDefinitionId: 'agent-qa_specialist', llmModelIdentifier: 'qa-model' },
+        },
+      },
+      leafMembers: [
+        leafMember('program_manager', ['program_manager']),
+        leafMember('BuildSquad/review_lead', ['BuildSquad', 'review_lead']),
+        leafMember('BuildSquad/qa_specialist', ['BuildSquad', 'qa_specialist']),
+      ],
+    })
+
+    expect(summary.memberOverrideTag?.count).toBe(3)
+    expect(summary.memberOverrideTag?.visibleNames).toEqual([
+      'BuildSquad / qa_specialist',
+      'BuildSquad / review_lead',
+    ])
+    expect(summary.memberOverrideTag?.routeKeys).toEqual([
+      'BuildSquad/qa_specialist',
+      'BuildSquad/review_lead',
+      'program_manager',
+    ])
+    expect(summary.memberOverrideTag).not.toHaveProperty('label')
   })
 })

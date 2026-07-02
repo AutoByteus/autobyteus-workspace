@@ -38,6 +38,7 @@
 
       <TeamRunConfigForm
         v-else-if="effectiveTeamConfig && activeTeamDefinition"
+        ref="teamRunConfigFormRef"
         :config="effectiveTeamConfig"
         :team-definition="activeTeamDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
@@ -54,6 +55,7 @@
       <TeamRunLaunchSummary
         v-if="isTeamActive && teamRunLaunchSummary"
         :summary="teamRunLaunchSummary"
+        @focus-overrides="handleFocusOverrides"
       />
       <button
         @click="handleRun"
@@ -97,7 +99,10 @@ import {
   buildTeamMemberTreeFromDefinition,
   flattenLeafAgentMemberNodes,
 } from '~/utils/teamDefinitionMembers'
-import { buildTeamRunLaunchSummaryPresentation } from '~/utils/teamRunConfigPresentation'
+import {
+  buildTeamRunLaunchSummaryPresentation,
+  type TeamRunLaunchWorkspacePresentation,
+} from '~/utils/teamRunConfigPresentation'
 
 const selectionStore = useAgentSelectionStore()
 const runConfigStore = useAgentRunConfigStore()
@@ -117,6 +122,10 @@ type PendingWorkspaceInput = { mode: 'existing' | 'new'; pendingPath: string }
 const pendingWorkspaceInput = ref<PendingWorkspaceInput>({ mode: 'existing', pendingPath: '' })
 const isLaunching = ref(false)
 const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
+type TeamRunConfigFormExpose = {
+  focusMemberOverrides: (routeKeys: string[]) => void | Promise<void>
+}
+const teamRunConfigFormRef = ref<TeamRunConfigFormExpose | null>(null)
 
 const effectiveAgentConfig = computed((): AgentRunConfig | null => {
   if (selectionStore.isAgentSelected && selectionStore.selectedRunId) {
@@ -151,22 +160,64 @@ const activeTeamDefinition = computed(() => {
   return teamDefinitionStore.getAgentTeamDefinitionById(effectiveTeamConfig.value.teamDefinitionId) || null
 })
 
-const activeTeamLeafMemberCount = computed(() => {
-  if (!activeTeamDefinition.value) return 0
+const activeTeamLeafMembers = computed(() => {
+  if (!activeTeamDefinition.value) return []
   const memberTree = buildTeamMemberTreeFromDefinition(activeTeamDefinition.value, {
     getTeamDefinitionById: (teamDefinitionId: string) =>
       teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
   })
-  return flattenLeafAgentMemberNodes(memberTree).length
+  return flattenLeafAgentMemberNodes(memberTree)
+})
+
+const activeTeamLeafMemberCount = computed(() => activeTeamLeafMembers.value.length)
+
+const workspaceDisplayNameForConfig = (config: TeamRunConfig): string | undefined => {
+  if (config.workspaceMetadata?.displayName) {
+    return config.workspaceMetadata.displayName
+  }
+  if (!config.workspaceId) {
+    return undefined
+  }
+  const metadata = workspaceStore.workspaceMetadataById[config.workspaceId]
+  if (metadata?.displayName) {
+    return metadata.displayName
+  }
+  const workspace = workspaceStore.workspaces[config.workspaceId] as any
+  return workspace?.displayName || workspace?.name || workspace?.workspaceName || config.workspaceId
+}
+
+const teamLaunchWorkspaceSummary = computed<TeamRunLaunchWorkspacePresentation>(() => {
+  if (pendingWorkspaceInput.value.mode === 'new') {
+    return {
+      mode: 'new',
+      path: currentPendingNewPath.value || undefined,
+    }
+  }
+
+  const config = effectiveTeamConfig.value
+  if (config?.workspaceId) {
+    return {
+      mode: 'existing',
+      name: workspaceDisplayNameForConfig(config),
+    }
+  }
+
+  return { mode: 'unset' }
 })
 
 const teamRunLaunchSummary = computed(() => {
   if (!effectiveTeamConfig.value || !activeTeamDefinition.value) return null
   return buildTeamRunLaunchSummaryPresentation({
     config: effectiveTeamConfig.value,
+    leafMembers: activeTeamLeafMembers.value,
     leafMemberCount: activeTeamLeafMemberCount.value,
+    workspace: teamLaunchWorkspaceSummary.value,
   })
 })
+
+const handleFocusOverrides = (routeKeys: string[]) => {
+  void teamRunConfigFormRef.value?.focusMemberOverrides(routeKeys)
+}
 
 const isWorkspaceLockedForSelectedAgentRun = computed(() => {
   if (!selectionStore.isAgentSelected || !selectionStore.selectedRunId) {

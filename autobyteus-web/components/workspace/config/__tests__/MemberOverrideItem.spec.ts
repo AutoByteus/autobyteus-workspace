@@ -14,6 +14,18 @@ const flushPromises = async () => {
   await new Promise<void>((resolve) => setTimeout(resolve, 0))
 }
 
+const fallbackTranslate = (key: string): string => {
+  const tail = key.split('.').pop() || key
+  const normalized = tail.replace(/_/g, ' ').toLowerCase()
+  return normalized.charAt(0).toUpperCase() + normalized.slice(1)
+}
+
+const translateMemberOverrideLabel = (key: string): string => ({
+  'workspace.components.workspace.config.MemberOverrideItem.auto_approve_use_global': 'Use global',
+  'workspace.components.workspace.config.MemberOverrideItem.auto_approve_yes': 'Yes',
+  'workspace.components.workspace.config.MemberOverrideItem.auto_approve_no': 'No',
+}[key] ?? fallbackTranslate(key))
+
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: vi.fn(),
 }))
@@ -87,8 +99,24 @@ const runtimeProviders: Record<string, any[]> = {
                 enum: ['low', 'medium', 'high', 'xhigh'],
                 default: 'medium',
               },
+              service_tier: {
+                type: 'string',
+                title: 'Fast mode',
+                description: 'Fast mode',
+                enum: ['fast'],
+              },
             },
           },
+        },
+        {
+          modelIdentifier: 'gpt-no-config',
+          name: 'GPT No Config',
+          value: 'gpt-no-config',
+          canonicalName: 'gpt-no-config',
+          providerId: 'OPENAI',
+          providerName: 'OpenAI',
+          providerType: 'OPENAI',
+          runtime: 'codex_app_server',
         },
         {
           modelIdentifier: 'gpt-5.3-codex',
@@ -108,6 +136,12 @@ const runtimeProviders: Record<string, any[]> = {
                 description: 'Reasoning Effort',
                 enum: ['low', 'medium', 'high', 'xhigh'],
                 default: 'medium',
+              },
+              service_tier: {
+                type: 'string',
+                title: 'Fast mode',
+                description: 'Fast mode',
+                enum: ['fast'],
               },
             },
           },
@@ -210,13 +244,23 @@ describe('MemberOverrideItem', () => {
     await nextTick()
 
     const editor = wrapper.get('[data-test="member-override-editor"]')
+    const card = wrapper.get('[data-test="member-override-card"]')
     expect(wrapper.get('[data-test="member-override-row"]').attributes('aria-expanded')).toBe('false')
+    expect(card.attributes('data-state')).toBe('collapsed')
+    expect(card.attributes('data-member-route-key')).toBe('reviewer')
+    expect(card.attributes('tabindex')).toBe('-1')
     expect(editor.attributes('style')).toContain('display: none')
     expect(wrapper.get('[data-test="member-override-status"]').text()).toContain('Using team defaults')
+    expect(wrapper.find('[data-test="member-override-reset"]').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('No member overrides')
+    expect(wrapper.find('[data-test="member-override-field-indicator-empty"]').exists()).toBe(false)
 
     await wrapper.get('[data-test="member-override-row"]').trigger('click')
 
     expect(wrapper.get('[data-test="member-override-row"]').attributes('aria-expanded')).toBe('true')
+    expect(card.attributes('data-state')).toBe('expanded')
+    expect(card.classes()).toContain('border-blue-200')
+    expect(card.classes()).toContain('ring-1')
     expect(editor.attributes('style') ?? '').not.toContain('display: none')
   })
 
@@ -244,6 +288,7 @@ describe('MemberOverrideItem', () => {
 
     await wrapper.get('[data-test="member-override-row"]').trigger('click')
 
+    expect(wrapper.findAll('[data-test="member-override-field-indicator"]')).toHaveLength(0)
     expect(wrapper.get('[data-test="member-override-runtime-field"]').text()).toContain('Field overridden')
     expect(wrapper.get('[data-test="member-override-auto-approve-field"]').text()).toContain('Field overridden')
     expect(wrapper.get('[data-test="member-override-model-field"]').text()).not.toContain('Field overridden')
@@ -306,10 +351,19 @@ describe('MemberOverrideItem', () => {
   it('maps Auto Approve Override Use global, Yes, and No to undefined, true, and false storage', async () => {
     const wrapper = mount(MemberOverrideItem, {
       props: defaultProps,
+      global: {
+        mocks: {
+          $t: translateMemberOverrideLabel,
+        },
+      },
     })
 
     await nextTick()
     const select = wrapper.get('#override-auto-reviewer')
+    expect(select.text()).toContain('Use global')
+    expect(select.text()).toContain('Yes')
+    expect(select.text()).toContain('No')
+    expect(wrapper.text()).not.toContain('workspace.components.workspace.config.MemberOverrideItem.auto_approve_use_global')
 
     await select.setValue('yes')
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
@@ -345,10 +399,46 @@ describe('MemberOverrideItem', () => {
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual(['reviewer', null])
   })
 
-  it('resets a member override to team defaults when enabled and never mutates when disabled', async () => {
+  it('confirms a header reset before clearing and keeps reset controls outside the expand button', async () => {
     const wrapper = mount(MemberOverrideItem, {
       props: {
         ...defaultProps,
+        override: {
+          agentDefinitionId: 'agent-reviewer',
+          autoExecuteTools: true,
+        },
+      },
+    })
+
+    expect(wrapper.get('[data-test="member-override-row"]').find('[data-test="member-override-reset"]').exists()).toBe(false)
+    expect(wrapper.get('[data-test="member-override-reset"]').text()).toContain('Reset to default')
+
+    const beforeRequestCount = wrapper.emitted('update:override')?.length ?? 0
+    await wrapper.get('[data-test="member-override-reset"]').trigger('click')
+    expect(wrapper.emitted('update:override')?.length ?? 0).toBe(beforeRequestCount)
+    expect(wrapper.get('[data-test="member-override-reset-confirm"]').text()).toContain('Confirm reset')
+    expect(wrapper.get('[data-test="member-override-reset-cancel"]').text()).toContain('Cancel')
+    expect(wrapper.get('[data-test="member-override-row"]').attributes('aria-expanded')).toBe('false')
+
+    await wrapper.get('[data-test="member-override-reset-cancel"]').trigger('click')
+    expect(wrapper.emitted('update:override')?.length ?? 0).toBe(beforeRequestCount)
+    expect(wrapper.find('[data-test="member-override-reset-confirm"]').exists()).toBe(false)
+
+    await wrapper.get('[data-test="member-override-row"]').trigger('click')
+    expect(wrapper.get('[data-test="member-override-row"]').attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('[data-test="member-override-reset"]').exists()).toBe(true)
+
+    await wrapper.get('[data-test="member-override-reset"]').trigger('click')
+    await wrapper.get('[data-test="member-override-reset-confirm"]').trigger('click')
+
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual(['reviewer', null])
+  })
+
+  it('does not mutate reset controls while disabled', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        disabled: true,
         override: {
           agentDefinitionId: 'agent-reviewer',
           runtimeKind: 'codex_app_server',
@@ -356,16 +446,12 @@ describe('MemberOverrideItem', () => {
       },
     })
 
-    await wrapper.get('[data-test="member-override-row"]').trigger('click')
-    await wrapper.get('[data-test="member-override-reset"]').trigger('click')
+    const reset = wrapper.get('[data-test="member-override-reset"]')
+    expect((reset.element as HTMLButtonElement).disabled).toBe(true)
+    await reset.trigger('click')
 
-    expect(wrapper.emitted('update:override')?.at(-1)).toEqual(['reviewer', null])
-
-    await wrapper.setProps({ disabled: true })
-    const beforeDisabledClickCount = wrapper.emitted('update:override')?.length ?? 0
-    await wrapper.get('[data-test="member-override-reset"]').trigger('click')
-
-    expect(wrapper.emitted('update:override')?.length ?? 0).toBe(beforeDisabledClickCount)
+    expect(wrapper.emitted('update:override')).toBeUndefined()
+    expect(wrapper.find('[data-test="member-override-reset-confirm"]').exists()).toBe(false)
   })
 
   it('renders a blocking warning when a runtime override breaks inherited global model availability', async () => {
@@ -706,7 +792,29 @@ describe('MemberOverrideItem', () => {
     expect(wrapper.find('select[id^="config-reviewer"]').exists()).toBe(false)
   })
 
-  it('keeps inherited effort-only reasoning compact until expanded and displays the schema default', async () => {
+  it('renders an explicit no-options message when the effective model has no config schema', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        globalRuntimeKind: 'codex_app_server',
+        globalLlmModel: 'gpt-no-config',
+        globalLlmConfig: null,
+      },
+    })
+
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+    await wrapper.get('[data-test="member-override-row"]').trigger('click')
+
+    expect(wrapper.get('[data-test="member-override-model-config-field"]').text()).toContain(
+      'No configurable model options for this model.',
+    )
+    expect(wrapper.find('[data-test="member-override-model-config-unavailable"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
+  })
+
+  it('renders inherited reasoning and Fast mode flat without an Advanced disclosure', async () => {
     const wrapper = mount(MemberOverrideItem, {
       props: {
         ...defaultProps,
@@ -722,27 +830,21 @@ describe('MemberOverrideItem', () => {
     await flushPromises()
     await nextTick()
 
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
     const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
     const reasoningSelect = wrapper.get('select#config-reviewer-reasoning_effort')
+    const fastModeSelect = wrapper.get('select#config-reviewer-service_tier')
     const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
 
     expect(thinkingRow.props('enabled')).toBe(true)
     expect(thinkingRow.get('button').element.disabled).toBe(true)
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
-    expect(advancedContainer.attributes('style')).toContain('display: none')
-    expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
-    expect(wrapper.emitted('update:override')).toBeUndefined()
-
-    await advancedToggle.trigger('click')
-
-    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
     expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
     expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
+    expect((fastModeSelect.element as HTMLSelectElement).value).toBe('__default__')
     expect(wrapper.emitted('update:override')).toBeUndefined()
   })
 
-  it('keeps compact advanced collapsed when inherited global thinking-on model changes', async () => {
+  it('keeps flat advanced rows visible when the inherited global thinking-on model changes', async () => {
     const wrapper = mount(MemberOverrideItem, {
       props: {
         ...defaultProps,
@@ -758,22 +860,21 @@ describe('MemberOverrideItem', () => {
     await flushPromises()
     await nextTick()
 
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
     const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
-    expect(advancedContainer.attributes('style')).toContain('display: none')
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
 
     await wrapper.setProps({ globalLlmModel: 'gpt-5.3-codex' })
     await nextTick()
     await flushPromises()
     await nextTick()
 
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
-    expect(advancedContainer.attributes('style')).toContain('display: none')
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
     expect(wrapper.emitted('update:override')).toBeUndefined()
   })
 
-  it('opens compact advanced for an explicit member model selection whose effective thinking is on', async () => {
+  it('keeps flat advanced rows visible for an explicit member model selection whose effective thinking is on', async () => {
     const wrapper = mount(MemberOverrideItem, {
       props: {
         ...defaultProps,
@@ -789,9 +890,8 @@ describe('MemberOverrideItem', () => {
     await flushPromises()
     await nextTick()
 
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
     const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
 
     wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
     await nextTick()
@@ -801,7 +901,7 @@ describe('MemberOverrideItem', () => {
     await flushPromises()
     await nextTick()
 
-    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
     expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
       'reviewer',
@@ -812,7 +912,7 @@ describe('MemberOverrideItem', () => {
     ])
   })
 
-  it('opens compact advanced for an explicit member runtime selection to an effective-on model', async () => {
+  it('keeps flat advanced rows visible for an explicit member runtime selection to an effective-on model', async () => {
     const wrapper = mount(MemberOverrideItem, {
       props: {
         ...defaultProps,
@@ -828,9 +928,8 @@ describe('MemberOverrideItem', () => {
     await flushPromises()
     await nextTick()
 
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
     const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
 
     await wrapper.get('#override-runtime-reviewer').setValue('codex_app_server')
     await nextTick()
@@ -840,7 +939,7 @@ describe('MemberOverrideItem', () => {
     await flushPromises()
     await nextTick()
 
-    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
     expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
     expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
       'reviewer',
@@ -849,6 +948,58 @@ describe('MemberOverrideItem', () => {
         runtimeKind: 'codex_app_server',
       },
     ])
+  })
+
+  it('defaults member override Thinking on through ModelConfigSection for Claude when no explicit state exists', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        globalRuntimeKind: 'claude_agent_sdk',
+        globalLlmModel: 'claude-sonnet',
+        globalLlmConfig: null,
+      },
+    })
+
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(false)
+    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
+      'reviewer',
+      {
+        agentDefinitionId: 'agent-reviewer',
+        llmConfig: {
+          thinking_enabled: true,
+        },
+      },
+    ])
+
+    await wrapper.setProps({
+      override: wrapper.emitted('update:override')?.at(-1)?.[1] as MemberConfigOverride,
+    })
+    await nextTick()
+
+    expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(true)
+  })
+
+  it('preserves explicit inherited member Thinking off state and read-only no-mutation behavior', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        globalRuntimeKind: 'claude_agent_sdk',
+        globalLlmModel: 'claude-sonnet',
+        globalLlmConfig: { thinking_enabled: false },
+        disabled: true,
+      },
+    })
+
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(false)
+    expect(wrapper.emitted('update:override')).toBeUndefined()
   })
 
 })

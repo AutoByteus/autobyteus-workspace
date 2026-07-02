@@ -3,45 +3,47 @@
     <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('workspace.components.workspace.config.WorkspaceSelector.workspace_directory') }}</label>
 
     <!-- Mode Toggle -->
-    <div class="mb-3 inline-flex rounded-full border border-slate-200 bg-slate-50 p-1" role="tablist">
-      <button
-        type="button"
-        @click="mode = 'existing'"
-        :disabled="existingDisabled || isInteractionDisabled"
-        class="rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
-        :class="[
-          mode === 'existing'
-            ? 'bg-blue-700 text-white shadow-sm'
-            : 'text-slate-600 hover:bg-white hover:text-slate-900',
-          existingDisabled || isInteractionDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-        ]"
-        role="tab"
-        :aria-selected="mode === 'existing'"
+    <div class="mb-3 flex justify-start" data-test="workspace-mode-toggle-wrapper">
+      <div
+        class="inline-flex rounded-full border border-slate-200 bg-slate-50 p-1"
+        data-test="workspace-mode-toggle"
+        role="tablist"
       >
-        <span class="flex items-center justify-center">
-          <span class="i-heroicons-folder-open-20-solid w-4 h-4 mr-2"></span>
-          Existing
-        </span>
-      </button>
-      <button
-        type="button"
-        @click="mode = 'new'"
-        :disabled="isInteractionDisabled"
-        class="rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
-        :class="[
-          mode === 'new'
-            ? 'bg-blue-700 text-white shadow-sm'
-            : 'text-slate-600 hover:bg-white hover:text-slate-900',
-          isInteractionDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-        ]"
-        role="tab"
-        :aria-selected="mode === 'new'"
-      >
-        <span class="flex items-center justify-center">
-          <span class="i-heroicons-plus-circle-20-solid w-4 h-4 mr-2"></span>
-          New
-        </span>
-      </button>
+        <button
+          type="button"
+          @click="mode = 'existing'"
+          :disabled="existingDisabled || isInteractionDisabled"
+          class="relative inline-flex w-28 items-center justify-center rounded-full px-3 py-1.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+          :class="[
+            mode === 'existing'
+              ? 'bg-blue-700 text-white shadow-sm'
+              : 'text-slate-600 hover:bg-white hover:text-slate-900',
+            existingDisabled || isInteractionDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+          ]"
+          role="tab"
+          :aria-selected="mode === 'existing'"
+        >
+          <span class="i-heroicons-folder-open-20-solid absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" aria-hidden="true"></span>
+          <span class="block w-full text-center leading-5" data-test="workspace-mode-label-existing">Existing</span>
+        </button>
+        <button
+          type="button"
+          @click="mode = 'new'"
+          :disabled="isInteractionDisabled"
+          class="relative inline-flex w-28 items-center justify-center rounded-full px-3 py-1.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+          :class="[
+            mode === 'new'
+              ? 'bg-blue-700 text-white shadow-sm'
+              : 'text-slate-600 hover:bg-white hover:text-slate-900',
+            isInteractionDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+          ]"
+          role="tab"
+          :aria-selected="mode === 'new'"
+        >
+          <span class="i-heroicons-plus-circle-20-solid absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" aria-hidden="true"></span>
+          <span class="block w-full text-center leading-5" data-test="workspace-mode-label-new">New</span>
+        </button>
+      </div>
     </div>
 
     <!-- Existing Workspace Dropdown -->

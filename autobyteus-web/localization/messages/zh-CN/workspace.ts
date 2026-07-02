@@ -109,6 +109,26 @@ const messages = {
     "模型",
   "workspace.components.workspace.config.TeamRunLaunchSummary.no_model":
     "未选择模型",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.auto_approve":
+    "自动批准",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.on":
+    "开启",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.off":
+    "关闭",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.workspace":
+    "工作区",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.workspace_existing":
+    "已有",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.workspace_new":
+    "新建",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.workspace_required":
+    "必填",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.override_one":
+    "1 个成员覆盖：{name}",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.override_two":
+    "2 个成员覆盖：{first}、{second}",
+  "workspace.components.workspace.config.TeamRunLaunchSummary.override_count":
+    "{count} 个成员覆盖",
   "workspace.components.workspace.config.MemberOverrideItem.agent_member":
     "智能体",
   "workspace.components.workspace.config.MemberOverrideItem.using_team_defaults":
@@ -121,6 +141,10 @@ const messages = {
     "只覆盖需要不同于团队运行默认值的字段。",
   "workspace.components.workspace.config.MemberOverrideItem.reset_to_default":
     "重置为默认值",
+  "workspace.components.workspace.config.MemberOverrideItem.confirm_reset_to_default":
+    "确认重置",
+  "workspace.components.workspace.config.MemberOverrideItem.cancel_reset":
+    "取消",
   "workspace.components.workspace.config.MemberOverrideItem.field_overridden":
     "已覆盖",
   "workspace.components.workspace.config.MemberOverrideItem.runtime_field":
@@ -135,6 +159,8 @@ const messages = {
     "自动批准覆盖",
   "workspace.components.workspace.config.MemberOverrideItem.auto_approve_override_help":
     "使用全局设置会跟随团队“自动批准工具”。",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve_use_global":
+    "使用全局设置",
   "workspace.components.workspace.config.MemberOverrideItem.auto_approve_yes":
     "是",
   "workspace.components.workspace.config.MemberOverrideItem.auto_approve_no":
@@ -145,6 +171,10 @@ const messages = {
     "团队自动批准当前为关闭。",
   "workspace.components.workspace.config.MemberOverrideItem.model_config_override":
     "模型配置覆盖",
+  "workspace.components.workspace.config.MemberOverrideItem.no_model_config_options":
+    "此模型没有可配置选项。",
+  "workspace.components.workspace.config.MemberOverrideItem.model_config_unavailable":
+    "请选择兼容的成员模型后再配置模型选项。",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "智能体",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":

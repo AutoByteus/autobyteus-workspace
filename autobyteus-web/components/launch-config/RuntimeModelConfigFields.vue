@@ -55,6 +55,8 @@
       :advanced-initially-expanded="advancedInitiallyExpanded"
       :missing-historical-config="missingHistoricalConfig"
       :inline-single-advanced-row-when-thinking-on="inlineSingleAdvancedRowWhenThinkingOnComputed"
+      :advanced-display-mode="advancedDisplayMode"
+      :default-thinking-on-when-supported="defaultThinkingOnWhenSupportedComputed"
       @update:config="updateModelConfig"
     />
   </div>
@@ -94,6 +96,8 @@ const props = defineProps<{
   advancedInitiallyExpanded?: boolean
   missingHistoricalConfig?: boolean
   inlineSingleAdvancedRowWhenThinkingOn?: boolean
+  advancedDisplayMode?: 'auto' | 'flat'
+  defaultThinkingOnWhenSupported?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -117,6 +121,10 @@ const modelPlaceholderText = computed(() => props.modelPlaceholder ?? 'Select a 
 const runtimeFieldId = computed(() => `${props.idPrefix ?? 'launch'}-runtime-kind`)
 const inlineSingleAdvancedRowWhenThinkingOnComputed = computed(
   () => props.inlineSingleAdvancedRowWhenThinkingOn === true,
+)
+const advancedDisplayMode = computed(() => props.advancedDisplayMode ?? 'auto')
+const defaultThinkingOnWhenSupportedComputed = computed(
+  () => props.defaultThinkingOnWhenSupported === true,
 )
 
 const {

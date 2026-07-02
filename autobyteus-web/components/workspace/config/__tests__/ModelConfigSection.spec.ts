@@ -328,6 +328,119 @@ describe('ModelConfigSection', () => {
     expect(advancedContainer.attributes('style')).toContain('display: none');
   });
 
+  it('applies default-on thinking only through explicit launch-surface opt-in', async () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: null,
+        applyDefaults: true,
+        defaultThinkingOnWhenSupported: true,
+        schema: {
+          reasoning_effort: {
+            type: 'string',
+            title: 'Reasoning Effort',
+            enum: ['none', 'low', 'medium', 'high'],
+            default: 'none',
+          },
+          reasoning_summary: {
+            type: 'string',
+            title: 'Reasoning Summary',
+            enum: ['none', 'auto', 'concise'],
+            default: 'none',
+          },
+        },
+      },
+    });
+
+    await flushPromises();
+
+    expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({
+      reasoning_summary: 'auto',
+    });
+  });
+
+  it('preserves explicit thinking-off state when default-on thinking is opted in', async () => {
+    const explicitOff = { reasoning_effort: 'none', reasoning_summary: 'none' };
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: explicitOff,
+        applyDefaults: true,
+        defaultThinkingOnWhenSupported: true,
+        schema: {
+          reasoning_effort: {
+            type: 'string',
+            title: 'Reasoning Effort',
+            enum: ['none', 'low', 'medium', 'high'],
+            default: 'none',
+          },
+          reasoning_summary: {
+            type: 'string',
+            title: 'Reasoning Summary',
+            enum: ['none', 'auto', 'concise'],
+            default: 'none',
+          },
+        },
+      },
+    });
+
+    await flushPromises();
+
+    expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(false);
+    expect(wrapper.emitted('update:config')).toBeUndefined();
+  });
+
+  it('does not apply default-on thinking in read-only, disabled, or missing-historical states', async () => {
+    const schema = {
+      reasoning_effort: {
+        type: 'string',
+        title: 'Reasoning Effort',
+        enum: ['none', 'low', 'medium', 'high'],
+        default: 'none',
+      },
+      reasoning_summary: {
+        type: 'string',
+        title: 'Reasoning Summary',
+        enum: ['none', 'auto', 'concise'],
+        default: 'none',
+      },
+    };
+    const wrappers = [
+      mount(ModelConfigSection, {
+        props: {
+          modelConfig: null,
+          applyDefaults: true,
+          defaultThinkingOnWhenSupported: true,
+          readOnly: true,
+          schema,
+        },
+      }),
+      mount(ModelConfigSection, {
+        props: {
+          modelConfig: null,
+          applyDefaults: true,
+          defaultThinkingOnWhenSupported: true,
+          disabled: true,
+          schema,
+        },
+      }),
+      mount(ModelConfigSection, {
+        props: {
+          modelConfig: null,
+          applyDefaults: true,
+          defaultThinkingOnWhenSupported: true,
+          readOnly: true,
+          missingHistoricalConfig: true,
+          schema,
+        },
+      }),
+    ];
+
+    await flushPromises();
+
+    for (const wrapper of wrappers) {
+      expect(wrapper.emitted('update:config')).toBeUndefined();
+    }
+  });
+
   it('keeps the advanced disclosure for the opt-in path when multiple advanced rows remain', () => {
     const wrapper = mount(ModelConfigSection, {
       props: {
@@ -355,6 +468,36 @@ describe('ModelConfigSection', () => {
     expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(true);
     expect(advancedToggle.attributes('aria-expanded')).toBe('true');
     expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none');
+  });
+
+  it('renders advanced rows flat only when the caller explicitly opts in', () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: null,
+        advancedDisplayMode: 'flat',
+        schema: {
+          reasoning_effort: {
+            type: 'string',
+            title: 'Reasoning Effort',
+            enum: ['low', 'medium', 'high', 'xhigh'],
+            default: 'medium',
+          },
+          service_tier: {
+            type: 'string',
+            title: 'Fast mode',
+            enum: ['fast'],
+          },
+        },
+      },
+    });
+
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]');
+
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false);
+    expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(true);
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none');
+    expect(wrapper.get('select#config-reasoning_effort').text()).toContain('medium');
+    expect(wrapper.get('select#config-service_tier').text()).toContain('fast');
   });
 
   it('keeps compact effort-only reasoning controls collapsed but shows the effective default when expanded', async () => {

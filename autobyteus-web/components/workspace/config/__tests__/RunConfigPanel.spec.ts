@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { reactive } from 'vue'
+import { defineComponent, h } from 'vue'
 import RunConfigPanel from '../RunConfigPanel.vue'
 import AgentRunConfigForm from '../AgentRunConfigForm.vue'
 import TeamRunConfigForm from '../TeamRunConfigForm.vue'
@@ -257,9 +257,22 @@ describe('RunConfigPanel', () => {
       teamDefinitionName: 'Team team-def-1',
       runtimeKind: 'codex_app_server',
       llmModelIdentifier: 'gpt-5.4',
+      autoExecuteTools: true,
       workspaceId: 'ws-1',
+      workspaceMetadata: null,
+      memberOverrides: {
+        'BuildSquad/review_lead': {
+          agentDefinitionId: 'agent-review',
+          runtimeKind: 'claude_agent_sdk',
+        },
+      },
     } as any
     store.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
+    workspaceStoreMock.workspaces['ws-1'] = {
+      workspaceId: 'ws-1',
+      name: 'Temp Workspace',
+      absolutePath: '/tmp/default',
+    }
 
     const wrapper = mount(RunConfigPanel, {
       global: {
@@ -270,6 +283,76 @@ describe('RunConfigPanel', () => {
     expect(wrapper.get('[data-test="team-run-launch-summary-members"]').text()).toContain('3')
     expect(wrapper.get('[data-test="team-run-launch-summary-runtime"]').text()).toContain('Codex App Server')
     expect(wrapper.get('[data-test="team-run-launch-summary-model"]').text()).toContain('gpt-5.4')
+    expect(wrapper.get('[data-test="team-run-launch-summary-auto-approve"]').text()).toContain('On')
+    expect(wrapper.get('[data-test="team-run-launch-summary-workspace"]').text()).toContain('Existing (Temp Workspace)')
+    expect(wrapper.get('[data-test="team-run-launch-summary-overrides"]').text()).toContain('BuildSquad / review_lead')
+  })
+
+  it('omits the footer override tag when no meaningful member overrides exist', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const store = useTeamRunConfigStore() as any
+    store.config = {
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team team-def-1',
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-5.4',
+      autoExecuteTools: false,
+      workspaceId: null,
+      memberOverrides: {},
+    } as any
+    store.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] } as any
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    expect(wrapper.find('[data-test="team-run-launch-summary-overrides"]').exists()).toBe(false)
+    expect(wrapper.get('[data-test="team-run-launch-summary-workspace"]').text()).toContain('Required')
+  })
+
+  it('delegates footer override tag focus requests to the team form boundary', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const store = useTeamRunConfigStore() as any
+    store.config = {
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team team-def-1',
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-5.4',
+      autoExecuteTools: false,
+      workspaceId: 'ws-1',
+      memberOverrides: {
+        'BuildSquad/review_lead': {
+          agentDefinitionId: 'agent-review',
+          runtimeKind: 'claude_agent_sdk',
+        },
+      },
+    } as any
+    store.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
+    const focusMemberOverrides = vi.fn()
+    const TeamRunConfigFormStub = defineComponent({
+      name: 'TeamRunConfigForm',
+      props: ['config', 'teamDefinition', 'workspaceLoadingState', 'initialPath', 'readOnly'],
+      emits: ['select-existing', 'workspace-input-change'],
+      setup(_, { expose }) {
+        expose({ focusMemberOverrides })
+        return () => h('div', { class: 'team-run-config-form-stub' })
+      },
+    })
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: {
+          AgentRunConfigForm: true,
+          TeamRunConfigForm: TeamRunConfigFormStub,
+        },
+      },
+    })
+
+    await wrapper.get('[data-test="team-run-launch-summary-overrides"]').trigger('click')
+
+    expect(focusMemberOverrides).toHaveBeenCalledWith(['BuildSquad/review_lead'])
   })
 
   it('triggers team run on button click when launch readiness passes', async () => {

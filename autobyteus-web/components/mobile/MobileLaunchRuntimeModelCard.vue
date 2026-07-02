@@ -12,6 +12,7 @@
       :read-only="disabled"
       :model-label="modelLabel"
       :id-prefix="idPrefix"
+      default-thinking-on-when-supported
       @update:runtime-kind="$emit('update:runtimeKind', $event)"
       @update:llm-model-identifier="$emit('update:llmModelIdentifier', $event)"
       @update:llm-config="$emit('update:llmConfig', $event)"

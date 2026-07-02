@@ -70,6 +70,7 @@ import { Icon } from '@iconify/vue';
 import { sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
 import { useLocalization } from '~/composables/useLocalization';
 import {
+  applyDefaultThinkingOnWhenSupported,
   applyThinkingToggle,
   getThinkingControlState,
   getThinkingParamKeys,
@@ -91,6 +92,8 @@ const props = defineProps<{
   advancedInitiallyExpanded?: boolean;
   missingHistoricalConfig?: boolean;
   inlineSingleAdvancedRowWhenThinkingOn?: boolean;
+  advancedDisplayMode?: 'auto' | 'flat';
+  defaultThinkingOnWhenSupported?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -123,8 +126,13 @@ const shouldInlineSingleAdvancedRow = computed(() =>
   hasSingleAdvancedRow.value &&
   !showMissingHistoricalConfig.value,
 );
+const shouldFlattenAdvancedRows = computed(() =>
+  props.advancedDisplayMode === 'flat' && !showMissingHistoricalConfig.value,
+);
 const usesAdvancedDisclosure = computed(() =>
-  hasAdvancedSchema.value && !shouldInlineSingleAdvancedRow.value,
+  hasAdvancedSchema.value &&
+  !shouldFlattenAdvancedRows.value &&
+  !shouldInlineSingleAdvancedRow.value,
 );
 const shouldDefaultAdvancedOpen = computed(() =>
   props.advancedInitiallyExpanded === true ||
@@ -196,24 +204,42 @@ const thinkingEnabled = computed({
 
 const applyDefaultsIfNeeded = () => {
   if (!hasSchema.value) return;
-  if (!props.applyDefaults) return;
+  if (!props.applyDefaults && props.defaultThinkingOnWhenSupported !== true) return;
 
-  const nextConfig: Record<string, unknown> = { ...(props.modelConfig ?? {}) };
+  let nextConfig: Record<string, unknown> = { ...(props.modelConfig ?? {}) };
   let changed = false;
   const thinkingKeys = new Set(getThinkingParamKeys(props.schema ?? null));
+  const canApplyThinkingDefault =
+    props.defaultThinkingOnWhenSupported === true &&
+    props.disabled !== true &&
+    props.readOnly !== true &&
+    !showMissingHistoricalConfig.value;
 
-  for (const [key, paramSchema] of Object.entries(props.schema ?? {})) {
-    if (thinkingKeys.has(key)) continue;
-    if (nextConfig[key] === undefined && paramSchema.default !== undefined) {
-      nextConfig[key] = paramSchema.default;
+  if (canApplyThinkingDefault) {
+    const thinkingDefaultConfig = applyDefaultThinkingOnWhenSupported(
+      props.schema ?? null,
+      nextConfig,
+    );
+    if (!configsEqual(thinkingDefaultConfig, nextConfig)) {
+      nextConfig = { ...(thinkingDefaultConfig ?? {}) };
       changed = true;
     }
   }
 
-  if (props.modelConfig?.thinking_enabled === true && props.schema?.thinking_budget_tokens?.default !== undefined) {
-    if (nextConfig.thinking_budget_tokens === undefined) {
-      nextConfig.thinking_budget_tokens = props.schema.thinking_budget_tokens.default;
-      changed = true;
+  if (props.applyDefaults) {
+    for (const [key, paramSchema] of Object.entries(props.schema ?? {})) {
+      if (thinkingKeys.has(key)) continue;
+      if (nextConfig[key] === undefined && paramSchema.default !== undefined) {
+        nextConfig[key] = paramSchema.default;
+        changed = true;
+      }
+    }
+
+    if (nextConfig.thinking_enabled === true && props.schema?.thinking_budget_tokens?.default !== undefined) {
+      if (nextConfig.thinking_budget_tokens === undefined) {
+        nextConfig.thinking_budget_tokens = props.schema.thinking_budget_tokens.default;
+        changed = true;
+      }
     }
   }
 
@@ -233,7 +259,15 @@ const sanitizeConfigIfNeeded = (): boolean => {
 };
 
 watch(
-  () => [props.schema, props.modelConfig, props.applyDefaults],
+  () => [
+    props.schema,
+    props.modelConfig,
+    props.applyDefaults,
+    props.defaultThinkingOnWhenSupported,
+    props.disabled,
+    props.readOnly,
+    props.missingHistoricalConfig,
+  ],
   () => {
     if (sanitizeConfigIfNeeded()) {
       return;
@@ -250,7 +284,10 @@ watch(
     props.readOnly,
     props.missingHistoricalConfig,
     props.inlineSingleAdvancedRowWhenThinkingOn,
+    props.advancedDisplayMode,
+    thinkingControlState.value.enabled,
     shouldInlineSingleAdvancedRow.value,
+    shouldFlattenAdvancedRows.value,
   ],
   () => {
     showAdvancedParams.value = shouldDefaultAdvancedOpen.value;

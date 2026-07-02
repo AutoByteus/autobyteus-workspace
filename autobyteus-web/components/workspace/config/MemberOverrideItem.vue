@@ -1,86 +1,38 @@
 <template>
-  <div class="rounded-md border border-slate-200 bg-white shadow-sm">
-    <button
-      type="button"
-      class="flex w-full items-start justify-between gap-3 px-3 py-3 text-left transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-      :aria-expanded="isExpanded ? 'true' : 'false'"
-      data-test="member-override-row"
-      @click="toggleExpanded"
-    >
-      <span class="min-w-0 flex-1 space-y-2">
-        <span class="flex min-w-0 flex-wrap items-center gap-2">
-          <span class="truncate text-sm font-semibold text-slate-800">{{ memberName }}</span>
-          <span
-            class="rounded-full border px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide"
-            :class="isCoordinator ? 'border-indigo-100 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-slate-50 text-slate-500'"
-          >
-            {{ isCoordinator ? $t('workspace.components.workspace.config.MemberOverrideItem.coordinator') : $t('workspace.components.workspace.config.MemberOverrideItem.agent_member') }}
-          </span>
-          <span
-            class="rounded-full border px-2 py-0.5 text-xs font-medium"
-            :class="hasOverride ? 'border-amber-100 bg-amber-50 text-amber-700' : 'border-emerald-100 bg-emerald-50 text-emerald-700'"
-            data-test="member-override-status"
-          >
-            {{ hasOverride ? $t('workspace.components.workspace.config.MemberOverrideItem.overridden') : $t('workspace.components.workspace.config.MemberOverrideItem.using_team_defaults') }}
-          </span>
-        </span>
-
-        <span
-          v-if="memberBreadcrumb && memberBreadcrumb !== memberName"
-          class="block truncate font-mono text-xs text-gray-500"
-          :title="memberRouteKey"
-          data-test="member-override-breadcrumb"
-        >
-          {{ memberBreadcrumb }}
-        </span>
-
-        <span class="flex flex-wrap items-center gap-1.5">
-          <span
-            v-for="indicator in overrideIndicators"
-            :key="indicator.key"
-            class="rounded-full border border-blue-100 bg-blue-50 px-2 py-0.5 text-[0.625rem] font-semibold text-blue-700"
-            data-test="member-override-field-indicator"
-          >
-            {{ $t(indicator.labelKey) }}
-          </span>
-          <span
-            v-if="overrideIndicators.length === 0"
-            class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[0.625rem] font-semibold text-slate-500"
-            data-test="member-override-field-indicator-empty"
-          >
-            {{ $t('workspace.components.workspace.config.MemberOverrideItem.no_member_overrides') }}
-          </span>
-        </span>
-      </span>
-
-      <span
-        class="i-heroicons-chevron-down-20-solid mt-0.5 h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200"
-        :class="isExpanded ? 'rotate-180' : ''"
-        aria-hidden="true"
-      ></span>
-    </button>
+  <div
+    class="rounded-md border bg-white shadow-sm transition-colors duration-200 focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100"
+    :class="isExpanded ? 'border-blue-200 bg-blue-50/30 ring-1 ring-blue-100' : 'border-slate-200'"
+    :data-state="isExpanded ? 'expanded' : 'collapsed'"
+    :data-member-route-key="memberRouteKey"
+    tabindex="-1"
+    data-test="member-override-card"
+  >
+    <MemberOverrideHeader
+      :member-name="memberName"
+      :member-route-key="memberRouteKey"
+      :member-breadcrumb="memberBreadcrumb"
+      :is-coordinator="isCoordinator"
+      :has-override="hasOverride"
+      :is-expanded="isExpanded"
+      :override-indicators="overrideIndicators"
+      :disabled="disabled"
+      :confirming-reset="confirmingReset"
+      @toggle="toggleExpanded"
+      @request-reset="requestResetOverride"
+      @confirm-reset="confirmResetOverride"
+      @cancel-reset="cancelResetOverride"
+    />
 
     <div
       v-show="isExpanded"
       class="border-t border-slate-200 px-3 py-4"
       data-test="member-override-editor"
     >
-      <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div class="min-w-0">
-          <h4 class="text-sm font-semibold text-slate-900">{{ $t('workspace.components.workspace.config.MemberOverrideItem.member_override_details') }}</h4>
-          <p class="mt-1 text-xs text-slate-500">
-            {{ $t('workspace.components.workspace.config.MemberOverrideItem.member_override_details_help') }}
-          </p>
-        </div>
-        <button
-          type="button"
-          class="inline-flex shrink-0 items-center justify-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          :disabled="disabled || !hasOverride"
-          data-test="member-override-reset"
-          @click="handleResetOverride"
-        >
-          {{ $t('workspace.components.workspace.config.MemberOverrideItem.reset_to_default') }}
-        </button>
+      <div class="mb-4 min-w-0">
+        <h4 class="text-sm font-semibold text-slate-900">{{ $t('workspace.components.workspace.config.MemberOverrideItem.member_override_details') }}</h4>
+        <p class="mt-1 text-xs text-slate-500">
+          {{ $t('workspace.components.workspace.config.MemberOverrideItem.member_override_details_help') }}
+        </p>
       </div>
 
       <div class="mb-3" data-test="member-override-runtime-field">
@@ -159,24 +111,33 @@
       </div>
 
       <div data-test="member-override-model-config-field">
-        <div v-if="effectiveModelIdentifier" class="mb-1 flex items-center gap-2">
+        <div class="mb-1 flex items-center gap-2">
           <span class="block text-xs font-medium text-gray-500">{{ $t('workspace.components.workspace.config.MemberOverrideItem.model_config_override') }}</span>
           <span v-if="hasModelConfigOverride" class="rounded-full bg-blue-50 px-1.5 py-0.5 text-[0.625rem] font-semibold text-blue-700">
             {{ $t('workspace.components.workspace.config.MemberOverrideItem.field_overridden') }}
           </span>
         </div>
         <ModelConfigSection
-          v-if="effectiveModelIdentifier"
+          v-if="shouldRenderModelConfigSection"
           :schema="modelConfigSchema"
           :model-config="effectiveModelConfig"
           :disabled="disabled"
           :read-only="disabled"
           :compact="true"
           :id-prefix="`config-${inputIdSuffix}`"
-          :advanced-initially-expanded="effectiveAdvancedInitiallyExpanded"
+          :advanced-initially-expanded="advancedInitiallyExpanded === true"
+          advanced-display-mode="flat"
+          default-thinking-on-when-supported
           :missing-historical-config="missingHistoricalConfig"
           @update:config="emitOverrideWithConfig"
         />
+        <p
+          v-else
+          class="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500"
+          data-test="member-override-model-config-unavailable"
+        >
+          {{ modelConfigUnavailableMessage }}
+        </p>
       </div>
     </div>
   </div>
@@ -185,8 +146,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type { MemberConfigOverride } from '~/types/agent/TeamRunConfig'
-import type { ProviderWithModels } from '~/stores/llmProviderConfig'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
+import MemberOverrideHeader from './MemberOverrideHeader.vue'
 import ModelConfigSection from './ModelConfigSection.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import {
@@ -203,8 +164,6 @@ import {
   resolveEffectiveMemberLlmConfig,
   resolveEffectiveMemberRuntimeKind,
 } from '~/utils/teamRunConfigUtils'
-import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
-import { getThinkingControlState } from '~/utils/llmThinkingConfigAdapter'
 
 const props = defineProps<{
   memberName: string
@@ -242,7 +201,7 @@ const storedRuntimeOverrideValue = computed(() => props.override?.runtimeKind ||
 const inputIdSuffix = computed(() => props.memberRouteKey.replace(/[^a-zA-Z0-9_-]+/g, '-'))
 const explicitModelIdentifier = computed(() => props.override?.llmModelIdentifier || '')
 const isExpanded = ref(false)
-const memberAdvancedExplicitlyExpanded = ref(false)
+const confirmingReset = ref(false)
 const hasOverride = computed(() => hasMeaningfulMemberOverride(props.override))
 const globalModelIdentifier = computed(() => props.globalLlmModel || '')
 const hasRuntimeOverride = computed(() => hasExplicitMemberRuntimeOverride(props.override))
@@ -293,49 +252,17 @@ const effectiveModelConfig = computed(() => {
 const modelConfigSchema = computed(() =>
   modelConfigSchemaByIdentifier(effectiveModelIdentifier.value),
 )
-const effectiveAdvancedInitiallyExpanded = computed(() =>
-  props.advancedInitiallyExpanded === true || memberAdvancedExplicitlyExpanded.value,
+const hasModelConfigSchema = computed(() =>
+  !!modelConfigSchema.value && Object.keys(modelConfigSchema.value).length > 0,
 )
-
-const shouldOpenAdvancedForSchema = (
-  schema: UiModelConfigSchema | null,
-  config: Record<string, unknown> | null | undefined,
-) => {
-  const thinkingState = getThinkingControlState(schema, config)
-  return thinkingState.supported && thinkingState.enabled
-}
-
-const modelConfigSchemaFromRows = (
-  rows: ProviderWithModels[],
-  modelIdentifier: string | null | undefined,
-): UiModelConfigSchema | null => {
-  const normalizedIdentifier = (modelIdentifier || '').trim()
-  if (!normalizedIdentifier) {
-    return null
-  }
-
-  for (const row of rows) {
-    const model = row.models.find((entry) => entry.modelIdentifier === normalizedIdentifier)
-    if (!model?.configSchema) {
-      continue
-    }
-    const normalized = normalizeModelConfigSchema(model.configSchema)
-    if (normalized && Object.keys(normalized).length > 0) {
-      return normalized
-    }
-  }
-
-  return null
-}
-
-const maybeOpenMemberAdvancedForSchema = (
-  schema: UiModelConfigSchema | null,
-  config: Record<string, unknown> | null | undefined,
-) => {
-  if (shouldOpenAdvancedForSchema(schema, config)) {
-    memberAdvancedExplicitlyExpanded.value = true
-  }
-}
+const shouldRenderModelConfigSection = computed(() =>
+  Boolean(effectiveModelIdentifier.value) && hasModelConfigSchema.value,
+)
+const modelConfigUnavailableMessage = computed(() =>
+  effectiveModelIdentifier.value
+    ? $t('workspace.components.workspace.config.MemberOverrideItem.no_model_config_options')
+    : $t('workspace.components.workspace.config.MemberOverrideItem.model_config_unavailable'),
+)
 
 const modelPlaceholder = computed(() =>
   isUnresolvedInheritedModel.value
@@ -440,15 +367,6 @@ const handleRuntimeChange = async (value: string) => {
   const retainedExplicitModel = explicitModelIdentifier.value && nextModelIdentifiers.includes(explicitModelIdentifier.value)
     ? explicitModelIdentifier.value
     : undefined
-  const effectiveNextModel = retainedExplicitModel ||
-    (nextModelIdentifiers.includes(globalModelIdentifier.value) ? globalModelIdentifier.value : undefined)
-  const retainedExplicitConfig =
-    !runtimeChanged &&
-    retainedExplicitModel &&
-    hasExplicitMemberLlmConfigOverride(props.override)
-      ? (props.override?.llmConfig ?? null)
-      : undefined
-  const effectiveNextConfig = retainedExplicitConfig ?? (props.globalLlmConfig ?? null)
 
   emit(
     'update:override',
@@ -463,13 +381,6 @@ const handleRuntimeChange = async (value: string) => {
           : undefined,
     }),
   )
-
-  if (runtimeChanged) {
-    maybeOpenMemberAdvancedForSchema(
-      modelConfigSchemaFromRows(nextRows, effectiveNextModel),
-      effectiveNextConfig,
-    )
-  }
 }
 
 const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | undefined) => {
@@ -494,20 +405,24 @@ const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value
 }
 
-const handleResetOverride = () => {
+const requestResetOverride = () => {
+  if (props.disabled || !hasOverride.value) return
+  confirmingReset.value = true
+}
+
+const cancelResetOverride = () => {
+  confirmingReset.value = false
+}
+
+const confirmResetOverride = () => {
   if (props.disabled || !hasOverride.value) return
   emit('update:override', props.memberRouteKey, null)
+  confirmingReset.value = false
 }
 
 const handleModelChange = (value: string) => {
   if (props.disabled) return
   const modelChanged = value !== explicitModelIdentifier.value
-  if (modelChanged && value) {
-    maybeOpenMemberAdvancedForSchema(
-      modelConfigSchemaByIdentifier(value),
-      props.globalLlmConfig ?? null,
-    )
-  }
 
   emit(
     'update:override',
@@ -541,4 +456,13 @@ const handleAutoApproveOverrideChange = (value: string) => {
     }),
   )
 }
+
+watch(
+  () => [hasOverride.value, props.memberRouteKey, props.disabled],
+  () => {
+    if (!hasOverride.value || props.disabled) {
+      confirmingReset.value = false
+    }
+  },
+)
 </script>

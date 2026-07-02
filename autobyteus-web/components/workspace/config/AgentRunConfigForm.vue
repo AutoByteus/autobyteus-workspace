@@ -19,6 +19,7 @@
       :model-help-text="$t('workspace.components.workspace.config.AgentRunConfigForm.select_a_model')"
       :advanced-initially-expanded="readOnlyMode"
       :missing-historical-config="missingHistoricalConfig"
+      default-thinking-on-when-supported
       id-prefix="agent-run"
       @update:runtime-kind="updateRuntimeKind"
       @update:llm-model-identifier="updateLlmModelIdentifier"

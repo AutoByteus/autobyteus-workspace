@@ -40,6 +40,23 @@ export interface TeamRunLaunchSummaryPresentation {
   memberCount: number
   runtimeLabel: string
   modelIdentifier: string
+  autoApproveEnabled: boolean
+  workspace: TeamRunLaunchWorkspacePresentation
+  memberOverrideTag: TeamRunLaunchOverrideTagPresentation | null
+}
+
+export type TeamRunLaunchWorkspaceMode = 'existing' | 'new' | 'unset'
+
+export interface TeamRunLaunchWorkspacePresentation {
+  mode: TeamRunLaunchWorkspaceMode
+  name?: string
+  path?: string
+}
+
+export interface TeamRunLaunchOverrideTagPresentation {
+  count: number
+  routeKeys: string[]
+  visibleNames: string[]
 }
 
 const MODEL_CONFIG_VALUE_MAX_LENGTH = 64
@@ -117,6 +134,29 @@ const activeOverrideDisplayName = (
   return breadcrumb || member.displayName || member.memberName || memberRouteKey
 }
 
+const buildActiveOverrideDetails = (params: {
+  leafMembers: readonly AgentTeamMemberNode[]
+  memberOverrides?: Record<string, MemberConfigOverride> | null
+}): Array<{ routeKey: string; displayName: string }> => {
+  const leafByRouteKey = new Map(
+    params.leafMembers.map((member) => [member.memberRouteKey, member] as const),
+  )
+
+  return Object.entries(params.memberOverrides || {})
+    .filter(([, override]) => hasMeaningfulMemberOverride(override))
+    .map(([memberRouteKey]) => ({
+      routeKey: memberRouteKey,
+      displayName: activeOverrideDisplayName(
+        leafByRouteKey.get(memberRouteKey),
+        memberRouteKey,
+      ),
+    }))
+    .sort((left, right) =>
+      left.displayName.localeCompare(right.displayName) ||
+      left.routeKey.localeCompare(right.routeKey),
+    )
+}
+
 export const buildTeamRunDefaultsPresentation = (params: {
   config: TeamRunConfig
   defaultLaunchConfig?: DefaultLaunchConfig | null
@@ -162,17 +202,10 @@ export const buildTeamMemberOverridesPresentation = (params: {
   maxVisibleNames?: number
 }): TeamMemberOverridesPresentation => {
   const maxVisibleNames = Math.max(0, params.maxVisibleNames ?? 3)
-  const leafByRouteKey = new Map(
-    params.leafMembers.map((member) => [member.memberRouteKey, member] as const),
-  )
-
-  const activeOverrideNames = Object.entries(params.memberOverrides || {})
-    .filter(([, override]) => hasMeaningfulMemberOverride(override))
-    .map(([memberRouteKey]) => activeOverrideDisplayName(
-      leafByRouteKey.get(memberRouteKey),
-      memberRouteKey,
-    ))
-    .sort((left, right) => left.localeCompare(right))
+  const activeOverrideNames = buildActiveOverrideDetails({
+    leafMembers: params.leafMembers,
+    memberOverrides: params.memberOverrides,
+  }).map((detail) => detail.displayName)
 
   return {
     totalMembers: params.leafMembers.length,
@@ -183,10 +216,40 @@ export const buildTeamMemberOverridesPresentation = (params: {
 }
 
 export const buildTeamRunLaunchSummaryPresentation = (params: {
-  config: Pick<TeamRunConfig, 'runtimeKind' | 'llmModelIdentifier'>
-  leafMemberCount: number
-}): TeamRunLaunchSummaryPresentation => ({
-  memberCount: Math.max(0, params.leafMemberCount),
-  runtimeLabel: runtimeKindToLabel(normalizeRuntimeKind(params.config.runtimeKind)),
-  modelIdentifier: normalizeModelIdentifier(params.config.llmModelIdentifier),
-})
+  config: Pick<TeamRunConfig, 'runtimeKind' | 'llmModelIdentifier' | 'autoExecuteTools' | 'memberOverrides'>
+  leafMembers?: readonly AgentTeamMemberNode[]
+  leafMemberCount?: number
+  workspace?: TeamRunLaunchWorkspacePresentation | null
+}): TeamRunLaunchSummaryPresentation => {
+  const leafMembers = params.leafMembers ?? []
+  const overrideDetails = buildActiveOverrideDetails({
+    leafMembers,
+    memberOverrides: params.config.memberOverrides,
+  })
+  const memberCount = params.leafMemberCount ?? leafMembers.length
+
+  return {
+    memberCount: Math.max(0, memberCount),
+    runtimeLabel: runtimeKindToLabel(normalizeRuntimeKind(params.config.runtimeKind)),
+    modelIdentifier: normalizeModelIdentifier(params.config.llmModelIdentifier),
+    autoApproveEnabled: params.config.autoExecuteTools === true,
+    workspace: params.workspace ?? { mode: 'unset' },
+    memberOverrideTag: buildMemberOverrideTagPresentation(overrideDetails),
+  }
+}
+
+const buildMemberOverrideTagPresentation = (
+  overrideDetails: Array<{ routeKey: string; displayName: string }>,
+): TeamRunLaunchOverrideTagPresentation | null => {
+  if (!overrideDetails.length) {
+    return null
+  }
+
+  const visibleNames = overrideDetails.slice(0, 2).map((detail) => detail.displayName)
+
+  return {
+    count: overrideDetails.length,
+    routeKeys: overrideDetails.map((detail) => detail.routeKey),
+    visibleNames,
+  }
+}

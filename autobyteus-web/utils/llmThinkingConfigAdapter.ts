@@ -25,6 +25,13 @@ const PROVIDER_KEYS: Record<ThinkingProvider, string[]> = {
   typed: ['thinking_type', 'reasoning_effort'],
 };
 
+const EXPLICIT_THINKING_STATE_KEYS: Record<ThinkingProvider, string[]> = {
+  openai: ['reasoning_effort', 'reasoning_summary'],
+  claude: ['thinking_enabled'],
+  gemini: ['thinking_level', 'include_thoughts'],
+  typed: ['thinking_type'],
+};
+
 const hasKey = (
   schema: UiModelConfigSchema | null,
   key: string,
@@ -209,6 +216,24 @@ const removeKey = (next: ThinkingConfig, key: string) => {
   }
 };
 
+const hasExplicitConfigKey = (
+  config: ThinkingConfig | null | undefined,
+  key: string,
+): boolean => !!config &&
+  Object.prototype.hasOwnProperty.call(config, key) &&
+  config[key] !== undefined;
+
+export const hasExplicitThinkingState = (
+  schema: UiModelConfigSchema | null,
+  config: ThinkingConfig | null | undefined,
+): boolean => {
+  const provider = detectThinkingProvider(schema);
+  if (!provider || !schema) return false;
+  return EXPLICIT_THINKING_STATE_KEYS[provider]
+    .filter((key) => hasKey(schema, key))
+    .some((key) => hasExplicitConfigKey(config, key));
+};
+
 export const applyThinkingToggle = (
   schema: UiModelConfigSchema | null,
   enabled: boolean,
@@ -290,6 +315,23 @@ export const applyThinkingToggle = (
   }
 
   return Object.keys(next).length > 0 ? next : null;
+};
+
+export const applyDefaultThinkingOnWhenSupported = (
+  schema: UiModelConfigSchema | null,
+  config: ThinkingConfig | null | undefined,
+): ThinkingConfig | null => {
+  const state = getThinkingControlState(schema, config);
+  if (!state.supported || !state.canEnable) {
+    return config ?? null;
+  }
+  if (hasExplicitThinkingState(schema, config)) {
+    return config ?? null;
+  }
+  if (state.enabled) {
+    return config ?? null;
+  }
+  return applyThinkingToggle(schema, true, config);
 };
 
 export const getThinkingParamKeys = (

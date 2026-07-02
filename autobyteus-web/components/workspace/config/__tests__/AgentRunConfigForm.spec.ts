@@ -382,7 +382,7 @@ describe('AgentRunConfigForm', () => {
     expect(localConfig.llmConfig).toEqual({ reasoning_effort: 'high' })
   })
 
-  it('starts primary advanced collapsed for OpenAI Responses off defaults', async () => {
+  it('defaults supported OpenAI Responses thinking on in primary launch config', async () => {
     setProviders([
       buildProviderRow('OPENAI', 'OpenAI', [
         {
@@ -437,12 +437,76 @@ describe('AgentRunConfigForm', () => {
     const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
     const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
 
+    expect(thinkingRow.props('enabled')).toBe(true)
+    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
+    expect((wrapper.get('select#agent-run-reasoning_effort').element as HTMLSelectElement).value).toBe('none')
+    expect((wrapper.get('select#agent-run-reasoning_summary').element as HTMLSelectElement).value).toBe('auto')
+    expect(localConfig.llmConfig).toEqual({ reasoning_summary: 'auto' })
+  })
+
+  it('preserves explicit OpenAI Responses thinking-off state in primary launch config', async () => {
+    setProviders([
+      buildProviderRow('OPENAI', 'OpenAI', [
+        {
+          modelIdentifier: 'gpt-5.5-responses',
+          name: 'GPT-5.5 Responses',
+          value: 'gpt-5.5-responses',
+          canonicalName: 'gpt-5.5-responses',
+          providerId: 'OPENAI',
+          providerName: 'OpenAI',
+          providerType: 'OPENAI',
+          runtime: 'autobyteus',
+          configSchema: {
+            parameters: [
+              {
+                name: 'reasoning_effort',
+                type: 'string',
+                title: 'Reasoning Effort',
+                default_value: 'none',
+                enum_values: ['none', 'low', 'medium', 'high'],
+              },
+              {
+                name: 'reasoning_summary',
+                type: 'string',
+                title: 'Reasoning Summary',
+                default_value: 'none',
+                enum_values: ['none', 'auto', 'concise'],
+              },
+            ],
+          },
+        },
+      ]),
+    ])
+
+    const explicitOff = { reasoning_effort: 'none', reasoning_summary: 'none' }
+    const localConfig = {
+      ...mockConfig,
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-5.5-responses',
+      llmConfig: explicitOff,
+    }
+    const wrapper = mount(AgentRunConfigForm, {
+      props: {
+        config: localConfig,
+        agentDefinition: mockAgentDef as any,
+        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
+    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
+
     expect(thinkingRow.props('enabled')).toBe(false)
     expect(advancedToggle.attributes('aria-expanded')).toBe('false')
     expect(advancedContainer.attributes('style')).toContain('display: none')
     expect((wrapper.get('select#agent-run-reasoning_effort').element as HTMLSelectElement).value).toBe('none')
     expect((wrapper.get('select#agent-run-reasoning_summary').element as HTMLSelectElement).value).toBe('none')
-    expect(localConfig.llmConfig).toBeNull()
+    expect(localConfig.llmConfig).toEqual(explicitOff)
   })
 
   it('updates config when the runtime and model selection change', async () => {

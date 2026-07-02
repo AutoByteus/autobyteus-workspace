@@ -348,6 +348,30 @@ describe('TeamRunConfigForm', () => {
     expect(items).toHaveLength(0)
   })
 
+  it('centers disclosure button labels with balanced chevron columns', async () => {
+    const { wrapper } = buildWrapper()
+
+    const defaultsToggle = wrapper.get('[data-test="team-run-defaults-edit"]')
+    expect(defaultsToggle.text()).toMatch(/Hide team default/i)
+    expect(defaultsToggle.classes()).toContain('inline-grid')
+    expect(defaultsToggle.classes()).toContain('grid-cols-[1rem_auto_1rem]')
+    expect(defaultsToggle.classes()).toContain('justify-items-center')
+    expect(defaultsToggle.classes()).toContain('gap-1')
+    expect(defaultsToggle.find('.text-center.leading-5').text()).toMatch(/Hide team default/i)
+    expect(defaultsToggle.find('.i-heroicons-chevron-down-20-solid').classes()).not.toContain('ml-1')
+
+    await openMemberOverrides(wrapper)
+
+    const overridesToggle = wrapper.get('[data-test="team-member-overrides-edit"]')
+    expect(overridesToggle.text()).toContain('Hide member overrides')
+    expect(overridesToggle.classes()).toContain('inline-grid')
+    expect(overridesToggle.classes()).toContain('grid-cols-[1rem_auto_1rem]')
+    expect(overridesToggle.classes()).toContain('justify-items-center')
+    expect(overridesToggle.classes()).toContain('gap-1')
+    expect(overridesToggle.find('.text-center.leading-5').text()).toContain('Hide member overrides')
+    expect(overridesToggle.find('.i-heroicons-chevron-down-20-solid').classes()).not.toContain('ml-1')
+  })
+
   it('keeps run defaults open and opens member override editors on demand', async () => {
     const { wrapper } = buildWrapper()
 
@@ -365,6 +389,54 @@ describe('TeamRunConfigForm', () => {
     expect(items[0].props('memberName')).toBe('Member A')
     expect(items[0].props('globalRuntimeKind')).toBe('autobyteus')
     expect(items[0].props('globalLlmModel')).toBe('gpt-5.4')
+  })
+
+  it('exposes route-key override focus by expanding overrides and focusing the matching nested member card', async () => {
+    const scrollIntoView = vi.fn()
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      configurable: true,
+      value: scrollIntoView,
+    })
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    const config = { ...mockConfig, teamDefinitionId: 'team-nested', memberOverrides: {} } as any
+    const wrapper = mount(TeamRunConfigForm, {
+      attachTo: host,
+      props: {
+        config,
+        teamDefinition: nestedTeamDef as any,
+        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+      },
+      global: {
+        stubs: {
+          WorkspaceSelector: true,
+          SearchableGroupedSelect: {
+            name: 'SearchableGroupedSelect',
+            template: '<div class="searchable-select-stub"></div>',
+            props: ['modelValue', 'disabled', 'options'],
+            emits: ['update:modelValue'],
+          },
+          MemberOverrideItem: {
+            name: 'MemberOverrideItem',
+            template: '<div data-test="member-override-card" :data-member-route-key="memberRouteKey" tabindex="-1">{{ memberRouteKey }}</div>',
+            props: ['memberName', 'memberRouteKey', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig', 'globalAutoExecuteTools'],
+            emits: ['update:override'],
+          },
+        },
+      },
+    })
+
+    expect(wrapper.find('[data-test="team-member-overrides-editor"]').exists()).toBe(false)
+
+    await (wrapper.vm as any).focusMemberOverrides(['BuildSquad/review_lead'])
+
+    const target = wrapper.get('[data-member-route-key="BuildSquad/review_lead"]')
+    expect(wrapper.get('[data-test="team-member-overrides-editor"]').exists()).toBe(true)
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'center', behavior: 'smooth' })
+    expect(document.activeElement).toBe(target.element)
+
+    wrapper.unmount()
+    host.remove()
   })
 
   it('aligns team auto approve toggle with the title row, with description below', () => {
@@ -544,13 +616,14 @@ describe('TeamRunConfigForm', () => {
     const reasoningSelect = wrapper.get('select#team-run-reasoning_effort')
     const serviceTierSelect = wrapper.get('select#team-run-service_tier')
     const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
+    const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
 
     expect(thinkingRow.props('enabled')).toBe(true)
     expect(thinkingRow.props('neutralEnabled')).toBe(true)
     expect(thinkingRow.get('button').element.disabled).toBe(true)
     expect(thinkingRow.get('button').classes()).toContain('bg-gray-300')
-    expect(advancedToggle.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
     expect(reasoningSelect.isVisible()).toBe(true)
     expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
     expect((serviceTierSelect.element as HTMLSelectElement).value).toBe('__default__')
@@ -587,7 +660,7 @@ describe('TeamRunConfigForm', () => {
     expect((reasoningSelect.element as HTMLSelectElement).value).toBe('medium')
   })
 
-  it('starts team-global advanced collapsed for OpenAI Responses off defaults', async () => {
+  it('defaults supported OpenAI Responses thinking on and keeps team defaults flat', async () => {
     const { wrapper, config } = buildWrapper({
       runtimeKind: 'autobyteus',
       llmModelIdentifier: 'gpt-5.5-responses',
@@ -599,15 +672,35 @@ describe('TeamRunConfigForm', () => {
     await flushPromises()
 
     const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
-    const advancedToggle = wrapper.get('[data-testid="advanced-params-toggle"]')
     const advancedContainer = wrapper.get('[data-testid="advanced-params-container"]')
 
+    expect(thinkingRow.props('enabled')).toBe(true)
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
+    expect(advancedContainer.attributes('style') ?? '').not.toContain('display: none')
+    expect((wrapper.get('select#team-run-reasoning_effort').element as HTMLSelectElement).value).toBe('none')
+    expect((wrapper.get('select#team-run-reasoning_summary').element as HTMLSelectElement).value).toBe('auto')
+    expect(config.llmConfig).toEqual({ reasoning_summary: 'auto' })
+  })
+
+  it('preserves explicit OpenAI Responses thinking-off state in team defaults', async () => {
+    const explicitOff = { reasoning_effort: 'none', reasoning_summary: 'none' }
+    const { wrapper, config } = buildWrapper({
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-5.5-responses',
+      llmConfig: explicitOff,
+    })
+
+    await openRunDefaults(wrapper)
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    const thinkingRow = wrapper.getComponent({ name: 'ModelConfigBasic' })
+
     expect(thinkingRow.props('enabled')).toBe(false)
-    expect(advancedToggle.attributes('aria-expanded')).toBe('false')
-    expect(advancedContainer.attributes('style')).toContain('display: none')
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false)
     expect((wrapper.get('select#team-run-reasoning_effort').element as HTMLSelectElement).value).toBe('none')
     expect((wrapper.get('select#team-run-reasoning_summary').element as HTMLSelectElement).value).toBe('none')
-    expect(config.llmConfig).toBeNull()
+    expect(config.llmConfig).toEqual(explicitOff)
   })
 
   it('prunes inherited member-only llmConfig overrides when the global model changes', async () => {

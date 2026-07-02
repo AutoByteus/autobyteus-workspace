@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4">
+  <div ref="formRoot" class="space-y-4">
     <div
       class="space-y-4"
       data-test="team-definition-group"
@@ -40,6 +40,8 @@
                 :advanced-initially-expanded="readOnlyMode"
                 :missing-historical-config="missingHistoricalGlobalConfig"
                 :inline-single-advanced-row-when-thinking-on="true"
+                advanced-display-mode="flat"
+                default-thinking-on-when-supported
                 id-prefix="team-run"
                 @update:runtime-kind="updateRuntimeKind"
                 @update:llm-model-identifier="updateLlmModelIdentifier"
@@ -157,7 +159,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, nextTick, ref, toRef, watch } from 'vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { SkillAccessMode } from '~/types/agent/AgentRunConfig'
@@ -203,6 +205,7 @@ const emit = defineEmits<{
 }>()
 
 const teamDefinitionStore = useAgentTeamDefinitionStore()
+const formRoot = ref<HTMLElement | null>(null)
 const runDefaultsExpanded = ref(true)
 const overridesExpanded = ref(props.readOnly === true)
 const readOnlyMode = computed(() => props.readOnly === true)
@@ -260,6 +263,36 @@ const toggleRunDefaultsExpanded = () => {
 const toggleOverridesExpanded = () => {
   overridesExpanded.value = !overridesExpanded.value
 }
+
+const focusMemberOverrides = async (routeKeys: string[]) => {
+  const targetRouteKeys = routeKeys
+    .map((routeKey) => routeKey.trim())
+    .filter((routeKey) => routeKey.length > 0)
+  if (!targetRouteKeys.length) {
+    return
+  }
+
+  overridesExpanded.value = true
+  await nextTick()
+  await nextTick()
+
+  const targets = Array.from(
+    formRoot.value?.querySelectorAll<HTMLElement>('[data-test="member-override-card"][data-member-route-key]') ?? [],
+  ).filter((element) =>
+    targetRouteKeys.includes(element.dataset.memberRouteKey || ''),
+  )
+  const firstTarget = targets[0]
+  if (!firstTarget) {
+    return
+  }
+
+  firstTarget.scrollIntoView?.({ block: 'center', behavior: 'smooth' })
+  firstTarget.focus({ preventScroll: true })
+}
+
+defineExpose({
+  focusMemberOverrides,
+})
 
 const handleOverrideUpdate = (memberRouteKey: string, override: MemberConfigOverride | null) => {
   if (isFormReadOnly.value) return

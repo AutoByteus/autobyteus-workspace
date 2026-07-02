@@ -381,7 +381,7 @@ describe('WorkspaceSelector', () => {
     expect(wrapper.text()).toContain('Workspace path is invalid');
   });
 
-  it('renders Existing/New as a compact left-aligned pill with a strong selected state', async () => {
+  it('renders Existing/New as left-aligned equal-width segments with centered content and strong selected state', async () => {
     workspaceStoreMock.tempWorkspaceId = 'temp-ws';
     workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
     workspaceStoreMock.allWorkspaces = [
@@ -397,11 +397,30 @@ describe('WorkspaceSelector', () => {
     await flushPromises();
     await wrapper.vm.$nextTick();
 
+    const wrapperEl = wrapper.get('[data-test="workspace-mode-toggle-wrapper"]');
     const tablist = wrapper.get('[role="tablist"]');
-    const existingTab = wrapper.findAll('[role="tab"]').find((tab) => tab.text().includes('Existing'));
+    const tabs = wrapper.findAll('[role="tab"]');
+    const existingTab = tabs.find((tab) => tab.text().includes('Existing'));
+    const newTab = tabs.find((tab) => tab.text().includes('New'));
 
+    expect(wrapperEl.classes()).toContain('flex');
+    expect(wrapperEl.classes()).toContain('justify-start');
     expect(tablist.classes()).toContain('inline-flex');
     expect(tablist.classes()).toContain('rounded-full');
+    expect(existingTab?.classes()).toContain('w-28');
+    expect(existingTab?.classes()).toContain('relative');
+    expect(existingTab?.classes()).toContain('items-center');
+    expect(existingTab?.classes()).toContain('justify-center');
+    expect(existingTab?.classes()).toContain('text-center');
+    expect(newTab?.classes()).toContain('w-28');
+    expect(newTab?.classes()).toContain('relative');
+    expect(newTab?.classes()).toContain('items-center');
+    expect(newTab?.classes()).toContain('justify-center');
+    expect(newTab?.classes()).toContain('text-center');
+    expect(wrapper.get('[data-test="workspace-mode-label-existing"]').classes()).toEqual(expect.arrayContaining(['block', 'w-full', 'text-center', 'leading-5']));
+    expect(wrapper.get('[data-test="workspace-mode-label-new"]').classes()).toEqual(expect.arrayContaining(['block', 'w-full', 'text-center', 'leading-5']));
+    expect(existingTab?.find('.i-heroicons-folder-open-20-solid').classes()).toEqual(expect.arrayContaining(['absolute', 'left-3', 'top-1/2', '-translate-y-1/2']));
+    expect(newTab?.find('.i-heroicons-plus-circle-20-solid').classes()).toEqual(expect.arrayContaining(['absolute', 'left-3', 'top-1/2', '-translate-y-1/2']));
     expect(existingTab?.classes()).toContain('bg-blue-700');
     expect(existingTab?.classes()).toContain('text-white');
     expect(wrapper.text()).not.toContain('Workspace: Temp Workspace');

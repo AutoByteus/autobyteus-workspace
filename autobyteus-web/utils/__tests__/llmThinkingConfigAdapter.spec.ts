@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  applyDefaultThinkingOnWhenSupported,
   applyThinkingToggle,
   detectThinkingProvider,
+  hasExplicitThinkingState,
   getThinkingControlState,
   getThinkingParamKeys,
   getThinkingToggleOwnedParamKeys,
@@ -163,6 +165,59 @@ describe('llmThinkingConfigAdapter', () => {
     }, null)).toMatchObject({
       supported: false,
       enabled: false,
+    });
+  });
+
+  it('defaults thinking on only when no explicit provider state exists', () => {
+    const openAiResponsesSchema = {
+      reasoning_effort: {
+        type: 'string',
+        enum: ['none', 'low', 'medium', 'high'],
+        default: 'none',
+      },
+      reasoning_summary: {
+        type: 'string',
+        enum: ['none', 'auto', 'concise'],
+        default: 'none',
+      },
+    };
+    const claudeSchema = {
+      thinking_enabled: { type: 'boolean', default: false },
+      thinking_budget_tokens: { type: 'integer', default: 1024 },
+      reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'], default: 'medium' },
+    };
+    const geminiSchema = {
+      thinking_level: { type: 'string', enum: ['minimal', 'low', 'medium'], default: 'minimal' },
+      include_thoughts: { type: 'boolean', default: false },
+    };
+
+    expect(hasExplicitThinkingState(openAiResponsesSchema, null)).toBe(false);
+    expect(applyDefaultThinkingOnWhenSupported(openAiResponsesSchema, null)).toEqual({
+      reasoning_summary: 'auto',
+    });
+    expect(applyDefaultThinkingOnWhenSupported(claudeSchema, {})).toEqual({
+      thinking_enabled: true,
+      thinking_budget_tokens: 1024,
+    });
+    expect(applyDefaultThinkingOnWhenSupported(geminiSchema, {})).toEqual({
+      include_thoughts: true,
+      thinking_level: 'medium',
+    });
+
+    expect(applyDefaultThinkingOnWhenSupported(openAiResponsesSchema, { reasoning_effort: 'none' })).toEqual({
+      reasoning_effort: 'none',
+    });
+    expect(applyDefaultThinkingOnWhenSupported(openAiResponsesSchema, { reasoning_summary: 'none' })).toEqual({
+      reasoning_summary: 'none',
+    });
+    expect(applyDefaultThinkingOnWhenSupported(claudeSchema, { thinking_enabled: false })).toEqual({
+      thinking_enabled: false,
+    });
+    expect(applyDefaultThinkingOnWhenSupported(deepSeekSchema, { thinking_type: 'disabled' })).toEqual({
+      thinking_type: 'disabled',
+    });
+    expect(applyDefaultThinkingOnWhenSupported(geminiSchema, { thinking_level: 'minimal' })).toEqual({
+      thinking_level: 'minimal',
     });
   });
 });

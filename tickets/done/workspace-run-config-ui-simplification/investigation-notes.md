@@ -352,3 +352,178 @@ Observed from screenshots:
 - Exact child-card indentation and section spacing require visual tuning; design should specify hierarchy semantics rather than hard pixel values.
 - If the run footer becomes too dense on narrow widths, summary chips should wrap or truncate rather than pushing the Run Team button off-screen.
 - Some existing tests intentionally assert fixed-on reasoning displays as enabled blue. Those tests must be updated if design review accepts neutral disabled display for non-configurable thinking.
+
+
+## Fourth Re-entry Investigation Update — Delivery User Verification Feedback 4 (2026-07-01 PDT)
+
+### Source Log Addendum
+
+| Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
+| --- | --- | --- | --- | --- | --- |
+| 2026-07-01 | Other | `tickets/in-progress/workspace-run-config-ui-simplification/delivery-user-verification-feedback-4.md` | Capture fourth delivery-stage user verification feedback | User requested a high-priority `Auto Approve Override` raw-key fix, collapsed-only member header chips, complete model-config override content, member-only flat advanced model-config display, and header reset with confirmation | Yes, implementation rework after design review |
+| 2026-07-01 | Command | `pwd; git status --short --branch` | Verify worktree and current delivery-hold state | Worktree is `/Users/bingq/.autobyteus/server-data/temp_workspace/autobyteus-workspace-run-config-ui-simplification`; branch `codex/workspace-run-config-ui-simplification` is ahead of `origin/personal` by two commits; delivery docs are modified and feedback 4 is untracked because finalization is blocked | No |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/MemberOverrideItem.vue` | Inspect member override row/header, auto approve selector, model config section, and reset behavior | Header chips render unconditionally even when expanded; reset is inside expanded body and clears immediately; `auto_approve_use_global` key is referenced; `ModelConfigSection` renders only for an effective model and may render no visible body if no schema exists | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/ModelConfigSection.vue` | Inspect current advanced disclosure policy | Existing props support default disclosure plus `inlineSingleAdvancedRowWhenThinkingOn`; feedback 4 needs a stronger opt-in flat mode for member override context that hides `Advanced` and renders all advanced fields directly | Yes |
+| 2026-07-01 | Code | `autobyteus-web/localization/messages/en/workspace.ts`, `autobyteus-web/localization/messages/zh-CN/workspace.ts`, generated workspace message files | Verify auto approve labels | English and Chinese source catalogs define `auto_approve_yes` and `auto_approve_no` but not `auto_approve_use_global`; generated workspace files also do not include the member override auto approve keys, explaining the raw key rendering path | Yes |
+
+### Current Behavior / Current Flow Addendum
+
+- Current round-4 delivery-held UI already includes the round-3 design implementation: borderless team section, unified team defaults card, moved team auto approve, compact workspace selector, footer launch summary, independent member cards, field-level badges, and neutral non-configurable Thinking display.
+- The remaining fourth-feedback issues are localized primarily in `MemberOverrideItem.vue` plus a small default-safe extension to `ModelConfigSection.vue` and localization catalog repair.
+- Member card header is currently a single clickable `<button>`. Moving reset into the header requires a valid interactive structure; implementation should not nest a reset `<button>` inside that existing row button.
+- The raw `workspace.components.workspace.config.MemberOverrideItem.auto_approve_use_global` display is consistent with a missing localization entry, not a backend data issue.
+- The `Model config override` row should never be a title-only area. The design now requires either concrete schema controls or explicit empty/unavailable copy.
+
+### Relevant Files / Components Addendum
+
+| Path / Component | Current Responsibility | Fourth-Reentry Finding / Observation | Design / Ownership Implication |
+| --- | --- | --- | --- |
+| `autobyteus-web/components/workspace/config/MemberOverrideItem.vue` | Leaf member override card, expansion, field controls, auto approve selector, reset | Owns every fourth-feedback UI issue except the shared advanced disclosure primitive | Update header structure, collapsed-only chips, reset confirmation, labels, and model-config content fallback here |
+| `autobyteus-web/components/workspace/config/ModelConfigSection.vue` | Shared schema-driven Thinking/basic/advanced rendering | Needs caller-controlled flat advanced mode beyond the existing one-row team-default opt-in | Add a default-safe prop such as `advancedDisplayMode="flat"` or equivalent and pass it only from member override context |
+| `autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue` | Renders schema parameter rows | Already provides concrete controls for advanced rows | No behavior change expected beyond being shown flat by `ModelConfigSection` |
+| `autobyteus-web/localization/messages/en/workspace.ts`, `zh-CN/workspace.ts`, generated workspace messages | Localization catalogs consumed by UI/tests | Missing `auto_approve_use_global` entry causes raw-key display | Add source entries and regenerate/update consumed files as required |
+| `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts` and/or member/model config specs | Durable component behavior coverage | Existing tests need assertions for fourth-feedback behavior | Add/update tests for raw-key absence, collapsed-only chips, reset confirmation, model config content, and flat advanced rows |
+
+### Design Health Assessment Evidence Addendum
+
+| Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
+| --- | --- | --- | --- |
+| User feedback 4 | Requests member-card hierarchy and interaction changes after testing | Design-impact re-entry is required before implementation resumes | Yes |
+| `MemberOverrideItem.vue` | Header chips and reset are local leaf-card concerns | Leaf component should own these behaviors rather than shifting them to the tree owner | Yes |
+| Localization catalogs | Missing key explains raw-key display | Add catalog invariant and test against raw key rendering | Yes |
+| `ModelConfigSection.vue` | Disclosure policy is shared and currently default-global | Add opt-in flat mode to avoid cross-form regression | Yes |
+
+### Constraints / Dependencies / Compatibility Facts Addendum
+
+- The reset confirmation must work while collapsed and expanded, but must not toggle the card unintentionally.
+- `Use global` remains storage-compatible with existing optional `autoExecuteTools: undefined`; no schema migration is needed.
+- Flattening `Advanced` in member override context is visual only; it must not change config sanitization/default application or thinking toggle semantics.
+- Read-only selected run inspection must still disable reset and field mutation.
+
+### Open Unknowns / Risks Addendum
+
+- Exact confirmation UI can be inline two-step, popover, or equivalent; the important invariant is that clearing is not performed on first click.
+- If localization generation is required by repository tooling, implementers must update both source and generated message files or run the generator so tests/runtime use the new label.
+
+
+## Fifth Re-entry Investigation Update — Delivery User Verification Feedback 5 (2026-07-01 PDT)
+
+### Source Log Addendum
+
+| Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
+| --- | --- | --- | --- | --- | --- |
+| 2026-07-01 | Other | `tickets/in-progress/workspace-run-config-ui-simplification/delivery-user-verification-feedback-5.md` | Capture fifth delivery-stage user verification feedback | User requested removal of redundant `No member overrides`, whole-card member active framing, no `Advanced` in team defaults, Thinking default ON for supported models in team defaults and agent config, and centered workspace segmented control | Yes, implementation rework after design review |
+| 2026-07-01 | Command | `pwd; git status --short --branch; git rev-parse HEAD; git rev-parse origin/personal` | Verify worktree and current delivery-hold state | Worktree is `/Users/bingq/.autobyteus/server-data/temp_workspace/autobyteus-workspace-run-config-ui-simplification`; branch `codex/workspace-run-config-ui-simplification` is ahead of `origin/personal`; HEAD `ff088189392fe0dc1238a8b21e74cf90bfed6ded`; `origin/personal` `57185192d4b93840dab1fb7134604b1716a600a8` | No |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/MemberOverrideHeader.vue` | Inspect collapsed member header rendering | Empty-state chip renders when `overrideIndicators.length === 0`, causing redundant `No member overrides` under `Using team defaults`; header button owns inner rounded/focus treatment | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/MemberOverrideItem.vue` | Inspect member card owner | Item owns `isExpanded` and root card shell, so it is the right owner for whole-card expanded/focus styling; header child should not own selected frame | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue` | Inspect team defaults editor props | Team defaults only passes `inline-single-advanced-row-when-thinking-on`, so `Advanced` can still render when more than one lower field exists | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue` | Inspect shared runtime/model editor boundary | Component forwards `inlineSingleAdvancedRowWhenThinkingOn` but not `advancedDisplayMode`; it also passes `apply-defaults=true` to `ModelConfigSection`, making it the right opt-in point for launch-default Thinking behavior | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/ModelConfigSection.vue` | Inspect advanced display and default application | Already supports `advancedDisplayMode: 'flat'`, but only direct callers can use it; `applyDefaultsIfNeeded` skips thinking keys and only applies budget when `thinking_enabled` already true | Yes |
+| 2026-07-01 | Code | `autobyteus-web/utils/llmThinkingConfigAdapter.ts` | Inspect provider-aware Thinking state | Existing provider detection/toggle logic can enable OpenAI/Claude/Gemini/typed thinking, but there is no helper for “default on only if no explicit state exists” | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/AgentRunConfigForm.vue` | Confirm single-agent launch surface | Agent config uses `RuntimeModelConfigFields`, so default-on Thinking can be shared with team defaults via an opt-in prop instead of duplicating logic | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/WorkspaceSelector.vue` | Inspect segmented control layout | Existing/New control is a left-edge `inline-flex`; selected-state styling is already strong and should be preserved while centering | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/mobile/MobileLaunchRuntimeModelCard.vue`, `autobyteus-web/components/launch-config/DefinitionLaunchPreferencesSection.vue` | Check other `RuntimeModelConfigFields` callers | Mobile launch card may represent the same launch-edit surface; definition preferences are durable preferences and should not silently receive launch-default mutations unless explicitly chosen | Implementation should decide/test scope |
+
+### Current Behavior / Current Flow Addendum
+
+- Current round-5 implementation has implemented feedback 4: `MemberOverrideItem.vue` now delegates header rendering to `MemberOverrideHeader.vue`, auto approve labels are catalog-backed, model config fallback exists, reset confirmation exists, and member model config uses `advanced-display-mode="flat"`.
+- Remaining fifth-feedback issues are bounded but cross two shared UI owners:
+  - `MemberOverrideHeader.vue` renders an empty chip for no overrides and owns inner-frame styling that should move to the whole card shell owned by `MemberOverrideItem.vue`.
+  - `RuntimeModelConfigFields.vue` needs to forward flat advanced display to `ModelConfigSection.vue` so `TeamRunConfigForm.vue` can opt in for team defaults.
+  - `llmThinkingConfigAdapter.ts` / `ModelConfigSection.vue` need a missing invariant: thinking-capable models default Thinking ON unless explicit config state exists.
+  - `WorkspaceSelector.vue` owns the left-positioned segmented control and can center it without changing event flow.
+
+### Relevant Files / Components Addendum
+
+| Path / Component | Current Responsibility | Fifth-Reentry Finding / Observation | Design / Ownership Implication |
+| --- | --- | --- | --- |
+| `autobyteus-web/components/workspace/config/MemberOverrideHeader.vue` | Member card header content, expand action, reset controls | Renders redundant empty chip and inner-looking frame/focus styles | Remove empty chip; keep content/actions; avoid owning whole-card active frame |
+| `autobyteus-web/components/workspace/config/MemberOverrideItem.vue` | Leaf member card shell, expansion state, field controls | Owns root card and `isExpanded`, so it should own active/selected card styling | Add dynamic whole-card expanded/focus styling here |
+| `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue` | Team defaults caller | Needs to opt team defaults into flat advanced display and default-on Thinking | Pass new/forwarded props to `RuntimeModelConfigFields` |
+| `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue` | Shared runtime/model/config launch editor | Correct boundary for forwarding display mode and opt-in Thinking default behavior | Add `advancedDisplayMode` and `defaultThinkingOnWhenSupported` props |
+| `autobyteus-web/components/workspace/config/ModelConfigSection.vue` | Shared model config rendering and default application | Already owns advanced display and default application; missing Thinking default-on invariant | Apply provider-aware default-on helper only when opted in and editable |
+| `autobyteus-web/utils/llmThinkingConfigAdapter.ts` | Provider-aware thinking detection/toggle semantics | Existing toggle can enable thinking but lacks explicit-state detection/default-on helper | Add reusable helper for default-on unless explicit state exists |
+| `autobyteus-web/components/workspace/config/AgentRunConfigForm.vue` | Single-agent launch config surface | Uses shared editor and should opt into default-on Thinking | Pass default-on prop to `RuntimeModelConfigFields` |
+| `autobyteus-web/components/workspace/config/WorkspaceSelector.vue` | Workspace Directory selector presentation/events | Left-aligned mode pill should be centered | Center existing control, preserve behavior |
+
+### Design Health Assessment Evidence Addendum
+
+| Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
+| --- | --- | --- | --- |
+| User feedback 5 | Requests model-config default behavior, not just cosmetic polish | Design-impact re-entry is required | Yes |
+| `llmThinkingConfigAdapter.ts` | Provider-specific thinking state is already centralized | Default-on behavior belongs in this adapter boundary, not per form | Yes |
+| `RuntimeModelConfigFields.vue` callers | Agent/team launch forms share the editor; definition preferences also use it | Use an explicit opt-in to avoid unintentional preference/history mutation | Yes |
+| `MemberOverrideItem.vue` / `MemberOverrideHeader.vue` | Root card owns expansion state; header currently owns inner frame | Move active frame to root card boundary | Yes |
+
+### Constraints / Dependencies / Compatibility Facts Addendum
+
+- Explicit Thinking off values must remain authoritative. Schema defaults alone do not count as explicit user/persisted state for the new default-on rule.
+- Read-only historical/missing config states must not be mutated by default application.
+- `advancedDisplayMode="flat"` already exists in `ModelConfigSection.vue`; the missing part for team defaults is forwarding/opt-in through `RuntimeModelConfigFields.vue`.
+- Centering `WorkspaceSelector` must not restore the removed green selected-workspace text.
+
+### Open Unknowns / Risks Addendum
+
+- Mobile launch config also uses `RuntimeModelConfigFields`; implementation should decide whether it is part of the same launch surface and either opt it in or record no-impact.
+- Provider-specific explicit-state detection must distinguish true state keys from related tuning keys such as budget, so default-on does not misinterpret partial configs.
+
+
+## Sixth Re-entry Investigation Update — Delivery User Verification Feedback 6 (2026-07-01 PDT)
+
+### Source Log Addendum
+
+| Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
+| --- | --- | --- | --- | --- | --- |
+| 2026-07-01 | Other | `tickets/in-progress/workspace-run-config-ui-simplification/delivery-user-verification-feedback-6.md` | Capture sixth delivery-stage user verification feedback | User requested left-aligned workspace mode control with centered equal segments, richer Run Team summary with override navigation tag, and member override Thinking default ON for effective Claude/Anthropic contexts | Yes, implementation rework after design review |
+| 2026-07-01 | Command | `pwd; git status --short --branch; git rev-parse HEAD; git rev-parse origin/personal` | Verify worktree and current delivery-hold state | Worktree is the ticket worktree; branch `codex/workspace-run-config-ui-simplification`; HEAD `ff088189392fe0dc1238a8b21e74cf90bfed6ded`; `origin/personal` `57185192d4b93840dab1fb7134604b1716a600a8`; finalization still blocked | No |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/WorkspaceSelector.vue` | Inspect current Existing/New layout after feedback 5 | Mode wrapper uses `flex justify-center`, centering the whole pill; buttons are content-width and need equal width with centered content | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | Inspect footer summary owner and available data | Panel renders `TeamRunLaunchSummary` above Run Team and has effective config, active team definition, workspace store, pending workspace mode/path, and can hold a form ref | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/TeamRunLaunchSummary.vue` | Inspect current summary display | Summary renders only member count, runtime, and model; no auto approve, workspace, override tag, separators, or events | Yes |
+| 2026-07-01 | Code | `autobyteus-web/utils/teamRunConfigPresentation.ts` | Inspect current summary DTO/presentation helpers | `TeamRunLaunchSummaryPresentation` only includes member/runtime/model. Existing member override summary helper has display-name logic but no route keys in launch summary | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue` | Inspect member override section owner | Form owns `overridesExpanded`, member tree, leaf members, and recursive editor render; correct owner for exposed focus/navigation method | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/MemberOverrideTree.vue`, `MemberOverrideItem.vue` | Inspect leaf card target ownership | Tree renders recursive leaves; item root has card shell and can expose stable data attribute/focus target by route key | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/MemberOverrideItem.vue` | Inspect member model config props | Member `ModelConfigSection` passes flat display but not `default-thinking-on-when-supported`, so member effective model contexts do not use round-5 default-on logic | Yes |
+| 2026-07-01 | Code | `autobyteus-web/components/workspace/config/ModelConfigSection.vue`, `autobyteus-web/utils/llmThinkingConfigAdapter.ts` | Inspect existing default-on Thinking boundary | Shared section/adapter already implement default-on when opted in; member override needs to reuse this instead of duplicating provider logic | Yes |
+
+### Current Behavior / Current Flow Addendum
+
+- Current round-6 delivery-held UI has implemented feedback 5: workspace mode control is centered, member empty chip is removed, whole-card member framing exists, team defaults pass flat advanced/default Thinking props, agent/mobile launch config opt into default-on Thinking, and shared adapter helpers exist.
+- Remaining sixth-feedback gaps are targeted:
+  - `WorkspaceSelector.vue` should reverse whole-control centering while retaining centered content inside equal-width segments.
+  - Launch summary needs richer presentation DTO data and a click event for override navigation.
+  - Member override model config needs the same default-on Thinking opt-in as launch config when the effective member model supports Thinking.
+- The footer-to-member navigation crosses component boundaries; the design should avoid direct DOM reach from `TeamRunLaunchSummary.vue` into member rows.
+
+### Relevant Files / Components Addendum
+
+| Path / Component | Current Responsibility | Sixth-Reentry Finding / Observation | Design / Ownership Implication |
+| --- | --- | --- | --- |
+| `autobyteus-web/components/workspace/config/WorkspaceSelector.vue` | Shared workspace mode/select/new path UI | Whole control centered; buttons not explicitly equal-width | Left-align wrapper; equal-width centered buttons here |
+| `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | Sticky footer, Run button, effective config/workspace context | Correct parent for summary data and override tag event handling | Build extended summary and call team form navigation method |
+| `autobyteus-web/components/workspace/config/TeamRunLaunchSummary.vue` | Display-only team footer summary | Needs auto approve, workspace, override tag, separators, event emit | Keep display-only; emit focus-overrides(routeKeys) |
+| `autobyteus-web/utils/teamRunConfigPresentation.ts` | Pure team run summary/presentation facts | Needs launch summary DTO extension with override route keys and workspace/auto approve labels | Extend helper; no DOM/navigation logic |
+| `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue` | Team form and member override section state | Owns `overridesExpanded`; can expose focus method | Add public `focusMemberOverrides(routeKeys)` style method |
+| `autobyteus-web/components/workspace/config/MemberOverrideTree.vue` / `MemberOverrideItem.vue` | Recursive member list and leaf card shell | Need stable route-key anchors/focusability | Add data attributes/ref targets in leaf card path |
+| `autobyteus-web/components/workspace/config/MemberOverrideItem.vue` | Member effective model-config editor | Does not pass default Thinking opt-in to `ModelConfigSection` | Add `default-thinking-on-when-supported` here |
+| `autobyteus-web/components/workspace/config/ModelConfigSection.vue`, `utils/llmThinkingConfigAdapter.ts` | Provider-aware model config defaults | Existing owner for default-on Thinking | Reuse unchanged/extend tests; do not duplicate provider logic |
+
+### Design Health Assessment Evidence Addendum
+
+| Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
+| --- | --- | --- | --- |
+| User feedback 6 | Adds navigation behavior from footer summary to member cards | Design impact due cross-component boundary | Yes |
+| `RunConfigPanel.vue` + `TeamRunConfigForm.vue` | Footer and form are siblings/parent-child with form render in scroll area | Need a clean public form method or request prop, not raw DOM from summary | Yes |
+| `MemberOverrideItem.vue` | Member model config lacks default Thinking opt-in | Local propagation defect; shared adapter remains correct owner | Yes |
+| `WorkspaceSelector.vue` | Layout-only correction in exact owner | Local fix with tests | Yes |
+
+### Constraints / Dependencies / Compatibility Facts Addendum
+
+- Override summary tag navigation must use member route keys, not names, because nested team members can share display names.
+- `TeamRunLaunchSummary.vue` must not mutate form state or own scrolling; it should emit a semantic event.
+- Member override Thinking default-on may create an explicit member `llmConfig` when a member has an effective model override and no explicit thinking state; this is acceptable when required to make the visible effective config ON.
+- Read-only/historical member config must remain no-mutation.
+
+### Open Unknowns / Risks Addendum
+
+- If multiple override cards are targeted, implementation can focus the first and optionally add a temporary highlight to all targeted cards; tests should require at least first-card focus/scroll.
+- Workspace summary compactness may require truncation for long workspace names.
