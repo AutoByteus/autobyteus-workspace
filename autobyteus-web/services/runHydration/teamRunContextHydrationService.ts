@@ -13,6 +13,7 @@ import type { AgentTeamContext, HistoricalTeamHydrationState, TeamMemberProjecti
 import { normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import { fetchAndHydrateTeamCommunicationForTeam } from './teamCommunicationHydrationService';
+import { fetchAndHydrateTaskDelegationRecordsForTeam } from './taskDelegationHydrationService';
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
@@ -231,6 +232,10 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     client,
     teamRunId: input.metadata.teamRunId,
   });
+  await fetchAndHydrateTaskDelegationRecordsForTeam({
+    client,
+    teamRunId: input.metadata.teamRunId,
+  });
 
   const {
     members,
@@ -321,6 +326,10 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
   }
 
   await fetchAndHydrateTeamCommunicationForTeam({
+    client,
+    teamRunId: input.metadata.teamRunId,
+  });
+  await fetchAndHydrateTaskDelegationRecordsForTeam({
     client,
     teamRunId: input.metadata.teamRunId,
   });

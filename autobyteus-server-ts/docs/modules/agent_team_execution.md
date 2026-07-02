@@ -149,8 +149,9 @@ subteam itself is the team delegation target and accountable owner.
 Legacy task-plan tool names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, `get_task_plan_status`, and the old local task-plan
 `update_task_status`) must not be exposed as a parallel model workflow. Task
-state is held internally in a team-run-scoped delegation ledger for correlation,
-activation, result/review history, stream projection, and settlement safety.
+state is split between active-only delegation ledger entries for runtime
+correlation/settlement safety and root-team-run durable `TaskDelegationRecord`
+rows for user-visible task history.
 
 The happy path is push-based:
 
@@ -165,10 +166,12 @@ The happy path is push-based:
    `TaskDelegationToolRunRouter` binds the tool call either to the active parent
    `TeamRun` or, for task-team ingress result submission, to the active
    task-team child run registered for that parent.
-2. `TaskDelegationService` creates one `not_started` ledger record, validates
-   the explicit target object against the delegation target roster, and treats
-   the submitted task as independent ready-to-run work. Delegation targets are
-   topology-derived and are not inferred from communication recipients.
+2. `TaskDelegationService` reserves the next task id through
+   `TaskDelegationRecordsService` using the root-team-run persistence scope,
+   creates an active-only `starting` ledger entry, validates the explicit target
+   object against the delegation target roster, and treats the submitted task as
+   independent ready-to-run work. Delegation targets are topology-derived and are
+   not inferred from communication recipients.
 3. For a member target, activation binds a concrete task-agent execution in the
    `TaskAgentDirectory`, starts one task-agent instance through
    `TeamRun.startTaskAgentInstance(...)`, and sends a task-centered work packet
@@ -185,22 +188,27 @@ The happy path is push-based:
    `task_team_instance_id`; the accountable owner remains the logical team
    target, but team/accountable labels stay in metadata/events rather than the
    runtime packet body or visible activation copy.
-5. Successful activations mark the record `active`, mark the exact execution run
-   reachable, and emit `TASK_DELEGATION_ACTIVATED`; failed activations leave
-   the record `not_started`, unregister the starting execution, and return the
-   activation-failure reason to the tool caller without framing the target as
-   rejecting work.
+5. Successful activations replace the `starting` entry with an active
+   `record` entry, construct a normalized durable `TaskDelegationRecord` with
+   `status: "active"`, sender/receiver `ConversationTargetAddress` values,
+   `receiverTargetKind`, task content/reference files, compact `taskRun`
+   identity, and `createdAt`, then persist that record before emitting
+   `TASK_DELEGATION_ACTIVATED`. Failed activations delete the active-only
+   starting entry, unregister the starting execution, and return the
+   activation-failure reason to the tool caller. `not_started` is a public tool
+   result status only; it is never a durable task-record status.
 6. The bound task-agent or task-team ingress context calls `submit_task_result`.
-   The ledger records a distinct submission id, moves the task to
-   `awaiting_review`, sets `pendingSubmissionId`, emits
+   The ledger records a distinct submission update, moves the task to
+   `awaiting_review`, persists the updated durable record, emits
    `TASK_DELEGATION_RESULT_SUBMITTED` and status projection, and the notification
    dispatcher attempts a system notification to the task review owner.
 7. The task review owner calls `review_task_result`. `request_revision` records
-   a review linked to the pending submission id, returns the task to `active`,
-   emits review/status events, and attempts a system revision notification to
-   the same task execution instance. `accept` records a review linked to the
-   pending submission, marks the task `accepted`, emits review/status events,
-   and requests safe settlement.
+   a review update linked to the pending submission id, returns the task to
+   `active`, persists the updated durable record, emits review/status events,
+   and attempts a system revision notification to the same task execution
+   instance. `accept` records the review update, marks the task `accepted`,
+   persists the terminal durable record, emits review/status events, and
+   requests safe settlement.
 8. Notification delivery is non-transactional after valid lifecycle mutation:
    committed state and events remain authoritative even if the system input is
    rejected. Public `submit_task_result` and revision-request
@@ -272,16 +280,35 @@ Events emitted by members inside a task-team child run also carry
 `task_team_relative_member_route_key` so clients route scoped child events by
 `task_team_run_id` instead of guessing from the structural team route.
 
-Task-delegation events also carry the UI-facing task metadata required by the
-right-side Team tab `Tasks` section: normalized `taskId`/label/description,
-target identity, status, execution kind/run id, `referenceFiles`, and the
-original normalized `taskArguments`. `referenceFiles` are task-owned rows
-derived from the ledger record's explicit `reference_files`; they are not Team
-Communication message references and must not use message ids or message
-reference routes. `TaskDelegationService.resolveTaskReference(...)` is the
-ledger-side authority for `taskId + referenceId`, while
-`TaskDelegationReferenceContentService` resolves readable local content for an
-active parent team run.
+Task-delegation events also carry UI-facing task metadata for live projection,
+including normalized `taskId`/label/description, target identity, status,
+execution kind/run id, `referenceFiles`, and original normalized
+`taskArguments`. The Team tab `Tasks` section uses those live events only as
+runtime enrichment and refresh triggers; its durable display source is
+`getTaskDelegationRecords(teamRunId)`. `referenceFiles` are task-owned rows from
+normalized task records, not Team Communication message references, and must not
+use message ids or message reference routes. `TaskDelegationService` remains the
+active-runtime reference authority while a service is registered; when the active
+service is gone, `TaskDelegationReferenceContentService` falls back to the
+persisted root-team-run records file.
+
+Durable task records are stored once per root team run at:
+
+```text
+<memoryDir>/agent_teams/<rootTeamRunId>/task_delegation_records.json
+```
+
+The file envelope is `{ teamRunId, records }`, where `teamRunId` is the root
+storage team run id. Each `TaskDelegationRecord` stores address-first
+sender/receiver identity, `receiverTargetKind`, content, normalized task-owned
+reference files, compact task-run address, submission/review updates, and
+`createdAt`. Task-team child-run delegations reserve ids from and write to this
+root file while preserving root-visible child address segments; no child-local
+`task_delegation_records.json` is written. Missing or corrupt records files
+degrade to an empty records list with a backend warning. The GraphQL read API is
+`getTaskDelegationRecords(teamRunId)`, and persisted `active` or
+`awaiting_review` rows are visible history only after restart; they do not
+restore active task-agent/task-team tool authority.
 
 The REST content route for a selected task reference is:
 

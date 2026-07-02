@@ -100,8 +100,12 @@ class FakeTeamRunBackend implements TeamRunBackend {
   }
 }
 
-const createService = (backend: FakeTeamRunBackend): TaskDelegationService => {
+const createService = (
+  backend: FakeTeamRunBackend,
+  persistedRecords: unknown[] = [],
+): TaskDelegationService => {
   let allocationCounter = 0;
+  let taskIdCounter = 0;
   const teamRun = new TeamRun({
     backend,
     config: new TeamRunConfig({
@@ -173,6 +177,24 @@ const createService = (backend: FakeTeamRunBackend): TaskDelegationService => {
         return `${prefix}_${String(allocationCounter).padStart(32, "0")}`;
       },
     },
+    recordsService: {
+      reserveTaskId: async () => {
+        taskIdCounter += 1;
+        return `task_${String(taskIdCounter).padStart(4, "0")}`;
+      },
+      persistRecord: async (_scope, record) => {
+        const index = persistedRecords.findIndex((entry) =>
+          typeof entry === "object" &&
+          entry !== null &&
+          "taskId" in entry &&
+          (entry as { taskId?: unknown }).taskId === record.taskId,
+        );
+        if (index >= 0) persistedRecords[index] = structuredClone(record);
+        else persistedRecords.push(structuredClone(record));
+      },
+      getTaskDelegationRecords: async () => persistedRecords as never,
+      resolveReference: async () => null,
+    } as never,
   });
 };
 
@@ -410,7 +432,8 @@ describe("TaskDelegationService", () => {
 
   it("delegates to an explicit team target and binds a task-team execution instance", async () => {
     const backend = new FakeTeamRunBackend();
-    const service = createService(backend);
+    const persistedRecords: any[] = [];
+    const service = createService(backend, persistedRecords);
 
     const created = await service.delegateTask(
       buildContext(coordinator, [coordinator, worker, reviewer, designTeam]),
@@ -442,6 +465,30 @@ describe("TaskDelegationService", () => {
       }),
     });
     expect(start.teamConfig.memberRunId).toBe(start.identity.taskTeamRunId);
+    expect(persistedRecords).toHaveLength(1);
+    expect(persistedRecords[0]).toMatchObject({
+      taskId: "task_0001",
+      status: "active",
+      receiverTargetKind: "team",
+      receiverAddress: {
+        segments: [
+          { kind: "member", memberRouteKey: "design_team" },
+          { kind: "task_team", taskTeamRunId: start.identity.taskTeamRunId },
+          { kind: "member", memberRouteKey: "team_lead" },
+        ],
+      },
+      taskRun: {
+        address: {
+          segments: [
+            { kind: "member", memberRouteKey: "design_team" },
+            { kind: "task_team", taskTeamRunId: start.identity.taskTeamRunId },
+          ],
+        },
+      },
+    });
+    expect(persistedRecords[0]).not.toHaveProperty("target");
+    expect(persistedRecords[0]).not.toHaveProperty("ingress");
+    expect(persistedRecords[0]).not.toHaveProperty("coordinator");
     expect(start.message.content).toContain("Your team is accountable for the delegated task below.");
     expect(start.message.content).toContain("Task ID: task_0001");
     expect(start.message.content).toContain("Coordinate the design review.");
@@ -530,7 +577,8 @@ describe("TaskDelegationService", () => {
 
   it("submits, revises, submits again, accepts latest pending submission, and settles after idle", async () => {
     const backend = new FakeTeamRunBackend();
-    const service = createService(backend);
+    const persistedRecords: any[] = [];
+    const service = createService(backend, persistedRecords);
     await service.delegateTask(buildContext(), delegateMemberTask("worker", "Do work."));
     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
 
@@ -545,6 +593,19 @@ describe("TaskDelegationService", () => {
     expect(submitted).toEqual({
       task_id: "task_0001",
       status: "awaiting_review",
+    });
+    expect(persistedRecords).toHaveLength(1);
+    expect(persistedRecords[0]).toMatchObject({
+      taskId: "task_0001",
+      status: "awaiting_review",
+      updates: [
+        expect.objectContaining({
+          kind: "submission",
+          submissionId: "task_0001_submission_0001",
+          content: "Implemented the requested work.",
+          referenceFiles: [expect.objectContaining({ path: "/tmp/result.md", type: "file" })],
+        }),
+      ],
     });
     expect(backend.postedMessages[0]).toMatchObject({ targetMemberRunId: null });
     expect(backend.postedMessages[0]!.target).toEqual({ kind: "route_key", memberRouteKey: "coordinator" });
@@ -586,6 +647,21 @@ describe("TaskDelegationService", () => {
       task_id: "task_0001",
       status: "active",
     });
+    expect(persistedRecords[0]).toMatchObject({
+      taskId: "task_0001",
+      status: "active",
+      updates: [
+        expect.objectContaining({ kind: "submission", submissionId: "task_0001_submission_0001" }),
+        expect.objectContaining({
+          kind: "review",
+          reviewId: "task_0001_review_0001",
+          reviewedSubmissionId: "task_0001_submission_0001",
+          decision: "request_revision",
+          content: "Please add tests.",
+          referenceFiles: [expect.objectContaining({ path: "/tmp/revision.md", type: "file" })],
+        }),
+      ],
+    });
     expect(backend.postedMessages[1]).toMatchObject({ targetMemberRunId: "worker_00000000000000000000000000000001" });
     expect(backend.postedMessages[1]!.target).toEqual({ kind: "route_key", memberRouteKey: "worker" });
     expect(backend.postedMessages[1]!.message.content).toContain("submit_task_result");
@@ -624,6 +700,19 @@ describe("TaskDelegationService", () => {
       task_id: "task_0001",
       status: "awaiting_review",
     });
+    expect(persistedRecords[0]).toMatchObject({
+      taskId: "task_0001",
+      status: "awaiting_review",
+      updates: [
+        expect.objectContaining({ submissionId: "task_0001_submission_0001" }),
+        expect.objectContaining({ reviewId: "task_0001_review_0001" }),
+        expect.objectContaining({
+          kind: "submission",
+          submissionId: "task_0001_submission_0002",
+          content: "Added tests.",
+        }),
+      ],
+    });
 
     const accepted = await service.reviewTaskResult(buildContext(), {
       task_id: "task_0001",
@@ -634,6 +723,26 @@ describe("TaskDelegationService", () => {
       task_id: "task_0001",
       status: "accepted",
     });
+    expect(persistedRecords).toHaveLength(1);
+    expect(persistedRecords[0]).toMatchObject({
+      taskId: "task_0001",
+      status: "accepted",
+      updates: [
+        expect.objectContaining({ submissionId: "task_0001_submission_0001" }),
+        expect.objectContaining({ reviewId: "task_0001_review_0001" }),
+        expect.objectContaining({ submissionId: "task_0001_submission_0002" }),
+        expect.objectContaining({
+          kind: "review",
+          reviewId: "task_0001_review_0002",
+          reviewedSubmissionId: "task_0001_submission_0002",
+          decision: "accept",
+          content: "Accepted",
+        }),
+      ],
+    });
+    expect(persistedRecords[0]).not.toHaveProperty("pendingSubmissionId");
+    expect(persistedRecords[0]).not.toHaveProperty("submissions");
+    expect(persistedRecords[0]).not.toHaveProperty("reviews");
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_SUBMITTED")).toHaveLength(2);
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_RESULT_REVIEWED")).toEqual([
       expect.objectContaining({ reviewId: "task_0001_review_0001", reviewedSubmissionId: "task_0001_submission_0001", status: "active", decision: "request_revision", description: "Do work.", comment: "Please add tests." }),
@@ -710,7 +819,8 @@ describe("TaskDelegationService", () => {
   it("keeps rejected activations not_started and does not publish active exact-run targets", async () => {
     const backend = new FakeTeamRunBackend();
     backend.taskAgentStartResults = [{ accepted: false, code: "REJECTED", message: "No" }];
-    const service = createService(backend);
+    const persistedRecords: unknown[] = [];
+    const service = createService(backend, persistedRecords);
 
     const created = await service.delegateTask(buildContext(), delegateMemberTask("worker", "Cannot start."));
 
@@ -719,6 +829,7 @@ describe("TaskDelegationService", () => {
       status: "not_started",
       message: "No",
     });
+    expect(persistedRecords).toEqual([]);
     expect(taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED")).toEqual([]);
     expect(getTaskAgentDirectory("team-run-1").resolveTaskAgentRunId("worker_00000000000000000000000000000001")).toBeNull();
   });

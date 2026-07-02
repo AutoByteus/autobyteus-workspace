@@ -14,10 +14,12 @@ messages carry `reference_files` in the target runtime input/event metadata, but
 they intentionally omit Team Communication projection fields and do not create
 Team tab reference rows.
 
-Task-delegation `reference_files` are owned by Task Delegation. They are stored
-on the delegation ledger record, emitted as `TASK_DELEGATION_EVENT.referenceFiles`
-for the Team tab `Tasks` section, and served by task-owned identity. They are
-not Agent Artifact rows and are not Team Communication message references.
+Task-delegation `reference_files` are owned by Task Delegation. They are
+normalized as task-owned `referenceFiles` on persisted
+`TaskDelegationRecord` rows, rendered in the Team tab `Tasks` section, and
+served by task-owned identity. Live task-delegation events may trigger a records
+refresh, but the durable reference source is the task-delegation records file,
+not Agent Artifacts or Team Communication.
 
 ## TS Source
 
@@ -41,7 +43,7 @@ not Agent Artifact rows and are not Team Communication message references.
   - `src/services/team-communication/team-communication-content-service.ts`
   - `src/api/graphql/types/team-communication.ts`
   - `src/api/rest/team-communication.ts`
-- Task Delegation references for active delegated tasks:
+- Task Delegation references for delegated task records:
   - `src/agent-team-execution/task-delegation/task-delegation-reference-file.ts`
   - `src/agent-team-execution/task-delegation/task-delegation-reference-content-service.ts`
   - `src/agent-team-execution/task-delegation/task-delegation-service.ts`
@@ -69,8 +71,9 @@ not Agent Artifact rows and are not Team Communication message references.
   `/runs/:runId/file-change-content`.
 - Keep Team Communication message/reference storage for accepted team-route
   deliveries separate at `agent_teams/<teamRunId>/team_communication_messages.json`.
-- Keep Task Delegation reference rows on the active delegation ledger and serve
-  bytes by `teamRunId + taskId + referenceId` through
+- Keep Task Delegation reference rows on durable task records in
+  `agent_teams/<rootTeamRunId>/task_delegation_records.json` and serve bytes by
+  `teamRunId + taskId + referenceId` through
   `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`.
 - Treat source invocation ids as opaque tool-call identities when correlating
   `FILE_CHANGE` context. The context store is keyed by exact source invocation
@@ -90,7 +93,8 @@ message payloads. Direct exact-run message references remain direct runtime
 input/event metadata unless a separate future projection is designed.
 
 Task-delegation references use the same explicit `reference_files` input idea
-but remain task-owned: the ledger emits normalized `referenceFiles` on
-task-delegation events, and the task reference route resolves active task
-content without involving Team Communication storage or Agent Artifact
-projection.
+but remain task-owned: the active task service normalizes them into durable
+`TaskReferenceFile` objects on `TaskDelegationRecord` rows. The task reference
+route first uses active task services when available, then falls back to the
+persisted root-run records file, without involving Team Communication storage or
+Agent Artifact projection.

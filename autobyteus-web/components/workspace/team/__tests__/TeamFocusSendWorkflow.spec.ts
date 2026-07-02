@@ -11,6 +11,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
+import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
@@ -18,22 +19,22 @@ const labels: Record<string, string> = {
   'agentInput.components.agentInput.AgentUserInputTextArea.type_a_message': 'Type a message...',
   'workspace.components.workspace.team.TeamOverviewPanel.messages': 'Messages',
   'workspace.components.workspace.team.TeamOverviewPanel.messages_count': 'Messages',
-  'workspace.components.workspace.team.TeamActiveTasksSection.active_tasks': 'Tasks',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular': 'task',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural': 'tasks',
-  'workspace.components.workspace.team.TeamActiveTasksSection.empty': 'No active delegated tasks',
-  'workspace.components.workspace.team.TeamActiveTasksSection.empty_detail': 'Delegated work will appear here automatically.',
-  'workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable': 'Task description unavailable',
-  'workspace.components.workspace.team.TeamActiveTasksSection.focus': 'Focus',
-  'workspace.components.workspace.team.TeamActiveTasksSection.technical_details': 'Technical details',
-  'workspace.components.workspace.team.TeamActiveTasksSection.select_task': 'Select a task to read it.',
-  'workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice': 'Waiting for user action in Activity.',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_type': 'Task type',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_id': 'Task ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id': 'Agent run ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id': 'Agent team run ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.target_kind': 'Target kind',
-  'workspace.components.workspace.team.TeamActiveTasksSection.target': 'Target',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.tasks': 'Tasks',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_singular': 'task',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural': 'tasks',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.empty': 'No delegated tasks yet',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail': 'Delegated work appears here from saved task records.',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable': 'Task description unavailable',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.focus': 'Focus',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.technical_details': 'Technical details',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.select_task': 'Select a task to read it.',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice': 'Waiting for user action in Activity.',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_type': 'Task type',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_id': 'Task ID',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.agent_run_id': 'Agent run ID',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.agent_team_run_id': 'Agent team run ID',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.target_kind': 'Target kind',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.target': 'Target',
   'workspace.components.workspace.team.AgentTeamEventMonitor.no_active_team_session': 'No active team session',
   'workspace.components.workspace.team.AgentTeamEventMonitor.select_a_team_member_from_the': 'Select a team member',
   'workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet': 'No activity yet',
@@ -206,6 +207,7 @@ const mountWorkflow = () => {
   const teamContextsStore = useAgentTeamContextsStore();
   const selectionStore = useAgentSelectionStore();
   const communicationStore = useTeamCommunicationStore();
+  const taskDelegationStore = useTaskDelegationStore();
   const runHistoryStore = useRunHistoryStore();
   const teamRunStore = useAgentTeamRunStore();
   const teamContext = buildTeamContext();
@@ -226,6 +228,54 @@ const mountWorkflow = () => {
       messageType: 'handoff',
       createdAt: '2026-06-28T00:00:00.000Z',
       referenceFiles: [],
+    },
+  ]);
+  taskDelegationStore.replaceRecords('team-1', [
+    {
+      taskId: 'task_0001',
+      status: 'active',
+      senderAddress: { segments: [{ kind: 'member', memberRouteKey: 'coordinator' }] },
+      receiverAddress: { segments: [{ kind: 'member', memberRouteKey: 'worker' }] },
+      receiverTargetKind: 'member',
+      content: 'Draft the implementation handoff.',
+      referenceFiles: [],
+      taskRun: {
+        address: {
+          segments: [
+            { kind: 'member', memberRouteKey: 'worker' },
+            { kind: 'task_agent', taskAgentRunId: 'task-agent-run-1' },
+          ],
+        },
+        startedAt: '2026-06-28T00:01:00.000Z',
+      },
+      updates: [],
+      createdAt: '2026-06-28T00:01:00.000Z',
+    },
+    {
+      taskId: 'task_0002',
+      status: 'awaiting_review',
+      senderAddress: { segments: [{ kind: 'member', memberRouteKey: 'coordinator' }] },
+      receiverAddress: {
+        segments: [
+          { kind: 'member', memberRouteKey: 'SoftwareEngineeringTeam' },
+          { kind: 'task_team', taskTeamRunId: 'task-team-run-1' },
+          { kind: 'member', memberRouteKey: 'solution_designer' },
+        ],
+      },
+      receiverTargetKind: 'team',
+      content: 'Review the implementation as a team.',
+      referenceFiles: [],
+      taskRun: {
+        address: {
+          segments: [
+            { kind: 'member', memberRouteKey: 'SoftwareEngineeringTeam' },
+            { kind: 'task_team', taskTeamRunId: 'task-team-run-1' },
+          ],
+        },
+        startedAt: '2026-06-28T00:02:00.000Z',
+      },
+      updates: [],
+      createdAt: '2026-06-28T00:02:00.000Z',
     },
   ]);
 
@@ -274,9 +324,9 @@ const mountWorkflow = () => {
 };
 
 const expandTasks = async (wrapper: ReturnType<typeof mount>) => {
-  const tasksBody = wrapper.get('[data-test="team-active-tasks-body"]');
+  const tasksBody = wrapper.get('[data-test="team-delegated-tasks-body"]');
   if ((tasksBody.attributes('style') ?? '').includes('display: none')) {
-    await wrapper.get('[data-test="team-active-tasks-header"]').trigger('click');
+    await wrapper.get('[data-test="team-delegated-tasks-header"]').trigger('click');
   }
   await nextTick();
 };
@@ -298,7 +348,7 @@ describe('Team Tasks Focus + send-message workflow', () => {
     const { wrapper, teamContextsStore, activeContextStore, sendMessageSpy } = mountWorkflow();
     await expandTasks(wrapper);
 
-    await wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
+    await wrapper.get('[data-test="team-delegated-task-agent-entry"] [data-test="team-delegated-task-summary-row"]').trigger('click');
     await flushPromises();
     await nextTick();
 
@@ -308,8 +358,8 @@ describe('Team Tasks Focus + send-message workflow', () => {
     expect(JSON.parse(wrapper.get('[data-test="team-communication-panel"]').attributes('data-focused-address') || 'null')).toEqual({
       segments: [{ kind: 'member', memberRouteKey: 'coordinator' }],
     });
-    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Draft the implementation handoff.');
-    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="delegated-task-task-body"]').text()).toContain('Draft the implementation handoff.');
+    expect(wrapper.find('[data-test="left-delegated-task-actor-row"]').exists()).toBe(false);
 
     await sendViaComposer(wrapper, 'Please continue the coordinator work.');
 
@@ -334,16 +384,16 @@ describe('Team Tasks Focus + send-message workflow', () => {
     await flushPromises();
     await nextTick();
 
-    await wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
+    await wrapper.get('[data-test="team-delegated-task-team-entry"] [data-test="team-delegated-task-summary-row"]').trigger('click');
     await flushPromises();
     await nextTick();
 
     expect(teamContextsStore.activeTeamContext?.focusedMemberRouteKey).toBe('coordinator');
-    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.find('[data-test="team-task-detail-team-entry"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="active-task-member-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="active-task-technical-details"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="delegated-task-task-body"]').text()).toContain('Review the implementation as a team.');
+    expect(wrapper.find('[data-test="team-delegated-task-team-entry"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="left-delegated-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="delegated-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="delegated-task-technical-details"]').exists()).toBe(false);
   });
 });

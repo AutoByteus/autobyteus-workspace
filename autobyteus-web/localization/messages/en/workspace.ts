@@ -101,51 +101,49 @@ const messages = {
     "Task agent",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "Approval required",
-  "workspace.components.workspace.team.TeamActiveTasksSection.active_tasks":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.tasks":
     "Tasks",
-  "workspace.components.workspace.team.TeamActiveTasksSection.active_count":
-    "Active",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_singular":
     "task",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural":
     "tasks",
-  "workspace.components.workspace.team.TeamActiveTasksSection.focus_agent":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_agent":
     "Focus agent",
-  "workspace.components.workspace.team.TeamActiveTasksSection.focus_team":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_team":
     "Focus team",
-  "workspace.components.workspace.team.TeamActiveTasksSection.focus":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus":
     "Focus",
-  "workspace.components.workspace.team.TeamActiveTasksSection.technical_details":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.technical_details":
     "Technical details",
-  "workspace.components.workspace.team.TeamActiveTasksSection.select_task":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.select_task":
     "Select a task to read it.",
-  "workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice":
     "Waiting for user action in Activity.",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target_kind":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.target_kind":
     "Target kind",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_type":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_type":
     "Task type",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.target":
     "Target",
-  "workspace.components.workspace.team.TeamActiveTasksSection.empty":
-    "No active delegated tasks",
-  "workspace.components.workspace.team.TeamActiveTasksSection.empty_detail":
-    "Delegated work will appear here automatically.",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_agent":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty":
+    "No delegated tasks yet",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail":
+    "Delegated work appears here from saved task records.",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_agent":
     "Task Agent",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_team":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_team":
     "Task Team",
-  "workspace.components.workspace.team.TeamActiveTasksSection.approval_required":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
     "Approval required",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_id":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_id":
     "Task ID",
-  "workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_run_id":
     "Agent run ID",
-  "workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_team_run_id":
     "Agent team run ID",
-  "workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable":
     "Task description unavailable",
-  "workspace.components.workspace.team.TeamActiveTasksSection.members":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
     "Members",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
     "Temporary task execution",

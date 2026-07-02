@@ -50,13 +50,14 @@
     <div
       v-if="activeTeamContext"
       class="flex flex-col transition-all duration-300 ease-in-out"
-      :class="activeTasksExpanded ? 'min-h-0 flex-1' : 'flex-none'"
+      :class="delegatedTasksExpanded ? 'min-h-0 flex-1' : 'flex-none'"
     >
-      <TeamActiveTasksSection
+      <TeamDelegatedTasksSection
         :team-context="activeTeamContext"
-        :collapsed="!activeTasksExpanded"
+        :focused-address="focusedCommunicationAddress"
+        :collapsed="!delegatedTasksExpanded"
         class="h-full"
-        @toggle="toggleSection('activeTasks')"
+        @toggle="toggleSection('delegatedTasks')"
       />
     </div>
   </div>
@@ -66,34 +67,23 @@
 import { computed, ref, watch } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
+import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import TeamCommunicationPanel from '~/components/workspace/team/TeamCommunicationPanel.vue';
-import TeamActiveTasksSection from '~/components/workspace/team/TeamActiveTasksSection.vue';
-import { deriveActiveTaskEntries } from '~/utils/teamActiveTaskEntries';
+import TeamDelegatedTasksSection from '~/components/workspace/team/TeamDelegatedTasksSection.vue';
+import { deriveDelegatedTaskEntries } from '~/utils/teamDelegatedTaskEntries';
 import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
 
-type TeamOverviewSection = 'messages' | 'activeTasks';
+type TeamOverviewSection = 'messages' | 'delegatedTasks';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamCommunicationStore = useTeamCommunicationStore();
+const taskDelegationStore = useTaskDelegationStore();
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const activeTeamRunId = computed(() => activeTeamContext.value?.teamRunId || '');
 const expandedSection = ref<TeamOverviewSection | null>('messages');
-const lastAutoOpenedTaskSignatureKey = ref('');
+const lastAutoOpenedDelegatedTaskSignatureKey = ref('');
 const messagesExpanded = computed(() => expandedSection.value === 'messages');
-const activeTasksExpanded = computed(() => expandedSection.value === 'activeTasks');
-const activeTaskEntries = computed(() => {
-  const teamContext = activeTeamContext.value;
-  return teamContext ? deriveActiveTaskEntries(teamContext) : [];
-});
-const activeTaskSignature = computed(() => activeTaskEntries.value
-  .map((entry) => [
-    entry.kind,
-    entry.node.memberRouteKey,
-    entry.taskId ?? '',
-    entry.runId ?? '',
-  ].join(':'))
-  .sort()
-  .join('|'));
+const delegatedTasksExpanded = computed(() => expandedSection.value === 'delegatedTasks');
 const focusedCommunicationAddress = computed(() => {
   const teamContext = activeTeamContext.value;
   if (!teamContext) return null;
@@ -102,13 +92,32 @@ const focusedCommunicationAddress = computed(() => {
     allowActiveExecutionSafetyFallback: true,
   }).target?.address ?? null;
 });
+const delegatedTaskEntries = computed(() => {
+  const teamContext = activeTeamContext.value;
+  return teamContext
+    ? deriveDelegatedTaskEntries(
+      teamContext,
+      taskDelegationStore.getRecordsForTeam(teamContext.teamRunId),
+      focusedCommunicationAddress.value,
+    )
+    : [];
+});
+const delegatedTaskSignature = computed(() => delegatedTaskEntries.value
+  .map((entry) => [
+    entry.entryKey,
+    entry.kind,
+    entry.taskId ?? '',
+    entry.runId ?? '',
+  ].join(':'))
+  .sort()
+  .join('|'));
 const messageCount = computed(() => {
   const teamRunId = activeTeamRunId.value;
   return teamCommunicationStore.getPerspectiveForAddress(teamRunId, focusedCommunicationAddress.value).messages.length;
 });
 
 watch(
-  [activeTeamRunId, activeTaskSignature],
+  [activeTeamRunId, delegatedTaskSignature],
   ([nextRunId, nextSignature], previousValues) => {
     const previousRunId = previousValues?.[0] ?? '';
     const runChanged = nextRunId !== previousRunId;
@@ -117,30 +126,30 @@ watch(
       : '';
 
     if (!nextRunId) {
-      lastAutoOpenedTaskSignatureKey.value = '';
+      lastAutoOpenedDelegatedTaskSignatureKey.value = '';
       return;
     }
 
     if (runChanged) {
       if (nextSignature) {
-        expandedSection.value = 'activeTasks';
-        lastAutoOpenedTaskSignatureKey.value = nextSignatureKey;
+        expandedSection.value = 'delegatedTasks';
+        lastAutoOpenedDelegatedTaskSignatureKey.value = nextSignatureKey;
         return;
       }
 
-      lastAutoOpenedTaskSignatureKey.value = '';
+      lastAutoOpenedDelegatedTaskSignatureKey.value = '';
       expandedSection.value = 'messages';
       return;
     }
 
-    if (nextSignature && nextSignatureKey !== lastAutoOpenedTaskSignatureKey.value) {
-      expandedSection.value = 'activeTasks';
-      lastAutoOpenedTaskSignatureKey.value = nextSignatureKey;
+    if (nextSignature && nextSignatureKey !== lastAutoOpenedDelegatedTaskSignatureKey.value) {
+      expandedSection.value = 'delegatedTasks';
+      lastAutoOpenedDelegatedTaskSignatureKey.value = nextSignatureKey;
       return;
     }
 
     if (!nextSignature) {
-      lastAutoOpenedTaskSignatureKey.value = '';
+      lastAutoOpenedDelegatedTaskSignatureKey.value = '';
     }
   },
   { immediate: true },

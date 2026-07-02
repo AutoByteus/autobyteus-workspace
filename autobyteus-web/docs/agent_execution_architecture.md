@@ -196,38 +196,44 @@ preserve status color semantics. It must not use the superseded CSS dotted-borde
 or dashed-stroke marker treatments, add a second dotted initials/avatar marker,
 add a trailing marker, or show visible `Temp` / `Temporary` copy in the row body.
 Selecting either a stable or transient Workspaces row uses the existing
-team-member focus path and route-key identity. The right-side Team tab owns task
-detail/content through its Active Tasks section; it is not the primary execution
+team-member focus path and route-key identity. The right-side Team tab owns
+task detail/content through its Tasks section; it is not the primary execution
 hierarchy or status surface.
 
 `TeamOverviewPanel` owns the local Messages/Tasks accordion state. Messages
-remains the default for a selected team run with no active task entries, but the
-panel opens Tasks automatically when the selected team run already has active
-task entries or when a new active-task identity appears while the same run is
-mounted. The auto-open signature is derived from the same
-`deriveActiveTaskEntries(...)` entries consumed by `TeamActiveTasksSection`,
-keyed by task kind, member route, task id, and execution run id, so unrelated
-messages or refreshes do not open Tasks. A user may still collapse Tasks for the
-same task set; the panel reopens only for a different active-task signature or a
-selected-run change to a run that has active tasks. When the selected team run
-changes and there are no active tasks, the panel opens Messages.
-`TeamActiveTasksSection` derives task-agent and task-team entries from the
-transient projection nodes in `AgentTeamContext`, owns the Team-tab split layout
-and section-local task/reference selection, and renders a task-detail navigator
-plus detail pane.
+remains the default for a selected team run with no delegated task entries, but
+the panel opens Tasks automatically when the selected team run already has
+persisted delegated task entries or when a new delegated-task identity appears
+while the same run is mounted. The auto-open signature is derived from the same
+`deriveDelegatedTaskEntries(...)` entries consumed by
+`TeamDelegatedTasksSection`, keyed by persisted task id and live execution
+identity when available, so unrelated messages or refreshes do not open Tasks. A
+user may still collapse Tasks for the same task set; the panel reopens only for
+a different delegated-task signature or a selected-run change to a run that has
+delegated tasks. When the selected team run changes and there are no delegated
+tasks, the panel opens Messages.
 
-Inside that section, `TeamActiveTaskNavigator` renders task-content navigation
-only: clean text task summaries without a leading status dot or visible status
-label, task-owned reference rows with visible selected state and no separate
-visible `References` heading, and collapsed Technical details for task type,
-task id, execution run id, target metadata, and raw task arguments. Summary and
-reference clicks update only the section-local task/reference detail selection;
-they must not focus the center conversation/composer, replace it with a task
-team card, or repeat the Workspaces execution hierarchy. It must not render
-responsible actor/member hierarchy rows, `Focus agent` / `Focus team` controls,
-approval controls, leading summary status dots, or visible summary status copy
-such as `ACTIVE` / `RUNNING`.
-`TeamActiveTaskDetailPane` is content/reference-only: it renders the selected
+`TeamDelegatedTasksSection` derives entries from persisted task-delegation
+records in `taskDelegationStore`, filtered by the focused sender/receiver
+address perspective. Live task-agent/task-team projection nodes in
+`AgentTeamContext` are optional enrichment for matching records and provisional
+visibility for not-yet-refreshed live tasks; they are not the durable display
+source. Opening or reloading active and historical team runs hydrates records via
+`getTaskDelegationRecords(teamRunId)`, and live task-delegation websocket events
+schedule a debounced records refresh.
+
+Inside that section, `TeamDelegatedTaskNavigator` renders task-content
+navigation only: clean text task summaries without a leading status dot or
+visible status label, task-owned reference rows with visible selected state and
+no separate visible `References` heading, and collapsed Technical details for
+task type, task id, execution run id, target metadata, and raw task arguments.
+Summary and reference clicks update only the section-local task/reference detail
+selection; they must not focus the center conversation/composer, replace it with
+a task team card, or repeat the Workspaces execution hierarchy. It must not
+render responsible actor/member hierarchy rows, `Focus agent` / `Focus team`
+controls, approval controls, leading summary status dots, or visible summary
+status copy such as `ACTIVE` / `RUNNING`.
+`TeamDelegatedTaskDetailPane` is content/reference-only: it renders the selected
 task body or selected task-owned reference preview and intentionally does not
 duplicate the actor/team heading, status chip, waiting notice, focus controls,
 actor/member roster, reference list, or Technical details in the right pane.
@@ -240,23 +246,25 @@ display-row projections rather than ordinary durable `TeamMemberTreeRow` history
 rows. Transient task-team roots with child rows are collapsed by default; their
 user-controlled disclosure state is keyed by the transient execution row identity
 so simultaneous task-team executions do not accidentally share expansion state.
-Workspaces must not render active-task summary blocks, task reference rows, raw
-task arguments, approval controls, or active-task Technical details. Tasks is not
-an approval action surface: pending approval can appear only as non-actionable
-task context or technical metadata there, and Activity remains the owner for
-Approve/Deny controls and approval command routing. Task reference files come
-from task-delegation event metadata and open in the Tasks right pane through the
-task-owned reference route; Messages remains message-owned and its
-content/reference UX is not routed through task identity.
+Workspaces must not render delegated-task summary blocks, task reference rows,
+raw task arguments, approval controls, or delegated-task Technical details.
+Tasks is not an approval action surface: pending approval can appear only as
+non-actionable task context or technical metadata there, and Activity remains
+the owner for Approve/Deny controls and approval command routing. Task reference
+files come from persisted task-delegation records and open in the Tasks right
+pane through the task-owned reference route; Messages remains message-owned and
+its content/reference UX is not routed through task identity.
 The center workspace remains the focused conversation/event/composer surface and
 must not render `TeamActiveTaskExecutionsBar` or any replacement center list.
 
 Running and awaiting-acceptance task executions must remain visible as
-Workspaces transient identity rows and as Team → Active Tasks detail entries
-after active team reopen/hydration, even when server resume metadata only lists
-stable logical coordinator/member rows. Run-open hydration therefore restores
-concrete task executions from live projection/identity instead of collapsing them
-into the logical member or team parent.
+Workspaces transient identity rows and as Team → Tasks detail entries after
+active team reopen/hydration when live projection is present. Persisted delegated
+task records must remain visible in Team → Tasks for active, accepted,
+awaiting-review, and historical tasks even after those transient runtime rows
+settle, disappear, or the backend restarts. Run-open hydration therefore loads
+root-run task records and uses live projection/identity only as enrichment
+instead of collapsing tasks into the logical member or team parent.
 Stream routing is projection-first: task-team root/scoped child identity wins before
 task-agent identity, then exact logical route/path identity, then compatible
 run-id fallback. The frontend must not recreate the removed `isTaskAgentRunId`

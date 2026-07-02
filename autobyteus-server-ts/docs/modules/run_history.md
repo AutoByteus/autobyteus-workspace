@@ -212,6 +212,7 @@ Team persisted files:
 - member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`, with deeper child team run ids appended in `teamRunPath` order
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical team/member directory, for example `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
 - team communication projection: `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
+- task delegation records projection: `memory/agent_teams/<rootTeamRunId>/task_delegation_records.json`
 
 Important identity/storage rules:
 
@@ -393,6 +394,20 @@ the app-data migration path before current runtime/API/store hydration. The
 member Artifacts tab must not hydrate those reference files as Sent/Received
 artifact rows.
 
+Task Delegation records are also outside the member replay bundle. Accepted and
+active delegated task lifecycle transitions are normalized into
+`agent_teams/<rootTeamRunId>/task_delegation_records.json`, one file per root
+team run. Historical Team tab hydration reads that projection through
+`getTaskDelegationRecords(teamRunId)` and stores the result in the frontend Task
+Delegation store. The records use the same address-first
+`ConversationTargetAddress` convention as Team Communication for
+`senderAddress`, `receiverAddress`, task-run addresses, and update addresses,
+with `receiverTargetKind` preserving whether the accountable target was a member
+or a team. Task-team child-run delegations write to the root run file and keep
+root-visible child address segments; no child-local task records file is
+expected. Persisted task records are display/history state after restart, not
+runtime authority to resume task tools.
+
 The `agent-memory` subsystem no longer owns the canonical replay DTO. It supplies
 raw traces and memory-inspector views only; run-history is the only subsystem
 that may normalize those raw traces into the historical replay bundle used by
@@ -433,6 +448,8 @@ Frontend restore uses that bundle in two sibling hydration paths:
 - team pane: Team Communication hydration from
   `getTeamCommunicationMessages(teamRunId)` for message-owned sent/received
   communication records and child reference files
+- team pane: Task Delegation hydration from `getTaskDelegationRecords(teamRunId)`
+  for persisted delegated task records and task-owned reference files
 
 Those sibling paths must stay synchronized. Reopen/hydration code should apply
 the projected `conversation` and `activities` from the same replay bundle, or

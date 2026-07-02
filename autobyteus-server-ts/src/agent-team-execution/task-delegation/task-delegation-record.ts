@@ -1,3 +1,4 @@
+import type { ConversationTargetAddress } from "../domain/conversation-target-address.js";
 import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
 import type { TaskExecutionInstance } from "./task-execution-instance.js";
 import type {
@@ -6,8 +7,9 @@ import type {
   TaskDelegationTarget,
 } from "./task-delegation-target.js";
 
+export const TASK_DELEGATION_RECORDS_FILE_NAME = "task_delegation_records.json";
+
 export const TASK_DELEGATION_LEDGER_STATUSES = [
-  "not_started",
   "active",
   "awaiting_review",
   "accepted",
@@ -51,24 +53,6 @@ export type TaskDelegationTaskInput = {
   reference_files?: string[];
 };
 
-export type TaskDelegationReferenceFileType =
-  | "file"
-  | "image"
-  | "audio"
-  | "video"
-  | "pdf"
-  | "csv"
-  | "excel"
-  | "other";
-
-export type TaskDelegationReferenceFilePayload = {
-  referenceId: string;
-  path: string;
-  type: TaskDelegationReferenceFileType;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type DelegateTaskInput = TaskDelegationTaskInput;
 
 export type SubmitTaskResultInput = {
@@ -91,23 +75,83 @@ export type ReviewTaskResultInput = {
   reference_files?: string[];
 };
 
-export type TaskResultSubmission = {
+export type TaskDelegationReferenceFileType =
+  | "file"
+  | "image"
+  | "audio"
+  | "video"
+  | "pdf"
+  | "csv"
+  | "excel"
+  | "other";
+
+export type TaskReferenceFile = {
+  referenceId: string;
+  path: string;
+  type: TaskDelegationReferenceFileType;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TaskDelegationReferenceFilePayload = TaskReferenceFile;
+
+export type TaskRunReference = {
+  address: ConversationTargetAddress;
+  startedAt: string;
+};
+
+export type TaskSubmissionUpdate = {
+  kind: "submission";
   submissionId: string;
-  sequence: number;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
+  content: string;
+  referenceFiles: TaskReferenceFile[];
+  createdAt: string;
+};
+
+export type TaskReviewUpdate = {
+  kind: "review";
+  reviewId: string;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
+  reviewedSubmissionId: string;
+  decision: TaskResultReviewDecision;
+  content: string | null;
+  referenceFiles: TaskReferenceFile[];
+  createdAt: string;
+};
+
+export type TaskUpdate = TaskSubmissionUpdate | TaskReviewUpdate;
+
+export type TaskDelegationRecord = {
+  taskId: string;
+  status: TaskDelegationStatus;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
+  receiverTargetKind: "member" | "team";
+  content: string;
+  referenceFiles: TaskReferenceFile[];
+  taskRun: TaskRunReference | null;
+  updates: TaskUpdate[];
+  createdAt: string;
+};
+
+export type TaskDelegationRecordsFile = {
+  teamRunId: string;
+  records: TaskDelegationRecord[];
+};
+
+export type TaskResultSubmission = TaskSubmissionUpdate & {
   message: string;
-  referenceFiles: string[];
   submittedAt: string;
   execution: TaskExecutionInstance;
 };
 
-export type TaskResultReview = {
-  reviewId: string;
-  reviewedSubmissionId: string;
-  decision: TaskResultReviewDecision;
+export type TaskResultReview = TaskReviewUpdate & {
   comment: string | null;
-  referenceFiles: string[];
-  reviewer: TaskDelegationDelegatorIdentity;
   reviewedAt: string;
+  reviewer: TaskDelegationDelegatorIdentity;
 };
 
 export type TaskDelegationNotificationType =
@@ -133,28 +177,6 @@ export type TaskDelegationNotificationDeliveryOutcome = {
   warning: TaskDelegationWarning | null;
 };
 
-export type TaskDelegationRecord = {
-  taskId: string;
-  taskLabel: string;
-  description: string;
-  status: TaskDelegationStatus;
-  target: TaskDelegationTarget;
-  delegator: TaskDelegationDelegatorIdentity;
-  referenceFiles: string[];
-  taskArguments: TaskDelegationTaskInput;
-  execution: TaskExecutionInstance | null;
-  delegatorReplyRecipientName: string | null;
-  delegatorReplyTargetAgentRunId: string | null;
-  pendingSubmissionId: string | null;
-  resultSubmissions: TaskResultSubmission[];
-  resultReviews: TaskResultReview[];
-  acceptanceComment: string | null;
-  acceptedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  terminalAt: string | null;
-};
-
 export type TaskDelegationActivationResult = {
   target: { kind: TaskDelegationTarget["kind"]; name: string };
   accepted: boolean;
@@ -167,6 +189,7 @@ export type TaskDelegationActivationResult = {
 
 export type TaskDelegationActivationPayload = {
   teamRunId: string;
+  rootTeamRunId: string;
   target: TaskDelegationTarget;
   execution: TaskExecutionInstance;
   taskIds: string[];
@@ -185,6 +208,7 @@ export type TaskDelegationActivationPayload = {
 
 export type TaskDelegationStatusUpdatePayload = {
   teamRunId: string;
+  rootTeamRunId: string;
   taskId: string;
   taskLabel: string;
   description: string;
@@ -218,6 +242,7 @@ export type DelegateTaskResult =
 
 export type TaskDelegationResultSubmittedPayload = {
   teamRunId: string;
+  rootTeamRunId: string;
   taskId: string;
   taskLabel: string;
   description: string;
@@ -236,6 +261,7 @@ export type TaskDelegationResultSubmittedPayload = {
 
 export type TaskDelegationResultReviewedPayload = {
   teamRunId: string;
+  rootTeamRunId: string;
   taskId: string;
   taskLabel: string;
   description: string;

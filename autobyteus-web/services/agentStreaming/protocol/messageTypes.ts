@@ -227,6 +227,9 @@ export interface TaskDelegationEventPayload extends TeamStreamIdentityPayload {
     | 'TASK_DELEGATION_TERMINAL_STATUS'
     | string;
   teamRunId?: string;
+  team_run_id?: string;
+  rootTeamRunId?: string;
+  root_team_run_id?: string;
   taskId?: string;
   task_id?: string;
   taskIds?: string[];

@@ -3,6 +3,7 @@ import {
   TeamRunEventSourceType,
   type TeamRunTaskDelegationEventPayload,
 } from "../domain/team-run-event.js";
+import type { ActiveTaskDelegationRecordEntry } from "./task-delegation-active-entry.js";
 import {
   isTaskDelegationTerminalStatus,
   type TaskDelegationActivationPayload,
@@ -14,6 +15,14 @@ import {
   type TaskResultReview,
   type TaskResultSubmission,
 } from "./task-delegation-record.js";
+import {
+  derivePendingSubmissionId,
+  deriveTaskLabel,
+  getTaskRecordUpdatedAt,
+  latestAcceptanceReview,
+  latestTaskReview,
+  latestTaskSubmission,
+} from "./task-delegation-record-derived.js";
 import { getTaskExecutionKind, getTaskExecutionRunId } from "./task-execution-instance.js";
 import { getTaskDelegationTargetName } from "./task-delegation-target.js";
 import {
@@ -21,41 +30,49 @@ import {
   buildTaskDelegationReferenceFiles,
 } from "./task-delegation-reference-file.js";
 
-const sourcePathForRecord = (record: TaskDelegationRecord): string[] =>
-  record.target.kind === "member"
-    ? record.target.member.memberPath
-    : record.target.team.memberPath;
+const sourcePathForEntry = (entry: ActiveTaskDelegationRecordEntry): string[] =>
+  entry.target.kind === "member"
+    ? entry.target.member.memberPath
+    : entry.target.team.memberPath;
+
+const taskArgumentsForEntry = (entry: ActiveTaskDelegationRecordEntry) =>
+  buildTaskDelegationArguments({
+    target: entry.target,
+    content: entry.record.content,
+    referenceFiles: entry.record.referenceFiles,
+  });
 
 export class TaskDelegationEventPublisher {
   publishActivated(input: {
     teamRun: TeamRun;
     teamRunId: string;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
   }): void {
-    if (!input.record.execution) throw new Error(`Task '${input.record.taskId}' is missing execution identity.`);
-    const executionKind = getTaskExecutionKind(input.record.execution)!;
+    const executionKind = getTaskExecutionKind(input.entry.taskRunExecution)!;
     const payload: TaskDelegationActivationPayload = {
       teamRunId: input.teamRunId,
-      target: input.record.target,
-      execution: input.record.execution,
-      taskIds: [input.record.taskId],
-      tasks: [input.record].map((record) => ({
-        taskId: record.taskId,
-        taskLabel: record.taskLabel,
-        description: record.description,
-        status: record.status,
-        referenceFiles: buildTaskDelegationReferenceFiles(record),
-        taskArguments: buildTaskDelegationArguments(record),
+      rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
+      target: input.entry.target,
+      execution: input.entry.taskRunExecution,
+      taskIds: [input.entry.record.taskId],
+      tasks: [input.entry].map((entry) => ({
+        taskId: entry.record.taskId,
+        taskLabel: deriveTaskLabel(entry.record.content, entry.record.taskId),
+        description: entry.record.content,
+        status: entry.record.status,
+        referenceFiles: buildTaskDelegationReferenceFiles(entry.record),
+        taskArguments: taskArgumentsForEntry(entry),
         executionKind,
-        executionRunId: getTaskExecutionRunId(record.execution),
+        executionRunId: getTaskExecutionRunId(entry.taskRunExecution),
       })),
       activatedAt: new Date().toISOString(),
     };
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: sourcePathForRecord(input.record),
+      sourcePath: sourcePathForEntry(input.entry),
       eventType: "TASK_DELEGATION_ACTIVATED",
+      target: input.entry.target,
       payload,
     });
   }
@@ -64,34 +81,40 @@ export class TaskDelegationEventPublisher {
     teamRun: TeamRun;
     teamRunId: string;
     previousStatus: TaskDelegationStatus;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
   }): void {
+    const record = input.entry.record;
+    const latestSubmission = latestTaskSubmission(record);
+    const latestReview = latestTaskReview(record);
+    const acceptedReview = latestAcceptanceReview(record);
     const payload: TaskDelegationStatusUpdatePayload = {
       teamRunId: input.teamRunId,
-      taskId: input.record.taskId,
-      taskLabel: input.record.taskLabel,
-      description: input.record.description,
-      target: input.record.target,
-      delegator: input.record.delegator,
-      referenceFiles: buildTaskDelegationReferenceFiles(input.record),
-      taskArguments: buildTaskDelegationArguments(input.record),
-      execution: input.record.execution,
+      rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
+      taskId: record.taskId,
+      taskLabel: deriveTaskLabel(record.content, record.taskId),
+      description: record.content,
+      target: input.entry.target,
+      delegator: input.entry.reviewOwner,
+      referenceFiles: buildTaskDelegationReferenceFiles(record),
+      taskArguments: taskArgumentsForEntry(input.entry),
+      execution: input.entry.taskRunExecution,
       previousStatus: input.previousStatus,
-      status: input.record.status,
-      pendingSubmissionId: input.record.pendingSubmissionId,
-      latestSubmissionId: input.record.resultSubmissions.at(-1)?.submissionId ?? null,
-      latestReviewId: input.record.resultReviews.at(-1)?.reviewId ?? null,
-      reviewedSubmissionId: input.record.resultReviews.at(-1)?.reviewedSubmissionId ?? null,
-      acceptanceComment: input.record.acceptanceComment,
-      acceptedAt: input.record.acceptedAt,
-      updatedAt: input.record.updatedAt,
-      terminal: isTaskDelegationTerminalStatus(input.record.status),
+      status: record.status,
+      pendingSubmissionId: derivePendingSubmissionId(record),
+      latestSubmissionId: latestSubmission?.submissionId ?? null,
+      latestReviewId: latestReview?.reviewId ?? null,
+      reviewedSubmissionId: latestReview?.reviewedSubmissionId ?? null,
+      acceptanceComment: acceptedReview?.content ?? null,
+      acceptedAt: acceptedReview?.createdAt ?? null,
+      updatedAt: getTaskRecordUpdatedAt(record),
+      terminal: isTaskDelegationTerminalStatus(record.status),
     };
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: sourcePathForRecord(input.record),
+      sourcePath: sourcePathForEntry(input.entry),
       eventType: "TASK_DELEGATION_STATUS_UPDATED",
+      target: input.entry.target,
       payload,
     });
   }
@@ -100,31 +123,34 @@ export class TaskDelegationEventPublisher {
     teamRun: TeamRun;
     teamRunId: string;
     previousStatus: TaskDelegationStatus;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
     submission: TaskResultSubmission;
   }): void {
+    const record = input.entry.record;
     const payload: TaskDelegationResultSubmittedPayload = {
       teamRunId: input.teamRunId,
-      taskId: input.record.taskId,
-      taskLabel: input.record.taskLabel,
-      description: input.record.description,
-      target: input.record.target,
-      delegator: input.record.delegator,
-      referenceFiles: buildTaskDelegationReferenceFiles(input.record),
-      taskArguments: buildTaskDelegationArguments(input.record),
-      execution: input.record.execution,
+      rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
+      taskId: record.taskId,
+      taskLabel: deriveTaskLabel(record.content, record.taskId),
+      description: record.content,
+      target: input.entry.target,
+      delegator: input.entry.reviewOwner,
+      referenceFiles: buildTaskDelegationReferenceFiles(record),
+      taskArguments: taskArgumentsForEntry(input.entry),
+      execution: input.entry.taskRunExecution,
       previousStatus: input.previousStatus,
-      status: input.record.status,
+      status: record.status,
       submissionId: input.submission.submissionId,
-      pendingSubmissionId: input.record.pendingSubmissionId,
-      submittedAt: input.submission.submittedAt,
-      updatedAt: input.record.updatedAt,
+      pendingSubmissionId: derivePendingSubmissionId(record),
+      submittedAt: input.submission.createdAt,
+      updatedAt: getTaskRecordUpdatedAt(record),
     };
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: sourcePathForRecord(input.record),
+      sourcePath: sourcePathForEntry(input.entry),
       eventType: "TASK_DELEGATION_RESULT_SUBMITTED",
+      target: input.entry.target,
       payload,
     });
   }
@@ -133,34 +159,37 @@ export class TaskDelegationEventPublisher {
     teamRun: TeamRun;
     teamRunId: string;
     previousStatus: TaskDelegationStatus;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
     review: TaskResultReview;
   }): void {
+    const record = input.entry.record;
     const payload: TaskDelegationResultReviewedPayload = {
       teamRunId: input.teamRunId,
-      taskId: input.record.taskId,
-      taskLabel: input.record.taskLabel,
-      description: input.record.description,
-      target: input.record.target,
-      delegator: input.record.delegator,
-      referenceFiles: buildTaskDelegationReferenceFiles(input.record),
-      taskArguments: buildTaskDelegationArguments(input.record),
-      execution: input.record.execution,
+      rootTeamRunId: input.entry.persistenceScope.rootTeamRunId,
+      taskId: record.taskId,
+      taskLabel: deriveTaskLabel(record.content, record.taskId),
+      description: record.content,
+      target: input.entry.target,
+      delegator: input.entry.reviewOwner,
+      referenceFiles: buildTaskDelegationReferenceFiles(record),
+      taskArguments: taskArgumentsForEntry(input.entry),
+      execution: input.entry.taskRunExecution,
       previousStatus: input.previousStatus,
-      status: input.record.status,
+      status: record.status,
       reviewId: input.review.reviewId,
       reviewedSubmissionId: input.review.reviewedSubmissionId,
       decision: input.review.decision,
-      comment: input.review.comment,
-      reviewedAt: input.review.reviewedAt,
-      updatedAt: input.record.updatedAt,
-      terminal: isTaskDelegationTerminalStatus(input.record.status),
+      comment: input.review.content,
+      reviewedAt: input.review.createdAt,
+      updatedAt: getTaskRecordUpdatedAt(record),
+      terminal: isTaskDelegationTerminalStatus(record.status),
     };
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: sourcePathForRecord(input.record),
+      sourcePath: sourcePathForEntry(input.entry),
       eventType: "TASK_DELEGATION_RESULT_REVIEWED",
+      target: input.entry.target,
       payload,
     });
   }
@@ -170,6 +199,7 @@ export class TaskDelegationEventPublisher {
     teamRunId: string;
     sourcePath: string[];
     eventType: TeamRunTaskDelegationEventPayload["eventType"];
+    target: ActiveTaskDelegationRecordEntry["target"];
     payload: unknown;
   }): void {
     input.teamRun.publishEvent({
@@ -180,7 +210,7 @@ export class TaskDelegationEventPublisher {
         eventType: input.eventType,
         payload: {
           ...(input.payload as Record<string, unknown>),
-          target_name: getTaskDelegationTargetName((input.payload as { target: TaskDelegationRecord["target"] }).target),
+          target_name: getTaskDelegationTargetName(input.target),
         },
       },
     });

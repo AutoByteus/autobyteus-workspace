@@ -1,17 +1,31 @@
-import type { TaskDelegationRecord } from "./task-delegation-record.js";
+import type { ActiveTaskDelegationWorkEntry } from "./task-delegation-active-entry.js";
+import { deriveTaskLabel } from "./task-delegation-record-derived.js";
 
 const renderList = (items: readonly string[]): string =>
   items.length > 0 ? items.map((item) => `- ${item}`).join("\n") : "- None specified";
 
+const entryTaskId = (entry: ActiveTaskDelegationWorkEntry): string => (
+  entry.phase === "record" ? entry.record.taskId : entry.taskId
+);
+
+const entryExecutionKind = (entry: ActiveTaskDelegationWorkEntry): "task_agent" | "task_team" | null => (
+  entry.phase === "record"
+    ? entry.taskRunExecution.kind
+    : entry.boundExecution?.kind ?? null
+);
+
+const entryReferencePaths = (entry: ActiveTaskDelegationWorkEntry): string[] => (
+  entry.phase === "record" ? entry.record.referenceFiles : entry.referenceFiles
+).map((reference) => reference.path);
+
 export class TaskDelegationWorkPacketRenderer {
-  render(records: readonly TaskDelegationRecord[]): string {
-    if (records.length === 0) throw new Error("Cannot render an empty task delegation work packet.");
-    const record = records[0]!;
-    const header = this.renderHeader(record, records.length);
+  render(entries: readonly ActiveTaskDelegationWorkEntry[]): string {
+    if (entries.length === 0) throw new Error("Cannot render an empty task delegation work packet.");
+    const header = this.renderHeader(entries[0]!, entries.length);
     return [
       header,
       "",
-      ...records.flatMap((item, index) => this.renderRecord(item, index, records.length)),
+      ...entries.flatMap((item, index) => this.renderEntry(item, index, entries.length)),
       "Task lifecycle guidance:",
       "1. Work directly from this task packet. Do not call get_my_tasks; that tool is not part of this workflow.",
       "2. The framework marks this task execution internally active/running when it starts; do not spend a tool call reporting in_progress.",
@@ -23,30 +37,32 @@ export class TaskDelegationWorkPacketRenderer {
     ].join("\n");
   }
 
-  private renderHeader(record: TaskDelegationRecord, count: number): string {
+  private renderHeader(entry: ActiveTaskDelegationWorkEntry, count: number): string {
     if (count > 1) return `You have been activated for ${count} delegated tasks.`;
-    if (record.execution?.kind === "task_team") {
-      return `Your team is accountable for the delegated task below. This task-scoped team run exits after acceptance and safe settlement.`;
+    if (entryExecutionKind(entry) === "task_team") {
+      return "Your team is accountable for the delegated task below. This task-scoped team run exits after acceptance and safe settlement.";
     }
     return "You have been activated for the delegated task below.";
   }
 
-  private renderRecord(
-    record: TaskDelegationRecord,
+  private renderEntry(
+    entry: ActiveTaskDelegationWorkEntry,
     index: number,
     total: number,
   ): string[] {
+    const content = entry.phase === "record" ? entry.record.content : entry.content;
+    const taskLabel = deriveTaskLabel(content, entryTaskId(entry));
     const title = total > 1
-      ? `Task ${index + 1} label: ${record.taskLabel}`
-      : `Task label: ${record.taskLabel}`;
+      ? `Task ${index + 1} label: ${taskLabel}`
+      : `Task label: ${taskLabel}`;
     return [
       title,
-      `Task ID: ${record.taskId}`,
-      `Task review owner: ${record.delegator.memberName}`,
+      `Task ID: ${entryTaskId(entry)}`,
+      `Task review owner: ${entry.reviewOwner.memberName}`,
       "Description:",
-      record.description,
+      content,
       "Reference files:",
-      renderList(record.referenceFiles),
+      renderList(entryReferencePaths(entry)),
       "",
     ];
   }
