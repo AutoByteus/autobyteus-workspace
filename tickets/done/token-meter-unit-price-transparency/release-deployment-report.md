@@ -56,23 +56,26 @@ Integration history note: delivery initially rerouted twice for generated GraphQ
 Planned release version: `1.3.93`
 Planned release tag: `v1.3.93`
 Release helper command: `pnpm release 1.3.93 -- --release-notes tickets/done/token-meter-unit-price-transparency/release-notes.md`
-Release commit/tag publication: pending execution after repository finalization.
+Release commit: `56904964bd56` (`chore(release): bump workspace release version to 1.3.93`)
+Release tag: `v1.3.93`
+Release tag object: `127c2c37d4c2`
+Release tag target: `56904964bd56`
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency/tickets/done/token-meter-unit-price-transparency/investigation-notes.md`
 - Ticket branch: `codex/token-meter-unit-price-transparency`
-- Ticket branch commit result: Pre-integration checkpoint/merge commits exist; final delivery commit is pending user verification.
-- Ticket branch push result: Not started.
+- Ticket branch commit result: `Completed` — `f63addb85cb3` (`feat(token-usage): expose token meter unit prices`)
+- Ticket branch push result: `Completed` — pushed `codex/token-meter-unit-price-transparency`, then deleted after target merge/release.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A — user verification has not occurred.
+- Target advanced after user verification: `No` — final refresh kept `origin/personal` at `d5039026af82` before ticket merge.
 - Delivery-owned edits protected before re-integration: `Completed` via checkpoint commit `dace6d8b` before merging latest base.
-- Re-integration before final merge result: `Not needed` at this pre-verification stage; delivery will refresh again after user verification.
-- Target branch update result: Not started.
-- Merge into target result: Not started.
-- Push target branch result: Not started.
-- Repository finalization status: `In progress`
+- Re-integration before final merge result: `Not needed` — ticket branch already included the latest tracked target.
+- Target branch update result: `Completed` — local target was at `origin/personal` before fast-forward merge.
+- Merge into target result: `Completed` — fast-forwarded `personal` from `d5039026af82` to `f63addb85cb3`.
+- Push target branch result: `Completed` — pushed ticket merge commit, then pushed release commit and final delivery-record commit to `origin/personal`.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -80,18 +83,18 @@ Release commit/tag publication: pending execution after repository finalization.
 - Applicable: `Yes`
 - Method: `Release Script`
 - Method reference / command: `pnpm release 1.3.93 -- --release-notes tickets/done/token-meter-unit-price-transparency/release-notes.md`
-- Release/publication/deployment result: `Pending execution after target merge`
-- Release notes handoff result: `Prepared`
+- Release/publication/deployment result: `Completed` — release commit and tag were pushed; GitHub release workflows were triggered.
+- Release notes handoff result: `Used`
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency`
-- Worktree cleanup result: `Not required`
-- Worktree prune result: `Not required`
-- Local ticket branch cleanup result: `Not required`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup is intentionally deferred until after user verification and repository finalization.
+- Worktree cleanup result: `Completed` — dedicated ticket worktree removed.
+- Worktree prune result: `Completed` — worktree metadata pruned during cleanup.
+- Local ticket branch cleanup result: `Completed` — local `codex/token-meter-unit-price-transparency` deleted.
+- Remote branch cleanup result: `Completed` — remote `codex/token-meter-unit-price-transparency` deleted.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -140,7 +143,7 @@ Before repository finalization, rollback is simply not proceeding with final com
 
 ## Final Status
 
-`User verified. Ticket archived; finalization and release v1.3.93 are in progress.`
+`Completed — ticket finalized, release v1.3.93 tag pushed, workflows triggered, and ticket worktree/branch cleanup completed.`
 
 ## Finalization Addendum — User Verified Release Request (2026-07-02)
 
@@ -153,3 +156,18 @@ Before repository finalization, rollback is simply not proceeding with final com
 - Release notes: `tickets/done/token-meter-unit-price-transparency/release-notes.md`.
 - Planned release/version: `1.3.92 -> 1.3.93` / `v1.3.93`.
 - Planned release command after target merge: `pnpm release 1.3.93 -- --release-notes tickets/done/token-meter-unit-price-transparency/release-notes.md`.
+
+## Finalization Completion Addendum — Release v1.3.93 (2026-07-02)
+
+- Ticket branch final commit: `f63addb85cb3` (`feat(token-usage): expose token meter unit prices`).
+- Ticket branch push result: completed; `origin/codex/token-meter-unit-price-transparency` was created before target merge and deleted after release finalization.
+- Finalization target update: `personal` fast-forwarded to ticket commit `f63addb85cb3` and was pushed to `origin/personal`.
+- Release command: `bash scripts/desktop-release.sh release 1.3.93 --branch release/token-meter-unit-price-v1.3.93 --release-notes tickets/done/token-meter-unit-price-transparency/release-notes.md --no-push`, followed by explicit pushes to `origin/personal` and `v1.3.93`.
+- Release command result: completed. The helper updated `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` from `1.3.92` to `1.3.93`, synced `.github/release-notes/release-notes.md`, synced the managed messaging release manifest to `v1.3.93`, committed `56904964bd56`, and created annotated tag `v1.3.93`.
+- Release tag object: `127c2c37d4c206ef41edc07edae111851b95b6de`.
+- Release tag target: `56904964bd56455c32ba7484071c66930c1342ec`.
+- Release log artifact: `tickets/done/token-meter-unit-price-transparency/release-v1.3.93.log`.
+- Initial tag-triggered workflow observation: Desktop Release `28590495941` queued; Android APK Release `28590496019`, iOS App Store Connect Release `28590495313`, Release Messaging Gateway `28590495481`, and Server Docker Release `28590495768` in progress at first check.
+- Workflow status artifact: `tickets/done/token-meter-unit-price-transparency/release-workflow-status-v1.3.93.log`.
+- Post-finalization cleanup result: dedicated ticket worktree removed, local ticket branch deleted, and remote ticket branch deleted.
+- Final delivery-record note: this metadata update is intentionally after the `v1.3.93` tag and does not alter release tag contents.

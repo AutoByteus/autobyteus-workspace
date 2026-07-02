@@ -2,7 +2,7 @@
 
 ## Status
 
-Verified by user; finalization and release requested. Ticket is archived to `tickets/done/token-meter-unit-price-transparency/`; repository finalization and release `v1.3.93` are in progress.
+Completed. User verified, ticket archived to `tickets/done/token-meter-unit-price-transparency/`, ticket branch merged into `personal`, release `v1.3.93` pushed, tag-triggered release workflows started, and the dedicated ticket worktree/branch cleanup completed.
 
 ## Worktree / Branch / Target
 
@@ -117,3 +117,11 @@ Finalization plan:
 - Planned release version: `1.3.93`
 - Planned release tag: `v1.3.93`
 - Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-unit-price-transparency/tickets/done/token-meter-unit-price-transparency/release-notes.md`
+
+## Finalization Completion
+
+- Ticket commit: `f63addb85cb3` (`feat(token-usage): expose token meter unit prices`).
+- Release commit: `56904964bd56` (`chore(release): bump workspace release version to 1.3.93`).
+- Release tag: `v1.3.93` (target `56904964bd56`).
+- Final delivery-record commit: created after the release tag to record release/cleanup metadata; it does not alter release tag contents.
+- Cleanup: dedicated ticket worktree removed; local and remote ticket branches deleted.
