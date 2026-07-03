@@ -1,4 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
 import { GeminiLLM } from '../../../../src/llm/api/gemini-llm.js';
 import { MistralLLM } from '../../../../src/llm/api/mistral-llm.js';
@@ -342,6 +345,56 @@ describe('provider-native API request payloads', () => {
     expect(modelTurn.parts.some((part: any) => part.thoughtSignature === 'thought-sig-1')).toBe(true);
     expect(captured.config.tools[0].functionDeclarations[0].name).toBe('get_weather');
     expectNoLegacyProviderText(captured);
+  });
+
+  it('captures Gemini generateContent payload with local .m4a audio as inlineData', async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'gemini-provider-m4a-'));
+    const audioPath = path.join(tempDir, 'meeting.m4a');
+    const audioBytes = Buffer.from('provider-bound m4a fixture');
+    await fs.writeFile(audioPath, audioBytes);
+
+    let captured: any;
+    const llm = new GeminiLLM(undefined, commonConfig());
+    (llm as any).client = {
+      models: {
+        generateContent: async (params: any) => {
+          captured = params;
+          return {
+            text: 'ok',
+            candidates: [{ content: { parts: [{ text: 'ok' }] } }],
+            usageMetadata: {
+              promptTokenCount: 1,
+              candidatesTokenCount: 1,
+              totalTokenCount: 2
+            }
+          };
+        }
+      }
+    };
+
+    try {
+      await llm.sendMessages([
+        new Message(MessageRole.USER, {
+          content: 'Transcribe this.',
+          audio_urls: [audioPath]
+        })
+      ]);
+
+      const userTurn = captured.contents.find((item: any) => item.role === 'user');
+      expect(userTurn).toBeDefined();
+      expect(userTurn.parts).toEqual([
+        { text: 'Transcribe this.' },
+        {
+          inlineData: {
+            data: audioBytes.toString('base64'),
+            mimeType: 'audio/mp4'
+          }
+        }
+      ]);
+    } finally {
+      await llm.cleanup();
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
   });
 
   it('captures Ollama chat payload with assistant tool_calls, ordered role=tool results, and no synthetic aggregate user text', async () => {

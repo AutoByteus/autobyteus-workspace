@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { URL } from 'node:url';
+import { getMediaFileKindFromPath } from '../../utils/media-file-kind.js';
 
 export enum ContextFileType {
   TEXT = 'text',
@@ -33,6 +34,17 @@ export namespace ContextFileType {
   export function fromPath(uri: string): ContextFileType {
     if (!uri || typeof uri !== 'string') {
       return ContextFileType.UNKNOWN;
+    }
+
+    const mediaKind = getMediaFileKindFromPath(uri);
+    if (mediaKind === 'image') {
+      return ContextFileType.IMAGE;
+    }
+    if (mediaKind === 'audio') {
+      return ContextFileType.AUDIO;
+    }
+    if (mediaKind === 'video') {
+      return ContextFileType.VIDEO;
     }
 
     let extension = '';
@@ -69,25 +81,6 @@ export namespace ContextFileType {
         return ContextFileType.PYTHON;
       case '.js':
         return ContextFileType.JAVASCRIPT;
-      case '.mp3':
-      case '.wav':
-      case '.m4a':
-      case '.flac':
-      case '.ogg':
-      case '.aac':
-        return ContextFileType.AUDIO;
-      case '.mp4':
-      case '.mov':
-      case '.avi':
-      case '.mkv':
-      case '.webm':
-        return ContextFileType.VIDEO;
-      case '.png':
-      case '.jpg':
-      case '.jpeg':
-      case '.gif':
-      case '.webp':
-        return ContextFileType.IMAGE;
       default:
         return ContextFileType.UNKNOWN;
     }

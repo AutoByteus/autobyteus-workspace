@@ -296,6 +296,21 @@ tool-result user text, including the
 `The following tool executions have completed...` prefix, legacy
 `Tool: <name> (ID: ...)` lines, and aggregate `Status: Success` markers.
 
+### Provider Media Payload Rendering
+
+`Message.image_urls`, `Message.audio_urls`, and `Message.video_urls` are
+declared current-turn media input for provider renderers. The image/audio/video
+extension policy is centralized in `src/utils/media-file-kind.ts`; context-file
+typing and `src/llm/utils/media-payload-formatter.ts` both depend on that
+classifier instead of owning separate media allowlists.
+
+Provider prompt renderers own the provider-specific media part shape, not media
+extension policy. Direct Gemini renders declared media through the formatter as
+`inlineData` with the resolved MIME type; local `.m4a` audio therefore becomes
+`inlineData` with `mimeType: 'audio/mp4'`. If a declared media source cannot be
+converted, the renderer must fail before provider invocation with an actionable
+media-conversion error rather than silently sending a text-only request.
+
 ## 9. Autobyteus RPA Runtime Conversation Contract
 
 `AutobyteusLLM` is the TypeScript adapter for browser-backed RPA LLM models
