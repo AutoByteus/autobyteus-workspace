@@ -78,6 +78,7 @@
         <div class="h-full overflow-y-auto">
           <WorkspaceAgentRunsTreePanel
             @run-selected="onRunningRunSelected"
+            @run-created="onRunningRunCreated"
           />
         </div>
       </section>
@@ -152,6 +153,11 @@ const navigateToSettings = async (): Promise<void> => {
 };
 
 const onRunningRunSelected = async (): Promise<void> => {
+  if (route.path === '/workspace') return;
+  await pushRoute('/workspace');
+};
+
+const onRunningRunCreated = async (): Promise<void> => {
   if (route.path === '/workspace') return;
   await pushRoute('/workspace');
 };

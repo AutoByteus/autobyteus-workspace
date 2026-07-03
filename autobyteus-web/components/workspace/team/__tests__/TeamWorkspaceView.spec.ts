@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { flushPromises, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import TeamWorkspaceView from '../TeamWorkspaceView.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
@@ -8,7 +8,6 @@ const {
   state,
   teamContextsStoreMock,
   agentDefinitionStoreMock,
-  teamDefinitionStoreMock,
   teamRunConfigStoreMock,
   agentRunConfigStoreMock,
   selectionStoreMock,
@@ -64,16 +63,6 @@ const {
         return null;
       }),
     },
-    teamDefinitionStoreMock: {
-      agentTeamDefinitions: [] as any[],
-      fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
-      getAgentTeamDefinitionById: vi.fn((id: string) => (
-        teamDefinitionStoreMock.agentTeamDefinitions.find((definition: any) => definition.id === id) || null
-      )),
-      getAgentTeamDefinitionByName: vi.fn((name: string) => (
-        teamDefinitionStoreMock.agentTeamDefinitions.find((definition: any) => definition.name === name) || null
-      )),
-    },
     teamRunConfigStoreMock: {
       setConfig: vi.fn(),
     },
@@ -98,10 +87,6 @@ vi.mock('~/stores/agentTeamContextsStore', () => ({
 
 vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => agentDefinitionStoreMock,
-}));
-
-vi.mock('~/stores/agentTeamDefinitionStore', () => ({
-  useAgentTeamDefinitionStore: () => teamDefinitionStoreMock,
 }));
 
 vi.mock('~/stores/teamRunConfigStore', () => ({
@@ -184,18 +169,6 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => {
 describe('TeamWorkspaceView', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    teamDefinitionStoreMock.agentTeamDefinitions = [
-      {
-        id: 'team-def-1',
-        name: 'Class Room Simulation',
-        coordinatorMemberName: 'professor',
-        nodes: [
-          { memberName: 'professor', refType: 'AGENT', ref: 'agent-professor-def' },
-          { memberName: 'student', refType: 'AGENT', ref: 'agent-student-def' },
-        ],
-      },
-    ];
-    teamDefinitionStoreMock.fetchAllAgentTeamDefinitions.mockResolvedValue(undefined);
     state.activeTeamContext = buildTeamContext();
     state.activeExecutionFocusedMemberRouteKey = 'professor';
   });
@@ -324,7 +297,6 @@ describe('TeamWorkspaceView', () => {
     const sourceConfig = state.activeTeamContext.config;
     const wrapper = mountComponent();
     await wrapper.get('[data-test="new-agent"]').trigger('click');
-    await flushPromises();
 
     const seed = teamRunConfigStoreMock.setConfig.mock.calls[0]?.[0];
     expect(seed).toEqual(expect.objectContaining({
@@ -349,118 +321,6 @@ describe('TeamWorkspaceView', () => {
     expect(sourceConfig.memberOverrides.professor.llmConfig.nested.values).toEqual(['medium']);
     expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalledTimes(1);
     expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
-  });
-
-  it('loads team definitions before seeding a new team run from a workspace-history context', async () => {
-    teamDefinitionStoreMock.agentTeamDefinitions = [];
-    teamDefinitionStoreMock.fetchAllAgentTeamDefinitions.mockImplementation(async () => {
-      teamDefinitionStoreMock.agentTeamDefinitions = [
-        {
-          id: 'team-def-1',
-          name: 'Class Room Simulation',
-          coordinatorMemberName: 'professor',
-          nodes: [
-            { memberName: 'professor', refType: 'AGENT', ref: 'agent-professor-def' },
-            { memberName: 'student', refType: 'AGENT', ref: 'agent-student-def' },
-          ],
-        },
-      ];
-    });
-
-    const wrapper = mountComponent();
-    await flushPromises();
-
-    await wrapper.get('[data-test="new-agent"]').trigger('click');
-    await flushPromises();
-
-    expect(teamDefinitionStoreMock.fetchAllAgentTeamDefinitions).toHaveBeenCalled();
-    expect(teamRunConfigStoreMock.setConfig).toHaveBeenCalledWith(expect.objectContaining({
-      teamDefinitionId: 'team-def-1',
-      teamDefinitionName: 'Class Room Simulation',
-      isLocked: false,
-    }));
-    expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalledTimes(1);
-    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
-  });
-
-  it('canonicalizes task-trail runtime team identifiers before opening a new team run', async () => {
-    teamDefinitionStoreMock.agentTeamDefinitions = [
-      {
-        id: 'catalog-task-trail-team',
-        name: 'task trail',
-        coordinatorMemberName: 'homework_teacher',
-        nodes: [
-          { memberName: 'homework_student', refType: 'AGENT', ref: 'student-agent-def' },
-          { memberName: 'homework_teacher', refType: 'AGENT', ref: 'teacher-agent-def' },
-        ],
-      },
-    ];
-    state.activeTeamContext = buildTeamContext({
-      config: {
-        teamDefinitionName: 'task trail',
-        teamDefinitionId: 'task-team-run-1',
-        llmModelIdentifier: 'gpt-5.4',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        workspaceMetadata: null,
-        autoExecuteTools: true,
-        skillAccessMode: 'PRELOADED_ONLY',
-        isLocked: true,
-        llmConfig: null,
-        memberOverrides: {
-          homework_teacher: {
-            agentDefinitionId: 'teacher-agent-def',
-            llmModelIdentifier: 'gpt-5.3-codex',
-          },
-          'task-team-run-1/homework_teacher': {
-            agentDefinitionId: 'task-agent-run-1',
-            llmModelIdentifier: 'runtime-task-model',
-          },
-        },
-      },
-    });
-
-    const wrapper = mountComponent();
-    await wrapper.get('[data-test="new-agent"]').trigger('click');
-    await flushPromises();
-
-    const seed = teamRunConfigStoreMock.setConfig.mock.calls[0]?.[0];
-    expect(seed).toEqual(expect.objectContaining({
-      teamDefinitionId: 'catalog-task-trail-team',
-      teamDefinitionName: 'task trail',
-      isLocked: false,
-      memberOverrides: {
-        homework_teacher: expect.objectContaining({
-          agentDefinitionId: 'teacher-agent-def',
-          llmModelIdentifier: 'gpt-5.3-codex',
-        }),
-      },
-    }));
-    expect(seed.memberOverrides).not.toHaveProperty('task-team-run-1/homework_teacher');
-    expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalledTimes(1);
-    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
-  });
-
-  it('keeps the selected team view when no catalog definition can be resolved for a cloned run', async () => {
-    teamDefinitionStoreMock.agentTeamDefinitions = [];
-    teamDefinitionStoreMock.fetchAllAgentTeamDefinitions.mockResolvedValue(undefined);
-    state.activeTeamContext = buildTeamContext({
-      config: {
-        teamDefinitionName: 'missing runtime team',
-        teamDefinitionId: 'task-team-run-1',
-        memberOverrides: {},
-      },
-    });
-
-    const wrapper = mountComponent();
-    await flushPromises();
-
-    await wrapper.get('[data-test="new-agent"]').trigger('click');
-    await flushPromises();
-
-    expect(teamRunConfigStoreMock.setConfig).not.toHaveBeenCalled();
-    expect(agentRunConfigStoreMock.clearConfig).not.toHaveBeenCalled();
-    expect(selectionStoreMock.clearSelection).not.toHaveBeenCalled();
   });
 
   it('renders the focused monitor directly', () => {
