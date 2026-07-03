@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/api-e2e-coverage-investigation.md`
 - Current Execution Round: `1`
 - Trigger: API/E2E coverage stage after code-review pass.
 - Prior Round Reviewed: `N/A`
@@ -30,7 +30,7 @@ Execution followed the recorded coverage investigation. Stale durable Token Usag
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -148,8 +148,8 @@ Out of scope/deferred:
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/api-e2e-execution-coverage-report.md`
 
 ## Temporary Execution Methods / Scaffolding
 
@@ -244,3 +244,116 @@ No reroute classification applies. Coverage passed after durable E2E updates. Be
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
 - Notes: API/E2E coverage passed with updated durable GraphQL E2E tests. Repository-resident durable coverage changed, so the cumulative package must return through `code_reviewer` before delivery.
+
+---
+
+# Round 2 Addendum — User-Requested Live Browser Runtime Validation
+
+## Trigger
+
+The user explicitly asked for a real browser test instead of only durable/synthetic E2E evidence: start the backend server and frontend from README-style setup, import `/Users/normy/autobyteus_org/autobyteus-agents`, use Codex runtime with `gpt-5.5`, use the `Nested Classroom Test Team`, and report how much confidence the live evidence gives.
+
+## Round 2 Scope
+
+- Repository-resident durable coverage changed in Round 2: `No`.
+- Coverage/report artifacts changed in Round 2: `Yes`.
+- Live browser/API runtime validation was added on top of the already-passed durable GraphQL E2E suite from Round 1.
+- Result classification: `Pass` for Token Statistics nested task-team row propagation in the live browser stack; `Partial` for full delegated task acceptance lifecycle because the student agent emitted the marker as assistant text but did not call `submit_task_result`.
+
+## Live Environment Started
+
+- Backend command source: built server (`pnpm -C autobyteus-server-ts build` followed by `node autobyteus-server-ts/dist/app.js`).
+- Backend URL: `http://127.0.0.1:28080`.
+- Backend app env: `APP_ENV=test`.
+- Backend data dir: `/tmp/autobyteus-token-stats-browser-e2e-20260702203234`.
+- Backend DB: `file:/tmp/autobyteus-token-stats-browser-e2e-20260702203234/db/test.db`.
+- Frontend URL: `http://127.0.0.1:23000`.
+- Frontend endpoint overrides: GraphQL/REST/WS endpoints pointed at `127.0.0.1:28080`.
+- Confirmed package UI included `/Users/normy/autobyteus_org/autobyteus-agents`.
+- Confirmed model catalog for `codex_app_server` exposed `gpt-5.5`.
+
+## Browser / Runtime Evidence Artifacts
+
+- Live evidence JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/live-browser-e2e-evidence-20260702T1842Z.json`
+- Agent package import screenshot: `/Users/normy/.autobyteus/browser-artifacts/8d8785-1783017413414.png`
+- Nested Classroom Test Team catalog screenshot: `/Users/normy/.autobyteus/browser-artifacts/dc5b3d-1783017482863.png`
+- Terminated team-run state screenshot: `/Users/normy/.autobyteus/browser-artifacts/dc5b3d-1783017723897.png`
+- Expanded Token Statistics UI screenshot: `/Users/normy/.autobyteus/browser-artifacts/dc5b3d-1783017807508.png`
+- Task delegation records: `/tmp/autobyteus-token-stats-browser-e2e-20260702203234/memory/agent_teams/nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f/task_delegation_records.json`
+- Team run metadata: `/tmp/autobyteus-token-stats-browser-e2e-20260702203234/memory/agent_teams/nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f/team_run_metadata.json`
+- Teacher raw trace: `/tmp/autobyteus-token-stats-browser-e2e-20260702203234/memory/agent_teams/nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f/test_teacher_e123269771164bbab98cedd36d704739/raw_traces.jsonl`
+- Student task-team raw trace: `/tmp/autobyteus-token-stats-browser-e2e-20260702203234/memory/agent_teams/nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f/studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456/student_one_65ec8fb602a24bcab6c101301f369219/raw_traces.jsonl`
+
+## Live Run IDs
+
+- Team definition id/name: `nested-classroom-test` / `Nested Classroom Test Team`.
+- Root team run id: `nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f`.
+- Teacher member run id: `test_teacher_e123269771164bbab98cedd36d704739`.
+- Delegated task id: `task_0001`.
+- Task-team run id: `studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456`.
+- Task-team student run id: `student_one_65ec8fb602a24bcab6c101301f369219`.
+- Marker used: `BROWSER_NESTED_CLASSROOM_OK_1783017507353`.
+
+## Live Execution Observed
+
+- Browser-created team run connected over the app's team WebSocket.
+- `Teacher` used `delegate_task` with target `{ kind: "team", name: "StudentStudyGroup" }`.
+- `delegate_task` succeeded and created `task_0001`.
+- Runtime task records show receiver address:
+  - `member:StudentStudyGroup`
+  - `task_team:studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456`
+  - `member:student_one`
+- `student_one` received the task packet and emitted `BROWSER_NESTED_CLASSROOM_OK_1783017507353`.
+- The run was manually terminated after Token Statistics evidence was captured because `student_one` did not call `submit_task_result`; consequently `Teacher`'s `review_task_result` attempts correctly failed with `Delegated task 'task_0001' is active, not awaiting_review.`
+
+## Live Token Statistics API Evidence
+
+GraphQL `tokenUsageTaskStatisticsInPeriod` returned one root team row for the live run:
+
+- Root row: `TEAM_RUN` / `Nested Classroom Test Team`
+  - model/runtime: `gpt-5.5` / `codex_app_server`
+  - total tokens: `1,353,804`
+  - children:
+    - `TASK_TEAM_RUN` / `StudentStudyGroup`
+      - `taskTeamRunId`: `studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456`
+      - execution address: `member:StudentStudyGroup -> task_team:studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456`
+      - total tokens: `32,307`
+      - child:
+        - `MEMBER_RUN` / `student_one`
+        - execution address: `member:StudentStudyGroup -> task_team:studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456 -> member:student_one`
+        - total tokens: `32,307`
+    - `MEMBER_RUN` / `Teacher`
+      - execution address: `member:Teacher`
+      - total tokens: `1,321,497`
+
+The browser Token Statistics UI also rendered the expanded nested rows (`Nested Classroom Test Team` -> `StudentStudyGroup` task team -> `student_one` member, plus direct `Teacher`) in screenshot `/Users/normy/.autobyteus/browser-artifacts/dc5b3d-1783017807508.png`.
+
+## Round 2 Passed
+
+- `pnpm -C autobyteus-server-ts build` — Passed before backend startup.
+- Backend server startup against isolated data dir — Passed.
+- Frontend Nuxt dev startup with explicit backend endpoints — Passed.
+- Browser UI package/team catalog validation — Passed; exact `Nested Classroom Test Team` was available.
+- Codex App Server model catalog validation — Passed; `gpt-5.5` was available.
+- Live nested task-team execution address propagation into organic token usage events/API rows — Passed.
+- Token Statistics UI rendering of live nested task-team/member rows — Passed.
+
+## Round 2 Partial / Caveat
+
+- Full task lifecycle acceptance did not complete in the live LLM run.
+- Cause observed: `student_one` emitted the requested marker as assistant prose but did not call `submit_task_result`; the task remained `active`.
+- `Teacher` then attempted `review_task_result`, which failed correctly because the task was not `awaiting_review`.
+- This lowers confidence in the full classroom task-lifecycle prompt/model behavior for this single live run, but it does not contradict the Token Statistics implementation evidence: the delegated task-team run still generated organic nested token rows with the correct execution addresses and UI placement.
+
+## Round 2 Cleanup
+
+- The live team run was terminated with `terminateAgentTeamRun` after evidence capture.
+- Backend/frontend dev server cleanup was performed after evidence/report capture.
+- No temporary source files or durable test-code changes were added in Round 2.
+
+## Round 2 Latest Authoritative Result
+
+- Token Statistics nested task/team rows: `Pass`.
+- Real browser stack/package/runtime/model: `Pass`.
+- Full delegated classroom task acceptance lifecycle: `Partial` for this single live run due to LLM/tool-use behavior (`submit_task_result` not called).
+- Confidence impact: combined durable E2E + live browser/API/UI evidence gives high confidence in the Token Statistics nested-row fix; the live classroom lifecycle itself needs either a tighter deterministic E2E harness or repeated prompt/model validation if lifecycle completion is a release criterion.

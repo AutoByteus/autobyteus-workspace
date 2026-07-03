@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/design-spec.md`
 - Current Review Round: 1
 - Trigger: Superseding design handoff after user-approved self-contained Token Usage `execution_address_json` direction.
 - Prior Review Round Reviewed: N/A. Earlier handoffs were superseded before an authoritative review report was written.

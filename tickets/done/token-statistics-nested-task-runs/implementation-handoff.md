@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/design-review-report.md`
 
 ## What Changed
 

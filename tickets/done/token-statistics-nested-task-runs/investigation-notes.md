@@ -34,7 +34,7 @@ Reference screenshot:
 
 - Project Type (`Git`/`Non-Git`): Git superrepo worktree.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs`
 - Current Branch: `codex/token-statistics-nested-task-runs`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs`
 - Bootstrap Base Branch: `origin/personal`

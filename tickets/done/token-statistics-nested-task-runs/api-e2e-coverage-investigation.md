@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/in-progress/token-statistics-nested-task-runs/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs/tickets/done/token-statistics-nested-task-runs/code-review-report.md`
 - Current Investigation Round: `1`
 - Trigger: Code review passed and routed to API/E2E for Token Statistics nested task/task-agent row validation.
 - Prior Investigation Reviewed: `N/A`
@@ -117,3 +117,60 @@ Implementation handoff `Legacy / Compatibility Removal Check` was reviewed. It r
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: N/A
 - Notes: Existing stale coverage asserts intentionally removed `members`/path behavior, so the correct action is durable coverage update, not implementation reroute. Live nested LLM runtime execution is not feasible in the current ungated environment; this is recorded as deferred residual risk while API-level ledger/projection coverage is added and executed.
+
+---
+
+# Round 2 Addendum — User-Requested Live Browser Runtime Check
+
+## Investigation Meta Update
+
+- Current Investigation Round: `2`
+- Trigger: User explicitly requested a real browser test on July 2, 2026: read README setup, start backend and frontend, import `/Users/normy/autobyteus_org/autobyteus-agents`, use Codex runtime with `gpt-5.5`, use the classroom team, and inspect real behavior rather than relying only on synthetic GraphQL E2E fixtures.
+- Latest Authoritative Investigation: `Round 2`
+- Upstream Durable Coverage State: Round 1 durable Token Usage GraphQL E2E coverage remains valid and already passed. Round 2 is an additional live executable/browser confidence pass, not a replacement for the durable E2E suite.
+
+## Additional Existing Coverage / Runtime Inventory
+
+| Path / Scenario | Current Assertion Or Intent | Validity Decision | Evidence | Action |
+| --- | --- | --- | --- | --- |
+| Root `README.md`, `autobyteus-server-ts/README.md`, `autobyteus-web/README.md` | Source checkout setup, backend build/run, frontend dev server run, and GraphQL/REST/WS endpoint configuration. | `Still Valid` for live local browser setup. | README inspection shows backend runs from `dist/app.js` with `--host`, `--port`, and `--data-dir`; frontend uses Nuxt dev with `NUXT_PUBLIC_*` endpoints. | Start backend and frontend with an isolated app data directory and explicit ports. |
+| `/Users/normy/autobyteus_org/autobyteus-agents` agent package | Local package root containing `agents/` and `agent-teams/`, including `agent-teams/classroom-simulation-team`. | `Still Valid` for user-requested import path. | Package root contains `agents`, `agent-teams`, README, and `Classroom Simulation Team`; no exact team named `Nested Classroom Test Team` was found by static search. | Import via Settings UI / GraphQL-visible package registry; use available `Classroom Simulation Team` unless a more exact nested classroom definition appears after import. |
+| `agent-teams/classroom-simulation-team` | Two-role professor/student team using file-backed `run_bash` and `send_message_to`. | `Still Valid` for browser/live agent communication smoke. | `team-config.json` lists `professor` and `student`; both agent configs expose `send_message_to` and `run_bash`. | Launch with Codex App Server runtime and `gpt-5.5` if model catalog exposes it. |
+| Existing gated runtime E2E `autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` | Live task-agent/task-team delegation flows using real runtimes, including Codex `gpt-5.5` for task-team worker in one scenario. | `Still Valid` as related runtime evidence, but not the user-requested browser/import path. | Docs describe it as gated by live flags and model/service availability. | Do not edit. Use as a reference for GraphQL/WebSocket launch mechanics if needed during browser validation. |
+
+## Additional Temporary Executable Validation Plan
+
+| Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven | Why This Should Not Remain As Durable Coverage |
+| --- | --- | --- | --- |
+| `TEMP-BROWSER-001` | Start backend from built server with a disposable `--data-dir`; start Nuxt frontend with explicit GraphQL/REST/WS endpoints; open the frontend in the browser tool. | README-based local app stack works against the review-passed branch. | This is environment/runtime confidence evidence, not a stable deterministic test suitable for ordinary CI. |
+| `TEMP-BROWSER-002` | Use the browser UI to import `/Users/normy/autobyteus_org/autobyteus-agents` and confirm the package row/team catalog appears. | User-requested package import works in the actual app UI. | Local absolute path and user machine package are environment-specific. |
+| `TEMP-BROWSER-003` | Query model catalog for `codex_app_server` and verify `gpt-5.5` availability before launch. | Requested runtime/model can be selected. | Model availability is user-environment dependent. |
+| `TEMP-BROWSER-004` | Launch the classroom team with Codex `gpt-5.5` member configs, send a compact classroom prompt, and observe live team stream/tool/message evidence. | Real Codex-backed team members can execute tool-backed professor/student communication on this branch. | Live LLM behavior is nondeterministic and may require approvals/timing/model access. |
+| `TEMP-BROWSER-005` | Inspect Token Usage API/DB and browser Token Statistics UI after live run. | Organic token events from the live run appear in current Token Statistics surfaces. | This complements but does not replace durable deterministic ledger GraphQL coverage. |
+
+## Additional Not Tested / Infeasible / Deferred Criteria
+
+| Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
+| --- | --- | --- | --- |
+| Exact team named `Nested Classroom Test Team`. | Static search of `/Users/normy/autobyteus_org/autobyteus-agents` found `Classroom Simulation Team` but no exact `Nested Classroom Test Team` definition before import. | If the user expected a different package/team, the live run may validate the nearest available classroom team but not that exact hidden team. | Proceed with imported classroom team and record the exact team id/name observed after package import. Escalate only if no classroom-like team is available after import. |
+| Guaranteed task-team/task-agent nested Token Usage rows from classroom team alone. | Classroom team is a two-agent communication team; it does not inherently use task delegation. | It may produce direct member token rows but not `TASK_TEAM_RUN`/`TASK_AGENT_RUN` rows unless the prompt or tools trigger delegation behavior not present in the team configs. | If the user-requested classroom run does not naturally produce task delegation rows, record direct live runtime evidence and rely on Round 1 durable E2E for task-team/task-agent row correctness. Consider an additional task-delegation live probe only if feasible without changing durable code. |
+
+## Round 2 Execution Decision
+
+- Proceed To Browser/API/E2E Execution: `Yes`
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed In Round 2: `No planned test-code changes`; only the canonical investigation/report artifacts will be updated with evidence.
+- Reroute Required Before Browser Execution: `No`
+- Notes: Round 2 will use isolated data and user-requested live runtime settings. If `gpt-5.5` or Codex App Server is unavailable at runtime, classify that as an environment blocker for the exact live request and record the fallback evidence collected up to that point.
+
+## Round 2 Discovery Update After Browser Catalog Load
+
+The static package search in the initial Round 2 addendum was conservative. After starting the actual backend/frontend and loading the agent-team catalog through the browser UI, the exact user-requested team was available:
+
+- Team id: `nested-classroom-test`
+- Team name: `Nested Classroom Test Team`
+- Top-level coordinator route: `Teacher`
+- Nested task team target route: `StudentStudyGroup`
+- Nested task team ingress/worker route observed during execution: `StudentStudyGroup/student_one`
+- Runtime/model selected for the live run: `codex_app_server` / `gpt-5.5`
+
+This supersedes the earlier fallback note that only `Classroom Simulation Team` was visible by static package search. The Round 2 browser execution should be evaluated against the exact `Nested Classroom Test Team`, not the fallback classroom simulation team.
