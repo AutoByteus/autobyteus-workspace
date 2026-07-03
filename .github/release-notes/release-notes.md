@@ -1,10 +1,11 @@
 ## What's New
-- Added reliable direct Gemini support for `.m4a` audio returned by `read_media_file` so audio tool results are sent to Gemini as media input instead of text-only context.
+- Added a startup migration that backfills historical Token Usage execution addresses so older task/team usage can use the current nested statistics hierarchy.
 
 ## Improvements
-- Unified media file classification for image, audio, and video paths so context-file handling and provider payload rendering share the same supported extension policy.
-- Added env-gated live Gemini coverage for the `.m4a` path with a synthetic spoken fixture and response assertion.
+- Preserves token and cost totals while repairing deterministic historical direct-member, task-team, and task-agent attribution.
+- Reports clear migration summary details for backfilled, already-addressed, skipped, insufficient-data, and failed rows.
+- Keeps unreconstructable historical rows visible through the existing safe fallback instead of guessing hierarchy.
 
 ## Fixes
-- Fixed direct Gemini request rendering for local `.m4a` files by sending `inlineData` with `audio/mp4` MIME data.
-- Fixed silent media drops by failing declared media conversion errors before provider invocation.
+- Fixed historical delegated task-team token usage appearing as unrelated top-level team rows when task delegation records can safely map it back under the original root team.
+- Fixed stale Token Statistics prototype/docs references to legacy `memberPath`/path-field hierarchy in favor of recursive `children` plus `executionAddress`.
