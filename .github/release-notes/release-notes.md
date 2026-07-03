@@ -1,5 +1,10 @@
-# Release Notes — Revert Session Discovery UI
+## What's New
+- Added reliable direct Gemini support for `.m4a` audio returned by `read_media_file` so audio tool results are sent to Gemini as media input instead of text-only context.
 
-- Reverted the Workspaces sidebar session-discovery UI changes from v1.3.94 after production regressions were found.
-- Restored the previous workspace history grouping and team-definition navigation behavior.
-- Kept the latest validated task-agent/task-team behavior outside the reverted session-discovery redesign intact.
+## Improvements
+- Unified media file classification for image, audio, and video paths so context-file handling and provider payload rendering share the same supported extension policy.
+- Added env-gated live Gemini coverage for the `.m4a` path with a synthetic spoken fixture and response assertion.
+
+## Fixes
+- Fixed direct Gemini request rendering for local `.m4a` files by sending `inlineData` with `audio/mp4` MIME data.
+- Fixed silent media drops by failing declared media conversion errors before provider invocation.
