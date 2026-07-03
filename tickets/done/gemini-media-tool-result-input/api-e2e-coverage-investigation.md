@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/code-review-report.md`
 - Current Investigation Round: 3
 - Trigger: Code review Round 4 pass after user requested stronger live proof: env-gated live direct-Gemini `.m4a` test now uses a spoken `hello hello hello` fixture and asserts the live Gemini response contains `hello`.
 - Prior Investigation Reviewed: Yes — prior Rounds 1 and 2 in this same file.

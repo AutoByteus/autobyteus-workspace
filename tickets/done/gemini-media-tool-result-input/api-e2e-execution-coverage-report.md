@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/api-e2e-coverage-investigation.md`
 - Current Execution Round: 3
 - Trigger: Code review Round 4 pass after user requested stronger live proof: env-gated live direct-Gemini `.m4a` test now uses a spoken `hello hello hello` fixture and asserts the live Gemini response contains `hello`.
 - Prior Round Reviewed: Yes — Rounds 1 and 2 in this same report.
@@ -32,7 +32,7 @@ The current product scope remains direct Gemini `.m4a` media input. RPA, server 
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -145,12 +145,12 @@ New/updated durable coverage reviewed before this execution and validated in thi
 - Paths added or updated: N/A by API/E2E Round 3
 - Paths removed: None
 - If `Yes`, returned through `code_reviewer` before delivery: N/A
-- Post-API/E2E coverage code review artifact: N/A for this round. The stronger durable live coverage was added before this round and already passed code review in `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/code-review-report.md`.
+- Post-API/E2E coverage code review artifact: N/A for this round. The stronger durable live coverage was added before this round and already passed code review in `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/code-review-report.md`.
 
 ## Other Execution Artifacts
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input/api-e2e-execution-coverage-report.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/api-e2e-execution-coverage-report.md`
 
 ## Temporary Execution Methods / Scaffolding
 

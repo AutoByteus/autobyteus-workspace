@@ -28,7 +28,7 @@ Reference screenshots:
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/in-progress/gemini-media-tool-result-input`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input`
 - Current Branch: `codex/gemini-media-tool-result-input`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input`
 - Bootstrap Base Branch: `origin/personal`
