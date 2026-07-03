@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-This ticket delivers a direct Gemini request-construction bug fix in `autobyteus-ts` plus focused tests, an env-gated live provider proof, docs, and release notes. User verification was received on 2026-07-03 and a new patch release was requested. Because `origin/personal` advanced to `v1.3.95` before finalization, the planned new release version is `1.3.96`.
+This ticket delivered a direct Gemini request-construction bug fix in `autobyteus-ts` plus focused tests, an env-gated live provider proof, docs, and release notes. User verification was received on 2026-07-03 and a new patch release was requested. Because `origin/personal` advanced to `v1.3.95` before finalization, the new release version is `1.3.96`.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary records integrated-base state, stronger live-proof evidence, finalization recheck evidence, docs sync, and release plan.
+- Notes: Handoff summary records integrated-base state, stronger live-proof evidence, finalization recheck evidence, docs sync, and release result.
 
 ## Initial Delivery Integration Refresh
 
@@ -21,7 +21,6 @@ This ticket delivers a direct Gemini request-construction bug fix in `autobyteus
 - Integration result: `Completed` — latest-base merge commit `2cb54da9fbb968a9781b8e41ed7086d6231452d2` without conflicts.
 - Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
-- No-rerun rationale: N/A
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker: N/A
@@ -36,41 +35,43 @@ This ticket delivers a direct Gemini request-construction bug fix in `autobyteus
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/autobyteus-ts/docs/llm_module_design.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/autobyteus-ts/docs/llm_module_design_nodejs.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/llm_module_design.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/llm_module_design_nodejs.md`
 - No-impact rationale: N/A — long-lived docs were updated.
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input`
 
 ## Version / Tag / Release Commit
 
-- Planned release version: `1.3.96`
-- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/release-notes.md`
-- Release helper command planned after repository finalization: `pnpm release 1.3.96 -- --release-notes tickets/done/gemini-media-tool-result-input/release-notes.md`
-- Current status in this archived ticket-branch commit: `Prepared; execution pending repository finalization`
+- Release version: `1.3.96`
+- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input/release-notes.md`
+- Release helper command: `pnpm release 1.3.96 -- --release-notes tickets/done/gemini-media-tool-result-input/release-notes.md`
+- Release commit: `f43e7651b345d766126bb5c2f0e93198d9f11203` (`chore(release): bump workspace release version to 1.3.96`)
+- Release tag: `v1.3.96` -> `f43e7651b345d766126bb5c2f0e93198d9f11203`
+- Version sync result: `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` are both `1.3.96`; managed messaging release manifest synced to `v1.3.96`.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input/investigation-notes.md`
 - Ticket branch: `codex/gemini-media-tool-result-input`
-- Ticket branch commit result: `Pending this archival commit`
-- Ticket branch push result: `Pending after archival commit`
+- Ticket branch commit result: `Completed` — `1177b84e9c3b93fc712045bd25a74dc5c853c01e`
+- Ticket branch push result: `Completed` — pushed `origin/codex/gemini-media-tool-result-input` before target merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `Yes`, to `71adb8bb1afe031d96b5427abea183d3825cc56a` (`v1.3.95`)
 - Delivery-owned edits protected before re-integration: `Completed`
 - Re-integration before final merge result: `Completed` — merge commit `2cb54da9fbb968a9781b8e41ed7086d6231452d2`
-- Target branch update result: `Pending ticket-branch commit/push`
-- Merge into target result: `Pending ticket-branch commit/push`
-- Push target branch result: `Pending target merge`
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` — local `personal` fast-forwarded to latest `origin/personal` before merge.
+- Merge into target result: `Completed` — `17ebf7fc0223f21520d8e5052a712b7876b633df` merged the ticket branch into `personal`.
+- Push target branch result: `Completed` — pushed `personal` after target merge, then release helper pushed release commit `f43e7651b345d766126bb5c2f0e93198d9f11203`.
+- Repository finalization status: `Completed`
 - Blocker: N/A
 
 ## Release / Publication / Deployment
@@ -78,17 +79,25 @@ This ticket delivers a direct Gemini request-construction bug fix in `autobyteus
 - Applicable: `Yes`
 - Method: `Release Script`
 - Method reference / command: `pnpm release 1.3.96 -- --release-notes tickets/done/gemini-media-tool-result-input/release-notes.md`
-- Release/publication/deployment result: `Pending repository finalization`
-- Release notes handoff result: `Prepared`
+- Release/publication/deployment result: `Release tag pushed; GitHub release workflows started`
+- Release notes handoff result: `Used` — copied to `.github/release-notes/release-notes.md` by the release helper.
 - Blocker: N/A
+
+GitHub workflow rollout status snapshot after tag push:
+
+  - iOS App Store Connect Release: `in_progress` (run `28655202703`, event `push`, head `f43e7651b345d766126bb5c2f0e93198d9f11203`)
+  - Android APK Release: `in_progress` (run `28655202698`, event `push`, head `f43e7651b345d766126bb5c2f0e93198d9f11203`)
+  - Server Docker Release: `in_progress` (run `28655202680`, event `push`, head `f43e7651b345d766126bb5c2f0e93198d9f11203`)
+  - Desktop Release: `in_progress` (run `28655202677`, event `push`, head `f43e7651b345d766126bb5c2f0e93198d9f11203`)
+  - Release Messaging Gateway: `in_progress` (run `28655202650`, event `push`, head `f43e7651b345d766126bb5c2f0e93198d9f11203`)
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input`
-- Worktree cleanup result: `Pending repository finalization/release`
-- Worktree prune result: `Pending repository finalization/release`
-- Local ticket branch cleanup result: `Pending repository finalization/release`
-- Remote branch cleanup result: `Pending repository finalization/release`
+- Worktree cleanup result: `Completed` — removed after target merge and release.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` — deleted `codex/gemini-media-tool-result-input`.
+- Remote branch cleanup result: `Completed` — deleted `origin/codex/gemini-media-tool-result-input` after merge/release.
 - Blocker: N/A
 
 ## Escalation / Reroute
@@ -97,13 +106,13 @@ N/A.
 
 ## Release Notes Summary
 
-- Release notes artifact created before release: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/release-notes.md`
-- Archived release notes artifact used for release/publication: `Pending release helper`
-- Release notes status: `Updated`
+- Release notes artifact created before release: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input/release-notes.md`
+- Release notes status: `Updated and used`
 
 ## Deployment Steps
 
-Release will be performed by the documented release helper. Pushing tag `v1.3.96` starts the configured desktop, Android, iOS, messaging-gateway, and server Docker release workflows. No separate manual dispatch should be run for the same fresh release.
+The documented release helper pushed tag `v1.3.96`, which started the configured desktop, Android, iOS, messaging-gateway, and server Docker release workflows. No separate manual dispatch was run.
 
 ## Environment Or Migration Notes
 
@@ -119,9 +128,10 @@ Release will be performed by the documented release helper. Pushing tag `v1.3.96
 - API/E2E Round 3 provider-bound payload capture passed: 1 file / 7 tests.
 - API/E2E Round 3 `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` passed.
 - API/E2E Round 3 `git diff --check` passed after artifact refresh.
-- Finalization focused media/Gemini suite passed: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/validation-evidence/finalization-focused-suite-20260703-123554.log`
-- Finalization provider-bound payload capture passed: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/validation-evidence/finalization-provider-payload-20260703-123602.log`
-- Finalization TypeScript typecheck passed: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/tickets/done/gemini-media-tool-result-input/validation-evidence/finalization-tsc-20260703-123604.log`
+- Finalization focused media/Gemini suite passed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input/validation-evidence/finalization-focused-suite-20260703-123554.log`
+- Finalization provider-bound payload capture passed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input/validation-evidence/finalization-provider-payload-20260703-123602.log`
+- Finalization TypeScript typecheck passed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-media-tool-result-input/validation-evidence/finalization-tsc-20260703-123604.log`
+- Release helper completed and pushed branch/tag for `v1.3.96`.
 
 ## Rollback Criteria
 
@@ -129,4 +139,4 @@ If release workflows fail because of packaging, signing, or deployment infrastru
 
 ## Final Status
 
-`Repository finalization in progress; release 1.3.96 prepared pending target merge and release helper execution.`
+`Completed: repository finalized, v1.3.96 tag pushed, release workflows started, and ticket worktree/branches cleaned up.`
