@@ -55,7 +55,6 @@ The Pinia stores act as the primary interface for the UI components to interact 
 - **Role**: Manages multi-agent team sessions.
 - **Key Actions**:
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
-  - Team workspace header **New** (`+`) actions that clone the selected run must resolve the seed through the loaded team-definition catalog before opening run config. The clone path canonicalizes runtime/task-trail `teamDefinitionId` values back to the catalog team id/name, prunes member overrides whose route keys are task-agent/task-team runtime projections rather than catalog leaf members, and leaves the current selected view intact when no catalog definition can be resolved instead of navigating to a `Definition not found` state.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
   - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., server task-delegation lifecycle events, status changes, member events) via WebSocket.
   - `sendMessageToFocusedMember()`: Routes user input through `resolveTeamConversationTargetAddressResult(...)`, which returns a typed `ConversationTargetAddress` for backend routing and a separate local target key for composer, draft-attachment, and optimistic-message ownership. The address can target structural leaf members, structural subteams, task-agent executions, task-team roots, or members inside task-team executions by composing `member`, `task_team`, and `task_agent` segments from the focused projection. A new/all-offline team can still send its first message to a focused non-coordinator structural member, and a valid runtime projection can now receive ordinary chat without falling back to the structural template. Missing/stale focused targets or incomplete runtime identity fail validation instead of silently retargeting; the active-execution safety fallback remains reserved for task-agent-only logical-member conversations that should not receive ordinary user chat. After validation, the store immediately begins a local submission for the selected local target by appending the user message when a local leaf context exists, clearing that target's composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Frontend team chat emits `SEND_MESSAGE.conversation_target_address`; backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery and target-validation boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
@@ -320,40 +319,31 @@ applied.
 
 ### Workspace History Row Titles
 
-Workspace history row titles are resolved through the session-display-label
-projection, not rendered directly from backend `summary` fields in Vue
-templates. `stores/runHistorySessionLabels.ts` normalizes whitespace, strips
-known prompt wrappers such as `[User Requirement]`, and resolves the visible
-primary title in this order:
+Workspace history rows render `RunTreeRow.summary` as the visible one-line task
+title. For standalone agent runs that title should represent the initial
+non-empty user message, not the latest follow-up. When the history tree is
+merged with live single-agent contexts, `mergeRunTreeWithLiveContexts(...)`
+overlays active status and the live context's activity timestamp while using the
+live conversation's first non-empty user message as the row summary when
+available. Persisted standalone and team history rows arrive from GraphQL with
+`createdAt` plus derived live status fields, not durable `lastActivityAt`,
+`lastKnownStatus`, or delete-lifecycle fields. The frontend read model maps
+`createdAt` into the shared tree sort field for stored rows and derives local
+team-tree `lastActivityAt` / `lastKnownStatus` / delete readiness from V2
+catalog facts plus live status. This prevents an active persisted row with a
+stale latest-message summary from overriding the known initial-message title in
+the sidebar while keeping backend history catalogs out of live-status storage.
 
-1. explicit source title (`displayTitle` or `sessionTitle`) when a history row
-   provides one;
-2. sanitized legacy/current `summary`; and
-3. a safe fallback (`Untitled session` or `Untitled team session`).
-
-The same projection also builds the secondary metadata line. Standalone agent
-sessions show the agent name plus `agent session`. Team sessions show only the
-team name plus member count when positive, such as `Software Engineering Team
-(7)`; they intentionally do not show coordinator/member-focus text in the
-sidebar subtitle. Persisted standalone and team history rows still arrive from
-GraphQL with `createdAt` plus derived live status fields, not durable
-`lastActivityAt`, `lastKnownStatus`, or delete-lifecycle fields. The frontend
-read model maps `createdAt` into the shared tree sort field for stored rows and
-derives local team-tree `lastActivityAt` / `lastKnownStatus` / delete readiness
-from V2 catalog facts plus live status. Live single-agent context merges can
-still prefer the live conversation's first non-empty user message as the legacy
-summary input, but the visible row title must go through the display-label
-resolver before rendering.
+If no live first-user-message summary is available, the frontend keeps the
+backend-provided history summary. Team row title behavior remains owned by the
+team-history path and is not reinterpreted by the standalone live-context
+overlay.
 
 ### Workspace History Progressive Disclosure
 
-The Workspaces sidebar keeps workspaces as the top-level scope, but expanded
-workspaces render a direct session-first list rather than agent-definition or
-team-definition groups. `WorkspaceAgentRunsTreePanel.vue` wires the tree state
-from `useWorkspaceHistoryTreeState(...)`,
-`runHistoryStore.getWorkspaceSessionNodes(...)` projects each workspace into
-`WorkspaceHistorySessionRow` records through
-`buildWorkspaceHistorySessionRows(...)`, and
+The Workspaces sidebar history tree uses progressive disclosure for its
+ordinary desktop render. `WorkspaceAgentRunsTreePanel.vue` wires the tree state
+from `useWorkspaceHistoryTreeState(...)`, and
 `WorkspaceHistoryWorkspaceSection.vue` renders only the visible level for the
 current expansion state.
 
@@ -368,88 +358,61 @@ current expansion state.
   renders one workspace row for that root. The fixed temp descriptor wins over a
   same-root filesystem descriptor so the default temp workspace stays
   non-removable.
-- Workspace rows default collapsed, so the initial tree shows workspace names
-  only. Expanding a workspace calls the workspace-scoped history path for that
-  workspace id and then shows session rows directly under the workspace.
-  Registered filesystem ids resolve through the backend workspace registry;
-  `temp_ws_default` resolves through the temp workspace lifecycle.
-- The session list merges standalone agent runs and root team runs for the
-  visible workspace. Active sessions sort before inactive sessions, then rows
-  sort by most recent activity/creation and finally by stable session key.
-- Each session row is the retrieval object. It contains a fixed-width leading
-  disclosure lane, a status-dot lane, the projected primary display title,
-  source metadata, relative time, and valid run/team actions. Expandable rows
-  render their disclosure arrow in that lane; non-expandable rows render an
-  equal-width placeholder so arrows, dots, and titles align consistently across
-  the list. The disclosure arrow and status dot align to the title row, with a
-  fixed arrow-to-dot gap, rather than centering over the full title/subtitle
-  block. Session rows intentionally do not render source avatar or initials
-  chips; the width is reserved for titles and timestamps. The old `Teams`
-  heading, team-definition group row, and agent-definition group row are not
-  part of the desktop history surface.
-- Team session rows own the disclosure control for member details. Selecting a
-  team session opens/focuses the existing coordinator/default member path;
-  expanding the session reveals recursive member/subteam rows underneath that
-  session. Member rows are details of the session, not a required navigation
-  layer before selecting it.
-- Team member detail rows intentionally omit member avatar/initials chips and
-  render the member name directly with its status dot. The detail container uses
-  reduced indentation plus a subtle left guide line instead of large horizontal
-  offsets. Nested structural subteams keep a compact Team badge and disclosure
-  control.
-- Latest-base transient task-agent and task-team execution rows are integrated
-  inline with expanded team-member details through `WorkspaceTransientExecutionRow.vue`
-  and `workspaceTeamExecutionDisplayRows.ts`. They are scoped under the
-  relevant team run/member route key, can be focused/expanded like other detail
-  rows, and do not restore the old team-definition or agent-definition grouping
-  layers.
+- Workspace rows default collapsed after history loads, so the initial tree
+  shows workspace names only.
+- Expanding a workspace reveals the next-level standalone-agent groups and
+  team-definition groups for that visible workspace. Registered filesystem ids
+  resolve through the backend workspace registry; `temp_ws_default` resolves
+  through the temp workspace lifecycle.
 - Local standalone run rows are projected under their visible workspace
   descriptor even after a draft run is promoted from a `temp-...` id to its
   permanent run id, then deduplicated when backend history catches up. Local
   draft/live rows without a matching visible workspace descriptor are ignored
   instead of creating their own top-level workspace.
-- Manual workspace, team-session, and nested team-member/subteam/transient
-  execution expansion choices are kept in component-local tree state and are
-  not reset by quiet history refreshes while the history panel remains mounted.
+- Standalone run rows and team-run rows stay collapsed until the user expands
+  the specific agent group or team-definition group.
+- Team-definition group rows and individual team-run rows use the same compact
+  standalone chevron size, shape, and gray color. The row button remains the
+  single interaction boundary, and team-run rows expose `aria-expanded` so
+  visual, keyboard, and assistive-technology state stay in sync.
+- Manual workspace, agent-group, team-definition-group, team-run, and nested
+  team-member/subteam expansion choices are kept in component-local tree state
+  and are not reset by quiet history refreshes while the history panel remains
+  mounted.
 - Newly added workspaces are explicitly opened after creation so the add flow
   still lands the user in the workspace they just created.
-- Quiet refreshes update already-loaded workspace history without falling back
-  to a global history fetch that can mark unrelated active contexts offline.
 
-When an existing standalone or team session is selected before its workspace is
+When an existing run or team run is selected before its history ancestry is
 visible, `useWorkspaceHistoryTreeState(...)` performs a one-shot selected-path
-reveal. The reveal expands only the selected session's workspace and, for team
-sessions, opens the matching team-session row. After the selected path has been
-revealed for the stable session key, later quiet refreshes must not reopen the
-same path if the user manually collapses it. When a user opens/selects a team
-session that has a focused nested member or transient execution, or selects a
-nested detail row directly, `useWorkspaceHistorySelectionActions(...)` asks
-`useWorkspaceHistoryTreeState(...)` to expand only the ancestors needed to keep
-that focus visible.
+reveal. The reveal expands only the selected run/team's workspace and containing
+agent or team-definition group, and for selected team runs opens the matching
+team-run row. After the selected path has been revealed for the stable selection
+key, later quiet refreshes must not reopen the same path if the user manually
+collapses it. When a user opens/selects a team run that has a focused nested
+member, or selects a nested member row directly,
+`useWorkspaceHistorySelectionActions(...)` asks
+`useWorkspaceHistoryTreeState(...)` to expand only the subteam ancestors
+needed to keep that nested focus visible.
 
 For team-run member rows, selection state uses roster/history visual focus, not
 active-execution command focus. The Workspace history tree renders recursive
 `memberTree` structure when available, with `team.members` only as the flat
 fallback. Nested `agent_team` member rows appear as subteam rows with a Team
 badge and their own disclosure control; they are collapsed by default, expand
-children recursively with compact indentation and a guide line, and the
-disclosure toggles children without selecting the row body. Clicking a stable
-member, subteam, task-agent execution, or task-team execution whose route key is
-present in the live/team history projection should keep that `{ teamRunId,
-memberRouteKey }` focus selected in the history tree and Focus display even when
-the member is offline or has no active runtime context. Live/hydrated
-team-context merges must preserve the persisted history row's workspace
-grouping and use this roster/transient focus for selected-row highlighting; the
-shared composer remains active-execution-owned separately.
+children recursively with indentation, and the disclosure toggles children
+without selecting the row body. Clicking a member or subteam row whose route key
+exists in the team's `memberTree` should keep that route key selected in the
+history tree and Focus display even when the member is offline or has no active
+runtime context. Live/hydrated team-context merges must preserve the persisted
+history row's workspace grouping and use this roster focus for selected-row
+highlighting; the shared composer remains active-execution-owned separately.
 
 ### Workspace History Archive And Delete Actions
 
 `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the
-workspace history tree wiring. `WorkspaceHistoryWorkspaceSection.vue` delegates
-session row rendering to `WorkspaceHistorySessionRow.vue` and team member detail
-rendering to `WorkspaceHistoryTeamMemberRows.vue`. The row actions
-intentionally keep archive, termination, draft removal, and permanent delete
-separate:
+workspace history tree wiring and delegates row rendering to
+`WorkspaceHistoryWorkspaceSection.vue`. The row actions intentionally keep
+archive, termination, draft removal, and permanent delete separate:
 
 - active standalone runs and active team runs expose stop/terminate actions, not
   archive;

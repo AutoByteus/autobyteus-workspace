@@ -1,15 +1,21 @@
 import { computed, ref, watch } from 'vue';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import { buildWorkspaceTeamDefinitionDisplayGroups } from '~/components/workspace/history/workspaceHistoryTeamDefinitionGroups';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
-import { toWorkspaceHistorySessionKey, type WorkspaceHistorySessionRow } from '~/stores/runHistorySessionProjection';
-import type { TeamMemberTreeRow } from '~/stores/runHistoryTypes';
+import type {
+  RunHistoryWorkspaceGroup,
+  TeamMemberTreeRow,
+  TeamRunHistoryDefinitionGroup,
+  TeamTreeNode,
+} from '~/stores/runHistoryTypes';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 interface RunHistoryTreeStoreLike {
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
+  workspaceGroups: RunHistoryWorkspaceGroup[];
   getTreeNodes: () => RunTreeWorkspaceNode[];
-  getWorkspaceSessionNodes: (workspaceRootPath?: string) => WorkspaceHistorySessionRow[];
+  getTeamNodes: (workspaceRootPath?: string) => TeamTreeNode[];
 }
 
 interface SelectionStoreLike {
@@ -22,7 +28,9 @@ export const useWorkspaceHistoryTreeState = (params: {
   selectionStore: SelectionStoreLike;
 }) => {
   const expandedWorkspaces = ref<Record<string, boolean>>({});
-  const expandedSessions = ref<Record<string, boolean>>({});
+  const expandedAgents = ref<Record<string, boolean>>({});
+  const expandedTeamDefinitions = ref<Record<string, boolean>>({});
+  const expandedTeams = ref<Record<string, boolean>>({});
   const expandedTeamMembers = ref<Record<string, boolean>>({});
   const observedSelectionKey = ref<string | null>(null);
   const revealAppliedForObservedKey = ref(false);
@@ -30,40 +38,75 @@ export const useWorkspaceHistoryTreeState = (params: {
 
   const workspaceNodes = computed(() => params.runHistoryStore.getTreeNodes());
 
-  const selectedSessionKey = computed<string | null>(() => {
+  const selectedRunId = computed(() => {
+    if (params.selectionStore.selectedType === 'agent' && params.selectionStore.selectedRunId) {
+      return params.selectionStore.selectedRunId;
+    }
+    return params.runHistoryStore.selectedRunId;
+  });
+
+  const selectedRevealKey = computed<string | null>(() => {
     const selectedType = params.selectionStore.selectedType;
     const selectedRunId = params.selectionStore.selectedRunId?.trim() || '';
     if (selectedType === 'team' && selectedRunId) {
-      return toWorkspaceHistorySessionKey('team', selectedRunId);
+      return `team:${selectedRunId}`;
     }
     if (selectedType === 'agent' && selectedRunId) {
-      return toWorkspaceHistorySessionKey('agent', selectedRunId);
+      return `agent:${selectedRunId}`;
     }
 
     const selectedTeamId = params.runHistoryStore.selectedTeamRunId?.trim() || '';
     if (selectedTeamId) {
-      return toWorkspaceHistorySessionKey('team', selectedTeamId);
+      return `team:${selectedTeamId}`;
     }
 
     const selectedAgentRunId = params.runHistoryStore.selectedRunId?.trim() || '';
     if (selectedAgentRunId) {
-      return toWorkspaceHistorySessionKey('agent', selectedAgentRunId);
+      return `agent:${selectedAgentRunId}`;
     }
 
     return null;
   });
 
-  const workspaceSessions = (workspaceRootPath: string): WorkspaceHistorySessionRow[] => {
+  const workspaceTeams = (workspaceRootPath: string): TeamTreeNode[] => {
     const key = normalizeRootPath(workspaceRootPath);
     if (!key) {
       return [];
     }
-    return params.runHistoryStore.getWorkspaceSessionNodes(key);
+    return params.runHistoryStore.getTeamNodes(key);
+  };
+
+  const workspaceTeamHistoryGroups = (
+    workspaceRootPath: string,
+  ): TeamRunHistoryDefinitionGroup[] => {
+    const key = normalizeRootPath(workspaceRootPath);
+    if (!key) {
+      return [];
+    }
+
+    const workspaceGroup = (params.runHistoryStore.workspaceGroups ?? []).find(
+      (group) => normalizeRootPath(group.workspaceRootPath) === key,
+    );
+    return workspaceGroup?.teamDefinitions ?? [];
   };
 
   const workspaceKey = (workspaceId: string): string => workspaceId.trim();
 
-  const sessionKey = (value: string): string => value.trim();
+  const agentKey = (workspaceId: string, agentDefinitionId: string): string => {
+    const normalizedWorkspace = workspaceKey(workspaceId);
+    const normalizedAgent = agentDefinitionId.trim();
+    return normalizedWorkspace && normalizedAgent
+      ? `${normalizedWorkspace}::agent::${normalizedAgent}`
+      : '';
+  };
+
+  const teamDefinitionKey = (workspaceId: string, groupKey: string): string => {
+    const normalizedWorkspace = workspaceKey(workspaceId);
+    const normalizedGroup = groupKey.trim();
+    return normalizedWorkspace && normalizedGroup
+      ? `${normalizedWorkspace}::team-definition::${normalizedGroup}`
+      : '';
+  };
 
   const teamMemberKey = (
     workspaceId: string,
@@ -100,25 +143,83 @@ export const useWorkspaceHistoryTreeState = (params: {
     if (node) setWorkspaceExpanded(node.workspaceId, expanded);
   };
 
-  const isSessionExpanded = (rawSessionKey: string): boolean => {
-    const key = sessionKey(rawSessionKey);
-    return key ? expandedSessions.value[key] ?? false : false;
+  const isAgentExpanded = (workspaceId: string, agentDefinitionId: string): boolean => {
+    const key = agentKey(workspaceId, agentDefinitionId);
+    return key ? expandedAgents.value[key] ?? false : false;
   };
 
-  const setSessionExpanded = (rawSessionKey: string, expanded: boolean): void => {
-    const key = sessionKey(rawSessionKey);
+  const setAgentExpanded = (
+    workspaceId: string,
+    agentDefinitionId: string,
+    expanded: boolean,
+  ): void => {
+    const key = agentKey(workspaceId, agentDefinitionId);
     if (!key) {
       return;
     }
 
-    expandedSessions.value = {
-      ...expandedSessions.value,
+    expandedAgents.value = {
+      ...expandedAgents.value,
       [key]: expanded,
     };
   };
 
-  const toggleSession = (rawSessionKey: string): void => {
-    setSessionExpanded(rawSessionKey, !isSessionExpanded(rawSessionKey));
+  const toggleAgent = (workspaceId: string, agentDefinitionId: string): void => {
+    setAgentExpanded(
+      workspaceId,
+      agentDefinitionId,
+      !isAgentExpanded(workspaceId, agentDefinitionId),
+    );
+  };
+
+  const isTeamDefinitionExpanded = (workspaceId: string, groupKey: string): boolean => {
+    const key = teamDefinitionKey(workspaceId, groupKey);
+    return key ? expandedTeamDefinitions.value[key] ?? false : false;
+  };
+
+  const setTeamDefinitionExpanded = (
+    workspaceId: string,
+    groupKey: string,
+    expanded: boolean,
+  ): void => {
+    const key = teamDefinitionKey(workspaceId, groupKey);
+    if (!key) {
+      return;
+    }
+
+    expandedTeamDefinitions.value = {
+      ...expandedTeamDefinitions.value,
+      [key]: expanded,
+    };
+  };
+
+  const toggleTeamDefinition = (workspaceId: string, groupKey: string): void => {
+    setTeamDefinitionExpanded(
+      workspaceId,
+      groupKey,
+      !isTeamDefinitionExpanded(workspaceId, groupKey),
+    );
+  };
+
+  const isTeamExpanded = (teamRunId: string): boolean => {
+    const normalizedTeamRunId = teamRunId.trim();
+    return normalizedTeamRunId ? expandedTeams.value[normalizedTeamRunId] ?? false : false;
+  };
+
+  const setTeamExpanded = (teamRunId: string, expanded: boolean): void => {
+    const normalizedTeamRunId = teamRunId.trim();
+    if (!normalizedTeamRunId) {
+      return;
+    }
+
+    expandedTeams.value = {
+      ...expandedTeams.value,
+      [normalizedTeamRunId]: expanded,
+    };
+  };
+
+  const toggleTeam = (teamRunId: string): void => {
+    setTeamExpanded(teamRunId, !isTeamExpanded(teamRunId));
   };
 
   const isTeamMemberExpanded = (
@@ -200,27 +301,74 @@ export const useWorkspaceHistoryTreeState = (params: {
     return ancestorRouteKeys.length > 0;
   };
 
-  const revealSessionAncestry = (targetSessionKey: string): boolean => {
+  const revealAgentRunAncestry = (runId: string): boolean => {
     for (const workspaceNode of workspaceNodes.value) {
       const workspaceId = workspaceKey(workspaceNode.workspaceId);
       if (!workspaceId) {
         continue;
       }
 
-      const matchingSession = workspaceSessions(workspaceNode.workspaceRootPath).find(
-        (session) => session.sessionKey === targetSessionKey,
+      const agentNode = workspaceNode.agents.find((agent) =>
+        agent.runs.some((run) => run.runId === runId),
       );
-      if (!matchingSession) {
+      if (!agentNode) {
         continue;
       }
 
       setWorkspaceExpanded(workspaceId, true);
-      if (matchingSession.kind === 'team') {
-        setSessionExpanded(matchingSession.sessionKey, true);
-      }
+      setAgentExpanded(workspaceId, agentNode.agentDefinitionId, true);
       return true;
     }
 
+    return false;
+  };
+
+  const revealTeamRunAncestry = (teamRunId: string): boolean => {
+    for (const workspaceNode of workspaceNodes.value) {
+      const workspaceId = workspaceKey(workspaceNode.workspaceId);
+      if (!workspaceId) {
+        continue;
+      }
+
+      const workspaceRootPath = workspaceNode.workspaceRootPath;
+      const teamGroups = buildWorkspaceTeamDefinitionDisplayGroups(
+        workspaceTeamHistoryGroups(workspaceRootPath),
+        workspaceTeams(workspaceRootPath),
+      );
+      const matchingGroup = teamGroups.find((group) =>
+        group.runs.some((team) => team.teamRunId === teamRunId),
+      );
+      if (!matchingGroup) {
+        continue;
+      }
+
+      setWorkspaceExpanded(workspaceId, true);
+      setTeamDefinitionExpanded(workspaceId, matchingGroup.key, true);
+      setTeamExpanded(teamRunId, true);
+      return true;
+    }
+
+    return false;
+  };
+
+  const revealSelectedAncestry = (key: string): boolean => {
+    const separatorIndex = key.indexOf(':');
+    if (separatorIndex <= 0) {
+      return false;
+    }
+
+    const kind = key.slice(0, separatorIndex);
+    const id = key.slice(separatorIndex + 1).trim();
+    if (!id) {
+      return false;
+    }
+
+    if (kind === 'agent') {
+      return revealAgentRunAncestry(id);
+    }
+    if (kind === 'team') {
+      return revealTeamRunAncestry(id);
+    }
     return false;
   };
 
@@ -240,7 +388,7 @@ export const useWorkspaceHistoryTreeState = (params: {
       return;
     }
 
-    if (!revealSessionAncestry(key)) {
+    if (!revealSelectedAncestry(key)) {
       pendingRevealKey.value = key;
       return;
     }
@@ -249,18 +397,36 @@ export const useWorkspaceHistoryTreeState = (params: {
     pendingRevealKey.value = null;
   };
 
-  const revealDependencySignature = computed(() => workspaceNodes.value
-    .map((workspaceNode) => {
-      const rootPath = normalizeRootPath(workspaceNode.workspaceRootPath);
-      const sessions = workspaceSessions(rootPath)
-        .map((session) => `${session.sessionKey}:${session.lastActivityAt}`)
-        .join(',');
-      return `${rootPath}=${sessions}`;
-    })
-    .join('|'));
+  const revealDependencySignature = computed(() => {
+    const agentRuns = workspaceNodes.value
+      .map((workspaceNode) => {
+        const rootPath = normalizeRootPath(workspaceNode.workspaceRootPath);
+        const runs = workspaceNode.agents
+          .map((agent) => `${agent.agentDefinitionId}:${agent.runs.map((run) => run.runId).join(',')}`)
+          .join(';');
+        return `${rootPath}=${runs}`;
+      })
+      .join('|');
+
+    const teamRuns = params.runHistoryStore.getTeamNodes()
+      .map((team) => `${normalizeRootPath(team.workspaceRootPath)}:${team.teamRunId}:${team.teamDefinitionId}:${team.teamDefinitionName}`)
+      .join('|');
+
+    const teamHistoryGroups = (params.runHistoryStore.workspaceGroups ?? [])
+      .map((workspaceGroup) => {
+        const rootPath = normalizeRootPath(workspaceGroup.workspaceRootPath);
+        const groups = workspaceGroup.teamDefinitions
+          .map((group) => `${group.teamDefinitionId}:${group.teamDefinitionName}:${group.runs.map((run) => run.teamRunId).join(',')}`)
+          .join(';');
+        return `${rootPath}=${groups}`;
+      })
+      .join('|');
+
+    return `${agentRuns}::${teamRuns}::${teamHistoryGroups}`;
+  });
 
   watch(
-    [selectedSessionKey, revealDependencySignature],
+    [selectedRevealKey, revealDependencySignature],
     ([key]) => {
       applySelectedReveal(key);
     },
@@ -283,21 +449,29 @@ export const useWorkspaceHistoryTreeState = (params: {
       Object.entries(record).filter(([candidate]) => candidate !== key && !candidate.startsWith(prefix)),
     );
     expandedWorkspaces.value = omitPrefix(expandedWorkspaces.value);
+    expandedAgents.value = omitPrefix(expandedAgents.value);
+    expandedTeamDefinitions.value = omitPrefix(expandedTeamDefinitions.value);
     expandedTeamMembers.value = omitPrefix(expandedTeamMembers.value);
-    expandedSessions.value = {};
   };
 
   return {
     workspaceNodes,
-    workspaceSessions,
-    selectedSessionKey,
+    selectedRunId,
+    workspaceTeams,
+    workspaceTeamHistoryGroups,
     isWorkspaceExpanded,
     setWorkspaceExpanded,
     setWorkspaceExpandedByRootPath,
     toggleWorkspace,
-    isSessionExpanded,
-    setSessionExpanded,
-    toggleSession,
+    isAgentExpanded,
+    setAgentExpanded,
+    toggleAgent,
+    isTeamDefinitionExpanded,
+    setTeamDefinitionExpanded,
+    toggleTeamDefinition,
+    isTeamExpanded,
+    setTeamExpanded,
+    toggleTeam,
     isTeamMemberExpanded,
     setTeamMemberExpanded,
     toggleTeamMember,

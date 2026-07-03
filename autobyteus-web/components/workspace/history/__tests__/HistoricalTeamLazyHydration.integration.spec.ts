@@ -367,6 +367,12 @@ describe('Historical team lazy hydration integration', () => {
       await workspaceRow.get('button').trigger('click');
       await flushPromises();
     }
+
+    const teamDefinitionRow = wrapper.get('[data-test="workspace-team-definition-row-team-def-1"]');
+    if (teamDefinitionRow.attributes('aria-expanded') !== 'true') {
+      await teamDefinitionRow.trigger('click');
+      await flushPromises();
+    }
   };
 
   it('opens a historical team through the sidebar and lazily hydrates only the newly selected member', async () => {
