@@ -2,13 +2,13 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/design-review-report.md`
-- Solution Rework Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/solution-rework-notes.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/design-review-report.md`
+- Solution Rework Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/solution-rework-notes.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/code-review-report.md`
 - Current Investigation Round: 2
 - Trigger: Code review round 4 passed after CR-002 solution/design/implementation rework; API/E2E resumed after the prior pause.
 - Prior Investigation Reviewed: Yes — the prior round-2-based investigation artifact was superseded by CR-002 and is updated here.

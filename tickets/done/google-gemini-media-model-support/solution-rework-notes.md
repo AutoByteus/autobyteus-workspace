@@ -8,7 +8,7 @@ Resolved: user chose current ticket = `generate_video` creation support; future 
 
 Code review round 3 rerouted the Google Gemini media model support task back to solution design because official Gemini Omni Flash docs document video input/editing capabilities beyond the approved narrow `generate_video` contract.
 
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/code-review-report.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/code-review-report.md`
 - Finding: `CR-002 — Current design/tool contract omits documented Gemini Omni video-input/editing capabilities`
 
 ## Official Source Recheck

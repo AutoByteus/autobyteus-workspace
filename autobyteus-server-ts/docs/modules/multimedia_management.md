@@ -39,6 +39,15 @@ passed as a one-element array. String or comma-separated `input_images` input is
 not accepted, including as a compatibility fallback, because data URIs can
 contain commas and must stay intact as individual array entries.
 
+`generate_video` is currently a creation-only video tool. Its
+`generation_config.task` may select `text_to_video`, `image_to_video`, or
+`reference_to_video`; `image_to_video` and `reference_to_video` require at least
+one `input_images` entry. Video editing, uploaded/source-video editing,
+stateful `previous_interaction_id` flows, audio-reference upload, and voice
+editing are intentionally outside the current server-owned media tool contract
+and should be added through a future explicit tool/schema expansion rather than
+hidden behind `generate_video`.
+
 Media local-path handling is intentionally scoped to the server-owned media tool
 fields. Relative local paths resolve inside the active workspace and may not
 traverse outside it. Absolute `output_file_path` values may target any local path

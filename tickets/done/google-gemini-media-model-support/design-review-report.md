@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/in-progress/google-gemini-media-model-support/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/google-gemini-media-model-support/tickets/done/google-gemini-media-model-support/design-spec.md`
 - Current Review Round: 2
 - Trigger: CR-002 design-impact reroute from code review round 3; solution rework re-checked official Gemini Omni docs and captured user re-approval of creation-only `generate_video` scope.
 - Prior Review Round Reviewed: Round 1 design review report in this same file.

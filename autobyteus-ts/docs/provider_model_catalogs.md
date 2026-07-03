@@ -37,7 +37,7 @@ or changing provider-specific request-shaping behavior.
 | Image | `gemini-3.1-flash-lite-image` | `gemini-3.1-flash-lite-image` | Gemini | 2026-07-03 | Fast Gemini image generation model; registered in the image catalog and mapped identically for API-key and Vertex Gemini runtimes. |
 | Image | `gemini-3.1-flash-image` | `gemini-3.1-flash-image` | Gemini | 2026-07-03 | Current Gemini 3.1 Flash Image / Nano Banana 2 model ID; replaces the shut-down preview catalog ID without an alias. |
 | Image | `gemini-3-pro-image` | `gemini-3-pro-image` | Gemini | 2026-07-03 | Current Gemini 3 Pro Image model ID; replaces the shut-down preview catalog ID without an alias. |
-| Video | `gemini-omni-flash-preview` | `gemini-omni-flash-preview` | Gemini | 2026-07-03 | Registered in the video catalog for text-to-video and image-to-video through `GeminiVideoClient` and the Gemini Interactions API. |
+| Video | `gemini-omni-flash-preview` | `gemini-omni-flash-preview` | Gemini | 2026-07-03 | Docs-backed registration for creation-only `text_to_video`, `image_to_video`, and `reference_to_video` through `GeminiVideoClient` and the Gemini Interactions API; live provider generation was not validated in the delivery environment. |
 | Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
 | Audio / TTS | `gemini-2.5-pro-tts` | `gemini-2.5-pro-preview-tts` | Gemini | 2026-04-25 | User-facing compact ID maps to the documented preview API value. |
 
@@ -298,12 +298,22 @@ Gemini Omni Interactions API request shape, Files API polling/download, inline
 base64 handling, and temporary download cleanup. Server media tools call the
 video client boundary and must not call `@google/genai` directly.
 
-`gemini-omni-flash-preview` is the supported Gemini Omni Flash video model ID
-verified on 2026-07-03. The exposed generation configuration is intentionally
-narrow: `aspect_ratio`, `delivery`, `poll_interval_ms`, and `max_poll_ms`.
-Unsupported provider controls such as temperature, top-p, negative prompts,
-audio references, and voice editing must not be exposed unless Gemini documents
-support for them.
+`gemini-omni-flash-preview` is the docs-backed Gemini Omni Flash video model ID
+checked on 2026-07-03. The current AutoByteus surface is creation-only:
+`generation_config.task` accepts `text_to_video`, `image_to_video`, or
+`reference_to_video`, with image/reference creation driven by `input_images`.
+There is no current `edit_video`, uploaded/source-video editing,
+`previous_interaction_id` continuation, audio-reference upload, or voice-editing
+contract. Add those through a future explicit tool/schema expansion rather than
+as permissive hidden fields on `generate_video`.
+
+The exposed generation configuration is intentionally narrow: `task`,
+`aspect_ratio`, `delivery`, `poll_interval_ms`, and `max_poll_ms`. Unsupported
+provider controls such as temperature, top-p, negative prompts, audio
+references, and voice editing must not be exposed unless Gemini documents
+support for them. Do not treat the catalog row as proof of live Gemini
+generation: the 2026-07-03 delivery probe could not validate live Interactions
+generation with the available Vertex API-key-only credential mode.
 
 ## Defaults, Deprecations, and Removals
 
