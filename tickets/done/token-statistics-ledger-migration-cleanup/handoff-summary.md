@@ -117,3 +117,27 @@ Suggested verification if you want to exercise the behavior locally before final
 6. Confirm totals are preserved and unreconstructable rows remain visible as fallback rows rather than disappearing.
 
 User verification has been received. Delivery is finalizing the archived ticket, updating `personal`, and preparing release `v1.3.97`.
+
+
+## Finalization / Release Completion
+
+Completed after user verification on 2026-07-03:
+
+- Archived ticket commit: `1d78dfa17301de800229b31d53bda05532829fe2` (`chore(ticket): archive token ledger migration cleanup`).
+- Finalization target: `origin/personal`.
+- Target update: `origin/personal` fast-forwarded from `98db9e8bdbf05358147e68a62c0bcdd183d54bd8` through the archived ticket commit and then release commit `cda69fbce9743f433296c36856abaa44842c7dac`.
+- Release version: `1.3.97`.
+- Release tag: `v1.3.97` -> `cda69fbce9743f433296c36856abaa44842c7dac`.
+- Package versions after release: `autobyteus-web` `1.3.97`, `autobyteus-message-gateway` `1.3.97`.
+- Curated release notes were copied to `.github/release-notes/release-notes.md` by the release helper.
+- GitHub release workflows for desktop, Android, iOS, messaging gateway, and server Docker were started by the tag push.
+- Dedicated ticket worktree and local/remote ticket branches were cleaned up.
+- Final delivery/release report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-ledger-migration-cleanup/release-deployment-report.md`
+
+Workflow status snapshot immediately after tag push:
+
+- Desktop Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786517
+- iOS App Store Connect Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786553
+- Server Docker Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786566
+- Release Messaging Gateway: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786608
+- Android APK Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786631
