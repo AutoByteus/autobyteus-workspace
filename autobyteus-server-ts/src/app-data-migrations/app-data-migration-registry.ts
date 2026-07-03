@@ -6,6 +6,7 @@ import { TeamRunHistoryIndexV2AppDataMigration } from "./migrations/team-run-his
 import { TeamRunMetadataMemberTreeMigration } from "./migrations/team-run-metadata-member-tree-migration.js";
 import { RemoveSelfEvolutionRunMetadataMigration } from "./migrations/remove-self-evolution-run-metadata-migration.js";
 import { TeamCommunicationProjectionAddressMigration } from "./migrations/team-communication-projection-address-migration.js";
+import { TokenUsageExecutionAddressBackfillMigration } from "./migrations/token-usage-execution-address-backfill-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -14,6 +15,7 @@ export class AppDataMigrationRegistry {
     this.definitions = definitions ?? [
       new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
       new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
+      new TokenUsageExecutionAddressBackfillMigration(appConfigProvider.config.getMemoryDir()),
       new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
       new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),

@@ -33,6 +33,8 @@ The ledger answers, per usage observation:
     terminal result/model-usage data into `TOKEN_USAGE_UPDATED` events.
 - Ledger/pricing/projections: `src/token-usage`
 - SQL repository: `src/token-usage/repositories/sql/token-usage-ledger-repository.ts`
+- Historical execution-address app-data backfill:
+  `src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.ts`
 - GraphQL API: `src/api/graphql/types/token-usage-stats.ts`
 - Prisma model/migration:
   - `prisma/schema.prisma` model `TokenUsageLedgerEvent`
@@ -226,6 +228,48 @@ migrations, but those columns are not active Prisma/domain/API hierarchy
 authority; `execution_address_json` plus `root_team_run_id` is the current
 source for Token Statistics hierarchy.
 
+## Historical Execution-Address Backfill
+
+The execution-address rollout uses an expand/backfill/contract sequence:
+
+1. Prisma migration `20260702093000_token_usage_execution_address` expands the
+   ledger with `execution_address_json`.
+2. Required startup app-data migration
+   `20260703_token_usage_execution_address_backfill` materializes deterministic
+   historical addresses after the schema exists.
+3. Physical removal of dormant `team_run_path_json` and `member_path_json`
+   remains a future contract phase; do not add a normal Prisma drop-column
+   migration before the backfill has run and been observed.
+
+The backfill migration is the only Token Usage path that reads historical task
+delegation records. It builds a migration-local task-team run index from
+persisted delegation records, then scans `token_usage_ledger_events` and:
+
+- re-roots old delegated task-team rows from the child task-team run id back to
+  the original root team id and writes
+  `member(...) -> task_team(...) -> member(...)` or task-agent-prefixed
+  addresses;
+- writes direct team member addresses as `member(memberRouteKey)`;
+- writes direct task-agent addresses as
+  `member(memberRouteKey) -> task_agent(taskAgentRunId)` when scalar ledger
+  fields are sufficient;
+- leaves already-addressed rows unchanged;
+- skips standalone rows and unreconstructable/conflicting rows without guessing
+  parentage, so the bounded no-address fallback remains the visibility path for
+  those rows.
+
+The migration records an app-data migration summary with scanned, migrated,
+skipped, and failed counts plus category details for direct-member backfills,
+task-team corrections, task-agent backfills, already-addressed rows, standalone
+skips, insufficient-data skips, task-record-index conflicts, and row failures.
+It preserves token/cost totals; only hierarchy ownership fields
+(`root_team_run_id`, `execution_address_json`) are repaired.
+
+Normal Token Statistics queries must not query task records to reconstruct
+hierarchy. After backfill, runtime/API/frontend hierarchy remains ledger-owned:
+`root_team_run_id` plus `execution_address_json`, with scalar no-address
+fallback only for rows that cannot be deterministically converted.
+
 ## GraphQL / Statistics
 
 `TokenUsageStatisticsResolver` exposes ledger-backed reads:
@@ -397,6 +441,16 @@ the direct `Teacher` member through the Settings Token Statistics UI. That live
 run is supporting evidence, not a committed browser automation harness; broader
 task-agent and repeated same-target edge cases remain guarded by deterministic
 GraphQL E2E coverage.
+
+Historical execution-address cleanup is covered by deterministic migration and
+GraphQL E2E tests. The coverage exercises integrated historical DB shapes
+through the app-data migration runner/status/log path and then verifies Token
+Usage GraphQL output for task-team re-rooting, repeated same-target task-team
+separation, direct task-agent backfill, aggregate total preservation,
+conflict/insufficient-data skip reasons, and fallback visibility. Source scans
+also guard against reintroducing active `team_run_path_json` /
+`member_path_json` hierarchy reads or adding a current-ticket Prisma
+drop-column contract.
 
 ## Runtime E2E Coverage
 
