@@ -196,38 +196,44 @@ preserve status color semantics. It must not use the superseded CSS dotted-borde
 or dashed-stroke marker treatments, add a second dotted initials/avatar marker,
 add a trailing marker, or show visible `Temp` / `Temporary` copy in the row body.
 Selecting either a stable or transient Workspaces row uses the existing
-team-member focus path and route-key identity. The right-side Team tab owns task
-detail/content through its Active Tasks section; it is not the primary execution
+team-member focus path and route-key identity. The right-side Team tab owns
+task detail/content through its Tasks section; it is not the primary execution
 hierarchy or status surface.
 
 `TeamOverviewPanel` owns the local Messages/Tasks accordion state. Messages
-remains the default for a selected team run with no active task entries, but the
-panel opens Tasks automatically when the selected team run already has active
-task entries or when a new active-task identity appears while the same run is
-mounted. The auto-open signature is derived from the same
-`deriveActiveTaskEntries(...)` entries consumed by `TeamActiveTasksSection`,
-keyed by task kind, member route, task id, and execution run id, so unrelated
-messages or refreshes do not open Tasks. A user may still collapse Tasks for the
-same task set; the panel reopens only for a different active-task signature or a
-selected-run change to a run that has active tasks. When the selected team run
-changes and there are no active tasks, the panel opens Messages.
-`TeamActiveTasksSection` derives task-agent and task-team entries from the
-transient projection nodes in `AgentTeamContext`, owns the Team-tab split layout
-and section-local task/reference selection, and renders a task-detail navigator
-plus detail pane.
+remains the default for a selected team run with no delegated task entries, but
+the panel opens Tasks automatically when the selected team run already has
+persisted delegated task entries or when a new delegated-task identity appears
+while the same run is mounted. The auto-open signature is derived from the same
+`deriveDelegatedTaskEntries(...)` entries consumed by
+`TeamDelegatedTasksSection`, keyed by persisted task id and live execution
+identity when available, so unrelated messages or refreshes do not open Tasks. A
+user may still collapse Tasks for the same task set; the panel reopens only for
+a different delegated-task signature or a selected-run change to a run that has
+delegated tasks. When the selected team run changes and there are no delegated
+tasks, the panel opens Messages.
 
-Inside that section, `TeamActiveTaskNavigator` renders task-content navigation
-only: clean text task summaries without a leading status dot or visible status
-label, task-owned reference rows with visible selected state and no separate
-visible `References` heading, and collapsed Technical details for task type,
-task id, execution run id, target metadata, and raw task arguments. Summary and
-reference clicks update only the section-local task/reference detail selection;
-they must not focus the center conversation/composer, replace it with a task
-team card, or repeat the Workspaces execution hierarchy. It must not render
-responsible actor/member hierarchy rows, `Focus agent` / `Focus team` controls,
-approval controls, leading summary status dots, or visible summary status copy
-such as `ACTIVE` / `RUNNING`.
-`TeamActiveTaskDetailPane` is content/reference-only: it renders the selected
+`TeamDelegatedTasksSection` derives entries from persisted task-delegation
+records in `taskDelegationStore`, filtered by the focused sender/receiver
+address perspective. Live task-agent/task-team projection nodes in
+`AgentTeamContext` are optional enrichment for matching records and provisional
+visibility for not-yet-refreshed live tasks; they are not the durable display
+source. Opening or reloading active and historical team runs hydrates records via
+`getTaskDelegationRecords(teamRunId)`, and live task-delegation websocket events
+schedule a debounced records refresh.
+
+Inside that section, `TeamDelegatedTaskNavigator` renders task-content
+navigation only: clean text task summaries without a leading status dot or
+visible status label, task-owned reference rows with visible selected state and
+no separate visible `References` heading, and collapsed Technical details for
+task type, task id, execution run id, target metadata, and raw task arguments.
+Summary and reference clicks update only the section-local task/reference detail
+selection; they must not focus the center conversation/composer, replace it with
+a task team card, or repeat the Workspaces execution hierarchy. It must not
+render responsible actor/member hierarchy rows, `Focus agent` / `Focus team`
+controls, approval controls, leading summary status dots, or visible summary
+status copy such as `ACTIVE` / `RUNNING`.
+`TeamDelegatedTaskDetailPane` is content/reference-only: it renders the selected
 task body or selected task-owned reference preview and intentionally does not
 duplicate the actor/team heading, status chip, waiting notice, focus controls,
 actor/member roster, reference list, or Technical details in the right pane.
@@ -240,23 +246,25 @@ display-row projections rather than ordinary durable `TeamMemberTreeRow` history
 rows. Transient task-team roots with child rows are collapsed by default; their
 user-controlled disclosure state is keyed by the transient execution row identity
 so simultaneous task-team executions do not accidentally share expansion state.
-Workspaces must not render active-task summary blocks, task reference rows, raw
-task arguments, approval controls, or active-task Technical details. Tasks is not
-an approval action surface: pending approval can appear only as non-actionable
-task context or technical metadata there, and Activity remains the owner for
-Approve/Deny controls and approval command routing. Task reference files come
-from task-delegation event metadata and open in the Tasks right pane through the
-task-owned reference route; Messages remains message-owned and its
-content/reference UX is not routed through task identity.
+Workspaces must not render delegated-task summary blocks, task reference rows,
+raw task arguments, approval controls, or delegated-task Technical details.
+Tasks is not an approval action surface: pending approval can appear only as
+non-actionable task context or technical metadata there, and Activity remains
+the owner for Approve/Deny controls and approval command routing. Task reference
+files come from persisted task-delegation records and open in the Tasks right
+pane through the task-owned reference route; Messages remains message-owned and
+its content/reference UX is not routed through task identity.
 The center workspace remains the focused conversation/event/composer surface and
 must not render `TeamActiveTaskExecutionsBar` or any replacement center list.
 
 Running and awaiting-acceptance task executions must remain visible as
-Workspaces transient identity rows and as Team → Active Tasks detail entries
-after active team reopen/hydration, even when server resume metadata only lists
-stable logical coordinator/member rows. Run-open hydration therefore restores
-concrete task executions from live projection/identity instead of collapsing them
-into the logical member or team parent.
+Workspaces transient identity rows and as Team → Tasks detail entries after
+active team reopen/hydration when live projection is present. Persisted delegated
+task records must remain visible in Team → Tasks for active, accepted,
+awaiting-review, and historical tasks even after those transient runtime rows
+settle, disappear, or the backend restarts. Run-open hydration therefore loads
+root-run task records and uses live projection/identity only as enrichment
+instead of collapsing tasks into the logical member or team parent.
 Stream routing is projection-first: task-team root/scoped child identity wins before
 task-agent identity, then exact logical route/path identity, then compatible
 run-id fallback. The frontend must not recreate the removed `isTaskAgentRunId`
@@ -732,28 +740,30 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 4.  **Token Usage Meter (`TokenUsageMeterStore`)**:
     - Listens to live `TOKEN_USAGE_UPDATED` events through `tokenUsageHandler.ts` and hydrates reopened/focused runs through ledger-backed GraphQL summary queries.
     - Maintains separate run and team summaries keyed by server run/team ids, deduplicates events by `usage_event_id` / `idempotency_key`, and applies only server-provided token/cost/component fields.
-    - Preserves gross input, standard/uncached input, cache-read/cache-write input, cache state, cache hit rates, output/reasoning/billable output, nullable component costs, `apiCostStatus` (`estimated`, `price_missing`, `partial_price_missing`, `local_no_api_bill`, or `mixed`), missing price dimensions, latest prompt/context-window fields, latest model/runtime, and `usageReportCount`.
+    - Preserves gross input, standard/uncached input, cache-read/cache-write input, cache state, cache hit rates, output/reasoning/billable output, nullable component costs, server-provided component `unitPrices`, `apiCostStatus` (`estimated`, `price_missing`, `partial_price_missing`, `local_no_api_bill`, or `mixed`), missing price dimensions, latest prompt/context-window fields, latest model/runtime, and `usageReportCount`.
     - Missing price data is rendered as price missing/partial rather than `$0`; local runtime rows are rendered as `Local / no API bill`; mixed-currency/provider aggregates keep token totals but no fake aggregate monetary total.
     - Powers the right-side `Token` tab (`TokenUsageMeterPanel.vue`). The internal tab id may remain `usage`; the user-visible label is token-oriented. Workspace headers intentionally do not render token/cost chips; token usage detail belongs in the Token tab rather than the agent/team top header.
     - `useTokenUsageWorkspaceScope.ts` owns the Token tab subject boundary. Single-agent workspaces resolve the selected agent run as the primary summary; team workspaces resolve the focused leaf member's agent run as the primary summary. Team aggregates must not override a focused member primary summary; if a focused route is not a leaf run, the panel shows a focused-run unavailable state instead of falling back to the aggregate.
-    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, and `Pricing details`) and never imports provider pricing metadata or recalculates model prices.
+    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`) and never imports provider pricing metadata or recalculates model prices.
     - `TeamTokenUsageSummary.vue` renders the subordinate team comparison as one semantic grouped-metric table for team workspaces. The table keeps `Member`, `Gross input`, `Output`, and `Total` columns available at all widths; each metric cell pairs the token count with its matching API cost subline, the Team subtitle explains once that costs are estimated and that Total cost is input plus output cost, horizontal scrolling is scoped to the Team table region when the right-side panel is too narrow, visible focused-member state is preserved, and the explicitly labeled `Team total` aggregate remains the final row when available.
     - `Gross input` is cumulative input sent to provider context and may include discounted cache-hit tokens. It is distinct from `latestPromptTokens`, which is the latest model-call prompt/context size used for the latest prompt progress bar.
     - `Input breakdown` renders server-owned uncached/full-price input, cache hits/discounted input, cache writes, input cache rate, and component costs only when meaningful; zero/unknown rows remain hidden instead of fabricated.
+    - `Calculation details` is the explicit unit-price disclosure. It shows component rows with tokens, server-provided unit price, cost, and the formula `tokens ÷ 1,000,000 × unit price`; mixed, missing, partial-missing, and local/no-bill unit-price states render as labels such as `varies by call`, `unpriced`, `partially missing`, or `Local / no API bill` instead of a frontend price table or blended rate.
     - `Usage reports` in pricing details is `usageReportCount`, usually model calls or model turns. It is not user messages, chat rows, or a raw primary `events` label.
-    - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost.
+    - Reasoning output appears only inside the Output card and only when the server summary reports positive reasoning output tokens. The copy states that thinking tokens are included in output tokens and estimated output cost; calculation details show the reasoning unit price as the output price / included in output cost so users do not double-count thinking.
     - Unknown latest-prompt/context-window pressure is intentionally hidden; the latest prompt block renders only when both a numeric pressure percentage and effective context window are present.
-    - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, reasoning-token, model/runtime, usage-report, and latest-prompt display where present.
-    - Live store coverage must preserve runtime-native summary fields from server events, including Codex-style cache/reasoning tokens/cost, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the token meter.
-    - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, and runtime field names, plus frontend store/component tests for live aggregation, GraphQL hydration replacement, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.
+    - Browser-facing proof should validate clean agent/team headers with no token chip and validate the Token tab against server/GraphQL-backed summaries, including focused member primary selection, the scoped horizontally scrollable grouped Team table at constrained widths, absence of a standalone Cost column, the `Total` grouped metric column remaining reachable and row-associated, normal estimated rows omitting repeated status copy, subordinate final-row team total, price-missing, partial-price, local/no-bill, mixed-currency, cache-positive, unit-price calculation details, reasoning-token included-in-output copy, model/runtime, usage-report, and latest-prompt display where present.
+    - Live store coverage must preserve runtime-native summary fields from server events, including Codex-style cache/reasoning tokens/cost, component unit prices, latest runtime/ingestion/model metadata, and latest prompt/context-window fields used by the token meter. Live-event unit prices and hydrated GraphQL summaries should converge to the same display shape.
+    - Current durable regression coverage includes GraphQL E2E for cached gross input, provider-specific semantics, local/no-bill, custom missing price, mixed currency, runtime field names, and unit-price hydration across run/team/member/statistics summaries, plus frontend store/component tests for live aggregation, live/hydrated unit-price convergence, GraphQL hydration replacement, focused team member primary selection, grouped Team table headers/rows, paired token+cost metric cells, absence of a standalone Cost column, scoped table-scroll hooks, clean header rendering, Token Meter hierarchy, calculation details, cache-aware rows, price-status labels, localization catalog coverage, and latest prompt fields. Latest visual evidence for the cache-aware Token Meter is under `tickets/token-input-prompt-discrepancy-analysis/implementation-evidence/`.
 5.  **Settings Token Statistics (`tokenUsageStatisticsStore`)**:
     - Owns the historical Settings > Token Statistics page state separately from the live/focused Token Meter. It fetches the ledger-backed task/team projection and the runtime/model diagnostics projection for the selected observed-usage date range.
     - The selected Settings sidebar item is the visible page identity; the main content starts with one compact filter/control card instead of repeating a visible `Token Statistics` page title. The card orders controls as grouping select (`Task` / `Model`), start/end dates, then `Fetch Statistics`.
-    - The page defaults to the `Task` grouping. Top-level rows are standalone agent runs or root team runs; repeated executions remain separate by concrete run/team identity; team member agent usage is rendered only as nested member rows so team totals are not double-counted.
+    - The page defaults to the `Task` grouping. Top-level rows are standalone agent runs or root team runs; descendants are backend-provided recursive `children` rows with `rowKind` values for member runs, task-team runs, and task-agent runs. Repeated task-team/task-agent executions remain separate by concrete run id / `executionAddress`; team member and delegated task usage is rendered only under its parent so team totals are not double-counted.
+    - The store/table consume server-owned `children` and `executionAddress` values; they must not reconstruct hierarchy from task records, memory paths, display names, or removed Token Usage `members`/path fields. The current GraphQL query requests five nested `children` levels, so deeper backend trees require an explicit query-depth follow-up before every level is visible.
     - Row labels use token-usage-owned display fields (`teamName`, `agentName`, `runSummary`, `runCreatedAt`, `memberName`) captured/backfilled at the ledger boundary. Created time uses `runCreatedAt` when available; otherwise the store/table preserve `createdTimeSource` and the UI labels the timestamp as first usage observed rather than true task creation. Settings statistics does not add workspace display fields or inactive no-usage roster rows.
     - The frontend must not send a `rangeMode` variable or render `Usage during period`, `Select Date Range:`, `Group by:`, a separate `By Task` / `By Model` tab row, or a `Tasks created in period` selector until a backend-created-time filtering contract exists.
     - `Model` remains a secondary diagnostics grouping by runtime/model pair, with runtime fallbacks and the same server-owned cost/status semantics as the task table.
-    - Focused coverage for this surface includes backend GraphQL E2E plus store/page/table component specs for Task default grouping, team expansion, first-usage fallback, cost breakdowns, absence of `rangeMode`, and runtime/model diagnostics.
+    - Focused coverage for this surface includes backend GraphQL E2E plus store/page/table component specs for Task default grouping, recursive `children`, `executionAddress`, direct members, task-team/task-agent rows, nested task-agent prefixes, repeated same-target execution separation, legacy no-address fallback, first-usage fallback, cost breakdowns, absence of `rangeMode`, and runtime/model diagnostics. A 2026-07-02 live browser/API/UI evidence run also rendered `Nested Classroom Test Team -> StudentStudyGroup -> student_one` plus direct `Teacher` rows using Codex App Server / GPT-5.5; it complements deterministic coverage rather than replacing it.
 6.  **Todos (`AgentTodoStore`)**:
     - Maintains the agent's Todo list separately from the chat history.
 

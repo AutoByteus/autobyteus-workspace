@@ -26,9 +26,8 @@ export const buildTokenUsageRunSummary = (
   return {
     run_id: input.runId,
     root_team_run_id: input.rootTeamRunIdOverride ?? latest?.root_team_run_id ?? null,
-    team_run_path: latest?.team_run_path ?? null,
+    execution_address: latest?.execution_address ?? null,
     member_agent_run_id: latest?.member_agent_run_id ?? null,
-    member_path: latest?.member_path ?? null,
     member_route_key: latest?.member_route_key ?? null,
     agent_definition_id: latest?.agent_definition_id ?? null,
     workspace_id: latest?.workspace_id ?? null,
@@ -61,6 +60,7 @@ export const buildTokenUsageRunSummary = (
     missing_price_dimensions: aggregate.missing_price_dimensions,
     pricing_policy_key: aggregate.pricing_policy_key,
     selected_pricing_tier_id: aggregate.selected_pricing_tier_id,
+    unit_prices: aggregate.unit_prices,
     latest_prompt_tokens: latest?.latest_prompt_tokens ?? null,
     effective_context_window_tokens: latest?.effective_context_window_tokens ?? null,
     context_window_usage_percent: latest?.context_window_usage_percent ?? null,

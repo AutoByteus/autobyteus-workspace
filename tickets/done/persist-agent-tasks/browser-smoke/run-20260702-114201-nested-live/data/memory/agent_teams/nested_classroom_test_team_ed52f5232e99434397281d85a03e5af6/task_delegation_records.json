@@ -1,0 +1,110 @@
+{
+  "teamRunId": "nested_classroom_test_team_ed52f5232e99434397281d85a03e5af6",
+  "records": [
+    {
+      "taskId": "task_0001",
+      "status": "accepted",
+      "senderAddress": {
+        "segments": [
+          {
+            "kind": "member",
+            "memberRouteKey": "Teacher"
+          }
+        ]
+      },
+      "receiverAddress": {
+        "segments": [
+          {
+            "kind": "member",
+            "memberRouteKey": "StudentStudyGroup"
+          },
+          {
+            "kind": "task_team",
+            "taskTeamRunId": "studentstudygroup_57d8220343e64a729fa42dffc494f401"
+          },
+          {
+            "kind": "member",
+            "memberRouteKey": "student_one"
+          }
+        ]
+      },
+      "receiverTargetKind": "team",
+      "content": "Objective: Test nested team delegation. Return exactly the token requested by the user.\n\nContext: Teacher is validating that a delegated task can be assigned to the nested team StudentStudyGroup and reviewed.\n\nConstraints: Do not include any extra words, punctuation, formatting, or explanation in the task result. The submitted result message must be exactly:\nNESTED_CLASSROOM_OK\n\nDone condition: Submit the task result with exactly NESTED_CLASSROOM_OK as the complete message.",
+      "referenceFiles": [],
+      "taskRun": {
+        "address": {
+          "segments": [
+            {
+              "kind": "member",
+              "memberRouteKey": "StudentStudyGroup"
+            },
+            {
+              "kind": "task_team",
+              "taskTeamRunId": "studentstudygroup_57d8220343e64a729fa42dffc494f401"
+            }
+          ]
+        },
+        "startedAt": "2026-07-02T09:45:08.300Z"
+      },
+      "updates": [
+        {
+          "kind": "submission",
+          "submissionId": "task_0001_submission_0001",
+          "senderAddress": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberRouteKey": "StudentStudyGroup"
+              },
+              {
+                "kind": "task_team",
+                "taskTeamRunId": "studentstudygroup_57d8220343e64a729fa42dffc494f401"
+              }
+            ]
+          },
+          "receiverAddress": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberRouteKey": "Teacher"
+              }
+            ]
+          },
+          "content": "NESTED_CLASSROOM_OK",
+          "referenceFiles": [],
+          "createdAt": "2026-07-02T09:45:17.133Z"
+        },
+        {
+          "kind": "review",
+          "reviewId": "task_0001_review_0001",
+          "senderAddress": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberRouteKey": "Teacher"
+              }
+            ]
+          },
+          "receiverAddress": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberRouteKey": "StudentStudyGroup"
+              },
+              {
+                "kind": "task_team",
+                "taskTeamRunId": "studentstudygroup_57d8220343e64a729fa42dffc494f401"
+              }
+            ]
+          },
+          "reviewedSubmissionId": "task_0001_submission_0001",
+          "decision": "accept",
+          "content": "Result matches the requested token exactly.",
+          "referenceFiles": [],
+          "createdAt": "2026-07-02T09:45:19.783Z"
+        }
+      ],
+      "createdAt": "2026-07-02T09:45:08.148Z"
+    }
+  ]
+}

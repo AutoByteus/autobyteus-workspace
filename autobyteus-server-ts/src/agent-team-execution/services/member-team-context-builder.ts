@@ -2,6 +2,7 @@ import { AgentTeamDefinitionService } from "../../agent-team-definition/services
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
+import type { TokenUsageTeamExecutionScope } from "../domain/token-usage-execution-scope.js";
 import type { InterAgentMessageDeliveryHandler } from "../domain/inter-agent-message-delivery.js";
 import {
   MemberTeamContext,
@@ -13,6 +14,10 @@ import {
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
 import { buildTeamMemberAddress } from "../domain/inter-agent-message-delivery.js";
 import { MemberCommunicationRosterBuilder } from "./member-communication-roster-builder.js";
+import {
+  getTokenUsageExecutionAddressBuilder,
+  type TokenUsageExecutionAddressBuilder,
+} from "./token-usage-execution-address-builder.js";
 
 export type MemberTeamContextMemberInput =
   | {
@@ -54,6 +59,7 @@ export class MemberTeamContextBuilder {
   constructor(
     teamDefinitionService: AgentTeamDefinitionService = AgentTeamDefinitionService.getInstance(),
     rosterBuilder: MemberCommunicationRosterBuilder = new MemberCommunicationRosterBuilder(),
+    private readonly tokenUsageAddressBuilder: TokenUsageExecutionAddressBuilder = getTokenUsageExecutionAddressBuilder(),
   ) {
     this.teamDefinitionService = teamDefinitionService;
     this.rosterBuilder = rosterBuilder;
@@ -73,6 +79,7 @@ export class MemberTeamContextBuilder {
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
     taskAgentInstance?: TaskAgentInstanceIdentity | null;
     taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    tokenUsageTeamScope?: TokenUsageTeamExecutionScope | null;
   }): Promise<MemberTeamContext> {
     const members = input.members.map((member) => this.buildMemberDescriptor(input.teamRunId, member));
     const currentMemberRouteKey = input.currentMemberRouteKey.trim();
@@ -90,6 +97,13 @@ export class MemberTeamContextBuilder {
     });
     const allowedRecipientNames = communicationRecipients.map((recipient) => recipient.recipientName);
     const deliverInterAgentMessage = input.deliverInterAgentMessage ?? null;
+    const tokenUsageTeamScope = input.tokenUsageTeamScope ??
+      this.tokenUsageAddressBuilder.buildRootTeamScope(input.teamRunId);
+    const tokenUsageExecutionScope = this.tokenUsageAddressBuilder.buildMemberRunScope({
+      teamScope: tokenUsageTeamScope,
+      memberRouteKey: currentMemberRouteKey,
+      taskAgentInstance: input.taskAgentInstance ?? null,
+    });
     const teamName =
       parentBoundary?.representedSubTeam.memberName?.trim() ||
       await this.resolveTeamName(input.teamDefinitionId);
@@ -113,6 +127,7 @@ export class MemberTeamContextBuilder {
       deliverInterAgentMessage,
       taskAgentInstance: input.taskAgentInstance ?? null,
       taskTeamInstance: input.taskTeamInstance ?? null,
+      tokenUsageExecutionScope,
     });
   }
 

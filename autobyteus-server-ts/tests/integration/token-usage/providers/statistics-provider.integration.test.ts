@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createTokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenUsageStatisticsProvider } from "../../../../src/token-usage/providers/statistics-provider.js";
 import type { TokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
+import type { TokenUsageExecutionAddress } from "../../../../src/token-usage/domain/execution-address.js";
 
 const mockStore = {
   listEventsInPeriod: vi.fn(),
@@ -30,7 +31,9 @@ const buildEvent = (input: {
   runSummary?: string | null;
   runCreatedAt?: string | null;
   memberName?: string | null;
-  memberPath?: string[] | null;
+  executionAddress?: TokenUsageExecutionAddress | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
 }): TokenUsageUpdatedPayload => {
   const runId = input.runId ?? `stats_${input.model ?? "unknown"}`;
   return {
@@ -40,11 +43,13 @@ const buildEvent = (input: {
         idempotency_key: `stats:${runId}:${input.observedAt ?? Math.random()}`,
         observed_at: input.observedAt,
         root_team_run_id: input.rootTeamRunId ?? null,
+        execution_address: input.executionAddress ?? null,
         member_agent_run_id: input.memberAgentRunId ?? null,
         member_route_key: input.memberRouteKey ?? null,
-        member_path: input.memberPath ?? null,
         agent_definition_id: input.agentDefinitionId ?? null,
         team_name: input.teamName ?? null,
+        task_agent_run_id: input.taskAgentRunId ?? null,
+        task_id: input.taskId ?? null,
         agent_name: input.agentName ?? null,
         run_summary: input.runSummary ?? null,
         run_created_at: input.runCreatedAt ?? null,
@@ -177,7 +182,7 @@ describe("TokenUsageStatisticsProvider", () => {
         memberAgentRunId: "member-a",
         memberRouteKey: "designer",
         memberName: "Solution Designer",
-        memberPath: ["designer"],
+        executionAddress: { segments: [{ kind: "member", memberRouteKey: "designer" }] },
         teamName: "Team New",
         runSummary: "Build a feature",
         runCreatedAt: "2026-06-29T10:00:00.000Z",
@@ -197,7 +202,7 @@ describe("TokenUsageStatisticsProvider", () => {
         memberAgentRunId: "member-b",
         memberRouteKey: "builder",
         memberName: "Implementation Engineer",
-        memberPath: ["builder"],
+        executionAddress: { segments: [{ kind: "member", memberRouteKey: "builder" }] },
         teamName: "Team New",
         runSummary: "Build a feature",
         runCreatedAt: "2026-06-29T10:00:00.000Z",
@@ -243,8 +248,8 @@ describe("TokenUsageStatisticsProvider", () => {
     expect(team.createdTimeSource).toBe("RUN_HISTORY");
     expect(team.aggregate.gross_input_tokens).toBe(150);
     expect(team.aggregate.estimated_api_total_cost).toBeCloseTo(1.65, 10);
-    expect(team.members.map((member) => member.memberRouteKey).sort()).toEqual(["builder", "designer"]);
-    expect(team.members.map((member) => member.memberName).sort()).toEqual([
+    expect(team.children.map((member) => member.memberRouteKey).sort()).toEqual(["builder", "designer"]);
+    expect(team.children.map((member) => member.displayName).sort()).toEqual([
       "Implementation Engineer",
       "Solution Designer",
     ]);
@@ -265,7 +270,7 @@ describe("TokenUsageStatisticsProvider", () => {
         memberAgentRunId: "member-designer",
         memberRouteKey: "solution_designer",
         memberName: "solution_designer",
-        memberPath: ["solution_designer"],
+        executionAddress: { segments: [{ kind: "member", memberRouteKey: "solution_designer" }] },
         teamName: "Usage Team",
         runCreatedAt: "2026-06-29T09:00:00.000Z",
         model: "gpt-5.5",
@@ -302,21 +307,150 @@ describe("TokenUsageStatisticsProvider", () => {
 
     const team = result.rows[0]!;
     expect(team.aggregate.estimated_api_total_cost).toBeCloseTo(1.2, 10);
-    expect(team.members.map((member) => member.memberRouteKey).sort()).toEqual([
+    expect(team.children.map((member) => member.memberRouteKey).sort()).toEqual([
       "legacy_member",
       "solution_designer",
     ]);
-    expect(team.members.some((member) => member.memberRouteKey === "architecture_reviewer")).toBe(false);
-    expect(team.members.some((member) => member.aggregate.usage_report_count === 0)).toBe(false);
-    expect(team.members.find((member) => member.memberRouteKey === "solution_designer")).toMatchObject({
-      memberName: "solution_designer",
+    expect(team.children.some((member) => member.memberRouteKey === "architecture_reviewer")).toBe(false);
+    expect(team.children.some((member) => member.aggregate.usage_report_count === 0)).toBe(false);
+    expect(team.children.find((member) => member.memberRouteKey === "solution_designer")).toMatchObject({
+      displayName: "solution_designer",
       aggregate: expect.objectContaining({ usage_report_count: 1, gross_input_tokens: 100 }),
     });
-    expect(team.members.find((member) => member.memberRouteKey === "legacy_member")).toMatchObject({
+    expect(team.children.find((member) => member.memberRouteKey === "legacy_member")).toMatchObject({
       memberRouteKey: "legacy_member",
       memberAgentRunId: "legacy-run",
-      memberName: "legacy_member",
+      displayName: "legacy_member",
       aggregate: expect.objectContaining({ gross_input_tokens: 7 }),
+    });
+  });
+
+  it("builds recursive task-team and task-agent rows from execution addresses", async () => {
+    mockStore.listEventsInPeriod.mockResolvedValue([
+      buildEvent({
+        runId: "student-one-run",
+        rootTeamRunId: "nested-classroom-root",
+        memberAgentRunId: "student-one-run",
+        memberRouteKey: "student_one",
+        memberName: "student_one",
+        teamName: "Nested Classroom Test Team",
+        executionAddress: {
+          segments: [
+            { kind: "member", memberRouteKey: "StudentStudyGroup" },
+            { kind: "task_team", taskTeamRunId: "studentstudygroup-task-team-run-1" },
+            { kind: "member", memberRouteKey: "student_one" },
+          ],
+        },
+        model: "gpt-5",
+        inputTokens: 30,
+        outputTokens: 3,
+        inputCost: 0.3,
+        outputCost: 0.03,
+        totalCost: 0.33,
+        status: "estimated",
+        currency: "USD",
+        observedAt: "2026-07-01T10:01:00.000Z",
+      }),
+      buildEvent({
+        runId: "student-two-run",
+        rootTeamRunId: "nested-classroom-root",
+        memberAgentRunId: "student-two-run",
+        memberRouteKey: "student_two",
+        memberName: "student_two",
+        teamName: "Nested Classroom Test Team",
+        executionAddress: {
+          segments: [
+            { kind: "member", memberRouteKey: "StudentStudyGroup" },
+            { kind: "task_team", taskTeamRunId: "studentstudygroup-task-team-run-1" },
+            { kind: "member", memberRouteKey: "student_two" },
+          ],
+        },
+        model: "gpt-5",
+        inputTokens: 40,
+        outputTokens: 4,
+        inputCost: 0.4,
+        outputCost: 0.04,
+        totalCost: 0.44,
+        status: "estimated",
+        currency: "USD",
+        observedAt: "2026-07-01T10:02:00.000Z",
+      }),
+      buildEvent({
+        runId: "codex-task-agent-run",
+        rootTeamRunId: "nested-classroom-root",
+        memberAgentRunId: "codex-task-agent-run",
+        memberRouteKey: "Codex",
+        memberName: "Codex",
+        taskAgentRunId: "codex-task-agent-run",
+        teamName: "Nested Classroom Test Team",
+        executionAddress: {
+          segments: [
+            { kind: "member", memberRouteKey: "Codex" },
+            { kind: "task_agent", taskAgentRunId: "codex-task-agent-run" },
+          ],
+        },
+        model: "gpt-5",
+        inputTokens: 50,
+        outputTokens: 5,
+        inputCost: 0.5,
+        outputCost: 0.05,
+        totalCost: 0.55,
+        status: "estimated",
+        currency: "USD",
+        observedAt: "2026-07-01T10:03:00.000Z",
+      }),
+      buildEvent({
+        runId: "nested-task-agent-run",
+        rootTeamRunId: "nested-classroom-root",
+        memberAgentRunId: "nested-task-agent-run",
+        memberRouteKey: "student_one",
+        memberName: "student_one",
+        taskAgentRunId: "nested-task-agent-run",
+        teamName: "Nested Classroom Test Team",
+        executionAddress: {
+          segments: [
+            { kind: "member", memberRouteKey: "StudentStudyGroup" },
+            { kind: "task_team", taskTeamRunId: "studentstudygroup-task-team-run-1" },
+            { kind: "member", memberRouteKey: "student_one" },
+            { kind: "task_agent", taskAgentRunId: "nested-task-agent-run" },
+          ],
+        },
+        model: "gpt-5",
+        inputTokens: 20,
+        outputTokens: 2,
+        inputCost: 0.2,
+        outputCost: 0.02,
+        totalCost: 0.22,
+        status: "estimated",
+        currency: "USD",
+        observedAt: "2026-07-01T10:04:00.000Z",
+      }),
+    ]);
+
+    const result = await provider().getTaskStatisticsInPeriod(
+      new Date("2026-07-01T00:00:00.000Z"),
+      new Date("2026-07-02T00:00:00.000Z"),
+    );
+
+    expect(result.rows).toHaveLength(1);
+    const team = result.rows[0]!;
+    expect(team.displayName).toBe("Nested Classroom Test Team");
+    expect(team.aggregate.gross_input_tokens).toBe(140);
+    const taskTeam = team.children.find((row) => row.rowKind === "TASK_TEAM_RUN")!;
+    expect(taskTeam).toMatchObject({
+      displayName: "StudentStudyGroup",
+      taskTeamRunId: "studentstudygroup-task-team-run-1",
+      aggregate: expect.objectContaining({ gross_input_tokens: 90 }),
+    });
+    expect(taskTeam.children.map((row) => row.displayName).sort()).toEqual(["student_one", "student_one", "student_two"]);
+    expect(taskTeam.children.find((row) => row.rowKind === "TASK_AGENT_RUN")).toMatchObject({
+      taskAgentRunId: "nested-task-agent-run",
+      aggregate: expect.objectContaining({ gross_input_tokens: 20 }),
+    });
+    expect(team.children.find((row) => row.rowKind === "TASK_AGENT_RUN")).toMatchObject({
+      displayName: "Codex",
+      taskAgentRunId: "codex-task-agent-run",
+      aggregate: expect.objectContaining({ gross_input_tokens: 50 }),
     });
   });
 });

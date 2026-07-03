@@ -71,4 +71,42 @@ describe("TaskDelegationReferenceContentService", () => {
       code: "REFERENCE_NOT_FOUND",
     } satisfies Partial<TaskDelegationReferenceContentError>);
   });
+
+  it("falls back to persisted task records when no active task service is registered", async () => {
+    const tempDir = await createTempDir();
+    const filePath = path.join(tempDir, "persisted-task-reference.md");
+    await fs.writeFile(filePath, "# Persisted Reference", "utf-8");
+    const service = new TaskDelegationReferenceContentService(
+      { getExisting: () => null },
+      {
+        resolveReference: async (input) => {
+          expect(input).toEqual({
+            rootTeamRunId: "root-team-run",
+            taskId: "task_0001",
+            referenceId: "persisted-ref",
+          });
+          return {
+            record: { taskId: "task_0001" },
+            reference: {
+              referenceId: "persisted-ref",
+              path: filePath,
+              type: "file",
+              createdAt: "2026-07-02T00:00:00.000Z",
+              updatedAt: "2026-07-02T00:00:00.000Z",
+            },
+          } as any;
+        },
+      },
+    );
+
+    const resolved = await service.resolveContent({
+      teamRunId: "root-team-run",
+      taskId: "task_0001",
+      referenceId: "persisted-ref",
+    });
+
+    expect(resolved.absolutePath).toBe(filePath);
+    expect(resolved.mimeType).toBe("text/markdown");
+    expect(await readStreamAsText(resolved.stream)).toBe("# Persisted Reference");
+  });
 });

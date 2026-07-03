@@ -1527,6 +1527,7 @@ export type Query = {
   getSearchConfig: SearchConfig;
   getSelfEvolutionRunRecord?: Maybe<GraphqlSelfEvolutionRunRecord>;
   getServerSettings: Array<ServerSetting>;
+  getTaskDelegationRecords: Array<TaskDelegationRecordObject>;
   getTeamCommunicationMessages: Array<TeamCommunicationMessageObject>;
   getTeamMemberRunMemoryView: AgentMemoryView;
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
@@ -1662,6 +1663,11 @@ export type QueryGetRunProjectionArgs = {
 
 export type QueryGetSelfEvolutionRunRecordArgs = {
   evolutionRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetTaskDelegationRecordsArgs = {
+  teamRunId: Scalars['String']['input'];
 };
 
 
@@ -2076,6 +2082,64 @@ export type StreamableHttpMcpServerConfigInput = {
   url: Scalars['String']['input'];
 };
 
+export type TaskDelegationRecordObject = {
+  __typename?: 'TaskDelegationRecordObject';
+  content: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
+  receiverAddress: TaskDelegationTargetAddressObject;
+  receiverTargetKind: Scalars['String']['output'];
+  referenceFiles: Array<TaskDelegationReferenceFileObject>;
+  senderAddress: TaskDelegationTargetAddressObject;
+  status: Scalars['String']['output'];
+  taskId: Scalars['String']['output'];
+  taskRun?: Maybe<TaskDelegationTaskRunObject>;
+  updates: Array<TaskDelegationUpdateObject>;
+};
+
+export type TaskDelegationReferenceFileObject = {
+  __typename?: 'TaskDelegationReferenceFileObject';
+  createdAt: Scalars['String']['output'];
+  path: Scalars['String']['output'];
+  referenceId: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
+};
+
+export type TaskDelegationTargetAddressObject = {
+  __typename?: 'TaskDelegationTargetAddressObject';
+  parentTeamRunId?: Maybe<Scalars['String']['output']>;
+  segments: Array<TaskDelegationTargetSegmentObject>;
+};
+
+export type TaskDelegationTargetSegmentObject = {
+  __typename?: 'TaskDelegationTargetSegmentObject';
+  kind: Scalars['String']['output'];
+  memberPath?: Maybe<Array<Scalars['String']['output']>>;
+  memberRouteKey?: Maybe<Scalars['String']['output']>;
+  taskAgentRunId?: Maybe<Scalars['String']['output']>;
+  taskTeamRunId?: Maybe<Scalars['String']['output']>;
+};
+
+export type TaskDelegationTaskRunObject = {
+  __typename?: 'TaskDelegationTaskRunObject';
+  address: TaskDelegationTargetAddressObject;
+  startedAt: Scalars['String']['output'];
+};
+
+export type TaskDelegationUpdateObject = {
+  __typename?: 'TaskDelegationUpdateObject';
+  content?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
+  decision?: Maybe<Scalars['String']['output']>;
+  kind: Scalars['String']['output'];
+  receiverAddress: TaskDelegationTargetAddressObject;
+  referenceFiles: Array<TaskDelegationReferenceFileObject>;
+  reviewId?: Maybe<Scalars['String']['output']>;
+  reviewedSubmissionId?: Maybe<Scalars['String']['output']>;
+  senderAddress: TaskDelegationTargetAddressObject;
+  submissionId?: Maybe<Scalars['String']['output']>;
+};
+
 export type TeamCommunicationMessageObject = {
   __typename?: 'TeamCommunicationMessageObject';
   content: Scalars['String']['output'];
@@ -2222,6 +2286,7 @@ export type TokenUsageCostSummaryAggregateGraphql = {
   standardInputTokenRate?: Maybe<Scalars['Float']['output']>;
   standardInputTokens: Scalars['Int']['output'];
   totalTokens: Scalars['Int']['output'];
+  unitPrices: TokenUsageUnitPricesGraphql;
   updatedAt?: Maybe<Scalars['String']['output']>;
   usageReportCount: Scalars['Int']['output'];
 };
@@ -2251,13 +2316,13 @@ export type TokenUsageRunSummaryGraphql = {
   estimatedApiReasoningOutputCost?: Maybe<Scalars['Float']['output']>;
   estimatedApiStandardInputCost?: Maybe<Scalars['Float']['output']>;
   estimatedApiTotalCost?: Maybe<Scalars['Float']['output']>;
+  executionAddress?: Maybe<Scalars['JSON']['output']>;
   grossInputTokens: Scalars['Int']['output'];
   latestModelIdentifier?: Maybe<Scalars['String']['output']>;
   latestModelProvider?: Maybe<Scalars['String']['output']>;
   latestPromptTokens?: Maybe<Scalars['Int']['output']>;
   latestRuntimeKind?: Maybe<Scalars['String']['output']>;
   memberAgentRunId?: Maybe<Scalars['String']['output']>;
-  memberPath?: Maybe<Array<Scalars['String']['output']>>;
   memberRouteKey?: Maybe<Scalars['String']['output']>;
   missingPriceDimensions: Array<Scalars['String']['output']>;
   observedModelIdentifiers: Array<Scalars['String']['output']>;
@@ -2271,23 +2336,11 @@ export type TokenUsageRunSummaryGraphql = {
   selectedPricingTierId?: Maybe<Scalars['String']['output']>;
   standardInputTokenRate?: Maybe<Scalars['Float']['output']>;
   standardInputTokens: Scalars['Int']['output'];
-  teamRunPath?: Maybe<Array<Scalars['String']['output']>>;
   totalTokens: Scalars['Int']['output'];
+  unitPrices: TokenUsageUnitPricesGraphql;
   updatedAt?: Maybe<Scalars['String']['output']>;
   usageReportCount: Scalars['Int']['output'];
   workspaceId?: Maybe<Scalars['String']['output']>;
-};
-
-export type TokenUsageTaskMemberStatisticsRowGraphql = {
-  __typename?: 'TokenUsageTaskMemberStatisticsRowGraphql';
-  aggregate: TokenUsageCostSummaryAggregateGraphql;
-  memberAgentRunId?: Maybe<Scalars['String']['output']>;
-  memberName: Scalars['String']['output'];
-  memberPath: Array<Scalars['String']['output']>;
-  memberRouteKey?: Maybe<Scalars['String']['output']>;
-  models: Array<Scalars['String']['output']>;
-  rowId: Scalars['String']['output'];
-  runtimeKinds: Array<Scalars['String']['output']>;
 };
 
 export type TokenUsageTaskStatisticsResultGraphql = {
@@ -2298,10 +2351,13 @@ export type TokenUsageTaskStatisticsResultGraphql = {
 export type TokenUsageTaskStatisticsRowGraphql = {
   __typename?: 'TokenUsageTaskStatisticsRowGraphql';
   aggregate: TokenUsageCostSummaryAggregateGraphql;
+  children: Array<TokenUsageTaskStatisticsRowGraphql>;
   createdAt: Scalars['String']['output'];
   createdTimeSource: Scalars['String']['output'];
   displayName: Scalars['String']['output'];
-  members: Array<TokenUsageTaskMemberStatisticsRowGraphql>;
+  executionAddress?: Maybe<Scalars['JSON']['output']>;
+  memberAgentRunId?: Maybe<Scalars['String']['output']>;
+  memberRouteKey?: Maybe<Scalars['String']['output']>;
   models: Array<Scalars['String']['output']>;
   rootTeamRunId?: Maybe<Scalars['String']['output']>;
   rowId: Scalars['String']['output'];
@@ -2309,6 +2365,26 @@ export type TokenUsageTaskStatisticsRowGraphql = {
   runId?: Maybe<Scalars['String']['output']>;
   runtimeKinds: Array<Scalars['String']['output']>;
   summary?: Maybe<Scalars['String']['output']>;
+  taskAgentRunId?: Maybe<Scalars['String']['output']>;
+  taskId?: Maybe<Scalars['String']['output']>;
+  taskTeamRunId?: Maybe<Scalars['String']['output']>;
+};
+
+export type TokenUsageUnitPriceSummaryGraphql = {
+  __typename?: 'TokenUsageUnitPriceSummaryGraphql';
+  pricePerMillion?: Maybe<Scalars['Float']['output']>;
+  status: Scalars['String']['output'];
+};
+
+export type TokenUsageUnitPricesGraphql = {
+  __typename?: 'TokenUsageUnitPricesGraphql';
+  cacheCreation1hInput: TokenUsageUnitPriceSummaryGraphql;
+  cacheCreation5mInput: TokenUsageUnitPriceSummaryGraphql;
+  cacheCreationInput: TokenUsageUnitPriceSummaryGraphql;
+  cacheReadInput: TokenUsageUnitPriceSummaryGraphql;
+  output: TokenUsageUnitPriceSummaryGraphql;
+  reasoningOutput: TokenUsageUnitPriceSummaryGraphql;
+  standardInput: TokenUsageUnitPriceSummaryGraphql;
 };
 
 export type ToolArgumentSchema = {
@@ -3283,6 +3359,13 @@ export type GetTeamCommunicationMessagesQueryVariables = Exact<{
 
 export type GetTeamCommunicationMessagesQuery = { __typename?: 'Query', getTeamCommunicationMessages: Array<{ __typename?: 'TeamCommunicationMessageObject', messageId: string, content: string, messageType: string, createdAt: string, senderAddress: { __typename?: 'TeamCommunicationTargetAddressObject', segments: Array<{ __typename?: 'TeamCommunicationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, receiverAddress: { __typename?: 'TeamCommunicationTargetAddressObject', segments: Array<{ __typename?: 'TeamCommunicationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, referenceFiles: Array<{ __typename?: 'TeamCommunicationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }> }> };
 
+export type GetTaskDelegationRecordsQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetTaskDelegationRecordsQuery = { __typename?: 'Query', getTaskDelegationRecords: Array<{ __typename?: 'TaskDelegationRecordObject', taskId: string, status: string, receiverTargetKind: string, content: string, createdAt: string, senderAddress: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, receiverAddress: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, referenceFiles: Array<{ __typename?: 'TaskDelegationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }>, taskRun?: { __typename?: 'TaskDelegationTaskRunObject', startedAt: string, address: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> } } | null, updates: Array<{ __typename?: 'TaskDelegationUpdateObject', kind: string, submissionId?: string | null, reviewId?: string | null, reviewedSubmissionId?: string | null, decision?: string | null, content?: string | null, createdAt: string, senderAddress: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, receiverAddress: { __typename?: 'TaskDelegationTargetAddressObject', parentTeamRunId?: string | null, segments: Array<{ __typename?: 'TaskDelegationTargetSegmentObject', kind: string, memberRouteKey?: string | null, memberPath?: Array<string> | null, taskTeamRunId?: string | null, taskAgentRunId?: string | null }> }, referenceFiles: Array<{ __typename?: 'TaskDelegationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }> }> }> };
+
 export type GetAgentRunResumeConfigQueryVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
@@ -3342,21 +3425,21 @@ export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetSearchConfigQuery = { __typename?: 'Query', getSearchConfig: { __typename?: 'SearchConfig', provider: string, serperApiKeyConfigured: boolean, serpapiApiKeyConfigured: boolean, googleCseApiKeyConfigured: boolean, googleCseId?: string | null, vertexAiSearchApiKeyConfigured: boolean, vertexAiSearchServingConfig?: string | null } };
 
-export type TokenUsageRunSummaryFieldsFragment = { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, teamRunPath?: Array<string> | null, memberAgentRunId?: string | null, memberPath?: Array<string> | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null };
+export type TokenUsageRunSummaryFieldsFragment = { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, executionAddress?: any | null, memberAgentRunId?: string | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } };
 
 export type GetAgentRunTokenUsageSummaryQueryVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
 
 
-export type GetAgentRunTokenUsageSummaryQuery = { __typename?: 'Query', getAgentRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, teamRunPath?: Array<string> | null, memberAgentRunId?: string | null, memberPath?: Array<string> | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null } };
+export type GetAgentRunTokenUsageSummaryQuery = { __typename?: 'Query', getAgentRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, executionAddress?: any | null, memberAgentRunId?: string | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
 
 export type GetTeamRunTokenUsageSummaryQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
 }>;
 
 
-export type GetTeamRunTokenUsageSummaryQuery = { __typename?: 'Query', getTeamRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, teamRunPath?: Array<string> | null, memberAgentRunId?: string | null, memberPath?: Array<string> | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null } };
+export type GetTeamRunTokenUsageSummaryQuery = { __typename?: 'Query', getTeamRunTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, executionAddress?: any | null, memberAgentRunId?: string | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
 
 export type GetTeamMemberTokenUsageSummaryQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -3365,9 +3448,11 @@ export type GetTeamMemberTokenUsageSummaryQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamMemberTokenUsageSummaryQuery = { __typename?: 'Query', getTeamMemberTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, teamRunPath?: Array<string> | null, memberAgentRunId?: string | null, memberPath?: Array<string> | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null } };
+export type GetTeamMemberTokenUsageSummaryQuery = { __typename?: 'Query', getTeamMemberTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, executionAddress?: any | null, memberAgentRunId?: string | null, memberRouteKey?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
 
 export type TokenUsageCostSummaryAggregateFieldsFragment = { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> };
+
+export type TokenUsageTaskStatisticsRowFieldsFragment = { __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, rootTeamRunId?: string | null, memberRouteKey?: string | null, memberAgentRunId?: string | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, taskId?: string | null, executionAddress?: any | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, runtimeKinds: Array<string>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } };
 
 export type GetTokenUsageTaskStatisticsInPeriodQueryVariables = Exact<{
   startTime: Scalars['DateTime']['input'];
@@ -3375,7 +3460,7 @@ export type GetTokenUsageTaskStatisticsInPeriodQueryVariables = Exact<{
 }>;
 
 
-export type GetTokenUsageTaskStatisticsInPeriodQuery = { __typename?: 'Query', tokenUsageTaskStatisticsInPeriod: { __typename?: 'TokenUsageTaskStatisticsResultGraphql', rows: Array<{ __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, rootTeamRunId?: string | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, runtimeKinds: Array<string>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> }, members: Array<{ __typename?: 'TokenUsageTaskMemberStatisticsRowGraphql', rowId: string, memberRouteKey?: string | null, memberAgentRunId?: string | null, memberName: string, memberPath: Array<string>, models: Array<string>, runtimeKinds: Array<string>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } }> }> } };
+export type GetTokenUsageTaskStatisticsInPeriodQuery = { __typename?: 'Query', tokenUsageTaskStatisticsInPeriod: { __typename?: 'TokenUsageTaskStatisticsResultGraphql', rows: Array<{ __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, rootTeamRunId?: string | null, memberRouteKey?: string | null, memberAgentRunId?: string | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, taskId?: string | null, executionAddress?: any | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, runtimeKinds: Array<string>, children: Array<{ __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, rootTeamRunId?: string | null, memberRouteKey?: string | null, memberAgentRunId?: string | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, taskId?: string | null, executionAddress?: any | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, runtimeKinds: Array<string>, children: Array<{ __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, rootTeamRunId?: string | null, memberRouteKey?: string | null, memberAgentRunId?: string | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, taskId?: string | null, executionAddress?: any | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, runtimeKinds: Array<string>, children: Array<{ __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, rootTeamRunId?: string | null, memberRouteKey?: string | null, memberAgentRunId?: string | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, taskId?: string | null, executionAddress?: any | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, runtimeKinds: Array<string>, children: Array<{ __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, rootTeamRunId?: string | null, memberRouteKey?: string | null, memberAgentRunId?: string | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, taskId?: string | null, executionAddress?: any | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, runtimeKinds: Array<string>, children: Array<{ __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, rootTeamRunId?: string | null, memberRouteKey?: string | null, memberAgentRunId?: string | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, taskId?: string | null, executionAddress?: any | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, runtimeKinds: Array<string>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } }>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } }>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } }>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } }>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } }>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } }> } };
 
 export type GetUsageStatisticsInPeriodQueryVariables = Exact<{
   startTime: Scalars['DateTime']['input'];
@@ -3782,9 +3867,8 @@ export const TokenUsageRunSummaryFieldsFragmentDoc = gql`
     fragment TokenUsageRunSummaryFields on TokenUsageRunSummaryGraphql {
   runId
   rootTeamRunId
-  teamRunPath
+  executionAddress
   memberAgentRunId
-  memberPath
   memberRouteKey
   agentDefinitionId
   workspaceId
@@ -3817,6 +3901,36 @@ export const TokenUsageRunSummaryFieldsFragmentDoc = gql`
   missingPriceDimensions
   pricingPolicyKey
   selectedPricingTierId
+  unitPrices {
+    standardInput {
+      status
+      pricePerMillion
+    }
+    cacheReadInput {
+      status
+      pricePerMillion
+    }
+    cacheCreationInput {
+      status
+      pricePerMillion
+    }
+    cacheCreation5mInput {
+      status
+      pricePerMillion
+    }
+    cacheCreation1hInput {
+      status
+      pricePerMillion
+    }
+    output {
+      status
+      pricePerMillion
+    }
+    reasoningOutput {
+      status
+      pricePerMillion
+    }
+  }
   latestPromptTokens
   effectiveContextWindowTokens
   contextWindowUsagePercent
@@ -3865,6 +3979,29 @@ export const TokenUsageCostSummaryAggregateFieldsFragmentDoc = gql`
   observedModelProviders
 }
     `;
+export const TokenUsageTaskStatisticsRowFieldsFragmentDoc = gql`
+    fragment TokenUsageTaskStatisticsRowFields on TokenUsageTaskStatisticsRowGraphql {
+  rowId
+  rowKind
+  runId
+  rootTeamRunId
+  memberRouteKey
+  memberAgentRunId
+  taskAgentRunId
+  taskTeamRunId
+  taskId
+  executionAddress
+  displayName
+  summary
+  createdAt
+  createdTimeSource
+  models
+  runtimeKinds
+  aggregate {
+    ...TokenUsageCostSummaryAggregateFields
+  }
+}
+    ${TokenUsageCostSummaryAggregateFieldsFragmentDoc}`;
 export const GetAgentPackagesDocument = gql`
     query GetAgentPackages {
   agentPackages {
@@ -7805,6 +7942,116 @@ export function useGetTeamCommunicationMessagesLazyQuery(variables?: GetTeamComm
   return VueApolloComposable.useLazyQuery<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>(GetTeamCommunicationMessagesDocument, variables, options);
 }
 export type GetTeamCommunicationMessagesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>;
+export const GetTaskDelegationRecordsDocument = gql`
+    query GetTaskDelegationRecords($teamRunId: String!) {
+  getTaskDelegationRecords(teamRunId: $teamRunId) {
+    taskId
+    status
+    senderAddress {
+      parentTeamRunId
+      segments {
+        kind
+        memberRouteKey
+        memberPath
+        taskTeamRunId
+        taskAgentRunId
+      }
+    }
+    receiverAddress {
+      parentTeamRunId
+      segments {
+        kind
+        memberRouteKey
+        memberPath
+        taskTeamRunId
+        taskAgentRunId
+      }
+    }
+    receiverTargetKind
+    content
+    referenceFiles {
+      referenceId
+      path
+      type
+      createdAt
+      updatedAt
+    }
+    taskRun {
+      address {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      startedAt
+    }
+    updates {
+      kind
+      submissionId
+      reviewId
+      reviewedSubmissionId
+      decision
+      senderAddress {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      receiverAddress {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      content
+      referenceFiles {
+        referenceId
+        path
+        type
+        createdAt
+        updatedAt
+      }
+      createdAt
+    }
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetTaskDelegationRecordsQuery__
+ *
+ * To run a query within a Vue component, call `useGetTaskDelegationRecordsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTaskDelegationRecordsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTaskDelegationRecordsQuery({
+ *   teamRunId: // value for 'teamRunId'
+ * });
+ */
+export function useGetTaskDelegationRecordsQuery(variables: GetTaskDelegationRecordsQueryVariables | VueCompositionApi.Ref<GetTaskDelegationRecordsQueryVariables> | ReactiveFunction<GetTaskDelegationRecordsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>(GetTaskDelegationRecordsDocument, variables, options);
+}
+export function useGetTaskDelegationRecordsLazyQuery(variables?: GetTaskDelegationRecordsQueryVariables | VueCompositionApi.Ref<GetTaskDelegationRecordsQueryVariables> | ReactiveFunction<GetTaskDelegationRecordsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>(GetTaskDelegationRecordsDocument, variables, options);
+}
+export type GetTaskDelegationRecordsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTaskDelegationRecordsQuery, GetTaskDelegationRecordsQueryVariables>;
 export const GetAgentRunResumeConfigDocument = gql`
     query GetAgentRunResumeConfig($runId: String!) {
   getAgentRunResumeConfig(runId: $runId) {
@@ -8174,35 +8421,26 @@ export const GetTokenUsageTaskStatisticsInPeriodDocument = gql`
     query GetTokenUsageTaskStatisticsInPeriod($startTime: DateTime!, $endTime: DateTime!) {
   tokenUsageTaskStatisticsInPeriod(startTime: $startTime, endTime: $endTime) {
     rows {
-      rowId
-      rowKind
-      runId
-      rootTeamRunId
-      displayName
-      summary
-      createdAt
-      createdTimeSource
-      models
-      runtimeKinds
-      aggregate {
-        ...TokenUsageCostSummaryAggregateFields
-      }
-      members {
-        rowId
-        memberRouteKey
-        memberAgentRunId
-        memberName
-        memberPath
-        models
-        runtimeKinds
-        aggregate {
-          ...TokenUsageCostSummaryAggregateFields
+      ...TokenUsageTaskStatisticsRowFields
+      children {
+        ...TokenUsageTaskStatisticsRowFields
+        children {
+          ...TokenUsageTaskStatisticsRowFields
+          children {
+            ...TokenUsageTaskStatisticsRowFields
+            children {
+              ...TokenUsageTaskStatisticsRowFields
+              children {
+                ...TokenUsageTaskStatisticsRowFields
+              }
+            }
+          }
         }
       }
     }
   }
 }
-    ${TokenUsageCostSummaryAggregateFieldsFragmentDoc}`;
+    ${TokenUsageTaskStatisticsRowFieldsFragmentDoc}`;
 
 /**
  * __useGetTokenUsageTaskStatisticsInPeriodQuery__

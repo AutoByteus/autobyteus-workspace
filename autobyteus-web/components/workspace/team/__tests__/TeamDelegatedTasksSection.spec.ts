@@ -1,25 +1,25 @@
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import TeamActiveTasksSection from '../TeamActiveTasksSection.vue';
+import TeamDelegatedTasksSection from '../TeamDelegatedTasksSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const labels: Record<string, string> = {
-  'workspace.components.workspace.team.TeamActiveTasksSection.active_tasks': 'Tasks',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular': 'task',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural': 'tasks',
-  'workspace.components.workspace.team.TeamActiveTasksSection.empty': 'No active delegated tasks',
-  'workspace.components.workspace.team.TeamActiveTasksSection.empty_detail': 'Delegated work will appear here automatically.',
-  'workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable': 'Task description unavailable',
-  'workspace.components.workspace.team.TeamActiveTasksSection.focus': 'Focus',
-  'workspace.components.workspace.team.TeamActiveTasksSection.technical_details': 'Technical details',
-  'workspace.components.workspace.team.TeamActiveTasksSection.select_task': 'Select a task to read it.',
-  'workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice': 'Waiting for user action in Activity.',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_type': 'Task type',
-  'workspace.components.workspace.team.TeamActiveTasksSection.task_id': 'Task ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id': 'Agent run ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id': 'Agent team run ID',
-  'workspace.components.workspace.team.TeamActiveTasksSection.target_kind': 'Target kind',
-  'workspace.components.workspace.team.TeamActiveTasksSection.target': 'Target',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.tasks': 'Tasks',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_singular': 'task',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural': 'tasks',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.empty': 'No delegated tasks yet',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail': 'Delegated work appears here from saved task records.',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable': 'Task description unavailable',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.focus': 'Focus',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.technical_details': 'Technical details',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.select_task': 'Select a task to read it.',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice': 'Waiting for user action in Activity.',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_type': 'Task type',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_id': 'Task ID',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.agent_run_id': 'Agent run ID',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.agent_team_run_id': 'Agent team run ID',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.target_kind': 'Target kind',
+  'workspace.components.workspace.team.TeamDelegatedTasksSection.target': 'Target',
 };
 
 const buildTeamContext = () => {
@@ -139,7 +139,7 @@ const buildTeamContext = () => {
   };
 };
 
-const mountSubject = (teamContext = buildTeamContext(), props: Record<string, unknown> = {}) => mount(TeamActiveTasksSection, {
+const mountSubject = (teamContext = buildTeamContext(), props: Record<string, unknown> = {}) => mount(TeamDelegatedTasksSection, {
   props: { teamContext: teamContext as any, ...props },
   global: {
     stubs: {
@@ -159,7 +159,7 @@ const mountSubject = (teamContext = buildTeamContext(), props: Record<string, un
   },
 });
 
-describe('TeamActiveTasksSection', () => {
+describe('TeamDelegatedTasksSection', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -167,51 +167,51 @@ describe('TeamActiveTasksSection', () => {
   it('uses controlled collapsed state with human task count and no approval summary', async () => {
     const wrapper = mountSubject(buildTeamContext(), { collapsed: true });
 
-    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('2 tasks');
-    expect(wrapper.find('[data-test="team-active-tasks-approval-summary"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="team-active-tasks-disclosure"]').exists()).toBe(true);
-    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).not.toMatch(/[▾▸]/);
-    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
+    expect(wrapper.get('[data-test="team-delegated-tasks-header"]').text()).toContain('2 tasks');
+    expect(wrapper.find('[data-test="team-delegated-tasks-approval-summary"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-delegated-tasks-disclosure"]').exists()).toBe(true);
+    expect(wrapper.get('[data-test="team-delegated-tasks-header"]').text()).not.toMatch(/[▾▸]/);
+    expect(wrapper.get('[data-test="team-delegated-tasks-body"]').attributes('style')).toContain('display: none');
 
-    await wrapper.get('[data-test="team-active-tasks-header"]').trigger('click');
+    await wrapper.get('[data-test="team-delegated-tasks-header"]').trigger('click');
     expect(wrapper.emitted('toggle')).toHaveLength(1);
-    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style')).toContain('display: none');
+    expect(wrapper.get('[data-test="team-delegated-tasks-body"]').attributes('style')).toContain('display: none');
 
     await wrapper.setProps({ collapsed: false });
-    expect(wrapper.get('[data-test="team-active-tasks-body"]').attributes('style') ?? '').not.toContain('display: none');
-    expect(wrapper.find('[data-test="team-active-tasks-split"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="team-active-tasks-navigator"]').exists()).toBe(true);
+    expect(wrapper.get('[data-test="team-delegated-tasks-body"]').attributes('style') ?? '').not.toContain('display: none');
+    expect(wrapper.find('[data-test="team-delegated-tasks-split"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-delegated-tasks-navigator"]').exists()).toBe(true);
   });
 
   it('renders task detail navigation without duplicating execution hierarchy rows', () => {
     const wrapper = mountSubject();
 
-    expect(wrapper.get('[data-test="team-task-detail-agent-entry"]').text()).toContain('Draft the implementation handoff.');
-    expect(wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('task_0001');
-    expect(wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('active');
-    expect(wrapper.get('[data-test="team-task-detail-team-entry"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('task_0002');
-    expect(wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').text()).not.toContain('awaiting_review');
-    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-members"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="team-active-task-references"]').text()).toContain('design-spec.md');
-    expect(wrapper.get('[data-test="team-active-task-technical-details"]').text()).toContain('Technical details');
+    expect(wrapper.get('[data-test="team-delegated-task-agent-entry"]').text()).toContain('Draft the implementation handoff.');
+    expect(wrapper.get('[data-test="team-delegated-task-agent-entry"] [data-test="team-delegated-task-summary-row"]').text()).not.toContain('task_0001');
+    expect(wrapper.get('[data-test="team-delegated-task-agent-entry"] [data-test="team-delegated-task-summary-row"]').text()).not.toContain('active');
+    expect(wrapper.get('[data-test="team-delegated-task-team-entry"]').text()).toContain('Review the implementation as a team.');
+    expect(wrapper.get('[data-test="team-delegated-task-team-entry"] [data-test="team-delegated-task-summary-row"]').text()).not.toContain('task_0002');
+    expect(wrapper.get('[data-test="team-delegated-task-team-entry"] [data-test="team-delegated-task-summary-row"]').text()).not.toContain('awaiting_review');
+    expect(wrapper.find('[data-test="left-delegated-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-members"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="team-delegated-task-references"]').text()).toContain('design-spec.md');
+    expect(wrapper.get('[data-test="team-delegated-task-technical-details"]').text()).toContain('Technical details');
 
-    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.find('[data-test="active-task-focus-primary"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="active-task-task-detail"]').text()).not.toContain('software_engineering_team');
-    expect(wrapper.get('[data-test="active-task-task-detail"]').text()).not.toContain('Task Team');
-    expect(wrapper.find('[data-test="active-task-technical-details"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="active-task-detail-pane"]').find('[data-test="team-active-task-reference-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="active-task-member-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="active-task-approve-tool"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="active-task-deny-tool"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="delegated-task-task-body"]').text()).toContain('Review the implementation as a team.');
+    expect(wrapper.find('[data-test="delegated-task-focus-primary"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="delegated-task-task-detail"]').text()).not.toContain('software_engineering_team');
+    expect(wrapper.get('[data-test="delegated-task-task-detail"]').text()).not.toContain('Task Team');
+    expect(wrapper.find('[data-test="delegated-task-technical-details"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="delegated-task-detail-pane"]').find('[data-test="team-delegated-task-reference-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="delegated-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="delegated-task-approve-tool"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="delegated-task-deny-tool"]').exists()).toBe(false);
   });
 
   it('switches the whole right pane to a task-owned reference preview and refreshes repeated reference selections', async () => {
     const wrapper = mountSubject();
-    const reference = wrapper.findAll('[data-test="team-active-task-reference-row"]')[0];
+    const reference = wrapper.findAll('[data-test="team-delegated-task-reference-row"]')[0];
 
     await reference.trigger('click');
 
@@ -219,7 +219,7 @@ describe('TeamActiveTasksSection', () => {
     expect(wrapper.get('[data-test="task-reference-viewer"]').text()).toContain('team-run');
     expect(wrapper.get('[data-test="task-reference-viewer"]').text()).toContain('task_0002');
     expect(wrapper.get('[data-test="task-reference-refresh"]').text()).toBe('0');
-    expect(wrapper.find('[data-test="active-task-task-body"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="delegated-task-task-body"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="viewer-back"]').exists()).toBe(false);
     expect(wrapper.emitted('select-member')).toBeUndefined();
 
@@ -229,19 +229,19 @@ describe('TeamActiveTasksSection', () => {
 
   it('returns from reference preview to task body when a summary row is selected', async () => {
     const wrapper = mountSubject();
-    const reference = wrapper.findAll('[data-test="team-active-task-reference-row"]')[0];
+    const reference = wrapper.findAll('[data-test="team-delegated-task-reference-row"]')[0];
     await reference.trigger('click');
-    expect(wrapper.find('[data-test="active-task-reference-preview"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="delegated-task-reference-preview"]').exists()).toBe(true);
 
-    await wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
-    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.find('[data-test="active-task-reference-preview"]').exists()).toBe(false);
+    await wrapper.get('[data-test="team-delegated-task-team-entry"] [data-test="team-delegated-task-summary-row"]').trigger('click');
+    expect(wrapper.get('[data-test="delegated-task-task-body"]').text()).toContain('Review the implementation as a team.');
+    expect(wrapper.find('[data-test="delegated-task-reference-preview"]').exists()).toBe(false);
   });
 
   it('adds a message-style horizontal split resize handle for the task navigator', async () => {
     const wrapper = mountSubject();
-    const navigator = wrapper.get('[data-test="team-active-tasks-navigator"]');
-    const handle = wrapper.get('[data-test="team-active-tasks-resize-handle"]');
+    const navigator = wrapper.get('[data-test="team-delegated-tasks-navigator"]');
+    const handle = wrapper.get('[data-test="team-delegated-tasks-resize-handle"]');
 
     expect(handle.attributes('role')).toBe('separator');
     expect(handle.attributes('aria-orientation')).toBe('vertical');
@@ -263,25 +263,25 @@ describe('TeamActiveTasksSection', () => {
   it('selects task summaries for reading without focusing execution targets', async () => {
     const wrapper = mountSubject();
 
-    await wrapper.get('[data-test="team-task-detail-agent-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
+    await wrapper.get('[data-test="team-delegated-task-agent-entry"] [data-test="team-delegated-task-summary-row"]').trigger('click');
 
     expect(wrapper.emitted('select-member')).toBeUndefined();
-    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Draft the implementation handoff.');
-    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="active-task-focus-primary"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="delegated-task-task-body"]').text()).toContain('Draft the implementation handoff.');
+    expect(wrapper.find('[data-test="left-delegated-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="delegated-task-focus-primary"]').exists()).toBe(false);
   });
 
   it('keeps task-team summary selection detail-only with no member navigation', async () => {
     const wrapper = mountSubject();
 
-    await wrapper.get('[data-test="team-task-detail-team-entry"] [data-test="team-active-task-summary-row"]').trigger('click');
+    await wrapper.get('[data-test="team-delegated-task-team-entry"] [data-test="team-delegated-task-summary-row"]').trigger('click');
     expect(wrapper.emitted('select-member')).toBeUndefined();
-    expect(wrapper.find('[data-test="left-active-task-actor-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-member-row"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="active-task-task-body"]').text()).toContain('Review the implementation as a team.');
+    expect(wrapper.find('[data-test="left-delegated-task-actor-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-member-row"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="delegated-task-task-body"]').text()).toContain('Review the implementation as a team.');
   });
 
-  it('shows the empty active task state', () => {
+  it('shows the empty delegated-task state', () => {
     const wrapper = mountSubject({
       ...buildTeamContext(),
       memberTree: [],
@@ -289,10 +289,10 @@ describe('TeamActiveTasksSection', () => {
       leafAgentContextsByRouteKey: new Map(),
     });
 
-    expect(wrapper.get('[data-test="team-active-tasks-header"]').text()).toContain('0 tasks');
-    const emptyState = wrapper.get('[data-test="team-active-tasks-empty"]');
-    expect(emptyState.text()).toContain('No active delegated tasks');
-    expect(emptyState.text()).toContain('Delegated work will appear here automatically.');
+    expect(wrapper.get('[data-test="team-delegated-tasks-header"]').text()).toContain('0 tasks');
+    const emptyState = wrapper.get('[data-test="team-delegated-tasks-empty"]');
+    expect(emptyState.text()).toContain('No delegated tasks yet');
+    expect(emptyState.text()).toContain('Delegated work appears here from saved task records.');
     expect(emptyState.classes()).not.toContain('border-dashed');
   });
 });

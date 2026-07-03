@@ -1,15 +1,52 @@
 import { Arg, Field, Float, Int, ObjectType, Query, Resolver } from "type-graphql";
+import { GraphQLJSON } from "graphql-scalars";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
 import type {
   TokenUsageCostSummaryAggregate,
 } from "../../../token-usage/projections/token-usage-cost-summary-aggregate.js";
 import type {
+  TokenUsageUnitPrices,
+  TokenUsageUnitPriceSummary,
+} from "../../../token-usage/domain/token-usage-unit-price-summary.js";
+import type {
   TokenUsageRuntimeModelStatisticsRow,
-  TokenUsageTaskMemberStatisticsRow,
   TokenUsageTaskStatisticsRow,
 } from "../../../token-usage/domain/statistics-models.js";
 import { TokenUsageLedgerStore } from "../../../token-usage/providers/token-usage-ledger-store.js";
 import { TokenUsageStatisticsProvider } from "../../../token-usage/providers/statistics-provider.js";
+
+@ObjectType()
+export class TokenUsageUnitPriceSummaryGraphql {
+  @Field(() => String)
+  status!: string;
+
+  @Field(() => Float, { nullable: true })
+  pricePerMillion?: number | null;
+}
+
+@ObjectType()
+export class TokenUsageUnitPricesGraphql {
+  @Field(() => TokenUsageUnitPriceSummaryGraphql)
+  standardInput!: TokenUsageUnitPriceSummaryGraphql;
+
+  @Field(() => TokenUsageUnitPriceSummaryGraphql)
+  cacheReadInput!: TokenUsageUnitPriceSummaryGraphql;
+
+  @Field(() => TokenUsageUnitPriceSummaryGraphql)
+  cacheCreationInput!: TokenUsageUnitPriceSummaryGraphql;
+
+  @Field(() => TokenUsageUnitPriceSummaryGraphql)
+  cacheCreation5mInput!: TokenUsageUnitPriceSummaryGraphql;
+
+  @Field(() => TokenUsageUnitPriceSummaryGraphql)
+  cacheCreation1hInput!: TokenUsageUnitPriceSummaryGraphql;
+
+  @Field(() => TokenUsageUnitPriceSummaryGraphql)
+  output!: TokenUsageUnitPriceSummaryGraphql;
+
+  @Field(() => TokenUsageUnitPriceSummaryGraphql)
+  reasoningOutput!: TokenUsageUnitPriceSummaryGraphql;
+}
 
 @ObjectType()
 export class TokenUsageCostSummaryAggregateGraphql {
@@ -100,6 +137,9 @@ export class TokenUsageCostSummaryAggregateGraphql {
   @Field(() => String, { nullable: true })
   selectedPricingTierId?: string | null;
 
+  @Field(() => TokenUsageUnitPricesGraphql)
+  unitPrices!: TokenUsageUnitPricesGraphql;
+
   @Field(() => Int)
   usageReportCount!: number;
 
@@ -124,14 +164,11 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
   @Field(() => String, { nullable: true })
   rootTeamRunId?: string | null;
 
-  @Field(() => [String], { nullable: true })
-  teamRunPath?: string[] | null;
+  @Field(() => GraphQLJSON, { nullable: true })
+  executionAddress?: unknown | null;
 
   @Field(() => String, { nullable: true })
   memberAgentRunId?: string | null;
-
-  @Field(() => [String], { nullable: true })
-  memberPath?: string[] | null;
 
   @Field(() => String, { nullable: true })
   memberRouteKey?: string | null;
@@ -162,33 +199,6 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
 }
 
 @ObjectType()
-export class TokenUsageTaskMemberStatisticsRowGraphql {
-  @Field(() => String)
-  rowId!: string;
-
-  @Field(() => String, { nullable: true })
-  memberRouteKey?: string | null;
-
-  @Field(() => String, { nullable: true })
-  memberAgentRunId?: string | null;
-
-  @Field(() => String)
-  memberName!: string;
-
-  @Field(() => [String])
-  memberPath!: string[];
-
-  @Field(() => [String])
-  models!: string[];
-
-  @Field(() => [String])
-  runtimeKinds!: string[];
-
-  @Field(() => TokenUsageCostSummaryAggregateGraphql)
-  aggregate!: TokenUsageCostSummaryAggregateGraphql;
-}
-
-@ObjectType()
 export class TokenUsageTaskStatisticsRowGraphql {
   @Field(() => String)
   rowId!: string;
@@ -201,6 +211,24 @@ export class TokenUsageTaskStatisticsRowGraphql {
 
   @Field(() => String, { nullable: true })
   rootTeamRunId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  memberRouteKey?: string | null;
+
+  @Field(() => String, { nullable: true })
+  memberAgentRunId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  taskAgentRunId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  taskTeamRunId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  taskId?: string | null;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  executionAddress?: unknown | null;
 
   @Field(() => String)
   displayName!: string;
@@ -223,8 +251,8 @@ export class TokenUsageTaskStatisticsRowGraphql {
   @Field(() => TokenUsageCostSummaryAggregateGraphql)
   aggregate!: TokenUsageCostSummaryAggregateGraphql;
 
-  @Field(() => [TokenUsageTaskMemberStatisticsRowGraphql])
-  members!: TokenUsageTaskMemberStatisticsRowGraphql[];
+  @Field(() => [TokenUsageTaskStatisticsRowGraphql])
+  children!: TokenUsageTaskStatisticsRowGraphql[];
 }
 
 @ObjectType()
@@ -302,6 +330,25 @@ export class UsageStatistics {
   aggregate!: TokenUsageCostSummaryAggregateGraphql;
 }
 
+const toTokenUsageUnitPriceSummaryGraphql = (
+  summary: TokenUsageUnitPriceSummary,
+): TokenUsageUnitPriceSummaryGraphql => ({
+  status: summary.status,
+  pricePerMillion: summary.price_per_million,
+});
+
+const toTokenUsageUnitPricesGraphql = (
+  unitPrices: TokenUsageUnitPrices,
+): TokenUsageUnitPricesGraphql => ({
+  standardInput: toTokenUsageUnitPriceSummaryGraphql(unitPrices.standard_input),
+  cacheReadInput: toTokenUsageUnitPriceSummaryGraphql(unitPrices.cache_read_input),
+  cacheCreationInput: toTokenUsageUnitPriceSummaryGraphql(unitPrices.cache_creation_input),
+  cacheCreation5mInput: toTokenUsageUnitPriceSummaryGraphql(unitPrices.cache_creation_5m_input),
+  cacheCreation1hInput: toTokenUsageUnitPriceSummaryGraphql(unitPrices.cache_creation_1h_input),
+  output: toTokenUsageUnitPriceSummaryGraphql(unitPrices.output),
+  reasoningOutput: toTokenUsageUnitPriceSummaryGraphql(unitPrices.reasoning_output),
+});
+
 const toTokenUsageCostSummaryAggregateGraphql = (
   aggregate: TokenUsageCostSummaryAggregate,
 ): TokenUsageCostSummaryAggregateGraphql => ({
@@ -334,6 +381,7 @@ const toTokenUsageCostSummaryAggregateGraphql = (
   missingPriceDimensions: aggregate.missing_price_dimensions,
   pricingPolicyKey: aggregate.pricing_policy_key,
   selectedPricingTierId: aggregate.selected_pricing_tier_id,
+  unitPrices: toTokenUsageUnitPricesGraphql(aggregate.unit_prices),
   usageReportCount: aggregate.usage_report_count,
   updatedAt: aggregate.updated_at,
   observedRuntimeKinds: aggregate.observed_runtime_kinds,
@@ -371,6 +419,7 @@ const summaryAggregate = (summary: TokenUsageRunSummaryPayload): TokenUsageCostS
   missing_price_dimensions: summary.missing_price_dimensions,
   pricing_policy_key: summary.pricing_policy_key,
   selected_pricing_tier_id: summary.selected_pricing_tier_id,
+  unit_prices: summary.unit_prices,
   usage_report_count: summary.usage_report_count,
   updated_at: summary.updated_at,
   observed_runtime_kinds: summary.latest_runtime_kind ? [summary.latest_runtime_kind] : [],
@@ -382,9 +431,8 @@ const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): To
   ...toTokenUsageCostSummaryAggregateGraphql(summaryAggregate(summary)),
   runId: summary.run_id,
   rootTeamRunId: summary.root_team_run_id,
-  teamRunPath: summary.team_run_path,
+  executionAddress: summary.execution_address,
   memberAgentRunId: summary.member_agent_run_id,
-  memberPath: summary.member_path,
   memberRouteKey: summary.member_route_key,
   agentDefinitionId: summary.agent_definition_id,
   workspaceId: summary.workspace_id,
@@ -396,24 +444,17 @@ const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): To
   latestRuntimeKind: summary.latest_runtime_kind,
 });
 
-const toTaskMemberRow = (
-  row: TokenUsageTaskMemberStatisticsRow,
-): TokenUsageTaskMemberStatisticsRowGraphql => ({
-  rowId: row.rowId,
-  memberRouteKey: row.memberRouteKey,
-  memberAgentRunId: row.memberAgentRunId,
-  memberName: row.memberName,
-  memberPath: row.memberPath,
-  models: row.models,
-  runtimeKinds: row.runtimeKinds,
-  aggregate: toTokenUsageCostSummaryAggregateGraphql(row.aggregate),
-});
-
 const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRowGraphql => ({
   rowId: row.rowId,
   rowKind: row.rowKind,
   runId: row.runId,
   rootTeamRunId: row.rootTeamRunId,
+  memberRouteKey: row.memberRouteKey,
+  memberAgentRunId: row.memberAgentRunId,
+  taskAgentRunId: row.taskAgentRunId,
+  taskTeamRunId: row.taskTeamRunId,
+  taskId: row.taskId,
+  executionAddress: row.executionAddress,
   displayName: row.displayName,
   summary: row.summary,
   createdAt: row.createdAt,
@@ -421,7 +462,7 @@ const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRo
   models: row.models,
   runtimeKinds: row.runtimeKinds,
   aggregate: toTokenUsageCostSummaryAggregateGraphql(row.aggregate),
-  members: row.members.map(toTaskMemberRow),
+  children: row.children.map(toTaskRow),
 });
 
 const toUsageStatistics = (row: TokenUsageRuntimeModelStatisticsRow): UsageStatistics => ({

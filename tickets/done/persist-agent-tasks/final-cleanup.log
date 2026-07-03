@@ -1,0 +1,13 @@
+Cleanup started 2026-07-02T11:15:23Z
+Removing worktree /Users/normy/autobyteus_org/autobyteus-worktrees/persist-agent-tasks
+Pruning worktrees
+Deleting local branch codex/persist-agent-tasks
+Deleted branch codex/persist-agent-tasks (was 89686ef4).
+Deleting remote branch origin/codex/persist-agent-tasks
+remote:
+remote: GitHub found 584 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (14 critical, 239 high, 279 moderate, 52 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]           codex/persist-agent-tasks
+Cleanup completed 2026-07-02T11:15:51Z

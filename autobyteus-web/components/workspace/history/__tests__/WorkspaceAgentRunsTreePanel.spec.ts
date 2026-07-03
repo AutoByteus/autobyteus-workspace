@@ -1462,7 +1462,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ]);
   });
 
-  it('keeps the global Workspaces tree free of active-task detail and full-context UI under an expanded live team', async () => {
+  it('keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
         teamRunId: 'team-1',
@@ -1498,11 +1498,11 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
 
     expect(wrapper.find('[data-test="workspace-team-member-team-1-implementation_engineer"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="team-active-task-context-tree"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="team-active-task-navigator"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-summary-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-reference-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="left-active-task-technical-details"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-delegated-task-context-tree"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-delegated-task-navigator"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-summary-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-reference-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-technical-details"]').exists()).toBe(false);
   });
 
 

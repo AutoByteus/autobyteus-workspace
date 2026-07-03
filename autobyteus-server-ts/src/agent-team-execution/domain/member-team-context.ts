@@ -1,6 +1,8 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
 import type { TaskTeamInstanceIdentity } from "./task-team-instance.js";
+import type { TokenUsageExecutionScope } from "./token-usage-execution-scope.js";
+import { cloneTokenUsageExecutionScope } from "./token-usage-execution-scope.js";
 import type {
   InterAgentMessageDeliveryHandler,
   InterAgentMessageParticipant,
@@ -94,6 +96,7 @@ export class MemberTeamContext {
   readonly deliverInterAgentMessage: InterAgentMessageDeliveryHandler | null;
   readonly taskAgentInstance: TaskAgentInstanceIdentity | null;
   readonly taskTeamInstance: TaskTeamInstanceIdentity | null;
+  readonly tokenUsageExecutionScope: TokenUsageExecutionScope | null;
 
   constructor(input: {
     teamRunId: string;
@@ -114,6 +117,7 @@ export class MemberTeamContext {
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
     taskAgentInstance?: TaskAgentInstanceIdentity | null;
     taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    tokenUsageExecutionScope?: TokenUsageExecutionScope | null;
   }) {
     this.teamRunId = input.teamRunId;
     this.teamDefinitionId = input.teamDefinitionId;
@@ -133,5 +137,8 @@ export class MemberTeamContext {
     this.deliverInterAgentMessage = input.deliverInterAgentMessage ?? null;
     this.taskAgentInstance = input.taskAgentInstance ?? null;
     this.taskTeamInstance = input.taskTeamInstance ?? null;
+    this.tokenUsageExecutionScope = input.tokenUsageExecutionScope
+      ? cloneTokenUsageExecutionScope(input.tokenUsageExecutionScope)
+      : null;
   }
 }

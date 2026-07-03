@@ -33,6 +33,8 @@ import { dispatchGenericTeamMemberMessage } from './teamStreamGenericMessageDisp
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
+import { getApolloClient } from '~/utils/apolloClient';
+import { scheduleTaskDelegationRecordsRefresh } from '~/services/runHydration/taskDelegationHydrationService';
 import type {
   ConversationTargetAddress,
   ConversationTargetSegment,
@@ -416,7 +418,26 @@ export class TeamStreamingService {
     Promise.resolve().then(cleanup);
   }
 
+  private refreshTaskDelegationRecords(message: ServerMessage, teamContext: AgentTeamContext): void {
+    if (message.type !== 'TASK_DELEGATION_EVENT') return;
+    const payload = message.payload as Record<string, unknown>;
+    const rootTeamRunId = (
+      typeof payload.root_team_run_id === 'string' ? payload.root_team_run_id.trim() : ''
+    ) || (
+      typeof payload.rootTeamRunId === 'string' ? payload.rootTeamRunId.trim() : ''
+    ) || (
+      typeof payload.team_run_id === 'string' ? payload.team_run_id.trim() : ''
+    ) || (
+      typeof payload.teamRunId === 'string' ? payload.teamRunId.trim() : ''
+    ) || teamContext.teamRunId;
+    scheduleTaskDelegationRecordsRefresh({
+      client: getApolloClient(),
+      teamRunId: rootTeamRunId,
+    });
+  }
+
   private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {
+    this.refreshTaskDelegationRecords(message, teamContext);
     if (message.type === 'TEAM_STATUS') {
       const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
       if (projectionResult.outcome === 'drop') {

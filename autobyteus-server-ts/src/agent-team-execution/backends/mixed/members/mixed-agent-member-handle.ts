@@ -274,6 +274,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       taskAgentInstance: this.options.taskAgentInstance ?? null,
       taskTeamInstance: this.resolveTaskTeamIngressBinding(),
+      tokenUsageTeamScope: this.options.teamContext.runtimeContext.tokenUsageTeamScope,
     });
 
     return new AgentRunConfig({

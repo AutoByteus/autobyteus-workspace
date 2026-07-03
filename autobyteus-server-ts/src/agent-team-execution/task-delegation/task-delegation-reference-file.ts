@@ -3,8 +3,10 @@ import type {
   TaskDelegationReferenceFilePayload,
   TaskDelegationReferenceFileType,
   TaskDelegationTaskInput,
+  TaskReferenceFile,
 } from "./task-delegation-record.js";
 import { getTaskDelegationTargetName } from "./task-delegation-target.js";
+import type { TaskDelegationTarget } from "./task-delegation-target.js";
 
 const normalizeReferencePath = (value: string): string => value.replace(/\\/g, "/").trim();
 
@@ -26,31 +28,38 @@ export const buildTaskDelegationReferenceId = (
   filePath: string,
 ): string => `task-reference:${index}:${filePath}`;
 
-export const buildTaskDelegationReferenceFiles = (
-  record: Pick<TaskDelegationRecord, "referenceFiles" | "createdAt" | "updatedAt">,
-): TaskDelegationReferenceFilePayload[] => {
-  const byPath = new Map<string, TaskDelegationReferenceFilePayload>();
-  record.referenceFiles.forEach((rawPath, index) => {
+export const normalizeTaskDelegationReferenceFiles = (
+  rawReferenceFiles: readonly string[],
+  timestamp: string,
+): TaskReferenceFile[] => {
+  const byPath = new Map<string, TaskReferenceFile>();
+  rawReferenceFiles.forEach((rawPath, index) => {
     const normalizedPath = normalizeReferencePath(rawPath);
     if (!normalizedPath || byPath.has(normalizedPath)) return;
     byPath.set(normalizedPath, {
       referenceId: buildTaskDelegationReferenceId(index, normalizedPath),
       path: normalizedPath,
       type: inferTaskDelegationReferenceFileType(normalizedPath),
-      createdAt: record.createdAt,
-      updatedAt: record.updatedAt || record.createdAt,
+      createdAt: timestamp,
+      updatedAt: timestamp,
     });
   });
   return [...byPath.values()];
 };
 
-export const buildTaskDelegationArguments = (
-  record: Pick<TaskDelegationRecord, "target" | "description" | "referenceFiles" | "taskArguments">,
-): TaskDelegationTaskInput => ({
+export const buildTaskDelegationReferenceFiles = (
+  record: Pick<TaskDelegationRecord, "referenceFiles">,
+): TaskDelegationReferenceFilePayload[] => record.referenceFiles.map((reference) => ({ ...reference }));
+
+export const buildTaskDelegationArguments = (input: {
+  target: TaskDelegationTarget;
+  content: string;
+  referenceFiles: readonly TaskReferenceFile[];
+}): TaskDelegationTaskInput => ({
   target: {
-    kind: record.taskArguments.target.kind,
-    name: record.taskArguments.target.name || getTaskDelegationTargetName(record.target),
+    kind: input.target.kind,
+    name: getTaskDelegationTargetName(input.target),
   },
-  description: record.taskArguments.description || record.description,
-  reference_files: [...(record.taskArguments.reference_files ?? record.referenceFiles)],
+  description: input.content,
+  reference_files: input.referenceFiles.map((reference) => reference.path),
 });

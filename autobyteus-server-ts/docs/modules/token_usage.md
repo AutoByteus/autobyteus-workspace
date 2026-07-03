@@ -38,6 +38,7 @@ The ledger answers, per usage observation:
   - `prisma/schema.prisma` model `TokenUsageLedgerEvent`
   - `prisma/migrations/20260624090000_add_token_usage_ledger_events/`
   - `prisma/migrations/20260625193000_token_usage_component_pricing_explainability/`
+  - `prisma/migrations/20260702093000_token_usage_execution_address/`
 
 ## Event Pipeline
 
@@ -49,7 +50,9 @@ payloads into the ledger/event contract:
    identity, input-token semantic, cache state, latest prompt/context-window
    fields, scope, raw JSON, quality flags, and idempotency fields.
 2. `TokenUsageContextEnricher` adds canonical run/team/member/task/workspace
-   identity from `AgentRunContext` / `AgentRunConfig` / `MemberTeamContext`.
+   identity from `AgentRunContext` / `AgentRunConfig` / `MemberTeamContext`,
+   including the root-team grouping id and token-usage-owned
+   `execution_address` snapshot for team-context runs.
 3. `TokenUsageComponentBasisResolver` converts provider/runtime readings into
    canonical component fields before pricing. It is the only stage that decides
    whether reported input already includes cache tokens (`gross_includes_cache`)
@@ -209,11 +212,19 @@ estimating cost.
 - `idempotency_key` is unique.
 - run/time, team/time, and snapshot-series indexes support summaries and
   cumulative snapshot diffing.
+- Team-context usage stores `root_team_run_id` as the root grouping key and
+  `execution_address_json` as the canonical ordered execution address for the
+  token-producing run. The address is persisted as Token Usage data, not as a
+  frontend reconstruction or task-record lookup.
 
 The old `token_usage_records` table was a lossy role-split storage shape and is
 not used as the current accounting source. `TokenUsageStore`,
 `SqlTokenUsageRecordRepository`, and `TokenUsagePersistenceProcessor` should not
-be reintroduced as compatibility writers.
+be reintroduced as compatibility writers. Historical SQLite files may still
+contain dormant `team_run_path_json` / `member_path_json` columns from earlier
+migrations, but those columns are not active Prisma/domain/API hierarchy
+authority; `execution_address_json` plus `root_team_run_id` is the current
+source for Token Statistics hierarchy.
 
 ## GraphQL / Statistics
 
@@ -223,16 +234,29 @@ be reintroduced as compatibility writers.
 - `tokenUsageTaskStatisticsInPeriod(startTime, endTime)` is the primary
   Settings > Token Statistics projection. It returns one top-level row for each
   standalone agent run or root team run that has ledger usage observed during
-  the selected period, with team member usage nested under the team row instead
-  of repeated as standalone rows.
-- Task-statistics rows keep repeated executions separate by concrete run/team
-  identity. Row labels come from token-usage-owned display fields captured or
-  backfilled at the ledger boundary: `teamName`, `agentName`, `runSummary`,
-  `runCreatedAt`, and `memberName`. Runtime/model/path facts continue to use
-  existing ledger fields, and Settings statistics does not add workspace or
-  roster metadata. If `runCreatedAt` is unavailable, the row falls back to the
-  first observed ledger timestamp and marks `createdTimeSource` so the frontend
-  can label it as first usage observed rather than true task creation.
+  the selected period, with descendant usage nested through recursive
+  `children` rows instead of repeated as standalone rows.
+- Task-statistics rows use `rowKind` values `TEAM_RUN`, `AGENT_RUN`,
+  `MEMBER_RUN`, `TASK_TEAM_RUN`, and `TASK_AGENT_RUN`. Team descendant rows
+  expose `executionAddress` when the ledger event had a valid address. A
+  `member -> task_team` segment pair becomes a `TASK_TEAM_RUN` row,
+  `member -> task_agent` becomes a `TASK_AGENT_RUN` row, and terminal member
+  segments become `MEMBER_RUN` rows. Repeated task-team or task-agent
+  executions for the same logical target remain separate by concrete run id /
+  execution-address prefix.
+- Active Token Usage Task statistics does not expose or consume the old
+  one-level `members` child field, `memberPath`, `teamRunPath`,
+  `member_path`, or `team_run_path` as hierarchy surfaces. Legacy rows without
+  a valid execution address remain visible as safe fallback `MEMBER_RUN` rows
+  with `executionAddress: null`; no task-team/task-agent parentage is guessed.
+- Task-statistics row labels come from token-usage-owned display fields
+  captured or backfilled at the ledger boundary: `teamName`, `agentName`,
+  `runSummary`, `runCreatedAt`, and `memberName`. Runtime/model/scalar member
+  facts continue to use ledger fields for display/filter metadata, and Settings
+  statistics does not add workspace or inactive roster metadata. If
+  `runCreatedAt` is unavailable, the row falls back to the first observed ledger
+  timestamp and marks `createdTimeSource` so the frontend can label it as first
+  usage observed rather than true task creation.
 - `usageStatisticsInPeriod(startTime, endTime)` remains the secondary
   diagnostics projection for the Settings > Token Statistics `Model` grouping. It groups
   by runtime/model pair so the same model used through different runtimes is not
@@ -254,9 +278,23 @@ cumulative snapshots. Run, team, member, and statistics GraphQL shapes include
 the cache-aware/component summary contract: gross input, standard input, cache
 read/write tokens, cache rates, output/reasoning/billable output, nullable
 component costs, `apiCostStatus`, missing price dimensions, policy/tier
-metadata, latest prompt/context-window fields, model/runtime identity, and
-`usageReportCount`. Clients must treat those fields as server-owned summary
-data, not as a prompt to recalculate prices locally.
+metadata, component `unitPrices`, latest prompt/context-window fields,
+model/runtime identity, and `usageReportCount`. Clients must treat those fields
+as server-owned summary data, not as a prompt to recalculate prices locally.
+
+`unitPrices` is the display-safe explanation of the unit-price basis used by
+the summary. It reports a `{ status, pricePerMillion }` summary for standard
+input, cache-read input, cache-write input, cache-write 5m/1h subtype buckets,
+output, and reasoning output. A `single` status means one trusted unit price can
+explain the positive tokens in that component; `mixed` means the aggregate spans
+different component-relevant prices, providers, models, currencies, or local
+and paid rows; `missing` / `partial_missing` means trusted pricing was absent
+for all or some relevant rows; `not_applicable` means the component has no
+positive tokens; and `local_no_api_bill` means no provider API unit price
+applies. Zero-token rows do not make a unit price look mixed. Reasoning output
+uses the output unit price when the pricing owner exposes reasoning/thinking as
+an output sub-breakdown, and it remains included in output cost rather than
+being added as a separate total.
 
 ## Frontend Contract
 
@@ -276,14 +314,20 @@ The frontend treats token usage as display-only state:
   The frontend does not render `Usage during period`, `Select Date Range:`,
   `Group by:`, or a separate `By Task` / `By Model` tab row.
 - The Task grouping table shows task/run identity, type, runtime,
-  model(s), token totals, input/output/total cost, status, nested team members,
-  created time as the last visible column, and a cost breakdown. Team expansion
-  is usage-derived for the selected period: inactive roster members are not
-  emitted, members remain attached to their parent team row during sorting, and
-  member usage must not be double-counted as standalone top-level agent rows.
+  model(s), token totals, input/output/total cost, status, recursive
+  team/task/member children, created time as the last visible column, and a
+  cost breakdown. Team expansion is usage-derived for the selected period:
+  inactive roster members are not emitted, child rows remain attached to their
+  parent during sorting, and member/task usage must not be double-counted as
+  standalone top-level rows. The frontend consumes backend-provided `children`
+  and `executionAddress` values only; it must not rebuild hierarchy from task
+  records, memory paths, display names, or the removed `members`/path fields.
+  The current GraphQL document requests top-level rows plus five recursive
+  `children` levels; deeper backend trees require an explicit query-depth
+  follow-up before all levels are visible in the web table.
 - `TokenUsageMeterPanel` presents the approved Token Meter hierarchy:
   `Latest prompt`, `Gross input`, `Output`, `Total estimate`,
-  `Input breakdown`, and `Pricing details`.
+  `Input breakdown`, `Pricing details`, and collapsed `Calculation details`.
 - `Gross input` is cumulative input sent to providers. It may include discounted
   cache-hit tokens and must not be labeled as full-price input or as the latest
   active context size.
@@ -294,9 +338,15 @@ The frontend treats token usage as display-only state:
 - `Pricing details` renders model/runtime, `apiCostStatus`, missing dimensions,
   and `usageReportCount` as `Usage reports` / model calls. Raw `events` is not a
   primary Token Meter label.
+- `Calculation details` renders server-provided component unit prices and the
+  explanatory formula `tokens ÷ 1,000,000 × unit price`, with explicit
+  `varies by call`, `unpriced`, `partially missing`, and local/no-bill labels
+  instead of frontend catalog lookups or fake blended rates.
 - The Output card shows reasoning/thinking tokens only when the server summary
   reports positive `reasoningOutputTokens`; those tokens are already included in
-  output tokens and estimated output cost.
+  output tokens and estimated output cost. Calculation details labels their unit
+  price as the output price / included in output cost so users do not
+  double-count thinking.
 - Unknown latest-prompt/context-window pressure is hidden rather than rendered
   as a noisy empty card. Context pressure appears only when a numeric percentage
   and effective context window are present;
@@ -327,15 +377,26 @@ These browser proofs are one-off delivery evidence rather than a committed
 browser or screenshot automation harness. Current durable regression coverage
 for the token-usage contract comes from GraphQL E2E coverage for cached gross
 input, provider-specific component semantics, local/no-bill, custom missing
-price, mixed-currency aggregate behavior, model-list regressions, and the
-runtime-native Codex/Claude field baseline. Frontend store/component tests cover
-live update aggregation, GraphQL hydration replacement, Token Meter hierarchy,
-cache-aware input rows, price-status labels, reasoning-output display, latest
-prompt fields, and the right-side tab label. Settings > Token Statistics also
-has focused backend GraphQL E2E coverage plus frontend store/component coverage
-for Task default grouping, no `rangeMode`, nested team members, first-usage
-created-time fallback, runtime/model grouping, status/cost-breakdown display,
-and Model runtime diagnostics.
+price, mixed-currency aggregate behavior, model-list regressions, unit-price
+hydration across run/team/member/statistics summaries, and the runtime-native
+Codex/Claude field baseline. Frontend store/component tests cover live update
+aggregation, live/hydrated unit-price convergence, GraphQL hydration
+replacement, Token Meter hierarchy, calculation details, cache-aware input rows,
+price-status labels, reasoning-output display, latest prompt fields, and the
+right-side tab label. Settings > Token Statistics also has focused backend
+GraphQL E2E coverage plus frontend store/component coverage
+for Task default grouping, no `rangeMode`, recursive `children`,
+`executionAddress`, direct members, task-team rows, task-agent rows, nested
+task-agent-under-task-team prefixes, repeated same-target execution separation,
+legacy no-address fallback, first-usage created-time fallback, runtime/model
+grouping, status/cost-breakdown display, and Model runtime diagnostics. Live
+browser/runtime/API/UI evidence from 2026-07-02 also exercised `Nested
+Classroom Test Team` with Codex App Server / GPT-5.5 and observed
+`TEAM_RUN -> TASK_TEAM_RUN StudentStudyGroup -> MEMBER_RUN student_one` plus
+the direct `Teacher` member through the Settings Token Statistics UI. That live
+run is supporting evidence, not a committed browser automation harness; broader
+task-agent and repeated same-target edge cases remain guarded by deterministic
+GraphQL E2E coverage.
 
 ## Runtime E2E Coverage
 

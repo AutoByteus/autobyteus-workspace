@@ -4,9 +4,8 @@ export const TOKEN_USAGE_RUN_SUMMARY_FIELDS = gql`
   fragment TokenUsageRunSummaryFields on TokenUsageRunSummaryGraphql {
     runId
     rootTeamRunId
-    teamRunPath
+    executionAddress
     memberAgentRunId
-    memberPath
     memberRouteKey
     agentDefinitionId
     workspaceId
@@ -39,6 +38,36 @@ export const TOKEN_USAGE_RUN_SUMMARY_FIELDS = gql`
     missingPriceDimensions
     pricingPolicyKey
     selectedPricingTierId
+    unitPrices {
+      standardInput {
+        status
+        pricePerMillion
+      }
+      cacheReadInput {
+        status
+        pricePerMillion
+      }
+      cacheCreationInput {
+        status
+        pricePerMillion
+      }
+      cacheCreation5mInput {
+        status
+        pricePerMillion
+      }
+      cacheCreation1hInput {
+        status
+        pricePerMillion
+      }
+      output {
+        status
+        pricePerMillion
+      }
+      reasoningOutput {
+        status
+        pricePerMillion
+      }
+    }
     latestPromptTokens
     effectiveContextWindowTokens
     contextWindowUsagePercent

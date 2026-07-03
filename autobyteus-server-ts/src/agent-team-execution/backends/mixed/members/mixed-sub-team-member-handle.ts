@@ -26,6 +26,7 @@ import type { MixedTeamRunContext, MixedSubTeamMemberContext } from "../mixed-te
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-agent-message-runtime-builders.js";
 import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
+import { getTokenUsageExecutionAddressBuilder } from "../../../services/token-usage-execution-address-builder.js";
 import { prefixMixedSubTeamEvent } from "../events/mixed-team-event-bridge.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 
@@ -67,6 +68,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
   private childRun: TeamRun | null = null;
   private unsubscribe: (() => void) | null = null;
   private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
+  private readonly tokenUsageAddressBuilder = getTokenUsageExecutionAddressBuilder();
 
   constructor(private readonly options: {
     parentContext: TeamRunContext<MixedTeamRunContext>;
@@ -268,6 +270,10 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
         parentMembers: this.buildParentBoundaryMembers(),
         deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       },
+      tokenUsageTeamScope: this.tokenUsageAddressBuilder.buildSubTeamScope({
+        parentScope: this.options.parentContext.runtimeContext.tokenUsageTeamScope,
+        representedMemberRouteKey: this.context.memberRouteKey,
+      }),
     });
     this.context.childTeamRunId = this.childRun.runId;
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;

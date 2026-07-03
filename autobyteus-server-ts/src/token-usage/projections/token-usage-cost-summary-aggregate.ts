@@ -6,6 +6,8 @@ import {
   summarizeCacheState,
   type CacheState,
 } from "../domain/token-usage-component-basis.js";
+import type { TokenUsageUnitPrices } from "../domain/token-usage-unit-price-summary.js";
+import { buildTokenUsageUnitPrices } from "./token-usage-unit-price-summary.js";
 
 export interface TokenUsageCostSummaryAggregate {
   gross_input_tokens: number;
@@ -37,6 +39,7 @@ export interface TokenUsageCostSummaryAggregate {
   missing_price_dimensions: string[];
   pricing_policy_key: string | null;
   selected_pricing_tier_id: string | null;
+  unit_prices: TokenUsageUnitPrices;
   usage_report_count: number;
   updated_at: string | null;
   observed_runtime_kinds: string[];
@@ -143,6 +146,7 @@ export const buildTokenUsageCostSummaryAggregate = (
     missing_price_dimensions: uniqueStrings(events.flatMap((event) => event.missing_price_dimensions)),
     pricing_policy_key: singleOrNull(uniqueStrings(events.map((event) => event.pricing_policy_key))),
     selected_pricing_tier_id: singleOrNull(uniqueStrings(events.map((event) => event.selected_pricing_tier_id))),
+    unit_prices: buildTokenUsageUnitPrices(events, { forceMixed: mixed }),
     usage_report_count: events.length,
     updated_at: latest?.observed_at ?? null,
     observed_runtime_kinds: uniqueStrings(events.map((event) => normalizeTokenUsageRuntimeKind(event.runtime_kind))),

@@ -1,0 +1,312 @@
+{
+  "generatedAt": "2026-07-02T18:45:06.690Z",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs",
+  "dataDir": "/tmp/autobyteus-token-stats-browser-e2e-20260702203234",
+  "backend": {
+    "host": "127.0.0.1",
+    "port": 28080,
+    "databaseUrl": "file:/tmp/autobyteus-token-stats-browser-e2e-20260702203234/db/test.db",
+    "appEnv": "test"
+  },
+  "frontend": {
+    "url": "http://127.0.0.1:23000",
+    "graphql": "http://127.0.0.1:28080/graphql"
+  },
+  "browserScreenshots": {
+    "agentPackageImported": "/Users/normy/.autobyteus/browser-artifacts/8d8785-1783017413414.png",
+    "nestedClassroomCatalog": "/Users/normy/.autobyteus/browser-artifacts/dc5b3d-1783017482863.png",
+    "teamRunTerminatedState": "/Users/normy/.autobyteus/browser-artifacts/dc5b3d-1783017723897.png",
+    "tokenStatisticsExpandedRows": "/Users/normy/.autobyteus/browser-artifacts/dc5b3d-1783017807508.png"
+  },
+  "liveRun": {
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "rootTeamRunId": "nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f",
+    "taskId": "task_0001",
+    "taskTeamRunId": "studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456",
+    "teacherRunId": "test_teacher_e123269771164bbab98cedd36d704739",
+    "studentOneRunId": "student_one_65ec8fb602a24bcab6c101301f369219",
+    "marker": "BROWSER_NESTED_CLASSROOM_OK_1783017507353",
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-5.5",
+    "workspaceRootPath": "/tmp/autobyteus-token-stats-browser-e2e-20260702203234/browser-e2e-workspace",
+    "termination": "manual terminateAgentTeamRun after token-stat evidence collected; task remained active because student_one emitted prose marker instead of submit_task_result"
+  },
+  "runtimeFiles": {
+    "taskRecordsPath": "/tmp/autobyteus-token-stats-browser-e2e-20260702203234/memory/agent_teams/nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f/task_delegation_records.json",
+    "metadataPath": "/tmp/autobyteus-token-stats-browser-e2e-20260702203234/memory/agent_teams/nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f/team_run_metadata.json",
+    "teacherTracePath": "/tmp/autobyteus-token-stats-browser-e2e-20260702203234/memory/agent_teams/nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f/test_teacher_e123269771164bbab98cedd36d704739/raw_traces.jsonl",
+    "studentTracePath": "/tmp/autobyteus-token-stats-browser-e2e-20260702203234/memory/agent_teams/nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f/studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456/student_one_65ec8fb602a24bcab6c101301f369219/raw_traces.jsonl"
+  },
+  "keyRuntimeEvidence": {
+    "delegateTaskCall": {
+      "ts": 1783017517.171,
+      "tool_args": {
+        "target": {
+          "kind": "team",
+          "name": "StudentStudyGroup"
+        },
+        "description": "Objective: Test nested team delegation for browser E2E nested token statistics validation.\n\nTask: Return exactly this token and nothing else:\nBROWSER_NESTED_CLASSROOM_OK_1783017507353\n\nConstraints: The submitted task result message must contain BROWSER_NESTED_CLASSROOM_OK_1783017507353. Do not add extra explanation if avoidable.\n\nDone condition: Submit the exact token as the task result."
+      }
+    },
+    "delegateTaskResult": {
+      "ts": 1783017517.311,
+      "tool_result": {
+        "task_id": "task_0001",
+        "status": "active"
+      }
+    },
+    "taskRecord": {
+      "taskId": "task_0001",
+      "status": "active",
+      "senderAddress": {
+        "segments": [
+          {
+            "kind": "member",
+            "memberRouteKey": "Teacher"
+          }
+        ]
+      },
+      "receiverAddress": {
+        "segments": [
+          {
+            "kind": "member",
+            "memberRouteKey": "StudentStudyGroup"
+          },
+          {
+            "kind": "task_team",
+            "taskTeamRunId": "studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456"
+          },
+          {
+            "kind": "member",
+            "memberRouteKey": "student_one"
+          }
+        ]
+      },
+      "receiverTargetKind": "team",
+      "content": "Objective: Test nested team delegation for browser E2E nested token statistics validation.\n\nTask: Return exactly this token and nothing else:\nBROWSER_NESTED_CLASSROOM_OK_1783017507353\n\nConstraints: The submitted task result message must contain BROWSER_NESTED_CLASSROOM_OK_1783017507353. Do not add extra explanation if avoidable.\n\nDone condition: Submit the exact token as the task result.",
+      "referenceFiles": [],
+      "taskRun": {
+        "address": {
+          "segments": [
+            {
+              "kind": "member",
+              "memberRouteKey": "StudentStudyGroup"
+            },
+            {
+              "kind": "task_team",
+              "taskTeamRunId": "studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456"
+            }
+          ]
+        },
+        "startedAt": "2026-07-02T18:38:37.308Z"
+      },
+      "updates": [],
+      "createdAt": "2026-07-02T18:38:37.179Z"
+    },
+    "studentAssistantMarker": {
+      "ts": 1783017525.381,
+      "content": "BROWSER_NESTED_CLASSROOM_OK_1783017507353"
+    },
+    "reviewFailureCount": 4,
+    "firstReviewFailure": {
+      "seq": 6,
+      "ts": 1783017528.517,
+      "tool_error": "Delegated task 'task_0001' is active, not awaiting_review.",
+      "tool_args": {
+        "task_id": "task_0001",
+        "decision": "accept",
+        "comment": "Accepted: result contains BROWSER_NESTED_CLASSROOM_OK_1783017507353."
+      }
+    }
+  },
+  "tokenStatisticsGraphql": {
+    "queryWindow": {
+      "start": "2026-07-02T18:00:00.000Z",
+      "end": "2026-07-02T19:30:00.000Z"
+    },
+    "errors": [],
+    "topRowCount": 1,
+    "teamRow": {
+      "rowKind": "TEAM_RUN",
+      "displayName": "Nested Classroom Test Team",
+      "rootTeamRunId": "nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f",
+      "runId": null,
+      "memberRouteKey": null,
+      "memberAgentRunId": null,
+      "taskTeamRunId": null,
+      "taskAgentRunId": null,
+      "taskId": null,
+      "executionAddress": null,
+      "models": [
+        "gpt-5.5"
+      ],
+      "runtimeKinds": [
+        "codex_app_server"
+      ],
+      "aggregate": {
+        "grossInputTokens": 1348166,
+        "outputTokens": 5638,
+        "reasoningOutputTokens": 2735,
+        "totalTokens": 1353804,
+        "estimatedApiInputCost": 1.4260779999999997,
+        "estimatedApiOutputCost": 0.16914000000000004,
+        "estimatedApiTotalCost": 1.5952179999999998,
+        "apiCostStatus": "estimated",
+        "observedRuntimeKinds": [
+          "codex_app_server"
+        ],
+        "observedModelIdentifiers": [
+          "gpt-5.5"
+        ]
+      },
+      "children": [
+        {
+          "rowKind": "TASK_TEAM_RUN",
+          "displayName": "StudentStudyGroup",
+          "rootTeamRunId": "nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f",
+          "runId": "studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456",
+          "memberRouteKey": "StudentStudyGroup",
+          "memberAgentRunId": null,
+          "taskTeamRunId": "studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456",
+          "taskAgentRunId": null,
+          "taskId": "task_0001",
+          "executionAddress": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberRouteKey": "StudentStudyGroup"
+              },
+              {
+                "kind": "task_team",
+                "taskTeamRunId": "studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456"
+              }
+            ]
+          },
+          "models": [
+            "gpt-5.5"
+          ],
+          "runtimeKinds": [
+            "codex_app_server"
+          ],
+          "aggregate": {
+            "grossInputTokens": 32097,
+            "outputTokens": 210,
+            "reasoningOutputTokens": 129,
+            "totalTokens": 32307,
+            "estimatedApiInputCost": 0.044709,
+            "estimatedApiOutputCost": 0.0063,
+            "estimatedApiTotalCost": 0.051009,
+            "apiCostStatus": "estimated",
+            "observedRuntimeKinds": [
+              "codex_app_server"
+            ],
+            "observedModelIdentifiers": [
+              "gpt-5.5"
+            ]
+          },
+          "children": [
+            {
+              "rowKind": "MEMBER_RUN",
+              "displayName": "student_one",
+              "rootTeamRunId": "nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f",
+              "runId": "student_one_65ec8fb602a24bcab6c101301f369219",
+              "memberRouteKey": "student_one",
+              "memberAgentRunId": "student_one_65ec8fb602a24bcab6c101301f369219",
+              "taskTeamRunId": null,
+              "taskAgentRunId": null,
+              "taskId": "task_0001",
+              "executionAddress": {
+                "segments": [
+                  {
+                    "kind": "member",
+                    "memberRouteKey": "StudentStudyGroup"
+                  },
+                  {
+                    "kind": "task_team",
+                    "taskTeamRunId": "studentstudygroup_ecf2cc350e2745d184cc6d4736e1d456"
+                  },
+                  {
+                    "kind": "member",
+                    "memberRouteKey": "student_one"
+                  }
+                ]
+              },
+              "models": [
+                "gpt-5.5"
+              ],
+              "runtimeKinds": [
+                "codex_app_server"
+              ],
+              "aggregate": {
+                "grossInputTokens": 32097,
+                "outputTokens": 210,
+                "reasoningOutputTokens": 129,
+                "totalTokens": 32307,
+                "estimatedApiInputCost": 0.044709,
+                "estimatedApiOutputCost": 0.0063,
+                "estimatedApiTotalCost": 0.051009,
+                "apiCostStatus": "estimated",
+                "observedRuntimeKinds": [
+                  "codex_app_server"
+                ],
+                "observedModelIdentifiers": [
+                  "gpt-5.5"
+                ]
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "rowKind": "MEMBER_RUN",
+          "displayName": "Teacher",
+          "rootTeamRunId": "nested_classroom_test_team_74d441ff370a47de9614928b1f9ed80f",
+          "runId": "test_teacher_e123269771164bbab98cedd36d704739",
+          "memberRouteKey": "Teacher",
+          "memberAgentRunId": "test_teacher_e123269771164bbab98cedd36d704739",
+          "taskTeamRunId": null,
+          "taskAgentRunId": null,
+          "taskId": null,
+          "executionAddress": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberRouteKey": "Teacher"
+              }
+            ]
+          },
+          "models": [
+            "gpt-5.5"
+          ],
+          "runtimeKinds": [
+            "codex_app_server"
+          ],
+          "aggregate": {
+            "grossInputTokens": 1316069,
+            "outputTokens": 5428,
+            "reasoningOutputTokens": 2606,
+            "totalTokens": 1321497,
+            "estimatedApiInputCost": 1.3813689999999998,
+            "estimatedApiOutputCost": 0.16284000000000004,
+            "estimatedApiTotalCost": 1.5442090000000002,
+            "apiCostStatus": "estimated",
+            "observedRuntimeKinds": [
+              "codex_app_server"
+            ],
+            "observedModelIdentifiers": [
+              "gpt-5.5"
+            ]
+          },
+          "children": []
+        }
+      ]
+    }
+  },
+  "verdict": {
+    "tokenStatisticsNestedRows": "pass",
+    "liveBrowserStackAndPackageImport": "pass",
+    "fullTaskLifecycleAcceptance": "partial-not-completed",
+    "lifecycleReason": "student_one produced the marker as assistant output but did not call submit_task_result, so review_task_result correctly failed while task status was active"
+  }
+}

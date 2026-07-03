@@ -79,7 +79,7 @@ read-only surfaces:
   does not own a task-specific Back-to-task control, and reuses the same
   raw/Markdown/media/PDF, CSV, and Excel `FileViewer` paths without changing
   message-owned reference UX. Returning from a task reference preview is owned
-  by the Active Tasks navigator and section-local task/reference selection:
+  by the Team Tasks navigator and section-local task/reference selection:
   selecting the task summary clears the selected reference and shows the task
   body again.
 

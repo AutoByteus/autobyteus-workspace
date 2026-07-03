@@ -40,6 +40,22 @@ const messages: Record<string, string> = {
   'shell.tokenUsage.cacheWrites': 'Cache writes',
   'shell.tokenUsage.totalInputCost': 'Total input cost',
   'shell.tokenUsage.pricingDetails': 'Pricing details',
+  'shell.tokenUsage.calculationDetails': 'Calculation details',
+  'shell.tokenUsage.calculationDetailsHelp': 'Estimated API cost is calculated from server-accounted token components.',
+  'shell.tokenUsage.calculationFormula': 'Formula: tokens ÷ 1,000,000 × unit price.',
+  'shell.tokenUsage.component': 'Component',
+  'shell.tokenUsage.unitPrice': 'Unit price',
+  'shell.tokenUsage.pricePerMillionTokens': '{price} / 1M tokens',
+  'shell.tokenUsage.sameAsOutputPrice': 'same as output',
+  'shell.tokenUsage.includedInOutputCost': 'included in output cost',
+  'shell.tokenUsage.variesByCall': 'varies by call',
+  'shell.tokenUsage.partiallyMissingUnitPrice': 'partially missing',
+  'shell.tokenUsage.mixedCalculationDetails': 'Calculation varies by model/provider call. A single unit price is not available for this aggregate.',
+  'shell.tokenUsage.localNoUnitPrices': 'Local runtime: no provider API unit prices apply.',
+  'shell.tokenUsage.roundingNote': 'Displayed costs are rounded; exact internal values may differ slightly.',
+  'shell.tokenUsage.cacheWrite5m': 'Cache write 5m',
+  'shell.tokenUsage.cacheWrite1h': 'Cache write 1h',
+  'shell.tokenUsage.thinkingReasoning': 'Thinking / reasoning',
   'shell.tokenUsage.priceStatus': 'Price status',
   'shell.tokenUsage.priceStatusComplete': 'Estimated',
   'shell.tokenUsage.priceStatusPartial': 'Partial estimate',
@@ -94,10 +110,9 @@ vi.mock('~/composables/useLocalization', () => ({
 const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsageRunSummary => ({
   runId: 'run-1',
   rootTeamRunId: null,
-  teamRunPath: null,
+  executionAddress: null,
   memberAgentRunId: null,
-  memberPath: null,
-  memberRouteKey: null,
+    memberRouteKey: null,
   agentDefinitionId: null,
   workspaceId: null,
   grossInputTokens: 1000,
@@ -129,6 +144,15 @@ const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsage
   missingPriceDimensions: [],
   pricingPolicyKey: 'catalog:openai:gpt-test',
   selectedPricingTierId: null,
+  unitPrices: {
+    standardInput: { status: 'single', pricePerMillion: 2 },
+    cacheReadInput: { status: 'single', pricePerMillion: 2 },
+    cacheCreationInput: { status: 'not_applicable', pricePerMillion: null },
+    cacheCreation5mInput: { status: 'not_applicable', pricePerMillion: null },
+    cacheCreation1hInput: { status: 'not_applicable', pricePerMillion: null },
+    output: { status: 'single', pricePerMillion: 10 },
+    reasoningOutput: { status: 'single', pricePerMillion: 10 },
+  },
   latestPromptTokens: 1000,
   effectiveContextWindowTokens: 128000,
   contextWindowUsagePercent: 0.78125,
@@ -219,6 +243,49 @@ describe('TokenUsageMeterPanel', () => {
     expect(wrapper.find('[title="Included in output tokens and estimated output cost."]').exists()).toBe(true);
     expect(wrapper.find('[title="Latest provider prompt/current context; not a run total."]').exists()).toBe(true);
     expect(wrapper.find('[title="Run-total cached input divided by run-total gross input."]').exists()).toBe(true);
+    const calculationToggle = wrapper.get('[data-test="calculation-details-toggle"]');
+    const calculationChevron = calculationToggle.get('[data-test="calculation-details-chevron"]');
+    expect(calculationToggle.text()).toContain('Calculation details');
+    expect(calculationToggle.classes()).not.toContain('hover:bg-blue-50');
+    expect(calculationToggle.classes()).not.toContain('hover:text-blue-800');
+    expect(calculationToggle.classes()).not.toContain('focus:ring-blue-500');
+    expect(calculationToggle.classes()).not.toContain('focus-visible:ring-slate-300');
+    expect(calculationToggle.classes()).toContain('hover:bg-gray-50');
+    expect(calculationToggle.classes()).toContain('active:bg-gray-100');
+    expect(calculationToggle.classes()).toContain('focus-visible:outline-gray-300');
+    expect(calculationChevron.classes()).toContain('-rotate-90');
+    expect((calculationToggle.element.firstElementChild as Element | null)?.getAttribute('data-test')).toBe('calculation-details-chevron');
+    expect(wrapper.find('[data-test="calculation-details-panel"]').exists()).toBe(false);
+  });
+
+  it('expands calculation details with server-provided unit prices and thinking included copy', async () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
+    meterStore.upsertSummary(buildSummary());
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const wrapper = mountPanel();
+    await wrapper.get('[data-test="calculation-details-toggle"]').trigger('click');
+
+    const panel = wrapper.get('[data-test="calculation-details-panel"]');
+    expect(wrapper.get('[data-test="calculation-details-toggle"]').attributes('aria-expanded')).toBe('true');
+    expect(wrapper.get('[data-test="calculation-details-chevron"]').classes()).not.toContain('-rotate-90');
+    expect(panel.text()).toContain('Estimated API cost is calculated from server-accounted token components.');
+    expect(panel.text()).toContain('Formula: tokens ÷ 1,000,000 × unit price.');
+    expect(panel.text()).toContain('Uncached input');
+    expect(panel.text()).toContain('$2.00 / 1M tokens');
+    expect(panel.text()).toContain('Cache hits');
+    expect(panel.text()).toContain('Output');
+    expect(panel.text()).toContain('$10.00 / 1M tokens');
+    expect(panel.text()).toContain('Thinking / reasoning');
+    expect(panel.text()).toContain('same as output');
+    expect(panel.text()).toContain('included in output cost');
+    expect(panel.text()).toContain('Input cost');
+    expect(panel.text()).toContain('Output cost');
+    expect(panel.text()).toContain('Total estimate');
+    expect(panel.text()).toContain('Displayed costs are rounded');
   });
 
   it('omits the thinking-token subline when no reasoning tokens are present', () => {
@@ -232,6 +299,40 @@ describe('TokenUsageMeterPanel', () => {
     const wrapper = mountPanel();
 
     expect(wrapper.get('[data-test="token-usage-primary"]').text()).not.toContain('Thinking');
+  });
+
+  it('shows varies-by-call calculation details for mixed pricing without a fake unit price', async () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
+    meterStore.upsertSummary(buildSummary({
+      apiCostStatus: 'mixed',
+      estimatedApiStandardInputCost: null,
+      estimatedApiCacheReadInputCost: null,
+      estimatedApiOutputCost: null,
+      estimatedApiTotalCost: null,
+      currency: null,
+      unitPrices: {
+        standardInput: { status: 'mixed', pricePerMillion: null },
+        cacheReadInput: { status: 'mixed', pricePerMillion: null },
+        cacheCreationInput: { status: 'not_applicable', pricePerMillion: null },
+        cacheCreation5mInput: { status: 'not_applicable', pricePerMillion: null },
+        cacheCreation1hInput: { status: 'not_applicable', pricePerMillion: null },
+        output: { status: 'mixed', pricePerMillion: null },
+        reasoningOutput: { status: 'mixed', pricePerMillion: null },
+      },
+    }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const wrapper = mountPanel();
+    await wrapper.get('[data-test="calculation-details-toggle"]').trigger('click');
+
+    const panel = wrapper.get('[data-test="calculation-details-panel"]');
+    expect(panel.text()).toContain('Calculation varies by model/provider call.');
+    expect(panel.text()).toContain('varies by call');
+    expect(panel.text()).toContain('Mixed');
+    expect(panel.text()).not.toContain('$2.00 / 1M tokens');
   });
 
   it('uses the focused team member as primary and keeps aggregate usage only in the Team section', async () => {

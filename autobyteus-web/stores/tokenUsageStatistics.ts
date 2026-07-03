@@ -8,9 +8,10 @@ import type {
   TokenUsageCostSummaryAggregate,
   TokenUsageCreatedTimeSource,
   TokenUsageRuntimeModelStatisticsRow,
-  TokenUsageTaskMemberStatisticsRow,
+  TokenUsageTaskRowKind,
   TokenUsageTaskStatisticsRow,
 } from '~/types/tokenUsageStatistics';
+import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
 import type { TokenUsageApiCostStatus, TokenUsageCacheState } from '~/types/tokenUsageMeter';
 
 interface TokenUsageStatisticsState {
@@ -30,15 +31,12 @@ type AggregatePayload = Partial<TokenUsageCostSummaryAggregate> & {
   cacheState?: string | null;
 };
 
-type TaskMemberPayload = Omit<TokenUsageTaskMemberStatisticsRow, 'aggregate'> & {
-  aggregate?: AggregatePayload | null;
-};
-
-type TaskRowPayload = Omit<TokenUsageTaskStatisticsRow, 'aggregate' | 'members' | 'rowKind' | 'createdTimeSource'> & {
+type TaskRowPayload = Omit<TokenUsageTaskStatisticsRow, 'aggregate' | 'children' | 'rowKind' | 'createdTimeSource'> & {
   rowKind?: string | null;
   createdTimeSource?: string | null;
   aggregate?: AggregatePayload | null;
-  members?: TaskMemberPayload[] | null;
+  executionAddress?: unknown;
+  children?: TaskRowPayload[] | null;
 };
 
 type ModelRowPayload = {
@@ -130,22 +128,36 @@ const normalizeCreatedTimeSource = (value?: string | null): TokenUsageCreatedTim
   return 'FIRST_USAGE_OBSERVED';
 };
 
-const normalizeTaskMember = (member: TaskMemberPayload): TokenUsageTaskMemberStatisticsRow => ({
-  rowId: member.rowId,
-  memberRouteKey: member.memberRouteKey ?? null,
-  memberAgentRunId: member.memberAgentRunId ?? null,
-  memberName: member.memberName,
-  memberPath: normalizeArray(member.memberPath),
-  models: normalizeArray(member.models),
-  runtimeKinds: normalizeArray(member.runtimeKinds),
-  aggregate: normalizeAggregate(member.aggregate),
-});
+const normalizeTaskRowKind = (value?: string | null): TokenUsageTaskRowKind => {
+  if (
+    value === 'TEAM_RUN' ||
+    value === 'AGENT_RUN' ||
+    value === 'MEMBER_RUN' ||
+    value === 'TASK_TEAM_RUN' ||
+    value === 'TASK_AGENT_RUN'
+  ) return value;
+  return 'AGENT_RUN';
+};
+
+const normalizeExecutionAddress = (value: unknown): ConversationTargetAddress | null => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const segments = (value as { segments?: unknown }).segments;
+  return Array.isArray(segments)
+    ? { segments: segments as ConversationTargetAddress['segments'] }
+    : null;
+};
 
 const normalizeTaskRow = (row: TaskRowPayload): TokenUsageTaskStatisticsRow => ({
   rowId: row.rowId,
-  rowKind: row.rowKind === 'TEAM_RUN' ? 'TEAM_RUN' : 'AGENT_RUN',
+  rowKind: normalizeTaskRowKind(row.rowKind),
   runId: row.runId ?? null,
   rootTeamRunId: row.rootTeamRunId ?? null,
+  memberRouteKey: row.memberRouteKey ?? null,
+  memberAgentRunId: row.memberAgentRunId ?? null,
+  taskAgentRunId: row.taskAgentRunId ?? null,
+  taskTeamRunId: row.taskTeamRunId ?? null,
+  taskId: row.taskId ?? null,
+  executionAddress: normalizeExecutionAddress(row.executionAddress),
   displayName: row.displayName,
   summary: row.summary ?? null,
   createdAt: row.createdAt,
@@ -153,7 +165,7 @@ const normalizeTaskRow = (row: TaskRowPayload): TokenUsageTaskStatisticsRow => (
   models: normalizeArray(row.models),
   runtimeKinds: normalizeArray(row.runtimeKinds),
   aggregate: normalizeAggregate(row.aggregate),
-  members: (row.members ?? []).map(normalizeTaskMember),
+  children: (row.children ?? []).map(normalizeTaskRow),
 });
 
 const normalizeModelRow = (row: ModelRowPayload): TokenUsageRuntimeModelStatisticsRow => ({

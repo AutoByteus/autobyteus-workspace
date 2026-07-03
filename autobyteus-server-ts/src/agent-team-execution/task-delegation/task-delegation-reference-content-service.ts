@@ -5,6 +5,10 @@ import {
   getTaskDelegationRunRegistry,
   type TaskDelegationRunRegistry,
 } from "./task-delegation-run-registry.js";
+import {
+  getTaskDelegationRecordsService,
+  type TaskDelegationRecordsService,
+} from "./records/task-delegation-records-service.js";
 import type {
   TaskDelegationRecord,
   TaskDelegationReferenceFilePayload,
@@ -54,6 +58,7 @@ const isReadableFile = (absolutePath: string): boolean => {
 export class TaskDelegationReferenceContentService {
   constructor(
     private readonly runRegistry: Pick<TaskDelegationRunRegistry, "getExisting"> = getTaskDelegationRunRegistry(),
+    private readonly recordsService: Pick<TaskDelegationRecordsService, "resolveReference"> = getTaskDelegationRecordsService(),
   ) {}
 
   async resolveContent(input: {
@@ -61,11 +66,16 @@ export class TaskDelegationReferenceContentService {
     taskId: string;
     referenceId: string;
   }): Promise<ResolvedTaskDelegationReferenceContent> {
-    const service = this.runRegistry.getExisting(input.teamRunId.trim());
+    const teamRunId = input.teamRunId.trim();
+    const service = this.runRegistry.getExisting(teamRunId);
     const resolved = service?.resolveTaskReference({
       taskId: input.taskId,
       referenceId: input.referenceId,
-    }) ?? null;
+    }) ?? await this.recordsService.resolveReference({
+      rootTeamRunId: teamRunId,
+      taskId: input.taskId,
+      referenceId: input.referenceId,
+    });
     if (!resolved) {
       throw new TaskDelegationReferenceContentError(
         "REFERENCE_NOT_FOUND",

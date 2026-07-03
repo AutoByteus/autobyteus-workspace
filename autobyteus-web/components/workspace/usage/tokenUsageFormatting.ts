@@ -1,4 +1,4 @@
-import type { TokenUsageApiCostStatus, TokenUsageRunSummary } from '~/types/tokenUsageMeter';
+import type { TokenUsageApiCostStatus, TokenUsageRunSummary, TokenUsageUnitPriceSummary } from '~/types/tokenUsageMeter';
 
 export type TokenUsageTranslator = (key: string, params?: Record<string, string | number>) => string;
 
@@ -50,6 +50,32 @@ export const createTokenUsageFormatter = (t: TokenUsageTranslator) => {
     value > 0 ? `${formatInteger(value)} ${t('shell.tokenUsage.tokenShortLabel')}` : '—'
   );
 
+  const formatUnitPriceAmount = (value: number, currency: string | null): string => {
+    const fractionDigits = Math.abs(value) >= 1 ? 2 : 4;
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: currency || 'USD',
+      currencyDisplay: 'narrowSymbol',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: fractionDigits,
+    }).format(value);
+  };
+
+  const formatUnitPrice = (
+    summary: TokenUsageUnitPriceSummary,
+    currency: string | null,
+  ): string => {
+    if (summary.status === 'not_applicable') return '—';
+    if (summary.status === 'local_no_api_bill') return t('shell.tokenUsage.priceStatusLocal');
+    if (summary.status === 'mixed') return t('shell.tokenUsage.variesByCall');
+    if (summary.status === 'missing') return t('shell.tokenUsage.unpriced');
+    if (summary.status === 'partial_missing') return t('shell.tokenUsage.partiallyMissingUnitPrice');
+    if (summary.pricePerMillion === null) return t('shell.tokenUsage.unpriced');
+    return t('shell.tokenUsage.pricePerMillionTokens', {
+      price: formatUnitPriceAmount(summary.pricePerMillion, currency),
+    });
+  };
+
   const cacheSubline = (summary: TokenUsageRunSummary): string => {
     if (summary.cacheState === 'positive') {
       return t('shell.tokenUsage.cacheHitRate', { percent: formatRatePercent(summary.cacheReadInputTokenRate) });
@@ -88,6 +114,8 @@ export const createTokenUsageFormatter = (t: TokenUsageTranslator) => {
     formatRatePercent,
     formatStatus,
     formatTokenDetail,
+    formatUnitPrice,
+    formatUnitPriceAmount,
     statusClass,
     tokenCell,
     trimLabel,

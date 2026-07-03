@@ -1,0 +1,65 @@
+{
+  "data": {
+    "getTaskDelegationRecords": [
+      {
+        "content": "Objective: Test nested team delegation. Return exactly the token requested by the user.\n\nContext: Teacher is validating that a delegated task can be assigned to the nested team StudentStudyGroup and reviewed.\n\nConstraints: Do not include any extra words, punctuation, formatting, or explanation in the task result. The submitted result message must be exactly:\nNESTED_CLASSROOM_OK\n\nDone condition: Submit the task result with exactly NESTED_CLASSROOM_OK as the complete message.",
+        "receiverAddress": {
+          "segments": [
+            {
+              "kind": "member",
+              "memberRouteKey": "StudentStudyGroup",
+              "taskTeamRunId": null
+            },
+            {
+              "kind": "task_team",
+              "memberRouteKey": null,
+              "taskTeamRunId": "studentstudygroup_57d8220343e64a729fa42dffc494f401"
+            },
+            {
+              "kind": "member",
+              "memberRouteKey": "student_one",
+              "taskTeamRunId": null
+            }
+          ]
+        },
+        "receiverTargetKind": "team",
+        "status": "accepted",
+        "taskId": "task_0001",
+        "taskRun": {
+          "address": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberRouteKey": "StudentStudyGroup",
+                "taskTeamRunId": null
+              },
+              {
+                "kind": "task_team",
+                "memberRouteKey": null,
+                "taskTeamRunId": "studentstudygroup_57d8220343e64a729fa42dffc494f401"
+              }
+            ]
+          }
+        },
+        "updates": [
+          {
+            "content": "NESTED_CLASSROOM_OK",
+            "decision": null,
+            "kind": "submission",
+            "reviewId": null,
+            "reviewedSubmissionId": null,
+            "submissionId": "task_0001_submission_0001"
+          },
+          {
+            "content": "Result matches the requested token exactly.",
+            "decision": "accept",
+            "kind": "review",
+            "reviewId": "task_0001_review_0001",
+            "reviewedSubmissionId": "task_0001_submission_0001",
+            "submissionId": null
+          }
+        ]
+      }
+    ]
+  }
+}

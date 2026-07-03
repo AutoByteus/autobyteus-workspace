@@ -100,51 +100,49 @@ const messages = {
     "任务智能体",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "需要审批",
-  "workspace.components.workspace.team.TeamActiveTasksSection.active_tasks":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.tasks":
     "任务",
-  "workspace.components.workspace.team.TeamActiveTasksSection.active_count":
-    "活跃",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_count_singular":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_singular":
     "个任务",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_count_plural":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural":
     "个任务",
-  "workspace.components.workspace.team.TeamActiveTasksSection.focus_agent":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_agent":
     "聚焦智能体",
-  "workspace.components.workspace.team.TeamActiveTasksSection.focus_team":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_team":
     "聚焦团队",
-  "workspace.components.workspace.team.TeamActiveTasksSection.focus":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus":
     "聚焦",
-  "workspace.components.workspace.team.TeamActiveTasksSection.technical_details":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.technical_details":
     "技术详情",
-  "workspace.components.workspace.team.TeamActiveTasksSection.select_task":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.select_task":
     "选择一个任务进行阅读。",
-  "workspace.components.workspace.team.TeamActiveTasksSection.waiting_activity_notice":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice":
     "正在等待在 Activity 中处理用户操作。",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target_kind":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.target_kind":
     "目标类型",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_type":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_type":
     "任务类型",
-  "workspace.components.workspace.team.TeamActiveTasksSection.target":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.target":
     "目标",
-  "workspace.components.workspace.team.TeamActiveTasksSection.empty":
-    "暂无活跃委派任务",
-  "workspace.components.workspace.team.TeamActiveTasksSection.empty_detail":
-    "委派的工作会自动显示在这里。",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_agent":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty":
+    "暂无委派任务",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail":
+    "委派工作会从已保存的任务记录显示在这里。",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_agent":
     "任务智能体",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_team":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_team":
     "任务团队",
-  "workspace.components.workspace.team.TeamActiveTasksSection.approval_required":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
     "需要审批",
-  "workspace.components.workspace.team.TeamActiveTasksSection.task_id":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_id":
     "任务 ID",
-  "workspace.components.workspace.team.TeamActiveTasksSection.agent_run_id":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_run_id":
     "智能体运行 ID",
-  "workspace.components.workspace.team.TeamActiveTasksSection.agent_team_run_id":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_team_run_id":
     "智能体团队运行 ID",
-  "workspace.components.workspace.team.TeamActiveTasksSection.description_unavailable":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable":
     "任务描述不可用",
-  "workspace.components.workspace.team.TeamActiveTasksSection.members":
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
     "成员",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
     "临时任务执行",
