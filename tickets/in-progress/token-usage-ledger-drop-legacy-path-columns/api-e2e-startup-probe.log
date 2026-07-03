@@ -1,0 +1,218 @@
+Startup probe temp data dir: /tmp/autobyteus-legacy-drop-startup-2h37yQ
+Startup probe port: 51763
+Runtime overrides: DATABASE_URL=file:/tmp/autobyteus-legacy-drop-startup-2h37yQ/db/test.db AUTOBYTEUS_MEMORY_DIR=/tmp/autobyteus-legacy-drop-startup-2h37yQ/memory AUTOBYTEUS_LOG_DIR=/tmp/autobyteus-legacy-drop-startup-2h37yQ/logs
+Running Prisma migrate deploy against representative temp DB.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/tmp/autobyteus-legacy-drop-startup-2h37yQ/db/test.db"
+
+SQLite database test.db created at file:/tmp/autobyteus-legacy-drop-startup-2h37yQ/db/test.db
+
+17 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Seeding representative historical token row via Prisma raw query with legacy columns present and missing execution_address_json.
+Columns before server startup: id usage_event_id idempotency_key observed_at persisted_at run_id turn_id llm_call_id call_sequence root_team_run_id team_run_path_json member_agent_run_id member_path_json member_route_key agent_definition_id workspace_id task_agent_instance_id task_agent_run_id task_id runtime_kind model_provider model_identifier model_value ingestion_kind usage_scope snapshot_series_key previous_snapshot_event_id reported_input_tokens reported_output_tokens reported_total_tokens accounting_input_tokens accounting_output_tokens accounting_total_tokens cache_read_input_tokens cache_creation_input_tokens reasoning_output_tokens billable_input_tokens billable_output_tokens raw_usage_json raw_event_json quality_flags_json cost_basis currency input_price_per_million output_price_per_million cached_input_read_price_per_million cached_input_write_price_per_million pricing_source pricing_status pricing_missing_reason pricing_snapshot_json estimated_api_input_cost estimated_api_standard_input_cost estimated_api_cache_read_input_cost estimated_api_cache_creation_input_cost estimated_api_output_cost estimated_api_reasoning_output_cost estimated_api_total_cost api_cost_status latest_context_input_tokens effective_context_budget_tokens context_pressure_percent input_token_semantic standard_input_tokens cache_miss_input_tokens cache_creation_5m_input_tokens cache_creation_1h_input_tokens cache_state cached_input_write_5m_price_per_million cached_input_write_1h_price_per_million pricing_policy_key selected_pricing_tier_id missing_price_dimensions_json estimated_api_cache_creation_5m_input_cost estimated_api_cache_creation_1h_input_cost latest_prompt_tokens effective_context_window_tokens context_window_usage_percent team_name agent_name run_summary run_created_at member_name execution_address_json 
+Starting built server process with explicit temp DATABASE_URL; startup should run Prisma deploy, app-data backfill, then legacy-column drop.
+{
+  "backfill": {
+    "migrationId": "20260703_token_usage_execution_address_backfill",
+    "status": "SUCCEEDED",
+    "attempts": 1,
+    "summary": {
+      "scannedCount": 1,
+      "migratedCount": 1,
+      "skippedCount": 0,
+      "failedCount": 0,
+      "details": [
+        {
+          "itemId": "token-usage-execution-address:task-record-index",
+          "status": "SKIPPED",
+          "message": "Scanned 0 task delegation records; indexed 0 task-team run addresses; conflicts 0."
+        },
+        {
+          "itemId": "token-usage-execution-address:direct-member-backfills",
+          "status": "MIGRATED",
+          "message": "Direct member backfills: 1."
+        },
+        {
+          "itemId": "token-usage-execution-address:task-team-corrections",
+          "status": "SKIPPED",
+          "message": "Task-team corrections: 0."
+        },
+        {
+          "itemId": "token-usage-execution-address:task-agent-backfills",
+          "status": "SKIPPED",
+          "message": "Task-agent backfills: 0."
+        },
+        {
+          "itemId": "token-usage-execution-address:already-addressed",
+          "status": "SKIPPED",
+          "message": "Already-addressed rows: 0."
+        },
+        {
+          "itemId": "token-usage-execution-address:standalone-skips",
+          "status": "SKIPPED",
+          "message": "Standalone skips: 0."
+        },
+        {
+          "itemId": "token-usage-execution-address:insufficient-data-skips",
+          "status": "SKIPPED",
+          "message": "Insufficient-data skips: 0. Reasons: none."
+        },
+        {
+          "itemId": "token-usage-execution-address:failures",
+          "status": "SKIPPED",
+          "message": "Failures: 0."
+        }
+      ]
+    },
+    "errorMessage": null,
+    "logPath": "/tmp/autobyteus-legacy-drop-startup-2h37yQ/logs/app-data-migrations/20260703_token_usage_execution_address_backfill-2026-07-03T14-45-16-317Z.log"
+  },
+  "drop": {
+    "migrationId": "20260703_drop_token_usage_legacy_path_columns",
+    "status": "SUCCEEDED",
+    "attempts": 1,
+    "summary": {
+      "scannedCount": 2,
+      "migratedCount": 2,
+      "skippedCount": 0,
+      "failedCount": 0,
+      "details": [
+        {
+          "itemId": "token-usage-legacy-path-columns:prerequisite",
+          "status": "SKIPPED",
+          "message": "Execution-address backfill prerequisite status: SUCCEEDED."
+        },
+        {
+          "itemId": "token-usage-legacy-path-columns:team_run_path_json",
+          "status": "MIGRATED",
+          "message": "Dropped obsolete token usage ledger column 'team_run_path_json'."
+        },
+        {
+          "itemId": "token-usage-legacy-path-columns:member_path_json",
+          "status": "MIGRATED",
+          "message": "Dropped obsolete token usage ledger column 'member_path_json'."
+        },
+        {
+          "itemId": "token-usage-legacy-path-columns:data-preservation",
+          "status": "SKIPPED",
+          "message": "Token usage ledger row count preserved: 1 -> 1."
+        },
+        {
+          "itemId": "token-usage-legacy-path-columns:final-schema",
+          "status": "MIGRATED",
+          "message": "Final schema has 82 columns and excludes team_run_path_json, member_path_json."
+        }
+      ]
+    },
+    "errorMessage": null,
+    "logPath": "/tmp/autobyteus-legacy-drop-startup-2h37yQ/logs/app-data-migrations/20260703_drop_token_usage_legacy_path_columns-2026-07-03T14-45-16-324Z.log"
+  }
+}
+Columns after server startup: id usage_event_id idempotency_key observed_at persisted_at run_id turn_id llm_call_id call_sequence root_team_run_id member_agent_run_id member_route_key agent_definition_id workspace_id task_agent_instance_id task_agent_run_id task_id runtime_kind model_provider model_identifier model_value ingestion_kind usage_scope snapshot_series_key previous_snapshot_event_id reported_input_tokens reported_output_tokens reported_total_tokens accounting_input_tokens accounting_output_tokens accounting_total_tokens cache_read_input_tokens cache_creation_input_tokens reasoning_output_tokens billable_input_tokens billable_output_tokens raw_usage_json raw_event_json quality_flags_json cost_basis currency input_price_per_million output_price_per_million cached_input_read_price_per_million cached_input_write_price_per_million pricing_source pricing_status pricing_missing_reason pricing_snapshot_json estimated_api_input_cost estimated_api_standard_input_cost estimated_api_cache_read_input_cost estimated_api_cache_creation_input_cost estimated_api_output_cost estimated_api_reasoning_output_cost estimated_api_total_cost api_cost_status latest_context_input_tokens effective_context_budget_tokens context_pressure_percent input_token_semantic standard_input_tokens cache_miss_input_tokens cache_creation_5m_input_tokens cache_creation_1h_input_tokens cache_state cached_input_write_5m_price_per_million cached_input_write_1h_price_per_million pricing_policy_key selected_pricing_tier_id missing_price_dimensions_json estimated_api_cache_creation_5m_input_cost estimated_api_cache_creation_1h_input_cost latest_prompt_tokens effective_context_window_tokens context_window_usage_percent team_name agent_name run_summary run_created_at member_name execution_address_json 
+Seeded row after startup:
+startup-probe-usage|startup-probe-root|{"segments":[{"kind":"member","memberRouteKey":"Teacher"}]}|55|0.55
+Checking live GraphQL Token Usage statistics against the started server.
+{
+  "totalCostInPeriod": 0.55,
+  "root": {
+    "rowKind": "TEAM_RUN",
+    "rootTeamRunId": "startup-probe-root",
+    "aggregate": {
+      "totalTokens": 55,
+      "estimatedApiTotalCost": 0.55
+    },
+    "children": [
+      {
+        "rowKind": "MEMBER_RUN",
+        "memberRouteKey": "Teacher",
+        "executionAddress": {
+          "segments": [
+            {
+              "kind": "member",
+              "memberRouteKey": "Teacher"
+            }
+          ]
+        },
+        "aggregate": {
+          "totalTokens": 55,
+          "estimatedApiTotalCost": 0.55
+        }
+      }
+    ]
+  },
+  "teacher": {
+    "rowKind": "MEMBER_RUN",
+    "memberRouteKey": "Teacher",
+    "executionAddress": {
+      "segments": [
+        {
+          "kind": "member",
+          "memberRouteKey": "Teacher"
+        }
+      ]
+    },
+    "aggregate": {
+      "totalTokens": 55,
+      "estimatedApiTotalCost": 0.55
+    }
+  }
+}
+Startup lifecycle probe passed. Server log copied to: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-ledger-drop-legacy-path-columns/tickets/in-progress/token-usage-ledger-drop-legacy-path-columns/api-e2e-startup-server.log

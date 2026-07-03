@@ -262,7 +262,7 @@ describe("TokenUsageExecutionAddressBackfillMigration", () => {
     expect(detailText(secondRun.summary.details)).toContain("Already-addressed rows: 6.");
   });
 
-  it("keeps active token usage hierarchy paths off legacy path columns and defers physical column drop", async () => {
+  it("keeps active token usage hierarchy paths off legacy path columns and keeps physical drop out of normal Prisma migrations", async () => {
     const repoRoot = path.resolve(process.cwd(), "..");
     const activeHierarchyFiles = [
       "autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts",
