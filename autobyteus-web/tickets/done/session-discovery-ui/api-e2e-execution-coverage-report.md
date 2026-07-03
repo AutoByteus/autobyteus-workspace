@@ -8,11 +8,11 @@
 - Worktree: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web`
 - Branch: `codex/session-discovery-ui`
 - Trigger: Code review Round 6 passed for the task-trail/team-task member-focus header `+` Local Fix and required fresh API/E2E evidence before Delivery resumes.
-- Coverage Investigation: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/api-e2e-coverage-investigation.md`
-- Requirements Doc: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/requirements.md`
-- Task-Trail Header Plus Rework Request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
-- Implementation Handoff: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/implementation-handoff.md`
-- Code Review Report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/code-review-report.md`
+- Coverage Investigation: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/requirements.md`
+- Task-Trail Header Plus Rework Request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
+- Implementation Handoff: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/implementation-handoff.md`
+- Code Review Report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/code-review-report.md`
 
 ## Summary
 
@@ -30,7 +30,7 @@ No repository-resident source or durable coverage code was changed by API/E2E in
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -179,8 +179,8 @@ The durable tests for the task-trail header-plus Local Fix were already part of 
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/api-e2e-execution-coverage-report.md`
 - Temporary typecheck log: `/tmp/session-discovery-api-e2e-r5-typecheck.log` (not a durable task artifact)
 
 ## Temporary Execution Methods / Scaffolding

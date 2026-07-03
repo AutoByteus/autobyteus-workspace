@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/requirements.md`
-- Upstream Investigation Notes: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/investigation-notes.md`
-- Reviewed Design Spec: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-spec.md`
+- Upstream Requirements Doc: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/requirements.md`
+- Upstream Investigation Notes: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/investigation-notes.md`
+- Reviewed Design Spec: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review after user-approved requirements.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-spec.md` against the canonical design principles, especially spine completeness, authoritative boundary encapsulation, clean-cut removal, reusable owned structure tightness, and task design-health evidence.
+Reviewed `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/design-spec.md` against the canonical design principles, especially spine completeness, authoritative boundary encapsulation, clean-cut removal, reusable owned structure tightness, and task design-health evidence.
 
 ## Task Design Health Assessment Verdict
 

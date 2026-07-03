@@ -63,15 +63,15 @@ The conflicts are in production source and selection/rendering contracts for the
 
 ## Cumulative Artifact Package
 
-- Rework request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-rework.md`
-- Requirements: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/requirements.md`
-- Investigation notes: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/investigation-notes.md`
-- Design spec: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-spec.md`
-- Design review report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-review-report.md`
-- Updated implementation handoff: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/implementation-handoff.md`
-- Updated code review report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/code-review-report.md`
-- Updated coverage investigation: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/api-e2e-coverage-investigation.md`
-- Updated execution coverage report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/api-e2e-execution-coverage-report.md`
-- Previous docs sync report to refresh after integration: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/docs-sync-report.md`
-- Previous handoff summary to refresh after integration: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/handoff-summary.md`
-- Release/deployment report updated with this blocker: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/release-deployment-report.md`
+- Rework request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-user-verification-rework.md`
+- Requirements: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/requirements.md`
+- Investigation notes: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/investigation-notes.md`
+- Design spec: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/design-spec.md`
+- Design review report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/design-review-report.md`
+- Updated implementation handoff: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/implementation-handoff.md`
+- Updated code review report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/code-review-report.md`
+- Updated coverage investigation: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/api-e2e-coverage-investigation.md`
+- Updated execution coverage report: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/api-e2e-execution-coverage-report.md`
+- Previous docs sync report to refresh after integration: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/docs-sync-report.md`
+- Previous handoff summary to refresh after integration: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/handoff-summary.md`
+- Release/deployment report updated with this blocker: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/release-deployment-report.md`

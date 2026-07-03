@@ -3,8 +3,8 @@
 ## Summary Meta
 
 - Ticket: `session-discovery-ui`
-- Last Updated: `2026-07-02 22:50 PDT`
-- Current Status: `Ready for renewed user verification; ticket branch pushed; mainline merge deferred by user instruction`
+- Last Updated: `2026-07-03 00:00 PDT`
+- Current Status: `User verified; ticket archived; ready for mainline merge and release 1.3.94`
 - Worktree: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui`
 - Web package path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web`
 - Ticket branch: `codex/session-discovery-ui`
@@ -27,14 +27,14 @@
   - updated durable Nuxt/Vitest coverage for projection, tree state, selection behavior, lazy hydration, host panel integration, transient rows, status-dot presentation, session leading-lane alignment, active team termination, and the header `+` task-trail clone path; and
   - synchronized long-lived frontend docs with the final reviewed/API-E2E-passed implementation.
 - Planned scope reference:
-  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/requirements.md`
-  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-spec.md`
+  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/requirements.md`
+  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/design-spec.md`
 - User-verification rework references:
-  - Chip/subtitle/indent/dot polish: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-rework.md`
-  - Arrow/status-dot alignment polish: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-arrow-dot-alignment-rework.md`
-  - Task-trail header plus bug: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
+  - Chip/subtitle/indent/dot polish: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-user-verification-rework.md`
+  - Arrow/status-dot alignment polish: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-user-verification-arrow-dot-alignment-rework.md`
+  - Task-trail header plus bug: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
 - Latest-base integration blocker/resolution reference:
-  - Previous blocker artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-base-integration-conflict-blocker.md`
+  - Previous blocker artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-base-integration-conflict-blocker.md`
   - Previous conflict resolved by implementation/code-review/API-E2E; later latest-base refresh to `5832196c` completed without conflicts in delivery.
 - Deferred / not delivered:
   - backend persisted/generated session-title pipeline;
@@ -81,7 +81,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/docs-sync-report.md`
+  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/docs-sync-report.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-web/docs/agent_execution_architecture.md`
@@ -93,27 +93,26 @@
 
 ## User Verification Hold
 
-- Waiting for renewed user verification: `Yes`
-- User verification received for Round 5 task-trail fix after latest-base merge: `No`
+- Waiting for renewed user verification: `No`
+- User verification received for Round 5 task-trail fix after latest-base merge: `Yes`
 - Notes:
   - This is a one-off Software Engineering Team run, not active product iteration.
-  - The user previously authorized ticket-branch push only and explicitly deferred merge to the mainline/default branch (`personal`).
-  - Ticket archival, target-branch merge/push, release, deployment, and cleanup remain deferred until the user later authorizes mainline finalization.
+  - The user previously authorized ticket-branch push only, then later provided explicit final verification and authorization to finalize and release.
+  - Ticket archival is complete; target-branch merge/push, release, deployment, and cleanup are proceeding under the latest user instruction.
 
 ## Finalization Record
 
-- Ticket archived to: `Not done — renewed user verification and mainline authorization still pending`
+- Ticket archived to: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui`
 - Ticket worktree path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui`
 - Ticket branch: `codex/session-discovery-ui`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Completed on ticket branch` — delivery docs commit `78c0d79d` (`docs(delivery): refresh task trail header plus handoff`).
-- Ticket branch push status: `Completed` — `origin/codex/session-discovery-ui` updated with the Round 6 delivery docs on 2026-07-02; no mainline/default branch push was attempted.
-- Merge status: `Deferred by user instruction` — no merge to `personal`/mainline was attempted.
-- Release/publication/deployment status: `Not required / not started`
+- Commit status: `Pending final archive commit`
+- Ticket branch push status: `Pending final archive commit push`
+- Merge status: `Authorized by user; pending final target merge`
+- Release/publication/deployment status: `Release 1.3.94 requested; pending after mainline merge`
 - Worktree cleanup status: `Not started — mainline merge deferred by user instruction`
 - Local branch cleanup status: `Not started — keep local ticket branch until user authorizes mainline finalization or cleanup`
 - Blockers / notes:
-  - user constraint: do not merge or push `personal`/mainline yet.
-  - ticket branch is pushed at `origin/codex/session-discovery-ui`; this status-only report update is committed on top of the pushed Round 6 delivery docs.
-  - after renewed user verification and explicit mainline authorization, refresh `origin/personal` again before merge, then archive/finalize through the normal delivery flow.
+  - user said `测试通过，给我push到branch，直接finalize and release`, interpreted as explicit authorization to finalize to `personal` and release.
+  - release notes prepared at `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/release-notes.md`.

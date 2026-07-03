@@ -9,11 +9,11 @@
 - Ticket branch: `codex/session-discovery-ui`
 - Remote ticket branch: `origin/codex/session-discovery-ui`
 - Finalization target: `origin/personal` / `personal`
-- Current status: `Ready for renewed user verification; ticket branch pushed; mainline merge deferred by user instruction`
+- Current status: `User verified; ticket archived; ready for mainline merge and release 1.3.94`
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/handoff-summary.md`
+- Handoff summary artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff captures delivered session-first history UI scope, user-verification polish rounds, task-trail header `+` Local Fix, latest-base integration, validation evidence, docs sync, residual risks, ticket-branch-only delivery constraint, and explicit mainline merge deferral.
 
@@ -36,16 +36,16 @@
 ## Verification / Acceptance
 
 - Verification owner: `User`
-- Initial explicit user completion/verification received: `Yes` for earlier alignment state
+- Initial explicit user completion/verification received: `Yes`
 - Product Manager acceptance status: `N/A`
 - Initial verification / acceptance reference: User said `我觉得这一版很好，检查通过`, then clarified `可以push到branch，但是不要合并到main` on 2026-07-01/2026-07-02.
 - Renewed verification required after later Local Fix and re-integration: `Yes`
-- Renewed verification received: `No` for the Round 6 task-trail header `+` fix after latest-base merge.
-- Renewed verification / acceptance reference: `Pending user verification of this refreshed handoff`
+- Renewed verification received: `Yes` for the Round 6 task-trail header `+` fix after latest-base merge.
+- Renewed verification / acceptance reference: user said `测试通过，给我push到branch，直接finalize and release`.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/docs-sync-report.md`
+- Docs sync artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `autobyteus-web/docs/agent_execution_architecture.md`
@@ -54,37 +54,37 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `N/A — still in /tickets/in-progress/session-discovery-ui` because renewed user verification and mainline authorization remain pending.
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui`
 
 ## Version / Tag / Release Commit
 
-- Not started. No version bump, tag, release-specific commit, publication, or deployment is in scope for the user-requested ticket-branch-only handoff.
+- Release requested. Prepared release notes for version `1.3.94`; release helper will run after mainline merge.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/investigation-notes.md`
+- Bootstrap context source: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/investigation-notes.md`
 - Ticket branch: `codex/session-discovery-ui`
-- Ticket branch commit result: `Completed` — delivery docs commit `78c0d79d` (`docs(delivery): refresh task trail header plus handoff`).
-- Ticket branch push result: `Completed` — `git push` updated `origin/codex/session-discovery-ui` with the Round 6 delivery docs on 2026-07-02; no mainline/default branch push was attempted.
+- Ticket branch commit result: `Pending final archive commit`
+- Ticket branch push result: `Pending final archive commit push`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after verification / acceptance: `Yes` — `origin/personal` advanced to `5832196cca5215f4771b29a72d4f3fe20a0a8d8b` and was merged into the ticket branch before this handoff.
 - Delivery-owned edits protected before re-integration: `Completed` via checkpoint commit `4e736190`
 - Re-integration before final merge result: `Completed` via merge commit `d88ceadf33f658075784bfeb234849228de37e4c`
-- Target branch update result: `Deferred by user instruction` — no checkout, merge, or push of `personal`/mainline was attempted.
-- Merge into target result: `Deferred by user instruction` — user explicitly requested no merge to mainline/default branch yet.
-- Push target branch result: `Deferred by user instruction` — no target branch push was attempted.
-- Repository finalization status: `Partially completed / deferred`
-- Blocker (if applicable): renewed user verification is pending for the task-trail header `+` fix; mainline/default branch merge is intentionally deferred by user instruction.
+- Target branch update result: `Authorized by user; pending`
+- Merge into target result: `Authorized by user; pending`
+- Push target branch result: `Authorized by user; pending`
+- Repository finalization status: `In progress`
+- Blocker (if applicable): `N/A` — user authorized finalization and release.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
+- Applicable: `Yes`
 - Method: `Other`
-- Method reference / command: `No release/publication/deployment requested for this verification handoff`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
+- Method reference / command: `pnpm release 1.3.94 -- --release-notes autobyteus-web/tickets/done/session-discovery-ui/release-notes.md`
+- Release/publication/deployment result: `Pending`
+- Release notes handoff result: `Prepared`
 - Blocker (if applicable): `N/A`
 
 ## Post-Finalization Cleanup
@@ -94,7 +94,7 @@
 - Worktree prune result: `Blocked`
 - Local ticket branch cleanup result: `Blocked`
 - Remote branch cleanup result: `Not started`
-- Blocker (if applicable): Cleanup must wait until renewed user verification and later mainline finalization authorization; keep local and remote ticket branch `codex/session-discovery-ui` available.
+- Blocker (if applicable): Cleanup waits until ticket-branch push, mainline merge/push, and release complete; keep local and remote ticket branch `codex/session-discovery-ui` available until then.
 
 ## Product Manager Iteration Acceptance Callback
 
@@ -118,17 +118,17 @@
 
 - Classification: `N/A`
 - Recommended recipient: `N/A`
-- Why final handoff could not complete: `N/A — refreshed verification handoff is complete; finalization is intentionally held for user verification and mainline authorization.`
+- Why final handoff could not complete: `N/A — refreshed verification is complete and user authorized finalization/release; delivery is proceeding.`
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `Not required`
-- Archived release notes artifact used for release/publication: `Not required`
-- Release notes status: `Not required`
+- Release notes artifact created before verification / acceptance: `Created after explicit release request`
+- Archived release notes artifact used for release/publication: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/release-notes.md`
+- Release notes status: `Prepared`
 
 ## Deployment Steps
 
-- None. No deployment path was requested or applicable before renewed user verification.
+- Release helper will bump versions, sync curated release notes, tag `v1.3.94`, and push `personal` plus the tag after mainline merge.
 
 ## Environment Or Migration Notes
 
@@ -156,10 +156,10 @@
 
 ## Rollback Criteria
 
-- Before mainline finalization: revise or discard the ticket worktree/branch changes if user verification fails or requested behavior changes.
+- Before mainline finalization completes: revise or discard the ticket worktree/branch changes only if final delivery checks fail or user changes the release instruction.
 - After future finalization: revert the eventual ticket-branch merge/commit from `personal` if the session-first sidebar redesign or header `+` clone fix must be backed out.
-- No schema, migration, or release artifact rollback is currently required because mainline finalization and release have not been performed by this ticket.
+- No schema, migration, or runtime data rollback is required; if release validation fails, revert the merge/release commits and retag according to the documented release process.
 
 ## Final Status
 
-- `Ready for renewed user verification; ticket branch pushed; mainline deferred` — latest tracked `origin/personal` is integrated, docs are refreshed to final alignment and header `+` clone behavior, delivery smoke checks passed, `origin/codex/session-discovery-ui` has been updated, and no archival/merge-to-mainline/release/deployment/cleanup has been performed.
+- `Finalization in progress` — user verification and finalization/release authorization received; ticket archived and release notes prepared. Mainline merge and release are pending.

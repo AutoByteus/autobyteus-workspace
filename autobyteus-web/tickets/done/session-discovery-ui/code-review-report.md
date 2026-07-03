@@ -3,19 +3,19 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/requirements.md`
+- Requirements Doc Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/requirements.md`
 - Current Review Round: `6`
 - Trigger: `implementation_engineer` completed the task-trail/team-task header `+` Local Fix requested during delivery/user verification after the ticket-branch push.
 - Prior Review Round Reviewed: `Round 5` in this canonical report; result was `Pass` for the arrow/status-dot alignment Local Fix.
 - Latest Authoritative Round: `6`
-- Task-Trail Header Plus Rework Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
-- Arrow / Status Dot Alignment Rework Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-arrow-dot-alignment-rework.md`
-- Delivery Base Integration Conflict Blocker Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-base-integration-conflict-blocker.md`
-- Investigation Notes Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-spec.md`
-- Design Review Report Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/api-e2e-execution-coverage-report.md`
+- Task-Trail Header Plus Rework Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
+- Arrow / Status Dot Alignment Rework Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-user-verification-arrow-dot-alignment-rework.md`
+- Delivery Base Integration Conflict Blocker Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-base-integration-conflict-blocker.md`
+- Investigation Notes Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/design-spec.md`
+- Design Review Report Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes — prior API/E2E rounds exist, but this task-trail header-plus Local Fix changed production source and durable tests after those reports; API/E2E must resume.`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes — implementation updated TeamWorkspaceView and launch-default tests for catalog-backed seed resolution, runtime/team ID canonicalization, transient route-key pruning, and no-selection-clear fallback.`
 - Latest-base integration reference: `origin/personal` at `57185192d4b93840dab1fb7134604b1716a600a8`; merge commit `9d8475e2895d4fba1b2b24ae21acc1c01b2a8901` (`merge origin/personal for session discovery ui`).
@@ -51,8 +51,8 @@ Primary changed implementation/code files reviewed:
 - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/composables/useDefinitionLaunchDefaults.ts`
 - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts`
 - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/composables/__tests__/useDefinitionLaunchDefaults.spec.ts`
-- `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/implementation-handoff.md`
-- `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
+- `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/implementation-handoff.md`
+- `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
 
 Context reviewed from prior rounds includes the requirements, investigation notes, reviewed design, design review, previous code review state, API/E2E reports, delivery docs/final handoff artifacts, latest-base integration blocker, prior UI polish reworks, and release/deployment report. Current API/E2E and delivery artifacts are stale relative to this new behavioral Local Fix and are intentionally downstream follow-ups.
 
@@ -174,11 +174,11 @@ No blocking findings.
 - Docs impact: `Yes`
 - Why: The Local Fix changes user-visible header `+` behavior for selected task-trail/team-task contexts and supersedes delivery/API artifacts that predate the fix. Long-lived project docs only need edits if they document header-plus/new-run cloning behavior; ticket delivery artifacts definitely need refresh.
 - Files or areas likely affected:
-  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/api-e2e-coverage-investigation.md`
-  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/api-e2e-execution-coverage-report.md`
-  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/docs-sync-report.md`
-  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/handoff-summary.md`
-  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/release-deployment-report.md`
+  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/api-e2e-coverage-investigation.md`
+  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/api-e2e-execution-coverage-report.md`
+  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/docs-sync-report.md`
+  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/handoff-summary.md`
+  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/release-deployment-report.md`
   - Long-lived docs only if Delivery finds existing wording for team header `+` / new-run cloning behavior.
 - Blocking status: Not blocking this code review because API/E2E and Delivery own their respective artifact refresh after a review pass; it is a required downstream follow-up.
 
