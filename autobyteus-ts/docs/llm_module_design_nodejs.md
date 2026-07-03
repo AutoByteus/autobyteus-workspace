@@ -296,6 +296,33 @@ tool-result user text, including the
 `The following tool executions have completed...` prefix, legacy
 `Tool: <name> (ID: ...)` lines, and aggregate `Status: Success` markers.
 
+### Provider Media Payload Rendering
+
+`Message.image_urls`, `Message.audio_urls`, and `Message.video_urls` are
+declared current-turn media input for provider renderers. The image/audio/video
+extension policy is centralized in `src/utils/media-file-kind.ts`; context-file
+typing and `src/llm/utils/media-payload-formatter.ts` both depend on that
+classifier instead of owning separate media allowlists.
+
+Provider prompt renderers own the provider-specific media part shape, not media
+extension policy. Direct Gemini renders declared media through the formatter as
+`inlineData` with the resolved MIME type; local `.m4a` audio therefore becomes
+`inlineData` with `mimeType: 'audio/mp4'`. If a declared media source cannot be
+converted, the renderer must fail before provider invocation with an actionable
+media-conversion error rather than silently sending a text-only request.
+
+The direct-Gemini `.m4a` path has an opt-in live proof in
+`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`. Default test
+runs keep it skipped unless `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1` is set. The
+fixture at `tests/data/test_audio.m4a` is a small synthetic/non-private spoken
+sample; the live test renders the exact local file bytes as Gemini
+`inlineData`, verifies `mimeType: 'audio/mp4'`, calls direct Gemini through
+`sendMessages(request.messages, request.renderedPayload)`, and asserts the
+response contains the spoken word `hello`. `AUTOBYTEUS_GEMINI_M4A_LIVE_MODEL`
+can override the default live model for targeted provider compatibility checks.
+The test is a provider-acceptance and simple transcription-signal guard; token
+accounting and broad transcription-quality validation remain separate concerns.
+
 ## 9. Autobyteus RPA Runtime Conversation Contract
 
 `AutobyteusLLM` is the TypeScript adapter for browser-backed RPA LLM models
@@ -422,10 +449,14 @@ Focused unit coverage for this contract lives in:
 - `tests/unit/llm/api/autobyteus-llm.test.ts`
 - `tests/unit/llm/api/provider-native-request-payloads.test.ts`
 - `tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts`
+- `tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts`
+- `tests/unit/llm/utils/media-payload-formatter.test.ts`
+- `tests/unit/utils/media-file-kind.test.ts`
 - `tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts`
 - `tests/unit/clients/autobyteus-client.test.ts`
 - `tests/unit/agent/loop/agent-turn-input-box.test.ts`
 - `tests/unit/agent/loop/tool-result-continuation-builder.test.ts`
+- `tests/unit/agent/message/context-file-type.test.ts`
 
 Provider-native continuation integration coverage lives in
 `tests/integration/agent/provider-native-tool-continuation-flow.test.ts`; it
@@ -433,6 +464,13 @@ drives the local agent event loop across the in-scope native providers, verifies
 that native tool results continue through provider-native carriers, and rejects
 the old synthetic aggregate user message. Broader integration tests remain
 under `tests/integration/llm/...`.
+
+Direct-Gemini media continuation coverage also includes
+`tests/integration/agent/read-media-file-continuation-flow.test.ts` for the
+local `read_media_file -> LLMUserMessage.audio_urls -> Gemini inlineData` path
+and the env-gated
+`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts` for live
+`.m4a` provider acceptance.
 
 ## 11. Where to Update
 

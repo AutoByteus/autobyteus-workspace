@@ -251,6 +251,7 @@ vi.mock('~/utils/apolloClient', () => ({
 
 vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   ListWorkspaceRunHistory: 'ListWorkspaceRunHistory',
+  GetWorkspaceRunHistory: 'GetWorkspaceRunHistory',
   GetRunProjection: 'GetRunProjection',
   GetRunFileChanges: 'GetRunFileChanges',
   GetAgentRunResumeConfig: 'GetAgentRunResumeConfig',
@@ -363,7 +364,7 @@ describe('Historical team lazy hydration integration', () => {
   const expandTeamDefinitionGroup = async (wrapper: any) => {
     const workspaceRow = wrapper.get('[data-test="workspace-row"][data-workspace-root="/ws/a"]');
     if (workspaceRow.attributes('aria-expanded') !== 'true') {
-      await workspaceRow.trigger('click');
+      await workspaceRow.get('button').trigger('click');
       await flushPromises();
     }
 
@@ -382,6 +383,15 @@ describe('Historical team lazy hydration integration', () => {
       if (query === 'ListWorkspaceRunHistory') {
         return {
           data: buildWorkspaceHistoryResponse(),
+          errors: [],
+        };
+      }
+
+      if (query === 'GetWorkspaceRunHistory') {
+        return {
+          data: {
+            workspaceRunHistory: buildWorkspaceHistoryResponse().listWorkspaceRunHistory[0],
+          },
           errors: [],
         };
       }
@@ -420,13 +430,15 @@ describe('Historical team lazy hydration integration', () => {
     const selectionStore = useAgentSelectionStore();
 
     await flushPromises();
+    await runHistoryStore.fetchTree();
+    await flushPromises();
 
     expect(runHistoryStore.workspaceGroups).toHaveLength(1);
     await expandTeamDefinitionGroup(wrapper);
     await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
     await flushPromises();
 
-    const hydratedTeam = teamContextsStore.getTeamContextById('team-1');
+    const hydratedTeam = teamContextsStore.getTeamContextById('team-1') as any;
     expect(hydratedTeam).toBeTruthy();
     expect(hydratedTeam?.focusedMemberRouteKey).toBe('solution_designer');
     expect(hydratedTeam?.members.get('solution_designer')?.state.conversation.messages.length).toBe(2);
@@ -445,7 +457,7 @@ describe('Historical team lazy hydration integration', () => {
     await wrapper.get('[data-test="workspace-team-member-team-1-architect_reviewer"]').trigger('click');
     await flushPromises();
 
-    const refocusedTeam = teamContextsStore.getTeamContextById('team-1');
+    const refocusedTeam = teamContextsStore.getTeamContextById('team-1') as any;
     expect(resumeConfigCalls).toBe(1);
     expect(projectionCalls).toEqual(['solution_designer', 'architect_reviewer']);
     expect(refocusedTeam?.focusedMemberRouteKey).toBe('architect_reviewer');

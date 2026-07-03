@@ -1,13 +1,32 @@
 import axios from 'axios';
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import mime from 'mime-types';
+import { getMediaFileKindFromPath } from '../../utils/media-file-kind.js';
+
+const getLookupPath = (mediaSource: string): string => {
+  if (mediaSource.startsWith('data:')) {
+    return '';
+  }
+
+  try {
+    const parsed = new URL(mediaSource);
+    return parsed.pathname;
+  } catch {
+    return mediaSource.split(/[?#]/, 1)[0] ?? mediaSource;
+  }
+};
 
 /**
  * Determine MIME type of file.
  */
-export function getMimeType(filePath: string): string {
-  const mimeType = mime.lookup(filePath);
+export function getMimeType(mediaSource: string): string {
+  if (mediaSource.startsWith('data:')) {
+    const header = mediaSource.slice(0, mediaSource.indexOf(',') >= 0 ? mediaSource.indexOf(',') : undefined);
+    const mimeType = header.slice(5).split(';', 1)[0]?.trim();
+    return mimeType || 'application/octet-stream';
+  }
+
+  const mimeType = mime.lookup(getLookupPath(mediaSource));
   return mimeType || 'application/octet-stream';
 }
 
@@ -27,18 +46,8 @@ export function isBase64(s: string): boolean {
  * Check if path exists and has a valid media extension.
  */
 export async function isValidMediaPath(filePath: string): Promise<boolean> {
-  const validExtensions = new Set([
-    // Images
-    ".jpg", ".jpeg", ".png", ".gif", ".webp",
-    // Audio
-    ".mp3", ".wav", ".ogg", ".aac", ".flac",
-    // Video
-    ".mp4", ".mpeg", ".mov", ".avi", ".webm", ".mkv"
-  ]);
-
   try {
-    const ext = path.extname(filePath).toLowerCase();
-    if (!validExtensions.has(ext)) return false;
+    if (!getMediaFileKindFromPath(filePath)) return false;
     
     await fs.access(filePath);
     const stat = await fs.stat(filePath);
@@ -148,14 +157,7 @@ export async function mediaSourceToDataUri(mediaSource: string): Promise<string>
       const mimeTypeFromHeader = typeof headerContentType === 'string'
         ? headerContentType.split(';')[0].trim()
         : '';
-      const parsedUrlPath = (() => {
-        try {
-          return new URL(mediaSource).pathname;
-        } catch {
-          return mediaSource;
-        }
-      })();
-      const mimeTypeFromPath = mime.lookup(parsedUrlPath) || '';
+      const mimeTypeFromPath = getMimeType(mediaSource);
       const mimeType = mimeTypeFromHeader || mimeTypeFromPath || 'application/octet-stream';
       const base64Data = Buffer.from(response.data).toString('base64');
       return `data:${mimeType};base64,${base64Data}`;
