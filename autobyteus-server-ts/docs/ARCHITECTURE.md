@@ -71,10 +71,12 @@ Persistence is subsystem-owned rather than selected through a global mode.
   `memory/imports/<sourceNodeId>/`.
 - SQLite URL derivation is controlled by DB config (`DB_TYPE=sqlite` with optional `DATABASE_URL` override), and startup runs the normal Prisma migration path whenever the Prisma schema exists.
 - Required app-data migrations run after Prisma schema migrations so data repair
-  can rely on newly added columns before runtime/API reads begin. For example,
-  token usage execution-address backfill writes historical
-  `execution_address_json` values after the schema expand migration has added
-  the column.
+  and guarded local schema contracts can rely on newly added columns before
+  runtime/API reads begin. For example, token usage execution-address backfill
+  writes historical `execution_address_json` values after the schema expand
+  migration has added the column, and the later token-usage legacy-path-column
+  contract migration drops obsolete physical path columns only after that
+  backfill has reached terminal success.
 
 External-channel persistence has one deliberate exception:
 

@@ -222,13 +222,16 @@ estimating cost.
 The old `token_usage_records` table was a lossy role-split storage shape and is
 not used as the current accounting source. `TokenUsageStore`,
 `SqlTokenUsageRecordRepository`, and `TokenUsagePersistenceProcessor` should not
-be reintroduced as compatibility writers. Historical SQLite files may still
-contain dormant `team_run_path_json` / `member_path_json` columns from earlier
-migrations, but those columns are not active Prisma/domain/API hierarchy
-authority; `execution_address_json` plus `root_team_run_id` is the current
-source for Token Statistics hierarchy.
+be reintroduced as compatibility writers. Historical SQLite files created
+before the execution-address migration sequence may temporarily contain dormant
+`team_run_path_json` / `member_path_json` columns, but those columns are not
+active Prisma/domain/API hierarchy authority. Required startup app-data
+migrations backfill deterministic `execution_address_json` values first and
+then physically drop the obsolete path columns when present. After required
+startup migrations complete, `execution_address_json` plus `root_team_run_id`
+is the physical and logical source for Token Statistics hierarchy.
 
-## Historical Execution-Address Backfill
+## Historical Execution-Address Backfill And Schema Contract
 
 The execution-address rollout uses an expand/backfill/contract sequence:
 
@@ -237,9 +240,19 @@ The execution-address rollout uses an expand/backfill/contract sequence:
 2. Required startup app-data migration
    `20260703_token_usage_execution_address_backfill` materializes deterministic
    historical addresses after the schema exists.
-3. Physical removal of dormant `team_run_path_json` and `member_path_json`
-   remains a future contract phase; do not add a normal Prisma drop-column
-   migration before the backfill has run and been observed.
+3. Required startup app-data migration
+   `20260703_drop_token_usage_legacy_path_columns` runs after the backfill has a
+   terminal-success record and contracts the physical table by dropping
+   `team_run_path_json` and `member_path_json` when those columns are present.
+
+The physical drop is intentionally guarded in TypeScript app-data migration
+code rather than an unconditional Prisma SQL migration. SQLite does not support
+`DROP COLUMN IF EXISTS`, and local app databases can drift, so the contract
+migration inspects `PRAGMA table_info(token_usage_ledger_events)`, drops only
+present obsolete columns, treats already-absent obsolete columns as successful
+no-ops, verifies `root_team_run_id` and `execution_address_json` remain present,
+and fails rather than guessing if the execution-address backfill prerequisite is
+not `SUCCEEDED` or `SUCCEEDED_WITH_WARNINGS`.
 
 The backfill migration is the only Token Usage path that reads historical task
 delegation records. It builds a migration-local task-team run index from
@@ -264,6 +277,12 @@ task-team corrections, task-agent backfills, already-addressed rows, standalone
 skips, insufficient-data skips, task-record-index conflicts, and row failures.
 It preserves token/cost totals; only hierarchy ownership fields
 (`root_team_run_id`, `execution_address_json`) are repaired.
+
+The subsequent legacy-path-column contract migration records prerequisite
+status, dropped columns, already-absent skipped columns, row-count preservation,
+and final schema details. It does not read or migrate data from
+`team_run_path_json` or `member_path_json`; those columns are obsolete
+representations, not compatibility input.
 
 Normal Token Statistics queries must not query task records to reconstruct
 hierarchy. After backfill, runtime/API/frontend hierarchy remains ledger-owned:
@@ -449,8 +468,12 @@ Usage GraphQL output for task-team re-rooting, repeated same-target task-team
 separation, direct task-agent backfill, aggregate total preservation,
 conflict/insufficient-data skip reasons, and fallback visibility. Source scans
 also guard against reintroducing active `team_run_path_json` /
-`member_path_json` hierarchy reads or adding a current-ticket Prisma
-drop-column contract.
+`member_path_json` hierarchy reads. The physical schema contract coverage uses
+an isolated temporary SQLite runtime and verifies missing-prerequisite
+status/logs, backfill-before-drop ordering, final absence of
+`team_run_path_json` / `member_path_json`, preservation of canonical columns,
+row/token/cost/index preservation, app-data migration status/log details, and
+GraphQL statistics after the guarded drop.
 
 ## Runtime E2E Coverage
 
