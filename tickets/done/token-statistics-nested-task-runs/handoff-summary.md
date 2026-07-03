@@ -113,3 +113,19 @@ Suggested verification in Settings > Token Statistics with representative data:
 5. Confirm Model grouping and token/cost/unit-price details still look consistent with existing Token Usage behavior.
 
 Verification has been received. Delivery will commit/push the archived ticket branch, update and push `personal`, perform safe cleanup, then build Electron from the finalized main repo `personal` branch as requested.
+
+
+## Repository Finalization And Cleanup
+
+- Ticket branch finalization commit: `a260993a333b3749595172bd0559802d17ac8b10` (`docs(delivery): finalize token statistics nested task runs`).
+- Ticket branch push: completed to `origin/codex/token-statistics-nested-task-runs` before target merge.
+- Finalization target branch: `personal`.
+- Finalization target refresh: `git pull --ff-only origin personal` reported already up to date at `2b08155e2e1a9a30d6df2e541f4b9b7c5ccf06be` before merge.
+- Merge into target: fast-forwarded `personal` to `a260993a333b3749595172bd0559802d17ac8b10`.
+- Target push: completed to `origin/personal` at `a260993a333b3749595172bd0559802d17ac8b10`.
+- Release/version/tag: not requested and not performed.
+- Dedicated ticket worktree cleanup: completed; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs` removed.
+- Worktree prune: completed.
+- Local ticket branch cleanup: completed; `codex/token-statistics-nested-task-runs` deleted locally.
+- Remote ticket branch cleanup: completed; `origin/codex/token-statistics-nested-task-runs` deleted.
+- Post-finalization user request still in progress at this artifact update: build Electron from the finalized main repo `personal` branch.

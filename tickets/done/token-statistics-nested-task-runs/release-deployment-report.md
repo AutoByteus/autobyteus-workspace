@@ -68,17 +68,17 @@ Post-integration verification commands:
 
 - Bootstrap context source: Upstream handoff from `code_reviewer` recorded worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs`, branch `codex/token-statistics-nested-task-runs`, and base `origin/personal` at `f4e39308347c41f824c12d548ce0c07f06c6e4f9`.
 - Ticket branch: `codex/token-statistics-nested-task-runs`
-- Ticket branch commit result: `Pending final ticket-branch commit after archival`
-- Ticket branch push result: `Pending`
+- Ticket branch commit result: `Completed` — `a260993a333b3749595172bd0559802d17ac8b10` (`docs(delivery): finalize token statistics nested task runs`)
+- Ticket branch push result: `Completed` — pushed `origin/codex/token-statistics-nested-task-runs` before target merge
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No verification yet`
 - Delivery-owned edits protected before re-integration: `Not needed` at handoff time
 - Re-integration before final merge result: `Not needed` at handoff time; will refresh again after user verification.
-- Target branch update result: `Pending`
-- Merge into target result: `Pending`
-- Push target branch result: `Pending`
-- Repository finalization status: `In progress after user verification`
+- Target branch update result: `Completed` — `git pull --ff-only origin personal` confirmed target was current at `2b08155e2e1a9a30d6df2e541f4b9b7c5ccf06be` before merge
+- Merge into target result: `Completed` — fast-forwarded `personal` to `a260993a333b3749595172bd0559802d17ac8b10`
+- Push target branch result: `Completed` — pushed `personal` to `origin/personal` at `a260993a333b3749595172bd0559802d17ac8b10`
+- Repository finalization status: `Completed`
 - Blocker (if applicable): None at archival step.
 
 ## Local Electron Build For User Testing
@@ -106,10 +106,10 @@ Post-integration verification commands:
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs`
-- Worktree cleanup result: `Pending after target merge/push`
-- Worktree prune result: `Pending after target merge/push`
-- Local ticket branch cleanup result: `Pending after target merge/push`
-- Remote branch cleanup result: `Pending after target merge/push`
+- Worktree cleanup result: `Completed` — removed `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-nested-task-runs` after `origin/personal` was updated
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` — deleted local `codex/token-statistics-nested-task-runs`
+- Remote branch cleanup result: `Completed` — deleted `origin/codex/token-statistics-nested-task-runs`
 - Blocker (if applicable): N/A beyond verification hold.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
@@ -126,7 +126,15 @@ Post-integration verification commands:
 
 ## Deployment Steps
 
-- None performed before verification.
+- No deployment was requested or performed.
+
+## Post-Finalization Local Electron Build Request
+
+- Requested: `Yes` — build Electron from the finalized main repo `personal` branch after finalization.
+- Main repo path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
+- Build command to run after this finalization report update is committed/pushed: `CI=true NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= CSC_IDENTITY_AUTO_DISCOVERY=false pnpm build:electron:mac` from `autobyteus-web`.
+- Expected artifact directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/`.
+- Note: this requested local build disables macOS signing/notarization and is for user testing, not release-policy proof.
 
 ## Environment Or Migration Notes
 
@@ -151,4 +159,4 @@ Post-integration verification commands:
 
 ## Final Status
 
-`User verified; ticket archived; repository finalization and post-finalization local Electron build in progress.`
+`Repository finalization and cleanup completed; post-finalization local Electron build from main repo personal is pending.`
