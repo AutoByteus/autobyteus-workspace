@@ -354,6 +354,21 @@ turn/block group. Streaming converters may preserve provider-native metadata in
 `nativeToolCallContext` for stateless replay, but the normalized stored
 `id`, `name`, and arguments remain authoritative in the rendered request.
 
+## 6.3 Provider Media Payload Rendering
+
+`Message.image_urls`, `Message.audio_urls`, and `Message.video_urls` represent
+declared current-turn media input. The image/audio/video extension policy lives
+in the shared `src/utils/media-file-kind.ts` classifier; `ContextFileType` and
+`src/llm/utils/media-payload-formatter.ts` must use that classifier rather than
+maintaining independent allowlists.
+
+Provider prompt renderers own only provider wire shape. For direct Gemini,
+declared local media is converted by the media payload formatter and sent as
+`inlineData` with the formatter-resolved MIME type, so a local `.m4a` audio file
+renders as `audio/mp4` inline data. If a declared media source cannot be
+converted, the renderer must fail with an actionable error before provider
+invocation instead of silently continuing with a text-only request.
+
 ## 7. Dynamic Model Reloading
 
 For reloadable built-in runtimes (`OLLAMA`, `LMSTUDIO`, `AUTOBYTEUS`),

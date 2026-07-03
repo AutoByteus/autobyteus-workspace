@@ -1,0 +1,50 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/autobyteus-ts
+
+stdout | tests/unit/agent/message/context-file-type.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (5) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/gemini-read-media-file-m4a-live.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (5) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (5) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/utils/media-payload-formatter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (5) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/utils/media-file-kind.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (5) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/read-media-file-continuation-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (5) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/utils/media-file-kind.test.ts (3 tests) 3ms
+ ✓ tests/unit/agent/message/context-file-type.test.ts (5 tests) 3ms
+stderr | tests/unit/llm/utils/media-payload-formatter.test.ts > media_payload_formatter > fileToBase64 reads files
+Failed to read and encode file at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-f2x6mE/missing.png: Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-f2x6mE/missing.png'
+
+stderr | tests/unit/llm/utils/media-payload-formatter.test.ts > media_payload_formatter > urlToBase64 downloads content
+Failed to download from URL https://example.com/notfound.jpg: Error: Not Found
+
+ ✓ tests/unit/llm/utils/media-payload-formatter.test.ts (11 tests) 24ms
+ ✓ tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts (4 tests) 5ms
+ ✓ tests/integration/agent/read-media-file-continuation-flow.test.ts (1 test) 9ms
+ ↓ tests/integration/agent/gemini-read-media-file-m4a-live.test.ts (1 test | 1 skipped)
+
+ Test Files  5 passed | 1 skipped (6)
+      Tests  24 passed | 1 skipped (25)
+   Start at  09:20:44
+   Duration  497ms (transform 671ms, setup 155ms, import 1.01s, tests 45ms, environment 0ms)

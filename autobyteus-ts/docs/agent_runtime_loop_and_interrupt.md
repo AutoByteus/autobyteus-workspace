@@ -326,6 +326,12 @@ malformed `file:` URLs, and unresolved `/rest/.../context-files/...` locators
 are intentionally omitted from `Reference files:` so the text never advertises a
 non-file value as a local server path.
 
+Context-file media classification and LLM media payload validation share the
+same extension-to-kind authority in `src/utils/media-file-kind.ts`. Do not add a
+second image/audio/video allowlist in `ContextFileType`, tool-result
+continuation code, or provider media formatting; those boundaries should agree
+on which context files populate `image_urls`, `audio_urls`, and `video_urls`.
+
 The generated paths are model-visible absolute server paths by design. This is
 intended for the trusted local/server workflow where downstream agents may need
 to copy the same paths into explicit handoff `reference_files`.

@@ -1,0 +1,14 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-media-tool-result-input/autobyteus-ts
+
+stdout | tests/unit/llm/api/provider-native-request-payloads.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (5) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (7 tests) 19ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  12:36:02
+   Duration  1.20s (transform 285ms, setup 40ms, import 1.02s, tests 19ms, environment 0ms)

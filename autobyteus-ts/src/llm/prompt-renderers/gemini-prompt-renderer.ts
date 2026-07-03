@@ -65,7 +65,10 @@ export class GeminiPromptRenderer extends BasePromptRenderer {
           const mimeType = getMimeType(url);
           parts.push({ inlineData: { data: b64, mimeType } });
         } catch (error) {
-          console.error(`Failed to process Gemini media ${url}: ${error}`);
+          throw new Error(
+            `Failed to process Gemini declared media source "${url}": ` +
+            `${error instanceof Error ? error.message : String(error)}`
+          );
         }
       }
 
