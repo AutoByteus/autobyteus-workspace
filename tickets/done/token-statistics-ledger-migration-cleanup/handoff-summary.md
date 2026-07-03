@@ -139,5 +139,5 @@ Workflow status snapshot immediately after tag push:
 - Desktop Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786517
 - iOS App Store Connect Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786553
 - Server Docker Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786566
-- Release Messaging Gateway: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786608
-- Android APK Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786631
+- Release Messaging Gateway: `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786608
+- Android APK Release: `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786631

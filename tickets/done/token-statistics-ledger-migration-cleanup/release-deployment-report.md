@@ -93,8 +93,8 @@ GitHub workflow rollout status snapshot after tag push:
 - Desktop Release: `in_progress` (run `28659786517`, event `push`, head `cda69fbce9743f433296c36856abaa44842c7dac`, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786517)
 - iOS App Store Connect Release: `in_progress` (run `28659786553`, event `push`, head `cda69fbce9743f433296c36856abaa44842c7dac`, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786553)
 - Server Docker Release: `in_progress` (run `28659786566`, event `push`, head `cda69fbce9743f433296c36856abaa44842c7dac`, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786566)
-- Release Messaging Gateway: `in_progress` (run `28659786608`, event `push`, head `cda69fbce9743f433296c36856abaa44842c7dac`, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786608)
-- Android APK Release: `in_progress` (run `28659786631`, event `push`, head `cda69fbce9743f433296c36856abaa44842c7dac`, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786631)
+- Release Messaging Gateway: `completed/success` (run `28659786608`, event `push`, head `cda69fbce9743f433296c36856abaa44842c7dac`, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786608)
+- Android APK Release: `completed/success` (run `28659786631`, event `push`, head `cda69fbce9743f433296c36856abaa44842c7dac`, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28659786631)
 
 ## Post-Finalization Cleanup
 
