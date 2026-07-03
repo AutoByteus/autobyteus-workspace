@@ -76,7 +76,6 @@ const buildTeamNode = (focusedMemberRouteKey: string): TeamTreeNode => {
 const buildActions = () => {
   const runHistoryStore = {
     selectTreeRun: vi.fn(async () => undefined),
-    createDraftRun: vi.fn(async () => undefined),
   }
   const selectionStore = {
     selectedType: null,
@@ -89,10 +88,9 @@ const buildActions = () => {
     actions: useWorkspaceHistorySelectionActions({
       runHistoryStore,
       selectionStore,
-      setTeamExpanded: vi.fn(),
-      toggleTeam: vi.fn(),
+      setSessionExpanded: vi.fn(),
+      toggleSession: vi.fn(),
       emitRunSelected: vi.fn(),
-      emitRunCreated: vi.fn(),
     }),
   }
 }

@@ -74,10 +74,8 @@
           v-for="workspaceNode in workspaceNodes"
           :key="workspaceNode.workspaceId"
           :workspace-node="workspaceNode"
-          :workspace-teams="workspaceTeams(workspaceNode.workspaceRootPath)"
-          :workspace-team-history-groups="workspaceTeamHistoryGroups(workspaceNode.workspaceRootPath)"
+          :workspace-sessions="workspaceSessions(workspaceNode.workspaceRootPath)"
           :state="sectionState"
-          :avatars="sectionAvatarBindings"
           :actions="sectionActions"
         />
       </div>
@@ -114,7 +112,6 @@ import { Icon } from '@iconify/vue';
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
 import WorkspaceHistoryWorkspaceSection from '~/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue';
 import type {
-  WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
   WorkspaceHistorySectionState,
 } from '~/components/workspace/history/workspaceHistorySectionContracts';
@@ -124,12 +121,9 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useToasts } from '~/composables/useToasts';
 import { pickFolderPath } from '~/composables/useNativeFolderDialog';
-import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
 import { useWorkspaceHistorySelectionActions } from '~/composables/useWorkspaceHistorySelectionActions';
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
 import { useWorkspaceHistoryWorkspaceCreation } from '~/composables/useWorkspaceHistoryWorkspaceCreation';
@@ -141,7 +135,6 @@ import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 const emit = defineEmits<{
   (e: 'run-selected', payload: { type: 'agent'; runId: string }): void;
   (e: 'run-selected', payload: { type: 'team'; runId: string }): void;
-  (e: 'run-created', payload: { type: 'agent'; definitionId: string }): void;
 }>();
 
 const HISTORY_REFRESH_INTERVAL_MS = 5000;
@@ -152,8 +145,6 @@ const selectionStore = useAgentSelectionStore();
 const agentRunStore = useAgentRunStore();
 const teamRunStore = useAgentTeamRunStore();
 const agentTeamContextsStore = useAgentTeamContextsStore();
-const agentDefinitionStore = useAgentDefinitionStore();
-const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
@@ -166,25 +157,7 @@ const treeState = useWorkspaceHistoryTreeState({
   runHistoryStore,
   selectionStore,
 });
-const { workspaceNodes, workspaceTeams, workspaceTeamHistoryGroups } = treeState;
-const {
-  getAgentInitials,
-  getTeamInitials,
-  getTeamAvatarUrl,
-  getTeamMemberDisplayName,
-  getTeamMemberInitials,
-  getTeamMemberAvatarUrl,
-  showAgentAvatar,
-  showTeamAvatar,
-  showTeamMemberAvatar,
-  onAgentAvatarError,
-  onTeamAvatarError,
-  onTeamMemberAvatarError,
-} = useRunHistoryAvatarState({
-  loading: computed(() => runHistoryStore.loading),
-  agentDefinitions: computed(() => agentDefinitionStore.agentDefinitions),
-  teamDefinitions: computed(() => agentTeamDefinitionStore.agentTeamDefinitions),
-});
+const { workspaceNodes, workspaceSessions } = treeState;
 
 const {
   showCreateWorkspaceInline,
@@ -252,15 +225,13 @@ const {
 });
 
 const {
-  onSelectRun,
-  onSelectTeam,
+  onSelectSession,
   onSelectTeamMember,
-  onCreateRun,
 } = useWorkspaceHistorySelectionActions({
   runHistoryStore,
   selectionStore,
-  setTeamExpanded: treeState.setTeamExpanded,
-  toggleTeam: treeState.toggleTeam,
+  setSessionExpanded: treeState.setSessionExpanded,
+  toggleSession: treeState.toggleSession,
   expandTeamMemberAncestors: treeState.expandTeamMemberAncestors,
   emitRunSelected: (payload) => {
     if (payload.type === 'agent') {
@@ -269,7 +240,6 @@ const {
     }
     emit('run-selected', { type: 'team', runId: payload.runId });
   },
-  emitRunCreated: (payload) => emit('run-created', payload),
 });
 
 const onToggleWorkspace = async (workspaceNode: RunTreeWorkspaceNode): Promise<void> => {
@@ -307,8 +277,8 @@ const removeWorkspaceConfirmationMessage = computed(() => {
 });
 
 const sectionState: WorkspaceHistorySectionState = {
-  get selectedRunId() {
-    return treeState.selectedRunId.value;
+  get selectedSessionKey() {
+    return treeState.selectedSessionKey.value;
   },
   isRunTerminating: (runId: string) => Boolean(terminatingRunIds.value[runId]),
   isTeamTerminating: (teamRunId: string) => Boolean(terminatingTeamIds.value[teamRunId]),
@@ -322,11 +292,8 @@ const sectionState: WorkspaceHistorySectionState = {
   formatRelativeTime: (isoTime: string) => runHistoryStore.formatRelativeTime(isoTime),
   isWorkspaceExpanded: treeState.isWorkspaceExpanded,
   toggleWorkspace: onToggleWorkspace,
-  isAgentExpanded: treeState.isAgentExpanded,
-  toggleAgent: treeState.toggleAgent,
-  isTeamDefinitionExpanded: treeState.isTeamDefinitionExpanded,
-  toggleTeamDefinition: treeState.toggleTeamDefinition,
-  isTeamExpanded: treeState.isTeamExpanded,
+  isSessionExpanded: treeState.isSessionExpanded,
+  toggleSession: treeState.toggleSession,
   getLiveTeamContext: (teamRunId: string) => agentTeamContextsStore.getTeamContextById(teamRunId) ?? null,
   isTeamMemberExpanded: treeState.isTeamMemberExpanded,
   toggleTeamMember: treeState.toggleTeamMember,
@@ -334,29 +301,12 @@ const sectionState: WorkspaceHistorySectionState = {
 };
 
 
-const sectionAvatarBindings: WorkspaceHistoryAvatarBindings = {
-  showAgentAvatar,
-  onAgentAvatarError,
-  getAgentInitials,
-  showTeamAvatar,
-  getTeamAvatarUrl,
-  onTeamAvatarError,
-  getTeamInitials,
-  showTeamMemberAvatar,
-  getTeamMemberAvatarUrl,
-  onTeamMemberAvatarError,
-  getTeamMemberDisplayName,
-  getTeamMemberInitials,
-};
-
 const sectionActions: WorkspaceHistorySectionActions = {
   onRemoveWorkspace,
-  onCreateRun,
-  onSelectRun,
+  onSelectSession,
   onTerminateRun,
   onArchiveRun,
   onDeleteRun,
-  onSelectTeam,
   onTerminateTeam,
   onArchiveTeam,
   onDeleteTeam,
@@ -366,11 +316,7 @@ const sectionActions: WorkspaceHistorySectionActions = {
 let refreshTimerId: ReturnType<typeof setInterval> | null = null;
 
 onMounted(async () => {
-  await Promise.all([
-    workspaceStore.fetchAllWorkspaces().catch(() => undefined),
-    agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
-    agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
-  ]);
+  await workspaceStore.fetchAllWorkspaces().catch(() => undefined);
   refreshTimerId = setInterval(() => {
     for (const workspaceId of treeState.expandedWorkspaceIds()) {
       void runHistoryStore.refreshWorkspaceHistoryQuietly(workspaceId);

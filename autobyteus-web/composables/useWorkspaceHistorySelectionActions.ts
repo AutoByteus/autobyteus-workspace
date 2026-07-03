@@ -1,12 +1,9 @@
 import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import { toWorkspaceHistorySessionKey, type WorkspaceHistorySessionRow } from '~/stores/runHistorySessionProjection';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 
 interface RunHistorySelectionStoreLike {
   selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget) => Promise<void>;
-  createDraftRun: (options: {
-    workspaceRootPath: string;
-    agentDefinitionId: string;
-  }) => Promise<void>;
 }
 
 interface SelectionStoreLike {
@@ -18,8 +15,8 @@ interface SelectionStoreLike {
 export const useWorkspaceHistorySelectionActions = (params: {
   runHistoryStore: RunHistorySelectionStoreLike;
   selectionStore: SelectionStoreLike;
-  setTeamExpanded: (teamRunId: string, expanded: boolean) => void;
-  toggleTeam: (teamRunId: string) => void;
+  setSessionExpanded: (sessionKey: string, expanded: boolean) => void;
+  toggleSession: (sessionKey: string) => void;
   expandTeamMemberAncestors?: (
     workspaceId: string,
     teamRunId: string,
@@ -27,7 +24,6 @@ export const useWorkspaceHistorySelectionActions = (params: {
     memberTree: readonly TeamMemberTreeRow[],
   ) => boolean;
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
-  emitRunCreated: (payload: { type: 'agent'; definitionId: string }) => void;
 }) => {
   const flattenTeamRows = (rows: readonly TeamMemberTreeRow[]): TeamMemberTreeRow[] =>
     rows.flatMap((row) => [row, ...flattenTeamRows(row.children)]);
@@ -60,17 +56,18 @@ export const useWorkspaceHistorySelectionActions = (params: {
     team.memberTree.length > 0 ? team.memberTree : team.members;
 
   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
+    const teamSessionKey = toWorkspaceHistorySessionKey('team', team.teamRunId);
     const isAlreadySelectedTeam =
       params.selectionStore.selectedType === 'team'
       && params.selectionStore.selectedRunId === team.teamRunId;
 
     if (isAlreadySelectedTeam) {
-      params.toggleTeam(team.teamRunId);
+      params.toggleSession(teamSessionKey);
       params.emitRunSelected({ type: 'team', runId: team.teamRunId });
       return;
     }
 
-    params.setTeamExpanded(team.teamRunId, true);
+    params.setSessionExpanded(teamSessionKey, true);
     const targetMember = resolveTeamTargetMember(team);
     if (!targetMember) {
       params.selectionStore.selectRun(team.teamRunId, 'team');
@@ -94,13 +91,25 @@ export const useWorkspaceHistorySelectionActions = (params: {
     }
   };
 
+  const onSelectSession = async (
+    session: WorkspaceHistorySessionRow,
+    workspaceId = '',
+  ): Promise<void> => {
+    if (session.kind === 'agent') {
+      await onSelectRun(session.agentRun);
+      return;
+    }
+
+    await onSelectTeam(session.teamRun, workspaceId);
+  };
+
   const onSelectTeamMember = async (
     member: TeamMemberFocusTarget,
     workspaceId = '',
     memberTree: readonly TeamMemberTreeRow[] = [],
   ): Promise<void> => {
     try {
-      params.setTeamExpanded(member.teamRunId, true);
+      params.setSessionExpanded(toWorkspaceHistorySessionKey('team', member.teamRunId), true);
       params.expandTeamMemberAncestors?.(
         workspaceId,
         member.teamRunId,
@@ -114,22 +123,10 @@ export const useWorkspaceHistorySelectionActions = (params: {
     }
   };
 
-  const onCreateRun = async (
-    workspaceRootPath: string,
-    agentDefinitionId: string,
-  ): Promise<void> => {
-    try {
-      await params.runHistoryStore.createDraftRun({ workspaceRootPath, agentDefinitionId });
-      params.emitRunCreated({ type: 'agent', definitionId: agentDefinitionId });
-    } catch (error) {
-      console.error('Failed to create draft run:', error);
-    }
-  };
-
   return {
     onSelectRun,
     onSelectTeam,
+    onSelectSession,
     onSelectTeamMember,
-    onCreateRun,
   };
 };

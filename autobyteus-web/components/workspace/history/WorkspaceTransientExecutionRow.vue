@@ -43,7 +43,7 @@
 
     <div class="flex min-w-0 flex-1 items-center py-1 pr-2">
       <StatusDot
-        class="mr-1.5"
+        class="mr-2"
         data-test="workspace-transient-status-dot"
         :kind="row.memberKind === 'agent_team' ? 'team' : 'agent'"
         :status="row.currentStatus"
@@ -77,7 +77,7 @@ defineEmits<{
 }>();
 
 const rowStyle = computed(() => ({
-  marginLeft: `${props.row.depth * 12}px`,
+  marginLeft: `${props.row.depth * 8}px`,
 }));
 
 const ariaLabel = computed(() => `${props.row.displayName}. ${props.row.memberRouteKey}`);
