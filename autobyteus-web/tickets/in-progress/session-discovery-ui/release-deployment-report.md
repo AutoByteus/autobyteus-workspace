@@ -8,13 +8,13 @@
 - Web package path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web`
 - Ticket branch: `codex/session-discovery-ui`
 - Finalization target: `origin/personal` / `personal`
-- Current status: `Ticket branch pushed to origin; mainline merge deferred by user instruction`
+- Current status: `Needs Local Fix for task-trail header plus regression; ticket branch push completed; mainline merge remains deferred`
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff captures delivered session-first history UI scope, user-verification polish rounds, latest-base integration, validation evidence, docs sync, residual risks, user approval, successful ticket-branch push status, and the explicit mainline merge deferral.
+- Notes: Handoff captures delivered session-first history UI scope, user-verification polish rounds, latest-base integration, validation evidence, docs sync, residual risks, user approval, successful ticket-branch push status, explicit mainline merge deferral, and the new task-trail header-plus regression routed for Local Fix.
 
 ## Initial Delivery Integration Refresh
 
@@ -74,8 +74,8 @@
 - Target branch update result: `Deferred by user instruction` — no checkout, merge, or push of `personal`/mainline was attempted.
 - Merge into target result: `Deferred by user instruction` — user explicitly requested no merge to mainline/default branch yet.
 - Push target branch result: `Deferred by user instruction` — no target branch push was attempted.
-- Repository finalization status: `Partially completed / deferred`
-- Blocker (if applicable): mainline/default branch merge is intentionally deferred by user instruction; ticket branch push is complete.
+- Repository finalization status: `Blocked / needs Local Fix`
+- Blocker (if applicable): user found a task-trail/team-task header `+` regression (`Error: Definition not found.`); mainline/default branch merge also remains intentionally deferred by user instruction. Ticket branch push is complete.
 
 ## Release / Publication / Deployment
 
@@ -157,4 +157,4 @@
 
 ## Final Status
 
-- `Ticket branch pushed; mainline deferred` — user verification was received and user authorized ticket-branch push only, with no mainline merge. `origin/codex/session-discovery-ui` exists and tracks the local ticket branch. `origin/personal` remains unmodified and no merge/push to mainline was attempted. When the user later authorizes mainline finalization, refresh `origin/personal` again before merging, then archive/finalize through the normal delivery flow.
+- `Needs Local Fix; ticket branch pushed; mainline deferred` — `origin/codex/session-discovery-ui` exists and tracks the local ticket branch, and `origin/personal` remains unmodified with no merge/push to mainline attempted. User later found a task-trail/team-task header `+` regression where the UI shows `Error: Definition not found.` instead of preparing a new run with the same valid team configuration. Delivery recorded `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md` and routed it as `Local Fix` to `implementation_engineer`.

@@ -3,8 +3,8 @@
 ## Summary Meta
 
 - Ticket: `session-discovery-ui`
-- Last Updated: `2026-07-02 00:41 PDT`
-- Current Status: `Ticket branch pushed to origin; mainline merge deferred by user instruction`
+- Last Updated: `2026-07-02 21:08 PDT`
+- Current Status: `Needs Local Fix for task-trail header plus regression; ticket branch push completed; mainline merge remains deferred`
 - Worktree: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui`
 - Web package path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web`
 - Ticket branch: `codex/session-discovery-ui`
@@ -36,6 +36,7 @@
 - User-verification rework references:
   - Chip/subtitle/indent/dot polish: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-rework.md`
   - Arrow/status-dot alignment polish: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-arrow-dot-alignment-rework.md`
+  - Task-trail header plus bug: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
 - Latest-base integration blocker/resolution reference:
   - Blocker artifact: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-base-integration-conflict-blocker.md`
   - Resolved by implementation/code-review/API-E2E before this handoff; integrated merge commit is `9d8475e2895d4fba1b2b24ae21acc1c01b2a8901`.
@@ -156,4 +157,6 @@
 - Blockers / notes:
   - user constraint: do not merge or push `personal`/mainline yet.
   - ticket branch is available at `origin/codex/session-discovery-ui`.
-  - when the user later authorizes mainline finalization, refresh `origin/personal` again before merge, then archive/finalize through the normal delivery flow.
+  - new user verification blocker: clicking the top-right `+` from a task-trail/team-task member context opens `Error: Definition not found.` instead of preparing a new run with the same valid team configuration.
+  - routed as `Local Fix` to `implementation_engineer` via `delivery-user-verification-task-trail-new-run-bug.md`.
+  - when the fix passes review/API-E2E and the user later authorizes mainline finalization, refresh `origin/personal` again before merge, then archive/finalize through the normal delivery flow.

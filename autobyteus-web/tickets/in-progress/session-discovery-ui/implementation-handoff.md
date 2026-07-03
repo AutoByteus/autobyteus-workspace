@@ -9,6 +9,7 @@
 - Delivery/user verification local-fix rework request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-rework.md`
 - Delivery latest-base integration conflict blocker: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-base-integration-conflict-blocker.md`
 - Delivery/user verification arrow/status alignment rework request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-arrow-dot-alignment-rework.md`
+- Delivery/user verification task-trail header plus Local Fix request: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/in-progress/session-discovery-ui/delivery-user-verification-task-trail-new-run-bug.md`
 
 ## What Changed
 
@@ -179,6 +180,52 @@ Implementation-scoped checks run after this rework:
 3. `pnpm exec nuxi prepare` — passed.
 4. `pnpm exec nuxi typecheck` — still exits 1 due broad existing repository errors outside this change. Changed-path grep in `/tmp/session-discovery-arrow-dot-typecheck.log` returned no matches for the session-discovery/workspace-history files.
 5. `git diff --check` — passed.
+
+
+## Task-Trail Header Plus Local Fix Update (2026-07-02)
+
+Delivery/user verification reported that clicking the top-right `+` while focused on a task-trail/team-task member changed the main pane to `Error: Definition not found.` instead of preparing another run with the same team configuration.
+
+What changed:
+
+- Compared against `origin/personal`: the baseline `TeamWorkspaceView` header `+` also directly cloned the active team config, but the old `WorkspaceAgentRunsTreePanel.vue` imported `useAgentTeamDefinitionStore` and fetched team definitions on mount. The session-first UI branch removed that implicit catalog-loading side effect, so a Workspaces-selected team member could clear selection into `RunConfigPanel` before the team definition catalog was loaded.
+- Added `buildEditableCatalogTeamRunSeed(...)` in `composables/useDefinitionLaunchDefaults.ts` as the catalog-backed team new-run seed boundary.
+- The new seed helper first resolves the existing team run config to a catalog `AgentTeamDefinition` by ID, then falls back to the team definition name when the stored/runtime ID is not a catalog ID.
+- The helper rewrites the editable seed to the resolved catalog definition ID/name and prunes member overrides to catalog leaf member route keys so transient task-agent/task-team route keys are not carried into the new-run setup.
+- `TeamWorkspaceView.vue` now loads the team-definition catalog before the header `+` action seeds a team config, uses the catalog-backed seed helper, and does not clear selection/open an invalid config when no catalog definition can be resolved.
+- Existing agent header `+` behavior was not changed; normal catalog-backed team header `+` behavior remains covered by the existing TeamWorkspaceView seed test.
+
+Additional key files / tests:
+
+- Modified: `autobyteus-web/composables/useDefinitionLaunchDefaults.ts`
+- Modified: `autobyteus-web/components/workspace/team/TeamWorkspaceView.vue`
+- Updated tests:
+  - `autobyteus-web/composables/__tests__/useDefinitionLaunchDefaults.spec.ts`
+  - `autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts`
+
+Task Design Health Assessment for this Local Fix:
+
+- Change posture: bug fix discovered during delivery/user verification.
+- Root-cause classification: Missing Invariant / Local Implementation Defect. The existing header-plus/new-run flow owner was correct, but the session-first UI branch removed the old history panel's implicit team-catalog fetch, so the team path could reuse a live/hydrated team config before ensuring the corresponding catalog definition was loaded/resolved.
+- Refactor needed now: small local boundary tightening only; no upstream redesign required.
+- Evidence: `TeamWorkspaceView` previously cloned `activeTeamContext.config` directly through `buildEditableTeamRunSeed(...)`, while this branch's `WorkspaceAgentRunsTreePanel.vue` no longer loaded team definitions the way `origin/personal` did. The new path resolves the seed against `AgentTeamDefinitionStore` before clearing selection, and durable tests cover empty-catalog loading plus runtime task-team ID canonicalization.
+
+Implementation-scoped checks run after this task-trail Local Fix:
+
+1. `pnpm exec vitest run composables/__tests__/useDefinitionLaunchDefaults.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts` — passed, 19 tests.
+2. `pnpm exec vitest run components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/team/__tests__/TeamActiveTasksSection.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/teamRunConfigStore.spec.ts composables/__tests__/useDefinitionLaunchDefaults.spec.ts` — passed, 69 tests.
+3. `pnpm exec vitest run stores/__tests__/runHistorySessionProjection.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts components/__tests__/AppLeftPanel.spec.ts utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts utils/__tests__/workspaceStatusDotPresentation.spec.ts stores/__tests__/runHistoryStore.spec.ts` — passed, 138 tests.
+4. `pnpm exec vitest run components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts` — passed, 10 tests.
+5. `pnpm exec nuxi prepare` — passed.
+6. `pnpm exec nuxi typecheck` — still exits 1 due broad existing repository type errors outside this change. Grep for changed task-trail/header-plus paths in `/tmp/session-discovery-task-trail-plus-typecheck.log` returned no errors for `TeamWorkspaceView.vue`, `useDefinitionLaunchDefaults.ts`, or their updated tests.
+7. `git diff --check` — passed.
+
+Downstream coverage hints for this Local Fix:
+
+- From a task-trail/team-task member focus, click header `+`; expected result is a new team-run config seeded with the catalog-backed `task trail` team, not `Error: Definition not found.`.
+- Verify the seeded team config uses the catalog team definition ID/name even if the live/hydrated context carried a runtime/task-team run ID.
+- Verify transient task-agent/task-team member override route keys are absent from the new-run seed.
+- Reconfirm normal catalog-backed team header `+` and standalone agent header `+` flows.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
