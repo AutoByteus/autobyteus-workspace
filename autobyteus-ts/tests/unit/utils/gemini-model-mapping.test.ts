@@ -37,12 +37,31 @@ describe('resolveModelForRuntime', () => {
     expect(resolveModelForRuntime('gemini-3.5-flash', 'llm', 'vertex')).toBe('gemini-3.5-flash');
   });
 
-  it('maps Gemini 3.1 Flash Image Preview for api_key and vertex runtimes', () => {
+  it.each([
+    'gemini-3.1-flash-lite-image',
+    'gemini-3.1-flash-image',
+    'gemini-3-pro-image',
+    'gemini-2.5-flash-image',
+  ])('maps active Gemini image model %s for api_key and vertex runtimes', (modelId) => {
+    expect(resolveModelForRuntime(modelId, 'image', 'api_key')).toBe(modelId);
+    expect(resolveModelForRuntime(modelId, 'image', 'vertex')).toBe(modelId);
+  });
+
+  it('does not retain explicit mappings for shut-down Gemini image preview ids', () => {
     expect(resolveModelForRuntime('gemini-3.1-flash-image-preview', 'image', 'api_key')).toBe(
       'gemini-3.1-flash-image-preview'
     );
-    expect(resolveModelForRuntime('gemini-3.1-flash-image-preview', 'image', 'vertex')).toBe(
-      'gemini-3.1-flash-image-preview'
+    expect(resolveModelForRuntime('gemini-3-pro-image-preview', 'image', 'vertex')).toBe(
+      'gemini-3-pro-image-preview'
+    );
+  });
+
+  it('maps Gemini Omni Flash Preview video model for api_key and vertex runtimes', () => {
+    expect(resolveModelForRuntime('gemini-omni-flash-preview', 'video', 'api_key')).toBe(
+      'gemini-omni-flash-preview'
+    );
+    expect(resolveModelForRuntime('gemini-omni-flash-preview', 'video', 'vertex')).toBe(
+      'gemini-omni-flash-preview'
     );
   });
 

@@ -26,8 +26,11 @@ describe('ImageClientFactory', () => {
     expect(identifiers).toContain('gpt-image-1.5');
     expect(identifiers).toContain('gpt-image-2');
     expect(identifiers).toContain('gemini-2.5-flash-image');
-    expect(identifiers).toContain('gemini-3.1-flash-image-preview');
-    expect(identifiers).toContain('gemini-3-pro-image-preview');
+    expect(identifiers).toContain('gemini-3.1-flash-lite-image');
+    expect(identifiers).toContain('gemini-3.1-flash-image');
+    expect(identifiers).toContain('gemini-3-pro-image');
+    expect(identifiers).not.toContain('gemini-3.1-flash-image-preview');
+    expect(identifiers).not.toContain('gemini-3-pro-image-preview');
   });
 
   it('creates image client for valid identifier', () => {
@@ -49,18 +52,22 @@ describe('ImageClientFactory', () => {
     });
   });
 
-  it('registers Gemini 3.1 Flash Image Preview with exact provider model id and Gemini client', () => {
+  it.each([
+    'gemini-3.1-flash-lite-image',
+    'gemini-3.1-flash-image',
+    'gemini-3-pro-image',
+  ])('registers %s with exact provider model id and Gemini client', (modelId) => {
     const model = ImageClientFactory.listModels().find(
-      (listedModel) => listedModel.modelIdentifier === 'gemini-3.1-flash-image-preview'
+      (listedModel) => listedModel.modelIdentifier === modelId
     );
 
     expect(model).toBeDefined();
-    expect(model?.name).toBe('gemini-3.1-flash-image-preview');
-    expect(model?.value).toBe('gemini-3.1-flash-image-preview');
+    expect(model?.name).toBe(modelId);
+    expect(model?.value).toBe(modelId);
 
-    const client = ImageClientFactory.createImageClient('gemini-3.1-flash-image-preview');
+    const client = ImageClientFactory.createImageClient(modelId);
     expect(client).toBeInstanceOf(GeminiImageClient);
-    expect(client.model.modelIdentifier).toBe('gemini-3.1-flash-image-preview');
+    expect(client.model.modelIdentifier).toBe(modelId);
   });
 
   it('throws for invalid identifier', () => {

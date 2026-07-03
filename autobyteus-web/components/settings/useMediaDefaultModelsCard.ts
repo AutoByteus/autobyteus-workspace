@@ -23,11 +23,13 @@ export const useMediaDefaultModelsCard = () => {
     DEFAULT_IMAGE_EDIT_MODEL: '',
     DEFAULT_IMAGE_GENERATION_MODEL: '',
     DEFAULT_SPEECH_GENERATION_MODEL: '',
+    DEFAULT_VIDEO_GENERATION_MODEL: '',
   })
   const originalValues = reactive<Record<MediaDefaultModelSettingKey, string>>({
     DEFAULT_IMAGE_EDIT_MODEL: '',
     DEFAULT_IMAGE_GENERATION_MODEL: '',
     DEFAULT_SPEECH_GENERATION_MODEL: '',
+    DEFAULT_VIDEO_GENERATION_MODEL: '',
   })
 
   const isSaving = ref(false)
@@ -62,7 +64,9 @@ export const useMediaDefaultModelsCard = () => {
   const providerGroupsForSetting = (setting: MediaDefaultModelSettingSpec): ProviderWithModels[] => (
     setting.catalogKind === 'audio'
       ? modelCatalogStore.audioProvidersWithModels
-      : modelCatalogStore.imageProvidersWithModels
+      : setting.catalogKind === 'video'
+        ? modelCatalogStore.videoProvidersWithModels
+        : modelCatalogStore.imageProvidersWithModels
   )
 
   const optionForModel = (providerName: string, model: ModelInfo) => ({

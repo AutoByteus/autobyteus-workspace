@@ -19,7 +19,8 @@ metadata and do not create Team Communication reference rows.
    team subscribers.
 3. `FileChangeEventProcessor` derives `FILE_CHANGE` only for explicit file
    mutations or known generated-output tools (`generate_image`, `edit_image`,
-   `generate_speech`, including AutoByteus image/audio MCP forms).
+   `generate_speech`, `generate_video`, including AutoByteus image/audio/video
+   MCP forms).
 4. `RunFileChangeService` consumes `FILE_CHANGE`, canonicalizes path identity,
    and updates the run projection. Team-member projections remain scoped to the
    member run id.

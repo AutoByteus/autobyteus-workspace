@@ -15,6 +15,7 @@ const createProps = (overrides: Record<string, unknown> = {}) => ({
   llmModels: [{ modelIdentifier: 'gpt-4o', name: 'GPT-4o', providerType: 'OPENAI' }],
   audioModels: [{ modelIdentifier: 'whisper-1', name: 'Whisper', providerType: 'OPENAI' }],
   imageModels: [],
+  videoModels: [{ modelIdentifier: 'gemini-omni-flash-preview', name: 'Gemini Omni Flash Preview', providerType: 'GEMINI' }],
   isLoadingModels: false,
   isReloadingModels: false,
   isReloadingSelectedProvider: false,
@@ -38,6 +39,7 @@ const mountComponent = (overrides: Record<string, unknown> = {}) =>
           'settings.components.settings.ProviderAPIKeyManager.llm_models': 'LLM Models',
           'settings.components.settings.ProviderAPIKeyManager.audio_models': 'Audio Models',
           'settings.components.settings.ProviderAPIKeyManager.image_models': 'Image Models',
+          'settings.components.settings.ProviderAPIKeyManager.video_models': 'Video Models',
           'settings.components.settings.ProviderAPIKeyManager.no_models_found': 'No Models Found',
           'settings.components.settings.ProviderAPIKeyManager.this_provider_doesn_t_have_any': 'No models yet.',
         }[key] ?? key),
@@ -55,8 +57,10 @@ describe('ProviderModelBrowser', () => {
     expect(wrapper.text()).toContain('Providers')
     expect(wrapper.text()).toContain('LLM Models')
     expect(wrapper.text()).toContain('Audio Models')
+    expect(wrapper.text()).toContain('Video Models')
     expect(wrapper.text()).toContain('gpt-4o')
     expect(wrapper.text()).toContain('whisper-1')
+    expect(wrapper.text()).toContain('gemini-omni-flash-preview')
     expect(wrapper.text()).not.toContain('GPT-4o')
     expect(wrapper.get('[data-testid="config-slot"]').text()).toContain('config slot')
   })

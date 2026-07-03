@@ -4,10 +4,12 @@ import {
   EDIT_IMAGE_TOOL_NAME,
   GENERATE_IMAGE_TOOL_NAME,
   GENERATE_SPEECH_TOOL_NAME,
+  GENERATE_VIDEO_TOOL_NAME,
   MEDIA_TOOL_NAME_LIST,
   type EditImageInput,
   type GenerateImageInput,
   type GenerateSpeechInput,
+  type GenerateVideoInput,
   type MediaToolExecutionContext,
   type MediaToolName,
   type MediaToolResult,
@@ -16,6 +18,7 @@ import {
   parseEditImageInput,
   parseGenerateImageInput,
   parseGenerateSpeechInput,
+  parseGenerateVideoInput,
 } from "./media-tool-input-parsers.js";
 import {
   buildMediaToolParameterSchema,
@@ -45,6 +48,10 @@ const editImageDescription = (): string =>
 const generateSpeechDescription = (): string =>
   "Generates spoken audio from text using the default speech model, saves the generated audio to the requested local path, and returns { file_path }. Default media model settings apply to future/new media tool calls.";
 
+const generateVideoDescription = (): string =>
+  "Generates an MP4 video from a textual prompt and optional reference images, saves the first generated video to the requested local path, and returns { file_path }. Use a .mp4 output path for video artifact classification. Default media model settings apply to future/new media tool calls." +
+  getMediaToolDescriptionSuffix(GENERATE_VIDEO_TOOL_NAME);
+
 const manifestEntries: MediaToolManifestEntry[] = [
   {
     name: GENERATE_IMAGE_TOOL_NAME,
@@ -66,6 +73,13 @@ const manifestEntries: MediaToolManifestEntry[] = [
     buildArgumentSchema: () => buildMediaToolParameterSchema(GENERATE_SPEECH_TOOL_NAME),
     parseInput: (rawArguments): GenerateSpeechInput => parseGenerateSpeechInput(rawArguments),
     execute: (service, context, input) => service.generateSpeech(context, input as GenerateSpeechInput),
+  },
+  {
+    name: GENERATE_VIDEO_TOOL_NAME,
+    getDescription: generateVideoDescription,
+    buildArgumentSchema: () => buildMediaToolParameterSchema(GENERATE_VIDEO_TOOL_NAME),
+    parseInput: (rawArguments): GenerateVideoInput => parseGenerateVideoInput(rawArguments),
+    execute: (service, context, input) => service.generateVideo(context, input as GenerateVideoInput),
   },
 ];
 

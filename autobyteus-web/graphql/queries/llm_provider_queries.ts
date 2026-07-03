@@ -91,6 +91,32 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         hostUrl
       }
     }
+    availableVideoProvidersWithModels(runtimeKind: $runtimeKind) {
+      __typename
+      provider {
+        __typename
+        id
+        name
+        providerType
+        isCustom
+        baseUrl
+        apiKeyConfigured
+        status
+        statusMessage
+      }
+      models {
+        __typename
+        modelIdentifier
+        name
+        value
+        canonicalName
+        providerId
+        providerName
+        providerType
+        runtime
+        hostUrl
+      }
+    }
   }
 `;
 

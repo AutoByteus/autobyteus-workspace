@@ -2,7 +2,7 @@
 
 ## Scope
 
-Audio/image model catalogs and media-serving integration.
+Audio/image/video model catalogs and media-serving integration.
 
 ## TS Source
 
@@ -14,6 +14,7 @@ Audio/image model catalogs and media-serving integration.
 
 - `src/multimedia-management/services/audio-model-service.ts`
 - `src/multimedia-management/services/image-model-service.ts`
+- `src/multimedia-management/services/video-model-service.ts`
 
 ## Agent Tool Integration
 
@@ -30,12 +31,22 @@ The active first-party agent tool names are:
 - `generate_image`
 - `edit_image`
 - `generate_speech`
+- `generate_video`
 
-`generate_image` and `edit_image` accept `input_images` only as an optional
-array of image-reference strings. A single reference should be passed as a
-one-element array. String or comma-separated `input_images` input is not
-accepted, including as a compatibility fallback, because data URIs can contain
-commas and must stay intact as individual array entries.
+`generate_image`, `edit_image`, and `generate_video` accept `input_images` only
+as an optional array of image-reference strings. A single reference should be
+passed as a one-element array. String or comma-separated `input_images` input is
+not accepted, including as a compatibility fallback, because data URIs can
+contain commas and must stay intact as individual array entries.
+
+`generate_video` is currently a creation-only video tool. Its
+`generation_config.task` may select `text_to_video`, `image_to_video`, or
+`reference_to_video`; `image_to_video` and `reference_to_video` require at least
+one `input_images` entry. Video editing, uploaded/source-video editing,
+stateful `previous_interaction_id` flows, audio-reference upload, and voice
+editing are intentionally outside the current server-owned media tool contract
+and should be added through a future explicit tool/schema expansion rather than
+hidden behind `generate_video`.
 
 Media local-path handling is intentionally scoped to the server-owned media tool
 fields. Relative local paths resolve inside the active workspace and may not
@@ -51,3 +62,4 @@ construction and invocation:
 - `DEFAULT_IMAGE_GENERATION_MODEL`
 - `DEFAULT_IMAGE_EDIT_MODEL`
 - `DEFAULT_SPEECH_GENERATION_MODEL`
+- `DEFAULT_VIDEO_GENERATION_MODEL`

@@ -28,17 +28,27 @@ const MODEL_RUNTIME_MAP: Record<string, Record<string, Record<string, string>>> 
     }
   },
   image: {
-    'gemini-3.1-flash-image-preview': {
-      vertex: 'gemini-3.1-flash-image-preview',
-      api_key: 'gemini-3.1-flash-image-preview'
+    'gemini-3.1-flash-lite-image': {
+      vertex: 'gemini-3.1-flash-lite-image',
+      api_key: 'gemini-3.1-flash-lite-image'
     },
-    'gemini-3-pro-image-preview': {
-      vertex: 'gemini-3-pro-image-preview',
-      api_key: 'gemini-3-pro-image-preview'
+    'gemini-3.1-flash-image': {
+      vertex: 'gemini-3.1-flash-image',
+      api_key: 'gemini-3.1-flash-image'
+    },
+    'gemini-3-pro-image': {
+      vertex: 'gemini-3-pro-image',
+      api_key: 'gemini-3-pro-image'
     },
     'gemini-2.5-flash-image': {
       vertex: 'gemini-2.5-flash-image',
       api_key: 'gemini-2.5-flash-image'
+    }
+  },
+  video: {
+    'gemini-omni-flash-preview': {
+      vertex: 'gemini-omni-flash-preview',
+      api_key: 'gemini-omni-flash-preview'
     }
   }
 };

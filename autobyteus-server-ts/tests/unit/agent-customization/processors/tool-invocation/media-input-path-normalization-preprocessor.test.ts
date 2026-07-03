@@ -108,6 +108,34 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
     statSpy.mockRestore();
   });
 
+  it("normalizes generate_video input_images with workspace", async () => {
+    const processor = new MediaInputPathNormalizationPreprocessor();
+    const invocation = new ToolInvocation(
+      "generate_video",
+      { input_images: ["images/video-reference.png"] },
+      "3v",
+    );
+
+    const context = {
+      agentId: "agent-1",
+      workspaceRootPath: "/tmp",
+      llmInstance: { model: { provider: LLMProvider.AUTOBYTEUS } },
+    } as AgentContext;
+
+    const existsSpy = vi.spyOn(fs, "existsSync").mockReturnValue(true);
+    const statSpy = vi.spyOn(fs, "statSync").mockReturnValue({
+      isFile: () => true,
+    } as fs.Stats);
+
+    const result = await processor.process(invocation, context);
+
+    expect(mockMediaStorage.ingestLocalFileForContext).not.toHaveBeenCalled();
+    expect(result.arguments.input_images).toEqual(["/tmp/images/video-reference.png"]);
+
+    existsSpy.mockRestore();
+    statSpy.mockRestore();
+  });
+
   it("keeps URL entries unchanged", async () => {
     const processor = new MediaInputPathNormalizationPreprocessor();
     const invocation = new ToolInvocation(

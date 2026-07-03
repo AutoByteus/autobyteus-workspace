@@ -1,6 +1,7 @@
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
 import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
 import type { ImageModel } from 'autobyteus-ts/multimedia/image/image-model.js';
+import type { VideoModel } from 'autobyteus-ts/multimedia/video/video-model.js';
 import {
   RuntimeKind,
   runtimeKindFromString,
@@ -22,6 +23,10 @@ import {
   type ImageModelService,
 } from '../../multimedia-management/services/image-model-service.js';
 import {
+  getVideoModelService,
+  type VideoModelService,
+} from '../../multimedia-management/services/video-model-service.js';
+import {
   getAutobyteusModelCatalog,
   type AutobyteusModelCatalog,
 } from './autobyteus-model-catalog.js';
@@ -35,6 +40,7 @@ export class ModelCatalogService {
     private readonly codexModelCatalog: CodexModelCatalog = getCodexModelCatalog(),
     private readonly audioModelService: AudioModelService = getAudioModelService(),
     private readonly imageModelService: ImageModelService = getImageModelService(),
+    private readonly videoModelService: VideoModelService = getVideoModelService(),
   ) {}
 
   async listLlmModels(runtimeKind?: string | null): Promise<ModelInfo[]> {
@@ -109,6 +115,23 @@ export class ModelCatalogService {
   async reloadImageModels(runtimeKind?: string | null): Promise<void> {
     if (this.resolveRuntimeKind(runtimeKind) === RuntimeKind.AUTOBYTEUS) {
       await this.imageModelService.reloadModels();
+    }
+  }
+
+  async listVideoModels(runtimeKind?: string | null): Promise<VideoModel[]> {
+    switch (this.resolveRuntimeKind(runtimeKind)) {
+      case RuntimeKind.AUTOBYTEUS:
+        return this.videoModelService.getAvailableModels();
+      case RuntimeKind.CLAUDE_AGENT_SDK:
+      case RuntimeKind.CODEX_APP_SERVER:
+      default:
+        return [];
+    }
+  }
+
+  async reloadVideoModels(runtimeKind?: string | null): Promise<void> {
+    if (this.resolveRuntimeKind(runtimeKind) === RuntimeKind.AUTOBYTEUS) {
+      await this.videoModelService.reloadModels();
     }
   }
 

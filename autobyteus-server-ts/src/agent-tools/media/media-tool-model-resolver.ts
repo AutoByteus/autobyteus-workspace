@@ -2,6 +2,8 @@ import { AudioClientFactory } from "autobyteus-ts/multimedia/audio/audio-client-
 import type { AudioModel } from "autobyteus-ts/multimedia/audio/audio-model.js";
 import { ImageClientFactory } from "autobyteus-ts/multimedia/image/image-client-factory.js";
 import type { ImageModel } from "autobyteus-ts/multimedia/image/image-model.js";
+import { VideoClientFactory } from "autobyteus-ts/multimedia/video/video-client-factory.js";
+import type { VideoModel } from "autobyteus-ts/multimedia/video/video-model.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   MEDIA_DEFAULT_MODEL_SETTINGS,
@@ -12,7 +14,7 @@ export type ResolvedMediaModel = {
   kind: MediaDefaultModelKind;
   settingKey: string;
   modelIdentifier: string;
-  catalogModel: ImageModel | AudioModel | null;
+  catalogModel: ImageModel | AudioModel | VideoModel | null;
 };
 
 const normalizeNonEmptyString = (value: unknown): string | null =>
@@ -35,10 +37,18 @@ export class MediaModelResolver {
   private findCatalogModel(
     kind: MediaDefaultModelKind,
     modelIdentifier: string,
-  ): ImageModel | AudioModel | null {
+  ): ImageModel | AudioModel | VideoModel | null {
     if (kind === "speech_generation") {
       AudioClientFactory.ensureInitialized();
       return AudioClientFactory.listModels().find(
+        (candidate) =>
+          candidate.modelIdentifier === modelIdentifier || candidate.name === modelIdentifier,
+      ) ?? null;
+    }
+
+    if (kind === "video_generation") {
+      VideoClientFactory.ensureInitialized();
+      return VideoClientFactory.listModels().find(
         (candidate) =>
           candidate.modelIdentifier === modelIdentifier || candidate.name === modelIdentifier,
       ) ?? null;

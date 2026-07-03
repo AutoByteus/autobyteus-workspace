@@ -15,6 +15,8 @@ or changing provider-specific request-shaping behavior.
 | Gemini TTS runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiAudioClient` | User-facing names can map to API-key and Vertex-specific model values. |
 | Image models | `src/multimedia/image/image-client-factory.ts` | `src/multimedia/image/api/*` | Built-in image models are registered by the image factory. |
 | Gemini image runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiImageClient` | Official Gemini image IDs can map per API-key or Vertex runtime before request dispatch. |
+| Video models | `src/multimedia/video/video-client-factory.ts` | `src/multimedia/video/api/*` | Built-in video models are registered by the video factory. |
+| Gemini video runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiVideoClient` | Gemini Omni video IDs map through the video modality before Interactions API request dispatch. |
 | OpenAI image request shape | `src/multimedia/image/api/openai-image-client.ts` | `OpenAIImageClient` | Keep GPT Image vs. non-GPT image edit payload differences provider-owned. |
 
 ## Latest Catalog Additions
@@ -32,7 +34,10 @@ or changing provider-specific request-shaping behavior.
 | LLM | `glm-5.2` | `glm-5.2` | Zhipu GLM | 2026-06-16 | Replaces `glm-5.1`; uses GLM thinking schema and adapter-owned request mapping. |
 | LLM | `minimax-m3` | `MiniMax-M3` | MiniMax | 2026-06-24 | Replaces removed MiniMax M2.7 support; uses tiered pricing metadata and the MiniMax OpenAI-compatible adapter. |
 | Image | `gpt-image-2` | `gpt-image-2` | OpenAI | 2026-04-25 | Supports generation and editing through `OpenAIImageClient`. |
-| Image | `gemini-3.1-flash-image-preview` | `gemini-3.1-flash-image-preview` | Gemini | 2026-05-05 | Registered in the image catalog and mapped identically for API-key and Vertex Gemini runtimes. |
+| Image | `gemini-3.1-flash-lite-image` | `gemini-3.1-flash-lite-image` | Gemini | 2026-07-03 | Fast Gemini image generation model; registered in the image catalog and mapped identically for API-key and Vertex Gemini runtimes. |
+| Image | `gemini-3.1-flash-image` | `gemini-3.1-flash-image` | Gemini | 2026-07-03 | Current Gemini 3.1 Flash Image / Nano Banana 2 model ID; replaces the shut-down preview catalog ID without an alias. |
+| Image | `gemini-3-pro-image` | `gemini-3-pro-image` | Gemini | 2026-07-03 | Current Gemini 3 Pro Image model ID; replaces the shut-down preview catalog ID without an alias. |
+| Video | `gemini-omni-flash-preview` | `gemini-omni-flash-preview` | Gemini | 2026-07-03 | Docs-backed registration for creation-only `text_to_video`, `image_to_video`, and `reference_to_video` through `GeminiVideoClient` and the Gemini Interactions API; live provider generation was not validated in the delivery environment. |
 | Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
 | Audio / TTS | `gemini-2.5-pro-tts` | `gemini-2.5-pro-preview-tts` | Gemini | 2026-04-25 | User-facing compact ID maps to the documented preview API value. |
 
@@ -276,13 +281,39 @@ image modality mapping in `src/utils/gemini-model-mapping.ts` so
 `GeminiImageClient` resolves the correct provider value for both API-key and
 Vertex runtime modes.
 
-`gemini-3.1-flash-image-preview` is the supported Gemini 3.1 Flash Image
-Preview / Nano Banana 2 model ID verified on 2026-05-05. It uses the same
-provider API value for API-key and Vertex runtimes, and it reuses the existing
-`GeminiImageClient` generation/editing request path. Do not add guessed aliases
-such as `gemini-3.1-image`, `gemini-3.1-flash-image`, or
-`gemini-3.1-pro-image` unless Google publishes them as official IDs in a future
-model update.
+As of the 2026-07-03 verification, the active built-in Gemini image IDs are
+`gemini-3.1-flash-lite-image`, `gemini-3.1-flash-image`,
+`gemini-3-pro-image`, and the retained legacy `gemini-2.5-flash-image`.
+`gemini-3.1-flash-image-preview` and `gemini-3-pro-image-preview` were removed
+from the built-in catalog without aliases after Google shut down those preview
+IDs. The active IDs use the same provider API value for API-key and Vertex
+runtimes and reuse the existing `GeminiImageClient` generation/editing request
+path.
+
+### Gemini Video Models
+
+Gemini video model registration lives in `VideoClientFactory`, with runtime
+mapping in `src/utils/gemini-model-mapping.ts`. `GeminiVideoClient` owns the
+Gemini Omni Interactions API request shape, Files API polling/download, inline
+base64 handling, and temporary download cleanup. Server media tools call the
+video client boundary and must not call `@google/genai` directly.
+
+`gemini-omni-flash-preview` is the docs-backed Gemini Omni Flash video model ID
+checked on 2026-07-03. The current AutoByteus surface is creation-only:
+`generation_config.task` accepts `text_to_video`, `image_to_video`, or
+`reference_to_video`, with image/reference creation driven by `input_images`.
+There is no current `edit_video`, uploaded/source-video editing,
+`previous_interaction_id` continuation, audio-reference upload, or voice-editing
+contract. Add those through a future explicit tool/schema expansion rather than
+as permissive hidden fields on `generate_video`.
+
+The exposed generation configuration is intentionally narrow: `task`,
+`aspect_ratio`, `delivery`, `poll_interval_ms`, and `max_poll_ms`. Unsupported
+provider controls such as temperature, top-p, negative prompts, audio
+references, and voice editing must not be exposed unless Gemini documents
+support for them. Do not treat the catalog row as proof of live Gemini
+generation: the 2026-07-03 delivery probe could not validate live Interactions
+generation with the available Vertex API-key-only credential mode.
 
 ## Defaults, Deprecations, and Removals
 

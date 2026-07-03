@@ -84,7 +84,7 @@ The actual artifact/output files remain where the runtime wrote them.
 
 ### Run-scoped artifact preview flow
 
-1. A runtime writes/edits a file, or a known generated-output tool (`generate_image`, `edit_image`, `generate_speech`, including the AutoByteus image/audio MCP forms) produces an output path.
+1. A runtime writes/edits a file, or a known generated-output tool (`generate_image`, `edit_image`, `generate_speech`, `generate_video`, including the AutoByteus image/audio/video MCP forms) produces an output path.
 2. `AgentRunEventPipeline` runs once on the normalized backend event batch before subscriber fan-out.
 3. `FileChangeEventProcessor` derives a `FILE_CHANGE` event for explicit file mutations or known generated outputs.
 4. `RunFileChangeService` indexes the canonical path and type in the run-scoped projection.

@@ -12,8 +12,10 @@ const mockModelCatalogService = vi.hoisted(() => ({
   reloadLlmModels: vi.fn(),
   reloadAudioModels: vi.fn(),
   reloadImageModels: vi.fn(),
+  reloadVideoModels: vi.fn(),
   listAudioModels: vi.fn(),
   listImageModels: vi.fn(),
+  listVideoModels: vi.fn(),
 }));
 
 const mockLlmProviderService = vi.hoisted(() => ({
@@ -72,10 +74,13 @@ describe('LlmProviderResolver', () => {
     mockModelCatalogService.reloadLlmModels.mockReset();
     mockModelCatalogService.reloadAudioModels.mockReset();
     mockModelCatalogService.reloadImageModels.mockReset();
+    mockModelCatalogService.reloadVideoModels.mockReset();
     mockModelCatalogService.listAudioModels.mockReset();
     mockModelCatalogService.listImageModels.mockReset();
+    mockModelCatalogService.listVideoModels.mockReset();
     mockModelCatalogService.listAudioModels.mockResolvedValue([]);
     mockModelCatalogService.listImageModels.mockResolvedValue([]);
+    mockModelCatalogService.listVideoModels.mockResolvedValue([]);
 
     mockLlmProviderService.getProviderApiKeyConfigured.mockReset();
     mockLlmProviderService.listProvidersWithModels.mockReset();
@@ -211,6 +216,49 @@ describe('LlmProviderResolver', () => {
     ]);
   });
 
+  it('groups video models under built-in provider objects', async () => {
+    mockModelCatalogService.listVideoModels.mockResolvedValue([
+      {
+        modelIdentifier: 'gemini-omni-flash-preview',
+        name: 'Gemini Omni Flash Preview',
+        value: 'gemini-omni-flash-preview',
+        provider: 'GEMINI',
+        runtime: 'api',
+        hostUrl: null,
+        parameterSchema: {
+          toJsonSchemaDict: () => ({
+            type: 'object',
+            properties: {
+              aspect_ratio: { type: 'string', enum: ['16:9', '9:16'] },
+            },
+          }),
+        },
+      },
+    ]);
+
+    const resolver = new LlmProviderResolver();
+    const result = await resolver.availableVideoProvidersWithModels('autobyteus');
+
+    expect(mockModelCatalogService.listVideoModels).toHaveBeenCalledWith('autobyteus');
+    expect(mockBuiltInCatalog.getProvider).toHaveBeenCalledWith('GEMINI');
+    expect(result).toEqual([
+      expect.objectContaining({
+        provider: expect.objectContaining({ id: 'GEMINI' }),
+        models: [
+          expect.objectContaining({
+            modelIdentifier: 'gemini-omni-flash-preview',
+            providerId: 'GEMINI',
+            configSchema: expect.objectContaining({
+              properties: expect.objectContaining({
+                aspect_ratio: expect.objectContaining({ enum: ['16:9', '9:16'] }),
+              }),
+            }),
+          }),
+        ],
+      }),
+    ]);
+  });
+
   it('creates custom providers through the provider service', async () => {
     mockLlmProviderService.createCustomProvider.mockResolvedValue({
       id: 'provider_gateway',
@@ -262,5 +310,16 @@ describe('LlmProviderResolver', () => {
 
     expect(mockLlmProviderService.reloadProviderModels).toHaveBeenCalledWith('provider_gateway', 'autobyteus');
     expect(result).toContain('Reloaded 3 models for provider provider_gateway successfully.');
+  });
+
+  it('reloads LLM and multimedia model catalogs including video models', async () => {
+    const resolver = new LlmProviderResolver();
+    const result = await resolver.reloadLlmModels('autobyteus');
+
+    expect(result).toBe('All models (LLM and Multimedia) reloaded successfully.');
+    expect(mockModelCatalogService.reloadLlmModels).toHaveBeenCalledWith('autobyteus');
+    expect(mockModelCatalogService.reloadAudioModels).toHaveBeenCalledWith('autobyteus');
+    expect(mockModelCatalogService.reloadImageModels).toHaveBeenCalledWith('autobyteus');
+    expect(mockModelCatalogService.reloadVideoModels).toHaveBeenCalledWith('autobyteus');
   });
 });

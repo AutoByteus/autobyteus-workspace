@@ -47,6 +47,7 @@ The GraphQL boundary stays provider-centered through
 - `availableLlmProvidersWithModels(runtimeKind?)`
 - `availableAudioProvidersWithModels(runtimeKind?)`
 - `availableImageProvidersWithModels(runtimeKind?)`
+- `availableVideoProvidersWithModels(runtimeKind?)`
 - `getLlmProviderApiKeyConfigured(providerId)`
 - `getGeminiSetupConfig()`
 

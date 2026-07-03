@@ -3,11 +3,13 @@ import type { MediaDefaultModelKind } from "../../config/media-default-model-set
 export const GENERATE_IMAGE_TOOL_NAME = "generate_image";
 export const EDIT_IMAGE_TOOL_NAME = "edit_image";
 export const GENERATE_SPEECH_TOOL_NAME = "generate_speech";
+export const GENERATE_VIDEO_TOOL_NAME = "generate_video";
 
 export const MEDIA_TOOL_NAME_LIST = [
   GENERATE_IMAGE_TOOL_NAME,
   EDIT_IMAGE_TOOL_NAME,
   GENERATE_SPEECH_TOOL_NAME,
+  GENERATE_VIDEO_TOOL_NAME,
 ] as const;
 
 export type MediaToolName = (typeof MEDIA_TOOL_NAME_LIST)[number];
@@ -26,6 +28,7 @@ export const MEDIA_TOOL_MODEL_KIND_BY_NAME: Record<MediaToolName, MediaDefaultMo
   [GENERATE_IMAGE_TOOL_NAME]: "image_generation",
   [EDIT_IMAGE_TOOL_NAME]: "image_edit",
   [GENERATE_SPEECH_TOOL_NAME]: "speech_generation",
+  [GENERATE_VIDEO_TOOL_NAME]: "video_generation",
 };
 
 export type MediaToolExecutionContext = {
@@ -51,6 +54,13 @@ export type EditImageInput = {
 
 export type GenerateSpeechInput = {
   prompt: string;
+  output_file_path: string;
+  generation_config?: Record<string, unknown> | null;
+};
+
+export type GenerateVideoInput = {
+  prompt: string;
+  input_images?: string[] | null;
   output_file_path: string;
   generation_config?: Record<string, unknown> | null;
 };

@@ -14,6 +14,11 @@ const mockAudioClientFactory = vi.hoisted(() => ({
   listModels: vi.fn(),
 }));
 
+const mockVideoClientFactory = vi.hoisted(() => ({
+  ensureInitialized: vi.fn(),
+  listModels: vi.fn(),
+}));
+
 vi.mock("../../../../src/config/app-config-provider.js", () => ({
   appConfigProvider: {
     config: mockConfig,
@@ -28,12 +33,18 @@ vi.mock("autobyteus-ts/multimedia/audio/audio-client-factory.js", () => ({
   AudioClientFactory: mockAudioClientFactory,
 }));
 
+vi.mock("autobyteus-ts/multimedia/video/video-client-factory.js", () => ({
+  VideoClientFactory: mockVideoClientFactory,
+}));
+
 import {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_MODEL_IDENTIFIER,
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_SPEECH_MODEL_IDENTIFIER,
+  DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_VIDEO_MODEL_IDENTIFIER,
 } from "../../../../src/config/media-default-model-settings.js";
 import { MediaModelResolver } from "../../../../src/agent-tools/media/media-tool-model-resolver.js";
 
@@ -57,6 +68,14 @@ const fallbackSpeechModel = {
   modelIdentifier: DEFAULT_SPEECH_MODEL_IDENTIFIER,
   name: "Fallback Speech Model",
 };
+const configuredVideoModel = {
+  modelIdentifier: "configured-video-model",
+  name: "Configured Video Model",
+};
+const fallbackVideoModel = {
+  modelIdentifier: DEFAULT_VIDEO_MODEL_IDENTIFIER,
+  name: "Fallback Video Model",
+};
 
 describe("MediaModelResolver", () => {
   beforeEach(() => {
@@ -65,6 +84,8 @@ describe("MediaModelResolver", () => {
     mockImageClientFactory.listModels.mockReset();
     mockAudioClientFactory.ensureInitialized.mockReset();
     mockAudioClientFactory.listModels.mockReset();
+    mockVideoClientFactory.ensureInitialized.mockReset();
+    mockVideoClientFactory.listModels.mockReset();
 
     mockImageClientFactory.listModels.mockReturnValue([
       configuredImageEditModel,
@@ -75,6 +96,10 @@ describe("MediaModelResolver", () => {
       configuredSpeechModel,
       fallbackSpeechModel,
     ]);
+    mockVideoClientFactory.listModels.mockReturnValue([
+      configuredVideoModel,
+      fallbackVideoModel,
+    ]);
   });
 
   it("uses configured server setting values for all media model kinds when present", () => {
@@ -82,6 +107,7 @@ describe("MediaModelResolver", () => {
       [DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY]: "  configured-edit-model  ",
       [DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]: "Configured Generation Model",
       [DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY]: "configured-speech-model",
+      [DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY]: "configured-video-model",
     })[key]);
 
     const resolver = new MediaModelResolver();
@@ -104,15 +130,23 @@ describe("MediaModelResolver", () => {
       modelIdentifier: "configured-speech-model",
       catalogModel: configuredSpeechModel,
     });
+    expect(resolver.resolve("video_generation")).toMatchObject({
+      kind: "video_generation",
+      settingKey: DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
+      modelIdentifier: "configured-video-model",
+      catalogModel: configuredVideoModel,
+    });
 
     expect(mockImageClientFactory.ensureInitialized).toHaveBeenCalledTimes(2);
     expect(mockAudioClientFactory.ensureInitialized).toHaveBeenCalledTimes(1);
+    expect(mockVideoClientFactory.ensureInitialized).toHaveBeenCalledTimes(1);
   });
 
   it("falls back to approved defaults for all media model kinds when settings are absent or blank", () => {
     mockConfig.get.mockImplementation((key: string) => ({
       [DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]: "   ",
       [DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY]: "",
+      [DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY]: "",
     })[key]);
 
     const resolver = new MediaModelResolver();
@@ -134,6 +168,12 @@ describe("MediaModelResolver", () => {
       settingKey: DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
       modelIdentifier: DEFAULT_SPEECH_MODEL_IDENTIFIER,
       catalogModel: fallbackSpeechModel,
+    });
+    expect(resolver.resolve("video_generation")).toMatchObject({
+      kind: "video_generation",
+      settingKey: DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
+      modelIdentifier: DEFAULT_VIDEO_MODEL_IDENTIFIER,
+      catalogModel: fallbackVideoModel,
     });
   });
 });

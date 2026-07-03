@@ -15,3 +15,11 @@ export class SpeechGenerationResponse {
     this.audio_urls = audio_urls;
   }
 }
+
+export class VideoGenerationResponse {
+  video_urls: string[];
+
+  constructor(video_urls: string[]) {
+    this.video_urls = video_urls;
+  }
+}

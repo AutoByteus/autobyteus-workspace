@@ -160,10 +160,11 @@ The server owns the first-party media agent-tool boundary for:
 - `generate_image`
 - `edit_image`
 - `generate_speech`
+- `generate_video`
 
 Canonical contracts, schemas, parsing, model-default resolution, media-local
 path resolution, and execution orchestration live under `src/agent-tools/media`.
-Provider-specific image/audio clients still come from `autobyteus-ts`
+Provider-specific image/audio/video clients still come from `autobyteus-ts`
 multimedia infrastructure, but the old direct `autobyteus-ts` media `BaseTool`
 classes are no longer the active first-party registration path.
 
@@ -176,12 +177,18 @@ Runtime projection is explicit:
   media `dynamicTools` path and the old Claude `autobyteus_image_audio` MCP
   server path are not retained for these migrated tools.
 
-`generate_image` and `edit_image` use an array-shaped `input_images` public
-contract across all projections. Callers must pass image references as
-`string[]` values, including one-element arrays for a single reference. String
-or comma-separated `input_images` values are rejected rather than
-compatibility-parsed, which avoids corrupting data URIs that legitimately
+`generate_image`, `edit_image`, and `generate_video` use an array-shaped
+`input_images` public contract across all projections. Callers must pass image
+references as `string[]` values, including one-element arrays for a single
+reference. String or comma-separated `input_images` values are rejected rather
+than compatibility-parsed, which avoids corrupting data URIs that legitimately
 contain commas.
+
+`generate_video` is a creation-only boundary. It supports prompt-only video
+creation plus image/reference-image creation through `generation_config.task`
+values `text_to_video`, `image_to_video`, and `reference_to_video`; editing,
+uploaded/source-video editing, audio-reference upload, and stateful
+`previous_interaction_id` continuation are not part of this tool contract.
 
 Image references may be URLs, data URIs, local filesystem paths, or `file:`
 URLs. Local references and media output paths are resolved through the media
@@ -200,7 +207,8 @@ tools, but it is not the authority for server-owned media local paths.
 
 All media tools return the canonical result shape `{ file_path }`. Runtime event
 normalizers preserve that result shape from Agent Tools MCP provider wire names
-such as `mcp__autobyteus_agent_tools__generate_image`, so generated media files
+such as `mcp__autobyteus_agent_tools__generate_image` and
+`mcp__autobyteus_agent_tools__generate_video`, so generated media files
 continue to project as generated-output file changes while application surfaces
 see canonical names like `generate_image`.
 
