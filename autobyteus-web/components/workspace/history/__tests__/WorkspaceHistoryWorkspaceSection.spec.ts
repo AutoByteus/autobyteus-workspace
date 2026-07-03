@@ -24,6 +24,30 @@ const stableMember = (memberRouteKey: string, overrides: Record<string, any> = {
   ...overrides,
 });
 
+const teamSession = (team: any) => {
+  const members = team.memberTree?.length ? team.memberTree : team.members || [];
+  return {
+    kind: 'team' as const,
+    sessionKey: `team:${team.teamRunId}`,
+    sessionId: team.teamRunId,
+    workspaceRootPath: team.workspaceRootPath,
+    displayLabel: {
+      title: team.summary,
+      subtitle: members.length > 0 ? `${team.teamDefinitionName} (${members.length})` : team.teamDefinitionName,
+      rawSummary: team.summary,
+      titleSource: 'summary' as const,
+    },
+    source: {
+      sourceName: team.teamDefinitionName,
+      memberCount: members.length,
+    },
+    status: team.currentStatus,
+    isActive: team.isActive,
+    lastActivityAt: team.lastActivityAt,
+    teamRun: team,
+  } as any;
+};
+
 const mountSubject = (options: {
   teamOverride?: Record<string, any>;
   liveContextOverride?: Record<string, any>;
@@ -79,12 +103,10 @@ const mountSubject = (options: {
   } as any;
   const actions = {
     onRemoveWorkspace: vi.fn(),
-    onCreateRun: vi.fn(),
-    onSelectRun: vi.fn(),
+    onSelectSession: vi.fn(),
     onTerminateRun: vi.fn(),
     onArchiveRun: vi.fn(),
     onDeleteRun: vi.fn(),
-    onSelectTeam: vi.fn(),
     onTerminateTeam: vi.fn(),
     onArchiveTeam: vi.fn(),
     onDeleteTeam: vi.fn(),
@@ -94,7 +116,7 @@ const mountSubject = (options: {
   const expansionKey = (workspaceId: string, teamRunId: string, memberRouteKey: string) =>
     `${workspaceId}::${teamRunId}::${memberRouteKey}`;
   const state = {
-    selectedRunId: null,
+    selectedSessionKey: null,
     isRunTerminating: () => false,
     isTeamTerminating: () => false,
     isRunDeleting: () => false,
@@ -107,11 +129,8 @@ const mountSubject = (options: {
     formatRelativeTime: () => 'now',
     isWorkspaceExpanded: () => true,
     toggleWorkspace: vi.fn(),
-    isAgentExpanded: () => false,
-    toggleAgent: vi.fn(),
-    isTeamDefinitionExpanded: () => true,
-    toggleTeamDefinition: vi.fn(),
-    isTeamExpanded: () => true,
+    isSessionExpanded: () => true,
+    toggleSession: vi.fn(),
     getLiveTeamContext: () => liveContext,
     isTeamMemberExpanded: vi.fn((workspaceId: string, teamRunId: string, memberRouteKey: string) =>
       Boolean(expandedTeamMembers[expansionKey(workspaceId, teamRunId, memberRouteKey)])),
@@ -128,26 +147,12 @@ const mountSubject = (options: {
         workspaceId: 'workspace:/ws/a',
         workspaceRootPath: '/ws/a',
         workspaceName: 'Workspace A',
+        workspaceKind: 'filesystem',
         canRemoveFromWorkspaces: false,
         agents: [],
       },
-      workspaceTeams: [team],
-      workspaceTeamHistoryGroups: [],
+      workspaceSessions: [teamSession(team)],
       state,
-      avatars: {
-        showAgentAvatar: () => false,
-        onAgentAvatarError: vi.fn(),
-        getAgentInitials: () => 'A',
-        showTeamAvatar: () => false,
-        getTeamAvatarUrl: () => '',
-        onTeamAvatarError: vi.fn(),
-        getTeamInitials: () => 'TA',
-        showTeamMemberAvatar: () => false,
-        getTeamMemberAvatarUrl: () => '',
-        onTeamMemberAvatarError: vi.fn(),
-        getTeamMemberDisplayName: (member: any) => member.displayName || member.memberName,
-        getTeamMemberInitials: () => 'W',
-      },
       actions,
     },
     global: {
@@ -162,23 +167,25 @@ const mountSubject = (options: {
     },
   });
 
-  return { wrapper, actions, state, liveContext, worker };
+  return { wrapper, actions, state, liveContext, worker, team };
 };
 
 describe('WorkspaceHistoryWorkspaceSection', () => {
   it('renders transient execution rows inline with ghost/dashed semantics and focus identity', async () => {
     const { wrapper, actions } = mountSubject();
 
+    expect(wrapper.get('[data-test="workspace-team-row-team-run-1"]').text()).toContain('Team Alpha (1)');
     const stableRow = wrapper.get('[data-test="workspace-team-member-team-run-1-worker"]');
     expect(stableRow.attributes('data-row-kind')).toBe('stable_member');
     expect(stableRow.text()).toContain('worker');
     expect(stableRow.classes()).not.toContain('text-indigo-900');
+    expect(stableRow.find('img').exists()).toBe(false);
 
     const transientRow = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
     expect(transientRow.attributes('data-row-kind')).toBe('transient_execution');
     expect(transientRow.attributes('data-transient-kind')).toBe('task_agent');
     expect(transientRow.attributes('data-member-route-key')).toBe('task-agent-run-1');
-    expect(transientRow.attributes('style')).toContain('margin-left: 12px');
+    expect(transientRow.attributes('style')).toContain('margin-left: 8px');
     expect(transientRow.classes()).toContain('bg-indigo-50/40');
     expect(transientRow.classes()).toContain('ring-indigo-200');
     expect(transientRow.findAll('[data-test="workspace-transient-status-dot"]')).toHaveLength(1);
@@ -276,7 +283,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
           },
           taskTeamNode,
         ],
-        memberNodesByRouteKey: new Map([
+        memberNodesByRouteKey: new Map<string, any>([
           ['task-team-run-1', taskTeamNode],
           ['task-team-run-1/review_lead', taskTeamChildNode],
         ]),
@@ -307,7 +314,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     }
     expect(transientRows[1].attributes('data-transient-kind')).toBe('task_team_child');
     expect(transientRows[1].attributes('data-member-route-key')).toBe('task-team-run-1/review_lead');
-    expect(transientRows[1].attributes('style')).toContain('margin-left: 12px');
+    expect(transientRows[1].attributes('style')).toContain('margin-left: 8px');
     expect(transientRows[1].text()).toContain('review_lead');
     expect(disclosure.attributes('aria-expanded')).toBe('true');
 
@@ -338,7 +345,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
             { memberKind: 'agent', memberName: 'worker', displayName: 'worker', memberPath: ['worker'], memberRouteKey: 'worker', memberRunId: 'worker-run', agentDefinitionId: 'worker-agent' },
           ],
           leafAgentContextsByRouteKey: new Map(),
-        }),
+        } as any),
       },
     });
     await wrapper.vm.$nextTick();

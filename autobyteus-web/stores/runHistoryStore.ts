@@ -23,7 +23,12 @@ import {
   buildRunHistoryTreeNodes,
   findAgentNameByRunId as findAgentNameFromHistory,
   formatRunHistoryRelativeTime,
+  normalizeRootPath,
 } from '~/stores/runHistoryReadModel';
+import {
+  buildWorkspaceHistorySessionRows,
+  type WorkspaceHistorySessionRow,
+} from '~/stores/runHistorySessionProjection';
 import { openTeamMemberRunFromHistory, selectTreeRunFromHistory } from '~/stores/runHistorySelectionActions';
 import {
   type RunTreeRow,
@@ -460,6 +465,33 @@ export const useRunHistoryStore = defineStore('runHistory', {
         workspacesById: workspaceStore.workspaces,
         workspaceRootPath,
       });
+    },
+
+    getWorkspaceSessionNodes(workspaceRootPath?: string): WorkspaceHistorySessionRow[] {
+      const workspaceNodes = this.getTreeNodes();
+      const normalizedTargetRoot = normalizeRootPath(workspaceRootPath);
+      const targetWorkspaces = normalizedTargetRoot
+        ? workspaceNodes.filter((workspaceNode) =>
+            normalizeRootPath(workspaceNode.workspaceRootPath) === normalizedTargetRoot)
+        : workspaceNodes;
+      if (targetWorkspaces.length === 0) {
+        return [];
+      }
+
+      const teamNodes = this.getTeamNodes(normalizedTargetRoot || undefined);
+      const teamsByWorkspaceRoot = new Map<string, import('~/stores/runHistoryTypes').TeamTreeNode[]>();
+      for (const team of teamNodes) {
+        const key = normalizeRootPath(team.workspaceRootPath);
+        const existing = teamsByWorkspaceRoot.get(key) ?? [];
+        existing.push(team);
+        teamsByWorkspaceRoot.set(key, existing);
+      }
+
+      return targetWorkspaces.flatMap((workspaceNode) =>
+        buildWorkspaceHistorySessionRows({
+          workspaceNode,
+          teamNodes: teamsByWorkspaceRoot.get(normalizeRootPath(workspaceNode.workspaceRootPath)) ?? [],
+        }));
     },
 
     async openTeamMemberRun(

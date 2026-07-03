@@ -45,7 +45,78 @@ const {
   const normalizeWorkspaceNode = (workspace: any): any => ({
     ...workspace,
     workspaceId: workspace.workspaceId ?? workspaceIdFromRoot(workspace.workspaceRootPath),
+    workspaceKind: workspace.workspaceKind ?? 'filesystem',
+    canRemoveFromWorkspaces: workspace.canRemoveFromWorkspaces ?? true,
   });
+
+  const displayLabel = (kind: 'agent' | 'team', summary: string, sourceName: string, memberCount = 0) => {
+    const title = (summary || '').replace(/^\s*(?:\*\*)?\s*(?:\[\s*user requirement\s*\]|user requirement)\s*(?:\*\*)?\s*[:\-]?\s*/i, '').trim()
+      || (kind === 'team' ? 'Untitled team session' : 'Untitled session');
+    return {
+      title,
+      subtitle: kind === 'team'
+        ? (memberCount > 0 ? `${sourceName} (${memberCount})` : sourceName)
+        : `${sourceName} · agent session`,
+      rawSummary: summary,
+      titleSource: 'summary',
+    };
+  };
+
+  const flattenMembers = (members: any[]): any[] => members.flatMap((member) => [
+    member,
+    ...flattenMembers(member.children || []),
+  ]);
+
+  const buildWorkspaceSessions = (workspaceRootPath?: string): any[] => {
+    const workspaces = state.nodes
+      .map(normalizeWorkspaceNode)
+      .filter((workspace) => !workspaceRootPath || workspace.workspaceRootPath === workspaceRootPath);
+    return workspaces.flatMap((workspace) => {
+      const agentSessions = (workspace.agents || []).flatMap((agent: any) => (agent.runs || []).map((run: any) => ({
+        kind: 'agent',
+        sessionKey: `agent:${run.runId}`,
+        sessionId: run.runId,
+        workspaceRootPath: workspace.workspaceRootPath,
+        displayLabel: displayLabel('agent', run.summary, agent.agentName),
+        source: {
+          sourceName: agent.agentName,
+        },
+        status: run.currentStatus,
+        isActive: run.isActive,
+        lastActivityAt: run.lastActivityAt,
+        agentRun: run,
+      })));
+      const teamSessions = normalizeTeamNodes(state.teamNodesByWorkspace[workspace.workspaceRootPath] || [])
+        .map((team: any) => {
+          const rootMembers = team.memberTree?.length ? team.memberTree : team.members || [];
+          const members = flattenMembers(rootMembers);
+          return {
+            kind: 'team',
+            sessionKey: `team:${team.teamRunId}`,
+            sessionId: team.teamRunId,
+            workspaceRootPath: workspace.workspaceRootPath,
+            displayLabel: displayLabel(
+              'team',
+              team.summary,
+              team.teamDefinitionName,
+              members.length,
+            ),
+            source: {
+              sourceName: team.teamDefinitionName,
+              memberCount: members.length,
+            },
+            status: team.currentStatus,
+            isActive: team.isActive,
+            lastActivityAt: team.lastActivityAt,
+            teamRun: team,
+          };
+        });
+      return [...agentSessions, ...teamSessions].sort((a, b) => {
+        if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
+        return Date.parse(b.lastActivityAt) - Date.parse(a.lastActivityAt);
+      });
+    });
+  };
 
   const state = {
     loading: false,
@@ -127,6 +198,7 @@ const {
         }
         return normalizeTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
       }),
+      getWorkspaceSessionNodes: vi.fn((workspaceRootPath?: string) => buildWorkspaceSessions(workspaceRootPath)),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn(),
       createDraftRun: vi.fn().mockResolvedValue('temp-2'),
@@ -282,29 +354,17 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
   const expandAgentGroup = async (
     wrapper: any,
     workspaceRootPath = '/ws/a',
-    agentDefinitionId = 'agent-def-1',
+    _agentDefinitionId = 'agent-def-1',
   ) => {
     await expandWorkspace(wrapper, workspaceRootPath);
-    const agentRow = wrapper.get(
-      `[data-test="workspace-agent-row"][data-workspace-root="${workspaceRootPath}"][data-agent-definition-id="${agentDefinitionId}"]`,
-    );
-    if (agentRow.attributes('aria-expanded') !== 'true') {
-      await agentRow.trigger('click');
-      await flushPromises();
-    }
   };
 
   const expandTeamDefinitionGroup = async (
     wrapper: any,
     workspaceRootPath = '/ws/a',
-    groupKey = 'team-def-1',
+    _groupKey = 'team-def-1',
   ) => {
     await expandWorkspace(wrapper, workspaceRootPath);
-    const teamDefinitionRow = wrapper.get(`[data-test="workspace-team-definition-row-${groupKey}"]`);
-    if (teamDefinitionRow.attributes('aria-expanded') !== 'true') {
-      await teamDefinitionRow.trigger('click');
-      await flushPromises();
-    }
   };
 
   it('routes team top-row clicks through persisted member hydration instead of blind team selection', async () => {
