@@ -74,7 +74,6 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
@@ -88,13 +87,12 @@ import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMon
 import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/SelfEvolutionComposerCta.vue';
 import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
-import { buildEditableCatalogTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
+import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamRunStore = useAgentTeamRunStore();
 const agentDefinitionStore = useAgentDefinitionStore();
-const teamDefinitionStore = useAgentTeamDefinitionStore();
 const teamRunConfigStore = useTeamRunConfigStore();
 const agentRunConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
@@ -238,32 +236,10 @@ const sendSubteamMessage = async () => {
   }
 };
 
-const ensureTeamDefinitionsLoaded = async () => {
-  if (teamDefinitionStore.agentTeamDefinitions.length > 0) {
-    return;
-  }
+const createNewTeamRun = () => {
+  if (!activeTeamContext.value) return;
 
-  await teamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined);
-};
-
-const createNewTeamRun = async () => {
-  const teamContext = activeTeamContext.value;
-  if (!teamContext) return;
-
-  await ensureTeamDefinitionsLoaded();
-
-  const seed = buildEditableCatalogTeamRunSeed(teamContext.config, {
-    getTeamDefinitionById: (teamDefinitionId: string) =>
-      teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
-    getTeamDefinitionByName: (teamDefinitionName: string) =>
-      teamDefinitionStore.getAgentTeamDefinitionByName(teamDefinitionName),
-  });
-
-  if (!seed) {
-    return;
-  }
-
-  teamRunConfigStore.setConfig(seed);
+  teamRunConfigStore.setConfig(buildEditableTeamRunSeed(activeTeamContext.value.config));
   agentRunConfigStore.clearConfig();
   selectionStore.clearSelection();
 };
@@ -276,12 +252,9 @@ const openSelectedTeamConfig = () => {
 };
 
 onMounted(async () => {
-  await Promise.all([
-    agentDefinitionStore.agentDefinitions.length === 0
-      ? agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined)
-      : Promise.resolve(),
-    ensureTeamDefinitionsLoaded(),
-  ]);
+  if (agentDefinitionStore.agentDefinitions.length === 0) {
+    await agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined);
+  }
 });
 
 </script>

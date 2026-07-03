@@ -29,11 +29,11 @@ describe('AppLeftPanel', () => {
     expect(content).not.toContain("return '/media'");
   });
 
-  it('renders workspace history selection hook in host component', () => {
+  it('renders running-panel event hooks in host component', () => {
     const filePath = resolve(process.cwd(), 'components/AppLeftPanel.vue');
     const content = readFileSync(filePath, 'utf-8');
     expect(content).toContain('data-testid="nodes-network-icon"');
     expect(content).toContain('@run-selected="onRunningRunSelected"');
-    expect(content).not.toContain('@run-created="onRunningRunCreated"');
+    expect(content).toContain('@run-created="onRunningRunCreated"');
   });
 });

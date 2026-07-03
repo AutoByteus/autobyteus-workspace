@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
+import { nextTick } from 'vue';
 import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
 
 const flushPromises = async () => {
@@ -81,87 +82,6 @@ const {
     workspaceKind: workspace.workspaceKind ?? 'filesystem',
     canRemoveFromWorkspaces: workspace.canRemoveFromWorkspaces ?? true,
   });
-
-  const cleanTitle = (value: string | null | undefined): string => {
-    const normalized = (value || '').replace(/\s+/g, ' ').trim();
-    return normalized
-      .replace(/^\s*(?:\*\*)?\s*(?:\[\s*user requirement\s*\]|user requirement)\s*(?:\*\*)?\s*[:\-]?\s*/i, '')
-      .trim();
-  };
-
-  const displayLabel = (kind: 'agent' | 'team', summary: string, sourceName: string, memberCount = 0) => {
-    const title = cleanTitle(summary) || (kind === 'team' ? 'Untitled team session' : 'Untitled session');
-    if (kind === 'agent') {
-      return {
-        title,
-        subtitle: `${sourceName} · agent session`,
-        rawSummary: summary,
-        titleSource: title === cleanTitle(summary) ? 'summary' : 'fallback',
-      };
-    }
-    return {
-      title,
-      subtitle: memberCount > 0 ? `${sourceName} (${memberCount})` : sourceName,
-      rawSummary: summary,
-      titleSource: title === cleanTitle(summary) ? 'summary' : 'fallback',
-    };
-  };
-
-  const flattenMembers = (members: any[]): any[] => members.flatMap((member) => [
-    member,
-    ...flattenMembers(member.children || []),
-  ]);
-
-  const buildWorkspaceSessions = (workspaceRootPath?: string): any[] => {
-    const workspaces = state.nodes
-      .map(normalizeWorkspaceNode)
-      .filter((workspace) => !workspaceRootPath || workspace.workspaceRootPath === workspaceRootPath);
-    return workspaces.flatMap((workspace) => {
-      const agentSessions = (workspace.agents || []).flatMap((agent: any) => (agent.runs || []).map((run: any) => ({
-        kind: 'agent',
-        sessionKey: `agent:${run.runId}`,
-        sessionId: run.runId,
-        workspaceRootPath: workspace.workspaceRootPath,
-        displayLabel: displayLabel('agent', run.summary, agent.agentName),
-        source: {
-          sourceName: agent.agentName,
-        },
-        status: run.currentStatus,
-        isActive: run.isActive,
-        lastActivityAt: run.lastActivityAt,
-        agentRun: run,
-      })));
-      const teamSessions = normalizeTeamNodes(state.teamNodesByWorkspace[workspace.workspaceRootPath] || [])
-        .map((team: any) => {
-          const rootMembers = team.memberTree?.length ? team.memberTree : team.members || [];
-          const members = flattenMembers(rootMembers);
-          return {
-            kind: 'team',
-            sessionKey: `team:${team.teamRunId}`,
-            sessionId: team.teamRunId,
-            workspaceRootPath: workspace.workspaceRootPath,
-            displayLabel: displayLabel(
-              'team',
-              team.summary,
-              team.teamDefinitionName,
-              members.length,
-            ),
-            source: {
-              sourceName: team.teamDefinitionName,
-              memberCount: members.length,
-            },
-            status: team.currentStatus,
-            isActive: team.isActive,
-            lastActivityAt: team.lastActivityAt,
-            teamRun: team,
-          };
-        });
-      return [...agentSessions, ...teamSessions].sort((a, b) => {
-        if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
-        return Date.parse(b.lastActivityAt) - Date.parse(a.lastActivityAt);
-      });
-    });
-  };
 
   const state = {
     loading: false,
@@ -254,7 +174,6 @@ const {
         }
         return normalizeTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
       }),
-      getWorkspaceSessionNodes: vi.fn((workspaceRootPath?: string) => buildWorkspaceSessions(workspaceRootPath)),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn().mockResolvedValue(undefined),
       createDraftRun: vi.fn().mockResolvedValue('temp-2'),
@@ -493,17 +412,29 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   const expandAgentGroup = async (
     wrapper: any,
     workspaceRootPath = '/ws/a',
-    _agentDefinitionId = 'agent-def-1',
+    agentDefinitionId = 'agent-def-1',
   ) => {
     await expandWorkspace(wrapper, workspaceRootPath);
+    const agentRow = wrapper.get(
+      `[data-test="workspace-agent-row"][data-workspace-root="${workspaceRootPath}"][data-agent-definition-id="${agentDefinitionId}"]`,
+    );
+    if (agentRow.attributes('aria-expanded') !== 'true') {
+      await agentRow.trigger('click');
+      await flushPromises();
+    }
   };
 
   const expandTeamDefinitionGroup = async (
     wrapper: any,
     workspaceRootPath = '/ws/a',
-    _groupKey = 'team-def-1',
+    groupKey = 'team-def-1',
   ) => {
     await expandWorkspace(wrapper, workspaceRootPath);
+    const teamDefinitionRow = wrapper.get(`[data-test="workspace-team-definition-row-${groupKey}"]`);
+    if (teamDefinitionRow.attributes('aria-expanded') !== 'true') {
+      await teamDefinitionRow.trigger('click');
+      await flushPromises();
+    }
   };
 
   const seedNestedTeamRun = (focusedMemberRouteKey = 'coordinator') => {
@@ -726,7 +657,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').exists()).toBe(true);
   });
 
-  it('shows direct session rows after opening a workspace without definition groups', async () => {
+  it('shows groups after opening a workspace but keeps run histories collapsed', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
         teamRunId: 'team-1',
@@ -749,12 +680,12 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await expandWorkspace(wrapper);
 
     expect(wrapper.text()).toContain('SuperAgent');
+    expect(wrapper.text()).toContain('Teams');
     expect(wrapper.text()).toContain('Team Alpha');
-    expect(wrapper.text()).toContain('Describe messaging bindings');
-    expect(wrapper.text()).toContain('Team summary');
-    expect(wrapper.text()).not.toContain('Teams');
-    expect(wrapper.find('[data-test="workspace-agent-row"][data-agent-definition-id="agent-def-1"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="workspace-team-definition-row-team-def-1"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Describe messaging bindings');
+    expect(wrapper.text()).not.toContain('Team summary');
+    expect(wrapper.find('[data-test="workspace-agent-row"][data-agent-definition-id="agent-def-1"]').attributes('aria-expanded')).toBe('false');
+    expect(wrapper.find('[data-test="workspace-team-definition-row-team-def-1"]').attributes('aria-expanded')).toBe('false');
   });
 
   it('keeps the individual team run disclosure chevron visually consistent with the parent team chevron', async () => {
@@ -811,35 +742,6 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(teamRunDisclosure.classes()).not.toContain('rounded-md');
     expect(teamRunDisclosure.classes()).not.toContain('border');
     expect(teamRunDisclosure.classes()).not.toContain('shadow-sm');
-
-    const teamLeadingLane = teamRow.get('[data-test="workspace-session-leading-lane"]');
-    expect(teamLeadingLane.classes()).toEqual(expect.arrayContaining([
-      'h-5',
-      'items-center',
-      'mr-2',
-    ]));
-    expect(teamRow.find('[data-test="workspace-session-disclosure-placeholder"]').exists()).toBe(false);
-    const teamStatusLane = teamRow.get('[data-test="workspace-session-status-dot"]');
-    expect(teamStatusLane.classes()).toEqual(expect.arrayContaining([
-      'ml-1.5',
-      'h-3.5',
-      'w-2',
-      'items-center',
-      'justify-center',
-    ]));
-    expect(teamStatusLane.classes()).not.toContain('h-9');
-
-    const agentRow = wrapper.get('[data-session-key="agent:run-1"]');
-    const agentPlaceholder = agentRow.get('[data-test="workspace-session-disclosure-placeholder"]');
-    expect(agentPlaceholder.classes()).toEqual(expect.arrayContaining([
-      'h-3.5',
-      'w-3.5',
-      'flex-shrink-0',
-    ]));
-    expect(agentRow.get('[data-test="workspace-session-leading-lane"]').classes())
-      .toEqual(expect.arrayContaining(['h-5', 'items-center', 'mr-2']));
-    expect(agentRow.get('[data-test="workspace-session-status-dot"]').classes())
-      .toEqual(expect.arrayContaining(['ml-1.5', 'h-3.5', 'w-2']));
 
     await teamRow.trigger('click');
     await flushPromises();
@@ -995,14 +897,31 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     }
   });
 
-  it('does not render session source avatar or initials chips before session labels', async () => {
+  it('renders agent avatar image when the tree node provides avatar URL', async () => {
     const wrapper = mountComponent();
     await flushPromises();
     await expandWorkspace(wrapper);
 
-    expect(wrapper.find('img[alt="SuperAgent avatar"]').exists()).toBe(false);
-    expect(wrapper.text()).toContain('SuperAgent · agent session');
-    expect((wrapper.vm as any).showAgentAvatar).toBeUndefined();
+    const avatar = wrapper.find('img[alt="SuperAgent avatar"]');
+    expect(avatar.exists()).toBe(true);
+    expect(avatar.attributes('src')).toBe('https://example.com/superagent.png');
+  });
+
+  it('tracks broken avatar per URL key so a changed avatar URL can recover', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const vm = wrapper.vm as any;
+    const workspaceRootPath = '/ws/a';
+    const agentDefinitionId = 'agent-def-1';
+    const firstAvatarUrl = 'https://example.com/superagent.png';
+    const replacementAvatarUrl = 'https://example.com/superagent-v2.png';
+
+    expect(vm.showAgentAvatar(workspaceRootPath, agentDefinitionId, firstAvatarUrl)).toBe(true);
+    vm.onAgentAvatarError(workspaceRootPath, agentDefinitionId, firstAvatarUrl);
+    await nextTick();
+    expect(vm.showAgentAvatar(workspaceRootPath, agentDefinitionId, firstAvatarUrl)).toBe(false);
+    expect(vm.showAgentAvatar(workspaceRootPath, agentDefinitionId, replacementAvatarUrl)).toBe(true);
   });
 
   it('selects run via runHistoryStore.selectTreeRun and emits run-selected', async () => {
@@ -1026,15 +945,24 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ]);
   });
 
-  it('does not render per-agent quick-create controls in the session-first history list', async () => {
+  it('creates draft run from agent row plus button and emits run-created', async () => {
     const wrapper = mountComponent();
     await flushPromises();
     await expandWorkspace(wrapper);
 
     const createButtons = wrapper.findAll('button[title="New run with this agent"]');
-    expect(createButtons.length).toBe(0);
-    expect(runHistoryStoreMock.createDraftRun).not.toHaveBeenCalled();
-    expect(wrapper.emitted('run-created')).toBeUndefined();
+    expect(createButtons.length).toBe(1);
+
+    await createButtons[0]!.trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.createDraftRun).toHaveBeenCalledWith({
+      workspaceRootPath: '/ws/a',
+      agentDefinitionId: 'agent-def-1',
+    });
+    expect(wrapper.emitted('run-created')).toEqual([
+      [{ type: 'agent', definitionId: 'agent-def-1' }],
+    ]);
   });
 
   it('does not render run-row configuration button', async () => {
@@ -1054,7 +982,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.find('button[title="Improve skills from this run"]').exists()).toBe(false);
   });
 
-  it('renders direct team session rows under workspace and selects the team run when clicked', async () => {
+  it('renders grouped team rows under workspace and selects the team run when clicked', async () => {
     runHistoryState.workspaceGroups = [
       buildWorkspaceHistoryGroup({
         workspaceRootPath: '/ws/a',
@@ -1117,13 +1045,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
     await expandTeamDefinitionGroup(wrapper);
 
-    expect(wrapper.text()).not.toContain('Teams');
+    expect(wrapper.text()).toContain('Teams');
     const groupRow = wrapper.find('[data-test="workspace-team-definition-row-team-def-1"]');
-    expect(groupRow.exists()).toBe(false);
+    expect(groupRow.exists()).toBe(true);
+    expect(groupRow.text()).toContain('Team Alpha');
     const row = wrapper.find('[data-test="workspace-team-row-team-1"]');
     expect(row.exists()).toBe(true);
     expect(row.text()).toContain('Team summary');
-    expect(row.text()).toContain('Team Alpha');
     expect(row.text()).not.toContain('team-1');
 
     await row.trigger('click');
@@ -1319,7 +1247,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.text()).not.toContain('**[User Requirement]**');
   });
 
-  it('renders simplified team subtitle without team source avatar or coordinator text', async () => {
+  it('renders team avatar image when team definition avatar is available', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
         teamRunId: 'team-1',
@@ -1333,20 +1261,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
         currentStatus: 'offline',
         deleteLifecycle: 'READY',
         focusedMemberName: 'super_agent',
-        members: [
-          {
-            teamRunId: 'team-1',
-            memberRouteKey: 'super_agent',
-            memberName: 'Super Agent',
-            memberRunId: 'member-run-1',
-            workspaceRootPath: '/ws/a',
-            summary: 'Team summary',
-            lastActivityAt: '2026-01-01T02:00:00.000Z',
-            lastKnownStatus: 'IDLE',
-            isActive: false,
-            deleteLifecycle: 'READY',
-          },
-        ],
+        members: [],
       },
     ];
 
@@ -1354,14 +1269,12 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
     await expandWorkspace(wrapper);
 
-    const teamRow = wrapper.get('[data-test="workspace-team-row-team-1"]');
-    expect(teamRow.text()).toContain('Team Alpha (1)');
-    expect(teamRow.text()).not.toContain('coordinator:');
-    expect(teamRow.text()).not.toContain('roles');
-    expect(wrapper.find('img[alt="Team Alpha avatar"]').exists()).toBe(false);
+    const teamAvatar = wrapper.find('img[alt="Team Alpha avatar"]');
+    expect(teamAvatar.exists()).toBe(true);
+    expect(teamAvatar.attributes('src')).toBe('https://example.com/team-alpha.png');
   });
 
-  it('does not render team member avatar or initials chips before member names', async () => {
+  it('renders team member avatar image when matching agent definition avatar is available', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
         teamRunId: 'team-1',
@@ -1401,9 +1314,9 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await teamRow.trigger('click');
     await flushPromises();
 
-    const memberRow = wrapper.get('[data-test="workspace-team-member-team-1-super_agent"]');
-    expect(memberRow.text()).toContain('Super Agent');
-    expect(wrapper.find('img[alt="Super Agent avatar"]').exists()).toBe(false);
+    const memberAvatar = wrapper.find('img[alt="Super Agent avatar"]');
+    expect(memberAvatar.exists()).toBe(true);
+    expect(memberAvatar.attributes('src')).toBe('https://example.com/team-member.png');
   });
 
   it('selects team member through runHistoryStore so persisted member history can hydrate', async () => {
@@ -1556,51 +1469,6 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const archiveButtons = wrapper.findAll('button[title="Archive team history"]');
     expect(archiveButtons).toHaveLength(1);
-  });
-
-  it('terminates active team history rows from the row action and disables while pending', async () => {
-    let resolveTerminate!: () => void;
-    teamRunStoreMock.terminateTeamRun.mockImplementationOnce(
-      () => new Promise<void>((resolve) => {
-        resolveTerminate = resolve;
-      }),
-    );
-    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
-      {
-        teamRunId: 'team-active',
-        teamDefinitionId: 'team-def-1',
-        teamDefinitionName: 'Team Alpha',
-        workspaceRootPath: '/ws/a',
-        summary: 'Active team summary',
-        lastActivityAt: '2026-01-01T02:00:00.000Z',
-        lastKnownStatus: 'ACTIVE',
-        isActive: true,
-        currentStatus: 'running',
-        deleteLifecycle: 'CLEANUP_PENDING',
-        focusedMemberName: 'super_agent',
-        members: [],
-      },
-    ];
-
-    const wrapper = mountComponent();
-    await flushPromises();
-    await expandTeamDefinitionGroup(wrapper);
-
-    const terminateButton = wrapper.get('button[title="Terminate team"]');
-    expect(terminateButton.attributes('disabled')).toBeUndefined();
-
-    await terminateButton.trigger('click');
-    await nextTick();
-
-    expect(teamRunStoreMock.terminateTeamRun).toHaveBeenCalledWith('team-active');
-    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
-    expect(selectionStoreMock.selectRun).not.toHaveBeenCalled();
-    expect(wrapper.get('button[title="Terminate team"]').attributes('disabled')).toBeDefined();
-
-    resolveTerminate();
-    await flushPromises();
-
-    expect(wrapper.get('button[title="Terminate team"]').attributes('disabled')).toBeUndefined();
   });
 
   it('does not render team-row configuration button', async () => {
