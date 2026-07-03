@@ -81,7 +81,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/docs-sync-report.md`
+  - `/Volumes/bingq/AutoByteus/autobyteus-workspace/autobyteus-web/tickets/done/session-discovery-ui/docs-sync-report.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-web/docs/agent_execution_architecture.md`
@@ -102,17 +102,20 @@
 
 ## Finalization Record
 
-- Ticket archived to: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui`
-- Ticket worktree path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui`
+
+- Ticket archived to: `/Volumes/bingq/AutoByteus/autobyteus-workspace/autobyteus-web/tickets/done/session-discovery-ui`
+- Ticket source worktree path: `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui`
 - Ticket branch: `codex/session-discovery-ui`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Pending final archive commit`
-- Ticket branch push status: `Pending final archive commit push`
-- Merge status: `Authorized by user; pending final target merge`
-- Release/publication/deployment status: `Release 1.3.94 requested; pending after mainline merge`
-- Worktree cleanup status: `Not started — mainline merge deferred by user instruction`
-- Local branch cleanup status: `Not started — keep local ticket branch until user authorizes mainline finalization or cleanup`
+- Commit status: `Completed` — archive/release-notes commit `49d8cbb4a0c77c2dd81137f7ae2a71e788769d93` (`49d8cbb4`)
+- Ticket branch push status: `Completed` — pushed `origin/codex/session-discovery-ui` at `49d8cbb4a0c77c2dd81137f7ae2a71e788769d93`
+- Merge status: `Completed` — merged into `personal` via `9e7267b5fe0964486442c332e6c08e5fa335ee07` (`9e7267b5`) and pushed to `origin/personal`
+- Release/publication/deployment status: `Completed` — release commit `0bca518cca1b73979c0f3191aaecd42feabe75bb` (`0bca518c`), tag `v1.3.94`, workflow success `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28643165277`, release `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.94`
+- Worktree cleanup status: `Deferred intentionally` — ticket worktree retained for user-visible branch/reference continuity; not a release blocker.
+- Local branch cleanup status: `Deferred intentionally`
+- Remote ticket branch cleanup status: `Retained intentionally` because user explicitly asked to push to the ticket branch.
 - Blockers / notes:
-  - user said `测试通过，给我push到branch，直接finalize and release`, interpreted as explicit authorization to finalize to `personal` and release.
-  - release notes prepared at `/Volumes/bingq/AutoByteus/autobyteus-worktrees/session-discovery-ui/autobyteus-web/tickets/done/session-discovery-ui/release-notes.md`.
+  - No delivery/release blockers remain.
+  - User said `测试通过，给我push到branch，直接finalize and release`, treated as explicit verification and finalization/release authorization.
+  - Release notes used: `/Volumes/bingq/AutoByteus/autobyteus-workspace/autobyteus-web/tickets/done/session-discovery-ui/release-notes.md`.
