@@ -1,14 +1,17 @@
 export const DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY = "DEFAULT_IMAGE_EDIT_MODEL";
 export const DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY = "DEFAULT_IMAGE_GENERATION_MODEL";
 export const DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY = "DEFAULT_SPEECH_GENERATION_MODEL";
+export const DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY = "DEFAULT_VIDEO_GENERATION_MODEL";
 
 export const DEFAULT_IMAGE_MODEL_IDENTIFIER = "gpt-image-1.5";
 export const DEFAULT_SPEECH_MODEL_IDENTIFIER = "gemini-2.5-flash-tts";
+export const DEFAULT_VIDEO_MODEL_IDENTIFIER = "gemini-omni-flash-preview";
 
 export const MEDIA_DEFAULT_MODEL_KINDS = [
   "image_edit",
   "image_generation",
   "speech_generation",
+  "video_generation",
 ] as const;
 
 export type MediaDefaultModelKind = (typeof MEDIA_DEFAULT_MODEL_KINDS)[number];
@@ -37,6 +40,11 @@ export const MEDIA_DEFAULT_MODEL_SETTINGS: Record<
     kind: "speech_generation",
     settingKey: DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
     fallbackModelIdentifier: DEFAULT_SPEECH_MODEL_IDENTIFIER,
+  },
+  video_generation: {
+    kind: "video_generation",
+    settingKey: DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
+    fallbackModelIdentifier: DEFAULT_VIDEO_MODEL_IDENTIFIER,
   },
 };
 

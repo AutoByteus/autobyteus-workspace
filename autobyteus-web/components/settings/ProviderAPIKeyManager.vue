@@ -46,6 +46,7 @@
               :llm-models="selectedProviderLlmModels"
               :audio-models="selectedProviderAudioModels"
               :image-models="selectedProviderImageModels"
+              :video-models="selectedProviderVideoModels"
               :is-loading-models="isLoadingModels"
               :is-reloading-models="isReloadingModels"
               :is-reloading-selected-provider="isReloadingSelectedProvider"
@@ -137,6 +138,7 @@ const {
   selectedProviderLlmModels,
   selectedProviderAudioModels,
   selectedProviderImageModels,
+  selectedProviderVideoModels,
   selectedProviderConfigured,
   canReloadSelectedProvider,
   isReloadingSelectedProvider,

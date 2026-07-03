@@ -115,4 +115,41 @@ describe("MediaGenerationService", () => {
       "/tmp/workspace/out.bin",
     );
   });
+
+  it("generates video through the configured video client and writes the returned video URL", async () => {
+    const modelResolver = createModelResolver();
+    const pathResolver = createPathResolver();
+    const cleanup = vi.fn(async () => undefined);
+    const generateVideo = vi.fn(async () => ({ video_urls: ["data:video/mp4;base64,AA=="] }));
+
+    const service = new MediaGenerationService({
+      modelResolver,
+      pathResolver,
+      createVideoClient: vi.fn(() => ({ generateVideo, cleanup })),
+    });
+
+    await expect(service.generateVideo(
+      { workspaceRootPath: "/tmp/workspace" },
+      {
+        prompt: "make a short robot video",
+        input_images: ["ref.png"],
+        output_file_path: "video.mp4",
+        generation_config: { aspect_ratio: "9:16" },
+      },
+    )).resolves.toEqual({ file_path: "/tmp/workspace/out.bin" });
+
+    expect(modelResolver.resolve).toHaveBeenCalledWith("video_generation");
+    expect(pathResolver.resolveInputImageReferences).toHaveBeenCalledWith(["ref.png"], expect.any(Object));
+    expect(generateVideo).toHaveBeenCalledWith(
+      "make a short robot video",
+      ["ref.png"],
+      { aspect_ratio: "9:16" },
+    );
+    expect(pathResolver.writeGeneratedMediaFromUrl).toHaveBeenCalledWith(
+      "data:video/mp4;base64,AA==",
+      "/tmp/workspace/out.bin",
+    );
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
 });

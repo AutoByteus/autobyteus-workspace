@@ -14,7 +14,7 @@ const logger = {
 };
 
 export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationPreprocessor {
-  static TARGET_TOOLS = new Set(["generate_image", "edit_image"]);
+  static TARGET_TOOLS = new Set(["generate_image", "edit_image", "generate_video"]);
 
   constructor() {
     super();

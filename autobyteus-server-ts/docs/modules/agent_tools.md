@@ -160,10 +160,11 @@ The server owns the first-party media agent-tool boundary for:
 - `generate_image`
 - `edit_image`
 - `generate_speech`
+- `generate_video`
 
 Canonical contracts, schemas, parsing, model-default resolution, media-local
 path resolution, and execution orchestration live under `src/agent-tools/media`.
-Provider-specific image/audio clients still come from `autobyteus-ts`
+Provider-specific image/audio/video clients still come from `autobyteus-ts`
 multimedia infrastructure, but the old direct `autobyteus-ts` media `BaseTool`
 classes are no longer the active first-party registration path.
 

@@ -12,6 +12,7 @@ import {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
   MEDIA_DEFAULT_MODEL_SETTING_KEYS,
 } from "../config/media-default-model-settings.js";
 import {
@@ -29,6 +30,7 @@ export {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
 } from "../config/media-default-model-settings.js";
 
 const logger = {
@@ -166,6 +168,11 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
       "Default speech generation model identifier used by future text-to-speech media tool calls.",
+    );
+
+    this.registerPredefinedSetting(
+      DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
+      "Default video generation model identifier used by future media tool calls.",
     );
 
     logger.info(

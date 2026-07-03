@@ -36,6 +36,7 @@ const messages = {
   'settings.components.settings.ProviderAPIKeyManager.enter_vertex_api_key': 'Enter Vertex API key...',
   'settings.components.settings.ProviderAPIKeyManager.gemini_setup_choose_a_mode_and': 'Gemini setup: choose a mode and fill only required fields.',
   'settings.components.settings.ProviderAPIKeyManager.image_models': 'Image Models',
+  'settings.components.settings.ProviderAPIKeyManager.video_models': 'Video Models',
   'settings.components.settings.ProviderAPIKeyManager.llm_models': 'LLM Models',
   'settings.components.settings.ProviderAPIKeyManager.manage_provider_keys_and_reload_available': 'Manage provider keys and reload available models',
   'settings.components.settings.ProviderAPIKeyManager.no_models_found': 'No Models Found',

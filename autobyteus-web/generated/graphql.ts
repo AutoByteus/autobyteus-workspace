@@ -1501,6 +1501,7 @@ export type Query = {
   availableAudioProvidersWithModels: Array<ProviderWithModels>;
   availableImageProvidersWithModels: Array<ProviderWithModels>;
   availableLlmProvidersWithModels: Array<ProviderWithModels>;
+  availableVideoProvidersWithModels: Array<ProviderWithModels>;
   availableOptionalInputProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLifecycleProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalLlmResponseProcessorNames: Array<Scalars['String']['output']>;
@@ -1601,6 +1602,11 @@ export type QueryAvailableImageProvidersWithModelsArgs = {
 
 
 export type QueryAvailableLlmProvidersWithModelsArgs = {
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryAvailableVideoProvidersWithModelsArgs = {
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -3172,7 +3178,7 @@ export type GetAvailableLlmProvidersWithModelsQueryVariables = Exact<{
 }>;
 
 
-export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6708,6 +6714,32 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
     }
   }
   availableImageProvidersWithModels(runtimeKind: $runtimeKind) {
+    __typename
+    provider {
+      __typename
+      id
+      name
+      providerType
+      isCustom
+      baseUrl
+      apiKeyConfigured
+      status
+      statusMessage
+    }
+    models {
+      __typename
+      modelIdentifier
+      name
+      value
+      canonicalName
+      providerId
+      providerName
+      providerType
+      runtime
+      hostUrl
+    }
+  }
+  availableVideoProvidersWithModels(runtimeKind: $runtimeKind) {
     __typename
     provider {
       __typename

@@ -69,6 +69,30 @@ const geminiRow = {
   ],
 }
 
+const geminiVideoRow = {
+  provider: {
+    ...geminiRow.provider,
+  },
+  models: [
+    {
+      modelIdentifier: 'gemini-omni-flash-preview',
+      name: 'Gemini Omni Flash Preview',
+      value: 'gemini-omni-flash-preview',
+      canonicalName: 'gemini-omni-flash-preview',
+      providerId: 'GEMINI',
+      providerName: 'Gemini',
+      providerType: 'GEMINI',
+      runtime: 'api',
+      hostUrl: null,
+      configSchema: null,
+      maxContextTokens: null,
+      activeContextTokens: null,
+      maxInputTokens: null,
+      maxOutputTokens: null,
+    },
+  ],
+}
+
 const deepFreeze = <T>(value: T): T => {
   if (value && typeof value === 'object') {
     Object.freeze(value)
@@ -120,6 +144,7 @@ describe('llmProviderConfig store', () => {
         availableLlmProvidersWithModels: [openAiRow],
         availableAudioProvidersWithModels: [],
         availableImageProvidersWithModels: [],
+        availableVideoProvidersWithModels: [geminiVideoRow],
       },
     })
 
@@ -142,6 +167,7 @@ describe('llmProviderConfig store', () => {
       maxContextTokens: 128000,
       activeContextTokens: 32768,
     }))
+    expect(store.videoModels).toEqual(['gemini-omni-flash-preview'])
   })
 
   it('getLLMProviderApiKeyConfigured uses hydrated provider booleans before querying', async () => {
@@ -236,6 +262,7 @@ describe('llmProviderConfig store', () => {
         availableLlmProvidersWithModels: [openAiRow],
         availableAudioProvidersWithModels: [],
         availableImageProvidersWithModels: [],
+        availableVideoProvidersWithModels: [],
       },
     })
 
@@ -286,6 +313,7 @@ describe('llmProviderConfig store', () => {
         availableLlmProvidersWithModels: [openAiRow],
         availableAudioProvidersWithModels: [],
         availableImageProvidersWithModels: [],
+        availableVideoProvidersWithModels: [],
       },
     })
 

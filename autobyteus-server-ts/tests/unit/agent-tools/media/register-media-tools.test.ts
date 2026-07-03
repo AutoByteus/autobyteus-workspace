@@ -6,6 +6,7 @@ import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import {
   EDIT_IMAGE_TOOL_NAME,
   GENERATE_IMAGE_TOOL_NAME,
+  GENERATE_VIDEO_TOOL_NAME,
   MEDIA_TOOL_NAME_LIST,
 } from "../../../../src/agent-tools/media/media-tool-contract.js";
 import {
@@ -67,6 +68,13 @@ describe("registerMediaTools", () => {
       "local file path/file: URL readable by the server process",
     );
     expect(editImageMaskImage?.description).not.toMatch(OLD_MEDIA_PATH_POLICY_WORDING);
+
+    const generateVideoDefinition = defaultToolRegistry.getToolDefinition(GENERATE_VIDEO_TOOL_NAME);
+    const generateVideoInputImages = generateVideoDefinition?.argumentSchema?.getParameter("input_images");
+    const generateVideoOutputPath = generateVideoDefinition?.argumentSchema?.getParameter("output_file_path");
+    expect(generateVideoInputImages?.type).toBe("array");
+    expect(generateVideoInputImages?.description).toContain("image-to-video generation");
+    expect(generateVideoOutputPath?.description).toContain(".mp4");
   });
 
   it("reloads cached schemas for registered media tools without touching unrelated tools", () => {

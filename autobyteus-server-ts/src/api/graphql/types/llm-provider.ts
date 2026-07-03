@@ -5,6 +5,7 @@ import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { getLlmProviderDisplayName } from 'autobyteus-ts/llm/provider-display-names.js';
 import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
 import type { ImageModel } from 'autobyteus-ts/multimedia/image/image-model.js';
+import type { VideoModel } from 'autobyteus-ts/multimedia/video/video-model.js';
 import { appConfigProvider } from '../../../config/app-config-provider.js';
 import {
   getBuiltInLlmProviderCatalog,
@@ -219,7 +220,7 @@ const mapLlmModel = (model: ModelInfo): ModelDetail => ({
 });
 
 const mapMultimediaModel = (
-  model: AudioModel | ImageModel,
+  model: AudioModel | ImageModel | VideoModel,
 ): ModelDetail => ({
   modelIdentifier: model.modelIdentifier,
   name: model.name,
@@ -306,6 +307,22 @@ export class LlmProviderResolver {
     @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<ProviderWithModels[]> {
     const models = (await this.runtimeModelCatalogService.listImageModels(runtimeKind)).map(mapMultimediaModel);
+    const grouped = groupModelsByProvider(models);
+
+    return Array.from(grouped.entries())
+      .map(([providerId, items]) => ({
+        provider: this.builtInLlmProviderCatalog.getProvider(providerId as LLMProvider),
+        models: sortModels(items),
+      }))
+      .sort((a, b) => a.provider.name.localeCompare(b.provider.name));
+  }
+
+
+  @Query(() => [ProviderWithModels])
+  async availableVideoProvidersWithModels(
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
+  ): Promise<ProviderWithModels[]> {
+    const models = (await this.runtimeModelCatalogService.listVideoModels(runtimeKind)).map(mapMultimediaModel);
     const grouped = groupModelsByProvider(models);
 
     return Array.from(grouped.entries())
@@ -415,6 +432,7 @@ export class LlmProviderResolver {
       await this.runtimeModelCatalogService.reloadLlmModels(runtimeKind);
       await this.runtimeModelCatalogService.reloadAudioModels(runtimeKind);
       await this.runtimeModelCatalogService.reloadImageModels(runtimeKind);
+      await this.runtimeModelCatalogService.reloadVideoModels(runtimeKind);
       return 'All models (LLM and Multimedia) reloaded successfully.';
     } catch (error) {
       return `Error reloading models: ${String(error)}`;

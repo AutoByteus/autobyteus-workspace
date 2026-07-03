@@ -7,6 +7,7 @@ import {
   EDIT_IMAGE_TOOL_NAME,
   GENERATE_IMAGE_TOOL_NAME,
   GENERATE_SPEECH_TOOL_NAME,
+  GENERATE_VIDEO_TOOL_NAME,
   MEDIA_TOOL_MODEL_KIND_BY_NAME,
   type MediaToolName,
 } from "./media-tool-contract.js";
@@ -26,6 +27,8 @@ const INPUT_IMAGE_REFERENCE_DESCRIPTION =
   "URLs, data URIs, and local file paths or file: URLs readable by the server process are supported; relative local paths resolve inside the workspace.";
 const MASK_IMAGE_REFERENCE_DESCRIPTION =
   "Use a URL, data URI, or local file path/file: URL readable by the server process; relative local paths resolve inside the workspace.";
+const VIDEO_OUTPUT_FILE_DESCRIPTION =
+  "Required local file path where the generated MP4 video should be saved. Use a .mp4 extension for video artifact classification.";
 
 const buildOutputFilePathParameter = (description: string): ParameterDefinition =>
   new ParameterDefinition({
@@ -103,6 +106,11 @@ export const buildMediaToolParameterSchema = (toolName: MediaToolName): Paramete
     case GENERATE_SPEECH_TOOL_NAME:
       schema.addParameter(buildBasePromptParameter("The text to convert into spoken audio. For multi-speaker models, format dialogue with speaker labels that match generation_config.speaker_mapping."));
       schema.addParameter(buildOutputFilePathParameter(`Required local file path where the generated audio should be saved. ${OUTPUT_FILE_PATH_RESOLUTION_DESCRIPTION}`));
+      break;
+    case GENERATE_VIDEO_TOOL_NAME:
+      schema.addParameter(buildBasePromptParameter("A detailed textual description of the video to generate."));
+      schema.addParameter(buildInputImagesParameter(`Optional array of image locations to use as visual references for image-to-video generation. ${INPUT_IMAGE_REFERENCE_DESCRIPTION}`));
+      schema.addParameter(buildOutputFilePathParameter(`${VIDEO_OUTPUT_FILE_DESCRIPTION} ${OUTPUT_FILE_PATH_RESOLUTION_DESCRIPTION}`));
       break;
   }
 

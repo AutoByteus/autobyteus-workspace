@@ -7,3 +7,6 @@ export { ImageModel } from './image/image-model.js';
 export { BaseImageClient } from './image/base-image-client.js';
 export { AudioClientFactory, audioClientFactory } from './audio/audio-client-factory.js';
 export { ImageClientFactory, imageClientFactory } from './image/image-client-factory.js';
+export { VideoModel } from './video/video-model.js';
+export { BaseVideoClient } from './video/base-video-client.js';
+export { VideoClientFactory, videoClientFactory } from './video/video-client-factory.js';
