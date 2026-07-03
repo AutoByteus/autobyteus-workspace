@@ -50,8 +50,8 @@ Visible columns must appear in this order for MVP:
 
 | Column | Required? | Meaning | Display Rules |
 | --- | --- | --- | --- |
-| Task / Run | Yes | Human-readable task identity | Team rows use `teamName`; standalone rows use `agentName`; show `runSummary` and shortened run/team id. Member rows use `memberName` and shortened member run id. |
-| Type | Yes | `Team`, `Agent`, or child `Member` indicator | Team rows have chevron. Member rows are visually child rows, not top-level rows. |
+| Task / Run | Yes | Human-readable task identity | Team rows use `teamName`; standalone rows use `agentName`; show `runSummary` and shortened run/team id. Child rows use backend `displayName`/`memberName` and the relevant shortened member/task run id. |
+| Type | Yes | `Team`, `Agent`, `Member`, `Task team`, or `Task agent` indicator | Rows with `children` have chevrons. Child rows are visually nested, not top-level rows. |
 | Runtime | Yes | Runtime used by the run/member | Single runtime label, or `Mixed` for rows with multiple runtimes. Uses existing ledger runtime fields. |
 | Model(s) | Yes | LLM model(s) used | Single model, or `Mixed` with distinct models available in row details. Uses existing ledger model fields. |
 | Input | Yes | Gross input tokens | Subline: cache hit rate and cached token count when present. |
@@ -70,7 +70,7 @@ Optional advanced values belong in details, not extra default columns:
 - Cache hit rate
 - Usage report count
 - Raw runtime/model identifiers
-- Existing `memberPath` label for nested team usage rows
+- Backend `executionAddress` details for nested member/task-team/task-agent usage rows
 
 ### Row visual hierarchy
 
@@ -84,16 +84,18 @@ Optional advanced values belong in details, not extra default columns:
 - Runtime/model: single value or `Mixed`.
 - Total cost: bold.
 
-#### Expanded member row
+#### Expanded child row
 
 Indented under the team row.
 
-- Primary text: `memberName`, e.g. `solution_designer`.
-- Optional subline: shortened `memberAgentRunId` and existing `memberPath` when present.
+- Primary text: backend `displayName` / `memberName`, e.g. `solution_designer`.
+- Optional subline: shortened `memberAgentRunId`, `taskTeamRunId`, or
+  `taskAgentRunId`, plus a compact backend `executionAddress` detail when it is
+  useful for disambiguation.
 - Runtime/model from actual usage ledger events.
 - Same token/cost/status metric columns as the parent.
 - `Created Time` cell is not a separate member run creation time in MVP; render `—`, `same as team`, or muted inherited parent time.
-- No separate top-level row for member agent runs, to avoid double-counting.
+- No separate top-level row for nested member/task-team/task-agent runs, to avoid double-counting.
 - Members with no token usage observed in the selected date range are omitted.
 
 #### Standalone agent row
@@ -277,22 +279,43 @@ query TokenUsageTaskStatistics($startTime: DateTime!, $endTime: DateTime!) {
       rowKind # TEAM_RUN | AGENT_RUN
       runId
       rootTeamRunId
+      memberRouteKey
+      memberAgentRunId
+      taskAgentRunId
+      taskTeamRunId
+      taskId
+      executionAddress
       teamName
       agentName
+      displayName
       runSummary
       runCreatedAt
       createdTimeSource # RUN_CREATED_AT | FIRST_USAGE_OBSERVED
       models
       runtimeKinds
       aggregate { ...TokenUsageCostSummaryAggregateFields }
-      members {
+      children {
+        rowId
+        rowKind # MEMBER_RUN | TASK_TEAM_RUN | TASK_AGENT_RUN
+        runId
+        rootTeamRunId
         memberRouteKey
         memberAgentRunId
-        memberName
-        memberPath
+        taskAgentRunId
+        taskTeamRunId
+        taskId
+        executionAddress
+        displayName
         models
         runtimeKinds
         aggregate { ...TokenUsageCostSummaryAggregateFields }
+        children {
+          rowId
+          rowKind
+          displayName
+          executionAddress
+          aggregate { totalTokens estimatedApiTotalCost }
+        }
       }
     }
   }
@@ -303,7 +326,9 @@ Important backend constraints:
 
 - `teamName`, `agentName`, `runSummary`, `runCreatedAt`, and `memberName` are the only new self-contained display fields.
 - Runtime/model come from existing ledger fields and are not duplicated in the display fields.
-- `memberPath` comes from the existing ledger `memberPathJson` / `member_path` field.
+- Hierarchy comes from backend-provided recursive `children` and
+  `executionAddress`; the UI must not rebuild hierarchy from legacy
+  `memberPathJson`, `member_path`, task records, memory paths, or display names.
 - There is no `rangeMode` argument.
 - There is no no-usage member state, no roster order, no configured no-usage member runtime/model, no workspace field, and no generic snapshot/display-context object.
 
@@ -315,7 +340,7 @@ Important backend constraints:
 - Default to `Task`.
 - Do not render visible `Usage during period`, `Select Date Range:`, or `Group by:` copy.
 - Query task rows by usage observed during date range.
-- Show expandable team rows with usage-derived member rows.
+- Show expandable team rows with usage-derived recursive member/task-team/task-agent rows.
 - Add only the five self-contained display fields needed by the UI: `teamName`, `agentName`, `runSummary`, `runCreatedAt`, `memberName`.
 - Keep existing model statistics under the `Model` grouping, grouped by runtime/model pair.
 

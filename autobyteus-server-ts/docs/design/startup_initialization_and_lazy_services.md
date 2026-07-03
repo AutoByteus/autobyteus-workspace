@@ -12,7 +12,7 @@ The server must execute these steps in order:
 2. Initialize `appConfigProvider` with the effective `--data-dir`.
 3. Call `AppConfig.initialize()`.
 4. Import `src/server-runtime.ts` after bootstrap is complete.
-5. Run migrations.
+5. Run Prisma schema migrations, then required app-data migrations.
 6. Start transports and background tasks.
 
 ## Why This Exists
@@ -20,6 +20,9 @@ The server must execute these steps in order:
 - `AppConfig` determines `.env` location and derived paths.
 - Database clients and repositories read environment during initialization.
 - Media and workspace services derive storage roots from app data dir.
+- App-data migrations may read both SQL rows and memory files, so they must run
+  after configuration and schema expansion but before runtime/API reads expose
+  partially migrated data.
 
 ## Design Decision
 

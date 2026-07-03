@@ -30,9 +30,10 @@ The TypeScript server follows a layered domain architecture:
 3. Initialize `AppConfig` (loads `.env`, resolves paths, sets DB URL for SQLite).
 4. Dynamically import `src/server-runtime.ts` only after config bootstrap completes.
 5. Run Prisma migrations when the schema is present.
-6. Build and start Fastify transports.
-7. Create temp workspace.
-8. Schedule non-critical background startup tasks.
+6. Run required app-data migrations against the expanded schema.
+7. Build and start Fastify transports.
+8. Create temp workspace.
+9. Schedule non-critical background startup tasks.
 
 ## Caching and Singleton Pattern
 
@@ -69,6 +70,11 @@ Persistence is subsystem-owned rather than selected through a global mode.
   corpus files are kept under the configured memory root at
   `memory/imports/<sourceNodeId>/`.
 - SQLite URL derivation is controlled by DB config (`DB_TYPE=sqlite` with optional `DATABASE_URL` override), and startup runs the normal Prisma migration path whenever the Prisma schema exists.
+- Required app-data migrations run after Prisma schema migrations so data repair
+  can rely on newly added columns before runtime/API reads begin. For example,
+  token usage execution-address backfill writes historical
+  `execution_address_json` values after the schema expand migration has added
+  the column.
 
 External-channel persistence has one deliberate exception:
 

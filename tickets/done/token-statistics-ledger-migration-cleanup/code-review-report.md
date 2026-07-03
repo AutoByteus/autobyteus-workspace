@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup/requirements.md`
 - Current Review Round: `2`
 - Trigger: API/E2E completed and added repository-resident durable E2E coverage after prior code review.
-- Prior Review Round Reviewed: `Round 1` from `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup/code-review-report.md` before this update.
+- Prior Review Round Reviewed: `Round 1` from `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup/code-review-report.md` before this update.
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes` — added `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts`.
 
@@ -27,8 +27,8 @@
 
 This Round 2 review is scoped to the post-API/E2E coverage-code re-review entry point. It reviewed:
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup/api-e2e-execution-coverage-report.md`
 - Added durable E2E coverage: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/autobyteus-server-ts/tests/e2e/token-usage/token-usage-execution-address-backfill-graphql.e2e.test.ts`
 - Directly related implementation state/evidence needed to judge that coverage:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.ts`

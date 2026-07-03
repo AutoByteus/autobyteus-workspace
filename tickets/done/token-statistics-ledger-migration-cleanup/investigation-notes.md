@@ -23,7 +23,7 @@ The user verified a local Electron build based on the finalized `token-statistic
 
 - Project Type (`Git`/`Non-Git`): Git.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup`.
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/in-progress/token-statistics-ledger-migration-cleanup`.
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup/tickets/done/token-statistics-ledger-migration-cleanup`.
 - Current Branch: `codex/token-statistics-ledger-migration-cleanup`.
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-ledger-migration-cleanup`.
 - Bootstrap Base Branch: `origin/personal`.
