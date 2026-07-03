@@ -15,7 +15,7 @@
 - Updated `media-payload-formatter.isValidMediaPath()` to use the shared classifier and removed its local media whitelist. MIME lookup now handles `.m4a` paths, URLs with query strings, and data URI headers.
 - Updated direct `GeminiPromptRenderer` declared-media handling so media conversion failure throws an actionable error instead of logging and continuing with a text-only prompt.
 - Added focused durable coverage for classifier behavior, `.m4a` formatter/base64/MIME behavior, Gemini `.m4a` `inlineData`, declared-media failure, and the `read_media_file` continuation path preserving `.m4a` in `audio_urls` with `append_user_message` mode and rendering that assembled request through `GeminiPromptRenderer` to assert `inlineData` uses `audio/mp4`.
-- Added an env-gated live direct-Gemini integration test for the requested path: `ReadMediaFile -> ToolResultContinuationBuilder -> AgentInputPipeline -> LLMRequestAssembler/GeminiPromptRenderer -> GeminiLLM`, using a synthetic `.m4a` fixture and requiring `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1`.
+- Added an env-gated live direct-Gemini integration test for the requested path: `ReadMediaFile -> ToolResultContinuationBuilder -> AgentInputPipeline -> LLMRequestAssembler/GeminiPromptRenderer -> GeminiLLM`, using a synthetic spoken `.m4a` fixture that says `hello hello hello` and requiring `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1`.
 
 ## Key Files Or Areas
 
@@ -29,7 +29,7 @@
 - `autobyteus-ts/tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts`
 - `autobyteus-ts/tests/integration/agent/read-media-file-continuation-flow.test.ts`
 - `autobyteus-ts/tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`
-- `autobyteus-ts/tests/data/test_audio.m4a`
+- `autobyteus-ts/tests/data/test_audio.m4a` (synthetic spoken `hello hello hello` `.m4a` fixture)
 
 ## Important Assumptions
 
@@ -66,7 +66,7 @@
 
 - No new dependencies were added.
 - `.env.test` files remain ignored and were not modified or included. Focused test setup logged presence of environment variables but did not print secret values.
-- No private audio fixtures were added. Local tests create temporary synthetic `.m4a` files at runtime; the env-gated live test uses `autobyteus-ts/tests/data/test_audio.m4a`, a small synthetic/non-private fixture generated from the existing repository test audio.
+- No private audio fixtures were added. Local tests create temporary synthetic `.m4a` files at runtime; the env-gated live test uses `autobyteus-ts/tests/data/test_audio.m4a`, a small synthetic/non-private fixture generated locally with macOS `say` speaking `hello hello hello` and encoded as AAC `.m4a`.
 - The worktree `autobyteus-ts/.env.test` was refreshed by copying the main checkout's `autobyteus-ts/.env.test`; it remains ignored by git and was not printed.
 - The live Gemini `.m4a` test is disabled by default. Enable it with `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1`; optionally override the model with `AUTOBYTEUS_GEMINI_M4A_LIVE_MODEL`, otherwise it uses `gemini-3.1-pro-preview`.
 - Out-of-scope `autobyteus-server-ts`, `autobyteus-web`, AutoByteus RPA, and token-usage normalizer changes from the superseded round-1 implementation attempt were reverted before handoff. They are not part of this ticket.
@@ -77,16 +77,16 @@
   - Result with live flag unset: 5 files passed, 1 file skipped; 24 tests passed, 1 env-gated live test skipped.
   - Notes: Existing negative formatter tests intentionally log failed missing-file/download cases to stderr. The local integration test executes `ReadMediaFile -> ToolResultContinuationBuilder -> AgentInputPipeline -> LLMRequestAssembler -> GeminiPromptRenderer` with a synthetic `sample.m4a` and asserts the final Gemini payload contains `inlineData: { mimeType: 'audio/mp4', data: <base64> }`.
 - Passed live env-gated Gemini run: `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1 pnpm -C autobyteus-ts exec vitest run tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`
-  - Result: 1 test passed against the default `gemini-3.1-pro-preview` model using copied `.env.test` credentials.
+  - Result: 1 test passed against the default `gemini-3.1-pro-preview` model using copied `.env.test` credentials; the test asserted Gemini's response contains `hello` after the `read_media_file` continuation renders/sends the `.m4a` audio.
 - Passed optional live model override run: `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1 AUTOBYTEUS_GEMINI_M4A_LIVE_MODEL=gemini-3-flash-preview pnpm -C autobyteus-ts exec vitest run tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`
-  - Result: 1 test passed.
+  - Result: 1 test passed; response assertion also required `hello`.
 - Passed: `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit`.
 - Passed: `git diff --check`.
 - Passed: manual source-file size guard check for changed source implementation files.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Existing live LLM integration tests were inspected: `tests/integration/llm/api/gemini-llm.test.ts` covers live Gemini multimodal audio with `test_audio.mp3`, and `tests/integration/agent/handlers/gemini-tool-call-handler-live.test.ts` covers live Gemini tool-call streaming with `write_file`. There was no existing durable live test for `read_media_file -> .m4a -> Gemini` specifically, so an env-gated one was added.
+- Existing live LLM integration tests were inspected: `tests/integration/llm/api/gemini-llm.test.ts` covers live Gemini multimodal audio with `test_audio.mp3`, and `tests/integration/agent/handlers/gemini-tool-call-handler-live.test.ts` covers live Gemini tool-call streaming with `write_file`. There was no existing durable live test for `read_media_file -> .m4a -> Gemini` specifically, so an env-gated one was added with a spoken `hello` fixture and response assertion.
 - Verify an invalid declared media source fails before/at request rendering with an actionable Gemini media conversion error.
 - Confirm no RPA, server token-usage summary, GraphQL, frontend Token Meter, or token-count heuristic changes are expected under this revised scope.
 - If a live call still shows low usage after media `inlineData` is proven present, open a separate token/reporting follow-up rather than expanding this bug fix.

@@ -102,6 +102,12 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
       state: { activeTurn: turn, memoryManager }
     } as any;
 
+    const originalUserMessage = new LLMUserMessage({
+      content: 'Use read_media_file on test_audio.m4a, then transcribe exactly what is spoken. Answer with only the spoken word.'
+    });
+    memoryManager.ingestUserMessage(originalUserMessage, turn.turnId, 'UserMessageReceivedEvent');
+    memoryManager.appendWorkingContextUserMessage(originalUserMessage, { turnId: turn.turnId });
+
     const mediaResult = await new ReadMediaFile().execute(context, { file_path: 'test_audio.m4a' });
     expect(mediaResult).toBeInstanceOf(ContextFile);
     const contextFile = mediaResult as ContextFile;
@@ -134,7 +140,7 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
     ).prepareRequest(
       pipelineResult.llmUserMessage,
       turn.turnId,
-      'You are validating direct Gemini audio input. Reply with one short sentence after reading the audio.'
+      'You are validating direct Gemini audio input. Follow the user transcription instruction.'
     );
 
     const renderedMessages = request.renderedPayload as Array<{ role?: string; parts?: Array<Record<string, unknown>> }>;
@@ -148,18 +154,15 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
     });
 
     const llm = new GeminiLLM(buildGeminiModel(), new LLMConfig({
-      systemMessage: 'You are validating direct Gemini audio input. Reply briefly.',
+      systemMessage: 'You are validating direct Gemini audio input. Follow the user transcription instruction.',
       temperature: 0,
-      maxTokens: 64
+      maxTokens: 512
     }));
 
     try {
-      const liveMessage = new LLMUserMessage({
-        content: 'This is a short synthetic tone audio fixture. Reply with one short sentence confirming you received audio.',
-        audio_urls: pipelineResult.llmUserMessage.audio_urls
-      });
-      const response = await llm.sendUserMessage(liveMessage);
+      const response = await llm.sendMessages(request.messages, request.renderedPayload);
       expect(response).toBeInstanceOf(CompleteResponse);
+      expect(response.content.toLowerCase()).toContain('hello');
     } finally {
       await llm.cleanup();
     }
