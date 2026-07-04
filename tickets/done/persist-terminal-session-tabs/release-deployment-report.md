@@ -6,7 +6,7 @@ Finalization approved by user on 2026-07-04 after local Electron build. Reposito
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff summary records delivered scope, verification evidence, docs sync, release notes, finalization target, and the user-verification hold.
 
@@ -36,7 +36,7 @@ Finalization approved by user on 2026-07-04 after local Electron build. Reposito
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/terminal.md`
 - No-impact rationale (if applicable): N/A
@@ -44,7 +44,7 @@ Finalization approved by user on 2026-07-04 after local Electron build. Reposito
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs`
 
 ## Version / Tag / Release Commit
 
@@ -52,7 +52,7 @@ No version bump, tag, or release commit is required. User explicitly requested f
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/investigation-notes.md`
 - Ticket branch: `codex/persist-terminal-session-tabs`
 - Ticket branch commit result: Completed — `055a04db fix(web): persist terminal sessions by target`.
 - Ticket branch push result: Completed — pushed to `origin/codex/persist-terminal-session-tabs`.
@@ -93,7 +93,7 @@ No version bump, tag, or release commit is required. User explicitly requested f
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/release-notes.md`
+- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/release-notes.md`
 - Archived release notes artifact used for release/publication: N/A — no release/publication path was run per user instruction.
 - Release notes status: `Updated`
 

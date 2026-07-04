@@ -5,7 +5,7 @@
 - Ticket: `persist-terminal-session-tabs`
 - Date: `2026-07-04`
 - Current Status: `Delivered`
-- Workflow State Source: ticket artifacts in `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs`
+- Workflow State Source: ticket artifacts in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs`
 
 ## Delivery Summary
 
@@ -51,7 +51,7 @@
 
 ## Review Summary
 
-- Code review result: Pass (`/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/code-review-report.md`).
+- Code review result: Pass (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/code-review-report.md`).
 - Findings resolved: No code-review findings. Architecture review round 2 rebind lifecycle finding was resolved by the final clear-cache-on-node-rebind design before implementation.
 - Remaining findings or accepted risks:
   - No unresolved workflow findings.
@@ -60,7 +60,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/docs-sync-report.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-web/docs/terminal.md`
@@ -71,7 +71,7 @@
 
 - Release notes required: `Yes`
 - Release notes artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/release-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/release-notes.md`
 - Notes:
   - Release notes are prepared for a later release/publication path if requested after user verification and repository finalization.
   - Local Electron test build artifacts are available at `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.97.dmg`, `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.97.zip`, and `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
@@ -87,7 +87,7 @@
 ## Finalization Record
 
 - Ticket archived to:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs`
 - Ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs`
 - Ticket branch:

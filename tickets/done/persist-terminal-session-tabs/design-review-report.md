@@ -2,10 +2,10 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/design-spec.md`
-- Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/design-rework-note.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/design-spec.md`
+- Rework Note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/design-rework-note.md`
 - Current Review Round: 3
 - Trigger: Round 3 re-review after `solution_designer` resolved AR-D2-001 by choosing clear-cache-on-node/backend-rebind.
 - Prior Review Round Reviewed: Round 2 in this same report path.
@@ -26,7 +26,7 @@ Round rules:
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs/design-spec.md` as the round 3 authoritative design.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs/design-spec.md` as the round 3 authoritative design.
 
 Approved architecture shape:
 

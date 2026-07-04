@@ -28,7 +28,7 @@ Follow-up requirement refinement: user agreed on 2026-07-04 that the better UX i
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs
-- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs/tickets/done/persist-terminal-session-tabs
+- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/persist-terminal-session-tabs
 - Current Branch: codex/persist-terminal-session-tabs
 - Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/persist-terminal-session-tabs
 - Bootstrap Base Branch: origin/personal
