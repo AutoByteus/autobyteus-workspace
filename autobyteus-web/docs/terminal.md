@@ -12,12 +12,14 @@ The Terminal module enables users to:
 - Navigate command history with arrow keys
 - Use keyboard shortcuts (Ctrl+C for interrupt)
 - Follow the app-wide **Settings -> Display -> App font size** preset for terminal text sizing
+- Preserve one live terminal session per canonical backend/root-path target while the in-window terminal host is mounted
 
 ## Module Structure
 
 ```
 autobyteus-web/
 ├── components/workspace/tools/
+│   ├── TerminalPanel.vue         # Per-target in-window terminal cache/host
 │   └── Terminal.vue              # xterm.js terminal component
 ├── components/layout/
 │   ├── RightSideTabs.vue         # Tab container with Terminal tab
@@ -26,6 +28,7 @@ autobyteus-web/
 │   ├── useRightSideTabs.ts       # Tab state management
 │   └── useTerminalSession.ts     # Terminal WebSocket session
 └── utils/
+    ├── terminalTarget.ts         # Target normalization and cache key helpers
     └── terminalTransportCodec.ts # Terminal byte/base64/UTF-8 codec
 ```
 
@@ -35,6 +38,7 @@ autobyteus-web/
 flowchart TD
     subgraph "UI Layer"
         RightSideTabs[RightSideTabs.vue]
+        TerminalPanel[TerminalPanel.vue]
         Terminal[Terminal.vue]
         XTerm[xterm.js Library]
     end
@@ -43,7 +47,8 @@ flowchart TD
         Server[autobyteus-server]
     end
 
-    RightSideTabs --> Terminal
+    RightSideTabs --> TerminalPanel
+    TerminalPanel --> Terminal
     Terminal --> XTerm
     Terminal --> WorkspaceStore
     Terminal --> TerminalSession[useTerminalSession.ts]
@@ -51,6 +56,20 @@ flowchart TD
 ```
 
 ## Core Components
+
+### TerminalPanel.vue
+
+TerminalPanel is the in-window terminal cache host. RightSideTabs lazy-mounts this panel after the Terminal tab is first activated and then hides it on ordinary tab switches instead of unmounting it.
+
+**Key Responsibilities:**
+
+- Computes a canonical terminal cache key from the current backend/node terminal endpoint plus either a normalized workspace/root path or explicit server-home mode
+- Lazily creates a cached `Terminal.vue` child only while the Terminal tab is active for the current target
+- Keeps previously opened target children mounted and hidden, preserving their xterm scrollback, WebSocket, and backend PTY while the host remains mounted
+- Passes a snapshot target object or explicit `null` server-home target into each child so cached entries do not drift when active workspace metadata changes
+- Clears all cached entries when the window node binding revision or normalized terminal endpoint scope changes; child unmounts close WebSockets and let the backend release PTYs
+
+This is an in-window cache only. It does not persist terminals across page reloads, app restarts, backend restarts, host destruction, or node/backend rebinding.
 
 ### Terminal.vue
 
@@ -73,6 +92,8 @@ Main terminal component using xterm.js for rich terminal emulation.
 - **Responsive sizing**: Auto-fits container with ResizeObserver
 - **Display preference integration**: Uses the shared app font-size store and refits when terminal font metrics change
 - **Root-path target**: Accepts a `TerminalTarget` with a workspace root path (and optional display metadata) so desktop wrappers can connect without materializing workspace/file-explorer state.
+- **Visibility reactivation**: Accepts an `active` prop. Becoming active refits xterm and sends a resize if connected; becoming inactive does not disconnect.
+- **Target semantics**: Omitted `target` means derive from active workspace metadata for legacy direct usage; explicit `target: null` means server-home and must not fall back to active workspace metadata.
 
 **Terminal Configuration (Light Theme):**
 
@@ -140,6 +161,8 @@ Manages the terminal WebSocket session and streaming I/O.
 
 Tab container that hosts the Terminal alongside other workspace tools.
 
+RightSideTabs owns tab visibility. For Terminal it hosts `TerminalPanel.vue` after first activation and hides the panel with `v-show` during ordinary right-side tab switches. This keeps the TerminalPanel cache and all already-opened child terminal sessions alive until the right-side host truly unmounts or TerminalPanel clears its cache on node/backend rebinding.
+
 **Available Tabs:**
 
 | Tab Name      | Label      | Visibility | Component          |
@@ -147,7 +170,7 @@ Tab container that hosts the Terminal alongside other workspace tools.
 | `files`       | Files      | Always     | FileExplorerLayout |
 | `teamMembers` | Team       | Team mode  | TeamOverviewPanel  |
 | `todoList`    | To-Do      | Agent mode | TodoListPanel      |
-| `terminal`    | Terminal   | Always     | Terminal           |
+| `terminal`    | Terminal   | Always     | TerminalPanel (hosts Terminal children) |
 | `vnc`         | VNC Viewer | Always     | VncViewer          |
 
 ### Mobile Phone Access
@@ -203,9 +226,11 @@ The Terminal is automatically available from the workspace page. If no agent/tea
 
 The shell prompt is produced by the backend PTY and reflects the resolved cwd.
 
+After a target has been opened, switching away from Terminal to another right-side tab and back restores the same cached xterm/WebSocket/PTY session. Switching between workspace roots creates or shows the cached session for that canonical root path; returning to a previously opened root path restores its prior terminal while the TerminalPanel host is still alive.
+
 ## Backend Runtime Notes
 
-The frontend Terminal connects to the backend with either an explicit cwd/root path or an omitted-cwd default request. The backend owns server-home resolution and path validation. Explicit unavailable paths are rejected before PTY creation; an unavailable server home is rejected through the same terminal-unavailable path. The default-home terminal does not create workspace metadata and does not start File Explorer watchers. On macOS, the server uses the `autobyteus-ts` isolated PTY backend so a helper child process owns `node-pty`, the PTY descriptors, and the shell; closing the WebSocket releases the helper and avoids lingering PTY descriptors in the long-lived server process. Packaged macOS startup also repairs the `spawn-helper` adjacent to the `node-pty` native module selected for the running architecture, and startup failures are preserved as terminal `error` messages before the socket closes with `1011`.
+The frontend Terminal connects to the backend with either an explicit cwd/root path or an omitted-cwd default request. The backend owns server-home resolution and path validation. Explicit unavailable paths are rejected before PTY creation; an unavailable server home is rejected through the same terminal-unavailable path. The default-home terminal does not create workspace metadata and does not start File Explorer watchers. On macOS, the server uses the `autobyteus-ts` isolated PTY backend so a helper child process owns `node-pty`, the PTY descriptors, and the shell; closing the WebSocket releases the helper and avoids lingering PTY descriptors in the long-lived server process. TerminalPanel preserves sessions by keeping child components mounted while hidden; true host unmount, cache clearing, or node/backend rebinding still unmounts children and closes their WebSockets. Packaged macOS startup also repairs the `spawn-helper` adjacent to the `node-pty` native module selected for the running architecture, and startup failures are preserved as terminal `error` messages before the socket closes with `1011`.
 
 See `autobyteus-server-ts/docs/modules/terminal.md` and `autobyteus-ts/docs/terminal_tools.md` for backend lifecycle details.
 

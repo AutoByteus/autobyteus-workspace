@@ -33,8 +33,13 @@
       <div v-if="effectiveActiveTab === 'teamMembers'" class="h-full min-h-0">
         <TeamOverviewPanel />
       </div>
-      <div v-if="effectiveActiveTab === 'terminal'" class="h-full min-h-0">
-        <Terminal />
+      <div
+        v-if="shouldMountTerminalPanel"
+        v-show="isTerminalTabActive"
+        class="h-full min-h-0"
+        data-test="right-side-terminal-panel"
+      >
+        <TerminalPanel :active="isTerminalTabActive" />
       </div>
       <div v-if="effectiveActiveTab === 'vnc'" class="h-full min-h-0">
         <VncViewer />
@@ -65,7 +70,7 @@ import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import TabList from '~/components/tabs/TabList.vue';
 import TeamOverviewPanel from '~/components/workspace/team/TeamOverviewPanel.vue';
-import Terminal from '~/components/workspace/tools/Terminal.vue';
+import TerminalPanel from '~/components/workspace/tools/TerminalPanel.vue';
 import VncViewer from '~/components/workspace/tools/VncViewer.vue';
 import FileExplorerLayout from '~/components/fileExplorer/FileExplorerLayout.vue';
 import ArtifactsTab from '~/components/workspace/agent/ArtifactsTab.vue';
@@ -100,8 +105,11 @@ const effectiveActiveTab = computed(() => {
   return visibleTabs.value[0]?.name ?? 'terminal';
 });
 const hasOpenedFilesTab = ref(false);
+const hasOpenedTerminalTab = ref(false);
 const isFilesTabActive = computed(() => filesTabEnabled.value && effectiveActiveTab.value === 'files');
+const isTerminalTabActive = computed(() => effectiveActiveTab.value === 'terminal');
 const shouldMountFilesPanel = computed(() => filesTabEnabled.value && hasOpenedFilesTab.value);
+const shouldMountTerminalPanel = computed(() => hasOpenedTerminalTab.value);
 
 const handleTabSelect = (tabName: string) => {
   if (!filesTabEnabled.value && tabName === 'files') {
@@ -130,6 +138,12 @@ watch(visibleTabs, (newVisibleTabs) => {
 watch(isFilesTabActive, (isActive) => {
   if (isActive) {
     hasOpenedFilesTab.value = true;
+  }
+}, { immediate: true });
+
+watch(isTerminalTabActive, (isActive) => {
+  if (isActive) {
+    hasOpenedTerminalTab.value = true;
   }
 }, { immediate: true });
 
