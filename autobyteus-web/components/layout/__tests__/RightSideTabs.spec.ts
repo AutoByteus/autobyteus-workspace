@@ -93,7 +93,11 @@ describe('RightSideTabs', () => {
           template: '<div class="tab-list-stub" />',
         },
         TeamOverviewPanel: { template: '<div class="team-overview-stub" />' },
-        Terminal: { template: '<div class="terminal-stub" />' },
+        TerminalPanel: {
+          name: 'TerminalPanel',
+          props: ['active'],
+          template: '<div class="terminal-panel-stub" />',
+        },
         VncViewer: { template: '<div class="vnc-stub" />' },
         FileExplorerLayout: {
           name: 'FileExplorerLayout',
@@ -162,8 +166,35 @@ describe('RightSideTabs', () => {
 
     const wrapper = mountSubject();
 
-    expect(wrapper.find('.terminal-stub').exists()).toBe(true);
+    expect(wrapper.find('.terminal-panel-stub').exists()).toBe(true);
     expect(wrapper.find('.file-layout-stub').exists()).toBe(false);
+  });
+
+  it('keeps TerminalPanel lazy until first selection and cached inactive after tab switch', async () => {
+    activeTab.value = 'progress';
+    visibleTabs.value = [
+      { name: 'files', label: 'Files' },
+      { name: 'terminal', label: 'Terminal' },
+      { name: 'progress', label: 'Activity' },
+    ];
+    const wrapper = mountSubject();
+
+    expect(wrapper.find('.terminal-panel-stub').exists()).toBe(false);
+
+    activeTab.value = 'terminal';
+    await nextTick();
+
+    let terminalPanel = wrapper.getComponent({ name: 'TerminalPanel' });
+    expect(terminalPanel.props('active')).toBe(true);
+    expect(wrapper.get('[data-test="right-side-terminal-panel"]').attributes('style')).toBeUndefined();
+
+    activeTab.value = 'progress';
+    await nextTick();
+
+    terminalPanel = wrapper.getComponent({ name: 'TerminalPanel' });
+    expect(terminalPanel.props('active')).toBe(false);
+    expect(wrapper.find('.terminal-panel-stub').exists()).toBe(true);
+    expect(wrapper.get('[data-test="right-side-terminal-panel"]').attributes('style')).toContain('display: none');
   });
 
   it('caches Files after first use and marks it inactive when switching to Terminal', async () => {
@@ -181,7 +212,7 @@ describe('RightSideTabs', () => {
     activeTab.value = 'terminal';
     await nextTick();
 
-    expect(wrapper.find('.terminal-stub').exists()).toBe(true);
+    expect(wrapper.find('.terminal-panel-stub').exists()).toBe(true);
     fileLayout = wrapper.getComponent({ name: 'FileExplorerLayout' });
     expect(fileLayout.props('active')).toBe(false);
     expect(wrapper.find('.file-layout-stub').exists()).toBe(true);
