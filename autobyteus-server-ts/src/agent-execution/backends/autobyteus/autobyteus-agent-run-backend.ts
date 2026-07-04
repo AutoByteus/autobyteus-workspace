@@ -71,6 +71,8 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   private readonly listeners = new Set<AgentRunEventListener>();
   private stream: AgentEventStream | null = null;
   private isStreamClosed = true;
+  private lifecycleState: "active" | "terminating" | "terminated" = "active";
+  private terminationPromise: Promise<AgentOperationResult> | null = null;
 
   constructor(
     context: AgentRunContext<RuntimeAgentRunContext>,
@@ -87,7 +89,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   }
 
   isActive(): boolean {
-    return this.options.isActive();
+    return this.lifecycleState === "active" && this.options.isActive();
   }
 
   getPlatformAgentRunId(): string {
@@ -177,17 +179,27 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   }
 
   async terminate(): Promise<AgentOperationResult> {
-    try {
-      this.closeStream();
-      const removed = await this.options.removeAgent(this.runId);
-      return removed
-        ? {
-            accepted: true,
-          }
-        : buildRunNotFoundResult(this.runId);
-    } catch (error) {
-      return buildCommandFailure("terminate run", error);
+    if (this.lifecycleState === "terminated") {
+      return { accepted: true };
     }
+    if (this.terminationPromise) {
+      return this.terminationPromise;
+    }
+
+    this.lifecycleState = "terminating";
+    this.terminationPromise = (async () => {
+      try {
+        this.closeStream();
+        await this.options.removeAgent(this.runId);
+        this.lifecycleState = "terminated";
+        return { accepted: true };
+      } catch (error) {
+        return buildCommandFailure("terminate run", error);
+      } finally {
+        this.terminationPromise = null;
+      }
+    })();
+    return this.terminationPromise;
   }
 
   private ensureSubscribed(): void {

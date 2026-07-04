@@ -1,7 +1,7 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentMemoryScope } from "../../../../agent-memory/domain/agent-memory-location.js";
-import { buildAgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
+import { buildAgentStatusPayload, normalizeAgentApiStatus } from "../../../../agent-execution/domain/agent-status-payload.js";
 import type { TeamRun } from "../../../domain/team-run.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import { buildTeamMemberAddress, type InterAgentMessageDeliveryHandler, type ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
@@ -30,6 +30,8 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
   readonly context: MixedSubTeamMemberContext;
   private childRun: TeamRun | null = null;
   private unsubscribe: (() => void) | null = null;
+  private observedRootOffline = false;
+  private offlineFallbackPublished = false;
   private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
   private readonly tokenUsageAddressBuilder = getTokenUsageExecutionAddressBuilder();
 
@@ -145,7 +147,10 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
 
   async terminate(): Promise<AgentOperationResult> {
     const result = this.childRun ? await this.childRun.terminate() : { accepted: true };
-    this.dispose();
+    if (result.accepted) {
+      this.publishRootOfflineFallbackIfNeeded();
+      this.dispose();
+    }
     return result;
   }
 
@@ -231,6 +236,13 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
 
   private bindEvents(childRun: TeamRun): void {
     this.unsubscribe = childRun.subscribeToEvents((event) => {
+      if (
+        event.eventSourceType === TeamRunEventSourceType.TEAM &&
+        event.sourcePath.length === 0 &&
+        normalizeAgentApiStatus((event.data as TeamRunStatusUpdateData).status) === "offline"
+      ) {
+        this.observedRootOffline = true;
+      }
       const prefixedEvent = prefixMixedSubTeamEvent({
         parentTeamRunId: this.options.parentContext.runId,
         sourcePrefix: this.context.memberPath,
@@ -244,14 +256,23 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
   }
 
   private publishStatus(status: string): void {
+    const normalizedStatus = normalizeAgentApiStatus(status, status === "ERROR" ? "error" : "idle");
     this.options.publish({
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: this.options.parentContext.runId,
       sourcePath: this.context.memberPath,
-      data: { status: status === "ERROR" ? "error" : "idle" } satisfies TeamRunStatusUpdateData,
+      data: { status: normalizedStatus } satisfies TeamRunStatusUpdateData,
       taskTeamInstance: this.options.request.identity,
     });
     this.options.notifyStatusChange();
+  }
+
+  private publishRootOfflineFallbackIfNeeded(): void {
+    if (this.observedRootOffline || this.offlineFallbackPublished) {
+      return;
+    }
+    this.offlineFallbackPublished = true;
+    this.publishStatus("offline");
   }
 
   private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {

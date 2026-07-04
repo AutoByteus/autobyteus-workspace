@@ -77,6 +77,15 @@ export class TaskTeamActiveRunDirectory {
     return entry?.activeRun.isActive() ? cloneEntry(entry) : null;
   }
 
+  resolveKnownEntryByTaskTeamRunId(
+    taskTeamRunIdInput: string | null | undefined,
+  ): TaskTeamActiveRunEntry | null {
+    const taskTeamRunId = taskTeamRunIdInput?.trim();
+    if (!taskTeamRunId) return null;
+    const entry = this.entryByTaskTeamRunId.get(taskTeamRunId) ?? null;
+    return entry ? cloneEntry(entry) : null;
+  }
+
   unbind(taskTeamRunIdInput: string | null | undefined): void {
     const taskTeamRunId = taskTeamRunIdInput?.trim();
     if (!taskTeamRunId) return;

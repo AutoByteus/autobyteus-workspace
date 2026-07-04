@@ -267,9 +267,6 @@ export class MixedTeamRunBackend implements TeamRunBackend {
   }
 
   async terminate(): Promise<AgentOperationResult> {
-    if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
-    }
     try {
       return await this.teamManager.terminate();
     } catch (error) {

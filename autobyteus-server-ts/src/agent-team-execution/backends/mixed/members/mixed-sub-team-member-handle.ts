@@ -214,7 +214,9 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
 
   async terminate(): Promise<AgentOperationResult> {
     const result = this.childRun ? await this.childRun.terminate() : { accepted: true };
-    this.dispose();
+    if (result.accepted) {
+      this.dispose();
+    }
     return result;
   }
 

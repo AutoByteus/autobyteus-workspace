@@ -10,6 +10,7 @@ import type { TaskDelegationRunRegistry } from "./task-delegation-run-registry.j
 type PendingTeamSettlement = {
   taskTeamInstance: TaskTeamInstanceIdentity;
   requestedAt: string;
+  status: "settlement_requested" | "settling" | "settled";
 };
 
 export class TaskTeamSettlementCoordinator {
@@ -29,6 +30,7 @@ export class TaskTeamSettlementCoordinator {
     this.pendingByTaskTeamRunId.set(taskTeamRunId, {
       taskTeamInstance: cloneTaskTeamInstanceIdentity(taskTeamInstance),
       requestedAt: new Date().toISOString(),
+      status: this.pendingByTaskTeamRunId.get(taskTeamRunId)?.status ?? "settlement_requested",
     });
     this.subscribeToChildEvents(taskTeamRunId);
     void this.settleIfReady(taskTeamRunId);
@@ -44,24 +46,34 @@ export class TaskTeamSettlementCoordinator {
   private async settleIfReady(taskTeamRunId: string): Promise<void> {
     const pending = this.pendingByTaskTeamRunId.get(taskTeamRunId);
     if (!pending) return;
-    const entry = this.dependencies.taskTeamDirectory.resolveActiveEntryByTaskTeamRunId(taskTeamRunId);
+    if (pending.status === "settling" || pending.status === "settled") return;
+    const entry = this.dependencies.taskTeamDirectory.resolveKnownEntryByTaskTeamRunId(taskTeamRunId);
     if (!entry?.activeRun) return;
     this.subscribeToChildEvents(taskTeamRunId);
     if (this.hasOpenChildWork(entry.activeRun)) return;
 
-    const result = await this.dependencies.parentTeamRun.settleTaskTeamInstance(
-      pending.taskTeamInstance.logicalTeam.memberRouteKey,
-      pending.taskTeamInstance.taskTeamRunId,
-      `task_team_delegation_safe_after_${pending.requestedAt}`,
-    );
-    if (result.accepted) {
-      this.pendingByTaskTeamRunId.delete(taskTeamRunId);
-      this.unsubscribeFromChildEvents(taskTeamRunId);
-      this.dependencies.runRegistry.detach(entry.activeRun.runId);
-      this.dependencies.taskTeamDirectory.unbind(taskTeamRunId);
-    } else {
+    pending.status = "settling";
+    try {
+      const result = await this.dependencies.parentTeamRun.settleTaskTeamInstance(
+        pending.taskTeamInstance.logicalTeam.memberRouteKey,
+        pending.taskTeamInstance.taskTeamRunId,
+        `task_team_delegation_safe_after_${pending.requestedAt}`,
+      );
+      if (result.accepted) {
+        pending.status = "settled";
+        this.unsubscribeFromChildEvents(taskTeamRunId);
+        this.dependencies.runRegistry.detach(entry.activeRun.runId);
+        this.dependencies.taskTeamDirectory.unbind(taskTeamRunId);
+      } else {
+        pending.status = "settlement_requested";
+        console.warn(
+          `TaskTeamSettlementCoordinator: settlement rejected for '${taskTeamRunId}': ${result.message ?? "unknown error"}`,
+        );
+      }
+    } catch (error) {
+      pending.status = "settlement_requested";
       console.warn(
-        `TaskTeamSettlementCoordinator: settlement rejected for '${taskTeamRunId}': ${result.message ?? "unknown error"}`,
+        `TaskTeamSettlementCoordinator: settlement failed for '${taskTeamRunId}': ${String(error)}`,
       );
     }
   }
@@ -76,7 +88,7 @@ export class TaskTeamSettlementCoordinator {
 
   private subscribeToChildEvents(taskTeamRunId: string): void {
     if (this.subscriptionsByTaskTeamRunId.has(taskTeamRunId)) return;
-    const entry = this.dependencies.taskTeamDirectory.resolveActiveEntryByTaskTeamRunId(taskTeamRunId);
+    const entry = this.dependencies.taskTeamDirectory.resolveKnownEntryByTaskTeamRunId(taskTeamRunId);
     const childRun = entry?.activeRun ?? null;
     if (!childRun) return;
     const unsubscribe = childRun.subscribeToEvents(() => {

@@ -180,4 +180,53 @@ describe('AgentFactory', () => {
       fs.rmSync(explicitMemoryDir, { recursive: true, force: true });
     }
   });
+
+  it('keeps stopping agents known to removal but non-routable until stop completes', async () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+    let resolveStop: (() => void) | null = null;
+    const runtimeStub = Object.create(AgentRuntime.prototype) as AgentRuntime;
+    runtimeStub.context = { agentId: 'stopping-agent' } as any;
+    runtimeStub.stop = vi.fn(() => new Promise<void>((resolve) => {
+      resolveStop = resolve;
+    })) as any;
+
+    vi.spyOn(factory as any, 'createRuntimeWithId').mockReturnValue(runtimeStub);
+
+    const agent = factory.createAgentWithId('stopping-agent', config);
+    const firstRemove = factory.removeAgent('stopping-agent');
+
+    expect(factory.getAgent('stopping-agent')).toBeUndefined();
+    expect(factory.listActiveAgentIds()).not.toContain('stopping-agent');
+    expect(() => factory.createAgentWithId('stopping-agent', config)).toThrow(/already active or stopping/);
+
+    const secondRemove = factory.removeAgent('stopping-agent');
+    expect(runtimeStub.stop).toHaveBeenCalledTimes(1);
+
+    resolveStop?.();
+    await expect(firstRemove).resolves.toBe(true);
+    await expect(secondRemove).resolves.toBe(true);
+    expect(factory.getAgent(agent.agentId)).toBeUndefined();
+    expect(factory.listActiveAgentIds()).not.toContain(agent.agentId);
+  });
+
+  it('retains a non-routable stopping entry when graceful stop fails', async () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+    const runtimeStub = Object.create(AgentRuntime.prototype) as AgentRuntime;
+    runtimeStub.context = { agentId: 'failing-stop-agent' } as any;
+    runtimeStub.stop = vi.fn(async () => {
+      throw new Error('stop failed');
+    }) as any;
+
+    vi.spyOn(factory as any, 'createRuntimeWithId').mockReturnValue(runtimeStub);
+
+    factory.createAgentWithId('failing-stop-agent', config);
+    await expect(factory.removeAgent('failing-stop-agent')).rejects.toThrow('stop failed');
+
+    expect(factory.getAgent('failing-stop-agent')).toBeUndefined();
+    expect(factory.listActiveAgentIds()).not.toContain('failing-stop-agent');
+    expect(() => factory.restoreAgent('failing-stop-agent', config, '/tmp/memory/agents/failing-stop-agent'))
+      .toThrow(/already active or stopping/);
+  });
 });

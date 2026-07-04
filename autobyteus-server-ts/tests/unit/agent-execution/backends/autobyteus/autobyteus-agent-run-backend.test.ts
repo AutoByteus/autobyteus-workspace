@@ -152,6 +152,64 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(result).toEqual({ accepted: true });
   });
 
+  it("treats an already-absent held native run as terminated during held terminate", async () => {
+    const removeAgent = vi.fn().mockResolvedValue(false);
+    const { backend } = createBackend({
+      removeAgent,
+      isActive: () => false,
+    });
+
+    const result = await backend.terminate();
+    const repeated = await backend.terminate();
+
+    expect(removeAgent).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ accepted: true });
+    expect(repeated).toEqual({ accepted: true });
+  });
+
+  it("joins concurrent held native terminate calls and rejects new work while terminating", async () => {
+    let resolveRemove: ((value: boolean) => void) | null = null;
+    const removeAgent = vi.fn(() => new Promise<boolean>((resolve) => {
+      resolveRemove = resolve;
+    }));
+    const { backend, agent } = createBackend({ removeAgent });
+
+    const firstTerminate = backend.terminate();
+    const secondTerminate = backend.terminate();
+    const sendWhileTerminating = await backend.postUserMessage(new AgentInputUserMessage("late"));
+
+    expect(removeAgent).toHaveBeenCalledTimes(1);
+    expect(agent.postUserMessage).not.toHaveBeenCalledWith(expect.objectContaining({ content: "late" }));
+    expect(sendWhileTerminating).toEqual({
+      accepted: false,
+      code: "RUN_NOT_FOUND",
+      message: "Run 'agent-1' is not active.",
+    });
+
+    resolveRemove?.(true);
+    await expect(firstTerminate).resolves.toEqual({ accepted: true });
+    await expect(secondTerminate).resolves.toEqual({ accepted: true });
+  });
+
+  it("preserves native stop failures as terminate failures", async () => {
+    const { backend } = createBackend({
+      removeAgent: vi.fn().mockRejectedValue(new Error("stop failed")),
+    });
+
+    const result = await backend.terminate();
+
+    expect(result).toEqual({
+      accepted: false,
+      code: "RUNTIME_COMMAND_FAILED",
+      message: "Failed to terminate run: Error: stop failed",
+    });
+    await expect(backend.postUserMessage(new AgentInputUserMessage("late"))).resolves.toEqual({
+      accepted: false,
+      code: "RUN_NOT_FOUND",
+      message: "Run 'agent-1' is not active.",
+    });
+  });
+
   it("returns RUN_NOT_FOUND when the run is no longer active", async () => {
     const { backend, agent } = createBackend({
       isActive: () => false,
