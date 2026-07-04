@@ -2,37 +2,37 @@
 
 ## Release / Publication / Deployment Scope
 
-Delivery-stage handoff only. Repository finalization, release, publication, deployment, ticket archive move, push/merge, tag creation, and cleanup are not authorized before explicit user verification.
+Delivery-stage handoff plus user-requested local ticket commit, latest-base merge, README review, and local Electron macOS build. Repository finalization, release, publication, deployment, ticket archive move, target-branch merge/push, tag creation, and cleanup are not authorized before explicit user verification/finalization instruction.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Updated after the initial delivery integration refresh and docs sync. The handoff explicitly records the verification hold and finalization plan.
+- Notes: Updated after the user-requested commit, latest-base merge, post-integration check, README review, and Electron build.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal` at `a64ee085aba28df22112f40a996e382a0e84a210`
-- Latest tracked remote base reference checked: `origin/personal` fetched on 2026-07-04 and still at `a64ee085aba28df22112f40a996e382a0e84a210`
-- Base advanced since bootstrap or previous refresh: `No`
-- New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed`
-- Integration method: `Already current`
-- Integration result: `Completed`
-- Post-integration executable checks rerun: `No`
+- Latest tracked remote base reference checked: `origin/personal` at `0847d2e89b48480f07d19780ebd5c2cb0711e594`
+- Base advanced since bootstrap or previous refresh: `Yes`
+- New base commits integrated into the ticket branch: `Yes`
+- Local checkpoint commit result: `Completed` — `65c39bb6c7256c947f4a5512a0d83bd44170ca49` (`fix(agent-team): settle transient task teams reliably`)
+- Integration method: `Merge`
+- Integration result: `Completed` — merge commit `a71b9005` (`Merge remote-tracking branch 'origin/personal' into codex/transient-team-cleanup-bug`)
+- Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): Latest `origin/personal` equaled the ticket branch HEAD before delivery-owned edits (`a64ee085aba28df22112f40a996e382a0e84a210`), so no merge/rebase altered the reviewed and API/E2E-validated runtime state. Delivery ran `git diff --check` after docs/handoff/report edits as a hygiene check.
-- Delivery edits started only after integrated state was current: `Yes`
+- No-rerun rationale (only if no new base commits were integrated): `N/A`
+- Delivery edits started only after integrated state was current: `Yes` for the initial docs sync; after the user reported a new base, delivery committed/protected existing work, merged the latest base, reran checks/build, and updated delivery artifacts.
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): `N/A`
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `No`
-- Initial verification reference: `Pending user response to delivery handoff`
-- Renewed verification required after later re-integration: `No`
-- Renewed verification received: `Not needed`
-- Renewed verification reference: `N/A`
+- Initial verification reference: `Pending user response after updated handoff/build evidence`
+- Renewed verification required after later re-integration: `Yes`
+- Renewed verification received: `No`
+- Renewed verification reference: `Pending`
 
 ## Docs Sync Result
 
@@ -47,28 +47,28 @@ Delivery-stage handoff only. Repository finalization, release, publication, depl
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `Pending explicit user verification; current path is /Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug`
+- Archived ticket path: `Pending explicit final verification; current path is /Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug`
 
 ## Version / Tag / Release Commit
 
-No version bump, tag, or release commit was created. Release/versioning is not in scope before explicit user verification and was not otherwise requested for this handoff.
+No version bump, tag, or release commit was created. The local Electron build used the current package version `1.3.97` from the integrated branch state. Release/versioning is not in scope before explicit final verification and was not requested for this step.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/investigation-notes.md`
 - Ticket branch: `codex/transient-team-cleanup-bug`
-- Ticket branch commit result: `Not started — waiting for explicit user verification`
-- Ticket branch push result: `Not started — waiting for explicit user verification`
+- Ticket branch commit result: `Completed locally` — `65c39bb6c7256c947f4a5512a0d83bd44170ca49`
+- Ticket branch push result: `Not started — no push requested/authorized in this step`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: `N/A — user verification not yet received`
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not started — waiting for explicit user verification`
-- Target branch update result: `Not started — waiting for explicit user verification`
-- Merge into target result: `Not started — waiting for explicit user verification`
-- Push target branch result: `Not started — waiting for explicit user verification`
+- Target advanced after user verification: `N/A — final verification not yet received`
+- Delivery-owned edits protected before re-integration: `Completed` — ticket changes committed before latest-base merge.
+- Re-integration before final merge result: `Completed` — latest `origin/personal` merged into ticket branch at `a71b9005`.
+- Target branch update result: `Not started — waiting for explicit final verification`
+- Merge into target result: `Not started — waiting for explicit final verification`
+- Push target branch result: `Not started — waiting for explicit final verification`
 - Repository finalization status: `Not started — verification hold`
-- Blocker (if applicable): `N/A; explicit user verification is the required next gate, not a delivery failure`
+- Blocker (if applicable): `N/A; explicit user verification/finalization instruction is the required next gate, not a delivery failure`
 
 ## Release / Publication / Deployment
 
@@ -100,17 +100,33 @@ N/A. No deployment was requested or performed.
 
 ## Environment Or Migration Notes
 
-- No data migration, installer migration, or runtime environment change is required.
+- No data migration, installer migration, or runtime environment change is required by the task fix.
 - The fix changes in-memory lifecycle/settlement behavior for active delegated task-team executions and preserves durable task records/history.
 - Environment-gated live mixed task-delegation E2E remains skipped locally without live runtime flags; deterministic coverage passed and was used as primary proof.
+- Local Electron build artifacts are unsigned and not notarized.
 
 ## Verification Checks
 
-Delivery-stage checks:
+User-requested branch/base work:
 
-- PASS: `git fetch origin personal` — `origin/personal` remained `a64ee085aba28df22112f40a996e382a0e84a210`.
-- PASS: `git rev-list --left-right --count HEAD...origin/personal` — `0 0` before delivery-owned edits.
-- PASS: `git diff --check` after docs/handoff/report edits.
+- PASS: `git diff --check` before ticket commit.
+- PASS: `git commit -m "fix(agent-team): settle transient task teams reliably"` — commit `65c39bb6c7256c947f4a5512a0d83bd44170ca49`.
+- PASS: `git fetch origin personal --prune` — latest `origin/personal` at `0847d2e89b48480f07d19780ebd5c2cb0711e594`.
+- PASS: `git merge --no-edit origin/personal` — merge commit `a71b9005`; no conflicts.
+
+Post-integration checks:
+
+- PASS: `git diff --check`.
+- PASS: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/mixed-team-manager.test.ts` — 1 file, 9 tests passed.
+
+README-read Electron build:
+
+- README consulted: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/README.md`.
+- PASS: `pnpm -C autobyteus-web build:electron:mac`.
+- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/electron-build-mac-report.md`.
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.97.dmg`.
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.97.zip`.
 
 Upstream checks recorded as authoritative runtime validation:
 
@@ -130,8 +146,8 @@ Known validation notes:
 
 ## Rollback Criteria
 
-Before repository finalization: no rollback is needed; changes remain on the ticket branch/worktree until verified. After finalization, rollback should be a normal revert of the final ticket commit/merge if accepted task-team settlement causes regressions in active team execution, task-delegation records, scoped streaming cleanup, or child-run termination behavior.
+Before repository finalization: rollback is local branch management only; the target branch has not been changed by this ticket. After finalization, rollback should be a normal revert of the final ticket commit/merge if accepted task-team settlement causes regressions in active team execution, task-delegation records, scoped streaming cleanup, child-run termination behavior, or Electron startup/build behavior.
 
 ## Final Status
 
-Ready for user verification. Delivery must stop here until the user explicitly confirms the handoff state should be finalized.
+Ready for renewed user verification. Branch is locally committed and merged with latest `origin/personal`; focused post-integration backend check and README-directed Electron macOS build passed. Delivery must not archive/push/merge/release/clean up until the user explicitly confirms finalization.

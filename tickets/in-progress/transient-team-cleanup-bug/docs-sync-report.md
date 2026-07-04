@@ -3,10 +3,10 @@
 ## Scope
 
 - Ticket: `transient-team-cleanup-bug`
-- Trigger: Delivery-stage integrated-state docs sync after post-API/E2E durable coverage-code re-review pass.
+- Trigger: Delivery-stage integrated-state docs sync after post-API/E2E durable coverage-code re-review pass, then user-requested refresh onto updated `origin/personal`.
 - Bootstrap base reference: `origin/personal` at `a64ee085aba28df22112f40a996e382a0e84a210`.
-- Integrated base reference used for docs sync: `origin/personal` fetched on 2026-07-04 and still at `a64ee085aba28df22112f40a996e382a0e84a210`; ticket branch `codex/transient-team-cleanup-bug` was already current, so no merge/rebase was required.
-- Post-integration verification reference: `git diff --check` passed on 2026-07-04 after docs edits; upstream API/E2E and code-review checks remain authoritative for runtime behavior.
+- Integrated base reference used for docs sync: latest `origin/personal` at `0847d2e89b48480f07d19780ebd5c2cb0711e594`, merged into `codex/transient-team-cleanup-bug` with merge commit `a71b9005`.
+- Post-integration verification reference: `git diff --check` passed; focused backend unit check `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/mixed-team-manager.test.ts` passed; user-requested `pnpm -C autobyteus-web build:electron:mac` passed.
 
 ## Why Docs Were Updated
 
@@ -23,6 +23,7 @@
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/docs/settings.md` | Frontend Workspaces/task projection behavior and task-team transient row cleanup. | `No change` | Already states that running/awaiting task executions remain visible, persisted task records remain visible after runtime rows settle, and frontend removes transient roots/scoped children after backend settlement/offline cleanup. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/docs/agent_execution_architecture.md` | Frontend architecture copy of the Workspaces/task projection behavior. | `No change` | Already matches the final implemented frontend-facing behavior; server docs now carry the backend guarantee that drives it. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-server-ts/docs/modules/agent_streaming.md` | Server streaming module summary for task-team status payload routing. | `No change` | Existing scope documents identity/routing requirements; detailed cleanup signal semantics now live in the streaming protocol design doc. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/README.md` | User requested README review before Electron build. | `No change` | README already documents `pnpm build:electron:mac`; command was used successfully. |
 
 ## Docs Updated
 
@@ -51,4 +52,4 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed against the latest integrated state. Continue to handoff summary and user-verification hold; do not archive, push, merge, tag, release, deploy, or clean up until explicit user verification is received.
+- Notes: Docs sync remains complete against the latest integrated state at `0847d2e8`. Continue to user-verification/finalization hold unless the user explicitly asks to finalize; do not archive, push, merge to target, tag, release, deploy, or clean up without that signal.
