@@ -1,0 +1,118 @@
+{
+  "result": "Pass",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-browser-probe-results.json",
+  "initialScreenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-token-table-browser-initial.png",
+  "expandedScreenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-token-table-browser-expanded.png",
+  "checks": {
+    "headers": [
+      {
+        "text": "Task / Run↕",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Task / Run ascending"
+      },
+      {
+        "text": "Runtime↕",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Runtime ascending"
+      },
+      {
+        "text": "Model(s)",
+        "ariaSort": null,
+        "buttonCount": 0,
+        "buttonLabel": null
+      },
+      {
+        "text": "Input↕",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Input ascending"
+      },
+      {
+        "text": "Output↕",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Output ascending"
+      },
+      {
+        "text": "Input Cost",
+        "ariaSort": null,
+        "buttonCount": 0,
+        "buttonLabel": null
+      },
+      {
+        "text": "Output Cost",
+        "ariaSort": null,
+        "buttonCount": 0,
+        "buttonLabel": null
+      },
+      {
+        "text": "Total Cost↕",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Total Cost descending"
+      },
+      {
+        "text": "Created Time↓",
+        "ariaSort": "descending",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Created Time ascending"
+      }
+    ],
+    "initialTextIncludes": {
+      "partialEstimateInline": true,
+      "completeEstimateMainRow": false,
+      "detailsText": true
+    },
+    "dataRowsBefore": [
+      {
+        "text": "▸Software Engineering Team“investigate token costs”team …87654321Mixed: Codex, AutobyteusMixed: gpt-shared, deepseek-v4-flash160cache hit 25.0% · 40 cached185 thinking included$1.60$0.1800$1.78▸DetailsJul 1, 2041, 01:00 PM",
+        "cellCount": 9,
+        "inputCostButtons": 0,
+        "outputCostButtons": 0,
+        "totalCostDetailButtons": 1
+      },
+      {
+        "text": "Standalone Agent“prototype settings statistics UI”run …23456789Codexgpt-shared200cache hit 30.0% · 60 cached204 thinking included$2.00 partial est.$0.2000 partial est.$2.20 partial est.▸DetailsPartial estimateJul 1, 2041, 12:30 PMFirst usage observed",
+        "cellCount": 9,
+        "inputCostButtons": 0,
+        "outputCostButtons": 0,
+        "totalCostDetailButtons": 1
+      }
+    ],
+    "detailsButtonBefore": {
+      "controlsId": "token-usage-cost-details-agent-standalone-run",
+      "expandedBefore": "false",
+      "text": "$2.20 partial est.\n▸\nDetails"
+    },
+    "tableWidthBefore": {
+      "clientWidth": 1278,
+      "scrollWidth": 1278,
+      "tableWidth": 1278,
+      "viewportWidth": 1440,
+      "horizontalOverflowPixels": 0
+    },
+    "rowOrderAfterTotalCostSort": [
+      "Standalone Agent“prototype settings statistics UI”run …23456789Codexgpt-shared200cache hit 30.0% · 60 cached204 thinking included$2.00 partial est.$0.2000 partial est.$2.20 partial est.▸DetailsPartial estimateJul 1, 2041, 12:30 PMFirst usage observed",
+      "▾Software Engineering Team“investigate token costs”team …87654321Mixed: Codex, AutobyteusMixed: gpt-shared, deepseek-v4-flash160cache hit 25.0% · 40 cached185 thinking included$1.60$0.1800$1.78▸DetailsJul 1, 2041, 01:00 PM",
+      "↳ solution_designermember run …23456789Codexgpt-shared100cache hit 0.0% · 0 cached102 thinking included$1.00$0.1000$1.10▸DetailsJul 1, 2041, 01:01 PMFirst usage observed",
+      "↳ implementation_engineermember run …23456789Autobyteusdeepseek-v4-flash60cache hit 0.0% · 0 cached102 thinking included$0.5800$0.1000$0.6800▸DetailsJul 1, 2041, 01:02 PMFirst usage observed"
+    ],
+    "expandedDetails": {
+      "expandedAfter": "true",
+      "detailRowExists": true,
+      "detailRowColspan": "9",
+      "costBreakdownVisible": true,
+      "partialEstimateVisible": true,
+      "missingPriceDimensionsVisible": true
+    },
+    "tableWidthAfter": {
+      "clientWidth": 1278,
+      "scrollWidth": 1278,
+      "tableWidth": 1278,
+      "viewportWidth": 1440,
+      "horizontalOverflowPixels": 0
+    }
+  }
+}

@@ -1,0 +1,351 @@
+{
+  "scenarioId": "TEMP-BROWSER-001",
+  "round": 2,
+  "runtime": {
+    "node": "v22.23.1",
+    "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "viteRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/autobyteus-web",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "locale": "en-US",
+    "url": "http://127.0.0.1:5173/.api-e2e-token-table-round2-harness/index.html"
+  },
+  "screenshots": {
+    "initial": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round2-token-table-browser-initial.png",
+    "expanded": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round2-token-table-browser-expanded.png"
+  },
+  "consoleMessages": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "pageErrors": [],
+  "checks": {
+    "headers": [
+      {
+        "text": "Task / Run",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Task / Run ascending",
+        "indicatorCount": 1,
+        "triangles": [
+          {
+            "className": "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "0px",
+            "borderBottomWidth": "4px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          },
+          {
+            "className": "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "4px",
+            "borderBottomWidth": "0px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          }
+        ]
+      },
+      {
+        "text": "Runtime",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Runtime ascending",
+        "indicatorCount": 1,
+        "triangles": [
+          {
+            "className": "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "0px",
+            "borderBottomWidth": "4px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          },
+          {
+            "className": "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "4px",
+            "borderBottomWidth": "0px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          }
+        ]
+      },
+      {
+        "text": "Model(s)",
+        "ariaSort": null,
+        "buttonCount": 0,
+        "buttonLabel": null,
+        "indicatorCount": 0,
+        "triangles": []
+      },
+      {
+        "text": "Input",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Input ascending",
+        "indicatorCount": 1,
+        "triangles": [
+          {
+            "className": "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "0px",
+            "borderBottomWidth": "4px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          },
+          {
+            "className": "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "4px",
+            "borderBottomWidth": "0px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          }
+        ]
+      },
+      {
+        "text": "Output",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Output ascending",
+        "indicatorCount": 1,
+        "triangles": [
+          {
+            "className": "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "0px",
+            "borderBottomWidth": "4px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          },
+          {
+            "className": "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "4px",
+            "borderBottomWidth": "0px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          }
+        ]
+      },
+      {
+        "text": "Input Cost",
+        "ariaSort": null,
+        "buttonCount": 0,
+        "buttonLabel": null,
+        "indicatorCount": 0,
+        "triangles": []
+      },
+      {
+        "text": "Output Cost",
+        "ariaSort": null,
+        "buttonCount": 0,
+        "buttonLabel": null,
+        "indicatorCount": 0,
+        "triangles": []
+      },
+      {
+        "text": "Total Cost",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Total Cost descending",
+        "indicatorCount": 1,
+        "triangles": [
+          {
+            "className": "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "0px",
+            "borderBottomWidth": "4px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          },
+          {
+            "className": "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "4px",
+            "borderBottomWidth": "0px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          }
+        ]
+      },
+      {
+        "text": "Created Time",
+        "ariaSort": "descending",
+        "buttonCount": 1,
+        "buttonLabel": "Sort Created Time ascending",
+        "indicatorCount": 1,
+        "triangles": [
+          {
+            "className": "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "borderTopWidth": "0px",
+            "borderBottomWidth": "4px",
+            "borderTopColor": "rgb(179, 179, 179)",
+            "borderBottomColor": "rgb(179, 179, 179)"
+          },
+          {
+            "className": "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-current",
+            "borderTopWidth": "4px",
+            "borderBottomWidth": "0px",
+            "borderTopColor": "rgb(26, 26, 26)",
+            "borderBottomColor": "rgb(26, 26, 26)"
+          }
+        ]
+      }
+    ],
+    "initialTextIncludes": {
+      "partialEstimateCostText": true,
+      "partialEstimateBadgeMainRow": false,
+      "completeEstimateMainRow": false,
+      "detailsText": false
+    },
+    "dataRowsBefore": [
+      {
+        "text": "▸Software Engineering Team“investigate token costs”team …87654321Mixed: Codex, AutobyteusMixed: gpt-shared, deepseek-v4-flash160cache hit 25.0% · 40 cached185 thinking included$1.60$0.1800$1.78Jul 1, 2041, 01:00 PM",
+        "cellCount": 9,
+        "inputCostButtons": 0,
+        "outputCostButtons": 0,
+        "totalCostDetailButtons": 1,
+        "totalCostButtonText": "",
+        "totalCostButtonSvgCount": 1,
+        "totalCostButtonRect": {
+          "width": 20,
+          "height": 20
+        }
+      },
+      {
+        "text": "Standalone Agent“prototype settings statistics UI”run …23456789Codexgpt-shared200cache hit 30.0% · 60 cached204 thinking included$2.00 partial est.$0.2000 partial est.$2.20 partial est.Jul 1, 2041, 12:30 PMFirst usage observed",
+        "cellCount": 9,
+        "inputCostButtons": 0,
+        "outputCostButtons": 0,
+        "totalCostDetailButtons": 1,
+        "totalCostButtonText": "",
+        "totalCostButtonSvgCount": 1,
+        "totalCostButtonRect": {
+          "width": 20,
+          "height": 20
+        }
+      }
+    ],
+    "detailsButtonBefore": {
+      "controlsId": "token-usage-cost-details-agent-standalone-run",
+      "expandedBefore": "false",
+      "titleBefore": "Show cost details for Standalone Agent",
+      "text": "",
+      "rect": {
+        "x": 1166.109375,
+        "y": 251,
+        "width": 20,
+        "height": 20
+      }
+    },
+    "tableWidthBefore": {
+      "clientWidth": 1278,
+      "scrollWidth": 1278,
+      "tableWidth": 1278,
+      "viewportWidth": 1440,
+      "horizontalOverflowPixels": 0
+    },
+    "postSortHeaders": [
+      {
+        "text": "Task / Run",
+        "ariaSort": "none",
+        "buttonLabel": "Sort Task / Run ascending",
+        "triangles": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+        ]
+      },
+      {
+        "text": "Runtime",
+        "ariaSort": "none",
+        "buttonLabel": "Sort Runtime ascending",
+        "triangles": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+        ]
+      },
+      {
+        "text": "Model(s)",
+        "ariaSort": null,
+        "buttonLabel": null,
+        "triangles": []
+      },
+      {
+        "text": "Input",
+        "ariaSort": "none",
+        "buttonLabel": "Sort Input ascending",
+        "triangles": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+        ]
+      },
+      {
+        "text": "Output",
+        "ariaSort": "none",
+        "buttonLabel": "Sort Output ascending",
+        "triangles": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+        ]
+      },
+      {
+        "text": "Input Cost",
+        "ariaSort": null,
+        "buttonLabel": null,
+        "triangles": []
+      },
+      {
+        "text": "Output Cost",
+        "ariaSort": null,
+        "buttonLabel": null,
+        "triangles": []
+      },
+      {
+        "text": "Total Cost",
+        "ariaSort": "descending",
+        "buttonLabel": "Sort Total Cost ascending",
+        "triangles": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-current"
+        ]
+      },
+      {
+        "text": "Created Time",
+        "ariaSort": "none",
+        "buttonLabel": "Sort Created Time descending",
+        "triangles": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+        ]
+      }
+    ],
+    "rowOrderAfterTotalCostSort": [
+      "Standalone Agent“prototype settings statistics UI”run …23456789Codexgpt-shared200cache hit 30.0% · 60 cached204 thinking included$2.00 partial est.$0.2000 partial est.$2.20 partial est.Jul 1, 2041, 12:30 PMFirst usage observed",
+      "▾Software Engineering Team“investigate token costs”team …87654321Mixed: Codex, AutobyteusMixed: gpt-shared, deepseek-v4-flash160cache hit 25.0% · 40 cached185 thinking included$1.60$0.1800$1.78Jul 1, 2041, 01:00 PM",
+      "↳ solution_designermember run …23456789Codexgpt-shared100cache hit 0.0% · 0 cached102 thinking included$1.00$0.1000$1.10Jul 1, 2041, 01:01 PMFirst usage observed",
+      "↳ implementation_engineermember run …23456789Autobyteusdeepseek-v4-flash60cache hit 0.0% · 0 cached102 thinking included$0.5800$0.1000$0.6800Jul 1, 2041, 01:02 PMFirst usage observed"
+    ],
+    "expandedDetails": {
+      "expandedAfter": "true",
+      "expandedTitle": "Hide cost details for Standalone Agent",
+      "detailRowExists": true,
+      "detailRowColspan": "9",
+      "costBreakdownVisible": true,
+      "partialEstimateVisibleInBreakdown": true,
+      "missingPriceDimensionsVisible": true,
+      "visibleDetailsText": false
+    },
+    "tableWidthAfter": {
+      "clientWidth": 1278,
+      "scrollWidth": 1278,
+      "tableWidth": 1278,
+      "viewportWidth": 1440,
+      "horizontalOverflowPixels": 0
+    }
+  },
+  "result": "Pass"
+}
