@@ -4,7 +4,7 @@
 
 - Ticket: `token-statistics-table-ux`
 - Date: `2026-07-05`
-- Current Status: `User verified; archived for repository finalization`
+- Current Status: `Repository finalized on personal; release/deployment skipped`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux`
 - Ticket branch: `codex/token-statistics-table-ux`
 - Finalization target: `origin/personal` / `personal`
@@ -126,12 +126,13 @@
 - Ticket branch: `codex/token-statistics-table-ux`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Pending final delivery commit at artifact write time` — this archived summary is included in the final ticket-branch commit.
-- Push status: `Pending finalization command sequence`
-- Merge status: `Pending finalization command sequence`
-- Release/publication/deployment status: `Not started — explicitly out of scope`
-- Worktree cleanup status: `Pending post-merge cleanup decision`
-- Local branch cleanup status: `Pending post-merge cleanup decision`
+- Commit status: `Completed` — final delivery/archive commit `f2100bcd80f82ce88f061e8d3b22b69a921256e1` plus log-cleanup commit `853f2589930e064a052db4c9bf758efdfad00ed2`
+- Push status: `Completed` — ticket branch pushed, then `personal` pushed to `origin/personal`
+- Merge status: `Completed` — merge commit `eaa1e54540f0ab721d97485d5de07d397a829bdf` on `personal`
+- Release/publication/deployment status: `Skipped — explicitly out of scope`
+- Worktree cleanup status: `Deferred intentionally` — preserved local worktree because it contains the user-tested unsigned Electron build artifacts and installed dependencies
+- Local branch cleanup status: `Deferred intentionally` — local branch remains checked out by the preserved worktree
+- Remote branch cleanup status: `Completed` — deleted `origin/codex/token-statistics-table-ux` after merge
 - Blockers / notes:
   - No current delivery blocker. The prior delivery reroute is resolved by code-review round 4 plus API/E2E round 3.
-  - Finalization sequence after this artifact update is: final commit, push ticket branch, refresh `personal`, merge into `personal`, push `personal`; no release/version bump.
+  - No release, version bump, or deployment was performed by request.

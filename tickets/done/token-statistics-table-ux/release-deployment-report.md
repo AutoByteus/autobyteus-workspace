@@ -7,7 +7,7 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux`
 - Ticket branch: `codex/token-statistics-table-ux`
 - Finalization target: `origin/personal` / `personal`
-- Current status: `User verified; archived for repository finalization; release/deployment out of scope`
+- Current status: `Repository finalized on personal; release/deployment out of scope`
 
 ## Handoff Summary
 
@@ -64,17 +64,17 @@
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/investigation-notes.md`
 - Ticket branch: `codex/token-statistics-table-ux`
-- Ticket branch commit result: `Pending final delivery commit at artifact write time` — this archived report is included in that commit
-- Ticket branch push result: `Pending finalization command sequence`
+- Ticket branch commit result: `Completed` — final delivery/archive commit `f2100bcd80f82ce88f061e8d3b22b69a921256e1` plus log-cleanup commit `853f2589930e064a052db4c9bf758efdfad00ed2`
+- Ticket branch push result: `Completed` — pushed `codex/token-statistics-table-ux` to `origin` before target merge
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No` — `git fetch origin personal` kept `origin/personal` at `56e4fadc6084a60ae423d72e8f4b2797066120f5`
 - Delivery-owned edits protected before re-integration: `Not needed` — target did not advance
 - Re-integration before final merge result: `Not needed` — target did not advance
-- Target branch update result: `Pending finalization command sequence`
-- Merge into target result: `Pending finalization command sequence`
-- Push target branch result: `Pending finalization command sequence`
-- Repository finalization status: `Ready for final commit/push/merge sequence`
+- Target branch update result: `Completed` — `personal` was refreshed from `origin/personal` at `56e4fadc6084a60ae423d72e8f4b2797066120f5` before merge
+- Merge into target result: `Completed` — merge commit `eaa1e54540f0ab721d97485d5de07d397a829bdf` on `personal`
+- Push target branch result: `Completed` — pushed `personal` to `origin/personal`
+- Repository finalization status: `Completed`
 - Blocker (if applicable): `None`
 
 ## Release / Publication / Deployment
@@ -89,10 +89,10 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux`
-- Worktree cleanup result: `Pending post-merge cleanup decision`
-- Worktree prune result: `Pending post-merge cleanup decision`
-- Local ticket branch cleanup result: `Pending post-merge cleanup decision`
-- Remote branch cleanup result: `Not required`
+- Worktree cleanup result: `Deferred intentionally` — local ticket worktree was preserved because it contains the user-tested unsigned Electron build artifacts and installed build dependencies
+- Worktree prune result: `Not required`
+- Local ticket branch cleanup result: `Deferred intentionally` — local branch remains checked out by the preserved worktree
+- Remote branch cleanup result: `Completed` — deleted `origin/codex/token-statistics-table-ux` after merge to `origin/personal`
 - Blocker (if applicable): `None`
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
@@ -158,4 +158,4 @@
 
 ## Final Status
 
-- `Ready for repository finalization` — user verification received, ticket archived to `tickets/done`, integrated base refresh remained current, docs sync, release-notes refresh, handoff summary, delivery report, API/E2E round-3 evidence review, and README-guided local Electron test build are complete. Next step is final commit/push/merge to `personal`; release/deployment is explicitly skipped.
+- `Completed` — user verification received, ticket archived to `tickets/done`, ticket branch committed/pushed, `personal` refreshed and merged at `eaa1e54540f0ab721d97485d5de07d397a829bdf`, `origin/personal` pushed, remote ticket branch deleted, and release/deployment explicitly skipped.
