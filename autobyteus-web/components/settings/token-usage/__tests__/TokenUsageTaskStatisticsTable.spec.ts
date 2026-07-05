@@ -15,7 +15,6 @@ const { translate } = vi.hoisted(() => {
     'settings.components.settings.TokenUsageStatistics.inputCost': 'Input Cost',
     'settings.components.settings.TokenUsageStatistics.outputCost': 'Output Cost',
     'settings.components.settings.TokenUsageStatistics.total_cost': 'Total Cost',
-    'settings.components.settings.TokenUsageStatistics.details': 'Details',
     'settings.components.settings.TokenUsageStatistics.sortByColumnAscending': 'Sort {column} ascending',
     'settings.components.settings.TokenUsageStatistics.sortByColumnDescending': 'Sort {column} descending',
     'settings.components.settings.TokenUsageStatistics.showCostDetailsForRow': 'Show cost details for {row}',
@@ -248,15 +247,15 @@ describe('TokenUsageTaskStatisticsTable', () => {
     const headerCells = wrapper.findAll('thead th');
     const headers = headerCells.map((header) => header.text());
     expect(headers).toHaveLength(9);
-    expect(headers[0]).toMatch(/task.*run.*↕/i);
-    expect(headers[1]).toMatch(/runtime.*↕/i);
+    expect(headers[0]).toMatch(/task.*run/i);
+    expect(headers[1]).toMatch(/runtime/i);
     expect(headers[2]).toMatch(/models?/i);
-    expect(headers[3]).toMatch(/input.*↕/i);
-    expect(headers[4]).toMatch(/output.*↕/i);
+    expect(headers[3]).toMatch(/input/i);
+    expect(headers[4]).toMatch(/output/i);
     expect(headers[5]).toMatch(/input cost/i);
     expect(headers[6]).toMatch(/output cost/i);
-    expect(headers[7]).toMatch(/total cost.*↕/i);
-    expect(headers[8]).toMatch(/created time.*↓/i);
+    expect(headers[7]).toMatch(/total cost/i);
+    expect(headers[8]).toMatch(/created time/i);
     expect(headers).not.toContain('Type');
     expect(headers).not.toContain('Status');
     expect(headerCells[0]!.attributes('aria-sort')).toBe('none');
@@ -265,6 +264,7 @@ describe('TokenUsageTaskStatisticsTable', () => {
     expect(headerCells[5]!.find('button').exists()).toBe(false);
     expect(headerCells[6]!.find('button').exists()).toBe(false);
     expect(wrapper.findAll('thead button')).toHaveLength(6);
+    expect(wrapper.findAll('[data-sort-indicator]')).toHaveLength(6);
     expect(headerCells[8]!.find('button').attributes('aria-label')).toMatch(/ascending/i);
 
     const firstDataCells = wrapper.findAll('tbody > tr')[0]!.findAll('td');
@@ -272,7 +272,7 @@ describe('TokenUsageTaskStatisticsTable', () => {
     expect(firstDataCells[1]!.text()).toContain('Mixed: Codex, Autobyteus');
     const bodyButtons = wrapper.findAll('tbody button');
     expect(bodyButtons).toHaveLength(3);
-    expect(bodyButtons.filter((button) => button.text().includes('Details'))).toHaveLength(2);
+    expect(bodyButtons.filter((button) => button.attributes('aria-label')?.includes('cost details'))).toHaveLength(2);
 
     const topRows = topLevelRowTexts(wrapper);
     expect(topRows[0]).toContain('Software Engineering Team');
@@ -283,7 +283,6 @@ describe('TokenUsageTaskStatisticsTable', () => {
     expect(wrapper.text()).toContain('cache hit 25.0%');
     expect(wrapper.text()).toContain('5 thinking included');
     expect(wrapper.text()).toContain('partial est.');
-    expect(wrapper.text()).toContain('Partial');
     expect(wrapper.text()).not.toContain('Complete');
   });
 
@@ -310,8 +309,7 @@ describe('TokenUsageTaskStatisticsTable', () => {
 
     const detailButton = wrapper.findAll('tbody button')
       .find((button) => button.attributes('aria-label') === 'Show cost details for Standalone Agent')!;
-    expect(detailButton.text()).toContain('Details');
-    expect(detailButton.text()).toMatch(/2\.20|2\.2/);
+    expect(detailButton.element.closest('td')?.textContent).toMatch(/2\.20|2\.2/);
     expect(detailButton.attributes('aria-expanded')).toBe('false');
 
     await detailButton.trigger('click');

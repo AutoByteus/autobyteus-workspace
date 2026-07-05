@@ -1,0 +1,42 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/autobyteus-web
+
+stderr | components/settings/__tests__/TokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/tokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/tokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/tokenUsageStatistics.spec.ts > tokenUsageStatistics store > stores GraphQL errors and leaves loading state clean
+Failed to fetch token usage statistics: Error: task query failed
+    at Proxy.fetchStatistics (/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/autobyteus-web/stores/tokenUsageStatistics.ts:208:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts:190:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ stores/__tests__/tokenUsageStatistics.spec.ts (2 tests) 8ms
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts (3 tests) 29ms
+ ✓ components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts (2 tests) 54ms
+
+ Test Files  3 passed (3)
+      Tests  7 passed (7)
+   Start at  15:01:23
+   Duration  5.28s (transform 3.01s, setup 13.55s, collect 329ms, tests 92ms, environment 615ms, prepare 477ms)
+

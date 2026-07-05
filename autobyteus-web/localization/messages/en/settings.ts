@@ -456,7 +456,6 @@ const settingsMessages = {
   'settings.components.settings.TokenUsageStatistics.output': 'Output',
   'settings.components.settings.TokenUsageStatistics.inputCost': 'Input Cost',
   'settings.components.settings.TokenUsageStatistics.outputCost': 'Output Cost',
-  'settings.components.settings.TokenUsageStatistics.details': 'Details',
   'settings.components.settings.TokenUsageStatistics.sortByColumnAscending': 'Sort {{column}} ascending',
   'settings.components.settings.TokenUsageStatistics.sortByColumnDescending': 'Sort {{column}} descending',
   'settings.components.settings.TokenUsageStatistics.showCostDetailsForRow': 'Show cost details for {{row}}',

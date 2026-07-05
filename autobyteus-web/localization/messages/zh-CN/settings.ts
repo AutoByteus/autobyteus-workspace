@@ -456,7 +456,6 @@ const settingsMessages = {
   'settings.components.settings.TokenUsageStatistics.output': '输出',
   'settings.components.settings.TokenUsageStatistics.inputCost': '输入费用',
   'settings.components.settings.TokenUsageStatistics.outputCost': '输出费用',
-  'settings.components.settings.TokenUsageStatistics.details': '详情',
   'settings.components.settings.TokenUsageStatistics.sortByColumnAscending': '按 {{column}} 升序排序',
   'settings.components.settings.TokenUsageStatistics.sortByColumnDescending': '按 {{column}} 降序排序',
   'settings.components.settings.TokenUsageStatistics.showCostDetailsForRow': '显示 {{row}} 的费用详情',

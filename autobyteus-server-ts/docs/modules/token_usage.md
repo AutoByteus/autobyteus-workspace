@@ -376,18 +376,25 @@ The frontend treats token usage as display-only state:
   understanding and keeps `Model` as a runtime/model diagnostics grouping.
   The frontend does not render `Usage during period`, `Select Date Range:`,
   `Group by:`, or a separate `By Task` / `By Model` tab row.
-- The Task grouping table shows task/run identity, type, runtime,
-  model(s), token totals, input/output/total cost, status, recursive
-  team/task/member children, created time as the last visible column, and a
-  cost breakdown. Team expansion is usage-derived for the selected period:
-  inactive roster members are not emitted, child rows remain attached to their
-  parent during sorting, and member/task usage must not be double-counted as
-  standalone top-level rows. The frontend consumes backend-provided `children`
-  and `executionAddress` values only; it must not rebuild hierarchy from task
-  records, memory paths, display names, or the removed `members`/path fields.
-  The current GraphQL document requests top-level rows plus five recursive
-  `children` levels; deeper backend trees require an explicit query-depth
-  follow-up before all levels are visible in the web table.
+- The Task grouping table shows task/run identity, runtime, model(s), token
+  totals, input/output/total cost, recursive team/task/member children, created
+  time as the last visible column, and a cost breakdown. It does not render
+  standalone `Type` or `Status` columns: row kind stays visible through
+  hierarchy/metadata, complete-estimate status is suppressed in main rows, and
+  non-complete price status appears inline in the `Total Cost` cell plus the
+  expanded breakdown. Sortable headers show persistent neutral/active glyphs;
+  `Model(s)`, `Input Cost`, and `Output Cost` remain non-sortable, and cost
+  details open through one visible `Details` control in `Total Cost` rather
+  than duplicate hover-only cost-cell buttons. Team expansion is usage-derived
+  for the selected period: inactive roster members are not emitted, child rows
+  remain attached to their parent during sorting, and member/task usage must not
+  be double-counted as standalone top-level rows. The frontend consumes
+  backend-provided `children` and `executionAddress` values only; it must not
+  rebuild hierarchy from task records, memory paths, display names, or the
+  removed `members`/path fields. The current GraphQL document requests
+  top-level rows plus five recursive `children` levels; deeper backend trees
+  require an explicit query-depth follow-up before all levels are visible in the
+  web table.
 - `TokenUsageMeterPanel` presents the approved Token Meter hierarchy:
   `Latest prompt`, `Gross input`, `Output`, `Total estimate`,
   `Input breakdown`, `Pricing details`, and collapsed `Calculation details`.
@@ -452,7 +459,8 @@ for Task default grouping, no `rangeMode`, recursive `children`,
 `executionAddress`, direct members, task-team rows, task-agent rows, nested
 task-agent-under-task-team prefixes, repeated same-target execution separation,
 legacy no-address fallback, first-usage created-time fallback, runtime/model
-grouping, status/cost-breakdown display, and Model runtime diagnostics. Live
+grouping, reduced Task columns, sort affordances, explicit Total Cost details
+controls, status/cost-breakdown display, and Model runtime diagnostics. Live
 browser/runtime/API/UI evidence from 2026-07-02 also exercised `Nested
 Classroom Test Team` with Codex App Server / GPT-5.5 and observed
 `TEAM_RUN -> TASK_TEAM_RUN StudentStudyGroup -> MEMBER_RUN student_one` plus

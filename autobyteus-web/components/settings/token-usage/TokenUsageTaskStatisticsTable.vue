@@ -5,77 +5,119 @@
         <tr>
           <th class="px-3 py-3" :aria-sort="sortAriaSort('task')">
             <button
-              class="inline-flex items-center gap-1 rounded px-1 py-0.5 font-semibold text-gray-700 hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              :class="sortHeaderButtonClass('task')"
               type="button"
               :aria-label="sortButtonLabel('task', $t('settings.components.settings.TokenUsageStatistics.taskRun'))"
               :title="sortButtonLabel('task', $t('settings.components.settings.TokenUsageStatistics.taskRun'))"
               @click="toggleSort('task')"
             >
               <span>{{ $t('settings.components.settings.TokenUsageStatistics.taskRun') }}</span>
-              <span aria-hidden="true" :class="sortIconClass('task')">{{ sortIndicator('task') }}</span>
+              <span
+                class="inline-flex h-3 w-2 flex-col justify-center gap-0.5"
+                aria-hidden="true"
+                data-sort-indicator
+              >
+                <span :class="sortTriangleClass('task', 'asc')" />
+                <span :class="sortTriangleClass('task', 'desc')" />
+              </span>
             </button>
           </th>
           <th class="px-3 py-3" :aria-sort="sortAriaSort('runtime')">
             <button
-              class="inline-flex items-center gap-1 rounded px-1 py-0.5 font-semibold text-gray-700 hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              :class="sortHeaderButtonClass('runtime')"
               type="button"
               :aria-label="sortButtonLabel('runtime', $t('settings.components.settings.TokenUsageStatistics.runtime'))"
               :title="sortButtonLabel('runtime', $t('settings.components.settings.TokenUsageStatistics.runtime'))"
               @click="toggleSort('runtime')"
             >
               <span>{{ $t('settings.components.settings.TokenUsageStatistics.runtime') }}</span>
-              <span aria-hidden="true" :class="sortIconClass('runtime')">{{ sortIndicator('runtime') }}</span>
+              <span
+                class="inline-flex h-3 w-2 flex-col justify-center gap-0.5"
+                aria-hidden="true"
+                data-sort-indicator
+              >
+                <span :class="sortTriangleClass('runtime', 'asc')" />
+                <span :class="sortTriangleClass('runtime', 'desc')" />
+              </span>
             </button>
           </th>
           <th class="px-3 py-3">{{ $t('settings.components.settings.TokenUsageStatistics.models') }}</th>
           <th class="px-3 py-3 text-right" :aria-sort="sortAriaSort('input')">
             <button
-              class="ml-auto inline-flex items-center gap-1 rounded px-1 py-0.5 font-semibold text-gray-700 hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              :class="sortHeaderButtonClass('input', true)"
               type="button"
               :aria-label="sortButtonLabel('input', $t('settings.components.settings.TokenUsageStatistics.input'))"
               :title="sortButtonLabel('input', $t('settings.components.settings.TokenUsageStatistics.input'))"
               @click="toggleSort('input')"
             >
               <span>{{ $t('settings.components.settings.TokenUsageStatistics.input') }}</span>
-              <span aria-hidden="true" :class="sortIconClass('input')">{{ sortIndicator('input') }}</span>
+              <span
+                class="inline-flex h-3 w-2 flex-col justify-center gap-0.5"
+                aria-hidden="true"
+                data-sort-indicator
+              >
+                <span :class="sortTriangleClass('input', 'asc')" />
+                <span :class="sortTriangleClass('input', 'desc')" />
+              </span>
             </button>
           </th>
           <th class="px-3 py-3 text-right" :aria-sort="sortAriaSort('output')">
             <button
-              class="ml-auto inline-flex items-center gap-1 rounded px-1 py-0.5 font-semibold text-gray-700 hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              :class="sortHeaderButtonClass('output', true)"
               type="button"
               :aria-label="sortButtonLabel('output', $t('settings.components.settings.TokenUsageStatistics.output'))"
               :title="sortButtonLabel('output', $t('settings.components.settings.TokenUsageStatistics.output'))"
               @click="toggleSort('output')"
             >
               <span>{{ $t('settings.components.settings.TokenUsageStatistics.output') }}</span>
-              <span aria-hidden="true" :class="sortIconClass('output')">{{ sortIndicator('output') }}</span>
+              <span
+                class="inline-flex h-3 w-2 flex-col justify-center gap-0.5"
+                aria-hidden="true"
+                data-sort-indicator
+              >
+                <span :class="sortTriangleClass('output', 'asc')" />
+                <span :class="sortTriangleClass('output', 'desc')" />
+              </span>
             </button>
           </th>
           <th class="px-3 py-3 text-right">{{ $t('settings.components.settings.TokenUsageStatistics.inputCost') }}</th>
           <th class="px-3 py-3 text-right">{{ $t('settings.components.settings.TokenUsageStatistics.outputCost') }}</th>
           <th class="px-3 py-3 text-right" :aria-sort="sortAriaSort('totalCost')">
             <button
-              class="ml-auto inline-flex items-center gap-1 rounded px-1 py-0.5 font-semibold text-gray-700 hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              :class="sortHeaderButtonClass('totalCost', true)"
               type="button"
               :aria-label="sortButtonLabel('totalCost', $t('settings.components.settings.TokenUsageStatistics.total_cost'))"
               :title="sortButtonLabel('totalCost', $t('settings.components.settings.TokenUsageStatistics.total_cost'))"
               @click="toggleSort('totalCost')"
             >
               <span>{{ $t('settings.components.settings.TokenUsageStatistics.total_cost') }}</span>
-              <span aria-hidden="true" :class="sortIconClass('totalCost')">{{ sortIndicator('totalCost') }}</span>
+              <span
+                class="inline-flex h-3 w-2 flex-col justify-center gap-0.5"
+                aria-hidden="true"
+                data-sort-indicator
+              >
+                <span :class="sortTriangleClass('totalCost', 'asc')" />
+                <span :class="sortTriangleClass('totalCost', 'desc')" />
+              </span>
             </button>
           </th>
           <th class="px-3 py-3" :aria-sort="sortAriaSort('createdAt')">
             <button
-              class="inline-flex items-center gap-1 rounded px-1 py-0.5 font-semibold text-gray-700 hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              :class="sortHeaderButtonClass('createdAt')"
               type="button"
               :aria-label="sortButtonLabel('createdAt', $t('settings.components.settings.TokenUsageStatistics.createdTime'))"
               :title="sortButtonLabel('createdAt', $t('settings.components.settings.TokenUsageStatistics.createdTime'))"
               @click="toggleSort('createdAt')"
             >
               <span>{{ $t('settings.components.settings.TokenUsageStatistics.createdTime') }}</span>
-              <span aria-hidden="true" :class="sortIconClass('createdAt')">{{ sortIndicator('createdAt') }}</span>
+              <span
+                class="inline-flex h-3 w-2 flex-col justify-center gap-0.5"
+                aria-hidden="true"
+                data-sort-indicator
+              >
+                <span :class="sortTriangleClass('createdAt', 'asc')" />
+                <span :class="sortTriangleClass('createdAt', 'desc')" />
+              </span>
             </button>
           </th>
         </tr>
@@ -119,9 +161,12 @@
               {{ formatter.formatCostCell(entry.row.aggregate.estimatedApiOutputCost, entry.row.aggregate.currency, entry.row.aggregate.apiCostStatus) }}
             </td>
             <td class="px-3 py-3 text-right font-semibold tabular-nums">
-              <div class="flex flex-col items-end gap-1">
+              <div class="flex items-center justify-end gap-1">
+                <span>
+                  {{ formatter.formatCostCell(entry.row.aggregate.estimatedApiTotalCost, entry.row.aggregate.currency, entry.row.aggregate.apiCostStatus) }}
+                </span>
                 <button
-                  class="inline-flex items-center gap-1.5 rounded border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700 hover:border-blue-300 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                  class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                   type="button"
                   :aria-controls="detailRowId(entry.row)"
                   :aria-expanded="detailRows.has(entry.row.rowId)"
@@ -129,18 +174,25 @@
                   :title="costDetailsLabel(entry.row)"
                   @click="toggleDetails(entry.row.rowId)"
                 >
-                  <span class="text-gray-900">
-                    {{ formatter.formatCostCell(entry.row.aggregate.estimatedApiTotalCost, entry.row.aggregate.currency, entry.row.aggregate.apiCostStatus) }}
-                  </span>
-                  <span aria-hidden="true">{{ detailRows.has(entry.row.rowId) ? '▾' : '▸' }}</span>
-                  <span>{{ $t('settings.components.settings.TokenUsageStatistics.details') }}</span>
+                  <svg
+                    v-if="detailRows.has(entry.row.rowId)"
+                    class="h-3.5 w-3.5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M5.25 7.5 10 12.25 14.75 7.5H5.25Z" />
+                  </svg>
+                  <svg
+                    v-else
+                    class="h-3.5 w-3.5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M7.5 5.25 12.25 10 7.5 14.75v-9.5Z" />
+                  </svg>
                 </button>
-                <span
-                  v-if="shouldShowInlineStatus(entry.row)"
-                  :class="[formatter.statusClass(entry.row.aggregate.apiCostStatus), 'justify-end']"
-                >
-                  {{ formatter.formatStatus(entry.row.aggregate.apiCostStatus) }}
-                </span>
               </div>
             </td>
             <td class="px-3 py-3 whitespace-nowrap">
@@ -229,13 +281,13 @@ const toggleSort = (key: TokenUsageTaskSortKey): void => {
   sortDirection.value = key === 'createdAt' || key === 'totalCost' ? 'desc' : 'asc';
 };
 
-const sortIndicator = (key: TokenUsageTaskSortKey): string => {
-  if (sortKey.value !== key) return '↕';
-  return sortDirection.value === 'asc' ? '↑' : '↓';
-};
-
-const sortIconClass = (key: TokenUsageTaskSortKey): string => (
-  sortKey.value === key ? 'text-gray-900' : 'text-gray-400'
+const sortHeaderButtonClass = (key: TokenUsageTaskSortKey, alignRight = false): string => (
+  [
+    alignRight ? 'ml-auto' : '',
+    'inline-flex items-center gap-1 rounded py-0.5 font-semibold',
+    sortKey.value === key ? 'text-gray-900' : 'text-gray-600',
+    'hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
+  ].filter(Boolean).join(' ')
 );
 
 const sortAriaSort = (key: TokenUsageTaskSortKey): 'ascending' | 'descending' | 'none' => {
@@ -255,6 +307,13 @@ const sortButtonLabel = (key: TokenUsageTaskSortKey, columnLabel: string): strin
   return $t(directionKey, { column: columnLabel });
 };
 
+const sortTriangleClass = (key: TokenUsageTaskSortKey, direction: TokenUsageSortDirection): string => {
+  const active = sortKey.value === key && sortDirection.value === direction;
+  const tone = active ? 'border-current' : 'border-gray-300';
+  if (direction === 'asc') return `h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent ${tone}`;
+  return `h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent ${tone}`;
+};
+
 const toggleExpanded = (rowId: string): void => {
   if (expandedRows.has(rowId)) expandedRows.delete(rowId);
   else expandedRows.add(rowId);
@@ -264,10 +323,6 @@ const toggleDetails = (rowId: string): void => {
   if (detailRows.has(rowId)) detailRows.delete(rowId);
   else detailRows.add(rowId);
 };
-
-const shouldShowInlineStatus = (row: TokenUsageTaskStatisticsRow): boolean => (
-  row.aggregate.apiCostStatus !== 'estimated'
-);
 
 const detailRowId = (row: TokenUsageTaskStatisticsRow): string => `token-usage-cost-details-${row.rowId.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
 
