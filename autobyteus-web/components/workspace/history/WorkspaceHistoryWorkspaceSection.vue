@@ -291,9 +291,9 @@
                     data-row-kind="stable_member"
                     role="button"
                     tabindex="0"
-                    @click="selectTeamDisplayRow(team, displayRow.row)"
-                    @keydown.enter="selectTeamDisplayRow(team, displayRow.row)"
-                    @keydown.space.prevent="selectTeamDisplayRow(team, displayRow.row)"
+                    @click="activateTeamDisplayRow(team, displayRow.row, displayRow.hasChildren)"
+                    @keydown.enter="activateTeamDisplayRow(team, displayRow.row, displayRow.hasChildren)"
+                    @keydown.space.prevent="activateTeamDisplayRow(team, displayRow.row, displayRow.hasChildren)"
                   >
                     <button
                       v-if="displayRow.hasChildren"
@@ -414,8 +414,7 @@ interface VisibleTeamExecutionRow {
   hasChildren: boolean;
 }
 
-const rootTeamMembers = (team: TeamTreeNode): readonly TeamMemberTreeRow[] =>
-  team.memberTree.length > 0 ? team.memberTree : team.members;
+const rootTeamMembers = (team: TeamTreeNode): readonly TeamMemberTreeRow[] => team.memberTree.length > 0 ? team.memberTree : team.members;
 
 const teamExecutionRowsByTeamRunId = computed(() => new Map(
   props.workspaceTeams.map((team) => [
@@ -491,13 +490,9 @@ const visibleTeamExecutionRows = (team: TeamTreeNode): VisibleTeamExecutionRow[]
   return visibleRows;
 };
 
-const focusedTeamMemberRouteKey = (team: TeamTreeNode): string => (
-  props.state.getLiveTeamContext(team.teamRunId)?.focusedMemberRouteKey || team.focusedMemberRouteKey
-);
+const focusedTeamMemberRouteKey = (team: TeamTreeNode): string => props.state.getLiveTeamContext(team.teamRunId)?.focusedMemberRouteKey || team.focusedMemberRouteKey;
 
-const teamExecutionRowStyle = (row: WorkspaceTeamExecutionDisplayRow): Record<string, string> => ({
-  marginLeft: `${row.depth * 12}px`,
-});
+const teamExecutionRowStyle = (row: WorkspaceTeamExecutionDisplayRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
 
 const selectTeamDisplayRow = (
   team: TeamTreeNode,
@@ -507,6 +502,15 @@ const selectTeamDisplayRow = (
   props.workspaceNode.workspaceId,
   rootTeamMembers(team),
 );
+
+const activateTeamDisplayRow = (
+  team: TeamTreeNode,
+  row: WorkspaceTeamExecutionDisplayRow,
+  hasChildren: boolean,
+): Promise<void> | void => {
+  if (hasChildren) toggleTeamDisplayRow(team, row);
+  return selectTeamDisplayRow(team, row);
+};
 
 const USER_REQUIREMENT_PREFIX = /^\s*(?:\*\*)?\s*(?:\[\s*user requirement\s*\]|user requirement)\s*(?:\*\*)?\s*[:\-]?\s*/i;
 

@@ -312,10 +312,12 @@ team topology. The Workspaces tree renders those live task projections inline as
 transient execution identity rows with explicit stable/transient display
 semantics: a ghost row background, exactly one leading explicit eight-dot SVG
 ring status marker, no extra dotted avatar/trailing marker, and no visible
-temporary label. Transient task-team children are revealed only through the
-execution row's own identity-keyed disclosure. Team → Tasks remains the clean
-persisted delegated-task body/reference/technical-detail surface: summary rows
-show task text without a leading status dot or visible status label, reference
+temporary label. Transient task-team children are revealed through the execution
+row's own identity-keyed disclosure state: row-body activation toggles child
+visibility while selecting/focusing that transient row, and the explicit
+disclosure control remains a stopped toggle-only target. Team → Tasks remains
+the clean persisted delegated-task body/reference/technical-detail surface:
+summary rows show task text without a leading status dot or visible status label, reference
 rows are selectable without a separate visible `References` heading, and
 actor/member hierarchy, focus controls, and approval controls stay out of the
 right pane.

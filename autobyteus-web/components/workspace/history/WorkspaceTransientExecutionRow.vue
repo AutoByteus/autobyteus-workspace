@@ -12,9 +12,9 @@
     :aria-label="ariaLabel"
     role="button"
     tabindex="0"
-    @click="$emit('select', row)"
-    @keydown.enter="$emit('select', row)"
-    @keydown.space.prevent="$emit('select', row)"
+    @click="activateRow"
+    @keydown.enter="activateRow"
+    @keydown.space.prevent="activateRow"
   >
     <button
       v-if="hasChildren"
@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<{
   expanded: false,
 });
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'select', row: WorkspaceTransientExecutionDisplayRow): void;
   (e: 'toggle', row: WorkspaceTransientExecutionDisplayRow): void;
 }>();
@@ -81,4 +81,11 @@ const rowStyle = computed(() => ({
 }));
 
 const ariaLabel = computed(() => `${props.row.displayName}. ${props.row.memberRouteKey}`);
+
+const activateRow = (): void => {
+  if (props.hasChildren) {
+    emit('toggle', props.row);
+  }
+  emit('select', props.row);
+};
 </script>
