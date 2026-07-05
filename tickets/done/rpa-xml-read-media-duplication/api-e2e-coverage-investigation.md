@@ -2,13 +2,13 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/design-spec.md`
-- Design Correction: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/design-correction-remove-xml-instruction.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/design-review-report.md` (superseded where it mentions generated XML guidance)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/design-spec.md`
+- Design Correction: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/design-correction-remove-xml-instruction.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/design-review-report.md` (superseded where it mentions generated XML guidance)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/code-review-report.md`
 - Current Investigation Round: 2
 - Trigger: Code review round 3 passed after corrected implementation removed generated XML/backtick continuation guidance and split final RPA browser current-input composition to the linked RPA project.
 - Prior Investigation Reviewed: Round 1 paused/superseded investigation in this same file was reviewed as historical context and replaced by this corrected-scope investigation.

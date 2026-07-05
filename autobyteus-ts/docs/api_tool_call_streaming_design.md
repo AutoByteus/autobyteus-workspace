@@ -573,17 +573,29 @@ rejected without raw `tool_result` traces, working-context `ToolResultPayload`s,
 `tool_continuation` traces, or continuation events. After an accepted tool
 invocation batch settles:
 
-- In `api_tool_call` mode `ToolResultContinuationBuilder` marks the same-turn
-  continuation as `tool_history_only`; `AgentTurnRunner` emits an internal
-  `ToolContinuationReadyEvent`. `LlmPhase` then calls
+- For every accepted batch, `ToolResultContinuationBuilder` builds semantic
+  completed-tool display text from the processed results. A single successful
+  result renders as `The <tool_name> tool call completed successfully.`; multiple
+  results use a concise completed-tool summary. This text is the only
+  model-visible synthetic continuation text and must not contain internal
+  continuation labels or generated tool-call formatting instructions.
+- In `api_tool_call` mode without continuation context files, the builder marks
+  the same-turn continuation as `tool_history_only`; `AgentTurnRunner` emits an
+  internal `ToolContinuationReadyEvent`. `LlmPhase` then calls
   `LLMRequestAssembler.prepareToolContinuationRequest(...)`, which renders the
   current working context as-is. The next OpenAI-compatible request contains the
   prior `assistant.tool_calls` message plus matching `role: "tool"` result
-  messages, and it does **not** append the aggregate text beginning
-  `The following tool executions have completed...` as `role: "user"`.
-- In legacy `xml`, `json`, and `sentinel` parser modes it keeps the aggregate
-  `SenderType.TOOL` user-input continuation path, because those modes lack a
-  provider-native tool-result channel.
+  messages, and it does **not** append the completed-tool text as `role:
+  "user"`.
+- If a tool result supplies context-file media that must be carried into the
+  next model request, `AgentInputPipeline` keeps `append_user_message` even in
+  native API mode so the media has a provider-valid user/media carrier. That
+  carrier uses the semantic completed-tool text; the structured provider-native
+  tool result remains in history where the provider supports it.
+- In legacy `xml`, `json`, and `sentinel` parser modes it keeps the
+  `SenderType.TOOL` user-input continuation path with the same semantic
+  completed-tool text, because those modes lack a provider-native tool-result
+  channel.
 
 The server-side input customization path remains intact for normal inputs and
 intentional legacy text-mode continuations. Native API mode avoids that path for
@@ -621,13 +633,15 @@ preserved assistant `Message.reasoning_content` as DeepSeek `reasoning_content`;
 generic OpenAI-compatible renderers omit that extension field.
 
 Native provider payloads must not contain the old synthetic aggregate result
-message text, including the
-`The following tool executions have completed...` prefix, legacy
-`Tool: <name> (ID: ...)` lines, `Status: Success` markers, or legacy
-`[TOOL_CALL]` / `[TOOL_RESULT]` tags. Provider-native user-role result carriers,
-such as Gemini `functionResponse` turns and Anthropic `tool_result` blocks,
-remain valid because they carry structured native result payloads rather than
-the aggregate text continuation.
+message text, including the `The following tool executions have completed...`
+prefix, legacy `Tool: <name> (ID: ...)` lines, `Status: Success` markers,
+legacy `[TOOL_CALL]` / `[TOOL_RESULT]` tags, or internal labels such as `Tool
+history continuation` / `Native API tool continuation` as user-facing text.
+Provider-native user-role result carriers, such as Gemini `functionResponse`
+turns and Anthropic `tool_result` blocks, remain valid because they carry
+structured native result payloads rather than the aggregate text continuation.
+Provider-required media carrier messages are also valid when they contain only
+the semantic completed-tool wording and the current media attachments.
 
 ---
 

@@ -1,0 +1,775 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-ts
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/read-media-file-continuation-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/clients/autobyteus-client-media-staging.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stderr | tests/integration/clients/autobyteus-client-media-staging.test.ts > AutobyteusClient media staging integration > stages a large local video before sending an empty-content media-only message
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+ ✓ tests/integration/clients/autobyteus-client-media-staging.test.ts (1 test) 25ms
+ ✓ tests/integration/agent/read-media-file-continuation-flow.test.ts (1 test) 10ms
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_gemini'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationgemini', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_gemini'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent_gemini' (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb).
+AgentStatusManager initialized for agent_id 'agent_gemini'. Initial status: uninitialized. Notifier provided: true
+AgentWorker initialized for agent_id 'agent_gemini'.
+Registered AgentContext for agent_id 'agent_gemini'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'agent_gemini'. Context registered.
+AgentRuntime for 'agent_gemini': Starting worker.
+AgentWorker 'agent_gemini': Starting...
+AgentWorker 'agent_gemini' asyncRun(): Starting.
+Agent 'agent_gemini': Runtime init completed (event store initialized).
+AgentStatusDeriver initialized with status 'uninitialized'.
+Agent 'agent_gemini': Runtime init completed (status deriver initialized).
+Agent 'agent_gemini': Runtime init completed (AgentEventInbox initialized).
+Agent 'agent_gemini': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+Agent 'agent_gemini': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+McpServerPrewarmingStep initialized.
+SystemPromptProcessingStep initialized.
+WorkingContextSnapshotRestoreStep initialized.
+AgentBootstrapper initialized with default steps.
+Agent 'agent_gemini': Bootstrapper starting direct lifecycle execution.
+Agent 'agent_gemini': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'agent_gemini': Executing McpServerPrewarmingStep.
+Agent 'agent_gemini': No MCP tools found. Skipping MCP server pre-warming.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+Agent 'agent_gemini': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'agent_gemini': Executing SystemPromptProcessingStep.
+Agent 'agent_gemini': Retrieved base system prompt.
+Agent 'agent_gemini': Final processed system prompt configured on LLM instance. Final length: 51.
+Agent 'agent_gemini': Final processed system prompt:
+---
+Provider native tool continuation integration test.
+---
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+Agent 'agent_gemini': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_gemini' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestInputProcessor stored tool continuation boundary with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_gemini': Stop requested.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 34955933-7b4a-4511-89b3-d3f6dcdef1eb, AgentID: agent_gemini) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_gemini' asyncRun() loop has finished.
+AgentWorker 'agent_gemini': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_gemini': Shutdown resource cleanup completed successfully.
+AgentWorker 'agent_gemini': Shutdown sequence completed.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+Unregistered AgentContext for agent_id 'agent_gemini'.
+AgentRuntime for 'agent_gemini': Context unregistered.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentRuntime for 'agent_gemini' stop() method completed.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_ollama'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationollama', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_ollama'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent_ollama' (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae).
+AgentStatusManager initialized for agent_id 'agent_ollama'. Initial status: uninitialized. Notifier provided: true
+AgentWorker initialized for agent_id 'agent_ollama'.
+Registered AgentContext for agent_id 'agent_ollama'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'agent_ollama'. Context registered.
+AgentRuntime for 'agent_ollama': Starting worker.
+AgentWorker 'agent_ollama': Starting...
+AgentWorker 'agent_ollama' asyncRun(): Starting.
+Agent 'agent_ollama': Runtime init completed (event store initialized).
+AgentStatusDeriver initialized with status 'uninitialized'.
+Agent 'agent_ollama': Runtime init completed (status deriver initialized).
+Agent 'agent_ollama': Runtime init completed (AgentEventInbox initialized).
+Agent 'agent_ollama': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+Agent 'agent_ollama': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+McpServerPrewarmingStep initialized.
+SystemPromptProcessingStep initialized.
+WorkingContextSnapshotRestoreStep initialized.
+AgentBootstrapper initialized with default steps.
+Agent 'agent_ollama': Bootstrapper starting direct lifecycle execution.
+Agent 'agent_ollama': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'agent_ollama': Executing McpServerPrewarmingStep.
+Agent 'agent_ollama': No MCP tools found. Skipping MCP server pre-warming.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+Agent 'agent_ollama': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'agent_ollama': Executing SystemPromptProcessingStep.
+Agent 'agent_ollama': Retrieved base system prompt.
+Agent 'agent_ollama': Final processed system prompt configured on LLM instance. Final length: 51.
+Agent 'agent_ollama': Final processed system prompt:
+---
+Provider native tool continuation integration test.
+---
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+Agent 'agent_ollama': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_ollama' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestInputProcessor stored tool continuation boundary with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_ollama': Stop requested.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 7f890037-41c6-4afd-af5f-02fce3e5a7ae, AgentID: agent_ollama) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_ollama' asyncRun() loop has finished.
+AgentWorker 'agent_ollama': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_ollama': Shutdown resource cleanup completed successfully.
+AgentWorker 'agent_ollama': Shutdown sequence completed.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+Unregistered AgentContext for agent_id 'agent_ollama'.
+AgentRuntime for 'agent_ollama': Context unregistered.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentRuntime for 'agent_ollama' stop() method completed.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_anthropic'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationanthropic', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_anthropic'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent_anthropic' (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509).
+AgentStatusManager initialized for agent_id 'agent_anthropic'. Initial status: uninitialized. Notifier provided: true
+AgentWorker initialized for agent_id 'agent_anthropic'.
+Registered AgentContext for agent_id 'agent_anthropic'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'agent_anthropic'. Context registered.
+AgentRuntime for 'agent_anthropic': Starting worker.
+AgentWorker 'agent_anthropic': Starting...
+AgentWorker 'agent_anthropic' asyncRun(): Starting.
+Agent 'agent_anthropic': Runtime init completed (event store initialized).
+AgentStatusDeriver initialized with status 'uninitialized'.
+Agent 'agent_anthropic': Runtime init completed (status deriver initialized).
+Agent 'agent_anthropic': Runtime init completed (AgentEventInbox initialized).
+Agent 'agent_anthropic': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+Agent 'agent_anthropic': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+McpServerPrewarmingStep initialized.
+SystemPromptProcessingStep initialized.
+WorkingContextSnapshotRestoreStep initialized.
+AgentBootstrapper initialized with default steps.
+Agent 'agent_anthropic': Bootstrapper starting direct lifecycle execution.
+Agent 'agent_anthropic': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'agent_anthropic': Executing McpServerPrewarmingStep.
+Agent 'agent_anthropic': No MCP tools found. Skipping MCP server pre-warming.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+Agent 'agent_anthropic': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'agent_anthropic': Executing SystemPromptProcessingStep.
+Agent 'agent_anthropic': Retrieved base system prompt.
+Agent 'agent_anthropic': Final processed system prompt configured on LLM instance. Final length: 51.
+Agent 'agent_anthropic': Final processed system prompt:
+---
+Provider native tool continuation integration test.
+---
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+Agent 'agent_anthropic': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_anthropic' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestInputProcessor stored tool continuation boundary with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_anthropic': Stop requested.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: a05cbea3-07fc-456e-8b6a-59ae009a7509, AgentID: agent_anthropic) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_anthropic' asyncRun() loop has finished.
+AgentWorker 'agent_anthropic': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_anthropic': Shutdown resource cleanup completed successfully.
+AgentWorker 'agent_anthropic': Shutdown sequence completed.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+Unregistered AgentContext for agent_id 'agent_anthropic'.
+AgentRuntime for 'agent_anthropic': Context unregistered.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentRuntime for 'agent_anthropic' stop() method completed.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_mistral'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationmistral', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_mistral'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent_mistral' (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d).
+AgentStatusManager initialized for agent_id 'agent_mistral'. Initial status: uninitialized. Notifier provided: true
+AgentWorker initialized for agent_id 'agent_mistral'.
+Registered AgentContext for agent_id 'agent_mistral'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'agent_mistral'. Context registered.
+AgentRuntime for 'agent_mistral': Starting worker.
+AgentWorker 'agent_mistral': Starting...
+AgentWorker 'agent_mistral' asyncRun(): Starting.
+Agent 'agent_mistral': Runtime init completed (event store initialized).
+AgentStatusDeriver initialized with status 'uninitialized'.
+Agent 'agent_mistral': Runtime init completed (status deriver initialized).
+Agent 'agent_mistral': Runtime init completed (AgentEventInbox initialized).
+Agent 'agent_mistral': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+Agent 'agent_mistral': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+McpServerPrewarmingStep initialized.
+SystemPromptProcessingStep initialized.
+WorkingContextSnapshotRestoreStep initialized.
+AgentBootstrapper initialized with default steps.
+Agent 'agent_mistral': Bootstrapper starting direct lifecycle execution.
+Agent 'agent_mistral': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'agent_mistral': Executing McpServerPrewarmingStep.
+Agent 'agent_mistral': No MCP tools found. Skipping MCP server pre-warming.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+Agent 'agent_mistral': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'agent_mistral': Executing SystemPromptProcessingStep.
+Agent 'agent_mistral': Retrieved base system prompt.
+Agent 'agent_mistral': Final processed system prompt configured on LLM instance. Final length: 51.
+Agent 'agent_mistral': Final processed system prompt:
+---
+Provider native tool continuation integration test.
+---
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+Agent 'agent_mistral': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_mistral' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestInputProcessor stored tool continuation boundary with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_mistral': Stop requested.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: c03c30c9-89ac-4f9c-9fb4-b8c827d9da1d, AgentID: agent_mistral) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_mistral' asyncRun() loop has finished.
+AgentWorker 'agent_mistral': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_mistral': Shutdown resource cleanup completed successfully.
+AgentWorker 'agent_mistral': Shutdown sequence completed.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+Unregistered AgentContext for agent_id 'agent_mistral'.
+AgentRuntime for 'agent_mistral': Context unregistered.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentRuntime for 'agent_mistral' stop() method completed.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_openai_responses'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationopenai_responses', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_openai_responses'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent_openai_responses' (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579).
+AgentStatusManager initialized for agent_id 'agent_openai_responses'. Initial status: uninitialized. Notifier provided: true
+AgentWorker initialized for agent_id 'agent_openai_responses'.
+Registered AgentContext for agent_id 'agent_openai_responses'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'agent_openai_responses'. Context registered.
+AgentRuntime for 'agent_openai_responses': Starting worker.
+AgentWorker 'agent_openai_responses': Starting...
+AgentWorker 'agent_openai_responses' asyncRun(): Starting.
+Agent 'agent_openai_responses': Runtime init completed (event store initialized).
+AgentStatusDeriver initialized with status 'uninitialized'.
+Agent 'agent_openai_responses': Runtime init completed (status deriver initialized).
+Agent 'agent_openai_responses': Runtime init completed (AgentEventInbox initialized).
+Agent 'agent_openai_responses': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+Agent 'agent_openai_responses': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+McpServerPrewarmingStep initialized.
+SystemPromptProcessingStep initialized.
+WorkingContextSnapshotRestoreStep initialized.
+AgentBootstrapper initialized with default steps.
+Agent 'agent_openai_responses': Bootstrapper starting direct lifecycle execution.
+Agent 'agent_openai_responses': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'agent_openai_responses': Executing McpServerPrewarmingStep.
+Agent 'agent_openai_responses': No MCP tools found. Skipping MCP server pre-warming.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+Agent 'agent_openai_responses': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'agent_openai_responses': Executing SystemPromptProcessingStep.
+Agent 'agent_openai_responses': Retrieved base system prompt.
+Agent 'agent_openai_responses': Final processed system prompt configured on LLM instance. Final length: 51.
+Agent 'agent_openai_responses': Final processed system prompt:
+---
+Provider native tool continuation integration test.
+---
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+Agent 'agent_openai_responses': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_openai_responses' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+MemoryIngestInputProcessor stored tool continuation boundary with turnId turn_0001
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_openai_responses': Stop requested.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentExternalEventNotifier (NotifierID: 2473abbb-3dc3-4afc-befa-24a5f8cd3579, AgentID: agent_openai_responses) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_openai_responses' asyncRun() loop has finished.
+AgentWorker 'agent_openai_responses': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentWorker 'agent_openai_responses': Shutdown resource cleanup completed successfully.
+AgentWorker 'agent_openai_responses': Shutdown sequence completed.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+Unregistered AgentContext for agent_id 'agent_openai_responses'.
+AgentRuntime for 'agent_openai_responses': Context unregistered.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentRuntime for 'agent_openai_responses' stop() method completed.
+
+ ✓ tests/integration/agent/provider-native-tool-continuation-flow.test.ts (5 tests) 290ms
+
+ Test Files  3 passed (3)
+      Tests  7 passed (7)
+   Start at  18:30:11
+   Duration  1.09s (transform 844ms, setup 77ms, import 1.14s, tests 325ms, environment 0ms)
+

@@ -1,0 +1,81 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-ts
+
+stdout | tests/unit/agent/llm-request-assembler.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not publish final LLM completion after an interrupt accepted at the post-LLM seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > uses ToolContinuationReadyEvent instead of synthetic LLMUserMessageReadyEvent for native tool-history continuations
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+ ✓ tests/unit/agent/loop/agent-turn-runner.test.ts (3 tests) 7ms
+ ✓ tests/unit/agent/llm-request-assembler.test.ts (4 tests) 7ms
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > preserves SenderType.TOOL same-turn continuation through input processors and LLM message building
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > marks canonical text-history tool continuations as tool-history-only requests
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > appends canonical tool continuations when they carry media context files
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > rejects SenderType.TOOL as a new external turn trigger
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > publishes system task notifications through the semantic notifier exactly once
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > suppresses only the generic system task notifier when explicit metadata requests suppression
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > converts inter-agent messages with sender id and strict recipient input shape
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > includes explicit reference files once in recipient runtime input and metadata
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > keeps strict inter-agent template when sender name cannot be resolved
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/pipelines/agent-input-pipeline.test.ts (9 tests) 9ms
+
+ Test Files  3 passed (3)
+      Tests  16 passed (16)
+   Start at  18:30:10
+   Duration  466ms (transform 636ms, setup 85ms, import 759ms, tests 23ms, environment 0ms)
+

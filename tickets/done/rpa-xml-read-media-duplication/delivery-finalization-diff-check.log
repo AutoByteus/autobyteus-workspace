@@ -1,0 +1,4 @@
+# finalization diff hygiene check before ticket branch commit
+Command: git diff --check
+Command: git diff --cached --check
+Exit status: 0

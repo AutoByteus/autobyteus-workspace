@@ -24,7 +24,7 @@ Screenshot evidence path: `/Users/normy/.autobyteus/server-data/memory/agent_tea
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication`
 - Current Branch: `codex/rpa-xml-read-media-duplication`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication`
 - Bootstrap Base Branch: `origin/personal` at `56e4fadc6084a60ae423d72e8f4b2797066120f5`
@@ -110,7 +110,7 @@ Screenshot evidence path: `/Users/normy/.autobyteus/server-data/memory/agent_tea
 
 | Path / Component | Current Responsibility | Finding / Observation | Design / Ownership Implication |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication` | Dedicated task worktree/branch. | Created from `origin/personal`; canonical artifacts live under `tickets/in-progress/rpa-xml-read-media-duplication`. | Downstream work should use this worktree. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication` | Dedicated task worktree/branch. | Created from `origin/personal`; canonical artifacts live under `tickets/done/rpa-xml-read-media-duplication`. | Downstream work should use this worktree. |
 | `autobyteus-ts/src/llm/prompt-renderers/autobyteus-prompt-renderer.ts` | Converts internal `Message[]` into AutoByteus/RPA `AutobyteusConversationPayload`. | Correct owner for making local tool results visible as current browser continuation content. | Primary implementation target. |
 | `autobyteus-ts/src/llm/api/autobyteus-conversation-payload.ts` | Defines/validates AutoByteus conversation payload. | `current_message_index` must point to a user message. Synthetic current continuation user is valid. | Likely unchanged. |
 | `autobyteus-ts/src/clients/autobyteus-client.ts` | Sends payload to RPA server and normalizes media only for current message. | Supports desired invariant if renderer puts required media/content on current message. | Likely unchanged. |

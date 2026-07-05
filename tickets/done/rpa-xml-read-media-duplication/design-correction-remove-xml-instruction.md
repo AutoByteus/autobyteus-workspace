@@ -38,9 +38,9 @@ Implementation must remove all generated XML-format continuation logic, includin
 
 Updated upstream artifacts:
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/design-spec.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/design-spec.md`
 
 Downstream artifacts created before this correction, especially implementation handoff, code review report, and API/E2E coverage investigation, may still mention XML guidance. Those references are superseded by this correction until implementation is reworked and re-reviewed.
 

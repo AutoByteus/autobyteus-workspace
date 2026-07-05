@@ -2,13 +2,13 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/design-spec.md`
-- Design correction note: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/design-correction-remove-xml-instruction.md`
-- Prior design review report, superseded where it mentions XML guidance: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/design-review-report.md`
-- Prior code review report, superseded where it requires TS-side final RPA result-block composition: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/code-review-report.md`
-- Paused API/E2E coverage investigation, superseded where it mentions XML guidance: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication/api-e2e-coverage-investigation.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/design-spec.md`
+- Design correction note: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/design-correction-remove-xml-instruction.md`
+- Prior design review report, superseded where it mentions XML guidance: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/design-review-report.md`
+- Prior code review report, superseded where it requires TS-side final RPA result-block composition: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/code-review-report.md`
+- Paused API/E2E coverage investigation, superseded where it mentions XML guidance: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/api-e2e-coverage-investigation.md`
 
 ## What Changed
 

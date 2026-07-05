@@ -330,12 +330,15 @@ Current native mappings are:
 Renderer selection is mode-aware. `api_tool_call` selects the native provider
 renderer; `xml`, `json`, and `sentinel` select explicit text-history renderers
 so non-native parser modes continue to emit their configured
-`[TOOL_CALL]` / `[TOOL_RESULT]`-style history. Native tool-result continuation
-does not append an additional aggregate user message such as
-`The following tool executions have completed...`, legacy
-`Tool: <name> (ID: ...)` lines, or aggregate `Status: Success` markers; the
-next LLM request is assembled from the existing working context and rendered
-through the provider's native channel.
+`[TOOL_CALL]` / `[TOOL_RESULT]`-style history. Native text-only tool-result
+continuation does not append an additional aggregate user message such as `The
+following tool executions have completed...`, legacy `Tool: <name> (ID: ...)`
+lines, or aggregate `Status: Success` markers; the next LLM request is assembled
+from the existing working context and rendered through the provider's native
+channel. If a continuation carries context-file media, the request may append a
+user/media carrier, but its text is limited to semantic completed-tool wording
+such as `The read_media_file tool call completed successfully.` and must not
+include internal continuation labels or generated tool-call formatting guidance.
 
 OpenAI Responses is stricter than Chat Completions-style history for reasoning
 models. When a streamed Responses turn records `responseOutputItems` on the

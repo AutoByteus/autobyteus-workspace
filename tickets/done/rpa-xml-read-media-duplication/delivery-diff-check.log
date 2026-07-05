@@ -1,0 +1,3 @@
+# delivery diff hygiene check after Electron build handoff updates
+Command: git diff --check
+Exit status: 0

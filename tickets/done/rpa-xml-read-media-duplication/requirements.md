@@ -98,7 +98,7 @@ Medium
 ## Constraints / Dependencies
 
 - Primary task workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication`.
-- Canonical artifact folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/in-progress/rpa-xml-read-media-duplication`.
+- Canonical artifact folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication`.
 - RPA LLM workspace inspected as external dependency: `/Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace`.
 - Linked RPA-side ticket worktree for server/browser current-input composition: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-tool-result-current-input-composition`.
 - Local RPA server/container source of affected model: `llm-server-0` on `localhost:51739`.

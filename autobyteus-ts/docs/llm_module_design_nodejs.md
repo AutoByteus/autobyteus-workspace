@@ -246,8 +246,13 @@ agent/server path leaves `tool_choice` unset, and LM Studio uses
 `assistant.tool_calls` plus `role: "tool"` history instead of prompt-template
 `[TOOL_CALL]` / `[TOOL_RESULT]` text. Legacy text-shaped LM Studio history
 remains available only when an explicit text-parser mode is selected. Native
-tool-result continuations render the existing working context directly and do
-not append an extra aggregate `role: "user"` message containing tool results.
+text-only tool-result continuations render the existing working context directly
+and do not append an extra aggregate `role: "user"` message containing tool
+results. If a processed tool result includes context-file media, the request
+keeps a user/media carrier so the media can be sent; that carrier uses semantic
+completed-tool wording such as `The read_media_file tool call completed
+successfully.` rather than internal continuation labels or generated tool-call
+formatting instructions.
 
 DeepSeek is the provider-specific reasoning replay exception on this shared
 OpenAI-compatible transport: `DeepSeekLLM` installs `DeepSeekChatRenderer`, which
@@ -292,9 +297,12 @@ the batch. When `resolveToolCallFormat()` is `xml`, `json`, or `sentinel`, the
 same providers use their explicit text-history renderers and keep legacy
 `[TOOL_CALL]` / `[TOOL_RESULT]` history isolated to those non-native modes.
 Native provider payloads must also omit the older synthetic aggregate
-tool-result user text, including the
-`The following tool executions have completed...` prefix, legacy
-`Tool: <name> (ID: ...)` lines, and aggregate `Status: Success` markers.
+tool-result user text, including the `The following tool executions have
+completed...` prefix, legacy `Tool: <name> (ID: ...)` lines, aggregate `Status:
+Success` markers, and internal continuation labels as user-facing text.
+Provider-required media carrier messages remain valid when their text is the
+semantic completed-tool wording and their attachments are the current
+context-file media.
 
 ### Provider Media Payload Rendering
 
@@ -410,6 +418,10 @@ The payload invariants are:
   message `content`: assistant tool calls become canonical AutoByteus XML, and
   tool results become deterministic records containing id, tool name, result,
   and error information.
+- If XML-mode history ends with tool results and no current user/media carrier,
+  `AutobyteusPromptRenderer` may synthesize a current user continuation whose
+  content is only semantic completed-tool wording. It does not duplicate the
+  deterministic `Tool result:` record inside that synthetic current message.
 - Current-turn media stays attached to the current user message.
 - Historical media is represented textually by the renderer and is not
   re-uploaded in prior transcript entries.
@@ -438,7 +450,10 @@ with only `[current user]` appears as exactly the current user content. Multi-
 turn reconstruction keeps the unlabeled system preface, then uses ordered
 `User:`, `Assistant:`, and `Tool:` blocks for non-system history and ends with
 the current `User:` block. The server does not parse tool payloads and does not
-generate tool XML.
+generate tool XML. The TypeScript renderer therefore provides deterministic
+rendered `Tool:` records and minimal completed-tool current-user wording; the
+browser-cache-hit composition that decides how much prior rendered `Tool:`
+history to include remains an RPA-server responsibility.
 
 ## 10. Testing
 
@@ -449,6 +464,7 @@ Focused unit coverage for this contract lives in:
 - `tests/unit/llm/api/autobyteus-llm.test.ts`
 - `tests/unit/llm/api/provider-native-request-payloads.test.ts`
 - `tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts`
+- `tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts`
 - `tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts`
 - `tests/unit/llm/utils/media-payload-formatter.test.ts`
 - `tests/unit/utils/media-file-kind.test.ts`
@@ -456,14 +472,16 @@ Focused unit coverage for this contract lives in:
 - `tests/unit/clients/autobyteus-client.test.ts`
 - `tests/unit/agent/loop/agent-turn-input-box.test.ts`
 - `tests/unit/agent/loop/tool-result-continuation-builder.test.ts`
+- `tests/unit/agent/message/tool-continuation-display-text.test.ts`
 - `tests/unit/agent/message/context-file-type.test.ts`
 
 Provider-native continuation integration coverage lives in
 `tests/integration/agent/provider-native-tool-continuation-flow.test.ts`; it
 drives the local agent event loop across the in-scope native providers, verifies
 that native tool results continue through provider-native carriers, and rejects
-the old synthetic aggregate user message. Broader integration tests remain
-under `tests/integration/llm/...`.
+the old synthetic aggregate user message. Renderer unit coverage also verifies
+semantic media-carrier wording for OpenAI-compatible, Gemini, and AutoByteus RPA
+payloads. Broader integration tests remain under `tests/integration/llm/...`.
 
 Direct-Gemini media continuation coverage also includes
 `tests/integration/agent/read-media-file-continuation-flow.test.ts` for the
