@@ -174,7 +174,7 @@ describe('AgentTurnRunner interruption fences', () => {
       new ToolResultEvent('tool', { ok: true }, 'inv-1', undefined, {}, 'turn-1', false)
     ]);
     mocks.inputProcessToolContinuation.mockResolvedValue({
-      llmUserMessage: { role: 'tool', content: 'Native API tool continuation' },
+      llmUserMessage: { role: 'tool', content: 'The tool tool call completed successfully.' },
       sourceEvent: {} as any,
       llmRequestMode: 'tool_history_only'
     });
@@ -193,7 +193,7 @@ describe('AgentTurnRunner interruption fences', () => {
         (event) =>
           event instanceof LLMUserMessageReadyEvent &&
           String((event as LLMUserMessageReadyEvent).llmUserMessage?.content ?? '').includes(
-            'Native API tool continuation'
+            'The tool tool call completed successfully.'
           )
       )
     ).toHaveLength(0);

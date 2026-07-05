@@ -12,6 +12,10 @@ import {
   AutobyteusConversationPayload,
   AutobyteusConversationRole
 } from '../api/autobyteus-conversation-payload.js';
+import {
+  buildToolContinuationDisplayText,
+  type CompletedToolContinuationSummary
+} from '../../agent/message/tool-continuation-display-text.js';
 
 const countLabel = (count: number, singular: string): string =>
   `${count} ${singular}${count === 1 ? '' : 's'}`;
@@ -172,19 +176,15 @@ const toAutobyteusRole = (role: MessageRole): AutobyteusConversationRole => role
 
 export class AutobyteusPromptRenderer extends BasePromptRenderer {
   async render(messages: Message[]): Promise<AutobyteusConversationPayload> {
-    let currentMessageIndex = -1;
+    const latestUserMessageIndex = this.findLatestUserMessageIndex(messages);
 
-    for (let index = messages.length - 1; index >= 0; index -= 1) {
-      const msg = messages[index];
-      if (msg.role === MessageRole.USER) {
-        currentMessageIndex = index;
-        break;
-      }
-    }
-
-    if (currentMessageIndex < 0) {
+    if (latestUserMessageIndex < 0) {
       throw new Error('AutobyteusPromptRenderer requires at least one user message.');
     }
+
+    const trailingToolResults = this.collectTrailingToolResults(messages, latestUserMessageIndex);
+    const shouldAppendToolContinuation = trailingToolResults.length > 0;
+    const currentMessageIndex = shouldAppendToolContinuation ? messages.length : latestUserMessageIndex;
 
     const payload = {
       messages: messages.map((message, index): AutobyteusConversationMessage => {
@@ -206,7 +206,59 @@ export class AutobyteusPromptRenderer extends BasePromptRenderer {
       current_message_index: currentMessageIndex
     };
 
+    if (shouldAppendToolContinuation) {
+      payload.messages.push(this.buildSyntheticToolContinuationUserMessage(trailingToolResults));
+    }
+
     assertValidAutobyteusConversationPayload(payload);
     return payload;
+  }
+
+  private findLatestUserMessageIndex(messages: Message[]): number {
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      if (messages[index].role === MessageRole.USER) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  private collectTrailingToolResults(messages: Message[], latestUserMessageIndex: number): ToolResultPayload[] {
+    const results: ToolResultPayload[] = [];
+
+    for (let index = messages.length - 1; index > latestUserMessageIndex; index -= 1) {
+      const payload = messages[index].tool_payload;
+      if (payload instanceof ToolResultPayload) {
+        results.unshift(payload);
+        continue;
+      }
+
+      return results.length > 0 ? results : [];
+    }
+
+    return results;
+  }
+
+  private buildSyntheticToolContinuationUserMessage(
+    toolResults: ToolResultPayload[]
+  ): AutobyteusConversationMessage {
+    return {
+      role: MessageRole.USER,
+      content: this.buildSyntheticToolContinuationContent(toolResults),
+      image_urls: [],
+      audio_urls: [],
+      video_urls: []
+    };
+  }
+
+  private buildSyntheticToolContinuationContent(toolResults: ToolResultPayload[]): string {
+    return buildToolContinuationDisplayText(this.buildDisplayTextSummaries(toolResults));
+  }
+
+  private buildDisplayTextSummaries(toolResults: ToolResultPayload[]): CompletedToolContinuationSummary[] {
+    return toolResults.map((payload) => ({
+      toolName: payload.toolName,
+      error: payload.toolError
+    }));
   }
 }

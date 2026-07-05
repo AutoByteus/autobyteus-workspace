@@ -84,6 +84,30 @@ describe('OpenAIChatRenderer', () => {
     ]);
   });
 
+  it('renders media continuation text as completed-tool wording with image content parts', async () => {
+    const renderer = new OpenAIChatRenderer();
+    const rendered = await renderer.render([
+      new Message(MessageRole.USER, {
+        content: 'The read_media_file tool call completed successfully.',
+        image_urls: ['data:image/png;base64,aW1hZ2U=']
+      })
+    ]) as any[];
+
+    expect(rendered[0]).toMatchObject({ role: 'user' });
+    expect(rendered[0].content[0]).toEqual({
+      type: 'text',
+      text: 'The read_media_file tool call completed successfully.'
+    });
+    expect(rendered[0].content[1]).toMatchObject({
+      type: 'image_url',
+      image_url: {
+        url: expect.stringContaining('base64,aW1hZ2U=')
+      }
+    });
+    expect(JSON.stringify(rendered)).not.toContain('Native API tool continuation');
+    expect(JSON.stringify(rendered)).not.toContain('Tool history continuation');
+  });
+
   it('omits reasoning_content for non-tool assistant messages by default', async () => {
     const rendered = await new OpenAIChatRenderer().render([
       new Message(MessageRole.ASSISTANT, {
