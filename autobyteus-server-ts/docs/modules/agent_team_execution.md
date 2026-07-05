@@ -220,13 +220,24 @@ The happy path is push-based:
    delegation owned by that run, protects the coordinator by default, and calls
    `TeamRun.settleTaskAgentInstance(routeKey, taskAgentRunId, reason)` with a
    stale-route guard.
-10. Task-team settlement watches the active child team run until the child has no
+10. Task-team settlement watches the known child team run until the child has no
     open task-delegation ledger work, no active task-agent instances, and an
-    idle/offline aggregate status. It then calls
+    idle/offline aggregate status. Review acceptance and child status events are
+    only settlement wakeups: one coordinator-owned lifecycle transition may be
+    `settling` for a given `taskTeamRunId` at a time, so duplicate wakeups must
+    not start duplicate destructive close sequences. Settlement then calls
     `TeamRun.settleTaskTeamInstance(logicalTeamRouteKey, taskTeamRunId,
-    reason)`, detaches the task-team run from the delegation run registry, and
-    unbinds it from `TaskTeamActiveRunDirectory`. Future delegations to the same
-    logical team remain topology-based and allocate fresh task-team run identity.
+    reason)`. Accepted settlement terminates the child run through the child
+    team's lifecycle owner; already-stopping/offline child state converges as the
+    desired inactive outcome, while real active termination failures remain
+    rejected and keep the active binding visible for retry/diagnostics. After
+    accepted termination, the task-team root publishes or bridges a scoped root
+    `TEAM_STATUS` with `status: "offline"` before disposal, the coordinator
+    detaches the task-team run from the delegation run registry, and
+    `TaskTeamActiveRunDirectory` is unbound so future status snapshots and
+    reconnect/reload paths do not rehydrate the completed transient row. Future
+    delegations to the same logical team remain topology-based and allocate fresh
+    task-team run identity.
 
 Task-delegation work packets and lifecycle follow-up notifications are still
 delivered as runtime/model input, but their visible live transcript projection is

@@ -65,6 +65,25 @@ describe("TaskTeamActiveRunDirectory", () => {
     expect(directory.resolveActiveRun(firstRun.runId)).toBeNull();
   });
 
+  it("distinguishes active lookup from known binding lookup for inactive cleanup", () => {
+    const directory = new TaskTeamActiveRunDirectory();
+    const identity = buildIdentity();
+    const inactiveRun = buildRun("child-team-run-1", false);
+
+    directory.bindActiveRun(identity, inactiveRun);
+
+    expect(directory.resolveActiveRun(identity.taskTeamRunId)).toBeNull();
+    expect(directory.resolveActiveEntryByTaskTeamRunId(identity.taskTeamRunId)).toBeNull();
+    expect(directory.resolveKnownEntryByTaskTeamRunId(identity.taskTeamRunId)).toMatchObject({
+      taskTeamRunId: identity.taskTeamRunId,
+      childTeamRunId: "child-team-run-1",
+      activeRun: inactiveRun,
+    });
+
+    directory.unbind(identity.taskTeamRunId);
+    expect(directory.resolveKnownEntryByTaskTeamRunId(identity.taskTeamRunId)).toBeNull();
+  });
+
   it("cleans all active entries for a parent team run", () => {
     const directory = new TaskTeamActiveRunDirectory();
     directory.bindActiveRun(buildIdentity(), buildRun("child-team-run-1"));

@@ -110,6 +110,15 @@ rows are driven by member `AGENT_STATUS` snapshots/events or member-scoped
 history; an active running or initializing team can legitimately contain one
 active member and other offline members.
 
+For delegated task-team execution cleanup, successful accepted settlement emits
+or bridges a task-team-scoped root `TEAM_STATUS` with `status: "offline"` before
+the task-team handle is disposed. The event carries the task-team identity
+fields described above and uses the task-team root source path. Clients should
+treat it as the authoritative live cleanup signal for the transient task-team
+root and its scoped children; reconnect/reload should rely on the corresponding
+absence of that settled task-team handle from backend status snapshots rather
+than reconstructing it from durable task history.
+
 Status payloads expose only normalized `status` plus documented metadata. Native runtime transition-field names are not part of the server WebSocket status contract.
 
 Segment payloads use snake-case `turn_id` as the canonical transport field for

@@ -200,13 +200,11 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   }
 
   async terminate(): Promise<AgentOperationResult> {
-    const canRestore = typeof this.context.platformAgentRunId === "string"
-      && this.context.platformAgentRunId.trim().length > 0;
-    const run = this.agentRun?.isActive() || canRestore
-      ? await this.ensureReady()
-      : this.agentRun;
+    const run = this.agentRun;
     const result = run ? await run.terminate() : { accepted: true };
-    this.dispose();
+    if (result.accepted) {
+      this.dispose();
+    }
     return result;
   }
 
