@@ -14,12 +14,16 @@ messages carry `reference_files` in the target runtime input/event metadata, but
 they intentionally omit Team Communication projection fields and do not create
 Team tab reference rows.
 
-Task-delegation `reference_files` are owned by Task Delegation. They are
-normalized as task-owned `referenceFiles` on persisted
-`TaskDelegationRecord` rows, rendered in the Team tab `Tasks` section, and
-served by task-owned identity. Live task-delegation events may trigger a records
-refresh, but the durable reference source is the task-delegation records file,
-not Agent Artifacts or Team Communication.
+Task-delegation `reference_files` are owned by Task Delegation. They must be
+explicit absolute local filesystem paths; relative paths, URL/protocol-shaped
+values, and route-template or relative segments are rejected before task
+persistence. Accepted paths are normalized as task-owned `referenceFiles` on
+persisted `TaskDelegationRecord` rows, rendered in the Team tab `Tasks` section,
+and served by task-owned identity. New task references use a route-safe opaque
+`referenceId`; the persisted `referenceFiles[].path` remains the absolute local
+path used for content streaming. Live task-delegation events may trigger a
+records refresh, but the durable reference source is the task-delegation records
+file, not Agent Artifacts or Team Communication.
 
 ## TS Source
 
@@ -44,6 +48,7 @@ not Agent Artifacts or Team Communication.
   - `src/api/graphql/types/team-communication.ts`
   - `src/api/rest/team-communication.ts`
 - Task Delegation references for delegated task records:
+  - `src/services/reference-files/absolute-local-reference-files.ts`
   - `src/agent-team-execution/task-delegation/task-delegation-reference-file.ts`
   - `src/agent-team-execution/task-delegation/task-delegation-reference-content-service.ts`
   - `src/agent-team-execution/task-delegation/task-delegation-service.ts`
@@ -92,9 +97,12 @@ the structured `reference_files` list on accepted `recipient_name` team-route
 message payloads. Direct exact-run message references remain direct runtime
 input/event metadata unless a separate future projection is designed.
 
-Task-delegation references use the same explicit `reference_files` input idea
-but remain task-owned: the active task service normalizes them into durable
-`TaskReferenceFile` objects on `TaskDelegationRecord` rows. The task reference
-route first uses active task services when available, then falls back to the
-persisted root-run records file, without involving Team Communication storage or
-Agent Artifact projection.
+Task-delegation references use the same explicit absolute-local
+`reference_files` input idea but remain task-owned: the active task service
+normalizes valid paths into durable `TaskReferenceFile` objects on
+`TaskDelegationRecord` rows. The task reference route first uses active task
+services when available, then falls back to the persisted root-run records file,
+without involving Team Communication storage or Agent Artifact projection.
+Historical relative task references or pre-fix path-derived ids are not repaired
+by this route; invalid stored paths continue to fail at readback instead of
+falling back to workspace-relative resolution.

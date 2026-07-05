@@ -127,18 +127,22 @@ model-facing task-delegation protocol is:
 
 - `delegate_task`: a coordinator/delegator submits one bounded ready-to-run task
   with `target: { kind: "member" | "team", name }`, rich `description`, and
-  optional `reference_files`. Member targets are physical current-team agent
-  members. Team targets are visible current-team `agent_team` / subteam members
-  that become the accountable task owner. The old direct `member_name` selector
-  is not part of the current model-facing surface.
+  optional `reference_files` containing absolute local filesystem paths only.
+  Member targets are physical current-team agent members. Team targets are
+  visible current-team `agent_team` / subteam members that become the
+  accountable task owner. The old direct `member_name` selector is not part of
+  the current model-facing surface.
 - `submit_task_result`: the bound task-agent or task-team ingress context
   submits one reviewable result for its current task. The tool is selector-free;
-  task identity comes from the caller's bound execution context.
+  task identity comes from the caller's bound execution context, and optional
+  `reference_files` follow the same absolute-local rule as delegated work
+  packets.
 - `review_task_result`: the task review owner reviews the latest pending
   submission by `task_id` using `decision="accept"` or
   `decision="request_revision"`. Revision decisions require a non-empty
   task-result `comment` and are delivered by the system to the same task-agent
-  or task-team execution instance.
+  or task-team execution instance. Optional review `reference_files` must also
+  be absolute local filesystem paths.
 
 `send_message_to` remains ordinary teammate communication only. It is not the
 task result, revision, acceptance, or finalization protocol. Communication
@@ -298,10 +302,12 @@ execution kind/run id, `referenceFiles`, and original normalized
 runtime enrichment and refresh triggers; its durable display source is
 `getTaskDelegationRecords(teamRunId)`. `referenceFiles` are task-owned rows from
 normalized task records, not Team Communication message references, and must not
-use message ids or message reference routes. `TaskDelegationService` remains the
-active-runtime reference authority while a service is registered; when the active
-service is gone, `TaskDelegationReferenceContentService` falls back to the
-persisted root-team-run records file.
+use message ids or message reference routes. For new records, `referenceId` is a
+route-safe opaque identity and `path` is the stored normalized absolute local
+path. `TaskDelegationService` remains the active-runtime reference authority
+while a service is registered; when the active service is gone,
+`TaskDelegationReferenceContentService` falls back to the persisted
+root-team-run records file.
 
 Durable task records are stored once per root team run at:
 
@@ -331,7 +337,11 @@ The route serves content through `TaskDelegationReferenceContentService` with
 `cache-control: no-store`. Missing/unavailable references map to `404`, invalid
 stored reference paths map to `400`, unreadable paths map to `403`, and callers
 must continue to treat `teamRunId + taskId + referenceId` as the explicit task
-subject identity.
+subject identity. The route resolves the stored task reference by identity and
+then streams the stored absolute `path`; clients and servers must not derive a
+filesystem path from `referenceId`. Historical relative references and pre-fix
+path-derived ids are intentionally not migrated or served through
+workspace-relative, wildcard-route, or frontend fallback compatibility paths.
 
 ### Task Delegation Validation Notes
 
@@ -339,8 +349,10 @@ Durable deterministic coverage lives in the task-delegation integration/unit
 suites under `tests/integration/agent-team-execution/` and
 `tests/unit/agent-team-execution/`. The integration suite covers member-target
 and team-target delegation, task-team ingress, child tool routing, revision,
-settlement gates, cleanup, and sequential same-logical-team delegation. A gated
-live mixed-runtime E2E lives at
+settlement gates, cleanup, sequential same-logical-team delegation,
+absolute-only task `reference_files`, route-safe task `referenceId` generation,
+successful readable content fetches for stored absolute paths, and invalid
+stored relative-path readback. A gated live mixed-runtime E2E lives at
 `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`; it creates a real
 GraphQL/websocket team with an AutoByteus/LMStudio Qwen coordinator and a Codex
 `gpt-5.5` worker for the concrete task-agent result/revision path. The live path

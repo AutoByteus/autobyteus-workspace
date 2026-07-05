@@ -95,11 +95,12 @@ export const composeMemberRunInstructions = (
     runtimeLines.push("");
     runtimeLines.push("Task delegation protocol");
     runtimeLines.push('- Use `delegate_task` to assign one bounded ready-to-run task to an explicit target object: `{ target: { kind: "member" | "team", name }, description, reference_files? }`. The `description` is task-centered content: objective, context, constraints, done conditions, expected output, and reference guidance for the task itself.');
+    runtimeLines.push("- Task-delegation `reference_files` must be absolute local file paths. Use full paths returned by file-writing tools or run `realpath <file>` before passing references; relative paths and URLs are rejected.");
     runtimeLines.push("- Member targets are physical current-team agent members. Team targets are visible current-team teams/subteams; the team is accountable and the listed ingress coordinator receives the initial packet.");
     runtimeLines.push("- To assign multiple independent tasks, call `delegate_task` separately for each task.");
     runtimeLines.push("- Available lifecycle tools for this workflow are `delegate_task`, `submit_task_result`, and `review_task_result`.");
     runtimeLines.push("- Activated task-agent or task-team executions receive task details directly in a work packet. The framework marks them active/running internally; do not report in_progress.");
-    runtimeLines.push("- Task execution targets submit reviewable results with `submit_task_result`; provide a non-empty `message` and optional `reference_files`.");
+    runtimeLines.push("- Task execution targets submit reviewable results with `submit_task_result`; provide a non-empty `message` and optional absolute local `reference_files`.");
     runtimeLines.push("- The task review owner reviews submitted results with `review_task_result` using decision `accept` or `request_revision`; revision decisions require a non-empty `comment` with task-result feedback or revision instructions, and are delivered by the system to the same task execution instance.");
     runtimeLines.push("- `send_message_to` remains ordinary agent message delivery only. Do not use it for task result submission, revision requests, acceptance, or finalization.");
     runtimeLines.push("- After task-result acceptance, the framework settles or exits the final task execution after safe gates confirm no delegated work remains for that execution.");

@@ -146,6 +146,17 @@ task-team ingress contexts submit reviewable output with `submit_task_result`;
 the tool accepts only `message` and optional `reference_files` because the task
 is inferred from the caller's bound execution context.
 
+`reference_files` on `delegate_task`, `submit_task_result`, and
+`review_task_result` are explicit absolute local filesystem paths only. Callers
+should pass full paths returned by file-writing tools or resolve local files
+with `realpath` before invoking the tools. Relative paths, URLs/protocol-shaped
+values, and relative or route-template path segments are rejected before task
+record, submission, or review persistence; no workspace-relative compatibility
+resolver or historical migration runs for task references. Accepted task
+reference rows keep the normalized absolute path in `referenceFiles[].path`, and
+new `referenceId` values are route-safe opaque identities rather than embedded
+file paths.
+
 The task review owner reviews the latest pending submission with
 `review_task_result`, using `decision="accept"` to finalize or
 `decision="request_revision"` plus a task-result `comment` for revision

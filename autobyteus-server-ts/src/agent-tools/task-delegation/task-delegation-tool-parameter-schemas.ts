@@ -41,7 +41,7 @@ export const buildDelegateTaskParameterSchema = (): ParameterSchema => new Param
   new ParameterDefinition({
     name: "reference_files",
     type: ParameterType.ARRAY,
-    description: "Optional file/artifact paths or references the task execution target should inspect.",
+    description: "Optional absolute local file paths the task execution target should inspect. Use full filesystem paths, for example paths returned by file-writing tools or `realpath`; relative paths and URLs are rejected.",
     required: false,
     arrayItemSchema: { type: "string" },
   }),
@@ -58,7 +58,7 @@ export const buildSubmitTaskResultParameterSchema = (): ParameterSchema =>
     new ParameterDefinition({
       name: "reference_files",
       type: ParameterType.ARRAY,
-      description: "Optional file/artifact paths or references that support this submitted result.",
+      description: "Optional absolute local file paths that support this submitted result. Use full filesystem paths, for example paths returned by file-writing tools or `realpath`; relative paths and URLs are rejected.",
       required: false,
       arrayItemSchema: { type: "string" },
     }),
@@ -88,7 +88,7 @@ export const buildReviewTaskResultParameterSchema = (): ParameterSchema =>
     new ParameterDefinition({
       name: "reference_files",
       type: ParameterType.ARRAY,
-      description: "Optional file/artifact paths or references for revision instructions or acceptance context.",
+      description: "Optional absolute local file paths for revision instructions or acceptance context. Use full filesystem paths, for example paths returned by file-writing tools or `realpath`; relative paths and URLs are rejected.",
       required: false,
       arrayItemSchema: { type: "string" },
     }),

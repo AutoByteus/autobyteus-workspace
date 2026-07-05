@@ -167,7 +167,9 @@ Content route ownership stays split:
 - Task-delegation reference rows use
   `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`
   after resolving active task-owned `teamRunId + taskId + referenceId`
-  identity.
+  identity. New task `referenceId` values are route-safe opaque identities; the
+  stored `referenceFiles[].path` carries the normalized absolute local file path
+  used for streaming.
 
 The focused frontend member decides whether a message is shown in the sent or
 received Team Communication perspective by deriving that focused node's

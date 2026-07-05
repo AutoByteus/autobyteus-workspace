@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import fastify, { type FastifyInstance } from "fastify";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -47,6 +48,7 @@ import {
 import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { TaskDelegationRunRegistry } from "../../../src/agent-team-execution/task-delegation/task-delegation-run-registry.js";
+import { TaskDelegationReferenceContentService } from "../../../src/agent-team-execution/task-delegation/task-delegation-reference-content-service.js";
 import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../../src/agent-team-execution/task-delegation/task-agent-directory.js";
 import {
   clearTaskTeamActiveRunDirectory,
@@ -72,6 +74,7 @@ import {
   TaskDelegationToolService,
 } from "../../../src/agent-tools/task-delegation/task-delegation-tool-service.js";
 import { TaskDelegationToolRunRouter } from "../../../src/agent-tools/task-delegation/task-delegation-tool-run-router.js";
+import { registerTaskDelegationRoutes } from "../../../src/api/rest/task-delegation.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const teamRunId = "task-delegation-codex-run";
@@ -671,6 +674,55 @@ const taskDelegationEvents = (backend: ManagedCodexTeamBackend, eventType: TeamR
 const recordsById = (records: readonly TaskDelegationRecord[]): Map<string, TaskDelegationRecord> =>
   new Map(records.map((record) => [record.taskId, record]));
 
+const taskReferenceContentUrl = (input: {
+  teamRunId: string;
+  taskId: string;
+  referenceId: string;
+}): string =>
+  `/team-runs/${encodeURIComponent(input.teamRunId)}`
+  + `/task-delegations/${encodeURIComponent(input.taskId)}`
+  + `/references/${encodeURIComponent(input.referenceId)}/content`;
+
+const createTaskReferenceRouteApp = async (harness: Harness): Promise<FastifyInstance> => {
+  const app = fastify();
+  await registerTaskDelegationRoutes(app, {
+    contentService: new TaskDelegationReferenceContentService(
+      harness.runRegistry,
+      harness.recordsService,
+    ),
+  });
+  return app;
+};
+
+const memberAddress = (memberRouteKey: string) => ({
+  segments: [{ kind: "member" as const, memberRouteKey }],
+});
+
+const legacyRelativeReferenceRecord = (input: {
+  taskId: string;
+  referenceId: string;
+  referencePath: string;
+}): TaskDelegationRecord => ({
+  taskId: input.taskId,
+  status: "active",
+  senderAddress: memberAddress("coordinator"),
+  receiverAddress: memberAddress("worker"),
+  receiverTargetKind: "member",
+  content: "Legacy relative reference record.",
+  referenceFiles: [
+    {
+      referenceId: input.referenceId,
+      path: input.referencePath,
+      type: "file",
+      createdAt: "2026-07-05T00:00:00.000Z",
+      updatedAt: "2026-07-05T00:00:00.000Z",
+    },
+  ],
+  taskRun: null,
+  updates: [],
+  createdAt: "2026-07-05T00:00:00.000Z",
+});
+
 const publishIdleEvent = (
   backend: ManagedCodexTeamBackend,
   taskId: string,
@@ -841,6 +893,140 @@ describe("task delegation tool lifecycle integration", () => {
       .resolves.toEqual(persistedBeforeRegistryClear);
     harness.runRegistry.clear();
     await harness.manager.terminateTeamRun(harness.backend.runId);
+  });
+
+  it("enforces absolute-only task reference files through managed tools and the preview route", async () => {
+    const harness = await createHarness();
+    const app = await createTaskReferenceRouteApp(harness);
+    try {
+      await expect(executeDelegateTask(harness, {
+        target: { kind: "member", name: "worker" },
+        description: "Use the attached classroom problem.",
+        reference_files: ["math_problem_train_bird.txt"],
+      })).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "reference_files must be an array of absolute local file path strings. Invalid index=0 reason=path must be absolute.",
+      });
+      await expect(harness.recordsService.getTaskDelegationRecords(teamRunId))
+        .resolves.toEqual([]);
+      expect(harness.backend.taskAgentStarts).toEqual([]);
+
+      const referenceDir = await fs.mkdtemp(path.join(os.tmpdir(), "task-reference-absolute-"));
+      tempDirs.push(referenceDir);
+      const absoluteReferencePath = path.join(referenceDir, "math_problem_train_bird.txt");
+      await fs.writeFile(absoluteReferencePath, "Train-bird math problem content", "utf-8");
+      const createdAbsoluteReferenceTask = await executeDelegateTask(harness, {
+        target: { kind: "member", name: "worker" },
+        description: "Use the attached absolute classroom problem.",
+        reference_files: [absoluteReferencePath],
+      });
+      expect(createdAbsoluteReferenceTask).toEqual({
+        task_id: expect.stringMatching(/^task_\d{4}$/),
+        status: "active",
+      });
+      const absoluteReferenceTaskId = createdAbsoluteReferenceTask.task_id;
+
+      const recordsAfterDelegate = await harness.recordsService.getTaskDelegationRecords(teamRunId);
+      expect(recordsAfterDelegate).toHaveLength(1);
+      expect(recordsAfterDelegate[0]!.taskId).toBe(absoluteReferenceTaskId);
+      const taskReference = recordsAfterDelegate[0]!.referenceFiles[0]!;
+      expect(taskReference).toMatchObject({
+        referenceId: expect.stringMatching(/^task-reference:0:[a-f0-9]{32}$/),
+        path: absoluteReferencePath,
+        type: "file",
+      });
+      expect(taskReference.referenceId).not.toContain(absoluteReferencePath);
+
+      const contentResponse = await app.inject({
+        method: "GET",
+        url: taskReferenceContentUrl({
+          teamRunId,
+          taskId: absoluteReferenceTaskId,
+          referenceId: taskReference.referenceId,
+        }),
+      });
+      if (contentResponse.statusCode !== 200) {
+        throw new Error(
+          `Expected task reference content route to return 200 for persisted absolute reference `
+          + `${JSON.stringify(taskReference)}, received ${contentResponse.statusCode}: ${contentResponse.payload}`,
+        );
+      }
+      expect(contentResponse.statusCode).toBe(200);
+      expect(contentResponse.payload).toBe("Train-bird math problem content");
+      expect(String(contentResponse.headers["content-type"])).toContain("text/plain");
+      expect(contentResponse.headers["cache-control"]).toBe("no-store");
+
+      await expect(executeSubmitTaskResultAsTaskAgent(harness, absoluteReferenceTaskId, {
+        message: "Result with a relative reference.",
+        reference_files: ["relative-result.md"],
+      })).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "reference_files must be an array of absolute local file path strings. Invalid index=0 reason=path must be absolute.",
+      });
+      const recordsAfterRejectedSubmission = recordsById(
+        await harness.recordsService.getTaskDelegationRecords(teamRunId),
+      );
+      expect(recordsAfterRejectedSubmission.get(absoluteReferenceTaskId)).toMatchObject({
+        status: "active",
+        updates: [],
+      });
+
+      await expect(executeSubmitTaskResultAsTaskAgent(harness, absoluteReferenceTaskId, {
+        message: "Result with an absolute reference.",
+        reference_files: [absoluteReferencePath],
+      })).resolves.toEqual({
+        task_id: absoluteReferenceTaskId,
+        status: "awaiting_review",
+      });
+      await expect(executeCoordinatorReview(harness, {
+        task_id: absoluteReferenceTaskId,
+        decision: "request_revision",
+        comment: "Please revise with an absolute artifact reference.",
+        reference_files: ["relative-revision.md"],
+      })).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "reference_files must be an array of absolute local file path strings. Invalid index=0 reason=path must be absolute.",
+      });
+      const recordsAfterRejectedReview = recordsById(
+        await harness.recordsService.getTaskDelegationRecords(teamRunId),
+      );
+      expect(recordsAfterRejectedReview.get(absoluteReferenceTaskId)).toMatchObject({
+        status: "awaiting_review",
+        updates: [
+          expect.objectContaining({
+            kind: "submission",
+            referenceFiles: [expect.objectContaining({ path: absoluteReferencePath })],
+          }),
+        ],
+      });
+      expect(recordsAfterRejectedReview.get(absoluteReferenceTaskId)!.updates).toHaveLength(1);
+
+      harness.runRegistry.clear();
+      await harness.recordsService.persistRecord(
+        { rootTeamRunId: teamRunId, currentTeamRunId: teamRunId, teamRunPath: [] },
+        legacyRelativeReferenceRecord({
+          taskId: "task_legacy_relative",
+          referenceId: "task-reference:0:math_problem_train_bird.txt",
+          referencePath: "math_problem_train_bird.txt",
+        }),
+      );
+      const legacyResponse = await app.inject({
+        method: "GET",
+        url: taskReferenceContentUrl({
+          teamRunId,
+          taskId: "task_legacy_relative",
+          referenceId: "task-reference:0:math_problem_train_bird.txt",
+        }),
+      });
+      expect(legacyResponse.statusCode).toBe(400);
+      expect(legacyResponse.json()).toEqual(expect.objectContaining({
+        code: "INVALID_REFERENCE_PATH",
+      }));
+    } finally {
+      await app.close();
+      harness.runRegistry.clear();
+      await harness.manager.terminateTeamRun(harness.backend.runId).catch(() => undefined);
+    }
   });
 
   it("lets a task-agent delegate child work and review the child through tight task-agent identity", async () => {

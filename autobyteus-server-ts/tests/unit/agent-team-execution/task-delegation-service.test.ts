@@ -430,6 +430,103 @@ describe("TaskDelegationService", () => {
     expect(service.resolveTaskReference({ taskId: "task_0001", referenceId: "missing" })).toBeNull();
   });
 
+  it("rejects relative delegate_task reference files before task creation", async () => {
+    const backend = new FakeTeamRunBackend();
+    const persistedRecords: any[] = [];
+    const service = createService(backend, persistedRecords);
+
+    await expect(
+      service.delegateTask(
+        buildContext(),
+        delegateMemberTask("worker", "Use the attached source.", ["math_problem_train_bird.txt"]),
+      ),
+    ).rejects.toMatchObject({
+      code: "VALIDATION_ERROR",
+      message: "reference_files must be an array of absolute local file path strings. Invalid index=0 reason=path must be absolute.",
+    });
+
+    expect(persistedRecords).toEqual([]);
+    expect(backend.taskAgentStarts).toEqual([]);
+    expect(taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED")).toEqual([]);
+  });
+
+  it("rejects invalid absolute-looking delegate_task reference files before task creation", async () => {
+    const backend = new FakeTeamRunBackend();
+    const persistedRecords: any[] = [];
+    const service = createService(backend, persistedRecords);
+
+    await expect(
+      service.delegateTask(
+        buildContext(),
+        delegateMemberTask("worker", "Use the attached source.", ["/tmp/../source.md"]),
+      ),
+    ).rejects.toMatchObject({
+      code: "VALIDATION_ERROR",
+      message: "reference_files must be an array of absolute local file path strings. Invalid index=0 reason=path contains route-template or relative segments.",
+    });
+
+    expect(persistedRecords).toEqual([]);
+    expect(backend.taskAgentStarts).toEqual([]);
+  });
+
+  it("rejects relative submit_task_result reference files before submission persistence", async () => {
+    const backend = new FakeTeamRunBackend();
+    const persistedRecords: any[] = [];
+    const service = createService(backend, persistedRecords);
+    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Do work."));
+    const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
+
+    await expect(
+      service.submitTaskResult(buildContext(taskAgentCaller), {
+        message: "Implemented the requested work.",
+        reference_files: ["relative-result.md"],
+      }),
+    ).rejects.toMatchObject({
+      code: "VALIDATION_ERROR",
+      message: "reference_files must be an array of absolute local file path strings. Invalid index=0 reason=path must be absolute.",
+    });
+
+    expect(persistedRecords).toHaveLength(1);
+    expect(persistedRecords[0]).toMatchObject({
+      taskId: "task_0001",
+      status: "active",
+      updates: [],
+    });
+  });
+
+  it("rejects relative review_task_result reference files before review persistence", async () => {
+    const backend = new FakeTeamRunBackend();
+    const persistedRecords: any[] = [];
+    const service = createService(backend, persistedRecords);
+    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Do work."));
+    const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
+    await service.submitTaskResult(buildContext(taskAgentCaller), {
+      message: "Implemented the requested work.",
+      reference_files: ["/tmp/result.md"],
+    });
+
+    await expect(
+      service.reviewTaskResult(buildContext(), {
+        task_id: "task_0001",
+        decision: "request_revision",
+        comment: "Please revise.",
+        reference_files: ["relative-revision.md"],
+      }),
+    ).rejects.toMatchObject({
+      code: "VALIDATION_ERROR",
+      message: "reference_files must be an array of absolute local file path strings. Invalid index=0 reason=path must be absolute.",
+    });
+
+    expect(persistedRecords).toHaveLength(1);
+    expect(persistedRecords[0]).toMatchObject({
+      taskId: "task_0001",
+      status: "awaiting_review",
+      updates: [
+        expect.objectContaining({ kind: "submission" }),
+      ],
+    });
+  });
+
   it("delegates to an explicit team target and binds a task-team execution instance", async () => {
     const backend = new FakeTeamRunBackend();
     const persistedRecords: any[] = [];
