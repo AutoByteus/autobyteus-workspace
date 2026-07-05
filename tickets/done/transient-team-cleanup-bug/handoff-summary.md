@@ -75,7 +75,7 @@ bash scripts/desktop-release.sh release 1.3.98 --release-notes tickets/done/tran
 
 The helper bumped `autobyteus-web` and `autobyteus-message-gateway` to `1.3.98`, synced curated release notes and the managed messaging release manifest, pushed `origin/personal`, and pushed annotated tag `v1.3.98`.
 
-Tag-triggered workflows observed as started/in progress:
+Tag-triggered workflows observed after release:
 
 - Desktop Release: <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28728596538>
 - Android APK Release: <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28728596550>
@@ -88,7 +88,7 @@ Tag-triggered workflows observed as started/in progress:
 - Full live autonomous `Nested Classroom Test Team` browser repro was not run; deterministic integration, owner-boundary, and frontend streaming coverage passed and are the primary proof.
 - Environment-gated live `mixed-task-delegation.e2e.test.ts` was skipped locally because live runtime flags were absent and was not used as primary proof.
 - Broad `pnpm -C autobyteus-server-ts run typecheck` remains blocked by the existing repo `TS6059` `rootDir`/tests configuration; source build typecheck passed.
-- At release handoff time, tag-triggered workflows were in progress and the GitHub Release page was not yet visible. This is expected until one publish job creates/uploads release assets.
+- At final handoff time, the GitHub Release page was visible. Android APK and Messaging Gateway workflows had succeeded; Desktop, iOS, and Server Docker workflows were still in progress.
 
 ## Key Artifacts
 

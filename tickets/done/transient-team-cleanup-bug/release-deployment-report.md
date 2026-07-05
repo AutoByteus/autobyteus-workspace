@@ -93,12 +93,12 @@ Tag-triggered workflow startup observed via `gh run list`:
 | Workflow | Run ID | Status At Observation | URL |
 | --- | ---: | --- | --- |
 | Desktop Release | `28728596538` | `in_progress` | <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28728596538> |
-| Android APK Release | `28728596550` | `in_progress` | <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28728596550> |
+| Android APK Release | `28728596550` | `completed / success` | <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28728596550> |
 | iOS App Store Connect Release | `28728596549` | `in_progress` | <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28728596549> |
-| Release Messaging Gateway | `28728596565` | `in_progress` | <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28728596565> |
+| Release Messaging Gateway | `28728596565` | `completed / success` | <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28728596565> |
 | Server Docker Release | `28728596586` | `in_progress` | <https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28728596586> |
 
-At the same observation point, `gh release view v1.3.98` did not yet return a visible GitHub Release, which is expected until one of the publish jobs creates it and uploads assets.
+A later `gh release view v1.3.98` confirmed the GitHub Release is visible at <https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.98>. At final observation, Android APK and Messaging Gateway release workflows had completed successfully, while Desktop, iOS, and Server Docker workflows were still in progress.
 
 ## Post-Finalization Cleanup
 
