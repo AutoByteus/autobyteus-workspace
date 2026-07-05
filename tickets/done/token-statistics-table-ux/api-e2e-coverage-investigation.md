@@ -2,18 +2,18 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/implementation-handoff.md`
-- Visual Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/implementation-visual-rework.md`
-- CR-001 Local Fix Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/implementation-local-fix-cr-001.md`
-- Delivery Reroute Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/delivery-reroute-report.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/implementation-handoff.md`
+- Visual Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/implementation-visual-rework.md`
+- CR-001 Local Fix Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/implementation-local-fix-cr-001.md`
+- Delivery Reroute Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/delivery-reroute-report.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/code-review-report.md`
 - Current Investigation Round: 3
 - Trigger: Code-review round 4 passed CR-001 and requested API/E2E revalidation of the current value-plus-solid-triangle Total Cost control and cost-inclusive accessible label. Prior API/E2E round 2 evidence is stale because it covered the earlier icon-only disclosure state.
-- Prior Investigation Reviewed: Round 2 in this file and prior execution report `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-execution-coverage-report.md`.
+- Prior Investigation Reviewed: Round 2 in this file and prior execution report `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-execution-coverage-report.md`.
 - Latest Authoritative Investigation: Round 3
 
 ## Current Requirement And Design Basis

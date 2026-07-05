@@ -15,8 +15,8 @@ Delivery resumed from the API/E2E round 2 pass and checkpointed that state, then
 
 - `autobyteus-web/components/settings/token-usage/TokenUsageTaskStatisticsTable.vue`
 - `autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts`
-- `tickets/in-progress/token-statistics-table-ux/implementation-handoff.md`
-- `tickets/in-progress/token-statistics-table-ux/implementation-visual-rework.md`
+- `tickets/done/token-statistics-table-ux/implementation-handoff.md`
+- `tickets/done/token-statistics-table-ux/implementation-visual-rework.md`
 - additional untracked visual fixture PNGs for a value/solid-triangle variant
 
 The current source differs from the API/E2E round 2 evidence. API/E2E round 2 evidence records a separate empty-text 20px Total Cost disclosure button (`totalCostButtonText: ""`, `totalCostButtonRect.width: 20`, SVG count 1). Current source renders the Total Cost value itself as the button with a solid CSS triangle indicator (`data-cost-detail-indicator`).
@@ -40,9 +40,9 @@ The current source differs from the API/E2E round 2 evidence. API/E2E round 2 ev
 - Release notes/handoff/release report were refreshed toward the observed current value/solid-triangle behavior.
 - A local unsigned macOS Electron build was run on the current worktree and passed:
   - Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:mac`
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/delivery-round2-electron-build.log`
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/delivery-round2-electron-build.log`
   - Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.dmg`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.zip`
-- `git diff --check` passed after delivery edits; log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/delivery-git-diff-check.log`.
+- `git diff --check` passed after delivery edits; log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/delivery-git-diff-check.log`.
 
 These delivery checks do not replace the missing post-drift code review/API-E2E coverage.
 

@@ -2,16 +2,16 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/implementation-handoff.md`
-- Visual Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/implementation-visual-rework.md`
-- CR-001 Local Fix Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/implementation-local-fix-cr-001.md`
-- Delivery Reroute Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/delivery-reroute-report.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/implementation-handoff.md`
+- Visual Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/implementation-visual-rework.md`
+- CR-001 Local Fix Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/implementation-local-fix-cr-001.md`
+- Delivery Reroute Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/delivery-reroute-report.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-coverage-investigation.md`
 - Current Execution Round: 3
 - Trigger: Code-review round 4 pass after CR-001 local fix; revalidate current value-plus-solid-triangle Total Cost control and cost-inclusive accessible label before delivery resumes.
 - Prior Round Reviewed: Round 2 in this report. Round 2 had no unresolved execution failures, but it is stale for the current source because it covered an icon-only Total Cost disclosure.
@@ -31,7 +31,7 @@ Execution followed the round 3 coverage-investigation decision for the current p
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -44,14 +44,14 @@ Execution followed the round 3 coverage-investigation decision for the current p
 
 | Path / Scenario | Validity Decision (`Still Valid`/`Needs Update`/`Stale / Remove`/`Replace`/`Out Of Scope`/`Unclear`) | Action Taken | Evidence |
 | --- | --- | --- | --- |
-| `autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts` | Still Valid | Executed | Passed in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-focused-vitest.log`; covers the reduced column set, six sort indicators, `aria-sort`, non-sortable Model/Input Cost/Output Cost headers, value-plus-solid-triangle Total Cost details button, visible/accessibility-label formatted cost/status, `aria-expanded`, detail indicator, non-complete status text, sorting/child attachment, breakdown content, and `colspan=9`. |
+| `autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts` | Still Valid | Executed | Passed in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-focused-vitest.log`; covers the reduced column set, six sort indicators, `aria-sort`, non-sortable Model/Input Cost/Output Cost headers, value-plus-solid-triangle Total Cost details button, visible/accessibility-label formatted cost/status, `aria-expanded`, detail indicator, non-complete status text, sorting/child attachment, breakdown content, and `colspan=9`. |
 | `autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts` | Still Valid | Executed | Passed in `api-e2e-round3-focused-vitest.log`; confirms page controls and fetch variables remain unchanged. |
 | `autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts` | Still Valid | Executed | Passed in `api-e2e-round3-focused-vitest.log`; confirms GraphQL variables and normalization remain unchanged. |
 | `autobyteus-web/components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts` | Out Of Scope | Not executed | Model diagnostics table was not changed by the task-table CR-001 fix. |
 | Backend token-usage E2E/integration suites under `autobyteus-server-ts/tests/.../token-usage` | Out Of Scope | Not executed | Backend/server token-usage behavior and GraphQL schema are unchanged. |
-| `guard:localization-boundary` | Still Valid | Executed | Passed in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-localization-boundary.log`. |
-| `audit:localization-literals` | Still Valid | Executed | Passed with zero unresolved findings in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-localization-literals.log`. |
-| `git diff --check` | Still Valid | Executed | Passed; no output in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-git-diff-check.log`. |
+| `guard:localization-boundary` | Still Valid | Executed | Passed in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-localization-boundary.log`. |
+| `audit:localization-literals` | Still Valid | Executed | Passed with zero unresolved findings in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-localization-literals.log`. |
+| `git diff --check` | Still Valid | Executed | Passed; no output in `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-git-diff-check.log`. |
 
 ## Compatibility / Legacy Scope Check
 
@@ -61,7 +61,7 @@ Execution followed the round 3 coverage-investigation decision for the current p
 - If compatibility-related invalid scope was observed, reroute classification used: N/A
 - Upstream recipient notified: N/A
 
-Evidence: implementation handoff, CR-001 local fix note, and code-review round 4 record clean removal of compatibility/legacy UI paths. Round 3 source cleanup check `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-source-cleanup-check.log` confirms the temporary fixture route is absent from live source and no old token-statistics `Details` localization key/source reference, `rowTypeLabel`, old inline status helper/badge path, old `colspan="11"`, hidden duplicate detail-toggle marker, or visible text `Details` button remains in the changed source/locale/test scope. The current value button's `group-hover:underline` is allowed because the value-plus-solid-triangle control is persistently visible; focused component/browser checks verify Input Cost and Output Cost cells have no buttons.
+Evidence: implementation handoff, CR-001 local fix note, and code-review round 4 record clean removal of compatibility/legacy UI paths. Round 3 source cleanup check `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-source-cleanup-check.log` confirms the temporary fixture route is absent from live source and no old token-statistics `Details` localization key/source reference, `rowTypeLabel`, old inline status helper/badge path, old `colspan="11"`, hidden duplicate detail-toggle marker, or visible text `Details` button remains in the changed source/locale/test scope. The current value button's `group-hover:underline` is allowed because the value-plus-solid-triangle control is persistently visible; focused component/browser checks verify Input Cost and Output Cost cells have no buttons.
 
 ## Execution Surfaces / Modes
 
@@ -126,15 +126,15 @@ No repository-resident durable tests were implemented or updated during API/E2E 
 
 ## Other Execution Artifacts
 
-- Focused Vitest log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-focused-vitest.log`
-- Localization boundary log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-localization-boundary.log`
-- Localization audit log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-localization-literals.log`
-- Git diff check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-git-diff-check.log`
-- Source cleanup check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-source-cleanup-check.log`
-- Browser probe log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-browser-probe.log`
-- Browser probe JSON evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-browser-probe-results.json`
-- Browser initial screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-token-table-browser-initial.png`
-- Browser expanded screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-token-table-browser-expanded.png`
+- Focused Vitest log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-focused-vitest.log`
+- Localization boundary log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-localization-boundary.log`
+- Localization audit log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-localization-literals.log`
+- Git diff check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-git-diff-check.log`
+- Source cleanup check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-source-cleanup-check.log`
+- Browser probe log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-browser-probe.log`
+- Browser probe JSON evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-browser-probe-results.json`
+- Browser initial screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-token-table-browser-initial.png`
+- Browser expanded screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/api-e2e-round3-token-table-browser-expanded.png`
 
 ## Temporary Execution Methods / Scaffolding
 

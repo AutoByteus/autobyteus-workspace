@@ -23,8 +23,8 @@ Used a temporary Nuxt fixture route (`autobyteus-web/pages/__token-usage-task-ta
 
 Evidence screenshots:
 
-- Table close-up: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-closeup.png`
-- Expanded detail state: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-expanded.png`
+- Table close-up: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-closeup.png`
+- Expanded detail state: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-expanded.png`
 
 
 ## Post-Review Accessibility Fix

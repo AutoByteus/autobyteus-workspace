@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/design-review-report.md`
 
 ## What Changed
 
@@ -63,7 +63,7 @@
 - Installed workspace dependencies for local validation with `pnpm install --filter autobyteus...` because the worktree initially had no `node_modules` and `vitest` was unavailable.
 - Generated Nuxt test/type metadata with `pnpm -C autobyteus-web exec nuxi prepare` because the initial test attempt failed on missing `autobyteus-web/.nuxt/tsconfig.json`.
 - Generated dependency/build artifacts are ignored and are not part of the git diff.
-- For visual validation, a temporary Nuxt fixture route was created with deterministic task-table rows, served locally, captured with headless Chrome/Playwright, and then removed. Visual evidence is stored at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-closeup.png` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-expanded.png`.
+- For visual validation, a temporary Nuxt fixture route was created with deterministic task-table rows, served locally, captured with headless Chrome/Playwright, and then removed. Visual evidence is stored at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-closeup.png` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-expanded.png`.
 
 ## Local Implementation Checks Run
 

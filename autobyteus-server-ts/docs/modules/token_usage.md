@@ -384,9 +384,11 @@ The frontend treats token usage as display-only state:
   non-complete price status appears through formatted `Total Cost` text plus the
   expanded breakdown. Sortable headers show compact persistent two-triangle
   neutral/active glyphs; `Model(s)`, `Input Cost`, and `Output Cost` remain
-  non-sortable, and cost details open through one visible icon-only disclosure
-  control in `Total Cost` rather than duplicate hover-only cost-cell buttons.
-  Team expansion is usage-derived
+  non-sortable, and cost details open through one visible value-plus-solid-
+  triangle button in `Total Cost` rather than duplicate hover-only cost-cell
+  buttons. The button text is the formatted total cost/status, and its
+  localized show/hide label/title repeat that same cost/status for assistive
+  technology. Team expansion is usage-derived
   for the selected period: inactive roster members are not emitted, child rows
   remain attached to their parent during sorting, and member/task usage must not
   be double-counted as standalone top-level rows. The frontend consumes
@@ -460,9 +462,9 @@ for Task default grouping, no `rangeMode`, recursive `children`,
 `executionAddress`, direct members, task-team rows, task-agent rows, nested
 task-agent-under-task-team prefixes, repeated same-target execution separation,
 legacy no-address fallback, first-usage created-time fallback, runtime/model
-grouping, reduced Task columns, compact sort affordances, icon-only Total Cost
-disclosure controls, status/cost-breakdown display, and Model runtime
-diagnostics. Live
+grouping, reduced Task columns, compact sort affordances, value-plus-solid-
+triangle Total Cost disclosure controls, cost-inclusive accessible labels,
+status/cost-breakdown display, and Model runtime diagnostics. Live
 browser/runtime/API/UI evidence from 2026-07-02 also exercised `Nested
 Classroom Test Team` with Codex App Server / GPT-5.5 and observed
 `TEAM_RUN -> TASK_TEAM_RUN StudentStudyGroup -> MEMBER_RUN student_one` plus

@@ -57,7 +57,7 @@ Visible columns must appear in this order for MVP:
 | Output | Yes | Output tokens | Subline: thinking/reasoning tokens included in output when present. |
 | Input Cost | Yes | Backend-estimated input cost | Includes uncached + cache read/write costs; renders as a plain value, not a separate detail toggle. |
 | Output Cost | Yes | Backend-estimated output cost | Thinking is included in output, not added again; renders as a plain value, not a separate detail toggle. |
-| Total Cost | Yes | Main cost scan column | Bold; sortable; includes one always-visible icon-only disclosure control for the row cost breakdown, with accessible show/hide labels. Non-complete price statuses render through the formatted cost text in this cell. |
+| Total Cost | Yes | Main cost scan column | Bold; sortable; includes one always-visible value-plus-solid-triangle disclosure button for the row cost breakdown. The button text is the formatted Total Cost value/status, and its accessible show/hide label/title include that same formatted cost/status. Non-complete price statuses render through the formatted cost text in this cell. |
 | Created Time | Yes for top-level rows | Root team run or standalone agent run creation time | Last column; local time; default sort newest first. Member rows may show `—`, `same as team`, or muted inherited parent time, but do not require or imply a separate member-created-time field. |
 
 Optional advanced values belong in details, not extra default columns:
@@ -115,10 +115,10 @@ Indented under the team row.
 
 ## Expanded Details Panel / Row
 
-When the row's `Total Cost` icon-only disclosure affordance is clicked, show a
-compact detail panel below the row. Do not rely on hover-only clickable numeric
-cost cells or a visible text `Details` button; `Input Cost` and `Output Cost`
-stay plain values in the table.
+When the row's `Total Cost` value-plus-solid-triangle disclosure button is
+clicked, show a compact detail panel below the row. Do not rely on hover-only
+clickable numeric cost cells or a visible text `Details` button; `Input Cost`
+and `Output Cost` stay plain values in the table.
 
 ### Shared cost composition
 
@@ -243,7 +243,7 @@ Recommended after MVP:
 | Select `Task` | Shows task/team run rows; default grouping. |
 | Select `Model` | Shows runtime/model grouped diagnostics table. |
 | Click team chevron | Expands/collapses usage-derived member rows. |
-| Click the icon-only disclosure in `Total Cost` | Opens/expands the row breakdown details. |
+| Click the value-plus-solid-triangle button in `Total Cost` | Opens/expands the row breakdown details; the accessible label/title include the row identity and visible formatted total cost/status. |
 | View formatted non-complete cost text or expanded details | Shows missing dimensions / mixed reasons. |
 | Sort total cost | Reorders top-level rows only; member rows stay attached to team. |
 

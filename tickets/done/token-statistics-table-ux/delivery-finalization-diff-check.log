@@ -1,0 +1,3 @@
+Passed: git diff --cached --check
+Passed: git diff --check
+Checked after ticket archive and finalization artifact updates on 2026-07-05.

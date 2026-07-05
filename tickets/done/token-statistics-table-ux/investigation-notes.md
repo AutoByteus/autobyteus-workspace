@@ -36,7 +36,7 @@ Reference screenshots supplied by user:
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/done/token-statistics-table-ux`
 - Current Branch: `codex/token-statistics-table-ux`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux`
 - Bootstrap Base Branch: `origin/personal`
