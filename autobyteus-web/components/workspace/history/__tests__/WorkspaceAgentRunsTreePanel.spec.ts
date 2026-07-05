@@ -802,7 +802,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
   });
 
-  it('selects a nested team row from the row body', async () => {
+  it('toggles and selects a nested team row from the row body', async () => {
     seedNestedTeamRun();
 
     const wrapper = mountComponent();
@@ -815,12 +815,19 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await wrapper.get('[data-test="workspace-team-member-team-1-engineering_org"]').trigger('click');
     await flushPromises();
 
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(true);
     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
         memberRouteKey: 'engineering_org',
       }),
     );
+
+    await wrapper.get('[data-test="workspace-team-member-team-1-engineering_org"]').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-engineering_org/implementation_engineer"]').exists()).toBe(false);
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledTimes(2);
   });
 
   it('keeps an expanded nested child visible after selecting it', async () => {

@@ -246,6 +246,9 @@ display-row projections rather than ordinary durable `TeamMemberTreeRow` history
 rows. Transient task-team roots with child rows are collapsed by default; their
 user-controlled disclosure state is keyed by the transient execution row identity
 so simultaneous task-team executions do not accidentally share expansion state.
+When a transient task-team row has children, activating the row body toggles that
+identity-keyed disclosure state while also selecting/focusing the transient row;
+the explicit disclosure control remains a stopped toggle-only target.
 Workspaces must not render delegated-task summary blocks, task reference rows,
 raw task arguments, approval controls, or delegated-task Technical details.
 Tasks is not an approval action surface: pending approval can appear only as
@@ -399,12 +402,15 @@ active-execution command focus. The Workspace history tree renders recursive
 `memberTree` structure when available, with `team.members` only as the flat
 fallback. Nested `agent_team` member rows appear as subteam rows with a Team
 badge and their own disclosure control; they are collapsed by default, expand
-children recursively with indentation, and the disclosure toggles children
-without selecting the row body. Clicking a member or subteam row whose route key
-exists in the team's `memberTree` should keep that route key selected in the
-history tree and Focus display even when the member is offline or has no active
-runtime context. Live/hydrated team-context merges must preserve the persisted
-history row's workspace grouping and use this roster focus for selected-row
+children recursively with indentation, and disclosure-bearing subteam row-body
+activation toggles children while preserving row selection/focus. The explicit
+disclosure control remains visible and toggles children without selecting the
+row or bubbling into the row-body handler. Leaf member rows without children
+remain select-only. Clicking a member or subteam row whose route key exists in
+the team's `memberTree` should keep that route key selected in the history tree
+and Focus display even when the member is offline or has no active runtime
+context. Live/hydrated team-context merges must preserve the persisted history
+row's workspace grouping and use this roster focus for selected-row
 highlighting; the shared composer remains active-execution-owned separately.
 
 ### Workspace History Archive And Delete Actions

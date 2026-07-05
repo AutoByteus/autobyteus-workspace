@@ -167,12 +167,26 @@ const mountSubject = (options: {
 
 describe('WorkspaceHistoryWorkspaceSection', () => {
   it('renders transient execution rows inline with ghost/dashed semantics and focus identity', async () => {
-    const { wrapper, actions } = mountSubject();
+    const { wrapper, actions, state } = mountSubject();
 
     const stableRow = wrapper.get('[data-test="workspace-team-member-team-run-1-worker"]');
     expect(stableRow.attributes('data-row-kind')).toBe('stable_member');
     expect(stableRow.text()).toContain('worker');
     expect(stableRow.classes()).not.toContain('text-indigo-900');
+
+    await stableRow.trigger('click');
+
+    expect(state.toggleTeamMember).not.toHaveBeenCalled();
+    expect(actions.onSelectTeamMember).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: 'team-run-1',
+        memberRouteKey: 'worker',
+        kind: 'stable_member',
+      }),
+      'workspace:/ws/a',
+      expect.any(Array),
+    );
+    actions.onSelectTeamMember.mockClear();
 
     const transientRow = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
     expect(transientRow.attributes('data-row-kind')).toBe('transient_execution');
@@ -209,7 +223,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     );
   });
 
-  it('keeps transient task-team children collapsed until the row disclosure is toggled', async () => {
+  it('toggles transient task-team children from the row body and keeps disclosure toggle-only', async () => {
     const worker = stableMember('worker');
     const reviewLead = stableMember('SoftwareEngineeringTeam/review_lead', {
       memberPath: ['SoftwareEngineeringTeam', 'review_lead'],
@@ -254,7 +268,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
       currentStatus: AgentStatus.Running,
     };
 
-    const { wrapper } = mountSubject({
+    const { wrapper, actions } = mountSubject({
       teamOverride: {
         members: [worker, structuralTeam],
         memberTree: [worker, structuralTeam],
@@ -292,10 +306,11 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     expect(transientRows[0].text()).toContain('Software Engineering Team · task_0002');
     expect(wrapper.find('[data-member-route-key="task-team-run-1/review_lead"]').exists()).toBe(false);
 
-    const disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
+    let disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
     expect(disclosure.attributes('aria-expanded')).toBe('false');
 
-    await disclosure.trigger('click');
+    actions.onSelectTeamMember.mockClear();
+    await transientRows[0].trigger('click');
     await wrapper.vm.$nextTick();
     transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
     expect(transientRows).toHaveLength(2);
@@ -309,13 +324,42 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     expect(transientRows[1].attributes('data-member-route-key')).toBe('task-team-run-1/review_lead');
     expect(transientRows[1].attributes('style')).toContain('margin-left: 12px');
     expect(transientRows[1].text()).toContain('review_lead');
+    disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
     expect(disclosure.attributes('aria-expanded')).toBe('true');
+    expect(actions.onSelectTeamMember).toHaveBeenCalledWith(
+      expect.objectContaining({
+        kind: 'transient_execution',
+        transientKind: 'task_team',
+        memberRouteKey: 'task-team-run-1',
+      }),
+      'workspace:/ws/a',
+      expect.any(Array),
+    );
 
-    await disclosure.trigger('click');
+    actions.onSelectTeamMember.mockClear();
+    await wrapper
+      .get('[data-test="workspace-team-transient-execution-row"][data-member-route-key="task-team-run-1"]')
+      .trigger('click');
     await wrapper.vm.$nextTick();
     transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
     expect(transientRows).toHaveLength(1);
     expect(wrapper.find('[data-member-route-key="task-team-run-1/review_lead"]').exists()).toBe(false);
+    expect(actions.onSelectTeamMember).toHaveBeenCalledTimes(1);
+
+    actions.onSelectTeamMember.mockClear();
+    disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
+    await disclosure.trigger('click');
+    await wrapper.vm.$nextTick();
+    transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
+    expect(transientRows).toHaveLength(2);
+    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
+
+    disclosure = wrapper.get('[data-test="workspace-team-transient-disclosure"][data-member-route-key="task-team-run-1"]');
+    await disclosure.trigger('click');
+    await wrapper.vm.$nextTick();
+    transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
+    expect(transientRows).toHaveLength(1);
+    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
 
     const renderedText = wrapper.text();
     expect(renderedText).not.toContain('Review design body should stay on the right.');
@@ -345,5 +389,81 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
 
     expect(wrapper.find('[data-test="workspace-team-transient-execution-row"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="workspace-team-member-team-run-1-worker"]').exists()).toBe(true);
+  });
+
+  it('toggles stable nested team row children from row body click and keyboard while selecting the row', async () => {
+    const reviewLead = stableMember('SoftwareEngineeringTeam/review_lead', {
+      memberPath: ['SoftwareEngineeringTeam', 'review_lead'],
+      memberName: 'review_lead',
+      displayName: 'review_lead',
+    });
+    const structuralTeam = stableMember('SoftwareEngineeringTeam', {
+      memberKind: 'agent_team',
+      memberPath: ['SoftwareEngineeringTeam'],
+      memberName: 'Software Engineering Team',
+      displayName: 'Software Engineering Team',
+      teamDefinitionId: 'software-team',
+      children: [reviewLead],
+    });
+
+    const { wrapper, actions, state } = mountSubject({
+      teamOverride: {
+        focusedMemberRouteKey: 'SoftwareEngineeringTeam',
+        members: [structuralTeam],
+        memberTree: [structuralTeam],
+      },
+      liveContextOverride: {
+        focusedMemberRouteKey: 'SoftwareEngineeringTeam',
+        memberTree: [structuralTeam],
+        leafAgentContextsByRouteKey: new Map(),
+      },
+    });
+
+    const childSelector = '[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam/review_lead"]';
+    let nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam"]');
+    let disclosure = wrapper.get('[data-test="workspace-team-member-disclosure"][data-member-route-key="SoftwareEngineeringTeam"]');
+    expect(disclosure.attributes('aria-expanded')).toBe('false');
+    expect(wrapper.find(childSelector).exists()).toBe(false);
+
+    await nestedRow.trigger('click');
+    await wrapper.vm.$nextTick();
+
+    expect(state.toggleTeamMember).toHaveBeenLastCalledWith(
+      'workspace:/ws/a',
+      'team-run-1',
+      'SoftwareEngineeringTeam',
+    );
+    expect(actions.onSelectTeamMember).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        kind: 'stable_member',
+        memberRouteKey: 'SoftwareEngineeringTeam',
+      }),
+      'workspace:/ws/a',
+      expect.any(Array),
+    );
+    expect(wrapper.find(childSelector).exists()).toBe(true);
+
+    nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam"]');
+    await nestedRow.trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(childSelector).exists()).toBe(false);
+
+    nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam"]');
+    await nestedRow.trigger('keydown.enter');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(childSelector).exists()).toBe(true);
+
+    nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-SoftwareEngineeringTeam"]');
+    await nestedRow.trigger('keydown.space');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(childSelector).exists()).toBe(false);
+    expect(actions.onSelectTeamMember).toHaveBeenCalledTimes(4);
+
+    actions.onSelectTeamMember.mockClear();
+    disclosure = wrapper.get('[data-test="workspace-team-member-disclosure"][data-member-route-key="SoftwareEngineeringTeam"]');
+    await disclosure.trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(childSelector).exists()).toBe(true);
+    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
   });
 });
