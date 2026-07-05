@@ -80,6 +80,33 @@ describe('GeminiPromptRenderer', () => {
     }
   });
 
+  it('renders media continuation text as completed-tool wording with inlineData', async () => {
+    const renderer = new GeminiPromptRenderer();
+    const rendered = await renderer.render([
+      new Message(MessageRole.USER, {
+        content: 'The read_media_file tool call completed successfully.',
+        image_urls: ['data:image/png;base64,aW1hZ2U=']
+      })
+    ]);
+
+    expect(rendered).toEqual([
+      {
+        role: 'user',
+        parts: [
+          { text: 'The read_media_file tool call completed successfully.' },
+          {
+            inlineData: {
+              data: 'aW1hZ2U=',
+              mimeType: 'image/png',
+            },
+          },
+        ],
+      },
+    ]);
+    expect(JSON.stringify(rendered)).not.toContain('Native API tool continuation');
+    expect(JSON.stringify(rendered)).not.toContain('Tool history continuation');
+  });
+
   it('surfaces declared Gemini media conversion failures instead of rendering text only', async () => {
     const renderer = new GeminiPromptRenderer();
 

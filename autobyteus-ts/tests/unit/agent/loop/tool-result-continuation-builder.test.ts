@@ -39,7 +39,11 @@ describe('ToolResultContinuationBuilder', () => {
       source: 'text_history_ordered_batch'
     });
     expect(message.senderType).toBe(SenderType.TOOL);
-    expect(message.content).toBe('Tool history continuation');
+    expect(message.content).toBe('The tool_a tool call completed successfully.');
+    expect(message.content).not.toContain('Tool history continuation');
+    expect(message.content).not.toContain('Native API tool continuation');
+    expect(message.content).not.toContain('XML tool-call text');
+    expect(message.content).not.toContain('markdown triple backticks');
     expect(message.contextFiles).toBeNull();
     expect(message.metadata).toEqual({
       [TOOL_CONTINUATION_MODE_METADATA_KEY]: TOOL_HISTORY_ONLY_CONTINUATION_MODE,
@@ -66,13 +70,41 @@ describe('ToolResultContinuationBuilder', () => {
       source: 'native_api_ordered_batch'
     });
     expect(message.senderType).toBe(SenderType.TOOL);
-    expect(message.content).toBe('Native API tool continuation');
+    expect(message.content).toBe('The tool_a tool call completed successfully.');
+    expect(message.content).not.toContain('Native API tool continuation');
+    expect(message.content).not.toContain('Tool history continuation');
     expect(message.contextFiles).toBeNull();
     expect(message.metadata).toEqual({
       [TOOL_CONTINUATION_MODE_METADATA_KEY]: NATIVE_API_TOOL_CONTINUATION_MODE,
       turn_id: 'turn-1',
       tool_result_count: 1
     });
+  });
+
+  it('builds completed-tool wording for a successful read_media_file result', () => {
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
+    const builder = new ToolResultContinuationBuilder();
+    const resultEvent = new ToolResultEvent(
+      'read_media_file',
+      { uri: '/tmp/audio.mp3' },
+      'inv-media',
+      undefined,
+      { file_path: '/tmp/audio.mp3' },
+      'turn-1',
+      false
+    );
+
+    const message = builder.build([resultEvent], {
+      context: {
+        agentId: 'agent-1',
+        state: { memoryManager: { ingestToolResults: vi.fn() } }
+      } as any,
+      turn: { turnId: 'turn-1' } as any
+    });
+
+    expect(message.content).toBe('The read_media_file tool call completed successfully.');
+    expect(message.content).not.toContain('Tool history continuation');
+    expect(message.content).not.toContain('Native API tool continuation');
   });
 
   it('attaches context files returned by tools while preserving tool-history ingestion', () => {
@@ -103,6 +135,10 @@ describe('ToolResultContinuationBuilder', () => {
       source: 'text_history_ordered_batch'
     });
     expect(message.senderType).toBe(SenderType.TOOL);
+    expect(message.content).toContain('The following tool calls completed successfully: read_media_file, read_media_file.');
+    expect(message.content).not.toContain('Tool history continuation');
+    expect(message.content).not.toContain('XML tool-call text');
+    expect(message.content).not.toContain('markdown triple backticks');
     expect(message.contextFiles).toHaveLength(2);
     expect(message.contextFiles?.map((file) => file.uri)).toEqual(['/tmp/sample.mp3', '/tmp/clip.mp4']);
     expect(message.contextFiles?.map((file) => file.fileType)).toEqual([

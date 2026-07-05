@@ -21,7 +21,9 @@ This project uses two different runtime concepts that previously both used the w
     continuation `tool_history_only`; `AgentTurnRunner` emits
     `ToolContinuationReadyEvent` so the next LLM request uses structured
     `assistant.tool_calls` / `role: "tool"` history without adding an aggregate
-    user message.
+    user message. If the continuation carries context-file media, the same batch
+    stays in the outer turn but uses an appended user/media carrier with
+    semantic completed-tool wording so the media can be sent.
 
 ## Relationship
 

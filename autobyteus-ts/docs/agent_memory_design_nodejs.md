@@ -558,7 +558,11 @@ are present only when relevant.
 {"id":"rt_005_tool_continuation","ts":1738100004.10,"turn_id":"turn_0001","seq":5,"trace_type":"tool_continuation","content":"Native API tool continuation","source_event":"ToolContinuationReadyEvent"}
 ```
 
-Legacy text-parser continuations may use `source_event: "ToolContinuationInput"` for the same trace type.
+This boundary content is an internal trace label only. Model-visible synthetic
+continuation messages use semantic completed-tool wording such as `The
+read_media_file tool call completed successfully.`; legacy text-parser
+continuations may use `source_event: "ToolContinuationInput"` for the same trace
+type.
 
 **Example: tool result**
 
