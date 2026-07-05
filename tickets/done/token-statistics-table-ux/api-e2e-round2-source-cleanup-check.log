@@ -1,0 +1,6 @@
+Fixture route check:
+PASS absent autobyteus-web/pages/__token-usage-task-table-fixture.vue
+Token-statistics Details key/source scan:
+PASS no token-statistics Details references
+Old inline badge/helper and legacy table-path scan:
+PASS no stale inline badge/helper/type-status/hover/colspan=11 references in token-statistics changed scope

@@ -51,15 +51,13 @@ Visible columns must appear in this order for MVP:
 | Column | Required? | Meaning | Display Rules |
 | --- | --- | --- | --- |
 | Task / Run | Yes | Human-readable task identity | Team rows use `teamName`; standalone rows use `agentName`; show `runSummary` and shortened run/team id. Child rows use backend `displayName`/`memberName` and the relevant shortened member/task run id. |
-| Type | Yes | `Team`, `Agent`, `Member`, `Task team`, or `Task agent` indicator | Rows with `children` have chevrons. Child rows are visually nested, not top-level rows. |
 | Runtime | Yes | Runtime used by the run/member | Single runtime label, or `Mixed` for rows with multiple runtimes. Uses existing ledger runtime fields. |
 | Model(s) | Yes | LLM model(s) used | Single model, or `Mixed` with distinct models available in row details. Uses existing ledger model fields. |
 | Input | Yes | Gross input tokens | Subline: cache hit rate and cached token count when present. |
 | Output | Yes | Output tokens | Subline: thinking/reasoning tokens included in output when present. |
-| Input Cost | Yes | Backend-estimated input cost | Includes uncached + cache read/write costs; status suffix if partial/mixed. |
-| Output Cost | Yes | Backend-estimated output cost | Thinking is included in output, not added again. |
-| Total Cost | Yes | Main cost scan column | Bold; sortable. |
-| Status | Yes | Pricing confidence | Complete / Partial / Missing / Mixed / Local. No `No usage` status in MVP because no-usage members are omitted. |
+| Input Cost | Yes | Backend-estimated input cost | Includes uncached + cache read/write costs; renders as a plain value, not a separate detail toggle. |
+| Output Cost | Yes | Backend-estimated output cost | Thinking is included in output, not added again; renders as a plain value, not a separate detail toggle. |
+| Total Cost | Yes | Main cost scan column | Bold; sortable; includes one always-visible value-plus-solid-triangle disclosure button for the row cost breakdown. The button text is the formatted Total Cost value/status, and its accessible show/hide label/title include that same formatted cost/status. Non-complete price statuses render through the formatted cost text in this cell. |
 | Created Time | Yes for top-level rows | Root team run or standalone agent run creation time | Last column; local time; default sort newest first. Member rows may show `—`, `same as team`, or muted inherited parent time, but do not require or imply a separate member-created-time field. |
 
 Optional advanced values belong in details, not extra default columns:
@@ -71,6 +69,8 @@ Optional advanced values belong in details, not extra default columns:
 - Usage report count
 - Raw runtime/model identifiers
 - Backend `executionAddress` details for nested member/task-team/task-agent usage rows
+- Row-kind/status diagnostics that are already conveyed by hierarchy, metadata,
+  formatted non-complete cost text, and the expanded cost breakdown
 
 ### Row visual hierarchy
 
@@ -80,7 +80,11 @@ Optional advanced values belong in details, not extra default columns:
 - Team icon/badge.
 - Primary text: `teamName`, e.g. `Software Engineering Team`.
 - Secondary text: `runSummary` or first user prompt snippet.
-- Tertiary metadata: shortened root team run id; optional `Created <date>` text may appear here, but the visible date column remains last.
+- Tertiary metadata: shortened root team run id. This metadata replaces the old
+  standalone `Type` column: row kind is conveyed by hierarchy, chevrons, icons,
+  indentation, and run/member/task identifiers rather than a repeated badge.
+  Optional `Created <date>` text may appear here, but the visible date column
+  remains last.
 - Runtime/model: single value or `Mixed`.
 - Total cost: bold.
 
@@ -93,7 +97,9 @@ Indented under the team row.
   `taskAgentRunId`, plus a compact backend `executionAddress` detail when it is
   useful for disambiguation.
 - Runtime/model from actual usage ledger events.
-- Same token/cost/status metric columns as the parent.
+- Same token/cost metric columns as the parent. There is no standalone `Type` or
+  `Status` cell; meaningful row-kind/status information stays in metadata,
+  formatted total-cost text, and details.
 - `Created Time` cell is not a separate member run creation time in MVP; render `—`, `same as team`, or muted inherited parent time.
 - No separate top-level row for nested member/task-team/task-agent runs, to avoid double-counting.
 - Members with no token usage observed in the selected date range are omitted.
@@ -109,7 +115,10 @@ Indented under the team row.
 
 ## Expanded Details Panel / Row
 
-When a row is expanded or a cost cell/detail affordance is clicked, show a compact detail panel below the row.
+When the row's `Total Cost` value-plus-solid-triangle disclosure button is
+clicked, show a compact detail panel below the row. Do not rely on hover-only
+clickable numeric cost cells or a visible text `Details` button; `Input Cost`
+and `Output Cost` stay plain values in the table.
 
 ### Shared cost composition
 
@@ -184,7 +193,10 @@ If runtime is unavailable for legacy rows, show `Unknown`, not a blank cell.
 ### Partial pricing
 
 - Show cost amount with `partial est.` suffix.
-- Status cell or detail panel lists missing price dimensions.
+- The main table has no standalone `Status` column. Non-complete statuses such
+  as partial/missing/mixed/local render through the formatted cost text in the
+  `Total Cost` cell, and the detail panel lists the full status and missing
+  price dimensions.
 
 ### Mixed currency/model/pricing
 
@@ -205,7 +217,12 @@ User-sortable top-level columns:
 - Output
 - Runtime
 - Task / Run
-- Type
+
+Every sortable header shows a persistent compact two-triangle sort glyph:
+neutral for inactive sortable columns and current-color on the active direction
+triangle for the active sort. The active header exposes the current direction
+with accessible sort state. `Model(s)`, `Input Cost`, and `Output Cost` are not
+sortable in MVP and must not render as header buttons.
 
 Sorting applies only to top-level rows. Expanded member rows stay attached to their parent team.
 
@@ -213,7 +230,7 @@ Sorting applies only to top-level rows. Expanded member rows stay attached to th
 
 Recommended after MVP:
 
-- Type: `All`, `Team`, `Agent`
+- Row scope: `All`, `Team runs`, `Agent runs`
 - Agent/team name
 - Pricing status
 - Model
@@ -226,8 +243,8 @@ Recommended after MVP:
 | Select `Task` | Shows task/team run rows; default grouping. |
 | Select `Model` | Shows runtime/model grouped diagnostics table. |
 | Click team chevron | Expands/collapses usage-derived member rows. |
-| Click a cost cell | Opens/expands breakdown details. |
-| Hover/click pricing status | Shows missing dimensions / mixed reasons. |
+| Click the value-plus-solid-triangle button in `Total Cost` | Opens/expands the row breakdown details; the accessible label/title include the row identity and visible formatted total cost/status. |
+| View formatted non-complete cost text or expanded details | Shows missing dimensions / mixed reasons. |
 | Sort total cost | Reorders top-level rows only; member rows stay attached to team. |
 
 ## Created Time Semantics
@@ -257,11 +274,11 @@ Formatting rule:
 
 Chronological example:
 
-| Task / Run | Type | Runtime | Total Cost | Created Time |
-| --- | --- | --- | ---: | --- |
-| Software Engineering Team · "fix token meter…" | Team | Mixed | $10.30 | Jun 28, 2026, 15:42 |
-| Software Engineering Team · "build electron…" | Team | Codex | $3.12 | Jun 28, 2026, 12:08 |
-| Software Engineering Team · "review API…" | Team | Mixed | $7.84 | Jun 27, 2026, 18:51 |
+| Task / Run | Runtime | Total Cost | Created Time |
+| --- | --- | ---: | --- |
+| Software Engineering Team · "fix token meter…" | Mixed | $10.30 | Jun 28, 2026, 15:42 |
+| Software Engineering Team · "build electron…" | Codex | $3.12 | Jun 28, 2026, 12:08 |
+| Software Engineering Team · "review API…" | Mixed | $7.84 | Jun 27, 2026, 18:51 |
 
 These rows remain separate even if they share the same team definition, runtime, or model set.
 
