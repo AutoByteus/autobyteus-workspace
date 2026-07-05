@@ -2,7 +2,7 @@
 
 ## Status
 
-Ready for user verification after user-requested branch update and local Electron build. The ticket branch has been committed locally and merged with the latest `origin/personal`. Repository finalization is still intentionally on hold until explicit user verification/completion is received.
+User verified completion and requested finalization plus a new version release on 2026-07-05. The ticket branch was committed locally, merged with latest `origin/personal`, validated, Electron-built for macOS, then archived to `tickets/done/transient-team-cleanup-bug/` for final repository finalization.
 
 ## Worktree / Branch / Target
 
@@ -10,11 +10,13 @@ Ready for user verification after user-requested branch update and local Electro
 - Ticket branch: `codex/transient-team-cleanup-bug`
 - Finalization target: `origin/personal` / local `personal`
 - Bootstrap base: `origin/personal` at `a64ee085aba28df22112f40a996e382a0e84a210`
-- User-requested ticket commit: `65c39bb6c7256c947f4a5512a0d83bd44170ca49` (`fix(agent-team): settle transient task teams reliably`)
-- Latest integrated base: `origin/personal` at `0847d2e89b48480f07d19780ebd5c2cb0711e594`
+- Ticket implementation commit: `65c39bb6c7256c947f4a5512a0d83bd44170ca49` (`fix(agent-team): settle transient task teams reliably`)
+- Latest integrated base before finalization: `origin/personal` at `0847d2e89b48480f07d19780ebd5c2cb0711e594`
 - Integration method: merge latest tracked remote base into ticket branch.
 - Integration commit: `a71b9005` (`Merge remote-tracking branch 'origin/personal' into codex/transient-team-cleanup-bug`)
-- Branch relationship after merge: ticket branch is ahead of `origin/personal` by 2 local commits (ticket commit + merge commit).
+- Delivery evidence commit: `0bbc45c7963b6f5b55ec20c6b6ca81a7f9eafb8c` (`docs(delivery): record transient team cleanup integration build`)
+- Release version planned: `1.3.98`
+- Release tag planned: `v1.3.98`
 
 ## What Changed
 
@@ -43,16 +45,9 @@ Delivery updated long-lived docs to record the final integrated lifecycle invari
 
 Docs now state that accepted task-team settlement suppresses duplicate close paths, converges already-stopping/offline child state, preserves real active failures, publishes/bridges task-team-scoped root `TEAM_STATUS offline`, unbinds active task-team handles after accepted cleanup, and prevents settled rows from rehydrating through snapshots/reload.
 
-Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/docs-sync-report.md`
+Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/docs-sync-report.md`
 
-## Integrated-State Validation
-
-User-requested base refresh:
-
-- PASS: `git fetch origin personal --prune` — latest `origin/personal` resolved to `0847d2e89b48480f07d19780ebd5c2cb0711e594`.
-- Before integration, branch was ahead 1 / behind 4 versus `origin/personal`.
-- PASS: `git merge --no-edit origin/personal` — completed without conflicts.
-- Integration commit: `a71b9005`.
+## Validation Summary
 
 Post-integration checks:
 
@@ -63,7 +58,7 @@ User-requested Electron build:
 
 - README consulted: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/README.md`.
 - PASS: `pnpm -C autobyteus-web build:electron:mac`.
-- Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/electron-build-mac-report.md`.
+- Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/electron-build-mac-report.md`.
 - App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.97.dmg`
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.97.zip`
@@ -83,43 +78,31 @@ Upstream validation already passed and remains the primary runtime proof:
 - Environment-gated live `mixed-task-delegation.e2e.test.ts` was skipped locally because live runtime flags were absent and was not used as primary proof.
 - Broad `pnpm -C autobyteus-server-ts run typecheck` remains blocked by the existing repo `TS6059` `rootDir`/tests configuration; source build typecheck passed.
 - `mixed-team-manager.test.ts` is now sizeable as a test file; future unrelated manager scenarios may warrant splitting by concern. This is not a delivery blocker.
-- The local Electron app/DMG/ZIP are unsigned and not notarized. They are suitable for local handoff/testing, not a signed production release claim.
+- The local Electron app/DMG/ZIP built before final release are unsigned and not notarized. They are suitable for local handoff/testing, not a signed production release claim.
 
-## User Verification Hold
+## Finalization Request
 
-Stop here until the user explicitly verifies/completes this handoff state or gives a further explicit instruction.
+User verification received on 2026-07-05: `the task is done. lets finalize and release a new version`.
 
-Already performed by user request:
+Finalization plan:
 
-- Local ticket commit: `65c39bb6c7256c947f4a5512a0d83bd44170ca49`.
-- Latest `origin/personal` merged into the ticket branch: `a71b9005`.
-- README-read Electron macOS build: passed.
-
-Not yet performed:
-
-- Ticket archive move to `tickets/done/transient-team-cleanup-bug/`.
-- Push ticket branch.
-- Merge to `personal` / push finalization target.
-- Version bump, tag, release, deployment, or cleanup.
-
-After explicit final verification, delivery should:
-
-1. Fetch `origin` and refresh `origin/personal` again.
-2. If the target advanced, protect delivery-owned edits, re-integrate the ticket branch, rerun required checks, update handoff/docs if materially changed, and request renewed verification if needed.
-3. Move the ticket folder to `tickets/done/transient-team-cleanup-bug/` before the final commit.
-4. Commit final ticket-branch state, push the ticket branch, update local `personal` from remote, merge the ticket branch into `personal`, and push `personal` according to repository flow.
-5. Do not tag, release, deploy, or clean up unless explicitly requested or required by project policy at finalization time.
+1. Archive ticket to `tickets/done/transient-team-cleanup-bug/` before final commit.
+2. Commit and push ticket branch.
+3. Merge ticket branch into `personal` and push `origin/personal`.
+4. Run documented release helper for `1.3.98` using archived release notes.
+5. Push release tag `v1.3.98`, observe release workflow startup, record final release result, and clean up the dedicated ticket worktree/branches when safe.
 
 ## Key Artifacts
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/code-review-report.md`
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/api-e2e-coverage-investigation.md`
-- API/E2E execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/api-e2e-execution-coverage-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/docs-sync-report.md`
-- Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/electron-build-mac-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/release-deployment-report.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/code-review-report.md`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/api-e2e-coverage-investigation.md`
+- API/E2E execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/api-e2e-execution-coverage-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/docs-sync-report.md`
+- Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/electron-build-mac-report.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/release-notes.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/release-deployment-report.md`

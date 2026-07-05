@@ -2,11 +2,11 @@
 
 ## Release / Publication / Deployment Scope
 
-Delivery-stage handoff plus user-requested local ticket commit, latest-base merge, README review, and local Electron macOS build. Repository finalization, release, publication, deployment, ticket archive move, target-branch merge/push, tag creation, and cleanup are not authorized before explicit user verification/finalization instruction.
+User verified completion on 2026-07-05 and requested repository finalization plus a new version release. Scope now includes ticket archival, ticket branch push, merge into `personal`, documented release helper execution for `1.3.98`, tag `v1.3.98` publication, and cleanup.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Updated after the user-requested commit, latest-base merge, post-integration check, README review, and Electron build.
 
@@ -28,15 +28,15 @@ Delivery-stage handoff plus user-requested local ticket commit, latest-base merg
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification reference: `Pending user response after updated handoff/build evidence`
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification reference: User message on 2026-07-05: `the task is done. lets finalize and release a new version`
 - Renewed verification required after later re-integration: `Yes`
-- Renewed verification received: `No`
-- Renewed verification reference: `Pending`
+- Renewed verification received: `Yes`
+- Renewed verification reference: User message on 2026-07-05: `the task is done. lets finalize and release a new version`
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-server-ts/docs/modules/agent_team_execution.md`
@@ -46,16 +46,16 @@ Delivery-stage handoff plus user-requested local ticket commit, latest-base merg
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `Pending explicit final verification; current path is /Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `Pending explicit final verification; current path is /Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug`
 
 ## Version / Tag / Release Commit
 
-No version bump, tag, or release commit was created. The local Electron build used the current package version `1.3.97` from the integrated branch state. Release/versioning is not in scope before explicit final verification and was not requested for this step.
+Release requested. Planned release version: `1.3.98`; planned release tag: `v1.3.98`. The pre-finalization local Electron build used package version `1.3.97`; the release helper will bump release package versions during the release step.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/investigation-notes.md`
 - Ticket branch: `codex/transient-team-cleanup-bug`
 - Ticket branch commit result: `Completed locally` — `65c39bb6c7256c947f4a5512a0d83bd44170ca49`
 - Ticket branch push result: `Not started — no push requested/authorized in this step`
@@ -72,11 +72,11 @@ No version bump, tag, or release commit was created. The local Electron build us
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: `Other`
-- Method reference / command: `N/A`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
+- Applicable: `Yes`
+- Method: `Documented Command`
+- Method reference / command: `bash scripts/desktop-release.sh release 1.3.98 --release-notes tickets/done/transient-team-cleanup-bug/release-notes.md`
+- Release/publication/deployment result: `Pending`
+- Release notes handoff result: `Pending`
 - Blocker (if applicable): `N/A`
 
 ## Post-Finalization Cleanup
@@ -90,9 +90,9 @@ No version bump, tag, or release commit was created. The local Electron build us
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `No`
+- Release notes artifact created before verification: `Yes`
 - Archived release notes artifact used for release/publication: `N/A`
-- Release notes status: `Not required`
+- Release notes status: `Updated`
 
 ## Deployment Steps
 
@@ -123,7 +123,7 @@ README-read Electron build:
 
 - README consulted: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/README.md`.
 - PASS: `pnpm -C autobyteus-web build:electron:mac`.
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/in-progress/transient-team-cleanup-bug/electron-build-mac-report.md`.
+- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/tickets/done/transient-team-cleanup-bug/electron-build-mac-report.md`.
 - App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.97.dmg`.
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/transient-team-cleanup-bug/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.97.zip`.
