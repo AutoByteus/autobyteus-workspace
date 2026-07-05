@@ -4,14 +4,14 @@
 
 - Ticket: `rpa-xml-read-media-duplication`
 - Scope: Delivery integrated-state refresh, post-integration TS verification, long-lived docs sync, README-guided local macOS Electron test build, release-notes preparation, and final handoff for user verification after code-review round 3 and API/E2E pass.
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/rpa-xml-read-media-duplication`
 - Finalization target: `origin/personal` / `personal`
-- Current status: `User verified; finalization/release in progress`
+- Current status: `Repository finalized on personal; release v1.3.100 completed`
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff captures delivered TS continuation behavior, linked RPA dependency, integration refresh state, code-review/API-E2E evidence, post-integration rerun evidence, docs sync, README-guided local Electron build evidence, release notes status, and user-verification hold.
 
@@ -41,7 +41,7 @@
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `autobyteus-ts/docs/api_tool_call_streaming_design.md`
@@ -59,7 +59,7 @@
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication`
 
 ## Version / Tag / Release Commit
 
@@ -67,38 +67,38 @@
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/investigation-notes.md`
 - Ticket branch: `codex/rpa-xml-read-media-duplication`
-- Ticket branch commit result: `Pending final delivery/archive commit`
-- Ticket branch push result: `Pending final delivery/archive commit`
+- Ticket branch commit result: `Completed` — final delivery/archive commit `50f83727` on `codex/rpa-xml-read-media-duplication`
+- Ticket branch push result: `Completed` — pushed `origin/codex/rpa-xml-read-media-duplication` before target merge
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No` — `git fetch origin personal` kept `origin/personal` at `f90dd39fd3516c61ec70a8b0e991fe967cb06d80`.
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: `Pending`
-- Merge into target result: `Pending`
-- Push target branch result: `Pending`
-- Repository finalization status: `In progress`
-- Blocker (if applicable): `None currently`
+- Target branch update result: `Completed` — local `personal` was at fetched `origin/personal` `f90dd39fd3516c61ec70a8b0e991fe967cb06d80` before merge
+- Merge into target result: `Completed` — merge commit `34428e9d323038f529b8c63a1f887e4198008b75`
+- Push target branch result: `Completed` — release helper pushed `personal` through release commit `95b3fd03`; this final report commit records completion and is pushed after release
+- Repository finalization status: `Completed`
+- Blocker (if applicable): `None`
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: `Release Script`
-- Method reference / command: `pnpm release <version> -- --release-notes tickets/done/rpa-xml-read-media-duplication/release-notes.md` after repository finalization
-- Release/publication/deployment result: `Pending`
-- Release notes handoff result: `Prepared`
-- Blocker (if applicable): `None currently`
+- Method reference / command: `pnpm release 1.3.100 -- --release-notes tickets/done/rpa-xml-read-media-duplication/release-notes.md`
+- Release/publication/deployment result: `Completed` — release commit `95b3fd03d2b8e9d5e7f84f7a3f874885bba513a0` and tag `v1.3.100` pushed to `origin`
+- Release notes handoff result: `Used`
+- Blocker (if applicable): `None`
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication`
-- Worktree cleanup result: `Not required yet — finalization has not occurred; preserve the worktree until user testing is complete because it contains the local Electron artifacts`
-- Worktree prune result: `Not required yet`
-- Local ticket branch cleanup result: `Not required yet`
-- Remote branch cleanup result: `Not required yet`
-- Blocker (if applicable): `Cleanup waits for safe repository finalization`
+- Worktree cleanup result: `Completed` — removed `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication` after release; local Electron test artifacts were removed with the worktree
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` — deleted local `codex/rpa-xml-read-media-duplication`
+- Remote branch cleanup result: `Completed` — deleted `origin/codex/rpa-xml-read-media-duplication`
+- Blocker (if applicable): `None`
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -108,29 +108,29 @@
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/release-notes.md`
-- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/release-notes.md`
-- Release notes status: `Updated`
+- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/release-notes.md`
+- Release notes status: `Used for v1.3.100`
 
 ## Deployment Steps
 
 - No deployment steps run.
-- Release/version/tag command pending repository finalization.
+- Release/version/tag command completed: `pnpm release 1.3.100 -- --release-notes tickets/done/rpa-xml-read-media-duplication/release-notes.md`.
 - User-requested local test build only, not a release/deployment:
-  - README files reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/README.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-web/README.md`.
+  - README files reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`.
   - README-selected command for this macOS host: `pnpm build:electron:mac`.
   - Executed with local no-notarization/no-signing environment: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:mac`.
   - Result: `Passed`.
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/delivery-electron-build.log`.
-  - Output directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-web/electron-dist`.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/delivery-electron-build.log`.
+  - Output directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist`.
   - Test artifacts:
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.dmg`
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.zip`
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.dmg.blockmap`
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.zip.blockmap`
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+    - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.dmg`
+    - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.zip`
+    - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.dmg.blockmap`
+    - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.zip.blockmap`
+    - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
   - Build note: artifacts are unsigned and not notarized; they are for local testing only.
-- Release will use the project-documented release helper from the finalized `personal` state and the archived `tickets/done/rpa-xml-read-media-duplication/release-notes.md` artifact.
+- Release helper updated `autobyteus-web/package.json`, `autobyteus-message-gateway/package.json`, `.github/release-notes/release-notes.md`, and the managed messaging gateway release manifest, then pushed branch `personal` and tag `v1.3.100`.
 
 ## Environment Or Migration Notes
 
@@ -150,14 +150,14 @@
   - API/E2E round 1 — passed
   - temporary live RPA media probe — passed and cleaned up
 - Delivery-owned post-integration checks:
-  - `rg -n 'XML_TOOL_CALL_MARKDOWN_INSTRUCTION|includeXmlToolCallInstruction' autobyteus-ts/src autobyteus-ts/tests` — passed with expected exit 1; log: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-legacy-xml-guidance-rg.log`
-  - `pnpm exec vitest run tests/unit/agent/message/tool-continuation-display-text.test.ts tests/unit/agent/loop/tool-result-continuation-builder.test.ts tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts` — passed, 5 files / 26 tests; log: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-focused-renderer-vitest.log`
-  - `pnpm exec vitest run tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/pipelines/agent-input-pipeline.test.ts tests/unit/agent/llm-request-assembler.test.ts` — passed, 3 files / 16 tests; log: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-agent-pipeline-vitest.log`
-  - `pnpm exec vitest run tests/integration/agent/provider-native-tool-continuation-flow.test.ts tests/integration/agent/read-media-file-continuation-flow.test.ts tests/integration/clients/autobyteus-client-media-staging.test.ts` — passed, 3 files / 7 tests; log: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-integration-vitest.log`
-  - `pnpm exec tsc -p tsconfig.build.json --noEmit` — passed; log: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-tsc.log`
+  - `rg -n 'XML_TOOL_CALL_MARKDOWN_INSTRUCTION|includeXmlToolCallInstruction' autobyteus-ts/src autobyteus-ts/tests` — passed with expected exit 1; log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-legacy-xml-guidance-rg.log`
+  - `pnpm exec vitest run tests/unit/agent/message/tool-continuation-display-text.test.ts tests/unit/agent/loop/tool-result-continuation-builder.test.ts tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts` — passed, 5 files / 26 tests; log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-focused-renderer-vitest.log`
+  - `pnpm exec vitest run tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/pipelines/agent-input-pipeline.test.ts tests/unit/agent/llm-request-assembler.test.ts` — passed, 3 files / 16 tests; log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-agent-pipeline-vitest.log`
+  - `pnpm exec vitest run tests/integration/agent/provider-native-tool-continuation-flow.test.ts tests/integration/agent/read-media-file-continuation-flow.test.ts tests/integration/clients/autobyteus-client-media-staging.test.ts` — passed, 3 files / 7 tests; log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-integration-vitest.log`
+  - `pnpm exec tsc -p tsconfig.build.json --noEmit` — passed; log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/delivery-post-integration-tsc.log`
   - README review for build path — completed
-  - local macOS Electron test build — passed; log: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/delivery-electron-build.log`
-  - `git diff --check` after docs/report edits — passed; log: `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/delivery-diff-check.log`
+  - local macOS Electron test build — passed; log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/delivery-electron-build.log`
+  - `git diff --check` after docs/report edits — passed; log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/delivery-diff-check.log`
 
 ## Rollback Criteria
 
@@ -167,4 +167,4 @@
 
 ## Final Status
 
-- `Finalization/release in progress` — user verified the local Electron build and requested finalize + release; latest `origin/personal` was unchanged after verification, ticket is archived to `tickets/done`, and final repository/release steps are underway.
+- `Completed` — user verified the local Electron build, ticket was archived to `tickets/done`, ticket branch was committed/pushed/merged, `personal` was pushed, release commit `95b3fd03` and tag `v1.3.100` were pushed, dedicated ticket worktree and branches were cleaned up, and this final report commit records completion.

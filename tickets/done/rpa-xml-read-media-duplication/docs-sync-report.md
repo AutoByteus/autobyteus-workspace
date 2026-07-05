@@ -6,7 +6,7 @@
 - Trigger: API/E2E passed after code-review round 3 and corrected scope removed all generated XML/backtick continuation guidance; delivery needed to refresh long-lived docs against the latest integrated branch state.
 - Bootstrap base reference: `origin/personal` at `56e4fadc6084a60ae423d72e8f4b2797066120f5`
 - Integrated base reference used for docs sync: latest tracked `origin/personal` at `f90dd39fd3516c61ec70a8b0e991fe967cb06d80`; the reviewed/API-E2E-passed candidate was protected in local checkpoint commit `e6e90ac3`, then `git merge --no-edit origin/personal` completed as merge commit `57d4c475` with no conflicts.
-- Post-integration verification reference: delivery reran the corrected TS package checks after integrating the advanced base. Logs are under `/Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/tickets/done/rpa-xml-read-media-duplication/`:
+- Post-integration verification reference: delivery reran the corrected TS package checks after integrating the advanced base. Logs are under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/`:
   - `delivery-post-integration-legacy-xml-guidance-rg.log`
   - `delivery-post-integration-focused-renderer-vitest.log`
   - `delivery-post-integration-agent-pipeline-vitest.log`
