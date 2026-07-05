@@ -1,11 +1,11 @@
 ## What's New
-- Added a startup migration that backfills historical Token Usage execution addresses so older task/team usage can use the current nested statistics hierarchy.
+- Improved delegated task-team lifecycle cleanup so completed transient child teams are removed from active runtime projections after accepted review settlement.
 
 ## Improvements
-- Preserves token and cost totals while repairing deterministic historical direct-member, task-team, and task-agent attribution.
-- Reports clear migration summary details for backfilled, already-addressed, skipped, insufficient-data, and failed rows.
-- Keeps unreconstructable historical rows visible through the existing safe fallback instead of guessing hierarchy.
+- Task-team settlement now treats duplicate review/status wakeups as one lifecycle transition per task-team run, preserving deterministic cleanup behavior under racey shutdown timing.
+- Backend lifecycle docs now describe the accepted task-team settlement, scoped root offline signal, and snapshot/reload cleanup contract.
 
 ## Fixes
-- Fixed historical delegated task-team token usage appearing as unrelated top-level team rows when task delegation records can safely map it back under the original root team.
-- Fixed stale Token Statistics prototype/docs references to legacy `memberPath`/path-field hierarchy in favor of recursive `children` plus `executionAddress`.
+- Fixed an intermittent issue where a delegated child team, such as `StudentStudyGroup · task_0001`, could remain visible in the Workspaces team tree after the parent accepted the task result.
+- Fixed settlement races where already-stopping or already-offline child runs could reject cleanup and leave stale active task-team handles in backend snapshots.
+- Preserved real active termination failures as visible/retryable failures instead of silently hiding active work.
