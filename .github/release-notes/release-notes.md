@@ -1,11 +1,10 @@
 ## What's New
-- Improved delegated task-team lifecycle cleanup so completed transient child teams are removed from active runtime projections after accepted review settlement.
+- Nested agent-team rows in the Workspaces history tree now expand and collapse when you click the row body, so you no longer need to target only the small chevron.
 
 ## Improvements
-- Task-team settlement now treats duplicate review/status wakeups as one lifecycle transition per task-team run, preserving deterministic cleanup behavior under racey shutdown timing.
-- Backend lifecycle docs now describe the accepted task-team settlement, scoped root offline signal, and snapshot/reload cleanup contract.
+- Row-body activation still selects and focuses the nested team, including keyboard activation with Enter or Space.
+- Transient task-team rows now use the same row-body expand/collapse behavior for a more consistent tree interaction.
 
 ## Fixes
-- Fixed an intermittent issue where a delegated child team, such as `StudentStudyGroup · task_0001`, could remain visible in the Workspaces team tree after the parent accepted the task result.
-- Fixed settlement races where already-stopping or already-offline child runs could reject cleanup and leave stale active task-team handles in backend snapshots.
-- Preserved real active termination failures as visible/retryable failures instead of silently hiding active work.
+- Kept chevron clicks toggle-only so they do not also select the row or accidentally double-toggle.
+- Preserved leaf member rows as select-only when there are no children to expand.
