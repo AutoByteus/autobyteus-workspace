@@ -13,13 +13,13 @@
 - Removed standalone `Type` and `Status` task-table columns/cells.
 - Removed the now-unused `rowTypeLabel()` helper and old Type/Status/type-label localization entries.
 - Changed `Input Cost` and `Output Cost` cells to plain formatted values.
-- Replaced the three duplicate hover-only cost detail toggles with one explicit, always-visible icon-only disclosure control next to the `Total Cost` value.
-- Added `aria-expanded`, `aria-controls`, and localized show/hide labels for the Total Cost details control.
+- Replaced the three duplicate hover-only cost detail toggles with one explicit, always-visible value-plus-solid-triangle disclosure button in the `Total Cost` cell.
+- Added `aria-expanded`, `aria-controls`, and localized show/hide labels for the Total Cost details control; post-review CR-001 fix now includes the formatted Total Cost value/status in the accessible label.
 - Preserved non-`estimated` `apiCostStatus` visibility through existing formatted cost text (for example `price missing`, `partial est.`, `mixed est.`, `Local`) and the expanded cost breakdown status badge, while avoiding a noisy duplicate main-row status badge.
 - Updated the expanded detail row colspan from `11` to `9` for the reduced column count.
-- Added English and Chinese localization for sort actions and cost detail show/hide labels.
-- Updated focused task-table tests for the new column set, visible sort affordances, accessible sort/detail semantics, non-complete status preservation, and detail-row colspan.
-- Reworked the initial visual pass after user feedback: replaced oversized sort glyphs with compact triangle indicators and replaced the boxed `Details` text button with a small icon-only disclosure control.
+- Added English and Chinese localization for sort actions and cost detail show/hide labels, including formatted Total Cost interpolation for accessibility.
+- Updated focused task-table tests for the new column set, visible sort affordances, accessible sort/detail semantics, non-complete status preservation, Total Cost accessible-name value/status exposure, and detail-row colspan.
+- Reworked the initial visual pass after user feedback: replaced oversized sort glyphs with compact triangle indicators and replaced the boxed `Details` text button with a subtle value-plus-solid-triangle control.
 
 ## Key Files Or Areas
 
@@ -37,7 +37,7 @@
 ## Known Risks
 
 - `nuxi typecheck` currently fails on broad pre-existing repository issues outside this task scope. A grep of the typecheck output for changed task-table/localization files returned no matches.
-- The details control is now the single cost-breakdown toggle; users can no longer click Input Cost or Output Cost values directly. This is intentional per the reviewed design. The post-feedback visual rework keeps that control icon-only to avoid clutter.
+- The details control is now the single cost-breakdown toggle; users can no longer click Input Cost or Output Cost values directly. This is intentional per the reviewed design. The post-feedback visual rework makes the whole Total Cost value plus solid triangle clickable to improve discoverability without adding a separate button, and the CR-001 local fix keeps that visible value/status in the control's accessible label.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -56,14 +56,14 @@
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: `TokenUsageTaskStatisticsTable.vue` is 361 total lines / 341 effective non-empty lines after the visual rework. The source implementation diff for that file remains under the `>220` changed-line split/escalation signal. Test/localization files are outside the hard source implementation file-size guardrail.
+- Notes: `TokenUsageTaskStatisticsTable.vue` is 362 total lines / 340 effective non-empty lines after the CR-001 accessibility fix. The source implementation diff for that file remains under the `>220` changed-line split/escalation signal. Test/localization files are outside the hard source implementation file-size guardrail.
 
 ## Environment Or Dependency Notes
 
 - Installed workspace dependencies for local validation with `pnpm install --filter autobyteus...` because the worktree initially had no `node_modules` and `vitest` was unavailable.
 - Generated Nuxt test/type metadata with `pnpm -C autobyteus-web exec nuxi prepare` because the initial test attempt failed on missing `autobyteus-web/.nuxt/tsconfig.json`.
 - Generated dependency/build artifacts are ignored and are not part of the git diff.
-- For visual validation, a temporary Nuxt fixture route was created with deterministic task-table rows, served locally, captured with headless Chrome/Playwright, and then removed. Visual evidence is stored at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-clean-page.png` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-clean-closeup.png`.
+- For visual validation, a temporary Nuxt fixture route was created with deterministic task-table rows, served locally, captured with headless Chrome/Playwright, and then removed. Visual evidence is stored at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-closeup.png` and `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-expanded.png`.
 
 ## Local Implementation Checks Run
 
@@ -77,9 +77,9 @@
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - Verify visually that each sortable task-table header shows a subtle persistent neutral indicator and the active Created Time/selected sort column shows the correct active direction without large icon badges.
-- Verify screen-reader/accessibility semantics around `aria-sort` and the Total Cost details button `aria-expanded` state.
+- Verify screen-reader/accessibility semantics around `aria-sort` and the Total Cost details button accessible name, which should include both the show/hide action and visible Total Cost value/status, plus `aria-expanded` state.
 - Verify non-`estimated` statuses (`partial_price_missing`, `price_missing`, `mixed`, `local_no_api_bill`) remain visible inline near Total Cost and inside the expanded cost breakdown.
-- Verify Input Cost and Output Cost are plain values and that only Total Cost owns the row cost-details toggle, now as a compact icon-only disclosure control.
+- Verify Input Cost and Output Cost are plain values and that only Total Cost owns the row cost-details toggle, now as a compact value-plus-solid-triangle disclosure control.
 - Verify expanded team children remain attached after sorting by Total Cost.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required

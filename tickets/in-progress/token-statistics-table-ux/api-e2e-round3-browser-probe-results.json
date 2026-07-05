@@ -1,0 +1,616 @@
+{
+  "result": "Pass",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux",
+  "webRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/autobyteus-web",
+  "harnessDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/autobyteus-web/.api-e2e-token-table-round3-harness",
+  "harnessRemoved": true,
+  "browser": {
+    "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "locale": "en-US"
+  },
+  "screenshots": {
+    "initial": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-token-table-browser-initial.png",
+    "expanded": "/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/api-e2e-round3-token-table-browser-expanded.png"
+  },
+  "checks": [
+    {
+      "name": "initial table has exactly 9 headers",
+      "passed": true,
+      "details": {
+        "headerTexts": [
+          "Task / Run",
+          "Runtime",
+          "Model(s)",
+          "Input",
+          "Output",
+          "Input Cost",
+          "Output Cost",
+          "Total Cost",
+          "Created Time"
+        ]
+      }
+    },
+    {
+      "name": "Type and Status headers are absent",
+      "passed": true,
+      "details": {
+        "headerTexts": [
+          "Task / Run",
+          "Runtime",
+          "Model(s)",
+          "Input",
+          "Output",
+          "Input Cost",
+          "Output Cost",
+          "Total Cost",
+          "Created Time"
+        ]
+      }
+    },
+    {
+      "name": "six sortable header indicators are present",
+      "passed": true,
+      "details": {
+        "total": 6
+      }
+    },
+    {
+      "name": "Created Time starts as active descending sort",
+      "passed": true,
+      "details": {
+        "index": 8,
+        "text": "Created Time",
+        "ariaSort": "descending",
+        "buttonCount": 1,
+        "indicatorCount": 1,
+        "indicatorChildClasses": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-current"
+        ],
+        "buttonLabel": "Sort Created Time ascending",
+        "title": "Sort Created Time ascending"
+      }
+    },
+    {
+      "name": "Task / Run starts inactive with aria-sort none",
+      "passed": true,
+      "details": {
+        "index": 0,
+        "text": "Task / Run",
+        "ariaSort": "none",
+        "buttonCount": 1,
+        "indicatorCount": 1,
+        "indicatorChildClasses": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+        ],
+        "buttonLabel": "Sort Task / Run ascending",
+        "title": "Sort Task / Run ascending"
+      }
+    },
+    {
+      "name": "Model(s), Input Cost, and Output Cost are non-sortable plain headers",
+      "passed": true,
+      "details": {
+        "model": {
+          "index": 2,
+          "text": "Model(s)",
+          "ariaSort": null,
+          "buttonCount": 0,
+          "indicatorCount": 0,
+          "indicatorChildClasses": [],
+          "buttonLabel": null,
+          "title": null
+        },
+        "inputCost": {
+          "index": 5,
+          "text": "Input Cost",
+          "ariaSort": null,
+          "buttonCount": 0,
+          "indicatorCount": 0,
+          "indicatorChildClasses": [],
+          "buttonLabel": null,
+          "title": null
+        },
+        "outputCost": {
+          "index": 6,
+          "text": "Output Cost",
+          "ariaSort": null,
+          "buttonCount": 0,
+          "indicatorCount": 0,
+          "indicatorChildClasses": [],
+          "buttonLabel": null,
+          "title": null
+        }
+      }
+    },
+    {
+      "name": "initial top-level order follows Created Time desc",
+      "passed": true,
+      "details": {
+        "dataRows": [
+          "▸Software Engineering Team“investigate token costs”team …87654321Mixed: Codex, AutobyteusMixed: gpt-shared, deepseek-v4-flash160cache hit 25.0% · 40 cached185 thinking included$1.60$0.1800$1.78Jul 1, 2041, 01:00 PM",
+          "Standalone Agent“prototype settings statistics UI”run …23456789Codexgpt-shared200cache hit 30.0% · 60 cached204 thinking included$2.00 partial est.$0.2000 partial est.$2.20 partial est.Jul 1, 2041, 12:30 PMFirst usage observed"
+        ]
+      }
+    },
+    {
+      "name": "Standalone row has 9 cells",
+      "passed": true,
+      "details": {
+        "standaloneCellCount": 9
+      }
+    },
+    {
+      "name": "Input Cost and Output Cost cells have no buttons",
+      "passed": true,
+      "details": {
+        "inputCostButtons": 0,
+        "outputCostButtons": 0
+      }
+    },
+    {
+      "name": "Total Cost button uses visible value text, not icon-only",
+      "passed": true,
+      "details": {
+        "text": "$2.20 partial est.",
+        "ariaLabel": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "title": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "ariaExpanded": "false",
+        "ariaControls": "token-usage-cost-details-agent-standalone-run",
+        "indicatorCount": 1,
+        "svgCount": 0,
+        "rect": {
+          "width": 71.484375,
+          "height": 60
+        },
+        "indicatorRect": {
+          "width": 5,
+          "height": 8
+        },
+        "indicatorClass": "text-gray-400 group-hover:text-blue-600 h-0 w-0 border-y-[4px] border-l-[5px] border-y-transparent border-l-current"
+      }
+    },
+    {
+      "name": "Total Cost button has solid CSS triangle indicator and no SVG icon",
+      "passed": true,
+      "details": {
+        "text": "$2.20 partial est.",
+        "ariaLabel": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "title": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "ariaExpanded": "false",
+        "ariaControls": "token-usage-cost-details-agent-standalone-run",
+        "indicatorCount": 1,
+        "svgCount": 0,
+        "rect": {
+          "width": 71.484375,
+          "height": 60
+        },
+        "indicatorRect": {
+          "width": 5,
+          "height": 8
+        },
+        "indicatorClass": "text-gray-400 group-hover:text-blue-600 h-0 w-0 border-y-[4px] border-l-[5px] border-y-transparent border-l-current"
+      }
+    },
+    {
+      "name": "Total Cost show label/title include the visible formatted cost/status",
+      "passed": true,
+      "details": {
+        "text": "$2.20 partial est.",
+        "ariaLabel": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "title": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "ariaExpanded": "false",
+        "ariaControls": "token-usage-cost-details-agent-standalone-run",
+        "indicatorCount": 1,
+        "svgCount": 0,
+        "rect": {
+          "width": 71.484375,
+          "height": 60
+        },
+        "indicatorRect": {
+          "width": 5,
+          "height": 8
+        },
+        "indicatorClass": "text-gray-400 group-hover:text-blue-600 h-0 w-0 border-y-[4px] border-l-[5px] border-y-transparent border-l-current"
+      }
+    },
+    {
+      "name": "Total Cost initial aria-expanded/aria-controls are present",
+      "passed": true,
+      "details": {
+        "text": "$2.20 partial est.",
+        "ariaLabel": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "title": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "ariaExpanded": "false",
+        "ariaControls": "token-usage-cost-details-agent-standalone-run",
+        "indicatorCount": 1,
+        "svgCount": 0,
+        "rect": {
+          "width": 71.484375,
+          "height": 60
+        },
+        "indicatorRect": {
+          "width": 5,
+          "height": 8
+        },
+        "indicatorClass": "text-gray-400 group-hover:text-blue-600 h-0 w-0 border-y-[4px] border-l-[5px] border-y-transparent border-l-current"
+      }
+    },
+    {
+      "name": "visible main row includes partial est. and omits Complete estimate",
+      "passed": true,
+      "details": {
+        "bodyText": "Token table API/E2E round 3 probe Task / Run Runtime MODEL(S) Input Output INPUT COST OUTPUT COST Total Cost Created Time ▸ Software Engineering Team “investigate token costs” team …87654321 Mixed: Codex, Autobyteus Mixed: gpt-shared, deepseek-v4-flash 160 cache hit 25.0% · 40 cached 18 5 thinking included $1.60 $0.1800 $1.78 Jul 1, 2041, 01:00 PM Standalone Agent “prototype settings statistics UI” run …23456789 Codex gpt-shared 200 cache hit 30.0% · 60 cached 20 4 thinking included $2.00 partial est. $0.2000 partial est. $2.20 partial est. Jul 1, 2041, 12:30 PM First usage observed"
+      }
+    },
+    {
+      "name": "visible table text has no text Details control",
+      "passed": true,
+      "details": {
+        "bodyText": "Token table API/E2E round 3 probe Task / Run Runtime MODEL(S) Input Output INPUT COST OUTPUT COST Total Cost Created Time ▸ Software Engineering Team “investigate token costs” team …87654321 Mixed: Codex, Autobyteus Mixed: gpt-shared, deepseek-v4-flash 160 cache hit 25.0% · 40 cached 18 5 thinking included $1.60 $0.1800 $1.78 Jul 1, 2041, 01:00 PM Standalone Agent “prototype settings statistics UI” run …23456789 Codex gpt-shared 200 cache hit 30.0% · 60 cached 20 4 thinking included $2.00 partial est. $0.2000 partial est. $2.20 partial est. Jul 1, 2041, 12:30 PM First usage observed"
+      }
+    },
+    {
+      "name": "table wrapper has no horizontal overflow at 1440px initial viewport",
+      "passed": true,
+      "details": {
+        "clientWidth": 1214,
+        "scrollWidth": 1214
+      }
+    },
+    {
+      "name": "expanded Total Cost button flips aria-expanded and hide label with same cost/status",
+      "passed": true,
+      "details": {
+        "text": "$2.20 partial est.",
+        "ariaLabel": "Hide cost details for Standalone Agent, total cost $2.20 partial est.",
+        "title": "Hide cost details for Standalone Agent, total cost $2.20 partial est.",
+        "ariaExpanded": "true",
+        "ariaControls": "token-usage-cost-details-agent-standalone-run",
+        "indicatorClass": "text-gray-400 group-hover:text-blue-600 h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-current"
+      }
+    },
+    {
+      "name": "expanded breakdown renders status, dimensions, and colspan=9",
+      "passed": true,
+      "details": {
+        "detailColspan": "9",
+        "detailRowText": "Cost breakdownPartial estimate1 usage reportsInput breakdownTokensCostUncached input140$1.40 partial est.Cache hits60$0.6000 partial est.Cache writes0$0.0000 partial est.Total input cost200$2.00 partial est.Output breakdownTokensCostOutput tokens20$0.2000 partial est.Thinking tokens included in output4includedEstimated API cost220$2.20 partial est.Missing price dimensions: cache_creation_price"
+      }
+    },
+    {
+      "name": "table wrapper has no horizontal overflow after detail expansion",
+      "passed": true,
+      "details": {
+        "clientWidth": 1214,
+        "scrollWidth": 1214
+      }
+    },
+    {
+      "name": "Total Cost sort becomes active descending with active triangle",
+      "passed": true,
+      "details": {
+        "index": 7,
+        "text": "Total Cost",
+        "ariaSort": "descending",
+        "indicatorChildClasses": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-current"
+        ],
+        "buttonLabel": "Sort Total Cost ascending"
+      }
+    },
+    {
+      "name": "Created Time sort becomes inactive after Total Cost click",
+      "passed": true,
+      "details": {
+        "index": 8,
+        "text": "Created Time",
+        "ariaSort": "none",
+        "indicatorChildClasses": [
+          "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+          "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+        ],
+        "buttonLabel": "Sort Created Time descending"
+      }
+    },
+    {
+      "name": "expanded children stay attached below team after Total Cost sorting",
+      "passed": true,
+      "details": {
+        "dataRows": [
+          "Standalone Agent“prototype settings statistics UI”run …23456789Codexgpt-shared200cache hit 30.0% · 60 cached204 thinking included$2.00 partial est.$0.2000 partial est.$2.20 partial est.Jul 1, 2041, 12:30 PMFirst usage observed",
+          "▾Software Engineering Team“investigate token costs”team …87654321Mixed: Codex, AutobyteusMixed: gpt-shared, deepseek-v4-flash160cache hit 25.0% · 40 cached185 thinking included$1.60$0.1800$1.78Jul 1, 2041, 01:00 PM",
+          "↳ solution_designermember run …23456789Codexgpt-shared100cache hit 25.0% · 40 cached102 thinking included$1.00$0.1000$1.10Jul 1, 2041, 01:01 PMFirst usage observed",
+          "↳ implementation_engineermember run …23456789Autobyteusdeepseek-v4-flash60cache hit 0.0% · 0 cached83 thinking included$0.6000$0.0800$0.6800Jul 1, 2041, 01:02 PMFirst usage observed"
+        ]
+      }
+    },
+    {
+      "name": "no browser page errors",
+      "passed": true,
+      "details": {
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "no request failures",
+      "passed": true,
+      "details": {
+        "requestFailures": []
+      }
+    }
+  ],
+  "failures": [],
+  "snapshots": {
+    "initial": {
+      "bodyText": "Token table API/E2E round 3 probe Task / Run Runtime MODEL(S) Input Output INPUT COST OUTPUT COST Total Cost Created Time ▸ Software Engineering Team “investigate token costs” team …87654321 Mixed: Codex, Autobyteus Mixed: gpt-shared, deepseek-v4-flash 160 cache hit 25.0% · 40 cached 18 5 thinking included $1.60 $0.1800 $1.78 Jul 1, 2041, 01:00 PM Standalone Agent “prototype settings statistics UI” run …23456789 Codex gpt-shared 200 cache hit 30.0% · 60 cached 20 4 thinking included $2.00 partial est. $0.2000 partial est. $2.20 partial est. Jul 1, 2041, 12:30 PM First usage observed",
+      "headers": [
+        {
+          "index": 0,
+          "text": "Task / Run",
+          "ariaSort": "none",
+          "buttonCount": 1,
+          "indicatorCount": 1,
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Task / Run ascending",
+          "title": "Sort Task / Run ascending"
+        },
+        {
+          "index": 1,
+          "text": "Runtime",
+          "ariaSort": "none",
+          "buttonCount": 1,
+          "indicatorCount": 1,
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Runtime ascending",
+          "title": "Sort Runtime ascending"
+        },
+        {
+          "index": 2,
+          "text": "Model(s)",
+          "ariaSort": null,
+          "buttonCount": 0,
+          "indicatorCount": 0,
+          "indicatorChildClasses": [],
+          "buttonLabel": null,
+          "title": null
+        },
+        {
+          "index": 3,
+          "text": "Input",
+          "ariaSort": "none",
+          "buttonCount": 1,
+          "indicatorCount": 1,
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Input ascending",
+          "title": "Sort Input ascending"
+        },
+        {
+          "index": 4,
+          "text": "Output",
+          "ariaSort": "none",
+          "buttonCount": 1,
+          "indicatorCount": 1,
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Output ascending",
+          "title": "Sort Output ascending"
+        },
+        {
+          "index": 5,
+          "text": "Input Cost",
+          "ariaSort": null,
+          "buttonCount": 0,
+          "indicatorCount": 0,
+          "indicatorChildClasses": [],
+          "buttonLabel": null,
+          "title": null
+        },
+        {
+          "index": 6,
+          "text": "Output Cost",
+          "ariaSort": null,
+          "buttonCount": 0,
+          "indicatorCount": 0,
+          "indicatorChildClasses": [],
+          "buttonLabel": null,
+          "title": null
+        },
+        {
+          "index": 7,
+          "text": "Total Cost",
+          "ariaSort": "none",
+          "buttonCount": 1,
+          "indicatorCount": 1,
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Total Cost descending",
+          "title": "Sort Total Cost descending"
+        },
+        {
+          "index": 8,
+          "text": "Created Time",
+          "ariaSort": "descending",
+          "buttonCount": 1,
+          "indicatorCount": 1,
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-current"
+          ],
+          "buttonLabel": "Sort Created Time ascending",
+          "title": "Sort Created Time ascending"
+        }
+      ],
+      "dataRowTexts": [
+        "▸Software Engineering Team“investigate token costs”team …87654321Mixed: Codex, AutobyteusMixed: gpt-shared, deepseek-v4-flash160cache hit 25.0% · 40 cached185 thinking included$1.60$0.1800$1.78Jul 1, 2041, 01:00 PM",
+        "Standalone Agent“prototype settings statistics UI”run …23456789Codexgpt-shared200cache hit 30.0% · 60 cached204 thinking included$2.00 partial est.$0.2000 partial est.$2.20 partial est.Jul 1, 2041, 12:30 PMFirst usage observed"
+      ],
+      "bodyButtonCount": 3,
+      "standaloneCellCount": 9,
+      "standaloneInputCostButtonCount": 0,
+      "standaloneOutputCostButtonCount": 0,
+      "standaloneTotalButton": {
+        "text": "$2.20 partial est.",
+        "ariaLabel": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "title": "Show cost details for Standalone Agent, total cost $2.20 partial est.",
+        "ariaExpanded": "false",
+        "ariaControls": "token-usage-cost-details-agent-standalone-run",
+        "indicatorCount": 1,
+        "svgCount": 0,
+        "rect": {
+          "width": 71.484375,
+          "height": 60
+        },
+        "indicatorRect": {
+          "width": 5,
+          "height": 8
+        },
+        "indicatorClass": "text-gray-400 group-hover:text-blue-600 h-0 w-0 border-y-[4px] border-l-[5px] border-y-transparent border-l-current"
+      },
+      "tableWidth": {
+        "clientWidth": 1214,
+        "scrollWidth": 1214
+      }
+    },
+    "expanded": {
+      "bodyText": "Token table API/E2E round 3 probe Task / Run Runtime MODEL(S) Input Output INPUT COST OUTPUT COST Total Cost Created Time ▸ Software Engineering Team “investigate token costs” team …87654321 Mixed: Codex, Autobyteus Mixed: gpt-shared, deepseek-v4-flash 160 cache hit 25.0% · 40 cached 18 5 thinking included $1.60 $0.1800 $1.78 Jul 1, 2041, 01:00 PM Standalone Agent “prototype settings statistics UI” run …23456789 Codex gpt-shared 200 cache hit 30.0% · 60 cached 20 4 thinking included $2.00 partial est. $0.2000 partial est. $2.20 partial est. Jul 1, 2041, 12:30 PM First usage observed Cost breakdown Partial estimate 1 usage reports INPUT BREAKDOWN TOKENS COST Uncached input 140 $1.40 partial est. Cache hits 60 $0.6000 partial est. Cache writes 0 $0.0000 partial est. Total input cost 200 $2.00 partial est. OUTPUT BREAKDOWN TOKENS COST Output tokens 20 $0.2000 partial est. Thinking tokens included in output 4 included Estimated API cost 220 $2.20 partial est. Missing price dimensions: cache_creation_price",
+      "standaloneTotalButton": {
+        "text": "$2.20 partial est.",
+        "ariaLabel": "Hide cost details for Standalone Agent, total cost $2.20 partial est.",
+        "title": "Hide cost details for Standalone Agent, total cost $2.20 partial est.",
+        "ariaExpanded": "true",
+        "ariaControls": "token-usage-cost-details-agent-standalone-run",
+        "indicatorClass": "text-gray-400 group-hover:text-blue-600 h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-current"
+      },
+      "detailRowText": "Cost breakdownPartial estimate1 usage reportsInput breakdownTokensCostUncached input140$1.40 partial est.Cache hits60$0.6000 partial est.Cache writes0$0.0000 partial est.Total input cost200$2.00 partial est.Output breakdownTokensCostOutput tokens20$0.2000 partial est.Thinking tokens included in output4includedEstimated API cost220$2.20 partial est.Missing price dimensions: cache_creation_price",
+      "detailColspan": "9",
+      "tableWidth": {
+        "clientWidth": 1214,
+        "scrollWidth": 1214
+      }
+    },
+    "sorted": {
+      "headers": [
+        {
+          "index": 0,
+          "text": "Task / Run",
+          "ariaSort": "none",
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Task / Run ascending"
+        },
+        {
+          "index": 1,
+          "text": "Runtime",
+          "ariaSort": "none",
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Runtime ascending"
+        },
+        {
+          "index": 2,
+          "text": "Model(s)",
+          "ariaSort": null,
+          "indicatorChildClasses": [],
+          "buttonLabel": null
+        },
+        {
+          "index": 3,
+          "text": "Input",
+          "ariaSort": "none",
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Input ascending"
+        },
+        {
+          "index": 4,
+          "text": "Output",
+          "ariaSort": "none",
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Output ascending"
+        },
+        {
+          "index": 5,
+          "text": "Input Cost",
+          "ariaSort": null,
+          "indicatorChildClasses": [],
+          "buttonLabel": null
+        },
+        {
+          "index": 6,
+          "text": "Output Cost",
+          "ariaSort": null,
+          "indicatorChildClasses": [],
+          "buttonLabel": null
+        },
+        {
+          "index": 7,
+          "text": "Total Cost",
+          "ariaSort": "descending",
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-current"
+          ],
+          "buttonLabel": "Sort Total Cost ascending"
+        },
+        {
+          "index": 8,
+          "text": "Created Time",
+          "ariaSort": "none",
+          "indicatorChildClasses": [
+            "h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent border-gray-300",
+            "h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent border-gray-300"
+          ],
+          "buttonLabel": "Sort Created Time descending"
+        }
+      ],
+      "dataRows": [
+        "Standalone Agent“prototype settings statistics UI”run …23456789Codexgpt-shared200cache hit 30.0% · 60 cached204 thinking included$2.00 partial est.$0.2000 partial est.$2.20 partial est.Jul 1, 2041, 12:30 PMFirst usage observed",
+        "▾Software Engineering Team“investigate token costs”team …87654321Mixed: Codex, AutobyteusMixed: gpt-shared, deepseek-v4-flash160cache hit 25.0% · 40 cached185 thinking included$1.60$0.1800$1.78Jul 1, 2041, 01:00 PM",
+        "↳ solution_designermember run …23456789Codexgpt-shared100cache hit 25.0% · 40 cached102 thinking included$1.00$0.1000$1.10Jul 1, 2041, 01:01 PMFirst usage observed",
+        "↳ implementation_engineermember run …23456789Autobyteusdeepseek-v4-flash60cache hit 0.0% · 0 cached83 thinking included$0.6000$0.0800$0.6800Jul 1, 2041, 01:02 PMFirst usage observed"
+      ]
+    }
+  },
+  "consoleEvents": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "timestamp": "2026-07-05T13:43:21.825Z"
+}

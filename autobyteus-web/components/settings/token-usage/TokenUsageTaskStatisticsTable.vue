@@ -161,39 +161,24 @@
               {{ formatter.formatCostCell(entry.row.aggregate.estimatedApiOutputCost, entry.row.aggregate.currency, entry.row.aggregate.apiCostStatus) }}
             </td>
             <td class="px-3 py-3 text-right font-semibold tabular-nums">
-              <div class="flex items-center justify-end gap-1">
-                <span>
-                  {{ formatter.formatCostCell(entry.row.aggregate.estimatedApiTotalCost, entry.row.aggregate.currency, entry.row.aggregate.apiCostStatus) }}
+              <button
+                class="group ml-auto inline-flex items-center gap-1 rounded font-semibold text-gray-900 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                type="button"
+                :aria-controls="detailRowId(entry.row)"
+                :aria-expanded="detailRows.has(entry.row.rowId)"
+                :aria-label="costDetailsLabel(entry.row)"
+                :title="costDetailsLabel(entry.row)"
+                @click="toggleDetails(entry.row.rowId)"
+              >
+                <span class="group-hover:underline">
+                  {{ formattedTotalCost(entry.row) }}
                 </span>
-                <button
-                  class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
-                  type="button"
-                  :aria-controls="detailRowId(entry.row)"
-                  :aria-expanded="detailRows.has(entry.row.rowId)"
-                  :aria-label="costDetailsLabel(entry.row)"
-                  :title="costDetailsLabel(entry.row)"
-                  @click="toggleDetails(entry.row.rowId)"
-                >
-                  <svg
-                    v-if="detailRows.has(entry.row.rowId)"
-                    class="h-3.5 w-3.5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path d="M5.25 7.5 10 12.25 14.75 7.5H5.25Z" />
-                  </svg>
-                  <svg
-                    v-else
-                    class="h-3.5 w-3.5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path d="M7.5 5.25 12.25 10 7.5 14.75v-9.5Z" />
-                  </svg>
-                </button>
-              </div>
+                <span
+                  :class="costDetailArrowClass(entry.row.rowId)"
+                  aria-hidden="true"
+                  data-cost-detail-indicator
+                />
+              </button>
             </td>
             <td class="px-3 py-3 whitespace-nowrap">
               <div>{{ formatter.formatCreatedAt(entry.row.createdAt) }}</div>
@@ -326,11 +311,27 @@ const toggleDetails = (rowId: string): void => {
 
 const detailRowId = (row: TokenUsageTaskStatisticsRow): string => `token-usage-cost-details-${row.rowId.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
 
+const costDetailArrowClass = (rowId: string): string => {
+  const base = 'text-gray-400 group-hover:text-blue-600';
+  if (detailRows.has(rowId)) {
+    return `${base} h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-current`;
+  }
+  return `${base} h-0 w-0 border-y-[4px] border-l-[5px] border-y-transparent border-l-current`;
+};
+
+const formattedTotalCost = (row: TokenUsageTaskStatisticsRow): string => (
+  formatter.formatCostCell(
+    row.aggregate.estimatedApiTotalCost,
+    row.aggregate.currency,
+    row.aggregate.apiCostStatus,
+  )
+);
+
 const costDetailsLabel = (row: TokenUsageTaskStatisticsRow): string => {
   const key = detailRows.has(row.rowId)
     ? 'settings.components.settings.TokenUsageStatistics.hideCostDetailsForRow'
     : 'settings.components.settings.TokenUsageStatistics.showCostDetailsForRow';
-  return $t(key, { row: row.displayName });
+  return $t(key, { row: row.displayName, cost: formattedTotalCost(row) });
 };
 
 const createdTimeSourceLabel = (source: TokenUsageTaskStatisticsRow['createdTimeSource']): string => {

@@ -10,7 +10,7 @@ The user reviewed the implemented Token Statistics task table UI and reported th
   - Neutral sortable columns show subtle gray up/down triangles.
   - The active direction uses the header text color.
   - Existing `aria-sort`, localized action labels, and keyboard/focus support remain intact.
-- Replaced the boxed `Details` text button with a compact icon-only disclosure control next to the Total Cost value.
+- Replaced the boxed `Details` text button with a subtle inline value-plus-solid-triangle button, for example `0,1942 $ ▶`.
   - The control remains always visible, but no longer dominates the cell.
   - `aria-label`, `title`, `aria-expanded`, and `aria-controls` remain intact.
 - Removed the extra inline status badge that duplicated `price missing`/partial status copy and made rows visually busier.
@@ -23,8 +23,13 @@ Used a temporary Nuxt fixture route (`autobyteus-web/pages/__token-usage-task-ta
 
 Evidence screenshots:
 
-- Full fixture page: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-clean-page.png`
-- Table close-up: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-clean-closeup.png`
+- Table close-up: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-closeup.png`
+- Expanded detail state: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux/tickets/in-progress/token-statistics-table-ux/visual-fixture-token-table-solid-triangle-expanded.png`
+
+
+## Post-Review Accessibility Fix
+
+After code review CR-001, the value-plus-solid-triangle control keeps the same visual design but its localized accessible label now includes the same formatted Total Cost value/status shown in the button, for example `Show cost details for Standalone Agent, total cost $2.20 partial est.` Focused tests assert the show/hide labels include that visible value/status while `aria-expanded` still changes.
 
 ## Checks After Rework
 
@@ -46,5 +51,5 @@ Changed source/test/localization files remain:
 ## Notes For Review
 
 - The UI now prioritizes visual cleanliness while keeping persistent discoverability and accessibility semantics.
-- The cost detail action is intentionally icon-only to avoid reintroducing a noisy text control; accessibility is carried by labels/state.
+- The cost detail action is intentionally rendered as the full Total Cost value plus a small solid triangle, for example `0,1942 $ ▶`, so the affordance is visible without becoming a separate noisy button; accessibility is carried by labels/state.
 - The temporary visual fixture route was not retained as durable code.

@@ -17,8 +17,8 @@ const { translate } = vi.hoisted(() => {
     'settings.components.settings.TokenUsageStatistics.total_cost': 'Total Cost',
     'settings.components.settings.TokenUsageStatistics.sortByColumnAscending': 'Sort {column} ascending',
     'settings.components.settings.TokenUsageStatistics.sortByColumnDescending': 'Sort {column} descending',
-    'settings.components.settings.TokenUsageStatistics.showCostDetailsForRow': 'Show cost details for {row}',
-    'settings.components.settings.TokenUsageStatistics.hideCostDetailsForRow': 'Hide cost details for {row}',
+    'settings.components.settings.TokenUsageStatistics.showCostDetailsForRow': 'Show cost details for {row}, total cost {cost}',
+    'settings.components.settings.TokenUsageStatistics.hideCostDetailsForRow': 'Hide cost details for {row}, total cost {cost}',
     'settings.components.settings.TokenUsageStatistics.firstUsageObserved': 'First usage observed',
     'settings.components.settings.TokenUsageStatistics.collapseTeam': 'Collapse team',
     'settings.components.settings.TokenUsageStatistics.expandTeam': 'Expand team',
@@ -236,6 +236,8 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   }],
 }];
 
+const normalizedText = (text: string): string => text.replace(/\s+/g, ' ').trim();
+
 const topLevelRowTexts = (wrapper: ReturnType<typeof mount>) => wrapper.findAll('tbody > tr')
   .map((row) => row.text())
   .filter((text) => !text.includes('↳') && !text.includes('Cost breakdown'));
@@ -308,14 +310,25 @@ describe('TokenUsageTaskStatisticsTable', () => {
     expect(memberIndex).toBeGreaterThan(teamIndex);
 
     const detailButton = wrapper.findAll('tbody button')
-      .find((button) => button.attributes('aria-label') === 'Show cost details for Standalone Agent')!;
-    expect(detailButton.element.closest('td')?.textContent).toMatch(/2\.20|2\.2/);
+      .find((button) => button.attributes('aria-label')?.startsWith('Show cost details for Standalone Agent'))!;
+    const visibleCost = normalizedText(detailButton.text());
+    const detailLabel = detailButton.attributes('aria-label')!;
+    expect(visibleCost).toMatch(/2\.20|2\.2/);
+    expect(visibleCost).toContain('partial est.');
+    expect(detailLabel).toContain(visibleCost);
+    expect(detailLabel).toContain('partial est.');
+    expect(detailButton.find('[data-cost-detail-indicator]').exists()).toBe(true);
     expect(detailButton.attributes('aria-expanded')).toBe('false');
 
     await detailButton.trigger('click');
     await nextTick();
     const expandedDetailButton = wrapper.findAll('tbody button')
-      .find((button) => button.attributes('aria-label') === 'Hide cost details for Standalone Agent')!;
+      .find((button) => button.attributes('aria-label')?.startsWith('Hide cost details for Standalone Agent'))!;
+    const expandedVisibleCost = normalizedText(expandedDetailButton.text());
+    const expandedDetailLabel = expandedDetailButton.attributes('aria-label')!;
+    expect(expandedDetailLabel).toContain(expandedVisibleCost);
+    expect(expandedDetailLabel).toContain('partial est.');
+    expect(expandedDetailButton.find('[data-cost-detail-indicator]').exists()).toBe(true);
     expect(expandedDetailButton.attributes('aria-expanded')).toBe('true');
     const detailRow = wrapper.find('tbody tr[id^="token-usage-cost-details"]');
     expect(detailRow.exists()).toBe(true);
