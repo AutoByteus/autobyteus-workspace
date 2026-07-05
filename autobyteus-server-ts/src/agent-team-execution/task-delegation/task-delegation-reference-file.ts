@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type {
   TaskDelegationRecord,
   TaskDelegationReferenceFilePayload,
@@ -9,6 +10,9 @@ import { getTaskDelegationTargetName } from "./task-delegation-target.js";
 import type { TaskDelegationTarget } from "./task-delegation-target.js";
 
 const normalizeReferencePath = (value: string): string => value.replace(/\\/g, "/").trim();
+
+const hashReferencePath = (filePath: string): string =>
+  createHash("sha256").update(filePath).digest("hex").slice(0, 32);
 
 export const inferTaskDelegationReferenceFileType = (
   filePath: string,
@@ -26,7 +30,7 @@ export const inferTaskDelegationReferenceFileType = (
 export const buildTaskDelegationReferenceId = (
   index: number,
   filePath: string,
-): string => `task-reference:${index}:${filePath}`;
+): string => `task-reference:${index}:${hashReferencePath(filePath)}`;
 
 export const normalizeTaskDelegationReferenceFiles = (
   rawReferenceFiles: readonly string[],

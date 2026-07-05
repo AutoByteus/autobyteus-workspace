@@ -89,4 +89,17 @@ describe("send-message-to-tool-argument-parser", () => {
       message: "send_message_to reference_files must be an array of absolute local file path strings. Invalid path must be absolute.",
     });
   });
+
+  it("rejects absolute-looking reference_files containing URL protocol markers before delivery", () => {
+    const parsed = parseSendMessageToToolArguments({
+      recipient_name: "reviewer",
+      content: "hello",
+      reference_files: ["/tmp/https://example.com/report.md"],
+    });
+
+    expect(validateParsedSendMessageToToolArguments("send_message_to", parsed)).toEqual({
+      code: "INVALID_REFERENCE_FILES",
+      message: "send_message_to reference_files must be an array of absolute local file path strings. Invalid path must be a local filesystem path, not a URL or protocol path.",
+    });
+  });
 });

@@ -65,6 +65,7 @@ describe("task delegation runtime descriptions", () => {
     expect(delegateEntry.description).toContain("team");
     expect(delegateEntry.description).toContain("description");
     expect(delegateEntry.description).toContain("reference_files");
+    expect(delegateEntry.description).toContain("absolute local file paths");
     expect(delegateEntry.description).toContain("submit_task_result");
     expect(delegateEntry.description).not.toContain(["mark", "task", "completed"].join("_"));
     expect(delegateEntry.description).not.toContain(["accept", "task"].join("_"));
@@ -84,6 +85,10 @@ describe("task delegation runtime descriptions", () => {
     expect(delegateDescription).toContain("done conditions");
     expect(delegateDescription).toContain("task itself");
     expect(delegateDescription).not.toMatch(/message to|send/i);
+    const delegateReferenceDescription = findParameter(delegateSchema, "reference_files")?.description ?? "";
+    expect(delegateReferenceDescription).toContain("absolute local file paths");
+    expect(delegateReferenceDescription).toContain("realpath");
+    expect(delegateReferenceDescription).toContain("relative paths and URLs are rejected");
     expect(JSON.stringify(delegateSchema)).not.toContain("Do not pass");
     expect(JSON.stringify(delegateSchema)).not.toContain("completion_criteria");
   });
@@ -93,13 +98,16 @@ describe("task delegation runtime descriptions", () => {
     expect(submitEntry.description).toContain("bound to the current task-agent or task-team ingress context");
     expect(submitEntry.description).toContain("message");
     expect(submitEntry.description).toContain("reference_files");
+    expect(submitEntry.description).toContain("absolute local file paths");
     expect(submitEntry.description).not.toContain("Do not pass");
     expect(buildSubmitTaskResultParameterSchema().parameters.map((parameter) => parameter.name)).toEqual(["message", "reference_files"]);
+    expect(findParameter(buildSubmitTaskResultParameterSchema(), "reference_files")?.description).toContain("absolute local file paths");
 
     const reviewEntry = getTaskDelegationToolManifestEntry(REVIEW_TASK_RESULT_TOOL_NAME);
     expect(reviewEntry.description).toContain("latest pending result submission");
     expect(reviewEntry.description).toContain("request_revision");
     expect(reviewEntry.description).toContain("task-result comment");
+    expect(reviewEntry.description).toContain("absolute local file paths");
     expect(reviewEntry.description).not.toContain("non-empty message");
     const schema = buildReviewTaskResultParameterSchema();
     expect(schema.parameters.map((parameter) => parameter.name)).toEqual(["task_id", "decision", "comment", "reference_files"]);
@@ -109,6 +117,7 @@ describe("task delegation runtime descriptions", () => {
     expect(commentDescription).toContain("revision");
     expect(commentDescription).toContain("acceptance feedback");
     expect(commentDescription).not.toMatch(/message to|send/i);
+    expect(findParameter(schema, "reference_files")?.description).toContain("absolute local file paths");
   });
 
   it("projects pure task tools through Agent Tools MCP adapter definitions", () => {

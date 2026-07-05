@@ -314,7 +314,11 @@ describe("member-run-instruction-composer", () => {
       "To assign multiple independent tasks, call `delegate_task` separately for each task.",
     );
     expect(enabled.runtimeInstruction).toContain("Available lifecycle tools for this workflow are `delegate_task`, `submit_task_result`, and `review_task_result`.");
+    expect(enabled.runtimeInstruction).toContain("Task-delegation `reference_files` must be absolute local file paths.");
+    expect(enabled.runtimeInstruction).toContain("realpath <file>");
+    expect(enabled.runtimeInstruction).toContain("relative paths and URLs are rejected");
     expect(enabled.runtimeInstruction).toContain("Task execution targets submit reviewable results with `submit_task_result`");
+    expect(enabled.runtimeInstruction).toContain("optional absolute local `reference_files`");
     expect(enabled.runtimeInstruction).toContain("reviews submitted results with `review_task_result`");
     expect(enabled.runtimeInstruction).toContain("The `description` is task-centered content");
     expect(enabled.runtimeInstruction).toContain("non-empty `comment` with task-result feedback");

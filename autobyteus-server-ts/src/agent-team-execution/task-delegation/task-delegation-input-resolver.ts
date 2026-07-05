@@ -16,6 +16,10 @@ import {
   cloneTaskDelegationMemberIdentity,
   cloneTaskDelegationTeamIdentity,
 } from "./task-delegation-target.js";
+import {
+  normalizeExplicitAbsoluteLocalReferenceFiles,
+  type ExplicitAbsoluteLocalReferenceFileValidationError,
+} from "../../services/reference-files/absolute-local-reference-files.js";
 
 export const normalizeRequiredTaskDelegationString = (
   value: string,
@@ -42,6 +46,13 @@ const isAgentMember = (member: TaskDelegationContextMember): member is TaskDeleg
 
 const isTeamMember = (member: TaskDelegationContextMember): member is TaskDelegationTeamIdentity =>
   member.memberKind === "agent_team";
+
+const referenceFilesValidationMessage = (
+  error: ExplicitAbsoluteLocalReferenceFileValidationError,
+): string => {
+  const location = error.index === undefined ? "" : ` index=${error.index}`;
+  return `reference_files must be an array of absolute local file path strings. Invalid${location} reason=${error.reason}.`;
+};
 
 export class TaskDelegationInputResolver {
   constructor(private readonly teamRunId: string) {}
@@ -83,9 +94,14 @@ export class TaskDelegationInputResolver {
   }
 
   normalizeReferenceFiles(referenceFiles: readonly string[] | undefined): string[] {
-    return (referenceFiles ?? []).map((referenceFile) =>
-      normalizeRequiredTaskDelegationString(referenceFile, "reference_files item"),
-    );
+    const result = normalizeExplicitAbsoluteLocalReferenceFiles(referenceFiles ?? []);
+    if (!result.ok) {
+      throw new TaskDelegationError(
+        "VALIDATION_ERROR",
+        referenceFilesValidationMessage(result.error),
+      );
+    }
+    return result.referenceFiles;
   }
 
   private normalizeTaskInput(task: TaskDelegationTaskInput): TaskDelegationTaskInput {

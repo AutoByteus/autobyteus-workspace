@@ -109,4 +109,32 @@ describe("TaskDelegationReferenceContentService", () => {
     expect(resolved.mimeType).toBe("text/markdown");
     expect(await readStreamAsText(resolved.stream)).toBe("# Persisted Reference");
   });
+
+  it("keeps stored non-absolute task reference paths invalid during readback", async () => {
+    const service = new TaskDelegationReferenceContentService({
+      getExisting: () => ({
+        resolveTaskReference: () => ({
+          record: { taskId: "task_0001" },
+          reference: {
+            referenceId: "legacy-relative-ref",
+            path: "math_problem_train_bird.txt",
+            type: "file",
+            createdAt: "2026-07-02T00:00:00.000Z",
+            updatedAt: "2026-07-02T00:00:00.000Z",
+          },
+        }),
+      }) as any,
+    });
+
+    await expect(
+      service.resolveContent({
+        teamRunId: "team-1",
+        taskId: "task_0001",
+        referenceId: "legacy-relative-ref",
+      }),
+    ).rejects.toMatchObject({
+      name: "TaskDelegationReferenceContentError",
+      code: "INVALID_REFERENCE_PATH",
+    } satisfies Partial<TaskDelegationReferenceContentError>);
+  });
 });
