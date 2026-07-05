@@ -7,7 +7,7 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/rpa-xml-read-media-duplication`
 - Finalization target: `origin/personal` / `personal`
-- Current status: `Repository finalized on personal; release v1.3.100 completed`
+- Current status: `Repository finalized on personal; release v1.4.0 published with async workflows running`
 
 ## Handoff Summary
 
@@ -78,7 +78,7 @@
 - Re-integration before final merge result: `Not needed`
 - Target branch update result: `Completed` — local `personal` was at fetched `origin/personal` `f90dd39fd3516c61ec70a8b0e991fe967cb06d80` before merge
 - Merge into target result: `Completed` — merge commit `34428e9d323038f529b8c63a1f887e4198008b75`
-- Push target branch result: `Completed` — release helper pushed `personal` through release commit `95b3fd03`; this final report commit records completion and is pushed after release
+- Push target branch result: `Completed` — release helper pushed `personal` through release commit `03ead2d2`; this final report commit records completion and is pushed after release
 - Repository finalization status: `Completed`
 - Blocker (if applicable): `None`
 
@@ -86,8 +86,8 @@
 
 - Applicable: `Yes`
 - Method: `Release Script`
-- Method reference / command: `pnpm release 1.3.100 -- --release-notes tickets/done/rpa-xml-read-media-duplication/release-notes.md`
-- Release/publication/deployment result: `Completed` — release commit `95b3fd03d2b8e9d5e7f84f7a3f874885bba513a0` and tag `v1.3.100` pushed to `origin`
+- Method reference / command: `pnpm release 1.4.0 -- --release-notes tickets/done/rpa-xml-read-media-duplication/release-notes.md`
+- Release/publication/deployment result: `Completed for release helper/tag publication` — release commit `03ead2d28f3ca28bcae92ddfd9ceb8418ddde8ea` and tag `v1.4.0` pushed to `origin`; GitHub release is published, Messaging Gateway and Android workflows have succeeded, and Desktop/iOS/Server Docker workflows are still running
 - Release notes handoff result: `Used`
 - Blocker (if applicable): `None`
 
@@ -110,12 +110,12 @@
 
 - Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/release-notes.md`
 - Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/release-notes.md`
-- Release notes status: `Used for v1.3.100`
+- Release notes status: `Used for v1.4.0`
 
 ## Deployment Steps
 
 - No deployment steps run.
-- Release/version/tag command completed: `pnpm release 1.3.100 -- --release-notes tickets/done/rpa-xml-read-media-duplication/release-notes.md`.
+- Release/version/tag command completed: `pnpm release 1.4.0 -- --release-notes tickets/done/rpa-xml-read-media-duplication/release-notes.md`.
 - User-requested local test build only, not a release/deployment:
   - README files reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`.
   - README-selected command for this macOS host: `pnpm build:electron:mac`.
@@ -130,7 +130,7 @@
     - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.99.zip.blockmap`
     - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
   - Build note: artifacts are unsigned and not notarized; they are for local testing only.
-- Release helper updated `autobyteus-web/package.json`, `autobyteus-message-gateway/package.json`, `.github/release-notes/release-notes.md`, and the managed messaging gateway release manifest, then pushed branch `personal` and tag `v1.3.100`.
+- Release helper updated `autobyteus-web/package.json`, `autobyteus-message-gateway/package.json`, `.github/release-notes/release-notes.md`, and the managed messaging gateway release manifest, then pushed branch `personal` and tag `v1.4.0`. An initial `v1.3.100` release attempt was cancelled/deleted because the Android release workflow rejects patch numbers above 99 for versionCode safety; `v1.4.0` is the active release.
 
 ## Environment Or Migration Notes
 
@@ -167,4 +167,4 @@
 
 ## Final Status
 
-- `Completed` — user verified the local Electron build, ticket was archived to `tickets/done`, ticket branch was committed/pushed/merged, `personal` was pushed, release commit `95b3fd03` and tag `v1.3.100` were pushed, dedicated ticket worktree and branches were cleaned up, and this final report commit records completion.
+- `Published / async workflows running` — user verified the local Electron build, ticket was archived to `tickets/done`, ticket branch was committed/pushed/merged, `personal` was pushed, release commit `03ead2d2` and tag `v1.4.0` were pushed, dedicated ticket worktree and branches were cleaned up, and release workflows are running from the pushed tag. Messaging Gateway and Android are successful; Desktop, iOS, and Server Docker are still in progress at this report update.

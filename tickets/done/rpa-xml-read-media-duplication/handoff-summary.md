@@ -4,7 +4,7 @@
 
 - Ticket: `rpa-xml-read-media-duplication`
 - Date: `2026-07-05`
-- Current Status: `Repository finalized on personal; release v1.3.100 completed`
+- Current Status: `Repository finalized on personal; release v1.4.0 published with async workflows running`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/rpa-xml-read-media-duplication`
 - Finalization target: `origin/personal` / `personal`
@@ -103,9 +103,9 @@
 
 ## Release Notes Status
 
-- Release notes required: `Used for release v1.3.100 because the user requested finalize and release after testing`
+- Release notes required: `Used for release v1.4.0 because the user requested finalize and release after testing`
 - Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/rpa-xml-read-media-duplication/release-notes.md`
-- Notes: release helper synced these notes into `.github/release-notes/release-notes.md` for tag `v1.3.100`.
+- Notes: release helper synced these notes into `.github/release-notes/release-notes.md` for tag `v1.4.0`.
 
 ## User Verification Hold
 
@@ -122,12 +122,12 @@
 - Ticket branch: `codex/rpa-xml-read-media-duplication`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Completed` — ticket branch final commit `50f83727`, target merge commit `34428e9d`, release commit `95b3fd03`; this final report commit records completion after release
-- Push status: `Completed` — ticket branch, `personal`, and tag `v1.3.100` pushed to `origin`
+- Commit status: `Completed` — ticket branch final commit `50f83727`, target merge commit `34428e9d`, release commit `03ead2d2`; this final report commit records completion after release
+- Push status: `Completed` — ticket branch, `personal`, and tag `v1.4.0` pushed to `origin`
 - Merge status: `Completed` — `codex/rpa-xml-read-media-duplication` merged into `personal` at `34428e9d`
-- Release/publication/deployment status: `Completed` — release helper pushed `personal` and tag `v1.3.100` at release commit `95b3fd03`
+- Release/publication/deployment status: `Published` — release helper pushed `personal` and tag `v1.4.0` at release commit `03ead2d2`; Messaging Gateway and Android workflows have succeeded, while Desktop/iOS/Server Docker workflows are still running
 - Worktree cleanup status: `Completed` — dedicated ticket worktree removed after release; local Electron test artifacts were removed with it
 - Local branch cleanup status: `Completed` — deleted local `codex/rpa-xml-read-media-duplication` after merge
 - Remote branch cleanup status: `Completed` — deleted `origin/codex/rpa-xml-read-media-duplication` after release
 - Blockers / notes:
-  - no current delivery blocker. Release workflow is now running from pushed tag `v1.3.100` on GitHub Actions.
+  - no current delivery blocker. Release workflows are running from pushed tag `v1.4.0` on GitHub Actions. An initial `v1.3.100` release attempt was cancelled/deleted and replaced by `v1.4.0` because Android versionCode does not support patch numbers above 99.
