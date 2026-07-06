@@ -6,6 +6,7 @@
 - Command: `CI=true NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= CSC_IDENTITY_AUTO_DISCOVERY=false pnpm build:electron:mac -- --arm64` from `autobyteus-web`
 - Result: `Pass`
 - Signing/notarization: skipped for local testing because Apple identity/credentials were explicitly unset (`APPLE_SIGNING_IDENTITY=`; `CSC_IDENTITY_AUTO_DISCOVERY=false`).
+- Final cleanup note: these artifacts were produced in the temporary ticket worktree for user testing and were removed when that worktree was cleaned up after repository finalization. This file is retained as build evidence.
 - Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis/tickets/done/skill-access-mode-analysis/delivery-evidence/electron-build-mac-arm64.log`
 
 ## Artifacts

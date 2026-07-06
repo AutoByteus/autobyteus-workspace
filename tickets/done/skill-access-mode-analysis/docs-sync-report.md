@@ -6,7 +6,7 @@
 - Trigger: Delivery stage after post-API/E2E durable coverage-code re-review passed.
 - Bootstrap base reference: `origin/personal` @ `4391c29389e23adf4866908e47dc49f3ef492f10`
 - Integrated base reference used for docs sync: `origin/personal` @ `4391c29389e23adf4866908e47dc49f3ef492f10` after `git fetch origin --prune` on 2026-07-06.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis/tickets/done/skill-access-mode-analysis/delivery-verification.log`
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-access-mode-analysis/delivery-verification.log`
 
 ## Why Docs Were Updated
 

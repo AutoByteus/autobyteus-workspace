@@ -36,5 +36,5 @@ Result: passed
 Primary DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.0.dmg
 App bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
 ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.0.zip
-Artifact manifest: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis/tickets/done/skill-access-mode-analysis/delivery-evidence/electron-build-artifacts.md
+Artifact manifest: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-access-mode-analysis/delivery-evidence/electron-build-artifacts.md
 Signing/notarization: skipped intentionally for local testing.
