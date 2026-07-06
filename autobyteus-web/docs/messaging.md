@@ -73,6 +73,10 @@ Outside AutoByteus, create a Telegram bot with BotFather and copy the bot token.
 15. While the binding remains attached to the active run, later eligible coordinator or entry-node outputs are delivered back to Telegram even if they were triggered by internal team-member handoffs and the Telegram user has not sent a second message.
 16. Open `Verify` and run setup verification.
 
+Channel binding launch presets do not ask for skill access. Agent bindings use
+the selected agent definition's configured skills, and team bindings use each
+leaf member's configured skills.
+
 ### What `Telegram account label` Means
 
 `Telegram account label` is a stable internal identifier used by AutoByteus channel bindings. It does not need to be a Telegram numeric ID.
@@ -101,6 +105,7 @@ The low-level standalone gateway still supports webhook mode for operator-manage
 - Telegram peer discovery becomes useful only after at least one real inbound message reaches the bot.
 - TEAM bindings target a team definition plus saved launch preset. The first inbound message creates the team run automatically, and later messages reuse the cached run only while that bot-owned run is still live in the current server session. While that route/run link is active, eligible coordinator or entry-node outputs from the run are delivered to Telegram without requiring another inbound Telegram message. After a restart or inactive cached run, the next inbound message starts a fresh team run for the binding.
 - TEAM replies are emitted through the coordinator or entry node only; worker-only/internal coordination messages are not sent to the external peer.
+- The legacy all-installed-skill option is not valid for new or edited bindings; older persisted binding files are migrated to configured-only behavior during startup.
 - If `Refresh Peers` shows nothing, send another message to the bot and refresh again.
 
 ## Delivery Reliability And Heartbeat

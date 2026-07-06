@@ -107,7 +107,6 @@ export function useMessagingChannelBindingSetupFlow() {
     draft.targetType === 'TEAM' ? draft.teamLaunchPreset : draft.launchPreset;
 
   const activeLaunchPreset = computed(() => getActiveLaunchPreset());
-  const showSkillAccessControl = computed(() => true);
   const {
     runtimeOptions,
     groupedModelOptions,
@@ -117,7 +116,6 @@ export function useMessagingChannelBindingSetupFlow() {
     updateModel,
     updateModelConfig,
     updateAutoExecute,
-    updateSkillAccessMode,
   } = useBindingLaunchPresetModelSelection({
     targetType: computed(() => draft.targetType),
     activeLaunchPreset,
@@ -375,7 +373,6 @@ export function useMessagingChannelBindingSetupFlow() {
     selectedRuntimeUnavailableReason,
     selectedWorkspaceId,
     setWorkspaceSelectionMode,
-    showSkillAccessControl,
     showDiscordIdentityHint,
     showPeerDiscoveryInstruction,
     showTeamResponsePolicyHint,
@@ -385,7 +382,6 @@ export function useMessagingChannelBindingSetupFlow() {
     updateModel,
     updateModelConfig,
     updateRuntimeKind,
-    updateSkillAccessMode,
     useManualPeerInput,
     workspaceOptions,
     workspaceSelectionMode,

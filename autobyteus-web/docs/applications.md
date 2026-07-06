@@ -131,7 +131,7 @@ That gate:
 - `ApplicationTeamLaunchProfileEditor.vue` saves the team-shaped `launchProfile`: shared defaults plus the current member override rows for runtime/model when the slot declares them under `supportedLaunchConfig.AGENT_TEAM`.
 - `ApplicationWorkspaceRootSelector.vue` keeps workspace-root path selection consistent across the agent and team editors.
 
-The persisted contract is now `launchProfile`, not the older flat `launchDefaults` record. The frontend draft helpers in `applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate aligned with that kind-aware contract. For the execution-resource rename itself, stale saved refs using old `resourceRef`/`owner` shapes are not migrated: the server resets those setup rows so the host gate returns to setup/reconfigure state.
+The persisted contract is now `launchProfile`, not the older flat `launchDefaults` record. The launch-profile editors do not expose a skill-access selector; runtime skill exposure remains the configured skills on the selected agent definition, or each selected team member's definition. The frontend draft helpers in `applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate aligned with that kind-aware contract. For the execution-resource rename itself, stale saved refs using old `resourceRef`/`owner` shapes are not migrated: the server resets those setup rows so the host gate returns to setup/reconfigure state.
 
 ## Immersive Control Panel
 

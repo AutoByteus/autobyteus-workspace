@@ -517,7 +517,7 @@ const defineRuntimeSuite = (input: {
       llmModelIdentifier: string;
       workspaceRootPath: string;
       autoExecuteTools: boolean;
-      skillAccessMode?: "NONE" | "PRELOADED_ONLY" | "GLOBAL_DISCOVERY";
+      skillAccessMode?: "NONE" | "PRELOADED_ONLY" | "PRELOADED_ONLY";
     }): Promise<string> => {
       const mutation = `
         mutation CreateAgentRun($input: CreateAgentRunInput!) {

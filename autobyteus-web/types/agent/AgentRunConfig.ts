@@ -1,6 +1,6 @@
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 
-export type SkillAccessMode = 'PRELOADED_ONLY' | 'GLOBAL_DISCOVERY' | 'NONE';
+export type SkillAccessMode = 'PRELOADED_ONLY' | 'NONE';
 export type AgentRuntimeKind = string;
 export const DEFAULT_AGENT_RUNTIME_KIND: AgentRuntimeKind = 'autobyteus';
 

@@ -25,7 +25,16 @@ Configured agent skills are resolved before runtime-specific bootstrap through
 AutoByteus, Codex, Claude, and team-member launch paths should consume that
 resolved `Skill[]` shape instead of calling global skill catalog lookup by name.
 This preserves package-private and owning-team-shared skill context while still
-allowing global skill fallback.
+allowing configured skill-directory fallback for explicitly named skills.
+
+Launch flows no longer expose a user-facing skill-access choice. A standalone
+agent run receives the skills configured on its selected agent definition, and a
+team run gives each leaf member only the skills configured on that member's
+agent definition. An agent with no configured skills receives no
+AutoByteus-managed skills by default. The legacy `GLOBAL_DISCOVERY` / "all
+installed skills" mode is removed from public runtime inputs; unsupported legacy
+values are rejected after startup migration has rewritten old persisted metadata
+to configured-only behavior.
 
 Native AutoByteus runs consume the resolved `Skill.rootPath` values directly in
 `AgentConfig.skills`. For imported package agents this includes exact canonical

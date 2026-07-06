@@ -1,0 +1,40 @@
+### git diff --check
+### user-facing legacy label search (excluding tickets/node_modules/dist/build outputs)
+### GLOBAL_DISCOVERY/GlobalDiscovery remaining matches (excluding tickets/node_modules/dist/build outputs)
+./docs/custom-application-development.md:142:`GLOBAL_DISCOVERY` or model broad/orchestrator agents as "all installed skills"
+./autobyteus-application-sdk-contracts/README.md:95:skills. `GLOBAL_DISCOVERY` / all-installed skill access is not part of the SDK
+./autobyteus-application-backend-sdk/README.md:60:- Launch-profile helpers normalize missing skill access to `PRELOADED_ONLY`, which means the selected agent or team member uses the skills configured on its definition. `NONE` is the only explicit no-skill override. `GLOBAL_DISCOVERY` is rejected; app-owned broad agents must be configured with the desired skill names instead of requesting all-installed skills at launch.
+./autobyteus-server-ts/docs/modules/skills.md:155:legacy `GLOBAL_DISCOVERY` value is not accepted by public GraphQL inputs or SDK
+./autobyteus-server-ts/docs/modules/application_orchestration.md:76:The orchestration host validates the resource choice, launches the underlying agent/team run, persists one durable binding together with `bindingIntentId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary. Runtime skill exposure still comes from the selected agent/team definitions: agent starts and each team leaf member use configured skills only, and legacy `GLOBAL_DISCOVERY` values in app-authored inputs are rejected rather than normalized into broader access.
+./autobyteus-server-ts/docs/modules/application_orchestration.md:98:`GLOBAL_DISCOVERY` value is not a valid saved setup, backend SDK, or
+./autobyteus-server-ts/docs/modules/agent_execution.md:34:AutoByteus-managed skills by default. The legacy `GLOBAL_DISCOVERY` / "all
+./autobyteus-server-ts/docs/modules/run_history.md:256:  `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata,
+./autobyteus-server-ts/tests/e2e/runtime/skill-access-mode-graphql.e2e.test.ts:36:    expect(messages).toContain("GLOBAL_DISCOVERY");
+./autobyteus-server-ts/tests/e2e/runtime/skill-access-mode-graphql.e2e.test.ts:60:  it("rejects legacy GLOBAL_DISCOVERY single-agent run inputs", async () => {
+./autobyteus-server-ts/tests/e2e/runtime/skill-access-mode-graphql.e2e.test.ts:79:          skillAccessMode: "GLOBAL_DISCOVERY",
+./autobyteus-server-ts/tests/e2e/runtime/skill-access-mode-graphql.e2e.test.ts:86:  it("rejects legacy GLOBAL_DISCOVERY team member run inputs", async () => {
+./autobyteus-server-ts/tests/e2e/runtime/skill-access-mode-graphql.e2e.test.ts:107:              skillAccessMode: "GLOBAL_DISCOVERY",
+./autobyteus-server-ts/tests/e2e/runtime/skill-access-mode-graphql.e2e.test.ts:118:  it("rejects legacy GLOBAL_DISCOVERY external-channel agent launch preset inputs", async () => {
+./autobyteus-server-ts/tests/e2e/runtime/skill-access-mode-graphql.e2e.test.ts:141:            skillAccessMode: "GLOBAL_DISCOVERY",
+./autobyteus-server-ts/tests/e2e/runtime/skill-access-mode-graphql.e2e.test.ts:149:  it("rejects legacy GLOBAL_DISCOVERY external-channel team launch preset inputs", async () => {
+./autobyteus-server-ts/tests/e2e/runtime/skill-access-mode-graphql.e2e.test.ts:172:            skillAccessMode: "GLOBAL_DISCOVERY",
+./autobyteus-server-ts/src/app-data-migrations/migrations/remove-global-skill-discovery-mode-migration.ts:12:const LEGACY_MODE = "GLOBAL_DISCOVERY";
+./autobyteus-server-ts/src/app-data-migrations/migrations/remove-global-skill-discovery-mode-migration.ts:145:  readonly description = "Rewrites persisted GLOBAL_DISCOVERY skill access values to configured-only behavior.";
+./autobyteus-server-ts/src/app-data-migrations/migrations/remove-global-skill-discovery-mode-migration.ts:171:            message: "No GLOBAL_DISCOVERY skillAccessMode values found.",
+./autobyteus-server-ts/src/app-data-migrations/migrations/remove-global-skill-discovery-mode-migration.ts:181:          message: `Rewrote ${rewritten.rewrittenCount} GLOBAL_DISCOVERY skillAccessMode value(s) to ${TARGET_MODE}.`,
+./autobyteus-server-ts/src/app-data-migrations/migrations/remove-global-skill-discovery-mode-migration.ts:199:        ? `${summary.failedCount} file(s) could not be migrated away from GLOBAL_DISCOVERY.`
+./autobyteus-server-ts/tests/unit/app-data-migrations/remove-global-skill-discovery-mode-migration.test.ts:12:const LEGACY_MODE = "GLOBAL_DISCOVERY";
+./autobyteus-server-ts/tests/unit/app-data-migrations/remove-global-skill-discovery-mode-migration.test.ts:37:  it("rewrites persisted GLOBAL_DISCOVERY values across run, team, and channel metadata", async () => {
+./autobyteus-ts/tests/unit/agent/context/agent-config.test.ts:100:    expect(() => new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, null, [], null, 'GLOBAL_DISCOVERY' as any)).toThrow(
+
+### final git diff --check after delivery artifacts
+final git diff --check passed
+
+### local Electron user-test build
+Command: CI=true NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= CSC_IDENTITY_AUTO_DISCOVERY=false pnpm build:electron:mac -- --arm64
+Result: passed
+Primary DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.0.dmg
+App bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.0.zip
+Artifact manifest: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-access-mode-analysis/delivery-evidence/electron-build-artifacts.md
+Signing/notarization: skipped intentionally for local testing.

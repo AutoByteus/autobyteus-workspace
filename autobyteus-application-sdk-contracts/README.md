@@ -89,6 +89,14 @@ New external custom applications should start with `@autobyteus/application-devk
 
 `ApplicationRuntimeControl` includes durable published-artifact reads through `getRunPublishedArtifacts(runId)` and `getPublishedArtifactRevisionText({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.
 
+`ApplicationSkillAccessMode` is intentionally narrow: `PRELOADED_ONLY` means
+the host launches with the target agent definition's configured skills, and
+`NONE` suppresses AutoByteus-managed skills for flows that explicitly need no
+skills. `GLOBAL_DISCOVERY` / all-installed skill access is not part of the SDK
+contract. External application code should configure broad/orchestrator agents
+by assigning the desired skill names to the agent definition rather than by
+requesting a broader launch-time mode.
+
 The execution-resource rename is a clean break. SDK consumers should use the `ApplicationExecutionResource*` types, `source`, `executionResourceRef`, `executionResourceSlots[]`, and the `listAvailableExecutionResources(...)` / `getConfiguredExecutionResource(...)` runtime-control methods. Old runtime-resource names and old `owner` / `resourceRef` shapes are not compatibility aliases and are not migrated by the platform.
 
 ### Engine status

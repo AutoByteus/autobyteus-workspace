@@ -51,7 +51,13 @@ describe("server load_skill tool", () => {
 
     const tool = registerLoadSkillTool();
     const result = await tool.execute(
-      { agentId: "agent-1" } as any,
+      {
+        agentId: "agent-1",
+        config: {
+          skills: ["example-skill"],
+          skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+        },
+      } as any,
       { skill_name: "example-skill" },
     );
 
@@ -62,22 +68,24 @@ describe("server load_skill tool", () => {
     expect(result).toContain(`[guide](${path.join(skillRoot, "guide.md")})`);
   });
 
-  it("allows path-like input only when it matches an already server-managed skill", async () => {
+  it("rejects path-like input even when it matches a server-managed skill", async () => {
     const skillRoot = createSkillRoot();
-    mockSkillService.listSkills.mockReturnValue([
-      {
-        name: "example-skill",
-        description: "Example description",
-        content: "Read [guide](guide.md).",
-        rootPath: skillRoot,
-      },
-    ]);
 
-    const result = await loadSkill({ agentId: "agent-1" } as any, skillRoot);
+    await expect(
+      loadSkill(
+        {
+          agentId: "agent-1",
+          config: {
+            skills: ["example-skill"],
+            skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+          },
+        } as any,
+        skillRoot,
+      ),
+    ).rejects.toThrow("cannot be loaded by path");
 
-    expect(result).toContain("## Skill: example-skill");
-    expect(result).toContain(`Skill Base Path: ${skillRoot}`);
     expect(mockSkillService.getSkill).not.toHaveBeenCalled();
+    expect(mockSkillService.listSkills).not.toHaveBeenCalled();
   });
 
   it("rejects unmanaged arbitrary path loading", async () => {
@@ -85,10 +93,10 @@ describe("server load_skill tool", () => {
 
     await expect(
       loadSkill({ agentId: "agent-1" } as any, "/tmp/not-a-managed-skill"),
-    ).rejects.toThrow("not a server-managed skill");
+    ).rejects.toThrow("cannot be loaded by path");
   });
 
-  it("blocks non-preloaded skill loads in PRELOADED_ONLY mode", async () => {
+  it("blocks non-configured skill loads at runtime", async () => {
     await expect(
       loadSkill(
         {
@@ -100,12 +108,12 @@ describe("server load_skill tool", () => {
         } as any,
         "example-skill",
       ),
-    ).rejects.toThrow("is not preloaded for this agent");
+    ).rejects.toThrow("is not configured for this agent");
 
     expect(mockSkillService.getSkill).not.toHaveBeenCalled();
   });
 
-  it("blocks path loads in PRELOADED_ONLY mode", async () => {
+  it("blocks path loads at runtime", async () => {
     await expect(
       loadSkill(
         {

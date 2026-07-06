@@ -6,7 +6,6 @@ import {
   DEFAULT_AGENT_RUNTIME_KIND,
   runtimeKindToLabel,
   type AgentRuntimeKind,
-  type SkillAccessMode,
 } from '~/types/agent/AgentRunConfig';
 import type {
   ExternalChannelBindingTargetType,
@@ -189,10 +188,6 @@ export function useBindingLaunchPresetModelSelection(input: {
     activeLaunchPreset.value.autoExecuteTools = checked;
   };
 
-  const updateSkillAccessMode = (value: string) => {
-    activeLaunchPreset.value.skillAccessMode = value as SkillAccessMode;
-  };
-
   return {
     runtimeOptions,
     groupedModelOptions,
@@ -202,6 +197,5 @@ export function useBindingLaunchPresetModelSelection(input: {
     updateModel,
     updateModelConfig,
     updateAutoExecute,
-    updateSkillAccessMode,
   };
 }

@@ -1073,7 +1073,7 @@ describe('agentTeamRunStore', () => {
         llmModelIdentifier: 'gpt-5.3-codex',
         llmConfig: { reasoning_effort: 'high' },
         autoExecuteTools: false,
-        skillAccessMode: 'GLOBAL_DISCOVERY',
+        skillAccessMode: 'PRELOADED_ONLY',
         memberOverrides: {
           professor: {
             agentDefinitionId: 'agent-a',
@@ -1134,7 +1134,7 @@ describe('agentTeamRunStore', () => {
                 runtimeKind: 'codex_app_server',
                 workspaceId: workspaceMetadata.workspaceId,
                 workspaceRootPath: workspaceMetadata.workspaceRootPath,
-                skillAccessMode: 'GLOBAL_DISCOVERY',
+                skillAccessMode: 'PRELOADED_ONLY',
                 llmConfig: { reasoning_effort: 'medium' },
               }),
               expect.objectContaining({
@@ -1144,7 +1144,7 @@ describe('agentTeamRunStore', () => {
                 llmModelIdentifier: 'claude-sonnet',
                 workspaceId: workspaceMetadata.workspaceId,
                 workspaceRootPath: workspaceMetadata.workspaceRootPath,
-                skillAccessMode: 'GLOBAL_DISCOVERY',
+                skillAccessMode: 'PRELOADED_ONLY',
                 llmConfig: { thinking_enabled: true },
               }),
             ]),

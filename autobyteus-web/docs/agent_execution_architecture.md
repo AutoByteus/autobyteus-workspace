@@ -482,8 +482,8 @@ the selected run's config as a launch buffer.
 Selected existing single-agent and team run configuration is intentionally
 inspect-only:
 
-- runtime, model, workspace, auto-approve, skill-access, and team-member
-  override controls render disabled;
+- runtime, model, workspace, auto-approve, and team-member override controls
+  render disabled;
 - form update handlers and shared runtime/model normalization emissions no-op in
   read-only mode so historical context is not locally mutated;
 - the launch/run button is absent while an existing run is selected;
@@ -516,6 +516,13 @@ or DeepSeek `reasoning_effort: "high"`. Effective **Thinking** OFF or
 unavailable leaves **Advanced** collapsed initially, but still openable.
 Toggling a supported **Thinking** control ON opens **Advanced** automatically;
 toggling OFF after inspection does not force-collapse the section.
+
+Editable launch forms intentionally do not expose a skill-access dropdown.
+Standalone runs inherit the selected agent definition's configured skills, and
+team runs apply each leaf member's configured skills. Reopened historical
+configuration may still carry an internal `skillAccessMode` field for backend
+resume compatibility, but the only normal launch behavior is configured skills
+only.
 
 Compact member override rows may stay collapsed to avoid expanding large team
 forms. They still display inherited/effective defaults when expanded, and
@@ -576,7 +583,7 @@ single-agent or team run is selected, the frontend treats that selected run as a
 launch template for the new editable draft. The selected run itself remains
 inspect-only, but the editable launch buffer is seeded from a deep-cloned copy of
 the selected run config, including runtime kind, model identifier, workspace,
-auto-approve/skill-access settings, `llmConfig`, and team member overrides.
+auto-approve settings, `llmConfig`, and team member overrides.
 
 That source-copy path must preserve backend-provided model-thinking fields such
 as `reasoning_effort: "xhigh"` even when the runtime model catalog is still

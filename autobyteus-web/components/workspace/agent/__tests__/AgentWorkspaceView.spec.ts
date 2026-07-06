@@ -210,7 +210,7 @@ describe('AgentWorkspaceView', () => {
         runtimeKind: 'codex_app_server',
         workspaceId: 'ws-1',
         autoExecuteTools: true,
-        skillAccessMode: 'GLOBAL_DISCOVERY',
+        skillAccessMode: 'PRELOADED_ONLY',
         isLocked: true,
         llmConfig: {
           reasoning_effort: 'xhigh',
