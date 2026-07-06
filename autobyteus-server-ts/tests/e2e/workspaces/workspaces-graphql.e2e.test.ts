@@ -15,6 +15,76 @@ import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.j
 import { canonicalizeWorkspaceRootPath } from "../../../src/workspaces/workspace-path-utils.js";
 const workspaceManager = getWorkspaceManager();
 
+const resetWorkspaceRegistryStoreForTest = () => {
+  const registryStore = (workspaceManager as unknown as {
+    workspaceRegistryStore?: {
+      loaded: boolean;
+      loadPromise: Promise<void> | null;
+      mutationQueue: Promise<unknown>;
+      entries: Map<string, string>;
+    };
+  }).workspaceRegistryStore;
+  if (!registryStore) {
+    return;
+  }
+  registryStore.loaded = false;
+  registryStore.loadPromise = null;
+  registryStore.mutationQueue = Promise.resolve();
+  registryStore.entries = new Map<string, string>();
+};
+
+const useIsolatedWorkspaceConfig = (
+  appDataDir: string,
+  configuredTempRoot: string,
+) => {
+  fs.mkdirSync(appDataDir, { recursive: true });
+  fs.mkdirSync(configuredTempRoot, { recursive: true });
+  vi.spyOn(appConfigProvider, "config", "get").mockReturnValue({
+    getAppDataDir: () => appDataDir,
+    getTempWorkspaceDir: () => configuredTempRoot,
+  } as any);
+  resetWorkspaceRegistryStoreForTest();
+};
+
+const registryRecordForRoots = (roots: string[]): Record<string, string> =>
+  Object.fromEntries(
+    roots.map((rootPath) => {
+      const workspaceRootPath = canonicalizeWorkspaceRootPath(rootPath);
+      return [buildFilesystemWorkspaceId(workspaceRootPath), workspaceRootPath];
+    }),
+  );
+
+const writeRegistryRecord = (
+  appDataDir: string,
+  record: Record<string, string>,
+) => {
+  fs.mkdirSync(appDataDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(appDataDir, "workspaces.json"),
+    `${JSON.stringify(record, null, 2)}\n`,
+    "utf-8",
+  );
+};
+
+const readRegistryRecord = (appDataDir: string): Record<string, string> => {
+  const registryFilePath = path.join(appDataDir, "workspaces.json");
+  if (!fs.existsSync(registryFilePath)) {
+    return {};
+  }
+  return JSON.parse(fs.readFileSync(registryFilePath, "utf-8")) as Record<string, string>;
+};
+
+const expectNoWorkspaceRegistryWriteArtifacts = (appDataDir: string) => {
+  if (!fs.existsSync(appDataDir)) {
+    return;
+  }
+  const registryDirFiles = fs.readdirSync(appDataDir);
+  expect(registryDirFiles.some((fileName) => fileName.includes(".bak"))).toBe(false);
+  expect(
+    registryDirFiles.filter((fileName) => fileName.startsWith("workspaces.json.tmp-")),
+  ).toHaveLength(0);
+};
+
 const getWorkspaceFileExplorerState = async (workspaceId: string) => {
   const workspace = workspaceManager.getWorkspaceById(workspaceId);
   if (!workspace) {
@@ -88,6 +158,7 @@ describe("Workspaces GraphQL e2e", () => {
     }
     delete process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR;
     vi.restoreAllMocks();
+    resetWorkspaceRegistryStoreForTest();
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }, 20000);
 
@@ -422,12 +493,7 @@ describe("Workspaces GraphQL e2e", () => {
   it("creates and lists the temp workspace with the backend-selected app-data-relative path", async () => {
     const appDataDir = path.join(tempRoot, "server-data");
     const expectedTempRoot = path.join(appDataDir, "temp_workspace");
-    fs.mkdirSync(appDataDir, { recursive: true });
-    fs.mkdirSync(expectedTempRoot, { recursive: true });
-
-    vi.spyOn(appConfigProvider, "config", "get").mockReturnValue({
-      getTempWorkspaceDir: () => expectedTempRoot,
-    } as any);
+    useIsolatedWorkspaceConfig(appDataDir, expectedTempRoot);
 
     const listQuery = `
       query GetWorkspaces {
@@ -451,6 +517,213 @@ describe("Workspaces GraphQL e2e", () => {
     expect(found).toBeTruthy();
     expect(found?.absolutePath).toBe(expectedTempRoot);
     expect(found?.isTemp).toBe(true);
+  });
+
+  it("lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries", async () => {
+    const appDataDir = path.join(tempRoot, "server-data");
+    const configuredTempRoot = path.join(appDataDir, "temp_workspace");
+    const regularRoot = path.join(tempRoot, "regular_ws");
+    fs.mkdirSync(regularRoot, { recursive: true });
+    useIsolatedWorkspaceConfig(appDataDir, configuredTempRoot);
+
+    const configuredTempFilesystemId = buildFilesystemWorkspaceId(configuredTempRoot);
+    const regularWorkspaceId = buildFilesystemWorkspaceId(regularRoot);
+    writeRegistryRecord(
+      appDataDir,
+      registryRecordForRoots([configuredTempRoot, regularRoot]),
+    );
+    resetWorkspaceRegistryStoreForTest();
+
+    const listQuery = `
+      query GetWorkspaces {
+        workspaces {
+          workspaceId
+          workspaceRootPath
+          absolutePath
+          kind
+          isTemp
+        }
+      }
+    `;
+
+    const listResult = await execGraphql<{
+      workspaces: Array<{
+        workspaceId: string;
+        workspaceRootPath: string | null;
+        absolutePath: string | null;
+        kind: string;
+        isTemp: boolean;
+      }>;
+    }>(listQuery);
+
+    const rowsForConfiguredTempRoot = listResult.workspaces.filter(
+      (workspace) => workspace.absolutePath === configuredTempRoot,
+    );
+    expect(rowsForConfiguredTempRoot).toEqual([
+      expect.objectContaining({
+        workspaceId: "temp_ws_default",
+        workspaceRootPath: configuredTempRoot,
+        kind: "temp",
+        isTemp: true,
+      }),
+    ]);
+    expect(
+      listResult.workspaces.some((workspace) => workspace.workspaceId === configuredTempFilesystemId),
+    ).toBe(false);
+    expect(listResult.workspaces).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          workspaceId: regularWorkspaceId,
+          workspaceRootPath: regularRoot,
+          kind: "filesystem",
+          isTemp: false,
+        }),
+      ]),
+    );
+    expect(readRegistryRecord(appDataDir)).toEqual(registryRecordForRoots([regularRoot]));
+    await expect(
+      workspaceManager.getRegisteredWorkspaceRootPath(configuredTempFilesystemId),
+    ).resolves.toBeNull();
+    expectNoWorkspaceRegistryWriteArtifacts(appDataDir);
+  });
+
+  it("resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry", async () => {
+    const appDataDir = path.join(tempRoot, "server-data");
+    const configuredTempRoot = path.join(appDataDir, "temp_workspace");
+    useIsolatedWorkspaceConfig(appDataDir, configuredTempRoot);
+    const configuredTempFilesystemId = buildFilesystemWorkspaceId(configuredTempRoot);
+
+    const createMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) {
+          workspaceId
+          workspaceRootPath
+          absolutePath
+          kind
+          isTemp
+        }
+      }
+    `;
+    const listQuery = `
+      query GetWorkspaces {
+        workspaces {
+          workspaceId
+          absolutePath
+          kind
+          isTemp
+        }
+      }
+    `;
+
+    const created = await execGraphql<{
+      createWorkspace: {
+        workspaceId: string;
+        workspaceRootPath: string;
+        absolutePath: string | null;
+        kind: string;
+        isTemp: boolean;
+      };
+    }>(createMutation, { input: { rootPath: `${configuredTempRoot}/.` } });
+
+    expect(created.createWorkspace).toMatchObject({
+      workspaceId: "temp_ws_default",
+      workspaceRootPath: configuredTempRoot,
+      absolutePath: configuredTempRoot,
+      kind: "temp",
+      isTemp: true,
+    });
+    expect(readRegistryRecord(appDataDir)[configuredTempFilesystemId]).toBeUndefined();
+    await expect(
+      workspaceManager.getRegisteredWorkspaceRootPath(configuredTempFilesystemId),
+    ).resolves.toBeNull();
+
+    const listResult = await execGraphql<{
+      workspaces: Array<{
+        workspaceId: string;
+        absolutePath: string | null;
+        kind: string;
+        isTemp: boolean;
+      }>;
+    }>(listQuery);
+    expect(
+      listResult.workspaces.filter((workspace) => workspace.absolutePath === configuredTempRoot),
+    ).toEqual([
+      expect.objectContaining({
+        workspaceId: "temp_ws_default",
+        kind: "temp",
+        isTemp: true,
+      }),
+    ]);
+    expectNoWorkspaceRegistryWriteArtifacts(appDataDir);
+  });
+
+  it("preserves a seeded registry when GraphQL workspace listing and creation overlap", async () => {
+    const appDataDir = path.join(tempRoot, "server-data");
+    const configuredTempRoot = path.join(appDataDir, "temp_workspace");
+    useIsolatedWorkspaceConfig(appDataDir, configuredTempRoot);
+    const existingRoots = ["existing-a", "existing-b", "existing-c"].map((name) => {
+      const rootPath = path.join(tempRoot, name);
+      fs.mkdirSync(rootPath, { recursive: true });
+      return rootPath;
+    });
+    const newRoot = path.join(tempRoot, "created-during-list");
+    fs.mkdirSync(newRoot, { recursive: true });
+    writeRegistryRecord(appDataDir, registryRecordForRoots(existingRoots));
+    resetWorkspaceRegistryStoreForTest();
+
+    const listQuery = `
+      query GetWorkspaces {
+        workspaces {
+          workspaceId
+          workspaceRootPath
+        }
+      }
+    `;
+    const createMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) {
+          workspaceId
+          workspaceRootPath
+          kind
+          isTemp
+        }
+      }
+    `;
+
+    const [listResult, created] = await Promise.all([
+      execGraphql<{
+        workspaces: Array<{ workspaceId: string; workspaceRootPath: string | null }>;
+      }>(listQuery),
+      execGraphql<{
+        createWorkspace: {
+          workspaceId: string;
+          workspaceRootPath: string;
+          kind: string;
+          isTemp: boolean;
+        };
+      }>(createMutation, { input: { rootPath: newRoot } }),
+    ]);
+
+    expect(listResult.workspaces).toEqual(
+      expect.arrayContaining(
+        existingRoots.map((rootPath) =>
+          expect.objectContaining({
+            workspaceId: buildFilesystemWorkspaceId(rootPath),
+            workspaceRootPath: rootPath,
+          }),
+        ),
+      ),
+    );
+    expect(created.createWorkspace).toMatchObject({
+      workspaceId: buildFilesystemWorkspaceId(newRoot),
+      workspaceRootPath: newRoot,
+      kind: "filesystem",
+      isTemp: false,
+    });
+    expect(Object.values(readRegistryRecord(appDataDir)).sort()).toEqual(
+      [...existingRoots, newRoot].sort(),
+    );
+    expectNoWorkspaceRegistryWriteArtifacts(appDataDir);
   });
 
   it("rejects removing the default temp workspace", async () => {

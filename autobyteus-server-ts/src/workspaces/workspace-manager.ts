@@ -1,4 +1,3 @@
-import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { FileSystemWorkspace } from "./filesystem-workspace.js";
 import { SkillWorkspace } from "./skill-workspace.js";
@@ -14,6 +13,7 @@ import { canonicalizeWorkspaceRootPath } from "./workspace-path-utils.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
+  warn: (...args: unknown[]) => console.warn(...args),
   error: (...args: unknown[]) => console.error(...args),
   debug: (...args: unknown[]) => console.debug(...args),
 };
@@ -50,7 +50,17 @@ export class WorkspaceManager {
   async createWorkspace(config: WorkspaceInput): Promise<FileSystemWorkspace> {
     const rootPathValue = config.rootPath;
     logger.info(`Creating new workspace for rootPath: ${String(rootPathValue)}`);
-    const workspace = new FileSystemWorkspace(config);
+    const normalizedRootPath = canonicalizeWorkspaceRootPath(rootPathValue);
+    if (this.isConfiguredTempWorkspaceRoot(normalizedRootPath)) {
+      logger.info("Resolved configured temp workspace root to TempWorkspace.");
+      await this.cleanupConfiguredTempRootRegistryEntries(normalizedRootPath);
+      return this.getOrCreateTempWorkspace();
+    }
+
+    const workspace = new FileSystemWorkspace({
+      ...config,
+      rootPath: normalizedRootPath,
+    });
 
     const existingById = this.activeWorkspaces.get(workspace.workspaceId);
     if (existingById) {
@@ -78,7 +88,12 @@ export class WorkspaceManager {
   }
 
   async ensureWorkspaceByRootPath(rootPath: string): Promise<FileSystemWorkspace> {
-    const normalizedRootPath = path.normalize(path.resolve(rootPath.trim()));
+    const normalizedRootPath = canonicalizeWorkspaceRootPath(rootPath);
+    if (this.isConfiguredTempWorkspaceRoot(normalizedRootPath)) {
+      logger.info("Resolved configured temp workspace root to TempWorkspace.");
+      await this.cleanupConfiguredTempRootRegistryEntries(normalizedRootPath);
+      return this.getOrCreateTempWorkspace();
+    }
     const config = { rootPath: normalizedRootPath };
     return this.createWorkspace(config);
   }
@@ -118,6 +133,7 @@ export class WorkspaceManager {
   }
 
   async listRegisteredFilesystemWorkspaces(): Promise<FileSystemWorkspace[]> {
+    await this.cleanupConfiguredTempRootRegistryEntries();
     const entries = await this.workspaceRegistryStore.listEntries();
     return entries.map((entry) => this.workspaceFromRegistryEntry(entry));
   }
@@ -211,16 +227,29 @@ export class WorkspaceManager {
   }
 
   async getOrCreateTempWorkspace(): Promise<TempWorkspace> {
-    if (this.activeWorkspaces.has(TempWorkspace.TEMP_WORKSPACE_ID)) {
+    const configuredTempRootPath = this.getConfiguredTempWorkspaceRootPath();
+    const cachedTempWorkspace = this.activeWorkspaces.get(TempWorkspace.TEMP_WORKSPACE_ID);
+    if (
+      cachedTempWorkspace instanceof TempWorkspace
+      && this.workspaceMatchesRoot(cachedTempWorkspace, configuredTempRootPath)
+    ) {
       logger.debug("Returning cached temp workspace");
-      return this.activeWorkspaces.get(TempWorkspace.TEMP_WORKSPACE_ID) as TempWorkspace;
+      await this.cleanupConfiguredTempRootRegistryEntries(configuredTempRootPath);
+      return cachedTempWorkspace;
     }
 
-    const config = appConfigProvider.config;
-    const tempDir = config.getTempWorkspaceDir();
-    logger.info(`Creating temp workspace at: ${tempDir}`);
+    if (cachedTempWorkspace) {
+      logger.warn(
+        `Replacing cached temp workspace because configured temp root changed to ${configuredTempRootPath}.`,
+      );
+      await cachedTempWorkspace.close();
+      this.activeWorkspaces.delete(TempWorkspace.TEMP_WORKSPACE_ID);
+    }
 
-    const tempWorkspace = new TempWorkspace(String(tempDir));
+    await this.cleanupConfiguredTempRootRegistryEntries(configuredTempRootPath);
+    logger.info(`Creating temp workspace at: ${configuredTempRootPath}`);
+
+    const tempWorkspace = new TempWorkspace(configuredTempRootPath);
     this.activeWorkspaces.set(TempWorkspace.TEMP_WORKSPACE_ID, tempWorkspace);
     logger.info(`Temp workspace created and cached with ID: ${TempWorkspace.TEMP_WORKSPACE_ID}`);
 
@@ -254,6 +283,41 @@ export class WorkspaceManager {
       return canonicalizeWorkspaceRootPath(workspace.getBasePath()) === workspaceRootPath;
     } catch {
       return false;
+    }
+  }
+
+  private getConfiguredTempWorkspaceRootPath(): string {
+    return canonicalizeWorkspaceRootPath(appConfigProvider.config.getTempWorkspaceDir());
+  }
+
+  private isConfiguredTempWorkspaceRoot(workspaceRootPath: string): boolean {
+    return workspaceRootPath === this.getConfiguredTempWorkspaceRootPath();
+  }
+
+  private async cleanupConfiguredTempRootRegistryEntries(
+    configuredTempRootPath = this.getConfiguredTempWorkspaceRootPath(),
+  ): Promise<void> {
+    const removedEntries = await this.workspaceRegistryStore.deleteEntriesByRootPath(
+      configuredTempRootPath,
+      "configured temp workspace root cleanup",
+    );
+    if (!removedEntries.length) {
+      return;
+    }
+
+    logger.info(
+      `Removed ${removedEntries.length} persisted filesystem registry entr${
+        removedEntries.length === 1 ? "y" : "ies"
+      } for the configured temp workspace root.`,
+    );
+
+    for (const entry of removedEntries) {
+      const activeWorkspace = this.activeWorkspaces.get(entry.workspaceId);
+      if (!activeWorkspace || !this.workspaceMatchesRoot(activeWorkspace, configuredTempRootPath)) {
+        continue;
+      }
+      await activeWorkspace.close();
+      this.activeWorkspaces.delete(entry.workspaceId);
     }
   }
 }
