@@ -2,12 +2,12 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/design-spec.md`
 - Current Review Round: 2
 - Trigger: Re-review after solution-designer fixed AR-001 stale backup tradeoff contradiction.
-- Prior Review Round Reviewed: Round 1 from `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/design-review-report.md`
+- Prior Review Round Reviewed: Round 1 from `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/design-review-report.md`
 - Latest Authoritative Round: 2
 - Current-State Evidence Basis: Corrected requirements, investigation notes, design spec, recovery-candidate evidence, prior review finding AR-001, and current source reads of `autobyteus-server-ts/src/workspaces/workspace-registry-store.ts`, `autobyteus-server-ts/src/workspaces/workspace-manager.ts`, `autobyteus-server-ts/src/workspaces/temp-workspace.ts`, `autobyteus-server-ts/src/api/graphql/types/workspace.ts`, and existing workspace tests.
 

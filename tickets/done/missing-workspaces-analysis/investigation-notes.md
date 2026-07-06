@@ -18,7 +18,7 @@ User reports that suddenly all other workspaces are gone/not visible in the fron
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis
-- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis
+- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis
 - Current Branch: codex/missing-workspaces-analysis
 - Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis
 - Bootstrap Base Branch: origin/personal
@@ -153,7 +153,7 @@ Investigation not yet design-ready.
 
 ### Recovery Candidate Artifact
 
-- Generated read-only artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/workspace-registry-recovery-candidates.json`.
+- Generated read-only artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/workspace-registry-recovery-candidates.json`.
 - It includes:
   - current registry contents;
   - old registry-like paths observed in server logs at `2026-07-05T18:06Z`;

@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/requirements.md`
 - Current Review Round: 2
 - Trigger: API/E2E passed and repository-resident durable E2E coverage was updated after the earlier implementation code review.
-- Prior Review Round Reviewed: Round 1 from `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/code-review-report.md`
+- Prior Review Round Reviewed: Round 1 from `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/code-review-report.md`
 - Latest Authoritative Round: 2
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`
 
@@ -28,8 +28,8 @@
 This was a narrow post-API/E2E coverage-code re-review. It focused on repository-resident durable coverage added/updated after Round 1 plus directly related fixture helpers and execution evidence:
 
 - Updated durable E2E coverage: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/in-progress/missing-workspaces-analysis/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/api-e2e-execution-coverage-report.md`
 
 Round 2 did not reopen the full implementation source review except as context for judging the new durable coverage. The changed E2E file added scenarios for duplicate configured temp-root registry cleanup, `createWorkspace(configuredTempRoot)` resolving to `temp_ws_default`, and GraphQL list/create overlap preserving a seeded registry.
 

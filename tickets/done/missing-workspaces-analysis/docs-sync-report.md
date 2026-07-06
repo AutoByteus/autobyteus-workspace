@@ -5,8 +5,8 @@
 - Ticket: `missing-workspaces-analysis`
 - Trigger: Delivery after post-API/E2E coverage-code re-review passed on 2026-07-06.
 - Bootstrap base reference: `origin/personal` at `4391c29389e23adf4866908e47dc49f3ef492f10` (recorded bootstrap base branch in investigation notes).
-- Integrated base reference used for docs sync: `origin/personal` at `4391c29389e23adf4866908e47dc49f3ef492f10`; delivery fetch on 2026-07-06 found the ticket branch already current with the tracked remote base, so no merge/rebase was needed.
-- Post-integration verification reference: No new base commits were integrated; upstream API/E2E and code-review evidence remains applicable. Delivery additionally ran `git diff --check` after docs sync and it passed.
+- Integrated base reference used for docs sync: docs sync was first performed when `origin/personal` was at `4391c29389e23adf4866908e47dc49f3ef492f10`; before the requested Electron build, delivery created local checkpoint `0c8c02c5d1b7` and merged the later `origin/personal` revision `4561ac89b1606791bd830623d629e411d192f64c`. The docs update remains applicable after that merge.
+- Post-integration verification reference: upstream API/E2E and code-review evidence remains applicable; delivery additionally ran `git diff --check` before the checkpoint and the requested integrated macOS arm64 Electron build passed with exit status `0`.
 
 ## Why Docs Were Updated
 
@@ -55,7 +55,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed against the branch after delivery fetched the tracked base and confirmed no integration was needed. Final repository finalization remains on hold pending explicit user verification, per delivery workflow.
+- Notes: Docs sync completed and remained valid after the later merge of `origin/personal` for the local Electron test build. Final repository finalization remains on hold pending explicit user verification, per delivery workflow.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
