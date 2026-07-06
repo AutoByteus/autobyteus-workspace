@@ -66,7 +66,7 @@ Deferred by reviewed design:
 - Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-access-mode-analysis/release-notes.md`
 - Release status: Released via documented helper as `v1.4.1` after the later explicit user request to release.
 - Release commit: `579f0bd074ec2e145bd2f47f058d3286f4f7479c` (`chore(release): bump workspace release version to 1.4.1`).
-- Release workflow status at handoff-update time: desktop, Android APK, iOS/App Store Connect, messaging-gateway, and server Docker workflows were triggered by the tag push and were in progress.
+- Release workflow status at latest handoff check: Android APK and messaging-gateway workflows completed successfully; desktop, iOS/App Store Connect, and server Docker workflows were still in progress.
 
 ## Verification Summary
 

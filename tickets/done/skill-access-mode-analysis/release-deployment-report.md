@@ -84,12 +84,12 @@ Repository finalization was already complete on `origin/personal`. After the lat
 - Release/publication/deployment result: `Initiated successfully` — branch `personal` and tag `v1.4.1` were pushed; tag push started the desktop, Android APK, iOS/App Store Connect, messaging-gateway, and server Docker release workflows.
 - Release notes handoff result: `Completed` — archived ticket notes were copied to `.github/release-notes/release-notes.md` in the tagged release commit.
 - Manual dispatch result: `Not run` — per README, the fresh tag push is the normal release path and `release:manual-dispatch` is only for existing-tag recovery/re-publish.
-- GitHub Actions release workflow status at verification time (2026-07-06 08:28 CEST / 06:28 UTC):
+- GitHub Actions release workflow status at latest handoff check (2026-07-06 08:30 CEST / 06:30 UTC):
 - Desktop Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28772283284
-- Android APK Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28772283285
+- Android APK Release: `completed / success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28772283285
 - Server Docker Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28772283292
 - iOS App Store Connect Release: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28772283306
-- Release Messaging Gateway: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28772283312
+- Release Messaging Gateway: `completed / success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28772283312
 - Local user-test Electron build: `Completed before cleanup` — primary DMG was produced in the temporary ticket worktree and removed during final cleanup; retained evidence is under `tickets/done/skill-access-mode-analysis/delivery-evidence/`.
 - Blocker (if applicable): N/A — release automation was triggered successfully; final artifact publication continues asynchronously in GitHub Actions.
 
@@ -166,7 +166,7 @@ cat .github/release-notes/release-notes.md
 gh run list --limit 20 --json databaseId,name,event,headBranch,headSha,status,conclusion,createdAt,updatedAt,url,displayTitle --jq '.[] | select(.headSha=="579f0bd074ec2e145bd2f47f058d3286f4f7479c")'
 ```
 
-Result: Pass for local release preparation, branch/tag push, version sync, manifest sync, release-note sync, and workflow trigger verification. At verification time the five release workflows were queued or in progress on tag `v1.4.1`.
+Result: Pass for local release preparation, branch/tag push, version sync, manifest sync, release-note sync, and workflow trigger verification. At the latest handoff check, the Android APK and messaging-gateway release workflows had completed successfully; desktop, iOS/App Store Connect, and server Docker release workflows were still in progress on tag `v1.4.1`.
 
 ## Rollback Criteria
 
