@@ -2,7 +2,7 @@
 
 ## Status
 
-Verified and finalized on `origin/personal`. Ticket is archived to `tickets/done/skill-access-mode-analysis`. Release/deployment was explicitly skipped per user request.
+Verified, finalized, and released via tag `v1.4.1` on `origin/personal`. Ticket is archived to `tickets/done/skill-access-mode-analysis`. The release helper completed and pushed release commit `579f0bd074ec2e145bd2f47f058d3286f4f7479c` plus tag `v1.4.1`; GitHub Actions release workflows are running asynchronously.
 
 ## Authoritative Worktree And Branch
 
@@ -10,8 +10,9 @@ Verified and finalized on `origin/personal`. Ticket is archived to `tickets/done
 - Ticket branch: `codex/skill-access-mode-analysis` (remote branch retained; local branch deleted after merge)
 - Tracked base / finalization target: `origin/personal`
 - Latest base checked for this delivery handoff: `origin/personal` @ `4391c29389e23adf4866908e47dc49f3ef492f10`
-- Current branch HEAD: `4391c29389e23adf4866908e47dc49f3ef492f10`
-- Finalized target: `origin/personal` includes merge commit `ef7aad8158d1b859de407f0e006d94eea366112a` plus this finalization record update.
+- Release tag target: `v1.4.1` -> `579f0bd074ec2e145bd2f47f058d3286f4f7479c`
+- Branch HEAD at release-helper completion: `579f0bd074ec2e145bd2f47f058d3286f4f7479c` (this handoff/report update may be committed afterward as non-release bookkeeping).
+- Finalized target: `origin/personal` includes merge commit `ef7aad8158d1b859de407f0e006d94eea366112a`, finalization record commit `073e6c1eca74a243eff1cafd9fd5ed82656bbea8`, and release commit `579f0bd074ec2e145bd2f47f058d3286f4f7479c`.
 
 ## Delivery Integration Refresh
 
@@ -63,7 +64,9 @@ Deferred by reviewed design:
 
 - Release notes required: `Yes` for product-visible launch behavior and SDK/API contract cleanup.
 - Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-access-mode-analysis/release-notes.md`
-- Release status: No release or version bump has been performed; release notes are prepared for a later release path only if requested after verification.
+- Release status: Released via documented helper as `v1.4.1` after the later explicit user request to release.
+- Release commit: `579f0bd074ec2e145bd2f47f058d3286f4f7479c` (`chore(release): bump workspace release version to 1.4.1`).
+- Release workflow status at handoff-update time: desktop, Android APK, iOS/App Store Connect, messaging-gateway, and server Docker workflows were triggered by the tag push and were in progress.
 
 ## Verification Summary
 
@@ -114,14 +117,14 @@ The build skipped macOS code signing/notarization because Apple signing identity
 
 ## Finalization Record
 
-- User verification: received on 2026-07-06 with instruction to finalize and not release a new version.
+- User verification: received on 2026-07-06 with instruction to finalize; subsequent release authorization received on 2026-07-06 with instruction to release.
 - Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-access-mode-analysis`
 - Ticket branch commit: `a95fd695e471af755c667d4feb7c4a07aef2db3c` (`fix(skills): remove global discovery launch mode`)
 - Ticket branch push: completed to `origin/codex/skill-access-mode-analysis`.
 - Finalization target: `origin/personal`
 - Target merge: completed with merge commit `ef7aad8158d1b859de407f0e006d94eea366112a` (`merge(ticket): finalize skill access mode analysis`).
 - Target push: completed to `origin/personal`.
-- Release/version: not performed per explicit user instruction.
+- Release/version: performed after subsequent explicit release request — `v1.4.1` pushed from release commit `579f0bd074ec2e145bd2f47f058d3286f4f7479c`.
 - Cleanup: removed `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-access-mode-analysis`, ran `git worktree prune`, and deleted local branch `codex/skill-access-mode-analysis`. Remote ticket branch was left in place.
 
 ## Residual Notes / Risks
@@ -130,13 +133,6 @@ The build skipped macOS code signing/notarization because Apple signing identity
 - The retained internal `skillAccessMode` field shape is still present for `PRELOADED_ONLY` / `NONE` compatibility and historical config hydration; deleting that plumbing is a separate future cleanup.
 - Live runtime E2E is environment-gated and was not forced locally without the required `RUN_*_E2E` flags.
 
-## User Verification Request
+## User Verification / Release Closure
 
-Please verify the behavior you care about in the current worktree, especially:
-
-1. Starting a standalone agent no longer shows a launch-time skill-access dropdown and uses the agent definition's configured skills.
-2. Starting a team no longer shows a team-level skill-access dropdown and each leaf member uses its own configured skills.
-3. External channel binding setup no longer asks for skill access.
-4. If relevant, SDK/API callers should stop sending the removed legacy global-discovery value and rely on configured skills or explicit `NONE`.
-
-After verification, reply with explicit approval to finalize. On approval, delivery will refresh `origin/personal` again, re-integrate if needed, move the ticket folder to `tickets/done/skill-access-mode-analysis/`, commit/push the ticket branch, merge into the recorded target branch `personal`, push the target, and clean up if safe. Release/publication/deployment will only be performed if you explicitly request it.
+User verification was received before finalization, and a later explicit release request was received. No further local verification is requested in this handoff. Monitor the GitHub Actions release workflow runs for final artifact/container publication.
