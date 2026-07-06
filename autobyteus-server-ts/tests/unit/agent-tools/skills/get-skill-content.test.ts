@@ -38,7 +38,7 @@ describe("getSkillContentTool", () => {
 
     const tool = registerGetSkillContentTool();
     const result = await tool.execute(
-      { agentId: "agent-1" } as any,
+      { agentId: "agent-1", config: { skills: ["example-skill"] } } as any,
       { skill_name: "example-skill" },
     );
 
@@ -59,8 +59,17 @@ describe("getSkillContentTool", () => {
 
     const tool = registerGetSkillContentTool();
     await expect(
-      tool.execute({ agentId: "agent-1" } as any, { skill_name: "missing" }),
+      tool.execute({ agentId: "agent-1", config: { skills: ["missing"] } } as any, { skill_name: "missing" }),
     ).rejects.toThrow("not found");
+  });
+
+  it("throws before lookup when skill is not configured for the agent", async () => {
+    const tool = registerGetSkillContentTool();
+
+    await expect(
+      tool.execute({ agentId: "agent-1", config: { skills: ["other-skill"] } } as any, { skill_name: "example-skill" }),
+    ).rejects.toThrow("is not configured for this agent");
+    expect(mockSkillService.getSkill).not.toHaveBeenCalled();
   });
 
   it("includes error message when file tree fails", async () => {
@@ -74,7 +83,7 @@ describe("getSkillContentTool", () => {
 
     const tool = registerGetSkillContentTool();
     const result = await tool.execute(
-      { agentId: "agent-1" } as any,
+      { agentId: "agent-1", config: { skills: ["example-skill"] } } as any,
       { skill_name: "example-skill" },
     );
 

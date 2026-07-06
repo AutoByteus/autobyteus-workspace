@@ -86,6 +86,12 @@ Those values are used in two places:
 
 Definition editors can leave runtime blank to mean “choose when launching”, while workspace run-config forms resolve one effective team default immediately and let individual leaf members diverge when mixed-runtime launch is needed.
 
+Team launch forms do not expose a team-level skill-access selector. Each
+leaf member uses the skills configured on that member's agent definition; a leaf
+member with no configured skills receives no AutoByteus-managed skills by
+default. The old all-installed-skill option is not a normal launch-time policy
+and is absent from the frontend skill-access type union.
+
 ## Team Run Config Surface
 
 The workspace-side team launch buffer is owned by `teamRunConfigStore` and rendered through `TeamRunConfigForm.vue`.
@@ -113,7 +119,7 @@ targets.
 That surface owns:
 
 - the team-level default runtime/model/config selection,
-- shared workspace / auto-execute / skill-access fields,
+- shared workspace and auto-execute fields,
 - a recursive member override tree for nested team definitions, with subteam
   group rows and leaf-member override controls keyed by backend
   `memberRouteKey`, and
@@ -150,7 +156,7 @@ and unrelated member fields such as auto-execute are preserved.
 
 When `RunConfigPanel.vue` is showing a selected existing team run rather than a
 new team launch buffer, `TeamRunConfigForm.vue` receives read-only mode. In that
-mode the team-level runtime/model/workspace/auto-approve/skill controls and all
+mode the team-level runtime/model/workspace/auto-approve controls and all
 `MemberOverrideItem.vue` rows render as disabled, direct update handlers no-op,
 and the **Run Team** action is not shown. Member override rows remain
 inspectable, and advanced model/thinking sections are expanded or available so

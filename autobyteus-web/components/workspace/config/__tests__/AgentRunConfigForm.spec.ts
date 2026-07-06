@@ -465,9 +465,6 @@ describe('AgentRunConfigForm', () => {
     await wrapper.find('button#auto-execute').trigger('click')
     expect(localConfig.autoExecuteTools).toBe(true)
 
-    await wrapper.find('select#skill-access-mode').setValue('GLOBAL_DISCOVERY')
-    expect(localConfig.skillAccessMode).toBe('GLOBAL_DISCOVERY')
-
     await wrapper.find('select#agent-run-runtime-kind').setValue('codex_app_server')
     expect(localConfig.runtimeKind).toBe('codex_app_server')
     expect(localConfig.llmModelIdentifier).toBe('')
@@ -521,7 +518,7 @@ describe('AgentRunConfigForm', () => {
 
     expect(wrapper.find('select#agent-run-runtime-kind').element.disabled).toBe(true)
     expect(wrapper.find('button#auto-execute').element.disabled).toBe(true)
-    expect(wrapper.find('select#skill-access-mode').element.disabled).toBe(true)
+    expect(wrapper.find('select#skill-access-mode').exists()).toBe(false)
     expect(wrapper.findComponent({ name: 'WorkspaceSelector' }).props('disabled')).toBe(true)
     expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('disabled')).toBe(true)
     expect(wrapper.get('[data-testid="advanced-params-toggle"]').attributes('aria-expanded')).toBe('true')

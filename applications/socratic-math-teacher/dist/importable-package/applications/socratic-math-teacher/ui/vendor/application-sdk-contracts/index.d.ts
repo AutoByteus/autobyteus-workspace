@@ -7,7 +7,7 @@ export declare const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2: "2";
 export declare const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3: "3";
 export declare const APPLICATION_EVENT_DELIVERY_SEMANTICS: "AT_LEAST_ONCE";
 export type ApplicationRouteMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
-export type ApplicationSkillAccessMode = "GLOBAL_DISCOVERY" | "PRELOADED_ONLY" | "NONE";
+export type ApplicationSkillAccessMode = "PRELOADED_ONLY" | "NONE";
 export type ApplicationBackendSupportedExposures = {
     queries: boolean;
     commands: boolean;

@@ -1585,7 +1585,7 @@ describe('runHistoryStore', () => {
         llmModelIdentifier: 'model-selected',
         runtimeKind: 'codex_app_server',
         autoExecuteTools: true,
-        skillAccessMode: 'GLOBAL_DISCOVERY',
+        skillAccessMode: 'PRELOADED_ONLY',
         isLocked: true,
         llmConfig: {
           reasoning_effort: 'xhigh',
@@ -1609,7 +1609,7 @@ describe('runHistoryStore', () => {
     expect(seed).toEqual(expect.objectContaining({
       llmModelIdentifier: 'model-selected',
       autoExecuteTools: true,
-      skillAccessMode: 'GLOBAL_DISCOVERY',
+      skillAccessMode: 'PRELOADED_ONLY',
       isLocked: false,
       llmConfig: {
         reasoning_effort: 'xhigh',

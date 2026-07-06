@@ -8,9 +8,14 @@ import {
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { TreeNode } from "../../file-explorer/tree-node.js";
 import { SkillService } from "../../skills/services/skill-service.js";
+import {
+  assertSkillAllowedByAccessPolicy,
+  resolveSkillToolAccessPolicy,
+  type SkillToolContext,
+} from "./skill-tool-access.js";
 
 const DESCRIPTION =
-  "Retrieves a skill's instructions (SKILL.md) and a readable file tree listing.";
+  "Retrieves a configured skill's instructions (SKILL.md) and a readable file tree listing.";
 
 const argumentSchema = new ParameterSchema();
 argumentSchema.addParameter(
@@ -28,11 +33,6 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = {
-  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
-  agentId?: string;
-};
-
 const serializeTree = (node: TreeNode, prefix = ""): string => {
   const label = node.isFile ? node.name : `${node.name}/`;
   const output = [`${prefix}${label}`];
@@ -43,7 +43,7 @@ const serializeTree = (node: TreeNode, prefix = ""): string => {
 };
 
 export async function getSkillContent(
-  context: AgentContextLike,
+  context: SkillToolContext | null | undefined,
   skill_name: string,
 ): Promise<string> {
   const agentRunId = context?.agentId ?? "unknown";
@@ -55,10 +55,13 @@ export async function getSkillContent(
 
   try {
     const service = SkillService.getInstance();
+    const policy = resolveSkillToolAccessPolicy(context);
+    assertSkillAllowedByAccessPolicy(policy, skill_name);
     const skill = service.getSkill(skill_name);
     if (!skill) {
       throw new Error(`Skill '${skill_name}' not found.`);
     }
+    assertSkillAllowedByAccessPolicy(policy, skill.name);
 
     let filesStr = "";
     try {

@@ -40,8 +40,7 @@ const readObject = (value: unknown): Record<string, unknown> | null =>
 const normalizeSkillAccessMode = (value: unknown): SkillAccessMode => {
   if (
     value === SkillAccessMode.NONE ||
-    value === SkillAccessMode.PRELOADED_ONLY ||
-    value === SkillAccessMode.GLOBAL_DISCOVERY
+    value === SkillAccessMode.PRELOADED_ONLY
   ) {
     return value;
   }

@@ -29,7 +29,7 @@ describe("getSkillContentTool", () => {
         root.addChild(srcDir);
         mockSkillService.getSkillFileTree.mockResolvedValue(root);
         const tool = registerGetSkillContentTool();
-        const result = await tool.execute({ agentId: "agent-1" }, { skill_name: "example-skill" });
+        const result = await tool.execute({ agentId: "agent-1", config: { skills: ["example-skill"] } }, { skill_name: "example-skill" });
         expect(result).toContain("# Skill: example-skill");
         expect(result).toContain("## Description");
         expect(result).toContain("Example description");
@@ -44,7 +44,12 @@ describe("getSkillContentTool", () => {
     it("throws when skill is not found", async () => {
         mockSkillService.getSkill.mockReturnValue(null);
         const tool = registerGetSkillContentTool();
-        await expect(tool.execute({ agentId: "agent-1" }, { skill_name: "missing" })).rejects.toThrow("not found");
+        await expect(tool.execute({ agentId: "agent-1", config: { skills: ["missing"] } }, { skill_name: "missing" })).rejects.toThrow("not found");
+    });
+    it("throws before lookup when skill is not configured for the agent", async () => {
+        const tool = registerGetSkillContentTool();
+        await expect(tool.execute({ agentId: "agent-1", config: { skills: ["other-skill"] } }, { skill_name: "example-skill" })).rejects.toThrow("is not configured for this agent");
+        expect(mockSkillService.getSkill).not.toHaveBeenCalled();
     });
     it("includes error message when file tree fails", async () => {
         mockSkillService.getSkill.mockReturnValue({
@@ -55,7 +60,7 @@ describe("getSkillContentTool", () => {
         });
         mockSkillService.getSkillFileTree.mockRejectedValue(new Error("tree failed"));
         const tool = registerGetSkillContentTool();
-        const result = await tool.execute({ agentId: "agent-1" }, { skill_name: "example-skill" });
+        const result = await tool.execute({ agentId: "agent-1", config: { skills: ["example-skill"] } }, { skill_name: "example-skill" });
         expect(result).toContain("Error listing files");
         expect(result).toContain("tree failed");
     });

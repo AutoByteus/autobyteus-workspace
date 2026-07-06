@@ -73,7 +73,7 @@ This read-time validation is authoritative: stale persisted overrides or invalid
 - launch configuration for the matching runtime kind, and
 - optional `initialInput`.
 
-The orchestration host validates the resource choice, launches the underlying agent/team run, persists one durable binding together with `bindingIntentId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary.
+The orchestration host validates the resource choice, launches the underlying agent/team run, persists one durable binding together with `bindingIntentId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary. Runtime skill exposure still comes from the selected agent/team definitions: agent starts and each team leaf member use configured skills only, and legacy `GLOBAL_DISCOVERY` values in app-authored inputs are rejected rather than normalized into broader access.
 
 `getRunPublishedArtifacts(runId)` and `getPublishedArtifactRevisionText({ runId, revisionId })` provide application-owned read access to the shared published-artifact store after validating that the requested run still belongs to the calling application. These reads are for application/runtime consumers such as Brief Studio and Socratic reconciliation; the current web Artifacts tab is not a consumer of this API.
 
@@ -88,6 +88,15 @@ The orchestration boundary also owns persisted application launch setup for mani
 - the older flat `launch_defaults_json` to `launchProfile` normalization is separate from the execution-resource rename and does not permit old execution-resource refs,
 - read-time validation is authoritative: malformed profiles, kind mismatches, unsupported fields, or stale team topology are surfaced as `INVALID_SAVED_CONFIGURATION` together with `invalidSavedConfiguration` and issue detail instead of silently launching stale state, and
 - host-managed application flows keep `autoExecuteTools` enabled for the application-owned teaching workflows.
+
+Application runtime-control launch inputs still carry a compatibility-shaped
+`skillAccessMode` field. It has a narrow value set: `PRELOADED_ONLY` is the
+host-managed default and means "use the configured skills on the target
+definition"; `NONE` suppresses AutoByteus skill exposure when an
+internal/application flow intentionally needs that. The saved setup
+`launchProfile` editors do not expose a skill-access selector, and the removed
+`GLOBAL_DISCOVERY` value is not a valid saved setup, backend SDK, or
+runtime-control input.
 
 `ApplicationExecutionResourceConfigurationService` is the semantic owner for `GET /applications/:applicationId/execution-resource-configurations` and `PUT /applications/:applicationId/execution-resource-configurations/:slotKey`. It validates and normalizes current-shape writes, resets stale old execution-resource rows instead of migrating them, maps invalid write attempts to HTTP 400, and returns `READY`, `NOT_CONFIGURED`, or `INVALID_SAVED_CONFIGURATION` views for the frontend setup gate.
 

@@ -20,6 +20,8 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
     agentId: string,
     context: AgentContextLike
   ): string {
+    void toolInstances;
+
     const registry = new SkillRegistry();
     const preloadedSkills = context?.config?.skills ?? [];
     const skillAccessMode = resolveSkillAccessMode(
@@ -32,24 +34,18 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
       return systemPrompt;
     }
 
-    const allSkills = registry.listSkills();
-    const preloadedSkillSet = new Set(preloadedSkills);
-
-    if (!allSkills.length) {
-      console.info(`Agent '${agentId}': No skills found in registry. Skipping injection.`);
+    if (preloadedSkills.length === 0) {
+      console.info(`Agent '${agentId}': No configured skills. Skipping injection.`);
       return systemPrompt;
     }
 
-    const catalogSkills =
-      skillAccessMode === SkillAccessMode.PRELOADED_ONLY
-        ? preloadedSkills
-            .map((skillName) => registry.getSkill(skillName))
-            .filter((skill): skill is NonNullable<typeof skill> => Boolean(skill))
-        : allSkills;
+    const catalogSkills = preloadedSkills
+      .map((skillName) => registry.getSkill(skillName))
+      .filter((skill): skill is NonNullable<typeof skill> => Boolean(skill));
 
     if (!catalogSkills.length) {
       console.info(
-        `Agent '${agentId}': Skill access mode '${skillAccessMode}' produced no catalog entries. Skipping injection.`
+        `Agent '${agentId}': Configured skills produced no catalog entries. Skipping injection.`
       );
       return systemPrompt;
     }
@@ -59,25 +55,14 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
 
     for (const skill of catalogSkills) {
       catalogEntries.push(`- **${skill.name}**: ${skill.description}`);
-      if (
-        skillAccessMode === SkillAccessMode.PRELOADED_ONLY ||
-        preloadedSkillSet.has(skill.name)
-      ) {
-        detailedSections.push(
-          `#### ${skill.name}\n**Skill Base Path:** \`${skill.rootPath}\`\n\n${formatSkillContentForPrompt(skill)}`
-        );
-      }
+      detailedSections.push(
+        `#### ${skill.name}\n**Skill Base Path:** \`${skill.rootPath}\`\n\n${formatSkillContentForPrompt(skill)}`
+      );
     }
 
     let skillsBlock = '\n\n## Agent Skills\n';
     skillsBlock += '### Skill Catalog\n';
     skillsBlock += `${catalogEntries.join('\n')}\n`;
-    const hasLoadSkillTool =
-      Object.prototype.hasOwnProperty.call(toolInstances, 'load_skill') ||
-      Object.values(toolInstances).some((toolInstance) => toolInstance.definition?.name === 'load_skill');
-    if (skillAccessMode === SkillAccessMode.GLOBAL_DISCOVERY && hasLoadSkillTool) {
-      skillsBlock += '\nTo load a skill not shown in detail below, use the `load_skill` tool.\n';
-    }
 
     if (detailedSections.length) {
       skillsBlock += `

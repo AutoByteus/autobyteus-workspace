@@ -466,7 +466,7 @@ describe('TeamRunConfigForm', () => {
 
     expect(wrapper.find('select#team-run-runtime-kind').element.disabled).toBe(true)
     expect(wrapper.find('button#team-auto-execute').element.disabled).toBe(true)
-    expect(wrapper.find('select#team-skill-access-mode').element.disabled).toBe(true)
+    expect(wrapper.find('select#team-skill-access-mode').exists()).toBe(false)
     expect(wrapper.findComponent({ name: 'WorkspaceSelector' }).props('disabled')).toBe(true)
 
     const overrideDisclosure = wrapper.find('button.w-full')

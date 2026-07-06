@@ -47,12 +47,9 @@ export function assertSkillAllowedByAccessPolicy(
     throw new Error("Skill access is disabled for this agent (skill access mode is NONE).");
   }
 
-  if (
-    policy.mode === SkillAccessMode.PRELOADED_ONLY &&
-    !policy.configuredSkillSet.has(skillName)
-  ) {
+  if (!policy.configuredSkillSet.has(skillName)) {
     throw new Error(
-      `Skill '${skillName}' is not preloaded for this agent and cannot be loaded in PRELOADED_ONLY mode.`,
+      `Skill '${skillName}' is not configured for this agent and cannot be accessed at runtime.`,
     );
   }
 }

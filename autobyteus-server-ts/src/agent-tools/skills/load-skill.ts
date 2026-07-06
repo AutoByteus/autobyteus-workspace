@@ -6,7 +6,6 @@ import {
   ParameterType,
   BaseTool,
 } from "autobyteus-ts";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type { Skill } from "../../skills/domain/models.js";
 import { SkillService } from "../../skills/services/skill-service.js";
@@ -45,44 +44,18 @@ const logger = {
 const looksLikePath = (value: string): boolean =>
   path.isAbsolute(value) || value.includes("/") || value.includes("\\");
 
-const findManagedSkillByPath = (service: SkillService, skillPath: string): Skill | null => {
-  const resolvedPath = path.resolve(skillPath);
-  return (
-    service
-      .listSkills()
-      .find((skill) => path.resolve(skill.rootPath) === resolvedPath) ?? null
-  );
-};
-
 const resolveManagedSkill = (
   service: SkillService,
   rawSkillName: string,
   policy: SkillToolAccessPolicy,
 ): Skill => {
-  if (policy.mode === SkillAccessMode.PRELOADED_ONLY && looksLikePath(rawSkillName)) {
-    throw new Error(
-      `Skill '${rawSkillName}' cannot be loaded by path when skill access mode is PRELOADED_ONLY.`,
-    );
-  }
-
-  if (
-    policy.mode === SkillAccessMode.PRELOADED_ONLY &&
-    !policy.configuredSkillSet.has(rawSkillName)
-  ) {
-    throw new Error(
-      `Skill '${rawSkillName}' is not preloaded for this agent and cannot be loaded in PRELOADED_ONLY mode.`,
-    );
-  }
-
   if (looksLikePath(rawSkillName)) {
-    const pathMatch = findManagedSkillByPath(service, rawSkillName);
-    if (!pathMatch) {
-      throw new Error(
-        `Skill path '${rawSkillName}' is not a server-managed skill. Add the directory through normal skill sources/CRUD and load it by skill name.`,
-      );
-    }
-    return pathMatch;
+    throw new Error(
+      `Skill '${rawSkillName}' cannot be loaded by path. Load configured server-managed skills by registered skill name.`,
+    );
   }
+
+  assertSkillAllowedByAccessPolicy(policy, rawSkillName);
 
   const skill = service.getSkill(rawSkillName);
   if (!skill) {
@@ -105,9 +78,6 @@ export async function loadSkill(
   try {
     const service = SkillService.getInstance();
     const policy = resolveSkillToolAccessPolicy(context);
-    if (policy.mode === SkillAccessMode.NONE) {
-      assertSkillAllowedByAccessPolicy(policy, skill_name);
-    }
 
     const skill = resolveManagedSkill(service, skill_name, policy);
     assertSkillAllowedByAccessPolicy(policy, skill.name);

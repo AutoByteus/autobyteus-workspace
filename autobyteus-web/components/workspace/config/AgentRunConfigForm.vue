@@ -63,22 +63,6 @@
       </button>
     </div>
 
-    <div>
-      <label for="skill-access-mode" class="mb-1 block text-sm font-medium text-gray-700">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.skill_access') }}</label>
-      <select
-        id="skill-access-mode"
-        :value="config.skillAccessMode"
-        :disabled="isFormReadOnly"
-        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
-        @change="updateSkillAccessMode(($event.target as HTMLSelectElement).value)"
-      >
-        <option value="PRELOADED_ONLY">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.configured_skills_only_recommended') }}</option>
-        <option value="GLOBAL_DISCOVERY">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.all_installed_skills') }}</option>
-        <option value="NONE">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.no_skills') }}</option>
-      </select>
-      <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.controls_which_skills_this_agent_is') }}</p>
-    </div>
-
     <div v-if="readOnlyMode" class="flex items-center rounded bg-slate-50 p-2 text-xs text-slate-600">
       <span class="i-heroicons-eye-20-solid mr-1 h-4 w-4"></span>
       <span>{{ $t('workspace.components.workspace.config.AgentRunConfigForm.selected_run_configuration_read_only') }}</span>
@@ -104,7 +88,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { AgentDefinition } from '~/stores/agentDefinitionStore'
-import type { AgentRunConfig, SkillAccessMode } from '~/types/agent/AgentRunConfig'
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 
@@ -142,11 +126,6 @@ const runtimeSelectionLocked = computed(() => isFormReadOnly.value || runtimeLoc
 const updateAutoExecute = (checked: boolean) => {
   if (isFormReadOnly.value) return
   props.config.autoExecuteTools = checked
-}
-
-const updateSkillAccessMode = (value: string) => {
-  if (isFormReadOnly.value) return
-  props.config.skillAccessMode = value as SkillAccessMode
 }
 
 const updateRuntimeKind = (value: string) => {
