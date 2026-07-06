@@ -34,12 +34,15 @@ const cloneExecutionResourceRef = (
 ): ApplicationExecutionResourceRef => structuredClone(executionResourceRef);
 
 const normalizeSkillAccessMode = (
-  skillAccessMode: ApplicationSkillAccessMode | null | undefined,
+  skillAccessMode: ApplicationSkillAccessMode | string | null | undefined,
 ): ApplicationSkillAccessMode => {
-  if (skillAccessMode === "GLOBAL_DISCOVERY" || skillAccessMode === "NONE") {
-    return skillAccessMode;
+  if (skillAccessMode === undefined || skillAccessMode === null || skillAccessMode === APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE) {
+    return APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE;
   }
-  return APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE;
+  if (skillAccessMode === "NONE") {
+    return "NONE";
+  }
+  throw new Error(`Unsupported skillAccessMode '${skillAccessMode}'.`);
 };
 
 export const resolveConfiguredAgentLaunchProfile = (input: {

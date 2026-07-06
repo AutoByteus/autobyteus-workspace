@@ -119,8 +119,7 @@ const normalizeMemberMetadata = (
     autoExecuteTools: Boolean(base.autoExecuteTools),
     skillAccessMode:
       base.skillAccessMode === SkillAccessMode.NONE ||
-      base.skillAccessMode === SkillAccessMode.PRELOADED_ONLY ||
-      base.skillAccessMode === SkillAccessMode.GLOBAL_DISCOVERY
+      base.skillAccessMode === SkillAccessMode.PRELOADED_ONLY
         ? base.skillAccessMode
         : SkillAccessMode.PRELOADED_ONLY,
     llmConfig:

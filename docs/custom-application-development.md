@@ -132,6 +132,17 @@ The old singular `publish_artifact` tool is not registered, exposed, allowlisted
 
 Application backends observe durable published artifacts through `artifactHandlers.persisted`, `runtimeControl.getRunPublishedArtifacts(...)`, and `runtimeControl.getPublishedArtifactRevisionText(...)`.
 
+## Runtime skill access
+
+Application-authored run launches use the same configured-skill boundary as the
+native AutoByteus UI. Agents and team members can use the skills listed on their
+definition; an agent with no configured skills exposes no AutoByteus-managed
+skills by default. The SDK contract supports `PRELOADED_ONLY` for this
+host-managed behavior and `NONE` for explicit no-skill suppression. Do not send
+`GLOBAL_DISCOVERY` or model broad/orchestrator agents as "all installed skills"
+launches; configure the exact allowed `skillNames[]` on the agent definition
+instead.
+
 ## Trust and safety boundary
 
 AutoByteus user import of a generated package is prebuilt-only: import validation reads files and does not run app-owned `npm install`, build scripts, or package lifecycle scripts. This is not a sandbox guarantee. Application backend code is still executed later by the existing application worker runtime when the user launches the application.

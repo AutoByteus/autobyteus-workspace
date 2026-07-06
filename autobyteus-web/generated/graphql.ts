@@ -2025,7 +2025,6 @@ export type Skill = {
 };
 
 export enum SkillAccessModeEnum {
-  GlobalDiscovery = 'GLOBAL_DISCOVERY',
   None = 'NONE',
   PreloadedOnly = 'PRELOADED_ONLY'
 }

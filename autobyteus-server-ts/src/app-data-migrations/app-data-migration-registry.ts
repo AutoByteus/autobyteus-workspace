@@ -8,12 +8,17 @@ import { RemoveSelfEvolutionRunMetadataMigration } from "./migrations/remove-sel
 import { TeamCommunicationProjectionAddressMigration } from "./migrations/team-communication-projection-address-migration.js";
 import { TokenUsageExecutionAddressBackfillMigration } from "./migrations/token-usage-execution-address-backfill-migration.js";
 import { TokenUsageLegacyPathColumnsDropMigration } from "./migrations/token-usage-legacy-path-columns-drop-migration.js";
+import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-global-skill-discovery-mode-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
 
   constructor(definitions?: AppDataMigrationDefinition[]) {
     this.definitions = definitions ?? [
+      new RemoveGlobalSkillDiscoveryModeMigration(
+        appConfigProvider.config.getMemoryDir(),
+        appConfigProvider.config.getAppDataDir(),
+      ),
       new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
       new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageExecutionAddressBackfillMigration(appConfigProvider.config.getMemoryDir()),

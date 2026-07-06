@@ -21,7 +21,7 @@ function makeAgentRunConfig(agentDefinitionId = 'agent-1'): AgentRunConfig {
     runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
     workspaceId: 'workspace-1',
     autoExecuteTools: false,
-    skillAccessMode: 'GLOBAL_DISCOVERY',
+    skillAccessMode: 'PRELOADED_ONLY',
     isLocked: false,
   };
 }

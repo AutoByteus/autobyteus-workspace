@@ -15,10 +15,12 @@ When a human needs to learn a new subject (e.g., "Advanced Java Programming"), t
 
 This "Just-In-Time" learning model allows agents to have infinite potential knowledge without the cognitive load (context window) of holding it all at once.
 
-The core philosophy of this design is **Context Economy**:
+The core philosophy of this design is **Explicit Context Economy**:
 
-1.  **Lightweight Awareness**: The Agent is aware of _all_ available skills via minimal metadata (Name + Description) in the System Prompt.
-2.  **Heavyweight Loading (On-Demand)**: The massive body of a skill (instructions, examples, data) is _only_ loaded into the context when explicitly triggered (dynamically).
+1.  **Configured Awareness**: The Agent is aware only of the skills explicitly configured for that agent definition.
+2.  **Heavyweight Loading (On-Demand)**: The body of a configured skill (instructions, examples, data) may be loaded or inspected through the server-owned skill tools when the runtime exposes them.
+
+AutoByteus no longer has a launch-time "all installed skills" / global discovery mode. A generalist or orchestrator agent is modeled by configuring the broad skill set it is allowed to use on the agent definition; a zero-skill agent exposes no AutoByteus-managed skills by default.
 
 ## 1. Skill Definition: The Hierarchical "Skill as a Directory"
 
@@ -69,9 +71,9 @@ Before skill content is shown to the model, the runtime rewrites any Markdown li
 - not already an external URL, anchor, or absolute path
 
 into an absolute filesystem path. This means linked files usually arrive in model-visible skill content already ready for direct tool use.
-The runtime still injects:
+When configured skills are present, the runtime injects:
 
-1. A **Skill Catalog** listing all available skills
+1. A **Skill Catalog** listing the configured skills available to this agent
 2. **Critical Rules** for any remaining plain-text or unresolved relative references
 3. **Skill Details** with each preloaded skill's Root Path and formatted content
 
@@ -84,7 +86,7 @@ _Injection Format Example:_
 
 - **java_expert**: Java development expert with access to formatters and templates.
 
-If the server-owned `load_skill` tool is available, use it to load a listed skill by name when runtime skill details are needed.
+If the server-owned `load_skill` tool is available, use it to load a configured listed skill by name when runtime skill details are needed.
 
 ### Critical Rules for Using Skills
 
@@ -138,11 +140,11 @@ A central registry responsible for:
 
 Agent-facing skill access is provided by the server-owned `Skills` tool boundary:
 
-- `get_available_skills`: lists available skill names and descriptions.
-- `get_skill_content`: retrieves `SKILL.md` content plus a readable file tree for inspection.
-- `load_skill`: loads one server-managed skill for runtime use, returns the skill base path, path-resolution guidance, and skill content with resolvable relative Markdown links rewritten to absolute filesystem paths.
+- `get_available_skills`: lists configured skill names and descriptions for this agent.
+- `get_skill_content`: retrieves a configured skill's `SKILL.md` content plus a readable file tree for inspection.
+- `load_skill`: loads one configured server-managed skill for runtime use, returns the skill base path, path-resolution guidance, and skill content with resolvable relative Markdown links rewritten to absolute filesystem paths.
 
-`load_skill` is intentionally server-owned rather than a core `General` tool. It resolves skills through normal server-managed skill sources/CRUD and does not register arbitrary model-supplied filesystem paths as skills.
+`load_skill` is intentionally server-owned rather than a core `General` tool. It resolves skills through normal server-managed skill sources/CRUD, refuses path-like model input, and does not register arbitrary model-supplied filesystem paths as skills. Agent-runtime calls are additionally constrained by the current agent's configured skill allowlist; non-configured skill names are rejected even if they exist in the broader catalog.
 
 ## 3. Configuration & Integration
 
@@ -166,19 +168,20 @@ For specialized agents, skills are defined in the configuration. The system supp
   2.  **Names**: It looks up existing registered skills.
 - **Result**: The `SKILL.md` content for _all_ listed skills is injected into the System Prompt.
 
-### B. Dynamic Skills (Generalist Agents)
+### B. Configured Skills For Generalist Agents
 
-For flexible agents, skills are discovered on demand.
+Flexible or generalist agents still use explicit configuration. To grant broad skill coverage, add every allowed skill name or path to `AgentConfig.skills` / `agent-config.json.skillNames`.
 
-- **Config**: `AgentConfig(..., skills=[])` (but `SkillRegistry` has many available)
-- **Behavior**: Only metadata (Name/Description) is in the System Prompt.
+- **Config**: `AgentConfig(..., skills=["java_expert", "python_expert", ...])`
+- **Behavior**: The prompt catalog and server-owned skill tools expose only that configured set.
+- **Zero configured skills**: `AgentConfig(..., skills=[])` exposes no AutoByteus-managed skills. It does not fall back to all registered skills.
 - **Trigger**:
-  - The Agent, upon reading the user's natural language request (e.g., "Use the java skill"), can call the server-owned `load_skill` tool by skill name when that tool is available.
+  - The agent can call server-owned skill tools by configured skill name when those tools are available.
   - No "magic shortcuts" (like `$skill`) are required; it follows standard tool usage patterns.
 
 ## 4. Execution Flow: The Universal "Deep Dive"
 
-Regardless of _how_ the skill map (`SKILL.md`) was loaded (Preloaded vs. Dynamic), the "Deep Dive" phase follows the same rules.
+Regardless of whether the skill map (`SKILL.md`) was injected at startup or retrieved later for a configured skill, the "Deep Dive" phase follows the same rules.
 
 1.  **Possession of the Map**: The Agent has formatted `SKILL.md` content (either in System Prompt or recent context).
 2.  **Reading the Map**: The Agent reads skill instructions. Markdown links may already contain absolute filesystem paths.
@@ -194,12 +197,12 @@ Regardless of _how_ the skill map (`SKILL.md`) was loaded (Preloaded vs. Dynamic
 3.  **Reasoning**: Agent sees the template link already rewritten to an absolute path in the System Prompt.
 4.  **Action**: Calls `read_file` with that absolute path.
 
-### Example: Dynamic "General Assistant" (On-Demand)
+### Example: General Assistant With Explicit Skills
 
-1.  **Startup**: No preloaded skills. System Prompt just lists "Available: java_expert".
+1.  **Startup**: `AgentConfig` explicitly includes `skills=["java_expert"]`.
 2.  **User**: "I need to fix a Java bug, please use the java skill."
-3.  **Reasoning**: "The user requested the java skill. I should load it."
-4.  **Action 1**: Calls `load_skill` with the skill name `java_expert`.
+3.  **Reasoning**: "The configured `java_expert` skill is available. I should use it."
+4.  **Action 1**: If details were not already sufficient in the prompt, calls `load_skill` or `get_skill_content` with the configured skill name `java_expert`.
 5.  **Observation**: Receives formatted `SKILL.md` content and root path.
 6.  **Reasoning**: "The debugging docs link is already absolute, so I can read it directly."
 7.  **Action 2**: Calls `read_file` with that absolute path.

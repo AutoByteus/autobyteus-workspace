@@ -1,9 +1,13 @@
-import { tool, ParameterSchema, BaseTool } from "autobyteus-ts";
+import { SkillAccessMode, tool, ParameterSchema, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { SkillService } from "../../skills/services/skill-service.js";
 import { toJsonString } from "../json-utils.js";
+import {
+  resolveSkillToolAccessPolicy,
+  type SkillToolContext,
+} from "./skill-tool-access.js";
 
-const DESCRIPTION = "Lists all available skills with their descriptions.";
+const DESCRIPTION = "Lists configured skills available to this agent with their descriptions.";
 
 const argumentSchema = new ParameterSchema();
 
@@ -12,22 +16,27 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = {
-  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
-  agentId?: string;
-};
-
-export async function getAvailableSkills(context: AgentContextLike): Promise<string> {
+export async function getAvailableSkills(
+  context: SkillToolContext | null | undefined,
+): Promise<string> {
   const agentRunId = context?.agentId ?? "unknown";
   logger.info(`get_available_skills tool invoked by agent run ${agentRunId}.`);
 
   try {
     const service = SkillService.getInstance();
-    const skills = service.listSkills();
-    const payload = skills.map((skill) => ({
-      name: skill.name,
-      description: skill.description,
-    }));
+    const policy = resolveSkillToolAccessPolicy(context);
+
+    if (policy.mode === SkillAccessMode.NONE || policy.configuredSkillSet.size === 0) {
+      return toJsonString([], 2);
+    }
+
+    const payload = Array.from(policy.configuredSkillSet)
+      .map((skillName) => service.getSkill(skillName))
+      .filter((skill): skill is NonNullable<typeof skill> => Boolean(skill))
+      .map((skill) => ({
+        name: skill.name,
+        description: skill.description,
+      }));
     return toJsonString(payload, 2);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

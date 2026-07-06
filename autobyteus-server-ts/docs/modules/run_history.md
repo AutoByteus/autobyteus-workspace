@@ -251,6 +251,14 @@ Important identity/storage rules:
   writes a plain V2 row-array index, creates a backup of the previous index,
   records success/warnings/failures/retry state in `app_data_migration_records`,
   and resets in-process catalog state after writing
+- required startup app-data migration
+  `20260706_remove_global_skill_discovery_mode` rewrites persisted
+  `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata,
+  recursive team metadata, and external-channel binding files to
+  `PRELOADED_ONLY`, creates per-file backups for changed files, and reports
+  migrated/skipped/failed item counts. Current metadata parsing accepts only
+  `PRELOADED_ONLY` and `NONE`; history restore must not resurrect all-installed
+  skill discovery from older metadata.
 - manual fallback repair belongs to
   `scripts/migrate-agent-run-history-index-v2.mjs`; see
   `scripts/run-history-index-migration.md` before running cleanup against old

@@ -86,7 +86,7 @@ describe('teamRunConfigUtils', () => {
             agentDefinitionId: 'agent-a',
             llmModelIdentifier: 'gpt-5.4',
             autoExecuteTools: true,
-            skillAccessMode: 'GLOBAL_DISCOVERY',
+            skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: { reasoning_effort: 'high' },
             workspaceRootPath: '/tmp/workspace',
           }),
@@ -99,7 +99,7 @@ describe('teamRunConfigUtils', () => {
             agentDefinitionId: 'agent-b',
             llmModelIdentifier: 'gpt-5.4',
             autoExecuteTools: true,
-            skillAccessMode: 'GLOBAL_DISCOVERY',
+            skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: { reasoning_effort: 'high' },
             workspaceRootPath: '/tmp/workspace',
           }),
@@ -112,7 +112,7 @@ describe('teamRunConfigUtils', () => {
             agentDefinitionId: 'agent-c',
             llmModelIdentifier: 'gpt-5.4',
             autoExecuteTools: false,
-            skillAccessMode: 'GLOBAL_DISCOVERY',
+            skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: null,
             workspaceRootPath: '/tmp/workspace',
           }),
@@ -126,7 +126,7 @@ describe('teamRunConfigUtils', () => {
     expect(config.llmModelIdentifier).toBe('gpt-5.4')
     expect(config.llmConfig).toEqual({ reasoning_effort: 'high' })
     expect(config.autoExecuteTools).toBe(true)
-    expect(config.skillAccessMode).toBe('GLOBAL_DISCOVERY')
+    expect(config.skillAccessMode).toBe('PRELOADED_ONLY')
     expect(config.memberOverrides).toEqual({
       critic: {
         agentDefinitionId: 'agent-c',
