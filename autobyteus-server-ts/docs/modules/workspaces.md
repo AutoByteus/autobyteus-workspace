@@ -25,6 +25,33 @@ Filesystem workspace ids are deterministic `agent_ws_<sha256(canonical-root-path
 
 The old `workspace-id-mapping-store.ts` helper has been replaced by `workspace-registry-store.ts`; new code should use the registry store/manager boundary rather than creating a parallel mapping or hidden-workspace list.
 
+## Registry Persistence Invariants
+
+`WorkspaceRegistryStore` is the only owner that reads or writes
+`workspaces.json`. It must load the registry through a single-flight load path:
+concurrent callers await the same load, and the store is not marked loaded until
+the disk read or missing-file handling has completed.
+
+Registry mutations are serialized inside the store. Each mutation works from a
+clone of the current entries, validates the intended change, persists the clone,
+and commits the in-memory entries only after persistence succeeds. Upsert
+mutations must not remove entries. Explicit workspace removal may remove only the
+requested filesystem workspace id, and configured temp-root cleanup may remove
+only entries whose root equals the configured temp workspace root.
+
+Persistence uses a same-directory atomic staging file named
+`workspaces.json.tmp-<pid>-<timestamp>-<uuid>` followed by rename over
+`workspaces.json`. Persistent `.bak` or rotating backup files are not part of the
+normal registry write path. Stale registry temp files older than the cleanup
+threshold may be removed during later registry writes.
+
+Before replacing `workspaces.json`, the persistence helper re-reads the current
+disk snapshot and applies the same shrink validation against that persisted
+state. This guards the single packaged-server process and common stale-state
+failures. It is not an interprocess lock; if a future topology intentionally
+runs multiple server processes against the same app-data directory, add an
+interprocess registry lock before sharing the registry file.
+
 ## Visible Workspace Listing
 
 The GraphQL `workspaces()` query is the canonical visible workspace-list source for clients. It ensures the temp workspace exists, then returns:
@@ -37,6 +64,14 @@ Run history is not an authority for top-level workspace visibility. A historical
 The fixed default temp workspace (`temp_ws_default`) is a visible run workspace
 when returned by `workspaces()`. It may be shown in run-history/workspace UI, but
 it is not a removable registry entry.
+
+The configured temp workspace root is owned by `TempWorkspace`, not by the
+filesystem registry. `createWorkspace(input: { rootPath })` and internal
+workspace resolution paths that receive the configured temp root resolve to
+`temp_ws_default` and clean any stale filesystem registry rows for that root
+instead of persisting a duplicate `agent_ws_<hash>` row. Existing run history for
+the temp root remains intact; the visible workspace list should still show that
+root through the fixed temp workspace identity only.
 
 ## Remove From Workspaces
 

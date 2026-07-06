@@ -39,6 +39,7 @@ describe("WorkspaceManager", () => {
     }
     (manager as unknown as { activeWorkspaces: Map<string, FileSystemWorkspace> }).activeWorkspaces.clear();
     vi.restoreAllMocks();
+    fs.rmSync(appDataDir, { recursive: true, force: true });
   });
 
   it("creates and registers a workspace", async () => {
@@ -74,6 +75,52 @@ describe("WorkspaceManager", () => {
     expect(manager.getAllWorkspaces()).toHaveLength(1);
   });
 
+  it("routes the configured temp root to TempWorkspace instead of registering a filesystem workspace", async () => {
+    const tempRoot = createTempRoot();
+    vi.spyOn(appConfigProvider.config, "getTempWorkspaceDir").mockReturnValue(tempRoot);
+
+    const workspace = await manager.createWorkspace({ rootPath: `${tempRoot}/.` });
+
+    expect(workspace).toBeInstanceOf(TempWorkspace);
+    expect(workspace.workspaceId).toBe(TempWorkspace.TEMP_WORKSPACE_ID);
+    expect(workspace.getBasePath()).toBe(tempRoot);
+    expect(await manager.listRegisteredFilesystemWorkspaces()).toEqual([]);
+    expect(
+      fs.existsSync(path.join(appDataDir, "workspaces.json"))
+        ? fs.readFileSync(path.join(appDataDir, "workspaces.json"), "utf-8")
+        : "",
+    ).not.toContain(buildFilesystemWorkspaceId(tempRoot));
+  });
+
+  it("decommissions persisted filesystem entries for the configured temp root", async () => {
+    const tempRoot = createTempRoot();
+    const regularRoot = createTempRoot();
+    vi.spyOn(appConfigProvider.config, "getTempWorkspaceDir").mockReturnValue(tempRoot);
+    const tempFilesystemWorkspaceId = buildFilesystemWorkspaceId(tempRoot);
+    const regularWorkspaceId = buildFilesystemWorkspaceId(regularRoot);
+    fs.writeFileSync(
+      path.join(appDataDir, "workspaces.json"),
+      `${JSON.stringify({
+        [tempFilesystemWorkspaceId]: tempRoot,
+        [regularWorkspaceId]: regularRoot,
+      }, null, 2)}\n`,
+      "utf-8",
+    );
+    (manager as unknown as { activeWorkspaces: Map<string, FileSystemWorkspace> })
+      .activeWorkspaces
+      .set(tempFilesystemWorkspaceId, new FileSystemWorkspace({ rootPath: tempRoot }));
+
+    await manager.getOrCreateTempWorkspace();
+    const visibleWorkspaces = await manager.listVisibleWorkspaces();
+
+    expect(visibleWorkspaces.map((workspace) => workspace.workspaceId).sort()).toEqual(
+      [regularWorkspaceId, TempWorkspace.TEMP_WORKSPACE_ID].sort(),
+    );
+    expect(manager.getWorkspaceById(tempFilesystemWorkspaceId)).toBeUndefined();
+    expect(await manager.getRegisteredWorkspaceRootPath(tempFilesystemWorkspaceId)).toBeNull();
+    expect(await manager.getRegisteredWorkspaceRootPath(regularWorkspaceId)).toBe(regularRoot);
+  });
+
   it("returns undefined for unknown workspace IDs", () => {
     expect(manager.getWorkspaceById("missing")).toBeUndefined();
   });
@@ -93,11 +140,7 @@ describe("WorkspaceManager", () => {
 
   it("creates the temp workspace on first call", async () => {
     const tempRoot = createTempRoot();
-    const mockConfig = {
-      getTempWorkspaceDir: () => tempRoot,
-    };
-
-    vi.spyOn(appConfigProvider, "config", "get").mockReturnValue(mockConfig as any);
+    vi.spyOn(appConfigProvider.config, "getTempWorkspaceDir").mockReturnValue(tempRoot);
 
     const tempWorkspace = await manager.getOrCreateTempWorkspace();
 
@@ -109,11 +152,7 @@ describe("WorkspaceManager", () => {
 
   it("returns cached temp workspace on subsequent calls", async () => {
     const tempRoot = createTempRoot();
-    const mockConfig = {
-      getTempWorkspaceDir: () => tempRoot,
-    };
-
-    vi.spyOn(appConfigProvider, "config", "get").mockReturnValue(mockConfig as any);
+    vi.spyOn(appConfigProvider.config, "getTempWorkspaceDir").mockReturnValue(tempRoot);
 
     const first = await manager.getOrCreateTempWorkspace();
     const second = await manager.getOrCreateTempWorkspace();
@@ -167,11 +206,7 @@ describe("WorkspaceManager", () => {
 
   it("recreates the temp workspace from its stable workspace ID", async () => {
     const tempRoot = createTempRoot();
-    const mockConfig = {
-      getTempWorkspaceDir: () => tempRoot,
-    };
-
-    vi.spyOn(appConfigProvider, "config", "get").mockReturnValue(mockConfig as any);
+    vi.spyOn(appConfigProvider.config, "getTempWorkspaceDir").mockReturnValue(tempRoot);
 
     const tempWorkspace = await manager.getOrCreateWorkspace(TempWorkspace.TEMP_WORKSPACE_ID);
 

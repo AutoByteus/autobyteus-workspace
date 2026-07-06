@@ -1,10 +1,13 @@
 import { createHash } from "node:crypto";
-import fs from "node:fs/promises";
 import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
+import {
+  loadWorkspaceRegistryFile,
+  persistWorkspaceRegistryFileAtomically,
+  validateRegistryMutation,
+  type RegistryMutationValidation,
+} from "./workspace-registry-file-persistence.js";
 import { canonicalizeWorkspaceRootPath } from "./workspace-path-utils.js";
-
-type WorkspaceRegistryRecord = Record<string, string>;
 
 export interface WorkspaceRegistryEntry {
   workspaceId: string;
@@ -13,13 +16,11 @@ export interface WorkspaceRegistryEntry {
 
 export const FILESYSTEM_WORKSPACE_ID_PREFIX = "agent_ws_";
 
-const logger = {
-  warn: (...args: unknown[]) => console.warn(...args),
-};
-
 export class WorkspaceRegistryStore {
   private loaded = false;
-  private readonly entries = new Map<string, string>();
+  private loadPromise: Promise<void> | null = null;
+  private mutationQueue: Promise<unknown> = Promise.resolve();
+  private entries = new Map<string, string>();
 
   private getRegistryFilePath(): string {
     return path.join(appConfigProvider.config.getAppDataDir(), "workspaces.json");
@@ -30,34 +31,47 @@ export class WorkspaceRegistryStore {
       return;
     }
 
-    this.loaded = true;
-    const filePath = this.getRegistryFilePath();
+    if (!this.loadPromise) {
+      this.loadPromise = this.loadRegistryFromDisk().then((entries) => {
+        this.entries = entries;
+        this.loaded = true;
+      });
+    }
+
     try {
-      const raw = await fs.readFile(filePath, "utf-8");
-      const parsed = JSON.parse(raw) as WorkspaceRegistryRecord;
-      for (const [workspaceId, rootPath] of Object.entries(parsed)) {
-        if (typeof workspaceId !== "string" || typeof rootPath !== "string") {
-          continue;
-        }
-        try {
-          this.entries.set(workspaceId, canonicalizeWorkspaceRootPath(rootPath));
-        } catch {
-          // Ignore malformed persisted entries.
-        }
-      }
+      await this.loadPromise;
     } catch (error) {
-      const code = (error as NodeJS.ErrnoException | null)?.code;
-      if (code !== "ENOENT") {
-        logger.warn(`Failed reading workspace registry store: ${String(error)}`);
-      }
+      this.loadPromise = null;
+      throw error;
     }
   }
 
-  private async persistRegistry(): Promise<void> {
-    const filePath = this.getRegistryFilePath();
-    await fs.mkdir(path.dirname(filePath), { recursive: true });
-    const payload = JSON.stringify(Object.fromEntries(this.entries), null, 2);
-    await fs.writeFile(filePath, `${payload}\n`, "utf-8");
+  private async loadRegistryFromDisk(): Promise<Map<string, string>> {
+    return loadWorkspaceRegistryFile(this.getRegistryFilePath());
+  }
+
+  private async withSerializedMutation<T>(operation: () => Promise<T>): Promise<T> {
+    const run = this.mutationQueue.then(operation, operation);
+    this.mutationQueue = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
+  }
+
+  private async persistRegistryAtomically(
+    nextEntries: Map<string, string>,
+    validation: RegistryMutationValidation,
+  ): Promise<void> {
+    await persistWorkspaceRegistryFileAtomically(
+      this.getRegistryFilePath(),
+      nextEntries,
+      validation,
+    );
+  }
+
+  private commitEntries(nextEntries: Map<string, string>): void {
+    this.entries = nextEntries;
   }
 
   async listEntries(): Promise<WorkspaceRegistryEntry[]> {
@@ -68,29 +82,83 @@ export class WorkspaceRegistryStore {
   }
 
   async upsertEntry(workspaceId: string, rootPath: string): Promise<WorkspaceRegistryEntry> {
-    await this.ensureRegistryLoaded();
-    const normalizedWorkspaceId = workspaceId.trim();
-    if (!normalizedWorkspaceId) {
-      throw new Error("workspaceId is required for workspace registry entries.");
-    }
-    const workspaceRootPath = canonicalizeWorkspaceRootPath(rootPath);
-    if (this.entries.get(normalizedWorkspaceId) !== workspaceRootPath) {
-      this.entries.set(normalizedWorkspaceId, workspaceRootPath);
-      await this.persistRegistry();
-    }
-    return { workspaceId: normalizedWorkspaceId, workspaceRootPath };
+    return this.withSerializedMutation(async () => {
+      await this.ensureRegistryLoaded();
+      const normalizedWorkspaceId = workspaceId.trim();
+      if (!normalizedWorkspaceId) {
+        throw new Error("workspaceId is required for workspace registry entries.");
+      }
+      const workspaceRootPath = canonicalizeWorkspaceRootPath(rootPath);
+      if (this.entries.get(normalizedWorkspaceId) === workspaceRootPath) {
+        return { workspaceId: normalizedWorkspaceId, workspaceRootPath };
+      }
+
+      const nextEntries = new Map(this.entries);
+      nextEntries.set(normalizedWorkspaceId, workspaceRootPath);
+      const validation: RegistryMutationValidation = {
+        kind: "upsert",
+        workspaceId: normalizedWorkspaceId,
+      };
+      validateRegistryMutation(this.entries, nextEntries, validation, "in-memory state");
+      await this.persistRegistryAtomically(nextEntries, validation);
+      this.commitEntries(nextEntries);
+      return { workspaceId: normalizedWorkspaceId, workspaceRootPath };
+    });
   }
 
   async deleteEntry(workspaceId: string): Promise<WorkspaceRegistryEntry | null> {
-    await this.ensureRegistryLoaded();
-    const normalizedWorkspaceId = workspaceId.trim();
-    const workspaceRootPath = this.entries.get(normalizedWorkspaceId) ?? null;
-    if (!workspaceRootPath) {
-      return null;
-    }
-    this.entries.delete(normalizedWorkspaceId);
-    await this.persistRegistry();
-    return { workspaceId: normalizedWorkspaceId, workspaceRootPath };
+    return this.withSerializedMutation(async () => {
+      await this.ensureRegistryLoaded();
+      const normalizedWorkspaceId = workspaceId.trim();
+      const workspaceRootPath = this.entries.get(normalizedWorkspaceId) ?? null;
+      if (!workspaceRootPath) {
+        return null;
+      }
+
+      const nextEntries = new Map(this.entries);
+      nextEntries.delete(normalizedWorkspaceId);
+      const validation: RegistryMutationValidation = {
+        kind: "delete",
+        workspaceId: normalizedWorkspaceId,
+      };
+      validateRegistryMutation(this.entries, nextEntries, validation, "in-memory state");
+      await this.persistRegistryAtomically(nextEntries, validation);
+      this.commitEntries(nextEntries);
+      return { workspaceId: normalizedWorkspaceId, workspaceRootPath };
+    });
+  }
+
+  async deleteEntriesByRootPath(
+    rootPath: string,
+    reason: string,
+  ): Promise<WorkspaceRegistryEntry[]> {
+    return this.withSerializedMutation(async () => {
+      await this.ensureRegistryLoaded();
+      const workspaceRootPath = canonicalizeWorkspaceRootPath(rootPath);
+      const removedEntries: WorkspaceRegistryEntry[] = [];
+      const nextEntries = new Map(this.entries);
+      for (const [workspaceId, candidateRootPath] of this.entries.entries()) {
+        if (candidateRootPath !== workspaceRootPath) {
+          continue;
+        }
+        nextEntries.delete(workspaceId);
+        removedEntries.push({ workspaceId, workspaceRootPath: candidateRootPath });
+      }
+
+      if (!removedEntries.length) {
+        return [];
+      }
+
+      const validation: RegistryMutationValidation = {
+        kind: "deleteByRootPath",
+        workspaceRootPath,
+        reason,
+      };
+      validateRegistryMutation(this.entries, nextEntries, validation, "in-memory state");
+      await this.persistRegistryAtomically(nextEntries, validation);
+      this.commitEntries(nextEntries);
+      return removedEntries;
+    });
   }
 
   async getRootPathByWorkspaceId(workspaceId: string): Promise<string | null> {
