@@ -41,7 +41,7 @@ pnpm -C autobyteus-web build:electron:mac
 
 - Exit status: `0`
 - Build type: unsigned, not notarized, macOS arm64 local test build
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/delivery-evidence/electron-build-mac-arm64.log`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/missing-workspaces-analysis/delivery-evidence/electron-build-mac-arm64.log`
 - Packaged app directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 
 ## Artifacts
@@ -63,3 +63,7 @@ pnpm -C autobyteus-web build:electron:mac
 
 - This local build intentionally disables Apple signing identity and notarization for fast local testing.
 - macOS Gatekeeper behavior can differ from a signed/notarized release artifact. If macOS blocks opening this local build, use Finder right-click -> Open for local testing, or test the unpacked app directory directly.
+
+## Post-Finalization Retention Note
+
+The DMG/ZIP/unpacked app paths above were build-time paths inside the dedicated ticket worktree. After the user verified the local package and the ticket was merged to `personal`, delivery cleanup removed `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis`, so those unsigned local package files are no longer retained. The durable retained evidence is this artifact and `electron-build-mac-arm64.log` under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/missing-workspaces-analysis/delivery-evidence/`.

@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/design-spec.md`
-- Recovery candidate evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/workspace-registry-recovery-candidates.json`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/missing-workspaces-analysis/tickets/done/missing-workspaces-analysis/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/missing-workspaces-analysis/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/missing-workspaces-analysis/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/missing-workspaces-analysis/design-spec.md`
+- Recovery candidate evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/missing-workspaces-analysis/workspace-registry-recovery-candidates.json`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/missing-workspaces-analysis/design-review-report.md`
 
 ## What Changed
 
