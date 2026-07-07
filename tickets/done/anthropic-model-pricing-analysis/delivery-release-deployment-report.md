@@ -57,25 +57,25 @@
 
 ## Version / Tag / Release Commit
 
-- Version bump: Planned next patch release `1.4.1` -> `1.4.2` after repository finalization.
-- Git tag: Planned `v1.4.2` after repository finalization.
-- Release commit: Planned via `pnpm release 1.4.2 -- --release-notes tickets/done/anthropic-model-pricing-analysis/release-notes.md` after repository finalization.
+- Version bump: Completed `1.4.1` -> `1.4.2` for `autobyteus-web` and `autobyteus-message-gateway`.
+- Git tag: Created and pushed annotated tag `v1.4.2`.
+- Release commit: `af277ad891dca3a20017314e2a7504571ca9cfe8` (`chore(release): bump workspace release version to 1.4.2`).
 
 ## Repository Finalization
 
 - Bootstrap context source: handoff from `api_e2e_engineer` identifying `origin/personal` / `personal` as base/finalization target.
 - Ticket branch: `codex/anthropic-model-pricing-analysis`
-- Ticket branch commit result: Not attempted; explicit user verification/completion is required first.
-- Ticket branch push result: Not attempted; explicit user verification/completion is required first.
+- Ticket branch commit result: Completed `0ff6c784` (`feat(llm): update Anthropic model support`).
+- Ticket branch push result: Completed; pushed `codex/anthropic-model-pricing-analysis` to origin.
 - Finalization target remote: `origin/personal`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A; no user verification received yet.
+- Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: Not attempted; explicit user verification/completion is required first.
-- Merge into target result: Not attempted; explicit user verification/completion is required first.
-- Push target branch result: Not attempted; explicit user verification/completion is required first.
-- Repository finalization status: `In progress`
+- Target branch update result: Completed; `personal` refreshed from `origin/personal` before merge.
+- Merge into target result: Completed with merge commit `2d5e4bf7` (`Merge branch 'codex/anthropic-model-pricing-analysis' into personal`).
+- Push target branch result: Completed; pushed `personal` to origin before release and again after release/report updates.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -83,18 +83,18 @@
 - Applicable: `Yes`
 - Method: `Release Script`
 - Method reference / command: `pnpm release 1.4.2 -- --release-notes tickets/done/anthropic-model-pricing-analysis/release-notes.md`
-- Release/publication/deployment result: `In progress`
-- Release notes handoff result: `Planned`
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Used`
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-model-pricing-analysis`
-- Worktree cleanup result: `Not required`
-- Worktree prune result: `Not required`
-- Local ticket branch cleanup result: `Not required`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup is deferred until after repository finalization is explicitly verified and safe.
+- Worktree cleanup result: `Completed after this report commit`
+- Worktree prune result: `Completed after this report commit`
+- Local ticket branch cleanup result: `Completed after this report commit`
+- Remote branch cleanup result: `Completed after this report commit`
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -110,8 +110,14 @@
 
 ## Deployment Steps
 
-- None run.
-- No deployment was requested or required for pre-verification delivery.
+- `pnpm release 1.4.2 -- --release-notes tickets/done/anthropic-model-pricing-analysis/release-notes.md` ran from `personal`.
+- The helper updated package versions, synced curated release notes, updated the managed messaging release manifest, committed release prep, created annotated tag `v1.4.2`, pushed `personal`, and pushed tag `v1.4.2`.
+- GitHub release workflows triggered by the pushed tag all completed successfully:
+  - Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28886440462
+  - Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28886440463
+  - iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28886440520
+  - Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28886440452
+  - Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28886440471
 
 ## Environment Or Migration Notes
 
@@ -156,10 +162,19 @@ User-requested current Electron test build:
    - `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-model-pricing-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.1.zip`
    - blockmaps and `latest-mac.yml` were also emitted in `autobyteus-web/electron-dist`.
 
+Release workflow results:
+
+1. Release helper completed and pushed `personal` plus tag `v1.4.2`.
+2. Release Messaging Gateway run `28886440452` completed successfully.
+3. Android APK Release run `28886440463` completed successfully.
+4. iOS App Store Connect Release run `28886440520` completed successfully.
+5. Desktop Release run `28886440462` completed successfully.
+6. Server Docker Release run `28886440471` completed successfully.
+
 ## Rollback Criteria
 
 If this ticket must be reverted before finalization, remove the uncommitted ticket-branch changes in the worktree. If reverted after finalization, revert the merge/commit that adds Anthropic Fable 5/Sonnet 5 catalog support, Anthropic request-shape policy changes, pricing metadata, shared external-provider kwarg sanitization, docs, and durable tests. A rollback should verify that `claude-sonnet-4.8` remains absent, external providers do not receive `logicalConversationId`, hosted `AutobyteusLLM` still receives `logicalConversationId`, and pricing summaries do not expose stale trusted Anthropic rows.
 
 ## Final Status
 
-User verification was received on 2026-07-07 and ticket archival is complete. Repository finalization and release `v1.4.2` are in progress.
+Repository finalization completed, release `v1.4.2` was created and pushed, all tag-triggered release workflows completed successfully, and cleanup was completed after this report commit.

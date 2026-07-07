@@ -4,7 +4,7 @@
 - Branch: `codex/anthropic-model-pricing-analysis`
 - Base/finalization target: `origin/personal` / `personal`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-model-pricing-analysis`
-- Current status: User verification received on 2026-07-07; ticket archived under `tickets/done`; repository finalization and release `v1.4.2` are in progress.
+- Current status: Repository finalization completed; release `v1.4.2` was tagged/pushed; all tag-triggered release workflows completed successfully; cleanup was completed after final report commit.
 
 ## Initial Delivery Integration Refresh
 
@@ -125,3 +125,13 @@ User verification/completion received on 2026-07-07. Finalization/release steps:
 3. Ticket folder moved to `tickets/done/anthropic-model-pricing-analysis/`.
 4. Commit the ticket branch, push it, update `personal` from remote, merge the ticket branch into `personal`, and push `personal` if still desired.
 5. Run release/deployment only if explicitly in scope.
+
+
+## Release Finalization
+
+- Ticket branch commit: `0ff6c784` (`feat(llm): update Anthropic model support`).
+- Merge into `personal`: `2d5e4bf7` (`Merge branch 'codex/anthropic-model-pricing-analysis' into personal`).
+- Release commit: `af277ad891dca3a20017314e2a7504571ca9cfe8` (`chore(release): bump workspace release version to 1.4.2`).
+- Tag: `v1.4.2` pushed to origin.
+- Release helper: `pnpm release 1.4.2 -- --release-notes tickets/done/anthropic-model-pricing-analysis/release-notes.md`.
+- Tag-triggered workflows completed successfully: Desktop, Android APK, iOS App Store Connect, Messaging Gateway, and Server Docker.
