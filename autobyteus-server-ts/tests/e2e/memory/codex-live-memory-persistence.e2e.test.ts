@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
@@ -300,10 +300,11 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       );
       await recorder.waitForIdle(run.runId);
 
-      const rawTracePath = path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME);
+      const rawTracePath = path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
       const snapshotPath = path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME);
       await expect(fsPromises.access(rawTracePath)).resolves.toBeUndefined();
       await expect(fsPromises.access(snapshotPath)).resolves.toBeUndefined();
+      expect(fs.existsSync(path.join(memoryDir, "raw_traces.jsonl"))).toBe(false);
       expect(fs.existsSync(path.join(memoryDir, "raw_traces_archive.jsonl"))).toBe(false);
 
       const rawTraces = await readJsonl(rawTracePath);

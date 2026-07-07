@@ -30,8 +30,8 @@ describe('memoryInspectorStore', () => {
           workingContext: [],
           episodic: [],
           semantic: [],
-          rawTraceFiles: [{ fileName: 'raw_traces.jsonl', kind: 'active', recordCount: 2 }],
-          selectedRawTraceFileName: 'raw_traces.jsonl',
+          rawTraceFiles: [{ fileName: 'raw_traces_active.jsonl', kind: 'active', recordCount: 2 }],
+          selectedRawTraceFileName: 'raw_traces_active.jsonl',
           rawTraces: [],
         },
       },
@@ -45,7 +45,7 @@ describe('memoryInspectorStore', () => {
     expect(store.includeRawTraces).toBe(true);
     expect(queryMock.mock.calls[0][0].variables.includeRawTraces).toBe(true);
     expect(queryMock.mock.calls[0][0].variables.includeRawTraceFiles).toBe(true);
-    expect(store.selectedRawTraceFileName).toBe('raw_traces.jsonl');
+    expect(store.selectedRawTraceFileName).toBe('raw_traces_active.jsonl');
   });
 
   it('selecting a raw trace file sends the backend-listed filename selector', async () => {
@@ -57,7 +57,7 @@ describe('memoryInspectorStore', () => {
           episodic: [],
           semantic: [],
           rawTraceFiles: [
-            { fileName: 'raw_traces.jsonl', kind: 'active', recordCount: 2 },
+            { fileName: 'raw_traces_active.jsonl', kind: 'active', recordCount: 2 },
             { fileName: 'raw_traces_000001.jsonl', kind: 'segment', recordCount: 1, segmentIndex: 1 },
           ],
           selectedRawTraceFileName: 'raw_traces_000001.jsonl',

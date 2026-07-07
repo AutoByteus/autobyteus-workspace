@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   EPISODIC_MEMORY_FILE_NAME,
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
@@ -121,7 +121,7 @@ export class MemoryFileStore {
   }
 
   readRawTracesActive(runId: string, limit?: number): Array<Record<string, unknown>> {
-    const filePath = path.join(this.getRunDir(runId), RAW_TRACES_MEMORY_FILE_NAME);
+    const filePath = path.join(this.getRunDir(runId), RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
     return this.readJsonl(filePath, limit);
   }
 

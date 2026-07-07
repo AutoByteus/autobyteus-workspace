@@ -193,7 +193,7 @@ Standalone agent persisted files:
   `llmConfig`, `autoExecuteTools`, `skillAccessMode`, `platformAgentRunId`,
   `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
   `applicationExecutionContext`
-- runtime memory artifacts: `memory/agents/<runId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
+- runtime memory artifacts: `memory/agents/<runId>/{raw_traces_active.jsonl,working_context_snapshot.json,...}`
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
 Team persisted files:
@@ -209,7 +209,7 @@ Team persisted files:
   recursive `memberTree`; agent-member entries must not carry
   `selfEvolutionEffective` launch snapshots after the self-evolution metadata
   cleanup migration
-- member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`, with deeper child team run ids appended in `teamRunPath` order
+- member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/{raw_traces_active.jsonl,working_context_snapshot.json,...}`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/{raw_traces_active.jsonl,working_context_snapshot.json,...}`, with deeper child team run ids appended in `teamRunPath` order
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical team/member directory, for example `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
 - team communication projection: `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
 - task delegation records projection: `memory/agent_teams/<rootTeamRunId>/task_delegation_records.json`

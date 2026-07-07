@@ -54,7 +54,7 @@ describe("SelfEvolutionWorkTraceProjectionService", () => {
   });
 
   it("projects readable work trace files with merged tools and hidden backend fields", async () => {
-    await fs.writeFile(path.join(memoryDir, "raw_traces.jsonl"), [
+    await fs.writeFile(path.join(memoryDir, "raw_traces_active.jsonl"), [
       rawTrace({
         id: "trace-user-1",
         trace_type: "user",
@@ -140,7 +140,7 @@ describe("SelfEvolutionWorkTraceProjectionService", () => {
       seq: 1,
       content: "Archived request before compaction.",
     })}\n`, "utf-8");
-    await fs.writeFile(path.join(memoryDir, "raw_traces.jsonl"), `${rawTrace({
+    await fs.writeFile(path.join(memoryDir, "raw_traces_active.jsonl"), `${rawTrace({
       id: "active-worker-1",
       trace_type: "assistant",
       ts: 1_788_000_200,
@@ -174,7 +174,7 @@ describe("SelfEvolutionWorkTraceProjectionService", () => {
     expect(activeContent).toContain("[2026-");
 
     const archiveGeneratedAt = first.manifest.files[0]!.generatedAt;
-    await fs.appendFile(path.join(memoryDir, "raw_traces.jsonl"), `${rawTrace({
+    await fs.appendFile(path.join(memoryDir, "raw_traces_active.jsonl"), `${rawTrace({
       id: "active-worker-2",
       trace_type: "assistant",
       ts: 1_788_000_300,

@@ -149,7 +149,7 @@ inspection:
 memory/
   agents/
     <agent_id_or_run_id>/
-      raw_traces.jsonl
+      raw_traces_active.jsonl
       raw_traces_manifest.json          # rotated raw-trace manifest
       raw_traces_000001.jsonl           # immutable complete/pending rotated segment files
       episodic.jsonl
@@ -159,9 +159,11 @@ memory/
   agent_teams/
     <team_run_id>/
       <member_run_id>/
-        raw_traces.jsonl
+        raw_traces_active.jsonl
         working_context_snapshot.json
 ```
+
+Startup app-data migration `20260707_raw_trace_active_file_name` renames existing active `raw_traces.jsonl` files to `raw_traces_active.jsonl` in local and imported memory roots. Steady-state runtime code does not read, write, or alias the old active filename.
 
 ---
 
@@ -174,7 +176,7 @@ shape as native memory, but that path is intentionally **storage-only**:
   accepted;
 - assistant, reasoning, and tool lifecycle records are captured from normalized
   `AgentRunEvent`s;
-- `raw_traces.jsonl` and `working_context_snapshot.json` are written through
+- `raw_traces_active.jsonl` and `working_context_snapshot.json` are written through
   `RunMemoryFileStore` / `RawTraceItem` / `WorkingContextSnapshot` primitives;
 - native AutoByteus runs still use `MemoryManager` directly and are skipped by
   the server recorder to avoid duplicate traces.

@@ -271,7 +271,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
       platformAgentRunId: null,
       startedAt: "2026-06-23T00:00:00.000Z",
     });
-    writeText(path.join(memoryDir, "agents", localRunId, "raw_traces.jsonl"), JSON.stringify({
+    writeText(path.join(memoryDir, "agents", localRunId, "raw_traces_active.jsonl"), JSON.stringify({
       id: "local-trace",
       traceType: "user",
       sourceEvent: "AgentRun.postUserMessage",
@@ -302,7 +302,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
     expect(runResult.startMemorySync.changedFiles).toBeGreaterThanOrEqual(3);
 
     const importRoot = path.join(memoryDir, "imports", SOURCE_NODE_ID);
-    expect(fs.readFileSync(path.join(importRoot, "agents", localRunId, "raw_traces.jsonl"), "utf-8")).toContain("local source trace");
+    expect(fs.readFileSync(path.join(importRoot, "agents", localRunId, "raw_traces_active.jsonl"), "utf-8")).toContain("local source trace");
     expect(fs.existsSync(path.join(importRoot, "agents", localRunId, "ignored.partial"))).toBe(false);
     expect(fs.existsSync(path.join(importRoot, "agent_teams", "source-team-run", "team_run_metadata.json"))).toBe(true);
     expect(fs.existsSync(path.join(importRoot, "imports", "echo-source", "agents", "must-not-sync.txt"))).toBe(false);
@@ -356,7 +356,7 @@ describe("Memory Sync public API and imported memory e2e", () => {
       batchId: "rest-duplicate-batch",
       operations: [
         makeOperation("agents", "rest-only-run/run_metadata.json", importedOnlyMetadata),
-        makeOperation("agents", "rest-only-run/raw_traces.jsonl", importedOnlyTrace),
+        makeOperation("agents", "rest-only-run/raw_traces_active.jsonl", importedOnlyTrace),
       ],
     });
     const postBatch = async (batch: MemorySyncBatch) => fetch(`${hubBaseUrl}/rest/memory-sync/v1/batches`, {

@@ -1,7 +1,7 @@
 import path from "node:path";
 import {
   EPISODIC_MEMORY_FILE_NAME,
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
@@ -62,7 +62,7 @@ export class MemoryRunSummaryBuilder {
     );
     const episodicInfo = this.store.getFileInfo(path.join(runDir, EPISODIC_MEMORY_FILE_NAME));
     const semanticInfo = this.store.getFileInfo(path.join(runDir, SEMANTIC_MEMORY_FILE_NAME));
-    const rawTracesInfo = this.store.getFileInfo(path.join(runDir, RAW_TRACES_MEMORY_FILE_NAME));
+    const rawTracesInfo = this.store.getFileInfo(path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME));
     const rawArchiveInfo = this.store.getRawTraceArchiveInfo(runId);
     const latestMemoryMtime = maxMtime([
       workingContextInfo,

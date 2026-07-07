@@ -158,7 +158,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     expect(commandResult.accepted).toBe(true);
     await waitFor(() => backend.getStatusSnapshot().status === "idle");
 
-    const rawTracesPath = path.join(memoryDir, "agents", preferredRunId, "raw_traces.jsonl");
+    const rawTracesPath = path.join(memoryDir, "agents", preferredRunId, "raw_traces_active.jsonl");
     await waitFor(async () => {
       try {
         const raw = await fs.readFile(rawTracesPath, "utf-8");

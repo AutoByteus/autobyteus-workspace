@@ -52,7 +52,7 @@ describe("SelfEvolutionSkillPackageTreeRenderer", () => {
     await fs.writeFile(path.join(skillRoot, "dist", "generated.md"), "generated\n", "utf-8");
     await fs.writeFile(path.join(skillRoot, "node_modules", "pkg", "index.js"), "module.exports = {};\n", "utf-8");
     await fs.writeFile(path.join(skillRoot, "diagram.png"), "not really png\n", "utf-8");
-    await fs.writeFile(path.join(skillRoot, "raw_traces.jsonl"), "{}\n", "utf-8");
+    await fs.writeFile(path.join(skillRoot, "raw_traces_active.jsonl"), "{}\n", "utf-8");
     await fs.writeFile(path.join(outsideRoot, "outside.md"), "outside\n", "utf-8");
     await fs.symlink(outsideRoot, path.join(skillRoot, "outside-link"));
 

@@ -208,7 +208,7 @@ describe("Memory view GraphQL e2e", () => {
     const agentId = "memory-view-active-raw-traces";
     createdAgentIds.push(agentId);
     const agentDir = path.join(memoryDir, "agents", agentId);
-    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+    writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [
       { id: "active-1", trace_type: "user", content: "active one", ts: 1, turn_id: "t1", seq: 1 },
       { id: "active-2", trace_type: "assistant", content: "active two", ts: 2, turn_id: "t1", seq: 2 },
     ]);
@@ -227,7 +227,7 @@ describe("Memory view GraphQL e2e", () => {
 
     expect(data.getAgentRunMemoryView.rawTraceFiles).toEqual([
       {
-        fileName: "raw_traces.jsonl",
+        fileName: "raw_traces_active.jsonl",
         kind: "active",
         recordCount: 2,
         segmentIndex: null,
@@ -235,7 +235,7 @@ describe("Memory view GraphQL e2e", () => {
         lastTimestamp: null,
       },
     ]);
-    expect(data.getAgentRunMemoryView.selectedRawTraceFileName).toBe("raw_traces.jsonl");
+    expect(data.getAgentRunMemoryView.selectedRawTraceFileName).toBe("raw_traces_active.jsonl");
     expect(data.getAgentRunMemoryView.rawTraces.map((trace) => [trace.id, trace.content])).toEqual([
       ["active-2", "active two"],
     ]);
@@ -246,7 +246,7 @@ describe("Memory view GraphQL e2e", () => {
     createdAgentIds.push(agentId);
     const agentDir = path.join(memoryDir, "agents", agentId);
 
-    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+    writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [
       { id: "active-1", trace_type: "assistant", content: "active only", ts: 30, turn_id: "t3", seq: 3 },
     ]);
     writeJsonl(path.join(agentDir, "raw_traces_000001.jsonl"), [
@@ -283,7 +283,7 @@ describe("Memory view GraphQL e2e", () => {
       file.recordCount,
       file.segmentIndex,
     ])).toEqual([
-      ["raw_traces.jsonl", "active", 1, null],
+      ["raw_traces_active.jsonl", "active", 1, null],
       ["raw_traces_000002.jsonl", "segment", 2, 2],
       ["raw_traces_000001.jsonl", "segment", 1, 1],
     ]);
@@ -304,8 +304,24 @@ describe("Memory view GraphQL e2e", () => {
       rawTraceFileName: path.join(agentDir, "raw_traces_000002.jsonl"),
     });
 
-    expect(invalidSelectorData.getAgentRunMemoryView.selectedRawTraceFileName).toBe("raw_traces.jsonl");
+    expect(invalidSelectorData.getAgentRunMemoryView.selectedRawTraceFileName).toBe("raw_traces_active.jsonl");
     expect(invalidSelectorData.getAgentRunMemoryView.rawTraces.map((trace) => [trace.id, trace.content])).toEqual([
+      ["active-1", "active only"],
+    ]);
+
+    const staleOldSelectorData = await execGraphql<{
+      getAgentRunMemoryView: {
+        selectedRawTraceFileName: string | null;
+        rawTraces: Array<{ id: string | null; content: string | null }>;
+      };
+    }>(memoryViewRawTraceFilesQuery, {
+      runId: agentId,
+      includeRawTraceFiles: true,
+      rawTraceFileName: "raw_traces.jsonl",
+    });
+
+    expect(staleOldSelectorData.getAgentRunMemoryView.selectedRawTraceFileName).toBe("raw_traces_active.jsonl");
+    expect(staleOldSelectorData.getAgentRunMemoryView.rawTraces.map((trace) => [trace.id, trace.content])).toEqual([
       ["active-1", "active only"],
     ]);
 
@@ -347,7 +363,7 @@ describe("Memory view GraphQL e2e", () => {
       lastSyncStatus: null,
       lastError: null,
     });
-    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+    writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [
       { id: "imported-active", trace_type: "assistant", content: "imported active", ts: 12, turn_id: "ti", seq: 2 },
     ]);
     writeJsonl(path.join(agentDir, "raw_traces_000001.jsonl"), [
@@ -371,7 +387,7 @@ describe("Memory view GraphQL e2e", () => {
     });
 
     expect(data.getAgentRunMemoryView.rawTraceFiles.map((file) => [file.fileName, file.kind, file.recordCount])).toEqual([
-      ["raw_traces.jsonl", "active", 1],
+      ["raw_traces_active.jsonl", "active", 1],
       ["raw_traces_000001.jsonl", "segment", 1],
     ]);
     expect(data.getAgentRunMemoryView.selectedRawTraceFileName).toBe("raw_traces_000001.jsonl");

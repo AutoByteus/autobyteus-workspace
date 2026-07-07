@@ -6,7 +6,7 @@ import path from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { RAW_TRACES_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
@@ -95,7 +95,7 @@ const writeLocalReplayToolTrace = async (
 ): Promise<void> => {
   await fs.mkdir(runDir, { recursive: true });
   await fs.writeFile(
-    path.join(runDir, RAW_TRACES_MEMORY_FILE_NAME),
+    path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
     [
       {
         trace_type: "user",

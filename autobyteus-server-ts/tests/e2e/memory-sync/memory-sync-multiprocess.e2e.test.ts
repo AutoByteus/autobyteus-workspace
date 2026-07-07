@@ -177,7 +177,7 @@ const seedSourceMemory = (sourceDataDir: string): void => {
     platformAgentRunId: null,
     startedAt: "2026-06-23T02:00:00.000Z",
   }, null, 2));
-  writeText(path.join(runDir, "raw_traces.jsonl"), `${JSON.stringify({
+  writeText(path.join(runDir, "raw_traces_active.jsonl"), `${JSON.stringify({
     id: "mp-trace-1",
     traceType: "user",
     sourceEvent: "AgentRun.postUserMessage",
@@ -316,7 +316,7 @@ describe("Memory Sync multi-process backend e2e", () => {
     expect(syncResult.startMemorySync.changedFiles).toBeGreaterThanOrEqual(3);
 
     const importRoot = path.join(hubServer.dataDir, "memory", "imports", sourceNodeId);
-    expect(fs.readFileSync(path.join(importRoot, "agents", sourceRunId, "raw_traces.jsonl"), "utf-8")).toContain("hello from real source server");
+    expect(fs.readFileSync(path.join(importRoot, "agents", sourceRunId, "raw_traces_active.jsonl"), "utf-8")).toContain("hello from real source server");
     expect(fs.existsSync(path.join(importRoot, "agents", sourceRunId, "run_metadata.json"))).toBe(true);
     expect(fs.existsSync(path.join(importRoot, "agents", sourceRunId, "upload.partial"))).toBe(false);
     expect(fs.existsSync(path.join(importRoot, "agent_teams", sourceTeamRunId, "team_run_metadata.json"))).toBe(true);
@@ -329,7 +329,7 @@ describe("Memory Sync multi-process backend e2e", () => {
     expect(manifest.totals.fileCount).toBeGreaterThanOrEqual(3);
     expect(Object.keys(manifest.files)).toEqual(expect.arrayContaining([
       `agents/${sourceRunId}/run_metadata.json`,
-      `agents/${sourceRunId}/raw_traces.jsonl`,
+      `agents/${sourceRunId}/raw_traces_active.jsonl`,
       `agent_teams/${sourceTeamRunId}/team_run_metadata.json`,
     ]));
 

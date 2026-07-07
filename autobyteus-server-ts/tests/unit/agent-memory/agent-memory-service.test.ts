@@ -44,7 +44,7 @@ describe("AgentMemoryService", () => {
     });
     writeJsonl(path.join(agentDir, "episodic.jsonl"), [{ episode: "a" }]);
     writeJsonl(path.join(agentDir, "semantic.jsonl"), [{ fact: "b" }]);
-    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+    writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [
       { trace_type: "user", content: "hello", ts: 1, turn_id: "t1", seq: 1 },
       {
         trace_type: "tool_call",
@@ -85,7 +85,7 @@ describe("AgentMemoryService", () => {
     const runId = "agent-456";
     const agentDir = path.join(tempDir, "agents", runId);
 
-    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+    writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [
       { trace_type: "user", content: "one", ts: 1, turn_id: "t1", seq: 1 },
       { trace_type: "assistant", content: "two", ts: 2, turn_id: "t1", seq: 2 },
     ]);
@@ -143,7 +143,7 @@ describe("AgentMemoryService", () => {
     const runId = "agent-segments";
     const agentDir = path.join(tempDir, "agents", runId);
 
-    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+    writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [
       { id: "active-1", trace_type: "assistant", content: "active", ts: 30, turn_id: "t1", seq: 3 },
     ]);
     writeJsonl(path.join(agentDir, "raw_traces_000001.jsonl"), [
@@ -170,7 +170,7 @@ describe("AgentMemoryService", () => {
     });
 
     expect(view.rawTraceFiles?.map((file) => file.fileName)).toEqual([
-      "raw_traces.jsonl",
+      "raw_traces_active.jsonl",
       "raw_traces_000002.jsonl",
       "raw_traces_000001.jsonl",
     ]);
@@ -184,7 +184,7 @@ describe("AgentMemoryService", () => {
     const runId = "agent-invalid-file";
     const agentDir = path.join(tempDir, "agents", runId);
 
-    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+    writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [
       { id: "active-1", trace_type: "assistant", content: "active", ts: 30, turn_id: "t1", seq: 3 },
     ]);
     writeJsonl(path.join(agentDir, "raw_traces_000001.jsonl"), [
@@ -203,7 +203,7 @@ describe("AgentMemoryService", () => {
       rawTraceFileName: "/tmp/raw_traces_000001.jsonl",
     });
 
-    expect(view.selectedRawTraceFileName).toBe("raw_traces.jsonl");
+    expect(view.selectedRawTraceFileName).toBe("raw_traces_active.jsonl");
     expect(view.rawTraces?.map((trace) => trace.content)).toEqual(["active"]);
   });
 
@@ -227,7 +227,7 @@ describe("AgentMemoryService", () => {
     const runId = "agent-789";
     const agentDir = path.join(tempDir, "agents", runId);
 
-    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
+    writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [
       { trace_type: "user", content: "hello", ts: 1, turn_id: "t1", seq: 1 },
     ]);
 

@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { RAW_TRACES_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import type { MemoryTraceEvent, RawTraceFileSummary } from "../domain/models.js";
 import { MemoryFileStore } from "../store/memory-file-store.js";
@@ -98,7 +98,7 @@ export class RawTraceFileSourceService {
       return null;
     }
     return {
-      fileName: RAW_TRACES_MEMORY_FILE_NAME,
+      fileName: RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
       kind: "active",
       recordCount: this.countJsonlRecords(filePath),
       segmentIndex: null,

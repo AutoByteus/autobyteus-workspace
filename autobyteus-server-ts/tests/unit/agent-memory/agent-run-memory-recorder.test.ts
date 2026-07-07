@@ -13,7 +13,7 @@ import { AgentRunMemoryRecorder } from "../../../src/agent-memory/services/agent
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { RAW_TRACES_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 
 const tempDirs = new Set<string>();
 
@@ -115,7 +115,7 @@ describe("AgentRunMemoryRecorder", () => {
     unsubscribe();
     await recorder.waitForIdle("run-1");
 
-    await expect(fs.access(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME))).rejects.toThrow();
+    await expect(fs.access(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).rejects.toThrow();
   });
 
   it("detaches event subscriptions for recordable runs", async () => {

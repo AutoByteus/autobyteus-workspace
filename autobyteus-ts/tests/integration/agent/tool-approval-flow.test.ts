@@ -63,7 +63,7 @@ const waitFor = async (
 };
 
 const readRawTraces = async (memoryDir: string, agentId: string): Promise<Record<string, unknown>[]> => {
-  const rawPath = path.join(memoryDir, 'agents', agentId, 'raw_traces.jsonl');
+  const rawPath = path.join(memoryDir, 'agents', agentId, 'raw_traces_active.jsonl');
   try {
     const content = await fs.readFile(rawPath, 'utf-8');
     return content

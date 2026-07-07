@@ -21,7 +21,7 @@ describe("memory view graphql types", () => {
     trace.toolCallId = "call-1";
 
     const file = new RawTraceFileSummary();
-    file.fileName = "raw_traces.jsonl";
+    file.fileName = "raw_traces_active.jsonl";
     file.kind = "active";
     file.recordCount = 1;
 
@@ -30,12 +30,12 @@ describe("memory view graphql types", () => {
     view.workingContext = [message];
     view.rawTraces = [trace];
     view.rawTraceFiles = [file];
-    view.selectedRawTraceFileName = "raw_traces.jsonl";
+    view.selectedRawTraceFileName = "raw_traces_active.jsonl";
 
     expect(view.runId).toBe("agent-1");
     expect(view.workingContext?.[0]?.role).toBe("user");
     expect(view.rawTraces?.[0]?.toolCallId).toBe("call-1");
     expect(view.rawTraceFiles?.[0]?.recordCount).toBe(1);
-    expect(view.selectedRawTraceFileName).toBe("raw_traces.jsonl");
+    expect(view.selectedRawTraceFileName).toBe("raw_traces_active.jsonl");
   });
 });
