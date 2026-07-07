@@ -4,6 +4,7 @@ import path from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { graphql as graphqlFn, GraphQLSchema } from 'graphql';
 import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
+import { LLMFactory } from 'autobyteus-ts';
 
 describe('token usage related model-list GraphQL coverage', () => {
   let schema: GraphQLSchema;
@@ -31,10 +32,21 @@ describe('token usage related model-list GraphQL coverage', () => {
       OLLAMA_HOSTS: process.env.OLLAMA_HOSTS,
       LMSTUDIO_HOSTS: process.env.LMSTUDIO_HOSTS,
       AUTOBYTEUS_LLM_SERVER_HOSTS: process.env.AUTOBYTEUS_LLM_SERVER_HOSTS,
+      ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+      KIMI_API_KEY: process.env.KIMI_API_KEY,
+      MISTRAL_API_KEY: process.env.MISTRAL_API_KEY,
+      GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+      VERTEX_AI_API_KEY: process.env.VERTEX_AI_API_KEY,
     };
     process.env.OLLAMA_HOSTS = ' ';
     process.env.LMSTUDIO_HOSTS = ' ';
     process.env.AUTOBYTEUS_LLM_SERVER_HOSTS = ' ';
+    delete process.env.ANTHROPIC_API_KEY;
+    delete process.env.KIMI_API_KEY;
+    delete process.env.MISTRAL_API_KEY;
+    delete process.env.GEMINI_API_KEY;
+    delete process.env.VERTEX_AI_API_KEY;
+    LLMFactory.resetForTests();
 
     const query = `
       query AvailableModels {
@@ -80,6 +92,7 @@ describe('token usage related model-list GraphQL coverage', () => {
       expect(identifiers).not.toContain('minimax-m2.7');
       expect(namesAndValues).not.toContain('MiniMax-M2.7');
     } finally {
+      LLMFactory.resetForTests();
       for (const [key, value] of Object.entries(previousDiscoveryEnv)) {
         if (value === undefined) {
           delete process.env[key];
@@ -88,4 +101,107 @@ describe('token usage related model-list GraphQL coverage', () => {
         }
       }
     }
-  }, 20_000);});
+  }, 20_000);
+
+  it('surfaces current static Anthropic models through the settings-facing GraphQL model list', async () => {
+    const previousEnv = {
+      OLLAMA_HOSTS: process.env.OLLAMA_HOSTS,
+      LMSTUDIO_HOSTS: process.env.LMSTUDIO_HOSTS,
+      AUTOBYTEUS_LLM_SERVER_HOSTS: process.env.AUTOBYTEUS_LLM_SERVER_HOSTS,
+      ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+      KIMI_API_KEY: process.env.KIMI_API_KEY,
+      MISTRAL_API_KEY: process.env.MISTRAL_API_KEY,
+      GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+      VERTEX_AI_API_KEY: process.env.VERTEX_AI_API_KEY,
+    };
+    process.env.OLLAMA_HOSTS = ' ';
+    process.env.LMSTUDIO_HOSTS = ' ';
+    process.env.AUTOBYTEUS_LLM_SERVER_HOSTS = ' ';
+    delete process.env.ANTHROPIC_API_KEY;
+    delete process.env.KIMI_API_KEY;
+    delete process.env.MISTRAL_API_KEY;
+    delete process.env.GEMINI_API_KEY;
+    delete process.env.VERTEX_AI_API_KEY;
+    LLMFactory.resetForTests();
+
+    const query = `
+      query AnthropicModels {
+        availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
+          provider {
+            id
+          }
+          models {
+            modelIdentifier
+            name
+            value
+            canonicalName
+            maxContextTokens
+            maxOutputTokens
+          }
+        }
+      }
+    `;
+
+    try {
+      const result = await execGraphql<{
+        availableLlmProvidersWithModels: Array<{
+          provider: { id: string };
+          models: Array<{
+            modelIdentifier: string;
+            name: string;
+            value: string;
+            canonicalName: string;
+            maxContextTokens: number | null;
+            maxOutputTokens: number | null;
+          }>;
+        }>;
+      }>(query);
+
+      const anthropicModels = result.availableLlmProvidersWithModels
+        .filter((row) => row.provider.id === 'ANTHROPIC')
+        .flatMap((row) => row.models);
+      const byIdentifier = new Map(anthropicModels.map((model) => [model.modelIdentifier, model]));
+      const identifiers = anthropicModels.map((model) => model.modelIdentifier);
+      const namesAndValues = anthropicModels.flatMap((model) => [
+        model.name,
+        model.value,
+        model.canonicalName,
+      ]);
+
+      expect(identifiers).toEqual(expect.arrayContaining([
+        'claude-fable-5',
+        'claude-opus-4.8',
+        'claude-sonnet-5',
+      ]));
+      expect(byIdentifier.get('claude-fable-5')).toMatchObject({
+        value: 'claude-fable-5',
+        canonicalName: 'claude-fable-5',
+        maxContextTokens: 1000000,
+        maxOutputTokens: 128000,
+      });
+      expect(byIdentifier.get('claude-opus-4.8')).toMatchObject({
+        value: 'claude-opus-4-8',
+        canonicalName: 'claude-opus-4.8',
+        maxContextTokens: 1000000,
+        maxOutputTokens: 128000,
+      });
+      expect(byIdentifier.get('claude-sonnet-5')).toMatchObject({
+        value: 'claude-sonnet-5',
+        canonicalName: 'claude-sonnet-5',
+        maxContextTokens: 1000000,
+        maxOutputTokens: 128000,
+      });
+      expect(identifiers).not.toContain('claude-sonnet-4.8');
+      expect(namesAndValues).not.toContain('claude-sonnet-4-8');
+    } finally {
+      LLMFactory.resetForTests();
+      for (const [key, value] of Object.entries(previousEnv)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+    }
+  }, 20_000);
+});

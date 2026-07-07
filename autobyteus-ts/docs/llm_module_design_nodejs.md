@@ -51,9 +51,15 @@ Two OpenAI-style paths coexist:
   and the retained MiniMax M3 entry still use `OpenAICompatibleLLM`.
 - OpenAI-compatible Chat Completions payloads are built through
   `OpenAICompatibleRequestBuilder`, which maps `LLMConfig` generation controls,
-  merges provider-specific `extraParams`, filters framework-internal kwargs, owns
-  `tools` placement, and preserves explicit lower-level `tool_choice`
-  pass-through. The default agent/server path leaves `tool_choice` unset.
+  merges provider-specific `extraParams`, uses the shared provider-request
+  kwarg sanitizer for framework-internal kwargs, owns `tools` placement, and
+  preserves explicit lower-level `tool_choice` pass-through. The default
+  agent/server path leaves `tool_choice` unset.
+- `src/llm/api/provider-request-kwargs.ts` owns shared external-provider
+  filtering for internal invocation fields such as `logicalConversationId`,
+  `logical_conversation_id`, `conversationId`, `agentId`, `turnId`,
+  `requestId`, and `renderedPayload`. Provider adapters name their own
+  controlled fields; the sanitizer must not own provider-specific model policy.
 - Provider adapters keep provider-specific request legality local before
   delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.6`
   requests to Moonshot-safe temperature defaults and applies separate
@@ -162,8 +168,10 @@ The current latest-model support set is summarized in
 `docs/provider_model_catalogs.md`. Notable LLM entries include:
 
 - OpenAI `gpt-5.5` (verified 2026-04-25).
-- Anthropic `claude-opus-4.7` with API value `claude-opus-4-7` (verified
-  2026-04-25).
+- Anthropic `claude-fable-5`, `claude-opus-4.8`, and `claude-sonnet-5`
+  (verified 2026-07-07) with exact Claude API values and no
+  `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
+  or fallback.
 - DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
 - Gemini `gemini-3.5-flash` with the same provider value for API-key and
   Vertex runtimes (verified 2026-05-20).
@@ -178,8 +186,12 @@ The current latest-model support set is summarized in
 
 Provider adapters own request-shape differences:
 
-- `AnthropicLLM` maps Opus 4.7 adaptive-thinking config without sending fixed
-  thinking budgets or an adapter-injected default `temperature`.
+- `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 4.8,
+  Opus 4.7, Sonnet 5, and Fable 5 without sending fixed thinking budgets,
+  manual-budget overrides, or unsupported sampling fields (`temperature`,
+  `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
+  before Anthropic Messages API calls. Older Claude rows keep the legacy
+  fixed-budget path unless a separate provider migration changes them.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4 and
   maps the flat user-facing `thinking_type` config to
   top-level `thinking.type` before the shared request builder runs, dropping
@@ -208,6 +220,8 @@ models, see `docs/provider_model_catalogs.md`.
   runtimes.
 - `LLMFactory.reloadModels(provider)` supports provider-scoped reload for
   reloadable built-in providers such as LM Studio, Ollama, and Autobyteus.
+- Anthropic provider-scoped reload is not dynamic discovery. It returns the
+  current static Anthropic catalog count until the built-in catalog is updated.
 - Reload is **replace-on-success / preserve-on-failure**. Failed built-in
   reloads do not wipe the existing provider slice.
 - Saved custom OpenAI-compatible providers are synced through

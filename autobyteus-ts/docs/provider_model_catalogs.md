@@ -24,6 +24,9 @@ or changing provider-specific request-shaping behavior.
 | Surface | User-Facing Model ID | Provider API Value | Provider | Verified On | Implementation Notes |
 | --- | --- | --- | --- | --- | --- |
 | LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
+| LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
+| LLM | `claude-opus-4.8` | `claude-opus-4-8` | Anthropic | 2026-07-07 | Retained latest Opus row; uses the current adaptive-thinking/no-sampling request policy. |
+| LLM | `claude-sonnet-5` | `claude-sonnet-5` | Anthropic | 2026-07-07 | Latest Sonnet row; exact provider ID only, with no `claude-sonnet-4.8` alias. |
 | LLM | `claude-opus-4.7` | `claude-opus-4-7` | Anthropic | 2026-04-25 | Uses adaptive-thinking schema; see request-shape notes below. |
 | LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
@@ -109,20 +112,55 @@ records directly to `LLMFactory`; they should not wrap those records as
 invariants after composition. Catalog defaults are normal defaults unless the
 provider adapter also enforces them as fixed constraints.
 
+## Provider Request Kwarg Boundary
+
+Agent/runtime invocation kwargs can contain AutoByteus-internal coordination
+fields. External provider SDK payloads must filter those fields at the provider
+request boundary rather than asking upstream callers to know each provider's
+wire contract.
+
+`src/llm/api/provider-request-kwargs.ts` owns the shared internal kwarg deny-list
+for external provider requests: `logicalConversationId`,
+`logical_conversation_id`, `conversationId`, `agentId`, `turnId`, `requestId`,
+and `renderedPayload`. It drops null/undefined values and lets each adapter name
+its own controlled request fields such as `stream`, `tools`, or `tool_choice`.
+
+`logicalConversationId` remains required for `AutobyteusLLM` hosted/browser
+conversations. The filtering rule applies when requests leave AutoByteus for
+external providers such as Anthropic, Mistral, or OpenAI-compatible endpoints.
+Do not remove the internal kwarg from `LlmPhase` to fix an external provider
+request error.
+
 ## Provider-Specific Runtime Notes
 
-### Anthropic Claude Opus 4.7
+### Current Anthropic Claude models
 
-Claude Opus 4.7 must not reuse the older fixed-budget extended-thinking
-request shape. The built-in `claude-opus-4.7` schema exposes adaptive thinking:
+The built-in Anthropic catalog is static. Provider-scoped reload does not
+discover new Anthropic API model IDs; it returns the existing static Anthropic
+count until `src/llm/supported-model-definitions.ts` is updated.
+
+The active current-model rows are `claude-fable-5`, `claude-opus-4.8`,
+`claude-opus-4.7`, `claude-sonnet-5`, and retained `claude-sonnet-4.6`.
+Do not add `claude-sonnet-4.8` unless Anthropic publishes that exact API ID.
+
+Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5, and Claude Fable 5 must not
+reuse the older fixed-budget extended-thinking request shape. Their built-in
+schemas expose adaptive thinking:
 
 - `thinking_enabled: true` maps to `thinking: { type: "adaptive" }`.
 - `thinking_display: "summarized"` adds `display: "summarized"`.
-- The adapter does not inject its usual default `temperature` when calling
-  Opus 4.7.
+- The adapter does not send schema-generated fixed budgets and strips
+  provider-invalid manual `thinking: { type: "enabled", budget_tokens: ... }`
+  for these models.
+- The adapter does not inject its usual default `temperature` and removes
+  `temperature`, `top_p`, and `top_k` request fields for these models.
 
-Callers should not pass provider-invalid non-default sampling parameters for
-this model unless Anthropic documents support for them.
+Claude Fable 5 is catalog-available only; it is not a default or fallback.
+It carries standard pricing of `$10` input / `$50` output per MTok plus
+Anthropic prompt-cache dimensions, is materially more expensive than Opus 4.8,
+and has Fable-specific caveats such as 30-day data-retention requirements and
+refusal behavior. Add fallback/UX handling only through a separate product
+decision.
 
 ### OpenAI Responses Models
 
@@ -354,6 +392,20 @@ not inherit trusted zero pricing by default; they need explicit trusted pricing
 or they surface `price_missing`. Local runtimes such as Ollama and LM Studio
 should use `local_no_api_bill` status when there is no provider API bill rather
 than pretending a remote paid model cost is `$0`.
+
+Anthropic Claude rows verified on 2026-07-07 use standard first-party Claude API
+pricing in the static catalog, not Batch API, Opus Fast Mode, data-residency
+premiums, or temporary launch discounts. Claude Sonnet 5 deliberately uses the
+durable standard `$3` input / `$15` output per MTok row even though Anthropic's
+introductory `$2` / `$10` pricing runs through 2026-08-31. Cache dimensions must
+remain explicit:
+
+- Fable 5: input `10`, output `50`, cache read `1`, 5-minute cache write
+  `12.5`, 1-hour cache write `20`.
+- Opus 4.8: input `5`, output `25`, cache read `0.5`, 5-minute cache write
+  `6.25`, 1-hour cache write `10`.
+- Sonnet 5: input `3`, output `15`, cache read `0.3`, 5-minute cache write
+  `3.75`, 1-hour cache write `6`.
 
 ## Validation and Secret Hygiene
 

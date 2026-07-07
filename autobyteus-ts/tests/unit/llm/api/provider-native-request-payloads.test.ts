@@ -482,7 +482,16 @@ describe('provider-native API request payloads', () => {
       }
     };
 
-    await llm.sendMessages(messagesFor('mistral'), null, { tools: commonTools });
+    await llm.sendMessages(messagesFor('mistral'), null, {
+      logicalConversationId: 'agent-1',
+      logical_conversation_id: 'agent-1',
+      conversationId: 'conversation-1',
+      agentId: 'agent-1',
+      turnId: 'turn-1',
+      requestId: 'request-1',
+      renderedPayload: { internal: true },
+      tools: commonTools
+    });
 
     const assistant = captured.messages.find((msg: any) => Array.isArray(msg.tool_calls));
     const toolMessages = captured.messages.filter((msg: any) => msg.role === 'tool');
@@ -492,6 +501,14 @@ describe('provider-native API request payloads', () => {
     expect(toolMessages.map((msg: any) => msg.tool_call_id)).toEqual(['call_a', 'call_b']);
     expect(toolMessages.map((msg: any) => msg.name)).toEqual(['get_weather', 'get_time']);
     expect(userMessages.map((msg: any) => msg.content)).toEqual(['Use both tools, then continue.']);
+    expect(captured.tools).toBe(commonTools);
+    expect(captured).not.toHaveProperty('logicalConversationId');
+    expect(captured).not.toHaveProperty('logical_conversation_id');
+    expect(captured).not.toHaveProperty('conversationId');
+    expect(captured).not.toHaveProperty('agentId');
+    expect(captured).not.toHaveProperty('turnId');
+    expect(captured).not.toHaveProperty('requestId');
+    expect(captured).not.toHaveProperty('renderedPayload');
     expectNoLegacyProviderText(captured);
   });
 

@@ -110,4 +110,30 @@ runIntegration('AnthropicLLM Integration', () => {
       await llm.cleanup();
     }
   }, 120000);
+
+  it('should filter logicalConversationId from public streamUserMessage provider requests', async () => {
+    const llm = new AnthropicLLM(buildModel());
+    const userMessage = new LLMUserMessage({ content: 'Reply with exactly: OK' });
+    const receivedTokens: string[] = [];
+
+    try {
+      for await (const chunk of llm.streamUserMessage(userMessage, {
+        logicalConversationId: 'agent_probe'
+      })) {
+        expect(chunk).toBeInstanceOf(ChunkResponse);
+        if (chunk.content) {
+          receivedTokens.push(chunk.content);
+        }
+      }
+
+      expect(receivedTokens.join('').length).toBeGreaterThan(0);
+    } catch (error: any) {
+      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
+        return;
+      }
+      throw error;
+    } finally {
+      await llm.cleanup();
+    }
+  }, 120000);
 });

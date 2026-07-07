@@ -10,6 +10,9 @@ import { convertMistralToolCalls } from '../converters/mistral-tool-call-convert
 import { LLMProvider } from '../providers.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createMistralPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import { applySafeProviderRequestKwargs } from './provider-request-kwargs.js';
+
+const MISTRAL_CONTROLLED_KWARG_KEYS = new Set(['stream']);
 
 export class MistralLLM extends BaseLLM {
   protected client: Mistral;
@@ -52,11 +55,11 @@ export class MistralLLM extends BaseLLM {
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
       maxTokens: this.maxTokens ?? undefined,
-      ...kwargs
     };
+    applySafeProviderRequestKwargs(params, kwargs, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });
 
     if (this.config.extraParams) {
-      Object.assign(params, this.config.extraParams);
+      applySafeProviderRequestKwargs(params, this.config.extraParams, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });
     }
 
     try {
@@ -90,11 +93,11 @@ export class MistralLLM extends BaseLLM {
       topP: this.config.topP ?? undefined,
       maxTokens: this.maxTokens ?? undefined,
       stream: true,
-      ...kwargs
     };
+    applySafeProviderRequestKwargs(params, kwargs, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });
 
     if (this.config.extraParams) {
-      Object.assign(params, this.config.extraParams);
+      applySafeProviderRequestKwargs(params, this.config.extraParams, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });
     }
 
     try {

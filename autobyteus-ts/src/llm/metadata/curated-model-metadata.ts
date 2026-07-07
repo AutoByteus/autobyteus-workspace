@@ -31,12 +31,19 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
     }
   },
   [LLMProvider.ANTHROPIC]: {
+    'claude-fable-5': {
+      maxContextTokens: 1000000,
+      maxInputTokens: 1000000,
+      maxOutputTokens: 128000,
+      sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
+      verifiedAt: '2026-07-07'
+    },
     'claude-opus-4-8': {
       maxContextTokens: 1000000,
       maxInputTokens: 1000000,
       maxOutputTokens: 128000,
       sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
-      verifiedAt: '2026-06-24'
+      verifiedAt: '2026-07-07'
     },
     'claude-opus-4-7': {
       maxContextTokens: 1000000,
@@ -44,6 +51,13 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
       maxOutputTokens: 128000,
       sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
       verifiedAt: '2026-04-25'
+    },
+    'claude-sonnet-5': {
+      maxContextTokens: 1000000,
+      maxInputTokens: 1000000,
+      maxOutputTokens: 128000,
+      sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
+      verifiedAt: '2026-07-07'
     },
     'claude-sonnet-4-6': {
       maxContextTokens: 1000000,

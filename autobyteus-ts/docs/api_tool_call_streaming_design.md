@@ -468,8 +468,9 @@ authoritative place for this path to:
 
 - map `LLMConfig` controls (`temperature`, `topP`, penalties, stop sequences,
   `maxTokens`, and `extraParams`) into the request body;
-- filter framework-internal kwargs such as `logicalConversationId` and
-  `requestId`;
+- apply the shared provider-request kwarg sanitizer so framework-internal kwargs
+  such as `logicalConversationId` and `requestId` do not leave AutoByteus for
+  external providers;
 - attach provider-native `tools`; pass `tool_choice` only when an explicit
   lower-level caller supplies `kwargs.tool_choice`, never as an agent/server
   default.
@@ -815,9 +816,10 @@ async _streamUserMessageToLLM(
 | File                                                     | Change                            |
 | -------------------------------------------------------- | --------------------------------- |
 | `src/agent/handlers/llm-user-message-ready-event-handler.ts` | Format tool schemas, pass `tools` to LLM without default `tool_choice`, emit API text-leak diagnostics |
-| `src/llm/api/openai-compatible-request-builder.ts`           | Map config fields, filter internal kwargs, pass `tools`, and preserve explicit lower-level `tool_choice` kwargs |
+| `src/llm/api/provider-request-kwargs.ts`                     | Own the shared external-provider sanitizer for AutoByteus-internal invocation kwargs such as `logicalConversationId` |
+| `src/llm/api/openai-compatible-request-builder.ts`           | Map config fields, apply the shared sanitizer, pass `tools`, and preserve explicit lower-level `tool_choice` kwargs |
 | `src/llm/api/openai-compatible-llm.ts`                       | Use request builder for sync and streaming API calls |
-| (similar for other LLM providers)                        | Accept `tools` kwarg              |
+| (similar for other LLM providers)                        | Accept `tools` kwarg and filter internal invocation kwargs before external SDK calls |
 
 ---
 
