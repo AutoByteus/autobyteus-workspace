@@ -1,20 +1,20 @@
 # Code Review Report
 
-Write path: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/code-review-report.md`
+Write path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/code-review-report.md`
 
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/requirements.md`
 - Current Review Round: 2
 - Trigger: API/E2E engineer returned after updating repository-resident durable E2E coverage for the raw trace active filename rename.
 - Prior Review Round Reviewed: 1
 - Latest Authoritative Round: 2
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`
 
@@ -33,13 +33,13 @@ Round rules:
 
 Round 2 scope centered on repository-resident durable coverage changed by `api_e2e_engineer`, plus coverage investigation/execution evidence needed to judge those changes:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/autobyteus-server-ts/tests/e2e/memory/memory-view-graphql.e2e.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/autobyteus-server-ts/tests/e2e/memory/memory-explorer-graphql.e2e.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-api.e2e.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/memory/memory-view-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/memory/memory-explorer-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-api.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts`
 
 Review focus:
 
@@ -161,7 +161,7 @@ No blocking code-review findings.
 
 ## Validation Evidence
 
-API/E2E engineer execution evidence reviewed from `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/api-e2e-execution-coverage-report.md`:
+API/E2E engineer execution evidence reviewed from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/api-e2e-execution-coverage-report.md`:
 
 - `git diff --check` — passed before and after tests.
 - `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/memory-view-graphql.e2e.test.ts tests/e2e/memory/memory-explorer-graphql.e2e.test.ts tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts` — passed, 4 files / 12 tests.
@@ -170,7 +170,7 @@ API/E2E engineer execution evidence reviewed from `/Users/normy/autobyteus_org/a
 - `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts` — exit 0 with 1 skipped test because live Codex E2E is environment-gated.
 - Targeted hygiene search in E2E found only two old-filename literals, both deliberate negative no-compatibility assertions.
 
-Additional code-review commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime`:
+Additional code-review commands run from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`:
 
 - `git diff --check` — passed.
 - `rg -n "raw_traces\.jsonl|RAW_TRACES_MEMORY_FILE_NAME|MEMORY_FILE_NAMES\.rawTraces\b" autobyteus-server-ts/tests/e2e -S --glob '!node_modules' --glob '!dist' --glob '!build' --glob '!*.map'` — found only:

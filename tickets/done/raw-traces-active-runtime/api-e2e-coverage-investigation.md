@@ -2,12 +2,12 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/code-review-report.md`
 - Current Investigation Round: 1
 - Trigger: Code review passed the implementation and explicitly handed off stale `autobyteus-server-ts/tests/e2e/**` raw-trace active filename expectations/imports for API/E2E ownership.
 - Prior Investigation Reviewed: N/A

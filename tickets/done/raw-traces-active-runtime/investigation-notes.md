@@ -23,10 +23,10 @@ Clarification from code: the actual raw-trace runtime file is `raw_traces.jsonl`
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime`
 - Current Branch: `codex/raw-traces-active-runtime`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` completed successfully from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 - Task Branch: `codex/raw-traces-active-runtime`
@@ -42,7 +42,7 @@ Clarification from code: the actual raw-trace runtime file is `raw_traces.jsonl`
 | 2026-07-07 | Command | `pwd && git rev-parse --show-toplevel && git status --short --branch && git remote -v && find . -maxdepth 2 ...` from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` | Discover repository root, current branch, remote, and project shape before task isolation. | Root is `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`; branch `personal` tracks `origin/personal`; repo contains multiple TypeScript packages including backend/server packages. | No |
 | 2026-07-07 | Command | `git branch --show-current && git worktree list --porcelain && git remote show origin ...` | Identify existing worktrees and remote default/base branch. | Current branch `personal`; remote HEAD/default resolved as `personal`; many existing `codex/*` worktrees but none for this task. | No |
 | 2026-07-07 | Command | `git fetch origin --prune` | Refresh tracked remote refs before creating task worktree. | Completed successfully. | No |
-| 2026-07-07 | Command | `git worktree add -b codex/raw-traces-active-runtime /Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime origin/personal` | Create dedicated task worktree/branch from fresh base. | Created branch `codex/raw-traces-active-runtime` tracking `origin/personal`; worktree at `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime`. | No |
+| 2026-07-07 | Command | `git worktree add -b codex/raw-traces-active-runtime /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create dedicated task worktree/branch from fresh base. | Created branch `codex/raw-traces-active-runtime` tracking `origin/personal`; worktree at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`. | No |
 | 2026-07-07 | Command | `mkdir -p tickets/done/raw-traces-active-runtime` and artifact file creation | Create draft requirements and investigation artifacts before deeper investigation. | Draft `requirements.md` and `investigation-notes.md` created. | No |
 | 2026-07-07 | Command | `git fetch origin --prune && git rebase origin/personal && git status --short --branch` | Re-verify dedicated task worktree after user approval and refresh against latest tracked base before design production. | Rebase succeeded; branch `codex/raw-traces-active-runtime` is aligned with `origin/personal`; only task artifacts are untracked. | No |
 | 2026-07-07 | Doc | `solution-designer/design-principles.md`; `references/design-examples.md` | Apply shared design guidance and examples before writing design spec. | Design should be spine-first, keep old filename migration-only, and preserve authoritative boundaries. | No |

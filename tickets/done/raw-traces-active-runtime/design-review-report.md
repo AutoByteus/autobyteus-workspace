@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/design-spec.md`
 - Current Review Round: 2
 - Trigger: Re-review after user clarification to simplify migration policy to old-active-file detection, old-to-new rename, and optional imported Memory Sync manifest update; no detailed mixed-state handling.
 - Prior Review Round Reviewed: 1
@@ -24,7 +24,7 @@ Round rules:
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/design-spec.md` for a clean runtime active raw-trace filename rename from `raw_traces.jsonl` to `raw_traces_active.jsonl`, plus one-time persisted data migration and no steady-state backward compatibility.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/design-spec.md` for a clean runtime active raw-trace filename rename from `raw_traces.jsonl` to `raw_traces_active.jsonl`, plus one-time persisted data migration and no steady-state backward compatibility.
 
 Round 2 specifically verified that the requirements and design now describe the migration as:
 

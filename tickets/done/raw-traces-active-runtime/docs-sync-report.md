@@ -4,7 +4,7 @@
 
 - Ticket: `raw-traces-active-runtime`
 - Trigger: Delivery-stage docs sync after API/E2E execution passed and post-API/E2E durable coverage code review passed.
-- Bootstrap base reference: `origin/personal` recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/raw-traces-active-runtime/tickets/done/raw-traces-active-runtime/investigation-notes.md`; delivery resolved latest tracked `origin/personal` to `4bc35319905224d8622256a6cec92c49b21fd969` on 2026-07-07.
+- Bootstrap base reference: `origin/personal` recorded in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/raw-traces-active-runtime/investigation-notes.md`; delivery resolved latest tracked `origin/personal` to `4bc35319905224d8622256a6cec92c49b21fd969` on 2026-07-07.
 - Integrated base reference used for docs sync: `origin/personal` at `4bc35319905224d8622256a6cec92c49b21fd969`; ticket branch `codex/raw-traces-active-runtime` was already current with that tracked base after `git fetch origin --prune`.
 - Post-integration verification reference: `git rev-list --left-right --count HEAD...origin/personal` returned `0 0`; no base commits were integrated. `git diff --check` passed. Long-lived docs stale-name scan found only intentional migration-note references to `raw_traces.jsonl` in docs.
 
