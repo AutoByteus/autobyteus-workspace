@@ -482,7 +482,7 @@ describe("memory layout and projection integration", () => {
       "utf-8",
     );
     await fs.writeFile(
-      path.join(memberDir, "raw_traces.jsonl"),
+      path.join(memberDir, "raw_traces_active.jsonl"),
       [
         JSON.stringify({ trace_type: "user", content: "team hello", turn_id: "turn-1", seq: 1, ts: 10 }),
         JSON.stringify({ trace_type: "assistant", content: "team reply", turn_id: "turn-1", seq: 2, ts: 11 }),
@@ -566,7 +566,7 @@ describe("memory layout and projection integration", () => {
       "utf-8",
     );
     await fs.writeFile(
-      path.join(childMemberDir, "raw_traces.jsonl"),
+      path.join(childMemberDir, "raw_traces_active.jsonl"),
       [
         JSON.stringify({ trace_type: "user", content: "nested team hello", turn_id: "turn-1", seq: 1, ts: 20 }),
         JSON.stringify({ trace_type: "assistant", content: "nested team reply", turn_id: "turn-1", seq: 2, ts: 21 }),

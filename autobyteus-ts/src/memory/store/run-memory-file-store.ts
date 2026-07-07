@@ -11,7 +11,7 @@ import type { CompactedMemoryManifest } from './compacted-memory-manifest.js';
 import {
   COMPACTED_MEMORY_MANIFEST_FILE_NAME,
   EPISODIC_MEMORY_FILE_NAME,
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from './memory-file-names.js';
@@ -86,7 +86,7 @@ export class RunMemoryFileStore {
 
   getFilePath(memoryType: MemoryType): string {
     if (memoryType === MemoryType.RAW_TRACE) {
-      return path.join(this.runDir, RAW_TRACES_MEMORY_FILE_NAME);
+      return path.join(this.runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
     }
     if (memoryType === MemoryType.EPISODIC) {
       return path.join(this.runDir, EPISODIC_MEMORY_FILE_NAME);

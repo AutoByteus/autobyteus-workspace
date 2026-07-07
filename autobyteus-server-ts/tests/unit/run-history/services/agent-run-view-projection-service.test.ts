@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { RAW_TRACES_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { buildRunProjectionBundle } from "../../../../src/run-history/projection/run-projection-utils.js";
 import type { RunProjectionProvider } from "../../../../src/run-history/projection/run-projection-types.js";
@@ -213,7 +213,7 @@ describe("AgentRunViewProjectionService", () => {
     const runDir = path.join(memoryDir, "agents", runId);
     await fs.mkdir(runDir, { recursive: true });
     await fs.writeFile(
-      path.join(runDir, RAW_TRACES_MEMORY_FILE_NAME),
+      path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
       [
         { trace_type: "user", content: "inspect workspace", turn_id: "turn-1", seq: 1, ts: 1 },
         { trace_type: "reasoning", content: "I should list files first.", turn_id: "turn-1", seq: 2, ts: 2 },

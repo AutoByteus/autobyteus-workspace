@@ -24,17 +24,17 @@ describe('RawTracesTab', () => {
       props: {
         traces: [],
         rawTraceFiles: [
-          { fileName: 'raw_traces.jsonl', kind: 'active', recordCount: 59 },
+          { fileName: 'raw_traces_active.jsonl', kind: 'active', recordCount: 59 },
           { fileName: 'raw_traces_000003.jsonl', kind: 'segment', recordCount: 767, segmentIndex: 3 },
         ],
-        selectedRawTraceFileName: 'raw_traces.jsonl',
+        selectedRawTraceFileName: 'raw_traces_active.jsonl',
         limit: 10,
         loading: false,
       },
     });
 
     const select = wrapper.get('select');
-    expect(select.text()).toContain('raw_traces.jsonl');
+    expect(select.text()).toContain('raw_traces_active.jsonl');
     expect(select.text()).toContain('59');
     expect(select.text()).toContain('raw_traces_000003.jsonl');
 

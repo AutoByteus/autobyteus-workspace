@@ -6,7 +6,7 @@ import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writ
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
 import {
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
@@ -49,7 +49,7 @@ describe("RunMemoryWriter", () => {
       snapshotUpdate: { kind: "assistant", content: "hi", reasoning: "thinking" },
     });
 
-    await expect(fs.access(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME))).resolves.toBeUndefined();
+    await expect(fs.access(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).resolves.toBeUndefined();
     await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).resolves.toBeUndefined();
 
     const service = new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }));
@@ -78,7 +78,7 @@ describe("RunMemoryWriter", () => {
     const memoryDir = await mkTempDir();
     const store = new RunMemoryFileStore(memoryDir);
     await fs.writeFile(
-      path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME),
+      path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
       JSON.stringify({ id: "rt-1", ts: 1, turn_id: "turn-1", seq: 2, trace_type: "user", content: "old", source_event: "old" }) + "\n",
       "utf-8",
     );

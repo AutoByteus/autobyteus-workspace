@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { LocalMemoryRunViewProjectionProvider } from "../../../../src/run-history/projection/providers/local-memory-run-view-projection-provider.js";
-import { RAW_TRACES_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
 
@@ -94,7 +94,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
     const explicitMemoryDir = path.join(root, "local-run-id");
     await fs.mkdir(explicitMemoryDir, { recursive: true });
     await fs.writeFile(
-      path.join(explicitMemoryDir, RAW_TRACES_MEMORY_FILE_NAME),
+      path.join(explicitMemoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
       JSON.stringify({
         id: "rt-1",
         trace_type: "user",

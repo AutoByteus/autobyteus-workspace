@@ -30,7 +30,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
 import {
   EPISODIC_MEMORY_FILE_NAME,
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
@@ -307,7 +307,7 @@ describe("cross-runtime memory persistence integration", () => {
     emit(AgentRunEventType.TURN_COMPLETED, { turnId: `turn-${run.runId}-complete` });
     await recorder.waitForIdle(run.runId);
 
-    const rawTraceLines = await readLines(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME));
+    const rawTraceLines = await readLines(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME));
     const persistedRelevantRows = rawTraceLines
       .filter((trace) =>
         trace.trace_type === "reasoning" ||
@@ -509,7 +509,7 @@ describe("cross-runtime memory persistence integration", () => {
       }));
       await recorder.waitForIdle(run.runId);
 
-      await expect(fs.access(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME))).resolves.toBeUndefined();
+      await expect(fs.access(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).resolves.toBeUndefined();
       await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).resolves.toBeUndefined();
       expect(new RunMemoryFileStore(memoryDir).getRawTraceArchiveRevisionInfo()).toBeNull();
 
@@ -573,7 +573,7 @@ describe("cross-runtime memory persistence integration", () => {
     run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, { id: "text-1" }));
     await recorder.waitForIdle(run.runId);
 
-    await expect(fs.access(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME))).rejects.toThrow();
+    await expect(fs.access(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).rejects.toThrow();
     await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).rejects.toThrow();
   });
 
@@ -1235,7 +1235,7 @@ describe("cross-runtime memory persistence integration", () => {
     memberBackend.emit(AgentRunEventType.SEGMENT_END, { id: "team-text-1" });
     await recorder.waitForIdle(memberRunId);
 
-    const traces = await readLines(path.join(memberMemoryDir, RAW_TRACES_MEMORY_FILE_NAME));
+    const traces = await readLines(path.join(memberMemoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME));
     expect(traces.map((trace) => trace.trace_type)).toEqual(["user", "assistant"]);
     expect(traces.map((trace) => trace.turn_id)).toEqual([
       `turn-${memberRunId}`,
