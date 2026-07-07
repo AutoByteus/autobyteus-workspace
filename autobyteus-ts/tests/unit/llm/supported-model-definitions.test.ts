@@ -15,7 +15,9 @@ describe('supportedModelDefinitions', () => {
         'gemini-3.1-pro-preview',
         'minimax-m3',
         'deepseek-v4-pro',
+        'claude-fable-5',
         'claude-opus-4.8',
+        'claude-sonnet-5',
         'grok-4.3',
         'kimi-k2.7-code',
         'kimi-k2.7-code-highspeed',
@@ -72,6 +74,55 @@ describe('supportedModelDefinitions', () => {
 
     await expect(LLMFactory.getModelPricingInfo({ modelIdentifier: 'kimi-k2.7-code', modelProvider: LLMProvider.KIMI }))
       .resolves.toMatchObject({ input_price_per_million: 0.95, output_price_per_million: 4, cached_input_read_price_per_million: 0.19 });
+  });
+
+  it('registers current Anthropic target models with exact IDs and cache-aware standard pricing', async () => {
+    const names = new Set(supportedModelDefinitions.map((model) => model.name));
+    const values = new Set(supportedModelDefinitions.map((model) => model.value));
+
+    expect(Array.from(names)).toEqual(expect.arrayContaining([
+      'claude-fable-5',
+      'claude-opus-4.8',
+      'claude-sonnet-5',
+    ]));
+    expect(Array.from(values)).toEqual(expect.arrayContaining([
+      'claude-fable-5',
+      'claude-opus-4-8',
+      'claude-sonnet-5',
+    ]));
+    expect(names).not.toContain('claude-sonnet-4.8');
+    expect(values).not.toContain('claude-sonnet-4-8');
+
+    const expectedPricing = [
+      ['claude-fable-5', 10, 50, 1, 12.5, 20],
+      ['claude-opus-4.8', 5, 25, 0.5, 6.25, 10],
+      ['claude-sonnet-5', 3, 15, 0.3, 3.75, 6],
+    ] as const;
+
+    for (const [modelIdentifier, input, output, cacheRead, cacheWrite5m, cacheWrite1h] of expectedPricing) {
+      const pricing = await LLMFactory.getModelPricingInfo({
+        modelIdentifier,
+        modelProvider: LLMProvider.ANTHROPIC,
+      });
+
+      expect(pricing).toMatchObject({
+        pricing_status: 'trusted',
+        pricing_source: 'autobyteus_model_catalog',
+        currency: 'USD',
+        input_price_per_million: input,
+        output_price_per_million: output,
+        cached_input_read_price_per_million: cacheRead,
+        cached_input_write_5m_price_per_million: cacheWrite5m,
+        cached_input_write_1h_price_per_million: cacheWrite1h,
+        trusted_dimensions: {
+          input: true,
+          output: true,
+          cached_input_read: true,
+          cached_input_write_5m: true,
+          cached_input_write_1h: true,
+        },
+      });
+    }
   });
 
   it('uses the shared fixed Kimi K2.7 Code policy for both official catalog rows', () => {
@@ -177,15 +228,20 @@ describe('supportedModelDefinitions', () => {
     const values = new Set(supportedModelDefinitions.map((model) => model.value));
 
     expect(Array.from(names)).toEqual(expect.arrayContaining([
+      'claude-fable-5',
       'claude-opus-4.8',
+      'claude-sonnet-5',
       'grok-4.3',
       'grok-build-0.1',
       'minimax-m3',
       'qwen3.7-max',
     ]));
+    expect(values).toContain('claude-fable-5');
     expect(values).toContain('claude-opus-4-8');
+    expect(values).toContain('claude-sonnet-5');
     expect(values).toContain('MiniMax-M3');
     expect(names).not.toContain('claude-haiku-4.5');
+    expect(names).not.toContain('claude-sonnet-4.8');
     expect(names).not.toContain('grok-4-1-fast-reasoning');
     expect(names).not.toContain('grok-code-fast-1');
   });

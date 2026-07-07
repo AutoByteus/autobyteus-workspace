@@ -71,14 +71,14 @@ const claudeAdaptiveThinkingSchema = new ParameterSchema([
   new ParameterDefinition({
     name: 'thinking_enabled',
     type: ParameterType.BOOLEAN,
-    description: 'Enable Claude Opus 4.7 adaptive thinking. No fixed budget is sent.',
+    description: 'Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.',
     required: false,
     defaultValue: false
   }),
   new ParameterDefinition({
     name: 'thinking_display',
     type: ParameterType.ENUM,
-    description: 'Controls whether adaptive thinking content is omitted or summarized when adaptive thinking is enabled.',
+    description: 'Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.',
     required: false,
     defaultValue: 'omitted',
     enumValues: ['omitted', 'summarized']
@@ -202,12 +202,27 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     defaultConfig: new LLMConfig({ pricingConfig: pricing(1.0, 2.0, { cachedInputReadTokenPricing: 0.2 }) })
   },
   {
+    name: 'claude-fable-5',
+    value: 'claude-fable-5',
+    provider: LLMProvider.ANTHROPIC,
+    llmClass: AnthropicLLM,
+    canonicalName: 'claude-fable-5',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(10.0, 50.0, {
+      pricingEffectiveDate: '2026-07-07',
+      cachedInputReadTokenPricing: 1.0,
+      cachedInputWrite5mTokenPricing: 12.5,
+      cachedInputWrite1hTokenPricing: 20.0,
+    }) }),
+    configSchema: claudeAdaptiveThinkingSchema
+  },
+  {
     name: 'claude-opus-4.8',
     value: 'claude-opus-4-8',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-opus-4.8',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
+      pricingEffectiveDate: '2026-07-07',
       cachedInputReadTokenPricing: 0.5,
       cachedInputWrite5mTokenPricing: 6.25,
       cachedInputWrite1hTokenPricing: 10.0,
@@ -224,6 +239,20 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputReadTokenPricing: 0.5,
       cachedInputWrite5mTokenPricing: 6.25,
       cachedInputWrite1hTokenPricing: 10.0,
+    }) }),
+    configSchema: claudeAdaptiveThinkingSchema
+  },
+  {
+    name: 'claude-sonnet-5',
+    value: 'claude-sonnet-5',
+    provider: LLMProvider.ANTHROPIC,
+    llmClass: AnthropicLLM,
+    canonicalName: 'claude-sonnet-5',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, {
+      pricingEffectiveDate: '2026-07-07',
+      cachedInputReadTokenPricing: 0.3,
+      cachedInputWrite5mTokenPricing: 3.75,
+      cachedInputWrite1hTokenPricing: 6.0,
     }) }),
     configSchema: claudeAdaptiveThinkingSchema
   },

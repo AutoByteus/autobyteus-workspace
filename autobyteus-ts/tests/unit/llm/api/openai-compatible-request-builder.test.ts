@@ -34,6 +34,14 @@ describe('OpenAICompatibleRequestBuilder', () => {
       stream: true,
       kwargs: {
         logicalConversationId: 'agent-1',
+        logical_conversation_id: 'agent-1',
+        conversationId: 'conversation-1',
+        agentId: 'agent-1',
+        turnId: 'turn-1',
+        requestId: 'request-1',
+        renderedPayload: { provider: 'internal' },
+        nullish: null,
+        undefinedValue: undefined,
         metadata: { keep: true },
         tools,
         tool_choice: 'required'
@@ -57,6 +65,14 @@ describe('OpenAICompatibleRequestBuilder', () => {
       tool_choice: 'required'
     });
     expect(params).not.toHaveProperty('logicalConversationId');
+    expect(params).not.toHaveProperty('logical_conversation_id');
+    expect(params).not.toHaveProperty('conversationId');
+    expect(params).not.toHaveProperty('agentId');
+    expect(params).not.toHaveProperty('turnId');
+    expect(params).not.toHaveProperty('requestId');
+    expect(params).not.toHaveProperty('renderedPayload');
+    expect(params).not.toHaveProperty('nullish');
+    expect(params).not.toHaveProperty('undefinedValue');
   });
 
   it('does not emit tool_choice when no tools are attached', () => {

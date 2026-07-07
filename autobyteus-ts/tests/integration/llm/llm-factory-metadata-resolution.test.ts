@@ -79,6 +79,35 @@ describe('LLMFactory metadata resolution', () => {
       max_context_tokens: 1000000,
       max_output_tokens: 128000
     });
+    expect(anthropicModels.find((model) => model.model_identifier === 'claude-fable-5')).toMatchObject({
+      provider_type: LLMProvider.ANTHROPIC,
+      value: 'claude-fable-5',
+      max_context_tokens: 1000000,
+      max_input_tokens: 1000000,
+      max_output_tokens: 128000
+    });
+    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.8')).toMatchObject({
+      provider_type: LLMProvider.ANTHROPIC,
+      value: 'claude-opus-4-8',
+      max_context_tokens: 1000000,
+      max_output_tokens: 128000
+    });
+    const claudeSonnet5 = anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-5');
+    expect(claudeSonnet5).toMatchObject({
+      provider_type: LLMProvider.ANTHROPIC,
+      value: 'claude-sonnet-5',
+      max_context_tokens: 1000000,
+      max_input_tokens: 1000000,
+      max_output_tokens: 128000
+    });
+    expect(claudeSonnet5?.config_schema).toMatchObject({
+      properties: {
+        thinking_enabled: expect.objectContaining({ type: 'boolean' }),
+        thinking_display: expect.objectContaining({ enum: ['omitted', 'summarized'] })
+      }
+    });
+    expect(claudeSonnet5?.config_schema?.properties ?? {}).not.toHaveProperty('thinking_budget_tokens');
+    expect(anthropicModels.map((model) => model.model_identifier)).not.toContain('claude-sonnet-4.8');
     const deepseekV4Flash = deepseekModels.find((model) => model.model_identifier === 'deepseek-v4-flash');
     expect(deepseekV4Flash).toMatchObject({
       provider_type: LLMProvider.DEEPSEEK,
@@ -185,6 +214,9 @@ describe('LLMFactory metadata resolution', () => {
           ok: true,
           json: async () => ({
             data: [
+              { id: 'claude-fable-5', max_input_tokens: 1000000, max_tokens: 128000 },
+              { id: 'claude-sonnet-5', max_input_tokens: 1000000, max_tokens: 128000 },
+              { id: 'claude-opus-4-8', max_input_tokens: 1000000, max_tokens: 128000 },
               { id: 'claude-sonnet-4-6', max_input_tokens: 1200000, max_tokens: 64000 },
               { id: 'claude-opus-4-7', max_input_tokens: 1000000, max_tokens: 128000 },
               { id: 'claude-opus-4-6', max_input_tokens: 1000000, max_tokens: 128000 }
@@ -256,6 +288,8 @@ describe('LLMFactory metadata resolution', () => {
 
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-4.6')?.max_context_tokens).toBe(1200000);
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-4.6')?.max_output_tokens).toBe(64000);
+    expect(anthropicModels.find((model) => model.model_identifier === 'claude-fable-5')?.max_output_tokens).toBe(128000);
+    expect(anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-5')?.max_context_tokens).toBe(1000000);
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.max_output_tokens).toBe(128000);
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.value).toBe('claude-opus-4-7');
     expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')?.max_context_tokens).toBe(256000);

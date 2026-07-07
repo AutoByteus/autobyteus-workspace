@@ -78,7 +78,8 @@ new built-in enum value for every saved endpoint.
     `LLMFactory.ensureInitialized()` is called. It:
     - Registers supported built-in API models from
       `src/llm/supported-model-definitions.ts` (for example `gpt-5.5`,
-      `claude-opus-4.7`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
+      current Anthropic rows such as `claude-fable-5`, `claude-opus-4.8`,
+      and `claude-sonnet-5`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
       the Kimi `kimi-k2.6` / `kimi-k2.7-code` /
       `kimi-k2.7-code-highspeed` rows).
     - Probes local runtimes (Ollama, LM Studio) to discover available models.
@@ -118,9 +119,14 @@ provider adapter under `src/llm/api/`.
 
 Current examples of provider-specific model rules:
 
-- `claude-opus-4.7` uses Anthropic adaptive thinking rather than fixed-budget
-  extended thinking, and the adapter does not inject a default `temperature`
-  for that model.
+- Current Anthropic adaptive-thinking rows (`claude-opus-4.8`,
+  `claude-opus-4.7`, `claude-sonnet-5`, and `claude-fable-5`) use adaptive
+  thinking rather than fixed-budget extended thinking. The adapter strips
+  provider-invalid manual thinking budgets and unsupported sampling fields
+  (`temperature`, `top_p`, `top_k`) for these rows. Do not add a
+  `claude-sonnet-4.8` alias unless Anthropic publishes that exact API ID, and
+  do not make Fable 5 a default or fallback without a separate product
+  decision.
 - `deepseek-v4-flash` and `deepseek-v4-pro` use the existing DeepSeek
   OpenAI-compatible adapter with a flat user-facing V4 thinking schema; the
   adapter maps that schema to the provider request shape.
@@ -253,11 +259,14 @@ is the single request-body construction boundary. It maps `LLMConfig`
 generation controls to provider fields (`temperature`, `top_p`,
 `frequency_penalty`, `presence_penalty`, `stop`, and
 `max_completion_tokens`), merges `extraParams` for provider-specific extensions,
-filters framework-internal kwargs such as `logicalConversationId` and
-`requestId`, attaches `tools`, and passes `tool_choice` only when a
-lower-level direct caller explicitly supplies `kwargs.tool_choice`. This keeps
-provider request payloads deterministic and prevents
-agent bookkeeping identifiers from leaking to OpenAI-compatible endpoints.
+uses the shared provider-request kwarg sanitizer for framework-internal kwargs
+such as `logicalConversationId` and `requestId`, attaches `tools`, and passes
+`tool_choice` only when a lower-level direct caller explicitly supplies
+`kwargs.tool_choice`. The same sanitizer is used by external provider adapters
+such as Anthropic and Mistral so agent bookkeeping identifiers do not leak to
+provider SDK request payloads. `logicalConversationId` remains valid for
+`AutobyteusLLM`; external adapters filter it at their request boundary instead
+of requiring upstream callers to remove it.
 Provider adapters can still normalize provider-specific request legality before
 delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.6` on
 Moonshot-safe temperature defaults unless a caller explicitly passes a
@@ -386,6 +395,10 @@ For reloadable built-in runtimes (`OLLAMA`, `LMSTUDIO`, `AUTOBYTEUS`),
 Custom OpenAI-compatible providers use a different boundary:
 `LLMFactory.syncOpenAICompatibleEndpointModels(savedProviders)`.
 
+Anthropic provider-scoped reload is not dynamic discovery. It returns the
+current static Anthropic catalog count until
+`src/llm/supported-model-definitions.ts` is updated.
+
 - Each saved provider is probed independently through its `/models` endpoint.
 - Successful providers contribute fresh `OPENAI_COMPATIBLE` runtime models.
 - The synced model set is authoritative to the current saved-provider list, so
@@ -415,8 +428,8 @@ collapsed when effective **Thinking** is OFF or unavailable; toggling a supporte
 | ---------- | ------------------ | ------- | ---------- | ---------------------------- |
 | GPT-5.5          | `reasoning_effort` | ENUM    | Dropdown / schema-backed Thinking state | `{reasoning_effort: "high"}` |
 | Gemini 3 / 3.5 Flash | `thinking_level`   | ENUM    | Dropdown / schema-backed Thinking state | `{thinking_level: "high"}`   |
-| Claude Opus 4.7  | `thinking_enabled` | BOOLEAN | Basic Thinking toggle | `{thinking: {type: "adaptive"}}` |
-| Claude Opus 4.7  | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
+| Current Claude adaptive rows | `thinking_enabled` | BOOLEAN | Basic Thinking toggle | `{thinking: {type: "adaptive"}}` |
+| Current Claude adaptive rows | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
 | DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}` |
 | DeepSeek V4      | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |
 | Zhipu GLM 5.2     | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}`   |
