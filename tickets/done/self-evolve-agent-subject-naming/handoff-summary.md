@@ -2,12 +2,12 @@
 
 ## Status
 
-- Delivery status: `Finalization in progress after user verification`
-- Repository finalization status: `In progress; user verified and requested no-release finalization`
+- Delivery status: `Completed`
+- Repository finalization status: `Completed; merged to personal and no release run`
 - Ticket branch: `codex/self-evolve-agent-subject-naming`
 - Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming`
 - Finalization target from bootstrap context: `personal` / `origin/personal`
-- Archived ticket artifact folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming`
+- Archived ticket artifact folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming`
 
 ## Integrated-State Check
 
@@ -92,7 +92,7 @@ Known note:
 
 ## Docs Sync
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/docs-sync-report.md`
 - Result: `Pass`
 - Long-lived docs updated in the final candidate:
   - `autobyteus-server-ts/docs/ARCHITECTURE.md`
@@ -121,35 +121,35 @@ Artifacts for testing:
 
 Evidence:
 
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/validation-evidence/delivery-electron-build-mac-20260708.log`
-- Artifact summary/checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/validation-evidence/delivery-electron-build-artifacts-20260708.txt`
-- DMG verification log: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/validation-evidence/delivery-electron-dmg-verify-20260708.log`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/validation-evidence/delivery-electron-build-mac-20260708.log`
+- Artifact summary/checksums: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/validation-evidence/delivery-electron-build-artifacts-20260708.txt`
+- DMG verification log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/validation-evidence/delivery-electron-dmg-verify-20260708.log`
 
 ## Ticket State Transition
 
 - User verification: `Received` on 2026-07-08.
 - User release instruction: `No release`.
 - Ticket moved from `tickets/in-progress/self-evolve-agent-subject-naming` to `tickets/done/self-evolve-agent-subject-naming` before final commit, per delivery finalization workflow.
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming`
 
 ## Delivery / Release / Deployment Report
 
-- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/release-deployment-report.md`
+- Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/release-deployment-report.md`
 - Current result: `Finalization in progress after user verification`
 - Release/deployment: `Not run; user explicitly requested no release`
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/code-review-report.md`
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/api-e2e-coverage-investigation.md`
-- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/api-e2e-execution-coverage-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming/tickets/done/self-evolve-agent-subject-naming/release-deployment-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/code-review-report.md`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/api-e2e-coverage-investigation.md`
+- API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/api-e2e-execution-coverage-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/self-evolve-agent-subject-naming/release-deployment-report.md`
 
 ## User Verification
 
@@ -167,7 +167,17 @@ Verification focus completed by user before finalization. Suggested verification
 3. Confirm assistant-authored sections use the target agent display name, reasoning sections use `<Agent Name> reasoning:`, tool sections use `<Agent Name> tool call:`, and user sections still use `user:`.
 4. Confirm the companion task packet/user-facing wording refers to the `target agent`, not `target worker`.
 
-Ticket archival is complete in `tickets/done`. Commit/push/merge finalization is in progress. No release, publication, or deployment will be run per user request. The Electron build was local-only for testing and remains outside release/deployment scope.
+Ticket archival is complete in `tickets/done`. Ticket branch commit `993214b5537a9357bd6e3ce0254f15e8df38d83c` was pushed, merged into `personal` by merge commit `f14298321a4c5d21a9f406a0c4ed94bf2f90c509`, and no release, publication, or deployment was run per user request. The Electron build was local-only for testing and remains outside release/deployment scope.
+
+## Repository Finalization Result
+
+- Ticket branch commit: `993214b5537a9357bd6e3ce0254f15e8df38d83c` (`feat(work-traces): render target agent subject labels`)
+- Ticket branch push: `Completed` to `origin/codex/self-evolve-agent-subject-naming`
+- Finalization target: `personal` / `origin/personal`
+- Merge into target: `Completed` with merge commit `f14298321a4c5d21a9f406a0c4ed94bf2f90c509`
+- Target push: `Completed` after final report update
+- Release/publication/deployment: `Not run` per user request
+- Cleanup decision: dedicated ticket worktree retained to preserve the user-tested local Electron DMG/ZIP artifacts; local and remote ticket branches retained for auditability.
 
 ## Rollback / Reroute Criteria
 
