@@ -3,7 +3,7 @@
 ## Example 1: Browser Exploration Becomes SOP
 
 Trace signal:
-- The worker tries several browser operations.
+- The target agent tries several browser operations.
 - It eventually discovers that inspecting the DOM snapshot first and using a stable label or selector works reliably.
 
 Good update:
@@ -26,7 +26,7 @@ Bad update:
 ## Example 3: No Durable Improvement
 
 Trace signal:
-- The worker failed because an external site was temporarily unavailable.
+- The target agent failed because an external site was temporarily unavailable.
 - No repeated mistake or reusable process gap is visible.
 
 Good outcome:
@@ -38,7 +38,7 @@ Bad update:
 ## Example 4: Package Structure Improvement
 
 Trace signal:
-- The worker missed relevant guidance because `SKILL.md` was too long and did not route to examples.
+- The target agent missed relevant guidance because `SKILL.md` was too long and did not route to examples.
 
 Good update:
 - Keep `SKILL.md` concise.
@@ -51,7 +51,7 @@ Bad update:
 ## Example 5: Durable SOP From Command Discovery
 
 Trace signal:
-- The worker runs several commands before finding the correct test command or setup path.
+- The target agent runs several commands before finding the correct test command or setup path.
 
 Good update:
 - Add a generalized command discovery checklist or known command in the relevant skill reference.

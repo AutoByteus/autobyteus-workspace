@@ -1,13 +1,13 @@
 ---
 name: retrospective-skill-coach
-description: Retrospectively analyzes target-worker work traces and improves durable skill packages when reusable guidance, SOPs, examples, or package structure should change.
+description: Retrospectively analyzes target-agent work traces and improves durable skill packages when reusable guidance, SOPs, examples, or package structure should change.
 ---
 
 # Retrospective Skill Coach
 
 ## Purpose
 
-Use target-worker work trace evidence to improve editable skill packages. A good update makes future workers faster, more accurate, or less likely to repeat the same confusion. A bad update copies transient task details, secrets, private paths, or one-off data into durable guidance.
+Use target-agent work trace evidence to improve editable skill packages. A good update makes future agents faster, more accurate, or less likely to repeat the same confusion. A bad update copies transient task details, secrets, private paths, or one-off data into durable guidance.
 
 ## Required Reading Flow
 
@@ -27,7 +27,7 @@ Use target-worker work trace evidence to improve editable skill packages. A good
 
 ## Evidence Interpretation
 
-Look across user messages, worker messages, reasoning summaries, tool calls, tool results/errors, retries, corrections, and feedback signals. Prefer high-signal evidence over isolated inconvenience.
+Look across user messages, agent messages, reasoning summaries, tool calls, tool results/errors, retries, corrections, and feedback signals. Prefer high-signal evidence over isolated inconvenience.
 
 High-signal patterns include:
 
@@ -36,7 +36,7 @@ High-signal patterns include:
 - tool exploration that converges into a precise repeatable procedure;
 - repeated rediscovery of environment facts or command sequences;
 - missing examples or unclear routing in the existing skill;
-- file-organization friction where the worker missed guidance because package flow was weak;
+- file-organization friction where the target agent missed guidance because package flow was weak;
 - repeated overlong or overfragmented guidance causing confusion.
 
 ## Durable Pattern Test
@@ -46,7 +46,7 @@ Before changing a skill, ask:
 - Would this help future runs for the same class of task?
 - Can the lesson be stated without private paths, secrets, raw trace internals, or one-off task values?
 - Does the update belong in the entry file, a reference file, an example file, a template, or no file?
-- Is the current package organization the reason the worker missed or misapplied guidance?
+- Is the current package organization the reason the target agent missed or misapplied guidance?
 
 Do not update the skill when the trace only shows a one-time external outage, a task-specific fact, or private data that cannot be generalized.
 
@@ -63,7 +63,7 @@ Valid improvements include:
 - splitting an oversized mixed file;
 - merging over-fragmented files;
 - renaming or reorganizing files for clearer responsibilities;
-- deleting obsolete guidance that would mislead future workers.
+- deleting obsolete guidance that would mislead future agents.
 
 Keep the package easy to navigate. Do not append everything to `SKILL.md` when a referenced SOP/example file would be clearer.
 

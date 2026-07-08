@@ -14,19 +14,19 @@ Repeated failed attempts often indicate missing skill guidance. Look for several
 
 ### Tool Exploration To SOP Convergence
 
-Sometimes the worker starts without knowing an environment, website, UI, or tool surface. It tries several probes, then discovers a reliable action sequence. If that sequence is reusable, convert it into an SOP.
+Sometimes the target agent starts without knowing an environment, website, UI, or tool surface. It tries several probes, then discovers a reliable action sequence. If that sequence is reusable, convert it into an SOP.
 
 Example pattern:
 
-1. Worker opens browser page.
-2. Worker inspects DOM snapshot several ways.
-3. Worker identifies a stable action sequence.
-4. Worker completes the task reliably.
+1. Target agent opens browser page.
+2. Target agent inspects DOM snapshot several ways.
+3. Target agent identifies a stable action sequence.
+4. Target agent completes the task reliably.
 5. Future skill guidance should teach the stable inspect-then-act sequence.
 
 ### Environment Rediscovery
 
-If the worker had to rediscover the same repository layout, command, test target, or setup step that a skill should know how to find, add a generalized discovery or setup rule.
+If the target agent had to rediscover the same repository layout, command, test target, or setup step that a skill should know how to find, add a generalized discovery or setup rule.
 
 ### Package Navigation Failure
 

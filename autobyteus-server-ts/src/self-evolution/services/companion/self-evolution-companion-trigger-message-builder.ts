@@ -15,7 +15,7 @@ export class SelfEvolutionCompanionTriggerMessageBuilder {
     _session: SelfEvolutionCompanionSession,
   ): Promise<AgentInputUserMessage> {
     const editablePackages = await this.renderEditablePackages(request.editableSkillTargets);
-    const prompt = `Self-improvement requested for the target worker.
+    const prompt = `Self-improvement requested for the target agent.
 
 Use the listed work trace files as the evidence package.
 
