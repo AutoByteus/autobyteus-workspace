@@ -5,10 +5,11 @@
 `src/self-evolution` owns the manual, skill-first self-evolution workflow for
 AutoByteus runs. It is a runtime/run capability: a user can activate a visible
 self-evolver companion for an active standalone run or selected team member run.
-The backend converts that target's raw trace corpus into readable work trace
-files, keeps those files current before every manual trigger, and asks the
-companion to inspect the work trace paths and improve configured skill packages
-when a reusable improvement is warranted.
+The backend uses the shared Agent Work Trace Projection capability to convert
+that target's raw trace corpus into readable work trace files, keeps those files
+current before every manual trigger, and asks the companion to inspect the work
+trace paths and improve configured skill packages when a reusable improvement is
+warranted.
 
 Self-evolution does not train a model, mutate agent/team definitions, run a
 post-edit audit service, automatically edit source code, or claim downstream
@@ -79,19 +80,26 @@ definition create and update inputs must not accept it.
 ## Work Trace Projection
 
 Raw trace storage remains backend-internal. The self-evolver-facing format is a
-self-evolution work trace, not raw JSONL and not a large inline prompt digest.
+shared Agent Work Trace package, not raw JSONL and not a large inline prompt
+digest.
 
-- `RawTraceWorkTraceSourceReader` reads the authoritative archived and active raw
-  trace corpus through the agent-memory/run-history boundary.
-- `SelfEvolutionWorkTraceProjectionService.ensureCurrent()` is the correctness
-  path. Every manual Self Improve request calls it before companion messaging.
+- `AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir })` is the
+  correctness path. Every manual Self Improve request calls it before companion
+  messaging.
+- The shared `agent-work-traces` capability reads authoritative archived and
+  active raw trace sources through `RawTraceFileSourceService` and the
+  agent-memory/run-history boundary. Self-evolution does not own the projection
+  source reader, renderer, redactor, store, or manifest policy.
 - The first request for a target backfills the current archived and active raw
   traces into work trace files. Later requests reuse unchanged archive segment
   conversions, regenerate changed active traces, and rewrite the manifest.
-- Work traces are stored under
-  `<target memoryDir>/self_evolution/work_traces/` with a
+- Work traces are stored under `<target memoryDir>/work_traces/` with a
   `work_traces_manifest.json`, numbered archive files such as
   `work_trace_000001.md`, and `work_trace_active.md` for the active segment.
+- The former generated cache root
+  `<target memoryDir>/self_evolution/work_traces/` is obsolete. Runtime does not
+  dual-write or fallback-read that path because work traces are derived from
+  canonical raw traces and can be regenerated on demand.
 - Work trace content is readable, timestamped, and semantically complete for
   coaching: user messages, worker messages, meaningful tool names, arguments,
   results/errors, retries, corrections, and feedback signals are preserved.
@@ -101,7 +109,8 @@ self-evolution work trace, not raw JSONL and not a large inline prompt digest.
   trace paths.
 
 A background projection worker is not part of this pass. Freshness is guaranteed
-on trigger by `ensureCurrent()`.
+on trigger by the shared `ensureCurrent()` call. See
+`agent_work_traces.md` for the shared projection contract.
 
 ## Prompt And Static Guidance Separation
 
@@ -148,8 +157,8 @@ The manual action activates or reuses a target-scoped companion session.
    target `AgentRun` is active before companion activation.
 4. `SelfEvolutionSkillTargetResolver` resolves the target's currently configured
    skills to exact writable skill roots and `SKILL.md` entry files.
-5. `SelfEvolutionWorkTraceProjectionService.ensureCurrent()` produces the work
-   trace package and manifest.
+5. `AgentWorkTraceProjectionService.ensureCurrent()` produces the shared work
+   trace package and manifest under `<target memoryDir>/work_traces/`.
 6. `SelfEvolutionCompanionSessionService` loads target-scoped evolver session
    state from `<target memoryDir>/self_evolution/evolver_session.json`.
    If the recorded companion run is active, it is reused. If it is unavailable,

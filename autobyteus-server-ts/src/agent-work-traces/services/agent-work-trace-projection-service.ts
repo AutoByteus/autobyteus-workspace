@@ -1,25 +1,24 @@
 import crypto from "node:crypto";
-import { RawTraceWorkTraceSourceReader } from "../../../agent-memory/services/raw-trace-work-trace-source-reader.js";
-import type { SelfEvolutionTargetContext } from "../self-evolution-target-context-resolver.js";
-import type { SelfEvolutionWorkTraceFile, SelfEvolutionWorkTracePackage } from "../../domain/work-traces.js";
-import { SelfEvolutionWorkTraceRenderer } from "./self-evolution-work-trace-renderer.js";
-import { SelfEvolutionWorkTraceStore } from "./self-evolution-work-trace-store.js";
+import type { AgentWorkTraceFile, AgentWorkTracePackage, AgentWorkTraceProjectionContext } from "../domain/work-traces.js";
+import { AgentWorkTraceRenderer } from "./agent-work-trace-renderer.js";
+import { AgentWorkTraceSourceReader } from "./agent-work-trace-source-reader.js";
+import { AgentWorkTraceStore } from "./agent-work-trace-store.js";
 
-export class SelfEvolutionWorkTraceProjectionService {
+export class AgentWorkTraceProjectionService {
   constructor(private readonly deps: {
-    sourceReader?: RawTraceWorkTraceSourceReader;
-    renderer?: SelfEvolutionWorkTraceRenderer;
-    store?: SelfEvolutionWorkTraceStore;
+    sourceReader?: AgentWorkTraceSourceReader;
+    renderer?: AgentWorkTraceRenderer;
+    store?: AgentWorkTraceStore;
   } = {}) {}
 
-  async ensureCurrent(context: SelfEvolutionTargetContext): Promise<SelfEvolutionWorkTracePackage> {
+  async ensureCurrent(context: AgentWorkTraceProjectionContext): Promise<AgentWorkTracePackage> {
     const generatedAt = new Date().toISOString();
     const existing = await this.store.readManifest(context);
     const existingBySource = new Map(
       (existing?.files ?? []).map((file) => [file.sourceId, file]),
     );
     const sources = await this.sourceReader.listSources(context);
-    const files: SelfEvolutionWorkTraceFile[] = [];
+    const files: AgentWorkTraceFile[] = [];
 
     for (const source of sources) {
       const prior = existingBySource.get(source.sourceId);
@@ -52,15 +51,15 @@ export class SelfEvolutionWorkTraceProjectionService {
     };
   }
 
-  private get sourceReader(): RawTraceWorkTraceSourceReader {
-    return this.deps.sourceReader ?? new RawTraceWorkTraceSourceReader();
+  private get sourceReader(): AgentWorkTraceSourceReader {
+    return this.deps.sourceReader ?? new AgentWorkTraceSourceReader();
   }
 
-  private get renderer(): SelfEvolutionWorkTraceRenderer {
-    return this.deps.renderer ?? new SelfEvolutionWorkTraceRenderer();
+  private get renderer(): AgentWorkTraceRenderer {
+    return this.deps.renderer ?? new AgentWorkTraceRenderer();
   }
 
-  private get store(): SelfEvolutionWorkTraceStore {
-    return this.deps.store ?? new SelfEvolutionWorkTraceStore();
+  private get store(): AgentWorkTraceStore {
+    return this.deps.store ?? new AgentWorkTraceStore();
   }
 }

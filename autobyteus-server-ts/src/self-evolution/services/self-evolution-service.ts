@@ -19,7 +19,7 @@ import { SelfEvolutionStrategyCatalogService } from "./strategies/self-evolution
 import { ManualTriggerStrategy } from "./triggers/manual-trigger-strategy.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { SelfEvolutionEffectiveConfigResolver } from "./self-evolution-effective-config-resolver.js";
-import { SelfEvolutionWorkTraceProjectionService } from "./work-traces/self-evolution-work-trace-projection-service.js";
+import { AgentWorkTraceProjectionService } from "../../agent-work-traces/services/agent-work-trace-projection-service.js";
 import { SelfEvolutionCompanionSessionService } from "./companion/self-evolution-companion-session-service.js";
 
 export type StartSelfEvolutionForAgentRunInput = { runId: string; requestedByUserId?: string | null; requestedFrom?: "run_detail" | "api"; };
@@ -36,7 +36,7 @@ type SelfEvolutionServiceDeps = {
   recordLifecycle?: SelfEvolutionRecordLifecycle;
   agentRunManager?: Pick<AgentRunManager, "getActiveRun">;
   effectiveConfigResolver?: SelfEvolutionEffectiveConfigResolver;
-  workTraceProjectionService?: SelfEvolutionWorkTraceProjectionService;
+  workTraceProjectionService?: AgentWorkTraceProjectionService;
   companionSessionService?: SelfEvolutionCompanionSessionService;
 };
 
@@ -225,6 +225,6 @@ export class SelfEvolutionService {
   private get recordLifecycle(): SelfEvolutionRecordLifecycle { return this.deps.recordLifecycle ?? new SelfEvolutionRecordLifecycle(); }
   private get agentRunManager(): Pick<AgentRunManager, "getActiveRun"> { return this.deps.agentRunManager ?? AgentRunManager.getInstance(); }
   private get effectiveConfigResolver(): SelfEvolutionEffectiveConfigResolver { return this.deps.effectiveConfigResolver ?? new SelfEvolutionEffectiveConfigResolver(); }
-  private get workTraceProjectionService(): SelfEvolutionWorkTraceProjectionService { return this.deps.workTraceProjectionService ?? new SelfEvolutionWorkTraceProjectionService(); }
+  private get workTraceProjectionService(): AgentWorkTraceProjectionService { return this.deps.workTraceProjectionService ?? new AgentWorkTraceProjectionService(); }
   private get companionSessionService(): SelfEvolutionCompanionSessionService { return this.deps.companionSessionService ?? new SelfEvolutionCompanionSessionService(); }
 }

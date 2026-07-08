@@ -1,5 +1,5 @@
 import type { SelfEvolutionNotificationSummary, SelfEvolutionSkillTarget, SelfEvolutionTargetRef } from "./models.js";
-import type { SelfEvolutionWorkTracePackage } from "./work-traces.js";
+import type { AgentWorkTracePackage } from "../../agent-work-traces/domain/work-traces.js";
 
 export type SelfEvolutionEvolverSessionStateStatus = "active" | "replaced" | "unavailable";
 
@@ -41,7 +41,7 @@ export type SelfEvolutionCompanionTriggerRequest = {
   evolutionRunId: string;
   requestedAt: string;
   targetAgentRunId: string;
-  workTracePackage: SelfEvolutionWorkTracePackage;
+  workTracePackage: AgentWorkTracePackage;
   editableSkillTargets: SelfEvolutionSkillTarget[];
 };
 

@@ -1,11 +1,10 @@
 import crypto from "node:crypto";
 import path from "node:path";
-import type { MemoryTraceEvent } from "../domain/models.js";
-import { MemoryFileStore } from "../store/memory-file-store.js";
-import { RawTraceFileSourceService } from "./raw-trace-file-source-service.js";
-import type { RawTraceFileSource } from "./raw-trace-file-source-service.js";
-import type { SelfEvolutionWorkTraceSource } from "../../self-evolution/domain/work-traces.js";
-import type { SelfEvolutionTargetContext } from "../../self-evolution/services/self-evolution-target-context-resolver.js";
+import type { MemoryTraceEvent } from "../../agent-memory/domain/models.js";
+import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
+import { RawTraceFileSourceService } from "../../agent-memory/services/raw-trace-file-source-service.js";
+import type { RawTraceFileSource } from "../../agent-memory/services/raw-trace-file-source-service.js";
+import type { AgentWorkTraceProjectionContext, AgentWorkTraceSource } from "../domain/work-traces.js";
 
 const traceTs = (record: MemoryTraceEvent): number | null =>
   Number.isFinite(record.ts) && record.ts > 0 ? record.ts : null;
@@ -21,8 +20,8 @@ const fingerprint = (sourcePath: string, records: MemoryTraceEvent[]): string =>
   return hash.digest("hex");
 };
 
-export class RawTraceWorkTraceSourceReader {
-  async listSources(context: SelfEvolutionTargetContext): Promise<SelfEvolutionWorkTraceSource[]> {
+export class AgentWorkTraceSourceReader {
+  async listSources(context: AgentWorkTraceProjectionContext): Promise<AgentWorkTraceSource[]> {
     const runId = path.basename(context.memoryDir);
     const service = this.createRawTraceFileSourceService(context);
     return service
@@ -30,7 +29,7 @@ export class RawTraceWorkTraceSourceReader {
       .map((file) => this.buildSourceForFile(file, service.readSource(runId, file).records));
   }
 
-  private createRawTraceFileSourceService(context: SelfEvolutionTargetContext): RawTraceFileSourceService {
+  private createRawTraceFileSourceService(context: AgentWorkTraceProjectionContext): RawTraceFileSourceService {
     return new RawTraceFileSourceService(
       new MemoryFileStore(path.dirname(context.memoryDir), {
         runRootSubdir: "",
@@ -42,7 +41,7 @@ export class RawTraceWorkTraceSourceReader {
   private buildSourceForFile(
     file: RawTraceFileSource,
     records: MemoryTraceEvent[],
-  ): SelfEvolutionWorkTraceSource {
+  ): AgentWorkTraceSource {
     const index = file.kind === "segment" ? file.segmentIndex ?? null : null;
     return this.buildSource({
       kind: file.kind === "segment" ? "archive_segment" : "active",
@@ -57,13 +56,13 @@ export class RawTraceWorkTraceSourceReader {
   }
 
   private buildSource(input: {
-    kind: SelfEvolutionWorkTraceSource["kind"];
+    kind: AgentWorkTraceSource["kind"];
     sourceId: string;
     displayName: string;
     sourcePath: string;
     index: number | null;
     records: MemoryTraceEvent[];
-  }): SelfEvolutionWorkTraceSource {
+  }): AgentWorkTraceSource {
     return {
       kind: input.kind,
       sourceId: input.sourceId,

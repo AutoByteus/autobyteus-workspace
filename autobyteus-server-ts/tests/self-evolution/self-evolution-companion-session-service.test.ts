@@ -205,7 +205,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
   });
 
   it("posts the concise self-evolution task packet through the companion request path and registers the final-message grant", async () => {
-    const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "self_evolution", "work_traces", "work_traces_manifest.json");
+    const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "work_traces", "work_traces_manifest.json");
     const workTraceRootPath = path.dirname(manifestPath);
     const workTraceFilePath = path.join(workTraceRootPath, "work_trace_active.md");
     const skillRootPath = path.join(tempRoot, "skills", "durable-skill");
@@ -375,7 +375,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
   });
 
   it("builds a concise path-only companion trigger with package tree metadata", async () => {
-    const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "self_evolution", "work_traces", "work_traces_manifest.json");
+    const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "work_traces", "work_traces_manifest.json");
     const workTraceRootPath = path.dirname(manifestPath);
     const workTraceFilePath = path.join(workTraceRootPath, "work_trace_active.md");
     const skillRootPath = path.join(tempRoot, "skills", "durable-skill");

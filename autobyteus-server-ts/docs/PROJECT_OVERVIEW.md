@@ -34,6 +34,7 @@ Major domains under `src/`:
 - External-channel messaging ingress, bindings, and reply routing
 - Prompt engineering
 - Skills
+- Shared Agent Work Trace Projection
 - Manual skill self-evolution orchestration
 - MCP server management
 - LLM and multimedia model management
@@ -73,6 +74,7 @@ This keeps startup robust while still warming caches shortly after boot.
 - `features/memory_sync.md`
 - `features/remote_access.md`
 - `modules/README.md`
+  - `modules/agent_work_traces.md`
   - `modules/self_evolution.md`
   - `modules/agent_tools_mcp_server.md`
 - `design/startup_initialization_and_lazy_services.md`

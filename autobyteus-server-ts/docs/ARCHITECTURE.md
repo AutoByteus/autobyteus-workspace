@@ -107,6 +107,19 @@ Each major business area is isolated under `src/<module>` and usually contains:
 - `services/`
 
 
+## Agent Work Trace Projection
+
+The shared work-trace subsystem lives under `src/agent-work-traces`. It owns the
+raw-trace-to-readable-Markdown projection boundary for target run memory
+directories. Consumers call
+`AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir })`; the
+capability reads canonical raw traces through `RawTraceFileSourceService`, writes
+derived files under `<memoryDir>/work_traces/`, and returns a manifest/package
+with file paths and a summary hash. The older self-evolution-owned generated
+cache root `<memoryDir>/self_evolution/work_traces/` is not a runtime fallback or
+dual-write target because work traces are regenerable from canonical raw traces.
+See `modules/agent_work_traces.md` for the detailed shared contract.
+
 ## Self-Evolution Runtime
 
 The self-evolution subsystem is a control-plane workflow under `src/self-evolution`.
@@ -114,15 +127,16 @@ It is globally disabled by default through `ENABLE_SELF_EVOLUTION`. Manual start
 resolve eligibility from current global self-evolution settings and the current
 live target state, not from launch-time run overrides or stored launch snapshots.
 Agent/team definitions and launch inputs do not own self-evolution eligibility.
-Manual starts ensure a readable work trace projection is current for the selected
-standalone run or team member, then activate or reuse a visible target-scoped
-companion `AgentRun` and send it a small path-based trigger. The companion reads
-work trace files, may edit only exact configured skill roots, and can report a
-meaningful durable skill update through the grant-scoped `send_message_to`
-contract. A required startup migration removes obsolete `selfEvolutionEffective`
-fields from existing run and team-member metadata. The MVP intentionally has no
-product change-audit or metrics/reporting service; Git/manual inspection remains
-the review surface. See `modules/self_evolution.md` for the detailed contract.
+Manual starts consume the shared Agent Work Trace Projection package for the
+selected standalone run or team member, then activate or reuse a visible
+target-scoped companion `AgentRun` and send it a small path-based trigger. The
+companion reads work trace files, may edit only exact configured skill roots, and
+can report a meaningful durable skill update through the grant-scoped
+`send_message_to` contract. A required startup migration removes obsolete
+`selfEvolutionEffective` fields from existing run and team-member metadata. The
+MVP intentionally has no product change-audit or metrics/reporting service;
+Git/manual inspection remains the review surface. See `modules/self_evolution.md`
+for the detailed consumer contract.
 
 ## External-Channel Messaging Runtime
 

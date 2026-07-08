@@ -1,7 +1,7 @@
-import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../../../run-history/projection/historical-replay-event-types.js";
-import { buildHistoricalReplayEvents } from "../../../run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
-import type { SelfEvolutionWorkTraceSource } from "../../domain/work-traces.js";
-import { SelfEvolutionWorkTraceRedactor } from "./self-evolution-work-trace-redactor.js";
+import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../../run-history/projection/historical-replay-event-types.js";
+import { buildHistoricalReplayEvents } from "../../run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
+import type { AgentWorkTraceSource } from "../domain/work-traces.js";
+import { AgentWorkTraceRedactor } from "./agent-work-trace-redactor.js";
 
 const toIso = (ts: number | null): string => {
   if (typeof ts === "number" && Number.isFinite(ts) && ts > 0) {
@@ -25,13 +25,13 @@ const stringifyVisible = (value: unknown): string => {
   }
 };
 
-export class SelfEvolutionWorkTraceRenderer {
-  constructor(private readonly deps: { redactor?: SelfEvolutionWorkTraceRedactor } = {}) {}
+export class AgentWorkTraceRenderer {
+  constructor(private readonly deps: { redactor?: AgentWorkTraceRedactor } = {}) {}
 
-  renderSource(source: SelfEvolutionWorkTraceSource): string {
+  renderSource(source: AgentWorkTraceSource): string {
     const events = buildHistoricalReplayEvents(source.records);
     const lines: string[] = [];
-    lines.push(`# Self-Evolution Work Trace: ${source.displayName}`);
+    lines.push(`# Agent Work Trace: ${source.displayName}`);
     lines.push("");
     lines.push(`Source: ${source.kind}`);
     lines.push(`Records: ${source.recordCount}`);
@@ -99,7 +99,7 @@ export class SelfEvolutionWorkTraceRenderer {
     return this.redactor.redact(value).trim();
   }
 
-  private get redactor(): SelfEvolutionWorkTraceRedactor {
-    return this.deps.redactor ?? new SelfEvolutionWorkTraceRedactor();
+  private get redactor(): AgentWorkTraceRedactor {
+    return this.deps.redactor ?? new AgentWorkTraceRedactor();
   }
 }

@@ -1,6 +1,6 @@
 const MAX_VISIBLE_TEXT_LENGTH = 20_000;
 
-export class SelfEvolutionWorkTraceRedactor {
+export class AgentWorkTraceRedactor {
   redact(value: string): string {
     return value
       .replace(/\b(Authorization\s*[:=]\s*)(Bearer|Basic|Token)\s+[A-Za-z0-9._~+/=-]+/gi, "$1$2 <redacted-token>")

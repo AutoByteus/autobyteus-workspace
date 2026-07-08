@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { SelfEvolutionTargetContext } from "../self-evolution-target-context-resolver.js";
-import type { SelfEvolutionWorkTraceFile, SelfEvolutionWorkTraceManifest, SelfEvolutionWorkTraceSource } from "../../domain/work-traces.js";
+import type { AgentWorkTraceFile, AgentWorkTraceManifest, AgentWorkTraceProjectionContext, AgentWorkTraceSource } from "../domain/work-traces.js";
 
 export const WORK_TRACE_MANIFEST_FILE_NAME = "work_traces_manifest.json";
 
@@ -17,16 +16,16 @@ const atomicWrite = async (filePath: string, content: string): Promise<void> => 
   await fs.rename(tmpPath, filePath);
 };
 
-export class SelfEvolutionWorkTraceStore {
-  getWorkTraceRootPath(context: SelfEvolutionTargetContext): string {
-    return path.join(context.memoryDir, "self_evolution", "work_traces");
+export class AgentWorkTraceStore {
+  getWorkTraceRootPath(context: AgentWorkTraceProjectionContext): string {
+    return path.join(context.memoryDir, "work_traces");
   }
 
-  getManifestPath(context: SelfEvolutionTargetContext): string {
+  getManifestPath(context: AgentWorkTraceProjectionContext): string {
     return path.join(this.getWorkTraceRootPath(context), WORK_TRACE_MANIFEST_FILE_NAME);
   }
 
-  buildFileName(source: SelfEvolutionWorkTraceSource): string {
+  buildFileName(source: AgentWorkTraceSource): string {
     if (source.kind === "active") {
       return "work_trace_active.md";
     }
@@ -34,10 +33,10 @@ export class SelfEvolutionWorkTraceStore {
     return `work_trace_${String(index).padStart(6, "0")}.md`;
   }
 
-  async readManifest(context: SelfEvolutionTargetContext): Promise<SelfEvolutionWorkTraceManifest | null> {
+  async readManifest(context: AgentWorkTraceProjectionContext): Promise<AgentWorkTraceManifest | null> {
     try {
       const raw = await fs.readFile(this.getManifestPath(context), "utf-8");
-      return JSON.parse(raw) as SelfEvolutionWorkTraceManifest;
+      return JSON.parse(raw) as AgentWorkTraceManifest;
     } catch (error) {
       if (String(error).includes("ENOENT")) {
         return null;
@@ -47,11 +46,11 @@ export class SelfEvolutionWorkTraceStore {
   }
 
   async writeTraceFile(input: {
-    context: SelfEvolutionTargetContext;
-    source: SelfEvolutionWorkTraceSource;
+    context: AgentWorkTraceProjectionContext;
+    source: AgentWorkTraceSource;
     content: string;
     generatedAt: string;
-  }): Promise<SelfEvolutionWorkTraceFile> {
+  }): Promise<AgentWorkTraceFile> {
     const fileName = this.buildFileName(input.source);
     const filePath = path.join(this.getWorkTraceRootPath(input.context), fileName);
     await atomicWrite(filePath, input.content);
@@ -69,12 +68,12 @@ export class SelfEvolutionWorkTraceStore {
   }
 
   async writeManifest(input: {
-    context: SelfEvolutionTargetContext;
-    files: SelfEvolutionWorkTraceFile[];
+    context: AgentWorkTraceProjectionContext;
+    files: AgentWorkTraceFile[];
     generatedAt: string;
-  }): Promise<SelfEvolutionWorkTraceManifest> {
+  }): Promise<AgentWorkTraceManifest> {
     const manifestPath = this.getManifestPath(input.context);
-    const manifest: SelfEvolutionWorkTraceManifest = {
+    const manifest: AgentWorkTraceManifest = {
       schemaVersion: 1,
       target: input.context.target,
       generatedAt: input.generatedAt,

@@ -90,15 +90,15 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
       workTraceProjectionService: {
         ensureCurrent: vi.fn(async () => ({
           target: { kind: "agent_run", runId: "target-run-1" },
-          workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
-          manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+          workTraceRootPath: path.join(targetContext.memoryDir, "work_traces"),
+          manifestPath: path.join(targetContext.memoryDir, "work_traces", "work_traces_manifest.json"),
           summaryHash: "hash-123",
           manifest: {
             schemaVersion: 1,
             target: { kind: "agent_run", runId: "target-run-1" },
             generatedAt: "2026-01-01T00:00:00.000Z",
-            workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
-            manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+            workTraceRootPath: path.join(targetContext.memoryDir, "work_traces"),
+            manifestPath: path.join(targetContext.memoryDir, "work_traces", "work_traces_manifest.json"),
             files: [],
           },
         })),
@@ -198,15 +198,15 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
     let projectionCount = 0;
     const packageFor = (count: number) => ({
       target: { kind: "agent_run" as const, runId: "target-run-1" },
-      workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
-      manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+      workTraceRootPath: path.join(targetContext.memoryDir, "work_traces"),
+      manifestPath: path.join(targetContext.memoryDir, "work_traces", "work_traces_manifest.json"),
       summaryHash: `hash-${count}`,
       manifest: {
         schemaVersion: 1,
         target: { kind: "agent_run" as const, runId: "target-run-1" },
         generatedAt: `2026-01-01T00:00:0${count}.000Z`,
-        workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
-        manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+        workTraceRootPath: path.join(targetContext.memoryDir, "work_traces"),
+        manifestPath: path.join(targetContext.memoryDir, "work_traces", "work_traces_manifest.json"),
         files: [],
       },
     });
@@ -278,15 +278,15 @@ describe("SelfEvolutionService executable direct-edit flow", () => {
       workTraceProjectionService: {
         ensureCurrent: vi.fn(async () => ({
           target: { kind: "agent_run", runId: "target-run-1" },
-          workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
-          manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+          workTraceRootPath: path.join(targetContext.memoryDir, "work_traces"),
+          manifestPath: path.join(targetContext.memoryDir, "work_traces", "work_traces_manifest.json"),
           summaryHash: "hash-123",
           manifest: {
             schemaVersion: 1,
             target: { kind: "agent_run", runId: "target-run-1" },
             generatedAt: "2026-01-01T00:00:00.000Z",
-            workTraceRootPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces"),
-            manifestPath: path.join(targetContext.memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"),
+            workTraceRootPath: path.join(targetContext.memoryDir, "work_traces"),
+            manifestPath: path.join(targetContext.memoryDir, "work_traces", "work_traces_manifest.json"),
             files: [],
           },
         })),

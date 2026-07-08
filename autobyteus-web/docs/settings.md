@@ -778,7 +778,7 @@ needs to know that one exact turn has finished.
 
 ## Related Documentation
 
-- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, work trace projection, companion lifecycle, skill-root edit, and minimal provenance contract.
+- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend self-evolution workflow, shared work-trace package consumption, companion lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

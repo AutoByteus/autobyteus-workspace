@@ -2,10 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { AgentDefinition } from "../../src/agent-definition/domain/models.js";
-import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
-import type { SelfEvolutionTargetContext } from "../../src/self-evolution/services/self-evolution-target-context-resolver.js";
-import { SelfEvolutionWorkTraceProjectionService } from "../../src/self-evolution/services/work-traces/self-evolution-work-trace-projection-service.js";
+import type { AgentWorkTraceProjectionContext } from "../../src/agent-work-traces/domain/work-traces.js";
+import { AgentWorkTraceProjectionService } from "../../src/agent-work-traces/services/agent-work-trace-projection-service.js";
 
 const rawTrace = (record: Record<string, unknown>): string => JSON.stringify(record);
 
@@ -18,34 +16,18 @@ const pathExists = async (filePath: string): Promise<boolean> => {
   }
 };
 
-describe("SelfEvolutionWorkTraceProjectionService", () => {
+describe("AgentWorkTraceProjectionService", () => {
   let tempRoot: string;
   let memoryDir: string;
-  let context: SelfEvolutionTargetContext;
+  let context: AgentWorkTraceProjectionContext;
 
   beforeEach(async () => {
-    tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "self-evolution-work-traces-"));
+    tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "agent-work-traces-"));
     memoryDir = path.join(tempRoot, "memory", "agents", "target-run-1");
     await fs.mkdir(memoryDir, { recursive: true });
     context = {
       target: { kind: "agent_run", runId: "target-run-1" },
-      sourceRunIds: ["target-run-1"],
-      targetAgentDefinition: new AgentDefinition({
-        id: "target-agent",
-        name: "Target Agent",
-        description: "Target agent",
-        instructions: "Use skills.",
-      }),
-      agentDefinitionId: "target-agent",
-      agentName: "Target Agent",
-      workspaceRootPath: tempRoot,
       memoryDir,
-      runMetadataPath: path.join(memoryDir, "run_metadata.json"),
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      llmModelIdentifier: "model",
-      llmConfig: null,
-      effectiveConfig: null,
-      targetMetadata: {} as any,
     };
   });
 
@@ -96,17 +78,19 @@ describe("SelfEvolutionWorkTraceProjectionService", () => {
       }),
     ].join("\n") + "\n", "utf-8");
 
-    const result = await new SelfEvolutionWorkTraceProjectionService().ensureCurrent(context);
+    const result = await new AgentWorkTraceProjectionService().ensureCurrent(context);
 
-    expect(result.workTraceRootPath).toBe(path.join(memoryDir, "self_evolution", "work_traces"));
-    expect(result.manifestPath).toBe(path.join(memoryDir, "self_evolution", "work_traces", "work_traces_manifest.json"));
+    expect(result.workTraceRootPath).toBe(path.join(memoryDir, "work_traces"));
+    expect(result.manifestPath).toBe(path.join(memoryDir, "work_traces", "work_traces_manifest.json"));
     expect(result.manifestPath).not.toContain(`${path.sep}targets${path.sep}`);
+    await expect(pathExists(path.join(memoryDir, "self_evolution", "work_traces"))).resolves.toBe(false);
     expect(result).not.toHaveProperty("targetKey");
     expect(result.manifest).not.toHaveProperty("targetKey");
     expect(result.manifest.files).toHaveLength(1);
     expect(result.manifest.files[0]).toMatchObject({ sourceKind: "active", fileName: "work_trace_active.md", recordCount: 4 });
 
     const content = await fs.readFile(result.manifest.files[0]!.filePath, "utf-8");
+    expect(content).toContain("# Agent Work Trace: active raw traces");
     expect(content).toContain("user:\nPlease inspect the failing command.");
     expect(content).toContain("worker:\nI will run the command and check the result.");
     expect(content).toContain("tool: run_bash");
@@ -149,7 +133,7 @@ describe("SelfEvolutionWorkTraceProjectionService", () => {
       content: "Active response after compaction.",
     })}\n`, "utf-8");
 
-    const service = new SelfEvolutionWorkTraceProjectionService();
+    const service = new AgentWorkTraceProjectionService();
     const first = await service.ensureCurrent(context);
 
     expect(first.manifest.files).toHaveLength(2);

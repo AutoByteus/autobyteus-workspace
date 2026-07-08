@@ -1,10 +1,18 @@
 import type { MemoryTraceEvent } from "../../agent-memory/domain/models.js";
-import type { SelfEvolutionTargetRef } from "./models.js";
 
-export type SelfEvolutionWorkTraceSourceKind = "archive_segment" | "active";
+export type AgentWorkTraceTargetRef =
+  | { kind: "agent_run"; runId: string }
+  | { kind: "team_member_run"; teamRunId: string; memberRunId: string };
 
-export type SelfEvolutionWorkTraceSource = {
-  kind: SelfEvolutionWorkTraceSourceKind;
+export type AgentWorkTraceProjectionContext = {
+  target: AgentWorkTraceTargetRef;
+  memoryDir: string;
+};
+
+export type AgentWorkTraceSourceKind = "archive_segment" | "active";
+
+export type AgentWorkTraceSource = {
+  kind: AgentWorkTraceSourceKind;
   sourceId: string;
   displayName: string;
   sourcePath: string;
@@ -16,9 +24,9 @@ export type SelfEvolutionWorkTraceSource = {
   records: MemoryTraceEvent[];
 };
 
-export type SelfEvolutionWorkTraceFile = {
+export type AgentWorkTraceFile = {
   sourceId: string;
-  sourceKind: SelfEvolutionWorkTraceSourceKind;
+  sourceKind: AgentWorkTraceSourceKind;
   sourceFingerprint: string;
   fileName: string;
   filePath: string;
@@ -28,19 +36,19 @@ export type SelfEvolutionWorkTraceFile = {
   generatedAt: string;
 };
 
-export type SelfEvolutionWorkTraceManifest = {
+export type AgentWorkTraceManifest = {
   schemaVersion: 1;
-  target: SelfEvolutionTargetRef;
+  target: AgentWorkTraceTargetRef;
   generatedAt: string;
   workTraceRootPath: string;
   manifestPath: string;
-  files: SelfEvolutionWorkTraceFile[];
+  files: AgentWorkTraceFile[];
 };
 
-export type SelfEvolutionWorkTracePackage = {
-  target: SelfEvolutionTargetRef;
+export type AgentWorkTracePackage = {
+  target: AgentWorkTraceTargetRef;
   workTraceRootPath: string;
   manifestPath: string;
-  manifest: SelfEvolutionWorkTraceManifest;
+  manifest: AgentWorkTraceManifest;
   summaryHash: string;
 };
