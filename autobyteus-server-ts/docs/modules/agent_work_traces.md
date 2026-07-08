@@ -14,19 +14,21 @@ duplicating rendering policy.
 ## Public Boundary
 
 Consumers call `AgentWorkTraceProjectionService.ensureCurrent({ target,
-memoryDir })` and receive an `AgentWorkTracePackage`. The context is intentionally
-small:
+memoryDir, agentName })` and receive an `AgentWorkTracePackage`. The context is
+intentionally small:
 
 - `target`: `{ kind: "agent_run", runId }` or `{ kind: "team_member_run",
   teamRunId, memberRunId }`
 - `memoryDir`: the target run/member memory directory whose raw trace files are
   being projected
+- `agentName`: the target agent display name used to render agent-authored
+  Markdown subject labels
 
 The projection package includes the shared work trace root path, manifest path,
-manifest metadata, target identity, file entries, and a summary hash over target
-and source fingerprints. Consumers should use the public projection service and
-package only; source reading, rendering, redaction, and store classes remain
-inside the shared capability.
+manifest metadata, render context metadata, target identity, file entries, and a
+summary hash over target, render context, and source fingerprints. Consumers
+should use the public projection service and package only; source reading,
+rendering, redaction, and store classes remain inside the shared capability.
 
 ## Source Inputs
 
@@ -56,8 +58,9 @@ Projection writes derived files directly under the target memory directory:
 
 `AgentWorkTraceStore` owns this layout, manifest writing, file naming, and atomic
 writes. Archive segment work trace files are reused when the source fingerprint
-is unchanged; the active trace file is regenerated when active raw trace content
-changes. The manifest is rewritten for the current package on each projection.
+and normalized render context fingerprint are unchanged; the active trace file is
+regenerated when active raw trace content changes. The manifest is rewritten for
+the current package on each projection.
 
 The previous self-evolution-owned cache root
 `<memoryDir>/self_evolution/work_traces/` is obsolete. The current runtime does
@@ -68,9 +71,14 @@ traces are regenerable from canonical raw traces.
 
 `AgentWorkTraceRenderer` converts raw trace records through the run-history
 historical replay transformer and emits readable Markdown for user messages,
-worker messages, reasoning, meaningful tool calls, tool results/errors,
+target-agent messages, reasoning, meaningful tool calls, tool results/errors,
 corrections, retries, feedback signals, and compaction-boundary notes when
 present.
+
+Agent-authored entries use the normalized target agent display name as the
+subject label, preserving configured casing while trimming and collapsing
+whitespace. Blank display names fall back to `Agent`. Tool sections use
+`<Agent Name> tool call:` and user messages remain `user:`.
 
 `AgentWorkTraceRedactor` hides backend/protocol noise and common sensitive
 values before content reaches the Markdown files. Hidden or redacted content

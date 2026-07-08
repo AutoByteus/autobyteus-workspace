@@ -7,6 +7,13 @@ export type AgentWorkTraceTargetRef =
 export type AgentWorkTraceProjectionContext = {
   target: AgentWorkTraceTargetRef;
   memoryDir: string;
+  agentName: string;
+};
+
+export type AgentWorkTraceRenderContext = {
+  subjectLabel: string;
+  rendererVersion: string;
+  fingerprint: string;
 };
 
 export type AgentWorkTraceSourceKind = "archive_segment" | "active";
@@ -37,8 +44,9 @@ export type AgentWorkTraceFile = {
 };
 
 export type AgentWorkTraceManifest = {
-  schemaVersion: 1;
+  schemaVersion: 2;
   target: AgentWorkTraceTargetRef;
+  renderContext: AgentWorkTraceRenderContext;
   generatedAt: string;
   workTraceRootPath: string;
   manifestPath: string;
@@ -50,5 +58,6 @@ export type AgentWorkTracePackage = {
   workTraceRootPath: string;
   manifestPath: string;
   manifest: AgentWorkTraceManifest;
+  renderContext: AgentWorkTraceRenderContext;
   summaryHash: string;
 };
