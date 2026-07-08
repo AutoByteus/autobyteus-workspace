@@ -2,7 +2,7 @@
 
 ## Status
 
-User verification was received on 2026-07-08. The ticket has been archived under `tickets/done/shared-work-trace-projection/` and is ready for repository finalization. Release/version work is explicitly out of scope per user instruction.
+User verification was received on 2026-07-08. The ticket has been archived under `tickets/done/shared-work-trace-projection/`, merged to `personal`, and pushed to `origin/personal`. Release/version work was explicitly skipped per user instruction.
 
 ## Worktree / Branch
 
@@ -84,18 +84,21 @@ Delivery/finalization-stage checks:
 - `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac` — passed; user tested the resulting local app successfully.
 - `node scripts/verify-packaged-terminal-runtime.mjs --server-root electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server --platform darwin --arch arm64 --spawn-probe` — passed.
 - `git fetch origin` after user verification — passed; finalization target did not advance.
+- Post-merge main-worktree validation: initial `tsc` attempt exposed stale local `autobyteus-ts` build output in the main worktree; after `pnpm -C autobyteus-server-ts prepare:shared`, `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` passed.
+- `git push origin personal` — passed.
 
-## Finalization Plan
+## Finalization Result
 
-Per the repository ticket-branch finalization flow:
+Repository finalization completed:
 
-1. Commit archived ticket and implementation/docs changes on `codex/shared-work-trace-projection`.
-2. Push `codex/shared-work-trace-projection` to `origin`.
-3. Refresh local `personal` from `origin/personal`.
-4. Merge the ticket branch into `personal`.
-5. Push `personal` to `origin/personal`.
-6. Skip release/version/tag/deployment by explicit user instruction.
-7. Retain the dedicated ticket worktree/local branch for traceability and the already-built local Electron artifacts unless separately requested.
+1. Finalization commit on `codex/shared-work-trace-projection`: `b366ffc38a53d4b9d60dc131e192c9cf2301004b` (`feat(server): add shared agent work trace projection`).
+2. Pushed `codex/shared-work-trace-projection` to `origin`.
+3. Refreshed local `personal` from `origin/personal`; it was already current at `f2c6643ed94d839a06f662bbfbbd3bc8ca4b9628`.
+4. Fast-forward merged the ticket branch into `personal`.
+5. Rebuilt shared packages in the main worktree after the merge and reran `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`; it passed.
+6. Pushed `personal` to `origin/personal`.
+7. Skipped release/version/tag/deployment by explicit user instruction.
+8. Retained the dedicated ticket worktree/local branch for traceability and the already-built local Electron artifacts unless separately requested.
 
 ## Relevant Artifacts
 
