@@ -19,24 +19,34 @@ const messages = {
     "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
+    "团队成员覆盖",
+  "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
+    "{{count}} 个已覆盖",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "协调者",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
     "已覆盖",
   "workspace.components.workspace.config.MemberOverrideItem.runtime_override":
-    "运行时覆盖",
+    "运行时",
   "workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default":
-    "使用全局运行时默认值",
+    "全局默认",
+  "workspace.components.workspace.config.MemberOverrideItem.llm_model_override":
+    "LLM 模型",
+  "workspace.components.workspace.config.MemberOverrideItem.use_global_model_default":
+    "全局默认",
   "workspace.components.workspace.config.MemberOverrideItem.search_models":
     "搜索模型...",
   "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
     "选择兼容的成员模型",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve":
+    "自动批准",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
-    "自动执行：使用全局设置",
+    "全局默认",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
-    "自动执行：开启",
+    "开启",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
-    "自动执行：关闭",
+    "关闭",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "智能体",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":
