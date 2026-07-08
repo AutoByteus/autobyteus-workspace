@@ -54,6 +54,7 @@
         :placeholder="$t('workspace.components.workspace.config.WorkspaceSelector.select_a_workspace')"
         search-placeholder="Search workspaces..."
         empty-message="No workspaces loaded yet."
+        :variant="controlVariant"
       />
     </div>
 
@@ -66,8 +67,7 @@
             v-model="tempPath"
             @keydown.enter.prevent
             :disabled="isLoading || isInteractionDisabled"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 py-2.5 px-3"
-            :class="{ 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500': error }"
+            :class="newWorkspaceInputClass"
             :placeholder="$t('workspace.components.workspace.config.WorkspaceSelector.absolute_path_to_workspace')"
           />
         </div>
@@ -129,6 +129,7 @@ const props = defineProps<{
   disabled?: boolean;
   workspaceLocked?: boolean;
   workspaceLockedMessage?: string;
+  controlVariant?: 'default' | 'quiet';
 }>();
 
 const emit = defineEmits<{
@@ -153,6 +154,14 @@ const workspaceLocked = computed(() => props.workspaceLocked === true);
 const workspaceLockedMessageToUse = computed(() => {
   return props.workspaceLockedMessage || 'Workspace is fixed for this run.';
 });
+const controlVariant = computed(() => props.controlVariant ?? 'default');
+const newWorkspaceInputClass = computed(() => [
+  'block w-full rounded-md border px-3 py-2.5 text-sm text-gray-900 transition-colors focus:outline-none disabled:bg-gray-100 disabled:text-gray-500',
+  controlVariant.value === 'quiet'
+    ? 'border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50'
+    : 'border-gray-300 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500',
+  props.error ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500' : '',
+]);
 
 // Computed
 const workspaceOptions = computed(() => {

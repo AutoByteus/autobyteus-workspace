@@ -19,24 +19,34 @@ const messages = {
     "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
+    "Team Members Override",
+  "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
+    "{{count}} overridden",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "Coordinator",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
     "Overridden",
   "workspace.components.workspace.config.MemberOverrideItem.runtime_override":
-    "Runtime Override",
+    "Runtime",
   "workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default":
-    "Use global runtime default",
+    "Global default",
+  "workspace.components.workspace.config.MemberOverrideItem.llm_model_override":
+    "LLM Model",
+  "workspace.components.workspace.config.MemberOverrideItem.use_global_model_default":
+    "Global default",
   "workspace.components.workspace.config.MemberOverrideItem.search_models":
     "Search models...",
   "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
     "Choose a compatible member model",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve":
+    "Auto approve",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
-    "Auto-execute: Use global",
+    "Global default",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
-    "Auto-execute: ON",
+    "On",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
-    "Auto-execute: OFF",
+    "Off",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "Agent",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":

@@ -1,8 +1,8 @@
 <template>
-  <div class="space-y-4 pt-2">
+  <div :class="advancedListClass">
     <!-- Clean grid layout for advanced parameters -->
-    <div v-for="(paramSchema, key) in schema" :key="key" class="grid grid-cols-[1.2fr,1fr] items-center gap-3">
-      <label :for="inputId(key)" class="text-sm text-gray-700 font-normal" :title="key">
+    <div v-for="(paramSchema, key) in schema" :key="key" :class="advancedRowClass">
+      <label :for="inputId(key)" class="text-sm font-normal text-gray-700" :title="key">
         {{ displayLabel(String(key), paramSchema) }}
         <span v-if="paramSchema.description" :title="paramSchema.description" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span>
       </label>
@@ -20,7 +20,7 @@
           :id="inputId(key)"
           :value="selectValue(key, paramSchema)"
           :disabled="disabled"
-          class="block w-full rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+          :class="advancedSelectClass"
           @change="handleSelectChange(key, ($event.target as HTMLSelectElement).value)"
         >
           <option v-if="shouldRenderDefaultOption(paramSchema)" :value="DEFAULT_OPTION">{{ $t('workspace.components.workspace.config.ModelConfigAdvanced.default') }}</option>
@@ -52,7 +52,7 @@
           type="number"
           :value="configValue(key) as number | ''"
           :disabled="disabled"
-          class="block w-full rounded-md border border-gray-300 py-2 px-3 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white placeholder-gray-400"
+          :class="advancedInputClass"
           @input="handleNumberChange(key, ($event.target as HTMLInputElement).value)"
         />
 
@@ -62,7 +62,7 @@
           type="text"
           :value="configValue(key) as string | ''"
           :disabled="disabled"
-          class="block w-full rounded-md border border-gray-300 py-2 px-3 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white placeholder-gray-400"
+          :class="advancedInputClass"
           @input="handleTextChange(key, ($event.target as HTMLInputElement).value)"
         />
       </div>
@@ -88,6 +88,7 @@ const props = defineProps<{
   idPrefix?: string;
   missingHistoricalConfig?: boolean;
   missingHistoricalConfigLabel?: string;
+  controlVariant?: 'default' | 'quiet';
 }>();
 
 const emit = defineEmits<{
@@ -98,6 +99,26 @@ const normalizedConfig = computed(() => props.config ?? {});
 const missingHistoricalConfigLabel = computed(() =>
   props.missingHistoricalConfigLabel ?? '',
 );
+const controlVariant = computed(() => props.controlVariant ?? 'default');
+const advancedListClass = computed(() => [
+  props.compact ? 'space-y-3 pt-1' : 'space-y-3 pt-1.5',
+]);
+const advancedRowClass = computed(() => [
+  'grid items-center gap-3',
+  props.compact ? 'grid-cols-[minmax(0,1fr),minmax(7rem,0.95fr)]' : 'grid-cols-[1.2fr,1fr]',
+]);
+const advancedSelectClass = computed(() => [
+  'block w-full rounded-md border py-2 pl-3 pr-8 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500',
+  controlVariant.value === 'quiet'
+    ? 'border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50'
+    : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500',
+]);
+const advancedInputClass = computed(() => [
+  'block w-full rounded-md border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500',
+  controlVariant.value === 'quiet'
+    ? 'border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50'
+    : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500',
+]);
 
 const formatLabel = (key: string): string => {
   return key

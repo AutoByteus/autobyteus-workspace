@@ -1,0 +1,21 @@
+Round 3 Electron build artifact summary
+Generated: 2026-07-08T11:13:02+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune
+Branch: codex/team-run-config-ui-retune
+HEAD commit before final verification commit: c5a4be2c607bb1cc9eaa4eccd237c803c1108f65
+origin/personal: 545ae7a188fb88260273bbc51bb72bf1543197c0
+merge-base HEAD origin/personal: 545ae7a188fb88260273bbc51bb72bf1543197c0
+HEAD...origin/personal left/right: 2	0 (HEAD-only commits, origin-only commits)
+origin/personal...HEAD left/right: 0	2 (origin-only commits, HEAD-only commits)
+
+Artifacts:
+-rw-r--r--@ 1 normy  staff   383M Jul  8 11:09 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.2.dmg
+-rw-r--r--@ 1 normy  staff   408K Jul  8 11:09 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.2.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   379M Jul  8 11:11 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.2.zip
+-rw-r--r--@ 1 normy  staff   399K Jul  8 11:11 /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.2.zip.blockmap
+
+SHA-256:
+3bad5a320efb53eeff2be4063b6ca6fb49edd6d406670d720d75487e2c2af6cd  /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.2.dmg
+168d3ba3fa502f0d1c0b06dff96d5b56a88395c92fb546350e0a1f7ec5e22430  /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.2.zip
+787a3fb086ff25e68308c1cb96755d8e0170fc9b4680300bdb8acd3d01a4e30b  /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.2.dmg.blockmap
+82a177d4a81f0c7adaabc18b507931be0d7a4e95bde61d82bc15f18b873e6ea6  /Users/normy/autobyteus_org/autobyteus-worktrees/team-run-config-ui-retune/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.2.zip.blockmap

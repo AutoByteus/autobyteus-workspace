@@ -524,14 +524,25 @@ configuration may still carry an internal `skillAccessMode` field for backend
 resume compatibility, but the only normal launch behavior is configured skills
 only.
 
-Compact member override rows may stay collapsed to avoid expanding large team
-forms. They still display inherited/effective defaults when expanded, and
-explicit member-local runtime or model selections that resolve to an effective-ON
-model can open only that member's **Advanced** controls. Display-only inherited
-or schema-default values must not create member overrides. Non-thinking
-runtime/model parameters render through the same advanced schema component; for
-Codex, a fast-capable model can therefore expose `service_tier` with the
-user-facing label **Fast mode** beside reasoning settings.
+Desktop run-configuration forms use quieter light-blue filled-field controls on
+dense Agent and Team launch surfaces while keeping the shared select components'
+default bordered styling available for callers that do not opt in. The
+light-blue treatment is presentation-only and preserves hover plus
+keyboard-focus affordance. Team launch configuration keeps the global **Auto
+approve tools** switch beside other global
+setup fields, directly after workspace selection, before the member-specific
+override disclosure. The **Team Members Override** disclosure defaults
+collapsed, shows the label followed by a visible chevron plus member/override
+counts, and remains openable in read-only inspection mode; when expanded,
+member rows render as a connected list with stronger shared separators to avoid
+overwhelming large teams. They still display inherited/effective defaults when
+expanded, and explicit member-local runtime or model selections that resolve to
+an effective-ON model can open only that member's **Advanced** controls.
+Display-only inherited or schema-default values must not create member
+overrides. Non-thinking runtime/model parameters render through the same
+advanced schema component; for Codex, a fast-capable model can therefore expose
+`service_tier` with the user-facing label **Fast mode** beside reasoning
+settings.
 
 
 ### Self-Evolution Manual Composer Action
