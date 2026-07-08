@@ -1,10 +1,4 @@
-## What's New
-- Added catalog support for Claude Fable 5 and Claude Sonnet 5, and kept Claude Opus 4.8 available with its exact Anthropic API ID.
-
 ## Improvements
-- Improved Anthropic model pricing metadata with explicit cache-read and cache-write dimensions for Fable 5, Opus 4.8, and Sonnet 5.
-- Clarified that Anthropic model reload uses AutoByteus's static built-in catalog rather than live model discovery.
-
-## Fixes
-- Fixed current Claude request shaping so Opus 4.8, Opus 4.7, Sonnet 5, and Fable 5 avoid unsupported manual thinking budgets and sampling overrides.
-- Fixed external provider request payloads so internal AutoByteus fields such as `logicalConversationId` are not sent to Anthropic or other external providers while hosted AutoByteus conversations still receive them.
+- Refined Team Run Configuration so the global **Auto approve tools** setting stays near workspace selection before member-specific overrides.
+- Made **Team Members Override** easier to scan with a collapsed default, visible chevron, member and override counts, and stronger connected-list separators when expanded.
+- Reduced visual noise in dense Team and Agent run configuration forms with the final light-blue quiet-control treatment while preserving hover, focus, and read-only inspection affordances.
