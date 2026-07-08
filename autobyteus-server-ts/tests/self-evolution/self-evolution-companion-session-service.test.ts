@@ -22,6 +22,12 @@ const effectiveConfig: SelfEvolutionEffectiveConfig = {
   sourceTrace: [],
 };
 
+const workTraceRenderContext = {
+  subjectLabel: "Target",
+  rendererVersion: "agent-work-trace-renderer-v2",
+  fingerprint: "render-fingerprint",
+};
+
 const fakeRun = (runId: string, active = true) => ({
   runId,
   isActive: () => active,
@@ -284,10 +290,12 @@ describe("SelfEvolutionCompanionSessionService", () => {
         target: { kind: "agent_run", runId: "target-run-1" },
         workTraceRootPath,
         manifestPath,
+        renderContext: workTraceRenderContext,
         summaryHash: "summary-hash",
         manifest: {
-          schemaVersion: 1,
+          schemaVersion: 2,
           target: { kind: "agent_run", runId: "target-run-1" },
+          renderContext: workTraceRenderContext,
           generatedAt: "2026-01-01T00:00:00.000Z",
           workTraceRootPath,
           manifestPath,
@@ -392,10 +400,12 @@ describe("SelfEvolutionCompanionSessionService", () => {
         target: { kind: "agent_run", runId: "target-run-1" },
         workTraceRootPath,
         manifestPath,
+        renderContext: workTraceRenderContext,
         summaryHash: "summary-hash",
         manifest: {
-          schemaVersion: 1,
+          schemaVersion: 2,
           target: { kind: "agent_run", runId: "target-run-1" },
+          renderContext: workTraceRenderContext,
           generatedAt: "2026-01-01T00:00:00.000Z",
           workTraceRootPath,
           manifestPath,
@@ -448,6 +458,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
     expect(message.content).toContain(`Work trace manifest: ${manifestPath}`);
     expect(message.content).toContain(`Work trace root: ${workTraceRootPath}`);
     expect(message.content).toContain(`1. ${workTraceFilePath}`);
+    expect(message.content).toContain("Self-improvement requested for the target agent.");
     expect(message.content).toContain("Use the listed work trace files as the evidence package.");
     expect(message.content).toContain("Editable skill packages:");
     expect(message.content).toContain(`Root directory: ${skillRootPath}`);
@@ -469,6 +480,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
     expect(message.content).not.toContain("Primary guidance file");
     expect(message.content).not.toContain("user:\n");
     expect(message.content).not.toContain("worker:\n");
+    expect(message.content).not.toContain("target worker");
     expect(message.metadata).toMatchObject({
       self_evolution_work_trace_manifest_path: manifestPath,
       self_evolution_work_trace_root_path: workTraceRootPath,

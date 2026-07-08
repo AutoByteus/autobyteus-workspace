@@ -1,0 +1,16 @@
+Electron build artifacts generated on 2026-07-08
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/self-evolve-agent-subject-naming
+Command source: autobyteus-web/README.md macOS Build With Logs (No Notarization)
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+
+Artifacts:
+-rw-r--r--@ 1 normy  staff   383M Jul  8 07:29 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.2.dmg
+-rw-r--r--@ 1 normy  staff   408K Jul  8 07:29 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.2.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   379M Jul  8 07:30 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.2.zip
+-rw-r--r--@ 1 normy  staff   399K Jul  8 07:30 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.2.zip.blockmap
+
+SHA256:
+f06c4e13d83220f4283cf72a899174f1499b757cb69dd7cabd0900d30d58810f  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.2.dmg
+5d97a5b2b8e8c6ceb2eb3ed1aabda65c4206982344a6303b588431805b1fb744  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.2.dmg.blockmap
+db97de0160aa0955fb96b99383984d4923d25307860f010e4f8b70b24cac9140  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.2.zip
+ce135e4fdc69d8a8eb8843edd68397f45140ce016c3a32bb311580c721014526  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.2.zip.blockmap

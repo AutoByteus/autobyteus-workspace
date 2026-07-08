@@ -6,7 +6,7 @@ Skill package improvement is not limited to editing `SKILL.md`.
 
 ### Small Entry-File Change
 
-Use when future workers need a concise routing or trigger rule.
+Use when future agents need a concise routing or trigger rule.
 
 ### New Or Updated SOP Reference
 

@@ -112,12 +112,14 @@ Each major business area is isolated under `src/<module>` and usually contains:
 The shared work-trace subsystem lives under `src/agent-work-traces`. It owns the
 raw-trace-to-readable-Markdown projection boundary for target run memory
 directories. Consumers call
-`AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir })`; the
-capability reads canonical raw traces through `RawTraceFileSourceService`, writes
-derived files under `<memoryDir>/work_traces/`, and returns a manifest/package
-with file paths and a summary hash. The older self-evolution-owned generated
-cache root `<memoryDir>/self_evolution/work_traces/` is not a runtime fallback or
-dual-write target because work traces are regenerable from canonical raw traces.
+`AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir, agentName })`;
+the capability reads canonical raw traces through
+`RawTraceFileSourceService`, writes derived files under
+`<memoryDir>/work_traces/`, and returns a manifest/package with file paths,
+render-context metadata, and a summary hash. The older self-evolution-owned
+generated cache root `<memoryDir>/self_evolution/work_traces/` is not a runtime
+fallback or dual-write target because work traces are regenerable from canonical
+raw traces.
 See `modules/agent_work_traces.md` for the detailed shared contract.
 
 ## Self-Evolution Runtime

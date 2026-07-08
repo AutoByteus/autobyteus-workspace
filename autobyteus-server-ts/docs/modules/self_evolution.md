@@ -83,9 +83,10 @@ Raw trace storage remains backend-internal. The self-evolver-facing format is a
 shared Agent Work Trace package, not raw JSONL and not a large inline prompt
 digest.
 
-- `AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir })` is the
-  correctness path. Every manual Self Improve request calls it before companion
-  messaging.
+- `AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir, agentName })`
+  is the correctness path. Every manual Self Improve request calls it before
+  companion messaging, using the resolved target agent display name for rendered
+  work-trace subject labels.
 - The shared `agent-work-traces` capability reads authoritative archived and
   active raw trace sources through `RawTraceFileSourceService` and the
   agent-memory/run-history boundary. Self-evolution does not own the projection
@@ -101,8 +102,9 @@ digest.
   dual-write or fallback-read that path because work traces are derived from
   canonical raw traces and can be regenerated on demand.
 - Work trace content is readable, timestamped, and semantically complete for
-  coaching: user messages, worker messages, meaningful tool names, arguments,
-  results/errors, retries, corrections, and feedback signals are preserved.
+  coaching: user messages, target-agent messages, meaningful tool names,
+  arguments, results/errors, retries, corrections, and feedback signals are
+  preserved.
 - Backend-only/protocol fields are hidden from the visible coaching content by
   default, including raw trace ids, `turn_id`, `seq`, `source_event`,
   `correlation_id`, `tool_call_id`, provider ids, raw JSON envelopes, and raw

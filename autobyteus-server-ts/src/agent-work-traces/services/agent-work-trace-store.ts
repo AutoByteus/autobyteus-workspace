@@ -1,6 +1,12 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { AgentWorkTraceFile, AgentWorkTraceManifest, AgentWorkTraceProjectionContext, AgentWorkTraceSource } from "../domain/work-traces.js";
+import type {
+  AgentWorkTraceFile,
+  AgentWorkTraceManifest,
+  AgentWorkTraceProjectionContext,
+  AgentWorkTraceRenderContext,
+  AgentWorkTraceSource,
+} from "../domain/work-traces.js";
 
 export const WORK_TRACE_MANIFEST_FILE_NAME = "work_traces_manifest.json";
 
@@ -71,11 +77,13 @@ export class AgentWorkTraceStore {
     context: AgentWorkTraceProjectionContext;
     files: AgentWorkTraceFile[];
     generatedAt: string;
+    renderContext: AgentWorkTraceRenderContext;
   }): Promise<AgentWorkTraceManifest> {
     const manifestPath = this.getManifestPath(input.context);
     const manifest: AgentWorkTraceManifest = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       target: input.context.target,
+      renderContext: input.renderContext,
       generatedAt: input.generatedAt,
       workTraceRootPath: this.getWorkTraceRootPath(input.context),
       manifestPath,
