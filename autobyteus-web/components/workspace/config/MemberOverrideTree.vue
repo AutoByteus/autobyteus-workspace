@@ -83,8 +83,8 @@ const emit = defineEmits<{
 const treeClass = computed(() => [
   'divide-y',
   props.nested
-    ? 'border-l border-slate-200 pl-3 divide-slate-200'
-    : 'overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm divide-slate-200',
+    ? 'border-l border-slate-300 pl-3 divide-slate-300'
+    : 'overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm divide-slate-300',
 ]);
 
 const memberMissingHistoricalConfig = (memberRouteKey: string) => {

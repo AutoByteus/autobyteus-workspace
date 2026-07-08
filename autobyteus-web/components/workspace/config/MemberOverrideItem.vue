@@ -2,7 +2,7 @@
   <div class="bg-white p-3" data-test="member-override-item">
     <div class="mb-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <span class="text-sm font-medium text-gray-700">{{ memberName }}</span>
+        <span class="text-[0.95rem] font-semibold text-slate-800">{{ memberName }}</span>
         <span v-if="isCoordinator" class="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-xs text-indigo-600">
           {{ t('workspace.components.workspace.config.MemberOverrideItem.coordinator') }}
         </span>
@@ -26,7 +26,7 @@
         :id="`override-runtime-${inputIdSuffix}`"
         :value="storedRuntimeOverrideValue"
         :disabled="disabled"
-        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+        class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
         @change="handleRuntimeChange(($event.target as HTMLSelectElement).value)"
       >
         <option value="">{{ t('workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default') }}</option>
@@ -57,6 +57,7 @@
         :disabled="disabled"
         :placeholder="modelPlaceholder"
         :search-placeholder="t('workspace.components.workspace.config.MemberOverrideItem.search_models')"
+        variant="quiet"
         class="w-full"
       />
     </div>
@@ -89,6 +90,7 @@
       :id-prefix="`config-${inputIdSuffix}`"
       :advanced-initially-expanded="effectiveAdvancedInitiallyExpanded"
       :missing-historical-config="missingHistoricalConfig"
+      control-variant="quiet"
       @update:config="emitOverrideWithConfig"
     />
   </div>

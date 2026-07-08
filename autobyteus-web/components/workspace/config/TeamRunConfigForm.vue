@@ -2,7 +2,7 @@
   <div class="space-y-4">
     <div>
       <label class="mb-1 block text-sm font-medium text-gray-700">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.team_definition') }}</label>
-      <div class="block w-full cursor-not-allowed select-none rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 shadow-sm">
+      <div class="block w-full cursor-not-allowed select-none rounded-md border border-transparent bg-slate-50 px-3 py-2 text-sm text-gray-500">
         {{ teamDefinition.name }}
       </div>
     </div>
@@ -20,6 +20,7 @@
       :advanced-initially-expanded="readOnlyMode"
       :missing-historical-config="missingHistoricalGlobalConfig"
       id-prefix="team-run"
+      control-variant="quiet"
       @update:runtime-kind="updateRuntimeKind"
       @update:llm-model-identifier="updateLlmModelIdentifier"
       @update:llm-config="updateLlmConfig"
@@ -32,6 +33,7 @@
         :error="workspaceLoadingState.error"
         :initial-path="initialPath || workspaceLoadingState.loadedPath || ''"
         :disabled="isFormReadOnly"
+        control-variant="quiet"
         @select-existing="handleSelectExisting"
         @workspace-input-change="handleWorkspaceInputChange"
       />
@@ -70,7 +72,10 @@
         :aria-controls="memberOverridesPanelId"
         @click="overridesExpanded = !overridesExpanded"
       >
-        <span class="flex min-w-0 items-center gap-2">
+        <span class="flex min-w-0 items-center gap-1.5">
+          <span class="truncate">
+            {{ t('workspace.components.workspace.config.TeamRunConfigForm.team_members_override') }} ({{ leafMembers.length }})
+          </span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -81,16 +86,13 @@
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="h-4 w-4 flex-shrink-0 transform text-gray-500 transition-transform duration-300"
+            class="h-4 w-4 flex-shrink-0 transform text-gray-600 transition-transform duration-300"
             :class="overridesExpanded ? '' : '-rotate-90'"
             data-test="team-member-overrides-chevron"
             aria-hidden="true"
           >
             <polyline points="6 9 12 15 18 9" />
           </svg>
-          <span class="truncate">
-            {{ t('workspace.components.workspace.config.TeamRunConfigForm.team_members_override') }} ({{ leafMembers.length }})
-          </span>
         </span>
         <span
           v-if="meaningfulOverrideCount > 0"

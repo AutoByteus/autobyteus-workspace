@@ -32,14 +32,14 @@
         type="button"
         data-testid="advanced-params-toggle"
         @click="showAdvancedParams = !showAdvancedParams"
-        class="inline-flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 transition-colors focus:outline-none"
+        :class="advancedToggleClass"
         :aria-expanded="showAdvancedParams"
       >
         <span>{{ $t('workspace.components.workspace.config.ModelConfigSection.advanced') }}</span>
         <Icon
           icon="heroicons:chevron-down-20-solid"
-          class="w-4 h-4 transition-transform duration-200"
-          :class="{ 'rotate-180': showAdvancedParams }"
+          class="h-4 w-4 text-gray-600 transition-transform duration-200"
+          :class="showAdvancedParams ? 'rotate-180' : ''"
         />
       </button>
     </div>
@@ -49,7 +49,7 @@
       v-if="hasAdvancedSchema"
       v-show="!usesAdvancedDisclosure || showAdvancedParams"
       data-testid="advanced-params-container"
-      :class="usesAdvancedDisclosure ? 'mt-2' : ''"
+      :class="advancedContainerClass"
     >
       <ModelConfigAdvanced
         :schema="advancedSchema"
@@ -59,6 +59,7 @@
         :id-prefix="idPrefix"
         :missing-historical-config="showMissingHistoricalConfig"
         :missing-historical-config-label="$t('workspace.components.workspace.config.ModelConfigSection.not_recorded_for_this_historical_run')"
+        :control-variant="controlVariant"
         @update:config="emitConfig"
       />
     </div>
@@ -90,6 +91,7 @@ const props = defineProps<{
   thinkingDescription?: string;
   advancedInitiallyExpanded?: boolean;
   missingHistoricalConfig?: boolean;
+  controlVariant?: 'default' | 'quiet';
 }>();
 
 const emit = defineEmits<{
@@ -97,6 +99,18 @@ const emit = defineEmits<{
 }>();
 
 const showAdvancedParams = ref(false);
+
+const controlVariant = computed(() => props.controlVariant ?? 'default');
+const advancedToggleClass = computed(() => [
+  'inline-flex items-center gap-1.5 rounded-md px-1 py-1 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+  controlVariant.value === 'quiet' ? 'hover:bg-slate-50' : '',
+]);
+const advancedContainerClass = computed(() => [
+  usesAdvancedDisclosure.value ? 'mt-2' : '',
+  controlVariant.value === 'quiet' && usesAdvancedDisclosure.value
+    ? 'border-l border-slate-200 pl-3'
+    : '',
+]);
 
 const hasSchema = computed(() => !!props.schema && Object.keys(props.schema).length > 0);
 

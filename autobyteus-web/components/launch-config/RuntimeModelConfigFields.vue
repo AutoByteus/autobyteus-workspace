@@ -6,7 +6,7 @@
         :id="runtimeFieldId"
         :value="normalizedStoredRuntimeKind"
         :disabled="runtimeSelectionLockedComputed"
-        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+        :class="nativeSelectClass"
         @change="updateRuntimeKind(($event.target as HTMLSelectElement).value)"
       >
         <option
@@ -39,6 +39,7 @@
         :disabled="disabledComputed || !availableProviderGroups.length"
         :placeholder="modelPlaceholderText"
         search-placeholder="Search models..."
+        :variant="controlVariant"
       />
       <p v-if="modelHelpText" class="mt-1 text-xs text-gray-500">{{ modelHelpText }}</p>
     </div>
@@ -54,6 +55,7 @@
       :id-prefix="idPrefix"
       :advanced-initially-expanded="advancedInitiallyExpanded"
       :missing-historical-config="missingHistoricalConfig"
+      :control-variant="controlVariant"
       @update:config="updateModelConfig"
     />
   </div>
@@ -92,6 +94,7 @@ const props = defineProps<{
   idPrefix?: string
   advancedInitiallyExpanded?: boolean
   missingHistoricalConfig?: boolean
+  controlVariant?: 'default' | 'quiet'
 }>()
 
 const emit = defineEmits<{
@@ -113,6 +116,13 @@ const blankRuntimeLabelText = computed(
 )
 const modelPlaceholderText = computed(() => props.modelPlaceholder ?? 'Select a model')
 const runtimeFieldId = computed(() => `${props.idPrefix ?? 'launch'}-runtime-kind`)
+const controlVariant = computed(() => props.controlVariant ?? 'default')
+const nativeSelectClass = computed(() => [
+  'block w-full rounded-md border px-3 py-2 text-sm text-gray-900 transition-colors focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500',
+  controlVariant.value === 'quiet'
+    ? 'border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50'
+    : 'border-gray-300 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500',
+])
 
 const {
   availableProviderGroups,

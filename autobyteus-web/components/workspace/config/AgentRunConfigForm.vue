@@ -2,7 +2,7 @@
   <div class="space-y-4">
     <div>
       <label class="mb-1 block text-sm font-medium text-gray-700">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.agent_definition') }}</label>
-      <div class="block w-full cursor-not-allowed select-none rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 shadow-sm">
+      <div class="block w-full cursor-not-allowed select-none rounded-md border border-transparent bg-slate-50 px-3 py-2 text-sm text-gray-500">
         {{ agentDefinition.name }}
       </div>
     </div>
@@ -20,6 +20,7 @@
       :advanced-initially-expanded="readOnlyMode"
       :missing-historical-config="missingHistoricalConfig"
       id-prefix="agent-run"
+      control-variant="quiet"
       @update:runtime-kind="updateRuntimeKind"
       @update:llm-model-identifier="updateLlmModelIdentifier"
       @update:llm-config="updateLlmConfig"
@@ -34,6 +35,7 @@
         :disabled="isFormReadOnly"
         :workspace-locked="workspaceLocked"
         workspace-locked-message="Workspace is fixed for existing runs."
+        control-variant="quiet"
         @select-existing="handleSelectExisting"
         @workspace-input-change="handleWorkspaceInputChange"
       />

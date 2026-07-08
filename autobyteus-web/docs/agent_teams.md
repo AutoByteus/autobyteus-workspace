@@ -119,9 +119,13 @@ targets.
 That surface owns:
 
 - the team-level default runtime/model/config selection,
-- shared workspace and auto-execute fields,
-- a recursive member override tree for nested team definitions, with subteam
-  group rows and leaf-member override controls keyed by backend
+- shared workspace and team-level **Auto approve tools** (`autoExecuteTools`)
+  field, rendered directly after workspace selection so the global approval
+  setting stays visible before member-specific controls,
+- a collapsed-by-default **Team Members Override** disclosure with the label
+  followed by a visible chevron, leaf-member count, optional active-override
+  count, and a recursive member override tree for nested team definitions, with
+  subteam group rows and leaf-member override controls keyed by backend
   `memberRouteKey`, and
 - runtime-scoped model catalog loading for the team default plus any explicit member runtime overrides.
 
@@ -137,15 +141,22 @@ overrides. Each leaf member can:
 
 Member `llmConfig` values use the same schema-driven shape as the team default.
 The team-global model config initializes **Advanced** from effective **Thinking**
-state: ON opens by default, while OFF or unavailable starts collapsed. Compact
-member override rows stay collapsed until the user expands or explicitly
-configures that member. Inherited member controls may display effective schema
-defaults such as a reasoning effort value, but display-only defaults do not
-create member overrides. Explicit member-local runtime/model selections that
-resolve to an effective-ON model may open only that member's **Advanced**
-controls. For Codex members, `service_tier: "fast"` is valid only while the
-selected or inherited Codex model schema exposes **Fast mode**; stale values are
-cleared when the owning runtime/model context changes.
+state: ON opens by default, while OFF or unavailable starts collapsed. The
+**Team Members Override** disclosure itself starts collapsed to keep large teams
+scannable; when expanded, leaf rows render in one connected list with stronger
+shared separators rather than separate bordered cards. Team, agent, workspace,
+member override, and **Advanced** model-parameter controls can opt into a quiet
+light-blue filled-field variant on this dense run-configuration surface while
+the shared select components keep their default bordered styling for other
+callers. That light-blue treatment is presentation-only and preserves hover and
+keyboard-focus affordance. Inherited member controls may display effective
+schema defaults such as reasoning effort values, but display-only defaults do
+not create member overrides.
+Explicit member-local runtime/model selections that resolve to an effective-ON
+model may open only that member's **Advanced** controls. For Codex members,
+`service_tier: "fast"` is valid only while the selected or inherited Codex model
+schema exposes **Fast mode**; stale values are cleared when the owning
+runtime/model context changes.
 
 When the runtime override changes, the row clears incompatible explicit model/config state instead of leaking stale member-only configuration into the next launch.
 
@@ -158,8 +169,9 @@ When `RunConfigPanel.vue` is showing a selected existing team run rather than a
 new team launch buffer, `TeamRunConfigForm.vue` receives read-only mode. In that
 mode the team-level runtime/model/workspace/auto-approve controls and all
 `MemberOverrideItem.vue` rows render as disabled, direct update handlers no-op,
-and the **Run Team** action is not shown. Member override rows remain
-inspectable, and advanced model/thinking sections are expanded or available so
+and the **Run Team** action is not shown. The **Team Members Override**
+disclosure remains operable for inspection even though inner controls are
+disabled, and advanced model/thinking sections are expanded or available so
 persisted backend values such as `reasoning_effort: "xhigh"` are visible for the
 global team config and per-member overrides.
 
