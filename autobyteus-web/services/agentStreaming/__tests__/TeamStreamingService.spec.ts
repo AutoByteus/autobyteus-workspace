@@ -1097,8 +1097,8 @@ describe('TeamStreamingService', () => {
       JSON.stringify({
         type: 'SYSTEM_TASK_NOTIFICATION',
         payload: {
-          sender_id: 'system.self_evolution',
-          content: 'Self improve finished for this run. Future runs will use any updated skill guidance.',
+          sender_id: 'system.skill_improvement',
+          content: 'Improve skills finished for this run. Future runs will use any updated skill guidance.',
           agent_name: 'worker-a',
           agent_id: 'worker-run-1',
           member_route_key: 'worker-a',
@@ -1113,8 +1113,8 @@ describe('TeamStreamingService', () => {
     expect(workerConversation.messages[0].segments).toHaveLength(1);
     expect(workerConversation.messages[0].segments).toContainEqual({
       type: 'system_task_notification',
-      senderId: 'system.self_evolution',
-      content: 'Self improve finished for this run. Future runs will use any updated skill guidance.',
+      senderId: 'system.skill_improvement',
+      content: 'Improve skills finished for this run. Future runs will use any updated skill guidance.',
     });
     expect(reviewerConversation.messages).toHaveLength(0);
   });

@@ -1,0 +1,5 @@
+Cleanup verification after browser validation.
+utc=2026-07-09T10:07:04Z
+--- listeners on 3000/8000 ---
+--- note ---
+Backend/frontend sessions were stopped with Ctrl-C. Existing unrelated Codex app-server processes were not killed.

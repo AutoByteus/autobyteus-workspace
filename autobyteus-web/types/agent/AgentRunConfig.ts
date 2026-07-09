@@ -52,7 +52,7 @@ export interface AgentRunConfig {
   /** Deterministic workspace metadata ID if a filesystem workspace is attached. */
   workspaceId: string | null;
 
-  /** Workspace root/display metadata companion for workspaceId; does not imply file-explorer acquisition. */
+  /** Workspace root/display metadata associated with workspaceId; does not imply file-explorer acquisition. */
   workspaceMetadata: WorkspaceMetadata | null;
   
   /** Whether to auto-execute tool calls without user confirmation */

@@ -29,7 +29,7 @@ import { AgentPackageResolver } from './types/agent-packages.js';
 import { ApplicationPackageResolver } from './types/application-packages.js';
 import { ManagedMessagingGatewayResolver } from './types/managed-messaging-gateway.js';
 import { AppDataMigrationResolver } from './types/app-data-migrations.js';
-import { SelfEvolutionResolver } from './types/self-evolution.js';
+import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 
 export async function buildGraphqlSchema() {
@@ -65,7 +65,7 @@ export async function buildGraphqlSchema() {
       ApplicationPackageResolver,
       ManagedMessagingGatewayResolver,
       AppDataMigrationResolver,
-      SelfEvolutionResolver,
+      SkillImprovementResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

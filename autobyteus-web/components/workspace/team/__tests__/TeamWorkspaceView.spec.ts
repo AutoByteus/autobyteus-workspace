@@ -177,9 +177,9 @@ describe('TeamWorkspaceView', () => {
     global: {
       stubs: {
         AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor"><slot name="composerContext" /></div>' },
-        SelfEvolutionComposerCta: {
+        SkillImprovementComposerCta: {
           props: ['target'],
-          template: '<div data-test="self-evolution-cta" :data-kind="target && target.kind" :data-team-run-id="target && target.teamRunId" :data-member-run-id="target && target.memberRunId" />',
+          template: '<div data-test="skill-improvement-cta" :data-kind="target && target.kind" :data-team-run-id="target && target.teamRunId" :data-member-run-id="target && target.memberRunId" />',
         },
         AgentUserInputForm: { template: '<div data-test="agent-user-input-form" />' },
         WorkspaceHeaderActions: {
@@ -330,9 +330,9 @@ describe('TeamWorkspaceView', () => {
     expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(false);
   });
 
-  it('passes the focused member run to the composer self-evolution CTA', () => {
+  it('passes the focused member run to the composer skill-improvement CTA', () => {
     const wrapper = mountComponent();
-    const cta = wrapper.get('[data-test="self-evolution-cta"]');
+    const cta = wrapper.get('[data-test="skill-improvement-cta"]');
     expect(cta.attributes('data-kind')).toBe('team-member');
     expect(cta.attributes('data-team-run-id')).toBe('team-1');
     expect(cta.attributes('data-member-run-id')).toBe('professor-run');

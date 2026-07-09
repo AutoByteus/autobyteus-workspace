@@ -1,0 +1,106 @@
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { runtimeKindFromString, type RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID } from "../domain/settings.js";
+import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/send-message-to-tool-contract.js";
+import type { SkillImprovementEffectiveConfig } from "../domain/models.js";
+import { SkillImprovementSettingsService } from "./skill-improvement-settings-service.js";
+
+export type SkillImprovementTargetLaunchFallback = {
+  runtimeKind?: RuntimeKind | string | null;
+  llmModelIdentifier?: string | null;
+  llmConfig?: Record<string, unknown> | null;
+  sourceAgentDefinitionId?: string | null;
+};
+
+export type ResolvedRetrospectiveSkillImproverAgentSettings = {
+  agentDefinitionId: string;
+  agentName: string;
+  runtimeKind: RuntimeKind;
+  llmModelIdentifier: string;
+  llmConfig: Record<string, unknown> | null;
+  skillAccessMode: SkillAccessMode;
+};
+
+const asTrimmedString = (value: unknown): string | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+};
+
+const asObjectRecord = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? { ...(value as Record<string, unknown>) }
+    : null;
+
+export class RetrospectiveSkillImproverAgentSettingsResolver {
+  constructor(private readonly deps: {
+    settingsService?: SkillImprovementSettingsService;
+    agentDefinitionService?: Pick<AgentDefinitionService, "getFreshAgentDefinitionById" | "getAgentDefinitionById">;
+  } = {}) {}
+
+  async resolve(input: {
+    effectiveConfig: SkillImprovementEffectiveConfig;
+    targetFallback: SkillImprovementTargetLaunchFallback;
+  }): Promise<ResolvedRetrospectiveSkillImproverAgentSettings> {
+    const selectedAgentId = input.effectiveConfig.improverAgentDefinitionId
+      ?? this.settingsService.getDefaultImproverAgentDefinitionId();
+    if (!selectedAgentId) {
+      throw new Error(
+        `No Retrospective Skill Improver is configured. Set ${AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID} in Server Settings.`,
+      );
+    }
+
+    const definition = await this.loadDefinition(selectedAgentId);
+    if (!definition) {
+      throw new Error(`Configured Retrospective Skill Improver definition '${selectedAgentId}' was not found.`);
+    }
+    if (!definition.toolNames.includes("run_bash")) {
+      throw new Error(`Configured Retrospective Skill Improver '${selectedAgentId}' must include run_bash in toolNames.`);
+    }
+    if (!definition.toolNames.includes(SEND_MESSAGE_TO_TOOL_NAME)) {
+      throw new Error(`Configured Retrospective Skill Improver '${selectedAgentId}' must include ${SEND_MESSAGE_TO_TOOL_NAME} in toolNames.`);
+    }
+
+    const launchConfig = definition.defaultLaunchConfig;
+    const runtimeKind = runtimeKindFromString(launchConfig?.runtimeKind ?? null)
+      ?? runtimeKindFromString(input.targetFallback.runtimeKind ?? null);
+    if (!runtimeKind) {
+      throw new Error(`Retrospective Skill Improver '${selectedAgentId}' has no runtime and target fallback is unavailable.`);
+    }
+
+    const llmModelIdentifier = asTrimmedString(launchConfig?.llmModelIdentifier)
+      ?? asTrimmedString(input.targetFallback.llmModelIdentifier);
+    if (!llmModelIdentifier) {
+      throw new Error(`Retrospective Skill Improver '${selectedAgentId}' has no model and target fallback is unavailable.`);
+    }
+
+    return {
+      agentDefinitionId: selectedAgentId,
+      agentName: definition.name,
+      runtimeKind,
+      llmModelIdentifier,
+      llmConfig: asObjectRecord(launchConfig?.llmConfig) ?? asObjectRecord(input.targetFallback.llmConfig),
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+    };
+  }
+
+  private async loadDefinition(selectedAgentId: string) {
+    const service = this.agentDefinitionService;
+    const fresh = service.getFreshAgentDefinitionById;
+    if (typeof fresh === "function") {
+      return fresh.call(service, selectedAgentId);
+    }
+    return service.getAgentDefinitionById(selectedAgentId);
+  }
+
+  private get settingsService(): SkillImprovementSettingsService {
+    return this.deps.settingsService ?? new SkillImprovementSettingsService();
+  }
+
+  private get agentDefinitionService(): Pick<AgentDefinitionService, "getFreshAgentDefinitionById" | "getAgentDefinitionById"> {
+    return this.deps.agentDefinitionService ?? AgentDefinitionService.getInstance();
+  }
+}

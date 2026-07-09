@@ -1,0 +1,4 @@
+Final pre-handoff verification
+utc=2026-07-09T10:09:13Z
+--- git diff --check ---
+--- listeners on 3000/8000 ---

@@ -35,7 +35,7 @@ Major domains under `src/`:
 - Prompt engineering
 - Skills
 - Shared Agent Work Trace Projection
-- Manual skill self-evolution orchestration
+- Manual Skill Improvement orchestration
 - MCP server management
 - LLM and multimedia model management
 - Workspaces and file explorer
@@ -75,6 +75,6 @@ This keeps startup robust while still warming caches shortly after boot.
 - `features/remote_access.md`
 - `modules/README.md`
   - `modules/agent_work_traces.md`
-  - `modules/self_evolution.md`
+  - `modules/skill_improvement.md`
   - `modules/agent_tools_mcp_server.md`
 - `design/startup_initialization_and_lazy_services.md`

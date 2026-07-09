@@ -193,13 +193,13 @@ const messages = {
     "Model",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "Select a model",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.self_improve": "self improve",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.standalone_scope": "this run",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.team_member_scope": "this member's run",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.aria_label": "self improve {{scope}}",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.tooltip": "Start a visible Skill Self-Evolver for {{scope}}. It may update configured skill packages or make no changes.",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.run_not_eligible": "This run is not eligible for self-improvement.",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.started_toast": "self improve started. Skills may be updated or no changes may be made.",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.improve_skills": "improve skills",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.standalone_scope": "this run",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.team_member_scope": "this member's run",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.aria_label": "improve skills {{scope}}",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.tooltip": "Start a visible Retrospective Skill Improver for {{scope}}. It may update configured skill packages or make no changes.",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.run_not_eligible": "This run is not eligible for Skill Improvement.",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.started_toast": "Improve skills started. Skills may be updated or no changes may be made.",
 } satisfies TranslationCatalog;
 
 export default messages;

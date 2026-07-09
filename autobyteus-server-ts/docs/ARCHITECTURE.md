@@ -115,28 +115,28 @@ directories. Consumers call
 `AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir, targetDisplayName })`;
 the capability reads canonical raw traces through
 `RawTraceFileSourceService`, writes derived files under
-`<memoryDir>/work_traces/`, and returns a clean manifest/package with target metadata, file paths, and a summary hash over rendered evidence. The older self-evolution-owned
-generated cache root `<memoryDir>/self_evolution/work_traces/` is not a runtime
+`<memoryDir>/work_traces/`, and returns a clean manifest/package with target metadata, file paths, and a summary hash over rendered evidence. The older skill-improvement-owned
+generated cache root `<memoryDir>/skill_improvement/work_traces/` is not a runtime
 fallback or dual-write target because work traces are regenerable from canonical
 raw traces.
 See `modules/agent_work_traces.md` for the detailed shared contract.
 
-## Self-Evolution Runtime
+## Skill Improvement Runtime
 
-The self-evolution subsystem is a control-plane workflow under `src/self-evolution`.
-It is globally disabled by default through `ENABLE_SELF_EVOLUTION`. Manual starts
-resolve eligibility from current global self-evolution settings and the current
+The skill-improvement subsystem is a control-plane workflow under `src/skill-improvement`.
+It is globally disabled by default through `ENABLE_SKILL_IMPROVEMENT`. Manual starts
+resolve eligibility from current global Skill Improvement settings and the current
 live target state, not from launch-time run overrides or stored launch snapshots.
-Agent/team definitions and launch inputs do not own self-evolution eligibility.
+Agent/team definitions and launch inputs do not own Skill Improvement eligibility.
 Manual starts consume the shared Agent Work Trace Projection package for the
 selected standalone run or team member, then activate or reuse a visible
 target-scoped Retrospective Skill Improver `AgentRun` and send it a small path-based trigger. The
 Retrospective Skill Improver reads work trace files, may edit only exact configured skill roots, and
 can report a meaningful durable skill update through the grant-scoped
 `send_message_to` contract. A required startup migration removes obsolete
-`selfEvolutionEffective` fields from existing run and team-member metadata. The
+`skillImprovementEffective` fields from existing run and team-member metadata. The
 MVP intentionally has no product change-audit or metrics/reporting service;
-Git/manual inspection remains the review surface. See `modules/self_evolution.md`
+Git/manual inspection remains the review surface. See `modules/skill_improvement.md`
 for the detailed consumer contract.
 
 ## External-Channel Messaging Runtime

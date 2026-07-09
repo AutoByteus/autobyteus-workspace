@@ -1,0 +1,169 @@
+{
+  "backendUrl": "http://127.0.0.1:8000",
+  "browserUrl": "http://127.0.0.1:3000",
+  "directMessageGrantEvidence": {
+    "completionTarget": "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230",
+    "expectedMessageType": "skill_update",
+    "expectedPurpose": "skill_improvement_skill_update",
+    "noChangeMessages": [
+      "No skill package changes were made.\n\nEvidence reviewed: the target run only received a browser validation ping asking for the exact response and no tools/file edits. The assistant complied correctly:\n\n> skill improvement browser validation pong\n\nThis trace shows no retry, correction, tool friction, workflow confusion, or reusable guidance gap in either editable skill package. Current guidance stands.",
+      "No skill package changes were made.\n\nThe trace still only contains a validation ping where the user explicitly requested the exact reply and no tools/files. The assistant complied exactly. There is no observable friction, correction, retry, or reusable guidance gap for either editable skill package, so current guidance stands."
+    ],
+    "noDurableSkillEdits": true,
+    "notificationSummaries": [
+      {
+        "improverRunId": "retrospective_skill_improver_d2da18aef8b74a05a0aae5b6a1d440d2",
+        "message": "Retrospective Skill Improver completed but did not call send_message_to with a final outcome.",
+        "status": "send_message_not_attempted",
+        "targetAgentRunId": "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230"
+      },
+      {
+        "improverRunId": "retrospective_skill_improver_d2da18aef8b74a05a0aae5b6a1d440d2",
+        "message": "Retrospective Skill Improver completed but did not call send_message_to with a final outcome.",
+        "status": "send_message_not_attempted",
+        "targetAgentRunId": "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230"
+      }
+    ]
+  },
+  "generatedAt": "2026-07-09T09:59:55.890727Z",
+  "manifestShape": {
+    "containsRawTracesActiveInManifest": false,
+    "fileCount": 1,
+    "firstFileKeys": [
+      "fileName",
+      "filePath",
+      "firstTimestamp",
+      "generatedAt",
+      "lastTimestamp",
+      "recordCount",
+      "sourceDisplayName",
+      "sourceId",
+      "sourceKind"
+    ],
+    "schemaVersion": 3,
+    "target": {
+      "kind": "agent_run",
+      "runId": "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230"
+    }
+  },
+  "oldGraphqlNames": {
+    "selfEvolutionCapability": "GraphQL validation error: Cannot query field selfEvolutionCapability on type Query",
+    "setSelfEvolutionEnabled": "GraphQL validation error: Cannot query field setSelfEvolutionEnabled on type Mutation"
+  },
+  "packageImport": {
+    "dailyAssistantDefinitionId": "daily-assistant",
+    "dailyAssistantSkills": [
+      "shell-first-operating-practice",
+      "software-engineering-workflow-skill"
+    ],
+    "result": "already imported before browser mutation; mutation returned GraphQL error \"Agent package already exists.\" and Daily Assistant was present",
+    "source": "/Users/normy/autobyteus_org/autobyteus-agents"
+  },
+  "persistedPaths": {
+    "globalIndex": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/skill_improvement/index.json",
+    "improverRunMetadata": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/agents/retrospective_skill_improver_d2da18aef8b74a05a0aae5b6a1d440d2/run_metadata.json",
+    "improverSession": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/agents/daily_assistant_43a5a5ed64074dada77f41fb1c9e3230/skill_improvement/improver_session.json",
+    "recordFiles": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/skill_improvement/improvement_runs/331584ae-78e1-471e-8c3b-1b1da710f7a5/record.json",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/skill_improvement/improvement_runs/fa6bca47-2b8e-469d-bb64-10236a6ee1fd/record.json"
+    ],
+    "targetRunMetadata": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/agents/daily_assistant_43a5a5ed64074dada77f41fb1c9e3230/run_metadata.json",
+    "workTraceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/agents/daily_assistant_43a5a5ed64074dada77f41fb1c9e3230/work_traces/work_trace_active.md",
+    "workTraceManifest": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/agents/daily_assistant_43a5a5ed64074dada77f41fb1c9e3230/work_traces/work_traces_manifest.json"
+  },
+  "promptPacketPathOnlyEvidence": {
+    "improverTraceContainedManifestPath": true,
+    "improverTraceContainedWorkTraceRoot": true,
+    "improverTraceListedWorkTraceFilePath": true,
+    "noRawTraceBodyEmbeddedInTriggerPacket": true
+  },
+  "runtimeAndModel": {
+    "dailyPlatformAgentRunId": "019f464d-0309-70f1-a9b3-0c8b9841683b",
+    "dailyReplyObserved": true,
+    "dailyRunId": "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230",
+    "model": "gpt-5.5",
+    "runtimeAvailability": "enabled=true",
+    "runtimeKind": "codex_app_server"
+  },
+  "screenshots": {
+    "dailyAssistantResponseCta": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/validation-logs/browser-artifacts/03-daily-assistant-response-skill-improvement-cta.png",
+    "dailyAssistantRunReady": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/validation-logs/browser-artifacts/02-daily-assistant-run-ready.png",
+    "secondClickReuseAfterCompletion": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/validation-logs/browser-artifacts/04-second-click-reuse-after-completion.png",
+    "settingsSkillImprovementEnabled": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/validation-logs/browser-artifacts/05-settings-skill-improvement-enabled.png",
+    "workspaceConfigCodexGpt55": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/validation-logs/browser-artifacts/01-workspace-config-codex-gpt55.png"
+  },
+  "secondClickReuse": {
+    "improvementRunIds": [
+      "331584ae-78e1-471e-8c3b-1b1da710f7a5",
+      "fa6bca47-2b8e-469d-bb64-10236a6ee1fd"
+    ],
+    "retrospectiveImproverRunDirs": [
+      "retrospective_skill_improver_d2da18aef8b74a05a0aae5b6a1d440d2"
+    ],
+    "sharedImproverRunId": "retrospective_skill_improver_d2da18aef8b74a05a0aae5b6a1d440d2",
+    "validated": true
+  },
+  "skillImprovementCapability": {
+    "enabled": true,
+    "settingKey": "ENABLE_SKILL_IMPROVEMENT",
+    "settingsPageTextContainedSelfEvolution": false,
+    "settingsPageTextContainedSkillImprovement": true,
+    "source": "SERVER_SETTING"
+  },
+  "skillImprovementRuns": [
+    {
+      "completedAt": "2026-07-09T09:57:34.496Z",
+      "errors": [],
+      "improvementRunId": "331584ae-78e1-471e-8c3b-1b1da710f7a5",
+      "improverRunId": "retrospective_skill_improver_d2da18aef8b74a05a0aae5b6a1d440d2",
+      "llmModelIdentifier": "gpt-5.5",
+      "notificationSummary": {
+        "improverRunId": "retrospective_skill_improver_d2da18aef8b74a05a0aae5b6a1d440d2",
+        "message": "Retrospective Skill Improver completed but did not call send_message_to with a final outcome.",
+        "status": "send_message_not_attempted",
+        "targetAgentRunId": "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230"
+      },
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/skill_improvement/improvement_runs/331584ae-78e1-471e-8c3b-1b1da710f7a5/record.json",
+      "runtimeKind": "codex_app_server",
+      "skillTargetNames": [
+        "shell-first-operating-practice",
+        "software-engineering-workflow-skill"
+      ],
+      "sourceRunIds": [
+        "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230"
+      ],
+      "status": "completed",
+      "target": {
+        "kind": "agent_run",
+        "runId": "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230"
+      }
+    },
+    {
+      "completedAt": "2026-07-09T09:56:24.072Z",
+      "errors": [],
+      "improvementRunId": "fa6bca47-2b8e-469d-bb64-10236a6ee1fd",
+      "improverRunId": "retrospective_skill_improver_d2da18aef8b74a05a0aae5b6a1d440d2",
+      "llmModelIdentifier": "gpt-5.5",
+      "notificationSummary": {
+        "improverRunId": "retrospective_skill_improver_d2da18aef8b74a05a0aae5b6a1d440d2",
+        "message": "Retrospective Skill Improver completed but did not call send_message_to with a final outcome.",
+        "status": "send_message_not_attempted",
+        "targetAgentRunId": "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230"
+      },
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/runtime/backend-data/memory/skill_improvement/improvement_runs/fa6bca47-2b8e-469d-bb64-10236a6ee1fd/record.json",
+      "runtimeKind": "codex_app_server",
+      "skillTargetNames": [
+        "shell-first-operating-practice",
+        "software-engineering-workflow-skill"
+      ],
+      "sourceRunIds": [
+        "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230"
+      ],
+      "status": "completed",
+      "target": {
+        "kind": "agent_run",
+        "runId": "daily_assistant_43a5a5ed64074dada77f41fb1c9e3230"
+      }
+    }
+  ]
+}

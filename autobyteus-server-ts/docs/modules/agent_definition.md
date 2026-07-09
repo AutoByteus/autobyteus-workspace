@@ -65,14 +65,14 @@ Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-a
 Built-in templates are centralized under `src/built-in-agents/templates/`:
 
 - `memory-compactor/` syncs the normal shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor**.
-- `retrospective-skill-improver/` syncs the normal shared `agents/autobyteus-skill-evolver/` definition with display name **Retrospective Skill Improver**. The persisted definition id remains `autobyteus-skill-evolver` until a separate runtime/API rename is approved.
+- `retrospective-skill-improver/` syncs the normal shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver**. The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
 
 The built-in-agent bootstrapper owns this lifecycle:
 
 - registry-defined built-in `agent.md` and `agent-config.json` files are overwritten from the built-in template registry on startup;
 - standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
 - `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is initialized to `autobyteus-memory-compactor` only when the setting is blank;
-- `AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-skill-evolver` only when the setting is blank; and
+- `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and
 - the agent-definition cache is refreshed after built-in definitions resolve.
 
 Internal built-in agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting; app-data edits to registry-defined built-in ids are product-managed and will be overwritten by startup sync.

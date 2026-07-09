@@ -123,9 +123,9 @@ describe('AgentWorkspaceView', () => {
           props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl'],
           template: '<div data-test="agent-event-monitor"><slot name="composerContext" /></div>',
         },
-        SelfEvolutionComposerCta: {
+        SkillImprovementComposerCta: {
           props: ['target'],
-          template: '<div data-test="self-evolution-cta" :data-run-id="target && target.runId" :data-helper-run="target && String(target.isHelperRun)" />',
+          template: '<div data-test="skill-improvement-cta" :data-run-id="target && target.runId" :data-helper-run="target && String(target.isHelperRun)" />',
         },
         AgentStatusDisplay: { template: '<div data-test="header-status" />' },
         CopyButton: { template: '<button type="button" data-test="copy-button" />' },
@@ -178,25 +178,25 @@ describe('AgentWorkspaceView', () => {
     expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
   });
 
-  it('passes the selected run to the composer self-evolution CTA', () => {
+  it('passes the selected run to the composer skill-improvement CTA', () => {
     const wrapper = mountComponent();
-    const cta = wrapper.get('[data-test="self-evolution-cta"]');
+    const cta = wrapper.get('[data-test="skill-improvement-cta"]');
     expect(cta.attributes('data-run-id')).toBe('agent-1234');
     expect(cta.attributes('data-helper-run')).toBe('false');
   });
 
-  it('marks the Skill Self-Evolver helper run for CTA hiding', () => {
+  it('marks the Retrospective Skill Improver helper run for CTA hiding', () => {
     state.activeRun = buildAgentContext({
       config: {
-        agentDefinitionId: 'autobyteus-skill-evolver',
-        agentDefinitionName: 'Skill Self-Evolver',
+        agentDefinitionId: 'autobyteus-retrospective-skill-improver',
+        agentDefinitionName: 'Retrospective Skill Improver',
         agentAvatarUrl: null,
         isLocked: true,
       },
     });
 
     const wrapper = mountComponent();
-    const cta = wrapper.get('[data-test="self-evolution-cta"]');
+    const cta = wrapper.get('[data-test="skill-improvement-cta"]');
     expect(cta.attributes('data-helper-run')).toBe('true');
   });
 
