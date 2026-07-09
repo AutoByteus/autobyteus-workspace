@@ -108,7 +108,7 @@ for local absolute paths, and keeps eligible images as `localImage` items.
 HTTP(S), data URL, empty, malformed, and unresolved locator values are not
 listed as local reference files.
 
-## Model Catalog And Fast Mode Configuration
+## Model Catalog, Reasoning Effort, And Fast Mode Configuration
 
 Codex launch-time model configuration is driven by the Codex App Server
 `model/list` response and carried through the existing AutoByteus `llmConfig`
@@ -116,12 +116,23 @@ field. No Codex-specific GraphQL or database field is introduced for these
 model settings.
 
 - `supportedReasoningEfforts` / `supported_reasoning_efforts` is normalized to
-  the existing `reasoning_effort` enum parameter.
+  the existing model-scoped `reasoning_effort` enum parameter. AutoByteus
+  preserves each trimmed non-empty App Server value in first-seen order and
+  does not filter or lowercase it through a product-wide reasoning-effort
+  allowlist. The selected model's App Server row remains the capability
+  authority, so values such as `max`, `ultra`, or future values appear only for
+  models that advertise them.
 - `defaultReasoningEffort` / `default_reasoning_effort` is normalized as the
   schema default. The frontend displays that default as the effective reasoning
   value and **Thinking** state, opens **Advanced** for that ON default, and still
   leaves unset `llmConfig.reasoning_effort` as null so the Codex App Server can
   apply its own model default.
+- An explicit `llmConfig.reasoning_effort` is trimmed and carried without
+  lowercasing or capability filtering through `CodexThreadConfig` to App Server
+  `turn/start.effort`. Empty, whitespace-only, and non-string values remain
+  null. App Server decides whether a directly submitted non-empty value is
+  supported; thread bootstrap does not own a duplicate capability cache or a
+  second `model/list` lookup.
 - `additionalSpeedTiers` / `additional_speed_tiers` containing `fast` adds a
   `service_tier` enum parameter labeled **Fast mode**. Only `fast` is exposed;
   leaving the control at Default/off omits the setting and preserves Codex's
