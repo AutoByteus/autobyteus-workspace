@@ -30,8 +30,8 @@ const [
 ] = await Promise.all([
   assertDistAssetPresent("memory-compactor", "agent.md"),
   assertDistAssetPresent("memory-compactor", "agent-config.json"),
-  assertDistAssetPresent("skill-evolver", "agent.md"),
-  assertDistAssetPresent("skill-evolver", "agent-config.json"),
+  assertDistAssetPresent("retrospective-skill-improver", "agent.md"),
+  assertDistAssetPresent("retrospective-skill-improver", "agent-config.json"),
 ]);
 await assertDistTemplateAbsent("daily-assistant");
 
@@ -59,7 +59,7 @@ const fakeAgentDefinitionService = {
   async getFreshAgentDefinitionById(definitionId) {
     return {
       id: definitionId,
-      name: definitionId === SKILL_EVOLVER_AGENT_DEFINITION_ID ? "Skill Self-Evolver" : "Memory Compactor",
+      name: definitionId === SKILL_EVOLVER_AGENT_DEFINITION_ID ? "Retrospective Skill Improver" : "Memory Compactor",
     };
   },
   async refreshCache() {},
@@ -137,7 +137,7 @@ try {
 
   assert.equal(skillEvolverAgentMd, skillEvolverDistAgentMd);
   assert.equal(skillEvolverAgentConfig, skillEvolverDistAgentConfig);
-  assert.match(skillEvolverAgentMd, /Skill Self-Evolver/);
+  assert.match(skillEvolverAgentMd, /Retrospective Skill Improver/);
   assert.equal(settingsByKey.get(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID), MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
   assert.equal(settingsByKey.get(AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID), SKILL_EVOLVER_AGENT_DEFINITION_ID);
   const standaloneAgentMd = await fs.readFile(path.join(standaloneAgentDir, "agent.md"), "utf8");

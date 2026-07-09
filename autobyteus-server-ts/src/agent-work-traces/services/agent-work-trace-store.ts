@@ -4,7 +4,6 @@ import type {
   AgentWorkTraceFile,
   AgentWorkTraceManifest,
   AgentWorkTraceProjectionContext,
-  AgentWorkTraceRenderContext,
   AgentWorkTraceSource,
 } from "../domain/work-traces.js";
 
@@ -39,18 +38,6 @@ export class AgentWorkTraceStore {
     return `work_trace_${String(index).padStart(6, "0")}.md`;
   }
 
-  async readManifest(context: AgentWorkTraceProjectionContext): Promise<AgentWorkTraceManifest | null> {
-    try {
-      const raw = await fs.readFile(this.getManifestPath(context), "utf-8");
-      return JSON.parse(raw) as AgentWorkTraceManifest;
-    } catch (error) {
-      if (String(error).includes("ENOENT")) {
-        return null;
-      }
-      throw error;
-    }
-  }
-
   async writeTraceFile(input: {
     context: AgentWorkTraceProjectionContext;
     source: AgentWorkTraceSource;
@@ -63,7 +50,7 @@ export class AgentWorkTraceStore {
     return {
       sourceId: input.source.sourceId,
       sourceKind: input.source.kind,
-      sourceFingerprint: input.source.fingerprint,
+      sourceDisplayName: input.source.displayName,
       fileName,
       filePath,
       recordCount: input.source.recordCount,
@@ -77,13 +64,13 @@ export class AgentWorkTraceStore {
     context: AgentWorkTraceProjectionContext;
     files: AgentWorkTraceFile[];
     generatedAt: string;
-    renderContext: AgentWorkTraceRenderContext;
+    targetDisplayName: string | null;
   }): Promise<AgentWorkTraceManifest> {
     const manifestPath = this.getManifestPath(input.context);
     const manifest: AgentWorkTraceManifest = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       target: input.context.target,
-      renderContext: input.renderContext,
+      targetDisplayName: input.targetDisplayName,
       generatedAt: input.generatedAt,
       workTraceRootPath: this.getWorkTraceRootPath(input.context),
       manifestPath,

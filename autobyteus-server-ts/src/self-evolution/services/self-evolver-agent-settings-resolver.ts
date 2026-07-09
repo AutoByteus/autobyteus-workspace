@@ -49,32 +49,32 @@ export class SelfEvolverAgentSettingsResolver {
       ?? this.settingsService.getDefaultEvolverAgentDefinitionId();
     if (!selectedAgentId) {
       throw new Error(
-        `No self-evolver agent is configured. Set ${AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID} in Server Settings.`,
+        `No Retrospective Skill Improver is configured. Set ${AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID} in Server Settings.`,
       );
     }
 
     const definition = await this.loadDefinition(selectedAgentId);
     if (!definition) {
-      throw new Error(`Configured self-evolver agent definition '${selectedAgentId}' was not found.`);
+      throw new Error(`Configured Retrospective Skill Improver definition '${selectedAgentId}' was not found.`);
     }
     if (!definition.toolNames.includes("run_bash")) {
-      throw new Error(`Configured self-evolver agent '${selectedAgentId}' must include run_bash in toolNames.`);
+      throw new Error(`Configured Retrospective Skill Improver '${selectedAgentId}' must include run_bash in toolNames.`);
     }
     if (!definition.toolNames.includes(SEND_MESSAGE_TO_TOOL_NAME)) {
-      throw new Error(`Configured self-evolver agent '${selectedAgentId}' must include ${SEND_MESSAGE_TO_TOOL_NAME} in toolNames.`);
+      throw new Error(`Configured Retrospective Skill Improver '${selectedAgentId}' must include ${SEND_MESSAGE_TO_TOOL_NAME} in toolNames.`);
     }
 
     const launchConfig = definition.defaultLaunchConfig;
     const runtimeKind = runtimeKindFromString(launchConfig?.runtimeKind ?? null)
       ?? runtimeKindFromString(input.targetFallback.runtimeKind ?? null);
     if (!runtimeKind) {
-      throw new Error(`Self-evolver agent '${selectedAgentId}' has no runtime and target fallback is unavailable.`);
+      throw new Error(`Retrospective Skill Improver '${selectedAgentId}' has no runtime and target fallback is unavailable.`);
     }
 
     const llmModelIdentifier = asTrimmedString(launchConfig?.llmModelIdentifier)
       ?? asTrimmedString(input.targetFallback.llmModelIdentifier);
     if (!llmModelIdentifier) {
-      throw new Error(`Self-evolver agent '${selectedAgentId}' has no model and target fallback is unavailable.`);
+      throw new Error(`Retrospective Skill Improver '${selectedAgentId}' has no model and target fallback is unavailable.`);
     }
 
     return {

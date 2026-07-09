@@ -5,7 +5,7 @@ const resolver = new SelfEvolutionEffectiveConfigResolver({
   settingsService: {
     getDefaultTriggerStrategy: () => "manual_only",
     getDefaultEvolverStrategy: () => "single_agent",
-    getDefaultEvolverAgentDefinitionId: () => "skill-evolver",
+    getDefaultEvolverAgentDefinitionId: () => "retrospective-skill-improver",
   } as any,
 });
 
@@ -20,7 +20,7 @@ describe("SelfEvolutionEffectiveConfigResolver", () => {
       enabled: true,
       triggerStrategy: "manual_only",
       evolverStrategy: "single_agent",
-      evolverAgentDefinitionId: "skill-evolver",
+      evolverAgentDefinitionId: "retrospective-skill-improver",
       resolvedAt: "2026-01-01T00:00:00.000Z",
     });
     expect(effective.sourceTrace).toEqual([

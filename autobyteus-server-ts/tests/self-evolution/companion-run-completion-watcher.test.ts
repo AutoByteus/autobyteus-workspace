@@ -29,7 +29,7 @@ describe("CompanionRunCompletionWatcher", () => {
     });
 
     await expectRejectsBeforeDelay(pending);
-    await expect(pending).rejects.toThrow("Self-evolver companion run 'companion-run-1' failed.");
+    await expect(pending).rejects.toThrow("Retrospective Skill Improver run 'companion-run-1' failed.");
   });
 
   it("rejects a pending waiter immediately when statusHint is ERROR", async () => {
@@ -44,6 +44,6 @@ describe("CompanionRunCompletionWatcher", () => {
     });
 
     await expectRejectsBeforeDelay(pending);
-    await expect(pending).rejects.toThrow("Self-evolver companion run 'companion-run-1' failed.");
+    await expect(pending).rejects.toThrow("Retrospective Skill Improver run 'companion-run-1' failed.");
   });
 });

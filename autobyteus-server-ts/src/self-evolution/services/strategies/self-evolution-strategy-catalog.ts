@@ -9,13 +9,13 @@ const triggerStrategies: SelfEvolutionStrategyDescriptor[] = [
     name: "manual_only",
     label: "Manual only",
     status: "implemented",
-    description: "A user explicitly starts self-evolution from a run detail surface.",
+    description: "A user explicitly starts Skill Improvement from a run detail surface.",
   },
   {
     name: "scheduled",
     label: "Scheduled",
     status: "not_implemented",
-    description: "Future scheduled self-evolution trigger. Not executable in the MVP.",
+    description: "Future scheduled Skill Improvement trigger. Not executable in the MVP.",
   },
   {
     name: "signal_based",
@@ -30,13 +30,13 @@ const evolverStrategies: SelfEvolutionStrategyDescriptor[] = [
     name: "single_agent",
     label: "Single evolver agent",
     status: "implemented",
-    description: "Launches one visible helper agent run with run_bash access.",
+    description: "Launches one visible Retrospective Skill Improver agent run with run_bash access.",
   },
   {
     name: "agent_team",
     label: "Evolver team",
     status: "not_implemented",
-    description: "Future multi-agent evolution team strategy. Not executable in the MVP.",
+    description: "Future multi-agent Skill Improvement team strategy. Not executable in the MVP.",
   },
 ];
 

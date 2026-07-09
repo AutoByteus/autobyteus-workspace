@@ -133,7 +133,7 @@ export class ServerSettingsService {
 
     this.registerPredefinedSetting(
       AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
-      "Agent definition id for the skill self-evolver agent. Blank runtime/model fields on the selected evolver inherit from the target run.",
+      "Agent definition id for the Retrospective Skill Improver. Blank runtime/model fields on the selected improver inherit from the target run.",
     );
 
     this.registerPredefinedSetting(

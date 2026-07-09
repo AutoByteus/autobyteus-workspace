@@ -28,8 +28,8 @@ export const BUILT_IN_AGENT_DEFINITIONS = [
   },
   {
     id: SKILL_EVOLVER_AGENT_DEFINITION_ID,
-    templateDirName: "skill-evolver",
-    displayName: "Skill Self-Evolver",
+    templateDirName: "retrospective-skill-improver",
+    displayName: "Retrospective Skill Improver",
     settingDefault: {
       key: AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
     },
