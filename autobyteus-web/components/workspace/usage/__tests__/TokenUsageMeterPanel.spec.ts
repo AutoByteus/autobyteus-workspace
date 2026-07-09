@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick } from 'vue';
 import TokenUsageMeterPanel from '../TokenUsageMeterPanel.vue';
@@ -382,7 +382,7 @@ describe('TokenUsageMeterPanel', () => {
       estimatedApiOutputCost: 0.0022,
       estimatedApiTotalCost: 0.0222,
     }));
-    meterStore.teamSummaries['team-1'] = buildSummary({
+    meterStore.upsertLedgerBackedTeamSummary('team-1', buildSummary({
       runId: 'team-1',
       rootTeamRunId: 'team-1',
       grossInputTokens: 9000,
@@ -391,7 +391,7 @@ describe('TokenUsageMeterPanel', () => {
       estimatedApiInputCost: 0.0800,
       estimatedApiOutputCost: 0.0190,
       estimatedApiTotalCost: 0.099,
-    });
+    }));
     selectionStore.setRunSelection('team-1', 'team');
 
     const wrapper = mountPanel();
@@ -460,6 +460,117 @@ describe('TokenUsageMeterPanel', () => {
     expect(reviewerRow?.text()).not.toContain('Estimated');
   });
 
+  it('hydrates the team aggregate when only a partial live team summary exists', async () => {
+    const selectionStore = useAgentSelectionStore();
+    const teamContextsStore = useAgentTeamContextsStore();
+    const meterStore = useTokenUsageMeterStore();
+    const leadNode = buildAgentMemberNode('lead', 'Lead', 'lead-run');
+    const reviewerNode = buildAgentMemberNode('reviewer', 'Reviewer', 'reviewer-run');
+    teamContextsStore.teams.set('team-1', {
+      teamRunId: 'team-1',
+      config: { teamDefinitionId: 'team-def', teamDefinitionName: 'Delivery Team' },
+      memberTree: [leadNode, reviewerNode],
+      memberNodesByRouteKey: new Map<string, any>([
+        ['lead', leadNode],
+        ['reviewer', reviewerNode],
+      ]),
+      leafAgentContextsByRouteKey: new Map<string, any>([
+        ['lead', buildAgentContext('lead-run', 'Lead')],
+        ['reviewer', buildAgentContext('reviewer-run', 'Reviewer')],
+      ]),
+      coordinatorMemberRouteKey: 'lead',
+      historicalHydration: null,
+      focusedMemberRouteKey: 'lead',
+      currentStatus: AgentTeamStatus.Running,
+      isSubscribed: false,
+    } as any);
+    meterStore.applyTokenUsageUpdated({
+      usage_event_id: 'partial-live-lead-event',
+      idempotency_key: 'partial-live-lead-key',
+      observed_at: '2026-06-25T00:00:00.000Z',
+      run_id: 'lead-run',
+      root_team_run_id: 'team-1',
+      member_agent_run_id: 'lead-run',
+      member_route_key: 'lead',
+      runtime_kind: 'autobyteus',
+      model_provider: 'OPENAI',
+      model_identifier: 'gpt-test',
+      standard_input_tokens: 1111,
+      cache_miss_input_tokens: 1111,
+      cache_read_input_tokens: 0,
+      cache_creation_input_tokens: 0,
+      cache_creation_5m_input_tokens: 0,
+      cache_creation_1h_input_tokens: 0,
+      cache_state: 'not_reported',
+      reasoning_output_tokens: 0,
+      billable_output_tokens: 11,
+      meter_delta_input_tokens: 1111,
+      meter_delta_output_tokens: 11,
+      meter_delta_total_tokens: 1122,
+      input_price_per_million: 2,
+      output_price_per_million: 10,
+      estimated_api_input_cost: 0.0100,
+      estimated_api_standard_input_cost: 0.0100,
+      estimated_api_cache_read_input_cost: null,
+      estimated_api_cache_creation_input_cost: null,
+      estimated_api_cache_creation_5m_input_cost: null,
+      estimated_api_cache_creation_1h_input_cost: null,
+      estimated_api_output_cost: null,
+      estimated_api_reasoning_output_cost: null,
+      estimated_api_total_cost: 0.0100,
+      currency: 'USD',
+      api_cost_status: 'partial_price_missing',
+      missing_price_dimensions: [],
+    } as any);
+    meterStore.upsertSummary(buildSummary({
+      runId: 'reviewer-run',
+      rootTeamRunId: 'team-1',
+      memberRouteKey: 'reviewer',
+      grossInputTokens: 2222,
+      outputTokens: 22,
+      totalTokens: 2244,
+      estimatedApiInputCost: 0.0200,
+      estimatedApiOutputCost: 0.0022,
+      estimatedApiTotalCost: 0.0222,
+    }));
+    const aggregateSummary = buildSummary({
+      runId: 'backend-member-run-id',
+      rootTeamRunId: 'team-1',
+      grossInputTokens: 9000,
+      outputTokens: 900,
+      totalTokens: 9900,
+      estimatedApiInputCost: 0.0800,
+      estimatedApiOutputCost: 0.0190,
+      estimatedApiTotalCost: 0.099,
+    });
+    const fetchTeamSummarySpy = vi.spyOn(meterStore, 'fetchTeamRunSummary')
+      .mockImplementation(async (teamRunId: string) => (
+        meterStore.upsertLedgerBackedTeamSummary(teamRunId, aggregateSummary)
+      ));
+    selectionStore.setRunSelection('team-1', 'team');
+
+    const wrapper = mountPanel();
+    await flushPromises();
+    await nextTick();
+
+    expect(fetchTeamSummarySpy).toHaveBeenCalledWith('team-1');
+    expect(meterStore.hasLedgerBackedTeamSummary('team-1')).toBe(true);
+    const teamTable = wrapper.get('[data-test="team-token-table"]');
+    let totalCells = teamTable.get('[data-test="team-token-total-row"]').findAll('th, td');
+    expect(totalCells[1].text()).toContain('9,000');
+    expect(totalCells[1].text()).not.toContain('1,111');
+    expect(totalCells[2].text()).toContain('900');
+    expect(totalCells[3].text()).toContain('9,900');
+
+    teamContextsStore.setFocusedMember('reviewer');
+    await nextTick();
+
+    expect(wrapper.get('[data-test="gross-input-card"]').text()).toContain('2,222');
+    totalCells = teamTable.get('[data-test="team-token-total-row"]').findAll('th, td');
+    expect(totalCells[1].text()).toContain('9,000');
+    expect(totalCells[3].text()).toContain('9,900');
+  });
+
   it('shows an unavailable focus state instead of falling back to the team aggregate when focus is not a leaf run', () => {
     const selectionStore = useAgentSelectionStore();
     const teamContextsStore = useAgentTeamContextsStore();
@@ -491,7 +602,7 @@ describe('TokenUsageMeterPanel', () => {
       currentStatus: AgentTeamStatus.Running,
       isSubscribed: false,
     } as any);
-    meterStore.teamSummaries['team-1'] = buildSummary({ runId: 'team-1', rootTeamRunId: 'team-1', totalTokens: 9900 });
+    meterStore.upsertLedgerBackedTeamSummary('team-1', buildSummary({ runId: 'team-1', rootTeamRunId: 'team-1', totalTokens: 9900 }));
     selectionStore.setRunSelection('team-1', 'team');
 
     const wrapper = mountPanel();

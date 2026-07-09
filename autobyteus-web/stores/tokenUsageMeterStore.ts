@@ -114,10 +114,15 @@ const rate = (numerator: number, denominator: number): number | null =>
 const mergeUniqueStrings = (current: string[], next?: string[] | null): string[] =>
   Array.from(new Set([...current, ...(next ?? [])].filter(Boolean))).sort();
 
+type TeamSummarySource = 'live_partial' | 'ledger_backed';
+
 export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
   const runSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
   const teamSummaries = reactive<Record<string, TokenUsageRunSummary>>({});
+  const teamSummarySources = reactive<Record<string, TeamSummarySource>>({});
   const seenUsageKeys = reactive<Record<string, true>>({});
+
+  const normalizedTeamRunId = (teamRunId: string | null | undefined): string => teamRunId?.trim() || '';
 
   function getRunSummary(runId: string | null | undefined): TokenUsageRunSummary | null {
     if (!runId) return null;
@@ -129,14 +134,32 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return teamSummaries[teamRunId] ?? null;
   }
 
+  function hasLedgerBackedTeamSummary(teamRunId: string | null | undefined): boolean {
+    const normalized = normalizedTeamRunId(teamRunId);
+    return Boolean(normalized && teamSummaries[normalized] && teamSummarySources[normalized] === 'ledger_backed');
+  }
+
+  function needsTeamRunSummaryHydration(teamRunId: string | null | undefined): boolean {
+    const normalized = normalizedTeamRunId(teamRunId);
+    return Boolean(normalized && !hasLedgerBackedTeamSummary(normalized));
+  }
+
+  function upsertLedgerBackedTeamSummary(teamRunId: string, summary: TokenUsageRunSummary): TokenUsageRunSummary {
+    const normalizedRunId = normalizedTeamRunId(teamRunId);
+    const normalizedSummary = {
+      ...summary,
+      runId: normalizedRunId,
+      rootTeamRunId: normalizedRunId,
+      unitPrices: unitPricesOrEmpty(summary.unitPrices),
+    };
+    teamSummaries[normalizedRunId] = normalizedSummary;
+    teamSummarySources[normalizedRunId] = 'ledger_backed';
+    return normalizedSummary;
+  }
+
   function upsertSummary(summary: TokenUsageRunSummary): void {
     const normalizedSummary = { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
     runSummaries[normalizedSummary.runId] = normalizedSummary;
-    if (normalizedSummary.rootTeamRunId) {
-      teamSummaries[normalizedSummary.rootTeamRunId] = normalizedSummary.rootTeamRunId === normalizedSummary.runId
-        ? normalizedSummary
-        : (teamSummaries[normalizedSummary.rootTeamRunId] ?? normalizedSummary);
-    }
   }
 
   function applyToSummary(summary: TokenUsageRunSummary, payload: TokenUsageUpdatedPayload): TokenUsageRunSummary {
@@ -238,6 +261,9 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     const teamRunId = payload.root_team_run_id;
     if (teamRunId) {
       teamSummaries[teamRunId] = applyToSummary(teamSummaries[teamRunId] ?? emptySummary(teamRunId), payload);
+      if (teamSummarySources[teamRunId] !== 'ledger_backed') {
+        teamSummarySources[teamRunId] = 'live_partial';
+      }
     }
   }
 
@@ -256,9 +282,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     const { data } = await client.query({ query: GET_TEAM_RUN_TOKEN_USAGE_SUMMARY, variables: { teamRunId }, fetchPolicy: 'network-only' });
     const summary = data?.getTeamRunTokenUsageSummary as TokenUsageRunSummary | undefined;
     if (!summary) return null;
-    const normalizedSummary = { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
-    teamSummaries[teamRunId] = normalizedSummary;
-    return normalizedSummary;
+    return upsertLedgerBackedTeamSummary(teamRunId, summary);
   }
 
   async function fetchTeamMemberSummary(input: { teamRunId: string; memberAgentRunId?: string | null; memberRouteKey?: string | null }): Promise<TokenUsageRunSummary | null> {
@@ -279,7 +303,10 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     hasAnyUsage,
     getRunSummary,
     getTeamSummary,
+    hasLedgerBackedTeamSummary,
+    needsTeamRunSummaryHydration,
     upsertSummary,
+    upsertLedgerBackedTeamSummary,
     applyTokenUsageUpdated,
     fetchAgentRunSummary,
     fetchTeamRunSummary,

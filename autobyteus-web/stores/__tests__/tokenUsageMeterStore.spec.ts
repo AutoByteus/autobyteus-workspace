@@ -1,9 +1,14 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useTokenUsageMeterStore } from '../tokenUsageMeterStore';
 import { handleTokenUsageUpdated } from '~/services/agentStreaming/handlers/tokenUsageHandler';
+import { getApolloClient } from '~/utils/apolloClient';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { TokenUsageRunSummary, TokenUsageUpdatedPayload } from '~/types/tokenUsageMeter';
+
+vi.mock('~/utils/apolloClient', () => ({
+  getApolloClient: vi.fn(),
+}));
 
 const buildContext = (runId = 'run-context-1'): AgentContext => ({
   state: { runId },
@@ -66,9 +71,67 @@ const buildPayload = (overrides: Partial<TokenUsageUpdatedPayload> = {}): TokenU
   };
 };
 
+const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsageRunSummary => ({
+  runId: 'summary-run-1',
+  rootTeamRunId: null,
+  executionAddress: null,
+  memberAgentRunId: null,
+  memberRouteKey: null,
+  agentDefinitionId: 'agent-definition-1',
+  workspaceId: 'workspace-1',
+  grossInputTokens: 300,
+  standardInputTokens: 300,
+  cacheMissInputTokens: 300,
+  cacheReadInputTokens: 0,
+  cacheCreationInputTokens: 0,
+  cacheCreation5mInputTokens: 0,
+  cacheCreation1hInputTokens: 0,
+  outputTokens: 50,
+  reasoningOutputTokens: 0,
+  billableOutputTokens: 50,
+  totalTokens: 350,
+  cacheReadInputTokenRate: 0,
+  standardInputTokenRate: 1,
+  cacheCreationInputTokenRate: 0,
+  cacheState: 'not_reported',
+  estimatedApiInputCost: 0.003,
+  estimatedApiStandardInputCost: 0.003,
+  estimatedApiCacheReadInputCost: null,
+  estimatedApiCacheCreationInputCost: null,
+  estimatedApiCacheCreation5mInputCost: null,
+  estimatedApiCacheCreation1hInputCost: null,
+  estimatedApiOutputCost: 0.002,
+  estimatedApiReasoningOutputCost: null,
+  estimatedApiTotalCost: 0.005,
+  currency: 'USD',
+  apiCostStatus: 'estimated',
+  missingPriceDimensions: [],
+  pricingPolicyKey: 'catalog:openai:gpt-5.4-mini',
+  selectedPricingTierId: null,
+  unitPrices: {
+    standardInput: { status: 'single', pricePerMillion: 5 },
+    cacheReadInput: { status: 'not_applicable', pricePerMillion: null },
+    cacheCreationInput: { status: 'not_applicable', pricePerMillion: null },
+    cacheCreation5mInput: { status: 'not_applicable', pricePerMillion: null },
+    cacheCreation1hInput: { status: 'not_applicable', pricePerMillion: null },
+    output: { status: 'single', pricePerMillion: 30 },
+    reasoningOutput: { status: 'not_applicable', pricePerMillion: null },
+  },
+  latestPromptTokens: null,
+  effectiveContextWindowTokens: null,
+  contextWindowUsagePercent: null,
+  latestModelProvider: 'OPENAI',
+  latestModelIdentifier: 'gpt-5.4-mini',
+  latestRuntimeKind: 'codex_app_server',
+  usageReportCount: 3,
+  updatedAt: '2026-06-24T10:05:00.000Z',
+  ...overrides,
+});
+
 describe('tokenUsageMeterStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    vi.clearAllMocks();
   });
 
   it('applies live usage events idempotently and uses the active context run id when omitted', () => {
@@ -162,6 +225,114 @@ describe('tokenUsageMeterStore', () => {
       },
       usageReportCount: 2,
     });
+    expect(store.hasLedgerBackedTeamSummary('team-run-1')).toBe(false);
+    expect(store.needsTeamRunSummaryHydration('team-run-1')).toBe(true);
+  });
+
+  it('marks fetched team summaries ledger-backed and keys them by requested team run id', async () => {
+    const store = useTokenUsageMeterStore();
+    const queryMock = vi.fn().mockResolvedValue({
+      data: {
+        getTeamRunTokenUsageSummary: buildSummary({
+          runId: 'backend-member-run-id',
+          rootTeamRunId: 'team-run-1',
+          grossInputTokens: 900,
+          outputTokens: 90,
+          totalTokens: 990,
+        }),
+      },
+    });
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+
+    const fetchedSummary = await store.fetchTeamRunSummary('team-run-1');
+
+    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { teamRunId: 'team-run-1' },
+      fetchPolicy: 'network-only',
+    }));
+    expect(fetchedSummary).toMatchObject({
+      runId: 'team-run-1',
+      rootTeamRunId: 'team-run-1',
+      grossInputTokens: 900,
+      outputTokens: 90,
+      totalTokens: 990,
+    });
+    expect(store.getTeamSummary('team-run-1')).toEqual(fetchedSummary);
+    expect(store.getTeamSummary('backend-member-run-id')).toBeNull();
+    expect(store.hasLedgerBackedTeamSummary('team-run-1')).toBe(true);
+    expect(store.needsTeamRunSummaryHydration('team-run-1')).toBe(false);
+  });
+
+  it('preserves ledger-backed team readiness when later live deltas extend the team total', async () => {
+    const store = useTokenUsageMeterStore();
+    store.upsertLedgerBackedTeamSummary('team-run-1', buildSummary({
+      runId: 'backend-member-run-id',
+      rootTeamRunId: 'team-run-1',
+      grossInputTokens: 900,
+      outputTokens: 90,
+      totalTokens: 990,
+      usageReportCount: 9,
+    }));
+
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'post-ledger-live-event',
+      idempotency_key: 'post-ledger-live-key',
+      run_id: 'member-run-3',
+      root_team_run_id: 'team-run-1',
+      member_agent_run_id: 'member-run-3',
+      member_route_key: 'api_e2e_engineer',
+      meter_delta_input_tokens: 10,
+      meter_delta_output_tokens: 2,
+      meter_delta_total_tokens: 12,
+      estimated_api_input_cost: 0.0001,
+      estimated_api_output_cost: 0.0002,
+      estimated_api_total_cost: 0.0003,
+    }));
+
+    expect(store.getTeamSummary('team-run-1')).toMatchObject({
+      runId: 'team-run-1',
+      rootTeamRunId: 'team-run-1',
+      grossInputTokens: 910,
+      outputTokens: 92,
+      totalTokens: 1002,
+      usageReportCount: 10,
+    });
+    expect(store.hasLedgerBackedTeamSummary('team-run-1')).toBe(true);
+    expect(store.needsTeamRunSummaryHydration('team-run-1')).toBe(false);
+  });
+
+  it('does not seed the team aggregate cache from member summary writes', async () => {
+    const store = useTokenUsageMeterStore();
+    const memberSummary = buildSummary({
+      runId: 'member-run-1',
+      rootTeamRunId: 'team-run-1',
+      memberAgentRunId: 'member-run-1',
+      memberRouteKey: 'solution_designer',
+      grossInputTokens: 100,
+      outputTokens: 10,
+      totalTokens: 110,
+    });
+
+    store.upsertSummary(memberSummary);
+
+    expect(store.getRunSummary('member-run-1')).toMatchObject({ totalTokens: 110 });
+    expect(store.getTeamSummary('team-run-1')).toBeNull();
+    expect(store.needsTeamRunSummaryHydration('team-run-1')).toBe(true);
+
+    const queryMock = vi.fn().mockResolvedValue({
+      data: { getTeamMemberTokenUsageSummary: memberSummary },
+    });
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+
+    await store.fetchTeamMemberSummary({
+      teamRunId: 'team-run-1',
+      memberAgentRunId: 'member-run-1',
+      memberRouteKey: 'solution_designer',
+    });
+
+    expect(store.getRunSummary('member-run-1')).toMatchObject({ totalTokens: 110 });
+    expect(store.getTeamSummary('team-run-1')).toBeNull();
+    expect(store.needsTeamRunSummaryHydration('team-run-1')).toBe(true);
   });
 
 
