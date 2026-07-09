@@ -97,23 +97,23 @@ and is absent from the frontend skill-access type union.
 The workspace-side team launch buffer is owned by `teamRunConfigStore` and rendered through `TeamRunConfigForm.vue`.
 
 
-The team launch data model does not carry self-evolution overrides for the
+The team launch data model does not carry Skill Improvement overrides for the
 manual-click model. Team definitions, `team-config.json`, persisted default
 launch preferences, `TeamRunConfig`, and agent-member launch records do not own
-self-evolution eligibility; the backend resolves manual eligibility from current
-global self-evolution settings and the current active target state at click time.
-Whole-team/subteam evolution is not part of the MVP manual action, and the team
-run configuration form does not expose launch-time self-evolution default or
+Skill Improvement eligibility; the backend resolves manual eligibility from current
+global Skill Improvement settings and the current active target state at click time.
+Whole-team/subteam Skill Improvement is not part of the MVP manual action, and the team
+run configuration form does not expose launch-time Skill Improvement default or
 leaf-member override controls.
 
-For manual self-evolution, the composer-adjacent CTA targets the selected active
+For manual Skill Improvement, the composer-adjacent CTA targets the selected active
 leaf member, not the whole team row. The frontend sends the member-scoped target
-identity (`teamRunId` plus `memberRunId`) to `startTeamMemberSelfEvolution`, and
+identity (`teamRunId` plus `memberRunId`) to `startTeamMemberSkillImprovement`, and
 the backend records source run ids for the selected member only. Before
-triggering the companion, the backend ensures that member's work trace files are
-current, then activates or reuses the target-scoped companion run. This preserves
+triggering the improver, the backend ensures that member's work trace files are
+current, then activates or reuses the target-scoped improver run. This preserves
 the same valid focused leaf-member boundary used by the shared composer target
-and prevents stale history rows or whole-team containers from becoming evolution
+and prevents stale history rows or whole-team containers from becoming improvement
 targets.
 
 That surface owns:

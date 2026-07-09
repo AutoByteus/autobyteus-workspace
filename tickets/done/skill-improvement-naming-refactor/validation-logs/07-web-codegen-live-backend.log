@@ -1,0 +1,24 @@
+
+> autobyteus@1.4.3 codegen /Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/autobyteus-web
+> graphql-codegen --require dotenv/config --config codegen.ts
+
+[STARTED] Parse Configuration
+[SUCCESS] Parse Configuration
+[STARTED] Generate outputs
+[STARTED] Generate to ./generated/graphql.ts
+[STARTED] Load GraphQL schemas
+[FAILED] Failed to load schema from http://127.0.0.1:8000/graphql:
+[FAILED] connect ECONNREFUSED 127.0.0.1:8000
+[FAILED] 
+[FAILED] GraphQL Code Generator supports:
+[FAILED] 
+[FAILED] - ES Modules and CommonJS exports (export as default or named export "schema")
+[FAILED] - Introspection JSON File
+[FAILED] - URL of GraphQL endpoint
+[FAILED] - Multiple files with type definitions (glob expression)
+[FAILED] - String in config file
+[FAILED] 
+[FAILED] Try to use one of above options and run codegen again.
+[FAILED] 
+[SUCCESS] Generate outputs
+ ELIFECYCLE  Command failed with exit code 1.

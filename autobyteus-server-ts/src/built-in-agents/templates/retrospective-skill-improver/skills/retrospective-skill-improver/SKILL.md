@@ -14,7 +14,7 @@ Work trace body entries use role/event labels such as `user`, `assistant`, `tool
 ## Workflow
 
 1. Read the task message for dynamic scope: work trace paths, editable skill roots, package trees, target AgentRun id, and completion message type.
-2. Read the relevant work trace files as retrospective skill-improvement evidence.
+2. Read the relevant work trace files as retrospective Skill Improvement evidence.
 3. Inspect each relevant editable skill package, starting from `SKILL.md` and then any referenced files needed to understand the current guidance.
 4. Decide whether the evidence supports a durable improvement:
    - explain that current guidance stands;

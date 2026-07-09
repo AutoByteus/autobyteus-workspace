@@ -25,8 +25,8 @@ const assertDistTemplateAbsent = async (templateDirName) => {
 const [
   compactorDistAgentMdPath,
   compactorDistAgentConfigPath,
-  skillEvolverDistAgentMdPath,
-  skillEvolverDistAgentConfigPath,
+  skillImproverDistAgentMdPath,
+  skillImproverDistAgentConfigPath,
 ] = await Promise.all([
   assertDistAssetPresent("memory-compactor", "agent.md"),
   assertDistAssetPresent("memory-compactor", "agent-config.json"),
@@ -40,13 +40,13 @@ const { bootstrapBuiltInAgents } = await import(
 );
 const {
   MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-  SKILL_EVOLVER_AGENT_DEFINITION_ID,
+  RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } = await import(
   "../dist/built-in-agents/built-in-agent-registry.js"
 );
 const {
   AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-  AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
+  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } = await import(
   "../dist/services/server-settings-service.js"
 );
@@ -59,7 +59,7 @@ const fakeAgentDefinitionService = {
   async getFreshAgentDefinitionById(definitionId) {
     return {
       id: definitionId,
-      name: definitionId === SKILL_EVOLVER_AGENT_DEFINITION_ID ? "Retrospective Skill Improver" : "Memory Compactor",
+      name: definitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ? "Retrospective Skill Improver" : "Memory Compactor",
     };
   },
   async refreshCache() {},
@@ -72,7 +72,7 @@ const fakeServerSettingsService = {
   updateSetting(key, value) {
     if (
       key === AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID ||
-      key === AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID
+      key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID
     ) {
       settingsByKey.set(key, value);
       return [true, "ok"];
@@ -83,15 +83,15 @@ const fakeServerSettingsService = {
 
 try {
   const staleCompactorAgentDir = path.join(agentsDir, MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
-  const staleSkillEvolverAgentDir = path.join(agentsDir, SKILL_EVOLVER_AGENT_DEFINITION_ID);
+  const staleSkillImproverAgentDir = path.join(agentsDir, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   const standaloneAgentDir = path.join(agentsDir, "daily-assistant");
   await fs.mkdir(staleCompactorAgentDir, { recursive: true });
-  await fs.mkdir(staleSkillEvolverAgentDir, { recursive: true });
+  await fs.mkdir(staleSkillImproverAgentDir, { recursive: true });
   await fs.mkdir(standaloneAgentDir, { recursive: true });
   await fs.writeFile(path.join(staleCompactorAgentDir, "agent.md"), "stale memory compactor", "utf8");
   await fs.writeFile(path.join(staleCompactorAgentDir, "agent-config.json"), "{\"toolNames\":[\"stale_tool\"]}", "utf8");
-  await fs.writeFile(path.join(staleSkillEvolverAgentDir, "agent.md"), "stale skill evolver", "utf8");
-  await fs.writeFile(path.join(staleSkillEvolverAgentDir, "agent-config.json"), "{\"skillNames\":[\"stale_skill\"]}", "utf8");
+  await fs.writeFile(path.join(staleSkillImproverAgentDir, "agent.md"), "stale skill improver", "utf8");
+  await fs.writeFile(path.join(staleSkillImproverAgentDir, "agent-config.json"), "{\"skillNames\":[\"stale_skill\"]}", "utf8");
   await fs.writeFile(path.join(standaloneAgentDir, "agent.md"), "standalone local agent", "utf8");
   await fs.writeFile(path.join(standaloneAgentDir, "agent-config.json"), "{\"toolNames\":[\"calendar\"]}", "utf8");
 
@@ -111,8 +111,8 @@ try {
   const resultById = new Map(result.builtInAgents.map((item) => [item.agentDefinitionId, item]));
   assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).syncedAgentMd, true);
   assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).syncedAgentConfig, true);
-  assert.equal(resultById.get(SKILL_EVOLVER_AGENT_DEFINITION_ID).syncedAgentMd, true);
-  assert.equal(resultById.get(SKILL_EVOLVER_AGENT_DEFINITION_ID).syncedAgentConfig, true);
+  assert.equal(resultById.get(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID).syncedAgentMd, true);
+  assert.equal(resultById.get(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID).syncedAgentConfig, true);
 
   const compactorAgentDir = path.join(agentsDir, MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
   const [compactorAgentMd, compactorAgentConfig, compactorDistAgentMd, compactorDistAgentConfig] =
@@ -126,20 +126,20 @@ try {
   assert.equal(compactorAgentMd, compactorDistAgentMd);
   assert.equal(compactorAgentConfig, compactorDistAgentConfig);
   assert.match(compactorAgentMd, /Memory Compactor/);
-  const skillEvolverAgentDir = path.join(agentsDir, SKILL_EVOLVER_AGENT_DEFINITION_ID);
-  const [skillEvolverAgentMd, skillEvolverAgentConfig, skillEvolverDistAgentMd, skillEvolverDistAgentConfig] =
+  const skillImproverAgentDir = path.join(agentsDir, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
+  const [skillImproverAgentMd, skillImproverAgentConfig, skillImproverDistAgentMd, skillImproverDistAgentConfig] =
     await Promise.all([
-      fs.readFile(path.join(skillEvolverAgentDir, "agent.md"), "utf8"),
-      fs.readFile(path.join(skillEvolverAgentDir, "agent-config.json"), "utf8"),
-      fs.readFile(skillEvolverDistAgentMdPath, "utf8"),
-      fs.readFile(skillEvolverDistAgentConfigPath, "utf8"),
+      fs.readFile(path.join(skillImproverAgentDir, "agent.md"), "utf8"),
+      fs.readFile(path.join(skillImproverAgentDir, "agent-config.json"), "utf8"),
+      fs.readFile(skillImproverDistAgentMdPath, "utf8"),
+      fs.readFile(skillImproverDistAgentConfigPath, "utf8"),
     ]);
 
-  assert.equal(skillEvolverAgentMd, skillEvolverDistAgentMd);
-  assert.equal(skillEvolverAgentConfig, skillEvolverDistAgentConfig);
-  assert.match(skillEvolverAgentMd, /Retrospective Skill Improver/);
+  assert.equal(skillImproverAgentMd, skillImproverDistAgentMd);
+  assert.equal(skillImproverAgentConfig, skillImproverDistAgentConfig);
+  assert.match(skillImproverAgentMd, /Retrospective Skill Improver/);
   assert.equal(settingsByKey.get(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID), MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
-  assert.equal(settingsByKey.get(AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID), SKILL_EVOLVER_AGENT_DEFINITION_ID);
+  assert.equal(settingsByKey.get(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID), RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   const standaloneAgentMd = await fs.readFile(path.join(standaloneAgentDir, "agent.md"), "utf8");
   const standaloneAgentConfig = await fs.readFile(path.join(standaloneAgentDir, "agent-config.json"), "utf8");
   assert.equal(standaloneAgentMd, "standalone local agent");

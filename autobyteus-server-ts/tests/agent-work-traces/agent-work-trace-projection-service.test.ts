@@ -133,7 +133,7 @@ describe("AgentWorkTraceProjectionService", () => {
     expect(result.workTraceRootPath).toBe(path.join(memoryDir, "work_traces"));
     expect(result.manifestPath).toBe(path.join(memoryDir, "work_traces", "work_traces_manifest.json"));
     expect(result.manifestPath).not.toContain(`${path.sep}targets${path.sep}`);
-    await expect(pathExists(path.join(memoryDir, "self_evolution", "work_traces"))).resolves.toBe(false);
+    await expect(pathExists(path.join(memoryDir, "skill_improvement", "work_traces"))).resolves.toBe(false);
     expect(result).toMatchObject({
       target: { kind: "agent_run", runId: "target-run-1" },
       targetDisplayName: "Implementation Engineer",

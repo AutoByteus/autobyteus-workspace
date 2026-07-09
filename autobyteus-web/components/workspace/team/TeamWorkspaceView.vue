@@ -32,7 +32,7 @@
       <div class="flex-grow min-h-0">
         <AgentTeamEventMonitor>
           <template #composerContext>
-            <SelfEvolutionComposerCta :target="teamMemberSelfEvolutionTarget" />
+            <SkillImprovementComposerCta :target="teamMemberSkillImprovementTarget" />
           </template>
         </AgentTeamEventMonitor>
       </div>
@@ -40,7 +40,7 @@
       <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
         <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ composerTargetTitle }}</span>
         </p>
-        <SelfEvolutionComposerCta :target="teamMemberSelfEvolutionTarget" />
+        <SkillImprovementComposerCta :target="teamMemberSkillImprovementTarget" />
         <AgentUserInputForm v-if="focusedMemberContext" />
         <form v-else class="space-y-2" @submit.prevent="sendSubteamMessage">
           <textarea
@@ -84,8 +84,8 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
-import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/SelfEvolutionComposerCta.vue';
-import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
+import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue';
+import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
@@ -101,7 +101,7 @@ const headerAvatarLoadError = ref(false);
 const subteamDraft = ref('');
 const isSendingSubteamDraft = ref(false);
 const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
-const SKILL_EVOLVER_AGENT_DEFINITION_ID = 'autobyteus-skill-evolver';
+const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = 'autobyteus-retrospective-skill-improver';
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
@@ -172,7 +172,7 @@ const composerTargetTitle = computed(() => {
     || 'Team';
 });
 
-const teamMemberSelfEvolutionTarget = computed<SelfEvolutionComposerCtaTarget | null>(() => {
+const teamMemberSkillImprovementTarget = computed<SkillImprovementComposerCtaTarget | null>(() => {
   const team = activeTeamContext.value;
   const member = focusedMemberContext.value;
   if (!team || !member) {
@@ -183,8 +183,8 @@ const teamMemberSelfEvolutionTarget = computed<SelfEvolutionComposerCtaTarget | 
     teamRunId: team.teamRunId,
     memberRunId: member.state.runId,
     isHelperRun:
-      member.config.agentDefinitionId === SKILL_EVOLVER_AGENT_DEFINITION_ID ||
-      member.config.agentDefinitionName === 'Skill Self-Evolver',
+      member.config.agentDefinitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ||
+      member.config.agentDefinitionName === 'Retrospective Skill Improver',
   };
 });
 

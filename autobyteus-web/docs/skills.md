@@ -217,29 +217,29 @@ users can browse and open those bundled skill files normally. Duplicate skill
 names use first-seen catalog precedence, so package authors should choose unique
 logical skill names.
 
-## Self-Evolution And Skill Files
+## Skill Improvement And Skill Files
 
-Manual self-evolution is a skill-first workflow. When the backend deems a run or
-team agent-member eligible, the visible evolver helper may edit only the exact
+Manual Skill Improvement is a skill-first workflow. When the backend deems a run or
+team agent-member eligible, the visible improver helper may edit only the exact
 configured skill root directories returned by backend eligibility. `SKILL.md`
 is the package entry file; supporting files inside the same listed root may be
 changed when a reusable improvement needs them. Agent/team definitions, MCP/tool
 config, source code, run memory, sibling skills, and files outside the listed
 roots are out of MVP scope.
 
-The frontend does not decide whether a skill is eligible for evolution. The
-composer-adjacent **Self improve** CTA lazy-loads backend eligibility for the
+The frontend does not decide whether a skill is eligible for Skill Improvement. The
+composer-adjacent **Improve skills** CTA lazy-loads backend eligibility for the
 selected active run or team member and stays hidden when the backend says the
 current target is ineligible. Run-history rows and launch forms do not own
-self-evolution actions. Before messaging the visible companion, the backend
+Skill Improvement actions. Before messaging the visible improver, the backend
 projects the target's raw trace corpus into readable work trace files and sends
-the companion a concise task packet with paths, editable skill roots, and a
+the improver a concise task packet with paths, editable skill roots, and a
 bounded relative package tree that marks each `SKILL.md` as `[entry]`; it does
-not inline the work trace body or ask the companion to read raw trace JSONL. The
+not inline the work trace body or ask the improver to read raw trace JSONL. The
 backend records minimal provenance and does not compute changed paths or
 policy-violation metrics in the MVP. After launch, the workspace may show only a
 short transient start status. Only after meaningful durable skill package file
-changes, the companion reports through one direct `send_message_to` call with
+changes, the improver reports through one direct `send_message_to` call with
 `message_type: "skill_update"` to the still-active target run. Its content should
 explain what changed, why it matters, and how the target should use or reload the
 updated guidance, while dynamic references are absolute paths to changed or
@@ -257,6 +257,6 @@ separate proposal/apply UI or product audit service.
 
 ## Related Documentation
 
-- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend self-evolution workflow, shared work-trace package consumption, companion lifecycle, skill-root edit, and minimal provenance contract.
+- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, shared work-trace package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Skills are attached to agents to provide capabilities.
 - **[File Explorer](./file_explorer.md)**: Skills use the generic, workspace-agnostic File Explorer.

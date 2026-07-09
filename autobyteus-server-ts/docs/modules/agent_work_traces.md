@@ -9,7 +9,7 @@ derived generated artifacts, not canonical evidence; raw traces remain
 authoritative.
 
 The first consumer is manual Skill Improvement. Future memory compaction work
-should consume this shared package instead of importing self-evolution internals
+should consume this shared package instead of importing skill-improvement internals
 or duplicating rendering policy.
 
 ## Public Boundary
@@ -64,8 +64,8 @@ manifest for each `ensureCurrent()` call. It does not use renderer versions,
 render fingerprints, source fingerprints, old manifest fallback, dual rendering,
 or generated-file compatibility reads.
 
-The previous self-evolution-owned cache root
-`<memoryDir>/self_evolution/work_traces/` is obsolete. The current runtime does
+The previous skill-improvement-owned cache root
+`<memoryDir>/skill_improvement/work_traces/` is obsolete. The current runtime does
 not dual-write, fallback-read, or migrate that generated cache path because work
 traces are regenerable from canonical raw traces.
 
@@ -99,11 +99,11 @@ references.
 
 ## Consumer Contract
 
-Self-evolution is a consumer, not the projection owner. Before it triggers the
-Retrospective Skill Improver, `SelfEvolutionService` asks the shared projection
+Skill Improvement is a consumer, not the projection owner. Before it triggers the
+Retrospective Skill Improver, `SkillImprovementService` asks the shared projection
 service for a current package and sends only manifest/root/file paths and summary
-metadata through its path-based Skill Improvement request. Self-evolution session
-metadata keys may remain self-evolution-specific because they describe workflow
+metadata through its path-based Skill Improvement request. Skill Improvement session
+metadata keys may remain skill-improvement-specific because they describe workflow
 state, but the generated files and rendering policy are owned by
 `agent-work-traces`.
 
@@ -113,11 +113,11 @@ provided on demand by each `ensureCurrent()` call.
 ## Boundaries To Preserve
 
 - `agent-work-traces` may depend on raw trace and run-history projection
-  boundaries, but it must not import self-evolution.
-- `agent-memory` must not import work-trace or self-evolution projection types.
+  boundaries, but it must not import skill-improvement.
+- `agent-memory` must not import work-trace or skill-improvement projection types.
 - Consumers should not instantiate `AgentWorkTraceSourceReader`,
   `AgentWorkTraceRenderer`, or `AgentWorkTraceStore` directly.
 - Do not add compatibility wrappers, dual paths, old manifest fallback, or old
-  generated-path reads for `<memoryDir>/self_evolution/work_traces/`.
+  generated-path reads for `<memoryDir>/skill_improvement/work_traces/`.
 - Keep compaction-specific fields out of the shared package until the memory
   compaction redesign defines them.

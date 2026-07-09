@@ -1,9 +1,9 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
 import {
-  AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
-  SELF_EVOLUTION_CAPABILITY_SETTING_KEY,
-} from "../self-evolution/domain/settings.js";
+  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+  SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
+} from "../skill-improvement/domain/settings.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
@@ -56,7 +56,7 @@ type ServerSettingValueValidation = {
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
 export const AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID = "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID";
-export { AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID, SELF_EVOLUTION_CAPABILITY_SETTING_KEY };
+export { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID, SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY };
 
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
@@ -127,12 +127,12 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
-      SELF_EVOLUTION_CAPABILITY_SETTING_KEY,
-      "Controls whether manual skill self-evolution is available for this node at runtime. Defaults to disabled.",
+      SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
+      "Controls whether manual Skill Improvement is available for this node at runtime. Defaults to disabled.",
     );
 
     this.registerPredefinedSetting(
-      AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
+      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
       "Agent definition id for the Retrospective Skill Improver. Blank runtime/model fields on the selected improver inherit from the target run.",
     );
 
@@ -365,8 +365,8 @@ export class ServerSettingsService {
     );
   }
 
-  getSelfEvolutionEnabledSetting(): boolean | null {
-    const rawValue = appConfigProvider.config.get(SELF_EVOLUTION_CAPABILITY_SETTING_KEY)?.trim();
+  getSkillImprovementEnabledSetting(): boolean | null {
+    const rawValue = appConfigProvider.config.get(SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY)?.trim();
     if (!rawValue) {
       return null;
     }
@@ -374,9 +374,9 @@ export class ServerSettingsService {
     return rawValue.toLowerCase() === "true";
   }
 
-  setSelfEvolutionEnabledSetting(enabled: boolean): void {
+  setSkillImprovementEnabledSetting(enabled: boolean): void {
     appConfigProvider.config.set(
-      SELF_EVOLUTION_CAPABILITY_SETTING_KEY,
+      SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
       enabled ? "true" : "false",
     );
   }
@@ -394,8 +394,8 @@ export class ServerSettingsService {
     return this.getSettingValue(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID);
   }
 
-  getSelfEvolutionDefaultEvolverAgentDefinitionId(): string | null {
-    return this.getSettingValue(AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID);
+  getSkillImprovementDefaultImproverAgentDefinitionId(): string | null {
+    return this.getSettingValue(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   }
 
   getFeaturedCatalogItemsSettingValue(): string | null {

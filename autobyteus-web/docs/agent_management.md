@@ -94,12 +94,12 @@ legacy all-installed-skill launch option is not available in the UI or generated
 GraphQL enum.
 
 
-Self-evolution is explicitly excluded from persisted agent definition defaults
+Skill Improvement is explicitly excluded from persisted agent definition defaults
 and run-launch configuration. `AgentDefinition`, `agent-config.json`, the agent
 create/edit forms, and the standalone run configuration form do not own
-self-evolution eligibility. The composer-adjacent **Self improve** CTA asks the
+Skill Improvement eligibility. The composer-adjacent **Improve skills** CTA asks the
 backend for current eligibility for the selected active run, and the backend
-resolves that from global self-evolution settings plus current target state.
+resolves that from global Skill Improvement settings plus current target state.
 
 ## Store Ownership
 

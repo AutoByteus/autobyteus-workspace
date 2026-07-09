@@ -980,7 +980,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(configButton.exists()).toBe(false);
   });
 
-  it('does not render self-evolution actions on run-history rows', async () => {
+  it('does not render Skill Improvement actions on run-history rows', async () => {
     const wrapper = mountComponent();
     await flushPromises();
     await expandAgentGroup(wrapper);
