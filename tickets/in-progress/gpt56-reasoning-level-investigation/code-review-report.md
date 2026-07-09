@@ -2,91 +2,93 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/in-progress/gpt56-reasoning-level-investigation/requirements.md`
-- Current Review Round: `1`
-- Trigger: Implementation handoff for commit `7bda8b9d6d0611fc4011418b8deed7ea445af423`
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Review Round: `2`
+- Trigger: Mandatory re-review of repository-resident durable coverage commit `1df583eb6b142ad771f86c77f8aeeb95c07a0efc`
+- Prior Review Round Reviewed: `1`
+- Latest Authoritative Round: `2`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/in-progress/gpt56-reasoning-level-investigation/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/in-progress/gpt56-reasoning-level-investigation/proposed-design.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/in-progress/gpt56-reasoning-level-investigation/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/in-progress/gpt56-reasoning-level-investigation/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `N/A; API/E2E has not started`
-- API / E2E Execution Started Yet: `No`
-- Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/in-progress/gpt56-reasoning-level-investigation/api-e2e-execution-coverage-report.md`
+- API / E2E Execution Started Yet: `Yes`
+- Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Implementation handoff at `7bda8b9d` | N/A | None | Pass | Yes | Focused source and unit-test delta matches the reviewed design and is ready for API/E2E coverage investigation. |
+| 1 | Implementation handoff at `7bda8b9d` | N/A | None | Pass | No | Source/architecture review passed at `e5ace794`; API/E2E coverage investigation was authorized. Score: `9.55/10`. |
+| 2 | Durable coverage commit `1df583eb` and execution report `716d9504` | Round 1 had no unresolved findings | None | Pass | Yes | Dynamic parity, payload, malformed/default, and realistic `ultra` team coverage are maintainable and match the reviewed design. |
 
 ## Review Scope
 
-- Reviewed commit `7bda8b9d` against parent `4aeb3119`, with the full requirements, investigation, design, design-review, and implementation-handoff chain as context.
-- Inspected the production change in `autobyteus-server-ts/src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts` and its focused unit coverage.
-- Traced the unchanged runtime consumers through `CodexThreadBootstrapper`, `CodexThreadConfig`, and `CodexThread.sendTurn()` to confirm the resolved open string reaches `turn/start.effort` without another closed-set filter.
-- Inspected the existing live catalog integration test only to assess next-stage readiness. Its stale fixed-union assertion remains an explicitly assigned API/E2E coverage-investigation obligation, not an implementation-review finding.
-- Re-ran the three focused unit files (48 tests), the source-only TypeScript check, and `git diff --check` independently.
+- Narrowly reviewed the four repository-resident test files changed in `1df583eb` and confirmed that no production source changed after the initial review.
+- Reviewed the coverage investigation committed at `8daae87a` before durable test edits, including its stale-test disposition and planned replacement coverage.
+- Reviewed execution evidence committed at `716d9504`, including live App Server/catalog/GraphQL parity, real `turn/start` request capture, focused frontend execution, and the realistic two-member `ultra` team run.
+- Verified the live catalog coverage derives expected per-model reasoning sequences and `fast` visibility independently from raw App Server rows rather than importing the production normalizer or encoding a fixed union/model snapshot.
+- Verified the team E2E selects by advertised `ultra` capability, applies explicit `ultra` to both members, and retains the pre-existing exact communication/tool-trace invariants.
+- Independently re-ran the 58 focused deterministic tests, the final live catalog/GraphQL parity scenario, and coverage-commit diff hygiene.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
-Not applicable for round 1.
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1 | None | N/A | No unresolved findings to recheck | Round 1 `Findings` section recorded `None`; its downstream coverage obligations are now satisfied by `1df583eb` and `716d9504`. | No finding IDs were required. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts` | 134 | Pass; below 500 | Pass; production delta is 2 additions and 8 deletions | Pass; the file remains the focused Codex App Server JSON/schema/runtime adapter | Pass; existing Codex backend placement matches ownership | Pass | None |
+Not applicable in round 2. Commit `1df583eb` changes test files only; the source-file hard limit does not apply to unit, integration, API, or E2E coverage files. Test structure and maintainability are assessed below.
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The implementation removes the duplicated capability policy at the existing adapter boundary, matching the reviewed `Duplicated Policy Or Coordination` diagnosis. | None |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Catalog discovery still flows through App Server `model/list` to `CodexModelCatalog`/schema/UI; runtime selection still flows through bootstrap and `CodexThread` to `turn/start`. | None |
-| Ownership boundary preservation and clarity | Pass | App Server remains authoritative for model capability/support; AutoByteus now performs wire-shape normalization only. | None |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Trimming, order/deduplication, schema mapping, and runtime field resolution remain contained in the existing adapter responsibilities. | None |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The change reuses `asString`, the existing catalog mapper, runtime resolver, and thread transport; no cache, registry, or UI helper was added. | None |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Catalog and runtime paths continue sharing `normalizeCodexReasoningEffort`; generic non-empty string handling remains owned by `asString`. | None |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | The contract remains one `string | null` effort value and one ordered per-model schema enum; no parallel representation was introduced. | None |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | The stale AutoByteus capability set was deleted rather than copied or expanded; App Server owns support decisions. | None |
-| Empty indirection check (no pass-through-only boundary) | Pass | No new layer or wrapper was introduced; the existing adapter performs concrete JSON normalization and mapping. | None |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Reasoning wire normalization changed independently of the separate service-tier product policy. | None |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Bootstrap continues to depend on the adapter resolver and does not query catalog internals; GraphQL/frontend remain schema consumers. | None |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No caller was changed to mix `CodexModelCatalog` with App Server internals or thread bootstrap with catalog internals. | None |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Production and unit-test edits remain under the established Codex backend adapter paths. | None |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | A ten-line production correction does not warrant a new module; existing placement remains readable. | None |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `normalizeCodexReasoningEffort(unknown): string | null` now consistently means non-empty wire normalization, while model support remains upstream-owned. | None |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Existing names remain accurate in context, and tests explicitly document the open-string semantics. | None |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | The implementation simplifies shared logic to `asString(value)` and introduces no duplicate list or conversion. | None |
-| Patch-on-patch complexity control | Pass | The legacy allowlist and rejection branch were removed cleanly; no bypass, exception, fallback, or model-specific patch was added. | None |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | `VALID_REASONING_EFFORTS` and its closed-set branch are fully removed. | None |
-| Test quality is acceptable for the changed behavior | Pass | Tests cover current and future values, trimming/case preservation, malformed values, mixed row shapes, order/deduplication, default behavior, and runtime resolution. | None |
-| Test maintainability is acceptable for the changed behavior | Pass | Assertions are behavior-oriented and avoid replacing the removed production allowlist with a fixed union in unit coverage. | None |
-| Validation or delivery readiness for the next workflow stage | Pass | Independent review checks passed; remaining live parity, GraphQL, turn/start, and realistic `ultra` obligations are clearly scoped to API/E2E. | API/E2E engineer must investigate stale durable coverage before editing or executing final coverage. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | The old closed policy was deleted outright with no legacy fallback. | None |
-| No legacy code retention for old behavior | Pass | Unknown non-empty values no longer traverse a retained rejection path. | None |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Coverage tests the reviewed duplicated-policy removal and does not introduce a replacement capability policy. | None |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Durable coverage spans raw `model/list` -> catalog -> GraphQL and config -> bootstrapper -> thread -> `turn/start`, plus the real team runtime. | None |
+| Ownership boundary preservation and clarity | Pass | Expected capability sequences are derived from App Server rows; AutoByteus is tested as translator/transport rather than authority. | None |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Raw JSON normalization, schema lookup, payload inspection, and team assertions remain test-local support for their governed boundaries. | None |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Coverage uses the existing client manager, catalog, GraphQL schema, bootstrapper fixtures, thread fixtures, and team E2E harness. | None |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Small raw-row helpers are centralized within the live parity test; production helpers are deliberately not reused for expected-value derivation. | None |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Test views contain only model identity, config-schema parameters, reasoning sequence, and `fast` advertisement needed for parity. | None |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | No closed reasoning union was recreated; `fast` remains the separate, explicitly asserted product policy. | None |
+| Empty indirection check (no pass-through-only boundary) | Pass | Added helpers perform concrete raw collection, normalization, parity assertion, or capability-based selection. | None |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Live transport parity, bootstrap config, request payload, and realistic team behavior remain in their established coverage owners. | None |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | The live parity test calls public client/catalog/GraphQL boundaries; production dependency direction is unchanged. | None |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Test-only observation compares boundaries independently; no production caller bypass or mixed-level runtime dependency was added. | None |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | All edits remain in the existing catalog integration, Codex backend unit, thread unit, and team E2E files. | None |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The 228-line live parity file is cohesive and avoids a reusable test module whose only consumer would be this scenario. | None |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Assertions key on explicit model identifiers and inspect exact `reasoning_effort`, `service_tier`, and `turn/start.effort` subjects. | None |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Scenario and helper names state raw capability collection, schema parity, open effort propagation, and `ultra` invariants clearly. | None |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | The independent raw transform intentionally avoids self-confirming reuse of production normalization; other additions extend existing fixtures. | None |
+| Patch-on-patch complexity control | Pass | The stale assertion is replaced directly; there is no compatibility assertion, model exception, retry workaround, or fallback fixture. | None |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | The old five-value predicate is removed and replaced; temporary probes and generated Nuxt state were removed. | None |
+| Test quality is acceptable for the changed behavior | Pass | Coverage checks exact sequences, current/future values, malformed/unset behavior, exact payloads, per-model non-invention, `fast`, and realistic team invariants. | None |
+| Test maintainability is acceptable for the changed behavior | Pass | Live expectations are raw-derived and capability-selected; named `max`/`ultra` cases represent explicit acceptance requirements rather than a global catalog union. | None |
+| Validation or delivery readiness for the next workflow stage | Pass | Execution report is authoritative pass, independent review reruns are green, and post-API/E2E coverage code review has passed. | Delivery must refresh the branch before integrated-state docs/handoff work. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | Coverage does not retain or legitimize the removed allowlist behavior. | None |
+| No legacy code retention for old behavior | Pass | The obsolete fixed-union assertion is gone; no dormant legacy test path remains. | None |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.55`
-- Overall score (`/100`): `95.5`
-- Score calculation note: Simple average across the ten mandatory categories. The score summarizes quality; the pass decision follows the findings and mandatory checks.
+- Overall score (`/10`): `9.72`
+- Overall score (`/100`): `97.2`
+- Score calculation note: Simple average across the ten mandatory categories. The latest round's findings and mandatory checks, not the average, determine the review decision.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.6 | Both catalog-return and selected-effort runtime spines remain direct and independently traceable. | Final live GraphQL/UI and runtime evidence is not yet part of this source-review stage. | API/E2E should record parity and `turn/start` evidence without hardcoded model assumptions. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.7 | The change restores App Server authority and removes the competing AutoByteus capability policy. | Upstream rejection/default behavior still requires executable observation for arbitrary direct values. | API/E2E should make the delegated authority visible in runtime evidence. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.5 | The adapter exposes a tight `unknown -> string | null` contract and downstream thread APIs already accept the open string. | The function name can be read broadly without the focused tests/context. | Keep the open-string contract explicit in durable Codex integration documentation. |
-| `4` | `Separation of Concerns and File Placement` | 9.6 | The correction stays in the existing Codex adapter and does not mix reasoning policy with service-tier policy or frontend behavior. | The file serves catalog mapping and runtime-field resolution, though both are cohesive translations at the same boundary. | No source refactor is warranted; revisit only if unrelated Codex policies accumulate there. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | One trimmed `string | null` representation is reused across catalog and runtime paths. | The generic schema remains structurally typed as records, an existing project convention outside this narrow change. | No task-local change; preserve the single representation in future work. |
-| `6` | `Naming Quality and Local Readability` | 9.4 | The production simplification is immediately readable and test names state the intended semantics. | `normalize` alone does not encode that capability validation is deliberately excluded. | Durable docs and tests should continue to state that normalization is wire-shape-only. |
-| `7` | `API/E2E Readiness` | 9.2 | Source behavior, unit boundaries, and downstream obligations are clear enough for coverage investigation to start. | The existing live integration assertion is knowingly stale and realistic coverage has not run. | Replace it, after coverage investigation, with advertised-to-normalized parity and run/team evidence. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Unit coverage proves whitespace, case, malformed, duplicate, default, current, and future-value behavior; unchanged consumers carry the result to `turn/start`. | Live `max`/`ultra`, arbitrary direct input, and `ultra` team-runtime semantics remain unexecuted. | API/E2E must exercise those cases against a realistic App Server/team runtime. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 10.0 | The stale allowlist is removed outright with no compatibility seam, dual path, or fallback. | No material weakness found. | Maintain the clean-cut boundary; do not reintroduce a downstream union. |
-| `10` | `Cleanup Completeness` | 9.8 | Production obsolete policy is deleted and no dead helper or import remains. | The stale integration-test assertion remains pending by deliberate workflow ownership. | API/E2E should update or replace that durable coverage, then return it for re-review. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.7 | Coverage now spans both full reviewed spines and the meaningful team-runtime consequence. | Raw, catalog, and GraphQL snapshots are collected sequentially from a live upstream. | Keep live parity focused and diagnose upstream catalog churn separately if it appears. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.7 | Raw App Server metadata supplies expectations while AutoByteus boundaries are independently observed. | Direct-custom acceptance remains upstream-dependent by design. | Preserve the distinction between pass-through evidence and upstream support decisions. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.6 | GraphQL schema values, bootstrap config, and exact `turn/start` payload fields are asserted explicitly. | GraphQL `configSchema` remains a generic JSON object, an existing contract outside this task. | Keep typed test views narrow and avoid provider-specific frontend APIs. |
+| `4` | `Separation of Concerns and File Placement` | 9.6 | Each coverage mode remains in its established owner and no production/test-support module was added unnecessarily. | The live parity file includes setup, raw parsing, catalog, and GraphQL assertions in one file. | Split only if additional independent scenarios make the file materially harder to read. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | Test-only views are minimal and the expected-value transform is intentionally independent of production code. | Raw camel/snake aliases mirror the external adapter contract. | Update both raw evidence parsing and product mapping if the upstream protocol shape changes. |
+| `6` | `Naming Quality and Local Readability` | 9.5 | Names explain capability parity and runtime intent; table-driven cases are concise. | The GraphQL dependency-resolution setup is mechanically noisy but follows repository convention. | Reuse a project-wide GraphQL test harness only if the repository later establishes one. |
+| `7` | `API/E2E Readiness` | 9.8 | Required deterministic, live catalog/GraphQL, real-wire, frontend, and realistic team scenarios all passed. | Full unrelated Codex lifecycle suites were intentionally not run. | No task-local expansion; retain targeted coverage and rerun broader suites only when adjacent behavior changes. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.8 | Current, future-custom, whitespace, non-string, null, per-model, and `ultra` team semantics have direct evidence. | Future live catalogs may temporarily expose no `ultra`-capable model. | Treat that as an explicit environment/infeasibility result rather than weakening the durable test to a named fallback. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 10.0 | The stale assertion is removed and no compatibility union or bypass is present. | No material weakness found. | Do not reintroduce a downstream list as catalogs evolve. |
+| `10` | `Cleanup Completeness` | 9.9 | Obsolete coverage, temporary probes, generated state, and test workspaces were cleaned up; the worktree was clean at handoff. | Normal delivery-stage documentation and integration refresh remain. | Delivery should complete integrated-state docs and final handoff. |
 
 ## Findings
 
@@ -96,34 +98,34 @@ None.
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| API/E2E Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E coverage investigation and execution; not yet ready for delivery. |
-| Tests | Test quality is acceptable | Pass | Focused unit coverage exercises the corrected semantic boundary without a fixed production union. |
-| Tests | Test maintainability is acceptable | Pass | Tests use behavioral fixtures and the existing schema helper; downstream live parity coverage must remain dynamic. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No source findings; downstream obligations are explicitly enumerated. |
+| API/E2E Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for delivery's required branch refresh, integrated-state documentation assessment, and final handoff. |
+| Tests | Test quality is acceptable | Pass | Coverage asserts authority, exact transport, edge cases, and realistic `ultra` semantics at the correct boundaries. |
+| Tests | Test maintainability is acceptable | Pass | No permanent named-model snapshot or fixed reasoning union was added. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No findings; delivery receives the complete artifact and evidence chain. |
 
-Independent review execution:
+Independent round-2 review execution:
 
-- `pnpm exec vitest run tests/unit/agent-execution/backends/codex/codex-app-server-model-normalizer.test.ts tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts` -> Pass, 3 files / 48 tests.
-- `pnpm exec tsc -p tsconfig.build.json --noEmit` -> Pass.
-- `git diff --check 7bda8b9d^ 7bda8b9d` -> Pass.
-- Package-wide `pnpm typecheck` was not repeated because the implementation handoff records the pre-existing `rootDir: "src"` plus `include: ["src", "tests"]` TS6059 configuration blocker; the source-only TypeScript check is green.
+- `pnpm exec vitest run tests/unit/agent-execution/backends/codex/codex-app-server-model-normalizer.test.ts tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts` -> Pass, 3 files / 58 tests.
+- `RUN_CODEX_E2E=1 pnpm exec vitest run tests/integration/services/codex-model-catalog.integration.test.ts --reporter=verbose` -> Pass, 1/1 live parity test.
+- `git diff --check 1df583eb^ 1df583eb` -> Pass.
+- The reviewer did not repeat the 45.4-second live team run; its durable code and execution report evidence were inspected, and API/E2E recorded two successful targeted runs including the final run.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No wrapper, bypass, fallback, or dual-path behavior was added. |
-| No legacy old-behavior retention in changed scope | Pass | The closed capability set and rejection semantics were deleted. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No unused constant, branch, import, or helper remains from the removed policy. |
+| No backward-compatibility mechanisms in changed scope | Pass | Durable coverage contains no wrapper, fallback, dual path, or fixed legacy union. |
+| No legacy old-behavior retention in changed scope | Pass | The obsolete five-value predicate was removed rather than preserved alongside parity coverage. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No temporary test/probe or generated `.nuxt` state remains. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
-None in implementation-owned source. The stale fixed-union integration assertion is a known API/E2E coverage-investigation item rather than dead production code.
+None.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: The durable Codex integration contract should state that per-model advertised reasoning efforts are preserved as open non-empty strings and App Server remains authoritative.
+- Why: The durable Codex integration contract should record that per-model advertised reasoning efforts are preserved as open non-empty strings and App Server remains authoritative.
 - Files or areas likely affected: `autobyteus-server-ts/docs/modules/codex_integration.md` during delivery's integrated-state documentation pass.
 
 ## Classification
@@ -132,21 +134,19 @@ None in implementation-owned source. The stale fixed-union integration assertion
 
 ## Recommended Recipient
 
-- `api_e2e_engineer`
-- Produce the required coverage investigation artifact before durable coverage edits or final execution.
-- Validate raw App Server to catalog/GraphQL parity without a fixed union or permanent named-model dependency.
-- Capture `max` and `ultra` propagation to `turn/start`, realistic `ultra` team-runtime behavior, arbitrary trimmed non-empty direct input behavior, null/malformed handling, per-model non-invention, and unchanged `fast` service-tier behavior.
-- Return any repository-resident durable coverage changes through `code_reviewer` before delivery.
+- `delivery_engineer`
+- First refresh this ticket branch against the latest tracked `origin/personal` state, record the integrated-state result, then perform the docs-impact assessment/update and final handoff.
+- Preserve the cumulative artifact package and the post-API/E2E review result.
 
 ## Residual Risks
 
-- Live model catalogs change independently of AutoByteus; durable coverage must compare raw and mapped sequences dynamically rather than encode today's labels or model names as the authority.
-- `ultra` may activate App Server automatic task delegation, so selector and payload checks alone are insufficient; realistic team-runtime communication/tool invariants must be observed.
-- Direct non-empty values now reach App Server by design. Runtime evidence should distinguish successful pass-through from App Server acceptance/rejection/default behavior.
-- The package-wide TypeScript script remains affected by the pre-existing rootDir/include configuration mismatch recorded in the implementation handoff; it is not caused by this patch.
+- The live catalog and availability of an `ultra`-advertising model are upstream/environment dependent. The durable tests correctly fail or report infeasibility rather than hiding capability loss behind a fixed fallback.
+- Raw, catalog, and GraphQL values are sampled sequentially; unexpected upstream catalog churn during one run could require diagnosis rather than a product-code change.
+- Package-wide TypeScript remains affected by the documented pre-existing workspace/rootDir baseline; source-only TypeScript and executable changed-scope coverage are green.
+- Delivery's required remote refresh may expose integration changes that must be assessed against this evidence before finalization.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Score Summary: `9.55/10` (`95.5/100`); every mandatory category is at or above `9.0`.
-- Notes: Commit `7bda8b9d` cleanly implements the reviewed boundary correction with no source or architecture findings. API/E2E coverage investigation and execution may begin.
+- Score Summary: `9.72/10` (`97.2/100`); every mandatory category is at or above `9.0`.
+- Notes: Round 2 is authoritative. Durable coverage commit `1df583eb` is approved, API/E2E evidence is sufficient, and the cumulative package may proceed to delivery.
