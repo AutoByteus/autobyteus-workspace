@@ -240,12 +240,13 @@ describeCodexRuntime(
     };
 
     const fetchPreferredCodexToolModelIdentifier =
-      async (): Promise<string> => {
+      async (requiredReasoningEffort?: string): Promise<string> => {
         const query = `
       query Models($runtimeKind: String) {
         availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
           models {
             modelIdentifier
+            configSchema
           }
         }
       }
@@ -253,29 +254,46 @@ describeCodexRuntime(
 
         const result = await execGraphql<{
           availableLlmProvidersWithModels: Array<{
-            models: Array<{ modelIdentifier: string }>;
+            models: Array<{
+              modelIdentifier: string;
+              configSchema?: {
+                parameters?: Array<{
+                  name?: string;
+                  enum_values?: unknown[];
+                }>;
+              } | null;
+            }>;
           }>;
         }>(query, {
           runtimeKind: "codex_app_server",
         });
 
-        const allModelIdentifiers =
-          result.availableLlmProvidersWithModels.flatMap((provider) =>
-            provider.models
-              .map((model) => model.modelIdentifier)
-              .filter(
-                (modelIdentifier): modelIdentifier is string =>
-                  modelIdentifier.length > 0,
-              ),
-          );
-        if (allModelIdentifiers.length === 0) {
+        const allModels = result.availableLlmProvidersWithModels.flatMap(
+          (provider) =>
+            provider.models.filter(
+              (model) => model.modelIdentifier.length > 0,
+            ),
+        );
+        const eligibleModels = requiredReasoningEffort
+          ? allModels.filter((model) =>
+              model.configSchema?.parameters
+                ?.find((parameter) => parameter.name === "reasoning_effort")
+                ?.enum_values?.includes(requiredReasoningEffort),
+            )
+          : allModels;
+        const eligibleModelIdentifiers = eligibleModels.map(
+          (model) => model.modelIdentifier,
+        );
+        if (eligibleModelIdentifiers.length === 0) {
           throw new Error(
-            "No Codex runtime model was returned by availableLlmProvidersWithModels.",
+            requiredReasoningEffort
+              ? `No Codex runtime model advertises reasoning effort '${requiredReasoningEffort}'.`
+              : "No Codex runtime model was returned by availableLlmProvidersWithModels.",
           );
         }
 
         const override = process.env.CODEX_E2E_TOOL_MODEL?.trim();
-        if (override && allModelIdentifiers.includes(override)) {
+        if (override && eligibleModelIdentifiers.includes(override)) {
           return override;
         }
 
@@ -288,20 +306,20 @@ describeCodexRuntime(
           "gpt-5.1-codex-mini",
         ];
         for (const preferred of preferredOrder) {
-          if (allModelIdentifiers.includes(preferred)) {
+          if (eligibleModelIdentifiers.includes(preferred)) {
             return preferred;
           }
         }
 
-        const codexModel = allModelIdentifiers.find((modelIdentifier) =>
+        const codexModel = eligibleModelIdentifiers.find((modelIdentifier) =>
           modelIdentifier.toLowerCase().includes("codex"),
         );
-        return codexModel ?? allModelIdentifiers[0];
+        return codexModel ?? eligibleModelIdentifiers[0]!;
       };
 
-    it("routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime", async () => {
+    it("preserves send_message_to ping->pong->ping invariants with ultra reasoning", async () => {
       const unique = randomUUID();
-      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier("ultra");
       const workspaceRootPath = await mkdtemp(
         path.join(os.tmpdir(), "codex-team-roundtrip-e2e-"),
       );
@@ -413,6 +431,7 @@ Rules:
               memberName: "ping",
               agentDefinitionId: pingAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
+              llmConfig: { reasoning_effort: "ultra" },
               autoExecuteTools: true,
               skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
@@ -422,6 +441,7 @@ Rules:
               memberName: "pong",
               agentDefinitionId: pongAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
+              llmConfig: { reasoning_effort: "ultra" },
               autoExecuteTools: true,
               skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
