@@ -17,15 +17,9 @@ const effectiveConfig: SelfEvolutionEffectiveConfig = {
   enabled: true,
   triggerStrategy: "manual_only",
   evolverStrategy: "single_agent",
-  evolverAgentDefinitionId: "skill-evolver",
+  evolverAgentDefinitionId: "retrospective-skill-improver",
   resolvedAt: "2026-01-01T00:00:00.000Z",
   sourceTrace: [],
-};
-
-const workTraceRenderContext = {
-  subjectLabel: "Target",
-  rendererVersion: "agent-work-trace-renderer-v2",
-  fingerprint: "render-fingerprint",
 };
 
 const fakeRun = (runId: string, active = true) => ({
@@ -33,6 +27,37 @@ const fakeRun = (runId: string, active = true) => ({
   isActive: () => active,
   postUserMessage: vi.fn(async () => ({ accepted: true })),
   subscribeToEvents: vi.fn(() => () => undefined),
+});
+
+const buildWorkTracePackage = (input: {
+  workTraceRootPath: string;
+  manifestPath: string;
+  workTraceFilePath: string;
+}) => ({
+  target: { kind: "agent_run" as const, runId: "target-run-1" },
+  targetDisplayName: "Target",
+  workTraceRootPath: input.workTraceRootPath,
+  manifestPath: input.manifestPath,
+  summaryHash: "summary-hash",
+  manifest: {
+    schemaVersion: 3 as const,
+    target: { kind: "agent_run" as const, runId: "target-run-1" },
+    targetDisplayName: "Target",
+    generatedAt: "2026-01-01T00:00:00.000Z",
+    workTraceRootPath: input.workTraceRootPath,
+    manifestPath: input.manifestPath,
+    files: [{
+      sourceId: "active",
+      sourceKind: "active" as const,
+      sourceDisplayName: "active raw traces",
+      fileName: "work_trace_active.md",
+      filePath: input.workTraceFilePath,
+      recordCount: 2,
+      firstTimestamp: "2026-01-01T00:00:00.000Z",
+      lastTimestamp: "2026-01-01T00:00:01.000Z",
+      generatedAt: "2026-01-01T00:00:02.000Z",
+    }],
+  },
 });
 
 describe("SelfEvolutionCompanionSessionService", () => {
@@ -73,7 +98,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
       agentRunService: agentRunService as any,
       settingsResolver: {
         resolve: vi.fn(async () => ({
-          agentDefinitionId: "skill-evolver",
+          agentDefinitionId: "retrospective-skill-improver",
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: "companion-model",
           llmConfig: null,
@@ -111,7 +136,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
       status: "active",
       currentEvolverRunId: "restorable-companion",
       priorEvolverRunIds: [],
-      evolverAgentDefinitionId: "skill-evolver",
+      evolverAgentDefinitionId: "retrospective-skill-improver",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       llmModelIdentifier: "old-model",
       workspaceRootPath: tempRoot,
@@ -164,7 +189,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
       status: "active",
       currentEvolverRunId: "dead-companion",
       priorEvolverRunIds: [],
-      evolverAgentDefinitionId: "skill-evolver",
+      evolverAgentDefinitionId: "retrospective-skill-improver",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       llmModelIdentifier: "old-model",
       workspaceRootPath: tempRoot,
@@ -189,7 +214,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
       evolverSessionStore: store,
       settingsResolver: {
         resolve: vi.fn(async () => ({
-          agentDefinitionId: "skill-evolver",
+          agentDefinitionId: "retrospective-skill-improver",
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: "new-model",
           llmConfig: null,
@@ -210,7 +235,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
     });
   });
 
-  it("posts the concise self-evolution task packet through the companion request path and registers the final-message grant", async () => {
+  it("posts the concise Skill Improvement task packet through the improver request path and registers the final-message grant", async () => {
     const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "work_traces", "work_traces_manifest.json");
     const workTraceRootPath = path.dirname(manifestPath);
     const workTraceFilePath = path.join(workTraceRootPath, "work_trace_active.md");
@@ -260,7 +285,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
     const result = await service.postSelfImproveRequest({
       target: { kind: "agent_run", runId: "target-run-1" },
       companionRunId: "companion-run-1",
-      evolverAgentDefinitionId: "skill-evolver",
+      evolverAgentDefinitionId: "retrospective-skill-improver",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       llmModelIdentifier: "model",
       state: {
@@ -269,7 +294,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
         status: "active",
         currentEvolverRunId: "companion-run-1",
         priorEvolverRunIds: ["prior-companion-internal"],
-        evolverAgentDefinitionId: "skill-evolver",
+        evolverAgentDefinitionId: "retrospective-skill-improver",
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         llmModelIdentifier: "model",
         workspaceRootPath: tempRoot,
@@ -286,32 +311,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
       evolutionRunId: "evo-integrated-post",
       requestedAt: "2026-01-01T00:00:00.000Z",
       targetAgentRunId: "target-run-1",
-      workTracePackage: {
-        target: { kind: "agent_run", runId: "target-run-1" },
-        workTraceRootPath,
-        manifestPath,
-        renderContext: workTraceRenderContext,
-        summaryHash: "summary-hash",
-        manifest: {
-          schemaVersion: 2,
-          target: { kind: "agent_run", runId: "target-run-1" },
-          renderContext: workTraceRenderContext,
-          generatedAt: "2026-01-01T00:00:00.000Z",
-          workTraceRootPath,
-          manifestPath,
-          files: [{
-            sourceId: "active",
-            sourceKind: "active",
-            sourceFingerprint: "fingerprint",
-            fileName: "work_trace_active.md",
-            filePath: workTraceFilePath,
-            recordCount: 2,
-            firstTimestamp: "2026-01-01T00:00:00.000Z",
-            lastTimestamp: "2026-01-01T00:00:01.000Z",
-            generatedAt: "2026-01-01T00:00:02.000Z",
-          }],
-        },
-      },
+      workTracePackage: buildWorkTracePackage({ workTraceRootPath, manifestPath, workTraceFilePath }),
       editableSkillTargets: [{
         skillName: "durable-skill",
         skillRootPath,
@@ -382,7 +382,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
     });
   });
 
-  it("builds a concise path-only companion trigger with package tree metadata", async () => {
+  it("builds a concise path-only improver trigger with package tree metadata", async () => {
     const manifestPath = path.join(tempRoot, "memory", "agents", "target-run-1", "work_traces", "work_traces_manifest.json");
     const workTraceRootPath = path.dirname(manifestPath);
     const workTraceFilePath = path.join(workTraceRootPath, "work_trace_active.md");
@@ -396,32 +396,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
       evolutionRunId: "evo-path-only",
       requestedAt: "2026-01-01T00:00:00.000Z",
       targetAgentRunId: "target-run-1",
-      workTracePackage: {
-        target: { kind: "agent_run", runId: "target-run-1" },
-        workTraceRootPath,
-        manifestPath,
-        renderContext: workTraceRenderContext,
-        summaryHash: "summary-hash",
-        manifest: {
-          schemaVersion: 2,
-          target: { kind: "agent_run", runId: "target-run-1" },
-          renderContext: workTraceRenderContext,
-          generatedAt: "2026-01-01T00:00:00.000Z",
-          workTraceRootPath,
-          manifestPath,
-          files: [{
-            sourceId: "active",
-            sourceKind: "active",
-            sourceFingerprint: "fingerprint",
-            fileName: "work_trace_active.md",
-            filePath: workTraceFilePath,
-            recordCount: 2,
-            firstTimestamp: "2026-01-01T00:00:00.000Z",
-            lastTimestamp: "2026-01-01T00:00:01.000Z",
-            generatedAt: "2026-01-01T00:00:02.000Z",
-          }],
-        },
-      },
+      workTracePackage: buildWorkTracePackage({ workTraceRootPath, manifestPath, workTraceFilePath }),
       editableSkillTargets: [{
         skillName: "durable-skill",
         skillRootPath,
@@ -431,7 +406,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
     }, {
       target: { kind: "agent_run", runId: "target-run-1" },
       companionRunId: "companion-run-1",
-      evolverAgentDefinitionId: "skill-evolver",
+      evolverAgentDefinitionId: "retrospective-skill-improver",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       llmModelIdentifier: "model",
       state: {
@@ -440,7 +415,7 @@ describe("SelfEvolutionCompanionSessionService", () => {
         status: "active",
         currentEvolverRunId: "companion-run-1",
         priorEvolverRunIds: ["prior-companion"],
-        evolverAgentDefinitionId: "skill-evolver",
+        evolverAgentDefinitionId: "retrospective-skill-improver",
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         llmModelIdentifier: "model",
         workspaceRootPath: tempRoot,
@@ -458,8 +433,9 @@ describe("SelfEvolutionCompanionSessionService", () => {
     expect(message.content).toContain(`Work trace manifest: ${manifestPath}`);
     expect(message.content).toContain(`Work trace root: ${workTraceRootPath}`);
     expect(message.content).toContain(`1. ${workTraceFilePath}`);
-    expect(message.content).toContain("Self-improvement requested for the target agent.");
+    expect(message.content).toContain("Skill Improvement requested for the target run/agent.");
     expect(message.content).toContain("Use the listed work trace files as the evidence package.");
+    expect(message.content).toContain("The task message and work trace manifest provide the target identity.");
     expect(message.content).toContain("Editable skill packages:");
     expect(message.content).toContain(`Root directory: ${skillRootPath}`);
     expect(message.content).toContain("Package tree:\n   .");

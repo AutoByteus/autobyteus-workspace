@@ -65,7 +65,7 @@ Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-a
 Built-in templates are centralized under `src/built-in-agents/templates/`:
 
 - `memory-compactor/` syncs the normal shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor**.
-- `skill-evolver/` syncs the normal shared `agents/autobyteus-skill-evolver/` definition with display name **Skill Self-Evolver**.
+- `retrospective-skill-improver/` syncs the normal shared `agents/autobyteus-skill-evolver/` definition with display name **Retrospective Skill Improver**. The persisted definition id remains `autobyteus-skill-evolver` until a separate runtime/API rename is approved.
 
 The built-in-agent bootstrapper owns this lifecycle:
 

@@ -33,7 +33,7 @@ describe("SelfEvolutionRecordLifecycle direct outcome summaries", () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 
-  it("uses helper-authored send_message_to summary without sending duplicate generic notification", async () => {
+  it("uses improver-authored send_message_to summary without sending duplicate generic notification", async () => {
     const notify = vi.fn(async () => ({ status: "sent_active_idle" }));
     const lifecycle = new SelfEvolutionRecordLifecycle({
       runStore: new SelfEvolutionRunStore(tempDir),
@@ -44,14 +44,14 @@ describe("SelfEvolutionRecordLifecycle direct outcome summaries", () => {
 
     const finalRecord = await lifecycle.finalizeRecord(initial, "completed", {
       status: "send_message_sent",
-      message: "helper outcome delivered",
+      message: "improver outcome delivered",
       targetAgentRunId: "target-run",
       evolverRunId: "evolver-run",
     });
 
     expect(finalRecord.notificationSummary).toEqual({
       status: "send_message_sent",
-      message: "helper outcome delivered",
+      message: "improver outcome delivered",
       targetAgentRunId: "target-run",
       evolverRunId: "evolver-run",
     });

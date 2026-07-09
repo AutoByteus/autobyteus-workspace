@@ -87,12 +87,12 @@ export class SelfEvolutionCompanionSessionService {
       const triggerMessage = await this.triggerMessageBuilder.build(request, session);
       const postResult = await run.postUserMessage(triggerMessage);
       if (!postResult.accepted) {
-        throw new Error(postResult.message ?? `Self-evolver companion '${session.companionRunId}' rejected the request.`);
+        throw new Error(postResult.message ?? `Retrospective Skill Improver '${session.companionRunId}' rejected the request.`);
       }
       await this.agentRunService.recordRunActivity(run, {
-        summary: `Self-evolution companion request for ${context.agentName}`,
+        summary: `Skill Improvement request for ${context.agentName}`,
       }).catch((error) => {
-        console.warn(`Failed to record self-evolver companion activity for '${session.companionRunId}': ${String(error)}`);
+        console.warn(`Failed to record Retrospective Skill Improver activity for '${session.companionRunId}': ${String(error)}`);
       });
       await this.evolverSessionStore.write(context, {
         ...session.state,
@@ -203,7 +203,7 @@ export class SelfEvolutionCompanionSessionService {
   private requireActiveRun(runId: string): AgentRun {
     const run = this.agentRunService.getAgentRun(runId);
     if (!run?.isActive()) {
-      throw new Error(`Self-evolver companion run '${runId}' is not active.`);
+      throw new Error(`Retrospective Skill Improver run '${runId}' is not active.`);
     }
     return run;
   }
@@ -239,7 +239,7 @@ export class SelfEvolutionCompanionSessionService {
         status: "send_message_not_attempted",
         targetAgentRunId: input.targetAgentRunId,
         evolverRunId: input.evolverRunId,
-        message: "Self-evolver completed but did not call send_message_to with a final outcome.",
+        message: "Retrospective Skill Improver completed but did not call send_message_to with a final outcome.",
       };
     }
     if (latestUsage.accepted) {
@@ -247,7 +247,7 @@ export class SelfEvolutionCompanionSessionService {
         status: "send_message_sent",
         targetAgentRunId: input.targetAgentRunId,
         evolverRunId: input.evolverRunId,
-        message: latestUsage.message ?? "Self-evolver delivered its final outcome message.",
+        message: latestUsage.message ?? "Retrospective Skill Improver delivered its final outcome message.",
       };
     }
     return {

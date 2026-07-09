@@ -88,7 +88,7 @@ Grants do not discover, resolve, restore, or revive targets. Target liveness is
 still decided only by `AgentRunManager.getActiveRun(...)`, and rejected grant
 checks return typed delivery failures before the target receives input.
 
-The Skill Self-Evolver companion uses this seam to send at most one
+The Retrospective Skill Improver uses this seam to send at most one
 `skill_update` message to the active target run after meaningful durable
 skill package file changes. That message should explain what changed, why it
 matters, and how the target should use or reload the updated guidance, while its

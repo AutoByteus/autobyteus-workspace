@@ -20,7 +20,7 @@ export class CompanionRunCompletionWatcher {
       return;
     }
     if (event.eventType === AgentRunEventType.ERROR || event.statusHint === "ERROR") {
-      this.fail(new Error(`Self-evolver companion run '${this.runId}' failed.`));
+      this.fail(new Error(`Retrospective Skill Improver run '${this.runId}' failed.`));
       return;
     }
     if (event.eventType === AgentRunEventType.ASSISTANT_COMPLETE) {
@@ -40,7 +40,7 @@ export class CompanionRunCompletionWatcher {
       let waiter: CompletionWaiter;
       const timer = setTimeout(() => {
         this.removeWaiter(waiter);
-        reject(new Error(`Self-evolver companion run '${this.runId}' timed out after ${timeoutMs}ms.`));
+        reject(new Error(`Retrospective Skill Improver run '${this.runId}' timed out after ${timeoutMs}ms.`));
       }, timeoutMs);
       timer.unref?.();
       waiter = { resolve, reject, timer };

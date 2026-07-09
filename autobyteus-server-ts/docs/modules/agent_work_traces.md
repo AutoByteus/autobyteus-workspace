@@ -5,30 +5,32 @@
 `src/agent-work-traces` owns the shared Agent Work Trace Projection capability.
 It converts canonical raw trace files for a target run into readable Markdown
 work trace files that other features can pass around by path. Work traces are
-derived cache artifacts, not canonical evidence; raw traces remain authoritative.
+derived generated artifacts, not canonical evidence; raw traces remain
+authoritative.
 
-The first consumer is manual self-evolution. Future memory compaction work should
-consume this shared package instead of importing self-evolution internals or
-duplicating rendering policy.
+The first consumer is manual Skill Improvement. Future memory compaction work
+should consume this shared package instead of importing self-evolution internals
+or duplicating rendering policy.
 
 ## Public Boundary
 
 Consumers call `AgentWorkTraceProjectionService.ensureCurrent({ target,
-memoryDir, agentName })` and receive an `AgentWorkTracePackage`. The context is
-intentionally small:
+memoryDir, targetDisplayName })` and receive an `AgentWorkTracePackage`. The
+context is intentionally small:
 
 - `target`: `{ kind: "agent_run", runId }` or `{ kind: "team_member_run",
   teamRunId, memberRunId }`
 - `memoryDir`: the target run/member memory directory whose raw trace files are
   being projected
-- `agentName`: the target agent display name used to render agent-authored
-  Markdown subject labels
+- `targetDisplayName`: optional metadata-only target display name
 
-The projection package includes the shared work trace root path, manifest path,
-manifest metadata, render context metadata, target identity, file entries, and a
-summary hash over target, render context, and source fingerprints. Consumers
-should use the public projection service and package only; source reading,
-rendering, redaction, and store classes remain inside the shared capability.
+The projection package includes target identity, optional `targetDisplayName`,
+the shared work trace root path, manifest path, manifest metadata, file entries,
+and a summary hash over target identity plus rendered evidence content. Target
+display names are metadata only; they are not Markdown body speaker labels.
+Consumers should use the public projection service and package only; source
+reading, rendering, redaction, and store classes remain inside the shared
+capability.
 
 ## Source Inputs
 
@@ -57,10 +59,10 @@ Projection writes derived files directly under the target memory directory:
 ```
 
 `AgentWorkTraceStore` owns this layout, manifest writing, file naming, and atomic
-writes. Archive segment work trace files are reused when the source fingerprint
-and normalized render context fingerprint are unchanged; the active trace file is
-regenerated when active raw trace content changes. The manifest is rewritten for
-the current package on each projection.
+writes. Current projection regenerates work trace Markdown files and rewrites the
+manifest for each `ensureCurrent()` call. It does not use renderer versions,
+render fingerprints, source fingerprints, old manifest fallback, dual rendering,
+or generated-file compatibility reads.
 
 The previous self-evolution-owned cache root
 `<memoryDir>/self_evolution/work_traces/` is obsolete. The current runtime does
@@ -70,15 +72,23 @@ traces are regenerable from canonical raw traces.
 ## Rendering And Privacy
 
 `AgentWorkTraceRenderer` converts raw trace records through the run-history
-historical replay transformer and emits readable Markdown for user messages,
-target-agent messages, reasoning, meaningful tool calls, tool results/errors,
-corrections, retries, feedback signals, and compaction-boundary notes when
-present.
+historical replay transformer and emits readable Markdown for visible user
+messages, visible assistant messages, tool calls/results/errors, corrections,
+retries, feedback signals, and neutral trace events such as compaction-boundary
+notes when present.
 
-Agent-authored entries use the normalized target agent display name as the
-subject label, preserving configured casing while trimming and collapsing
-whitespace. Blank display names fall back to `Agent`. Tool sections use
-`<Agent Name> tool call:` and user messages remain `user:`.
+Each Markdown file starts exactly with `# Work Trace`. Body entries use canonical
+role/event labels:
+
+- `user:` for user-originated content
+- `assistant:` for assistant-originated visible message content
+- `tool:` for tool calls/results/errors, with `name`, `status`, and optional
+  `arguments`, `result`, or `error` sections
+- `trace_event:` for neutral provider/projection notes
+
+Separate assistant/internal reasoning records are omitted from the readable body
+and from the improver-visible summary hash. Visible rationale written as normal
+assistant message content remains visible as `assistant:` content.
 
 `AgentWorkTraceRedactor` hides backend/protocol noise and common sensitive
 values before content reaches the Markdown files. Hidden or redacted content
@@ -90,12 +100,12 @@ references.
 ## Consumer Contract
 
 Self-evolution is a consumer, not the projection owner. Before it triggers the
-visible skill-evolver companion, `SelfEvolutionService` asks the shared
-projection service for a current package and sends only manifest/root/file paths
-and summary metadata through its path-based companion request. Self-evolution
-session metadata keys may remain self-evolution-specific because they describe
-the companion workflow state, but the generated files and rendering policy are
-owned by `agent-work-traces`.
+Retrospective Skill Improver, `SelfEvolutionService` asks the shared projection
+service for a current package and sends only manifest/root/file paths and summary
+metadata through its path-based Skill Improvement request. Self-evolution session
+metadata keys may remain self-evolution-specific because they describe workflow
+state, but the generated files and rendering policy are owned by
+`agent-work-traces`.
 
 A background projection worker is not part of the current runtime. Freshness is
 provided on demand by each `ensureCurrent()` call.
@@ -107,7 +117,7 @@ provided on demand by each `ensureCurrent()` call.
 - `agent-memory` must not import work-trace or self-evolution projection types.
 - Consumers should not instantiate `AgentWorkTraceSourceReader`,
   `AgentWorkTraceRenderer`, or `AgentWorkTraceStore` directly.
-- Do not add compatibility wrappers, dual paths, or old generated-path fallback
-  reads for `<memoryDir>/self_evolution/work_traces/`.
+- Do not add compatibility wrappers, dual paths, old manifest fallback, or old
+  generated-path reads for `<memoryDir>/self_evolution/work_traces/`.
 - Keep compaction-specific fields out of the shared package until the memory
   compaction redesign defines them.

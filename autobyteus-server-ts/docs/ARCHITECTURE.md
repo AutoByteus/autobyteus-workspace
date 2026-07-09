@@ -112,11 +112,10 @@ Each major business area is isolated under `src/<module>` and usually contains:
 The shared work-trace subsystem lives under `src/agent-work-traces`. It owns the
 raw-trace-to-readable-Markdown projection boundary for target run memory
 directories. Consumers call
-`AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir, agentName })`;
+`AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir, targetDisplayName })`;
 the capability reads canonical raw traces through
 `RawTraceFileSourceService`, writes derived files under
-`<memoryDir>/work_traces/`, and returns a manifest/package with file paths,
-render-context metadata, and a summary hash. The older self-evolution-owned
+`<memoryDir>/work_traces/`, and returns a clean manifest/package with target metadata, file paths, and a summary hash over rendered evidence. The older self-evolution-owned
 generated cache root `<memoryDir>/self_evolution/work_traces/` is not a runtime
 fallback or dual-write target because work traces are regenerable from canonical
 raw traces.
@@ -131,8 +130,8 @@ live target state, not from launch-time run overrides or stored launch snapshots
 Agent/team definitions and launch inputs do not own self-evolution eligibility.
 Manual starts consume the shared Agent Work Trace Projection package for the
 selected standalone run or team member, then activate or reuse a visible
-target-scoped companion `AgentRun` and send it a small path-based trigger. The
-companion reads work trace files, may edit only exact configured skill roots, and
+target-scoped Retrospective Skill Improver `AgentRun` and send it a small path-based trigger. The
+Retrospective Skill Improver reads work trace files, may edit only exact configured skill roots, and
 can report a meaningful durable skill update through the grant-scoped
 `send_message_to` contract. A required startup migration removes obsolete
 `selfEvolutionEffective` fields from existing run and team-member metadata. The

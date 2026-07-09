@@ -1,9 +1,16 @@
 import crypto from "node:crypto";
 import type { AgentWorkTraceFile, AgentWorkTracePackage, AgentWorkTraceProjectionContext } from "../domain/work-traces.js";
-import { buildAgentWorkTraceRenderContext } from "./agent-work-trace-render-context.js";
 import { AgentWorkTraceRenderer } from "./agent-work-trace-renderer.js";
 import { AgentWorkTraceSourceReader } from "./agent-work-trace-source-reader.js";
 import { AgentWorkTraceStore } from "./agent-work-trace-store.js";
+
+const normalizeTargetDisplayName = (value: string | null | undefined): string | null => {
+  const normalized = value?.trim().replace(/\s+/g, " ") ?? "";
+  return normalized.length > 0 ? normalized : null;
+};
+
+const sha256 = (value: string): string =>
+  crypto.createHash("sha256").update(value).digest("hex");
 
 export class AgentWorkTraceProjectionService {
   constructor(private readonly deps: {
@@ -14,48 +21,37 @@ export class AgentWorkTraceProjectionService {
 
   async ensureCurrent(context: AgentWorkTraceProjectionContext): Promise<AgentWorkTracePackage> {
     const generatedAt = new Date().toISOString();
-    const renderContext = buildAgentWorkTraceRenderContext(context.agentName);
-    const existing = await this.store.readManifest(context);
-    const existingBySource = new Map(
-      (existing?.files ?? []).map((file) => [file.sourceId, file]),
-    );
-    const existingRenderFingerprint = existing?.renderContext?.fingerprint ?? null;
+    const targetDisplayName = normalizeTargetDisplayName(context.targetDisplayName);
     const sources = await this.sourceReader.listSources(context);
     const files: AgentWorkTraceFile[] = [];
+    const renderedEvidence: Array<{ sourceId: string; contentHash: string }> = [];
 
     for (const source of sources) {
-      const prior = existingBySource.get(source.sourceId);
-      if (
-        source.kind === "archive_segment" &&
-        prior?.sourceFingerprint === source.fingerprint &&
-        existingRenderFingerprint === renderContext.fingerprint
-      ) {
-        files.push(prior);
-        continue;
-      }
-      const content = this.renderer.renderSource(source, renderContext);
+      const content = this.renderer.renderSource(source);
       files.push(await this.store.writeTraceFile({ context, source, content, generatedAt }));
+      renderedEvidence.push({
+        sourceId: source.sourceId,
+        contentHash: sha256(content),
+      });
     }
 
-    const manifest = await this.store.writeManifest({ context, files, generatedAt, renderContext });
-    const summaryHash = crypto.createHash("sha256")
-      .update(JSON.stringify({
-        target: context.target,
-        renderContextFingerprint: renderContext.fingerprint,
-        files: manifest.files.map((file) => ({
-          sourceId: file.sourceId,
-          fingerprint: file.sourceFingerprint,
-          recordCount: file.recordCount,
-        })),
-      }))
-      .digest("hex");
+    const manifest = await this.store.writeManifest({
+      context,
+      files,
+      generatedAt,
+      targetDisplayName,
+    });
+    const summaryHash = sha256(JSON.stringify({
+      target: context.target,
+      files: renderedEvidence,
+    }));
 
     return {
       target: context.target,
+      targetDisplayName,
       workTraceRootPath: manifest.workTraceRootPath,
       manifestPath: manifest.manifestPath,
       manifest,
-      renderContext,
       summaryHash,
     };
   }

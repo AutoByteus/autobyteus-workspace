@@ -1,6 +1,6 @@
 import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../../run-history/projection/historical-replay-event-types.js";
 import { buildHistoricalReplayEvents } from "../../run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
-import type { AgentWorkTraceRenderContext, AgentWorkTraceSource } from "../domain/work-traces.js";
+import type { AgentWorkTraceSource } from "../domain/work-traces.js";
 import { AgentWorkTraceRedactor } from "./agent-work-trace-redactor.js";
 
 const toIso = (ts: number | null): string => {
@@ -28,57 +28,46 @@ const stringifyVisible = (value: unknown): string => {
 export class AgentWorkTraceRenderer {
   constructor(private readonly deps: { redactor?: AgentWorkTraceRedactor } = {}) {}
 
-  renderSource(source: AgentWorkTraceSource, renderContext: AgentWorkTraceRenderContext): string {
+  renderSource(source: AgentWorkTraceSource): string {
     const events = buildHistoricalReplayEvents(source.records);
     const lines: string[] = [];
-    lines.push(`# Agent Work Trace: ${source.displayName}`);
-    lines.push("");
-    lines.push(`Source: ${source.kind}`);
-    lines.push(`Records: ${source.recordCount}`);
-    lines.push(`First timestamp: ${source.firstTimestamp ? toIso(source.firstTimestamp) : "n/a"}`);
-    lines.push(`Last timestamp: ${source.lastTimestamp ? toIso(source.lastTimestamp) : "n/a"}`);
+    lines.push("# Work Trace");
     lines.push("");
 
     for (const event of events) {
-      const rendered = this.renderEvent(event, renderContext);
+      const rendered = this.renderEvent(event);
       if (rendered) {
         lines.push(rendered);
         lines.push("");
       }
     }
 
-    return `${lines.join("\n").trim()}\n`;
+    return `${lines.join("\n").trimEnd()}\n`;
   }
 
-  private renderEvent(
-    event: HistoricalReplayEvent,
-    renderContext: AgentWorkTraceRenderContext,
-  ): string | null {
+  private renderEvent(event: HistoricalReplayEvent): string | null {
     if (event.kind === "message") {
-      const role = event.role === "user" ? "user" : renderContext.subjectLabel;
+      const role = event.role === "user" ? "user" : "assistant";
       const content = this.clean(event.content ?? "");
       return content ? `[${toIso(event.ts)}] ${role}:\n${content}` : null;
     }
     if (event.kind === "reasoning") {
-      const content = this.clean(event.content ?? "");
-      return content ? `[${toIso(event.ts)}] ${renderContext.subjectLabel} reasoning:\n${content}` : null;
+      return null;
     }
     if (event.kind === "tool") {
-      return this.renderTool(event, renderContext);
+      return this.renderTool(event);
     }
     if (event.kind === "compaction") {
-      return `[${toIso(event.ts)}] ${renderContext.subjectLabel}:\n${this.clean(event.message)}`;
+      const message = this.clean(event.message);
+      return message ? `[${toIso(event.ts)}] trace_event:\n${message}` : null;
     }
     return null;
   }
 
-  private renderTool(
-    event: HistoricalReplayToolEvent,
-    renderContext: AgentWorkTraceRenderContext,
-  ): string {
+  private renderTool(event: HistoricalReplayToolEvent): string {
     const lines: string[] = [];
-    lines.push(`[${toIso(event.ts)}] ${renderContext.subjectLabel} tool call:`);
-    lines.push(`tool: ${this.clean(event.toolName)}`);
+    lines.push(`[${toIso(event.ts)}] tool:`);
+    lines.push(`name: ${this.clean(event.toolName)}`);
     lines.push(`status: ${event.status}`);
     if (event.toolArgs && Object.keys(event.toolArgs).length > 0) {
       lines.push("arguments:");

@@ -1,6 +1,6 @@
 # Package Improvement Playbook
 
-Skill package improvement is not limited to editing `SKILL.md`.
+Skill package improvement can target `SKILL.md`, references, examples, templates, scripts, or package organization.
 
 ## Choose The Right Change Shape
 
@@ -29,13 +29,10 @@ Use when guidance exists but file boundaries or flow are unclear.
 - `SKILL.md`: entrypoint, trigger rules, routing to references, concise mandatory rules.
 - `references/*.md`: detailed methods, SOPs, examples, troubleshooting.
 - `templates/*`: reusable output structures or document/code skeletons.
-- scripts/assets: only when the skill already uses them or the new workflow needs reusable executable support.
+- `scripts/*` and assets: reusable executable or static support when the workflow needs it.
 
-## Avoid Two Extremes
+## Keep Package Shape Balanced
 
-- Giant entry file: do not append every lesson to `SKILL.md`.
-- Over-fragmentation: do not create many tiny files when one coherent reference is clearer.
-
-## Cleanup Is Valid
-
-Remove or merge obsolete/misleading guidance when better package structure makes it unnecessary.
+- Use `SKILL.md` for what must be seen immediately.
+- Use one coherent reference when the lesson needs detail.
+- Merge or remove obsolete guidance when clearer package structure makes it unnecessary.

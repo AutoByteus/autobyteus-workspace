@@ -113,7 +113,11 @@ export class SelfEvolutionService {
         workspaceRootPath: context.workspaceRootPath,
       });
 
-      const workTracePackage = await this.workTraceProjectionService.ensureCurrent(context);
+      const workTracePackage = await this.workTraceProjectionService.ensureCurrent({
+        target: context.target,
+        memoryDir: context.memoryDir,
+        targetDisplayName: context.agentName,
+      });
       record = await this.recordLifecycle.patchRecord(record, {
         status: "launching_evolver",
         evidenceSummaryHash: workTracePackage.summaryHash,
