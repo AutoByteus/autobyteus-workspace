@@ -2,136 +2,154 @@
 
 ## Release / Publication / Deployment Scope
 
-Delivery-stage latest-base integration refresh, docs sync, final user-verification handoff, and post-verification repository finalization are in scope. No release, publication, deployment, tag, or version bump has been requested or performed before user verification.
+Finalize the validated `docker-launcher-preserve-upgrade-image-ref` change, archive the ticket, merge the fix into `personal`, cut patch release `v1.4.6`, push the release tag, and hand off the resulting asynchronous GitHub publication state truthfully.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/tickets/done/docker-launcher-preserve-upgrade-image-ref/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-launcher-preserve-upgrade-image-ref/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Summary records current tracked base, already-current integration result, delivery rerun checks, docs sync, upstream API/E2E outcome, residual environment limitations, and the verification request.
+- Notes: Finalized to record archive, merge, release commit/tag, release URL, verification checks, cleanup, and current asynchronous rollout state.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal` / `personal` from upstream bootstrap context.
-- Latest tracked remote base reference checked: `origin/personal@7508f3de95c7aebf2d5a2816e95e81023324aadf` (`chore(delivery): record token meter team total finalization`).
-- Base advanced since bootstrap or previous refresh: `No` — fetch left `origin/personal` at the same SHA as the ticket branch `HEAD`.
+- Latest tracked remote base reference checked: `origin/personal@7508f3de95c7aebf2d5a2816e95e81023324aadf`.
+- Base advanced since bootstrap or previous refresh: `No`
 - New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed` — no base integration was required, so the reviewed/validated candidate state was not at merge/rebase risk.
+- Local checkpoint commit result: `Not needed`
 - Integration method: `Already current`
 - Integration result: `Completed`
 - Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): N/A — although no rerun was required by base movement, delivery reran focused smoke/coverage checks anyway.
+- No-rerun rationale (only if no new base commits were integrated): N/A — focused checks were rerun anyway.
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` at latest delivery fetch (`origin/personal@7508f3de95c7aebf2d5a2816e95e81023324aadf`).
+- Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): N/A
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification reference: User message on 2026-07-09: "now finalize and release a new version."
-- Renewed verification required after later re-integration: `No` at this stage
+- Renewed verification required after later re-integration: `No` — final target did not advance after user verification.
 - Renewed verification received: `Not needed`
 - Renewed verification reference: N/A
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/tickets/done/docker-launcher-preserve-upgrade-image-ref/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-launcher-preserve-upgrade-image-ref/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/README.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/autobyteus-server-ts/README.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/autobyteus-server-ts/docker/README.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/scripts/public/docker/autobyteus-docker.d/bash/core.sh`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/autobyteus-web/localization/messages/en/settings.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/autobyteus-web/localization/messages/zh-CN/settings.ts`
+  - `README.md`
+  - `autobyteus-server-ts/README.md`
+  - `autobyteus-server-ts/docker/README.md`
+  - `scripts/public/docker/autobyteus-docker.d/bash/core.sh`
+  - `scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1`
+  - `autobyteus-web/localization/messages/en/settings.ts`
+  - `autobyteus-web/localization/messages/zh-CN/settings.ts`
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No` — held for explicit user verification.
-- Archived ticket path: N/A before verification.
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-launcher-preserve-upgrade-image-ref`
 
 ## Version / Tag / Release Commit
 
-Release requested by user on 2026-07-09. Planned patch release version: `1.4.6` / tag `v1.4.6`.
+- Ticket branch commit: `d26d7866dca5646b8987a95d064476a16a19adf6`
+- Merge commit into `personal`: `c1d2da124ab48e2007763bf5eef133fee81a2bca`
+- Release version: `1.4.6`
+- Release tag: `v1.4.6`
+- Release commit: `bc9844acbbc389165ad1157f5dd5045a6607f93f`
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.6
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/tickets/done/docker-launcher-preserve-upgrade-image-ref/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-launcher-preserve-upgrade-image-ref/investigation-notes.md`
 - Ticket branch: `codex/docker-launcher-preserve-upgrade-image-ref`
-- Ticket branch commit result: Not started — awaiting explicit user verification.
-- Ticket branch push result: Not started.
+- Ticket branch commit result: `Completed` — `d26d7866dca5646b8987a95d064476a16a19adf6`.
+- Ticket branch push result: `Completed` — pushed to `origin/codex/docker-launcher-preserve-upgrade-image-ref` before target merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A before verification.
-- Delivery-owned edits protected before re-integration: `Not needed` before verification.
-- Re-integration before final merge result: `Not needed` before verification.
-- Target branch update result: Not started.
-- Merge into target result: Not started.
-- Push target branch result: Not started.
-- Repository finalization status: `Blocked` — intentionally held for explicit user verification, not a technical blocker.
-- Blocker (if applicable): Awaiting user verification.
+- Target advanced after user verification: `No` — finalization refresh confirmed `origin/personal` remained at `7508f3de95c7aebf2d5a2816e95e81023324aadf`.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed` — temporary finalization branch was created from `origin/personal`.
+- Merge into target result: `Completed` — merge commit `c1d2da124ab48e2007763bf5eef133fee81a2bca`.
+- Push target branch result: `Completed` — pushed `personal` first at merge commit `c1d2da124ab48e2007763bf5eef133fee81a2bca`, then at release commit `bc9844acbbc389165ad1157f5dd5045a6607f93f`.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: `Release Script`
-- Method reference / command: planned `pnpm release 1.4.6 -- --branch <finalization-branch> --release-notes tickets/done/docker-launcher-preserve-upgrade-image-ref/release-notes.md --no-push`; then push `HEAD:personal` and tag `v1.4.6`.
-- Release/publication/deployment result: `In progress`
-- Release notes handoff result: `Created`
-- Blocker (if applicable): N/A
+- Method reference / command: `pnpm release 1.4.6 -- --branch codex/personal-finalize-docker-launcher-preserve-upgrade-image-ref --release-notes tickets/done/docker-launcher-preserve-upgrade-image-ref/release-notes.md --no-push`; then `git push origin HEAD:personal`; `git push origin v1.4.6`.
+- Release/publication/deployment result: `Completed locally; asynchronous GitHub release workflows still partially in progress at handoff snapshot`.
+- Release notes handoff result: `Used` — curated notes copied to `.github/release-notes/release-notes.md` and visible on the GitHub release.
+- Blocker (if applicable): N/A for local release/tag publication. Desktop, server Docker, and iOS workflow lanes were still running asynchronously at snapshot time.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref`
-- Worktree cleanup result: `Not required` before verification/finalization.
-- Worktree prune result: `Not required` before verification/finalization.
-- Local ticket branch cleanup result: `Not required` before verification/finalization.
-- Remote branch cleanup result: `Not required` before verification/finalization.
+- Worktree cleanup result: `Completed` — dedicated ticket worktree removed after merge/release push.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` — `codex/docker-launcher-preserve-upgrade-image-ref` deleted locally after target merge.
+- Remote branch cleanup result: `Completed` — `origin/codex/docker-launcher-preserve-upgrade-image-ref` deleted after target merge.
 - Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A — delivery handoff is complete for user verification; repository finalization is intentionally held.
+- Why final handoff could not complete: N/A
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: Created after explicit release request on 2026-07-09 at `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/tickets/done/docker-launcher-preserve-upgrade-image-ref/release-notes.md`.
-- Archived release notes artifact used for release/publication: Pending ticket archival.
+- Release notes artifact created before verification: Created after explicit release request on 2026-07-09 at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-launcher-preserve-upgrade-image-ref/release-notes.md`.
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-launcher-preserve-upgrade-image-ref/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-None run. If a later release/deployment is requested after repository finalization, use the project's documented release/deployment path at that time.
+- No direct manual deployment command was required locally beyond pushing `personal` and tag `v1.4.6`.
+- Publication and artifact delivery are owned by the GitHub Actions release workflows triggered by the tag push.
 
 ## Environment Or Migration Notes
 
 - No database migration, data migration, package dependency, or runtime environment variable change is part of this task.
 - PowerShell executable parse/runtime remains environment-limited because local `pwsh` is not installed; the environment-gated test skipped as expected upstream.
-- The localization literal audit initially could not run because this worktree has no `autobyteus-web/node_modules`; delivery reran it successfully using a temporary symlink to the existing main-worktree dependencies and removed the symlink after the check.
+- Release helper synchronized `autobyteus-web/package.json`, `autobyteus-message-gateway/package.json`, `.github/release-notes/release-notes.md`, and `autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json` for `v1.4.6`.
 
 ## Verification Checks
 
-Delivery reran these checks after confirming the branch was current with `origin/personal`:
+Finalization checks:
 
-- `bash -n scripts/public/docker/autobyteus-docker.d/bash/core.sh scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh scripts/public/docker/autobyteus-docker.d/bash/commands.sh scripts/public/docker/autobyteus-docker.sh` — passed.
-- `git diff --check` — passed before delivery docs artifacts and again after delivery docs/artifacts.
-- `python3.11 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_preserves_each_node_saved_image_ref_by_default scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_tag_retargets_all_nodes scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_image_retargets_all_nodes scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_matches_the_shared_workspace_cli_contract scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_public_launcher_source_files_stay_within_reviewable_size_guard -v` — passed, 5 tests.
-- `pnpm -C autobyteus-web guard:localization-boundary` — passed.
-- `pnpm -C autobyteus-web audit:localization-literals` — passed using temporary main-worktree dependency symlink; symlink removed after execution.
+- `bash -n scripts/public/docker/autobyteus-docker.d/bash/core.sh scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh scripts/public/docker/autobyteus-docker.d/bash/commands.sh scripts/public/docker/autobyteus-docker.sh` — passed before archive commit and after target merge.
+- Focused `python3.11 -m unittest` launcher coverage set — passed before archive commit and after target merge, 5 tests each run.
+- `git diff --check` — passed before archive commit.
+- `git diff --check HEAD~2..HEAD` — passed after target merge.
+- `python3 scripts/check_repository_artifact_hygiene.py` — passed before release push.
+- `node autobyteus-message-gateway/scripts/build-runtime-package.mjs --check-release-manifest --release-tag v1.4.6` — passed.
+- Package version check confirmed `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` are `1.4.6`.
 
-Upstream API/E2E checks also passed, including focused coverage under `python3` and `python3.11`, missing-`IMAGE_REF` temporary fallback probe, expected `pwsh` skip, and docs/help grep.
+Release rollout snapshot at 2026-07-09T17:55:44Z:
+
+| Workflow | Run ID | Result |
+| --- | --- | --- |
+| Release Messaging Gateway | `29038345592` | completed / success |
+| Android APK Release | `29038345645` | completed / success |
+| Desktop Release | `29038345787` | in progress |
+| Server Docker Release | `29038345766` | in progress |
+| iOS App Store Connect Release | `29038345646` | in progress |
+
+GitHub release `v1.4.6` was published at 2026-07-09T17:50:39Z. At snapshot time, attached assets included messaging-gateway runtime assets and Android APK assets.
 
 ## Rollback Criteria
 
-- If the user requests finalization and a renewed fetch shows `origin/personal` has advanced, protect delivery-owned edits, integrate the latest base, rerun relevant launcher/docs/localization checks, and request renewed verification if user-facing behavior or docs materially change.
-- If focused launcher coverage fails after a later integration refresh, do not finalize; classify the failure and route to the appropriate owner.
-- If a release/deployment is later requested and fails after repository finalization, keep repository finalization intact and record the deployment blocker separately.
+- If any still-running `v1.4.6` release workflow fails, stop treating that artifact lane as complete and inspect the failing workflow before promoting those artifacts.
+- Prefer a follow-up patch release over mutating or force-moving the already-pushed `v1.4.6` tag.
+- If repository rollback becomes necessary, revert the merge/release commits on `personal` in a new audited change rather than rewriting published history.
 
 ## Final Status
 
-User-verification hold. Delivery confirmed the ticket branch is current with latest tracked `origin/personal`, reran focused checks successfully, synced long-lived docs/user-facing guidance, and prepared the handoff artifacts. No archival, commit, push, merge, release, deployment, or cleanup has been performed before explicit user approval.
+Completed locally. The reviewed launcher fix was archived, merged to `personal`, released as `v1.4.6`, and published as a GitHub release with curated notes. Messaging-gateway and Android release lanes succeeded by the recorded snapshot; desktop, server Docker, and iOS lanes were still running asynchronously.
