@@ -197,7 +197,7 @@ export function useTokenUsageWorkspaceScope() {
     if (
       !normalizedTeamRunId ||
       teamTotalLoadingById[normalizedTeamRunId] ||
-      meterStore.getTeamSummary(normalizedTeamRunId)
+      !meterStore.needsTeamRunSummaryHydration(normalizedTeamRunId)
     ) {
       return;
     }
