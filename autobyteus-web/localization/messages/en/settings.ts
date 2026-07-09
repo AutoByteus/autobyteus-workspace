@@ -407,7 +407,7 @@ const settingsMessages = {
   'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.title': 'Create Docker node',
   'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.description': 'Pulls the latest image and creates the next indexed Docker container, preferring friendly sequential host ports when available.',
   'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.title': 'Upgrade all Docker nodes',
-  'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.description': 'Recreates all managed containers with the latest image while keeping named volumes.',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.description': "Recreates all managed containers with each node's saved image ref while keeping named volumes.",
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.title': 'Destroy all Docker nodes',
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.description': 'Removes all managed containers and unused old images while keeping named volumes.',
   'settings.components.settings.DockerNodeStartGuideCard.commands.reset.title': 'Reset Docker nodes',

@@ -1,0 +1,91 @@
+
+===== bash syntax =====
++ bash+ -n+ scripts/public/docker/autobyteus-docker.d/bash/core.sh+ scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh+ scripts/public/docker/autobyteus-docker.d/bash/commands.sh+ scripts/public/docker/autobyteus-docker.sh
+
+===== git diff whitespace check =====
++ git+ diff+ --check
+
+===== python3 test module compile =====
++ python3+ -m+ py_compile+ scripts/tests/test_public_docker_launcher_shared_workspace.py
+
+===== python3 focused durable coverage =====
++ python3+ -m+ unittest+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_preserves_each_node_saved_image_ref_by_default+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_tag_retargets_all_nodes+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_image_retargets_all_nodes+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_matches_the_shared_workspace_cli_contract+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_public_launcher_source_files_stay_within_reviewable_size_guard+ -v
+test_upgrade_all_preserves_each_node_saved_image_ref_by_default (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_with_explicit_tag_retargets_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_with_explicit_image_retargets_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_public_launcher_source_files_stay_within_reviewable_size_guard (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.705s
+
+OK
+
+===== python3.11 focused durable coverage =====
++ python3.11+ -m+ unittest+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_preserves_each_node_saved_image_ref_by_default+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_tag_retargets_all_nodes+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_image_retargets_all_nodes+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_matches_the_shared_workspace_cli_contract+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_public_launcher_source_files_stay_within_reviewable_size_guard+ -v
+test_upgrade_all_preserves_each_node_saved_image_ref_by_default (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_preserves_each_node_saved_image_ref_by_default) ... ok
+test_upgrade_all_with_explicit_tag_retargets_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_tag_retargets_all_nodes) ... ok
+test_upgrade_all_with_explicit_image_retargets_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_image_retargets_all_nodes) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_matches_the_shared_workspace_cli_contract) ... ok
+test_public_launcher_source_files_stay_within_reviewable_size_guard (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_public_launcher_source_files_stay_within_reviewable_size_guard) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.735s
+
+OK
+
+===== pwsh-gated parse coverage =====
++ python3.11+ -m+ unittest+ scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_parses_when_pwsh_is_available+ -v
+test_powershell_launcher_parses_when_pwsh_is_available (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_parses_when_pwsh_is_available) ... skipped 'pwsh is not installed'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK (skipped=1)
+
+===== TEMP-001 missing IMAGE_REF fallback probe =====
+from pathlib import Path
+from scripts.tests.test_public_docker_launcher_shared_workspace import (
+    fake_docker_environment,
+    read_call_records,
+    read_state_image_ref,
+    run_launcher,
+)
+
+with fake_docker_environment() as env:
+    run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "latest-zh")
+    state_file = Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]) / "nodes" / "autobyteus-server-0.env"
+    state_lines = [line for line in state_file.read_text(encoding="utf-8").splitlines() if not line.startswith("IMAGE_REF=")]
+    state_file.write_text("\n".join(state_lines) + "\n", encoding="utf-8")
+    call_count_before_upgrade = len(read_call_records(env))
+    result = run_launcher(env, "upgrade", "--all")
+    target_image = read_state_image_ref(env, "autobyteus-server-0")
+    upgrade_pulls = [
+        record
+        for record in read_call_records(env)[call_count_before_upgrade:]
+        if record[:1] == ["pull"]
+    ]
+    assert target_image == "autobyteus/autobyteus-server:latest", target_image
+    assert upgrade_pulls == [["pull", "autobyteus/autobyteus-server:latest"]], upgrade_pulls
+    assert "Checking image autobyteus/autobyteus-server:latest" in result.stdout, result.stdout
+    print("missing IMAGE_REF fallback ok", target_image, upgrade_pulls)
+missing IMAGE_REF fallback ok autobyteus/autobyteus-server:latest [['pull', 'autobyteus/autobyteus-server:latest']]
+
+===== TEMP-002 docs/help source wording check =====
+scripts/public/docker/autobyteus-docker.d/bash/core.sh:29:  upgrade --all      Upgrade all managed Docker nodes using their saved image refs
+scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1:29:  upgrade --all      Upgrade all managed Docker nodes using their saved image refs
+README.md:204:uses each node's saved image ref, so mixed fleets stay on their current image
+autobyteus-server-ts/docker/README.md:96:uses each node's saved image ref, so mixed fleets stay on their current image
+autobyteus-server-ts/docker/README.md:299:- `autobyteus-docker upgrade --all`: Recreate all managed containers with each node's saved image ref while keeping named volumes; pass `--tag` or `--image` only when intentionally retargeting every node.
+README.md:212:To intentionally retarget every managed node to a new tag or image, make that
+autobyteus-server-ts/docker/README.md:104:To intentionally retarget every managed node to a new tag or image, make that
+autobyteus-server-ts/docker/README.md:299:- `autobyteus-docker upgrade --all`: Recreate all managed containers with each node's saved image ref while keeping named volumes; pass `--tag` or `--image` only when intentionally retargeting every node.
+scripts/public/docker/autobyteus-docker.d/bash/core.sh:45:  --tag <tag>        Docker image tag (default: ${DEFAULT_TAG}; explicit upgrade --all retargets all nodes)
+scripts/public/docker/autobyteus-docker.d/bash/core.sh:46:  --image <image>    Docker image repository or full image ref (default: ${DEFAULT_IMAGE}; explicit upgrade --all retargets all nodes)
+scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1:45:  --tag <tag>        Docker image tag (default: $Script:DefaultTag; explicit upgrade --all retargets all nodes)
+scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1:46:  --image <image>    Docker image repository or full image ref (default: $Script:DefaultImage; explicit upgrade --all retargets all nodes)
+
+===== environment capability note =====
+Python 3.9.6
+Python 3.11.15
+execution log: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-launcher-preserve-upgrade-image-ref/tickets/done/docker-launcher-preserve-upgrade-image-ref/api-e2e-execution.log

@@ -276,10 +276,21 @@ noVNC:   printed by the launcher, usually http://localhost:6080
 VNC:     printed by the launcher, usually localhost:5908
 ```
 
-Upgrade every managed Docker node to the latest image while keeping named volumes:
+Upgrade every managed Docker node while keeping named volumes. A plain upgrade
+uses each node's saved image ref, so mixed fleets stay on their current image
+line (for example, `latest` nodes stay on `latest` and `latest-zh` nodes stay
+on `latest-zh`):
 
 ```bash
 autobyteus-docker upgrade --all
+```
+
+To intentionally retarget every managed node to a new tag or image, make that
+explicit:
+
+```bash
+autobyteus-docker upgrade --all --tag latest-zh
+autobyteus-docker upgrade --all --image autobyteus/custom-server:latest-zh
 ```
 
 Remove every managed Docker node while keeping named volumes:

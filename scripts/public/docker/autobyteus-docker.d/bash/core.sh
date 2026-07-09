@@ -26,7 +26,7 @@ Usage:
 Commands:
   install            Install or replace the local autobyteus-docker CLI
   new-container      Create a new Docker node with automatic indexed name and ports
-  upgrade --all      Upgrade all managed Docker nodes to the latest image
+  upgrade --all      Upgrade all managed Docker nodes using their saved image refs
   destroy --all      Remove all managed Docker nodes, keeping named volumes
   reset              Destroy all managed Docker nodes, then create autobyteus-server-0
   workspace paths    Show host/container paths for all nodes by default
@@ -42,8 +42,8 @@ Advanced temporary use: curl -fsSL <script-url> | bash -s -- <command> [options]
 
 Options:
   --name <name>      Select one node for single-node commands/output (default where applicable: ${DEFAULT_NODE_NAME})
-  --tag <tag>        Docker image tag (default: ${DEFAULT_TAG})
-  --image <image>    Docker image repository or full image ref (default: ${DEFAULT_IMAGE})
+  --tag <tag>        Docker image tag (default: ${DEFAULT_TAG}; explicit upgrade --all retargets all nodes)
+  --image <image>    Docker image repository or full image ref (default: ${DEFAULT_IMAGE}; explicit upgrade --all retargets all nodes)
   --all              Required for upgrade/destroy; optional for all-node read-only output; applies to stop/workspace apply as documented
   -h, --help         Show this help
 

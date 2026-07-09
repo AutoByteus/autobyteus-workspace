@@ -474,15 +474,33 @@ destroy_all_nodes() {
   remove_unused_image_ids "${image_ids[@]}"
 }
 
+upgrade_image_ref_for_node() {
+  local node_name="$1" override_image_ref="$2" override_explicit="$3" file
+  if [[ "$override_explicit" == "1" ]]; then
+    printf '%s\n' "$override_image_ref"
+    return
+  fi
+  file="$(state_path_for "$node_name")"
+  if [[ -f "$file" ]]; then
+    load_state "$file"
+    if [[ -n "${IMAGE_REF:-}" ]]; then
+      printf '%s\n' "$IMAGE_REF"
+      return
+    fi
+  fi
+  image_ref_for "$DEFAULT_IMAGE" "$DEFAULT_TAG"
+}
+
 upgrade_all_nodes() {
-  local image_ref="$1" node image_id image_ids=() any=0
+  local image_ref="$1" image_ref_override_explicit="$2" node target_image_ref image_id image_ids=() any=0
   while IFS= read -r image_id; do
     [[ -n "$image_id" ]] && image_ids+=("$image_id")
   done < <(managed_container_image_ids)
 
   while IFS= read -r node; do
     [[ -n "$node" ]] || continue
-    start_node "$node" "$image_ref"
+    target_image_ref="$(upgrade_image_ref_for_node "$node" "$image_ref" "$image_ref_override_explicit")"
+    start_node "$node" "$target_image_ref"
     any=1
   done < <(managed_node_names)
 

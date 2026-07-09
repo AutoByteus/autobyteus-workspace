@@ -119,13 +119,13 @@ function Invoke-AutoByteusDocker {
   $cmd = if ($CommandArgs.Count -gt 0) { $CommandArgs[0] } else { 'help' }
   if ($cmd -in @('help', '-h', '--help')) { Show-AutoByteusDockerHelp; return }
 
-  $stopAll = $false; $nameArg = ''; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $extra = @()
+  $stopAll = $false; $nameArg = ''; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $imageRefOverrideExplicit = $false; $extra = @()
   for ($i = 1; $i -lt $CommandArgs.Count; $i += 1) {
     switch ($CommandArgs[$i]) {
       '--all' { $stopAll = $true }
       '--name' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--name requires a value' }; $nameArg = $CommandArgs[$i] }
-      '--tag' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--tag requires a value' }; $tag = $CommandArgs[$i] }
-      '--image' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--image requires a value' }; $image = $CommandArgs[$i] }
+      '--tag' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--tag requires a value' }; $tag = $CommandArgs[$i]; $imageRefOverrideExplicit = $true }
+      '--image' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--image requires a value' }; $image = $CommandArgs[$i]; $imageRefOverrideExplicit = $true }
       { $_ -in @('-h', '--help') } { Show-AutoByteusDockerHelp; return }
       default {
         if (-not $nameArg -and $cmd -in @('urls', 'ports', 'status', 'ps', 'stop', 'logs')) { $nameArg = $CommandArgs[$i] }
@@ -159,7 +159,7 @@ function Invoke-AutoByteusDocker {
       if ($extra.Count -gt 0) { Fail-Launcher "Unknown upgrade option(s): $($extra -join ' ')" }
       if (-not $stopAll) { Fail-Launcher 'upgrade affects every managed node; rerun with --all.' }
       if ($nameArg) { Fail-Launcher 'upgrade --all does not accept --name.' }
-      Upgrade-AllNodes $imageRef
+      Upgrade-AllNodes $imageRef $imageRefOverrideExplicit
     }
     'destroy' {
       if ($extra.Count -gt 0) { Fail-Launcher "Unknown destroy option(s): $($extra -join ' ')" }

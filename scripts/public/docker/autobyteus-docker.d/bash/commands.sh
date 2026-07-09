@@ -157,15 +157,15 @@ show_logs() {
 }
 
 main() {
-  local cmd="${1:-help}" stop_all=0 name_arg="" tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" extra=()
+  local cmd="${1:-help}" stop_all=0 name_arg="" tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" image_ref_override_explicit=0 extra=()
   [[ "$cmd" == "help" || "$cmd" == "--help" || "$cmd" == "-h" ]] && { usage; return; }
   shift || true
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --all) stop_all=1; shift ;;
       --name) [[ $# -gt 1 ]] || fail "--name requires a value"; name_arg="$2"; shift 2 ;;
-      --tag) [[ $# -gt 1 ]] || fail "--tag requires a value"; tag="$2"; shift 2 ;;
-      --image) [[ $# -gt 1 ]] || fail "--image requires a value"; image="$2"; shift 2 ;;
+      --tag) [[ $# -gt 1 ]] || fail "--tag requires a value"; tag="$2"; image_ref_override_explicit=1; shift 2 ;;
+      --image) [[ $# -gt 1 ]] || fail "--image requires a value"; image="$2"; image_ref_override_explicit=1; shift 2 ;;
       -h|--help) usage; return ;;
       --) shift; extra+=("$@"); break ;;
       *) if [[ -z "$name_arg" && "$cmd" =~ ^(urls|ports|status|ps|stop|logs)$ ]]; then name_arg="$1"; else extra+=("$1"); fi; shift ;;
@@ -201,7 +201,7 @@ main() {
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown upgrade option(s): ${extra[*]}"
       [[ "$stop_all" == "1" ]] || fail "upgrade affects every managed node; rerun with --all."
       [[ -z "$name_arg" ]] || fail "upgrade --all does not accept --name."
-      upgrade_all_nodes "$image_ref"
+      upgrade_all_nodes "$image_ref" "$image_ref_override_explicit"
       ;;
     destroy)
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown destroy option(s): ${extra[*]}"
