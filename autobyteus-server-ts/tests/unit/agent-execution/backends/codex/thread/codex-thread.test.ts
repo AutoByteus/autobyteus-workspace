@@ -19,6 +19,7 @@ const createRunContext = (input: {
   runId: string;
   workingDirectory: string;
   autoExecuteTools: boolean;
+  reasoningEffort?: string | null;
   serviceTier?: string | null;
   dynamicToolHandlers?: Record<string, any>;
   memberTeamContext?: MemberTeamContext | null;
@@ -39,7 +40,8 @@ const createRunContext = (input: {
       codexThreadConfig: {
         model: "gpt-5.4-mini",
         workingDirectory: input.workingDirectory,
-        reasoningEffort: "medium",
+        reasoningEffort:
+          input.reasoningEffort === undefined ? "medium" : input.reasoningEffort,
         serviceTier: input.serviceTier ?? null,
         approvalPolicy: input.autoExecuteTools
           ? CodexApprovalPolicy.NEVER
@@ -56,6 +58,7 @@ const createRunContext = (input: {
 const createThread = (
   autoExecuteTools: boolean,
   input: {
+    reasoningEffort?: string | null;
     serviceTier?: string | null;
     dynamicToolHandlers?: Record<string, any>;
     memberTeamContext?: MemberTeamContext | null;
@@ -76,6 +79,7 @@ const createThread = (
       runId: `run-${autoExecuteTools ? "auto" : "manual"}`,
       workingDirectory: "/tmp/codex-thread-unit",
       autoExecuteTools,
+      reasoningEffort: input.reasoningEffort,
       serviceTier: input.serviceTier ?? null,
       dynamicToolHandlers: input.dynamicToolHandlers,
       memberTeamContext: input.memberTeamContext ?? null,
@@ -830,6 +834,37 @@ describe("CodexThread approval identity", () => {
 });
 
 describe("CodexThread turn payload", () => {
+  it.each(["max", "ultra", "Future-Custom"])(
+    "passes open reasoning effort %s to turn/start",
+    async (reasoningEffort) => {
+      const { thread, client } = createThread(false, { reasoningEffort });
+      thread.markStartupReady();
+
+      await thread.sendTurn(new AgentInputUserMessage("hello reasoning codex"));
+
+      expect(client.request).toHaveBeenCalledWith(
+        "turn/start",
+        expect.objectContaining({
+          effort: reasoningEffort,
+        }),
+      );
+    },
+  );
+
+  it("passes an unset reasoning effort as null to turn/start", async () => {
+    const { thread, client } = createThread(false, { reasoningEffort: null });
+    thread.markStartupReady();
+
+    await thread.sendTurn(new AgentInputUserMessage("hello default codex"));
+
+    expect(client.request).toHaveBeenCalledWith(
+      "turn/start",
+      expect.objectContaining({
+        effort: null,
+      }),
+    );
+  });
+
   it("passes the configured Codex serviceTier to turn/start", async () => {
     const { thread, client } = createThread(false, { serviceTier: "fast" });
     thread.markStartupReady();
