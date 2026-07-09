@@ -2,13 +2,13 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
-- Design Rework Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
+- Design Rework Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/code-review-report.md`
 - Current Investigation Round: 1
 - Trigger: Code-review pass for `skill-improvement-naming-refactor`, plus user direction to add browser validation after code-level tests.
 - Prior Investigation Reviewed: N/A

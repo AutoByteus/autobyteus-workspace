@@ -4,9 +4,9 @@
 
 - Ticket: `skill-improvement-naming-refactor`
 - Date: `2026-07-09`
-- Current Status: `User verified / repository finalization in progress`
-- Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor`
-- Ticket branch: `codex/skill-improvement-naming-refactor`
+- Current Status: `Repository finalized / no release performed`
+- Finalized target worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Ticket branch: `codex/skill-improvement-naming-refactor` (pushed for merge, then removed during cleanup)
 - Finalization target from bootstrap context: `origin/personal`
 - Integration refresh: `origin/personal` advanced from `45442c8a771b4c90db323e52bf6a69d20fcb7291` to `84f7de18c7a2648af07cefa10e62433e0d270570`; delivery created local checkpoint commit `97de8f6a9e826597619cb0c7ee0ce8e9b8370110` and merged latest `origin/personal` into the ticket branch with merge commit `3888cfbf2f87c687bd612d901393c97f09c00d38`.
 
@@ -21,14 +21,14 @@
   - Renamed web GraphQL documents, generated GraphQL types, stores, components, settings card, localization keys, and UI copy to Skill Improvement / Improve Skills terminology.
   - Kept old-term references only in the documented historical cleanup allowlist; active stale-term scan passed with `unexpected_matches=0`.
 - Planned scope reference:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/requirements.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
 - Deferred / not delivered:
   - No data migration, old-data cleanup routine, old setting fallback, GraphQL alias, old built-in-id fallback, or old runtime path fallback was added; this is intentional clean-state behavior for a development-phase feature.
   - No scheduled/signal-based/team-improver strategy implementation, metrics/reporting, service-level diff audit, live skill reload, or work-trace format change is included.
   - Broad web typecheck remains out of the latest validation scope because implementation/code review recorded pre-existing unrelated web typecheck issues; focused web tests and browser validation passed.
-  - No release, deployment, version bump, or tag has been performed before user verification.
+  - No release, deployment, version bump, or tag was performed per explicit user instruction.
 - Key architectural or ownership changes:
   - `autobyteus-server-ts/src/skill-improvement/` owns the full capability orchestration, eligibility, settings, target resolution, work-trace handoff, improver session lifecycle, records, and notifications.
   - `SkillImprovementImproverSessionService` owns target-scoped improver run reuse/launch and grant-scoped completion setup.
@@ -44,11 +44,11 @@
 ## Verification Summary
 
 - Design review: Passed after design rework; artifacts at:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
-- Code review: Passed; report at `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/code-review-report.md`.
-- API/E2E coverage investigation: Completed before execution; artifact at `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/api-e2e-coverage-investigation.md`.
-- API/E2E execution result: Passed; artifact at `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/api-e2e-execution-coverage-report.md`.
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
+- Code review: Passed; report at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/code-review-report.md`.
+- API/E2E coverage investigation: Completed before execution; artifact at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/api-e2e-coverage-investigation.md`.
+- API/E2E execution result: Passed; artifact at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/api-e2e-execution-coverage-report.md`.
 - API/E2E repository-resident durable coverage changes: `No`.
 - Upstream executed checks recorded as passing:
   - focused server Vitest (`13` files / `43` tests)
@@ -73,6 +73,7 @@
     - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.4.dmg`
     - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.4.zip`
     - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+  - These local build outputs were temporary and were removed with the dedicated ticket worktree during final cleanup.
 - Acceptance-criteria closure summary:
   - Active source/API/UI/runtime rename, clean settings/id/path contract, no compatibility fallback, docs/UI copy, GraphQL codegen, focused server/web tests, live browser validation, and historical allowlist requirements are covered by the cumulative artifact chain and post-integration checks.
 - Residual risk:
@@ -82,7 +83,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/docs-sync-report.md`
 - Docs result: `Updated`
 - Long-lived docs updated/reviewed:
   - `autobyteus-server-ts/docs/ARCHITECTURE.md`
@@ -110,23 +111,23 @@
 - Release notes artifact: N/A
 - Notes:
   - No release, tag, deployment, or version bump is part of the pre-verification handoff.
-  - A local unsigned/non-notarized macOS Electron build was produced for user testing only; it is not a release artifact and no version/tag/deployment work was performed.
+  - A local unsigned/non-notarized macOS Electron build was produced for user testing only; it was not a release artifact, and its temporary ticket-worktree outputs were removed during final cleanup.
 
 ## User Verification Hold
 
-- Waiting for explicit user verification: `Yes`
+- Waiting for explicit user verification: `No`
 - User verification received: `Yes`
 - Required next user signal:
   - Received on 2026-07-09: user confirmed local Electron testing succeeded and requested finalization with no new version.
 - Notes:
-  - Per delivery workflow, the ticket has not been moved to `tickets/done/`, pushed, merged into `personal`, released, deployed, or cleaned up.
-  - A local delivery-safety checkpoint and latest-base merge were created before handoff because `origin/personal` advanced after API/E2E validation. They remain local until finalization.
+  - Per delivery workflow, the ticket was moved to `tickets/done/`, the ticket branch was pushed and merged into `personal`, and the ticket worktree/local/remote ticket branches were cleaned up.
+  - The delivery-safety checkpoint and latest-base merge were incorporated into the finalized target history.
 
 ## Finalization Record
 
-- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/`
+- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/`
 - Ticket worktree path:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor` (removed during cleanup)
 - Ticket branch:
   - `codex/skill-improvement-naming-refactor`
 - Finalization target remote:
@@ -138,33 +139,35 @@
 - Local integration merge commit:
   - `3888cfbf2f87c687bd612d901393c97f09c00d38`
 - Commit status:
-  - `Local checkpoint and integration merge completed; archive/finalization commit pending in this finalization run`
+  - `Completed; archive/finalization commit 512aa94e656c3498d3515e95451b69beb63853f3`
 - Push status:
-  - `Pending in this finalization run`
+  - `Completed; ticket branch was pushed to origin before target merge and deleted after successful target push`
 - Merge status:
-  - `Ticket branch has already merged latest base locally; merge into finalization target pending in this finalization run`
+  - `Completed; ticket branch merged into personal with merge commit 7db12eb07764c5469798458c0d36e5441a3ab565`
 - Release/publication/deployment status:
   - `Not required per explicit user instruction; no release/version/tag/deployment will be performed`
 - Local Electron test build status:
   - `Completed for user verification; unsigned/non-notarized and not released`
 - Worktree cleanup status:
-  - `Pending after repository finalization`
+  - `Completed; dedicated ticket worktree removed`
 - Local branch cleanup status:
-  - `Pending after repository finalization`
+  - `Completed; local ticket branch removed`
+- Remote branch cleanup status:
+  - `Completed; origin/codex/skill-improvement-naming-refactor removed`
 - Blockers / notes:
-  - No technical blockers. User verification has been received; finalization is proceeding without release/version/tag work.
+  - None. Repository finalization completed without release/version/tag work.
 
 ## Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
-- Design rework notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/code-review-report.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/api-e2e-execution-coverage-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/release-deployment-report.md`
-- Validation logs directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
+- Design rework notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/code-review-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/api-e2e-execution-coverage-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/release-deployment-report.md`
+- Validation logs directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/`

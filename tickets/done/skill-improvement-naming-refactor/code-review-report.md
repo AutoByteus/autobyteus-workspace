@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/requirements.md`
 - Current Review Round: `1`
 - Trigger: Implementation handoff from `implementation_engineer` for `skill-improvement-naming-refactor`.
 - Prior Review Round Reviewed: `N/A`
 - Latest Authoritative Round: `1`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
-- Design Rework Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
+- Design Rework Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/implementation-handoff.md`
 - Execution Coverage Report Reviewed As Context: `N/A`
 - API / E2E Execution Started Yet: `No`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `No`

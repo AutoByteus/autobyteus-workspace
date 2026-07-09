@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
-- Design Rework Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-review-report.md`
+- Design Rework Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/design-rework-notes.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/api-e2e-coverage-investigation.md`
 - Current Execution Round: 1
 - Trigger: Code-review pass for `skill-improvement-naming-refactor` plus user instruction to run browser validation after code-level tests.
 - Prior Round Reviewed: N/A
@@ -36,7 +36,7 @@ Execution was derived from the approved requirements, design, design rework note
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -49,7 +49,7 @@ Execution was derived from the approved requirements, design, design rework note
 
 | Path / Scenario | Validity Decision (`Still Valid`/`Needs Update`/`Stale / Remove`/`Replace`/`Out Of Scope`/`Unclear`) | Action Taken | Evidence |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/skill-improvement/**` | Still Valid | Ran focused server suite. | `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/01-server-skill-improvement-focused.log` |
+| `autobyteus-server-ts/tests/skill-improvement/**` | Still Valid | Ran focused server suite. | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/01-server-skill-improvement-focused.log` |
 | `autobyteus-server-ts/tests/agent-work-traces/agent-work-trace-projection-service.test.ts` | Still Valid | Ran with focused server suite. | Same server log; browser runtime also produced expected work trace manifest/body paths in `14-browser-validation-summary.json`. |
 | `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts` | Still Valid | Ran with focused server suite and full server build smoke. | `01-server-skill-improvement-focused.log`, `05-server-build-full.log` |
 | `autobyteus-server-ts/tests/unit/agent-communication/global-agent-run-message-router.test.ts` | Still Valid | Ran with focused server suite. | `01-server-skill-improvement-focused.log`; browser summary records completion target/message type and no unauthorized send. |
@@ -89,7 +89,7 @@ Evidence:
 - Host: macOS (`MacBookPro` in backend logs).
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor`.
 - Backend app root: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/autobyteus-server-ts`.
-- Backend app data: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/runtime/backend-data`.
+- Backend app data: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/runtime/backend-data`.
 - Backend URL: `http://127.0.0.1:8000`.
 - Frontend URL: `http://127.0.0.1:3000`.
 - Browser runtime: `codex_app_server`, availability `enabled=true`.
@@ -155,7 +155,7 @@ Evidence:
 ## Execution Setup / Environment
 
 - Read local setup/README documentation before live browser setup.
-- Used isolated backend app data at `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/runtime/backend-data`.
+- Used isolated backend app data at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/runtime/backend-data`.
 - First backend/codegen attempt logs (`06-backend-dev-server.log`, `07-web-codegen-live-backend.log`) were superseded after the initial backend process exited.
 - A malformed initial Nuxt invocation produced a stray `autobyteus-web/--host` directory; it was removed, and the frontend was restarted from the correct root. Evidence is in `11-frontend-nuxt-dev.log`, `12-frontend-dev-restart-notes.log`, and `13-frontend-nuxt-dev-correct-root.log`.
 - Correct backend and frontend runs completed browser validation with no final environment blocker.
@@ -183,30 +183,30 @@ Note: Live web codegen was run to validate the reviewed generated GraphQL artifa
 
 ## Other Execution Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/01-server-skill-improvement-focused.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/02-server-tsc-build-noemit.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/03-web-skill-improvement-focused.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/04-diff-and-stale-term-scan.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/05-server-build-full.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/06-backend-dev-server.log` (superseded attempt)
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/07-web-codegen-live-backend.log` (superseded attempt)
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/08-backend-dev-server-foreground.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/09-web-codegen-live-backend.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/10-web-codegen-stability-rerun.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/11-frontend-nuxt-dev.log` (superseded attempt)
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/12-frontend-dev-restart-notes.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/13-frontend-nuxt-dev-correct-root.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/14-browser-validation-summary.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/15-cleanup-verification.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/16-final-prehandoff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/01-server-skill-improvement-focused.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/02-server-tsc-build-noemit.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/03-web-skill-improvement-focused.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/04-diff-and-stale-term-scan.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/05-server-build-full.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/06-backend-dev-server.log` (superseded attempt)
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/07-web-codegen-live-backend.log` (superseded attempt)
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/08-backend-dev-server-foreground.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/09-web-codegen-live-backend.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/10-web-codegen-stability-rerun.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/11-frontend-nuxt-dev.log` (superseded attempt)
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/12-frontend-dev-restart-notes.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/13-frontend-nuxt-dev-correct-root.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/14-browser-validation-summary.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/15-cleanup-verification.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/16-final-prehandoff-check.log`
 
 Browser screenshots:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/01-workspace-config-codex-gpt55.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/02-daily-assistant-run-ready.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/03-daily-assistant-response-skill-improvement-cta.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/04-second-click-reuse-after-completion.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/05-settings-skill-improvement-enabled.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/01-workspace-config-codex-gpt55.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/02-daily-assistant-run-ready.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/03-daily-assistant-response-skill-improvement-cta.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/04-second-click-reuse-after-completion.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/skill-improvement-naming-refactor/validation-logs/browser-artifacts/05-settings-skill-improvement-enabled.png`
 
 ## Temporary Execution Methods / Scaffolding
 
