@@ -254,6 +254,15 @@ Codex CLI and Claude Code are preinstalled in the image. The intended auth flow 
 Use `codex login` directly in the default container shell. The container runs as
 `root`, so `sudo codex login` is not required in the normal Docker setup.
 
+Browser-opening auth commands run from the root shell route through the packaged
+VNC browser bridge. The image sets `BROWSER=/usr/local/bin/open-vnc-browser-url.sh`;
+that helper switches to `vncuser` only from root, skips the switch when it is
+already running as `vncuser`, clears inherited `BROWSER`, and dispatches to the
+system `/usr/bin/xdg-open` inside the VNC desktop session. This keeps CLI
+device-login URLs opening in the container's Chromium/noVNC session without
+recursing back through the root bridge. Existing containers need to be recreated
+or upgraded to pick up browser-bridge script changes from a rebuilt image.
+
 The container runs as `root`, and `/root` is persisted in a Docker-managed named volume per launcher node or source-helper project. That means:
 
 - auth state is isolated per Docker node/instance,
