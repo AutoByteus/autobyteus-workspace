@@ -4,11 +4,11 @@
 
 - Ticket: `work-trace-assistant-speaker-labels`
 - Date: `2026-07-09`
-- Current Status: `User verified / repository finalization in progress`
-- Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels`
+- Current Status: `Finalized`
+- Authoritative repository path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/work-trace-assistant-speaker-labels`
 - Finalization target from bootstrap context: `origin/personal`
-- Integration refresh: `origin/personal` fetched and unchanged at `4f3ddc4d5dcaa4cf98195143a8abe04906259124`; ticket branch is already current with the latest tracked base.
+- Integration refresh: `origin/personal` fetched after user verification and remained unchanged at `4f3ddc4d5dcaa4cf98195143a8abe04906259124`; ticket branch was committed, pushed, merged into `personal`, and `personal` was pushed.
 
 ## Delivery Summary
 
@@ -21,12 +21,12 @@
   - Renamed the built-in source template/private skill package to `retrospective-skill-improver` while intentionally preserving the persisted `autobyteus-skill-evolver` id/settings spelling pending a separate source/API rename.
   - Refreshed durable docs and built-in improver guidance for canonical work-trace labels, omitted reasoning records, Skill Improvement actor wording, and grant-scoped `skill_update` completion.
 - Planned scope reference:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/requirements.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/design-spec.md`
 - Deferred / not delivered:
   - Broad source/module/API/persisted identifier rename from `self-evolution` / `autobyteus-skill-evolver` to Skill Improvement naming remains explicitly out of scope.
   - Live LLM Retrospective Skill Improver execution and browser UI click execution were intentionally not run; deterministic service/integration/API boundary coverage proves the changed contract.
-  - No release, deployment, version bump, or tag is included before explicit user verification.
+  - No release, deployment, version bump, or tag was performed per explicit user instruction.
 - Key architectural or ownership changes:
   - `agent-work-traces` remains the authoritative raw-trace-to-readable-Markdown projection boundary.
   - Work-trace metadata and readable body semantics are separated: target identity is manifest/package metadata; body labels are role/event labels.
@@ -41,10 +41,10 @@
 
 ## Verification Summary
 
-- Design review: Passed; latest design review artifact at `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/design-review-report.md`.
-- Code review: Passed after API/E2E-added durable coverage re-review; latest report at `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/code-review-report.md`.
-- API/E2E coverage investigation: Completed before durable coverage edits and final execution; artifact at `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/api-e2e-coverage-investigation.md`.
-- API/E2E execution result: Passed; artifact at `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/api-e2e-execution-coverage-report.md`.
+- Design review: Passed; latest design review artifact at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/design-review-report.md`.
+- Code review: Passed after API/E2E-added durable coverage re-review; latest report at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/code-review-report.md`.
+- API/E2E coverage investigation: Completed before durable coverage edits and final execution; artifact at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/api-e2e-coverage-investigation.md`.
+- API/E2E execution result: Passed; artifact at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/api-e2e-execution-coverage-report.md`.
 - Upstream executed checks recorded as passing:
   - `pnpm -C autobyteus-server-ts exec vitest run tests/self-evolution/self-evolution-service.integration.test.ts --no-watch`
   - `pnpm -C autobyteus-server-ts exec vitest run tests/agent-work-traces/agent-work-trace-projection-service.test.ts tests/self-evolution/self-evolution-service.integration.test.ts tests/self-evolution/self-evolution-companion-session-service.test.ts tests/self-evolution/manual-trigger-strategy.test.ts tests/self-evolution/self-evolution-graphql-resolver.test.ts tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts tests/unit/agent-communication/global-agent-run-message-router.test.ts --no-watch`
@@ -71,7 +71,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/docs-sync-report.md`
 - Docs result: `Updated`
 - Long-lived docs updated/reviewed:
   - `autobyteus-server-ts/docs/ARCHITECTURE.md`
@@ -91,7 +91,7 @@
 - Release notes required: `No`
 - Release notes artifact: N/A
 - Notes:
-  - No release, tag, deployment, or version bump was requested or applicable before user verification.
+  - No release, tag, deployment, or version bump was performed per explicit user instruction.
 
 ## User Verification Hold
 
@@ -108,7 +108,7 @@
 - Ticket archived to:
   - `tickets/done/work-trace-assistant-speaker-labels/`
 - Ticket worktree path:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels` (removed after merge/push)
 - Ticket branch:
   - `codex/work-trace-assistant-speaker-labels`
 - Finalization target remote:
@@ -116,29 +116,31 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Pending - finalization commit will archive this ticket and implementation changes`
+  - `Complete` (`ba299b566ba7edd482bafe6ab97bffc2a57a9e62` ticket finalization commit, `e948ac8493e70d841e367fcbbb6d55d18bfca583` merge commit, `3e6143ca5ae563603b98a87dd4184c319da7abab` final metadata commit)
 - Push status:
-  - `Pending - after finalization commit`
+  - `Complete` (ticket branch pushed, `personal` pushed, then cleanup metadata pushed)
 - Merge status:
-  - `Pending - after ticket branch push and target refresh`
+  - `Complete` (`e948ac8493e70d841e367fcbbb6d55d18bfca583`)
 - Release/publication/deployment status:
   - `Not required - user requested no new release version`
 - Worktree cleanup status:
-  - `Not started - pending repository finalization`
+  - `Complete` (dedicated ticket worktree removed and worktrees pruned)
 - Local branch cleanup status:
-  - `Not started - pending repository finalization`
+  - `Complete` (local `codex/work-trace-assistant-speaker-labels` branch deleted)
+- Remote branch cleanup status:
+  - `Complete` (remote `origin/codex/work-trace-assistant-speaker-labels` branch deleted)
 - Blockers / notes:
-  - No technical blockers. Finalization is proceeding after explicit user verification; exact commit/merge/push/cleanup results will be reported in the final response.
+  - No remaining blockers. Remote ticket branch `origin/codex/work-trace-assistant-speaker-labels` was deleted after `personal` was pushed.
 
 ## Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/code-review-report.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/api-e2e-execution-coverage-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/work-trace-assistant-speaker-labels/tickets/done/work-trace-assistant-speaker-labels/release-deployment-report.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/code-review-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/api-e2e-execution-coverage-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/work-trace-assistant-speaker-labels/release-deployment-report.md`
