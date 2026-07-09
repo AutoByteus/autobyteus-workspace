@@ -407,7 +407,7 @@ const settingsMessages = {
   'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.title': '创建 Docker 节点',
   'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.description': '拉取最新镜像并创建下一个编号的 Docker 容器；可用时优先使用连续易读的主机端口。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.title': '升级所有 Docker 节点',
-  'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.description': '用最新镜像重新创建所有已管理容器，同时保留命名卷。',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.description': '使用每个节点保存的镜像引用重新创建所有已管理容器，同时保留命名卷。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.title': '销毁所有 Docker 节点',
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.description': '移除所有已管理容器和未使用的旧镜像，同时保留命名卷。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.reset.title': '重置 Docker 节点',

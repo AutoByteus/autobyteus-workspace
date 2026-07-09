@@ -482,13 +482,21 @@ function Destroy-AllNodes {
   Remove-UnusedImageIds $imageIds
 }
 
-function Upgrade-AllNodes([string]$ImageRef) {
+function Get-UpgradeImageRefForNode([string]$NodeName, [string]$OverrideImageRef, [bool]$HasImageRefOverride) {
+  if ($HasImageRefOverride) { return $OverrideImageRef }
+  $state = Read-NodeState $NodeName
+  if ($state -and $state.imageRef) { return $state.imageRef }
+  Get-ImageRef $Script:DefaultImage $Script:DefaultTag
+}
+
+function Upgrade-AllNodes([string]$ImageRef, [bool]$HasImageRefOverride) {
   $nodes = @(Get-ManagedNodeNames)
   if ($nodes.Count -eq 0) { Write-LauncherInfo 'No managed Docker nodes found.'; return }
   $imageIds = @(Get-ManagedContainerImageIds)
   foreach ($node in $nodes) {
     $preferDefaults = $node -eq $Script:DefaultNodeName
-    Start-Node $node $ImageRef $preferDefaults
+    $targetImageRef = Get-UpgradeImageRefForNode $node $ImageRef $HasImageRefOverride
+    Start-Node $node $targetImageRef $preferDefaults
   }
   Remove-UnusedImageIds $imageIds
 }

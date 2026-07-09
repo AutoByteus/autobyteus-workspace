@@ -145,6 +145,73 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertTrue((current_shared_root / "nodes" / "autobyteus-server-0").is_dir())
             self.assertTrue((current_shared_root / "shared").is_dir())
 
+    def test_upgrade_all_preserves_each_node_saved_image_ref_by_default(self) -> None:
+        with fake_docker_environment() as env:
+            create_mixed_image_nodes(env)
+            call_count_before_upgrade = len(read_call_records(env))
+
+            result = run_launcher(env, "upgrade", "--all")
+
+            self.assertIn("Checking image autobyteus/test:latest", result.stdout)
+            self.assertIn("Checking image autobyteus/test:latest-zh", result.stdout)
+            self.assertEqual("autobyteus/test:latest", read_state_image_ref(env, "autobyteus-server-0"))
+            self.assertEqual("autobyteus/test:latest-zh", read_state_image_ref(env, "autobyteus-server-1"))
+            upgrade_pulls = [
+                record
+                for record in read_call_records(env)[call_count_before_upgrade:]
+                if record[:1] == ["pull"]
+            ]
+            self.assertEqual(
+                [["pull", "autobyteus/test:latest"], ["pull", "autobyteus/test:latest-zh"]],
+                upgrade_pulls,
+            )
+
+    def test_upgrade_all_with_explicit_tag_retargets_all_nodes(self) -> None:
+        with fake_docker_environment() as env:
+            create_mixed_image_nodes(env)
+            call_count_before_upgrade = len(read_call_records(env))
+
+            result = run_launcher(env, "upgrade", "--all", "--tag", "latest-zh")
+
+            self.assertIn("Checking image autobyteus/autobyteus-server:latest-zh", result.stdout)
+            self.assertEqual("autobyteus/autobyteus-server:latest-zh", read_state_image_ref(env, "autobyteus-server-0"))
+            self.assertEqual("autobyteus/autobyteus-server:latest-zh", read_state_image_ref(env, "autobyteus-server-1"))
+            upgrade_pulls = [
+                record
+                for record in read_call_records(env)[call_count_before_upgrade:]
+                if record[:1] == ["pull"]
+            ]
+            self.assertEqual(
+                [
+                    ["pull", "autobyteus/autobyteus-server:latest-zh"],
+                    ["pull", "autobyteus/autobyteus-server:latest-zh"],
+                ],
+                upgrade_pulls,
+            )
+
+    def test_upgrade_all_with_explicit_image_retargets_all_nodes(self) -> None:
+        with fake_docker_environment() as env:
+            create_mixed_image_nodes(env)
+            call_count_before_upgrade = len(read_call_records(env))
+
+            result = run_launcher(env, "upgrade", "--all", "--image", "autobyteus/custom-server:latest-zh")
+
+            self.assertIn("Checking image autobyteus/custom-server:latest-zh", result.stdout)
+            self.assertEqual("autobyteus/custom-server:latest-zh", read_state_image_ref(env, "autobyteus-server-0"))
+            self.assertEqual("autobyteus/custom-server:latest-zh", read_state_image_ref(env, "autobyteus-server-1"))
+            upgrade_pulls = [
+                record
+                for record in read_call_records(env)[call_count_before_upgrade:]
+                if record[:1] == ["pull"]
+            ]
+            self.assertEqual(
+                [
+                    ["pull", "autobyteus/custom-server:latest-zh"],
+                    ["pull", "autobyteus/custom-server:latest-zh"],
+                ],
+                upgrade_pulls,
+            )
+
     def test_bash_curl_pipe_mode_resolves_modules_from_source_base(self) -> None:
         with fake_docker_environment() as env:
             env["AUTOBYTEUS_DOCKER_PUBLIC_SOURCE_BASE"] = (REPO_ROOT / "scripts/public/docker").resolve().as_uri()
@@ -384,6 +451,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("v6", text)
             self.assertNotIn(REMOVED_NODE_PROFILE_ENV, text)
             self.assertNotIn(REMOVED_PROFILE_LABEL, text)
+            self.assertIn("saved image refs", text)
             self.assertIn("chromium_profile_volume", text)
             self.assertIn("chromium_profile_target", text)
             self.assertIn("-chromium-profile", text)
@@ -397,6 +465,10 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("workspace apply", text)
             self.assertIn("storage", text)
             self.assertIn("type=bind,source=", text)
+        self.assertIn("image_ref_override_explicit", bash_text)
+        self.assertIn("upgrade_image_ref_for_node", bash_text)
+        self.assertIn("imageRefOverrideExplicit", powershell_text)
+        self.assertIn("Get-UpgradeImageRefForNode", powershell_text)
 
     def test_public_launcher_source_files_stay_within_reviewable_size_guard(self) -> None:
         for path in PUBLIC_LAUNCHER_SOURCES:
@@ -428,6 +500,16 @@ def read_state_value(state_text: str, key: str) -> str:
         if line.startswith(prefix):
             return line[len(prefix):]
     raise AssertionError(f"state key not found: {key}")
+
+
+def create_mixed_image_nodes(env: dict[str, str]) -> None:
+    run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "latest")
+    run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "latest-zh")
+
+
+def read_state_image_ref(env: dict[str, str], node_name: str) -> str:
+    state_file = Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]) / "nodes" / f"{node_name}.env"
+    return read_state_value(state_file.read_text(encoding="utf-8"), "IMAGE_REF")
 
 
 def read_combined_text(paths: list[Path]) -> str:
@@ -464,6 +546,13 @@ def read_run_arg_records(env: dict[str, str]) -> list[list[str]]:
     run_args_path = Path(env["FAKE_DOCKER_ROOT"]) / "run-args.nul"
     payload = run_args_path.read_bytes()
     records = [record for record in payload.split(b"\n--RUN--\n") if record]
+    return [[arg.decode("utf-8") for arg in record.split(b"\0") if arg] for record in records]
+
+
+def read_call_records(env: dict[str, str]) -> list[list[str]]:
+    calls_path = Path(env["FAKE_DOCKER_ROOT"]) / "calls.nul"
+    payload = calls_path.read_bytes()
+    records = [record for record in payload.split(b"\n--CALL--\n") if record]
     return [[arg.decode("utf-8") for arg in record.split(b"\0") if arg] for record in records]
 
 

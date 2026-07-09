@@ -92,10 +92,21 @@ Existing files under `/home/autobyteus/data/temp_workspace` remain in the data
 named volume, but `/home/autobyteus/workspace` becomes the default temp
 workspace after apply.
 
-Upgrade every managed Docker node to the latest image while keeping named volumes:
+Upgrade every managed Docker node while keeping named volumes. A plain upgrade
+uses each node's saved image ref, so mixed fleets stay on their current image
+line (for example, `latest` nodes stay on `latest` and `latest-zh` nodes stay
+on `latest-zh`):
 
 ```bash
 autobyteus-docker upgrade --all
+```
+
+To intentionally retarget every managed node to a new tag or image, make that
+explicit:
+
+```bash
+autobyteus-docker upgrade --all --tag latest-zh
+autobyteus-docker upgrade --all --image autobyteus/custom-server:latest-zh
 ```
 
 Remove every managed Docker node while keeping named volumes:
@@ -285,7 +296,7 @@ Public launcher commands for no-clone users:
 
 - `autobyteus-docker install`: Install or replace the local launcher without touching Docker containers, volumes, or state.
 - `autobyteus-docker new-container`: Check/pull the configured image and create the next indexed managed Docker node (`autobyteus-server-0`, `autobyteus-server-1`, ...).
-- `autobyteus-docker upgrade --all`: Recreate all managed containers with the latest image while keeping named volumes.
+- `autobyteus-docker upgrade --all`: Recreate all managed containers with each node's saved image ref while keeping named volumes; pass `--tag` or `--image` only when intentionally retargeting every node.
 - `autobyteus-docker destroy --all`: Remove all managed containers and unused old images while keeping named volumes.
 - `autobyteus-docker reset`: Destroy all managed containers, keep volumes, then create a fresh `autobyteus-server-0`.
 - `autobyteus-docker workspace paths`: Show the host folders backing `/home/autobyteus/workspace` and `/home/autobyteus/shared`.
