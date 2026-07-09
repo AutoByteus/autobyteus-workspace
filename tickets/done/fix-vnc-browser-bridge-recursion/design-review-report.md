@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/requirements.md`
-- Upstream Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/investigation-notes.md`
-- Reviewed Design Spec: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md`
+- Upstream Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/requirements.md`
+- Upstream Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/investigation-notes.md`
+- Reviewed Design Spec: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review requested by `solution_designer` after requirements approval and source-level reproduction.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md` against the shared design principles and mandatory review checklist.
+Reviewed `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md` against the shared design principles and mandatory review checklist.
 
 ## Task Design Health Assessment Verdict
 

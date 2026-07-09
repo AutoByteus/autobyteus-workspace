@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/requirements.md`
-- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/investigation-notes.md`
-- Design spec: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md`
-- Design review report: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/design-review-report.md`
+- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/requirements.md`
+- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/investigation-notes.md`
+- Design spec: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md`
+- Design review report: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/design-review-report.md`
 
 ## What Changed
 
@@ -19,9 +19,9 @@
 
 ## Key Files Or Areas
 
-- Modified: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/autobyteus-server-ts/docker/open-vnc-browser-url.sh`
-- Reviewed unchanged: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/autobyteus-server-ts/docker/xdg-open-root-bridge.sh`
-- Reviewed unchanged: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/autobyteus-server-ts/docker/exo-open-root-bridge.sh`
+- Modified: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docker/open-vnc-browser-url.sh`
+- Reviewed unchanged: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docker/xdg-open-root-bridge.sh`
+- Reviewed unchanged: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docker/exo-open-root-bridge.sh`
 
 ## Important Assumptions
 
@@ -56,7 +56,7 @@
 
 ## Environment Or Dependency Notes
 
-- Worktree: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion`
+- Worktree: `/home/autobyteus/workspace/autobyteus-workspace`
 - Branch: `codex/fix-vnc-browser-bridge-recursion`
 - Base/finalization target from upstream: `origin/personal` / `personal`
 - Local check context had `root` uid `0` and `vncuser` uid `1000` available.

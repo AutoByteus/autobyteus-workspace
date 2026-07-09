@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/requirements.md`
+- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/requirements.md`
 - Current Review Round: 3
 - Trigger: `api_e2e_engineer` completed the bounded Local Fix for `CR-COV-001` in repository-resident durable coverage and rerouted for coverage-code re-review before delivery.
 - Prior Review Round Reviewed: 2
 - Latest Authoritative Round: 3
-- Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/investigation-notes.md`
-- Design Spec Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md`
-- Design Review Report Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/investigation-notes.md`
+- Design Spec Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md`
+- Design Review Report Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`
 
@@ -30,15 +30,15 @@ Reviewed the updated repository-resident durable coverage and directly related e
 
 Coverage artifact context reviewed:
 
-- Coverage investigation: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-coverage-investigation.md`
-- Execution coverage report, Round 2: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-coverage-investigation.md`
+- Execution coverage report, Round 2: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-execution-coverage-report.md`
 
 Files reviewed:
 
-- Updated durable coverage: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/scripts/tests/test_server_docker_browser_bridge.py`
-- Modified implementation source, rechecked for direct related context: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/autobyteus-server-ts/docker/open-vnc-browser-url.sh`
-- Reviewed unchanged wrappers, rechecked for direct related context: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/autobyteus-server-ts/docker/xdg-open-root-bridge.sh`, `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/autobyteus-server-ts/docker/exo-open-root-bridge.sh`
-- Dockerfile context asserted by coverage: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/autobyteus-server-ts/docker/Dockerfile.monorepo`
+- Updated durable coverage: `/home/autobyteus/workspace/autobyteus-workspace/scripts/tests/test_server_docker_browser_bridge.py`
+- Modified implementation source, rechecked for direct related context: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docker/open-vnc-browser-url.sh`
+- Reviewed unchanged wrappers, rechecked for direct related context: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docker/xdg-open-root-bridge.sh`, `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docker/exo-open-root-bridge.sh`
+- Dockerfile context asserted by coverage: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docker/Dockerfile.monorepo`
 
 Checks run during this re-review:
 

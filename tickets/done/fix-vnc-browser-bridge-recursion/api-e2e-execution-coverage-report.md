@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/requirements.md`
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/investigation-notes.md`
-- Design Spec: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md`
-- Design Review Report: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/design-review-report.md`
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/implementation-handoff.md`
-- Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/code-review-report.md`
-- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/requirements.md`
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/investigation-notes.md`
+- Design Spec: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/design-spec.md`
+- Design Review Report: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/design-review-report.md`
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/implementation-handoff.md`
+- Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/code-review-report.md`
+- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-coverage-investigation.md`
 - Current Execution Round: 2
 - Trigger: Code-review Round 2 Local Fix `CR-COV-001` for ineffective Dockerfile chmod coverage in API/E2E-authored durable coverage.
 - Prior Round Reviewed: Round 1 execution report and code-review Round 2 finding.
@@ -35,7 +35,7 @@ The requirements/design authorize source-level and controlled shell probes as su
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -75,7 +75,7 @@ The durable tests assert the old behavior is absent by checking that the opener 
 
 ## Platform / Runtime Targets
 
-- Worktree: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion`
+- Worktree: `/home/autobyteus/workspace/autobyteus-workspace`
 - Branch: `codex/fix-vnc-browser-bridge-recursion`
 - Base/finalization target: `origin/personal` / `personal`
 - User context for commands: `root`
@@ -125,7 +125,7 @@ No persistent external services were started. Durable tests use `tempfile.Tempor
 
 Updated:
 
-- `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/scripts/tests/test_server_docker_browser_bridge.py`
+- `/home/autobyteus/workspace/autobyteus-workspace/scripts/tests/test_server_docker_browser_bridge.py`
 
 Round 2 fix:
 
@@ -151,16 +151,16 @@ Coverage in that file now includes:
 
 - Repository-resident durable coverage added, updated, or removed this round: `Yes`
 - Paths added or updated:
-  - `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/scripts/tests/test_server_docker_browser_bridge.py`
+  - `/home/autobyteus/workspace/autobyteus-workspace/scripts/tests/test_server_docker_browser_bridge.py`
 - Paths removed: N/A
 - If `Yes`, returned through `code_reviewer` before delivery: `Pending; this Round 2 report routes the cumulative package back to code_reviewer for the required coverage-code re-review.`
-- Post-API/E2E coverage code review artifact: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/code-review-report.md` currently records Round 2 fail; next code-review round pending after this Local Fix.
+- Post-API/E2E coverage code review artifact: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/code-review-report.md` currently records Round 2 fail; next code-review round pending after this Local Fix.
 
 ## Other Execution Artifacts
 
-- Coverage investigation: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-execution-coverage-report.md`
-- Code review report with failing Round 2 finding: `/home/autobyteus/workspace/autobyteus-workspace-fix-vnc-browser-bridge-recursion/.codex/tasks/fix-vnc-browser-bridge-recursion/code-review-report.md`
+- Coverage investigation: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/api-e2e-execution-coverage-report.md`
+- Code review report with failing Round 2 finding: `/home/autobyteus/workspace/autobyteus-workspace/.codex/tasks/fix-vnc-browser-bridge-recursion/code-review-report.md`
 
 ## Temporary Execution Methods / Scaffolding
 
