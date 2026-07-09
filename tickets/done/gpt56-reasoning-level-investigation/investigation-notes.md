@@ -26,7 +26,7 @@ Reference screenshots:
 
 - Project Type: `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation`
 - Current Branch: `codex/gpt56-reasoning-level-investigation`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation`
 - Bootstrap Base Branch: `origin/personal`

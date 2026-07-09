@@ -91,3 +91,9 @@ Unpacked app bundle:
 ## Release Boundary
 
 This package is for local user verification only. It is unsigned, not notarized, not published, not tagged, and not release-policy evidence. No repository finalization or deployment action was performed.
+
+## Finalization Addendum
+
+- User verification passed on 2026-07-09.
+- The dedicated test worktree and its local unsigned DMG/ZIP were removed after repository finalization and release; the checksums and validation evidence above remain the durable record.
+- The production release was built independently by the signed/tag-triggered workflows from `v1.4.7` and published at `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.7`.

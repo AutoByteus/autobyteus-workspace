@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-API/E2E Coverage-Code Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/requirements.md`
 - Current Review Round: `2`
 - Trigger: Mandatory re-review of repository-resident durable coverage commit `1df583eb6b142ad771f86c77f8aeeb95c07a0efc`
 - Prior Review Round Reviewed: `1`
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/proposed-design.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/implementation-handoff.md`
-- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/proposed-design.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/implementation-handoff.md`
+- Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/api-e2e-execution-coverage-report.md`
 - API / E2E Execution Started Yet: `Yes`
 - Repository-Resident Durable Coverage Added, Updated, Or Removed After Prior Review: `Yes`
 

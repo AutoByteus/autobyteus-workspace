@@ -3,10 +3,10 @@
 ## Ticket
 
 - Ticket: `gpt56-reasoning-level-investigation`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation`
-- Branch: `codex/gpt56-reasoning-level-investigation`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation` — removed after finalization.
+- Branch: `codex/gpt56-reasoning-level-investigation` — merged, then deleted locally and remotely.
 - Finalization target: `personal` / `origin/personal`
-- Current handoff state: User verification passed on 2026-07-09. The ticket is archived under `tickets/done`; repository finalization and release `v1.4.7` are in progress.
+- Current handoff state: Complete. User verification passed, the ticket was archived, repository finalization completed, and release `v1.4.7` was published successfully on 2026-07-09.
 
 ## Initial Delivery Integration Refresh
 
@@ -57,18 +57,18 @@
 
 ## Docs And Delivery Artifacts
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/release-deployment-report.md`
-- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/electron-test-build-report.md`
-- Canonical long-lived doc updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-server-ts/docs/modules/codex_integration.md`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/release-notes.md`; prepared after the user explicitly requested release.
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/release-deployment-report.md`
+- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/electron-test-build-report.md`
+- Canonical long-lived doc updated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/codex_integration.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/release-notes.md`; prepared after the user explicitly requested release.
 
 ## Local Electron Test Build
 
 - Result: `Pass`.
 - Command: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.6.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.6.zip`
+- Original DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.6.dmg` — removed with the dedicated test worktree after successful user verification.
+- Original ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.6.zip` — removed with the dedicated test worktree after successful user verification.
 - Package checks: DMG verification, ZIP integrity, staged/final packaged terminal runtime ARM64 spawn probes, app architecture/version, and packaged correction inspection all passed.
 - Boundary: unsigned/unnotarized local test package only; not a release or deployment.
 
@@ -79,16 +79,19 @@
 - Direct arbitrary non-empty strings are intentionally passed to App Server, which remains authoritative for acceptance or rejection.
 - The package-wide TypeScript command retains the pre-existing `rootDir: "src"` plus `tests` inclusion baseline issue; the source-only TypeScript build and changed-scope executable checks are green.
 
-## User Verification Hold
+## User Verification
 
 - Explicit user verification received: `Yes`.
 - Verification date: `2026-07-09`.
 - Verification reference: User reported, “i have verified. its working. now finalize and release.”
 - Renewed verification required: `No`; the post-verification remote refresh found no target-base advance.
-- Authorized next actions: Commit and push the archived ticket branch, merge/push `personal`, then run the documented release helper for `v1.4.7` with the archived ticket release notes.
+- Authorized actions completed: Archived ticket commit `fb584a79`, merge commit `8ea63d39`, release commit `ec0fcab6`, tag `v1.4.7`, publication workflows, and ticket branch/worktree cleanup.
 
 ## Release Scope
 
 - Release authorized: `Yes`.
-- Planned version/tag: `1.4.7` / `v1.4.7`, the next patch after current package/tag version `1.4.6`.
+- Released version/tag: `1.4.7` / `v1.4.7`.
 - Release method: `pnpm release 1.4.7 -- --release-notes tickets/done/gpt56-reasoning-level-investigation/release-notes.md` from a clean, finalized `personal` branch.
+- Release commit: `ec0fcab6d360c83c85b3c47ed99231363492938c`.
+- GitHub Release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.7`.
+- Publication result: Desktop, Android APK, iOS App Store Connect, Messaging Gateway, and Server Docker release workflows all completed successfully.

@@ -2,13 +2,13 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/proposed-design.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/proposed-design.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/api-e2e-coverage-investigation.md`
 - Current Execution Round: `1`
 - Trigger: Code-review pass for implementation `7bda8b9d`, followed by the required coverage investigation at `8daae87a`.
 - Prior Round Reviewed: `N/A`
@@ -30,7 +30,7 @@
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/api-e2e-coverage-investigation.md`
 - Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
 - Existing durable coverage inventory reviewed: `Yes`
 - Existing tests treated as authority without current-requirement validity review: `No`
@@ -136,18 +136,18 @@ Not applicable to the changed reasoning-effort translation boundary. Each server
 
 - Repository-resident durable coverage added, updated, or removed this round: `Yes`
 - Paths added or updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
 - Paths removed: `None`; the obsolete assertion inside the live catalog file was removed and replaced.
 - If `Yes`, returned through `code_reviewer` before delivery: `Pending at report authoring; this report and the cumulative package are being routed to code_reviewer next, and delivery has not been contacted.`
 - Post-API/E2E coverage code review artifact: `Pending coverage-code re-review.`
 
 ## Other Execution Artifacts
 
-- Canonical coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/api-e2e-coverage-investigation.md`
-- This canonical execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/api-e2e-execution-coverage-report.md`
+- Canonical coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/api-e2e-coverage-investigation.md`
+- This canonical execution report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/api-e2e-execution-coverage-report.md`
 - No repository-resident screenshots, logs, or probe files were retained.
 
 ## Temporary Execution Methods / Scaffolding

@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/proposed-design.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/tickets/done/gpt56-reasoning-level-investigation/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/proposed-design.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gpt56-reasoning-level-investigation/design-review-report.md`
 
 ## What Changed
 
@@ -18,11 +18,11 @@
 
 ## Key Files Or Areas
 
-- Modified production boundary: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-server-ts/src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts`
-- Modified focused unit coverage: `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-app-server-model-normalizer.test.ts`
+- Modified production boundary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts`
+- Modified focused unit coverage: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-app-server-model-normalizer.test.ts`
 - Unchanged runtime consumers reviewed during implementation:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gpt56-reasoning-level-investigation/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts`
 
 ## Important Assumptions
 
