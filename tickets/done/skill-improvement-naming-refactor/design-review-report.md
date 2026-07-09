@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-spec.md`
 - Current Review Round: 2
 - Trigger: Revised package after round 1 fail, plus user clarification that the feature is disabled/development-phase/no-user and should use a clean-state/no-data-migration contract while preserving manual Skill Improvement behavior.
 - Prior Review Round Reviewed: Round 1 in this same report path before rewrite; findings AR-SI-001 through AR-SI-003 rechecked.
@@ -20,7 +20,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor/design-spec.md` round 2 revision.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor/design-spec.md` round 2 revision.
 
 ## Task Design Health Assessment Verdict
 

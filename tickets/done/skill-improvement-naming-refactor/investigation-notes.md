@@ -25,7 +25,7 @@ Architecture review round 1 agreed with the high-level clean-cut rename but reje
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/in-progress/skill-improvement-naming-refactor`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor/tickets/done/skill-improvement-naming-refactor`
 - Current Branch: `codex/skill-improvement-naming-refactor`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-improvement-naming-refactor`
 - Bootstrap Base Branch: `origin/personal`
