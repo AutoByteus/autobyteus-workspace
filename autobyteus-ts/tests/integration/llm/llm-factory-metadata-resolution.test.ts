@@ -7,8 +7,10 @@ import { LLMProvider } from '../../../src/llm/providers.js';
 import { AutobyteusModelProvider } from '../../../src/llm/autobyteus-provider.js';
 import { LMStudioModelProvider } from '../../../src/llm/lmstudio-provider.js';
 import { OllamaModelProvider } from '../../../src/llm/ollama-provider.js';
+import { OpenAILLM } from '../../../src/llm/api/openai-llm.js';
 
 const ENV_KEYS = [
+  'OPENAI_API_KEY',
   'ANTHROPIC_API_KEY',
   'KIMI_API_KEY',
   'MISTRAL_API_KEY',
@@ -73,6 +75,40 @@ describe('LLMFactory metadata resolution', () => {
     });
     expect(openaiModels.find((model) => model.model_identifier === 'gpt-5.4')?.max_context_tokens).toBe(1000000);
     expect(openaiModels.find((model) => model.model_identifier === 'gpt-5.4-mini')?.max_output_tokens).toBe(128000);
+    const gpt56Models = openaiModels.filter((model) => model.model_identifier.startsWith('gpt-5.6'));
+    expect(gpt56Models.map((model) => model.model_identifier).sort()).toEqual([
+      'gpt-5.6-luna',
+      'gpt-5.6-sol',
+      'gpt-5.6-terra',
+    ]);
+    for (const model of gpt56Models) {
+      expect(model).toMatchObject({
+        display_name: model.model_identifier,
+        value: model.model_identifier,
+        canonical_name: model.model_identifier,
+        provider_type: LLMProvider.OPENAI,
+        runtime: 'api',
+        max_context_tokens: 1050000,
+        max_output_tokens: 128000,
+        config_schema: {
+          properties: {
+            reasoning_effort: {
+              default: 'medium',
+              enum: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
+            },
+          },
+        },
+      });
+    }
+    expect(openaiModels.map((model) => model.model_identifier)).not.toContain('gpt-5.6');
+    expect(gpt55?.config_schema).toMatchObject({
+      properties: {
+        reasoning_effort: {
+          default: 'none',
+          enum: ['none', 'low', 'medium', 'high', 'xhigh'],
+        },
+      },
+    });
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')).toMatchObject({
       provider_type: LLMProvider.ANTHROPIC,
       value: 'claude-opus-4-7',
@@ -198,6 +234,21 @@ describe('LLMFactory metadata resolution', () => {
     expect(glmModels.map((model) => model.model_identifier)).not.toContain('glm-5.1');
     expect(qwenModels.find((model) => model.model_identifier === 'qwen3-max')?.max_context_tokens).toBe(262144);
     expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  it('resolves every canonical GPT-5.6 identifier through the existing OpenAI adapter', async () => {
+    process.env.OPENAI_API_KEY = 'test-openai-key';
+
+    for (const modelId of ['gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna']) {
+      const llm = await LLMFactory.createLLM(modelId);
+      expect(llm).toBeInstanceOf(OpenAILLM);
+      expect(llm.model).toMatchObject({
+        modelIdentifier: modelId,
+        value: modelId,
+        canonicalName: modelId,
+      });
+      await llm.cleanup();
+    }
   });
 
   it('applies live provider metadata during registry initialization when official endpoints are configured', async () => {
