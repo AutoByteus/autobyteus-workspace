@@ -1,11 +1,20 @@
 # Implementation Handoff
 
+## Round 2 Reconciliation
+
+- Status: `Implementation reconciled with authoritative architecture review round 2`
+- Superseded authorization: round 1 is historical only; this handoff now follows revised `REQ-011`, `AC-013`, `AC-014`, and `DS-006`.
+- Production conclusion: the existing Codex adapter already conforms. It maps only the installed app-server input/cache-read/output/reasoning/total fields, retains source records, keeps provider-delta cache creation null, and contains no remainder inference or speculative write aliases. No production Codex change was required.
+- Durable coverage added: focused Codex thread and backend assertions now distinguish upstream source keys from AutoByteus-injected reconciliation metadata, prove canonical cache creation remains null, prove the uncached remainder stays standard input rather than becoming a fabricated write, and prove a known GPT-5.6 write price does not create a write cost without a reported count. The existing provider-neutral Token Meter zero/absent-write assertion then proves no cache-write row is rendered.
+- Round 2 implementation commit: `96f73433` (`test: enforce Codex cache-write no-fabrication`).
+- Pre-probe commits `b95c795b`, `602e4eb9`, and `7d060a43` remain useful implementation/coverage evidence but are not final round-2 gates.
+
 ## Upstream Artifact Package
 
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/requirements.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/design-spec.md`
-- Supplemental solution artifacts: none
+- Supplemental solution artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/codex-cache-write-probe.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/design-review-report.md`
 
 ## What Changed
@@ -17,6 +26,7 @@
 - Extended the existing OpenAI-compatible usage adapter to normalize nested Responses/Chat `cache_write_tokens` into `cache_creation_input_tokens`, prefer nested zero over the top-level compatible fallback, and classify read- or write-positive usage as positive cache activity.
 - Preserved `LLMFactory -> OpenAILLM -> OpenAIResponsesLLM`, the provider-neutral server/frontend Token Meter contract, and all production server/frontend files unchanged.
 - Added focused catalog, metadata, factory, Responses request, usage-normalizer, and Token Meter component coverage.
+- Reconciled the separate Codex app-server boundary without changing production: missing upstream cache-write quantity remains unknown/null and is never derived from gross input minus cached reads.
 - Implementation commit: `b95c795b37eed8d510fa02d7ea16f2e8d4605e61` (`feat: add OpenAI GPT-5.6 models`).
 
 ## Key Files Or Areas
@@ -34,6 +44,8 @@ Focused coverage:
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/tests/unit/llm/api/token-usage-normalizers.test.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/tests/unit/llm/api/provider-native-request-payloads.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-web/components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts`
 
 ## Important Assumptions
@@ -42,6 +54,7 @@ Focused coverage:
 - Provider-reported input remains gross input; downstream generic accounting subtracts cache reads and cache writes once to derive standard input.
 - Static catalog visibility is entitlement-neutral. Provider access errors remain explicit runtime errors.
 - A top-level `cache_write_tokens` field is accepted only as the reviewed OpenAI-compatible adapter fallback; a nested zero is authoritative and is not overwritten.
+- Codex app-server is a separate source contract. Its current `cachedInputTokens` field is cache read only; absence of a write field is preserved as null and cannot be reconstructed from the uncached remainder.
 - No separate unsuffixed alias row, entitlement fallback, provider adapter, server/frontend model branch, browser pricing table, or frontend cost recomputation is required.
 
 ## Known Risks
@@ -49,6 +62,7 @@ Focused coverage:
 - Successful live GPT-5.6 calls remain unverified because the investigation credential was not entitled.
 - Real entitled raw `cache_write_tokens` usage remains unavailable; deterministic coverage exercises both documented nested shapes and the compatible top-level fallback.
 - Official GPT-5.6 rollout pages and the derived greater-than-272K cached rates are fresh and need downstream recheck.
+- Codex may perform internal cache writes that its current client protocol does not expose. AutoByteus therefore cannot price or display that hidden component; API/E2E must regenerate the supported protocol and return any newly exposed official field as design impact.
 - Focused write-only Token Meter coverage confirms the existing aggregate-positive cache condition exposes an empty zero-token `Cache hits` neighbor (`—` / price missing) alongside the correct positive `Cache writes` row. This did not prevent the approved token/price/cost disclosure, so no production UI correction was made. Treat a materially different product expectation as design impact.
 
 ## Task Design Health Assessment Implementation Check
@@ -58,7 +72,7 @@ Focused coverage:
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `No Refactor Needed`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: the change stayed within the static catalog, curated metadata, and provider usage-normalizer owners. No boundary bypass, new provider path, server production branch, or frontend production branch was needed.
+- Evidence / notes: the direct API change stayed within the static catalog, curated metadata, and provider usage-normalizer owners. Round 2 confirmed the separate Codex adapter already preserves the upstream absence correctly; only focused test assertions were tightened. No boundary bypass, new provider path, server production branch, or frontend production branch was needed.
 
 ## Legacy / Compatibility Removal Check
 
@@ -84,6 +98,7 @@ Focused coverage:
 - Installed the frozen workspace lockfile from the local pnpm store with `pnpm install --offline --frozen-lockfile`.
 - Generated ignored Nuxt test/type metadata with `pnpm exec nuxt prepare` because the dedicated worktree initially lacked `autobyteus-web/.nuxt/tsconfig.json`.
 - No SDK upgrade, package-manifest change, network API setup, or live provider credential was required.
+- `pnpm --dir autobyteus-server-ts typecheck` still fails before test-specific type analysis because the repository `tsconfig.json` sets `rootDir: src` while including `tests`, producing broad baseline `TS6059` errors for the existing suite. Shared dependency builds executed by its pretypecheck hook passed; the focused Vitest files and production `build:full` passed.
 
 ## Local Implementation Checks Run
 
@@ -95,6 +110,12 @@ Focused coverage:
 - `pnpm --dir autobyteus-web test:nuxt --run components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts`
   - Result: pass; 1 file, 8 tests.
   - Non-blocking stderr: existing KaTeX quirks-mode warning from the test environment.
+- `pnpm --dir autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts`
+  - Result: pass; 2 files, 31 tests.
+- `pnpm --dir autobyteus-server-ts build:full`
+  - Result: pass; TypeScript production build, managed-asset copy, and built-in-agent bootstrap smoke succeeded.
+- `pnpm --dir autobyteus-server-ts typecheck`
+  - Result: baseline-blocked by repository-wide `TS6059` rootDir/include configuration described above; no task-specific diagnostic was reached.
 - `git diff --check`
   - Result: pass before implementation commit.
 
@@ -109,6 +130,7 @@ These are implementation-scoped local checks only, not API/E2E sign-off.
 - Exercise standard and greater-than-272K tier selection through the server cost pipeline, including separate standard/read/write/output components and no double counting.
 - Confirm live `TOKEN_USAGE_UPDATED` and equivalent ledger-backed GraphQL hydration converge on generic write tokens, unit price, write cost, input cost, and total cost.
 - Use browser validation proportionately for the focused Token Meter positive, zero/absent, and mixed/missing write-price states; record the accepted empty cache-hit neighbor for write-only positive cache state.
+- Regenerate the supported Codex app-server protocol and compare its exact `TokenUsageBreakdown` fields. If it exposes a cache-write field, route design impact with its cumulative/last semantics; otherwise preserve the no-write-field/null/no-row evidence and distinguish upstream `tokenUsage`/`raw_usage_json` keys from injected `raw_event_json` reconciliation metadata.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
