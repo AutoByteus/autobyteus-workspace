@@ -8,33 +8,34 @@ import { CodexThreadEventName } from "../../../../../src/agent-execution/backend
 
 vi.mock("../../../../../src/token-usage/pricing/token-price-config-provider.js", () => ({
   TokenPriceConfigProvider: class TokenPriceConfigProvider {
-    async resolvePolicy() {
+    async resolvePolicy(payload: { model_identifier?: string | null }) {
+      const isGpt56Sol = payload.model_identifier === "gpt-5.6-sol";
       return {
-        pricing_policy_key: null,
-        price_config_id: null,
-        model_provider: null,
-        model_identifier: null,
-        model_value: null,
-        canonical_name: null,
-        currency: null,
-        input_price_per_million: null,
-        output_price_per_million: null,
-        cached_input_read_price_per_million: null,
-        cached_input_write_price_per_million: null,
+        pricing_policy_key: isGpt56Sol ? "autobyteus_model_catalog:OPENAI:gpt-5.6-sol" : null,
+        price_config_id: isGpt56Sol ? "autobyteus_model_catalog:OPENAI:gpt-5.6-sol" : null,
+        model_provider: isGpt56Sol ? "OPENAI" : null,
+        model_identifier: isGpt56Sol ? "gpt-5.6-sol" : null,
+        model_value: isGpt56Sol ? "gpt-5.6-sol" : null,
+        canonical_name: isGpt56Sol ? "gpt-5.6-sol" : null,
+        currency: isGpt56Sol ? "USD" : null,
+        input_price_per_million: isGpt56Sol ? 5 : null,
+        output_price_per_million: isGpt56Sol ? 30 : null,
+        cached_input_read_price_per_million: isGpt56Sol ? 0.5 : null,
+        cached_input_write_price_per_million: isGpt56Sol ? 6.25 : null,
         cached_input_write_5m_price_per_million: null,
         cached_input_write_1h_price_per_million: null,
         input_price_tiers: [],
-        pricing_status: "missing",
+        pricing_status: isGpt56Sol ? "trusted" : "missing",
         trusted_dimensions: {
-          input: false,
-          output: false,
-          cached_input_read: false,
-          cached_input_write: false,
+          input: isGpt56Sol,
+          output: isGpt56Sol,
+          cached_input_read: isGpt56Sol,
+          cached_input_write: isGpt56Sol,
           cached_input_write_5m: false,
           cached_input_write_1h: false,
         },
-        missing_reason: "test_unpriced",
-        source: null,
+        missing_reason: isGpt56Sol ? null : "test_unpriced",
+        source: isGpt56Sol ? "autobyteus_model_catalog" : null,
         effective_from: null,
         effective_to: null,
         version: null,
@@ -170,7 +171,7 @@ describe("CodexAgentRunBackend", () => {
   it("dispatches idle lifecycle events even when token usage updates were observed earlier", async () => {
     const { backend, codexThread, emitThreadEvent } = createBackend();
     codexThread.runContext.runtimeContext.activeTurnId = "turn-usage-1";
-    codexThread.runContext.runtimeContext.codexThreadConfig.model = "gpt-5.4-mini";
+    codexThread.runContext.runtimeContext.codexThreadConfig.model = "gpt-5.6-sol";
     codexThread.setCurrentStatus("RUNNING");
 
     const emittedEvents: Array<Record<string, unknown>> = [];
@@ -255,7 +256,7 @@ describe("CodexAgentRunBackend", () => {
             effective_context_window_tokens: 128000,
             context_window_usage_percent: 0.0078125,
             model_provider: "OPENAI",
-            model_identifier: "gpt-5.4-mini",
+            model_identifier: "gpt-5.6-sol",
             raw_usage_json: {
               totalTokens: 150,
               inputTokens: 100,
@@ -273,6 +274,24 @@ describe("CodexAgentRunBackend", () => {
         }),
       ]),
     );
+
+    const tokenUsageEvent = emittedEvents.find(
+      (event) => event.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED,
+    );
+    const payload = tokenUsageEvent?.payload as Record<string, any>;
+    expect(payload).toMatchObject({
+      reported_input_tokens: 10,
+      cache_read_input_tokens: 4,
+      standard_input_tokens: 6,
+      cache_creation_input_tokens: null,
+      cached_input_write_price_per_million: 6.25,
+      estimated_api_cache_creation_input_cost: null,
+    });
+    expect(payload.raw_usage_json).not.toHaveProperty("cacheWriteTokens");
+    expect(payload.raw_usage_json).not.toHaveProperty("cache_write_tokens");
+    expect(payload.raw_event_json.tokenUsage.total).not.toHaveProperty("cacheWriteTokens");
+    expect(payload.raw_event_json.autobyteus_cumulative_snapshot_provider_delta_tokens)
+      .toMatchObject({ cache_creation_input_tokens: null });
   });
 
   it("emits normalized token usage events for late token usage updates after idle", async () => {
