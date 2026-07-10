@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/design-spec.md`
-- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/codex-cache-write-probe.md` (`Complete — factual evidence`).
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/design-spec.md`
+- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/codex-cache-write-probe.md` (`Complete — factual evidence`).
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/api-e2e-coverage-investigation.md`
 - Current Execution Round: `2`
 - Trigger: Revised `REQ-011`, `AC-013`, `AC-014`, `DS-006`, supplemental Codex probe, reconciliation commit `96f73433a5ddc5e05d343b04d3852d1825b90234`, current handoff `df071972`, and source-review round-2 pass.
 - Prior Round Reviewed: `1`; all prior results were treated as historical reconciliation evidence and rerun where still material.
@@ -152,8 +152,8 @@ None.
 
 - Repository-resident durable coverage added, updated, or removed in the round-2 current package: `Yes` — two upstream reconciliation test updates; API/E2E itself changed none.
 - Paths added or updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts`
 - Paths removed: None.
 - Added or updated paths attached for proportional test-code review: `Yes` in the round-2 handoff.
 - Diff or repository evidence for removed paths: N/A.
@@ -162,10 +162,10 @@ None.
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `tickets/in-progress/openai-new-api-models/evidence/codex-generated-protocol-round2-2026-07-10.md` | Current generated-protocol evidence | Retained | Versions, exact types, write-key search, relevant hashes, source-vs-injected conclusion. |
-| `tickets/in-progress/openai-new-api-models/evidence/official-openai-gpt56-contract-round2-2026-07-10.md` | Fresh official-contract/rate evidence | Retained | Includes explicit composed-rate arithmetic. |
-| `tickets/in-progress/openai-new-api-models/evidence/live-openai-gpt56-round2-2026-07-10.json` | Sanitized live entitlement evidence | Retained | No secret or response output text. |
-| `tickets/in-progress/openai-new-api-models/evidence/round2-*.log` | Current command evidence | Retained | Focused/broader tests, builds, and explicit baseline typecheck diagnostic. |
+| `tickets/done/openai-new-api-models/evidence/codex-generated-protocol-round2-2026-07-10.md` | Current generated-protocol evidence | Retained | Versions, exact types, write-key search, relevant hashes, source-vs-injected conclusion. |
+| `tickets/done/openai-new-api-models/evidence/official-openai-gpt56-contract-round2-2026-07-10.md` | Fresh official-contract/rate evidence | Retained | Includes explicit composed-rate arithmetic. |
+| `tickets/done/openai-new-api-models/evidence/live-openai-gpt56-round2-2026-07-10.json` | Sanitized live entitlement evidence | Retained | No secret or response output text. |
+| `tickets/done/openai-new-api-models/evidence/round2-*.log` | Current command evidence | Retained | Focused/broader tests, builds, and explicit baseline typecheck diagnostic. |
 
 ## Temporary Execution Methods / Scaffolding
 

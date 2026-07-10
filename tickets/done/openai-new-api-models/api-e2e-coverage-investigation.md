@@ -2,13 +2,13 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/design-spec.md`
-- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/codex-cache-write-probe.md` (`Complete — factual evidence`).
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/design-spec.md`
+- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/codex-cache-write-probe.md` (`Complete — factual evidence`).
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/code-review-report.md`
 - Current Investigation Round: `2`
 - Trigger: Revised `REQ-011`, `AC-013`, `AC-014`, `DS-006`, supplemental Codex probe, reconciliation commit `96f73433a5ddc5e05d343b04d3852d1825b90234`, handoff commit `df071972`, and source-review round-2 pass.
 - Prior Investigation Reviewed: `1` — useful reconciliation evidence, superseded as a final gate by the Codex observability scope expansion.
@@ -209,7 +209,7 @@ Round 1 reached `95.9%` post-repository and `96.3%` final confidence. It remains
 - Health / readiness checks: authenticated model-list HTTP status.
 - Seed data / fixtures: deterministic repeated `cacheprobe` prefix only if entitled.
 - Test identities/permissions: configured OpenAI API organization; entitlement result recorded exactly.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/evidence/live-openai-gpt56-round2-2026-07-10.json` (secret omitted).
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/evidence/live-openai-gpt56-round2-2026-07-10.json` (secret omitted).
 - Owned processes/state to clean up: none for live HTTPS; server tests own UUID ledger rows and test DB.
 
 ## Temporary Executable Validation Plan

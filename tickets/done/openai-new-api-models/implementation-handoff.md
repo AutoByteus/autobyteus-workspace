@@ -11,11 +11,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/design-spec.md`
-- Supplemental solution artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/codex-cache-write-probe.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/tickets/in-progress/openai-new-api-models/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/design-spec.md`
+- Supplemental solution artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/codex-cache-write-probe.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/openai-new-api-models/design-review-report.md`
 
 ## What Changed
 
@@ -33,20 +33,20 @@
 
 Production:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/src/llm/supported-model-definitions.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/src/llm/metadata/curated-model-metadata.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/src/llm/api/openai-compatible-token-usage-normalizer.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/src/llm/supported-model-definitions.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/src/llm/metadata/curated-model-metadata.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/src/llm/api/openai-compatible-token-usage-normalizer.ts`
 
 Focused coverage:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/tests/unit/llm/metadata/model-metadata-resolver.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/tests/unit/llm/api/token-usage-normalizers.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts/tests/unit/llm/api/provider-native-request-payloads.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-web/components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/unit/llm/metadata/model-metadata-resolver.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/unit/llm/api/token-usage-normalizers.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/unit/llm/api/provider-native-request-payloads.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts`
 
 ## Important Assumptions
 

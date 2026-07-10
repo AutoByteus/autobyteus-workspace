@@ -119,6 +119,12 @@ provider adapter under `src/llm/api/`.
 
 Current examples of provider-specific model rules:
 
+- `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` remain exact,
+  entitlement-neutral built-in OpenAI rows on the existing Responses path.
+  They share a GPT-5.6-only reasoning schema with `medium` default and `max`
+  support, plus trusted cache-read/cache-write and >272K input-tier pricing.
+  Do not add the unsuffixed `gpt-5.6` alias as a fourth row or broaden older
+  OpenAI schemas with `max`.
 - Current Anthropic adaptive-thinking rows (`claude-opus-4.8`,
   `claude-opus-4.7`, `claude-sonnet-5`, and `claude-fable-5`) use adaptive
   thinking rather than fixed-budget extended thinking. The adapter strips
@@ -175,10 +181,23 @@ summaries, and persistence.
 
 Provider adapters must normalize what the provider reported, not what it costs.
 OpenAI-compatible/gross providers should report gross prompt/input plus cache
-read or miss buckets when available. Anthropic-style providers should mark
-`base_excludes_cache` so the server can derive gross input as base input plus
-cache read/write buckets. Local runtime estimates must never be used as
-persisted paid-provider accounting.
+read, write, or miss buckets when available. In particular, documented OpenAI
+`input_tokens_details.cache_write_tokens` or
+`prompt_tokens_details.cache_write_tokens` maps to the existing generic
+cache-creation input component without changing gross-input semantics.
+Anthropic-style providers should mark `base_excludes_cache` so the server can
+derive gross input as base input plus cache read/write buckets. Local runtime
+estimates must never be used as persisted paid-provider accounting.
+
+Direct OpenAI API observations and Codex app-server token notifications are
+different source contracts. The direct Responses path can map a documented
+`cache_write_tokens` quantity, but the Codex protocol verified on 2026-07-10
+exposes cached reads and no write count. Codex cache creation must remain
+unknown/null; do not infer it from gross input minus cached reads, and do not
+produce a write cost merely because catalog pricing contains a trusted write
+rate. Any future Codex write field requires generated-protocol verification and
+an explicit runtime-adapter mapping review with its cumulative `total`/`last`
+semantics. Do not route Codex raw events through the direct OpenAI normalizer.
 
 `BaseLLM` still supports optional extensions that hook into the request/response
 lifecycle, but token accounting must not depend on an auto-registered extension

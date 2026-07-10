@@ -23,6 +23,9 @@ or changing provider-specific request-shaping behavior.
 
 | Surface | User-Facing Model ID | Provider API Value | Provider | Verified On | Implementation Notes |
 | --- | --- | --- | --- | --- | --- |
+| LLM | `gpt-5.6-sol` | `gpt-5.6-sol` | OpenAI | 2026-07-10 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and tiered cache-read/cache-write-aware pricing. |
+| LLM | `gpt-5.6-terra` | `gpt-5.6-terra` | OpenAI | 2026-07-10 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and tiered cache-read/cache-write-aware pricing. |
+| LLM | `gpt-5.6-luna` | `gpt-5.6-luna` | OpenAI | 2026-07-10 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and tiered cache-read/cache-write-aware pricing. |
 | LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
 | LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
 | LLM | `claude-opus-4.8` | `claude-opus-4-8` | Anthropic | 2026-07-07 | Retained latest Opus row; uses the current adaptive-thinking/no-sampling request policy. |
@@ -164,14 +167,60 @@ decision.
 
 ### OpenAI Responses Models
 
-Official OpenAI text models such as `gpt-5.5` use the `OpenAIResponsesLLM` path
-and the Responses API input-item history format. For native tool continuation,
-the adapter requests `reasoning.encrypted_content` when tools or prior Responses
-tool/reasoning items are present, merges that request with any caller-supplied
-`include` entries, and replays captured `response.output` items exactly once
-when available. This preserves provider-required reasoning items before their
-matching `function_call` items while still using the normalized final
-`ToolCallSpec` for call id, name, and arguments.
+Official OpenAI text models such as `gpt-5.5`, `gpt-5.6-sol`,
+`gpt-5.6-terra`, and `gpt-5.6-luna` use the `OpenAIResponsesLLM` path and the
+Responses API input-item history format. The three GPT-5.6 rows preserve their
+exact provider IDs; do not add the unsuffixed `gpt-5.6` alias as a fourth
+selectable row. Their family-specific schema exposes reasoning efforts `none`,
+`low`, `medium`, `high`, `xhigh`, and `max`, with `medium` as the default,
+without advertising `max` on older OpenAI rows. Curated metadata records a
+`1,050,000`-token context window and `128,000`-token maximum output for each of
+the three exact IDs.
+
+For native tool continuation, the adapter requests `reasoning.encrypted_content`
+when tools or prior Responses tool/reasoning items are present, merges that
+request with any caller-supplied `include` entries, and replays captured
+`response.output` items exactly once when available. This preserves
+provider-required reasoning items before their matching `function_call` items
+while still using the normalized final `ToolCallSpec` for call id, name, and
+arguments.
+
+OpenAI usage normalization keeps gross input semantics and maps a non-negative
+`cache_write_tokens` value from `input_tokens_details` or
+`prompt_tokens_details` into the generic `cache_creation_input_tokens`
+component. A top-level value is only a shared external-shape fallback. The
+server remains the pricing owner, and the frontend consumes the resulting
+generic cache-write token, unit-price, and cost fields without an OpenAI-specific
+branch.
+
+Built-in catalog visibility is entitlement-neutral. Verification on 2026-07-10
+confirmed that the available OpenAI credential was valid but not entitled to
+any of the three exact GPT-5.6 IDs: each minimal Responses request returned the
+limited-preview `model_not_found` result. Catalog support therefore does not
+claim a successful live invocation or an observed provider payload containing
+real `cache_write_tokens`; repeat that smoke with an entitled account when one
+is available.
+
+#### Direct OpenAI API vs. Codex app-server usage
+
+The direct OpenAI API and Codex app-server are separate token-usage source
+contracts. The direct Responses/compatible path above can normalize a reported
+`cache_write_tokens` quantity. By contrast, the Codex app-server protocol
+verified on 2026-07-10 exposes total, input, cached-input, output, and reasoning
+token counts, but no cache-write count. Codex `cachedInputTokens` is a cache-read
+quantity only; the uncached remainder must not be relabeled as cache creation.
+
+For current Codex events, `cache_creation_input_tokens` therefore stays
+unknown/null. A trusted GPT-5.6 cache-write unit price alone must not create a
+write token count, cost, or frontend row. Source-field conclusions must use the
+upstream `tokenUsage` object and retained `raw_usage_json`; enriched
+`raw_event_json` may contain AutoByteus-added canonical reconciliation metadata
+with a null write value and is not proof that Codex emitted such a field.
+
+Re-generate the supported Codex protocol before adding a future write mapping.
+If an official field appears, review its `total`/`last` cumulative semantics at
+the Codex runtime adapter boundary instead of adding speculative aliases or
+reusing the direct OpenAI normalizer.
 
 ### DeepSeek V4
 
@@ -406,6 +455,17 @@ remain explicit:
   `6.25`, 1-hour cache write `10`.
 - Sonnet 5: input `3`, output `15`, cache read `0.3`, 5-minute cache write
   `3.75`, 1-hour cache write `6`.
+
+OpenAI GPT-5.6 prices verified on 2026-07-10 are first-party standard API prices
+per million tokens. The standard tier applies through `272,000` input tokens;
+above that threshold the full request uses `2x` input/cache-read/cache-write and
+`1.5x` output prices:
+
+| Model | Standard Input | Standard Output | Cache Read | Cache Write | >272K Input | >272K Output | >272K Cache Read | >272K Cache Write |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `gpt-5.6-sol` | `5` | `30` | `0.5` | `6.25` | `10` | `45` | `1` | `12.5` |
+| `gpt-5.6-terra` | `2.5` | `15` | `0.25` | `3.125` | `5` | `22.5` | `0.5` | `6.25` |
+| `gpt-5.6-luna` | `1` | `6` | `0.1` | `1.25` | `2` | `9` | `0.2` | `2.5` |
 
 ## Validation and Secret Hygiene
 
