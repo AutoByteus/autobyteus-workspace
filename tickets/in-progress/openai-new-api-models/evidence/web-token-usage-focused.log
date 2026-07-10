@@ -1,0 +1,30 @@
+
+> autobyteus@1.4.7 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/tokenUsageMeterStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-web
+
+stderr | stores/__tests__/tokenUsageMeterStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/tokenUsageMeterStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/tokenUsageMeterStore.spec.ts (11 tests) 9ms
+ ✓ components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts (8 tests) 86ms
+
+ Test Files  2 passed (2)
+      Tests  19 passed (19)
+   Start at  16:20:45
+   Duration  4.98s (transform 2.47s, setup 8.37s, collect 208ms, tests 95ms, environment 458ms, prepare 283ms)

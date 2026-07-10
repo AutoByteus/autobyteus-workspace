@@ -493,6 +493,77 @@ describe('tokenUsageMeterStore', () => {
     expect(store.getRunSummary('unit-price-convergence-run')?.unitPrices).toEqual(liveSummary?.unitPrices);
   });
 
+  it('keeps GPT-5.6 generic cache-write accounting aligned across live and hydrated summaries', () => {
+    const store = useTokenUsageMeterStore();
+    const runId = 'gpt56-generic-write-convergence-run';
+
+    store.applyTokenUsageUpdated(buildPayload({
+      usage_event_id: 'gpt56-generic-write-convergence-event',
+      idempotency_key: 'gpt56-generic-write-convergence-key',
+      run_id: runId,
+      model_identifier: 'gpt-5.6-sol',
+      meter_delta_input_tokens: 1_000,
+      standard_input_tokens: 500,
+      cache_miss_input_tokens: 500,
+      cache_read_input_tokens: 200,
+      cache_creation_input_tokens: 300,
+      cache_creation_5m_input_tokens: 0,
+      cache_creation_1h_input_tokens: 0,
+      meter_delta_output_tokens: 100,
+      meter_delta_total_tokens: 1_100,
+      billable_output_tokens: 100,
+      input_price_per_million: 5,
+      cached_input_read_price_per_million: 0.5,
+      cached_input_write_price_per_million: 6.25,
+      output_price_per_million: 30,
+      estimated_api_standard_input_cost: 0.0025,
+      estimated_api_cache_read_input_cost: 0.0001,
+      estimated_api_cache_creation_input_cost: 0.001875,
+      estimated_api_input_cost: 0.004475,
+      estimated_api_output_cost: 0.003,
+      estimated_api_total_cost: 0.007475,
+      selected_pricing_tier_id: 'standard_le_272k',
+    }));
+
+    const liveSummary = store.getRunSummary(runId);
+    expect(liveSummary).toMatchObject({
+      runId,
+      grossInputTokens: 1_000,
+      standardInputTokens: 500,
+      cacheReadInputTokens: 200,
+      cacheCreationInputTokens: 300,
+      outputTokens: 100,
+      estimatedApiCacheCreationInputCost: 0.001875,
+      estimatedApiInputCost: 0.004475,
+      estimatedApiTotalCost: 0.007475,
+      selectedPricingTierId: 'standard_le_272k',
+      latestModelIdentifier: 'gpt-5.6-sol',
+      unitPrices: {
+        standardInput: { status: 'single', pricePerMillion: 5 },
+        cacheReadInput: { status: 'single', pricePerMillion: 0.5 },
+        cacheCreationInput: { status: 'single', pricePerMillion: 6.25 },
+        output: { status: 'single', pricePerMillion: 30 },
+      },
+    });
+
+    const hydratedSummary: TokenUsageRunSummary = {
+      ...liveSummary!,
+      usageReportCount: 1,
+      updatedAt: '2026-07-10T12:00:00.000Z',
+    };
+    store.upsertSummary(hydratedSummary);
+
+    expect(store.getRunSummary(runId)).toMatchObject({
+      cacheCreationInputTokens: liveSummary?.cacheCreationInputTokens,
+      estimatedApiCacheCreationInputCost: liveSummary?.estimatedApiCacheCreationInputCost,
+      estimatedApiInputCost: liveSummary?.estimatedApiInputCost,
+      estimatedApiTotalCost: liveSummary?.estimatedApiTotalCost,
+      unitPrices: {
+        cacheCreationInput: liveSummary?.unitPrices.cacheCreationInput,
+      },
+    });
+  });
+
   it('lets ledger-backed reload summaries replace provisional live summaries', () => {
     const store = useTokenUsageMeterStore();
 
