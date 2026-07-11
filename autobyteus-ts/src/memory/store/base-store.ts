@@ -9,6 +9,10 @@ export abstract class MemoryStore {
   abstract listRawTracesOrdered(limit?: number): RawTraceItem[];
   abstract pruneRawTracesById(traceIdsToRemove: Iterable<string>, archive?: boolean): void;
 
+  listRawTraceCorpusOrdered(limit?: number): RawTraceItem[] {
+    return this.listRawTracesOrdered(limit);
+  }
+
   readSemanticDicts(): Record<string, unknown>[] {
     throw new Error(`${this.constructor.name} does not support semantic schema-gate reads.`);
   }

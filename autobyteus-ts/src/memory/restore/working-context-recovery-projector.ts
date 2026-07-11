@@ -3,68 +3,97 @@ import { formatToCleanString } from '../../utils/llm-output-formatter.js';
 import { clampRenderedLine } from '../compaction-snapshot-recent-turn-formatter.js';
 import { setMessageProvenance } from '../message-provenance.js';
 import type { RawTraceItem } from '../models/raw-trace-item.js';
+import { createToolCallIdentity, toolCallIdentityKey } from '../models/tool-call-identity.js';
+import { ToolInteractionStatus, type ToolInteraction } from '../models/tool-interaction.js';
+import { buildToolInteractions } from '../tool-interaction-builder.js';
 
 export class WorkingContextRecoveryProjector {
   project(rawTraces: RawTraceItem[], maxItemChars?: number | null): Message[] {
-    return rawTraces
-      .slice(-12)
-      .map((trace) => this.projectTrace(trace, maxItemChars))
-      .filter((message): message is Message => message !== null);
+    const interactionByIdentity = new Map(
+      buildToolInteractions(rawTraces).map((interaction) => [
+        toolCallIdentityKey({ turnId: interaction.turnId!, toolCallId: interaction.toolCallId }),
+        interaction,
+      ]),
+    );
+    const projectedToolIdentities = new Set<string>();
+    const messages: Message[] = [];
+
+    for (const trace of rawTraces.slice(-12)) {
+      if (trace.traceType === 'tool_call' || trace.traceType === 'tool_result') {
+        const identity = createToolCallIdentity(trace.turnId, trace.toolCallId);
+        if (!identity) continue;
+        const key = toolCallIdentityKey(identity);
+        if (projectedToolIdentities.has(key)) continue;
+        projectedToolIdentities.add(key);
+        const interaction = interactionByIdentity.get(key);
+        if (interaction) messages.push(...this.projectInteraction(interaction, maxItemChars));
+        continue;
+      }
+      const message = this.projectNonToolTrace(trace, maxItemChars);
+      if (message) messages.push(message);
+    }
+    return messages;
   }
 
-  private projectTrace(trace: RawTraceItem, maxItemChars?: number | null): Message | null {
-    if (trace.traceType === 'user') {
-      return this.withRecoveryProvenance(
-        new Message(MessageRole.USER, {
-          content: clampRenderedLine(trace.content, maxItemChars),
-          image_urls: trace.media?.images ?? [],
-          audio_urls: trace.media?.audio ?? [],
-          video_urls: trace.media?.video ?? [],
-        }),
-        trace,
-      );
-    }
+  private projectInteraction(interaction: ToolInteraction, maxItemChars?: number | null): Message[] {
+    const toolName = interaction.toolName ?? 'unknown_tool';
+    const request = this.withRecoveryProvenance(
+      new Message(MessageRole.ASSISTANT, {
+        content: clampRenderedLine(
+          `I requested tool ${toolName} with arguments ${formatToCleanString(interaction.arguments ?? {})}.`,
+          maxItemChars,
+        ),
+      }),
+      interaction.turnId,
+      interaction.anchorRawTraceId,
+      interaction.toolCallId,
+    );
+    if (interaction.status === ToolInteractionStatus.PENDING) return [request];
+    const result = this.withRecoveryProvenance(
+      new Message(MessageRole.USER, {
+        content: clampRenderedLine(
+          `Recovered tool result from ${toolName}: ${formatToCleanString(interaction.error ?? interaction.result)}`,
+          maxItemChars,
+        ),
+      }),
+      interaction.turnId,
+      interaction.terminalRawTraceId,
+      interaction.toolCallId,
+    );
+    return [request, result];
+  }
 
+  private projectNonToolTrace(trace: RawTraceItem, maxItemChars?: number | null): Message | null {
+    if (trace.traceType === 'user') {
+      return this.withRecoveryProvenance(new Message(MessageRole.USER, {
+        content: clampRenderedLine(trace.content, maxItemChars),
+        image_urls: trace.media?.images ?? [],
+        audio_urls: trace.media?.audio ?? [],
+        video_urls: trace.media?.video ?? [],
+      }), trace.turnId, trace.id, null);
+    }
     if (trace.traceType === 'assistant') {
       return this.withRecoveryProvenance(
         new Message(MessageRole.ASSISTANT, { content: clampRenderedLine(trace.content, maxItemChars) }),
-        trace,
+        trace.turnId,
+        trace.id,
+        null,
       );
     }
-
-    if (trace.traceType === 'tool_call' && trace.toolCallId && trace.toolName) {
-      return this.withRecoveryProvenance(
-        new Message(MessageRole.ASSISTANT, {
-          content: clampRenderedLine(
-            `I requested tool ${trace.toolName} with arguments ${formatToCleanString(trace.toolArgs ?? {})}.`,
-            maxItemChars,
-          ),
-        }),
-        trace,
-      );
-    }
-
-    if (trace.traceType === 'tool_result' && trace.toolCallId && trace.toolName) {
-      return this.withRecoveryProvenance(
-        new Message(MessageRole.USER, {
-          content: clampRenderedLine(
-            `Recovered tool result from ${trace.toolName}: ${formatToCleanString(trace.toolError ?? trace.toolResult ?? trace.content)}`,
-            maxItemChars,
-          ),
-        }),
-        trace,
-      );
-    }
-
     return null;
   }
 
-  private withRecoveryProvenance(message: Message, trace: RawTraceItem): Message {
+  private withRecoveryProvenance(
+    message: Message,
+    turnId: string | null,
+    rawTraceId: string | null,
+    toolCallId: string | null,
+  ): Message {
     return setMessageProvenance(message, {
       sourceKind: 'recovery',
-      turnId: trace.turnId,
-      rawTraceIds: [trace.id],
-      toolCallIds: trace.toolCallId ? [trace.toolCallId] : undefined,
+      turnId,
+      rawTraceIds: rawTraceId ? [rawTraceId] : undefined,
+      toolCallIds: toolCallId ? [toolCallId] : undefined,
     });
   }
 }

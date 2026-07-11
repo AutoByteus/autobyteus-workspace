@@ -110,4 +110,52 @@ describe("RunMemoryWriter", () => {
     expect(turn1.seq).toBe(3);
     expect(turn2.seq).toBe(6);
   });
+
+  it("writes strict call/result rows and groups archived calls with active null results", async () => {
+    const memoryDir = await mkTempDir();
+    const writer = new RunMemoryWriter({ memoryDir });
+    const callTrace = writer.write({
+      trace: {
+        traceType: "tool_call",
+        turnId: "turn-1",
+        content: "",
+        sourceEvent: "TOOL_EXECUTION_SUCCEEDED",
+        toolName: "no_output_tool",
+        toolCallId: "call-1",
+        toolArgs: {},
+      },
+      snapshotUpdate: { kind: "tool_call", toolCallId: "call-1", toolName: "no_output_tool", toolArgs: {} },
+    });
+    const store = new RunMemoryFileStore(memoryDir);
+    store.pruneRawTracesById([callTrace.id]);
+    writer.write({
+      trace: {
+        traceType: "tool_result",
+        turnId: "turn-1",
+        content: "",
+        sourceEvent: "TOOL_EXECUTION_SUCCEEDED",
+        toolCallId: "call-1",
+        toolResult: null,
+        toolError: null,
+      },
+      snapshotUpdate: {
+        kind: "tool_result", toolCallId: "call-1", toolName: "no_output_tool",
+        toolResult: null, toolError: null,
+      },
+    });
+    expect(store.listRawTraceDicts()[0]).toMatchObject({
+      trace_type: "tool_result", tool_call_id: "call-1", tool_result: null, tool_error: null,
+    });
+    expect(store.listRawTraceDicts()[0]).not.toHaveProperty("tool_name");
+    expect(store.listRawTraceDicts()[0]).not.toHaveProperty("tool_args");
+
+    const groups = new RunMemoryWriter({ memoryDir }).readToolTraceLifecycleGroups();
+    expect([...groups.values()]).toEqual([
+      expect.objectContaining({
+        identity: { turnId: "turn-1", toolCallId: "call-1" },
+        call: expect.objectContaining({ id: callTrace.id, toolName: "no_output_tool", toolArgs: {} }),
+        result: expect.objectContaining({ toolResult: null, toolError: null }),
+      }),
+    ]);
+  });
 });

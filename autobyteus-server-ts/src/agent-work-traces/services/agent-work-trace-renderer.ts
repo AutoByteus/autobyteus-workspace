@@ -1,7 +1,12 @@
 import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../../run-history/projection/historical-replay-event-types.js";
-import { buildHistoricalReplayEvents } from "../../run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
+import { buildHistoricalReplayEvents, type HistoricalReplayBuildOptions } from "../../run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
 import type { AgentWorkTraceSource } from "../domain/work-traces.js";
 import { AgentWorkTraceRedactor } from "./agent-work-trace-redactor.js";
+
+export type AgentWorkTraceToolProjection = Required<Pick<
+  HistoricalReplayBuildOptions,
+  "interactionByIdentity" | "traceById" | "includedToolIdentityKeys"
+>>;
 
 const toIso = (ts: number | null): string => {
   if (typeof ts === "number" && Number.isFinite(ts) && ts > 0) {
@@ -28,8 +33,11 @@ const stringifyVisible = (value: unknown): string => {
 export class AgentWorkTraceRenderer {
   constructor(private readonly deps: { redactor?: AgentWorkTraceRedactor } = {}) {}
 
-  renderSource(source: AgentWorkTraceSource): string {
-    const events = buildHistoricalReplayEvents(source.records);
+  renderSource(
+    source: AgentWorkTraceSource,
+    toolProjection?: AgentWorkTraceToolProjection,
+  ): string {
+    const events = buildHistoricalReplayEvents(source.records, toolProjection);
     const lines: string[] = [];
     lines.push("# Work Trace");
     lines.push("");

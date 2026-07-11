@@ -1,0 +1,74 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/autobyteus-ts
+
+stdout | tests/unit/memory/raw-trace-item.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-window-planner.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/memory-manager.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-task-prompt-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/tool-interaction-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-snapshot-bootstrapper.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-tool-protocol-repairer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-message-window-planner.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+······················stdout | tests/unit/memory/tool-trace-lifecycle-index.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/summarizer-message-units.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+····························stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not publish final LLM completion after an interrupt accepted at the post-LLM seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > uses ToolContinuationReadyEvent instead of synthetic LLMUserMessageReadyEvent for native tool-history continuations
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+···
+
+ Test Files  11 passed (11)
+      Tests  53 passed (53)
+   Start at  07:34:35
+   Duration  435ms (transform 1.24s, setup 260ms, import 1.45s, tests 98ms, environment 1ms)
+

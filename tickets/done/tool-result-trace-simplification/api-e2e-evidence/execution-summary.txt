@@ -1,0 +1,26 @@
+API/E2E EXECUTION SUMMARY
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification
+branch=codex/tool-result-trace-simplification
+bootstrap_commit=3effb76ab56d4d1bb876ad0623a8e5eb7093a584
+focused_core_unit=PASS: 11 files, 53 tests
+focused_server_unit=PASS: 9 files, 125 tests
+server_provider_persistence_integration=PASS: 2 files, 17 tests
+server_memory_layout_projection_integration=PASS: 2 files, 14 tests
+server_graphql_projection_e2e=PASS: 1 file, 6 tests
+final_core_durable_rerun=PASS: 2 files, 8 tests
+final_server_durable_rerun=PASS: 3 files, 23 tests
+live_codex_memory=PASS: 1 file, 1 test
+live_codex_hosted_search_probe=PASS: 1 file, 1 test
+core_source_typecheck=PASS
+server_source_typecheck=PASS
+git_diff_check=PASS
+no_migration_static_audit=PASS
+core_full_unit_diagnostic=BASELINE: 320/322 files and 1681/1683 tests passed; 2 known unchanged failures
+server_full_unit_diagnostic=BASELINE: 354/369 files and 1890/1917 tests passed; same 15 files/27 tests plus 2 unhandled errors as upstream baseline
+temporary_probe_source_retained=no
+temporary_probe_sha256=451f2c642773aa4e47dd365c6f6d12a199b2c48d2479b6622eca8f83387e3f94
+temporary_probe_path_absent=yes
+setup_resources_absent=yes
+cleanup=PASS
+result=PASS
+final_confidence=97.2%

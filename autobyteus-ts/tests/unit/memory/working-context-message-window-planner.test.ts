@@ -79,6 +79,38 @@ describe('WorkingContextMessageWindowPlanner', () => {
     expect(plan.retainedMessages).toContain(latestToolResult);
   });
 
+  it('keeps a multi-call protocol group protected until every call has a result', () => {
+    const planner = new WorkingContextMessageWindowPlanner(undefined, new FixedBudgetStrategy(0));
+    const toolCalls = new Message(MessageRole.ASSISTANT, {
+      tool_payload: new ToolCallPayload([
+        { id: 'call_a', name: 'first_tool', arguments: {} },
+        { id: 'call_b', name: 'second_tool', arguments: {} },
+      ]),
+    });
+    const resultB = new Message(MessageRole.TOOL, {
+      tool_payload: new ToolResultPayload('call_b', 'second_tool', 'done'),
+    });
+
+    const plan = planner.plan({
+      messages: [
+        new Message(MessageRole.SYSTEM, { content: 'System' }),
+        new Message(MessageRole.USER, { content: 'Run both.' }),
+        toolCalls,
+        resultB,
+      ],
+      minRecentNaturalUnits: 0,
+    });
+
+    expect(plan.protectedSuffixUnits).toHaveLength(1);
+    expect(plan.protectedSuffixUnits[0]).toMatchObject({
+      kind: 'tool_protocol_group',
+      toolCallIds: ['call_a', 'call_b'],
+      matchedToolCallIds: ['call_b'],
+      isComplete: false,
+    });
+    expect(plan.compactableUnits.flatMap((unit) => unit.messages)).not.toContain(toolCalls);
+  });
+
   it('does not let the default recent-unit floor retain all oversized natural units', () => {
     const planner = new WorkingContextMessageWindowPlanner();
     const huge = 'x'.repeat(20_000);

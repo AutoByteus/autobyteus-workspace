@@ -354,6 +354,16 @@ team member metadata -> member memoryDir -> raw trace corpus -> historical repla
   confusing runtime-native ids with local storage ids. Provider-boundary marker traces are provenance and
   are ignored as conversation/activity content by the historical replay
   transformer.
+- Tool projection first builds physical lifecycle groups across that complete
+  corpus using compound `(turn_id, tool_call_id)` identity. A current call row
+  owns name/arguments; its separate minimal result row owns terminal
+  result/error. The transformer emits one conversation tool item and one
+  Activity per lifecycle, anchored to the call even when call and result are in
+  different raw-trace files.
+- Existing historical result rows may contain duplicated or late/effective
+  name/arguments. `buildToolInteractions(...)` may use those fields as a
+  read-only historical override, but run-history projection never feeds that
+  overlay back into recorder/writer state or creates a compatibility write.
 - `RuntimeMemoryEventAccumulator` owns the live event-to-raw-trace write
   boundary for runtime streams. When a same-turn reasoning segment is still
   open and the next visible write arrives (tool call, terminal tool result,
@@ -486,6 +496,12 @@ This section describes raw-trace rotation segments and is separate from the
 history-row visibility archive flag documented above.
 
 Native AutoByteus compaction rotates compacted raw traces into complete `native_compaction` entries. Codex and Claude provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into complete `provider_compaction_boundary` entries. New rotated segments are direct run-directory files named `raw_traces_<zero-padded-index>.jsonl` and indexed by `raw_traces_manifest.json`. Complete-corpus run-history and memory-view reads include only complete rotated segments plus active records, dedupe by raw trace id, and ignore pending manifest entries. Memory Inspector file-selector reads list only active plus complete segment files and return records from the selected file instead of an implicit merged corpus.
+
+Cross-file tool pairs are expected: a call can be rotated before its result is
+written. Complete-corpus logical projection correlates that pair without copying
+the call into the active file or exposing two activities. Native compaction
+eligibility/pruning remains active-only; archive-only raw ids must not leak into
+active removal decisions.
 
 The prior `raw_traces_archive_manifest.json` plus `raw_traces_archive/` layout is migration/fallback input only. Startup app-data migration `20260617_raw_trace_rotation_layout` converts old complete entries to the direct rotated layout and decommissions old authoritative files after verification. The old monolithic `raw_traces_archive.jsonl` path is intentionally not a current read/write target and historical monolithic archive files are not read under the approved no-compatibility policy.
 

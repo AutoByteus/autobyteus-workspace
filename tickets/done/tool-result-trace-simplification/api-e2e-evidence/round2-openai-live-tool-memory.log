@@ -1,0 +1,169 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/autobyteus-ts
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'openaisingleflowagent_integration_test_agent_7383'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'openaisingleflowagent_integration_test_agent_7383': LLM instance 'OpenAILLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'openaisingleflowagent_integration_test_agent_7383'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'openaisingleflowagent_integration_test_agent_7383' with config: 'OpenAISingleFlowAgent'.
+AgentWorker initialized for agent_id 'openaisingleflowagent_integration_test_agent_7383'.
+Registered AgentContext for agent_id 'openaisingleflowagent_integration_test_agent_7383'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'openaisingleflowagent_integration_test_agent_7383'. Context registered.
+Agent facade initialized for agent_id 'openaisingleflowagent_integration_test_agent_7383'.
+Agent 'openaisingleflowagent_integration_test_agent_7383' created and stored successfully.
+Agent 'openaisingleflowagent_integration_test_agent_7383' requesting runtime to start.
+AgentRuntime for 'openaisingleflowagent_integration_test_agent_7383': Starting worker.
+AgentWorker 'openaisingleflowagent_integration_test_agent_7383': Starting...
+AgentWorker 'openaisingleflowagent_integration_test_agent_7383' asyncRun(): Starting.
+Agent 'openaisingleflowagent_integration_test_agent_7383': Runtime init completed (event store initialized).
+Agent 'openaisingleflowagent_integration_test_agent_7383': Runtime init completed (status deriver initialized).
+Agent 'openaisingleflowagent_integration_test_agent_7383': Runtime init completed (AgentEventInbox initialized).
+Agent 'openaisingleflowagent_integration_test_agent_7383': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+Agent 'openaisingleflowagent_integration_test_agent_7383': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+Agent 'openaisingleflowagent_integration_test_agent_7383': Bootstrapper starting direct lifecycle execution.
+Agent 'openaisingleflowagent_integration_test_agent_7383': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'openaisingleflowagent_integration_test_agent_7383': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+Agent 'openaisingleflowagent_integration_test_agent_7383': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'openaisingleflowagent_integration_test_agent_7383': Executing SystemPromptProcessingStep.
+Agent 'openaisingleflowagent_integration_test_agent_7383': No configured skills. Skipping injection.
+Agent 'openaisingleflowagent_integration_test_agent_7383': Final processed system prompt configured on LLM instance. Final length: 185.
+Agent 'openaisingleflowagent_integration_test_agent_7383': Final processed system prompt:
+---
+You are a precise integration-test agent. When the user asks you to create a file, you must use the available write_file tool. After the tool succeeds, provide one short final sentence.
+---
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+Agent 'openaisingleflowagent_integration_test_agent_7383': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentWorker 'openaisingleflowagent_integration_test_agent_7383' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+OPENAI_LIVE_TOOL_MEMORY_ASSERTIONS=PASS
+Agent 'openaisingleflowagent_integration_test_agent_7383' requesting runtime to stop (timeout: 20s).
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentWorker 'openaisingleflowagent_integration_test_agent_7383': Stop requested.
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentExternalEventNotifier (NotifierID: d627ea1b-274b-40f7-b6ce-10f49f5becb2, AgentID: openaisingleflowagent_integration_test_agent_7383) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentWorker 'openaisingleflowagent_integration_test_agent_7383' asyncRun() loop has finished.
+AgentWorker 'openaisingleflowagent_integration_test_agent_7383': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentWorker 'openaisingleflowagent_integration_test_agent_7383': Shutdown resource cleanup completed successfully.
+AgentWorker 'openaisingleflowagent_integration_test_agent_7383': Shutdown sequence completed.
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+Unregistered AgentContext for agent_id 'openaisingleflowagent_integration_test_agent_7383'.
+AgentRuntime for 'openaisingleflowagent_integration_test_agent_7383': Context unregistered.
+
+stdout | tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL
+AgentRuntime for 'openaisingleflowagent_integration_test_agent_7383' stop() method completed.
+
+ ✓ tests/integration/agent/openai-single-agent-flow.test.ts > OpenAI single-agent flow > executes a real OpenAI tool flow and persists strict call/result JSONL 3861ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  09:36:50
+   Duration  5.24s (transform 792ms, setup 34ms, import 1.24s, tests 3.86s, environment 0ms)
+
+OPENAI_LIVE_VITEST_EXIT=0
+OPENAI_LIVE_ASSERTION_MARKER_PRESENT=yes
+OPENAI_PROVIDER_SKIP_OBSERVED=no
+TTR_OPENAI_014=PASS

@@ -1,0 +1,21 @@
+DELIVERY INTEGRATION REFRESH
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification
+branch=codex/tool-result-trace-simplification
+bootstrap_commit=3effb76ab56d4d1bb876ad0623a8e5eb7093a584
+tracked_base=origin/personal
+fetch_utc=2026-07-11T05:59:24Z
+pre_fetch_base=ce83847296d9eace2f6eb832521c1d6b135c4722
+post_fetch_base=ce83847296d9eace2f6eb832521c1d6b135c4722
+base_advance_from_bootstrap=9 commits
+checkpoint_commit=22121f184bb643ca7f60f55efc7ee3ab893e7a19
+checkpoint_subject=chore(delivery): checkpoint reviewed tool trace simplification
+integration_method=merge
+integration_commit=8f6b720208d0d0fce9da71f788979281d8e1aea6
+integration_subject=Merge remote-tracking branch 'origin/personal' into codex/tool-result-trace-simplification
+conflicts=none
+post_integration_check=PASS: 2 files / 8 tests
+post_integration_check_log=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/delivery-evidence/post-integration-core-durable-rerun.log
+pre_handoff_remote_audit_utc=2026-07-11T06:19:15Z
+pre_handoff_origin_personal=ce83847296d9eace2f6eb832521c1d6b135c4722
+pre_handoff_ahead_behind=2 0
+pre_handoff_result=PASS: integrated handoff state contains latest tracked origin/personal

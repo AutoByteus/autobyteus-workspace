@@ -1,0 +1,9 @@
+round2_started_at=2026-07-11T07:36:35Z
+scenario=TTR-OPENAI-014
+credential_source=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/.env.test
+credential_file_present=yes
+OPENAI_KEY_LOADED_FROM_CANONICAL_ENV_FILE=yes
+OPENAI_MODELS_HTTP_STATUS=200
+SELECTED_MODEL=gpt-5.4-mini
+SELECTED_MODEL_AVAILABLE=yes
+PREFLIGHT=PASS

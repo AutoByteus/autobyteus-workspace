@@ -1,8 +1,9 @@
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
-import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
+import { RawTraceItem, type RawTraceItemOptions } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+import { buildToolTraceLifecycleIndex, type ToolTraceLifecycleGroup } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
 import { WorkingContextSnapshot } from "autobyteus-ts/memory/working-context-snapshot.js";
 import type {
   RuntimeMemorySnapshotUpdate,
@@ -44,7 +45,7 @@ export class RunMemoryWriter {
   }
 
   appendRawTrace(input: RuntimeMemoryTraceInput): RawTraceItem {
-    const trace = new RawTraceItem({
+    const options: RawTraceItemOptions = {
       id: `rt_${Date.now()}_${randomUUID()}`,
       ts: toTimestampSeconds(input.ts),
       turnId: input.turnId,
@@ -52,16 +53,33 @@ export class RunMemoryWriter {
       traceType: input.traceType,
       content: input.content ?? "",
       sourceEvent: input.sourceEvent,
-      media: input.media ?? null,
-      toolName: input.toolName ?? null,
-      toolCallId: input.toolCallId ?? null,
-      toolArgs: input.toolArgs ?? null,
-      toolResult: input.toolResult,
-      toolError: input.toolError ?? null,
-      correlationId: input.correlationId ?? null,
-    });
+    };
+    if (input.traceType === "tool_call") {
+      Object.assign(options, {
+        toolName: input.toolName,
+        toolCallId: input.toolCallId,
+        toolArgs: input.toolArgs,
+      });
+    } else if (input.traceType === "tool_result") {
+      Object.assign(options, {
+        toolCallId: input.toolCallId,
+        toolResult: input.toolResult === undefined ? null : input.toolResult,
+        toolError: input.toolError ?? null,
+      });
+    } else if (input.traceType === "provider_compaction_boundary") {
+      if (input.toolResult !== undefined) options.toolResult = input.toolResult;
+      options.correlationId = input.correlationId;
+    } else {
+      options.media = input.media;
+      options.correlationId = input.correlationId;
+    }
+    const trace = new RawTraceItem(options);
     this.store.appendRawTrace(trace);
     return trace;
+  }
+
+  readToolTraceLifecycleGroups(): ReadonlyMap<string, ToolTraceLifecycleGroup> {
+    return buildToolTraceLifecycleIndex(this.store.listRawTraceCorpusOrdered());
   }
 
   writeSnapshotUpdate(update: RuntimeMemorySnapshotUpdate): void {

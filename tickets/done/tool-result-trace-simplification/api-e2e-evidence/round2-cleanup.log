@@ -1,0 +1,8 @@
+round2_cleanup_started_at=2026-07-11T07:38:03Z
+new ignored paths before cleanup:
+removed round-2 core dependency symlink
+new ignored paths remaining versus round-1 clean baseline:
+OPENAI_ENV_FILE_COPIED_TO_WORKTREE=no
+OPENAI_TEMP_DIR_MATCH_COUNT=0
+ROUND2_CLEANUP=PASS
+round2_cleanup_finished_at=2026-07-11T07:38:03Z

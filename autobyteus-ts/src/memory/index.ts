@@ -5,6 +5,13 @@ export { CompactionSnapshotRecentTurnFormatter, RECENT_TURN_TRUNCATION_MARKER, c
 export { MemoryManager } from './memory-manager.js';
 export { TurnTracker } from './turn-tracker.js';
 export { buildToolInteractions } from './tool-interaction-builder.js';
+export type { BuildToolInteractionsOptions, ToolInteractionTrace } from './tool-interaction-builder.js';
+export { buildToolCallContextIndex, buildToolTraceLifecycleIndex } from './tool-trace-lifecycle-index.js';
+export type {
+  PhysicalToolTraceRecord,
+  ToolCallContext,
+  ToolTraceLifecycleGroup,
+} from './tool-trace-lifecycle-index.js';
 
 export { Compactor } from './compaction/compactor.js';
 export type { CompactionExecutionOutcome } from './compaction/compactor.js';
@@ -43,6 +50,8 @@ export { CompactionPlan } from './compaction/compaction-plan.js';
 
 export { MemoryType } from './models/memory-types.js';
 export { RawTraceItem } from './models/raw-trace-item.js';
+export { createToolCallIdentity, toolCallIdentityKey } from './models/tool-call-identity.js';
+export type { ToolCallIdentity } from './models/tool-call-identity.js';
 export { EpisodicItem } from './models/episodic-item.js';
 export { SemanticItem, COMPACTED_MEMORY_CATEGORY_ORDER, COMPACTED_MEMORY_CATEGORY_BASE_SALIENCE, isCompactedMemoryCategory } from './models/semantic-item.js';
 export type { CompactedMemoryCategory } from './models/semantic-item.js';

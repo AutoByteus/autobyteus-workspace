@@ -1315,6 +1315,36 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
+  it("omits arguments from the captured hosted webSearch placeholder start", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws-placeholder",
+          query: "",
+          action: { type: "other" },
+        },
+        turnId: "turn-placeholder",
+      },
+    });
+
+    expect(converted.map((entry) => entry.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_START,
+      AgentRunEventType.TOOL_EXECUTION_STARTED,
+    ]);
+    expect(converted[0]?.payload.metadata).toMatchObject({ tool_name: "search_web" });
+    expect(converted[0]?.payload.metadata).not.toHaveProperty("arguments");
+    expect(converted[1]?.payload).toMatchObject({
+      invocation_id: "ws-placeholder",
+      turn_id: "turn-placeholder",
+      tool_name: "search_web",
+    });
+    expect(converted[1]?.payload).not.toHaveProperty("arguments");
+  });
+
   it("fans out successful webSearch completions into terminal success and segment end", () => {
     const converter = new CodexThreadEventConverter("run-1");
 

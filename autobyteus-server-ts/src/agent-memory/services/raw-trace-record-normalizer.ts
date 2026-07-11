@@ -45,21 +45,28 @@ export const applyRawTraceLimit = <T>(items: T[], limit?: number | null): T[] =>
   return items.slice(-limit);
 };
 
-export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTraceEvent => ({
-  id: asString(trace["id"]),
-  traceType: asString(trace["trace_type"]) ?? "",
-  sourceEvent: asString(trace["source_event"]),
-  content: asString(trace["content"]),
-  toolName: asString(trace["tool_name"]),
-  toolCallId: asString(trace["tool_call_id"]),
-  toolArgs: asRecord(trace["tool_args"]),
-  toolResult: trace["tool_result"] ?? null,
-  toolError: asString(trace["tool_error"]),
-  media: asRecord(trace["media"]) as Record<string, string[]> | null,
-  turnId: asString(trace["turn_id"]) ?? "",
-  seq: traceSeq(trace),
-  ts: traceTs(trace),
-});
+export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTraceEvent => {
+  const event: MemoryTraceEvent = {
+    id: asString(trace["id"]),
+    traceType: asString(trace["trace_type"]) ?? "",
+    sourceEvent: asString(trace["source_event"]),
+    content: asString(trace["content"]),
+    toolName: asString(trace["tool_name"]),
+    toolCallId: asString(trace["tool_call_id"]),
+    toolArgs: asRecord(trace["tool_args"]),
+    media: asRecord(trace["media"]) as Record<string, string[]> | null,
+    turnId: asString(trace["turn_id"]) ?? "",
+    seq: traceSeq(trace),
+    ts: traceTs(trace),
+  };
+  if (Object.prototype.hasOwnProperty.call(trace, "tool_result")) {
+    event.toolResult = trace["tool_result"];
+  }
+  if (Object.prototype.hasOwnProperty.call(trace, "tool_error")) {
+    event.toolError = asString(trace["tool_error"]);
+  }
+  return event;
+};
 
 export const normalizeRawTraceRecords = (
   records: RawTraceRecord[],

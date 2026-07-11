@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import {
   AgentRunEventType,
   type AgentRunEvent,
@@ -42,12 +43,21 @@ const readRawTraces = (memoryDir: string) =>
       includeSemantic: false,
     }).rawTraces ?? [];
 
+const readPhysicalRawTraces = async (memoryDir: string): Promise<Record<string, unknown>[]> =>
+  (await fs.readFile(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME), "utf-8"))
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as Record<string, unknown>);
+
 describe("Codex MCP tool arguments memory/projection integration", () => {
-  it("persists MCP lifecycle args into tool call/result traces and projects both UI surfaces", async () => {
+  it("persists an early MCP call plus minimal result and projects both UI surfaces", async () => {
     const memoryDir = await mkTempDir();
+    const writer = new RunMemoryWriter({ memoryDir });
     const accumulator = new RuntimeMemoryEventAccumulator({
       runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
+      writer,
+      toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
     });
     const toolArgs = {
       output_file_path: "/tmp/autobyteus-generated.png",
@@ -88,6 +98,26 @@ describe("Codex MCP tool arguments memory/projection integration", () => {
       result: toolResult,
     }));
 
+    const physicalTraces = await readPhysicalRawTraces(memoryDir);
+    const physicalCall = physicalTraces.find(
+      (trace) => trace.trace_type === "tool_call" && trace.tool_call_id === "call_generate_image",
+    );
+    const physicalResult = physicalTraces.find(
+      (trace) => trace.trace_type === "tool_result" && trace.tool_call_id === "call_generate_image",
+    );
+    expect(physicalCall).toMatchObject({
+      tool_name: "generate_image",
+      tool_args: toolArgs,
+    });
+    expect(physicalCall).not.toHaveProperty("tool_result");
+    expect(physicalCall).not.toHaveProperty("tool_error");
+    expect(physicalResult).toMatchObject({
+      tool_result: toolResult,
+      tool_error: null,
+    });
+    expect(physicalResult).not.toHaveProperty("tool_name");
+    expect(physicalResult).not.toHaveProperty("tool_args");
+
     const traces = readRawTraces(memoryDir);
     expect(traces.map((trace) => trace.traceType)).toEqual(["reasoning", "tool_call", "tool_result"]);
     expect(traces[0]).toMatchObject({
@@ -101,10 +131,11 @@ describe("Codex MCP tool arguments memory/projection integration", () => {
     });
     expect(traces[2]).toMatchObject({
       toolCallId: "call_generate_image",
-      toolName: "generate_image",
-      toolArgs,
       toolResult,
+      toolError: null,
     });
+    expect(traces[2]?.toolName).toBeNull();
+    expect(traces[2]?.toolArgs).toBeNull();
 
     const replayEvents = buildHistoricalReplayEvents(traces);
     const projection = buildRunProjectionBundleFromEvents("run-1", replayEvents);
