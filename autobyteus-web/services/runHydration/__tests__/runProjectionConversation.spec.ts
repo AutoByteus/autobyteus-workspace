@@ -2,6 +2,62 @@ import { describe, expect, it } from 'vitest';
 import { buildConversationFromProjection } from '../runProjectionConversation';
 
 describe('runProjectionConversation', () => {
+  it('hydrates the corrected packaged tool-update projection as one A+B Thinking segment', () => {
+    const conversation = buildConversationFromProjection(
+      'run-ordered-tool-reasoning',
+      [
+        {
+          kind: 'tool_call',
+          invocationId: 'tool-1',
+          toolName: 'run_bash',
+          toolArgs: { command: 'sleep 1' },
+          toolResult: { stdout: 'done\n' },
+          status: 'success',
+          ts: 1,
+        },
+        {
+          kind: 'reasoning',
+          content: 'A\n\nB',
+          ts: 2,
+        },
+        {
+          kind: 'tool_call',
+          invocationId: 'tool-2',
+          toolName: 'run_bash',
+          toolArgs: { command: 'pwd' },
+          status: 'running',
+          ts: 3,
+        },
+      ],
+      {
+        agentDefinitionId: 'agent-1',
+        agentName: 'Agent',
+        llmModelIdentifier: 'gpt-5.6-sol',
+      },
+    );
+
+    expect(conversation.messages).toHaveLength(1);
+    const message = conversation.messages[0];
+    if (message?.type !== 'ai') throw new Error('expected AI message');
+    expect(message.reasoning).toBe('A\n\nB');
+    expect(message.segments).toEqual([
+      expect.objectContaining({
+        type: 'tool_call',
+        invocationId: 'tool-1',
+        status: 'success',
+      }),
+      {
+        type: 'think',
+        content: 'A\n\nB',
+      },
+      expect.objectContaining({
+        type: 'tool_call',
+        invocationId: 'tool-2',
+      }),
+    ]);
+    expect(message.segments.filter((segment) => segment.type === 'think')).toHaveLength(1);
+  });
+
   it('groups adjacent assistant-side replay entries into one AI message with ordered segments', () => {
     const conversation = buildConversationFromProjection(
       'run-1',

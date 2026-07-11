@@ -5,129 +5,147 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/requirements.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/design-spec.md`
-- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
+- Supplemental Solution Artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/user-verification-failure-analysis.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/api-e2e-coverage-investigation.md`
-- Current Execution Round: `1`
-- Trigger: Source review passed commit `49f6c107`; execute API/E2E and realistic current-runtime validation.
-- Prior Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/code-review-report.md` (Implementation Review Round 2 authoritative)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/api-e2e-coverage-investigation.md` (Round 2 authoritative)
+- Current Execution Round: `2 — fresh validation of Round 4 candidate c016730b`
+- Trigger: prior package/user verification exposed a missing matching-result boundary rule; source rework and fresh code review passed.
+- Prior Round Reviewed: `Yes. The former API/E2E pass and package results are historical failed-candidate evidence only.`
+- Latest Authoritative Round: `Round 2`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial API/E2E handoff | N/A | No implementation failures | Pass | Yes | Test-owned setup/assertion corrections were made before final execution; all final scenarios pass. |
+| 1 | Initial adjacent-reasoning implementation | N/A | No execution failure, but exact packaged matching-result cadence was not covered | Superseded | No | User verification later disproved completeness. |
+| 2 | Round 4 ordered-card rework at `c016730b` | Yes — exact `tool start -> A -> matching result -> B -> next tool` sequence | No product failure; one bounded packaged-process harness retry | Pass | Yes | Fresh durable, live exact-model, build, packaged-runtime, and cleanup evidence. |
 
 ## Investigation And Execution Basis
 
-- Coverage investigation completed before durable coverage changes or final execution: `Yes`
+- Coverage investigation completed before durable changes/final execution: `Yes`
 - Investigation plan followed: `Yes`
-- Existing coverage decisions revised during execution: the env-gated live test was confirmed stale against the current required `createAgentRun(config, runId)` API and was updated. The new GraphQL test initially assumed persisted trace IDs reuse normalized segment IDs; repository behavior correctly allocates trace IDs independently, so the test was corrected to assert distinct traces and exact content rather than invalid ID equality. A trivial live prompt emitted no reasoning, so the test received a deterministic reasoning-worthy sanitized prompt and an explicit `CODEX_MEMORY_E2E_ASSERT_REASONING=1` gate for cadence assertions.
-- Reroute required before or during execution: `No`
+- Material deviation: full Electron window launch was intentionally not attempted because another user-owned app occupied the fixed embedded port. The documented alternative—fresh build plus isolated execution of the packaged server/modules and HTTP GraphQL—was completed. Full replacement-window verification remains downstream.
+- Existing coverage decisions revised during execution: `No`; planned three durable test updates were sufficient.
+- Reroute required: `No`
+- Current reviewed implementation commit: `c016730b7743f12d3e3b16f114d7bb5f48651b58`
+- Historical reports/logs were not counted as current pass evidence.
 
 ## Compatibility / Legacy Scope Check
 
-- Reviewed requirements/design introduce backward compatibility in scope: `No`
-- Compatibility-only or legacy-retention behavior observed in implementation: `No`
-- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes`
-- Durable coverage added or retained only for compatibility-only behavior: `No`
+- Requirements/design introduce or ambiguously retain backward compatibility: `No`
+- Compatibility-only/legacy-retention behavior observed in implementation: `No`
+- Approved persisted-data transition followed without migration/version fallback: `Yes — Not Affected, future facts only`
+- Durable coverage added only for compatibility behavior: `No`
+- Compatibility reroute: `N/A`
 - Upstream recipient notified: `N/A`
 
 ## Changed Boundary And Evidence Matrix
 
 | Scenario ID | Requirement / Acceptance-Criteria IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
 | --- | --- | --- | --- | --- | --- | --- |
-| `CTB-LIVE-01` | `REQ-CTB-002`, `004`, `005`, `008`; `AC-CTB-003`, `005`, `008` | Current GPT-5.6-Sol provider items -> normalized events -> real memory | Live authenticated Codex app-server | Live + Durable | Pass | `evidence/ctb-live-01-gpt-5.6-sol.log` |
-| `CTB-E2E-01` | `REQ-CTB-002`–`005`, `008`; `AC-CTB-003`–`006`, `008`, `009` | Raw provider fixtures -> actual converter -> accumulator -> raw trace -> GraphQL | Repository GraphQL E2E | Durable | Pass | `evidence/ctb-e2e-01-graphql.log` |
-| `CTB-BOUNDARY-01` | `REQ-CTB-003`, `007`; `AC-CTB-004`, `007`, `009` | Tool/text/approval/raw-output/lifecycle clear; maintenance/status/progress preserve | Unit/integration lifecycle matrix | Durable | Pass | `evidence/focused-server-and-persistence.log` |
-| `CTB-HYDRATE-01` | `REQ-CTB-004`, `006`; `AC-CTB-003`, `005`, `006` | Normalized same-ID live state and projected-row hydration | Nuxt state/hydration tests | Durable | Pass | `evidence/frontend-live-hydration.log` |
-| `CTB-ISOLATE-01` | `REQ-CTB-008`; `AC-CTB-004`, `008`, `009` | Converter-instance/run/team-member and turn state isolation | Focused repository test | Durable | Pass | `evidence/isolation-regression.log` |
-| `CTB-REGRESSION-01` | `AC-CTB-007`–`009` | Broader Codex, memory, run-history, projection regressions | Repository affected suites | Durable | Pass | `evidence/broader-affected-server.log` |
+| `CTB-R4-CORE-01` | `REQ-CTB-002`, `003`, `005`, `007`–`010`; `AC-CTB-002`–`004`, `007`–`011` | Completed snapshots, delta no-ops, matching lifecycle preservation, result-first boundaries, maintenance/reset/eviction/isolation | Seven focused server files | Durable | Pass — 7 files / 140 tests | `evidence/round-2/focused-server.log` |
+| `CTB-R4-E2E-01` | `REQ-CTB-002`–`005`, `009`, `010`; `AC-CTB-003`–`006`, `010`, `011` | Exact former packaged sequence through converter -> accumulator -> files -> real GraphQL; result-first companion | Server GraphQL E2E | Durable | Pass — 1 file / 6 tests | `evidence/round-2/graphql-exact-sequence.log` |
+| `CTB-R4-HYDRATE-01` | `REQ-CTB-004`–`006`; `AC-CTB-003`, `005`, `006`, `010` | One A+B projection row and one normalized live ID each become one ThinkSegment | Nuxt hydration + handler | Durable | Pass — 2 files / 30 tests | `evidence/round-2/frontend-hydration.log` |
+| `CTB-R4-REGRESSION-01` | `AC-CTB-007`–`011` | Broader Codex, memory, run-history and GraphQL regression surface | Server affected directories | Durable | Pass — 55 files / 385 tests | `evidence/round-2/broader-server.log` |
+| `CTB-R4-LIVE-01` | `REQ-CTB-002`, `005`, `008`, `010`; `AC-CTB-003`, `005`, `008`, `011` | Current GPT-5.6-Sol completed snapshots vs delta/part cadence, one live ID, one future trace | Authenticated Codex app-server E2E | Live + Durable | Pass — 1 live test | `evidence/round-2/live-gpt-5.6-sol.log` |
+| `CTB-R4-PACKAGE-01` | `REQ-CTB-002`–`005`, `009`, `010`; `AC-CTB-003`, `005`, `006`, `010`, `011` | Fresh package contains and executes exact matching-result A+B grouping and GraphQL projection | macOS ARM64 build + packaged bundled server/modules on isolated port/data | Desktop + Temporary | Pass | `logs/api-e2e/electron-build-round-2-mac-arm64.log`, `evidence/round-2/package-inspection.log`, `evidence/round-2/packaged-exact-sequence-probe.log` |
+| `CTB-R4-DIAGNOSIS-01` | `REQ-CTB-001`; `AC-CTB-001` | Original five-item/one-native/five-projection/five-card diagnosis remains documented | Reviewed upstream artifacts | Durable documentation | Pass / accepted upstream | `investigation-notes.md`, `user-verification-failure-analysis.md` |
 
 ## Additional Repository Coverage Execution
 
+The repository commands and post-repository scores are authoritative in the coverage investigation. Broader execution after that gate was:
+
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Focused six-file server normalization/persistence command recorded in the investigation | Worktree root | Tracker, converter, boundary matrix, memory integration | Pass — 6 files / 121 tests | `evidence/focused-server-and-persistence.log` |
-| 2 | Updated GraphQL projection E2E command recorded in the investigation | Worktree root | `CTB-E2E-01` | Pass — 1 file / 6 tests | `evidence/ctb-e2e-01-graphql.log` |
-| 3 | Focused Nuxt handler/hydration command recorded in the investigation | `autobyteus-web` | `CTB-HYDRATE-01` | Pass — 2 files / 29 tests | `evidence/frontend-live-hydration.log` |
-| 4 | Isolation-focused converter file | Worktree root | `CTB-ISOLATE-01` | Pass — 1 file / 37 tests | `evidence/isolation-regression.log` |
-| 5 | Broader affected server directories recorded in the investigation | Worktree root | `CTB-REGRESSION-01` | Pass — 54 files / 367 tests | `evidence/broader-affected-server.log` |
-| 6 | `git diff --check` | Worktree root | Patch hygiene | Pass | Final stage command output |
+| 1 | `RUN_CODEX_E2E=1 CODEX_MEMORY_E2E_MODEL=gpt-5.6-sol CODEX_MEMORY_E2E_REASONING_EFFORT=max CODEX_MEMORY_E2E_ASSERT_REASONING=1 CODEX_MEMORY_E2E_TIMEOUT_MS=300000 CODEX_MEMORY_E2E_EVENT_TIMEOUT_MS=300000 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts --no-watch --reporter=verbose` | Worktree root; existing authenticated Codex identity | `CTB-R4-LIVE-01` | Pass — 1 file / 1 test, 64.95s | `evidence/round-2/live-gpt-5.6-sol.log` |
+| 2 | `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac` | Worktree root | Fresh replacement package from `c016730b` | Pass | `logs/api-e2e/electron-build-round-2-mac-arm64.log` |
+| 3 | Fresh package executable with `ELECTRON_RUN_AS_NODE=1`, bundled `dist/app.js --host 127.0.0.1 --port 29795 --data-dir <temp>` | Explicit clean test env, isolated SQLite/temp app data | Packaged server startup/migrations/readiness | Pass | `evidence/round-2/packaged-server-process-live.log` |
+| 4 | Packaged Electron executable as Node runs `packaged-exact-sequence-probe.mjs`, then HTTP GraphQL at `127.0.0.1:29795` | Fresh packaged production modules | `CTB-R4-PACKAGE-01` exact sequence | Pass | `evidence/round-2/packaged-exact-sequence-probe.log` |
+| 5 | DMG/ZIP/Mach-O/marker/spawn-helper/hash inspection | Fresh generated outputs | Artifact freshness/integrity markers | Pass for local unsigned-test scope; strict deep signing is intentionally unavailable | `evidence/round-2/package-inspection.log` |
 
 ## Validation Confidence Scorecard
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
-| --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 95% | 98% | +3 | Current live adjacent items plus API/reload and generic UI evidence cover every AC | Negligible model stochasticity |
-| Changed-boundary execution directness | 95% | 100% | +5 | Actual GPT-5.6-Sol emitted two adjacent `item/completed` reasoning items and the implementation normalized them directly | None material |
-| Cross-boundary integration realism and mock gap | 93% | 96% | +3 | Real provider -> backend -> recorder plus separate actual converter -> GraphQL chain | One run was not driven through a launched HTTP server/browser, but the schema and real file boundary executed |
-| Environment, configuration, identity, and fixture fidelity | 92% | 97% | +5 | Installed/authenticated Codex CLI `0.144.1`, exact `gpt-5.6-sol`, effort `max`, isolated temp workspace/memory | Not a long-lived production team run |
-| Failure, edge-case, lifecycle, and recovery evidence | 98% | 98% | 0 | Complete disposition matrix, unscoped clear, errors, compaction, missing/repeated IDs, broader regressions | None material |
-| User-surface, browser, and desktop-shell confidence | 95% | 95% | 0 | Generic unchanged handler/hydrator tests directly prove one live ThinkSegment and projection parity | Visual styling not screenshot-tested; no UI/shell code changed |
-| Durable regression coverage quality and relevance | 97% | 97% | 0 | Three narrow test-file changes, exact scenario IDs, broad affected pass | Proportional test-code review remains downstream |
+| --- | ---: | ---: | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 95% | 99% | +4 | Exact live, persistence/API/hydration, and package sequence all pass | Model behavior remains inherently stochastic across future versions |
+| Changed-boundary execution directness | 98% | 100% | +2 | Exact former package failure executed in both durable source and fresh packaged production modules | None material |
+| Cross-boundary integration realism and mock gap | 96% | 99% | +3 | Actual converter/writer/files/GraphQL plus packaged HTTP server and real provider | All lifecycle aliases are deterministic provider-shaped cases rather than one live turn |
+| Environment, configuration, identity, and fixture fidelity | 91% | 98% | +7 | Authenticated installed exact model; fresh macOS ARM64 bundle; isolated packaged server/SQLite | Full replacement window was not opened in parallel |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | 98% | 0 | Matching success/failure/denial/approval/local-MCP/file/raw, result-first/missing ID, suppressed/ignored/maintenance, reset/clear/eviction/isolation all pass | None material |
+| User-surface, browser, and desktop-shell confidence | 92% | 94% | +2 | Exact generic live/hydrated state and fresh bundled runtime execute; no UI/shell production source changed | Final full-window visual/user verification remains downstream due fixed-port conflict |
+| Durable regression coverage quality and relevance | 97% | 97% | 0 | Three narrow durable updates, direct scenario IDs, and broad affected pass | Proportional test-code review remains downstream |
 
-- Overall post-repository confidence: `95.0%`
-- Overall final confidence: `97.3%`
+- Overall post-repository confidence: `95.3%`
+- Overall final confidence: `97.9%`
 - Calculation method: simple average of seven applicable categories.
-- Confidence change produced by broader validation: `+2.3 percentage points`; eliminated the current-provider cadence/content risk.
-- Every critical acceptance criterion directly proven: `Yes`
+- Confidence change produced by broader validation: `+2.6 percentage points`
+- Every critical acceptance criterion directly proven: `Yes for the reviewed implementation/API scope`; final full-window user verification is a downstream delivery gate, not a missing server acceptance criterion.
 - Any final applicable category below `90%`: `No`
 - Default final confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: pre-fix history remains fragmented and `summaryTextDelta` modernization remains out of scope by approval; neither affects the passed future-run criteria.
+- Confidence-limiting residual risks: actual full Electron window/visual journey for this replacement has not yet run; every rare provider tool alias was not induced in one live turn. Both are bounded by unchanged shell/UI code, direct generic UI tests, complete converter matrices, and fresh packaged-server execution.
 
 ## Broader Validation Decision And Execution
 
-- Decision and selected execution mode: `Required — Live API/CLI through repository env-gated Codex E2E`
-- Material deviation from plan: none. The prompt was made reasoning-worthy after a trivial prompt validly emitted no reasoning.
-- Confidence gap addressed: whether the installed exact model still emits adjacent provider reasoning items, whether completed snapshots duplicate/omit content, and whether one normalized identity persists as one trace.
-- Startup order/readiness: Vitest spawned `codex app-server`; model catalog resolved exact `gpt-5.6-sol`; thread startup reached ready; turn reached idle; recorder reached idle.
-- Environment: macOS arm64, Node `v22.23.1`, pnpm `10.28.2`, Codex CLI `0.144.1`, authenticated existing ChatGPT identity, reasoning effort `max`, temporary workspace/memory.
-- Seed/identity: unique run UUID and sanitized no-tool explanatory prompt with a unique response token.
+- Decision/mode: `Required — Live API/CLI plus project desktop package/build/process validation`
+- Material deviation: no full Electron launch because a user-owned instance occupied fixed port `29695`; package execution moved to isolated `29795` without changing production source.
+- Gaps addressed: current exact-model snapshot/delta cadence; duplicate/gap design-impact trigger; fresh bundle content; package process/persistence/GraphQL exact sequence.
+- Startup/readiness:
+  1. Repository/live tests executed after fresh coverage edits.
+  2. Electron package built to completion.
+  3. Fresh bundled server started with `DATABASE_URL` unset, `APP_ENV=test`, `DB_TYPE=sqlite`, isolated app data, and alternate port.
+  4. Temporary SQLite migrations completed and listener reached `127.0.0.1:29795`.
+  5. Packaged probe executed and GraphQL assertions passed.
+- Environment: macOS 26.2 arm64; Node `v22.23.1`; pnpm `10.28.2`; Codex CLI `0.144.1`; exact model `gpt-5.6-sol`; effort `max`; Electron `42.4.1`.
+- Identity/authentication: existing authenticated Codex identity; no credential recorded.
+- Seed/fixtures: sanitized reasoning-worthy no-tool live prompt; unique live run/temp workspace; deterministic provider-shaped package sequence; isolated test SQLite.
 
 | Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| Current raw cadence | At least one non-empty completed reasoning item; adjacent items allowed | Two adjacent reasoning items with two distinct provider IDs | Structured cadence row in live log | Pass |
-| Live normalization | One normalized reasoning ID across the adjacent items | Two normalized events, one `reasoning-block:*:1` ID | Structured cadence row | Pass |
-| Content integrity | Raw completed summaries equal concatenated normalized deltas exactly | Raw expected length `223`, normalized length `223`, exact equality assertion passed | Live test assertion/log | Pass |
-| Future persistence | One contiguous block writes one reasoning trace | One persisted reasoning trace with exact combined content | Live test assertion/log | Pass |
-| API/reload projection | Three adjacent items become one row; text boundary yields a second row/fresh ID | GraphQL conversation `reasoning -> message -> reasoning`, exact contents | GraphQL E2E log | Pass |
-| Live/reload renderer semantics | One ID/row produces one ThinkSegment | 21 handler + 8 hydrator tests passed | Frontend log | Pass |
+| Current provider cadence | Non-empty completed snapshots; delta/part events must not create normalized content | 2 completed reasoning items; 12 `summaryTextDelta`, 0 legacy delta, 6 summary-part-added messages | Structured live cadence row | Pass |
+| Live normalized identity/content | One normalized ID; number/content exactly tracks completed snapshots | 2 normalized events, one normalized ID, exact 350-character completed-snapshot composition | Live assertions/log | Pass |
+| Live persistence | One contiguous reasoning trace | Exactly 1 persisted reasoning trace | Live assertions/log | Pass |
+| Exact matching result in packaged modules | A then matching result then B stays one ID; next tool splits | A/B IDs identical; B delta `\n\nB`; next block ID fresh | Packaged probe JSON | Pass |
+| Packaged raw future facts | One A+B trace in source order between tool cards | `tool_call1, tool_result1, reasoning A+B, tool_call2, tool_result2, reasoning C` | Packaged probe JSON | Pass |
+| Packaged HTTP GraphQL | One A+B projected row | Reasoning rows `A\n\nB`, `C`; ordered kinds `tool_call, reasoning, tool_call, reasoning` | Packaged probe JSON | Pass |
+| Design-impact trigger | No duplicate completed snapshot and no completed-snapshot content gap | Exact completed snapshot equality passed; no duplicate/gap observed | Live log | Pass — trigger did not fire |
 
 ## Desktop Application Validation
 
-- Validation approach: repository Nuxt state/hydration tests plus live server/API execution; no desktop launch.
-- Browser-tested web-equivalent behavior: not separately browser-tested because no frontend production/DOM/browser API changed and semantic state is directly asserted.
-- Shell-specific behavior: not applicable.
-- Effect on any already-running desktop application: `None`
-- Behavior not directly proven: visual styling only; no confidence penalty below the 95% category threshold because card structure code is unchanged.
+- Approach: fresh local macOS ARM64 Electron build, archive inspection, bundled production marker inspection, and execution of the package's server/modules plus HTTP GraphQL.
+- Browser-tested web-equivalent behavior: no separate browser execution; no UI/DOM/browser source changed, and exact generic handler/hydration behavior passed 30 Nuxt tests.
+- Shell-specific/lifecycle evidence: current app bundle built; arm64 executable and bundled server exist; packaged native helpers executable; bundled server starts/migrates/listens; DMG/ZIP integrity checks pass.
+- Signing caveat: local build intentionally skipped Apple signing/notarization. Strict deep `codesign` verification is therefore not a pass criterion; `codesign -dv` reports only ad-hoc/linker signature metadata.
+- Effect on running desktop application: `None`; unrelated listener at `29695` remained active before/after.
+- Not directly proven: full replacement window and final visual user journey. User-surface confidence remains 94%, and delivery must retain explicit user verification before finalization.
 
 ## Platform / Runtime Targets
 
-- Operating system / platform: macOS Darwin 25.2.0, arm64.
-- Runtime/framework versions: Node `v22.23.1`; pnpm `10.28.2`; Codex CLI `0.144.1`; Vitest server `4.0.18`; Vitest/Nuxt frontend `3.2.4`.
-- Browser/engine: `N/A`
-- Locale/timezone: environment timezone Europe/Berlin; no locale-sensitive assertion.
+- OS/platform: macOS 26.2 (build 25C56), arm64.
+- Runtime/framework: Node `v22.23.1`; pnpm `10.28.2`; Codex CLI `0.144.1`; server Vitest `4.0.18`; Nuxt/Vitest frontend `3.2.4`; Electron `42.4.1`.
+- Browser/engine: `N/A — browser-specific behavior unchanged and not selected.`
+- Locale/timezone: Europe/Berlin environment; no locale-dependent assertion.
+- Environment log: `tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/environment.log`.
 
 ## Lifecycle / Upgrade / Restart / Persisted-Data Checks
 
 - Approved persisted-data decision: `Not Affected`
-- Representative existing data exercised: future test-owned raw traces created through current writer; no pre-fix records changed.
-- Direct-use result: current unchanged reader/GraphQL projection/hydrator directly consumed corrected future facts.
-- Migration completion/recovery: `N/A`
-- Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`
-- Residual untested persisted-data risk: none for approved future-run scope.
+- Representative data: newly produced test-owned raw traces through current writer.
+- Direct-use result: current file reader, GraphQL projection, and frontend hydrator consume corrected future A+B facts without migration.
+- Migration/recovery: `N/A`; package startup migrations applied only normal current schema to isolated empty test SQLite.
+- Version-specific branch, dual read/write, or compatibility fallback observed: `No`
+- Residual persisted-data risk: pre-fix history remains fragmented by approved scope; no risk to future-run criteria.
 
 ## Tests Implemented Or Updated
 
 | Path / Scenario | Change | Requirement / Boundary | Execution Result | Notes |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts` / `CTB-E2E-01` | Updated | Converter -> persistence -> GraphQL future parity | Pass | Adds one provider-event pipeline scenario. |
-| `autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts` / `CTB-LIVE-01` | Updated | Exact current model cadence, one ID/content/trace | Pass | Also repairs stale required run-ID setup; cadence assertions explicitly env-enabled. |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts` / `CTB-ISOLATE-01` | Updated | Run/team-member converter-instance and turn isolation | Pass | No production change. |
+| `autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts` / `CTB-R4-E2E-01` | Updated | Exact matching-result A+B, ignored deltas/repeat completion, next tool, result-first through files/GraphQL | Pass — 1 file / 6 tests | Production converter/accumulator/schema; no source mock bypass of changed boundary |
+| `autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts` / `CTB-R4-LIVE-01` | Updated | Current three delta/part counts and snapshot-only equality | Pass — live exact model | Assertions activate with `CODEX_MEMORY_E2E_ASSERT_REASONING=1` |
+| `autobyteus-web/services/runHydration/__tests__/runProjectionConversation.spec.ts` / `CTB-R4-HYDRATE-01` | Updated | Exact corrected projection produces one A+B ThinkSegment | Pass — 9 hydration tests / 30 focused frontend total | Provider-agnostic client fixture |
 
 ## Tests Removed As Stale Or Obsolete
 
@@ -135,74 +153,93 @@ None.
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `Yes`
-- Paths added or updated: the three test paths listed above.
-- Paths removed: `None`
-- Added or updated paths attached for proportional test-code review: `Yes`
-- Diff or repository evidence supplied for removed paths: `N/A`
+- Repository-resident durable coverage changed: `Yes`
+- Added/updated paths: the three test files listed above.
+- Removed paths: `None`
+- Added/updated paths attached for proportional test-code review: `Yes`
+- Removed-path diff evidence: `N/A`
+- Production source changed by API/E2E engineer: `No`
 
 ## Other Execution Artifacts
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `tickets/in-progress/consecutive-thinking-blocks/evidence/ctb-live-01-gpt-5.6-sol.log` | Exact live cadence/process evidence | Retained ticket evidence | Contains IDs/counts/lengths, not reasoning text. |
-| `tickets/in-progress/consecutive-thinking-blocks/evidence/ctb-e2e-01-graphql.log` | API pipeline evidence | Retained | 6 tests pass. |
-| `tickets/in-progress/consecutive-thinking-blocks/evidence/focused-server-and-persistence.log` | Focused repository evidence | Retained | 121 tests pass. |
-| `tickets/in-progress/consecutive-thinking-blocks/evidence/frontend-live-hydration.log` | Generic frontend contract evidence | Retained | 29 tests pass. |
-| `tickets/in-progress/consecutive-thinking-blocks/evidence/isolation-regression.log` | Isolation evidence | Retained | 37 tests pass. |
-| `tickets/in-progress/consecutive-thinking-blocks/evidence/broader-affected-server.log` | Broader regression evidence | Retained | 367 tests pass. |
+| `tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/focused-server.log` | Focused core evidence | Retained | 7 files / 140 tests |
+| `.../evidence/round-2/graphql-exact-sequence.log` | Exact API/reload evidence | Retained | 1 file / 6 tests |
+| `.../evidence/round-2/frontend-hydration.log` | Live/reload client semantics | Retained | 2 files / 30 tests |
+| `.../evidence/round-2/broader-server.log` | Regression evidence | Retained | 55 files / 385 tests |
+| `.../evidence/round-2/live-gpt-5.6-sol.log` | Current external cadence/content/persistence | Retained | Structured IDs/counts/lengths; no reasoning text in summary row |
+| `.../logs/api-e2e/electron-build-round-2-mac-arm64.log` | Fresh replacement build | Retained | Build pass |
+| `.../evidence/round-2/package-inspection.log` | Package markers/archive/hash/native bits | Retained | Also records expected unsigned-bundle strict verification caveat |
+| `.../evidence/round-2/packaged-server-process-live.log` | Isolated packaged server startup | Retained | Temporary SQLite, port 29795 |
+| `.../evidence/round-2/packaged-exact-sequence-probe.log` | Exact package result | Retained | JSON pass |
+| `.../evidence/round-2/cleanup.log` | Package temp cleanup | Retained | Pass |
+| `.../evidence/round-2/user-owned-port-preserved.log` | Non-interference | Retained | Original 29695 listener preserved |
 
 ## Temporary Execution Methods / Scaffolding
 
-No standalone temporary script or source scaffold remained. The live suite created temporary workspace/memory directories and cleaned them in `afterEach`.
+| Path / Method | Why Needed | Result / Evidence | Cleanup Result |
+| --- | --- | --- | --- |
+| `tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/packaged-exact-sequence-probe.mjs` | Generated package cannot host repository Vitest; imports fresh packaged production modules and queries packaged HTTP GraphQL | Pass JSON in companion log | Script retained as evidence; process/temp data removed |
+| Initial background packaged-server launch | First shell-owned background process exited when its shell ended after readiness. It also inherited an existing `DATABASE_URL`; Prisma reported the user database had no pending migrations, and no probe or mutating API call ran against it. This was an API/E2E setup issue, not a product failure. | Attempt log/health retained in `evidence/round-2/packaged-server-process.log` and `packaged-server-health.json` | Process exited; authoritative rerun explicitly unset `DATABASE_URL`, used isolated `test.db`, passed, and left no orphan |
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| Native Codex history reader in GraphQL scenario | Existing test mock verifies it is not called | Future projection must use local normalized memory, not native recovery | None for approved projection contract |
-| Provider boundary variants in matrix/API scenario | Sanitized payload fixtures through actual converter | Deterministically covers tools/approvals/errors/maintenance | Offset by live exact-model scenario |
+| Provider tool lifecycle variants | Real provider-shaped payloads through actual production converter | Approval/failure/denial/local-MCP/file/raw aliases cannot all be induced deterministically/safely in one live prompt | Offset by complete converter matrix, actual current provider cadence, exact packaged production execution |
+| Native Codex history recovery in GraphQL E2E | Existing mock asserts it is not called | Future projection must use local normalized memory | None for approved contract |
+| Browser/window | Nuxt semantic tests plus packaged server execution | Unchanged renderer/shell source; active user app owns fixed port | Full visual journey remains downstream user gate |
 
 ## Prior Failure Resolution Check
 
-`N/A` for Round 1. Execution-time test-owned corrections are documented under Investigation And Execution Basis and are not implementation failures.
+| Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Packaged `tool start -> A -> matching result -> B -> next tool` showed split cards/traces | Design Impact, returned through solution design/review/implementation | Matching existing-card result now preserves normalized and persisted block; next tool/result-first still split | GraphQL exact sequence + packaged probe | Directly reproduces prior sequence |
+| 1 | Historical API/E2E omitted exact matching-result cadence | Coverage gap | Durable exact API and frontend fixtures added; package probe added | Three changed test files + logs | Historical pass not reused |
+| 1 | Historical package contained pre-Round-4 implementation | Stale package evidence | Fresh `c016730b` package built/hashes recorded and bundled semantics executed | Build/package report and probe | Downstream full-window user verification still required |
 
 ## Result Summary
 
 | Result | Scenario IDs | Summary / Reason |
 | --- | --- | --- |
-| Pass | `CTB-LIVE-01`, `CTB-E2E-01`, `CTB-BOUNDARY-01`, `CTB-HYDRATE-01`, `CTB-ISOLATE-01`, `CTB-REGRESSION-01` | All critical criteria passed; exact current model emitted adjacent reasoning items that normalized and persisted once with exact content. |
+| Pass | `CTB-R4-CORE-01`, `CTB-R4-E2E-01`, `CTB-R4-HYDRATE-01`, `CTB-R4-REGRESSION-01`, `CTB-R4-LIVE-01`, `CTB-R4-PACKAGE-01`, `CTB-R4-DIAGNOSIS-01` | All current implementation/API/E2E criteria passed; exact former failure passes in source and fresh package; live completed-snapshot equality shows no design-impact duplicate/gap. |
+| Not Tested (downstream gate) | Full replacement Electron window journey | Unsafe parallel fixed-port launch; package/server current semantics proven and artifacts prepared | Delivery must retain explicit user verification before finalization. |
+| Out Of Scope | Pre-fix history remediation; delta modernization | Explicit approved exclusions | No action. |
 
 ## Cleanup Performed
 
 | Resource / Process / Data | Ownership | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Live Codex thread/client | Test-owned | Terminated thread and closed client in `afterEach` | Pass |
-| Live temporary workspace/memory | Test-owned | Recursive removal in `afterEach` | Pass |
-| GraphQL custom app-data/workspace | Test-owned | Removed in `afterAll` | Pass |
-| Default AutoByteus history | User-owned/unrelated | Never used or modified | Pass |
+| Live Codex client/thread/temp workspace/memory | Test-owned | Suite termination and recursive cleanup hooks | Pass |
+| Packaged server on `29795` | Test-owned | Foreground session interrupted after probe | Pass; no listener remains |
+| Packaged temp app data/SQLite/memory | Test-owned | Recursive removal | Pass |
+| Initial inherited user SQLite connection | User-owned/unrelated | Attempt reached health only; Prisma reported `No pending migrations to apply`; no probe or mutating API request was issued; authoritative rerun used isolated data | No observed change |
+| User AutoByteus listener on `29695` | User-owned/unrelated | Not touched; rechecked after cleanup | Preserved |
+| Fresh app/DMG/ZIP and retained logs | Ticket output | Retained for downstream verification/review | Intended |
 
 ## Classification
 
-`Pass`. No implementation failure, design impact, requirement gap, or blocker was found. The initial live/API test issues were bounded API/E2E-owned setup/assertion corrections and are resolved.
+`Pass`. No implementation failure, design impact, requirement gap, blocker, duplicate completed snapshot, or completed-snapshot content gap was observed. The initial package-process background retry was an API/E2E-owned harness-lifetime correction and did not affect the authoritative pass.
 
 ## Recommended Recipient
 
-`code_reviewer` for proportional review of the three changed durable test files.
+`code_reviewer` for the separate proportional review of the three changed durable test files. After that passes, route the cumulative package to `delivery_engineer`, retaining replacement full-window user verification as the finalization gate.
 
 ## Evidence / Notes
 
-- Live exact-current evidence is especially direct: two distinct provider reasoning item IDs, one normalized reasoning ID, one persisted reasoning trace, and exact source/normalized content-length equality at `223` characters.
-- No duplicate completed snapshot or content gap was observed, so the explicit design-impact trigger did not fire.
-- Pre-fix history fragmentation and `summaryTextDelta` modernization remain approved out of scope.
+- Live GPT-5.6-Sol evidence: 2 distinct provider reasoning item IDs, 12 current summary-text deltas, 6 summary-part-added notifications, 2 normalized events on one normalized block ID, one persisted reasoning trace, and exact completed-snapshot/normalized length equality at 350 characters.
+- Package evidence: A and B share one ID; matching B delta is `\n\nB`; raw trace has one A+B reasoning fact; packaged HTTP GraphQL has one A+B reasoning row; next tool starts a fresh block.
+- Result-first/missing identity and all matching lifecycle aliases are covered deterministically in the passing production-converter matrix. Matching success/failure/denial persistence is also covered in the passing accumulator suite.
+- No API/E2E production source change was made.
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Final validation confidence: `97.3%`
-- Default `95%` confidence target met: `Yes`
-- Any final applicable confidence category below `90%`: `No`
-- Broader validation decision: `Required and completed successfully`
-- Critical acceptance criteria lacking direct proof: `None`
+- Final validation confidence: `97.9%`
+- Default 95% confidence target met: `Yes`
+- Any applicable category below 90%: `No`
+- Broader validation decision: `Required and completed successfully — live exact model plus fresh packaged runtime`
+- Critical acceptance criteria lacking direct proof: `None for implementation/API scope`
 - Required next recipient: `code_reviewer` for proportional test-code review
-- Notes: Three durable test files changed; all must travel with the cumulative artifact package.
+- Notes: full replacement Electron window/user verification remains explicitly required downstream before repository finalization; three durable test files changed and must accompany the cumulative package.

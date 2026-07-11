@@ -379,10 +379,21 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         .filter((delta): delta is string => typeof delta === "string")
         .join("");
       const persistedReasoning = rawTraces.filter((trace) => trace.trace_type === "reasoning");
+      const rawReasoningDeltaMethodCounts = Object.fromEntries([
+        "item/reasoning/summaryTextDelta",
+        "item/reasoning/delta",
+        "item/reasoning/summaryPartAdded",
+      ].map((method) => [
+        method,
+        rawMessages.filter((message) => message.method === method).length,
+      ]));
 
       if (process.env.CODEX_MEMORY_E2E_ASSERT_REASONING === "1") {
         expect(rawReasoningItems.length).toBeGreaterThan(0);
         expect(rawReasoningItemIds).toHaveLength(rawReasoningItems.length);
+        expect(rawReasoningDeltaMethodCounts["item/reasoning/summaryTextDelta"])
+          .toBeGreaterThan(0);
+        expect(normalizedReasoningEvents).toHaveLength(rawReasoningItems.length);
         expect(new Set(normalizedReasoningIds).size).toBe(1);
         expect(normalizedReasoningContent).toBe(expectedReasoningContent);
         expect(persistedReasoning).toHaveLength(1);
@@ -393,6 +404,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         reasoningEffort: process.env.CODEX_MEMORY_E2E_REASONING_EFFORT?.trim() || "low",
         rawReasoningItemCount: rawReasoningItems.length,
         rawReasoningItemIds,
+        rawReasoningDeltaMethodCounts,
         normalizedReasoningEventCount: normalizedReasoningEvents.length,
         normalizedReasoningIds: [...new Set(normalizedReasoningIds)],
         persistedReasoningTraceCount: persistedReasoning.length,

@@ -4,107 +4,126 @@
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/requirements.md`
-- Supplemental Solution Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
-- Current Review Round: `1`
-- Trigger: Implementation handoff for commit `49f6c107` on branch `codex/consecutive-thinking-blocks`.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Supplemental Solution Artifacts Reviewed As Context:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/user-verification-failure-analysis.md`
+- Current Review Round: `2`
+- Trigger: Fresh source/architecture review of Round 4 implementation rework at commit `c016730b`, after packaged user verification invalidated the earlier candidate and Architecture Review Round 4 approved the revised ordered-card and completed-snapshot-only design.
+- Prior Review Round Reviewed: `1`
+- Latest Authoritative Round: `2`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/design-review-report.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/design-review-report.md` (Round 4 authoritative)
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/implementation-handoff.md`
-- Coverage Investigation Reviewed (failure-origin entry point): `N/A`
-- Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
-- Failing Scenario IDs: `N/A`
+- Coverage Investigation Reviewed (failure-origin entry point): Historical prior-candidate report only; not accepted as current API/E2E evidence.
+- Execution Coverage Report Reviewed (failure-origin entry point): Historical prior-candidate report only; not accepted as current API/E2E evidence.
+- Failing Scenario IDs: `N/A` for this implementation-review entry point.
 - Exact Failing Commands / Execution Mode: `N/A`
-- Failure Evidence Paths: `N/A`
+- Failure Evidence Paths:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/user-verification-failure-correlation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/user-verification-package-process.log`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Source/architecture review of `49f6c107` | N/A | No | Pass | Yes | The allocator, active-state reuse, singular update contract, boundary matrix, cleanup, and unchanged-consumer scope match the reviewed package. |
+| 1 | Initial implementation at `49f6c107` | N/A | No | Pass | No | Passed against the then-authoritative design. Later packaged user verification exposed a design-impact gap: matching tool-result updates were incorrectly specified as reasoning boundaries. |
+| 2 | Fresh review of approved Round 4 rework at `c016730b` | No prior source finding IDs; prior residual risks and invalidated boundary assumptions rechecked | No | Pass | Yes | Completed snapshots are singular/idempotent, tool placement is classified by ordered-card creation versus update, and memory sequencing preserves matching-result reasoning while retaining result-first flush. |
 
 ## Review Scope
 
-Reviewed the complete solution package, the implementation handoff, and `origin/personal...49f6c107`. The source audit covered all added, modified, and removed Codex event-normalization production files, plus the changed server/frontend unit evidence. Memory, history, GraphQL, and frontend production paths were checked for unintended changes and remain unchanged. API/E2E, live Codex reproduction, future-run GraphQL projection, and reload validation remain downstream responsibilities.
+Reviewed the complete revised solution package and `c016730b^...c016730b`, with the prior implementation/API/E2E/delivery/release artifacts treated only as historical evidence for the failed candidate. Source review covered:
+
+- strict completed-reasoning-snapshot normalization and permanent delta no-effect dispatch;
+- `CodexReasoningBlockTracker` idempotency and allocator invariants;
+- the new `CodexOrderedToolBoundaryTracker` and its item/raw/turn/error wiring;
+- ordered-card placement decisions across starts, approvals, results, failures, denials, logs, completions, suppressed events, and ignored methods;
+- `RuntimeMemoryEventAccumulator` matching-result versus result-first flush sequencing;
+- unchanged storage schema, run-history projection, GraphQL, and frontend production scope;
+- changed server/web architecture documentation and focused test structure.
 
 Independent reviewer checks:
 
-- `git diff --check origin/personal...HEAD`: passed.
-- Focused server review suite (`codex-reasoning-block-tracker`, `codex-reasoning-block-converter`, and existing `codex-thread-event-converter`): 3 files / 91 tests passed.
-- Worktree was clean at handoff commit before this report was added; implementation commit is one commit ahead of `origin/personal`.
+- Focused server unit/narrow integration suite: 7 files / 140 tests passed.
+- `git diff c016730b^ c016730b --check`: passed.
+- Obsolete-routing scan found the three reasoning delta event constants only in their explicit no-effect dispatch; no delta normalizer/fallback API remains.
+- Worktree was clean at implementation handoff; this canonical report update is the only reviewer-authored worktree change.
+
+Full current API/E2E investigation, realistic execution, proportional durable test review, and replacement packaged-app verification remain downstream. Historical pass reports do not satisfy the new round.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
-Not applicable for Round 1.
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1 | None assigned | N/A | N/A | Round 1 contained no source-review finding IDs. Its pass was later superseded by upstream Design Impact demonstrated in `user-verification-failure-analysis.md`. | The revised package returned through solution design and Architecture Review Round 4 before this fresh source review. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-Effective line counts exclude blank lines. The delta check uses added-line count for the reviewed commit; no changed implementation source exceeds the `>220` delta threshold.
+Effective counts exclude blank lines. Delta checks are for `c016730b` only. Tests, documentation, generated evidence, and ticket artifacts are excluded from implementation-source thresholds.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `codex-item-event-converter.ts` | 452 | Pass | Pass (`+42/-40`) | Pass; remains the item-family dispatcher, with disposition before early returns | Pass | Pass | None |
-| `codex-item-event-payload-parser.ts` | 278 | Pass | Pass (`+23/-14`) | Pass; remains the facade and delegates stateful reasoning normalization | Pass | Pass | None |
-| `codex-raw-response-event-converter.ts` | 50 | Pass | Pass (`+2`) | Pass; adds only raw function-output boundary clearing | Pass | Pass | None |
-| `codex-reasoning-block-tracker.ts` | 80 | Pass | Pass (`+92` physical lines) | Pass; cohesive typed state/allocator/joining owner | Pass | Pass | None |
-| `codex-reasoning-event-normalizer.ts` | 99 | Pass | Pass (`+113` physical lines) | Pass; cohesive payload extraction plus singular update decision | Pass | Pass | None |
-| `codex-reasoning-payload-parser.ts` | Removed (60 prior effective lines) | Pass | Pass (`-71` physical lines) | Pass; obsolete parser fully removed | Pass | Pass | None |
-| `codex-reasoning-segment-tracker.ts` | Removed (103 prior effective lines) | Pass | Pass (`-116` physical lines) | Pass; obsolete ID-only tracker fully removed | Pass | Pass | None |
-| `codex-thread-event-converter.ts` | 442 | Pass | Pass (`+18/-21`) | Pass; top-level authority still composes callbacks/facade rather than tracker state | Pass | Pass | None |
-| `codex-thread-lifecycle-event-converter.ts` | 55 | Pass | Pass (`+2`) | Pass; terminal-error cleanup only | Pass | Pass | None |
-| `codex-turn-event-converter.ts` | 56 | Pass | Pass (`+4/-2`) | Pass; turn lifecycle owns defensive clear operations | Pass | Pass | None |
+| `codex-item-event-converter.ts` | 473 | Pass | Pass (`+37/-15`) | Pass; still the item-family dispatch owner, with placement applied only beside actual emissions | Pass | Pass; high but coherent structural pressure | Do not add unrelated policy; extract only when a new coherent dispatch owner appears. |
+| `codex-item-event-payload-parser.ts` | 272 | Pass | Pass (`+2/-8`) | Pass; facade now exposes completed snapshots only | Pass | Pass | None |
+| `codex-ordered-tool-boundary-tracker.ts` | 42 | Pass | Pass (`+49` physical lines) | Pass; one bounded normalized placement state machine | Pass | Pass | None |
+| `codex-raw-response-event-converter.ts` | 54 | Pass | Pass (`+5/-2`) | Pass; classifies only emitted function-output logs | Pass | Pass | None |
+| `codex-reasoning-block-tracker.ts` | 77 | Pass | Pass (`+11/-13`) | Pass; typed completed snapshots, active reuse, idempotency, allocation, clear, eviction | Pass | Pass | None |
+| `codex-reasoning-event-normalizer.ts` | 78 | Pass | Pass (`+4/-28`) | Pass; delta parsing removed and completed-snapshot extraction retained | Pass | Pass | None |
+| `codex-thread-event-converter.ts` | 464 | Pass | Pass (`+25/-2`) | Pass; authoritative composition of facade plus private ordered-tool state | Pass | Pass; high but coherent structural pressure | Keep future provider policy behind existing contexts/facade. |
+| `codex-thread-event-name.ts` | 28 | Pass | Pass (`+1`) | Pass; names the permanently ignored current method explicitly | Pass | Pass | None |
+| `codex-thread-lifecycle-event-converter.ts` | 57 | Pass | Pass (`+2`) | Pass; terminal error clears both state owners | Pass | Pass | None |
+| `codex-turn-event-converter.ts` | 60 | Pass | Pass (`+4`) | Pass; lifecycle owns scoped/global state cleanup | Pass | Pass | None |
+| `runtime-memory-event-accumulator.ts` | 429 | Pass | Pass (`+2/-2`) | Pass; reuses existing `ToolState.callWritten` and `writeToolCall()` sequencing | Pass | Pass; existing broad accumulator remains internally cohesive for event-to-trace sequencing | None for this bounded change. |
 
-The two existing large dispatch/orchestration files remain below the hard limit and received bounded, responsibility-aligned changes. This patch does not create new structural pressure that warrants splitting them.
+No changed implementation source crosses the hard limit or delta threshold. The two Codex dispatch files are close enough to the hard limit to warrant explicit future discipline, but the Round 4 additions remain within their established responsibilities and do not justify an artificial split in this change.
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Handoff preserves the approved local-defect plus bounded file-responsibility-refactor posture; production changes stay inside Codex normalization. | None |
-| Implementation matches approved supplemental solution artifacts that constrain observable behavior | Pass | One allocator-owned ID is reused for adjacent fragments; completed-provider-item transitions add `\n\n`; semantic boundaries allocate a new ID. | None |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Raw Codex event -> authoritative converter -> facade -> normalizer/tracker -> normalized event -> unchanged memory/web consumers remains intact. | None |
-| Ownership boundary preservation and clarity | Pass | Tracker owns active state/allocation/joining; normalizer owns raw extraction; facade exposes update/clear; converters own dispatch disposition. | None |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Debug logging and cache eviction remain private tracker concerns; serialization and tool conversion remain with existing owners. | None |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The existing Codex event subsystem was refactored in place; no frontend/history grouping helper was introduced. | None |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `{segmentId, delta}` resolution and active block state each have one owner. | None |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | `CodexReasoningBlockInput`, `CodexReasoningBlockUpdate`, and private active state are minimal and non-overlapping. | None |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Allocation/reuse/separator policy is centralized in `CodexReasoningBlockTracker`; raw alias parsing is centralized in the normalizer. | None |
-| Empty indirection check (no pass-through-only boundary) | Pass | The item payload parser is an established multi-concern facade; the new methods preserve that authoritative boundary rather than adding a new empty wrapper. | None |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The new tracker and normalizer split typed state from generic record parsing; event converters only apply family disposition and map updates. | None |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Runtime dependency direction is converter -> facade -> normalizer -> tracker; boundary converters receive callbacks and do not mutate tracker state. | None |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | `CodexThreadEventConverter` calls reasoning behavior only through `CodexItemEventPayloadParser`; no caller combines facade calls with tracker state access. The item converter's type-only update contract does not expose active state or allocation operations. | None |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Both new production files are beside the Codex event converters they serve. | None |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Two focused files replace two weaker files without extra modules or generic helper layers. | None |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `resolveReasoningContentUpdate`, `clearReasoningBlockForBoundary`, `clearAllReasoningBlocks`, and typed `append` each have one explicit subject. | None |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | “Block tracker” and “event normalizer” accurately describe state and payload responsibilities; old “segment tracker/payload parser” names are removed. | None |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Four reasoning conversion paths share `createReasoningContentEvent`; no duplicate ID/content resolution remains. | None |
-| Patch-on-patch complexity control | Pass | Clean-cut replacement removes the old pair and fallback candidates rather than layering aliases or dual behavior. | None |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Old files/classes, split methods, tests, and references have no repository matches outside ticket history. | None |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Tests cover different/missing/repeated identity, separators, fresh post-clear IDs, cache eviction, converter namespaces, every reviewed boundary family, persistence accumulation, and generic frontend joining. | None |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Converter tests use focused emit/disposition helpers; tracker tests use a typed completion helper; fixtures remain sanitized. | None |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The obsolete segment-tracker test was removed with its implementation; no alias/compatibility expectations remain. | None |
-| API/E2E readiness for the next workflow stage | Pass | Source and focused unit evidence are green; downstream hints identify live Codex, future persistence/GraphQL/hydration, boundary, and isolation scenarios. | Proceed to API/E2E investigation and execution. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The implementation uses the three approved owners: snapshot reasoning normalization, Codex ordered-tool placement, and generic memory sequencing. | None |
+| Implementation matches approved supplemental solution artifacts that constrain observable behavior | Pass | Matching updates preserve a single Thinking block; result-first/new-card events clear; completed snapshots are singular; deltas are no-effect. | None |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | All five reviewed spines remain visible: execution, return-event, reasoning state, ordered-tool placement, and memory sequencing. | None |
+| Ownership boundary preservation and clarity | Pass | Tracker parses normalized identity only; converter/facade owns raw interpretation; accumulator uses normalized events and `callWritten`, not Codex methods. | None |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Cache eviction, debug logging, serialization, documentation, and tests remain attached to clear owners. | None |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The new tracker is justified shared state across item/raw paths; accumulator reuses existing `ToolState` rather than duplicating persistence policy. | None |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Ordered-card placement state is centralized once; reasoning snapshot/update shapes remain centralized. | None |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Ordered-tool state is only turn/invocation membership; reasoning input is only turn/provider/snapshot; memory adds no parallel state. | None |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Known-card versus result-first policy has one tracker; matching-result versus inferred-call trace sequencing has one accumulator owner. | None |
+| Empty indirection check (no pass-through-only boundary) | Pass | The established item facade performs raw identity/content interpretation; the new tracker owns real bounded lifecycle state. | None |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Payload extraction, placement state, item/raw dispatch, and persistence sequencing remain distinct. | None |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Runtime direction is converter -> facade/ordered tracker and facade -> reasoning normalizer -> reasoning tracker; memory consumes normalized events only. | None |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Backend callers use `CodexThreadEventConverter`; sub-converters receive typed callbacks and do not access tracker instances or state. Type-only placement/update contracts expose decisions, not internal state operations. | None |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Ordered-tool tracker sits beside the Codex converters; memory change remains in the generic accumulator. | None |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | One additional 42-line state owner is proportionate; no new folder/module layer or generic cache abstraction was introduced. | None |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `resolveCompletedReasoningSnapshot`, `classifyToolLifecycleUpdate`, clear operations, and `append` each have singular semantics. | None |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | “Ordered tool boundary,” “completed snapshot,” `hadRecordedCall`, and placement result names expose the corrected invariant. | None |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | `applyToolLifecyclePlacement` centralizes result-first clearing in item paths; raw path applies the same typed classification once. | None |
+| Patch-on-patch complexity control | Pass | The rework removes delta routing and unconditional clear/flush behavior instead of stacking feature flags or compatibility branches. | None |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Delta fallback/normalizer seams and unconditional terminal clears are removed; ignored methods remain explicit permanent no-effect cases. | None |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Tests cover idempotency, permanent delta no-effect, matching success/failure/denial/approval/log/result, result-first/missing identity, exact long-running sequence, lifecycle cleanup, eviction, and memory ordering. | None |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Focused converter helpers and tracker tests avoid repeated setup; accumulator scenarios directly assert trace order/content. | None |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Legacy delta methods are tested only as permanent no-effect product behavior; old live-delta expectations are removed. | None |
+| API/E2E readiness for the next workflow stage | Pass | Source, focused integration, production TypeScript, build, docs, and regression evidence are ready; exact real correlation and future projection/hydration remain explicitly assigned downstream. | Execute a fresh API/E2E investigation and run; do not reuse the historical pass. |
 
 ## Review Scorecard (Mandatory)
 
 - Overall score (`/10`): `9.3`
 - Overall score (`/100`): `93.3`
-- Score calculation note: Simple average of the ten category scores, rounded to one decimal for `/10` and `/100` presentation.
+- Score calculation note: Simple average of all ten category scores; the pass decision is based on mandatory checks and findings, not the average.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | The implementation preserves the complete provider-to-consumer spine and keeps the bounded state flow explicit. | Realistic live/reload evidence is not yet attached. | API/E2E should trace one newly produced run across live, persistence, GraphQL, and hydration. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | State, payload interpretation, facade, and dispatch ownership are clean and directionally correct. | The DTO type originates beside the internal tracker, creating minor compile-time coupling even though state operations remain encapsulated. | Reconsider DTO placement only if the contract is reused or the tracker ceases to be its natural owner. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.3 | The singular update and semantic clear APIs carry explicit identity meaning. | `fallbackDelta` remains available on the facade/normalizer although current converter use does not need it. | Keep it only while a concrete caller needs it; remove if it becomes unused API surface. |
-| `4` | `Separation of Concerns and File Placement` | 9.2 | The bounded replacement materially improves responsibilities without cross-subsystem changes. | Existing item/thread converter files remain sizable dispatch owners. | Avoid adding unrelated policy to those files; extract only when a new coherent owner appears. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | Typed input/update/private state are minimal and semantically singular. | `hasContent` is a compact state proxy rather than content-length state, which is correct but subtle. | Preserve the invariant with focused tests if fragment handling expands. |
-| `6` | `Naming Quality and Local Readability` | 9.3 | Names match block, normalization, boundary, and allocator semantics. | Boundary disposition is necessarily distributed across event-family converters. | Keep the design matrix and durable docs synchronized as event names expand. |
-| `7` | `API/E2E Readiness` | 9.0 | Focused unit/build evidence is strong and downstream scenarios are concrete. | No current live Codex reproduction or future-run reload proof has run yet. | Execute the realistic downstream plan before delivery. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.1 | Missing/repeated IDs, unscoped clears, eviction, instance recreation, and early returns are explicitly handled. | Duplicate completed snapshots for the same provider item remain a documented cadence risk; `summaryTextDelta` remains intentionally unsupported. | API/E2E should observe current provider cadence and route design impact if duplication is seen. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.7 | The patch is a clean-cut current-runtime replacement with no aliases, migration, fallback IDs, or old-history remediation. | Pre-fix runs remain fragmented by approved scope. | No source change; keep that limitation explicit in delivery notes. |
-| `10` | `Cleanup Completeness` | 9.6 | Superseded files, methods, imports, and tests are removed, and obsolete-symbol scan is clean. | Durable architecture docs are not updated in the implementation commit. | Delivery should synchronize the two design-identified docs or record a justified no-impact decision. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The revised five-spine model is directly recognizable in the implementation. | Real end-to-end evidence for the new ordered-tool/memory interaction is not current yet. | API/E2E should trace the exact long-running sequence across provider events, normalized output, memory, GraphQL, and hydration. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Three production owners have distinct state and authority; raw Codex policy does not leak into memory or frontend. | Converter context types necessarily expose small decision DTOs from internal concern files. | Keep these contracts state-free; relocate them only if reuse expands beyond this subsystem. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Snapshot-only and placement APIs are explicit and narrow. | `classifyToolLifecycleUpdate` both classifies and remembers an unknown identity, a useful but stateful semantic callers must understand. | Preserve the documented name/result contract and avoid adding optional mode selectors. |
+| `4` | `Separation of Concerns and File Placement` | 9.0 | The new tracker is proportionate and the accumulator change stays generic. | Item/thread converters are 473/464 effective lines and near the hard limit; accumulator is 429. | Future unrelated additions should introduce a coherent owner before these files cross structural limits. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | State shapes contain only singular identity/placement facts and reuse existing memory state. | Converter placement state and memory `callWritten` are intentionally separate representations at different authoritative boundaries. | Downstream tests must continue proving they correlate on the same normalized invocation identity. |
+| `6` | `Naming Quality and Local Readability` | 9.3 | Names make completed snapshots, ordered-card placement, and recorded-call timing explicit. | Dense dispatch tables remain cognitively expensive despite clear helper names. | Keep durable mapping docs and table-driven tests synchronized with new event families. |
+| `7` | `API/E2E Readiness` | 9.0 | Focused checks and exact downstream scenarios are strong. | Current live/provider, GraphQL, hydration, and replacement-package evidence has not run for `c016730b`. | Perform the full fresh downstream workflow and replacement Electron verification. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Source/tests address matching and result-first paths, missing identity, turn/error cleanup, eviction, idempotency, and no-effect deltas. | Real approval/start/result alias correlation and raw-response turn identity remain environment-dependent. | Exercise those actual surfaces in current Codex and package validation. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | No history repair, dual behavior, delta support seam, aliases, migration, or provider-ID block fallback exists. | Pre-fix history remains fragmented by explicit scope. | Keep the limitation explicit; add no compatibility path. |
+| `10` | `Cleanup Completeness` | 9.6 | Obsolete routing and unconditional clearing/flush paths are removed; durable docs are already synchronized. | Historical failed-candidate reports remain in the ticket and could be misread as current. | Downstream reports must label superseded evidence clearly and update canonical result fields. |
 
 ## Findings
 
@@ -114,12 +133,12 @@ No blocking or rework findings.
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No aliases, wrappers, feature flags, or old-ID branches were introduced. |
-| No legacy old-behavior retention in changed scope | Pass | Provider/event/fixed normalized-ID fallbacks were removed. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Old parser/tracker source and obsolete tracker test were removed with no live references. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Production persistence/history code is unchanged under the approved `Not Affected` decision. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | The current runtime has one allocator-owned identity path. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | No migration was required or added; future normalized events use the existing writer/reader contract. |
+| No backward-compatibility mechanisms in changed scope | Pass | No flag, dual path, alias, fallback, or old-history correction was added. |
+| No legacy old-behavior retention in changed scope | Pass | Unconditional terminal clears and delta content routing are replaced cleanly. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Old reasoning APIs remain removed; delta constants exist only to implement permanent explicit no-effect behavior. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Storage schema/readers are unchanged under the approved `Not Affected` decision. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Current runtime has one snapshot-only normalization and one normalized-event persistence path. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Matching result preserves an open segment; result-first delegates to existing `writeToolCall()` flush; no migration is required. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -127,15 +146,15 @@ None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`
-- Why: The durable Codex mapping and frontend consumer contract should record that adjacent provider reasoning items share an allocator-owned normalized block ID until a semantic boundary.
-- Files or areas likely affected:
+- Docs impact: `Yes — addressed in the implementation commit`
+- Why: The permanent completed-snapshot-only contract and ordered-card creation/update semantics materially change the Codex normalization contract and generic frontend-consumer guidance.
+- Files or areas affected:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/docs/agent_execution_architecture.md`
 
 ## Classification
 
-Not applicable; the implementation review passes.
+Not applicable; the fresh implementation review passes.
 
 ## Recommended Recipient
 
@@ -143,10 +162,12 @@ Not applicable; the implementation review passes.
 
 ## Residual Risks
 
-- Current `item/reasoning/summaryTextDelta` cadence remains intentionally out of scope; observing duplicate completed snapshots or a live content gap requires upstream design review rather than an incidental test-stage patch.
+- Exact live Codex approval/start/result/log alias correlation across item, local, and raw-response surfaces remains to be proven for `c016730b`.
+- The two authoritative state owners intentionally correlate through normalized invocation identity; downstream validation must detect any real provider surface that resolves different identities for the same card.
+- Historical API/E2E, delivery, release, and packaged-build pass reports describe the failed candidate and must not be treated as current evidence.
 - Pre-fix stored runs remain fragmented by approved scope.
-- Live Codex cadence, future persistence, GraphQL projection, hydration parity, and multi-run/team isolation still require downstream executable evidence.
-- The repository-wide server `pnpm typecheck` command retains the pre-existing test-tree `TS6059` configuration mismatch recorded in the implementation handoff; production build TypeScript and full server build evidence passed.
+- Cryptographic UUID collision remains theoretical and proportionately controlled.
+- The repository-wide server `pnpm typecheck` command retains the pre-existing test-tree `TS6059` mismatch; production TypeScript and `build:full` passed.
 
 ## Latest Authoritative Result
 
@@ -155,4 +176,4 @@ Not applicable; the implementation review passes.
 - Score Summary: `9.3/10` (`93.3/100`); every mandatory category is at least `9.0`.
 - Failure Origin (when applicable): `N/A`
 - Recommended Recipient (when applicable): `api_e2e_engineer`
-- Notes: Source and architecture are ready for downstream API/E2E investigation and execution. No implementation rework is required by this review.
+- Notes: Round 2 is authoritative. Commit `c016730b` is source/architecture ready for a completely fresh API/E2E investigation and execution cycle. Do not resume delivery from historical reports.

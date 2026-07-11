@@ -1,21 +1,14 @@
 # Electron Test Build Report
 
-## Scope
+## Authoritative Round
 
 - Ticket: `consecutive-thinking-blocks`
-- Purpose: Produce a local macOS ARM64 Electron package for explicit user verification before repository finalization.
+- Current build round: `2 — replacement Round 4 candidate`
 - Date: `2026-07-11`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks`
-- Branch/HEAD at build: `codex/consecutive-thinking-blocks` / `ff0ab09ecb00e59fb00d8ef09f6ac965ed99132a`, plus uncommitted delivery docs only.
-- Reviewed implementation commit included in the bundled server: `49f6c1070ab536437c1f2fd647b4201f3e123a88`
-
-## Instructions Reviewed
-
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/README.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/README.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/docs/electron_packaging.md`
-
-The documented macOS path is `pnpm build:electron:mac`; `NO_TIMESTAMP=1` and an empty `APPLE_TEAM_ID` select a local, non-notarized build. `AUTOBYTEUS_BUILD_FLAVOR=personal` was set explicitly so the verification package matches the repository's personal flavor rather than the `.env.production` default.
+- Branch/HEAD at build: `codex/consecutive-thinking-blocks` / `c016730b7743f12d3e3b16f114d7bb5f48651b58`
+- Prior report/package: historical failed-candidate evidence only; superseded by this round.
+- Purpose: prove the reviewed Round 4 implementation is present and executable in a fresh macOS ARM64 Electron package, and prepare a replacement artifact for downstream user verification.
 
 ## Build Command And Result
 
@@ -26,57 +19,77 @@ AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= \
 
 - Result: `Pass`
 - Package version: `1.4.8`
-- Electron version: `42.4.1`
+- Electron: `42.4.1`
 - Platform/architecture: macOS ARM64
-- Signing/notarization: local ad-hoc/linker signature only; no Apple identity, timestamp, or notarization
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/logs/delivery/electron-build-personal-mac-arm64-20260711.log`
+- Signing/notarization: intentionally absent for this local build (`APPLE_TEAM_ID=`); electron-builder skipped signing. `codesign -dv` sees only the executable's ad-hoc/linker signature, and strict deep bundle verification is not expected to pass for this unsigned local app. This is not distribution evidence.
+- Fresh build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/logs/api-e2e/electron-build-round-2-mac-arm64.log`
 
-The build completed the web/localization guards, server build and built-in-agent bootstrap smoke, bundled-server deployment, Prisma generation, native `node-pty` Electron rebuild, mobile and Electron renderer generation, Electron/main/preload TypeScript builds, application packaging, and DMG/ZIP generation.
+The build completed server production compilation, bundled-server deployment, Prisma/native dependency preparation, renderer generation, Electron/main/preload TypeScript compilation, app packaging, and DMG/ZIP generation.
 
-## Test Artifacts
+## Replacement Artifacts
 
-| Artifact | Path | Size | SHA-256 |
+| Artifact | Absolute Path | Size | SHA-256 |
 | --- | --- | ---: | --- |
-| Unpacked app | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` | N/A | N/A |
-| DMG | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg` | 383 MiB | `05241984bc9e5f391e0203f8206f6e678d47e26d41b56240b8ae9dfbfb99cf01` |
-| ZIP | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip` | 379 MiB | `c47287223af3d9aa17fe22647a985357111d78224146abc9ce710da12b5e081c` |
-| DMG blockmap | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg.blockmap` | 410 KiB | Not required for local testing |
-| ZIP blockmap | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip.blockmap` | 399 KiB | Not required for local testing |
+| Unpacked app | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` | `1.2G` on disk | N/A |
+| DMG | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg` | `384M` on disk | `d21d13d1d25a4bf5dcb5e62abc2df040bac75fde2b7c182c4214d5ad8e7fc2e8` |
+| ZIP | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip` | `385M` on disk | `890fbaa93cec1da6a4ae74d13fb061ce7c0e3534380f03db95eafd50f6643009` |
 
-## Artifact Verification
+## Artifact And Bundled-Runtime Verification
 
-- Unpacked app and packaged executable exist.
-- Packaged executable reports `Mach-O 64-bit executable arm64`.
-- Bundled server entrypoint exists at `AutoByteus.app/Contents/Resources/server/dist/app.js`.
-- Packaged `node-pty` spawn helpers retain executable bits.
-- `hdiutil imageinfo` successfully read the DMG as compressed UDIF/APFS-compatible output.
-- `unzip -tq` reported no errors in the ZIP.
-- `codesign -dv` reports the expected local ad-hoc/linker signature with no Team ID; this is not a signed/notarized distribution build.
+- Main executable exists, is executable, and reports `Mach-O 64-bit executable arm64`.
+- Bundled server exists at `AutoByteus.app/Contents/Resources/server`.
+- Packaged production JS contains the reviewed Round 4 markers:
+  - `CodexOrderedToolBoundaryTracker`
+  - `result_first_creation`
+  - accumulator `hadRecordedCall`
+  - explicit `ITEM_REASONING_SUMMARY_TEXT_DELTA` routing
+- All three packaged `node-pty` `spawn-helper` files retain executable bits.
+- `hdiutil imageinfo` passed for the DMG.
+- `unzip -tq` passed with no compressed-data errors for the ZIP.
+- Hashes above were calculated after the fresh build.
+- Inspection evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/package-inspection.log`
 
-## Recommended User Test
+## Packaged Bundled-Server Execution
 
-1. Quit any currently running AutoByteus instance so its embedded backend does not occupy port `29695`.
-2. Run the unpacked candidate directly:
+The fresh package's Electron executable was used in Node mode to run its bundled `dist/app.js` on alternate port `29795`, with `DATABASE_URL` explicitly unset and isolated test-owned app data/SQLite configuration. Readiness reached a listener on `127.0.0.1:29795`; migrations were applied only to the temporary test database.
 
-   ```bash
-   open "/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app"
-   ```
+A temporary probe imported the production converter, accumulator, writer, and metadata code from the fresh package, emitted the exact former failure sequence, then queried the running packaged server through HTTP GraphQL. It proved:
 
-   The DMG is also available if installation-style testing is preferred.
-3. Create a **new** Codex run using `gpt-5.6-sol` with high/max reasoning effort. Pre-fix historical runs are intentionally not repaired.
-4. Send a reasoning-heavy, no-tool prompt. For example, ask for a careful comparison of several append-only persistence designs and their crash-safety tradeoffs.
-5. Verify that adjacent reasoning output appears as one contiguous **Thinking** block rather than multiple back-to-back cards.
-6. Send or trigger a real text/tool boundary and verify later reasoning appears in a new Thinking block rather than appending to the prior one.
-7. Reopen the newly created run and verify the future-run projection still shows one block for the original contiguous reasoning and preserves the boundary split.
-8. Report success or the exact visible failure, including whether it occurred live or only after reopening.
+- completed A and B used one normalized reasoning ID;
+- the matching tool result yielded B as `\n\nB` on that ID;
+- the next tool created a fresh reasoning block ID;
+- raw future facts contained one `A\n\nB` reasoning trace between tool 1 and tool 2;
+- GraphQL returned reasoning rows `A\n\nB` and `C`, with one A+B row;
+- all three ignored reasoning delta/part methods emitted no event and contributed no persisted/projected marker text.
 
-## Operational Notes
+Result: `Pass`.
 
-- The candidate uses the normal embedded server at `http://127.0.0.1:29695` and the normal macOS data location `~/.autobyteus/server-data`.
-- No persisted-data migration or backfill runs for this ticket.
-- Because the package is local and not notarized, macOS may require **Control-click → Open** if it applies Gatekeeper restrictions.
-- Generated `electron-dist`, `resources/server`, Nuxt output, and build outputs are ignored repository artifacts and will be removed with the dedicated worktree after verified finalization.
+Evidence:
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/packaged-server-process-live.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/packaged-exact-sequence-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/packaged-exact-sequence-probe.mjs`
+
+## Parallel-Application Safety And Cleanup
+
+A user-owned AutoByteus instance from another worktree remained active on fixed embedded port `29695`. Because the Electron endpoint is fixed, this candidate's full window was not launched in parallel. The user-owned PIDs/process/data were not stopped or modified.
+
+The packaged probe used only port `29795` and a temporary directory. Its server was stopped and the temporary directory/database/memory were removed. Port `29695` remained owned by the original process after cleanup.
+
+Evidence:
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/cleanup.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/user-owned-port-preserved.log`
+
+## Downstream User Verification
+
+The replacement app is ready for the required downstream verification after the other AutoByteus instance is quit. Use a **new** Codex run; pre-fix history is intentionally not repaired. The priority journey remains:
+
+1. Launch this fresh replacement app.
+2. Use `gpt-5.6-sol` with high/max reasoning.
+3. Exercise a tool sequence that yields `tool start -> reasoning A -> matching result -> reasoning B -> next tool`.
+4. Confirm one live A+B Thinking card between tool 1 and tool 2.
+5. Reload the new run and confirm one corresponding A+B Thinking card.
+6. Report exact visible behavior before authorizing repository finalization.
 
 ## Status
 
-`Ready for user verification.` Repository finalization remains on hold until the user reports the test result and explicitly authorizes finalization.
+`Fresh replacement package built and packaged runtime validated; ready for downstream user verification.` The full-window user verification/finalization gate remains intentionally open.
