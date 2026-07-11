@@ -20,6 +20,8 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
+import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 
 const { readThreadMock } = vi.hoisted(() => ({
   readThreadMock: vi.fn(),
@@ -520,6 +522,141 @@ describe("Run projection tool-call GraphQL e2e", () => {
       status: "success",
       result: { stdout: "inferred\n" },
     });
+  });
+
+  it("projects future contiguous Codex reasoning blocks from provider events without reload drift", async () => {
+    const metadataStore = new AgentRunMetadataStore(memoryDir);
+    const runId = "run-codex-contiguous-reasoning-graphql";
+    const runDir = path.join(memoryDir, "agents", runId);
+    await metadataStore.writeMetadata(runId, {
+      runId,
+      agentDefinitionId: "agent-codex-contiguous-reasoning",
+      workspaceRootPath,
+      memoryDir: runDir,
+      llmModelIdentifier: "gpt-5.6-sol",
+      llmConfig: { reasoning_effort: "max" },
+      autoExecuteTools: false,
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      platformAgentRunId: "native-thread-must-not-recover-contiguous-reasoning",
+    } satisfies AgentRunMetadata);
+
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId,
+      writer: new RunMemoryWriter({ memoryDir: runDir }),
+    });
+    const converter = new CodexThreadEventConverter(runId);
+    const recordConverted = (method: string, params: Record<string, unknown>): AgentRunEvent[] => {
+      const converted = converter.convert({ method, params });
+      converted.forEach((convertedEvent) => accumulator.recordRunEvent(convertedEvent));
+      return converted;
+    };
+
+    recordConverted(CodexThreadEventName.TURN_STARTED, {
+      turn: { id: "turn-contiguous" },
+    });
+    const first = recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-contiguous",
+      item: {
+        id: "provider-reasoning-a",
+        type: "reasoning",
+        summary: [{ text: "first summary" }],
+      },
+    })[0]!;
+    recordConverted(CodexThreadEventName.ITEM_STARTED, {
+      turnId: "turn-contiguous",
+      item: { id: "compaction-status-only", type: "contextCompaction" },
+    });
+    recordConverted(CodexThreadEventName.THREAD_STATUS_CHANGED, {
+      threadId: "thread-contiguous",
+      status: { type: "active" },
+    });
+    const second = recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-contiguous",
+      item: {
+        id: "provider-reasoning-b",
+        type: "reasoning",
+        summary: [{ text: "second summary" }],
+      },
+    })[0]!;
+    const third = recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-contiguous",
+      item: {
+        id: "provider-reasoning-c",
+        type: "reasoning",
+        summary: [{ text: "third summary" }],
+      },
+    })[0]!;
+    recordConverted(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+      turnId: "turn-contiguous",
+      itemId: "assistant-boundary",
+      delta: "visible assistant boundary",
+    });
+    const afterBoundary = recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-contiguous",
+      item: {
+        id: "provider-reasoning-a",
+        type: "reasoning",
+        summary: [{ text: "post-boundary summary" }],
+      },
+    })[0]!;
+    recordConverted(CodexThreadEventName.TURN_COMPLETED, {
+      turn: { id: "turn-contiguous" },
+    });
+
+    expect(first.payload.id).toBe(second.payload.id);
+    expect(second.payload.id).toBe(third.payload.id);
+    expect(afterBoundary.payload.id).not.toBe(first.payload.id);
+    expect([first, second, third, afterBoundary].map((runtimeEvent) => runtimeEvent.payload.delta))
+      .toEqual([
+        "first summary",
+        "\n\nsecond summary",
+        "\n\nthird summary",
+        "post-boundary summary",
+      ]);
+
+    const persistedRows = (await fs.readFile(
+      path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
+      "utf-8",
+    ))
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line) as Record<string, unknown>);
+    const persistedReasoning = persistedRows.filter((row) => row.trace_type === "reasoning");
+    expect(persistedReasoning).toHaveLength(2);
+    expect(new Set(persistedReasoning.map((row) => row.id)).size).toBe(2);
+    expect(persistedReasoning.map((row) => row.content)).toEqual([
+      "first summary\n\nsecond summary\n\nthird summary",
+      "post-boundary summary",
+    ]);
+
+    const result = await execGraphql<{ getRunProjection: ProjectionPayload }>(
+      `
+        query RunProjection($runId: String!) {
+          getRunProjection(runId: $runId) {
+            runId
+            summary
+            lastActivityAt
+            conversation
+            activities
+          }
+        }
+      `,
+      { runId },
+    );
+    const projection = result.getRunProjection;
+    const reasoningRows = projection.conversation.filter((row) => row.kind === "reasoning");
+
+    expect(readThreadMock).not.toHaveBeenCalled();
+    expect(projection.conversation.map((row) => row.kind)).toEqual([
+      "reasoning",
+      "message",
+      "reasoning",
+    ]);
+    expect(reasoningRows.map((row) => row.content)).toEqual([
+      "first summary\n\nsecond summary\n\nthird summary",
+      "post-boundary summary",
+    ]);
   });
 
   it("returns empty standalone Codex projection instead of native recovery when local replay is absent", async () => {

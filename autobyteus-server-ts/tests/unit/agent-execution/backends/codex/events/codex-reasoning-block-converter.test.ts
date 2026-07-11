@@ -179,4 +179,66 @@ describe("Codex reasoning block conversion", () => {
     expect(secondA.payload.id).not.toBe(firstA.payload.id);
     expect(secondB.payload.id).not.toBe(firstB.payload.id);
   });
+
+  it("isolates active reasoning blocks across run instances and turns", () => {
+    const memberRunA = new CodexThreadEventConverter("member-run-a");
+    const memberRunB = new CodexThreadEventConverter("member-run-b");
+    const runATurnOne = emitCompletedReasoning(
+      memberRunA,
+      "shared-turn-one",
+      "shared-provider-id",
+      "member A turn one",
+    );
+    const runATurnTwo = emitCompletedReasoning(
+      memberRunA,
+      "shared-turn-two",
+      "shared-provider-id",
+      "member A turn two",
+    );
+    const runBTurnOne = emitCompletedReasoning(
+      memberRunB,
+      "shared-turn-one",
+      "shared-provider-id",
+      "member B turn one",
+    );
+
+    memberRunA.convert({
+      method: CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA,
+      params: { turnId: "shared-turn-one", itemId: "boundary-a", delta: "boundary" },
+    });
+
+    const runATurnOneAfterBoundary = emitCompletedReasoning(
+      memberRunA,
+      "shared-turn-one",
+      "shared-provider-id",
+      "member A turn one after boundary",
+    );
+    const runATurnTwoContinues = emitCompletedReasoning(
+      memberRunA,
+      "shared-turn-two",
+      "shared-provider-id",
+      "member A turn two continues",
+    );
+    const runBTurnOneContinues = emitCompletedReasoning(
+      memberRunB,
+      "shared-turn-one",
+      "shared-provider-id",
+      "member B turn one continues",
+    );
+
+    expect(new Set([
+      runATurnOne.payload.id,
+      runATurnTwo.payload.id,
+      runBTurnOne.payload.id,
+    ]).size).toBe(3);
+    expect(runATurnOneAfterBoundary.payload.id).not.toBe(runATurnOne.payload.id);
+    expect(runATurnTwoContinues.payload).toMatchObject({
+      id: runATurnTwo.payload.id,
+      delta: "member A turn two continues",
+    });
+    expect(runBTurnOneContinues.payload).toMatchObject({
+      id: runBTurnOne.payload.id,
+      delta: "member B turn one continues",
+    });
+  });
 });
