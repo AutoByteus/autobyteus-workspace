@@ -298,7 +298,8 @@ export class RuntimeMemoryEventAccumulator {
   private recordToolResult(event: AgentRunEvent): void {
     const turnId = this.resolveTurnId(extractTurnId(event.payload));
     const tool = this.resolveToolState(event.payload, turnId, "result");
-    if (!tool.callWritten) {
+    const hadRecordedCall = tool.callWritten;
+    if (!hadRecordedCall) {
       this.writeToolCall(tool, turnId, AgentRunEventType.TOOL_EXECUTION_STARTED, extractTimestamp(event.payload));
     }
     if (tool.resultWritten) {
@@ -317,7 +318,6 @@ export class RuntimeMemoryEventAccumulator {
       : failed
         ? null
         : extractToolResult(event.payload);
-    this.flushOpenReasoningSegments(turnId, event.eventType);
     this.input.writer.write({
       trace: {
         traceType: "tool_result",

@@ -218,6 +218,52 @@ with open reasoning and no later visible write or `TURN_COMPLETED` boundary has
 no reliable flush signal; the local replay may remain incomplete rather than
 speculatively writing or recovering from diagnostic `thread/read`.
 
+### Reasoning Block Identity And Semantic Boundaries
+
+Codex provider item ids are correlation facts, not normalized transcript
+identity. `CodexReasoningBlockTracker` allocates every new normalized reasoning
+block id as `reasoning-block:<converter-instance-nonce>:<monotonic-sequence>`.
+The sequence is never reset by a boundary clear, and provider ids, missing ids,
+or repeated ids never become allocation candidates.
+
+Within one resolved active turn, consecutive completed reasoning item snapshots reuse the
+same allocator-owned block id until a semantic transcript or lifecycle boundary
+clears it. Adjacent completed reasoning items from different provider item ids
+are joined with one blank-line separator; repeated completion of the same known
+provider item is idempotent. Reasoning without a resolved turn id receives a
+fresh id and is not cached for later
+reuse, preferring a safe split over a possible cross-turn merge.
+
+Boundary handling is semantic rather than based on converter fall-through:
+
+- clear the turn-scoped block for user/text transcript items, turn completion,
+  and tool starts/requests or result-first lifecycle events that create a new
+  ordered card;
+- preserve the active block for matching results, approvals, statuses, logs,
+  and completions that update an already-positioned tool card;
+- clear every cached block for turn start and terminal runtime error, or when a
+  boundary has no usable turn id;
+- preserve the active block across provider compaction, status, token-usage,
+  plan/task-progress, ignored/unsupported, and other non-transcript maintenance
+  notifications; and
+- supported completed reasoning item snapshots append to the active block rather
+  than clearing it.
+
+The memory accumulator stays provider-agnostic and uses its existing
+`ToolState.callWritten` fact: a result for an already-recorded call preserves an
+open reasoning segment, while result-first inference flushes before the newly
+written call. The run-history projection stays unchanged. A repeated normalized
+id accumulates into one future reasoning trace and one
+projected reasoning row; a later allocator-owned id becomes a separate trace
+and row. Pre-fix stored traces are not rewritten and can remain fragmented.
+
+Completed reasoning item snapshots are the sole supported displayed/persisted
+reasoning-summary content source. `item/reasoning/summaryTextDelta` is
+intentionally and permanently unsupported: dispatch ignores it with no
+normalized output and no reasoning-block or ordered-tool state change. Do not
+add a handler, fallback, feature flag, compatibility seam, or future-support
+TODO for it.
+
 ## Provider Compaction Boundary Guardrail
 
 Codex provider/session compaction signals are provider-owned context management, not AutoByteus semantic compaction. The installed Codex protocol may expose names or payloads such as `item/started` / `item/completed` with `item.type = "contextCompaction"`, raw Responses `type = "context_compaction"`, older raw Responses `type = "compaction"`, or deprecated `thread/compacted`. This server integration may normalize those signals into `COMPACTION_STATUS` events carrying a `provider_compaction_boundary` payload. `compaction_trigger` is a trigger signal, not a completed boundary.
@@ -239,8 +285,8 @@ Forbidden downstream effect:
 
 | Raw Method | Raw Shape / Guard | Normalized Output | Owner | Decision |
 | --- | --- | --- | --- | --- |
-| `turn/started` | turn lifecycle start | `TURN_STARTED(turnId)` and projected `AGENT_STATUS { status: "running", can_interrupt }` | `codex-turn-event-converter.ts` | Keep |
-| `turn/completed` | turn lifecycle end | `TURN_COMPLETED(turnId)`, projected `AGENT_STATUS { status: "idle", can_interrupt: false }`, and reasoning tracker reset | `codex-turn-event-converter.ts` | Keep |
+| `turn/started` | turn lifecycle start | clear every active reasoning block, then `TURN_STARTED(turnId)` and projected `AGENT_STATUS { status: "running", can_interrupt }` | `codex-turn-event-converter.ts` | Keep |
+| `turn/completed` | turn lifecycle end | clear the turn-scoped reasoning block, then `TURN_COMPLETED(turnId)` and projected `AGENT_STATUS { status: "idle", can_interrupt: false }` | `codex-turn-event-converter.ts` | Keep |
 | `turn/diff/updated` | supplemental unified diff for a turn | none | `codex-turn-event-converter.ts` | Keep as explicit no-op |
 | `turn/taskProgressUpdated` | task progress payload | `TODO_LIST_UPDATE` | `codex-turn-event-converter.ts` | Keep |
 | `item/started` | `item.type = commandExecution` | `TOOL_EXECUTION_STARTED` | `codex-item-event-converter.ts` | Keep |
@@ -256,9 +302,11 @@ Forbidden downstream effect:
 | `item/completed` | `item.type = fileChange` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED(edit_file)`; always ends with `SEGMENT_END(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | diagnostic `thread/read` replay | item families `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, `fileChange` | diagnostic historical replay tool events; not a normal UI display fallback or merge source | `codex-thread-history-item-normalizer.ts`, `codex-run-view-projection-provider.ts` | Keep |
 | `item/agentMessage/delta` | agent visible text delta | `SEGMENT_CONTENT(text)` | `codex-item-event-converter.ts` | Keep |
-| `item/reasoning/delta` | reasoning delta | `SEGMENT_CONTENT(reasoning)` | `codex-item-event-converter.ts` | Keep |
-| `item/reasoning/summaryPartAdded` | reasoning summary delta | `SEGMENT_CONTENT(reasoning)` | `codex-item-event-converter.ts` | Keep |
-| `item/reasoning/completed` | reasoning snapshot completion | `SEGMENT_CONTENT(reasoning)` | `codex-item-event-converter.ts` | Keep |
+| `item/reasoning/delta` | legacy reasoning text delta | none; explicit ignored/no-effect path, no tracker mutation | `codex-item-event-converter.ts` | Permanently unsupported |
+| `item/reasoning/summaryPartAdded` | legacy reasoning summary delta | none; explicit ignored/no-effect path, no tracker mutation | `codex-item-event-converter.ts` | Permanently unsupported |
+| `item/reasoning/summaryTextDelta` | current reasoning summary text delta | none; explicit ignored/no-effect path, no content, allocation, clear, or state mutation | `codex-thread-event-converter.ts`, `codex-item-event-converter.ts` | Permanently unsupported |
+| `item/reasoning/completed` | reasoning snapshot completion | `SEGMENT_CONTENT(reasoning)` using the current allocator-owned block id; insert one blank-line separator only between adjacent completed provider items | `codex-item-event-converter.ts`, `codex-reasoning-block-tracker.ts` | Keep |
+| `item/completed` | `item.type = reasoning` completed item snapshot | `SEGMENT_CONTENT(reasoning)` using the current allocator-owned block id; repeated same-known-item completion is idempotent | `codex-item-event-converter.ts`, `codex-reasoning-event-normalizer.ts`, `codex-reasoning-block-tracker.ts` | Keep |
 | `item/plan/delta` | plan/todo delta | `TODO_LIST_UPDATE` | `codex-item-event-converter.ts` | Keep |
 | `item/commandExecution/requestApproval` | command approval request | `TOOL_APPROVAL_REQUESTED` | `codex-item-event-converter.ts` | Keep |
 | `item/fileChange/requestApproval` | file-change approval request | `TOOL_APPROVAL_REQUESTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
@@ -324,6 +372,14 @@ Output shape:
   source. `thread/read` replay is diagnostic/runtime-native mapping support;
   keep supported history item families aligned with the live lifecycle families
   above, but do not use them as the normal UI display fallback or merge partner.
+- Treat allocator-owned `reasoning-block:<nonce>:<sequence>` ids as normalized
+  contiguous-block identity. Provider item ids are correlation-only; clear or
+  preserve the active block from transcript/lifecycle semantics, not raw event
+  fall-through, and do not rewrite pre-fix traces.
+- Treat completed reasoning item snapshots as the sole supported summary-content
+  source. Permanently ignore `item/reasoning/summaryTextDelta` and legacy
+  reasoning text-delta methods with no output or state effect; do not add any
+  current or future support seam.
 - Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Emit and persist ready `TOKEN_USAGE_UPDATED` events from the thread/backend boundary, preserving `per_turn` versus `cumulative_snapshot` scope, instead of parsing raw token payloads or summing totals in higher runtime layers. Promote supported Codex cache/reasoning/context fields (`cachedInputTokens`, `reasoningOutputTokens`, `modelContextWindow`) into canonical token-usage fields before ledger enrichment, including `gross_includes_cache` input semantics, `cache_read_input_tokens`, `reasoning_output_tokens`, `latest_prompt_tokens`, and `effective_context_window_tokens`.
 - Treat Codex status notifications as thread-state inputs. Public status output is the projected coarse `AGENT_STATUS` payload from `CodexThread`, not a raw provider payload or legacy transition-field transport.
 - Treat provider/session compaction signals as storage-only boundary metadata: non-rotating in-progress provenance for Codex `contextCompaction` starts, marker append plus eligible segmented archive rotation for completed provider boundaries, and no marker/rotation for `compaction_trigger`. Never treat provider compaction as permission for semantic compaction, trace-content rewrite, trace loss, runtime memory retrieval, or runtime memory injection.

@@ -4,8 +4,7 @@ import { debugCodexThreadEvent } from "./codex-thread-event-debug.js";
 export type CodexReasoningBlockInput = {
   turnId: string | null;
   providerItemId: string | null;
-  fragmentKind: "delta" | "completed_item";
-  delta: string;
+  snapshot: string;
 };
 
 export type CodexReasoningBlockUpdate = {
@@ -26,19 +25,19 @@ export class CodexReasoningBlockTracker {
 
   constructor(private readonly instanceNonce = randomUUID()) {}
 
-  public append(input: CodexReasoningBlockInput): CodexReasoningBlockUpdate {
+  public append(input: CodexReasoningBlockInput): CodexReasoningBlockUpdate | null {
     const activeBlock = input.turnId
       ? this.activeBlockByTurnId.get(input.turnId)
       : undefined;
-    const block = activeBlock ?? this.createBlock(input.providerItemId);
-    const sameKnownProviderItem =
+    const repeatedKnownProviderItem =
+      Boolean(activeBlock) &&
       input.providerItemId !== null &&
-      block.currentProviderItemId === input.providerItemId;
-    const needsCompletedItemSeparator =
-      input.fragmentKind === "completed_item" &&
-      block.hasContent &&
-      !sameKnownProviderItem;
-    const delta = `${needsCompletedItemSeparator ? "\n\n" : ""}${input.delta}`;
+      activeBlock?.currentProviderItemId === input.providerItemId;
+    if (repeatedKnownProviderItem) return null;
+
+    const block = activeBlock ?? this.createBlock(input.providerItemId);
+    const needsSeparator = block.hasContent;
+    const delta = `${needsSeparator ? "\n\n" : ""}${input.snapshot}`;
 
     block.currentProviderItemId = input.providerItemId;
     block.hasContent = true;
@@ -50,10 +49,9 @@ export class CodexReasoningBlockTracker {
       segmentId: block.segmentId,
       turnId: input.turnId,
       providerItemId: input.providerItemId,
-      fragmentKind: input.fragmentKind,
       deltaLength: delta.length,
       reusedActiveBlock: Boolean(activeBlock),
-      insertedSeparator: needsCompletedItemSeparator,
+      insertedSeparator: needsSeparator,
       cacheSize: this.activeBlockByTurnId.size,
     });
     return { segmentId: block.segmentId, delta };

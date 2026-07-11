@@ -8,6 +8,7 @@ export enum CodexThreadEventName {
   ITEM_AGENT_MESSAGE_DELTA = "item/agentMessage/delta",
   ITEM_REASONING_DELTA = "item/reasoning/delta",
   ITEM_REASONING_SUMMARY_PART_ADDED = "item/reasoning/summaryPartAdded",
+  ITEM_REASONING_SUMMARY_TEXT_DELTA = "item/reasoning/summaryTextDelta",
   ITEM_REASONING_COMPLETED = "item/reasoning/completed",
   ITEM_PLAN_DELTA = "item/plan/delta",
   ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL = "item/commandExecution/requestApproval",

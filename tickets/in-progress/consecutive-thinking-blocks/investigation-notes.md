@@ -3,10 +3,10 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete.
-- Current Status: Architecture Round 1 returned `DR-CTB-001` and `DR-CTB-002` as Design Impact; bounded identity-allocation and event-boundary investigation and package revision are complete; ready for architecture re-review.
+- Current Status: Packaged Electron user verification failed on 2026-07-11. Exact new-run evidence confirms a Design Impact: terminal updates to an already-started tool card were incorrectly treated as new ordered reasoning boundaries. Architecture Round 3 accepted that correction but found a permanent-unsupported-protocol requirement gap and a stale formal spine model. The user approved the bounded package corrections and authorized architecture re-review on 2026-07-11.
 - Investigation Goal: Locate the precise segmentation boundary responsible for consecutive `Thinking` cards and determine whether AutoByteus behavior is defective.
 - Scope Classification: `Medium`
-- Scope Classification Rationale: The production defect and bounded refactor are localized to Codex App Server event normalization; unchanged memory, history, and frontend consumers expose the resulting contract.
+- Scope Classification Rationale: The bounded production correction spans Codex App Server reasoning normalization, Codex ordered-tool card-existence classification, and generic memory trace sequencing. History, GraphQL, and frontend production remain unchanged consumers.
 - Scope Summary: Reproduce the exact report, compare provider-native history with AutoByteus history, inspect live segment identity and replay hydration, and define a verifiable grouping invariant.
 - Primary Questions Resolved:
   1. Codex can emit multiple consecutive reasoning response items in one turn.
@@ -37,7 +37,8 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 
 | Artifact Path | Purpose | Evidence Or Decision Captured | Related Requirement / Acceptance-Criteria IDs | Status | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md` | Specify observable contiguous-thinking grouping, separators, boundaries, live/replay parity, and non-happy states | User-facing target behavior plus Round 1 identity/boundary safety clarification | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-008`; `AC-CTB-003`–`AC-CTB-007`, `AC-CTB-009` | Approved user direction; safety clarification applied | Include in architecture re-review |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md` | Specify observable contiguous-thinking grouping, separators, ordered-card boundaries, live/replay parity, and non-happy states | User-facing target behavior revised from packaged verification plus completed-snapshot-only content source | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-008`–`REQ-CTB-010`; `AC-CTB-003`–`AC-CTB-007`, `AC-CTB-009`–`AC-CTB-011` | User approved for architecture re-review | Approved input to the revised design |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/user-verification-failure-analysis.md` | Preserve exact packaged-app failure and origin evidence | Running process/build markers, live GraphQL pairs, raw trace ordering, implementation/design origin | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-009`; `AC-CTB-003`–`AC-CTB-006`, `AC-CTB-010` | Confirmed Design Impact | Include in all rework handoffs |
 
 ## Source Log
 
@@ -55,12 +56,16 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 | 2026-07-11 | Code | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-segment-tracker.ts` | Identify live identity owner | Stable item ID is returned before turn-cache reuse, so every provider reasoning item becomes a new segment despite adjacency | No |
 | 2026-07-11 | Code | `codex-item-event-converter.ts`, `codex-thread-event-converter.ts`, `codex-turn-event-converter.ts` | Map cache lifecycle and event projection | Non-reasoning item starts, text deltas, and turn completion clear the reasoning block cache; completed reasoning snapshots use tracker ID | Design must align clearing with visible boundaries |
 | 2026-07-11 | Code | `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`, `protocol/segmentTypes.ts`, `components/conversation/AIMessage.vue` | Verify frontend live behavior | An unseen ID creates a synthetic think segment; each segment renders once. No DOM duplication was found | No |
-| 2026-07-11 | Code | `runtime-memory-event-accumulator.ts`, `raw-trace-to-historical-replay-events.ts`, `runProjectionConversation.ts` | Trace persistence and reload | Distinct live segment IDs become distinct reasoning traces; one corrected live segment ID will naturally persist and reload as one block | Keep production code unchanged; pre-fix history remediation was removed from scope by the user |
+| 2026-07-11 | Code | `runtime-memory-event-accumulator.ts`, `raw-trace-to-historical-replay-events.ts`, `runProjectionConversation.ts` | Trace persistence and reload | Distinct live segment IDs become distinct reasoning traces; later verification showed matching tool results also flush an open same-ID segment | Modify accumulator flush timing; keep schema/projection/frontend and pre-fix history unchanged |
 | 2026-07-11 | Command | `pnpm -C autobyteus-server-ts exec vitest run ...codex-reasoning-segment-tracker... ...codex-thread-event-converter...`; `pnpm -C autobyteus-web exec vitest run ...segmentHandler... ...runProjectionConversation... --run` from identical-commit shared checkout | Validate current intended behavior and test baseline | Server 51 tests and web 28 tests pass; existing tracker test explicitly prefers stable item IDs, confirming current behavior is intentional/tested but wrong for the approved UX | Update tests after approval/design |
 | 2026-07-11 | Repo | `git log`, `git blame` for `codex-reasoning-segment-tracker.ts` | Determine history and refactor pressure | Tracker introduced with runtime/history refactor in `4fb78f86`; correct owner already exists, so local correction is sufficient | No |
 | 2026-07-11 | Review | `design-review-report.md`, Round 1 | Independently validate implementation safety | Found missing collision-safe new-block allocation (`DR-CTB-001`) and incomplete mapping of early-return/event-family boundaries (`DR-CTB-002`) | Revise and re-review with the same IDs |
 | 2026-07-11 | Code | `codex-item-event-converter.ts`, `codex-item-compaction-event-converter.ts`, `codex-raw-response-event-converter.ts`, `codex-turn-event-converter.ts`, `codex-thread-lifecycle-event-converter.ts` | Inventory every converted or ignored event family | Ordinary item/text/turn paths clear; compaction returns before general clear; approval/local-tool/raw-output/status/error paths need an explicit semantic decision | Add governing matrix and sequence coverage |
 | 2026-07-11 | Code | `codex-reasoning-segment-tracker.ts` fallback and clear behavior | Test post-boundary identity safety | `reasoning:${turnId}` and repeated provider/event IDs can be reused after a clear in the same turn | Allocate normalized IDs independently from provider candidates |
+| 2026-07-11 | User verification | Screenshots `ctx_87f7e12a4287__image.png`, `ctx_c024a3e629af__image.png` against the packaged app | Validate the implemented future-run behavior | New `delivery_engineer` run still shows adjacent Thinking cards | Block finalization and trace exact sequence |
+| 2026-07-11 | Process/package probe | `ps -p 2900,3521`; `rg` packaged `Contents/Resources/server/dist` | Exclude wrong-app/stale-server testing | Running app and bundled server are the consecutive-thinking-blocks build; new tracker/allocation and terminal clear markers are present | Failure is in candidate behavior |
+| 2026-07-11 | GraphQL/data probe | `getTeamMemberRunProjection` plus `raw_traces_active.jsonl` for `delivery_engineer_44d7...` | Correlate visible pairs with raw order | Four adjacent projection pairs each have exactly one matching `TOOL_EXECUTION_SUCCEEDED` trace between their source reasoning traces | Terminal result update is the split trigger |
+| 2026-07-11 | Code | `toolLifecycleHandler.ts`, `runtime-memory-event-accumulator.ts`, Codex item/raw converters | Identify lifecycle placement and persistence behavior | Frontend updates an existing invocation card; converter clears block; accumulator flushes reasoning on every tool result | Boundary must be ordered-card creation, with bounded accumulator change |
 
 ## Current Behavior / Current Flow
 
@@ -78,8 +83,8 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 ## Design Health Assessment Evidence
 
 - Change posture: `Bug Fix` / `Behavior Change`
-- Candidate root cause classification: `Local Implementation Defect` plus bounded `File Placement Or Responsibility Drift` in the parser/tracker naming, split update API, implicit ID allocation, and distributed boundary policy
-- Refactor posture evidence summary: The correct subsystem and governing boundary already exist. Correct live block identity and consolidate reasoning content/identity into one bounded normalizer contract; no history, frontend, or cross-cutting production refactor is justified.
+- Candidate root cause classification: original `Local Implementation Defect`; packaged-verification `Design Impact` in the tool-lifecycle boundary definition; Round 3 `Requirement Gap` for permanent unsupported-delta behavior and `Design Impact` from the incomplete formal owner/spine model
+- Refactor posture evidence summary: The normalized identity refactor is sound. Three bounded production owners require coordinated correction: reasoning normalization owns completed-snapshot content and block identity; ordered-tool classification distinguishes new-card creation from in-place updates; the generic memory accumulator preserves or flushes an open reasoning segment using its existing `callWritten` fact. Run-history and frontend production remain correct consumers.
 
 | Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
 | --- | --- | --- | --- |
@@ -90,6 +95,9 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 | Frontend docs/code | Frontend trusts segment identity | Vue-side runtime detection would violate boundary | Keep frontend generic |
 | Round 1 `DR-CTB-001` | Current fallback IDs can repeat after clear | Provider/event candidates cannot safely be normalized block identity | Use a converter-instance nonce plus monotonic block sequence |
 | Round 1 `DR-CTB-002` | Compaction and other special paths bypass general clear | “Non-reasoning item” is too coarse as an implementation rule | Classify by transcript/lifecycle semantics before branch returns |
+| Packaged user verification | Four visible adjacent pairs correlate to matching tool results | “Transcript-producing” remains too coarse because result updates an earlier card | Govern by ordered-card creation, not every lifecycle event |
+| User product decision / Round 3 `DR-CTB-003` | Real-time internal Thinking streaming is not required; `summaryTextDelta` support is rejected now and in future | Completed reasoning item snapshots are the sole content source; delta notification is explicit no-effect | Record the permanent product rule and add state/content regression |
+| Round 3 `DR-CTB-004` | Ordered-tool classification and memory flush are material production flows | Formal spine inventory must represent both owners without importing Codex raw-event policy into memory | Add bounded ordered-tool and memory sequencing spines |
 
 ## Relevant Files / Components
 
@@ -104,8 +112,11 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 | `autobyteus-web/services/runHydration/runProjectionConversation.ts` | Hydrate GraphQL projection into conversation segments | Correctly creates one think segment per projected reasoning row | Keep unchanged; future persistence should provide one row per contiguous block |
 | `autobyteus-web/components/conversation/AIMessage.vue` | Render ordered segments | Renders every segment once | No production change expected |
 | `.../codex-item-compaction-event-converter.ts` | Classify context-compaction/trigger item events | Returns before general item clearing and emits only provider status/no transcript | Explicitly preserve the active reasoning block |
-| `.../codex-raw-response-event-converter.ts` | Convert raw compaction and function-call output | Compaction is maintenance; function-call output is a tool-log boundary | Preserve compaction; clear before emitted tool output |
+| `.../codex-raw-response-event-converter.ts` | Convert raw compaction and function-call output | Compaction is maintenance; function-call output may update a known tool card or create a result-first synthetic card | Preserve compaction; classify matching update versus result-first |
 | `.../codex-thread-lifecycle-event-converter.ts` | Convert status and error lifecycle events | Status/token updates have no transcript meaning; runtime error is terminal | Preserve status; clear on terminal error lifecycle cleanup |
+| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | Apply tool lifecycle events | `ensureToolLifecycleSegment` updates the existing invocation segment and only synthesizes when missing | Matching terminal events do not add a new ordered card |
+| `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts` | Persist normalized content/tool facts | `recordToolResult()` unconditionally flushes open reasoning even when `tool.callWritten` is already true | Preserve open reasoning for matching results; retain inferred-call flush for result-first |
+| `.../codex-reasoning-event-normalizer.ts` and top-level unknown-event dispatch | Resolve supported reasoning content and block updates | Current Codex emits `item/reasoning/summaryTextDelta`; product intentionally rejects this content path | Consume completed reasoning item snapshots only; explicit delta no-effect must emit nothing and mutate no tracker |
 
 ## Runtime / Probe Findings
 
@@ -116,6 +127,7 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 | 2026-07-11 | Trace | Exact Codex rollout lines 2749–2767 | Five response reasoning items, no intervening tool/message | Upstream does emit multiple items, not merely transport chunks |
 | 2026-07-11 | Probe | Running AutoByteus GraphQL projection | Same turn returns five reasoning entries | Segmentation survives server persistence/replay and is ours to normalize |
 | 2026-07-11 | Test | Targeted server/web tests | All baseline tests pass; current tests encode separate stable-ID behavior | Bug is covered as current behavior and needs deliberate test revision |
+| 2026-07-11 | User verification | Packaged Electron plus live GraphQL/raw trace correlation | Four new-run adjacent pairs remain; each is split by an in-place matching tool result | Prior coverage missed long-running-tool interleaving |
 
 ## External / Public Source Findings
 
@@ -138,12 +150,14 @@ No web sources were required. The installed Codex CLI schema, direct JSON-RPC re
 5. **Persistence preserves the bug:** Those five normalized IDs are persisted as five valid audit traces and projected one-to-one on reload. Conversely, one corrected future ID will persist and reload as one block without reader changes.
 6. **Correct posture:** Fix future live identity and content joining in the Codex adapter. Do not change pre-fix history or teach Vue about Codex raw item IDs.
 7. **Identity safety:** Provider item/event IDs are correlation facts, not allocation candidates. A tracker-instance nonce plus monotonic counter gives every new normalized block a fresh namespaced ID, including after clears and process-local provider ID reuse.
-8. **Boundary safety:** Boundary behavior must be decided by semantic event family, not by whether a converter branch happens to fall through a general clear. Transcript/tool/text and terminal lifecycle events clear; maintenance/status/progress/ignored events preserve.
+8. **Round 1 boundary safety:** Boundary behavior must be decided explicitly, not by fall-through.
+9. **Verified correction:** Event family alone is insufficient. A tool start creates an ordered card and clears; a matching terminal/status/log event updates that earlier card and preserves. A result-first terminal event that synthesizes a missing card remains a boundary.
+10. **Permanent content-source decision:** Completed reasoning item snapshots are the sole supported displayed/persisted summary source. `item/reasoning/summaryTextDelta` is intentionally and permanently unsupported and must remain ignored/no-effect.
 
 ## Persisted Data Transition Evidence (When Applicable)
 
 - Current stored subject, location, representative shape, and approximate volume: JSONL raw traces under `.autobyteus/server-data/memory`; exact turn has five `trace_type:"reasoning"` rows followed by one assistant row. The overall store is large and audit-oriented.
-- Relevant code-model, serialization, semantic, or physical-store change: None. Corrected event identity is written through the existing schema and read by the existing projection.
+- Relevant code-model, serialization, semantic, or physical-store change: No schema change. Writer behavior changes so a matching result does not flush the open reasoning segment; a result-first inferred call retains existing flush/order behavior.
 - Normal readers and writers, including unknown/extra-field behavior: Writer records each normalized segment. Local memory projection reads ordered traces and currently creates one reasoning event per row.
 - Representative direct-read or compatibility evidence: Current files parse normally; exact GraphQL query returns all content/order. No transformation is needed to interpret them.
 - Required semantics and invariants preserved by direct use: `Yes` for future runs — the current writer accumulates a repeated normalized segment ID into one reasoning trace, and the normal reader projects that trace as one entry.
@@ -157,17 +171,17 @@ No web sources were required. The installed Codex CLI schema, direct JSON-RPC re
 - Provider adapters own normalized segment identity; frontend consumers must not parse runtime-native IDs.
 - Existing Codex tool/non-reasoning, assistant-text, and turn boundary behavior must remain distinct.
 - Pre-fix raw data remains untouched and may continue to display fragmented blocks.
-- Current `summaryTextDelta` mismatch is separate from the proven identity bug and must not trigger an unbounded protocol rewrite.
+- `item/reasoning/summaryTextDelta` is intentionally and permanently unsupported. It must emit no normalized content and must not allocate, append, clear, or otherwise mutate reasoning-block or ordered-tool state; completed reasoning item snapshots are the sole supported summary-content source.
 
 ## Open Unknowns / Risks
 
-- Existing semantic tool/text/turn intent governs, but current clear-call placement is incomplete. The target converter must apply the explicit matrix before early returns rather than inventing UI-derived detection or preserving accidental fall-through behavior.
-- If implementation touches current reasoning delta methods, snapshot-versus-delta reconciliation must prevent duplicate text.
+- The revised invariant is ordered-conversation placement: new card/text/turn creation clears; in-place lifecycle mutation preserves. Backend converters and the accumulator must encode this without moving Codex policy into Vue.
+- An explicit ignored/no-effect regression must prevent current or future dispatch-table changes from routing `item/reasoning/summaryTextDelta` into content or state handling.
 - Exact live/reload parity needs executable coverage for a run produced after the fix; no repaired-output expectation applies to pre-fix traces.
 
 ## Notes For Architecture Reviewer
 
-Round 1 failed with `DR-CTB-001` and `DR-CTB-002`. The revised review target must verify: collision-safe allocator-owned normalized block IDs; fresh identity after every clear even with missing/repeated provider candidates; a complete event-family clear/preserve/no-effect matrix applied before early returns; unchanged future-only persistence/projection/frontend scope; and continued `summaryTextDelta` deferral.
+Ready for architecture re-review following explicit user approval on 2026-07-11. The review must preserve `DR-CTB-001` and `DR-CTB-002`, confirm the ordered-card correction, verify permanent `summaryTextDelta` no-effect behavior under `DR-CTB-003`, and verify the formal reasoning, ordered-tool, and generic memory sequencing spines under `DR-CTB-004`.
 
 
 ## User Scope Revision — 2026-07-11

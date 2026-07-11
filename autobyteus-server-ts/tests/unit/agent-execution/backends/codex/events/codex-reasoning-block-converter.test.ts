@@ -13,11 +13,7 @@ const emitCompletedReasoning = (
     method: CodexThreadEventName.ITEM_COMPLETED,
     params: {
       turnId,
-      item: {
-        type: "reasoning",
-        id: providerItemId,
-        summary: [{ text }],
-      },
+      item: { type: "reasoning", id: providerItemId, summary: [{ text }] },
     },
   });
   expect(events).toHaveLength(1);
@@ -43,12 +39,34 @@ const expectBoundaryDisposition = (
   }
 };
 
-describe("Codex reasoning block conversion", () => {
-  it("groups different completed provider items into one normalized block", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+const expectMatchingToolUpdatePreserves = (
+  start: { method: string; params: JsonObject },
+  update: { method: string; params: JsonObject },
+) => {
+  const converter = new CodexThreadEventConverter("run-1");
+  converter.convert(start);
+  const before = emitCompletedReasoning(converter, "turn-1", "provider-a", "first");
+  converter.convert(update);
+  const after = emitCompletedReasoning(converter, "turn-1", "provider-b", "second");
 
+  expect(after.payload).toMatchObject({
+    id: before.payload.id,
+    delta: "\n\nsecond",
+  });
+};
+
+describe("Codex reasoning block conversion", () => {
+  it("groups completed provider snapshots and ignores repeated known-item completion", () => {
+    const converter = new CodexThreadEventConverter("run-1");
     const first = emitCompletedReasoning(converter, "turn-1", "provider-a", "first");
     const second = emitCompletedReasoning(converter, "turn-1", "provider-b", "second");
+    const repeated = converter.convert({
+      method: CodexThreadEventName.ITEM_REASONING_COMPLETED,
+      params: {
+        turnId: "turn-1",
+        item: { id: "provider-b", summary: [{ text: "second" }] },
+      },
+    });
 
     expect(first.payload.id).toEqual(expect.stringMatching(/^reasoning-block:[^:]+:1$/));
     expect(first.payload.id).not.toBe("provider-a");
@@ -57,16 +75,42 @@ describe("Codex reasoning block conversion", () => {
       delta: "\n\nsecond",
       segment_type: "reasoning",
     });
+    expect(repeated).toEqual([]);
   });
 
-  it("groups missing provider identities but allocates fresh after a repeated unscoped boundary", () => {
+  it("treats current and legacy reasoning text deltas as permanent state-free no-ops", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+    const deltaMethods = [
+      CodexThreadEventName.ITEM_REASONING_SUMMARY_TEXT_DELTA,
+      CodexThreadEventName.ITEM_REASONING_DELTA,
+      CodexThreadEventName.ITEM_REASONING_SUMMARY_PART_ADDED,
+    ];
+    const sendDeltas = () => deltaMethods.flatMap((method) => converter.convert({
+      method,
+      params: { turnId: "turn-1", itemId: "provider-delta", delta: "ignored" },
+    }));
+
+    expect(sendDeltas()).toEqual([]);
+    const first = emitCompletedReasoning(converter, "turn-1", "provider-a", "first");
+    expect(first.payload.id).toEqual(expect.stringMatching(/:1$/));
+    expect(sendDeltas()).toEqual([]);
+    const second = emitCompletedReasoning(converter, "turn-1", "provider-b", "second");
+    expect(second.payload.id).toBe(first.payload.id);
+
+    converter.convert({
+      method: CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA,
+      params: { turnId: "turn-1", delta: "" },
+    });
+    expect(sendDeltas()).toEqual([]);
+    const afterBoundary = emitCompletedReasoning(converter, "turn-1", "provider-c", "third");
+    expect(afterBoundary.payload.id).toEqual(expect.stringMatching(/:2$/));
+  });
+
+  it("groups missing provider identities and separates them only at a real boundary", () => {
     const converter = new CodexThreadEventConverter("run-1");
     const emitWithoutProviderId = (text: string) => converter.convert({
       method: CodexThreadEventName.ITEM_COMPLETED,
-      params: {
-        turnId: "turn-1",
-        item: { type: "reasoning", summary: [{ text }] },
-      },
+      params: { turnId: "turn-1", item: { type: "reasoning", summary: [{ text }] } },
     })[0]!;
 
     const first = emitWithoutProviderId("first");
@@ -77,70 +121,36 @@ describe("Codex reasoning block conversion", () => {
     });
     const afterBoundary = emitWithoutProviderId("third");
 
-    expect(second.payload).toMatchObject({
-      id: first.payload.id,
-      delta: "\n\nsecond",
-    });
+    expect(second.payload).toMatchObject({ id: first.payload.id, delta: "\n\nsecond" });
     expect(afterBoundary.payload.id).not.toBe(first.payload.id);
-    expect(afterBoundary.payload.delta).toBe("third");
-  });
-
-  it("routes every supported reasoning notification through the singular update contract", () => {
-    const converter = new CodexThreadEventConverter("run-1");
-    const events = [
-      ...converter.convert({
-        method: CodexThreadEventName.ITEM_REASONING_DELTA,
-        params: { turnId: "turn-1", itemId: "provider-a", delta: "a" },
-      }),
-      ...converter.convert({
-        method: CodexThreadEventName.ITEM_REASONING_SUMMARY_PART_ADDED,
-        params: { turnId: "turn-1", itemId: "provider-a", delta: "b" },
-      }),
-      ...converter.convert({
-        method: CodexThreadEventName.ITEM_REASONING_COMPLETED,
-        params: {
-          turnId: "turn-1",
-          item: { id: "provider-a", summary: [{ text: "c" }] },
-        },
-      }),
-      ...converter.convert({
-        method: CodexThreadEventName.ITEM_COMPLETED,
-        params: {
-          turnId: "turn-1",
-          item: { id: "provider-b", type: "reasoning", summary: [{ text: "d" }] },
-        },
-      }),
-    ];
-
-    expect(new Set(events.map((event) => event.payload.id)).size).toBe(1);
-    expect(events.map((event) => event.payload.delta)).toEqual(["a", "b", "c", "\n\nd"]);
   });
 
   it.each([
     ["user message start", CodexThreadEventName.ITEM_STARTED, { turnId: "turn-1", item: { type: "userMessage" } }],
     ["ordinary item start", CodexThreadEventName.ITEM_STARTED, { turnId: "turn-1", item: { type: "agentMessage", id: "message-1" } }],
-    ["ordinary item completion", CodexThreadEventName.ITEM_COMPLETED, { turnId: "turn-1", item: { type: "agentMessage", id: "message-1" } }],
+    ["tool start", CodexThreadEventName.ITEM_STARTED, { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "pwd" } }],
     ["empty assistant delta", CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, { turnId: "turn-1", delta: "" }],
-    ["command approval", CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL, { turnId: "turn-1" }],
-    ["file approval", CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL, { turnId: "turn-1" }],
-    ["local approval request", CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED, { turnId: "turn-1" }],
-    ["local approval result", CodexThreadEventName.LOCAL_TOOL_APPROVED, { turnId: "turn-1" }],
-    ["ignored tool call request", CodexThreadEventName.ITEM_TOOL_CALL, { turnId: "turn-1" }],
-    ["ignored permission request", CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL, { turnId: "turn-1" }],
-    ["empty local MCP completion", CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED, { turnId: "turn-1" }],
-    ["empty file output", CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA, { turnId: "turn-1" }],
-    ["empty raw function output", CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED, { turnId: "turn-1", item: { type: "functionCallOutput" } }],
+    ["approval request", CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL, { turnId: "turn-1", invocation_id: "tool-1" }],
+    ["result-first completion", CodexThreadEventName.ITEM_COMPLETED, { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "pwd" } }],
+    ["result-first approval update", CodexThreadEventName.LOCAL_TOOL_APPROVED, { turnId: "turn-1", invocation_id: "tool-1" }],
+    ["result-first local completion", CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED, { turnId: "turn-1", invocation_id: "tool-1", tool_name: "demo" }],
+    ["identity-missing local completion", CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED, { turnId: "turn-1" }],
+    ["result-first file log", CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA, { turnId: "turn-1", invocation_id: "tool-1", delta: "changed" }],
+    ["result-first raw log", CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED, { turnId: "turn-1", item: { type: "functionCallOutput", call_id: "tool-1", output: "done" } }],
     ["turn completion", CodexThreadEventName.TURN_COMPLETED, { turnId: "turn-1" }],
     ["turn start", CodexThreadEventName.TURN_STARTED, { turnId: "turn-1" }],
     ["terminal error", CodexThreadEventName.ERROR, { message: "failed" }],
   ] as Array<[string, string, JsonObject]>) (
-    "clears before branch-specific returns for %s",
-    (_label, method, params) => {
-      expectBoundaryDisposition(method, params, "clear");
-    },
+    "clears for ordered-card creation: %s",
+    (_label, method, params) => expectBoundaryDisposition(method, params, "clear"),
   );
 
   it.each([
+    ["non-tool completion", CodexThreadEventName.ITEM_COMPLETED, { turnId: "turn-1", item: { type: "agentMessage", id: "message-1" } }],
+    ["ignored tool call request", CodexThreadEventName.ITEM_TOOL_CALL, { turnId: "turn-1" }],
+    ["ignored permission request", CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL, { turnId: "turn-1" }],
+    ["empty file output", CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA, { turnId: "turn-1" }],
+    ["empty raw output", CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED, { turnId: "turn-1", item: { type: "functionCallOutput" } }],
     ["reasoning start", CodexThreadEventName.ITEM_STARTED, { turnId: "turn-1", item: { type: "reasoning" } }],
     ["compaction start", CodexThreadEventName.ITEM_STARTED, { turnId: "turn-1", item: { type: "contextCompaction", id: "compact-1" } }],
     ["compaction completion", CodexThreadEventName.ITEM_COMPLETED, { turnId: "turn-1", item: { type: "contextCompaction", id: "compact-1" } }],
@@ -158,87 +168,90 @@ describe("Codex reasoning block conversion", () => {
     ["unknown thread", "thread/futureNotification", { turnId: "turn-1" }],
     ["internal notification", "codex/event/status", { turnId: "turn-1" }],
   ] as Array<[string, string, JsonObject]>) (
-    "preserves or has no effect for %s",
-    (_label, method, params) => {
-      expectBoundaryDisposition(method, params, "preserve");
-    },
+    "preserves for in-place or no-effect event: %s",
+    (_label, method, params) => expectBoundaryDisposition(method, params, "preserve"),
   );
 
-  it("clears every active turn when a semantic boundary has no turn id", () => {
+  it.each([
+    [
+      "success result",
+      { method: CodexThreadEventName.ITEM_STARTED, params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "pwd" } } },
+      { method: CodexThreadEventName.ITEM_COMPLETED, params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "pwd", status: "completed" } } },
+    ],
+    [
+      "failure result",
+      { method: CodexThreadEventName.ITEM_STARTED, params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "pwd" } } },
+      { method: CodexThreadEventName.ITEM_COMPLETED, params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "pwd", status: "failed" } } },
+    ],
+    [
+      "denial result",
+      { method: CodexThreadEventName.ITEM_STARTED, params: { turnId: "turn-1", item: { type: "fileChange", id: "tool-1", path: "demo.ts" } } },
+      { method: CodexThreadEventName.ITEM_COMPLETED, params: { turnId: "turn-1", item: { type: "fileChange", id: "tool-1", path: "demo.ts", status: "declined" } } },
+    ],
+    [
+      "approval update",
+      { method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED, params: { turnId: "turn-1", invocation_id: "tool-1" } },
+      { method: CodexThreadEventName.LOCAL_TOOL_APPROVED, params: { turnId: "turn-1", invocation_id: "tool-1" } },
+    ],
+    [
+      "start after approval",
+      { method: CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL, params: { turnId: "turn-1", itemId: "tool-1" } },
+      { method: CodexThreadEventName.ITEM_STARTED, params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "pwd" } } },
+    ],
+    [
+      "local MCP completion",
+      { method: CodexThreadEventName.ITEM_STARTED, params: { turnId: "turn-1", item: { type: "mcpToolCall", id: "tool-1", tool: "demo" } } },
+      { method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED, params: { turnId: "turn-1", invocation_id: "tool-1", tool_name: "demo" } },
+    ],
+    [
+      "file log",
+      { method: CodexThreadEventName.ITEM_STARTED, params: { turnId: "turn-1", item: { type: "fileChange", id: "tool-1", path: "demo.ts" } } },
+      { method: CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA, params: { turnId: "turn-1", itemId: "tool-1", delta: "changed" } },
+    ],
+    [
+      "raw output",
+      { method: CodexThreadEventName.ITEM_STARTED, params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "pwd" } } },
+      { method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED, params: { turnId: "turn-1", item: { type: "functionCallOutput", call_id: "tool-1", output: "done" } } },
+    ],
+  ] as Array<[string, { method: string; params: JsonObject }, { method: string; params: JsonObject }]>) (
+    "preserves reasoning for matching existing-card %s",
+    (_label, start, update) => expectMatchingToolUpdatePreserves(start, update),
+  );
+
+  it("keeps one block through the exact long-running-tool result sequence", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+    converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "sleep 1" } },
+    });
+    const reasoningA = emitCompletedReasoning(converter, "turn-1", "provider-a", "A");
+    converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "sleep 1", status: "completed" } },
+    });
+    const reasoningB = emitCompletedReasoning(converter, "turn-1", "provider-b", "B");
+    converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-2", command: "pwd" } },
+    });
+    const afterBoundary = emitCompletedReasoning(converter, "turn-1", "provider-c", "C");
+
+    expect(reasoningB.payload).toMatchObject({ id: reasoningA.payload.id, delta: "\n\nB" });
+    expect(afterBoundary.payload.id).not.toBe(reasoningA.payload.id);
+  });
+
+  it("clears every active turn when an ordered boundary has no turn id", () => {
     const converter = new CodexThreadEventConverter("run-1");
     const firstA = emitCompletedReasoning(converter, "turn-a", "provider-a", "a");
     const firstB = emitCompletedReasoning(converter, "turn-b", "provider-b", "b");
-
     converter.convert({
       method: CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA,
       params: { delta: "" },
     });
 
-    const secondA = emitCompletedReasoning(converter, "turn-a", "provider-a", "a2");
-    const secondB = emitCompletedReasoning(converter, "turn-b", "provider-b", "b2");
-    expect(secondA.payload.id).not.toBe(firstA.payload.id);
-    expect(secondB.payload.id).not.toBe(firstB.payload.id);
-  });
-
-  it("isolates active reasoning blocks across run instances and turns", () => {
-    const memberRunA = new CodexThreadEventConverter("member-run-a");
-    const memberRunB = new CodexThreadEventConverter("member-run-b");
-    const runATurnOne = emitCompletedReasoning(
-      memberRunA,
-      "shared-turn-one",
-      "shared-provider-id",
-      "member A turn one",
-    );
-    const runATurnTwo = emitCompletedReasoning(
-      memberRunA,
-      "shared-turn-two",
-      "shared-provider-id",
-      "member A turn two",
-    );
-    const runBTurnOne = emitCompletedReasoning(
-      memberRunB,
-      "shared-turn-one",
-      "shared-provider-id",
-      "member B turn one",
-    );
-
-    memberRunA.convert({
-      method: CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA,
-      params: { turnId: "shared-turn-one", itemId: "boundary-a", delta: "boundary" },
-    });
-
-    const runATurnOneAfterBoundary = emitCompletedReasoning(
-      memberRunA,
-      "shared-turn-one",
-      "shared-provider-id",
-      "member A turn one after boundary",
-    );
-    const runATurnTwoContinues = emitCompletedReasoning(
-      memberRunA,
-      "shared-turn-two",
-      "shared-provider-id",
-      "member A turn two continues",
-    );
-    const runBTurnOneContinues = emitCompletedReasoning(
-      memberRunB,
-      "shared-turn-one",
-      "shared-provider-id",
-      "member B turn one continues",
-    );
-
-    expect(new Set([
-      runATurnOne.payload.id,
-      runATurnTwo.payload.id,
-      runBTurnOne.payload.id,
-    ]).size).toBe(3);
-    expect(runATurnOneAfterBoundary.payload.id).not.toBe(runATurnOne.payload.id);
-    expect(runATurnTwoContinues.payload).toMatchObject({
-      id: runATurnTwo.payload.id,
-      delta: "member A turn two continues",
-    });
-    expect(runBTurnOneContinues.payload).toMatchObject({
-      id: runBTurnOne.payload.id,
-      delta: "member B turn one continues",
-    });
+    expect(emitCompletedReasoning(converter, "turn-a", "provider-a", "a2").payload.id)
+      .not.toBe(firstA.payload.id);
+    expect(emitCompletedReasoning(converter, "turn-b", "provider-b", "b2").payload.id)
+      .not.toBe(firstB.payload.id);
   });
 });

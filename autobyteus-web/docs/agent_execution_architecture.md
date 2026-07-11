@@ -676,6 +676,24 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 - **`handleSegmentContent`**: Finds the segment by backend-provided `segment_type` + `id` and appends string deltas. This powers the "typewriter" effect. The frontend intentionally trusts that identity contract; provider adapters must emit different ids for distinct text blocks that belong on different sides of tool cards instead of relying on frontend runtime-specific reorder logic.
 - **`handleSegmentEnd`**: Performs transcript cleanup, sets the final tool name if it was streamed lazily, preserves final metadata such as arguments, and marks the segment as "parsed" (ready for execution state changes). When the backend sends `interrupted` or `failed` terminal metadata, it marks the segment/tool row terminal (`interrupted` or `error`) and stores the reason/error instead of leaving a spinner. It also delegates segment metadata hydration to `toolActivityProjection.ts`; lifecycle events remain authoritative for successful execution and terminal result/error state.
 
+Reasoning/Thinking rendering follows the same generic identity contract. Live
+`SEGMENT_CONTENT(segment_type=reasoning)` events with the same backend-provided
+id append to one `ThinkSegment`, while a different id creates a distinct
+Thinking block in stream order. Run-projection hydration likewise creates one
+`ThinkSegment` per projected reasoning row. Runtime adapters therefore own
+contiguous reasoning-block identity and semantic boundaries; the frontend must
+not parse Codex provider item ids, infer adjacency, merge neighboring reasoning
+rows, or repair pre-fix history. For Codex, allocator-owned ids let consecutive
+completed provider reasoning items remain one live/persisted block until a new
+ordered conversation card, assistant text, turn boundary, or terminal error.
+A matching result/status/log/completion that updates an already-positioned tool
+card is not a new ordered boundary; a result-first lifecycle event that causes
+the generic handlers to synthesize a missing tool card is. The Codex adapter
+uses completed reasoning item snapshots as the sole supported summary-content
+source and permanently ignores `item/reasoning/summaryTextDelta` with no output
+or state effect. The frontend neither consumes that provider method nor adds a
+fallback for it.
+
 #### `systemTaskNotificationHandler.ts`
 
 - **`handleSystemTaskNotification`**: Preserves backend-authored `SYSTEM_TASK_NOTIFICATION` payload content and sender identity by appending a `system_task_notification` segment to the current AI message. The frontend must not rewrite task-delegation display copy or convert these notifications into user/member input rows.

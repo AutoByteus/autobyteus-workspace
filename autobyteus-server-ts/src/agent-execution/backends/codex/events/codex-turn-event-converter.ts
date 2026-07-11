@@ -15,6 +15,8 @@ export type CodexTurnEventConverterContext = {
   createStatusEvent: (codexEventName: string, payload?: Partial<AgentStatusPayload>) => AgentRunEvent;
   clearReasoningBlockForBoundary: (payload: JsonObject) => void;
   clearAllReasoningBlocks: () => void;
+  clearOrderedToolsForBoundary: (payload: JsonObject) => void;
+  clearAllOrderedTools: () => void;
 };
 
 export const isCodexTurnEventName = (codexEventName: string): boolean =>
@@ -29,6 +31,7 @@ export const convertCodexTurnEvent = (
   switch (codexEventName) {
     case CodexThreadEventName.TURN_STARTED:
       context.clearAllReasoningBlocks();
+      context.clearAllOrderedTools();
       return [
         context.createEvent(codexEventName, AgentRunEventType.TURN_STARTED, {
           ...(turnId ? { turnId } : {}),
@@ -37,6 +40,7 @@ export const convertCodexTurnEvent = (
       ];
     case CodexThreadEventName.TURN_COMPLETED:
       context.clearReasoningBlockForBoundary(payload);
+      context.clearOrderedToolsForBoundary(payload);
       return [
         context.createEvent(codexEventName, AgentRunEventType.TURN_COMPLETED, {
           ...(turnId ? { turnId } : {}),

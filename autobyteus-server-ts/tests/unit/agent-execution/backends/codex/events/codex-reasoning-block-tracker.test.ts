@@ -5,8 +5,8 @@ const appendCompleted = (
   tracker: CodexReasoningBlockTracker,
   turnId: string | null,
   providerItemId: string | null,
-  delta: string,
-) => tracker.append({ turnId, providerItemId, fragmentKind: "completed_item", delta });
+  snapshot: string,
+) => tracker.append({ turnId, providerItemId, snapshot })!;
 
 describe("CodexReasoningBlockTracker", () => {
   it("joins adjacent provider items under one allocator-owned id with completed-item separators", () => {
@@ -26,23 +26,18 @@ describe("CodexReasoningBlockTracker", () => {
     expect(first.segmentId).not.toBe("provider-a");
   });
 
-  it("appends deltas without separators and treats provider ids as correlation only", () => {
+  it("ignores repeated completion of the same known provider item", () => {
     const tracker = new CodexReasoningBlockTracker("nonce-a");
 
-    const first = tracker.append({
+    const first = appendCompleted(tracker, "turn-1", "provider-a", "complete");
+    const repeated = tracker.append({
       turnId: "turn-1",
       providerItemId: "provider-a",
-      fragmentKind: "delta",
-      delta: "hel",
-    });
-    const second = tracker.append({
-      turnId: "turn-1",
-      providerItemId: "provider-a",
-      fragmentKind: "delta",
-      delta: "lo",
+      snapshot: "complete",
     });
 
-    expect(second).toEqual({ segmentId: first.segmentId, delta: "lo" });
+    expect(first.segmentId).toBe("reasoning-block:nonce-a:1");
+    expect(repeated).toBeNull();
   });
 
   it("allocates fresh monotonic ids after turn clear and clear-all even for repeated identity", () => {

@@ -170,16 +170,10 @@ export class CodexItemEventPayloadParser {
     return typeof candidate === "string" && candidate.length > 0 ? candidate : fallback;
   }
 
-  public resolveReasoningContentUpdate(
-    codexEventName: string,
+  public resolveCompletedReasoningSnapshot(
     payload: Record<string, unknown>,
-    fallbackDelta = "",
   ): CodexReasoningBlockUpdate | null {
-    return this.reasoningEventNormalizer.resolveContentUpdate(
-      codexEventName,
-      payload,
-      fallbackDelta,
-    );
+    return this.reasoningEventNormalizer.resolveCompletedSnapshot(payload);
   }
 
   public clearReasoningBlockForBoundary(payload: Record<string, unknown>): void {

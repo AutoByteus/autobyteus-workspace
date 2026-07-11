@@ -2,8 +2,6 @@ import {
   CodexReasoningBlockTracker,
   type CodexReasoningBlockUpdate,
 } from "./codex-reasoning-block-tracker.js";
-import { CodexThreadEventName } from "./codex-thread-event-name.js";
-
 const asObject = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -15,22 +13,16 @@ const asString = (value: unknown): string | null =>
 export class CodexReasoningEventNormalizer {
   private readonly blockTracker = new CodexReasoningBlockTracker();
 
-  public resolveContentUpdate(
-    codexEventName: string,
+  public resolveCompletedSnapshot(
     payload: Record<string, unknown>,
-    fallbackDelta = "",
   ): CodexReasoningBlockUpdate | null {
-    const fragmentKind = this.isDeltaEvent(codexEventName) ? "delta" : "completed_item";
-    const delta = fragmentKind === "delta"
-      ? fallbackDelta || this.resolveDelta(payload)
-      : this.resolveSnapshot(payload);
-    if (!delta) return null;
+    const snapshot = this.resolveSnapshot(payload);
+    if (!snapshot) return null;
 
     return this.blockTracker.append({
       turnId: this.resolveTurnId(payload),
       providerItemId: this.resolveProviderItemId(payload),
-      fragmentKind,
-      delta,
+      snapshot,
     });
   }
 
@@ -47,25 +39,10 @@ export class CodexReasoningEventNormalizer {
     this.blockTracker.clearAll();
   }
 
-  private isDeltaEvent(codexEventName: string): boolean {
-    return codexEventName === CodexThreadEventName.ITEM_REASONING_DELTA ||
-      codexEventName === CodexThreadEventName.ITEM_REASONING_SUMMARY_PART_ADDED;
-  }
-
-  private resolveDelta(payload: Record<string, unknown>): string {
-    const item = asObject(payload.item);
-    return asString(payload.delta) ??
-      asString(payload.content) ??
-      asString(payload.summary_part) ??
-      asString(item.content) ??
-      this.resolveSnapshot(payload);
-  }
-
   private resolveSnapshot(payload: Record<string, unknown>): string {
     const item = asObject(payload.item);
     return this.collectText(item.summary) ||
       this.collectText(item.content) ||
-      asString(payload.summary_part) ||
       asString(payload.summary) ||
       asString(item.text) ||
       "";
@@ -103,7 +80,6 @@ export class CodexReasoningEventNormalizer {
       const text = asString(row.text) ??
         asString(row.content) ??
         asString(row.summary) ??
-        asString(row.delta) ??
         asString(row.reasoning) ??
         asString(row.value);
       if (text) chunks.push(text);

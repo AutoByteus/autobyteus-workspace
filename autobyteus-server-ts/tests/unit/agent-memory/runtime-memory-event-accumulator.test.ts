@@ -181,6 +181,103 @@ describe("RuntimeMemoryEventAccumulator", () => {
     expect(traces[2]).toMatchObject({ toolResult: { stdout: "/tmp" } });
   });
 
+  it("keeps reasoning open across a matching result and flushes one trace at the next tool", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "sleep 1" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "A",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      result: { stdout: "done" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "\n\nB",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-2",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => [trace.traceType, trace.content, trace.toolCallId])).toEqual([
+      ["tool_call", "", "tool-1"],
+      ["tool_result", "", "tool-1"],
+      ["reasoning", "A\n\nB", null],
+      ["tool_call", "", "tool-2"],
+    ]);
+  });
+
+  it.each([
+    AgentRunEventType.TOOL_EXECUTION_FAILED,
+    AgentRunEventType.TOOL_DENIED,
+  ])("keeps reasoning open across matching %s updates", async (terminalEventType) => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+    const reasoningPayload = (delta: string) => ({
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta,
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "false" },
+    }));
+    accumulator.recordRunEvent(event(
+      AgentRunEventType.SEGMENT_CONTENT,
+      reasoningPayload("A"),
+    ));
+    accumulator.recordRunEvent(event(terminalEventType, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      error: "stopped",
+      reason: "not approved",
+    }));
+    accumulator.recordRunEvent(event(
+      AgentRunEventType.SEGMENT_CONTENT,
+      reasoningPayload("\n\nB"),
+    ));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-1" }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => trace.traceType)).toEqual([
+      "tool_call",
+      "tool_result",
+      "reasoning",
+    ]);
+    expect(traces[2]?.content).toBe("A\n\nB");
+  });
+
   it("persists open reasoning before assistant text without requiring turn completion", async () => {
     const memoryDir = await mkTempDir();
     const accumulator = new RuntimeMemoryEventAccumulator({

@@ -1,0 +1,13 @@
+USER VERIFICATION PACKAGE/PROCESS CHECK
+app_pid=2900
+app_started=2026-07-11T08:04:13+02:00
+app_path=/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+server_pid=3521
+server_started=2026-07-11T08:04:20+02:00
+server_entry=/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+server_port=29695
+data_dir=/Users/normy/.autobyteus/server-data
+packaged_reasoning_tracker_marker=PASS
+packaged_reasoning_block_id_marker=PASS
+packaged_terminal_clear_marker=PASS
+wrong_app_or_stale_server=NO
