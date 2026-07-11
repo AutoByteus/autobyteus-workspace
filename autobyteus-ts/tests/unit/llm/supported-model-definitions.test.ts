@@ -4,6 +4,7 @@ import { LLMModel } from '../../../src/llm/models.js';
 import { supportedModelDefinitions } from '../../../src/llm/supported-model-definitions.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { getCuratedModelMetadata } from '../../../src/llm/metadata/curated-model-metadata.js';
+import { OpenAILLM } from '../../../src/llm/api/openai-llm.js';
 
 describe('supportedModelDefinitions', () => {
   beforeAll(() => {
@@ -11,6 +12,9 @@ describe('supportedModelDefinitions', () => {
     (LLMFactory as unknown as { initialized: boolean }).initialized = true;
     for (const definition of supportedModelDefinitions) {
       if ([
+        'gpt-5.6-sol',
+        'gpt-5.6-terra',
+        'gpt-5.6-luna',
         'gemini-3.5-flash',
         'gemini-3.1-pro-preview',
         'minimax-m3',
@@ -27,6 +31,82 @@ describe('supportedModelDefinitions', () => {
         LLMFactory.registerModel(new LLMModel(definition));
       }
     }
+  });
+
+  it('registers exactly the three canonical GPT-5.6 models with family-specific reasoning and tiered cache pricing', async () => {
+    const cases = [
+      ['gpt-5.6-sol', 5, 30, 0.5, 6.25],
+      ['gpt-5.6-terra', 2.5, 15, 0.25, 3.125],
+      ['gpt-5.6-luna', 1, 6, 0.1, 1.25],
+    ] as const;
+    const openAIIds = supportedModelDefinitions
+      .filter((definition) => definition.provider === LLMProvider.OPENAI)
+      .map((definition) => definition.name);
+
+    expect(openAIIds.filter((id) => id.startsWith('gpt-5.6-')).sort()).toEqual(cases.map(([id]) => id).sort());
+    expect(openAIIds).not.toContain('gpt-5.6');
+
+    for (const [modelId, input, output, cacheRead, cacheWrite] of cases) {
+      const definition = supportedModelDefinitions.find((entry) => entry.name === modelId);
+      expect(definition).toMatchObject({
+        name: modelId,
+        value: modelId,
+        canonicalName: modelId,
+        provider: LLMProvider.OPENAI,
+        llmClass: OpenAILLM,
+      });
+      expect(definition?.configSchema?.toJsonSchema()).toMatchObject({
+        properties: {
+          reasoning_effort: {
+            default: 'medium',
+            enum: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
+          },
+          reasoning_summary: { enum: ['none', 'auto', 'concise', 'detailed'] },
+        },
+      });
+
+      const modelPricing = await LLMFactory.getModelPricingInfo({
+        modelIdentifier: modelId,
+        modelProvider: LLMProvider.OPENAI,
+      });
+      expect(modelPricing).toMatchObject({
+        pricing_status: 'trusted',
+        input_price_per_million: input,
+        output_price_per_million: output,
+        cached_input_read_price_per_million: cacheRead,
+        cached_input_write_price_per_million: cacheWrite,
+        trusted_dimensions: { cached_input_read: true, cached_input_write: true },
+      });
+      expect(modelPricing?.input_price_tiers).toEqual([
+        expect.objectContaining({
+          tier_id: 'standard_le_272k',
+          max_input_tokens: 272000,
+          input_price_per_million: input,
+          output_price_per_million: output,
+          cached_input_read_price_per_million: cacheRead,
+          cached_input_write_price_per_million: cacheWrite,
+        }),
+        expect.objectContaining({
+          tier_id: 'long_context_gt_272k',
+          max_input_tokens: null,
+          input_price_per_million: input * 2,
+          output_price_per_million: output * 1.5,
+          cached_input_read_price_per_million: cacheRead * 2,
+          cached_input_write_price_per_million: cacheWrite * 2,
+        }),
+      ]);
+      expect(definition?.defaultConfig?.pricingConfig.pricingEffectiveDate).toBe('2026-06-26');
+    }
+
+    const olderSchema = supportedModelDefinitions.find((entry) => entry.name === 'gpt-5.5')?.configSchema?.toJsonSchema();
+    expect(olderSchema).toMatchObject({
+      properties: {
+        reasoning_effort: {
+          default: 'none',
+          enum: ['none', 'low', 'medium', 'high', 'xhigh'],
+        },
+      },
+    });
   });
 
   it('exposes trusted shared-catalog pricing through the server-facing pricing lookup', async () => {

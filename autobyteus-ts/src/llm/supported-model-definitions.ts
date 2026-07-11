@@ -30,14 +30,14 @@ const pricing = (input: number, output: number, options: Omit<TokenPricingConfig
     outputTokenPricing: output,
   });
 
-const openaiReasoningSchema = new ParameterSchema([
+const createOpenAIReasoningSchema = (efforts: string[], defaultEffort: string) => new ParameterSchema([
   new ParameterDefinition({
     name: 'reasoning_effort',
     type: ParameterType.ENUM,
     description: 'Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.',
     required: false,
-    defaultValue: 'none',
-    enumValues: ['none', 'low', 'medium', 'high', 'xhigh']
+    defaultValue: defaultEffort,
+    enumValues: efforts
   }),
   new ParameterDefinition({
     name: 'reasoning_summary',
@@ -48,6 +48,43 @@ const openaiReasoningSchema = new ParameterSchema([
     enumValues: ['none', 'auto', 'concise', 'detailed']
   })
 ]);
+
+const openaiReasoningSchema = createOpenAIReasoningSchema(
+  ['none', 'low', 'medium', 'high', 'xhigh'],
+  'none',
+);
+const openaiGpt56ReasoningSchema = createOpenAIReasoningSchema(
+  ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
+  'medium',
+);
+
+const createOpenAIGpt56Pricing = (input: number, output: number): TokenPricingConfig => {
+  const cacheRead = input * 0.1;
+  const cacheWrite = input * 1.25;
+  return pricing(input, output, {
+    pricingEffectiveDate: '2026-06-26',
+    cachedInputReadTokenPricing: cacheRead,
+    cachedInputWriteTokenPricing: cacheWrite,
+    inputTokenPricingTiers: [
+      {
+        tierId: 'standard_le_272k',
+        maxInputTokens: 272_000,
+        inputTokenPricing: input,
+        outputTokenPricing: output,
+        cachedInputReadTokenPricing: cacheRead,
+        cachedInputWriteTokenPricing: cacheWrite,
+      },
+      {
+        tierId: 'long_context_gt_272k',
+        maxInputTokens: null,
+        inputTokenPricing: input * 2,
+        outputTokenPricing: output * 1.5,
+        cachedInputReadTokenPricing: cacheRead * 2,
+        cachedInputWriteTokenPricing: cacheWrite * 2,
+      },
+    ],
+  });
+};
 
 const claudeSchema = new ParameterSchema([
   new ParameterDefinition({
@@ -142,6 +179,19 @@ const glmSchema = new ParameterSchema([
 ]);
 
 export const supportedModelDefinitions: SupportedModelDefinition[] = [
+  ...([
+    ['gpt-5.6-sol', 5.0, 30.0],
+    ['gpt-5.6-terra', 2.5, 15.0],
+    ['gpt-5.6-luna', 1.0, 6.0],
+  ] as const).map(([modelId, inputPrice, outputPrice]) => ({
+    name: modelId,
+    value: modelId,
+    provider: LLMProvider.OPENAI,
+    llmClass: OpenAILLM,
+    canonicalName: modelId,
+    defaultConfig: new LLMConfig({ pricingConfig: createOpenAIGpt56Pricing(inputPrice, outputPrice) }),
+    configSchema: openaiGpt56ReasoningSchema,
+  })),
   {
     name: 'gpt-5.5',
     value: 'gpt-5.5',

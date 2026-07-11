@@ -1,0 +1,74 @@
+{
+  "recordedAt": "2026-07-10T14:12:30.330Z",
+  "sourceEnv": "autobyteus-ts/.env.test (copied from main repo; secret omitted)",
+  "credentialPresent": true,
+  "modelList": {
+    "httpStatus": 200,
+    "gpt56Ids": [],
+    "error": null
+  },
+  "responses": [
+    {
+      "model": "gpt-5.6-sol",
+      "request": {
+        "endpoint": "/v1/responses",
+        "reasoningEffort": "max",
+        "maxOutputTokens": 16,
+        "store": false
+      },
+      "httpStatus": 404,
+      "responseModel": null,
+      "responseId": null,
+      "usage": null,
+      "error": {
+        "code": "model_not_found",
+        "type": "invalid_request_error",
+        "param": null,
+        "message": "The model `gpt-5.6-sol` is in limited preview and is not available on this account. We expect broader API availability in the coming weeks. Until then, use `gpt-5.5`."
+      }
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "request": {
+        "endpoint": "/v1/responses",
+        "reasoningEffort": "none",
+        "maxOutputTokens": 16,
+        "store": false
+      },
+      "httpStatus": 404,
+      "responseModel": null,
+      "responseId": null,
+      "usage": null,
+      "error": {
+        "code": "model_not_found",
+        "type": "invalid_request_error",
+        "param": null,
+        "message": "The model `gpt-5.6-terra` is in limited preview and is not available on this account. We expect broader API availability in the coming weeks. Until then, use `gpt-5.5`."
+      }
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "request": {
+        "endpoint": "/v1/responses",
+        "reasoningEffort": "none",
+        "maxOutputTokens": 16,
+        "store": false
+      },
+      "httpStatus": 404,
+      "responseModel": null,
+      "responseId": null,
+      "usage": null,
+      "error": {
+        "code": "model_not_found",
+        "type": "invalid_request_error",
+        "param": null,
+        "message": "The model `gpt-5.6-luna` is in limited preview and is not available on this account. We expect broader API availability in the coming weeks. Until then, use `gpt-5.5`."
+      }
+    }
+  ],
+  "cacheProbe": {
+    "attempted": false,
+    "reason": "No minimal GPT-5.6 Responses request succeeded with the configured credential.",
+    "requests": []
+  }
+}

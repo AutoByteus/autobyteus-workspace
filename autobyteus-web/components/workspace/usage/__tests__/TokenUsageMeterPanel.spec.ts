@@ -230,6 +230,7 @@ describe('TokenUsageMeterPanel', () => {
     expect(primaryText).toContain('Input breakdown');
     expect(primaryText).toContain('Uncached input');
     expect(primaryText).toContain('Cache hits');
+    expect(primaryText).not.toContain('Cache writes');
     expect(primaryText).toContain('Pricing details');
     expect(primaryText).toContain('Usage reports');
     expect(primaryText).toContain('Tokens');
@@ -288,6 +289,59 @@ describe('TokenUsageMeterPanel', () => {
     expect(panel.text()).toContain('Displayed costs are rounded');
   });
 
+  it('shows server-provided generic cache-write tokens, price, and cost in both disclosure levels', async () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
+    meterStore.upsertSummary(buildSummary({
+      standardInputTokens: 0,
+      cacheMissInputTokens: 0,
+      cacheReadInputTokens: 0,
+      cacheCreationInputTokens: 1000,
+      cacheReadInputTokenRate: 0,
+      standardInputTokenRate: 0,
+      cacheCreationInputTokenRate: 1,
+      estimatedApiInputCost: 0.00625,
+      estimatedApiStandardInputCost: null,
+      estimatedApiCacheReadInputCost: null,
+      estimatedApiCacheCreationInputCost: 0.00625,
+      estimatedApiTotalCost: 0.00745,
+      latestModelIdentifier: 'gpt-5.6-sol',
+      unitPrices: {
+        standardInput: { status: 'not_applicable', pricePerMillion: null },
+        cacheReadInput: { status: 'not_applicable', pricePerMillion: null },
+        cacheCreationInput: { status: 'single', pricePerMillion: 6.25 },
+        cacheCreation5mInput: { status: 'not_applicable', pricePerMillion: null },
+        cacheCreation1hInput: { status: 'not_applicable', pricePerMillion: null },
+        output: { status: 'single', pricePerMillion: 10 },
+        reasoningOutput: { status: 'single', pricePerMillion: 10 },
+      },
+    }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const wrapper = mountPanel();
+    const primaryText = wrapper.get('[data-test="token-usage-primary"]').text();
+    const cacheHitLabel = wrapper.findAll('dt').find((node) => node.text() === 'Cache hits');
+    expect(primaryText).toContain('Cache writes');
+    expect(primaryText).toContain('1,000');
+    expect(primaryText).toContain('$0.0063');
+    // The existing aggregate-positive condition intentionally exposes an empty zero-token cache-hit neighbor.
+    expect(cacheHitLabel?.element.parentElement?.textContent).toContain('—');
+
+    const toggle = wrapper.get('[data-test="calculation-details-toggle"]');
+    await toggle.trigger('click');
+
+    const panel = wrapper.get('[data-test="calculation-details-panel"]');
+    expect(toggle.attributes('aria-expanded')).toBe('true');
+    expect(toggle.attributes('aria-controls')).toBe(panel.attributes('id'));
+    expect(panel.text()).toContain('Formula: tokens ÷ 1,000,000 × unit price.');
+    expect(panel.text()).toContain('Cache writes');
+    expect(panel.text()).toContain('1,000');
+    expect(panel.text()).toContain('$6.25 / 1M tokens');
+    expect(panel.text()).toContain('$0.0063');
+  });
+
   it('omits the thinking-token subline when no reasoning tokens are present', () => {
     const agentContextsStore = useAgentContextsStore();
     const selectionStore = useAgentSelectionStore();
@@ -308,15 +362,18 @@ describe('TokenUsageMeterPanel', () => {
     agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Story Agent'));
     meterStore.upsertSummary(buildSummary({
       apiCostStatus: 'mixed',
+      cacheCreationInputTokens: 1000,
+      cacheCreationInputTokenRate: 0.5,
       estimatedApiStandardInputCost: null,
       estimatedApiCacheReadInputCost: null,
+      estimatedApiCacheCreationInputCost: null,
       estimatedApiOutputCost: null,
       estimatedApiTotalCost: null,
       currency: null,
       unitPrices: {
         standardInput: { status: 'mixed', pricePerMillion: null },
         cacheReadInput: { status: 'mixed', pricePerMillion: null },
-        cacheCreationInput: { status: 'not_applicable', pricePerMillion: null },
+        cacheCreationInput: { status: 'mixed', pricePerMillion: null },
         cacheCreation5mInput: { status: 'not_applicable', pricePerMillion: null },
         cacheCreation1hInput: { status: 'not_applicable', pricePerMillion: null },
         output: { status: 'mixed', pricePerMillion: null },
@@ -330,9 +387,11 @@ describe('TokenUsageMeterPanel', () => {
 
     const panel = wrapper.get('[data-test="calculation-details-panel"]');
     expect(panel.text()).toContain('Calculation varies by model/provider call.');
+    expect(panel.text()).toContain('Cache writes');
     expect(panel.text()).toContain('varies by call');
     expect(panel.text()).toContain('Mixed');
     expect(panel.text()).not.toContain('$2.00 / 1M tokens');
+    expect(panel.text()).not.toContain('$6.25 / 1M tokens');
   });
 
   it('uses the focused team member as primary and keeps aggregate usage only in the Team section', async () => {

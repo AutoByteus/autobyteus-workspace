@@ -40,8 +40,27 @@ Official OpenAI remains on the Responses API path:
 - **`OpenAILLM`** (`src/llm/api/openai-llm.ts`) extends
   `OpenAIResponsesLLM`.
 
-This ticket did **not** move official OpenAI onto the generic
-OpenAI-compatible path.
+The exact built-in GPT-5.6 IDs are `gpt-5.6-sol`, `gpt-5.6-terra`, and
+`gpt-5.6-luna`. They use this same Responses path, a family-specific reasoning
+schema that adds `max` and defaults to `medium`, and trusted tiered pricing for
+standard, cache-read, cache-write, and output components. The shared usage
+normalizer maps nested OpenAI `cache_write_tokens` into the generic
+cache-creation input component so server accounting and frontend presentation do
+not need a provider-specific branch. Catalog registration is independent of the
+configured account's limited-preview entitlement; do not add an unsuffixed
+`gpt-5.6` alias or substitute another model when invocation is rejected.
+
+This direct API usage contract must not be projected onto Codex app-server
+events. The Codex protocol verified on 2026-07-10 exposes total, input,
+cached-input, output, and reasoning counts but no cache-write count.
+`cachedInputTokens` maps to cache read only; cache creation stays unknown/null,
+and a catalog write rate without a reported quantity produces no write cost or
+Token Meter write row. Never infer the uncached remainder as a write. A future
+Codex write field must first be confirmed in generated supported bindings and
+mapped in the server Codex runtime adapter with its `total`/`last` semantics,
+not added to `OpenAIResponsesLLM` or its usage normalizer.
+
+Official OpenAI does **not** use the generic OpenAI-compatible runtime path.
 
 ### 3.2 OpenAI-Compatible Providers
 
@@ -167,7 +186,9 @@ loads those definitions, resolves curated metadata from
 The current latest-model support set is summarized in
 `docs/provider_model_catalogs.md`. Notable LLM entries include:
 
-- OpenAI `gpt-5.5` (verified 2026-04-25).
+- OpenAI `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` (verified
+  2026-07-10), plus retained `gpt-5.5`. GPT-5.6 uses exact provider IDs with no
+  separate unsuffixed alias.
 - Anthropic `claude-fable-5`, `claude-opus-4.8`, and `claude-sonnet-5`
   (verified 2026-07-07) with exact Claude API values and no
   `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
@@ -186,6 +207,9 @@ The current latest-model support set is summarized in
 
 Provider adapters own request-shape differences:
 
+- `OpenAILLM` keeps GPT-5.6 on the official Responses path. The shared OpenAI
+  usage normalizer preserves gross input while mapping documented
+  `cache_write_tokens` detail fields into generic cache-creation input usage.
 - `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 4.8,
   Opus 4.7, Sonnet 5, and Fable 5 without sending fixed thinking budgets,
   manual-budget overrides, or unsupported sampling fields (`temperature`,

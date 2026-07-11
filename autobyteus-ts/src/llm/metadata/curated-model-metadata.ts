@@ -11,6 +11,24 @@ interface CuratedModelMetadataEntry extends PartialResolvedModelMetadata {
 
 const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedModelMetadataEntry>>> = {
   [LLMProvider.OPENAI]: {
+    'gpt-5.6-sol': {
+      maxContextTokens: 1050000,
+      maxOutputTokens: 128000,
+      sourceUrl: 'https://developers.openai.com/api/docs/models/gpt-5.6-sol',
+      verifiedAt: '2026-07-10'
+    },
+    'gpt-5.6-terra': {
+      maxContextTokens: 1050000,
+      maxOutputTokens: 128000,
+      sourceUrl: 'https://developers.openai.com/api/docs/models/gpt-5.6-terra',
+      verifiedAt: '2026-07-10'
+    },
+    'gpt-5.6-luna': {
+      maxContextTokens: 1050000,
+      maxOutputTokens: 128000,
+      sourceUrl: 'https://developers.openai.com/api/docs/models/gpt-5.6-luna',
+      verifiedAt: '2026-07-10'
+    },
     'gpt-5.5': {
       maxContextTokens: 1050000,
       maxOutputTokens: 128000,

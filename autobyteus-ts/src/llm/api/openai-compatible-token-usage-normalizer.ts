@@ -12,10 +12,13 @@ const numberField = (record: Record<string, unknown> | null, key: string): numbe
 
 const resolveCacheState = (input: {
   cacheReadTokens: number | null;
+  cacheWriteTokens: number | null;
   cacheMissTokens: number | null;
 }): CacheState => {
-  if (input.cacheReadTokens !== null || input.cacheMissTokens !== null) {
-    return (input.cacheReadTokens ?? 0) > 0 ? 'positive' : 'zero_reported';
+  if (input.cacheReadTokens !== null || input.cacheWriteTokens !== null || input.cacheMissTokens !== null) {
+    return (input.cacheReadTokens ?? 0) > 0 || (input.cacheWriteTokens ?? 0) > 0
+      ? 'positive'
+      : 'zero_reported';
   }
   return 'not_reported';
 };
@@ -32,6 +35,9 @@ export const createOpenAICompatibleTokenUsageObservation = (
     numberField(promptDetails, 'cached_tokens') ??
     numberField(usage, 'cached_tokens') ??
     numberField(usage, 'prompt_cache_hit_tokens');
+  const cacheWriteTokens =
+    numberField(promptDetails, 'cache_write_tokens') ??
+    numberField(usage, 'cache_write_tokens');
   const cacheMissTokens =
     numberField(promptDetails, 'cache_miss_tokens') ??
     numberField(promptDetails, 'uncached_tokens') ??
@@ -54,8 +60,9 @@ export const createOpenAICompatibleTokenUsageObservation = (
       modelValue: model.value,
     },
     inputTokenSemantic: 'gross_includes_cache',
-    cacheState: resolveCacheState({ cacheReadTokens, cacheMissTokens }),
+    cacheState: resolveCacheState({ cacheReadTokens, cacheWriteTokens, cacheMissTokens }),
     cacheReadInputTokens: cacheReadTokens,
+    cacheCreationInputTokens: cacheWriteTokens,
     cacheMissInputTokens: cacheMissTokens,
     reasoningOutputTokens: reasoningTokens,
     billableOutputTokens,

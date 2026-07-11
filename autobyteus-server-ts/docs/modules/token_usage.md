@@ -101,6 +101,23 @@ for the current update. `resolveCodexThreadTokenUsage(...)` owns this mapping:
 - map `reasoningOutputTokens` to first-class `reasoning_output_tokens`; and
 - map `modelContextWindow` to `effective_context_window_tokens`.
 
+The Codex app-server contract verified on 2026-07-10 exposes no cache-write
+quantity in either `total` or `last`. `cachedInputTokens` is cache read only;
+`resolveCodexThreadTokenUsage(...)` must keep cache creation unknown/null and
+must not infer it from `inputTokens - cachedInputTokens`. A trusted model-policy
+write price without a positive source quantity produces no write cost and no
+frontend cache-write row.
+
+When auditing protocol support, distinguish upstream source records from
+AutoByteus reconciliation metadata. `tokenUsage.total` / `tokenUsage.last` and
+the selected `raw_usage_json` are source evidence. Enriched `raw_event_json`
+may include AutoByteus-added
+`autobyteus_cumulative_snapshot_provider_delta_tokens` with a canonical null
+cache-write entry; that key does not mean Codex emitted a write field. Before
+supporting a future write count, re-generate the supported Codex bindings and
+review the official field's `total`/`last` cumulative semantics rather than
+adding aliases or remainder inference.
+
 Codex token-usage updates are dispatched as they arrive, including multiple
 updates for one active `turnId`; they must not wait behind a single pending
 turn-id map entry that could overwrite an earlier update. The raw Codex payload

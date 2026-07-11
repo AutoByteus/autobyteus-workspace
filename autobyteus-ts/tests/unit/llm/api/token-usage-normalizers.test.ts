@@ -69,6 +69,73 @@ describe('provider token usage normalizers', () => {
     }));
   });
 
+  it('normalizes nested OpenAI Responses cache writes and classifies write-only cache activity as positive', () => {
+    const model = buildModel(LLMProvider.OPENAI, 'gpt-5.6-sol');
+    const usage = {
+      input_tokens: 1000,
+      input_tokens_details: { cached_tokens: 0, cache_write_tokens: 400 },
+      output_tokens: 20,
+      total_tokens: 1020,
+    };
+
+    const observation = createOpenAICompatibleTokenUsageObservation(usage, model);
+
+    expect(observation).toEqual(expect.objectContaining({
+      input_tokens: 1000,
+      cache_read_input_tokens: 0,
+      cache_creation_input_tokens: 400,
+      cache_state: 'positive',
+      raw_usage_json: usage,
+    }));
+  });
+
+  it('normalizes nested Chat cache writes and keeps absent cache writes null', () => {
+    const model = buildModel(LLMProvider.OPENAI, 'gpt-5.6-terra');
+    const chatObservation = createOpenAICompatibleTokenUsageObservation({
+      prompt_tokens: 500,
+      prompt_tokens_details: { cached_tokens: 100, cache_write_tokens: 125 },
+      completion_tokens: 10,
+      total_tokens: 510,
+    }, model);
+    const absentObservation = createOpenAICompatibleTokenUsageObservation({
+      input_tokens: 20,
+      input_tokens_details: { cached_tokens: 0 },
+      output_tokens: 5,
+      total_tokens: 25,
+    }, model);
+
+    expect(chatObservation).toEqual(expect.objectContaining({
+      cache_read_input_tokens: 100,
+      cache_creation_input_tokens: 125,
+      cache_state: 'positive',
+    }));
+    expect(absentObservation).toEqual(expect.objectContaining({
+      cache_read_input_tokens: 0,
+      cache_creation_input_tokens: null,
+      cache_state: 'zero_reported',
+    }));
+  });
+
+  it('uses top-level compatible cache writes only when the nested field is absent', () => {
+    const model = buildModel(LLMProvider.OPENAI, 'gpt-5.6-luna');
+    const fallback = createOpenAICompatibleTokenUsageObservation({
+      input_tokens: 12,
+      cache_write_tokens: 3,
+      output_tokens: 1,
+    }, model);
+    const nestedZero = createOpenAICompatibleTokenUsageObservation({
+      input_tokens: 12,
+      input_tokens_details: { cache_write_tokens: 0 },
+      cache_write_tokens: 3,
+      output_tokens: 1,
+    }, model);
+
+    expect(fallback?.cache_creation_input_tokens).toBe(3);
+    expect(fallback?.cache_state).toBe('positive');
+    expect(nestedZero?.cache_creation_input_tokens).toBe(0);
+    expect(nestedZero?.cache_state).toBe('zero_reported');
+  });
+
   it('captures Kimi top-level cached_tokens without fabricating numeric reasoning tokens from reasoning_content', () => {
     const model = buildModel(LLMProvider.KIMI, 'kimi-k2.7-code');
     const usage = {

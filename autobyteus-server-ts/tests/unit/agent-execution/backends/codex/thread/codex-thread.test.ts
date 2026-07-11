@@ -1012,6 +1012,74 @@ describe("CodexThread token usage readiness", () => {
     ]);
   });
 
+  it("keeps absent Codex cache writes out of source records and null in reconciliation metadata", () => {
+    const { thread } = createThread(true);
+
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
+      turn: { id: "turn-usage-no-write-1" },
+    } as never);
+    thread.handleAppServerNotification(CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED, {
+      threadId: "thread-no-write-1",
+      turnId: "turn-usage-no-write-1",
+      tokenUsage: {
+        total: {
+          totalTokens: 120,
+          inputTokens: 100,
+          cachedInputTokens: 60,
+          outputTokens: 20,
+          reasoningOutputTokens: 8,
+        },
+        last: {
+          totalTokens: 12,
+          inputTokens: 10,
+          cachedInputTokens: 6,
+          outputTokens: 2,
+          reasoningOutputTokens: 1,
+        },
+      },
+    } as never);
+
+    const [usage] = thread.getReadyTokenUsageUpdates();
+    expect(usage).toMatchObject({
+      reported_input_tokens: 100,
+      cache_read_input_tokens: 60,
+      raw_usage_json: {
+        totalTokens: 120,
+        inputTokens: 100,
+        cachedInputTokens: 60,
+        outputTokens: 20,
+        reasoningOutputTokens: 8,
+      },
+    });
+    expect(usage).not.toHaveProperty("cache_creation_input_tokens");
+    expect(usage?.raw_usage_json).not.toHaveProperty("cacheWriteTokens");
+    expect(usage?.raw_usage_json).not.toHaveProperty("cache_write_tokens");
+
+    const rawEvent = usage?.raw_event_json as Record<string, any>;
+    expect(rawEvent.tokenUsage).toEqual({
+      total: {
+        totalTokens: 120,
+        inputTokens: 100,
+        cachedInputTokens: 60,
+        outputTokens: 20,
+        reasoningOutputTokens: 8,
+      },
+      last: {
+        totalTokens: 12,
+        inputTokens: 10,
+        cachedInputTokens: 6,
+        outputTokens: 2,
+        reasoningOutputTokens: 1,
+      },
+    });
+    expect(rawEvent.autobyteus_cumulative_snapshot_provider_delta_tokens).toMatchObject({
+      reported_input_tokens: 10,
+      cache_read_input_tokens: 6,
+      standard_input_tokens: null,
+      cache_creation_input_tokens: null,
+    });
+  });
+
   it("queues multiple same-turn cumulative advancements instead of overwriting by turn id", () => {
     const { thread } = createThread(true);
 
