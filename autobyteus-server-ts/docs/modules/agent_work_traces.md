@@ -43,6 +43,13 @@ Current steady-state inputs are:
 - active raw traces from `raw_traces_active.jsonl`
 - complete rotated raw-trace segment files such as `raw_traces_000001.jsonl`
 
+Projection resolves tool lifecycles package-wide, not independently per source
+file. It builds one complete-corpus logical interaction map keyed by
+`(turn_id, tool_call_id)`, assigns each interaction to its selected physical
+call anchor, and supplies the same terminal facts to that anchor's renderer.
+Thus an archived call plus active minimal result renders once without copying
+the call into the active file or parsing a second duplicate activity.
+
 Runtime projection must not revive `raw_traces.jsonl` as an active read/write
 fallback. Old active filename handling is migration-only and remains owned by the
 agent-memory/app-data migration path.
@@ -76,6 +83,12 @@ historical replay transformer and emits readable Markdown for visible user
 messages, visible assistant messages, tool calls/results/errors, corrections,
 retries, feedback signals, and neutral trace events such as compaction-boundary
 notes when present.
+
+For current tool traces, name/arguments come from the call and terminal
+result/error from the separate minimal result. Historical result-side
+name/argument supersets are interpreted only by the shared logical read
+projection. The renderer does not own raw correlation or writer compatibility
+policy.
 
 Each Markdown file starts exactly with `# Work Trace`. Body entries use canonical
 role/event labels:
@@ -115,6 +128,9 @@ provided on demand by each `ensureCurrent()` call.
 - `agent-work-traces` may depend on raw trace and run-history projection
   boundaries, but it must not import skill-improvement.
 - `agent-memory` must not import work-trace or skill-improvement projection types.
+- Keep physical lifecycle grouping and historical effective-field policy in the
+  shared core/run-history projection boundary; do not reimplement per-file tool
+  correlation in the work-trace source reader or renderer.
 - Consumers should not instantiate `AgentWorkTraceSourceReader`,
   `AgentWorkTraceRenderer`, or `AgentWorkTraceStore` directly.
 - Do not add compatibility wrappers, dual paths, old manifest fallback, or old

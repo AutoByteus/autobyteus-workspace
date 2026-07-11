@@ -35,8 +35,8 @@ export class RawTraceItem implements MemoryItem {
   toolName: string | null;
   toolCallId: string | null;
   toolArgs: Record<string, unknown> | null;
-  toolResult: unknown;
-  toolError: string | null;
+  toolResult: unknown | undefined;
+  toolError: string | null | undefined;
   correlationId: string | null;
 
   constructor(options: RawTraceItemOptions) {
@@ -51,8 +51,8 @@ export class RawTraceItem implements MemoryItem {
     this.toolName = options.toolName ?? null;
     this.toolCallId = options.toolCallId ?? null;
     this.toolArgs = options.toolArgs ?? null;
-    this.toolResult = options.toolResult ?? null;
-    this.toolError = options.toolError ?? null;
+    this.toolResult = options.toolResult;
+    this.toolError = options.toolError;
     this.correlationId = options.correlationId ?? null;
   }
 
@@ -75,8 +75,8 @@ export class RawTraceItem implements MemoryItem {
     if (this.toolName) data.tool_name = this.toolName;
     if (this.toolCallId) data.tool_call_id = this.toolCallId;
     if (this.toolArgs) data.tool_args = this.toolArgs;
-    if (this.toolResult !== null && this.toolResult !== undefined) data.tool_result = this.toolResult;
-    if (this.toolError) data.tool_error = this.toolError;
+    if (this.toolResult !== undefined) data.tool_result = this.toolResult;
+    if (this.toolError !== undefined) data.tool_error = this.toolError;
     if (this.correlationId) data.correlation_id = this.correlationId;
 
     return data;
@@ -95,8 +95,10 @@ export class RawTraceItem implements MemoryItem {
       toolName: typeof data.tool_name === 'string' ? data.tool_name : null,
       toolCallId: typeof data.tool_call_id === 'string' ? data.tool_call_id : null,
       toolArgs: (data.tool_args as Record<string, unknown> | undefined) ?? null,
-      toolResult: data.tool_result,
-      toolError: typeof data.tool_error === 'string' ? data.tool_error : null,
+      toolResult: Object.prototype.hasOwnProperty.call(data, 'tool_result') ? data.tool_result : undefined,
+      toolError: Object.prototype.hasOwnProperty.call(data, 'tool_error')
+        ? typeof data.tool_error === 'string' ? data.tool_error : null
+        : undefined,
       correlationId: typeof data.correlation_id === 'string' ? data.correlation_id : null
     });
   }

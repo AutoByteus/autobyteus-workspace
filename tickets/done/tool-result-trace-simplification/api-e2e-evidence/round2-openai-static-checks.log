@@ -1,0 +1,16 @@
+COMMAND: node autobyteus-ts/node_modules/typescript/bin/tsc -p autobyteus-ts/tsconfig.build.json --noEmit
+CORE_SOURCE_TYPECHECK=PASS
+COMMAND: git diff --check
+TRACKED_DIFF_CHECK=PASS
+COMMAND: trailing-whitespace scan for OpenAI live test and canonical reports
+ROUND2_WHITESPACE_CHECK=PASS
+ROUND2_STATIC_CHECKS=PASS
+COMMAND: final round-2 git diff --check after report updates
+FINAL_ROUND2_TRACKED_DIFF_CHECK=PASS
+COMMAND: trailing-whitespace scan for round-2 durable/artifact text
+FINAL_ROUND2_WHITESPACE_CHECK=PASS
+COMMAND: secret-pattern scan of round-2 changed test/reports/evidence
+ROUND2_SECRET_SCAN=PASS
+ROUND2_SETUP_PATH_ABSENT=yes
+FINAL_ROUND2_ARTIFACT_CHECKS=PASS
+FINAL_ROUND2_POST_REPORT_DIFF_WHITESPACE_SECRET_CHECK=PASS

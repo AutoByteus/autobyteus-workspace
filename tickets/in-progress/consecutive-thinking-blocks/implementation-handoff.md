@@ -12,6 +12,8 @@
 
 Historical review, API/E2E, delivery, release, build, and verification artifacts remain preserved in the same ticket directory. They are evidence for the failed prior candidate, not current pass results.
 
+This handoff supersedes the earlier Round 4 implementation handoff for source-review purposes. It records the implementation-owned resolution of the latest-base merge described in `delivery-integration-conflict-report.md`; all earlier source-review and API/E2E results are historical and must be rerun on the integrated commit.
+
 ## What Changed
 
 - Converted reasoning normalization to a strict completed-snapshot-only contract. `item/reasoning/summaryTextDelta`, `item/reasoning/delta`, and `item/reasoning/summaryPartAdded` are explicit permanent no-effect dispatch cases and never enter reasoning or ordered-tool state.
@@ -22,8 +24,10 @@ Historical review, API/E2E, delivery, release, build, and verification artifacts
   - a matching start-after-approval, result, failure, denial, approval transition, completion, or log preserves the active reasoning block;
   - suppressed and ignored events that emit no conversation card neither mark nor clear.
 - Cleared ordered-tool state together with reasoning state at turn start/completion and terminal runtime error.
-- Narrowly changed `RuntimeMemoryEventAccumulator.recordToolResult()` to snapshot `ToolState.callWritten` before inference. Result-first inference still delegates to `writeToolCall()` and flushes reasoning before the inferred card; a matching result writes without flushing the open reasoning segment.
-- Kept storage schema, run-history projection, GraphQL, frontend production code, and pre-fix historical data unchanged.
+- Integrated the latest-base `ToolCallIdentity`, lifecycle-group hydration, authoritative-argument readiness, split call/result trace IDs, interruption handling, and minimal result-row model with the Round 4 ordered-card sequencing invariant.
+- Added provider-agnostic `callObserved` state beside physical `callRawTraceId` state. The first normalized call observation flushes pre-card reasoning even when authoritative arguments defer the physical call; a matching terminal can later persist that call and result without flushing post-card reasoning; a genuinely result-first terminal still flushes before inferring the missing call.
+- Added focused deferred-argument coverage proving `reasoning before card -> placeholder start -> reasoning A -> matching terminal with arguments -> reasoning B -> next tool` persists as `reasoning before card -> call -> result -> one A+B reasoning trace -> next call`.
+- Kept storage schema, historical projection shape, GraphQL contract, frontend production code, and pre-fix historical data unchanged. Auto-merged latest-base converter, memory, GraphQL, and durable tests were inspected for semantic compatibility.
 
 ## Key Files Or Areas
 
@@ -31,6 +35,7 @@ Historical review, API/E2E, delivery, release, build, and verification artifacts
 - Modified: `codex-reasoning-block-tracker.ts`, `codex-reasoning-event-normalizer.ts`, `codex-item-event-payload-parser.ts`
 - Modified: Codex item/thread/turn/raw-response/thread-lifecycle converters and event-name enum
 - Modified: `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts`
+- Added: `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator-state.ts` to keep the changed accumulator below the source-file size guardrail without loosening its runtime state shapes.
 - Added/updated focused tests for reasoning snapshots, permanent delta no-effect, ordered-tool classification, matching/result-first lifecycle placement, memory sequencing, and the exact long-running-tool regression.
 - The reviewed Round 4 server/web architecture documentation is retained; no frontend production source was changed.
 
@@ -43,10 +48,10 @@ Historical review, API/E2E, delivery, release, build, and verification artifacts
 
 ## Known Risks
 
-- Exact real Codex invocation correlation across approval/start/result surfaces and future live/reload parity still require downstream API/E2E execution.
+- Exact real Codex invocation correlation across approval/start/result surfaces, including hosted-search deferred arguments, and future live/reload parity still require downstream API/E2E execution on the integrated latest-base commit.
 - Pre-fix historical runs remain fragmented by approved scope.
 - UUID namespace collision remains theoretically possible but proportionately controlled by cryptographic UUID plus monotonic per-instance allocation.
-- Ordered-tool placement state and generic memory `callWritten` state intentionally remain separate owners; both depend on the same normalized invocation identity.
+- Codex ordered-tool placement and provider-agnostic memory `callObserved`/physical lifecycle state intentionally remain separate owners; both depend on the same normalized invocation identity.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -55,7 +60,7 @@ Historical review, API/E2E, delivery, release, build, and verification artifacts
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: The implementation uses the three reviewed owners—completed-snapshot reasoning normalization, Codex-local ordered-tool classification, and provider-agnostic memory sequencing—without moving raw Codex policy into memory, history, GraphQL, or frontend production code.
+- Evidence / notes: The implementation uses the three reviewed owners—completed-snapshot reasoning normalization, Codex-local ordered-tool classification, and provider-agnostic memory sequencing—without moving raw Codex policy into memory, history, GraphQL, or frontend production code. The latest-base conflict was a local sequencing integration defect within the existing memory owner, not a requirement or ownership gap.
 
 ## Legacy / Compatibility Removal Check
 
@@ -65,14 +70,14 @@ Historical review, API/E2E, delivery, release, build, and verification artifacts
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: Largest changed source files are 473 and 464 effective non-empty lines. No changed source file has a `>220` line delta; the new ordered-tool tracker is 42 effective non-empty lines.
+- Notes: The integrated accumulator is 490 effective non-empty lines after extracting its tight internal state types to a 17-line adjacent file. The local merge-resolution delta remains below the `>220` review signal.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Not Affected`
 - Design-spec decision reference: `design-spec.md` section “Persisted Data / State Transition Decision” and “Memory Flush Invariants For Ordered Tool Updates”
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence or discard/rebuild result, when applicable: Focused accumulator coverage proves `tool start -> reasoning A -> matching result -> reasoning B -> next tool` persists `tool_call -> tool_result -> one reasoning(A+B) -> next tool_call`; result-first still flushes reasoning before the inferred call.
+- Direct-use evidence or discard/rebuild result, when applicable: Focused accumulator coverage proves both the ordinary and deferred-authoritative-argument forms of `tool start -> reasoning A -> matching result -> reasoning B -> next tool` persist `tool_call -> tool_result -> one reasoning(A+B) -> next tool_call`; result-first still flushes reasoning before the inferred call. Lifecycle hydration reads the latest-base physical trace groups directly without migration or compatibility writes.
 - Migration implementation and focused checks, only when `Migration Required`: `N/A`
 - Deviation from the reviewed transition decision: `None`
 
@@ -83,18 +88,18 @@ Historical review, API/E2E, delivery, release, build, and verification artifacts
 
 ## Local Implementation Checks Run
 
-- Focused server unit/narrow integration suite: 7 files / 140 tests passed, covering reasoning tracker, ordered-tool tracker, converter matrix, existing converter/parser regression, runtime memory sequencing, and cross-runtime memory persistence.
-- Generic frontend live/hydration suites: 2 files / 29 tests passed.
-- `pnpm exec tsc -p tsconfig.build.json --noEmit`: passed.
-- `pnpm build:full` in `autobyteus-server-ts`: passed, including built-in agents bootstrap smoke check.
-- `git diff --check`: passed before commit.
+- Integrated focused server unit/narrow integration suite: 10 files / 160 tests passed, covering accumulator sequencing and lifecycle hydration, recorder/writer/normalizer behavior, raw replay projection, snapshot-only reasoning conversion, Codex ordered-tool classification, thread conversion, cross-runtime persistence, and Codex MCP argument projection.
+- `pnpm prepare:shared`: passed, including the latest-base `autobyteus-ts` build and runtime-dependency verification.
+- `pnpm exec prisma generate --schema ./prisma/schema.prisma`: passed.
+- `pnpm build:full` in `autobyteus-server-ts`: passed, including TypeScript production compilation and built-in agents bootstrap smoke check.
+- Focused local diff/whitespace and conflict-marker checks passed for the implementation-owned paths. Imported latest-base historical evidence logs retain their upstream whitespace and were not rewritten.
 - Source scan confirms old reasoning delta routing/fallback APIs are absent; only explicit permanent no-effect event constants/cases/tests/docs remain.
 - These are implementation-scoped local checks only, not API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - Execute the exact packaged failure sequence with one invocation: `tool start -> completed reasoning A -> matching result -> completed reasoning B -> next tool start`; assert one live normalized reasoning ID/card for A+B.
-- Verify the same future run writes one reasoning trace for A+B, attaches the result to the earlier tool call in GraphQL projection, and hydrates one Thinking card after reload.
+- Verify the same future run writes one reasoning trace for A+B, attaches the result to the earlier tool call in GraphQL projection, and hydrates one Thinking card after reload. Repeat with a hosted-search placeholder whose arguments first become authoritative at terminal time.
 - Send `summaryTextDelta` and both legacy reasoning delta methods before, during, and after an active block; assert zero normalized events, content, allocation, clear, tool classification, persistence, or UI change. Then assert the completed snapshot appears once.
 - Cover matching success/failure/denial/log/approval/start-after-approval updates and result-first/missing-identity creation across item, local MCP, file-log, and raw function-output surfaces.
 - Recheck suppressed send-message and ignored tool/permissions notifications, compaction/status/progress preservation, turn/error resets, unscoped clear-all, cache eviction, and multi-run/team isolation.
@@ -102,4 +107,4 @@ Historical review, API/E2E, delivery, release, build, and verification artifacts
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. Return through implementation source review, then full API/E2E investigation/execution and proportional test review. Do not resume delivery from the historical pass artifacts.
+Yes. Return through fresh implementation source review, then full API/E2E investigation/execution and proportional test review on the latest-base-integrated commit. Do not resume delivery from the historical pass artifacts.

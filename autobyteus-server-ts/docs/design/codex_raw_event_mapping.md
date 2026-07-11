@@ -106,8 +106,11 @@ Normalized result:
 `SEGMENT_START` / `SEGMENT_END` tell the UI that a tool-call segment exists and
 has finished display parsing. They are not execution success/failure authority.
 `TOOL_EXECUTION_*` events drive Activity terminal state and storage-only memory
-tool-call/tool-result traces. Migrated server-owned backend tools must not be
-reintroduced on this dynamic-tool mapping as compatibility fallbacks.
+tool-call/tool-result traces. The memory writer persists call metadata once on a
+`tool_call` and writes only identity plus result/error on the later
+`tool_result`; terminal lifecycle payloads do not authorize duplicated raw
+result metadata. Migrated server-owned backend tools must not be reintroduced on
+this dynamic-tool mapping as compatibility fallbacks.
 
 ## MCP Tool Lifecycle Spine
 
@@ -129,8 +132,11 @@ Normalized result:
 
 `SEGMENT_START` / `SEGMENT_END` keep the transcript visible, while
 `TOOL_EXECUTION_*` events remain the only durable storage authority for
-tool-call and tool-result raw traces. The memory recorder must not parse raw
-Codex MCP item internals to repair missing arguments.
+tool-call and tool-result raw traces. The enriched terminal event may repeat
+name/arguments for live lifecycle consumers, but storage uses them only to
+materialize a missing call before the result. It never writes them on the raw
+result. The memory recorder must not parse raw Codex MCP item internals to
+repair missing arguments.
 
 Codex Agent Tools MCP calls use this MCP spine through the thread-scoped
 `autobyteus_agent_tools` server config. Live conversion and diagnostic
@@ -158,15 +164,28 @@ converter keeps the transcript segment lane and Activity lifecycle lane separate
 so the middle transcript and right-side Activity panel agree while lifecycle
 events remain the authority for execution and terminal state.
 
+The provider's start item can be only a placeholder: when it has no authoritative
+search/open/find action, the normalized `TOOL_EXECUTION_STARTED` payload omits
+`arguments`. Absence is intentional and differs from an explicit `{}`. The
+terminal item contains the authoritative action/query arguments in the observed
+Codex lifecycle.
+
 Normalized result:
 
-- `item/started(webSearch)` -> `SEGMENT_START(tool_call, tool_name=search_web)` + `TOOL_EXECUTION_STARTED(search_web)`
-- `item/completed(webSearch)` -> exactly one terminal lifecycle event (`TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED`) + `SEGMENT_END(tool_call)`
+- `item/started(webSearch)` -> `SEGMENT_START(tool_call, tool_name=search_web)` +
+  `TOOL_EXECUTION_STARTED(search_web)`, with `arguments` only when the provider
+  supplied an authoritative object
+- `item/completed(webSearch)` -> exactly one terminal lifecycle event
+  (`TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED`) carrying the terminal
+  action arguments + `SEGMENT_END(tool_call)`
 
 `SEGMENT_START` / `SEGMENT_END` continue to own transcript structure and may
 seed or hydrate pending Activity display facts through the shared frontend
 Activity projection. `TOOL_EXECUTION_*` events own executing/terminal state,
-result/error, logs, and storage-only memory tool traces for `search_web`.
+result/error, logs, and storage-only memory tool traces for `search_web`. The
+memory accumulator writes no placeholder `{}` call. When the terminal event is
+the first argument-ready observation, it appends the `tool_call` with the real
+action first and then a separate minimal `tool_result`.
 
 ## Thread History Replay Mapping
 
@@ -205,9 +224,12 @@ Codex reasoning must be written before later visible facts in the same turn.
 `RuntimeMemoryEventAccumulator` owns this storage boundary after Codex raw
 events are normalized into `AgentRunEvent`s:
 
-- open reasoning is flushed before explicit tool-call writes;
-- open reasoning is flushed before terminal tool-result writes that infer a
-  missing tool call;
+- open reasoning is flushed when the first normalized call lifecycle event
+  establishes a new ordered tool card, even when physical call persistence is
+  deferred until authoritative arguments arrive;
+- a matching terminal update may materialize that deferred physical call and
+  result without flushing reasoning written after the card, while a genuinely
+  result-first terminal flushes reasoning before it infers the missing call;
 - open reasoning is flushed before assistant text writes;
 - open reasoning is flushed before assistant-complete output writes;
 - `TURN_COMPLETED` remains a final reasoning flush boundary.
@@ -249,11 +271,13 @@ Boundary handling is semantic rather than based on converter fall-through:
 - supported completed reasoning item snapshots append to the active block rather
   than clearing it.
 
-The memory accumulator stays provider-agnostic and uses its existing
-`ToolState.callWritten` fact: a result for an already-recorded call preserves an
-open reasoning segment, while result-first inference flushes before the newly
-written call. The run-history projection stays unchanged. A repeated normalized
-id accumulates into one future reasoning trace and one
+The memory accumulator stays provider-agnostic and classifies generic normalized
+tool lifecycle state with separate call-observed and physical-call readiness
+facts. A result for an already-observed card preserves an open reasoning segment
+even when authoritative arguments only then make its physical call writable;
+result-first inference flushes before the newly written call. The accumulator
+does not reconstruct Codex raw-event policy. The run-history projection stays
+unchanged. A repeated normalized id accumulates into one future reasoning trace and one
 projected reasoning row; a later allocator-owned id becomes a separate trace
 and row. Pre-fix stored traces are not rewritten and can remain fragmented.
 
@@ -296,8 +320,8 @@ Forbidden downstream effect:
 | `item/started` | `item.type = mcpToolCall` | `SEGMENT_START(tool_call)`, `TOOL_EXECUTION_STARTED`; also tracks pending MCP call data on `CodexThread` | `codex-item-event-converter.ts`, `codex-thread-notification-handler.ts` | Keep |
 | `item/completed` | `item.type = mcpToolCall` | `SEGMENT_END(tool_call)`; also emits `codex/local/mcpToolExecutionCompleted` enriched from pending call data | `codex-item-event-converter.ts`, `codex-thread-notification-handler.ts` | Keep |
 | `codex/local/mcpToolExecutionCompleted` | local event emitted from `item/completed(mcpToolCall)` | `TOOL_EXECUTION_FAILED` when status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED`, preserving pending call arguments when raw completion omits them | `codex-item-event-converter.ts` | Keep |
-| `item/started` | `item.type = webSearch` | `SEGMENT_START(tool_call, tool_name=search_web)`, `TOOL_EXECUTION_STARTED(search_web)` | `codex-item-event-converter.ts` | Keep |
-| `item/completed` | `item.type = webSearch` | `TOOL_EXECUTION_FAILED` when status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED(search_web)`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep |
+| `item/started` | `item.type = webSearch` | `SEGMENT_START(tool_call, tool_name=search_web)`, `TOOL_EXECUTION_STARTED(search_web)`; placeholder starts omit `arguments` | `codex-item-event-converter.ts` | Keep; absent arguments defer raw call persistence, while explicit `{}` remains argument-ready |
+| `item/completed` | `item.type = webSearch` | Terminal lifecycle with authoritative action arguments: `TOOL_EXECUTION_FAILED` when status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED(search_web)`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep; storage appends call first when deferred, then a minimal result |
 | `item/started` | `item.type = fileChange` | `SEGMENT_START(edit_file)`, `TOOL_EXECUTION_STARTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = fileChange` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED(edit_file)`; always ends with `SEGMENT_END(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | diagnostic `thread/read` replay | item families `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, `fileChange` | diagnostic historical replay tool events; not a normal UI display fallback or merge source | `codex-thread-history-item-normalizer.ts`, `codex-run-view-projection-provider.ts` | Keep |
@@ -366,8 +390,9 @@ Output shape:
 
 - Treat `fileChange` item lifecycle as the authoritative owner for Codex `edit_file` lifecycle and changed-file availability.
 - Treat `dynamicToolCall` item lifecycle as the authoritative owner for Codex dynamic-tool execution lifecycle. Use its lifecycle events, not display-only `SEGMENT_*` events or diagnostic `TOOL_LOG`, for Activity success/error status and storage-only memory tool traces.
-- Treat `mcpToolCall` start plus the enriched local MCP completion event as the authoritative owner for Codex MCP tool execution lifecycle. Preserve pending call arguments through terminal events so restart/history projection can rebuild both transcript and Activity surfaces from the same raw traces.
-- Treat `webSearch` item lifecycle as the authoritative owner for Codex `search_web` execution status and storage-only memory tool traces. Segment events may seed pending Activity visibility, but lifecycle events own Activity executing/success/error status.
+- Treat `mcpToolCall` start plus the enriched local MCP completion event as the authoritative owner for Codex MCP tool execution lifecycle. Preserve pending call arguments in live terminal events when required, but persist them only on the call; the raw result remains minimal.
+- Treat `webSearch` item lifecycle as the authoritative owner for Codex `search_web` execution status and storage-only memory tool traces. Segment events may seed pending Activity visibility, but lifecycle events own Activity executing/success/error status. Do not fabricate `{}` arguments for a placeholder start; defer persistence until the terminal action can be written as call-then-result.
+- For every newly persisted Codex tool lifecycle, use compound `(turn_id, tool_call_id)` identity. A call owns name/arguments; a separate result physically owns both result/error keys and omits name/arguments. Existing historical supersets remain a read-only projection concern, not a writer input.
 - Treat local application-owned raw traces as the focused Codex UI reload
   source. `thread/read` replay is diagnostic/runtime-native mapping support;
   keep supported history item families aligned with the live lifecycle families

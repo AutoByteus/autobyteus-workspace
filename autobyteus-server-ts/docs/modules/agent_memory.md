@@ -63,6 +63,41 @@ Codex and Claude runs are recorded by the server as **storage-only** memory:
 3. Assistant text, reasoning, tool lifecycle outcomes, and normalized provider compaction-boundary payloads are captured from normalized `AgentRunEvent`s.
 4. `RunMemoryWriter` writes shared `RawTraceItem` records and updates `WorkingContextSnapshot` through `RunMemoryFileStore`.
 
+Tool execution uses a strict split physical contract shared with native memory:
+
+- a call row owns non-empty `turn_id`, `tool_call_id`, and `tool_name` plus an
+  explicit `tool_args` object;
+- a separate result row owns the same `turn_id` and `tool_call_id` plus
+  physically present `tool_result` and `tool_error` keys, including explicit
+  `null` values;
+- new result rows never repeat `tool_name` or `tool_args`, and a call is never
+  rewritten into a combined terminal row.
+
+`RuntimeMemoryEventAccumulator` persists a call at the first approval/start/
+terminal event that has valid identity, name, and authoritative arguments.
+Provider converters own the difference between an absent argument field (“not
+yet available”) and an explicit `{}` (a valid no-argument call); the accumulator
+must not parse provider-native payloads or branch on tool names. If a terminal
+event is the first event with authoritative arguments, the accumulator appends
+the call first and then the minimal result. Missing identity/arguments and
+ambiguous reused call ids are skipped and logged instead of receiving fabricated
+state.
+
+The first normalized approval/start observation also establishes the ordered
+tool-card boundary and flushes preceding reasoning, even when the physical call
+must wait for authoritative arguments. A matching terminal may then persist the
+deferred call and result without flushing reasoning written after that card. If
+the terminal is genuinely result-first, it flushes preceding reasoning before
+inferring the missing call. This classification uses generic normalized
+call-observed and physical-lifecycle state; memory does not import or reconstruct
+Codex raw-event policy.
+
+Physical lifecycle state is keyed by `(turn_id, tool_call_id)`, hydrated from
+complete rotated segments plus active rows when a recorder is reconstructed,
+and records call-written and result-written independently. This permits an
+archived call and active result to remain one lifecycle while keeping native
+active-file compaction eligibility and pruning active-only.
+
 The recorder does not instantiate a Codex/Claude memory manager, retrieve memory for those runtimes, inject recorded memory into prompts, or alter provider/runtime session state. Memory persistence is independent of websocket clients; the sidecar is attached by the run manager, not by live stream subscribers.
 
 Route-backed Agent Tools MCP calls from Codex App Server and Claude Agent SDK
@@ -151,6 +186,11 @@ Raw traces preserve provenance needed by future analyzers:
 - `source_event` / GraphQL `sourceEvent`
 - `content`, `media`, tool identity, tool args/result/error, correlation id, and timestamp fields when present
 
+The inspector exposes physical rows. For current writes, call-side name/args
+appear only on `tool_call`, while result/error appear only on `tool_result`.
+Working Context may retain a tool name on its provider-protocol result message;
+that separate projection does not change the raw result shape.
+
 GraphQL memory-view queries:
 
 - `getAgentRunMemoryView(runId: String!, source: MemoryExplorerSourceInput)`
@@ -177,6 +217,9 @@ Current archive/rotation behavior:
 - Readers prefer `raw_traces_manifest.json`; old `raw_traces_archive_manifest.json` plus `raw_traces_archive/` are data-read/migration fallback only when no new manifest exists.
 - Startup app-data migration `20260617_raw_trace_rotation_layout` converts old complete archive segments to direct rotated files, excludes pending entries from the new manifest, and decommissions old authoritative manifest/archive files after verification.
 - Complete-corpus reads include complete rotated segments plus active records, ordered by timestamp, turn id, sequence, then id.
+- Complete-corpus tool projection groups physical rows by compound
+  `(turn_id, tool_call_id)` identity, so a call and result may reside in
+  different files without producing duplicate interactions.
 - Pending manifest entries are retry state only and are not exposed to readers.
 - Sequence initialization for restored external runs reads active records plus complete rotated segments so per-turn `seq` values continue without reuse.
 
@@ -208,6 +251,14 @@ Provider-boundary handling must not create Codex/Claude semantic or episodic mem
 Run-history remains the owner of conversation/activity replay DTOs. Agent-memory may read run-history metadata/catalog rows to enrich explorer display names, summaries, workspace paths, timestamps, and grouping IDs, but stored memory remains the source of truth for inclusion in the Memory UI.
 
 When runtime-native Codex or Claude history cannot be read, the local-memory projection fallback can build a replay bundle from the complete raw-trace corpus using the explicit persisted `memoryDir` basename as the local run/member id. Provider-boundary markers are provenance and are not converted into user-visible conversation/activity items.
+
+Run-history and work-trace projection build one logical interaction from the
+physical call/result pair. New minimal results obtain name/arguments from their
+call. Existing historical result rows that contain duplicated or late/effective
+name/arguments remain readable through a logical read-only override; that
+historical overlay is never fed back into recorder/writer decisions. Existing
+files are directly usable: this contract requires no raw-file rewrite, schema
+branch, Memory Sync change, or migration.
 
 ## Key Source Files
 

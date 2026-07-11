@@ -1,0 +1,9 @@
+COMMAND: pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit
+CORE_SOURCE_TYPECHECK_EXIT=0
+COMMAND: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+SERVER_SOURCE_TYPECHECK_EXIT=0
+COMMAND: git diff --check
+GIT_DIFF_CHECK_EXIT=0
+FINAL_STATIC_EXIT=0
+UNTRACKED_AND_ARTIFACT_WHITESPACE_CHECK=PASS
+TRACKED_DIFF_CHECK_AFTER_REPORTS=PASS

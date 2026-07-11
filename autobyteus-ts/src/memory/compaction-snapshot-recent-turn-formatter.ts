@@ -1,6 +1,8 @@
 import { RawTraceItem } from './models/raw-trace-item.js';
-import { ToolInteractionStatus } from './models/tool-interaction.js';
+import { ToolInteractionStatus, type ToolInteraction } from './models/tool-interaction.js';
+import { createToolCallIdentity, toolCallIdentityKey } from './models/tool-call-identity.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
+import type { ToolCallContext } from './tool-trace-lifecycle-index.js';
 
 export const RECENT_TURN_TRUNCATION_MARKER = ' …[truncated]';
 
@@ -48,53 +50,53 @@ export const clampRenderedLine = (line: string, maxItemChars: number | null | un
 };
 
 export class CompactionSnapshotRecentTurnFormatter {
-  format(rawTail: RawTraceItem[], maxItemChars?: number | null): string[] {
+  format(
+    rawTail: RawTraceItem[],
+    maxItemChars?: number | null,
+    callContextByIdentity: ReadonlyMap<string, ToolCallContext> = new Map(),
+  ): string[] {
     const lines: string[] = [];
-    const interactions = buildToolInteractions(rawTail);
-    const interactionIds = new Set(interactions.map((interaction) => interaction.toolCallId));
-
-    const firstTraceByCallId = new Map<string, RawTraceItem>();
+    const interactions = buildToolInteractions(rawTail, { callContextByIdentity });
+    const byIdentity = new Map(interactions.map((interaction) => [
+      toolCallIdentityKey({ turnId: interaction.turnId!, toolCallId: interaction.toolCallId }),
+      interaction,
+    ]));
+    const renderedToolIdentities = new Set<string>();
     for (const item of rawTail) {
-      if (item.toolCallId && !firstTraceByCallId.has(item.toolCallId)) {
-        firstTraceByCallId.set(item.toolCallId, item);
-      }
-    }
-
-    const sortedInteractions = [...interactions].sort((a, b) => {
-      const firstA = firstTraceByCallId.get(a.toolCallId);
-      const firstB = firstTraceByCallId.get(b.toolCallId);
-      return (firstA?.seq ?? 0) - (firstB?.seq ?? 0);
-    });
-
-    for (const interaction of sortedInteractions) {
-      const trace = firstTraceByCallId.get(interaction.toolCallId);
-      const prefix = trace ? `(${trace.turnId}:${trace.seq}) TOOL:` : '(unknown) TOOL:';
-      const toolName = safeStringify(interaction.toolName ?? 'unknown_tool');
-      const argumentsText = safeStringify(interaction.arguments ?? {});
-
-      let resultText: string;
-      if (interaction.status === ToolInteractionStatus.PENDING) {
-        resultText = 'pending';
-      } else if (interaction.status === ToolInteractionStatus.ERROR) {
-        resultText = safeStringify(interaction.error ?? 'error');
-      } else {
-        resultText = safeStringify(interaction.result);
-      }
-
-      const line = `${prefix} ${toolName} ${argumentsText} -> ${resultText}`;
-      lines.push(clampRenderedLine(line, maxItemChars));
-    }
-
-    for (const item of rawTail) {
-      if ((item.traceType === 'tool_call' || item.traceType === 'tool_result')
-        && item.toolCallId
-        && interactionIds.has(item.toolCallId)) {
+      if (item.traceType === 'tool_call' || item.traceType === 'tool_result') {
+        const identity = createToolCallIdentity(item.turnId, item.toolCallId);
+        if (!identity) {
+          lines.push(this.formatRawTrace(item, maxItemChars));
+          continue;
+        }
+        const key = toolCallIdentityKey(identity);
+        if (renderedToolIdentities.has(key)) continue;
+        renderedToolIdentities.add(key);
+        const interaction = byIdentity.get(key);
+        if (interaction) lines.push(this.formatInteraction(item, interaction, maxItemChars));
         continue;
       }
       lines.push(this.formatRawTrace(item, maxItemChars));
     }
 
     return lines;
+  }
+
+  private formatInteraction(
+    trace: RawTraceItem,
+    interaction: ToolInteraction,
+    maxItemChars?: number | null,
+  ): string {
+    const prefix = `(${trace.turnId}:${trace.seq}) TOOL:`;
+    const resultText = interaction.status === ToolInteractionStatus.PENDING
+      ? 'pending'
+      : interaction.status === ToolInteractionStatus.ERROR
+        ? safeStringify(interaction.error ?? 'error')
+        : safeStringify(interaction.result);
+    return clampRenderedLine(
+      `${prefix} ${safeStringify(interaction.toolName ?? 'unknown_tool')} ${safeStringify(interaction.arguments ?? {})} -> ${resultText}`,
+      maxItemChars,
+    );
   }
 
   private formatRawTrace(item: RawTraceItem, maxItemChars?: number | null): string {

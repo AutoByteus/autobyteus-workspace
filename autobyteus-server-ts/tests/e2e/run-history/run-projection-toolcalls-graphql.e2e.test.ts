@@ -144,9 +144,8 @@ const writeLocalReplayToolTrace = async (
       {
         trace_type: "tool_result",
         tool_call_id: input.dynamicInvocationId,
-        tool_name: "send_message_to",
-        tool_args: input.dynamicArgs,
         tool_result: { delivered: true },
+        tool_error: null,
         turn_id: "turn-1",
         seq: 6,
         ts: TOOL_TS + 0.3,
@@ -313,6 +312,110 @@ describe("Run projection tool-call GraphQL e2e", () => {
     });
   });
 
+  it("projects an archived call with an active minimal result exactly once through GraphQL", async () => {
+    const metadataStore = new AgentRunMetadataStore(memoryDir);
+    const runId = "run-codex-cross-file-toolcalls-graphql";
+    const runDir = path.join(memoryDir, "agents", runId);
+    await metadataStore.writeMetadata(runId, {
+      runId,
+      agentDefinitionId: "agent-codex-cross-file-toolcalls",
+      workspaceRootPath,
+      memoryDir: runDir,
+      llmModelIdentifier: "gpt-5.2-codex",
+      llmConfig: null,
+      autoExecuteTools: false,
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      platformAgentRunId: "native-thread-should-not-recover-cross-file",
+    } satisfies AgentRunMetadata);
+
+    const writer = new RunMemoryWriter({ memoryDir: runDir });
+    writer.appendRawTrace({
+      traceType: "tool_call",
+      turnId: "turn-cross-file",
+      sourceEvent: "TOOL_EXECUTION_STARTED",
+      ts: TOOL_TS,
+      toolCallId: "cross-file-tool-1",
+      toolName: "functions.exec_command",
+      toolArgs: { cmd: "printf cross-file" },
+    });
+    const boundaryKey = "codex:thread-cross-file:projection-boundary";
+    const boundary = writer.appendRawTrace({
+      traceType: "provider_compaction_boundary",
+      turnId: "turn-cross-file",
+      sourceEvent: "COMPACTION_STATUS",
+      ts: TOOL_TS + 0.1,
+      content: "Provider compaction boundary",
+      correlationId: boundaryKey,
+      toolResult: {
+        provider: "codex",
+        rotation_eligible: true,
+      },
+    });
+    writer.rotateActiveRawTracesBeforeBoundary({
+      boundaryTraceId: boundary.id,
+      boundaryKey,
+      boundaryType: "provider_compaction_boundary",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      sourceEvent: "codex.thread_compacted",
+    });
+    writer.appendRawTrace({
+      traceType: "tool_result",
+      turnId: "turn-cross-file",
+      sourceEvent: "TOOL_EXECUTION_SUCCEEDED",
+      ts: TOOL_TS + 0.2,
+      toolCallId: "cross-file-tool-1",
+      toolResult: { stdout: "cross-file", exit_code: 0 },
+      toolError: null,
+    });
+
+    const lifecycle = writer.readToolTraceLifecycleGroups();
+    expect([...lifecycle.values()]).toEqual([
+      expect.objectContaining({
+        identity: { turnId: "turn-cross-file", toolCallId: "cross-file-tool-1" },
+        call: expect.objectContaining({ toolName: "functions.exec_command" }),
+        result: expect.objectContaining({ toolResult: { stdout: "cross-file", exit_code: 0 } }),
+      }),
+    ]);
+
+    const result = await execGraphql<{ getRunProjection: ProjectionPayload }>(
+      `
+        query RunProjection($runId: String!) {
+          getRunProjection(runId: $runId) {
+            runId
+            summary
+            lastActivityAt
+            conversation
+            activities
+          }
+        }
+      `,
+      { runId },
+    );
+
+    const conversationRows = result.getRunProjection.conversation.filter(
+      (row) => row.invocationId === "cross-file-tool-1",
+    );
+    const activityRows = result.getRunProjection.activities.filter(
+      (row) => row.invocationId === "cross-file-tool-1",
+    );
+    expect(readThreadMock).not.toHaveBeenCalled();
+    expect(conversationRows).toHaveLength(1);
+    expect(activityRows).toHaveLength(1);
+    expect(conversationRows[0]).toMatchObject({
+      kind: "tool_call",
+      toolName: "functions.exec_command",
+      toolArgs: { cmd: "printf cross-file" },
+      toolResult: { stdout: "cross-file", exit_code: 0 },
+    });
+    expect(activityRows[0]).toMatchObject({
+      toolName: "functions.exec_command",
+      arguments: { cmd: "printf cross-file" },
+      result: { stdout: "cross-file", exit_code: 0 },
+      status: "success",
+    });
+  });
+
   it("preserves Codex reasoning across runtime writes and reloads through getRunProjection", async () => {
     const metadataStore = new AgentRunMetadataStore(memoryDir);
     const runId = "run-codex-reasoning-durability-graphql";
@@ -330,9 +433,11 @@ describe("Run projection tool-call GraphQL e2e", () => {
       platformAgentRunId: "native-thread-should-not-recover-reasoning",
     } satisfies AgentRunMetadata);
 
+    const writer = new RunMemoryWriter({ memoryDir: runDir });
     const accumulator = new RuntimeMemoryEventAccumulator({
       runId,
-      writer: new RunMemoryWriter({ memoryDir: runDir }),
+      writer,
+      toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
     });
 
     accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-tool" }));
@@ -541,9 +646,11 @@ describe("Run projection tool-call GraphQL e2e", () => {
       platformAgentRunId: "native-thread-must-not-recover-ordered-tool-reasoning",
     } satisfies AgentRunMetadata);
 
+    const writer = new RunMemoryWriter({ memoryDir: runDir });
     const accumulator = new RuntimeMemoryEventAccumulator({
       runId,
-      writer: new RunMemoryWriter({ memoryDir: runDir }),
+      writer,
+      toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
     });
     const converter = new CodexThreadEventConverter(runId);
     const recordConverted = (method: string, params: Record<string, unknown>): AgentRunEvent[] => {

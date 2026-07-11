@@ -166,7 +166,7 @@ describe("AgentRunMemoryRecorder", () => {
     const traces = readView(memoryDir).rawTraces ?? [];
     expect(traces.map((trace) => [trace.traceType, trace.toolName, trace.toolCallId])).toEqual([
       ["tool_call", "send_message_to", "call-send-message-1"],
-      ["tool_result", "send_message_to", "call-send-message-1"],
+      ["tool_result", null, "call-send-message-1"],
     ]);
     expect(traces[0]).toMatchObject({
       sourceEvent: AgentRunEventType.TOOL_EXECUTION_STARTED,
@@ -186,5 +186,7 @@ describe("AgentRunMemoryRecorder", () => {
       ],
       toolError: null,
     });
+    expect(traces[1]?.toolArgs).toBeNull();
+    expect(traces[1]?.toolName).toBeNull();
   });
 });

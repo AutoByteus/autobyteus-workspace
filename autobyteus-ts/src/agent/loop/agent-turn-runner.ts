@@ -132,6 +132,10 @@ export class AgentTurnRunner {
             source: 'ToolResultEvent',
             appendToWorkingContext: false
           });
+          memoryManager.finalizePendingToolCallsForTurn(turnId, reason, {
+            source: 'AgentTurnInterruptedEvent',
+            appendToWorkingContext: false,
+          });
           memoryManager.appendRawTrace({
             turnId,
             traceType: 'operation_boundary',
@@ -176,7 +180,6 @@ export class AgentTurnRunner {
 
   private buildCompletedToolFactsForMemory(events: ToolResultEvent[], turnId: string): ToolResultEvent[] {
     return events
-      .filter((event) => !event.isDenied)
       .filter((event) => !event.turnId || event.turnId === turnId)
       .map((event) => new ToolResultEvent(
         event.toolName,

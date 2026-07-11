@@ -43,6 +43,10 @@ export class FileMemoryStore extends MemoryStore {
     return this.runStore.listRawTracesOrdered(limit);
   }
 
+  override listRawTraceCorpusOrdered(limit?: number): RawTraceItem[] {
+    return this.runStore.listRawTraceCorpusOrdered(limit);
+  }
+
   listRawTraceDicts(): Record<string, unknown>[] {
     return this.runStore.listRawTraceDicts();
   }

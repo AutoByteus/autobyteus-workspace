@@ -1,0 +1,14 @@
+BASE=3effb76ab56d4d1bb876ad0623a8e5eb7093a584
+COMMAND: git diff --name-only 3effb76ab56d4d1bb876ad0623a8e5eb7093a584 -- autobyteus-ts/src autobyteus-server-ts/src | grep path patterns for migration/Memory Sync/schema version
+CHANGED_FORBIDDEN_PATHS=NONE
+COMMAND: git diff -U0 3effb76ab56d4d1bb876ad0623a8e5eb7093a584 -- autobyteus-ts/src autobyteus-server-ts/src | grep added runtime compatibility vocabulary
+FORBIDDEN_ADDED_VOCABULARY=NONE
+COMMAND: grep -nEi 'codex|claude|search_web|run_bash' autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts
+PROVIDER_SPECIFIC_ACCUMULATOR_LITERAL=NONE
+COMMAND: find autobyteus-ts autobyteus-server-ts -type f for historical-tool-trace-read.ts or tool-trace-correlation.ts
+OBSOLETE_PROTOTYPES=ABSENT
+COMMAND: git diff --quiet 3effb76ab56d4d1bb876ad0623a8e5eb7093a584 -- autobyteus-ts/src/agent/loop/tool-phase.ts
+TOOL_PHASE_DIFF=NONE
+COMMAND: git diff --check
+GIT_DIFF_CHECK=PASS
+STATIC_AUDIT=PASS

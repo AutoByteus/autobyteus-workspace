@@ -1,0 +1,114 @@
+captured_at=2026-07-11T05:33:40Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification
+node=v22.23.1
+pnpm=10.28.2
+codex=codex-cli 0.144.1
+git_status_begin
+## codex/tool-result-trace-simplification...origin/personal [behind 9]
+ M autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts
+ M autobyteus-server-ts/src/agent-memory/domain/memory-recording-models.ts
+ M autobyteus-server-ts/src/agent-memory/services/agent-run-memory-recorder.ts
+ M autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer.ts
+ M autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts
+ M autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-payload.ts
+ M autobyteus-server-ts/src/agent-memory/store/run-memory-writer.ts
+ M autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-projection-service.ts
+ M autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-renderer.ts
+ M autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts
+ M autobyteus-server-ts/tests/agent-work-traces/agent-work-trace-projection-service.test.ts
+ M autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+ M autobyteus-server-ts/tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+ M autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-memory/run-memory-writer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+ M autobyteus-server-ts/tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts
+ M autobyteus-ts/src/agent/loop/agent-turn-runner.ts
+ M autobyteus-ts/src/memory/compaction-snapshot-recent-turn-formatter.ts
+ M autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts
+ M autobyteus-ts/src/memory/compaction/compaction-window-planner.ts
+ M autobyteus-ts/src/memory/compaction/interaction-block-builder.ts
+ M autobyteus-ts/src/memory/compaction/interaction-block.ts
+ M autobyteus-ts/src/memory/compaction/summarizer.ts
+ M autobyteus-ts/src/memory/compaction/tool-result-digest-builder.ts
+ M autobyteus-ts/src/memory/index.ts
+ M autobyteus-ts/src/memory/memory-manager-tool-protocol-safety.ts
+ M autobyteus-ts/src/memory/memory-manager.ts
+ M autobyteus-ts/src/memory/models/raw-trace-item.ts
+ M autobyteus-ts/src/memory/models/tool-interaction.ts
+ M autobyteus-ts/src/memory/raw-trace-ingestion.ts
+ M autobyteus-ts/src/memory/restore/working-context-recovery-projector.ts
+ M autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts
+ M autobyteus-ts/src/memory/store/base-store.ts
+ M autobyteus-ts/src/memory/store/file-store.ts
+ M autobyteus-ts/src/memory/store/run-memory-file-store.ts
+ M autobyteus-ts/src/memory/tool-interaction-builder.ts
+ M autobyteus-ts/src/memory/working-context-tool-protocol-repairer.ts
+ M autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts
+ M autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts
+ M autobyteus-ts/tests/unit/memory/compaction-task-prompt-builder.test.ts
+ M autobyteus-ts/tests/unit/memory/compaction-window-planner.test.ts
+ M autobyteus-ts/tests/unit/memory/memory-manager.test.ts
+ M autobyteus-ts/tests/unit/memory/summarizer-message-units.test.ts
+ M autobyteus-ts/tests/unit/memory/tool-interaction-builder.test.ts
+ M autobyteus-ts/tests/unit/memory/working-context-message-window-planner.test.ts
+ M autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts
+ M autobyteus-ts/tests/unit/memory/working-context-tool-protocol-repairer.test.ts
+?? autobyteus-server-ts/tests/unit/agent-memory/raw-trace-record-normalizer.test.ts
+?? autobyteus-ts/src/memory/models/tool-call-identity.ts
+?? autobyteus-ts/src/memory/tool-trace-lifecycle-index.ts
+?? autobyteus-ts/tests/unit/memory/raw-trace-item.test.ts
+?? autobyteus-ts/tests/unit/memory/tool-trace-lifecycle-index.test.ts
+?? tickets/in-progress/tool-result-trace-simplification/
+git_status_end
+ignored_test_artifacts_begin
+!! autobyteus-ts/mcp-config-12msRL/
+!! autobyteus-ts/mcp-config-EkBMC1/
+!! autobyteus-ts/mcp-config-I9UtvU/
+!! autobyteus-ts/mcp-config-NLaaTN/
+!! autobyteus-ts/mcp-config-RDSlKu/
+!! autobyteus-ts/mcp-config-UTyDww/
+!! autobyteus-ts/mcp-config-WkVmpW/
+!! autobyteus-ts/mcp-config-frnYND/
+!! autobyteus-ts/mcp-config-poG7t5/
+!! autobyteus-ts/tmp-edit-file-20lkCT/
+!! autobyteus-ts/tmp-edit-file-2JTPSy/
+!! autobyteus-ts/tmp-edit-file-3cIIDc/
+!! autobyteus-ts/tmp-edit-file-4whzL7/
+!! autobyteus-ts/tmp-edit-file-9YX0HW/
+!! autobyteus-ts/tmp-edit-file-AZ1uUL/
+!! autobyteus-ts/tmp-edit-file-EsPBia/
+!! autobyteus-ts/tmp-edit-file-J43J4r/
+!! autobyteus-ts/tmp-edit-file-SxvaiE/
+!! autobyteus-ts/tmp-edit-file-XMBc9N/
+!! autobyteus-ts/tmp-edit-file-f7AFeN/
+!! autobyteus-ts/tmp-edit-file-fO0u4S/
+!! autobyteus-ts/tmp-edit-file-nJrbF6/
+!! autobyteus-ts/tmp-edit-file-pd8agz/
+!! autobyteus-ts/tmp-edit-file-pzF0Ic/
+!! autobyteus-ts/tmp-edit-file-q6fQ6F/
+!! autobyteus-ts/tmp-edit-file-s1jRxz/
+!! autobyteus-ts/tmp-edit-file-zHRpiK/
+!! autobyteus-ts/tmp-insert-in-file-0Gfamy/
+!! autobyteus-ts/tmp-insert-in-file-BCFKaW/
+!! autobyteus-ts/tmp-insert-in-file-E0ceRr/
+!! autobyteus-ts/tmp-insert-in-file-GHHmgm/
+!! autobyteus-ts/tmp-insert-in-file-HIFKCR/
+!! autobyteus-ts/tmp-insert-in-file-RRM6Mw/
+!! autobyteus-ts/tmp-insert-in-file-VsmDUs/
+!! autobyteus-ts/tmp-insert-in-file-XLbj2y/
+!! autobyteus-ts/tmp-insert-in-file-fdjgoj/
+!! autobyteus-ts/tmp-insert-in-file-hVXrwp/
+!! autobyteus-ts/tmp-insert-in-file-oK7Ygg/
+!! autobyteus-ts/tmp-insert-in-file-xwS0by/
+!! autobyteus-ts/tmp-replace-in-file-1pAn2F/
+!! autobyteus-ts/tmp-replace-in-file-GDAPrH/
+!! autobyteus-ts/tmp-replace-in-file-Hm4N9J/
+!! autobyteus-ts/tmp-replace-in-file-I855RI/
+!! autobyteus-ts/tmp-replace-in-file-d6Xdu8/
+!! autobyteus-ts/tmp-replace-in-file-jNcJ50/
+!! autobyteus-ts/tmp-replace-in-file-rwaZIa/
+!! autobyteus-ts/tmp-replace-in-file-vsBseO/
+!! autobyteus-ts/tmp-replace-in-file-wfwoiO/
+ignored_test_artifacts_end

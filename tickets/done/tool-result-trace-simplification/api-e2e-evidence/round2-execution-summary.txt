@@ -1,0 +1,27 @@
+API/E2E EXECUTION ROUND 2 SUMMARY
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification
+branch=codex/tool-result-trace-simplification
+integrated_candidate_head=8f6b720208d0d0fce9da71f788979281d8e1aea6
+scenario=TTR-OPENAI-014
+trigger=user-requested real OpenAI validation
+credential_source=canonical autobyteus-ts/.env.test loaded in-process; no secret material recorded
+openai_preflight=PASS: inherited key removed, canonical file loaded, /v1/models HTTP 200
+selected_model=gpt-5.4-mini
+selected_model_available=yes
+live_openai=PASS: 1 file, 1 test, 5.24s total, 3.861s journey
+live_assertion_marker_present=yes
+provider_skip_observed=no
+tool_start_state=PASS: call durable with non-empty ID/name/explicit args; correlated result absent
+final_jsonl_state=PASS: exactly one call before one result; result has both outcome keys and no name/args
+file_and_continuation=PASS
+focused_native_regression=PASS: 2 files, 24 tests
+core_source_typecheck=PASS
+tracked_diff_check=PASS
+round2_whitespace_check=PASS
+production_source_changed_in_round2=no
+durable_test_paths_updated_in_round2=1
+test_paths_added_or_removed_in_round2=none
+cleanup=PASS: no credential copy, dependency link, temp OpenAI directory, or ignored-artifact delta
+round2_result=PASS
+final_confidence=98.3%
+next_gate=renewed proportional durable-test review by code_reviewer

@@ -1,3 +1,6 @@
+import type { AgentRunUserMessageAcceptedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
+import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
+
 export const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -50,8 +53,8 @@ export const extractToolName = (payload: Record<string, unknown>): string | null
   return asString(payload["tool_name"]) ?? asString(payload["name"]) ?? asString(metadata?.["tool_name"]);
 };
 
-export const extractToolArgs = (payload: Record<string, unknown>): Record<string, unknown> | null =>
-  asRecord(payload["arguments"]) ?? asRecord(payload["tool_args"]) ?? asRecord(payload["args"]);
+export const extractToolArgs = (payload: Record<string, unknown>): Record<string, unknown> | undefined =>
+  asRecord(payload["arguments"]) ?? asRecord(payload["tool_args"]) ?? asRecord(payload["args"]) ?? undefined;
 
 export const extractToolResult = (payload: Record<string, unknown>): unknown =>
   payload["result"] ?? payload["tool_result"] ?? null;
@@ -67,3 +70,15 @@ export const asBoolean = (value: unknown): boolean | null =>
 
 export const asNumber = (value: unknown): number | null =>
   typeof value === "number" && Number.isFinite(value) ? value : null;
+
+export const extractAcceptedMessageMedia = (
+  message: AgentRunUserMessageAcceptedPayload["message"],
+): RawTraceMedia | null => {
+  const media: RawTraceMedia = { images: [], audio: [], video: [] };
+  for (const file of message.contextFiles ?? []) {
+    if (file.fileType === "image") media.images?.push(file.uri);
+    else if (file.fileType === "audio") media.audio?.push(file.uri);
+    else if (file.fileType === "video") media.video?.push(file.uri);
+  }
+  return media.images?.length || media.audio?.length || media.video?.length ? media : null;
+};

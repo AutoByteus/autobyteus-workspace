@@ -1,4 +1,5 @@
 import type { RawTraceItem } from '../models/raw-trace-item.js';
+import type { ToolInteraction } from '../models/tool-interaction.js';
 import type { ToolResultDigest } from './tool-result-digest.js';
 
 export type InteractionBlockKind = 'user' | 'tool_continuation' | 'recovery';
@@ -17,6 +18,7 @@ export type InteractionBlock = {
   hasMalformedToolTrace: boolean;
   isStructurallyComplete: boolean;
   toolResultDigests: ToolResultDigest[];
+  toolInteractions?: ToolInteraction[];
 };
 
 export const INTERACTION_BLOCK_BOUNDARY_TRACE_TYPES = new Set(['user', 'tool_continuation']);

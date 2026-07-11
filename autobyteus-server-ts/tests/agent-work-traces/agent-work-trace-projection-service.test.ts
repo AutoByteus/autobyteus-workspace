@@ -90,7 +90,6 @@ describe("AgentWorkTraceProjectionService", () => {
       {
         id: "trace-tool-result-1",
         trace_type: "tool_result",
-        tool_name: "run_bash",
         tool_call_id: "tool-call-1",
         turn_id: "turn-1",
         seq: 5,
@@ -110,7 +109,6 @@ describe("AgentWorkTraceProjectionService", () => {
       {
         id: "trace-tool-result-2",
         trace_type: "tool_result",
-        tool_name: "read_file",
         tool_call_id: "tool-call-2",
         turn_id: "turn-1",
         seq: 7,
@@ -270,6 +268,58 @@ describe("AgentWorkTraceProjectionService", () => {
     expect(regeneratedManifest).not.toContain("renderContext");
     expect(regeneratedManifest).not.toContain("subjectLabel");
     expect(second.manifest.schemaVersion).toBe(3);
+  });
+
+  it("renders an archived call with an active minimal result exactly once across the package", async () => {
+    await fs.writeFile(path.join(memoryDir, "raw_traces_archive_manifest.json"), JSON.stringify({
+      schema_version: 1,
+      next_segment_index: 2,
+      segments: [{
+        index: 1,
+        file_name: "raw_traces_000001.jsonl",
+        boundary_type: "provider_compaction_boundary",
+        boundary_key: "split-tool-pair",
+        archived_at: 1_788_000_100,
+        record_count: 1,
+        status: "complete",
+      }],
+    }), "utf-8");
+    await fs.writeFile(path.join(memoryDir, "raw_traces_000001.jsonl"), `${rawTrace({
+      id: "archived-call",
+      trace_type: "tool_call",
+      tool_call_id: "call-split",
+      tool_name: "search_web",
+      tool_args: { query: "cross-file context" },
+      ts: 1_788_000_000,
+      turn_id: "turn-split",
+      seq: 1,
+    })}\n`, "utf-8");
+    await writeActiveRawTraces(memoryDir, [{
+      id: "active-result",
+      trace_type: "tool_result",
+      tool_call_id: "call-split",
+      tool_result: "done",
+      tool_error: null,
+      ts: 1_788_000_200,
+      turn_id: "turn-split",
+      seq: 2,
+    }]);
+
+    const result = await new AgentWorkTraceProjectionService().ensureCurrent(context);
+    const contents = new Map(await Promise.all(result.manifest.files.map(async (file) => [
+      file.sourceId,
+      await fs.readFile(file.filePath, "utf-8"),
+    ] as const)));
+    const archiveContent = contents.get("archive:1")!;
+    const activeContent = contents.get("active")!;
+    const packageContent = [...contents.values()].join("\n");
+
+    expect(archiveContent).toContain("tool:\nname: search_web\nstatus: success");
+    expect(archiveContent).toContain('"query": "cross-file context"');
+    expect(archiveContent).toContain("result:\n  done");
+    expect(activeContent).not.toContain("name: search_web");
+    expect(packageContent.match(/name: search_web/g)).toHaveLength(1);
+    expect(packageContent).not.toContain("name: search_web\nstatus: parsed");
   });
 
   it("excludes separate reasoning text from Markdown and summary hash while keeping visible assistant rationale", async () => {

@@ -125,12 +125,14 @@ const createWebSearchLifecycleStartedEvent = (
 ): AgentRunEvent => {
   const invocationId = context.resolveInvocationId(payload);
   const turnId = context.resolveTurnId(payload);
+  const toolArguments = context.resolveWebSearchArguments(payload);
+  const hasToolArguments = Object.keys(toolArguments).length > 0;
   return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
     ...serializeCodexItemEventPayload(payload),
     ...(invocationId ? { invocation_id: invocationId } : {}),
     ...(turnId ? { turn_id: turnId } : {}),
     tool_name: "search_web",
-    arguments: context.resolveWebSearchArguments(payload),
+    ...(hasToolArguments ? { arguments: toolArguments } : {}),
   });
 };
 
@@ -141,12 +143,14 @@ const createWebSearchTerminalLifecycleEvent = (
 ): AgentRunEvent => {
   const invocationId = context.resolveInvocationId(payload);
   const turnId = context.resolveTurnId(payload);
+  const toolArguments = context.resolveWebSearchArguments(payload);
+  const hasToolArguments = Object.keys(toolArguments).length > 0;
   const basePayload = {
     ...serializeCodexItemEventPayload(payload),
     ...(invocationId ? { invocation_id: invocationId } : {}),
     ...(turnId ? { turn_id: turnId } : {}),
     tool_name: "search_web",
-    arguments: context.resolveWebSearchArguments(payload),
+    ...(hasToolArguments ? { arguments: toolArguments } : {}),
   };
 
   if (context.isExecutionFailure(payload)) {

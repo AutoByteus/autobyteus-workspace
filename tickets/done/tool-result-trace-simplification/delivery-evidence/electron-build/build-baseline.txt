@@ -1,0 +1,35 @@
+ELECTRON TEST BUILD BASELINE
+recorded_utc=2026-07-11T06:26:41Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification
+branch=codex/tool-result-trace-simplification
+head=8f6b720208d0d0fce9da71f788979281d8e1aea6
+origin_personal=ce83847296d9eace2f6eb832521c1d6b135c4722
+platform=Darwin
+host_arch=arm64
+macos_version=26.2
+node_version=v22.23.1
+pnpm_version=10.28.2
+electron_version=42.4.1
+app_version=1.4.8
+build_flavor=personal
+target=macOS arm64 DMG + ZIP
+signing=disabled (APPLE_SIGNING_IDENTITY empty)
+notarization=disabled (Apple credential variables empty)
+timestamping=disabled (NO_TIMESTAMP=1)
+readme_command=NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
+executed_command=AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_SIGNING_IDENTITY= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_TEAM_ID= CSC_IDENTITY_AUTO_DISCOVERY=false pnpm -C autobyteus-web build:electron:mac -- --arm64
+pnpm_lock_sha256_before=50ee22230b26889a059407ac44a0810e049bc69ab6c586c147425d5b9d60b808
+autobyteus_web_package_sha256_before=720eaec6620b013913c886b2e121b0d042d108da71f300d4ddb12b3b2c39360f
+autobyteus_server_package_sha256_before=6bde9204b61b8785f15eb1cbf1d7b19b5665f6aef82f2e49dea38a560ca78dfd
+autobyteus_core_package_sha256_before=f80f01e00e880f489279af1fe1d7209ff2ba40bd9c0b4a729b14698a1ac81624
+electron_dist_before=absent
+web_resources_server_before=absent
+web_dist_before=absent
+web_dist_mobile_before=absent
+server_dist_before=absent
+core_dist_before=absent
+root_node_modules_before=absent
+web_node_modules_before=absent
+server_node_modules_before=absent
+core_node_modules_before=absent
+free_disk_before=371361080 KiB

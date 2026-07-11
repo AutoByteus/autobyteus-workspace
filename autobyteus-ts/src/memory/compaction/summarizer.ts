@@ -73,16 +73,24 @@ export abstract class Summarizer {
       return traces;
     }
 
+    if (message.tool_payload instanceof ToolResultPayload) {
+      return [new RawTraceItem({
+        ...base,
+        id: tracePrefix,
+        seq: 1,
+        traceType: 'tool_result',
+        content: message.content ?? '',
+        toolCallId: message.tool_payload.toolCallId,
+        toolResult: message.tool_payload.toolResult,
+        toolError: message.tool_payload.toolError,
+      })];
+    }
     return [new RawTraceItem({
       ...base,
       id: tracePrefix,
       seq: 1,
-      traceType: message.tool_payload instanceof ToolResultPayload ? 'tool_result' : message.role,
+      traceType: message.role,
       content: message.content ?? '',
-      toolName: message.tool_payload instanceof ToolResultPayload ? message.tool_payload.toolName : null,
-      toolCallId: message.tool_payload instanceof ToolResultPayload ? message.tool_payload.toolCallId : null,
-      toolResult: message.tool_payload instanceof ToolResultPayload ? message.tool_payload.toolResult : null,
-      toolError: message.tool_payload instanceof ToolResultPayload ? message.tool_payload.toolError : null,
     })];
   }
 }

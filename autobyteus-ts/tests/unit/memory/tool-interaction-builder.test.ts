@@ -12,8 +12,8 @@ const makeTrace = (options: {
   toolResult?: unknown;
   toolError?: string | null;
   seq: number;
-}) =>
-  new RawTraceItem({
+}) => {
+  const trace = new RawTraceItem({
     id: `rt_${options.seq}`,
     ts: Date.now() / 1000,
     turnId: options.turnId ?? 'turn_0001',
@@ -24,9 +24,11 @@ const makeTrace = (options: {
     toolName: options.toolName ?? null,
     toolCallId: options.toolCallId ?? null,
     toolArgs: options.toolArgs ?? null,
-    toolResult: options.toolResult ?? null,
-    toolError: options.toolError ?? null
   });
+  if (Object.prototype.hasOwnProperty.call(options, 'toolResult')) trace.toolResult = options.toolResult;
+  if (Object.prototype.hasOwnProperty.call(options, 'toolError')) trace.toolError = options.toolError;
+  return trace;
+};
 
 describe('buildToolInteractions', () => {
   it('builds a complete interaction with success', () => {
@@ -42,7 +44,6 @@ describe('buildToolInteractions', () => {
         traceType: 'tool_result',
         seq: 2,
         toolCallId: 'call_1',
-        toolName: 'write_file',
         toolResult: 'ok'
       })
     ];
@@ -69,7 +70,6 @@ describe('buildToolInteractions', () => {
         traceType: 'tool_result',
         seq: 2,
         toolCallId: 'call_2',
-        toolName: 'read_file',
         toolError: 'not found'
       })
     ];
@@ -94,5 +94,42 @@ describe('buildToolInteractions', () => {
     const interactions = buildToolInteractions(traces);
     expect(interactions).toHaveLength(1);
     expect(interactions[0].status).toBe(ToolInteractionStatus.PENDING);
+  });
+
+  it('classifies an explicit-null result row as successful', () => {
+    const interactions = buildToolInteractions([
+      makeTrace({
+        traceType: 'tool_call', seq: 1, toolCallId: 'call_null',
+        toolName: 'no_output_tool', toolArgs: {},
+      }),
+      makeTrace({
+        traceType: 'tool_result', seq: 2, toolCallId: 'call_null',
+        toolResult: null, toolError: null,
+      }),
+    ]);
+
+    expect(interactions).toHaveLength(1);
+    expect(interactions[0]).toMatchObject({
+      status: ToolInteractionStatus.SUCCESS,
+      result: null,
+      error: null,
+      anchorRawTraceId: 'rt_1',
+      terminalRawTraceId: 'rt_2',
+      anchorTs: expect.any(Number),
+      terminalTs: expect.any(Number),
+    });
+  });
+
+  it('uses historical terminal arguments and keeps reused call ids separate by turn', () => {
+    const interactions = buildToolInteractions([
+      makeTrace({ traceType: 'tool_call', turnId: 'turn_a', seq: 1, toolCallId: 'same', toolName: 'search_web', toolArgs: {} }),
+      makeTrace({ traceType: 'tool_result', turnId: 'turn_a', seq: 2, toolCallId: 'same', toolName: 'search_web', toolArgs: { query: 'cats' }, toolResult: 'done' }),
+      makeTrace({ traceType: 'tool_call', turnId: 'turn_b', seq: 3, toolCallId: 'same', toolName: 'read_file', toolArgs: { path: 'b' } }),
+      makeTrace({ traceType: 'tool_result', turnId: 'turn_b', seq: 4, toolCallId: 'same', toolResult: 'b', toolError: null }),
+    ]);
+
+    expect(interactions).toHaveLength(2);
+    expect(interactions[0]).toMatchObject({ turnId: 'turn_a', arguments: { query: 'cats' }, result: 'done' });
+    expect(interactions[1]).toMatchObject({ turnId: 'turn_b', arguments: { path: 'b' }, result: 'b' });
   });
 });
