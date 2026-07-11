@@ -47,9 +47,19 @@ export class RuntimeToolTraceSequencer {
   recordCallObservation(event: AgentRunEvent, activeTurnId: string | null): ToolTraceSequencingOutcome {
     const identity = this.resolveToolIdentity(event.payload, activeTurnId, "observation");
     if (!identity) return { resolvedTurnId: null };
-    const tool = this.getOrCreateToolState(identity);
-    if (tool.resultRawTraceId) return { resolvedTurnId: identity.turnId };
+    const key = toolCallIdentityKey(identity);
+    const existing = this.tools.get(key);
+    if (existing?.resultRawTraceId) return { resolvedTurnId: identity.turnId };
+    const observedName = extractToolName(event.payload);
+    const knownName = existing?.toolName?.trim() || observedName?.trim();
+    if (!knownName) {
+      console.warn(
+        `[RuntimeToolTraceSequencer] skipped tool observation '${identity.toolCallId}' in turn '${identity.turnId}' because it cannot create or match a tool card without a usable tool name.`,
+      );
+      return { resolvedTurnId: identity.turnId };
+    }
 
+    const tool = existing ?? this.getOrCreateToolState(identity);
     const firstObservation = !tool.callObserved && !tool.callRawTraceId;
     this.mergeToolObservation(tool, event.payload);
     if (firstObservation) {

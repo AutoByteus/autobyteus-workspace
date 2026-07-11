@@ -29,6 +29,7 @@ Historical source-review, API/E2E, delivery, release, build, and verification re
   - later matching readiness writes the strict call then minimal result without moving the boundary;
   - unseen ready terminal flushes before inferred call/result;
   - missing/ambiguous identity or unusable name creates no observation, flush, or write.
+- Resolved source-review finding `CR-CTB-002`: call/start observations now apply the same usable-name card-capability gate before state creation. An identity-only observation has no state/boundary/write effect; a later matching named ready observation owns the one boundary and call write, and its matching terminal preserves.
 - Preserved latest-base physical hydration and controlled interruption behavior. Deferred observation-only state is process-local and removed at turn cleanup; no placeholder call or persisted observation marker was added.
 - Deleted `runtime-memory-event-accumulator-state.ts` with no alias. `SegmentState` is beside the facade; private `RuntimeToolState` is beside the sequencer.
 - Split tool lifecycle state-machine tests into `runtime-tool-trace-sequencer.test.ts`; the accumulator suite now focuses on facade ordering, segment flushing, turn behavior, and compaction.
@@ -52,7 +53,7 @@ Historical source-review, API/E2E, delivery, release, build, and verification re
 ## Important Assumptions
 
 - A terminal is card-capable only when compound identity resolves and a non-empty normalized tool name is available from the event or existing lifecycle state. Argument readiness is independent.
-- A normalized call/approval/start with resolved identity is already a card observation; provider-specific card policy remains upstream in converters.
+- A normalized call/approval/start is a card observation only when compound identity resolves and a usable normalized name is available from the event or existing lifecycle state; provider-specific card policy remains upstream in converters.
 - Physical call hydration implies observation because durable call evidence exists. Observation-only state is intentionally not reconstructable.
 - The approved hard-crash/abandon exception applies only when no physical evidence exists. It cannot justify moving a boundary while the sequencer instance survives.
 
@@ -98,7 +99,7 @@ Historical source-review, API/E2E, delivery, release, build, and verification re
 
 ## Local Implementation Checks Run
 
-- Focused unit/narrow integration suite: 11 files / 161 tests passed. Coverage includes sequencer transitions, accumulator facade ordering, snapshot-only reasoning conversion, ordered-tool classification, converter normalized facts, writer/normalizer/recorder behavior, cross-runtime persistence, and narrow replay projection.
+- Focused unit/narrow integration suite: 11 files / 162 tests passed. Coverage includes the `CR-CTB-002` malformed-call transition, sequencer transitions, accumulator facade ordering, snapshot-only reasoning conversion, ordered-tool classification, converter normalized facts, writer/normalizer/recorder behavior, cross-runtime persistence, and narrow replay projection.
 - `pnpm exec tsc -p tsconfig.build.json --noEmit`: passed.
 - `pnpm prepare:shared`: passed, including `autobyteus-ts` build and runtime-dependency verification.
 - `pnpm exec prisma generate --schema ./prisma/schema.prisma`: passed.

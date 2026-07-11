@@ -128,6 +128,42 @@ describe("RuntimeToolTraceSequencer", () => {
     expect(flushReasoningBoundary).toHaveBeenCalledTimes(2);
   });
 
+  it("ignores an identity-only call observation and places the boundary at the later named card", async () => {
+    const memoryDir = await mkTempDir();
+    const { sequencer, flushReasoningBoundary } = createSequencer(memoryDir);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    expect(sequencer.recordCallObservation(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "named-later",
+      turn_id: "turn-1",
+      arguments: { command: "pwd" },
+    }), null)).toEqual({ resolvedTurnId: "turn-1" });
+    expect(flushReasoningBoundary).not.toHaveBeenCalled();
+    expect(readTraces(memoryDir)).toHaveLength(0);
+
+    sequencer.recordCallObservation(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "named-later",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }), "turn-1");
+    expect(flushReasoningBoundary).toHaveBeenCalledTimes(1);
+    expect(readTraces(memoryDir).map((trace) => trace.traceType)).toEqual(["tool_call"]);
+
+    sequencer.recordTerminal(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "named-later",
+      turn_id: "turn-1",
+      result: { stdout: "/tmp" },
+    }), "turn-1");
+    expect(flushReasoningBoundary).toHaveBeenCalledTimes(1);
+    expect(readTraces(memoryDir).map((trace) => trace.traceType)).toEqual([
+      "tool_call",
+      "tool_result",
+    ]);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("without a usable tool name"));
+    warn.mockRestore();
+  });
+
   it("leaves malformed terminals without observation, boundary, state, or writes", async () => {
     const memoryDir = await mkTempDir();
     const { sequencer, flushReasoningBoundary } = createSequencer(memoryDir);
