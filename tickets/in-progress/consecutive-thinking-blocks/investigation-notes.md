@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete.
-- Current Status: Packaged Electron user verification failed on 2026-07-11. Exact new-run evidence confirms a Design Impact: terminal updates to an already-started tool card were incorrectly treated as new ordered reasoning boundaries. Architecture Round 3 accepted that correction but found a permanent-unsupported-protocol requirement gap and a stale formal spine model. The user approved the bounded package corrections and authorized architecture re-review on 2026-07-11.
+- Current Status: `CR-CTB-001` remains a real architecture gate. Round 5 exposed the unseen-insufficient-terminal transition, and code review requires a deeper current-base ownership reassessment rather than approving the 490-effective-line accumulator shape by documentation. The substantive `RuntimeToolTraceSequencer` extraction is designed and user approved for architecture re-review.
 - Investigation Goal: Locate the precise segmentation boundary responsible for consecutive `Thinking` cards and determine whether AutoByteus behavior is defective.
 - Scope Classification: `Medium`
 - Scope Classification Rationale: The bounded production correction spans Codex App Server reasoning normalization, Codex ordered-tool card-existence classification, and generic memory trace sequencing. History, GraphQL, and frontend production remain unchanged consumers.
@@ -23,10 +23,10 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 - Project Type: `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks`
 - Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks`
-- Current Branch: `codex/consecutive-thinking-blocks`
+- Current Branch: `codex/consecutive-thinking-blocks` at integrated head `19368ac8f0b8f1d03ae7cd28363385d59c95fab7`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks`
 - Bootstrap Base Branch: `origin/personal`
-- Remote Refresh Result: `git fetch origin personal` succeeded on 2026-07-11; worktree created at `ce83847296d9eace2f6eb832521c1d6b135c4722` from refreshed `origin/personal`.
+- Remote Refresh Result: Initial worktree was created at `ce83847296d9eace2f6eb832521c1d6b135c4722`; delivery later refreshed and integrated latest `origin/personal` `f23dbf70a3d28ad0237035f26ede16378da7baaa` into merge head `19368ac8f0b8f1d03ae7cd28363385d59c95fab7`.
 - Task Branch: `codex/consecutive-thinking-blocks`
 - Expected Base Branch: `personal`
 - Expected Finalization Target: `personal`
@@ -37,7 +37,7 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 
 | Artifact Path | Purpose | Evidence Or Decision Captured | Related Requirement / Acceptance-Criteria IDs | Status | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md` | Specify observable contiguous-thinking grouping, separators, ordered-card boundaries, live/replay parity, and non-happy states | User-facing target behavior revised from packaged verification plus completed-snapshot-only content source | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-008`–`REQ-CTB-010`; `AC-CTB-003`–`AC-CTB-007`, `AC-CTB-009`–`AC-CTB-011` | User approved for architecture re-review | Approved input to the revised design |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md` | Specify observable contiguous-thinking grouping, separators, ordered-card boundaries, live/replay parity, non-happy states, and the evidence-free deferred-observation exception | User-facing target behavior plus completed-snapshot-only source, crash/reload constraint, and unseen-insufficient-terminal boundary | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-008`–`REQ-CTB-011`; `AC-CTB-003`–`AC-CTB-013` | Deep current-base redesign user approved | Approved for the next architecture handoff |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/user-verification-failure-analysis.md` | Preserve exact packaged-app failure and origin evidence | Running process/build markers, live GraphQL pairs, raw trace ordering, implementation/design origin | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-009`; `AC-CTB-003`–`AC-CTB-006`, `AC-CTB-010` | Confirmed Design Impact | Include in all rework handoffs |
 
 ## Source Log
@@ -65,7 +65,15 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 | 2026-07-11 | User verification | Screenshots `ctx_87f7e12a4287__image.png`, `ctx_c024a3e629af__image.png` against the packaged app | Validate the implemented future-run behavior | New `delivery_engineer` run still shows adjacent Thinking cards | Block finalization and trace exact sequence |
 | 2026-07-11 | Process/package probe | `ps -p 2900,3521`; `rg` packaged `Contents/Resources/server/dist` | Exclude wrong-app/stale-server testing | Running app and bundled server are the consecutive-thinking-blocks build; new tracker/allocation and terminal clear markers are present | Failure is in candidate behavior |
 | 2026-07-11 | GraphQL/data probe | `getTeamMemberRunProjection` plus `raw_traces_active.jsonl` for `delivery_engineer_44d7...` | Correlate visible pairs with raw order | Four adjacent projection pairs each have exactly one matching `TOOL_EXECUTION_SUCCEEDED` trace between their source reasoning traces | Terminal result update is the split trigger |
-| 2026-07-11 | Code | `toolLifecycleHandler.ts`, `runtime-memory-event-accumulator.ts`, Codex item/raw converters | Identify lifecycle placement and persistence behavior | Frontend updates an existing invocation card; converter clears block; accumulator flushes reasoning on every tool result | Boundary must be ordered-card creation, with bounded accumulator change |
+| 2026-07-11 | Code | `toolLifecycleHandler.ts`, `runtime-memory-event-accumulator.ts`, Codex item/raw converters | Identify lifecycle placement and persistence behavior | Frontend updates an existing invocation card; converter clears block; accumulator flushes reasoning on every tool result | Boundary must be ordered-card creation; later current-base review determines the owned memory refactor shape |
+| 2026-07-11 | Integration | `delivery-integration-conflict-report.md`; merge head `19368ac8`; latest base `f23dbf70` | Reconcile this ticket with finalized tool-result trace simplification | Latest base defers physical call persistence until explicit authoritative arguments; first normalized card observation can therefore precede any raw call row | Separate ordering observation from physical persistence |
+| 2026-07-11 | Code | `runtime-memory-event-accumulator-state.ts`; `runtime-memory-event-accumulator.ts:280-443` | Inspect integrated state and transition semantics | `callObserved`, `callRawTraceId`, and `resultRawTraceId` are distinct; first observation flushes, matching terminal may persist call/result later without flushing, result-first terminal flushes | Replace obsolete physical-call-only design model |
+| 2026-07-11 | Contract/Doc | `tickets/done/tool-result-trace-simplification/tool-trace-contract.md`; `autobyteus-server-ts/docs/modules/agent_memory.md` | Resolve authoritative argument, persistence, hydration, and crash rules | Placeholder argument absence cannot become `{}`; deferred observation is process-local and may be lost on crash; physical groups alone hydrate on restart | Inherit contract; document accepted evidence/reload gap |
+| 2026-07-11 | Review | `code-review-report.md`, implementation Round 3, `CR-CTB-001` | Validate integrated source against reviewed design | Source is locally coherent and 76 focused tests passed, but authoritative package contradicts its state/spine model | Revise package and re-review before API/E2E |
+| 2026-07-11 | Review | `design-review-report.md`, Round 5 | Review three-fact model and all observation/physical transitions | Three-fact model, ownership, crash exception, and prior findings pass; unseen insufficient terminal was incorrectly grouped with observed-deferred and malformed terminals | Split transition and add exact sequence coverage |
+| 2026-07-11 | Code/UI | `recordToolResult()` and frontend lifecycle parsers / `ensureToolLifecycleSegment()` | Determine first-card behavior for insufficient terminal | A terminal with valid identity/name synthesizes a frontend card even when arguments are absent; current memory returns before setting `callObserved`/flushing | First such terminal must observe/flush despite deferred persistence |
+| 2026-07-11 | Code structure | Full method inventory and line count for `runtime-memory-event-accumulator.ts` | Reassess separation of concerns instead of accepting type-only extraction | 521 physical / 490 effective lines; about 200 lines own tool observation, identity, readiness, persistence, hydration, interruption, and cleanup in addition to segment/turn/compaction concerns | Extract cohesive tool lifecycle sequencer |
+| 2026-07-11 | Code structure | `runtime-memory-event-accumulator-state.ts` | Judge whether existing extraction is meaningful | File contains only 17 lines of passive types; it lowers the parent line count but does not own lifecycle transitions or coordination | Remove/retighten during sequencer extraction |
 
 ## Current Behavior / Current Flow
 
@@ -84,7 +92,7 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 
 - Change posture: `Bug Fix` / `Behavior Change`
 - Candidate root cause classification: original `Local Implementation Defect`; packaged-verification `Design Impact` in the tool-lifecycle boundary definition; Round 3 `Requirement Gap` for permanent unsupported-delta behavior and `Design Impact` from the incomplete formal owner/spine model
-- Refactor posture evidence summary: The normalized identity refactor is sound. Three bounded production owners require coordinated correction: reasoning normalization owns completed-snapshot content and block identity; ordered-tool classification distinguishes new-card creation from in-place updates; the generic memory accumulator preserves or flushes an open reasoning segment using its existing `callWritten` fact. Run-history and frontend production remain correct consumers.
+- Refactor posture evidence summary: Reasoning normalization and Codex ordered-tool classification remain sound. Memory needs the accepted non-overlapping three-fact model, but the current accumulator now combines event routing, segment buffering, reasoning flushes, tool state transitions, identity resolution, strict tool writes, lifecycle hydration, interruption, turn cleanup, and provider-compaction delegation. Extract a meaningful provider-agnostic tool trace sequencer; keep the accumulator as the governing normalized-event/segment facade and expose only a narrow reasoning-boundary callback.
 
 | Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
 | --- | --- | --- | --- |
@@ -98,6 +106,9 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 | Packaged user verification | Four visible adjacent pairs correlate to matching tool results | “Transcript-producing” remains too coarse because result updates an earlier card | Govern by ordered-card creation, not every lifecycle event |
 | User product decision / Round 3 `DR-CTB-003` | Real-time internal Thinking streaming is not required; `summaryTextDelta` support is rejected now and in future | Completed reasoning item snapshots are the sole content source; delta notification is explicit no-effect | Record the permanent product rule and add state/content regression |
 | Round 3 `DR-CTB-004` | Ordered-tool classification and memory flush are material production flows | Formal spine inventory must represent both owners without importing Codex raw-event policy into memory | Add bounded ordered-tool and memory sequencing spines |
+| Latest-base `CR-CTB-001` | Hosted-search card start can precede authoritative arguments and any physical call row | Card observation cannot be inferred from `callRawTraceId`; physical persistence cannot be fabricated to represent observation | Revise `DS-CTB-005` and internal state model |
+| Architecture Round 5 | Unseen terminal with identity/name and absent args can itself synthesize the first card | “Terminal not ready” is not one semantic state: unseen card creation, observed update, and malformed/no-card differ | Split transition before source review |
+| Code-review deep-design reroute | 490 effective accumulator lines plus passive 17-line state extraction | State shapes are tight but lifecycle ownership remains embedded in a coordination-heavy facade | Extract `RuntimeToolTraceSequencer`; do not rubber-stamp current layout |
 
 ## Relevant Files / Components
 
@@ -115,7 +126,9 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 | `.../codex-raw-response-event-converter.ts` | Convert raw compaction and function-call output | Compaction is maintenance; function-call output may update a known tool card or create a result-first synthetic card | Preserve compaction; classify matching update versus result-first |
 | `.../codex-thread-lifecycle-event-converter.ts` | Convert status and error lifecycle events | Status/token updates have no transcript meaning; runtime error is terminal | Preserve status; clear on terminal error lifecycle cleanup |
 | `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | Apply tool lifecycle events | `ensureToolLifecycleSegment` updates the existing invocation segment and only synthesizes when missing | Matching terminal events do not add a new ordered card |
-| `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts` | Persist normalized content/tool facts | `recordToolResult()` unconditionally flushes open reasoning even when `tool.callWritten` is already true | Preserve open reasoning for matching results; retain inferred-call flush for result-first |
+| `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts` | Persist normalized content/tool facts and sequence reasoning boundaries | Integrated code observes a normalized card before authoritative args, may defer its physical call, and later persists matching call/result without another flush | Current generic owner is correct; formalize observation-versus-physical transitions |
+| `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator-state.ts` | Passive internal segment/tool types | The types are tight, but this 17-line file owns no lifecycle and leaves tool coordination in the accumulator | Decommission: move private tool state into sequencer; keep or inline segment state with accumulator |
+| Proposed `autobyteus-server-ts/src/agent-memory/services/runtime-tool-trace-sequencer.ts` | Not present | Cohesive tool observation/readiness/physical lifecycle state machine has no separate owner | Add as bounded internal owner; move tool state and ~200 lines from accumulator |
 | `.../codex-reasoning-event-normalizer.ts` and top-level unknown-event dispatch | Resolve supported reasoning content and block updates | Current Codex emits `item/reasoning/summaryTextDelta`; product intentionally rejects this content path | Consume completed reasoning item snapshots only; explicit delta no-effect must emit nothing and mutate no tracker |
 
 ## Runtime / Probe Findings
@@ -153,14 +166,18 @@ No web sources were required. The installed Codex CLI schema, direct JSON-RPC re
 8. **Round 1 boundary safety:** Boundary behavior must be decided explicitly, not by fall-through.
 9. **Verified correction:** Event family alone is insufficient. A tool start creates an ordered card and clears; a matching terminal/status/log event updates that earlier card and preserves. A result-first terminal event that synthesizes a missing card remains a boundary.
 10. **Permanent content-source decision:** Completed reasoning item snapshots are the sole supported displayed/persisted summary source. `item/reasoning/summaryTextDelta` is intentionally and permanently unsupported and must remain ignored/no-effect.
+11. **Latest-base state correction:** A normalized tool-card observation is an ordering fact even when no physical call can yet be written. Physical call/result IDs are durable-evidence facts. Conflating them would either miss the pre-card reasoning boundary or fabricate tool arguments.
+12. **Accepted restart behavior:** Only physical lifecycle groups hydrate. A deferred accumulator-only observation lost before authoritative arguments leaves no raw tool row and cannot promise exact transient-boundary reload parity; a later self-contained terminal is result-first from reconstructed state.
+13. **Surviving-process terminal distinction:** An unseen terminal with valid identity/name is a card observation even if args are absent; it must flush and retain deferred observation. A later ready matching terminal must not re-flush. An already-observed still-insufficient terminal preserves. A malformed terminal that frontend parsing cannot turn into a card neither observes nor flushes.
+14. **Ownership correction:** `RuntimeMemoryEventAccumulator` should remain the event/segment facade, not also contain the full tool physical lifecycle state machine. `RuntimeToolTraceSequencer` should own compound identity, card-capable observation, readiness, strict call-before-result persistence, hydration, interruption, cleanup, and duplicates, calling back only to flush reasoning at an ordered boundary.
 
 ## Persisted Data Transition Evidence (When Applicable)
 
 - Current stored subject, location, representative shape, and approximate volume: JSONL raw traces under `.autobyteus/server-data/memory`; exact turn has five `trace_type:"reasoning"` rows followed by one assistant row. The overall store is large and audit-oriented.
-- Relevant code-model, serialization, semantic, or physical-store change: No schema change. Writer behavior changes so a matching result does not flush the open reasoning segment; a result-first inferred call retains existing flush/order behavior.
+- Relevant code-model, serialization, semantic, or physical-store change: No schema change. Process-local writer state gains a semantic observation fact distinct from physical call/result IDs. First observation flushes; deferred matching terminal persists call/result without flushing; result-first terminal flushes before call.
 - Normal readers and writers, including unknown/extra-field behavior: Writer records each normalized segment. Local memory projection reads ordered traces and currently creates one reasoning event per row.
 - Representative direct-read or compatibility evidence: Current files parse normally; exact GraphQL query returns all content/order. No transformation is needed to interpret them.
-- Required semantics and invariants preserved by direct use: `Yes` for future runs — the current writer accumulates a repeated normalized segment ID into one reasoning trace, and the normal reader projects that trace as one entry.
+- Required semantics and invariants preserved by direct use: `Yes` when ordered boundaries have durable physical evidence. The current writer accumulates a repeated normalized segment ID into one reasoning trace, and the normal reader projects that trace as one entry. Observation-only state is intentionally not reconstructable after hard loss.
 - Physical storage, privacy/security, disposal, rebuild, or operational constraints: Raw traces are audit evidence and should remain immutable; reasoning summaries must not be copied into new migration artifacts.
 - Concrete benefit, cost, and risk of migration if it remains a candidate: No migration or pre-fix read-time correction is required or desired. Rewriting old audit data would add risk for behavior the user explicitly does not require.
 - Existing migration framework or lifecycle constraints, only if migration may be required: Not applicable.
@@ -172,16 +189,18 @@ No web sources were required. The installed Codex CLI schema, direct JSON-RPC re
 - Existing Codex tool/non-reasoning, assistant-text, and turn boundary behavior must remain distinct.
 - Pre-fix raw data remains untouched and may continue to display fragmented blocks.
 - `item/reasoning/summaryTextDelta` is intentionally and permanently unsupported. It must emit no normalized content and must not allocate, append, clear, or otherwise mutate reasoning-block or ordered-tool state; completed reasoning item snapshots are the sole supported summary-content source.
+- Governing tool-trace contract forbids placeholder `{}` arguments and new observation persistence types. Memory must remain provider-agnostic and hydrate only compound-identity physical lifecycle groups.
 
 ## Open Unknowns / Risks
 
 - The revised invariant is ordered-conversation placement: new card/text/turn creation clears; in-place lifecycle mutation preserves. Backend converters and the accumulator must encode this without moving Codex policy into Vue.
 - An explicit ignored/no-effect regression must prevent current or future dispatch-table changes from routing `item/reasoning/summaryTextDelta` into content or state handling.
 - Exact live/reload parity needs executable coverage for a run produced after the fix; no repaired-output expectation applies to pre-fix traces.
+- Deferred observation loss before authoritative arguments is an accepted current-base crash/interruption behavior. Exact transient-boundary reload parity is not promised for that evidence-free case.
 
 ## Notes For Architecture Reviewer
 
-Ready for architecture re-review following explicit user approval on 2026-07-11. The review must preserve `DR-CTB-001` and `DR-CTB-002`, confirm the ordered-card correction, verify permanent `summaryTextDelta` no-effect behavior under `DR-CTB-003`, and verify the formal reasoning, ordered-tool, and generic memory sequencing spines under `DR-CTB-004`.
+Ready for architecture re-review after explicit user approval on 2026-07-11. The next review must preserve `DR-CTB-001`–`DR-CTB-004`, resolve the remaining `CR-CTB-001` unseen-insufficient-terminal transition against integrated head `19368ac8`, and judge the substantive sequencer extraction rather than the rejected 490-line accumulator shape.
 
 
 ## User Scope Revision — 2026-07-11

@@ -6,11 +6,11 @@
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/design-spec.md`
 - Supplemental Solution Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/user-verification-failure-analysis.md`
-- Current Review Round: `4`
-- Trigger: Re-review after `DR-CTB-003` and `DR-CTB-004` corrections, explicit user approval of the snapshot-only contract, and alignment of the formal five-spine ownership model.
-- Prior Review Round Reviewed: `3`
-- Latest Authoritative Round: `4`
-- Current-State Evidence Basis: Branch `codex/consecutive-thinking-blocks` at implemented commits `49f6c107` and `ff0ab09`; independent review of the revised mandatory artifacts and supplements, packaged-process/runtime-correlation evidence, live projection/raw-trace failure analysis, implemented Codex converters/trackers, current `RuntimeMemoryEventAccumulator` tool/reasoning sequencing, generic frontend tool-card projection behavior, and aligned durable server/web architecture documentation.
+- Current Review Round: `6`
+- Trigger: Re-review after the user-approved deep current-base redesign split the unseen-terminal transitions and extracted `RuntimeToolTraceSequencer` from the rejected accumulator shape.
+- Prior Review Round Reviewed: `5`
+- Latest Authoritative Round: `6`
+- Current-State Evidence Basis: Integrated failed-candidate head `19368ac8f0b8f1d03ae7cd28363385d59c95fab7` on base `origin/personal` `f23dbf70a3d28ad0237035f26ede16378da7baaa`; independent review of the revised solution package, `CR-CTB-001` source-review evidence, latest-base authoritative-argument/tool-trace contract, normalized frontend card-capability behavior, the proposed accumulator/sequencer ownership split, complete terminal transition table, lifecycle hydration/cleanup/crash rules, file/test mapping, and aligned durable docs.
 
 ## Round History
 
@@ -19,7 +19,9 @@
 | 1 | Initial review | N/A | `DR-CTB-001`, `DR-CTB-002` | Fail | No | Ownership and scope were sound, but block-ID allocation and the full boundary-event policy were not implementation-safe. |
 | 2 | Re-review of bounded design-impact revision | `DR-CTB-001`, `DR-CTB-002` | No | Pass | No | Both prior findings were resolved with concrete invariants, interfaces, examples, and sequence coverage intent. |
 | 3 | Packaged-verification ordered-card correction | `DR-CTB-001`, `DR-CTB-002` | `DR-CTB-003`, `DR-CTB-004` | Fail | No | Ordered-card ownership was sound, but the package contradicted the user's permanent `summaryTextDelta` rejection and had not fully refreshed its design-health/spine model. |
-| 4 | Snapshot-only and five-spine correction re-review | `DR-CTB-001`–`DR-CTB-004` | No | Pass | Yes | All prior findings are resolved; the design is coherent, actionable, and user approved. |
+| 4 | Snapshot-only and five-spine correction re-review | `DR-CTB-001`–`DR-CTB-004` | No | Pass | No | All prior architecture findings were resolved; later latest-base integration invalidated the physical-call-as-observation memory model. |
+| 5 | Latest-base `CR-CTB-001` model re-review | `DR-CTB-001`–`DR-CTB-004`; `CR-CTB-001` | `CR-CTB-001` remained unresolved at one transition | Fail | No | The three-fact model was sound, but an unseen card-synthesizing terminal without arguments lacked its first-observation boundary. |
+| 6 | Deep current-base transition and ownership redesign | `DR-CTB-001`–`DR-CTB-004`; `CR-CTB-001` | No | Pass | Yes | The terminal branches are complete and the sequencer extraction gives the lifecycle one coherent owner behind the accumulator facade. |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -33,9 +35,9 @@
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
 | Assessment is present for the current task posture | Pass | The package classifies the work as a bug fix/behavior change. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | The original identity defect and the later ordered-card boundary defect are supported by the exact rollout, packaged-code markers, four live projection pairs, matching raw tool-result traces, and current unconditional converter/accumulator clears. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | The original identity defect, ordered-card boundary defect, and latest-base observation-versus-physical-evidence conflict are supported by exact rollout/package/projection traces, the tool-trace contract, integrated state/code, and source-review evidence. | None. |
 | Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The design names three bounded production owners: completed-snapshot reasoning normalization, Codex ordered-tool classification, and generic memory trace sequencing. Permanent delta non-support is an explicit non-goal, not a deferral. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Health assessment, reading order, five-spine inventory, bounded flows, subsystem/file/interface maps, sequence, examples, risks, and guidance all implement the same owner model. | None. |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Health assessment, `DS-CTB-005`, terminal transition table, sequencer/facade boundaries, file/test mapping, lifecycle/hydration rules, examples, sequence, and risks consistently implement the current-base model. | None. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -47,6 +49,7 @@
 | 2 | `DR-CTB-002` | High | Remains Resolved / Semantics Refined | The event matrix is now based on ordered-card creation versus in-place updates; exact packaged evidence justifies the refinement. | The prior early-return completeness requirement remains satisfied in the revised design shape. |
 | 3 | `DR-CTB-003` | High | Resolved | Requirements, design, investigation, UI supplement, and durable docs now state that completed item snapshots are the sole supported summary source; current/legacy reasoning text deltas are permanent no-effect inputs with no output or state mutation. `REQ-CTB-010` / `AC-CTB-011` cover before/during/after-active-block behavior and repeated completion idempotency. | No handler, fallback, flag, compatibility seam, or future-support TODO is permitted. |
 | 3 | `DR-CTB-004` | Medium | Resolved | The design health assessment names all three changed production owners and formalizes `DS-CTB-003` reasoning, `DS-CTB-004` ordered-tool classification, and `DS-CTB-005` provider-agnostic memory sequencing with complete narratives and bounded flows. | Memory remains a normalized-event consumer and imports no Codex raw-event policy. |
+| Implementation Review 3 / Architecture Round 5 | `CR-CTB-001` | High | Resolved | The package splits unseen card-capable insufficient terminal, observed/deferred insufficient update, and malformed/no-card terminal; requires first-terminal observation/flush before readiness return; adds `AC-CTB-013`; and extracts `RuntimeToolTraceSequencer` as the single transition owner. | Integrated source remains a failed candidate and requires implementation rework/source review against this design. |
 
 ## Spine Inventory Verdict
 
@@ -56,14 +59,15 @@
 | `DS-CTB-002` | Codex return-event path to browser and memory | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | `DS-CTB-003` | Bounded local reasoning-normalization state flow | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | `DS-CTB-004` | Bounded local ordered-tool classification | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-CTB-005` | Bounded local memory result/flush sequencing | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| `DS-CTB-005` | Bounded local tool-trace observation/readiness/physical sequencing | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Codex event normalization | Pass | Pass | Pass | Pass | Correct production owner for provider-item-to-normalized-block semantics. |
-| Agent memory | Pass | Pass | Pass | Pass | Existing `ToolState.callWritten` is the right trace-sequencing fact for matching-result versus inferred-call flush. |
+| Agent memory facade | Pass | Pass | Pass | Pass | `RuntimeMemoryEventAccumulator` remains the authoritative normalized event/segment facade and actual reasoning-flush owner. |
+| Tool trace sequencing | Pass | Pass | Pass | Pass | `RuntimeToolTraceSequencer` is a justified internal owner for observation, readiness, physical writes, hydration, interruption, cleanup, and duplicates. |
 | Run-history projection | Pass | Pass | Pass | Pass | Reuse unchanged is proportionate for future runs. |
 | Web conversation state/rendering | Pass | Pass | Pass | Pass | Remaining provider-agnostic is architecturally correct. |
 
@@ -74,7 +78,7 @@
 | Reasoning content-and-identity resolution | Pass | Pass | Pass | Pass | One event normalizer prevents split policy across converter branches. |
 | Active reasoning block state | Pass | Pass | Pass | Pass | A Codex-specific block tracker is preferable to a generic cache/helper. |
 | Ordered tool-card identity state | Pass | Pass | Pass | Pass | A bounded Codex tracker avoids raw-provider policy in Vue or memory. |
-| Existing tool call/result state | Pass | Pass | Pass | Pass | Reusing `ToolState.callWritten` avoids a second memory-side representation. |
+| Runtime tool observation/physical transitions | Pass | Pass | Pass | Pass | One sequencer privately owns the three non-overlapping facts and every lifecycle transition that uses them. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
@@ -85,7 +89,9 @@
 | `CodexReasoningBlockInput { turnId, providerItemId, fragmentKind, delta }` | Pass | Pass | Pass | N/A | Pass | Payload-derived normalized-ID candidates are removed; correlation and joining semantics are singular. |
 | Private allocator state `{ instanceNonce, nextBlockSequence }` | Pass | Pass | Pass | N/A | Pass | One namespace per tracker plus a never-reset monotonic sequence owns fresh-block identity. |
 | Private `KnownOrderedTool { turnId, invocationId }` | Pass | Pass | Pass | N/A | Pass | Holds only normalized placement identity and no UI/tool payload. |
-| Existing `ToolState { callWritten, resultWritten }` | Pass | Pass | Pass | N/A | Pass | `callWritten` has the singular memory-side meaning needed for ordered trace sequencing. |
+| `RuntimeToolState.callObserved` | Pass | Pass | Pass | N/A | Pass | Process-local first-boundary fact; it makes no physical-evidence claim. |
+| `RuntimeToolState.callRawTraceId` | Pass | Pass | Pass | N/A | Pass | Physical authoritative call-row identity only. |
+| `RuntimeToolState.resultRawTraceId` | Pass | Pass | Pass | N/A | Pass | Distinct physical minimal-result identity and duplicate-terminal guard. |
 
 ## Removal / Decommission Completeness Verdict
 
@@ -109,7 +115,9 @@
 | `codex-raw-response-event-converter.ts` | Pass | Pass | N/A | Pass | Owns raw compaction preservation and matching/result-first function-call-output classification. |
 | `codex-thread-lifecycle-event-converter.ts` | Pass | Pass | N/A | Pass | Owns status preservation and terminal-error clear. |
 | `codex-ordered-tool-boundary-tracker.ts` | Pass | Pass | Pass | Pass | Singular bounded owner for observed-card versus result-first lifecycle classification. |
-| `runtime-memory-event-accumulator.ts` | Pass | Pass | Pass | Pass | Existing trace-sequencing owner; uses `callWritten` before inference and removes only the matching-result flush. |
+| `runtime-memory-event-accumulator.ts` | Pass | Pass | Pass | Pass | Narrowed governing facade for turn/segment/reasoning/assistant buffering, flush implementation, compaction, and tool delegation. |
+| `runtime-tool-trace-sequencer.ts` | Pass | Pass | Pass | Pass | Cohesive bounded state-machine owner for tool observation/readiness/physical lifecycle. |
+| `runtime-memory-event-accumulator-state.ts` removal | Pass | Pass | Pass | Pass | Passive mixed type file becomes obsolete; private state moves beside its actual owners with no alias. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -128,6 +136,7 @@
 | `CodexItemEventPayloadParser.resolveReasoningContentUpdate` | Pass | Pass | Pass | Pass | One facade call prevents mixed-level tracker access. |
 | `CodexOrderedToolBoundaryTracker` | Pass | Pass | Pass | Pass | Internal normalized placement-state owner behind converter callbacks. |
 | `RuntimeMemoryEventAccumulator.recordRunEvent` | Pass | Pass | Pass | Pass | Correct persistence boundary; writer behavior changes without importing Codex policy. |
+| `RuntimeToolTraceSequencer` | Pass | Pass | Pass | Pass | Internal lifecycle boundary; accumulator and sequencer do not bypass each other's private state. |
 
 ## Interface Boundary Verdict
 
@@ -139,6 +148,10 @@
 | `CodexReasoningBlockTracker.append(input)` | Pass | Pass | Pass | Low | Pass |
 | `markOrderedToolCreated(turnId, invocationId)` | Pass | Pass | Pass | Low | Pass |
 | `classifyToolLifecycleUpdate(turnId, invocationId)` | Pass | Pass | Pass | Low | Pass |
+| `RuntimeToolTraceSequencer.recordCallObservation(event, activeTurnId)` | Pass | Pass | Pass | Low | Pass |
+| `RuntimeToolTraceSequencer.recordTerminal(event, activeTurnId)` | Pass | Pass | Pass | Low | Pass |
+| `flushReasoningBoundary(turnId, sourceEvent)` callback | Pass | Pass | Pass | Low | Pass |
+| Sequencer `interruptTurn` / `completeTurn` / hydration | Pass | Pass | Pass | Low | Pass |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -149,6 +162,8 @@
 | `codex-reasoning-block-tracker.ts` | Pass | Pass | Low | Pass | Cohesive state owner beside its normalizer. |
 | `codex-ordered-tool-boundary-tracker.ts` | Pass | Pass | Low | Pass | Correctly colocated with Codex event converters. |
 | `agent-memory/services/runtime-memory-event-accumulator.ts` | Pass | Pass | Low | Pass | Correct existing owner for current trace ordering and flush timing. |
+| `agent-memory/services/runtime-tool-trace-sequencer.ts` | Pass | Pass | Low | Pass | Meaningful internal owner colocated under agent memory. |
+| `agent-memory/services/runtime-memory-event-accumulator-state.ts` | Pass | Pass | Low | Pass | Explicitly removed because it would become an empty passive split. |
 | History/web paths | Pass | Pass | Low | Pass | Production code correctly remains unchanged. |
 
 ## Existing Capability / Subsystem Reuse Verdict
@@ -157,7 +172,7 @@
 | --- | --- | --- | --- | --- | --- |
 | Live reasoning normalization | Pass | Pass | Pass | Pass | Bounded refactor of the existing Codex helper pair. |
 | Ordered tool-card placement | Pass | Pass | Pass | Pass | A new bounded Codex tracker is justified because the converter must distinguish card creation from mutation. |
-| Future persistence/reload | Pass | Pass | Pass | Pass | Narrowly modify the accumulator using existing `callWritten`; reuse projection unchanged. |
+| Future persistence/reload | Pass | Pass | Pass | Pass | Extract the provider-agnostic sequencer with process-local observation plus physical IDs; retain the accumulator facade and projection, and accept only the approved evidence-free crash/abandon exception. |
 | Browser grouping | Pass | Pass | N/A | Pass | Existing generic handlers are the correct consumer boundary. |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -171,7 +186,7 @@
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? (`Pass`/`Fail`) | Direct Use, Rebuild, Or Migration Choice Is Proportionate? (`Pass`/`Fail`) | Migration Safety Is Complete If Required? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Future `raw_traces*.jsonl` reasoning traces | `Not Affected` | Pass | Pass | N/A | Pass | Schema/readers do not change; the current writer changes flush timing using existing `callWritten` state. Pre-fix data is explicitly out of scope. |
+| Future reasoning and strict split tool lifecycle traces | `Not Affected` | Pass | Pass | N/A | Pass | Schema/readers do not change; process-local observation controls timing, physical call requires authoritative arguments, and no observation marker/migration is added. Pre-fix data remains out of scope. |
 
 ## Change / Refactor Safety Verdict
 
@@ -182,6 +197,8 @@
 | Boundary clearing across the complete item/raw/lifecycle dispatch | Pass | Pass | Pass | Pass |
 | Matching-result versus result-first live classification | Pass | Pass | Pass | Pass |
 | Memory matching-result flush correction | Pass | Pass | Pass | Pass |
+| Unseen insufficient terminal followed by later authoritative terminal | Pass | Pass | Pass | Pass |
+| Accumulator-to-sequencer extraction | Pass | Pass | Pass | Pass |
 | Unchanged history/frontend production paths | Pass | Pass | Pass | Pass |
 | Permanent `summaryTextDelta` non-support | Pass | Pass | Pass | Pass |
 
@@ -195,21 +212,23 @@
 | New block after clear without a usable unique provider/event ID | Yes | Pass | Pass | Pass | Namespaced monotonic examples cover missing/repeated provider identity, post-boundary allocation, unscoped notifications, and converter recreation. |
 | Full Codex boundary-event inventory including early-return item classes | Yes | Pass | Pass | Pass | The matrix covers item, compaction, approval/local-tool, ignored, raw-response, turn, thread/status, and terminal-error families. |
 | Matching known-card result versus result-first creation | Yes | Pass | Pass | Pass | Concrete live and persisted trace examples explain both outcomes. |
+| Unseen result-first terminal that creates a card but lacks authoritative arguments, followed by a later ready update | Yes | Pass | Pass | Pass | `AC-CTB-013` and the transition table place the boundary at the first terminal, defer physical rows, and prohibit later re-flush. |
+| Observed insufficient update versus malformed/no-card terminal | Yes | Pass | Pass | Pass | The former preserves existing observation; the latter creates no state or boundary. |
 | Explicit permanently unsupported `summaryTextDelta` behavior | Yes | Pass | Pass | Pass | Snapshot-only content, permanent no-effect dispatch, prohibited support seams, idempotent completed snapshots, and before/during/after-state coverage are explicit. |
 
 ## Missing Use Cases / Open Unknowns
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| None blocking design approval | Snapshot-only content/no-effect deltas, ordered-card classification, memory flush sequencing, future persistence, and unchanged generic consumers are explicit and covered by acceptance intent. | Proceed with implementation rework and the full downstream review/validation path. | Closed for design review |
+| None blocking design approval | Current-base observation/readiness/physical sequencing, all three insufficient-terminal branches, meaningful extraction, hydration/crash behavior, and unchanged generic consumers are explicit and user approved. | Proceed with source rework, then fresh implementation source review before API/E2E. | Closed for design review |
 
 ## Review Decision
 
-`Pass`: the design is ready for implementation rework.
+`Pass`: the deep current-base redesign is ready for implementation.
 
 ## Findings
 
-None. Findings `DR-CTB-001` through `DR-CTB-004` are resolved in the prior-findings resolution table.
+None. Findings `DR-CTB-001` through `DR-CTB-004` and `CR-CTB-001` are resolved in the prior-findings resolution table.
 
 ## Classification
 
@@ -223,10 +242,12 @@ None. Findings `DR-CTB-001` through `DR-CTB-004` are resolved in the prior-findi
 
 - Pre-fix historical runs remain fragmented by approved scope. No migration, projection fold, or compatibility path should be added.
 - Random UUID namespace collision is theoretically possible but proportionately controlled by a cryptographic UUID plus monotonic per-instance sequence.
-- Ordered-tool placement state and memory `callWritten` state intentionally serve different owners. Source review must ensure they remain driven by the same normalized invocation identity without memory importing Codex raw-event names.
-- The replacement implementation and API/E2E pass must reproduce the exact long-running-tool sequence through live state, raw traces, GraphQL projection, hydration, and a replacement packaged Electron build.
+- Codex ordered-tool placement state and memory observation/physical state intentionally serve different owners; memory must remain driven by normalized identity/name/argument presence without importing Codex raw-event names.
+- The user-approved hard-crash/abandon exception remains proportionate and must not be expanded to surviving-process ordering drift.
+- The sequencer extraction is a material source change; integrated head `19368ac8` remains a failed candidate until implementation rework and fresh source review pass.
+- Source review should confirm the accumulator is materially narrowed, the sequencer is not a pass-through wrapper, and the split 995-line tests follow the production owners without private-state coupling.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Notes: Round 4 is authoritative. `DR-CTB-001` through `DR-CTB-004` are resolved; the cumulative reviewed solution package is ready for implementation rework and full downstream validation.
+- Notes: Round 6 is authoritative. `DR-CTB-001` through `DR-CTB-004` and `CR-CTB-001` are resolved; source rework must return through fresh implementation source review before API/E2E.

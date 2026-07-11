@@ -694,6 +694,20 @@ source and permanently ignores `item/reasoning/summaryTextDelta` with no output
 or state effect. The frontend neither consumes that provider method nor adds a
 fallback for it.
 
+Card synthesis depends on valid normalized invocation identity and tool name,
+not on argument readiness. Therefore an unseen terminal with identity/name but
+absent arguments is already a visible boundary. A later matching terminal that
+supplies authoritative arguments updates that card and must not move the
+boundary past reasoning rendered after the first terminal. A malformed terminal
+that lifecycle parsing rejects creates no card and has no grouping effect.
+
+Live/reload Thinking-boundary equivalence depends on durable normalized
+evidence. If a provider tool card was observed while authoritative call
+arguments were unavailable and the process fails before any physical call can
+be written, that process-local observation is intentionally not reconstructed;
+reload must not fabricate a missing tool card or promise exact boundary parity
+for that evidence-free case.
+
 #### `systemTaskNotificationHandler.ts`
 
 - **`handleSystemTaskNotification`**: Preserves backend-authored `SYSTEM_TASK_NOTIFICATION` payload content and sender identity by appending a `system_task_notification` segment to the current AI message. The frontend must not rewrite task-delegation display copy or convert these notifications into user/member input rows.

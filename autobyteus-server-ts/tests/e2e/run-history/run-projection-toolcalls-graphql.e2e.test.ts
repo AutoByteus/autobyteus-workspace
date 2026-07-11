@@ -767,12 +767,61 @@ describe("Run projection tool-call GraphQL e2e", () => {
       turn: { id: "turn-result-first" },
     });
 
+    recordConverted(CodexThreadEventName.TURN_STARTED, {
+      turn: { id: "turn-unseen-insufficient-terminal" },
+    });
+    const reasoningBeforeInsufficientTerminal = completedReasoning(
+      "turn-unseen-insufficient-terminal",
+      "provider-insufficient-a",
+      "before insufficient terminal",
+    );
+    const insufficientTerminalEvents = recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-unseen-insufficient-terminal",
+      item: {
+        id: "web-search-insufficient",
+        type: "webSearch",
+        status: "completed",
+        query: "",
+        action: { type: "other" },
+      },
+    });
+    const insufficientTerminal = insufficientTerminalEvents.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    );
+    expect(insufficientTerminal?.payload).toMatchObject({
+      invocation_id: "web-search-insufficient",
+      turn_id: "turn-unseen-insufficient-terminal",
+      tool_name: "search_web",
+    });
+    expect(insufficientTerminal?.payload).not.toHaveProperty("arguments");
+    const reasoningAfterInsufficientTerminal = completedReasoning(
+      "turn-unseen-insufficient-terminal",
+      "provider-insufficient-b",
+      "after insufficient terminal",
+    );
+    recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-unseen-insufficient-terminal",
+      item: {
+        id: "web-search-insufficient",
+        type: "webSearch",
+        status: "completed",
+        query: "AutoByteus",
+        action: { type: "search", query: "AutoByteus" },
+      },
+    });
+    recordConverted(CodexThreadEventName.TURN_COMPLETED, {
+      turn: { id: "turn-unseen-insufficient-terminal" },
+    });
+
     expect(reasoningB.payload).toMatchObject({
       id: reasoningA.payload.id,
       delta: "\n\nB",
     });
     expect(reasoningAfterNextTool.payload.id).not.toBe(reasoningA.payload.id);
     expect(reasoningAfterResultFirst.payload.id).not.toBe(reasoningBeforeResultFirst.payload.id);
+    expect(reasoningAfterInsufficientTerminal.payload.id).not.toBe(
+      reasoningBeforeInsufficientTerminal.payload.id,
+    );
 
     const persistedRows = (await fs.readFile(
       path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
@@ -799,6 +848,10 @@ describe("Run projection tool-call GraphQL e2e", () => {
       { type: "tool_call", content: "", toolCallId: "tool-result-first" },
       { type: "tool_result", content: "", toolCallId: "tool-result-first" },
       { type: "reasoning", content: "after result-first", toolCallId: null },
+      { type: "reasoning", content: "before insufficient terminal", toolCallId: null },
+      { type: "tool_call", content: "", toolCallId: "web-search-insufficient" },
+      { type: "tool_result", content: "", toolCallId: "web-search-insufficient" },
+      { type: "reasoning", content: "after insufficient terminal", toolCallId: null },
     ]);
     expect(JSON.stringify(persistedRows)).not.toContain("must never be displayed or persisted");
 
@@ -837,6 +890,15 @@ describe("Run projection tool-call GraphQL e2e", () => {
     const afterResultFirstIndex = projection.conversation.findIndex(
       (row) => row.kind === "reasoning" && row.content === "after result-first",
     );
+    const beforeInsufficientTerminalIndex = projection.conversation.findIndex(
+      (row) => row.kind === "reasoning" && row.content === "before insufficient terminal",
+    );
+    const insufficientTerminalToolIndex = projection.conversation.findIndex(
+      (row) => row.kind === "tool_call" && row.invocationId === "web-search-insufficient",
+    );
+    const afterInsufficientTerminalIndex = projection.conversation.findIndex(
+      (row) => row.kind === "reasoning" && row.content === "after insufficient terminal",
+    );
 
     expect(readThreadMock).not.toHaveBeenCalled();
     expect(reasoningContents).toEqual([
@@ -844,11 +906,15 @@ describe("Run projection tool-call GraphQL e2e", () => {
       "after next tool",
       "before result-first",
       "after result-first",
+      "before insufficient terminal",
+      "after insufficient terminal",
     ]);
     expect(toolOneIndex).toBeLessThan(matchingReasoningIndex);
     expect(matchingReasoningIndex).toBeLessThan(toolTwoIndex);
     expect(beforeResultFirstIndex).toBeLessThan(resultFirstToolIndex);
     expect(resultFirstToolIndex).toBeLessThan(afterResultFirstIndex);
+    expect(beforeInsufficientTerminalIndex).toBeLessThan(insufficientTerminalToolIndex);
+    expect(insufficientTerminalToolIndex).toBeLessThan(afterInsufficientTerminalIndex);
     expect(findToolRow(projection.conversation, "tool-1")).toMatchObject({
       kind: "tool_call",
       invocationId: "tool-1",

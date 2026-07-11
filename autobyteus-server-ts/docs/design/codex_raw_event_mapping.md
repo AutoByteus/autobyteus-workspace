@@ -221,8 +221,11 @@ Unsupported tool-like `thread/read` items are logged only under
 
 Normal Codex UI reload depends on local application-owned raw traces, so live
 Codex reasoning must be written before later visible facts in the same turn.
-`RuntimeMemoryEventAccumulator` owns this storage boundary after Codex raw
-events are normalized into `AgentRunEvent`s:
+`RuntimeMemoryEventAccumulator` remains the normalized event/segment facade for
+this storage boundary after Codex raw events become `AgentRunEvent`s. Its
+provider-agnostic `RuntimeToolTraceSequencer` owns tool observation, readiness,
+physical lifecycle writes/hydration, and requests the facade's reasoning flush
+through a one-way callback:
 
 - open reasoning is flushed when the first normalized call lifecycle event
   establishes a new ordered tool card, even when physical call persistence is
@@ -271,10 +274,15 @@ Boundary handling is semantic rather than based on converter fall-through:
 - supported completed reasoning item snapshots append to the active block rather
   than clearing it.
 
-The memory accumulator stays provider-agnostic and classifies generic normalized
-tool lifecycle state with separate call-observed and physical-call readiness
-facts. A result for an already-observed card preserves an open reasoning segment
+The memory path stays provider-agnostic: `RuntimeToolTraceSequencer` classifies
+generic normalized tool lifecycle state with separate call-observed and
+physical-call readiness facts behind the accumulator facade. A result for an
+already-observed card preserves an open reasoning segment
 even when authoritative arguments only then make its physical call writable;
+an unseen terminal with valid normalized identity/name observes and flushes even
+when arguments are still absent because generic consumers synthesize its card;
+a later ready matching terminal does not re-flush. A malformed terminal that
+cannot synthesize a card has no observation effect. Unseen fully ready
 result-first inference flushes before the newly written call. The accumulator
 does not reconstruct Codex raw-event policy. The run-history projection stays
 unchanged. A repeated normalized id accumulates into one future reasoning trace and one

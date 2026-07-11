@@ -1,10 +1,10 @@
 # User Verification Failure Analysis
 
 - **Canonical path:** `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/user-verification-failure-analysis.md`
-- **Status:** `Confirmed — Design Impact; Round 3 Package Corrections User Approved for Architecture Re-review`
+- **Status:** `Confirmed — Design Impact; Deep Current-Base Redesign User Approved`
 - **Observed:** 2026-07-11 during user verification of the packaged macOS ARM64 Electron candidate.
-- **Related requirements:** `REQ-CTB-002`, `REQ-CTB-003`, `REQ-CTB-004`, `REQ-CTB-005`
-- **Related acceptance criteria:** `AC-CTB-003`, `AC-CTB-004`, `AC-CTB-005`, `AC-CTB-006`
+- **Related requirements:** `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-009`, `REQ-CTB-011`
+- **Related acceptance criteria:** `AC-CTB-003`–`AC-CTB-006`, `AC-CTB-010`, `AC-CTB-012`, `AC-CTB-013`
 - **Relationship to mandatory artifacts:** Runtime evidence and failure-origin analysis for the revised requirements and design; it supplements but does not replace them.
 
 ## Verification Environment
@@ -71,3 +71,31 @@ The prior durable coverage proved `reasoning -> tool start -> reasoning` and res
 `tool start -> reasoning A -> matching tool result update -> reasoning B -> next tool start`
 
 Required future coverage must assert one live Thinking block for `A+B`, one persisted reasoning trace for `A+B`, and the same single block after GraphQL projection/hydration.
+
+## Latest-Base Design-Impact Addendum
+
+Integration with latest base preserved the strict split physical tool-trace
+contract: a call cannot be written until authoritative arguments are explicit.
+That means a visible card observation and a physical call row are different
+facts. The integrated candidate represented them with `callObserved`,
+`callRawTraceId`, and `resultRawTraceId`, but left the full transition set in a
+490-effective-line `RuntimeMemoryEventAccumulator` and returned too early for
+an unseen terminal whose identity/name can synthesize a card while arguments
+are still absent.
+
+The corrected sequence is:
+
+`reasoning A -> unseen terminal(identity/name, args absent) -> reasoning B -> later matching ready terminal -> next boundary`
+
+The first terminal must observe the card and flush A once without writing a
+placeholder tool row. The later ready terminal must write call then result
+without re-flushing B. A malformed terminal that lacks card-capable
+identity/name has no observation or boundary effect.
+
+This is not being repaired by another conditional in the accumulator. The
+revised design extracts a provider-agnostic `RuntimeToolTraceSequencer` that
+owns observation, readiness, compound identity, strict writes, hydration,
+interruption, cleanup, and duplicates. The accumulator remains the normalized
+event/segment facade and supplies only a one-way reasoning-boundary callback.
+No approved UI behavior, storage schema, pre-fix history, or frontend production
+path changes.

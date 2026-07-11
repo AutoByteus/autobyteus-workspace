@@ -2,9 +2,9 @@
 
 - **Canonical path:** `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
 - **Scope:** User-visible grouping of reasoning summaries in live and reloaded agent/team conversations.
-- **Status:** `Round 3 Correction — User Approved for Architecture Re-review`
-- **Related requirements:** `REQ-CTB-002`, `REQ-CTB-003`, `REQ-CTB-004`, `REQ-CTB-005`, `REQ-CTB-008`, `REQ-CTB-009`, `REQ-CTB-010`
-- **Related acceptance criteria:** `AC-CTB-003`, `AC-CTB-004`, `AC-CTB-005`, `AC-CTB-006`, `AC-CTB-007`, `AC-CTB-009`, `AC-CTB-010`, `AC-CTB-011`
+- **Status:** `Deep Current-Base Redesign — User Approved for Architecture Re-review`
+- **Related requirements:** `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-008`–`REQ-CTB-011`
+- **Related acceptance criteria:** `AC-CTB-003`–`AC-CTB-013`
 - **Relationship to mandatory artifacts:** Clarifies the observable grouping rule defined in `requirements.md`; implementation ownership and protocol identity are defined in `design-spec.md`.
 
 ## User Journey
@@ -41,6 +41,7 @@ Tool results, logs, statuses, and completions that mutate an existing card at it
 | tool call -> reasoning A -> matching tool result update -> reasoning B -> next tool call | tool -> Thinking(A+B) -> next tool |
 | reasoning A -> result-first tool event that creates a missing card -> reasoning B | Thinking(A) -> inferred tool -> Thinking(B) |
 | summaryTextDelta("partial") -> completed reasoning snapshot A | no card/content from delta -> Thinking(A) once |
+| reasoning A -> unseen terminal(identity/name, no args) -> reasoning B -> later matching ready terminal | Thinking(A) -> synthesized tool card -> Thinking(B); later terminal updates that card without moving the boundary |
 
 ## Content Joining
 
@@ -59,8 +60,9 @@ Tool results, logs, statuses, and completions that mutate an existing card at it
 
 ## Reloaded / Historical State
 
-- Runs produced after this fix render with the same boundaries before and after reload.
+- Runs produced after this fix whose ordered boundaries have durable normalized evidence render with the same boundaries before and after reload.
 - Pre-fix historical runs are out of scope and may retain their current card boundaries.
+- Explicit latest-base exception: if a tool card was observed with no authoritative arguments and the process crashes or the turn is abandoned before any physical call can be persisted, that transient observation has no durable evidence. Reload must not fabricate the missing card or promise exact boundary parity for that case.
 
 ## Error, Empty, Disabled, Permission, Responsive, Accessibility
 
@@ -78,3 +80,7 @@ The user verified the packaged candidate on 2026-07-11 and rejected the remainin
 The user approved this revised ordered-card behavior on 2026-07-11 and authorized architecture re-review.
 
 Architecture Round 3 requested explicit completed-snapshot-only/no-delta language. After reviewing why delta/snapshot reconciliation would add complexity without meaningful product benefit, the user approved this clarification and authorized architecture re-review on 2026-07-11.
+
+Latest-base integration requires the evidence-free deferred-observation reload exception above. It does not alter normal completed tool lifecycles or the ordered-card rule. The user approved this exception on 2026-07-11.
+
+Architecture Round 5 additionally clarified that an unseen terminal with valid identity/name creates the card immediately even when arguments are absent. That first terminal is therefore the visible boundary; a later matching ready terminal must not move it. The current-base redesign preserves that behavior through an extracted memory sequencer rather than a conditional accumulator patch; the user approved this package for architecture re-review on 2026-07-11.
