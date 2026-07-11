@@ -306,6 +306,34 @@ describe('segmentHandler', () => {
   });
 
   describe('handleSegmentContent', () => {
+    it('appends adjacent reasoning updates with one normalized id to one think segment', () => {
+      handleSegmentContent(
+        {
+          id: 'reasoning-block:test:1',
+          turn_id: 'turn-1',
+          delta: 'first',
+          segment_type: 'reasoning',
+        },
+        mockContext,
+      );
+      handleSegmentContent(
+        {
+          id: 'reasoning-block:test:1',
+          turn_id: 'turn-1',
+          delta: '\n\nsecond',
+          segment_type: 'reasoning',
+        },
+        mockContext,
+      );
+
+      const aiMessage = mockContext.conversation.messages[0] as any;
+      expect(aiMessage.segments).toHaveLength(1);
+      expect(aiMessage.segments[0]).toMatchObject({
+        type: 'think',
+        content: 'first\n\nsecond',
+      });
+    });
+
     it('streams write_file content into the segment state', () => {
       handleSegmentStart(
         {

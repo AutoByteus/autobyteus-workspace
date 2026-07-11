@@ -29,6 +29,9 @@ import {
 } from "./codex-turn-event-converter.js";
 import { logRawCodexThreadEventDetails } from "./codex-thread-event-debug.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
+import {
+  CodexOrderedToolBoundaryTracker,
+} from "./codex-ordered-tool-boundary-tracker.js";
 
 type RuntimeRunReference = {
   runtimeKind: RuntimeKind;
@@ -92,6 +95,7 @@ export const deriveCodexAgentRunStatusHint = (
 
 export class CodexThreadEventConverter {
   private readonly itemEventPayloadParser = new CodexItemEventPayloadParser();
+  private readonly orderedToolBoundaryTracker = new CodexOrderedToolBoundaryTracker();
   private rawCodexEventSequence = 0;
   private providerBoundarySequence = 0;
   private readonly emittedBoundaryKeys: string[] = [];
@@ -103,15 +107,19 @@ export class CodexThreadEventConverter {
       this.createEvent(codexEventName, eventType, payload),
     createStatusEvent: (codexEventName, payload) =>
       this.createStatusEvent(codexEventName, payload),
-    clearReasoningSegmentForTurn: (payload) =>
-      this.itemEventPayloadParser.clearReasoningSegmentForTurn(payload),
+    clearReasoningBlockForBoundary: (payload) =>
+      this.itemEventPayloadParser.clearReasoningBlockForBoundary(payload),
+    clearAllReasoningBlocks: () =>
+      this.itemEventPayloadParser.clearAllReasoningBlocks(),
+    clearOrderedToolsForBoundary: (payload) => this.clearOrderedToolsForBoundary(payload),
+    clearAllOrderedTools: () => this.orderedToolBoundaryTracker.clearAll(),
   };
 
   private readonly itemEventConverterContext: CodexItemEventConverterContext = {
     createEvent: (codexEventName, eventType, payload) =>
       this.createEvent(codexEventName, eventType, payload),
-    createSegmentContentEvent: (codexEventName, payload, segmentType) =>
-      this.createSegmentContentEvent(codexEventName, payload, segmentType),
+    createTextSegmentContentEvent: (codexEventName, payload) =>
+      this.createTextSegmentContentEvent(codexEventName, payload),
     createCompactionStatusEvent: (sourceSurface, payload, status, rotationEligible) =>
       this.createCodexProviderCompactionStatusEvent(
         sourceSurface,
@@ -119,8 +127,15 @@ export class CodexThreadEventConverter {
         status,
         rotationEligible,
       ),
-    clearReasoningSegmentForTurn: (payload) =>
-      this.itemEventPayloadParser.clearReasoningSegmentForTurn(payload),
+    clearReasoningBlockForBoundary: (payload) =>
+      this.itemEventPayloadParser.clearReasoningBlockForBoundary(payload),
+    resolveCompletedReasoningSnapshot: (payload) =>
+      this.itemEventPayloadParser.resolveCompletedReasoningSnapshot(payload),
+    classifyToolLifecycleUpdate: (payload) =>
+      this.orderedToolBoundaryTracker.classifyToolLifecycleUpdate(
+        this.itemEventPayloadParser.resolveTurnId(payload),
+        this.itemEventPayloadParser.resolveInvocationId(payload),
+      ),
     resolveItemType: (payload) => this.itemEventPayloadParser.resolveItemType(payload),
     isUserMessageItem: (itemType) => this.itemEventPayloadParser.isUserMessageItem(itemType),
     isReasoningItem: (itemType) => this.itemEventPayloadParser.isReasoningItem(itemType),
@@ -138,10 +153,6 @@ export class CodexThreadEventConverter {
     resolveSegmentType: (payload) => this.itemEventPayloadParser.resolveSegmentType(payload),
     resolveSegmentMetadata: (payload) =>
       this.itemEventPayloadParser.resolveSegmentMetadata(payload),
-    resolveReasoningSnapshot: (payload) =>
-      this.itemEventPayloadParser.resolveReasoningSnapshot(payload),
-    resolveReasoningSegmentId: (payload) =>
-      this.itemEventPayloadParser.resolveReasoningSegmentId(payload),
     resolveSegmentId: (payload, fallback) =>
       this.itemEventPayloadParser.resolveSegmentId(payload, fallback),
     resolveInvocationId: (payload) => this.itemEventPayloadParser.resolveInvocationId(payload),
@@ -152,6 +163,8 @@ export class CodexThreadEventConverter {
       this.itemEventPayloadParser.resolveToolArguments(payload, fallbackToolName),
     resolveDynamicToolArguments: (payload) =>
       this.itemEventPayloadParser.resolveDynamicToolArguments(payload),
+    hasExplicitToolArguments: (payload) =>
+      this.itemEventPayloadParser.hasExplicitToolArguments(payload),
     resolveLogEntry: (payload) => this.itemEventPayloadParser.resolveLogEntry(payload),
     isExecutionFailure: (payload) => this.itemEventPayloadParser.isExecutionFailure(payload),
     resolveToolError: (payload) => this.itemEventPayloadParser.resolveToolError(payload),
@@ -167,6 +180,9 @@ export class CodexThreadEventConverter {
       this.createEvent(codexEventName, eventType, payload),
     createStatusEvent: (codexEventName, payload) =>
       this.createStatusEvent(codexEventName, payload),
+    clearAllReasoningBlocks: () =>
+      this.itemEventPayloadParser.clearAllReasoningBlocks(),
+    clearAllOrderedTools: () => this.orderedToolBoundaryTracker.clearAll(),
   };
 
   private readonly rawResponseEventConverterContext: CodexRawResponseEventConverterContext = {
@@ -182,6 +198,13 @@ export class CodexThreadEventConverter {
     resolveItemType: (payload) => this.itemEventPayloadParser.resolveItemType(payload),
     resolveInvocationId: (payload) => this.itemEventPayloadParser.resolveInvocationId(payload),
     resolveLogEntry: (payload) => this.itemEventPayloadParser.resolveLogEntry(payload),
+    clearReasoningBlockForBoundary: (payload) =>
+      this.itemEventPayloadParser.clearReasoningBlockForBoundary(payload),
+    classifyToolLifecycleUpdate: (payload) =>
+      this.orderedToolBoundaryTracker.classifyToolLifecycleUpdate(
+        this.itemEventPayloadParser.resolveTurnId(payload),
+        this.itemEventPayloadParser.resolveInvocationId(payload),
+      ),
   };
 
   constructor(
@@ -241,15 +264,17 @@ export class CodexThreadEventConverter {
     return [];
   }
 
-  private createSegmentContentEvent(
+  private clearOrderedToolsForBoundary(payload: JsonObject): void {
+    const turnId = this.itemEventPayloadParser.resolveTurnId(payload);
+    if (turnId) this.orderedToolBoundaryTracker.clearForTurn(turnId);
+    else this.orderedToolBoundaryTracker.clearAll();
+  }
+
+  private createTextSegmentContentEvent(
     codexEventName: string,
     payload: JsonObject,
-    segmentType?: "text" | "reasoning",
   ): AgentRunEvent | null {
-    const delta =
-      segmentType === "reasoning"
-        ? this.itemEventPayloadParser.resolveReasoningDelta(payload)
-        : this.itemEventPayloadParser.resolveDelta(payload);
+    const delta = this.itemEventPayloadParser.resolveDelta(payload);
     if (!delta) {
       return null;
     }
@@ -258,12 +283,9 @@ export class CodexThreadEventConverter {
       AgentRunEventType.SEGMENT_CONTENT,
       {
         ...serializePayload(payload),
-        id:
-          segmentType === "reasoning"
-            ? this.itemEventPayloadParser.resolveReasoningSegmentId(payload)
-            : this.itemEventPayloadParser.resolveSegmentId(payload),
+        id: this.itemEventPayloadParser.resolveSegmentId(payload),
         delta,
-        ...(segmentType ? { segment_type: segmentType } : {}),
+        segment_type: "text",
       },
     );
   }

@@ -1,0 +1,46 @@
+timestamp=2026-07-11T08:15:17Z
+commit=c016730b7743f12d3e3b16f114d7bb5f48651b58
+branch=codex/consecutive-thinking-blocks
+-- executable --
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+main-executable: executable
+-- packaged server markers --
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-raw-response-event-converter.js:22:    if (context.classifyToolLifecycleUpdate(payload) === "result_first_creation") {
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-thread-event-converter.js:11:import { CodexOrderedToolBoundaryTracker, } from "./codex-ordered-tool-boundary-tracker.js";
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-thread-event-converter.js:51:    orderedToolBoundaryTracker = new CodexOrderedToolBoundaryTracker();
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-item-event-converter.js:127:    if (context.classifyToolLifecycleUpdate(payload) === "result_first_creation") {
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-item-event-converter.js:291:        case CodexThreadEventName.ITEM_REASONING_SUMMARY_TEXT_DELTA:
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-thread-event-name.js:12:    CodexThreadEventName["ITEM_REASONING_SUMMARY_TEXT_DELTA"] = "item/reasoning/summaryTextDelta";
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-ordered-tool-boundary-tracker.js:1:export class CodexOrderedToolBoundaryTracker {
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-ordered-tool-boundary-tracker.js:27:        return "result_first_creation";
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-memory/services/runtime-memory-event-accumulator.js:238:        const hadRecordedCall = tool.callWritten;
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-memory/services/runtime-memory-event-accumulator.js:239:        if (!hadRecordedCall) {
+-- spawn-helper executable bits --
+executable: /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+executable: /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+executable: /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+-- archive integrity --
+dmg-imageinfo: pass
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip.
+zip-test: pass
+-- code signature --
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+-- sizes --
+1.2G	/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+384M	/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg
+385M	/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip
+-- sha256 --
+d21d13d1d25a4bf5dcb5e62abc2df040bac75fde2b7c182c4214d5ad8e7fc2e8  /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg
+890fbaa93cec1da6a4ae74d13fb061ce7c0e3534380f03db95eafd50f6643009  /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip
+-- user-owned fixed port remains --
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 57731 normy   27u  IPv4 0x52b926edf1708689      0t0  TCP *:29695 (LISTEN)

@@ -27,6 +27,100 @@ const expectNoAgentToolsSecrets = (
 };
 
 describe("CodexThreadEventConverter", () => {
+  it("projects authoritative command arguments for a result-first completed command", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-result-first",
+        item: {
+          id: "tool-result-first",
+          type: "commandExecution",
+          command: "echo inferred",
+          status: "completed",
+          aggregatedOutput: "inferred\n",
+        },
+      },
+    });
+
+    const terminal = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    );
+    expect(terminal).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "tool-result-first",
+        turn_id: "turn-result-first",
+        tool_name: "run_bash",
+        arguments: { command: "echo inferred" },
+        result: "inferred\n",
+      },
+    });
+  });
+
+  it("preserves explicit empty arguments for a result-first dynamic terminal", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-empty-dynamic",
+        item: {
+          id: "dynamic-empty",
+          type: "dynamicToolCall",
+          name: "no_arg_tool",
+          arguments: {},
+          status: "completed",
+          result: { ok: true },
+        },
+      },
+    });
+
+    const terminal = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    );
+    expect(terminal).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "dynamic-empty",
+        turn_id: "turn-empty-dynamic",
+        tool_name: "no_arg_tool",
+        arguments: {},
+        result: { ok: true },
+      },
+    });
+  });
+
+  it("omits arguments for a genuinely argument-absent dynamic terminal", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-absent-dynamic",
+        item: {
+          id: "dynamic-absent",
+          type: "dynamicToolCall",
+          name: "arguments_later_tool",
+          status: "completed",
+          result: { ok: true },
+        },
+      },
+    });
+
+    const terminal = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    );
+    expect(terminal?.payload).toMatchObject({
+      invocation_id: "dynamic-absent",
+      turn_id: "turn-absent-dynamic",
+      tool_name: "arguments_later_tool",
+      result: { ok: true },
+    });
+    expect(terminal?.payload).not.toHaveProperty("arguments");
+  });
+
   it("ignores codex-prefixed internal events at the dispatcher boundary", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
@@ -1343,6 +1437,35 @@ describe("CodexThreadEventConverter", () => {
       tool_name: "search_web",
     });
     expect(converted[1]?.payload).not.toHaveProperty("arguments");
+  });
+
+  it("emits card-capable identity and name without inventing arguments for an unseen webSearch terminal", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws-terminal-placeholder",
+          status: "completed",
+          query: "",
+          action: { type: "other" },
+        },
+        turnId: "turn-terminal-placeholder",
+      },
+    });
+
+    expect(converted.map((entry) => entry.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      AgentRunEventType.SEGMENT_END,
+    ]);
+    expect(converted[0]?.payload).toMatchObject({
+      invocation_id: "ws-terminal-placeholder",
+      turn_id: "turn-terminal-placeholder",
+      tool_name: "search_web",
+    });
+    expect(converted[0]?.payload).not.toHaveProperty("arguments");
   });
 
   it("fans out successful webSearch completions into terminal success and segment end", () => {

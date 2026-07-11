@@ -1,0 +1,23 @@
+timestamp=2026-07-11T19:21:35Z
+commit=abd50be3fa1ded276242dfc59673209b914f8bad
+git-diff-check=pass
+temporary-live-harness-absent=pass
+packaged-port-closed=pass
+-- user listener --
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 96219 normy   27u  IPv4 0x83687b15e85af339      0t0  TCP *:29695 (LISTEN)
+-- status --
+ M autobyteus-web/services/runHydration/__tests__/runProjectionConversation.spec.ts
+ M tickets/in-progress/consecutive-thinking-blocks/api-e2e-coverage-investigation.md
+ M tickets/in-progress/consecutive-thinking-blocks/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/consecutive-thinking-blocks/code-review-report.md
+ M tickets/in-progress/consecutive-thinking-blocks/electron-test-build-report.md
+?? tickets/in-progress/consecutive-thinking-blocks/evidence/round-3/
+?? tickets/in-progress/consecutive-thinking-blocks/evidence/round-4/
+?? tickets/in-progress/consecutive-thinking-blocks/logs/api-e2e/electron-build-round-4-mac-arm64.log
+-- durable test diff names from architecture base --
+M	autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+M	autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts
+M	autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+A	autobyteus-server-ts/tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts
+autobyteus-web/services/runHydration/__tests__/runProjectionConversation.spec.ts

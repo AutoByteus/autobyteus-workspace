@@ -365,13 +365,16 @@ team member metadata -> member memoryDir -> raw trace corpus -> historical repla
   read-only historical override, but run-history projection never feeds that
   overlay back into recorder/writer state or creates a compatibility write.
 - `RuntimeMemoryEventAccumulator` owns the live event-to-raw-trace write
-  boundary for runtime streams. When a same-turn reasoning segment is still
-  open and the next visible write arrives (tool call, terminal tool result,
-  assistant text, or assistant-complete output), the accumulator flushes that
-  reasoning first so reload projection preserves the live ordering before tool
-  cards or assistant text. `TURN_COMPLETED` still flushes pending reasoning, but
-  a run that ends with open reasoning and no later visible write or turn
-  completion can still have incomplete local replay by design.
+  boundary for runtime streams. A new ordered tool card flushes preceding
+  same-turn reasoning at its first normalized call observation, even when the
+  physical call waits for authoritative arguments. Matching lifecycle updates,
+  including a terminal that later materializes that call and its result,
+  preserve reasoning written after the card. A genuinely result-first terminal
+  flushes before inferring the missing call. Assistant text and
+  assistant-complete output also flush preceding open reasoning.
+  `TURN_COMPLETED` still flushes pending reasoning, but a run that ends with
+  open reasoning and no later visible write or turn completion can still have
+  incomplete local replay by design.
 - Runtime-native providers such as `CodexRunViewProjectionProvider` and
   `ClaudeRunViewProjectionProvider` are diagnostic utilities only. They are not
   reachable from normal `getRunProjection` / `getTeamMemberRunProjection` UI

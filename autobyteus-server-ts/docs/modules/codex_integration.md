@@ -176,9 +176,12 @@ terminal row.
 Call timing follows provider argument readiness. Ordinary Codex command, file,
 dynamic, and MCP starts with explicit argument objects are written early. A
 hosted `webSearch` placeholder start omits `arguments` and creates no raw tool
-row; the terminal action supplies authoritative query/open/find arguments, so
-storage appends the call first and then the minimal result. An explicit `{}` is
-still a valid no-argument call. The shared accumulator does not parse raw Codex
+row, but its normalized start still establishes the live ordered card and
+flushes reasoning that preceded it. The terminal action supplies authoritative
+query/open/find arguments, so storage appends the call first and then the
+minimal result without splitting reasoning written after the card. A genuinely
+result-first terminal still flushes before the inferred call. An explicit `{}`
+is a valid no-argument call. The shared accumulator does not parse raw Codex
 items or branch on `search_web`; presence semantics belong to the converter.
 
 This memory is the normal run-history display replay source and is also useful

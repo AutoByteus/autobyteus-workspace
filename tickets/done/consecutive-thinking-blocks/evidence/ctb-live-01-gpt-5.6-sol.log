@@ -1,0 +1,154 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:74740) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts
+AgentRunManager initialized.
+
+stderr | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=19
+
+stderr | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=34
+
+stderr | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=254
+
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=312
+
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Finished Autobyteus audio model discovery. Total models registered: 8
+
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+Successfully created codex_app_server agent run 'run-codex-live-memory-ab844da8-08ca-403d-a6ff-fc7f5b0ce71e'.
+
+stdout | tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment
+[codex-live-reasoning-cadence] {"modelIdentifier":"gpt-5.6-sol","reasoningEffort":"max","rawReasoningItemCount":2,"rawReasoningItemIds":["rs_08d518708aeedba0016a51c90f316c819194485f1e2312e9cd","rs_08d518708aeedba0016a51c91bbc448191945f9c6357a452cb"],"normalizedReasoningEventCount":2,"normalizedReasoningIds":["reasoning-block:8ee053cd-a729-4843-888a-857718ccea18:1"],"persistedReasoningTraceCount":1,"expectedReasoningContentLength":223,"normalizedReasoningContentLength":223}
+
+ ✓ tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts > Codex live memory persistence e2e > persists raw traces and working context from a real Codex app-server turn without websocket attachment 31526ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  06:39:34
+   Duration  36.71s (transform 3.45s, setup 80ms, import 4.54s, tests 31.53s, environment 0ms)
+

@@ -1,0 +1,52 @@
+{
+  "result": "pass",
+  "runId": "packaged-ctb-r4-exact-sequence",
+  "normalized": {
+    "firstId": "reasoning-block:cc469377-39cd-45e6-b49f-b82cad280d4b:1",
+    "matchingId": "reasoning-block:cc469377-39cd-45e6-b49f-b82cad280d4b:1",
+    "nextBlockId": "reasoning-block:cc469377-39cd-45e6-b49f-b82cad280d4b:2",
+    "matchingDelta": "\n\nB"
+  },
+  "rawRelevant": [
+    {
+      "type": "tool_call",
+      "content": "",
+      "toolCallId": "tool-1"
+    },
+    {
+      "type": "tool_result",
+      "content": "",
+      "toolCallId": "tool-1"
+    },
+    {
+      "type": "reasoning",
+      "content": "A\n\nB",
+      "toolCallId": null
+    },
+    {
+      "type": "tool_call",
+      "content": "",
+      "toolCallId": "tool-2"
+    },
+    {
+      "type": "tool_result",
+      "content": "",
+      "toolCallId": "tool-2"
+    },
+    {
+      "type": "reasoning",
+      "content": "C",
+      "toolCallId": null
+    }
+  ],
+  "projectionReasoning": [
+    "A\n\nB",
+    "C"
+  ],
+  "projectionKinds": [
+    "tool_call",
+    "reasoning",
+    "tool_call",
+    "reasoning"
+  ]
+}

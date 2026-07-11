@@ -1,0 +1,154 @@
+[RuntimeToolTraceSequencer] deferred terminal tool event 'web-search-insufficient' in turn 'turn-insufficient' because authoritative call arguments were unavailable.
+[RuntimeToolTraceSequencer] deferred terminal tool event 'web-search-insufficient' in turn 'turn-insufficient' because authoritative call arguments were unavailable.
+[RuntimeToolTraceSequencer] deferred terminal tool event 'dynamic-absent' in turn 'turn-absent' because authoritative call arguments were unavailable.
+{
+  "result": "pass",
+  "runId": "packaged-ctb-r6-abd50be3",
+  "normalized": {
+    "matchingAId": "reasoning-block:a7a6e1c0-d919-40b9-a257-df4fbaa2c5aa:1",
+    "matchingBId": "reasoning-block:a7a6e1c0-d919-40b9-a257-df4fbaa2c5aa:1",
+    "nextId": "reasoning-block:a7a6e1c0-d919-40b9-a257-df4fbaa2c5aa:2",
+    "resultFirstArguments": {
+      "command": "echo inferred"
+    },
+    "insufficientBeforeId": "reasoning-block:a7a6e1c0-d919-40b9-a257-df4fbaa2c5aa:5",
+    "insufficientAfterId": "reasoning-block:a7a6e1c0-d919-40b9-a257-df4fbaa2c5aa:6",
+    "explicitEmptyHasArguments": true,
+    "absentHasArguments": false
+  },
+  "rawRelevant": [
+    {
+      "type": "tool_call",
+      "content": "",
+      "toolCallId": "tool-1"
+    },
+    {
+      "type": "tool_result",
+      "content": "",
+      "toolCallId": "tool-1"
+    },
+    {
+      "type": "reasoning",
+      "content": "A\n\nB",
+      "toolCallId": null
+    },
+    {
+      "type": "tool_call",
+      "content": "",
+      "toolCallId": "tool-2"
+    },
+    {
+      "type": "tool_result",
+      "content": "",
+      "toolCallId": "tool-2"
+    },
+    {
+      "type": "reasoning",
+      "content": "C",
+      "toolCallId": null
+    },
+    {
+      "type": "reasoning",
+      "content": "before result-first",
+      "toolCallId": null
+    },
+    {
+      "type": "tool_call",
+      "content": "",
+      "toolCallId": "tool-result-first"
+    },
+    {
+      "type": "tool_result",
+      "content": "",
+      "toolCallId": "tool-result-first"
+    },
+    {
+      "type": "reasoning",
+      "content": "after result-first",
+      "toolCallId": null
+    },
+    {
+      "type": "reasoning",
+      "content": "before insufficient terminal",
+      "toolCallId": null
+    },
+    {
+      "type": "tool_call",
+      "content": "",
+      "toolCallId": "web-search-insufficient"
+    },
+    {
+      "type": "tool_result",
+      "content": "",
+      "toolCallId": "web-search-insufficient"
+    },
+    {
+      "type": "reasoning",
+      "content": "after insufficient terminal",
+      "toolCallId": null
+    },
+    {
+      "type": "tool_call",
+      "content": "",
+      "toolCallId": "tool-after-insufficient"
+    },
+    {
+      "type": "tool_result",
+      "content": "",
+      "toolCallId": "tool-after-insufficient"
+    },
+    {
+      "type": "reasoning",
+      "content": "after next boundary",
+      "toolCallId": null
+    },
+    {
+      "type": "reasoning",
+      "content": "before explicit empty",
+      "toolCallId": null
+    },
+    {
+      "type": "tool_call",
+      "content": "",
+      "toolCallId": "dynamic-empty"
+    },
+    {
+      "type": "tool_result",
+      "content": "",
+      "toolCallId": "dynamic-empty"
+    },
+    {
+      "type": "reasoning",
+      "content": "after explicit empty",
+      "toolCallId": null
+    },
+    {
+      "type": "reasoning",
+      "content": "before truly absent",
+      "toolCallId": null
+    },
+    {
+      "type": "reasoning",
+      "content": "after truly absent",
+      "toolCallId": null
+    }
+  ],
+  "projectionReasoning": [
+    "A\n\nB",
+    "C",
+    "before result-first",
+    "before insufficient terminal",
+    "after result-first",
+    "after insufficient terminal",
+    "after next boundary",
+    "before explicit empty",
+    "before truly absent",
+    "after truly absent",
+    "after explicit empty"
+  ],
+  "ac13ProjectionIndexes": {
+    "insufficientBeforeIndex": 6,
+    "insufficientToolIndex": 8,
+    "insufficientAfterIndex": 9
+  }
+}

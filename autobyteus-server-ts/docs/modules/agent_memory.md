@@ -73,21 +73,57 @@ Tool execution uses a strict split physical contract shared with native memory:
 - new result rows never repeat `tool_name` or `tool_args`, and a call is never
   rewritten into a combined terminal row.
 
-`RuntimeMemoryEventAccumulator` persists a call at the first approval/start/
-terminal event that has valid identity, name, and authoritative arguments.
+`RuntimeMemoryEventAccumulator` remains the normalized event/segment facade:
+it owns turn context, reasoning/assistant segment buffering and flushing, and
+provider-compaction delegation. Its internal provider-agnostic
+`RuntimeToolTraceSequencer` owns the cohesive tool lifecycle state machine:
+compound identity, card observation, authoritative-argument readiness, strict
+call/result writes, physical hydration, interruption, cleanup, and duplicate
+suppression. The sequencer may request a reasoning boundary through one
+`flushReasoningBoundary(turnId, sourceEvent)` callback, but it cannot inspect
+segment maps; the facade cannot inspect or mutate sequencer tool state.
+
+The sequencer persists a call at the first approval/start/terminal event that
+has valid identity, name, and authoritative arguments.
 Provider converters own the difference between an absent argument field (“not
-yet available”) and an explicit `{}` (a valid no-argument call); the accumulator
-must not parse provider-native payloads or branch on tool names. If a terminal
-event is the first event with authoritative arguments, the accumulator appends
-the call first and then the minimal result. Missing identity/arguments and
-ambiguous reused call ids are skipped and logged instead of receiving fabricated
-state.
+yet available”) and an explicit `{}` (a valid no-argument call); memory must not
+parse provider-native payloads or branch on tool names. If a terminal event is
+the first event with authoritative arguments, the sequencer appends the call
+first and then the minimal result. Missing arguments defer physical writes;
+missing identity/name that cannot create a card and ambiguous reused call ids
+are skipped and logged instead of receiving fabricated state. Sequencer record
+methods accept the facade's current active turn and return
+only a resolved turn id when correlation establishes one; general turn/fallback
+ownership remains in the accumulator.
+
+The first normalized card-capable lifecycle observation establishes the ordered
+tool-card boundary and flushes preceding reasoning, even when the physical call
+must wait for authoritative arguments. This includes an unseen terminal with a
+resolvable compound identity and non-empty normalized tool name: generic UI
+consumers synthesize its card even if arguments are absent, so memory must mark
+it observed and flush before returning for insufficient readiness. A matching
+terminal may later persist the deferred call and result without flushing
+reasoning written after that card. An already-observed still-insufficient
+terminal preserves the boundary; a malformed terminal without usable
+identity/name creates no card and neither observes nor flushes. An unseen fully
+ready terminal flushes before its inferred call. This classification uses
+generic normalized call-observed and physical-lifecycle state; memory does not
+import or reconstruct Codex raw-event policy.
 
 Physical lifecycle state is keyed by `(turn_id, tool_call_id)`, hydrated from
 complete rotated segments plus active rows when a recorder is reconstructed,
 and records call-written and result-written independently. This permits an
 archived call and active result to remain one lifecycle while keeping native
 active-file compaction eligibility and pruning active-only.
+
+Call observation is process-local ordering state, not a third persisted tool
+record. If a deferred observation is abandoned, interrupted without
+authoritative arguments, or lost to hard process failure before the call is
+written, no raw tool row is fabricated and the transient observation cannot be
+hydrated. A crash after call append but before result append leaves an honest
+unmatched call; reconstruction hydrates that physical call as observed and a
+later matching terminal may append only the result. Historical result-side
+argument overlays remain read-only and never reconstruct current writer state.
 
 The recorder does not instantiate a Codex/Claude memory manager, retrieve memory for those runtimes, inject recorded memory into prompts, or alter provider/runtime session state. Memory persistence is independent of websocket clients; the sidecar is attached by the run manager, not by live stream subscribers.
 

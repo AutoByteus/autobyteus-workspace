@@ -15,6 +15,7 @@ import type { AgentRunBackendFactory } from "../../../src/agent-execution/backen
 import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
+import type { CodexAppServerMessage } from "../../../src/agent-execution/backends/codex/thread/codex-app-server-message.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import {
@@ -196,6 +197,23 @@ const readJsonl = async (filePath: string): Promise<Record<string, unknown>[]> =
     .filter(Boolean)
     .map((line) => JSON.parse(line) as Record<string, unknown>);
 
+const asRecord = (value: unknown): Record<string, unknown> =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : {};
+
+const collectSummaryText = (value: unknown): string => {
+  if (!Array.isArray(value)) return "";
+  return value
+    .map((entry) => {
+      if (typeof entry === "string") return entry;
+      const row = asRecord(entry);
+      const candidate = row.text ?? row.content ?? row.summary ?? row.delta;
+      return typeof candidate === "string" ? candidate : "";
+    })
+    .join("");
+};
+
 describeLiveCodexMemory("Codex live memory persistence e2e", () => {
   let clientManager: CodexAppServerClientManager | null = null;
   let threadManager: CodexThreadManager | null = null;
@@ -237,6 +255,9 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+    if (process.env.CODEX_MEMORY_E2E_MODEL?.trim()) {
+      expect(modelIdentifier).toBe(process.env.CODEX_MEMORY_E2E_MODEL.trim());
+    }
     const recorder = new AgentRunMemoryRecorder();
     const manager = new AgentRunManager({
       autoByteusBackendFactory: unusedBackendFactory,
@@ -260,7 +281,9 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         autoExecuteTools: false,
         workspaceId: "workspace-codex-live-memory",
         memoryDir,
-        llmConfig: { reasoning_effort: "low" },
+        llmConfig: {
+          reasoning_effort: process.env.CODEX_MEMORY_E2E_REASONING_EFFORT?.trim() || "low",
+        },
         skillAccessMode: SkillAccessMode.NONE,
       }),
       runId,
@@ -273,17 +296,27 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     await waitForStartupReady(thread!.startup.waitForReady);
 
     const events: AgentRunEvent[] = [];
+    const rawMessages: CodexAppServerMessage[] = [];
     const unsubscribe = run.subscribeToEvents((event) => {
       if (event && typeof event === "object") {
         events.push(event as AgentRunEvent);
       }
+    });
+    const unsubscribeRaw = thread!.subscribeAppServerMessages((message) => {
+      rawMessages.push(message);
     });
 
     try {
       const responseToken = `LIVE_CODEX_MEMORY_${randomUUID().replace(/-/g, "_")}`;
       const sendResult = await run.postUserMessage(
         new AgentInputUserMessage(
-          `Without using tools, reply with exactly this token and no other text: ${responseToken}`,
+          [
+            "Without using tools, explain carefully why final tool-call argument availability can",
+            "affect when an append-only system persists a tool activity but does not change the",
+            "meaning or payload responsibility of the tool result. Compare the available design",
+            "choices and their crash-safety tradeoffs. Begin the final response with this token:",
+            responseToken,
+          ].join(" "),
         ),
       );
       expect(sendResult.accepted).toBe(true);
@@ -322,6 +355,63 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         ),
       ).toBe(true);
 
+      const rawReasoningItems = rawMessages
+        .filter((message) => message.method === "item/completed")
+        .map((message) => asRecord(message.params.item))
+        .filter((item) => item.type === "reasoning");
+      const rawReasoningItemIds = rawReasoningItems
+        .map((item) => item.id)
+        .filter((id): id is string => typeof id === "string" && id.length > 0);
+      const expectedReasoningContent = rawReasoningItems
+        .map((item) => collectSummaryText(item.summary))
+        .filter(Boolean)
+        .join("\n\n");
+      const normalizedReasoningEvents = events.filter(
+        (event) =>
+          event.eventType === AgentRunEventType.SEGMENT_CONTENT &&
+          event.payload.segment_type === "reasoning",
+      );
+      const normalizedReasoningIds = normalizedReasoningEvents
+        .map((event) => event.payload.id)
+        .filter((id): id is string => typeof id === "string" && id.length > 0);
+      const normalizedReasoningContent = normalizedReasoningEvents
+        .map((event) => event.payload.delta)
+        .filter((delta): delta is string => typeof delta === "string")
+        .join("");
+      const persistedReasoning = rawTraces.filter((trace) => trace.trace_type === "reasoning");
+      const rawReasoningDeltaMethodCounts = Object.fromEntries([
+        "item/reasoning/summaryTextDelta",
+        "item/reasoning/delta",
+        "item/reasoning/summaryPartAdded",
+      ].map((method) => [
+        method,
+        rawMessages.filter((message) => message.method === method).length,
+      ]));
+
+      if (process.env.CODEX_MEMORY_E2E_ASSERT_REASONING === "1") {
+        expect(rawReasoningItems.length).toBeGreaterThan(0);
+        expect(rawReasoningItemIds).toHaveLength(rawReasoningItems.length);
+        expect(rawReasoningDeltaMethodCounts["item/reasoning/summaryTextDelta"])
+          .toBeGreaterThan(0);
+        expect(normalizedReasoningEvents).toHaveLength(rawReasoningItems.length);
+        expect(new Set(normalizedReasoningIds).size).toBe(1);
+        expect(normalizedReasoningContent).toBe(expectedReasoningContent);
+        expect(persistedReasoning).toHaveLength(1);
+        expect(persistedReasoning[0]?.content).toBe(expectedReasoningContent);
+      }
+      console.log("[codex-live-reasoning-cadence]", JSON.stringify({
+        modelIdentifier,
+        reasoningEffort: process.env.CODEX_MEMORY_E2E_REASONING_EFFORT?.trim() || "low",
+        rawReasoningItemCount: rawReasoningItems.length,
+        rawReasoningItemIds,
+        rawReasoningDeltaMethodCounts,
+        normalizedReasoningEventCount: normalizedReasoningEvents.length,
+        normalizedReasoningIds: [...new Set(normalizedReasoningIds)],
+        persistedReasoningTraceCount: persistedReasoning.length,
+        expectedReasoningContentLength: expectedReasoningContent.length,
+        normalizedReasoningContentLength: normalizedReasoningContent.length,
+      }));
+
       const snapshot = JSON.parse(await fsPromises.readFile(snapshotPath, "utf8")) as {
         messages?: Array<{ role?: string; content?: string }>;
       };
@@ -332,6 +422,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       ).toBe(true);
     } finally {
       unsubscribe();
+      unsubscribeRaw();
     }
   }, FLOW_TIMEOUT_MS);
 });

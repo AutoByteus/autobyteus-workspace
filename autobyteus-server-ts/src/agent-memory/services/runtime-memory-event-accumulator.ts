@@ -2,23 +2,17 @@ import type { AgentRunUserMessageAcceptedPayload } from "../../agent-execution/d
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import type { RunMemoryWriter } from "../store/run-memory-writer.js";
-import { createToolCallIdentity, toolCallIdentityKey, type ToolCallIdentity } from "autobyteus-ts/memory/models/tool-call-identity.js";
 import type { ToolTraceLifecycleGroup } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
 import { ProviderCompactionBoundaryRecorder } from "./provider-compaction-boundary-recorder.js";
 import {
   asString,
   extractAcceptedMessageMedia,
   extractContentDelta,
-  extractError,
-  extractInvocationId,
-  extractReason,
   extractSegmentId,
   extractTimestamp,
-  extractToolArgs,
-  extractToolName,
-  extractToolResult,
   extractTurnId,
 } from "./runtime-memory-event-payload.js";
+import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
 
 type SegmentState = {
   id: string;
@@ -29,22 +23,14 @@ type SegmentState = {
   ts: number | null;
 };
 
-type RuntimeToolState = {
-  identity: ToolCallIdentity;
-  toolName?: string;
-  toolArgs?: Record<string, unknown>;
-  callRawTraceId?: string;
-  resultRawTraceId?: string;
-};
-
 export class RuntimeMemoryEventAccumulator {
   private activeTurnId: string | null = null;
   private fallbackTurnIndex = 0;
   private currentFallbackTurnId: string | null = null;
   private readonly segments = new Map<string, SegmentState>();
-  private readonly tools = new Map<string, RuntimeToolState>();
   private readonly pendingReasoningByTurn = new Map<string, string[]>();
   private readonly providerCompactionBoundaryRecorder: ProviderCompactionBoundaryRecorder;
+  private readonly toolTraceSequencer: RuntimeToolTraceSequencer;
 
   constructor(
     private readonly input: {
@@ -53,7 +39,12 @@ export class RuntimeMemoryEventAccumulator {
       toolTraceLifecycleGroups: ReadonlyMap<string, ToolTraceLifecycleGroup>;
     },
   ) {
-    this.hydrateToolStates(input.toolTraceLifecycleGroups);
+    this.toolTraceSequencer = new RuntimeToolTraceSequencer({
+      writer: input.writer,
+      toolTraceLifecycleGroups: input.toolTraceLifecycleGroups,
+      flushReasoningBoundary: (turnId, sourceEvent) =>
+        this.flushOpenReasoningSegments(turnId, sourceEvent),
+    });
     this.providerCompactionBoundaryRecorder = new ProviderCompactionBoundaryRecorder({
       writer: input.writer,
       resolveTurnId: (candidate) => this.resolveTurnId(candidate),
@@ -180,10 +171,7 @@ export class RuntimeMemoryEventAccumulator {
       }
     }
     this.flushPendingReasoning(turnId);
-    for (const [key, tool] of this.tools) {
-      if (tool.identity.turnId !== turnId || tool.callRawTraceId || tool.resultRawTraceId) continue;
-      this.tools.delete(key);
-    }
+    this.toolTraceSequencer.completeTurn(turnId);
     if (this.activeTurnId === turnId) this.activeTurnId = null;
     if (this.currentFallbackTurnId === turnId) this.currentFallbackTurnId = null;
   }
@@ -194,11 +182,7 @@ export class RuntimeMemoryEventAccumulator {
       console.warn("[RuntimeMemoryEventAccumulator] skipped TURN_INTERRUPTED without a turn identity.");
       return;
     }
-    const error = extractError(event.payload) ?? extractReason(event.payload) ?? "Tool execution interrupted.";
-    for (const tool of [...this.tools.values()]) {
-      if (tool.identity.turnId !== turnId || !tool.callRawTraceId || tool.resultRawTraceId) continue;
-      this.persistToolResult(tool, event, null, error, "Tool execution interrupted.");
-    }
+    this.toolTraceSequencer.interruptTurn(event, turnId);
     this.completeTurn({ ...event, payload: { ...event.payload, turn_id: turnId } });
   }
 
@@ -228,12 +212,7 @@ export class RuntimeMemoryEventAccumulator {
     this.writeAssistantTrace(segment.turnId, content, sourceEvent, segment.ts);
   }
 
-  private writeAssistantTrace(
-    turnId: string,
-    content: string,
-    sourceEvent: string,
-    ts: number | null,
-  ): void {
+  private writeAssistantTrace(turnId: string, content: string, sourceEvent: string, ts: number | null): void {
     if (sourceEvent !== AgentRunEventType.TURN_COMPLETED) {
       this.flushOpenReasoningSegments(turnId, sourceEvent);
     }
@@ -254,12 +233,7 @@ export class RuntimeMemoryEventAccumulator {
     });
   }
 
-  private writeReasoningTrace(
-    turnId: string,
-    content: string,
-    sourceEvent: string,
-    ts: number | null,
-  ): void {
+  private writeReasoningTrace(turnId: string, content: string, sourceEvent: string, ts: number | null): void {
     this.input.writer.write({
       trace: {
         traceType: "reasoning",
@@ -304,157 +278,13 @@ export class RuntimeMemoryEventAccumulator {
   }
 
   private recordToolCall(event: AgentRunEvent): void {
-    const identity = this.resolveToolIdentity(event.payload, "observation");
-    if (!identity) return;
-    const tool = this.getOrCreateToolState(identity);
-    if (tool.resultRawTraceId) return;
-    this.mergeToolObservation(tool, event.payload);
-    if (!tool.callRawTraceId && this.isCallReady(tool)) {
-      this.persistToolCall(tool, event);
-    }
-    this.activeTurnId = identity.turnId;
+    const outcome = this.toolTraceSequencer.recordCallObservation(event, this.activeTurnId);
+    if (outcome.resolvedTurnId) this.activeTurnId = outcome.resolvedTurnId;
   }
 
   private recordToolResult(event: AgentRunEvent): void {
-    const identity = this.resolveToolIdentity(event.payload, "terminal");
-    if (!identity) return;
-    const tool = this.getOrCreateToolState(identity);
-    if (tool.resultRawTraceId) return;
-    this.mergeToolObservation(tool, event.payload);
-
-    if (!tool.callRawTraceId) {
-      if (!this.isCallReady(tool)) {
-        console.warn(
-          `[RuntimeMemoryEventAccumulator] skipped terminal tool event '${identity.toolCallId}' in turn '${identity.turnId}' because authoritative call arguments were unavailable.`,
-        );
-        return;
-      }
-      this.persistToolCall(tool, event);
-    }
-    if (!tool.toolName) {
-      console.warn(
-        `[RuntimeMemoryEventAccumulator] skipped terminal tool event '${identity.toolCallId}' in turn '${identity.turnId}' because its persisted call has no usable tool name.`,
-      );
-      return;
-    }
-
-    const denied = event.eventType === AgentRunEventType.TOOL_DENIED;
-    const failed = event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED;
-    const interrupted = event.eventType === AgentRunEventType.TOOL_EXECUTION_INTERRUPTED;
-    const error = denied
-      ? extractError(event.payload) ?? extractReason(event.payload) ?? "Tool execution denied."
-      : failed
-        ? extractError(event.payload) ?? "Tool execution failed."
-        : interrupted
-          ? extractError(event.payload) ?? extractReason(event.payload) ?? "Tool execution interrupted."
-          : null;
-    const result = denied
-      ? { status: "denied", reason: extractReason(event.payload) ?? error }
-      : interrupted ? null : extractToolResult(event.payload);
-    this.persistToolResult(
-      tool,
-      event,
-      result,
-      error,
-      denied ? "Tool execution denied." : interrupted ? "Tool execution interrupted." : "",
-    );
-  }
-
-  private persistToolCall(tool: RuntimeToolState, event: AgentRunEvent): void {
-    if (tool.callRawTraceId || !this.isCallReady(tool)) return;
-    this.flushOpenReasoningSegments(tool.identity.turnId, event.eventType);
-    const trace = this.input.writer.write({
-      trace: {
-        traceType: "tool_call",
-        turnId: tool.identity.turnId,
-        content: "",
-        sourceEvent: event.eventType,
-        ts: extractTimestamp(event.payload),
-        toolName: tool.toolName,
-        toolCallId: tool.identity.toolCallId,
-        toolArgs: tool.toolArgs,
-      },
-      snapshotUpdate: {
-        kind: "tool_call",
-        toolCallId: tool.identity.toolCallId,
-        toolName: tool.toolName,
-        toolArgs: tool.toolArgs,
-      },
-    });
-    tool.callRawTraceId = trace.id;
-  }
-
-  private persistToolResult(
-    tool: RuntimeToolState,
-    event: AgentRunEvent,
-    result: unknown,
-    error: string | null,
-    content: string,
-  ): void {
-    if (tool.resultRawTraceId || !tool.callRawTraceId || !tool.toolName) return;
-    this.flushOpenReasoningSegments(tool.identity.turnId, event.eventType);
-    const trace = this.input.writer.write({
-      trace: {
-        traceType: "tool_result",
-        turnId: tool.identity.turnId,
-        content,
-        sourceEvent: event.eventType,
-        ts: extractTimestamp(event.payload),
-        toolCallId: tool.identity.toolCallId,
-        toolResult: result === undefined ? null : result,
-        toolError: error,
-      },
-      snapshotUpdate: {
-        kind: "tool_result",
-        toolCallId: tool.identity.toolCallId,
-        toolName: tool.toolName,
-        toolResult: result === undefined ? null : result,
-        toolError: error,
-      },
-    });
-    tool.resultRawTraceId = trace.id;
-  }
-
-  private getOrCreateToolState(identity: ToolCallIdentity): RuntimeToolState {
-    const key = toolCallIdentityKey(identity);
-    const existing = this.tools.get(key);
-    if (existing) return existing;
-    const tool: RuntimeToolState = { identity };
-    this.tools.set(key, tool);
-    return tool;
-  }
-
-  private mergeToolObservation(tool: RuntimeToolState, payload: Record<string, unknown>): void {
-    const observedName = extractToolName(payload);
-    const observedArgs = extractToolArgs(payload);
-    if (!tool.callRawTraceId) {
-      if (observedName) tool.toolName = observedName;
-      if (observedArgs !== undefined) tool.toolArgs = observedArgs;
-    } else if (!tool.toolName && observedName) {
-      tool.toolName = observedName;
-    }
-  }
-
-  private isCallReady(tool: RuntimeToolState): tool is RuntimeToolState & {
-    toolName: string;
-    toolArgs: Record<string, unknown>;
-  } {
-    return Boolean(tool.toolName?.trim()) && tool.toolArgs !== undefined;
-  }
-
-  private hydrateToolStates(groups: ReadonlyMap<string, ToolTraceLifecycleGroup>): void {
-    for (const [key, group] of groups) {
-      const tool: RuntimeToolState = {
-        identity: group.identity,
-      };
-      if (group.call?.toolName?.trim()) tool.toolName = group.call.toolName.trim();
-      if (group.call?.toolArgs !== null && group.call?.toolArgs !== undefined) {
-        tool.toolArgs = group.call.toolArgs;
-      }
-      if (group.call) tool.callRawTraceId = group.call.id ?? `physical:${key}:call`;
-      if (group.result) tool.resultRawTraceId = group.result.id ?? `physical:${key}:result`;
-      this.tools.set(key, tool);
-    }
+    const outcome = this.toolTraceSequencer.recordTerminal(event, this.activeTurnId);
+    if (outcome.resolvedTurnId) this.activeTurnId = outcome.resolvedTurnId;
   }
 
   private resolveSegmentId(
@@ -475,43 +305,6 @@ export class RuntimeMemoryEventAccumulator {
     }
     const id = extractSegmentId(payload);
     return id ? this.segments.get(id)?.type ?? "text" : "text";
-  }
-
-  private resolveToolIdentity(
-    payload: Record<string, unknown>, mode: "observation" | "terminal",
-  ): ToolCallIdentity | null {
-    const toolCallId = extractInvocationId(payload);
-    if (!toolCallId) {
-      console.warn("[RuntimeMemoryEventAccumulator] skipped tool event without an invocation id.");
-      return null;
-    }
-    const explicitTurnId = extractTurnId(payload);
-    if (explicitTurnId) return { turnId: explicitTurnId, toolCallId };
-    const matches = [...this.tools.values()]
-      .filter((tool) => tool.identity.toolCallId === toolCallId);
-    if (mode === "terminal") {
-      if (matches.length === 1) return matches[0]!.identity;
-      if (matches.length > 1) {
-        console.warn(`[RuntimeMemoryEventAccumulator] skipped terminal tool event '${toolCallId}' because it matches multiple turn lifecycles.`);
-        return null;
-      }
-    } else {
-      const activeMatch = matches.find((tool) => tool.identity.turnId === this.activeTurnId);
-      if (activeMatch) return activeMatch.identity;
-      const pendingMatches = matches.filter((tool) => !tool.resultRawTraceId);
-      if (pendingMatches.length === 1) return pendingMatches[0]!.identity;
-      if (pendingMatches.length > 1 || (!this.activeTurnId && matches.length > 1)) {
-        console.warn(`[RuntimeMemoryEventAccumulator] skipped tool observation '${toolCallId}' because it matches multiple turn lifecycles.`);
-        return null;
-      }
-      if (!this.activeTurnId && matches.length === 1) return matches[0]!.identity;
-    }
-    const identity = createToolCallIdentity(this.activeTurnId, toolCallId);
-    if (!identity) {
-      console.warn(`[RuntimeMemoryEventAccumulator] skipped tool event '${toolCallId}' without a turn identity.`);
-      return null;
-    }
-    return identity;
   }
 
   private resolveTurnId(candidate: unknown): string {
