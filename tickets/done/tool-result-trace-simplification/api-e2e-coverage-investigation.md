@@ -2,19 +2,70 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/design-spec.md`
 - Supplemental Solution Artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/tool-trace-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/code-review-report.md`
-- Current Investigation Round: 1
-- Trigger: Implementation source-review round 2 passed and requested API/E2E coverage investigation and execution.
-- Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: Round 1
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/tool-trace-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/code-review-report.md`
+- Current Investigation Round: 2
+- Trigger: After round-1 Pass, the user explicitly requested a plan and execution against the real OpenAI API using the canonical repository `.env.test` credential.
+- Prior Investigation Reviewed: Round 1 (Pass; final confidence 97.2% after live Codex validation)
+- Latest Authoritative Investigation: Round 2
+
+## Round 2 User-Requested OpenAI Live Extension (Plan And Result)
+
+### Scope And Evidence Gap
+
+Round 1 directly proved the native persistence path with deterministic test LLMs and proved an external provider with live Codex, but it did not execute the native AutoByteus agent loop against the real OpenAI Chat Completions tool-call stream. The remaining OpenAI-specific gap is streamed provider argument assembly flowing through `LlmPhase`, early call persistence, real tool execution, minimal result persistence, and the continuation turn.
+
+LM Studio is not part of this extension: the user identified an OpenAI credential, and a live OpenAI run closes the newly requested provider gap without requiring a separately running local LM Studio model/server.
+
+### Environment Discovery
+
+- Canonical secret source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/.env.test`.
+- Credential readiness: confirmed by presence only; no value, prefix, hash, or response content is recorded.
+- Provider readiness preflight: an authenticated `GET /v1/models` returned HTTP 200. `gpt-5.4-mini` is available and is selected as the lower-cost tool-capable model for this run.
+- Loading method: execute Node/Vitest with `env -u OPENAI_API_KEY node --env-file=<canonical .env.test> ...` so the evidence proves the canonical file supplies the key rather than inheriting an unrelated shell value.
+- Data safety: one isolated temporary workspace and memory directory; harmless `write_file` only; no shared or production file mutation.
+
+### Existing Coverage Decision
+
+| Path / Scenario | Round-2 Validity Decision | Evidence Gap | Action |
+| --- | --- | --- | --- |
+| `autobyteus-ts/tests/integration/agent/openai-single-agent-flow.test.ts` | Needs Update | It already executes a real OpenAI tool journey, but it proves only the output file/events and does not inspect physical memory or prove call persistence at tool-start time | Keep the env-gated journey; supply an explicit test-local memory directory and add strict call/result JSONL assertions, including a synchronous tool-start snapshot |
+
+### Scenario And Success Contract
+
+| Scenario ID | Execution Surface | Required Observable Evidence | Durable Decision |
+| --- | --- | --- | --- |
+| TTR-OPENAI-014 | Real `OpenAILLM` -> streamed API tool-call handler -> native agent loop -> `write_file` -> `MemoryManager` -> physical JSONL -> continuation | At tool execution start, one non-empty-ID `write_file` call with explicit model-issued args is already durable and no correlated result exists. At completion, exactly one correlated result physically contains both outcome keys and omits name/args; call precedes result; file content and final continuation also pass. A unique success marker must be present so provider-access skip handling cannot be mistaken for executed proof. | Update the existing env-gated durable integration test; no new temporary test file |
+
+### Planned Execution And Failure Handling
+
+1. Recreate only the worktree dependency link required for core Vitest.
+2. Update the existing live OpenAI test with test-local memory and strict physical JSONL assertions.
+3. Execute only TTR-OPENAI-014 first with canonical `.env.test` loading and `OPENAI_AGENT_FLOW_MODEL=gpt-5.4-mini`.
+4. Require both Vitest Pass and `OPENAI_LIVE_TOOL_MEMORY_ASSERTIONS=PASS`; absence of the marker is a failed/blocked execution, not a pass.
+5. If provider access fails, record the exact HTTP/access class without exposing credentials and do not claim execution. If the tool lifecycle fails, retain the exact scenario/log for focused failure-origin review.
+6. On success, run the focused native memory/approval regression, source typecheck, and diff/whitespace checks; then remove all owned setup and compare ignored artifacts with the round-1 clean baseline.
+7. Update the canonical execution report as round 2 and redeliver the cumulative package to `code_reviewer` for proportional review of the newly changed durable test path plus the existing round-1 paths.
+
+### Round 2 Execution Result
+
+- TTR-OPENAI-014: **Pass** against real OpenAI `gpt-5.4-mini`.
+- Credential source proof: canonical `.env.test` loaded the key after the inherited `OPENAI_API_KEY` was explicitly removed; authenticated model discovery returned HTTP 200 and confirmed the selected model.
+- Provider execution proof: Vitest reported 1 file / 1 test passed in 5.24 seconds; the real journey itself completed in 3.861 seconds.
+- Silent-skip guard: `OPENAI_LIVE_TOOL_MEMORY_ASSERTIONS=PASS` was present and `[provider integration skip]` was absent.
+- At the synchronous `AGENT_TOOL_EXECUTION_STARTED` observation, the physical JSONL already contained the model-issued `write_file` call with a non-empty ID and explicit path/content arguments, and contained no correlated result.
+- After execution and the live continuation turn, JSONL contained exactly one call and one correlated result in order. The call had no outcome keys; the result physically had both outcome keys, including `tool_error:null`, and had no name/args.
+- The harmless output file contained every required line, the final assistant response referenced its path, and no tool/generation failure was emitted.
+- Focused native regression: `MemoryManager` plus approval integration passed 2 files / 24 tests.
+- Core source typecheck, tracked diff check, targeted whitespace check, and round-2 cleanup passed.
+- Durable impact: one additional existing test file updated; no production source and no test path added or removed.
 
 ## Current Requirement And Design Basis
 
@@ -156,6 +207,9 @@ None planned.
 | 8 | `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit`; `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`; `git diff --check` | Assigned worktree; server dependency overlay resolved current worktree core | Source compile and diff integrity | Pass | `api-e2e-evidence/final-source-typecheck-and-diff-check.log` |
 | 9 | Static changed-path/vocabulary audit for migration, version, Memory Sync, provider branching, obsolete prototypes | Diff from bootstrap commit `3effb76ab56d4d1bb876ad0623a8e5eb7093a584` | AC-012 and no compatibility writer/runtime branch | Pass | `api-e2e-evidence/no-migration-legacy-static-audit.log` |
 | 10 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts --no-watch` | Installed/authenticated Codex App Server, isolated run/workspace/memory | TTR-API-008 and live transport readiness | Initial stale setup failure, then Pass — 1 file / 1 test after bounded test fix | `api-e2e-evidence/codex-live-memory-e2e.log`; `api-e2e-evidence/codex-live-memory-e2e-rerun.log` |
+| 11 | `env -u OPENAI_API_KEY OPENAI_AGENT_FLOW_MODEL=gpt-5.4-mini node --env-file=<canonical core .env.test> node_modules/vitest/vitest.mjs run tests/integration/agent/openai-single-agent-flow.test.ts --reporter=verbose` | Real OpenAI API; test-local workspace/memory; inherited key explicitly removed | TTR-OPENAI-014; live native early persistence, strict JSONL, execution, continuation | Pass — 1 file / 1 test; assertion marker present; no provider skip | `api-e2e-evidence/round2-openai-live-tool-memory.log` |
+| 12 | Core `MemoryManager` unit plus native approval integration | Assigned worktree | Round-1 native contract regression after the OpenAI durable update | Pass — 2 files / 24 tests | `api-e2e-evidence/round2-native-regression.log` |
+| 13 | Core source typecheck, `git diff --check`, targeted whitespace scan | Assigned worktree | Round-2 compile and artifact integrity | Pass | `api-e2e-evidence/round2-openai-static-checks.log` |
 
 The full TypeScript configuration that includes every test file was also run diagnostically. It exposes broad pre-existing test-root and unrelated typing debt and is not the project’s source-build authority; the authoritative core and server build configurations both pass. Evidence is retained in `api-e2e-evidence/typecheck-tests.log`.
 
@@ -178,16 +232,34 @@ The full TypeScript configuration that includes every test file was also run dia
 - Default clean-confidence target of `95%` met: Yes, but the material provider-drift risk still justified broader validation.
 - Material residual risks: raw/snapshot writes are not cross-file transactional; live Codex protocol evidence is version-specific; deferred hosted calls may disappear on hard loss by approved contract.
 
+### Round 2 Final Confidence Extension
+
+| Confidence Category | Round-1 Final | Round-2 Final | OpenAI Evidence Effect |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 98% | 99% | Adds a real native provider to the already direct AC-001/AC-004 proof |
+| Changed-boundary execution directness | 98% | 99% | Synchronous tool-start JSONL inspection proves early call/no-result state on a live stream |
+| Cross-boundary integration realism and mock gap | 97% | 99% | Real OpenAI stream, native agent loop, tool, memory filesystem, and continuation join the prior live Codex proof |
+| Environment, configuration, identity, and fixture fidelity | 96% | 98% | Canonical secret file, authenticated model discovery, available selected model, isolated data, and explicit no-skip marker |
+| Failure, edge-case, lifecycle, and recovery evidence | 97% | 97% | No change; round-1 edge/recovery matrix remains authoritative |
+| User-surface, browser, and desktop-shell confidence | N/A | N/A | Still inapplicable |
+| Durable regression coverage quality and relevance | 97% | 98% | Existing env-gated live journey now protects the exact physical persistence contract |
+
+- Overall round-2 final confidence: **98.3%** (simple average of six applicable categories).
+- Every critical acceptance criterion directly proven: Yes.
+- Any applicable category below 90%: No.
+- Default clean-confidence target met: Yes.
+- Remaining external-provider gap: no live LM Studio run was performed; it requires a separately running/reachable configured model and is not evidence supplied by the OpenAI credential.
+
 ## Broader Validation Decision (Mandatory)
 
-- Decision: Required; executed and passed.
-- Selected execution mode: Live API / Lifecycle (Codex App Server); no browser.
-- Specific confidence gap or residual risk addressed: Repository fixtures can prove the adapter and persistence code, but the root cause is an external hosted-search lifecycle whose shape can evolve.
-- Why the selected mode can materially improve confidence: It checks the installed/authenticated App Server against the current converter/recorder/writer boundary and inspects actual physical JSONL produced by a live hosted search.
-- Expected confidence after the selected validation: Approximately 97%, with no applicable category below 90% and direct proof for every critical acceptance criterion.
+- Decision: Required; both selected rounds executed and passed.
+- Selected execution mode: Live API / Lifecycle — Codex App Server in round 1 and native OpenAI API in round 2; no browser.
+- Specific confidence gap or residual risk addressed: Round 1 addressed evolving hosted-Codex search events; round 2 addressed real OpenAI streamed argument assembly flowing through the native early-write/result/continuation boundary.
+- Why the selected mode can materially improve confidence: Codex checks the installed App Server against converter/recorder/writer JSONL. OpenAI checks a second real provider through `OpenAILLM`, native agent/tool execution, synchronous tool-start persistence, final strict JSONL, and continuation.
+- Expected/achieved confidence after selected validation: 98.3%, with no applicable category below 90% and direct proof for every critical acceptance criterion.
 - Browser-specific decision and rationale: Browser validation is not applicable; no frontend, browser API, renderer, routing, or desktop-shell behavior changed.
 - If Not Required: N/A.
-- If Blocked: N/A; authentication, model catalog, thread lifecycle, and hosted search were available.
+- If Blocked: N/A; Codex authentication/catalog/thread/search and OpenAI canonical credential/model/tool execution were available.
 
 ## Desktop Application Validation Decision
 
@@ -202,14 +274,14 @@ The full TypeScript configuration that includes every test file was also run dia
 
 ## Live Environment And Fixture Plan
 
-- Startup order and commands: Build current core package, execute repository coverage, then run the env-gated live Codex memory E2E and a one-off hosted-search probe through the same production manager/recorder path.
-- Environment choices that materially affect the run: `RUN_CODEX_E2E=1`; installed `codex-cli 0.144.1`; isolated temporary workspace and memory directories; approval policy controlled by the existing harness.
-- Health / readiness checks: `codex --version`; model catalog returns a supported model; thread startup-ready promise completes.
+- Startup order and commands: Build current core package, execute repository coverage, run the env-gated live Codex memory E2E and hosted-search probe, then in round 2 load canonical core `.env.test`, preflight OpenAI models, and run the env-gated OpenAI single-agent journey.
+- Environment choices that materially affect the run: `RUN_CODEX_E2E=1`; installed `codex-cli 0.144.1`; real OpenAI `gpt-5.4-mini`; canonical `.env.test`; isolated temporary workspace and memory directories.
+- Health / readiness checks: `codex --version`; Codex model catalog/thread startup; OpenAI `/v1/models` HTTP 200 and selected-model presence; explicit live assertion marker and no provider-skip marker.
 - Seed data / fixtures: No durable shared data; unique run/token IDs and test-local JSONL.
-- Test identities, authentication, permissions, or session state: Existing local Codex authentication; no credential values recorded. No production account mutation.
-- Requirement-linked journeys or scenarios: TTR-API-008 live recorder smoke and TTR-PROBE-001 live hosted-search placeholder/terminal lifecycle.
-- Evidence to capture: Exact command, Vitest output, shape-only JSONL assertions, temporary harness checksum, and cleanup result; no provider-private content is reproduced in the reports.
-- Owned processes and temporary state to clean up: Spawned Codex client/thread, temporary workspaces/memory dirs, dependency links, build output, and test DB artifacts created by this run.
+- Test identities, authentication, permissions, or session state: Existing local Codex authentication plus canonical OpenAI test credential loaded in-process; no credential values recorded and no production account mutation.
+- Requirement-linked journeys or scenarios: TTR-API-008 live Codex recorder smoke, TTR-PROBE-001 live hosted-search lifecycle, and TTR-OPENAI-014 native OpenAI tool/memory lifecycle.
+- Evidence to capture: Exact commands, Vitest output, shape-only JSONL assertions, OpenAI no-skip marker, temporary Codex harness checksum, and cleanup result; no provider-private content is reproduced in the reports.
+- Owned processes and temporary state to clean up: Spawned Codex client/thread, Codex/OpenAI temporary workspaces and memory, dependency links, build output, and test DB artifacts created by the runs.
 
 ## Temporary Executable Validation Plan
 
@@ -223,6 +295,7 @@ The full TypeScript configuration that includes every test file was also run dia
 | Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- |
 | Live Claude paid-provider tool execution | Deterministic coordinator/converter inputs and persistence composition directly exercise the changed local boundary; external Claude service behavior did not change | Low residual external-provider drift | Revisit only if local provider composition fails or live Claude lifecycle is materially uncertain |
+| Live LM Studio model execution | Round 2 was explicitly enabled by the OpenAI credential; LM Studio requires a separately running/reachable configured model and remains a distinct external environment | Low bounded OpenAI-compatible endpoint drift | Run only if LM Studio-specific confidence is requested and a concrete model is confirmed ready |
 | Electron/browser UI | No changed UI or shell boundary | None for this task | None |
 | Hard process kill between separate raw and snapshot filesystem writes | Existing recovery tests deterministically reproduce the durable states without unsafe process manipulation | Bounded accepted transaction-gap risk | Preserve recovery coverage and residual-risk statement |
 
@@ -237,9 +310,9 @@ The full TypeScript configuration that includes every test file was also run dia
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: Yes
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: Yes — three scenarios added and six files updated in total; no removals
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: Yes — four scenarios added and seven files updated across both rounds; no removals
 - Post-repository confidence: 96.3%
-- Broader validation decision: Required; live Codex lifecycle executed and passed
+- Broader validation decision: Required; live Codex and live OpenAI lifecycles executed and passed
 - Reroute Required Before Validation Execution: No
 - Recommended Recipient If Reroute Required: N/A
-- Notes: The initial investigation was written before any API/E2E-owned durable test edit. Execution exposed two bounded stale fixtures, both classified and repaired as API/E2E-owned local fixes before final reruns. Final confidence and broader evidence are recorded in the execution coverage report.
+- Notes: Round 2 was planned in this canonical investigation before the OpenAI durable edit. TTR-OPENAI-014 passed without provider skip, raised final confidence to 98.3%, and requires a renewed proportional review of the seventh changed durable test path.

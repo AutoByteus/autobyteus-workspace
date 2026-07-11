@@ -1,0 +1,7 @@
+pre_handoff_remote_audit_utc=2026-07-11T06:19:15Z
+pre_fetch_origin_personal=ce83847296d9eace2f6eb832521c1d6b135c4722
+post_fetch_origin_personal=ce83847296d9eace2f6eb832521c1d6b135c4722
+ticket_head=8f6b720208d0d0fce9da71f788979281d8e1aea6
+merge_base=ce83847296d9eace2f6eb832521c1d6b135c4722
+ahead_behind=2	0
+result=PASS: handoff state contains latest tracked origin/personal

@@ -62,8 +62,8 @@ Working Context remains a separate protocol projection. Historical split rows re
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Authoritative Relationship |
 | --- | --- | --- | --- | --- | --- |
-| `tickets/in-progress/tool-result-trace-simplification/tool-trace-contract.md` | Exact new-write, provider-readiness, crash, compaction, and historical-read contract | REQ-001–REQ-012 | AC-001–AC-013 | Revised for the 2026-07-11 user-approved direction | Clarifies but does not replace requirements or design |
-| `tickets/in-progress/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md` | Direct provider/parser/schema evidence | REQ-004, REQ-006, REQ-010 | AC-003, AC-010, AC-011 | Complete evidence; provider-late and no-client-result conclusions accepted by user | Evidence supplement for requirements, investigation, and design |
+| `tickets/done/tool-result-trace-simplification/tool-trace-contract.md` | Exact new-write, provider-readiness, crash, compaction, and historical-read contract | REQ-001–REQ-012 | AC-001–AC-013 | Revised for the 2026-07-11 user-approved direction | Clarifies but does not replace requirements or design |
+| `tickets/done/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md` | Direct provider/parser/schema evidence | REQ-004, REQ-006, REQ-010 | AC-003, AC-010, AC-011 | Complete evidence; provider-late and no-client-result conclusions accepted by user | Evidence supplement for requirements, investigation, and design |
 
 ## Design Health Assessment (Mandatory)
 

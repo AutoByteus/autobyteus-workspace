@@ -80,6 +80,19 @@ The memory system is defined by its implemented operations:
 - Optional: `media`, `tool_name`, `tool_call_id`, `tool_args`, `tool_result`, `tool_error`,
   `correlation_id`
 
+`RawTraceItem` remains a permissive envelope so existing rows stay readable, but
+new tool writes use two strict physical variants:
+
+- `tool_call`: non-empty `turn_id`, `tool_call_id`, and `tool_name`, plus an
+  explicit `tool_args` object; no result/error fields.
+- `tool_result`: the same `turn_id` and `tool_call_id`, plus physically present
+  `tool_result` and `tool_error` keys (including explicit `null`); no
+  `tool_name` or `tool_args`.
+
+The logical tool identity is the compound `(turn_id, tool_call_id)`. A call and
+its result remain separate append-only records; current writers do not update a
+call in place or write a combined terminal call.
+
 **EPISODIC (EpisodicItem)**
 
 - `id`, `ts`, `turn_ids`, `summary`, `salience`
@@ -98,6 +111,14 @@ The memory system is defined by its implemented operations:
 - `result`
 - `error`
 - `status` (`PENDING | SUCCESS | ERROR`)
+
+`buildToolTraceLifecycleIndex(...)` groups the first physical call and first
+physical result for each compound identity. `buildToolInteractions(...)` then
+creates exactly one logical interaction, taking current name/arguments from the
+call and terminal state from the result. Historical result-side name/argument
+supersets remain readable as a read-only override when they contain the only
+late/effective evidence; writers and lifecycle reconstruction must never consume
+that historical overlay.
 
 ---
 
@@ -121,6 +142,12 @@ working-context snapshot serialization without requiring callers to instantiate
 `MemoryManager`. Native `FileMemoryStore` delegates its common file operations to
 this facade, and `autobyteus-server-ts` uses the same facade for storage-only
 Codex/Claude run and team-member memory recording.
+
+Tool lifecycle readers intentionally distinguish active-only records from the
+complete corpus. Native raw-trace compaction eligibility and pruning remain
+active-only, while lifecycle reconstruction, logical projection, recovery, and
+result-context lookup may read complete rotated segments plus active records so
+a call and result can live in different physical files.
 
 `RawTraceArchiveManager` is the only owner of raw-trace rotation internals:
 `raw_traces_manifest.json`, immutable direct run-directory segment files named
@@ -575,6 +602,13 @@ are present only when relevant.
 - `tool_error`
 - `correlation_id`
 
+For current tool writes, optionality is trace-specific rather than arbitrary:
+
+- a `tool_call` owns `tool_name`, `tool_call_id`, and `tool_args`;
+- a `tool_result` owns `tool_call_id`, `tool_result`, and `tool_error`;
+- both result keys are serialized even when their value is `null`;
+- result rows never repeat call-side name/arguments.
+
 **Example: user trace**
 
 ```
@@ -593,11 +627,24 @@ read_media_file tool call completed successfully.`; legacy text-parser
 continuations may use `source_event: "ToolContinuationInput"` for the same trace
 type.
 
+**Example: tool call**
+
+```
+{"id":"rt_002","ts":1738100002.10,"turn_id":"turn_0001","seq":2,"trace_type":"tool_call","content":"","source_event":"PendingToolInvocationEvent","tool_name":"list_directory","tool_call_id":"call_1","tool_args":{"path":"src"}}
+```
+
 **Example: tool result**
 
 ```
-{"id":"rt_003","ts":1738100003.11,"turn_id":"turn_0001","seq":3,"trace_type":"tool_result","content":"","source_event":"ToolResultEvent","tool_name":"list_directory","tool_call_id":"call_1","tool_result":["app.ts","parser.ts"]}
+{"id":"rt_003","ts":1738100003.11,"turn_id":"turn_0001","seq":3,"trace_type":"tool_result","content":"","source_event":"ToolResultEvent","tool_call_id":"call_1","tool_result":["app.ts","parser.ts"],"tool_error":null}
 ```
+
+Native AutoByteus persists the model-issued call before preprocessing,
+preparation, approval, execution, or result handling. Preparation-time argument
+transformations are execution state and do not rewrite the raw call or appear on
+the result. Server-recorded runtimes persist at the first normalized event with
+a valid identity, name, and explicit arguments; absent arguments mean “not yet
+available”, while an explicit `{}` is a valid no-argument call.
 
 **Example: assistant response**
 
@@ -619,6 +666,8 @@ Raw traces remain line-by-line audit records. Runtime compaction plans over
   `MemoryManager.startTurn()` at outer turn start.
 - Tool call intents and tool results inherit the active `turn_id`, even if the
   result arrives later.
+- Correlation and duplicate suppression use `(turn_id, tool_call_id)`, so equal
+  provider call ids in different turns remain distinct.
 - Tool continuation does **not** mint a new turn; it reuses the active `turn_id`.
   Native `api_tool_call` mode keeps the provider continuation as tool history;
   legacy text-parser modes may represent the continuation as TOOL-origin input.
@@ -1451,6 +1500,10 @@ without reintroducing direct-model compaction summarization.
 - `src/memory/memory-manager.ts`
   - Event-driven entry point
   - Persists user/tool/assistant traces and `tool_continuation` boundaries
+  - Persists native model-issued calls before tool preparation/execution and
+    appends separate minimal terminal results
+  - Rejects invalid native tool batches before raw-trace or Working Context
+    mutation and deduplicates by compound tool identity
   - Appends provider-facing working-context messages with memory provenance
   - Owns direct working-context snapshot append/reset authority
   - Exposes `ensureWorkingContextToolProtocolSafeForNextLlm(...)` for bootstrap,
@@ -1494,10 +1547,21 @@ without reintroducing direct-model compaction summarization.
   - Converts recent raw traces into natural recovery messages only for bootstrap
     fallback
 
+- `src/memory/models/tool-call-identity.ts`
+  - Defines normalized `(turn_id, tool_call_id)` identity and its stable key
+
+- `src/memory/tool-trace-lifecycle-index.ts`
+  - Groups physical call/result presence without applying historical semantic
+    overlays
+
+- `src/memory/raw-trace-ingestion.ts`
+  - Validates complete native batches and builds strict call/minimal-result rows
+
 ### Storage
 
 - `src/memory/store/base-store.ts`
-  - Store interface (`add`, `list`, `listRawTracesOrdered`, `pruneRawTracesById`)
+  - Store interface (`add`, `list`, active-only `listRawTracesOrdered`, complete
+    `listRawTraceCorpusOrdered`, `pruneRawTracesById`)
 
 - `src/memory/store/file-store.ts`
   - Default JSONL-backed persistence
@@ -1599,7 +1663,9 @@ without reintroducing direct-model compaction summarization.
     retained working-context messages.
 
 - `src/memory/tool-interaction-builder.ts`
-  - Derives tool interaction views from `RAW_TRACE`
+  - Derives one logical tool interaction per compound identity from physical
+    call/result rows
+  - Applies historical result-side name/argument supersets only in the read view
 
 ### Ingest Processors
 
@@ -1677,6 +1743,7 @@ requestCompaction(requestedTurnId?: string | null): CompactionOperationId
 clearCompactionRequest(): void
 requirePendingCompactionRequest(): PendingCompactionRequest
 listRawTracesOrdered(limit?: number): RawTraceItem[]
+listRawTraceCorpusOrdered(limit?: number): RawTraceItem[]
 pruneRawTracesById(traceIds: Iterable<string>, archive?: boolean): void
 getWorkingContextMessages(): Message[]
 resetWorkingContextSnapshot(snapshotMessages: Iterable<Message>, lastCompactionTs?: number | null): void
@@ -1723,6 +1790,7 @@ summarizeMessageUnits(units: WorkingContextMessageUnit[]): Promise<CompactionRes
 add(items: Iterable<MemoryItem>): void
 list(memoryType: MemoryType, limit?: number): MemoryItem[]
 listRawTracesOrdered(limit?: number): RawTraceItem[]
+listRawTraceCorpusOrdered(limit?: number): RawTraceItem[]
 pruneRawTracesById(traceIds: Iterable<string>, archive?: boolean): void
 ```
 
@@ -1866,3 +1934,18 @@ These decisions are required to keep data flow consistent and avoid ambiguity:
 4. **Token budget source**
    - Add `max_context_tokens` to `LLMModel` metadata.
    - Use provider-reported `prompt_tokens` (post-response) to trigger compaction.
+
+5. **Physical tool lifecycle contract**
+   - Append one strict call and one separate minimal result per compound
+     `(turn_id, tool_call_id)` identity.
+   - Treat a persisted call without a result as pending/unknown after abrupt
+     loss; never infer success or retry automatically.
+   - Keep Working Context tool messages as a separate provider-protocol
+     projection; their required tool name does not authorize name/arguments on
+     raw result rows.
+
+6. **Historical compatibility**
+   - Existing split/superset rows are directly readable without migration,
+     schema-version branches, dual writes, or historical rewrites.
+   - Historical result-side metadata is effective only in logical read
+     projection and cannot influence new writer decisions.

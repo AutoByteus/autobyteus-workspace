@@ -2,12 +2,12 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/design-spec.md`
 - Supplemental Solution Artifacts Reviewed:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/tool-trace-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/tool-trace-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md`
 - Current Review Round: 5
 - Trigger: Explicit 2026-07-11 user requirement reset from the superseded terminal-only design to a provider-authoritative split `tool_call` / minimal `tool_result` design.
 - Prior Review Round Reviewed: 4

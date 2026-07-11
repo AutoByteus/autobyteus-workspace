@@ -3,18 +3,18 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/requirements.md`
 - Supplemental Solution Artifacts Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/tool-trace-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/tool-trace-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md`
 - Current Review Round: `2`
 - Trigger: Implementation-owned rework for source-review findings `CR-001` through `CR-003`.
 - Prior Review Round Reviewed: `1`
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/implementation-handoff.md`
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - Failing Scenario IDs: `N/A`

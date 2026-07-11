@@ -35,7 +35,7 @@ On 2026-07-11 the user approved the current basis: keep the existing call/result
 
 - Project Type (`Git`/`Non-Git`): Git.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification`.
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification`.
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification`.
 - Current Branch: `codex/tool-result-trace-simplification`.
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification`.
 - Bootstrap Base Branch: `origin/personal`.
@@ -59,8 +59,8 @@ These changes are implementation provenance, not approved target behavior. The r
 
 | Artifact Path | Purpose | Evidence Or Decision Captured | Related Requirement / Acceptance-Criteria IDs | Status | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/tool-trace-contract.md` | Exact persisted/read contract | Split call/minimal result, argument readiness, crash/compaction/reconstruction, historical grouping | REQ-001–REQ-012 / AC-001–AC-013 | Being revised to the approved 2026-07-11 basis | Architecture review |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/tickets/in-progress/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md` | Root-cause evidence | Full client-visible lifecycle capture, schema, actual parser/converter output, no result-body audit, corpus classification | REQ-004, REQ-006, REQ-010 / AC-003, AC-010, AC-011 | Complete evidence; design consequence being revised | Retain with cumulative package |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/tool-trace-contract.md` | Exact persisted/read contract | Split call/minimal result, argument readiness, crash/compaction/reconstruction, historical grouping | REQ-001–REQ-012 / AC-001–AC-013 | Being revised to the approved 2026-07-11 basis | Architecture review |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/tool-result-trace-simplification/codex-search-web-lifecycle-probe.md` | Root-cause evidence | Full client-visible lifecycle capture, schema, actual parser/converter output, no result-body audit, corpus classification | REQ-004, REQ-006, REQ-010 / AC-003, AC-010, AC-011 | Complete evidence; design consequence being revised | Retain with cumulative package |
 
 ## Source Log
 

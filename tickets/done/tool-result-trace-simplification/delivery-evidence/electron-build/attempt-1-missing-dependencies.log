@@ -1,0 +1,14 @@
+build_started_utc=2026-07-11T06:26:59Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification
+head=8f6b720208d0d0fce9da71f788979281d8e1aea6
+origin_personal=ce83847296d9eace2f6eb832521c1d6b135c4722
+command=AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_SIGNING_IDENTITY= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_TEAM_ID= CSC_IDENTITY_AUTO_DISCOVERY=false DEBUG=electron-builder,electron-builder:*,app-builder-lib*,builder-util* pnpm -C autobyteus-web build:electron:mac -- --arm64
+
+> autobyteus@1.4.8 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --arm64
+
+sh: cross-env: command not found
+ ELIFECYCLE  Command failed.
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+build_finished_utc=2026-07-11T06:27:00Z
+exit_status=1

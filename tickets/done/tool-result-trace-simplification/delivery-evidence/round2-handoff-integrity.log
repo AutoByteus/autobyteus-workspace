@@ -1,0 +1,49 @@
+round2_handoff_audit_started_utc=2026-07-11T07:57:27Z
+branch=codex/tool-result-trace-simplification
+candidate_head=8f6b720208d0d0fce9da71f788979281d8e1aea6
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+origin_personal=ce83847296d9eace2f6eb832521c1d6b135c4722
+base_relation=PASS:ahead_2_behind_0
+staged_changes=none
+tracked_diff_check=PASS
+tracked_modified_scope=PASS:seven_long_lived_docs_one_round2_test_three_round2_reports
+untracked_scope=PASS:ticket_artifacts_only,count_38
+ignored_delta=PASS:electron-dist_only
+temporary_dependency_and_build_intermediates=absent
+required_artifacts=PASS:count_25
+round2_authoritative_markers=PASS
+delivery_document_round2_refresh=PASS:no_stale_97.2_or_six_file_claims
+electron_artifacts=PASS:dmg_52c2863833015deda9bbe398f46debe4290ae51507bdf746607fb88ed861e8cb:zip_c73437e4464e09a99c6bdd7e534aff7f0be0af630109cdc3615f453dc91a7441:not_mounted
+final_status_short_begin
+## codex/tool-result-trace-simplification...origin/personal [ahead 2]
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_work_traces.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-ts/tests/integration/agent/openai-single-agent-flow.test.ts
+ M tickets/in-progress/tool-result-trace-simplification/api-e2e-coverage-investigation.md
+ M tickets/in-progress/tool-result-trace-simplification/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/tool-result-trace-simplification/api-e2e-test-review-report.md
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-cleanup.log
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-dependency-setup.log
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-execution-summary.txt
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-ignored-after-cleanup.paths
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-ignored-before-cleanup.paths
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-native-regression.log
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-openai-environment-preflight.log
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-openai-live-tool-memory.log
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-openai-static-checks.log
+?? tickets/in-progress/tool-result-trace-simplification/api-e2e-evidence/round2-status-before-setup.txt
+?? tickets/in-progress/tool-result-trace-simplification/delivery-evidence/
+?? tickets/in-progress/tool-result-trace-simplification/docs-sync-report.md
+?? tickets/in-progress/tool-result-trace-simplification/electron-test-build-report.md
+?? tickets/in-progress/tool-result-trace-simplification/handoff-summary.md
+?? tickets/in-progress/tool-result-trace-simplification/release-deployment-report.md
+?? tickets/in-progress/tool-result-trace-simplification/release-notes.md
+final_status_short_end
+round2_handoff_audit_finished_utc=2026-07-11T07:57:32Z
+ROUND2_HANDOFF_INTEGRITY=PASS

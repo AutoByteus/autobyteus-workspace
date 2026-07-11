@@ -1,0 +1,14 @@
+round2_delivery_base_refresh_utc=2026-07-11T07:50:38Z
+branch=codex/tool-result-trace-simplification
+candidate_head=8f6b720208d0d0fce9da71f788979281d8e1aea6
+origin_personal_before=ce83847296d9eace2f6eb832521c1d6b135c4722
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+origin_personal_after=ce83847296d9eace2f6eb832521c1d6b135c4722
+merge_base=ce83847296d9eace2f6eb832521c1d6b135c4722
+ticket_ahead=2
+ticket_behind=0
+latest_base_contained=yes
+new_base_commits_integrated_this_refresh=no
+integration_action=none_required
+rationale=origin/personal remained ce83847296d9eace2f6eb832521c1d6b135c4722 and is already contained by merge commit 8f6b720208d0d0fce9da71f788979281d8e1aea6
