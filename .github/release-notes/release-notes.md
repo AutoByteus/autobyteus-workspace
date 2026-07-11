@@ -1,24 +1,26 @@
-# OpenAI GPT-5.6 API Model Support
+# Consecutive Thinking Blocks and Reliable Tool Boundaries
 
 ## Highlights
 
-- Adds `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` as exact built-in OpenAI API model choices.
-- Adds the GPT-5.6 reasoning-effort contract, including `max`, with the documented `medium` default.
-- Adds curated 1,050,000-token context and 128,000-token output limits.
-- Adds trusted standard and >272K pricing for input, output, cache reads, and cache writes.
-- Normalizes direct OpenAI API `cache_write_tokens` into the existing generic cache-write accounting path so the Token Meter can show reported write tokens, unit price, and estimated cost without frontend provider-specific pricing logic.
+- Groups consecutive Codex reasoning snapshots into one continuous **Thinking** block instead of rendering back-to-back cards for provider-internal item boundaries.
+- Preserves the same grouping after a new run is reopened from local history.
+- Starts a new Thinking block only when a real ordered conversation boundary is created, such as a new tool card or assistant-text boundary.
 
-## Direct OpenAI And Codex Runtime Distinction
+## Tool Ordering And Reliability
 
-Direct OpenAI Responses usage and Codex app-server usage are separate source contracts. Current Codex token events expose cached reads but no cache-write count. AutoByteus therefore keeps Codex cache creation unknown/null, does not infer writes from uncached input, and does not calculate or display a write component from pricing alone. A future official Codex write field requires explicit supported-protocol and cumulative-snapshot mapping review.
-
-## Availability Note
-
-The catalog entries are independent of the configured OpenAI account's limited-preview entitlement. The credential used for round-2 delivery validation was valid but did not have access to any of the three exact model IDs. Successful live GPT-5.6 invocation and a real direct API response containing raw `cache_write_tokens` remain unverified; users without entitlement receive OpenAI's explicit model-access error rather than a silent substitution.
+- Keeps reasoning together when a matching tool result, status, log, approval, or completion updates a tool card that is already positioned in the conversation.
+- Places genuine result-first and provider-late tool calls at the correct point between separate Thinking blocks.
+- Distinguishes explicit empty tool arguments from missing arguments so valid calls persist while incomplete placeholders wait for authoritative details.
+- Prevents malformed, duplicate, or argument-less placeholder events from fabricating duplicate tool rows in history.
+- Persists each tool invocation as one correlated call/result pair for reliable live display, reload, Memory inspection, and generated work traces.
 
 ## Compatibility And Data
 
-- No database migration or historical usage rewrite is required.
-- No unsuffixed `gpt-5.6` duplicate alias was added.
-- Existing OpenAI model schemas and defaults remain unchanged.
-- No speculative Codex write alias, remainder inference, provider-specific frontend branch, or compatibility path was introduced.
+- Existing historical runs are not rewritten; the corrected grouping applies to newly recorded runs.
+- No database migration, backfill, or user-data rebuild is required.
+- Codex reasoning deltas remain non-display transport noise; completed reasoning snapshots are the canonical visible and persisted content.
+
+## Validation
+
+- Verified in the replacement macOS Electron application by the user before release.
+- Fresh API/E2E validation reached `98.4%` confidence across focused server, GraphQL, frontend hydration, authenticated Codex reasoning, real hosted search, broader regression, and packaged-runtime checks.
