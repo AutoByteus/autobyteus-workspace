@@ -71,4 +71,10 @@ Because the latest base changes the effective production memory/tool pipeline, t
 
 ## Status
 
-`Resolved by implementation; fresh source review and full API/E2E route required.` Delivery remains paused until the integrated commit passes source review, API/E2E execution, and proportional durable test-code review. No replacement package, push, target merge, archive transition, release, deployment, or cleanup may proceed from historical pass artifacts.
+`Resolved and downstream route completed.` The integrated resolution evolved
+through final production head `abd50be3fa1ded276242dfc59673209b914f8bad` and
+passed Architecture Review Round 6, Implementation Source Review Round 8,
+API/E2E Round 4 at `98.4%`, and proportional durable test-code review Round 3.
+This report is retained as historical integration-resolution evidence and is no
+longer a delivery blocker. Replacement full-window user verification remains
+required before repository finalization.

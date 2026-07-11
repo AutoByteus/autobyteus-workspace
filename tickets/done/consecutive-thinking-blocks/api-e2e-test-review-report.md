@@ -4,13 +4,13 @@
 
 - Review Round: `3`
 - Trigger: Fresh Round 4 API/E2E passed exact source head `abd50be3fa1ded276242dfc59673209b914f8bad` with six cumulative durable test paths in scope.
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/requirements.md`
 - Supplemental Solution Artifacts Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/user-verification-failure-analysis.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/code-review-report.md` (Implementation Review Round 8 Pass)
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/api-e2e-coverage-investigation.md` (Round 4 authoritative)
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/api-e2e-execution-coverage-report.md` (Round 4 authoritative)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/code-review-report.md` (Implementation Review Round 8 Pass)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/api-e2e-coverage-investigation.md` (Round 4 authoritative)
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/api-e2e-execution-coverage-report.md` (Round 4 authoritative)
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `98.4%`
 - Prior unresolved test-review findings rechecked: `None`. Rounds 1 and 2 passed; their candidate evidence is superseded, but their durable tests remain part of the cumulative current-task scope where still applicable.

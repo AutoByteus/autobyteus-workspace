@@ -22,7 +22,7 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 
 - Project Type: `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks`
 - Current Branch: `codex/consecutive-thinking-blocks` at integrated head `19368ac8f0b8f1d03ae7cd28363385d59c95fab7`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks`
 - Bootstrap Base Branch: `origin/personal`
@@ -37,8 +37,8 @@ The user reports frequent adjacent `Thinking` cards when software-engineering te
 
 | Artifact Path | Purpose | Evidence Or Decision Captured | Related Requirement / Acceptance-Criteria IDs | Status | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md` | Specify observable contiguous-thinking grouping, separators, ordered-card boundaries, live/replay parity, non-happy states, and the evidence-free deferred-observation exception | User-facing target behavior plus completed-snapshot-only source, crash/reload constraint, and unseen-insufficient-terminal boundary | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-008`–`REQ-CTB-011`; `AC-CTB-003`–`AC-CTB-013` | Deep current-base redesign user approved | Approved for the next architecture handoff |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/user-verification-failure-analysis.md` | Preserve exact packaged-app failure and origin evidence | Running process/build markers, live GraphQL pairs, raw trace ordering, implementation/design origin | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-009`; `AC-CTB-003`–`AC-CTB-006`, `AC-CTB-010` | Confirmed Design Impact | Include in all rework handoffs |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md` | Specify observable contiguous-thinking grouping, separators, ordered-card boundaries, live/replay parity, non-happy states, and the evidence-free deferred-observation exception | User-facing target behavior plus completed-snapshot-only source, crash/reload constraint, and unseen-insufficient-terminal boundary | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-008`–`REQ-CTB-011`; `AC-CTB-003`–`AC-CTB-013` | Deep current-base redesign user approved | Approved for the next architecture handoff |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md` | Preserve exact packaged-app failure and origin evidence | Running process/build markers, live GraphQL pairs, raw trace ordering, implementation/design origin | `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-009`; `AC-CTB-003`–`AC-CTB-006`, `AC-CTB-010` | Confirmed Design Impact | Include in all rework handoffs |
 
 ## Source Log
 

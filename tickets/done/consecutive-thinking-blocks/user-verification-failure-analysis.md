@@ -1,6 +1,6 @@
 # User Verification Failure Analysis
 
-- **Canonical path:** `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/user-verification-failure-analysis.md`
+- **Canonical path:** `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
 - **Status:** `Confirmed — Design Impact; Deep Current-Base Redesign User Approved`
 - **Observed:** 2026-07-11 during user verification of the packaged macOS ARM64 Electron candidate.
 - **Related requirements:** `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-009`, `REQ-CTB-011`
@@ -17,8 +17,8 @@
 - Failing turn: `019f4fd9-7733-7680-a3e4-9d8603f028d3`.
 - Projection probe: live `getTeamMemberRunProjection` against `http://127.0.0.1:29695/graphql`.
 - Stored trace: `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_15eb25f9280f4cc0910708e1495c53a4/delivery_engineer_44d7b48c4c834b6a9401367e0e2238c9/raw_traces_active.jsonl`.
-- Preserved correlation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/user-verification-failure-correlation.log`.
-- Preserved package/process evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/user-verification-package-process.log`.
+- Preserved correlation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/evidence/user-verification-failure-correlation.log`.
+- Preserved package/process evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/evidence/user-verification-package-process.log`.
 
 ## Exact Reproduction Evidence
 
