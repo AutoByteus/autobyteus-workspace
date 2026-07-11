@@ -166,6 +166,18 @@ export class CodexToolPayloadParser {
     return this.sanitizeRecord({ ...itemArguments, ...explicitArguments });
   }
 
+  public hasExplicitToolArguments(payload: Record<string, unknown>): boolean {
+    const item = asObject(payload.item);
+    return [
+      payload.arguments,
+      payload.args,
+      payload.input,
+      item.arguments,
+      item.args,
+      item.input,
+    ].some((candidate) => this.isStructuredArgumentInput(candidate));
+  }
+
   public resolveToolCallMetadataArguments(
     payload: Record<string, unknown>,
   ): Record<string, unknown> {
@@ -344,6 +356,19 @@ export class CodexToolPayloadParser {
       Object.assign(merged, this.asRecord(candidate));
     }
     return merged;
+  }
+
+  private isStructuredArgumentInput(value: unknown): boolean {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      return true;
+    }
+    if (typeof value !== "string" || value.trim().length === 0) {
+      return false;
+    }
+    const parsed = parseJsonValue(value);
+    return parsed.parsed && Boolean(
+      parsed.value && typeof parsed.value === "object" && !Array.isArray(parsed.value),
+    );
   }
 
   private collectText(value: unknown, depth = 0): string {

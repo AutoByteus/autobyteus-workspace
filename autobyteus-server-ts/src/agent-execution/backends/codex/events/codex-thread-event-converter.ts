@@ -163,6 +163,8 @@ export class CodexThreadEventConverter {
       this.itemEventPayloadParser.resolveToolArguments(payload, fallbackToolName),
     resolveDynamicToolArguments: (payload) =>
       this.itemEventPayloadParser.resolveDynamicToolArguments(payload),
+    hasExplicitToolArguments: (payload) =>
+      this.itemEventPayloadParser.hasExplicitToolArguments(payload),
     resolveLogEntry: (payload) => this.itemEventPayloadParser.resolveLogEntry(payload),
     isExecutionFailure: (payload) => this.itemEventPayloadParser.isExecutionFailure(payload),
     resolveToolError: (payload) => this.itemEventPayloadParser.resolveToolError(payload),

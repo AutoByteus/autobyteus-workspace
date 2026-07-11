@@ -269,6 +269,10 @@ export class CodexItemEventPayloadParser {
     return this.toolPayloadParser.resolveDynamicToolArguments(payload);
   }
 
+  public hasExplicitToolArguments(payload: Record<string, unknown>): boolean {
+    return this.toolPayloadParser.hasExplicitToolArguments(payload);
+  }
+
   public resolveCommandValue(payload: Record<string, unknown>): string | null {
     return this.toolPayloadParser.resolveCommandValue(payload);
   }

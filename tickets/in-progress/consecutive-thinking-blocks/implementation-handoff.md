@@ -31,6 +31,7 @@ Historical source-review, API/E2E, delivery, release, build, and verification re
   - missing/ambiguous identity or unusable name creates no observation, flush, or write.
 - Resolved source-review finding `CR-CTB-002`: call/start observations now apply the same usable-name card-capability gate before state creation. An identity-only observation has no state/boundary/write effect; a later matching named ready observation owns the one boundary and call write, and its matching terminal preserves.
 - Resolved API/E2E failure-origin finding `CR-CTB-003`: terminal command/file fallback families now use the same fallback-aware authoritative argument projector as their start path. Result-first completed `commandExecution` therefore emits normalized `{ command }` arguments; dynamic terminals without a fallback retain the dynamic argument projector. Memory readiness and absent-versus-explicit-empty semantics are unchanged.
+- Resolved source-review finding `CR-CTB-004`: terminal normalization now carries an explicit structured-argument presence fact separately from the projected record. A dynamic terminal with explicit `{}` emits top-level `arguments: {}`, while a genuinely absent argument input omits the field. Non-empty dynamic and fallback command/file projections are unchanged; no empty object is fabricated.
 - Preserved latest-base physical hydration and controlled interruption behavior. Deferred observation-only state is process-local and removed at turn cleanup; no placeholder call or persisted observation marker was added.
 - Deleted `runtime-memory-event-accumulator-state.ts` with no alias. `SegmentState` is beside the facade; private `RuntimeToolState` is beside the sequencer.
 - Split tool lifecycle state-machine tests into `runtime-tool-trace-sequencer.test.ts`; the accumulator suite now focuses on facade ordering, segment flushing, turn behavior, and compaction.
@@ -46,6 +47,7 @@ Historical source-review, API/E2E, delivery, release, build, and verification re
 - Narrowed/updated: `autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts`
 - Updated provider-fact coverage: `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts`
 - Modified fallback-aware terminal projection: `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-terminal-tool-execution-event.ts`
+- Modified argument-presence projection: `autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-tool-payload-parser.ts`, its item-event facade, and converter context wiring.
 - Updated downstream durable scenario: `autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
 - Updated durable architecture docs:
   - `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
@@ -101,7 +103,7 @@ Historical source-review, API/E2E, delivery, release, build, and verification re
 
 ## Local Implementation Checks Run
 
-- Focused unit/narrow integration suite: 11 files / 163 tests passed. Coverage includes the `CR-CTB-002` malformed-call transition, direct `CR-CTB-003` result-first command normalization, sequencer transitions, accumulator facade ordering, snapshot-only reasoning conversion, ordered-tool classification, converter normalized facts, writer/normalizer/recorder behavior, cross-runtime persistence, and narrow replay projection.
+- Focused unit/narrow integration suite: 11 files / 165 tests passed. Coverage includes the `CR-CTB-002` malformed-call transition, direct `CR-CTB-003` result-first command normalization, both `CR-CTB-004` explicit-empty and truly-absent terminal argument cases, sequencer transitions, accumulator facade ordering, snapshot-only reasoning conversion, ordered-tool classification, converter normalized facts, writer/normalizer/recorder behavior, cross-runtime persistence, and narrow replay projection.
 - `pnpm exec tsc -p tsconfig.build.json --noEmit`: passed.
 - `pnpm prepare:shared`: passed, including `autobyteus-ts` build and runtime-dependency verification.
 - `pnpm exec prisma generate --schema ./prisma/schema.prisma`: passed.

@@ -48,6 +48,7 @@ export type CodexItemEventConverterContext = CodexItemCompactionEventConverterCo
     fallbackToolName: "run_bash" | "edit_file",
   ) => Record<string, unknown>;
   resolveDynamicToolArguments: (payload: JsonObject) => Record<string, unknown>;
+  hasExplicitToolArguments: (payload: JsonObject) => boolean;
   resolveLogEntry: (payload: JsonObject) => string;
   isExecutionFailure: (payload: JsonObject) => boolean;
   resolveToolError: (payload: JsonObject) => string;
