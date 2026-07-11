@@ -21,6 +21,10 @@ export type CodexTerminalToolExecutionEventContext = {
     payload: JsonObject,
     fallback?: "run_bash" | "edit_file",
   ) => string | null;
+  resolveToolArguments: (
+    payload: JsonObject,
+    fallbackToolName: "run_bash" | "edit_file",
+  ) => Record<string, unknown>;
   resolveDynamicToolArguments: (payload: JsonObject) => Record<string, unknown>;
   resolveExecutionStatus: (payload: JsonObject) => string | null;
   resolveToolDecisionReason: (payload: JsonObject) => string | null;
@@ -47,7 +51,9 @@ export const createTerminalToolExecutionEvent = (
   const rawToolName = context.resolveToolName(payload, fallbackToolName);
   const toolName = normalizeCodexAgentToolsToolNameForEvent(rawToolName);
   const serializedPayload = serializeCodexItemEventPayload(payload);
-  const toolArguments = context.resolveDynamicToolArguments(serializedPayload as JsonObject);
+  const toolArguments = fallbackToolName
+    ? context.resolveToolArguments(serializedPayload as JsonObject, fallbackToolName)
+    : context.resolveDynamicToolArguments(serializedPayload as JsonObject);
   const hasToolArguments = Object.keys(toolArguments).length > 0;
   const status = context.resolveExecutionStatus(payload)?.toLowerCase() ?? null;
   if (status === "declined") {

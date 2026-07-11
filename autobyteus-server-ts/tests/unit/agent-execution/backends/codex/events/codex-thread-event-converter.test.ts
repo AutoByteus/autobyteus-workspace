@@ -27,6 +27,36 @@ const expectNoAgentToolsSecrets = (
 };
 
 describe("CodexThreadEventConverter", () => {
+  it("projects authoritative command arguments for a result-first completed command", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-result-first",
+        item: {
+          id: "tool-result-first",
+          type: "commandExecution",
+          command: "echo inferred",
+          status: "completed",
+          aggregatedOutput: "inferred\n",
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "tool-result-first",
+        turn_id: "turn-result-first",
+        tool_name: "run_bash",
+        arguments: { command: "echo inferred" },
+        result: "inferred\n",
+      },
+    });
+  });
+
   it("ignores codex-prefixed internal events at the dispatcher boundary", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
