@@ -103,15 +103,17 @@ export class CodexThreadEventConverter {
       this.createEvent(codexEventName, eventType, payload),
     createStatusEvent: (codexEventName, payload) =>
       this.createStatusEvent(codexEventName, payload),
-    clearReasoningSegmentForTurn: (payload) =>
-      this.itemEventPayloadParser.clearReasoningSegmentForTurn(payload),
+    clearReasoningBlockForBoundary: (payload) =>
+      this.itemEventPayloadParser.clearReasoningBlockForBoundary(payload),
+    clearAllReasoningBlocks: () =>
+      this.itemEventPayloadParser.clearAllReasoningBlocks(),
   };
 
   private readonly itemEventConverterContext: CodexItemEventConverterContext = {
     createEvent: (codexEventName, eventType, payload) =>
       this.createEvent(codexEventName, eventType, payload),
-    createSegmentContentEvent: (codexEventName, payload, segmentType) =>
-      this.createSegmentContentEvent(codexEventName, payload, segmentType),
+    createTextSegmentContentEvent: (codexEventName, payload) =>
+      this.createTextSegmentContentEvent(codexEventName, payload),
     createCompactionStatusEvent: (sourceSurface, payload, status, rotationEligible) =>
       this.createCodexProviderCompactionStatusEvent(
         sourceSurface,
@@ -119,8 +121,10 @@ export class CodexThreadEventConverter {
         status,
         rotationEligible,
       ),
-    clearReasoningSegmentForTurn: (payload) =>
-      this.itemEventPayloadParser.clearReasoningSegmentForTurn(payload),
+    clearReasoningBlockForBoundary: (payload) =>
+      this.itemEventPayloadParser.clearReasoningBlockForBoundary(payload),
+    resolveReasoningContentUpdate: (codexEventName, payload) =>
+      this.itemEventPayloadParser.resolveReasoningContentUpdate(codexEventName, payload),
     resolveItemType: (payload) => this.itemEventPayloadParser.resolveItemType(payload),
     isUserMessageItem: (itemType) => this.itemEventPayloadParser.isUserMessageItem(itemType),
     isReasoningItem: (itemType) => this.itemEventPayloadParser.isReasoningItem(itemType),
@@ -138,10 +142,6 @@ export class CodexThreadEventConverter {
     resolveSegmentType: (payload) => this.itemEventPayloadParser.resolveSegmentType(payload),
     resolveSegmentMetadata: (payload) =>
       this.itemEventPayloadParser.resolveSegmentMetadata(payload),
-    resolveReasoningSnapshot: (payload) =>
-      this.itemEventPayloadParser.resolveReasoningSnapshot(payload),
-    resolveReasoningSegmentId: (payload) =>
-      this.itemEventPayloadParser.resolveReasoningSegmentId(payload),
     resolveSegmentId: (payload, fallback) =>
       this.itemEventPayloadParser.resolveSegmentId(payload, fallback),
     resolveInvocationId: (payload) => this.itemEventPayloadParser.resolveInvocationId(payload),
@@ -167,6 +167,8 @@ export class CodexThreadEventConverter {
       this.createEvent(codexEventName, eventType, payload),
     createStatusEvent: (codexEventName, payload) =>
       this.createStatusEvent(codexEventName, payload),
+    clearAllReasoningBlocks: () =>
+      this.itemEventPayloadParser.clearAllReasoningBlocks(),
   };
 
   private readonly rawResponseEventConverterContext: CodexRawResponseEventConverterContext = {
@@ -182,6 +184,8 @@ export class CodexThreadEventConverter {
     resolveItemType: (payload) => this.itemEventPayloadParser.resolveItemType(payload),
     resolveInvocationId: (payload) => this.itemEventPayloadParser.resolveInvocationId(payload),
     resolveLogEntry: (payload) => this.itemEventPayloadParser.resolveLogEntry(payload),
+    clearReasoningBlockForBoundary: (payload) =>
+      this.itemEventPayloadParser.clearReasoningBlockForBoundary(payload),
   };
 
   constructor(
@@ -241,15 +245,11 @@ export class CodexThreadEventConverter {
     return [];
   }
 
-  private createSegmentContentEvent(
+  private createTextSegmentContentEvent(
     codexEventName: string,
     payload: JsonObject,
-    segmentType?: "text" | "reasoning",
   ): AgentRunEvent | null {
-    const delta =
-      segmentType === "reasoning"
-        ? this.itemEventPayloadParser.resolveReasoningDelta(payload)
-        : this.itemEventPayloadParser.resolveDelta(payload);
+    const delta = this.itemEventPayloadParser.resolveDelta(payload);
     if (!delta) {
       return null;
     }
@@ -258,12 +258,9 @@ export class CodexThreadEventConverter {
       AgentRunEventType.SEGMENT_CONTENT,
       {
         ...serializePayload(payload),
-        id:
-          segmentType === "reasoning"
-            ? this.itemEventPayloadParser.resolveReasoningSegmentId(payload)
-            : this.itemEventPayloadParser.resolveSegmentId(payload),
+        id: this.itemEventPayloadParser.resolveSegmentId(payload),
         delta,
-        ...(segmentType ? { segment_type: segmentType } : {}),
+        segment_type: "text",
       },
     );
   }

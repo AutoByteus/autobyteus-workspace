@@ -43,6 +43,48 @@ const readView = (memoryDir: string, includeArchive = false) =>
     });
 
 describe("RuntimeMemoryEventAccumulator", () => {
+  it("persists one trace for adjacent reasoning deltas and a new trace after a tool boundary", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "first",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:1",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "\n\nsecond",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-block:test:2",
+      turn_id: "turn-1",
+      segment_type: "reasoning",
+      delta: "third",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-1" }));
+
+    const reasoningTraces = (readView(memoryDir).rawTraces ?? [])
+      .filter((trace) => trace.traceType === "reasoning");
+    expect(reasoningTraces.map((trace) => trace.content)).toEqual([
+      "first\n\nsecond",
+      "third",
+    ]);
+  });
+
   it("tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion", async () => {
     const memoryDir = await mkTempDir();
     const accumulator = new RuntimeMemoryEventAccumulator({

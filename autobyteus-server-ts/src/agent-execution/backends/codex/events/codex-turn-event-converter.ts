@@ -13,7 +13,8 @@ export type CodexTurnEventConverterContext = {
     payload: Record<string, unknown>,
   ) => AgentRunEvent;
   createStatusEvent: (codexEventName: string, payload?: Partial<AgentStatusPayload>) => AgentRunEvent;
-  clearReasoningSegmentForTurn: (payload: JsonObject) => void;
+  clearReasoningBlockForBoundary: (payload: JsonObject) => void;
+  clearAllReasoningBlocks: () => void;
 };
 
 export const isCodexTurnEventName = (codexEventName: string): boolean =>
@@ -27,6 +28,7 @@ export const convertCodexTurnEvent = (
   const turnId = resolveTurnIdFromAppServerMessage(payload);
   switch (codexEventName) {
     case CodexThreadEventName.TURN_STARTED:
+      context.clearAllReasoningBlocks();
       return [
         context.createEvent(codexEventName, AgentRunEventType.TURN_STARTED, {
           ...(turnId ? { turnId } : {}),
@@ -34,7 +36,7 @@ export const convertCodexTurnEvent = (
         context.createStatusEvent(codexEventName),
       ];
     case CodexThreadEventName.TURN_COMPLETED:
-      context.clearReasoningSegmentForTurn(payload);
+      context.clearReasoningBlockForBoundary(payload);
       return [
         context.createEvent(codexEventName, AgentRunEventType.TURN_COMPLETED, {
           ...(turnId ? { turnId } : {}),

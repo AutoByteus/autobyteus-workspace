@@ -16,6 +16,7 @@ export type CodexThreadLifecycleEventConverterContext = {
     payload: Record<string, unknown>,
   ) => AgentRunEvent;
   createStatusEvent: (codexEventName: string, payload?: Partial<AgentStatusPayload>) => AgentRunEvent;
+  clearAllReasoningBlocks: () => void;
 };
 
 export const isCodexThreadLifecycleEventName = (
@@ -37,6 +38,7 @@ export const convertCodexThreadLifecycleEvent = (
     case CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED:
       return [];
     case CodexThreadEventName.ERROR: {
+      context.clearAllReasoningBlocks();
       const nestedError = asObject(payload.error);
       const errorCode = nestedError?.code ?? payload.code;
       const errorMessage = nestedError?.message ?? payload.message;

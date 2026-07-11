@@ -14,6 +14,7 @@ export type CodexRawResponseEventConverterContext = {
   resolveItemType: (payload: JsonObject) => string | null;
   resolveInvocationId: (payload: JsonObject) => string | null;
   resolveLogEntry: (payload: JsonObject) => string;
+  clearReasoningBlockForBoundary: (payload: JsonObject) => void;
   createCompactionBoundaryEvent: (
     sourceSurface: "codex.raw_response_compaction_item",
     payload: JsonObject,
@@ -39,6 +40,7 @@ export const convertCodexRawResponseEvent = (
   if (itemType !== "functioncalloutput") {
     return null;
   }
+  context.clearReasoningBlockForBoundary(payload);
 
   const invocationId = context.resolveInvocationId(payload);
   const logEntry = context.resolveLogEntry(payload);
