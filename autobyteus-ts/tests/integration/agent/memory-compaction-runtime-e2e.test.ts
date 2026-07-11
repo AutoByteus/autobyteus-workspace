@@ -21,6 +21,7 @@ import { LMStudioTextToolHistoryRenderer } from '../../../src/llm/prompt-rendere
 import { OpenAIChatRenderer } from '../../../src/llm/prompt-renderers/openai-chat-renderer.js';
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
+import { buildLlmTokenUsageObservation } from '../../../src/llm/utils/llm-token-usage-observation.js';
 import { Message, ToolCallPayload, ToolResultPayload, type ToolCallSpec } from '../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../src/llm/utils/response-types.js';
 import { CompactionResult } from '../../../src/memory/compaction/compaction-result.js';
@@ -91,11 +92,12 @@ class StreamingLLM extends BaseLLM {
   }
 }
 
-const highUsage = {
-  prompt_tokens: 200,
-  completion_tokens: 10,
-  total_tokens: 210,
-};
+const highUsage = buildLlmTokenUsageObservation({
+  inputTokens: 200,
+  outputTokens: 10,
+  totalTokens: 210,
+  rawUsage: { input_tokens: 200, output_tokens: 10, total_tokens: 210 },
+});
 
 const createMemoryManager = (tempDir: string, agentId: string): MemoryManager => {
   const store = new FileMemoryStore(tempDir, agentId);

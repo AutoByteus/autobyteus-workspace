@@ -65,7 +65,7 @@ export class WorkingContextSnapshotBootstrapper {
 
     const bundle = memoryManager.retriever.retrieve(options.maxEpisodic, options.maxSemantic);
     const maxItemChars = options.maxItemChars ?? memoryManager.compactionPolicy.maxItemChars ?? null;
-    const recoveredMessages = this.recoveryProjector.project(memoryManager.listRawTracesOrdered(), maxItemChars);
+    const recoveredMessages = this.recoveryProjector.project(memoryManager.listRawTraceCorpusOrdered(), maxItemChars);
     const snapshotMessages = this.snapshotRebuilder.rebuild({
       systemPrompt,
       bundle,

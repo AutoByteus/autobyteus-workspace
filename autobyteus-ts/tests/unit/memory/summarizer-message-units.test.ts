@@ -43,7 +43,7 @@ const makeToolCallUnit = (): WorkingContextMessageUnit => ({
 });
 
 describe('Summarizer.summarizeMessageUnits', () => {
-  it('preserves assistant envelope and tool-call identity/arguments in fallback traces', async () => {
+  it('preserves call identity/arguments while keeping the fallback result minimal', async () => {
     const summarizer = new CapturingSummarizer();
 
     await summarizer.summarizeMessageUnits([makeToolCallUnit()]);
@@ -61,9 +61,11 @@ describe('Summarizer.summarizeMessageUnits', () => {
       toolArgs: { sku: 'A-1' },
     });
     expect(toolResultTrace).toMatchObject({
-      toolName: 'inventory_lookup',
       toolCallId: 'call_1',
       toolResult: { count: 7 },
+      toolError: null,
     });
+    expect(toolResultTrace?.toDict()).not.toHaveProperty('tool_name');
+    expect(toolResultTrace?.toDict()).not.toHaveProperty('tool_args');
   });
 });

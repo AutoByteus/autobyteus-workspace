@@ -1,6 +1,9 @@
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
 import { clampRenderedLine } from '../compaction-snapshot-recent-turn-formatter.js';
 import type { RawTraceItem } from '../models/raw-trace-item.js';
+import { createToolCallIdentity, toolCallIdentityKey } from '../models/tool-call-identity.js';
+import { ToolInteractionStatus, type ToolInteraction } from '../models/tool-interaction.js';
+import { buildToolInteractions } from '../tool-interaction-builder.js';
 import type { InteractionBlock } from './interaction-block.js';
 
 export type CompactionTaskPromptBuildOptions = {
@@ -70,14 +73,26 @@ export class CompactionTaskPromptBuilder {
 
     for (const block of blocks) {
       const digestByTraceId = new Map(block.toolResultDigests.map((digest) => [digest.traceId, digest]));
+      const interactions = block.toolInteractions ?? buildToolInteractions(block.traces);
+      const interactionByIdentity = new Map(interactions.map((interaction) => [
+        toolCallIdentityKey({ turnId: interaction.turnId!, toolCallId: interaction.toolCallId }),
+        interaction,
+      ]));
+      const renderedToolIdentities = new Set<string>();
 
       for (const trace of block.traces) {
-        const digest = digestByTraceId.get(trace.id);
-        if (trace.traceType === 'tool_result' && digest) {
-          const digestLine = digest.toolCallId
-            ? `Tool result digest for call ${digest.toolCallId} from ${digest.toolName ?? 'unknown_tool'} (${digest.status}): ${digest.summary}`
-            : `Tool result digest from ${digest.toolName ?? 'unknown_tool'} (${digest.status}): ${digest.summary}`;
-          lines.push(clampRenderedLine(digestLine, maxItemChars));
+        if (trace.traceType === 'tool_call' || trace.traceType === 'tool_result') {
+          const identity = createToolCallIdentity(trace.turnId, trace.toolCallId);
+          const key = identity ? toolCallIdentityKey(identity) : null;
+          if (!key || renderedToolIdentities.has(key)) continue;
+          renderedToolIdentities.add(key);
+          const interaction = interactionByIdentity.get(key);
+          if (interaction) {
+            const digest = interaction.terminalRawTraceId
+              ? digestByTraceId.get(interaction.terminalRawTraceId)
+              : undefined;
+            lines.push(this.formatInteraction(interaction, digest?.summary ?? null, maxItemChars));
+          }
           continue;
         }
         lines.push(formatRawTrace(trace, maxItemChars));
@@ -85,5 +100,19 @@ export class CompactionTaskPromptBuilder {
     }
 
     return lines;
+  }
+
+  private formatInteraction(
+    interaction: ToolInteraction,
+    terminalSummary: string | null,
+    maxItemChars?: number | null,
+  ): string {
+    const callId = renderToolCallId(interaction.toolCallId);
+    const request = `Tool interaction${callId ? ` ${callId}` : ''} from ${safeStringify(interaction.toolName ?? 'unknown_tool')} with arguments ${safeStringify(interaction.arguments ?? {})}`;
+    if (interaction.status === ToolInteractionStatus.PENDING) {
+      return clampRenderedLine(`${request} is pending.`, maxItemChars);
+    }
+    const outcome = terminalSummary ?? safeStringify(interaction.error ?? interaction.result);
+    return clampRenderedLine(`${request} (${interaction.status}): ${outcome}`, maxItemChars);
   }
 }

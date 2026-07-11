@@ -12,6 +12,10 @@ export class ToolInteraction {
   result: unknown;
   error: string | null;
   status: ToolInteractionStatus;
+  anchorRawTraceId: string | null;
+  terminalRawTraceId: string | null;
+  anchorTs: number | null;
+  terminalTs: number | null;
 
   constructor(options: {
     toolCallId: string;
@@ -21,6 +25,10 @@ export class ToolInteraction {
     result: unknown;
     error: string | null;
     status: ToolInteractionStatus;
+    anchorRawTraceId?: string | null;
+    terminalRawTraceId?: string | null;
+    anchorTs?: number | null;
+    terminalTs?: number | null;
   }) {
     this.toolCallId = options.toolCallId;
     this.turnId = options.turnId;
@@ -29,5 +37,9 @@ export class ToolInteraction {
     this.result = options.result;
     this.error = options.error;
     this.status = options.status;
+    this.anchorRawTraceId = options.anchorRawTraceId ?? null;
+    this.terminalRawTraceId = options.terminalRawTraceId ?? null;
+    this.anchorTs = options.anchorTs ?? null;
+    this.terminalTs = options.terminalTs ?? null;
   }
 }

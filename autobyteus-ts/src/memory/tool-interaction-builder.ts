@@ -1,49 +1,57 @@
-import { RawTraceItem } from './models/raw-trace-item.js';
 import { ToolInteraction, ToolInteractionStatus } from './models/tool-interaction.js';
+import {
+  buildToolTraceLifecycleIndex,
+  type PhysicalToolTraceRecord,
+  type ToolCallContext,
+} from './tool-trace-lifecycle-index.js';
 
-export const buildToolInteractions = (rawTraces: RawTraceItem[]): ToolInteraction[] => {
-  const interactions = new Map<string, ToolInteraction>();
+export type ToolInteractionTrace = PhysicalToolTraceRecord;
 
-  for (const trace of rawTraces) {
-    if (trace.traceType !== 'tool_call' && trace.traceType !== 'tool_result') {
-      continue;
-    }
-    if (!trace.toolCallId) {
-      continue;
-    }
+export type BuildToolInteractionsOptions = {
+  callContextByIdentity?: ReadonlyMap<string, ToolCallContext>;
+};
 
-    let interaction = interactions.get(trace.toolCallId);
-    if (!interaction) {
-      interaction = new ToolInteraction({
-        toolCallId: trace.toolCallId,
-        turnId: trace.turnId ?? null,
-        toolName: trace.toolName ?? null,
-        arguments: null,
-        result: null,
-        error: null,
-        status: ToolInteractionStatus.PENDING
-      });
-      interactions.set(trace.toolCallId, interaction);
-    }
+const nonEmpty = (value: unknown): string | null =>
+  typeof value === 'string' && value.trim() ? value.trim() : null;
 
-    if (trace.traceType === 'tool_call') {
-      interaction.toolName = trace.toolName ?? interaction.toolName;
-      interaction.arguments = trace.toolArgs ?? interaction.arguments;
-      if (interaction.status === ToolInteractionStatus.PENDING && interaction.error) {
-        interaction.status = ToolInteractionStatus.ERROR;
-      }
-      continue;
+export const buildToolInteractions = (
+  rawTraces: readonly ToolInteractionTrace[],
+  options: BuildToolInteractionsOptions = {},
+): ToolInteraction[] => {
+  const groups = buildToolTraceLifecycleIndex(rawTraces);
+  const interactions: ToolInteraction[] = [];
+
+  for (const [key, group] of groups) {
+    const context = options.callContextByIdentity?.get(key);
+    const call = group.call;
+    const result = group.result;
+    let toolName = nonEmpty(call?.toolName) ?? context?.toolName ?? null;
+    let toolArgs = call?.toolArgs ?? context?.toolArgs ?? null;
+
+    // Historical result-side invocation metadata is read-only effective evidence.
+    const historicalResultName = nonEmpty(result?.toolName);
+    if (historicalResultName) toolName = historicalResultName;
+    if (result?.toolArgs !== null && result?.toolArgs !== undefined) {
+      toolArgs = result.toolArgs;
     }
 
-    if (trace.traceType === 'tool_result') {
-      interaction.toolName = trace.toolName ?? interaction.toolName;
-      interaction.result = trace.toolResult ?? interaction.result;
-      interaction.error = trace.toolError ?? interaction.error;
-      interaction.status = trace.toolError
-        ? ToolInteractionStatus.ERROR
-        : ToolInteractionStatus.SUCCESS;
-    }
+    const error = result?.toolError ?? null;
+    interactions.push(new ToolInteraction({
+      toolCallId: group.identity.toolCallId,
+      turnId: group.identity.turnId,
+      toolName,
+      arguments: toolArgs,
+      result: result?.toolResult === undefined ? null : result.toolResult,
+      error,
+      status: !result
+        ? ToolInteractionStatus.PENDING
+        : error !== null ? ToolInteractionStatus.ERROR : ToolInteractionStatus.SUCCESS,
+      anchorRawTraceId: call?.id ?? result?.id ?? null,
+      terminalRawTraceId: result?.id ?? null,
+      anchorTs: call?.ts ?? result?.ts ?? null,
+      terminalTs: result?.ts ?? null,
+    }));
   }
 
-  return Array.from(interactions.values());
+  return interactions;
 };

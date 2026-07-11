@@ -142,6 +142,10 @@ export class RunMemoryFileStore {
     return this.readMemoryDicts(MemoryType.RAW_TRACE, limit).map((record) => RawTraceItem.fromDict(record));
   }
 
+  listRawTraceCorpusOrdered(limit?: number): RawTraceItem[] {
+    return this.readCompleteRawTraceCorpusDicts(limit).map((record) => RawTraceItem.fromDict(record));
+  }
+
   listRawTraceDicts(): Record<string, unknown>[] {
     return this.readMemoryDicts(MemoryType.RAW_TRACE);
   }

@@ -263,6 +263,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         llmConfig: { reasoning_effort: "low" },
         skillAccessMode: SkillAccessMode.NONE,
       }),
+      runId,
     );
     createdRunIds.add(run.runId);
     expect(run.runId).toBe(runId);

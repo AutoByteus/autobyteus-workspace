@@ -93,7 +93,6 @@ describe('CompactionTaskPromptBuilder', () => {
       traceType: 'tool_result',
       content: '',
       sourceEvent: 'test',
-      toolName: 'inventory_lookup',
       toolCallId: 'call_123',
       toolResult: { count: 7 },
     });
@@ -127,8 +126,6 @@ describe('CompactionTaskPromptBuilder', () => {
 
     const prompt = new CompactionTaskPromptBuilder().buildTaskPrompt([block, rawResultBlock]);
 
-    expect(prompt).toContain('Tool interaction call_123 request: inventory_lookup with arguments sku: A-1.');
-    expect(prompt).toContain('Tool result digest for call call_123 from inventory_lookup (success): count: 7');
-    expect(prompt).toContain('Tool result for call call_123 from inventory_lookup: count: 7');
+    expect(prompt.match(/Tool interaction call_123 from inventory_lookup with arguments sku: A-1 \(success\): count: 7/g)).toHaveLength(2);
   });
 });

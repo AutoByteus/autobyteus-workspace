@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
@@ -42,13 +42,19 @@ const readView = (memoryDir: string, includeArchive = false) =>
       includeSemantic: false,
     });
 
+const createAccumulator = (
+  memoryDir: string,
+  writer: RunMemoryWriter = new RunMemoryWriter({ memoryDir }),
+) => new RuntimeMemoryEventAccumulator({
+  runId: "run-1",
+  writer,
+  toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
+});
+
 describe("RuntimeMemoryEventAccumulator", () => {
   it("tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-1" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
@@ -75,10 +81,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
   it("persists open reasoning before a following tool call without duplicating later flushes", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-tool" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
@@ -110,10 +113,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
   it("persists open reasoning before an inferred tool call from a terminal tool result", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-result" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
@@ -136,15 +136,14 @@ describe("RuntimeMemoryEventAccumulator", () => {
       ["tool_call", "", "inferred-tool-after-reasoning"],
       ["tool_result", "", "inferred-tool-after-reasoning"],
     ]);
-    expect(traces[2]).toMatchObject({ toolResult: { stdout: "/tmp" } });
+    expect(traces[2]).toMatchObject({ toolResult: { stdout: "/tmp" }, toolError: null });
+    expect(traces[2]?.toolName).toBeNull();
+    expect(traces[2]?.toolArgs).toBeNull();
   });
 
   it("persists open reasoning before assistant text without requiring turn completion", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-text" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
@@ -186,10 +185,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
   it("persists open reasoning before assistant complete output", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-complete" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
@@ -227,10 +223,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
   it("uses an active turn when accepted command notification arrives after lifecycle start", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-claude" }));
     accumulator.recordAcceptedUserMessage({
@@ -259,10 +252,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
   it("uses active-turn fallback for tool events without turn ids and de-duplicates calls", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-2" }));
     accumulator.recordRunEvent(event(AgentRunEventType.TOOL_APPROVAL_REQUESTED, {
@@ -285,15 +275,218 @@ describe("RuntimeMemoryEventAccumulator", () => {
     expect(traces.map((trace) => trace.traceType)).toEqual(["tool_call", "tool_result"]);
     expect(traces.every((trace) => trace.turnId === "turn-2")).toBe(true);
     expect(traces[0]).toMatchObject({ toolCallId: "tool-1", toolName: "run_bash" });
-    expect(traces[1]).toMatchObject({ toolCallId: "tool-1", toolResult: { stdout: "/tmp" } });
+    expect(traces[1]).toMatchObject({ toolCallId: "tool-1", toolResult: { stdout: "/tmp" }, toolError: null });
+  });
+
+  it("correlates a late no-turn terminal to its unique durable call before the active turn", async () => {
+    const memoryDir = await mkTempDir();
+    const first = createAccumulator(memoryDir);
+    first.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-old" }));
+    first.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "late-call", turn_id: "turn-old", tool_name: "read_file", arguments: { path: "old" },
+    }));
+    const accumulator = createAccumulator(memoryDir);
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-new" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "late-call", result: "late result",
+    }));
+
+    const result = new RunMemoryFileStore(memoryDir).listRawTracesOrdered()
+      .find((trace) => trace.traceType === "tool_result");
+    expect(result).toMatchObject({
+      turnId: "turn-old", toolCallId: "late-call", toolResult: "late result", toolError: null,
+    });
+  });
+
+  it("requires an explicit turn for an ambiguous reused call id", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    for (const turnId of ["turn-a", "turn-b"]) {
+      accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: turnId }));
+      accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+        invocation_id: "reused", turn_id: turnId, tool_name: "run_bash", arguments: { command: turnId },
+      }));
+    }
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "reused", result: "ambiguous",
+    }));
+    expect(new RunMemoryFileStore(memoryDir).listRawTracesOrdered()
+      .filter((trace) => trace.traceType === "tool_result")).toHaveLength(0);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "reused", turn_id: "turn-a", result: "explicit",
+    }));
+    const results = new RunMemoryFileStore(memoryDir).listRawTracesOrdered()
+      .filter((trace) => trace.traceType === "tool_result");
+    expect(results).toHaveLength(1);
+    expect(results[0]).toMatchObject({ turnId: "turn-a", toolCallId: "reused", toolResult: "explicit" });
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("matches multiple turn lifecycles"));
+    warn.mockRestore();
+  });
+
+  it("waits for terminal data and persists a null-success completed call with physical outcome keys", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-web" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "web-1", turn_id: "turn-web", tool_name: "search_web",
+    }));
+    expect(new RunMemoryFileStore(memoryDir).listRawTracesOrdered()).toHaveLength(0);
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "web-1", turn_id: "turn-web", tool_name: "search_web",
+      arguments: { query: "cats", action_type: "search" }, result: null,
+    }));
+
+    const dicts = new RunMemoryFileStore(memoryDir).listRawTraceDicts();
+    expect(dicts).toHaveLength(2);
+    expect(dicts[0]).toMatchObject({
+      trace_type: "tool_call", tool_call_id: "web-1", tool_name: "search_web",
+      tool_args: { query: "cats", action_type: "search" },
+    });
+    expect(dicts[1]).toMatchObject({
+      trace_type: "tool_result", tool_call_id: "web-1", tool_result: null, tool_error: null,
+    });
+    expect(dicts[1]).not.toHaveProperty("tool_name");
+    expect(dicts[1]).not.toHaveProperty("tool_args");
+  });
+
+  it("persists an explicit empty argument object at the early boundary", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-empty" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "empty-1", turn_id: "turn-empty", tool_name: "no_arg_tool", arguments: {},
+    }));
+
+    expect(new RunMemoryFileStore(memoryDir).listRawTraceDicts()).toEqual([
+      expect.objectContaining({
+        trace_type: "tool_call", tool_call_id: "empty-1", tool_name: "no_arg_tool", tool_args: {},
+      }),
+    ]);
+  });
+
+  it("skips a terminal observation that cannot supply or resolve an authoritative call", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-missing" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      turn_id: "turn-missing", tool_name: "search_web", arguments: { query: "no id" }, result: null,
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "missing-1", turn_id: "turn-missing", tool_name: "search_web",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "missing-1", turn_id: "turn-missing", tool_name: "search_web", result: null,
+    }));
+
+    expect(new RunMemoryFileStore(memoryDir).listRawTracesOrdered()).toHaveLength(0);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("without an invocation id"));
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("authoritative call arguments were unavailable"));
+    warn.mockRestore();
+  });
+
+  it("writes minimal failure and denial results without copying terminal arguments", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-errors" }));
+    for (const invocationId of ["failed-1", "denied-1"]) {
+      accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+        invocation_id: invocationId, turn_id: "turn-errors", tool_name: "run_bash",
+        arguments: { command: invocationId },
+      }));
+    }
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_FAILED, {
+      invocation_id: "failed-1", turn_id: "turn-errors", tool_name: "run_bash",
+      arguments: { command: "transformed" }, result: { partial: true }, error: "boom",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_DENIED, {
+      invocation_id: "denied-1", turn_id: "turn-errors", tool_name: "run_bash",
+      arguments: { command: "transformed" }, reason: "not approved",
+    }));
+
+    const results = new RunMemoryFileStore(memoryDir).listRawTraceDicts()
+      .filter((trace) => trace.trace_type === "tool_result");
+    expect(results).toEqual([
+      expect.objectContaining({ tool_call_id: "failed-1", tool_result: { partial: true }, tool_error: "boom" }),
+      expect.objectContaining({
+        tool_call_id: "denied-1",
+        tool_result: { status: "denied", reason: "not approved" },
+        tool_error: "not approved",
+      }),
+    ]);
+    expect(results.every((trace) => !("tool_name" in trace) && !("tool_args" in trace))).toBe(true);
+  });
+
+  it("uses compound identities and makes per-tool plus turn interruption idempotent", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    for (const turnId of ["turn-a", "turn-b"]) {
+      accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: turnId }));
+      accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+        invocation_id: "same-call", turn_id: turnId, tool_name: "run_bash", arguments: { command: turnId },
+      }));
+      if (turnId === "turn-a") {
+        accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+          invocation_id: "same-call", turn_id: turnId, tool_name: "run_bash", result: "done",
+        }));
+      } else {
+        accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_INTERRUPTED, {
+          invocation_id: "same-call", turn_id: turnId, reason: "user stopped",
+        }));
+        accumulator.recordRunEvent(event(AgentRunEventType.TURN_INTERRUPTED, {
+          turn_id: turnId, reason: "user stopped",
+        }));
+      }
+    }
+
+    const traces = new RunMemoryFileStore(memoryDir).listRawTracesOrdered();
+    expect(traces).toHaveLength(4);
+    expect(traces.map((trace) => [trace.turnId, trace.toolCallId])).toEqual([
+      ["turn-a", "same-call"], ["turn-a", "same-call"],
+      ["turn-b", "same-call"], ["turn-b", "same-call"],
+    ]);
+    expect(traces[3]).toMatchObject({ toolResult: null, toolError: "user stopped" });
+  });
+
+  it("hydrates physical calls and results across reconstruction without duplicating either", async () => {
+    const memoryDir = await mkTempDir();
+    const first = createAccumulator(memoryDir);
+    first.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-complete" }));
+    first.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "done-1", turn_id: "turn-complete", tool_name: "read_file",
+      arguments: { path: "a" }, result: "a",
+    }));
+
+    const reconstructed = createAccumulator(memoryDir);
+    reconstructed.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "done-1", turn_id: "turn-complete", tool_name: "read_file",
+      arguments: { path: "a" }, result: "a",
+    }));
+    reconstructed.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "lost-1", turn_id: "turn-lost", tool_name: "read_file", arguments: { path: "lost" },
+    }));
+    const store = new RunMemoryFileStore(memoryDir);
+    const lostCall = store.listRawTracesOrdered().find((trace) => trace.toolCallId === "lost-1");
+    expect(lostCall).toBeDefined();
+    store.pruneRawTracesById([lostCall!.id]);
+    const afterLoss = createAccumulator(memoryDir);
+    afterLoss.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "lost-1", turn_id: "turn-lost", tool_name: "read_file", result: "lost",
+    }));
+
+    const traces = new RunMemoryFileStore(memoryDir).listRawTraceCorpusOrdered();
+    expect(traces.map((trace) => trace.traceType)).toEqual([
+      "tool_call", "tool_result", "tool_call", "tool_result",
+    ]);
+    expect(traces[3]).toMatchObject({ toolCallId: "lost-1", toolResult: "lost", toolError: null });
   });
 
   it("records tool traces once from lifecycle events when matching tool segments are present", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-tool-segment" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_START, {
@@ -339,17 +532,14 @@ describe("RuntimeMemoryEventAccumulator", () => {
     });
     expect(traces[1]).toMatchObject({
       sourceEvent: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
-      toolCallId: "tool-claude-1",
       toolResult: "workspace\n",
+      toolError: null,
     });
   });
 
   it("preserves assistant-tool-assistant raw trace order from distinct text segment ids", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-text-tool-text" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
@@ -397,16 +587,13 @@ describe("RuntimeMemoryEventAccumulator", () => {
     ]);
     expect(traces[0]).toMatchObject({ content: "Before tool." });
     expect(traces[1]).toMatchObject({ toolName: "Bash", toolCallId: "tool-bash-text-order" });
-    expect(traces[2]).toMatchObject({ toolName: "Bash", toolResult: "/tmp/project" });
+    expect(traces[2]).toMatchObject({ toolName: null, toolResult: "/tmp/project", toolError: null });
     expect(traces[3]).toMatchObject({ content: "After tool." });
   });
 
   it("creates deterministic fallback turns when no turn id is active", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "text-1",
@@ -424,10 +611,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
   it("ignores provider compaction/status payloads without local raw-trace pruning", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
@@ -454,10 +638,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
   it("writes provider compaction markers and rotates settled active traces into segmented archives", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
@@ -516,10 +697,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
   it("dedupes replayed provider boundaries without dropping post-boundary active records", async () => {
     const memoryDir = await mkTempDir();
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const accumulator = createAccumulator(memoryDir);
     const boundaryPayload = {
       kind: "provider_compaction_boundary",
       runtime_kind: "CODEX",
@@ -577,10 +755,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
     const memoryDir = await mkTempDir();
     const boundaryKey = "codex:thread-1:marker-only";
     const initialWriter = new RunMemoryWriter({ memoryDir });
-    const accumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: initialWriter,
-    });
+    const accumulator = createAccumulator(memoryDir, initialWriter);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
@@ -602,10 +777,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       correlationId: boundaryKey,
     });
 
-    const replayAccumulator = new RuntimeMemoryEventAccumulator({
-      runId: "run-1",
-      writer: new RunMemoryWriter({ memoryDir }),
-    });
+    const replayAccumulator = createAccumulator(memoryDir);
     replayAccumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
       kind: "provider_compaction_boundary",
       runtime_kind: "CODEX",

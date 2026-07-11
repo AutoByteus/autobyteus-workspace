@@ -21,6 +21,7 @@ const makeMemoryManager = (store: unknown = {}) => ({
   ensureWorkingContextToolProtocolSafeForNextLlm: vi.fn(),
   retriever: { retrieve: vi.fn(() => new MemoryBundle()) },
   listRawTracesOrdered: vi.fn(() => []),
+  listRawTraceCorpusOrdered: vi.fn(() => []),
   compactionPolicy: { maxItemChars: 200 },
 });
 

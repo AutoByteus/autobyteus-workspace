@@ -672,6 +672,157 @@ describe("cross-runtime memory persistence integration", () => {
     expect(continued.seq).toBe(3);
   });
 
+  it("defers a captured Codex hosted-search placeholder and writes the terminal call before its minimal result", async () => {
+    const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
+      "codex-hosted-search-memory-run",
+    );
+    const rawPath = path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitConverted(run, converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws-hosted-search-1",
+          query: "",
+          action: { type: "other" },
+        },
+        turnId,
+      },
+    }));
+    await recorder.waitForIdle(run.runId);
+
+    await expect(fs.access(rawPath)).rejects.toThrow();
+
+    emitConverted(run, converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws-hosted-search-1",
+          status: "completed",
+          query: "AutoByteus provider lifecycle",
+          action: {
+            type: "search",
+            query: "AutoByteus provider lifecycle",
+            queries: ["AutoByteus provider lifecycle"],
+          },
+        },
+        turnId,
+      },
+    }));
+    await recorder.waitForIdle(run.runId);
+
+    const traces = await readLines(rawPath);
+    expect(traces.map((trace) => trace.trace_type)).toEqual(["tool_call", "tool_result"]);
+    expect(traces[0]).toMatchObject({
+      tool_call_id: "ws-hosted-search-1",
+      tool_name: "search_web",
+      tool_args: {
+        query: "AutoByteus provider lifecycle",
+        action_type: "search",
+        queries: ["AutoByteus provider lifecycle"],
+      },
+    });
+    expect(traces[0]).not.toHaveProperty("tool_result");
+    expect(traces[0]).not.toHaveProperty("tool_error");
+    expect(traces[1]).toMatchObject({
+      tool_call_id: "ws-hosted-search-1",
+      tool_result: {
+        status: "completed",
+        query: "AutoByteus provider lifecycle",
+        action_type: "search",
+        queries: ["AutoByteus provider lifecycle"],
+      },
+      tool_error: null,
+    });
+    expect(traces[1]).not.toHaveProperty("tool_name");
+    expect(traces[1]).not.toHaveProperty("tool_args");
+  });
+
+  it("persists a Claude observed tool input at start and a later minimal result", async () => {
+    const memoryDir = await mkTempDir();
+    const recorder = new AgentRunMemoryRecorder();
+    const { factory } = createRuntimeBackendFactory(RuntimeKind.CLAUDE_AGENT_SDK);
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createRuntimeBackendFactory(RuntimeKind.AUTOBYTEUS).factory,
+      codexBackendFactory: createRuntimeBackendFactory(RuntimeKind.CODEX_APP_SERVER).factory,
+      claudeBackendFactory: factory,
+      runFileChangeService: createNoopSidecar() as never,
+      publishedArtifactRelayService: createNoopSidecar() as never,
+      memoryRecorder: recorder,
+    });
+    const run = await manager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        agentDefinitionId: "agent-def-claude-tool-memory",
+        llmModelIdentifier: "claude-sonnet",
+        autoExecuteTools: true,
+        workspaceId: "workspace-claude-tool-memory",
+        memoryDir,
+        skillAccessMode: SkillAccessMode.NONE,
+      }),
+      "claude-tool-memory-run",
+    );
+    const converter = new ClaudeSessionEventConverter(run.runId);
+    const turnId = "turn-claude-tool-memory";
+    const toolArgs = {
+      file_path: "/tmp/claude-observed.txt",
+      content: "observed before execution",
+    };
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitConverted(run, converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
+      params: {
+        invocation_id: "claude-write-1",
+        turn_id: turnId,
+        tool_name: "Write",
+        arguments: toolArgs,
+      },
+    }));
+    await recorder.waitForIdle(run.runId);
+
+    const rawPath = path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
+    let traces = await readLines(rawPath);
+    expect(traces).toHaveLength(1);
+    expect(traces[0]).toMatchObject({
+      trace_type: "tool_call",
+      tool_call_id: "claude-write-1",
+      tool_name: "Write",
+      tool_args: toolArgs,
+    });
+
+    emitConverted(run, converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "claude-write-1",
+        turn_id: turnId,
+        tool_name: "Write",
+        arguments: toolArgs,
+        result: {
+          type: "create",
+          filePath: "/tmp/claude-observed.txt",
+        },
+      },
+    }));
+    await recorder.waitForIdle(run.runId);
+
+    traces = await readLines(rawPath);
+    expect(traces.map((trace) => trace.trace_type)).toEqual(["tool_call", "tool_result"]);
+    expect(traces[1]).toMatchObject({
+      tool_call_id: "claude-write-1",
+      tool_result: {
+        type: "create",
+        filePath: "/tmp/claude-observed.txt",
+      },
+      tool_error: null,
+    });
+    expect(traces[1]).not.toHaveProperty("tool_name");
+    expect(traces[1]).not.toHaveProperty("tool_args");
+  });
+
   it("keeps Codex contextCompaction start non-rotating in the recorder flow", async () => {
     const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
       "codex-context-compaction-start-memory-run",
@@ -1144,7 +1295,8 @@ describe("cross-runtime memory persistence integration", () => {
     expect(traces.filter((trace) => trace.traceType === "tool_result")).toHaveLength(1);
     expect(traces[2]).toMatchObject({
       toolCallId: "denied-tool-1",
-      toolName: "run_bash",
+      toolName: null,
+      toolArgs: null,
       toolError: "policy denied",
       toolResult: { status: "denied", reason: "policy denied" },
     });

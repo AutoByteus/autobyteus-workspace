@@ -1,0 +1,132 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/autobyteus-ts
+
+stdout | tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/memory-compaction-tool-tail-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+·stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > emits requested, started, and completed during the same no-tool LLM lifecycle after threshold crossing
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > emits requested, started, and completed during the same no-tool LLM lifecycle after threshold crossing
+compaction_budget_evaluated {
+  agent_id: 'agent-1',
+  prompt_tokens: 0,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stderr | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+Tool 'lookup' not found in registry.
+
+stdout | tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'agent-1',
+  prompt_tokens: 0,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts > incomplete native tool-call persisted resume recovery (API/E2E) > restores a cached poisoned snapshot and starts LLM execution after one additional user prompt
+AgentRuntimeState initialized for agent_id 'agent_incomplete_tool_resume'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: xml
+AgentContext composed for agent_id 'agent_incomplete_tool_resume'. Config and State linked.
+
+stdout | tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts > incomplete native tool-call persisted resume recovery (API/E2E) > restores a cached poisoned snapshot and starts LLM execution after one additional user prompt
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_incomplete_tool_resume',
+  turn_id: 'turn_after_restart',
+  reason: 'missing_usage'
+}
+
+xx··
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > emits requested, started, and completed during the same no-tool LLM lifecycle after threshold crossing
+AssertionError: expected [] to deeply equal [ 'requested', 'started', 'completed' ]
+
+- Expected
++ Received
+
+- [
+-   "requested",
+-   "started",
+-   "completed",
+- ]
++ []
+
+ ❯ tests/integration/agent/memory-compaction-runtime-e2e.test.ts:192:54
+    190| 
+    191|       expect(outcome.kind).toBe('final');
+    192|       expect(statuses.map((status) => status.phase)).toEqual(['request…
+       |                                                      ^
+    193|       expect(statuses.map((status) => status.compaction_operation_id))…
+    194|         statuses[0].compaction_operation_id,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent/memory-compaction-runtime-e2e.test.ts > memory compaction runtime API/E2E validation > defers tool-call compaction until tool results are ingested, then renders a native same-turn continuation payload
+AssertionError: expected [] to deeply equal [ 'requested' ]
+
+- Expected
++ Received
+
+- [
+-   "requested",
+- ]
++ []
+
+ ❯ tests/integration/agent/memory-compaction-runtime-e2e.test.ts:242:54
+    240| 
+    241|       expect(outcome.kind).toBe('tool_invocations');
+    242|       expect(statuses.map((status) => status.phase)).toEqual(['request…
+       |                                                      ^
+    243|       expect(memoryManager.compactionRequired).toBe(true);
+    244| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  2 failed | 3 passed (5)
+   Start at  07:34:43
+   Duration  699ms (transform 1.06s, setup 74ms, import 1.42s, tests 44ms, environment 0ms)
+

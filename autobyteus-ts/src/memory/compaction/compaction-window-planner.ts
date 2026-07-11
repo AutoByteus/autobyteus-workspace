@@ -1,4 +1,9 @@
 import type { RawTraceItem } from '../models/raw-trace-item.js';
+import {
+  buildToolCallContextIndex,
+  buildToolTraceLifecycleIndex,
+  type ToolCallContext,
+} from '../tool-trace-lifecycle-index.js';
 import { CompactionPlan } from './compaction-plan.js';
 import { InteractionBlockBuilder } from './interaction-block-builder.js';
 import type { InteractionBlock } from './interaction-block.js';
@@ -11,8 +16,19 @@ export class CompactionWindowPlanner {
     private readonly maxItemChars: number | null = null,
   ) {}
 
-  plan(rawTraces: RawTraceItem[], activeTurnId?: string | null): CompactionPlan {
-    const builtBlocks = this.blockBuilder.build(rawTraces);
+  plan(input: {
+    activeRawTraces: RawTraceItem[];
+    activeTurnId?: string | null;
+    callContextByIdentity?: ReadonlyMap<string, ToolCallContext>;
+  }): CompactionPlan {
+    const activeRawTraceIds = new Set(input.activeRawTraces.map((trace) => trace.id));
+    const callContextByIdentity = new Map(input.callContextByIdentity ?? []);
+    for (const [key, context] of buildToolCallContextIndex(
+      buildToolTraceLifecycleIndex(input.activeRawTraces),
+    )) {
+      callContextByIdentity.set(key, context);
+    }
+    const builtBlocks = this.blockBuilder.build(input.activeRawTraces, callContextByIdentity);
     if (!builtBlocks.length) {
       return new CompactionPlan({
         blocks: [],
@@ -21,12 +37,14 @@ export class CompactionWindowPlanner {
         eligibleTraceIds: [],
         frontierTraceIds: [],
         frontierStartBlockIndex: 0,
-        activeTurnId: activeTurnId ?? null,
+        activeTurnId: input.activeTurnId ?? null,
       });
     }
 
-    const frontierStartBlockIndex = this.resolveFrontierStartBlockIndex(builtBlocks, activeTurnId ?? null);
-    const eligibleBlocks = builtBlocks.slice(0, frontierStartBlockIndex).map((block) => this.attachDigests(block));
+    const frontierStartBlockIndex = this.resolveFrontierStartBlockIndex(builtBlocks, input.activeTurnId ?? null);
+    const eligibleBlocks = builtBlocks
+      .slice(0, frontierStartBlockIndex)
+      .map((block) => this.attachDigests(block, callContextByIdentity));
     const frontierBlocks = builtBlocks.slice(frontierStartBlockIndex).map((block) => ({ ...block, toolResultDigests: [] }));
     const blocks = [...eligibleBlocks, ...frontierBlocks];
 
@@ -34,19 +52,22 @@ export class CompactionWindowPlanner {
       blocks,
       eligibleBlocks,
       frontierBlocks,
-      eligibleTraceIds: eligibleBlocks.flatMap((block) => block.traceIds),
-      frontierTraceIds: frontierBlocks.flatMap((block) => block.traceIds),
+      eligibleTraceIds: eligibleBlocks.flatMap((block) => block.traceIds).filter((id) => activeRawTraceIds.has(id)),
+      frontierTraceIds: frontierBlocks.flatMap((block) => block.traceIds).filter((id) => activeRawTraceIds.has(id)),
       frontierStartBlockIndex,
-      activeTurnId: activeTurnId ?? null,
+      activeTurnId: input.activeTurnId ?? null,
     });
   }
 
-  private attachDigests(block: InteractionBlock): InteractionBlock {
+  private attachDigests(
+    block: InteractionBlock,
+    callContextByIdentity: ReadonlyMap<string, ToolCallContext>,
+  ): InteractionBlock {
     return {
       ...block,
       toolResultDigests: block.traces
         .filter((trace) => trace.traceType === 'tool_result')
-        .map((trace) => this.digestBuilder.build(trace, this.maxItemChars)),
+        .map((trace) => this.digestBuilder.build(trace, this.maxItemChars, callContextByIdentity)),
     };
   }
 
