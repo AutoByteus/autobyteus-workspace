@@ -1,0 +1,5 @@
+cleaned=/tmp/ctb-r6-packaged-server-3hIMVt
+packaged-temp-cleanup=pass
+packaged-port-cleanup=pass
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 96219 normy   27u  IPv4 0x83687b15e85af339      0t0  TCP *:29695 (LISTEN)

@@ -3,12 +3,12 @@
 ## Authoritative Round
 
 - Ticket: `consecutive-thinking-blocks`
-- Current build round: `2 — replacement Round 4 candidate`
+- Current package validation: `Round 4 — Architecture Round 6 corrected head`
 - Date: `2026-07-11`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks`
-- Branch/HEAD at build: `codex/consecutive-thinking-blocks` / `c016730b7743f12d3e3b16f114d7bb5f48651b58`
-- Prior report/package: historical failed-candidate evidence only; superseded by this round.
-- Purpose: prove the reviewed Round 4 implementation is present and executable in a fresh macOS ARM64 Electron package, and prepare a replacement artifact for downstream user verification.
+- Branch/HEAD: `codex/consecutive-thinking-blocks` / `abd50be3fa1ded276242dfc59673209b914f8bad`
+- Historical packages/reports: prior-candidate evidence only; not counted as current pass.
+- Purpose: build the corrected server into a fresh macOS ARM64 package, verify deployment contents, and execute AC10/12/13 plus CR-CTB-003/004 through packaged production modules and HTTP GraphQL.
 
 ## Build Command And Result
 
@@ -18,78 +18,72 @@ AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= \
 ```
 
 - Result: `Pass`
-- Package version: `1.4.8`
+- Version: `1.4.8`
 - Electron: `42.4.1`
-- Platform/architecture: macOS ARM64
-- Signing/notarization: intentionally absent for this local build (`APPLE_TEAM_ID=`); electron-builder skipped signing. `codesign -dv` sees only the executable's ad-hoc/linker signature, and strict deep bundle verification is not expected to pass for this unsigned local app. This is not distribution evidence.
-- Fresh build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/logs/api-e2e/electron-build-round-2-mac-arm64.log`
+- Platform: macOS ARM64
+- Signing/notarization: intentionally absent for the local test build; electron-builder skipped signing because `APPLE_TEAM_ID=`. `codesign -dv` reports only the executable's ad-hoc/linker signature metadata. This is not distribution-signature evidence.
+- Fresh log: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/logs/api-e2e/electron-build-round-4-mac-arm64.log`
 
-The build completed server production compilation, bundled-server deployment, Prisma/native dependency preparation, renderer generation, Electron/main/preload TypeScript compilation, app packaging, and DMG/ZIP generation.
+The command passed localization guards/audit, shared/server build and built-in-agent bootstrap, Prisma/native dependency preparation, mobile and Electron renderer generation, Electron TypeScript compilation, packaging, and DMG/ZIP generation.
 
-## Replacement Artifacts
+## Fresh Artifacts
 
 | Artifact | Absolute Path | Size | SHA-256 |
 | --- | --- | ---: | --- |
-| Unpacked app | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` | `1.2G` on disk | N/A |
-| DMG | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg` | `384M` on disk | `d21d13d1d25a4bf5dcb5e62abc2df040bac75fde2b7c182c4214d5ad8e7fc2e8` |
-| ZIP | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip` | `385M` on disk | `890fbaa93cec1da6a4ae74d13fb061ce7c0e3534380f03db95eafd50f6643009` |
+| App | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` | `1.2G` on disk | N/A |
+| DMG | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg` | `384M` | `8849590846e6024369658dabc1ba5d9396695df5c3f89e78d95dd3b96b1c8728` |
+| ZIP | `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip` | `385M` | `87c16a3f61e910d8d0a0cdaea1edd43de699e8551b62bc5f084171e84b809ea7` |
 
-## Artifact And Bundled-Runtime Verification
+## Artifact Verification
 
-- Main executable exists, is executable, and reports `Mach-O 64-bit executable arm64`.
-- Bundled server exists at `AutoByteus.app/Contents/Resources/server`.
-- Packaged production JS contains the reviewed Round 4 markers:
-  - `CodexOrderedToolBoundaryTracker`
-  - `result_first_creation`
-  - accumulator `hadRecordedCall`
-  - explicit `ITEM_REASONING_SUMMARY_TEXT_DELTA` routing
-- All three packaged `node-pty` `spawn-helper` files retain executable bits.
+- Main executable is executable Mach-O arm64.
+- Bundled `Contents/Resources/server/dist/app.js` exists.
+- Bundled production JS contains:
+  - `RuntimeToolTraceSequencer` and `callObserved`;
+  - `hasExplicitToolArguments` parser/context wiring;
+  - fallback-aware terminal argument projection;
+  - narrowed accumulator construction of the sequencer.
+- Three bundled `node-pty` `spawn-helper` files retain executable bits.
 - `hdiutil imageinfo` passed for the DMG.
-- `unzip -tq` passed with no compressed-data errors for the ZIP.
-- Hashes above were calculated after the fresh build.
-- Inspection evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/package-inspection.log`
+- `unzip -tq` passed for the ZIP.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-4/package-inspection.log`
 
-## Packaged Bundled-Server Execution
+## Packaged Server And Exact Sequence Probe
 
-The fresh package's Electron executable was used in Node mode to run its bundled `dist/app.js` on alternate port `29795`, with `DATABASE_URL` explicitly unset and isolated test-owned app data/SQLite configuration. Readiness reached a listener on `127.0.0.1:29795`; migrations were applied only to the temporary test database.
+The fresh package's Electron executable ran the bundled server in Node mode on `127.0.0.1:29795`. `DATABASE_URL` was explicitly unset. `APP_ENV=test`, `DB_TYPE=sqlite`, and an isolated temporary app-data root produced an isolated `test.db`. Normal migrations completed only in that temporary database, and the server reached readiness.
 
-A temporary probe imported the production converter, accumulator, writer, and metadata code from the fresh package, emitted the exact former failure sequence, then queried the running packaged server through HTTP GraphQL. It proved:
+A retained temporary harness imported the converter, accumulator facade, sequencer path, writer, and metadata code from the **fresh packaged server**, emitted sanitized provider events, then queried the running package through HTTP GraphQL.
 
-- completed A and B used one normalized reasoning ID;
-- the matching tool result yielded B as `\n\nB` on that ID;
-- the next tool created a fresh reasoning block ID;
-- raw future facts contained one `A\n\nB` reasoning trace between tool 1 and tool 2;
-- GraphQL returned reasoning rows `A\n\nB` and `C`, with one A+B row;
-- all three ignored reasoning delta/part methods emitted no event and contributed no persisted/projected marker text.
+Authoritative result: `Pass`.
 
-Result: `Pass`.
+It proved:
 
-Evidence:
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/packaged-server-process-live.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/packaged-exact-sequence-probe.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/packaged-exact-sequence-probe.mjs`
-
-## Parallel-Application Safety And Cleanup
-
-A user-owned AutoByteus instance from another worktree remained active on fixed embedded port `29695`. Because the Electron endpoint is fixed, this candidate's full window was not launched in parallel. The user-owned PIDs/process/data were not stopped or modified.
-
-The packaged probe used only port `29795` and a temporary directory. Its server was stopped and the temporary directory/database/memory were removed. Port `29695` remained owned by the original process after cleanup.
+1. matching result preserves one live A+B normalized ID and one persisted/projected A+B block; next tool uses a fresh ID;
+2. result-first `commandExecution` projects `{ command: "echo inferred" }`, flushes before strict call/result, and projects between before/after reasoning;
+3. unseen insufficient hosted-search terminal flushes A, repeated insufficient update does not add rows, later readiness writes call/result without relocating the boundary, and packaged GraphQL order is `Thinking(A) -> tool -> Thinking(B)`;
+4. explicit dynamic `arguments: {}` remains present/ready and writes a pair;
+5. truly absent dynamic arguments remain omitted/deferred and fabricate no physical/projected tool row;
+6. ignored reasoning delta/part methods emit and persist/project nothing; repeated completed snapshot is idempotent.
 
 Evidence:
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/cleanup.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-2/user-owned-port-preserved.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-4/packaged-server-process.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-4/packaged-exact-sequence-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-4/packaged-exact-sequence-probe.mjs`
+
+The first temporary probe assertion compared global reasoning order across several synthetic turns created within the same millisecond. Projection's timestamp tie ordering differed even though exact raw rows passed. The harness was corrected to assert content completeness plus requirement-relevant within-turn ordering, the test-owned run directory was reset, and the authoritative rerun passed. This was an API/E2E harness issue, not a product failure. The first log is retained as `packaged-exact-sequence-probe-attempt-1.log`.
+
+## Non-Interference And Cleanup
+
+A user-owned AutoByteus server PID `96219` remained on fixed embedded port `29695`. The candidate full window was not launched in parallel. The user process/data were not stopped, reused, or modified.
+
+The package probe used only port `29795` and test-owned app data. Its server was stopped, the temp directory/SQLite/memory were removed, and port `29795` was confirmed closed. Port `29695` remained active.
+
+Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-4/cleanup.log`.
 
 ## Downstream User Verification
 
-The replacement app is ready for the required downstream verification after the other AutoByteus instance is quit. Use a **new** Codex run; pre-fix history is intentionally not repaired. The priority journey remains:
-
-1. Launch this fresh replacement app.
-2. Use `gpt-5.6-sol` with high/max reasoning.
-3. Exercise a tool sequence that yields `tool start -> reasoning A -> matching result -> reasoning B -> next tool`.
-4. Confirm one live A+B Thinking card between tool 1 and tool 2.
-5. Reload the new run and confirm one corresponding A+B Thinking card.
-6. Report exact visible behavior before authorizing repository finalization.
+The replacement app is ready for full-window user verification after the other AutoByteus instance is quit. Use a **new** Codex run; pre-fix history is intentionally unchanged. Confirm live and reload order for both matching-result A+B grouping and a provider-late tool boundary. Repository finalization must remain on hold until explicit user verification/authorization.
 
 ## Status
 
-`Fresh replacement package built and packaged runtime validated; ready for downstream user verification.` The full-window user verification/finalization gate remains intentionally open.
+`Fresh abd50be3 package built and packaged production runtime validated successfully; ready for downstream full-window user verification.`

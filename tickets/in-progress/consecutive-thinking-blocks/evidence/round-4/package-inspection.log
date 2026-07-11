@@ -1,0 +1,47 @@
+timestamp=2026-07-11T19:17:39Z
+commit=abd50be3fa1ded276242dfc59673209b914f8bad
+branch=codex/consecutive-thinking-blocks
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+main-executable=pass
+server-entrypoint=pass
+-- current markers --
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-thread-event-converter.js:89:        hasExplicitToolArguments: (payload) => this.itemEventPayloadParser.hasExplicitToolArguments(payload),
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-memory/services/runtime-tool-trace-sequencer.js:4:export class RuntimeToolTraceSequencer {
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-memory/services/runtime-tool-trace-sequencer.js:22:            console.warn(`[RuntimeToolTraceSequencer] skipped tool observation '${identity.toolCallId}' in turn '${identity.turnId}' because it cannot create or match a tool card without a usable tool name.`);
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-memory/services/runtime-tool-trace-sequencer.js:26:        const firstObservation = !tool.callObserved && !tool.callRawTraceId;
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-memory/services/runtime-tool-trace-sequencer.js:29:            tool.callObserved = true;
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-terminal-tool-execution-event.js:16:        ? context.resolveToolArguments(serializedPayload, fallbackToolName)
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-terminal-tool-execution-event.js:19:        context.hasExplicitToolArguments(serializedPayload);
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-memory/services/runtime-memory-event-accumulator.js:4:import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-memory/services/runtime-memory-event-accumulator.js:16:        this.toolTraceSequencer = new RuntimeToolTraceSequencer({
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-item-event-payload-parser.js:202:    hasExplicitToolArguments(payload) {
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/events/codex-item-event-payload-parser.js:203:        return this.toolPayloadParser.hasExplicitToolArguments(payload);
+/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/codex/items/codex-tool-payload-parser.js:133:    hasExplicitToolArguments(payload) {
+-- native helper permissions --
+executable: /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+executable: /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+executable: /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+dmg-imageinfo=pass
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip.
+zip-test=pass
+-- signing classification --
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+-- sizes --
+1.2G	/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+384M	/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg
+385M	/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip
+-- sha256 --
+8849590846e6024369658dabc1ba5d9396695df5c3f89e78d95dd3b96b1c8728  /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg
+87c16a3f61e910d8d0a0cdaea1edd43de699e8551b62bc5f084171e84b809ea7  /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip
+-- ports --
+packaged-port-29795=closed
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 96219 normy   27u  IPv4 0x83687b15e85af339      0t0  TCP *:29695 (LISTEN)

@@ -1,0 +1,38 @@
+{
+  "label": "explicit-empty",
+  "payload": {
+    "turnId": "turn-explicit-empty",
+    "item": {
+      "type": "dynamicToolCall",
+      "id": "empty",
+      "name": "no_arg_tool",
+      "arguments": {},
+      "status": "completed",
+      "result": "ok"
+    },
+    "invocation_id": "empty",
+    "turn_id": "turn-explicit-empty",
+    "tool_name": "no_arg_tool",
+    "arguments": {},
+    "result": "ok"
+  },
+  "hasTopLevelArguments": true
+}
+{
+  "label": "absent",
+  "payload": {
+    "turnId": "turn-absent",
+    "item": {
+      "type": "dynamicToolCall",
+      "id": "absent",
+      "name": "later_tool",
+      "status": "completed",
+      "result": "ok"
+    },
+    "invocation_id": "absent",
+    "turn_id": "turn-absent",
+    "tool_name": "later_tool",
+    "result": "ok"
+  },
+  "hasTopLevelArguments": false
+}

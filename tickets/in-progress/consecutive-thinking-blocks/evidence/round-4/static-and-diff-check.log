@@ -1,0 +1,9 @@
+commit=abd50be3fa1ded276242dfc59673209b914f8bad
+-- obsolete state file --
+obsolete-state-file-absent=pass
+-- persisted observation markers --
+no-persisted-observation-marker=pass
+-- compatibility/legacy terminal routes --
+no-compatibility-terminal-route=pass
+-- git diff check --
+git-diff-check=pass
