@@ -102,7 +102,7 @@ Non-blocking output included existing Nuxt chunk-size, dependency-resolution, mo
   - `dist/agent-memory/services/runtime-memory-event-accumulator.js` with the authoritative-argument readiness guard;
   - `dist/agent-memory/store/run-memory-writer.js` using `buildToolTraceLifecycleIndex`;
   - packaged `autobyteus-ts/dist/memory/tool-trace-lifecycle-index.js`.
-- Build-owned dependencies, staging resources, and intermediate `dist` outputs were removed after verification. Only `autobyteus-web/electron-dist/` remains beyond the pre-build ignored baseline for user testing.
+- Build-owned dependencies, staging resources, and intermediate `dist` outputs were removed after verification. At the user-verification checkpoint, only `autobyteus-web/electron-dist/` remained beyond the pre-build ignored baseline; it was removed during final cleanup.
 - No tracked source, package manifest, or lockfile mutation was introduced by setup/build/cleanup.
 
 Evidence root:
@@ -128,7 +128,7 @@ The normal desktop build uses `~/.autobyteus/server-data`. Use test data or back
 
 - Ticket archived under `tickets/done/tool-result-trace-simplification` before the final ticket commit.
 - The superseding round-2 OpenAI durable test/evidence and delivery documentation passed their gates and are included in the finalization package.
-- The DMG, ZIP, blockmaps, updater metadata, and unpacked app remain under ignored `autobyteus-web/electron-dist/` until the dedicated worktree is removed after merge/push.
+- The DMG, ZIP, blockmaps, updater metadata, and unpacked app were removed with the dedicated worktree after merge/push. Build-time paths and checksums remain above for audit.
 - No release, version bump, tag, publication, or deployment is in scope.
 
 ## User Verification
@@ -139,4 +139,4 @@ The normal desktop build uses `~/.autobyteus/server-data`. Use test data or back
 
 ## Finalization Cleanup Note
 
-The local test artifacts are scheduled for removal with the dedicated ticket worktree after the ticket branch is merged and `personal` is pushed. Their build-time paths, sizes, checksums, and verification evidence remain archived in this report and `delivery-evidence/electron-build/`; no artifact is being published as a release.
+Completed. The local test artifacts and dedicated ticket worktree were removed after the verified ticket was merged and `personal` was pushed. Their build-time paths, sizes, checksums, and verification evidence remain archived in this report and `delivery-evidence/electron-build/`; no artifact was published as a release.
