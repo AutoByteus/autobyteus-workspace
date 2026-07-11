@@ -96,8 +96,8 @@
 ## Repository Finalization And Release
 
 - Selected next patch version: `1.4.9` (latest existing release tag was `v1.4.8`).
-- Ticket archival: `Completed`; final commit/push are in progress.
-- Merge and push to `personal`: `In progress`.
+- Ticket archival/final commit/push: `Completed` — ticket commit `04bd1c2f73b6e10417cb16127930774f665f128b` pushed to `origin/codex/consecutive-thinking-blocks`.
+- Merge and push to `personal`: `Completed` — merge commit `26650776` pushed to `origin/personal`.
 - Release commit/tag/push: `In progress` through the documented `pnpm release` helper.
 - Worktree/branch cleanup: `Pending successful repository finalization and release`.
 
