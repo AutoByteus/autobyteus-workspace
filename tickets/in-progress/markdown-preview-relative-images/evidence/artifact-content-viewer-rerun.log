@@ -1,0 +1,23 @@
+
+> autobyteus@1.4.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-web
+
+stderr | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts (17 tests) 85ms
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  10:51:43
+   Duration  4.51s (transform 2.51s, setup 3.91s, collect 50ms, tests 85ms, environment 127ms, prepare 125ms)
+

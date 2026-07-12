@@ -1,0 +1,2 @@
+Removed validation-owned Vite harness and temporary dependency links.
+Round 2: removed temporary dependency links after supported registry cleanup and focused rerun.

@@ -1,0 +1,259 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:17775) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-eQ3VyP/ignored_ws
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-eQ3VyP/ignored_ws.
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+Created and registered workspace ID: agent_ws_e30235ea485e18be20e52f2d2adb98355f91d92a7bc3df2ca8d1a345bdb3c818
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+Created WorkspaceFileExplorer for agent_ws_e30235ea485e18be20e52f2d2adb98355f91d92a7bc3df2ca8d1a345bdb3c818 (graphql-folder-children).
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+Closing FileSystemWorkspace agent_ws_e30235ea485e18be20e52f2d2adb98355f91d92a7bc3df2ca8d1a345bdb3c818
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-55DIkx/ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-55DIkx/ws.
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Created and registered workspace ID: agent_ws_c78d8e332d3bc89407387eb2febf92e5f7d452f33a5548530f8b547c566527a8
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Created WorkspaceFileExplorer for agent_ws_c78d8e332d3bc89407387eb2febf92e5f7d452f33a5548530f8b547c566527a8 (graphql-folder-children).
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-55DIkx/ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-55DIkx/ws' completed in 0.0010 seconds.
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Closing FileSystemWorkspace agent_ws_c78d8e332d3bc89407387eb2febf92e5f7d452f33a5548530f8b547c566527a8
+
+ ✓ tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts (2 tests) 85ms
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:17779) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-ogX0Wt/workspace
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-ogX0Wt/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Created and registered workspace ID: agent_ws_c4932d140f026136ba0603006b2c20875bbd7970662ef22352432d8674bfb27a
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Closing FileSystemWorkspace agent_ws_c4932d140f026136ba0603006b2c20875bbd7970662ef22352432d8674bfb27a
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-Gx9JG3/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-Gx9JG3/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Created and registered workspace ID: agent_ws_00c2d79851d9c72ba803ab5af2e723ea91bd359fd24a42ab802ae4a5c920441d
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Security error accessing path ../workspace-sibling/leak.png in workspace agent_ws_00c2d79851d9c72ba803ab5af2e723ea91bd359fd24a42ab802ae4a5c920441d: Access denied: Path resolves outside the workspace boundary.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Closing FileSystemWorkspace agent_ws_00c2d79851d9c72ba803ab5af2e723ea91bd359fd24a42ab802ae4a5c920441d
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-diwudW/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-diwudW/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Created and registered workspace ID: agent_ws_00200290560f80813a969d8eab9e2b35400d5d660feb078b8a832800850a44b9
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Security error accessing path /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-diwudW/absolute.png in workspace agent_ws_00200290560f80813a969d8eab9e2b35400d5d660feb078b8a832800850a44b9: Access denied: Path resolves outside the workspace boundary.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Closing FileSystemWorkspace agent_ws_00200290560f80813a969d8eab9e2b35400d5d660feb078b8a832800850a44b9
+
+ ✓ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts (3 tests) 43ms
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > starts watcher when first watcher lease is acquired
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > starts watcher when first watcher lease is acquired
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Acquired file watcher lease for /fake/path (first); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Acquired file watcher lease for /fake/path (second); active leases: 2
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Released file watcher lease for /fake/path (first); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Released file watcher lease for /fake/path (second); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > makes watcher lease release idempotent
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > makes watcher lease release idempotent
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > returns events from the active watcher
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > returns events from the active watcher
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > closes active watcher once and clears future subscriptions
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > renames files with valid leaf names
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-rename-leaf-SSy18n' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > renames files with valid leaf names
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-rename-leaf-SSy18n' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > rejects path-like rename names before filesystem mutation
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-rename-boundary-nxAm2F/ws' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > rejects path-like rename names before filesystem mutation
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-rename-boundary-nxAm2F/ws' completed in 0.0020 seconds.
+
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts (11 tests) 35ms
+stderr | tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > returns 404 when workspace is missing
+Attempted to access non-existent workspace: missing
+
+stderr | tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > returns 400 for workspace path violations
+Security error accessing path ../secret.txt in workspace ws1: Access denied: Path resolves outside the workspace boundary.
+
+ ✓ tests/unit/api/rest/workspaces.test.ts (4 tests) 25ms
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > derives a deterministic workspaceId from the normalized root path
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > canonicalizes the root path before deriving the workspaceId
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > accepts an explicit workspaceId when provided
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+ ✓ tests/unit/workspaces/filesystem-workspace-id.test.ts (3 tests) 4ms
+ ✓ tests/unit/workspaces/workspace-path-utils.test.ts (3 tests) 2ms
+
+ Test Files  6 passed (6)
+      Tests  26 passed (26)
+   Start at  10:48:45
+   Duration  7.45s (transform 3.82s, setup 63ms, import 6.23s, tests 195ms, environment 0ms)
+

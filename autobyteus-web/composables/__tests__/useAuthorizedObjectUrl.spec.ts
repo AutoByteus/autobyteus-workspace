@@ -89,4 +89,41 @@ describe('useAuthorizedObjectUrlMap credential generations', () => {
 
     wrapper.unmount()
   })
+
+  it('restores an unchanged direct source when credential A is removed in flight', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const sessionStore = useMobileNodeSessionStore()
+    const source = '/rest/workspaces/ws/content?path=image.png'
+    const requestA = deferred<Response>()
+    vi.spyOn(globalThis, 'fetch').mockImplementation((_input, init) => {
+      const credential = new Headers(init?.headers).get('Authorization')
+      if (credential === 'Bearer credential-a') return requestA.promise
+      throw new Error(`Unexpected credential: ${credential}`)
+    })
+    const createObjectUrl = vi.spyOn(URL, 'createObjectURL')
+
+    let resources!: ReturnType<typeof useAuthorizedObjectUrlMap>
+    const wrapper = mount(defineComponent({
+      setup() {
+        resources = useAuthorizedObjectUrlMap(() => [source])
+        return () => h('div')
+      },
+    }), { global: { plugins: [pinia] } })
+
+    expect(resources.resolvedUrlsBySource.value).toEqual({ [source]: source })
+
+    sessionStore.$patch({ session: sessionWithCredential('credential-a') })
+    expect(resources.resolvedUrlsBySource.value).toEqual({})
+
+    sessionStore.$patch({ session: null })
+    expect(resources.resolvedUrlsBySource.value).toEqual({ [source]: source })
+
+    requestA.resolve(blobResponse('stale-a'))
+    await flushPromises()
+    expect(resources.resolvedUrlsBySource.value).toEqual({ [source]: source })
+    expect(createObjectUrl).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+  })
 })

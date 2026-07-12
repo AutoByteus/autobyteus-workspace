@@ -1,0 +1,493 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:21720) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-jEacZK
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-jEacZK.
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Created and registered workspace ID: agent_ws_89c65efe1356f0805fae9098c8e16d2061784ad5636ad99e622c83c704242eef
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Created WorkspaceFileExplorer for agent_ws_89c65efe1356f0805fae9098c8e16d2061784ad5636ad99e622c83c704242eef (e2e-search-snapshot).
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-jEacZK' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-jEacZK' completed in 0.0020 seconds.
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'alpha'
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[Search] FuzzysortSearchStrategy completed in 0.45ms, found 1 results (total: 0.47ms)
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-jEacZK' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stderr | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+File explorer websocket attached for workspace agent_ws_89c65efe1356f0805fae9098c8e16d2061784ad5636ad99e622c83c704242eef
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Closing FileSystemWorkspace agent_ws_89c65efe1356f0805fae9098c8e16d2061784ad5636ad99e622c83c704242eef
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-NIIB32
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-NIIB32.
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Created and registered workspace ID: agent_ws_db3cb1f974fa9c7cfc0012d61db8cc869571a63c8a3c3534e7631677abc3f5f7
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Created WorkspaceFileExplorer for agent_ws_db3cb1f974fa9c7cfc0012d61db8cc869571a63c8a3c3534e7631677abc3f5f7 (file-explorer-websocket).
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-NIIB32' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stderr | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer websocket attached for workspace agent_ws_db3cb1f974fa9c7cfc0012d61db8cc869571a63c8a3c3534e7631677abc3f5f7
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-NIIB32' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stderr | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer websocket attached for workspace agent_ws_db3cb1f974fa9c7cfc0012d61db8cc869571a63c8a3c3534e7631677abc3f5f7
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-NIIB32' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stderr | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer websocket attached for workspace agent_ws_db3cb1f974fa9c7cfc0012d61db8cc869571a63c8a3c3534e7631677abc3f5f7
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-NIIB32' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stderr | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer websocket attached for workspace agent_ws_db3cb1f974fa9c7cfc0012d61db8cc869571a63c8a3c3534e7631677abc3f5f7
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-NIIB32' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stderr | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer websocket attached for workspace agent_ws_db3cb1f974fa9c7cfc0012d61db8cc869571a63c8a3c3534e7631677abc3f5f7
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Closing FileSystemWorkspace agent_ws_db3cb1f974fa9c7cfc0012d61db8cc869571a63c8a3c3534e7631677abc3f5f7
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-4a7tDc
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-4a7tDc.
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created and registered workspace ID: agent_ws_9a1701b9808e47c31650159b94372b4d107f4751b2211bffc2dcc367db093601
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created WorkspaceFileExplorer for agent_ws_9a1701b9808e47c31650159b94372b4d107f4751b2211bffc2dcc367db093601 (file-explorer-websocket).
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-4a7tDc' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stderr | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-process.js
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer websocket attached for workspace agent_ws_9a1701b9808e47c31650159b94372b4d107f4751b2211bffc2dcc367db093601
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closing FileSystemWorkspace agent_ws_9a1701b9808e47c31650159b94372b4d107f4751b2211bffc2dcc367db093601
+
+ ❯ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests | 2 failed) 16083ms
+     × keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers 8027ms
+     ✓ does not leak watcher leases when sockets close before CONNECTED is observed 23ms
+     × survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy 8019ms
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:21734) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-N7Wk0t/ignored_ws
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-N7Wk0t/ignored_ws.
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+Created and registered workspace ID: agent_ws_77fe634313fc9356b459c7a900540144d563529e48b75d49192d8b9ec429cb14
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+Created WorkspaceFileExplorer for agent_ws_77fe634313fc9356b459c7a900540144d563529e48b75d49192d8b9ec429cb14 (graphql-folder-children).
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects ignored folder projections before cached tree mutation
+Closing FileSystemWorkspace agent_ws_77fe634313fc9356b459c7a900540144d563529e48b75d49192d8b9ec429cb14
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-MYsnah/ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-MYsnah/ws.
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Created and registered workspace ID: agent_ws_3e83cf389085774f48cb24d64656b282b76a294e0d5874038dada2c8d809e005
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Created WorkspaceFileExplorer for agent_ws_3e83cf389085774f48cb24d64656b282b76a294e0d5874038dada2c8d809e005 (graphql-folder-children).
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-MYsnah/ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-e2e-MYsnah/ws' completed in 0.0010 seconds.
+
+stdout | tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts > File explorer GraphQL path-boundary e2e > rejects same-prefix sibling escapes through folder, read, write, and rename APIs
+Closing FileSystemWorkspace agent_ws_3e83cf389085774f48cb24d64656b282b76a294e0d5874038dada2c8d809e005
+
+ ✓ tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts (2 tests) 85ms
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:21735) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-kXV8ZM/file_ops_ws
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-kXV8ZM/file_ops_ws.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Created and registered workspace ID: agent_ws_d4d86c564e2be9533a03617ba94a5520a0d48a48d1f8c6bc927de16912f2e991
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Created WorkspaceFileExplorer for agent_ws_d4d86c564e2be9533a03617ba94a5520a0d48a48d1f8c6bc927de16912f2e991 (graphql-write-file).
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-kXV8ZM/file_ops_ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-kXV8ZM/file_ops_ws' completed in 0.0010 seconds.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Closing FileSystemWorkspace agent_ws_d4d86c564e2be9533a03617ba94a5520a0d48a48d1f8c6bc927de16912f2e991
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-WHtqoy/rename_ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-WHtqoy/rename_ws.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Created and registered workspace ID: agent_ws_493763599da1b2b226ceeefbfa0357f6c77c28d872bf2760cce7e358948011c7
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Created WorkspaceFileExplorer for agent_ws_493763599da1b2b226ceeefbfa0357f6c77c28d872bf2760cce7e358948011c7 (graphql-create-file).
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-WHtqoy/rename_ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-WHtqoy/rename_ws' completed in 0.0000 seconds.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Closing FileSystemWorkspace agent_ws_493763599da1b2b226ceeefbfa0357f6c77c28d872bf2760cce7e358948011c7
+
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts (2 tests) 70ms
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:21736) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-IiIW7n
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-IiIW7n.
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Created and registered workspace ID: agent_ws_b2464e802cdbac3e01efddf1c33cecc6e989e3e1b0d4ed7538776779c8bdf513
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Created WorkspaceFileExplorer for agent_ws_b2464e802cdbac3e01efddf1c33cecc6e989e3e1b0d4ed7538776779c8bdf513 (graphql-folder-children).
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Closing FileSystemWorkspace agent_ws_b2464e802cdbac3e01efddf1c33cecc6e989e3e1b0d4ed7538776779c8bdf513
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-6E4tJN/graphql_snapshot_ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-6E4tJN/graphql_snapshot_ws.
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Created and registered workspace ID: agent_ws_76ad630107c5bb22a12571074ed3793294d2055adc128487c8b8658426f14ff4
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Created WorkspaceFileExplorer for agent_ws_76ad630107c5bb22a12571074ed3793294d2055adc128487c8b8658426f14ff4 (graphql-folder-children).
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-6E4tJN/graphql_snapshot_ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-6E4tJN/graphql_snapshot_ws' completed in 0.0020 seconds.
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'beta-search-target'
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[Search] FuzzysortSearchStrategy completed in 1.08ms, found 1 results (total: 1.11ms)
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Closing FileSystemWorkspace agent_ws_76ad630107c5bb22a12571074ed3793294d2055adc128487c8b8658426f14ff4
+
+ ✓ tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts (3 tests) 81ms
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:21737) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-SRfN5b/workspace
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-SRfN5b/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Created and registered workspace ID: agent_ws_900f375a611406de5019b1fb7af56160e9167f38acb49891cdf764f3136a5a3b
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Closing FileSystemWorkspace agent_ws_900f375a611406de5019b1fb7af56160e9167f38acb49891cdf764f3136a5a3b
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-fQKoW4/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-fQKoW4/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Created and registered workspace ID: agent_ws_24426ffee47bef91ece62c4d0bf932dc4b0acd9b80ba1d4a06bf544a62ec6b8c
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Security error accessing path ../workspace-sibling/leak.png in workspace agent_ws_24426ffee47bef91ece62c4d0bf932dc4b0acd9b80ba1d4a06bf544a62ec6b8c: Access denied: Path resolves outside the workspace boundary.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Closing FileSystemWorkspace agent_ws_24426ffee47bef91ece62c4d0bf932dc4b0acd9b80ba1d4a06bf544a62ec6b8c
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-G3Yx71/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-G3Yx71/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Created and registered workspace ID: agent_ws_c84cc350861e1c4525c3078cb57a9be8e305d6370bbf36769d01bca4f3e14bf1
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Security error accessing path /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-G3Yx71/absolute.png in workspace agent_ws_c84cc350861e1c4525c3078cb57a9be8e305d6370bbf36769d01bca4f3e14bf1: Access denied: Path resolves outside the workspace boundary.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Closing FileSystemWorkspace agent_ws_c84cc350861e1c4525c3078cb57a9be8e305d6370bbf36769d01bca4f3e14bf1
+
+ ✓ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts (3 tests) 41ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+ FAIL  tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Error: Timed out waiting for CONNECTED. Seen: {"type":"ERROR","payload":{"code":"WATCHER_UNAVAILABLE","message":"File watcher is not available for this workspace"}}
+ ❯ Timeout._onTimeout tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts:66:14
+     64|     const timer = setTimeout(() => {
+     65|       socket.off("message", onMessage);
+     66|       reject(new Error(`Timed out waiting for ${label}. Seen: ${seen.s…
+       |              ^
+     67|     }, timeoutMs);
+     68| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  2 failed | 11 passed (13)
+   Start at  10:52:11
+   Duration  25.91s (transform 3.77s, setup 48ms, import 8.72s, tests 16.36s, environment 0ms)
+

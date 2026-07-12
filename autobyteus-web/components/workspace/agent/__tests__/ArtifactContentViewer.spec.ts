@@ -173,7 +173,7 @@ describe('ArtifactContentViewer', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       'http://localhost:3000/rest/runs/agent-1/file-change-content?path=src%2Ftest.md',
-      { cache: 'no-store' },
+      { cache: 'no-store', headers: expect.any(Headers) },
     );
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('updated artifact content');
     expect((wrapper.vm as any).viewMode).toBe('preview');
@@ -198,7 +198,7 @@ describe('ArtifactContentViewer', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       'http://localhost:3000/rest/runs/agent-1/file-change-content?path=%2FUsers%2Fnormy%2FDownloads%2Fapply_patch_test.txt',
-      { cache: 'no-store' },
+      { cache: 'no-store', headers: expect.any(Headers) },
     );
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('downloads file content');
   });
@@ -233,7 +233,7 @@ describe('ArtifactContentViewer', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       'http://localhost:3000/rest/runs/agent-1/file-change-content?path=%2FUsers%2Fnormy%2FDownloads%2Fapply_patch_test.txt',
-      { cache: 'no-store' },
+      { cache: 'no-store', headers: expect.any(Headers) },
     );
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('workspace-backed content');
   });
@@ -487,7 +487,7 @@ describe('ArtifactContentViewer', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       'http://localhost:3000/rest/runs/agent-1/file-change-content?path=%2FUsers%2Fnormy%2FDownloads%2Fimage.png',
-      { cache: 'no-store' },
+      { cache: 'no-store', headers: expect.any(Headers) },
     );
     expect(createObjectURLMock).toHaveBeenCalledTimes(1);
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('blob:artifact-preview');
