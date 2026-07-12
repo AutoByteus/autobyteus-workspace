@@ -15,7 +15,12 @@ export function getActiveRemoteAccessCredential(): string | null {
 }
 
 export function getRemoteAccessAuthHeaders(): Record<string, string> {
-  const credential = getActiveRemoteAccessCredential();
+  return getRemoteAccessAuthHeadersForCredential(getActiveRemoteAccessCredential());
+}
+
+export function getRemoteAccessAuthHeadersForCredential(
+  credential: string | null,
+): Record<string, string> {
   return credential ? bearerHeader(credential) : {};
 }
 
@@ -32,10 +37,19 @@ export function addRemoteAccessAxiosAuth<T extends AxiosRequestConfig | Internal
 }
 
 export async function authorizedFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
+  return fetchWithRemoteAccessCredential(input, init, getActiveRemoteAccessCredential());
+}
+
+export async function fetchWithRemoteAccessCredential(
+  input: RequestInfo | URL,
+  init: RequestInit = {},
+  credential: string | null,
+): Promise<Response> {
   const headers = new Headers(init.headers);
-  const credential = getActiveRemoteAccessCredential();
   if (credential) {
     headers.set('Authorization', `Bearer ${credential}`);
+  } else {
+    headers.delete('Authorization');
   }
   return fetch(input, { ...init, headers });
 }

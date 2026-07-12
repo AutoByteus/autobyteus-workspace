@@ -7,6 +7,7 @@ import type { WorkspaceInput } from './workspace-input.js';
 import type { WorkspaceKind, WorkspaceMetadata } from './workspace-metadata.js';
 import {
   canonicalizeWorkspaceRootPath,
+  resolveWorkspaceRelativePath,
 } from './workspace-path-utils.js';
 
 const logger = {
@@ -76,14 +77,7 @@ export class FileSystemWorkspace {
       throw new Error('Workspace root path is not set.');
     }
 
-    const normalizedRoot = path.normalize(this.rootPath);
-    const absolutePath = path.normalize(path.join(normalizedRoot, relativePath));
-
-    if (!absolutePath.startsWith(normalizedRoot)) {
-      throw new Error('Access denied: Path resolves outside the workspace boundary.');
-    }
-
-    return absolutePath;
+    return resolveWorkspaceRelativePath(this.rootPath, relativePath);
   }
 
   async initialize(): Promise<void> {

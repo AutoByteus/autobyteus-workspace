@@ -1,0 +1,278 @@
+{
+  "status": "pass",
+  "scenarios": {
+    "MPRI-BROWSER-001": {
+      "pass": true,
+      "images": [
+        {
+          "alt": "Sibling",
+          "src": "http://127.0.0.1:43127/rest/workspaces/ws-a/content?path=docs%2Fsibling.png",
+          "naturalWidth": 1,
+          "complete": true
+        },
+        {
+          "alt": "Nested",
+          "src": "http://127.0.0.1:43127/rest/workspaces/ws-a/content?path=docs%2Fassets%2Fnested.png",
+          "naturalWidth": 1,
+          "complete": true
+        },
+        {
+          "alt": "Parent",
+          "src": "http://127.0.0.1:43127/rest/workspaces/ws-a/content?path=shared%2Fparent.png",
+          "naturalWidth": 1,
+          "complete": true
+        },
+        {
+          "alt": "Encoded Space",
+          "src": "http://127.0.0.1:43127/rest/workspaces/ws-a/content?path=docs%2Fassets%2Fspace%20image.png",
+          "naturalWidth": 1,
+          "complete": true
+        },
+        {
+          "alt": "SVG Fragment",
+          "src": "http://127.0.0.1:43127/rest/workspaces/ws-a/content?path=docs%2Fassets%2Fdiagram.svg#node-a",
+          "naturalWidth": 4,
+          "complete": true
+        },
+        {
+          "alt": "Missing",
+          "src": "http://127.0.0.1:43127/rest/workspaces/ws-a/content?path=docs%2Fassets%2Fmissing.png",
+          "naturalWidth": 0,
+          "complete": true
+        },
+        {
+          "alt": "Blocked",
+          "src": null,
+          "naturalWidth": 0,
+          "complete": true
+        },
+        {
+          "alt": "HTTP Direct",
+          "src": "/direct.png",
+          "naturalWidth": 1,
+          "complete": true
+        },
+        {
+          "alt": "Data Direct",
+          "src": "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==",
+          "naturalWidth": 1,
+          "complete": true
+        }
+      ],
+      "requests": [
+        {
+          "time": 1783846766241,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/direct.png",
+          "filePath": "direct.png",
+          "workspaceId": null,
+          "authorization": null
+        },
+        {
+          "time": 1783846766241,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fsibling.png",
+          "filePath": "docs/sibling.png",
+          "workspaceId": "ws-a",
+          "authorization": null
+        },
+        {
+          "time": 1783846766241,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Fnested.png",
+          "filePath": "docs/assets/nested.png",
+          "workspaceId": "ws-a",
+          "authorization": null
+        },
+        {
+          "time": 1783846766241,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=shared%2Fparent.png",
+          "filePath": "shared/parent.png",
+          "workspaceId": "ws-a",
+          "authorization": null
+        },
+        {
+          "time": 1783846766241,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Fspace%20image.png",
+          "filePath": "docs/assets/space image.png",
+          "workspaceId": "ws-a",
+          "authorization": null
+        },
+        {
+          "time": 1783846766241,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Fdiagram.svg",
+          "filePath": "docs/assets/diagram.svg",
+          "workspaceId": "ws-a",
+          "authorization": null
+        },
+        {
+          "time": 1783846766264,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Fmissing.png",
+          "filePath": "docs/assets/missing.png",
+          "workspaceId": "ws-a",
+          "authorization": null
+        }
+      ]
+    },
+    "MPRI-BROWSER-002": {
+      "pass": true,
+      "earlyRequests": [
+        {
+          "time": 1783846766307,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Finitial.svg",
+          "filePath": "docs/assets/initial.svg",
+          "workspaceId": "ws-a",
+          "authorization": "Bearer credential-a"
+        }
+      ],
+      "finalSrc": "blob:http://127.0.0.1:43127/32974193-c62d-4d59-aff0-7697feb34f28",
+      "naturalWidth": 4
+    },
+    "MPRI-BROWSER-003": {
+      "pass": true,
+      "transition": "null->A",
+      "finalSrc": "blob:http://127.0.0.1:43127/32974193-c62d-4d59-aff0-7697feb34f28"
+    },
+    "MPRI-BROWSER-004": {
+      "pass": true,
+      "requests": [
+        {
+          "time": 1783846766813,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Frotate.svg",
+          "filePath": "docs/assets/rotate.svg",
+          "workspaceId": "ws-a",
+          "authorization": "Bearer credential-a"
+        },
+        {
+          "time": 1783846766885,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Frotate.svg",
+          "filePath": "docs/assets/rotate.svg",
+          "workspaceId": "ws-a",
+          "authorization": "Bearer credential-b"
+        }
+      ],
+      "final": {
+        "src": "blob:http://127.0.0.1:43127/a853704e-c6c6-46da-976d-c9b3264d0a57",
+        "width": 7,
+        "height": 5
+      }
+    },
+    "MPRI-BROWSER-005": {
+      "pass": true,
+      "finalSrc": "http://127.0.0.1:43127/rest/workspaces/ws-a/content?path=docs%2Fassets%2Frotate.svg",
+      "revokedDelta": 1,
+      "requests": [
+        {
+          "time": 1783846766813,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Frotate.svg",
+          "filePath": "docs/assets/rotate.svg",
+          "workspaceId": "ws-a",
+          "authorization": "Bearer credential-a"
+        },
+        {
+          "time": 1783846766885,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Frotate.svg",
+          "filePath": "docs/assets/rotate.svg",
+          "workspaceId": "ws-a",
+          "authorization": "Bearer credential-b"
+        },
+        {
+          "time": 1783846767748,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Frotate.svg",
+          "filePath": "docs/assets/rotate.svg",
+          "workspaceId": "ws-a",
+          "authorization": null
+        }
+      ]
+    },
+    "MPRI-BROWSER-006": {
+      "pass": true,
+      "requests": [
+        {
+          "time": 1783846767798,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-a/content?path=docs%2Fassets%2Fswitch.svg",
+          "filePath": "docs/assets/switch.svg",
+          "workspaceId": "ws-a",
+          "authorization": "Bearer credential-a"
+        },
+        {
+          "time": 1783846767864,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/rest/workspaces/ws-b/content?path=docs%2Fassets%2Fswitch.svg",
+          "filePath": "docs/assets/switch.svg",
+          "workspaceId": "ws-b",
+          "authorization": "Bearer credential-a"
+        },
+        {
+          "time": 1783846767928,
+          "method": "GET",
+          "host": "localhost:43127",
+          "url": "/rest/workspaces/ws-b/content?path=other%2Fassets%2Fswitch.svg",
+          "filePath": "other/assets/switch.svg",
+          "workspaceId": "ws-b",
+          "authorization": "Bearer credential-a"
+        },
+        {
+          "time": 1783846767929,
+          "method": "GET",
+          "host": "localhost:43127",
+          "url": "/rest/workspaces/ws-b/content?path=docs%2Fassets%2Fswitch.svg",
+          "filePath": "docs/assets/switch.svg",
+          "workspaceId": "ws-b",
+          "authorization": "Bearer credential-a"
+        }
+      ],
+      "final": {
+        "src": "blob:http://127.0.0.1:43127/7ee5e00c-4e25-438e-a920-10d02d3bd2ed",
+        "width": 11
+      }
+    },
+    "MPRI-BROWSER-007": {
+      "pass": true,
+      "src": "generic-relative.png",
+      "requests": [
+        {
+          "time": 1783846768739,
+          "method": "GET",
+          "host": "127.0.0.1:43127",
+          "url": "/generic-relative.png",
+          "filePath": "generic-relative.png",
+          "workspaceId": null,
+          "authorization": null
+        }
+      ]
+    }
+  },
+  "errors": [],
+  "cleanup": {
+    "createdUrls": 3,
+    "revokedUrls": 3,
+    "revokedOnUnmount": 0
+  }
+}

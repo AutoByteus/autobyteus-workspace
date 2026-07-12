@@ -244,6 +244,7 @@ function seedProjectFileExplorerState(workspaceId = "workspace-1"): void {
       mode: "preview",
       content: "",
       url: null,
+      relativeResourceContext: null,
       isLoading: false,
       error: null,
     },

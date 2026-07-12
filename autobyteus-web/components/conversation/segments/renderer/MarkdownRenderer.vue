@@ -1,5 +1,5 @@
 <template>
-  <div class="markdown-renderer-segments" @click="handleLinkClick">
+  <div ref="markdownRendererContainer" class="markdown-renderer-segments" @click="handleLinkClick">
     <template v-for="segment in segments" :key="segment.key">
       <div v-if="segment.type === 'html'" v-html="segment.content" class="markdown-body prose dark:prose-invert prose-gray max-w-none"></div>
       <MermaidDiagram
@@ -14,6 +14,8 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted, nextTick } from 'vue';
 import { useMarkdownSegments } from '~/composables/useMarkdownSegments';
+import { useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl';
+import type { MarkdownImageResourceResolver } from '~/utils/markdownImageResource';
 import MermaidDiagram from './MermaidDiagram.vue'; 
 import 'prismjs/themes/prism.css'; 
 // Import KaTeX CSS for math rendering
@@ -21,17 +23,48 @@ import 'katex/dist/katex.min.css';
 
 const props = defineProps<{
   content: string;
+  imageResourceResolver?: MarkdownImageResourceResolver;
 }>();
 
 const contentRef = computed(() => props.content);
-const { parsedSegments } = useMarkdownSegments(contentRef);
+const imageResourceResolverRef = computed(() => props.imageResourceResolver);
+const { parsedSegments, managedImageSources } = useMarkdownSegments(
+  contentRef,
+  imageResourceResolverRef,
+);
+const { resolvedUrlsBySource, errorsBySource } = useAuthorizedObjectUrlMap(
+  () => managedImageSources.value,
+);
 
 const segments = computed(() => parsedSegments.value);
 
 const markdownRendererContainer = ref<HTMLElement | null>(null);
 
+const applyManagedImageBindings = () => {
+  const container = markdownRendererContainer.value;
+  if (!container) return;
+
+  const managedImages = container.querySelectorAll<HTMLImageElement>(
+    'img[data-markdown-image-source]',
+  );
+  for (const image of managedImages) {
+    const source = image.dataset.markdownImageSource;
+    image.removeAttribute('src');
+    image.removeAttribute('data-markdown-image-error');
+    if (!source) continue;
+
+    const resolvedUrl = resolvedUrlsBySource.value[source];
+    if (resolvedUrl) {
+      image.src = `${resolvedUrl}${image.dataset.markdownImageFragment ?? ''}`;
+    } else if (errorsBySource.value[source]) {
+      image.dataset.markdownImageError = 'load-failed';
+    }
+  }
+};
+
 const applyPostRenderEffects = async () => {
-    await nextTick();
+  await nextTick();
+  applyManagedImageBindings();
 };
 
 const handleLinkClick = (event: MouseEvent) => {
@@ -66,6 +99,11 @@ const openExternalLink = (url: string) => {
 
 onMounted(applyPostRenderEffects);
 watch(segments, applyPostRenderEffects, { deep: true });
+watch(
+  [resolvedUrlsBySource, errorsBySource],
+  applyManagedImageBindings,
+  { flush: 'sync' },
+);
 
 </script>
 

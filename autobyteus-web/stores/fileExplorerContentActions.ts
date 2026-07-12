@@ -16,6 +16,7 @@ import {
   remapPrefixedPath,
 } from '~/utils/fileExplorer/stateSync'
 import type { FileOpenMode, OpenFileState } from '~/stores/fileExplorerState'
+import { buildWorkspaceContentUrl } from '~/utils/fileExplorer/workspaceResourceUrl'
 
 function isAbsoluteLocalPath(path: string): boolean {
   if (path.startsWith('/')) {
@@ -59,6 +60,7 @@ export const fileExplorerContentActions = {
         mode,
         content: null,
         url: null,
+        relativeResourceContext: null,
         isLoading: true,
         error: null,
       }
@@ -113,6 +115,7 @@ export const fileExplorerContentActions = {
     }
 
     console.log('[FileExplorer] Handling as a workspace path.')
+    fileState.relativeResourceContext = { kind: 'workspace', workspaceId }
     if (fileState.type === 'Text') {
       console.log(`[FileExplorer] Fetching text content for "${filePath}" via GraphQL.`)
       void this.fetchFileContent(filePath, workspaceId)
@@ -122,8 +125,7 @@ export const fileExplorerContentActions = {
     if (['Image', 'Audio', 'Video', 'Excel', 'PDF'].includes(fileState.type)) {
       if (workspaceId) {
         const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '')
-        const encodedFilePath = encodeURIComponent(filePath)
-        fileState.url = `${restBaseUrl}/workspaces/${workspaceId}/content?path=${encodedFilePath}`
+        fileState.url = buildWorkspaceContentUrl(restBaseUrl, workspaceId, filePath)
         fileState.isLoading = false
         console.log(`[FileExplorer] Constructed absolute media URL for "${filePath}": ${fileState.url}`)
       } else {

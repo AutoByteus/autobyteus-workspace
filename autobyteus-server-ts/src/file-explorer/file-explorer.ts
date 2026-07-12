@@ -16,6 +16,7 @@ import { RenameFileOperation } from "./operations/rename-file-operation.js";
 import { WriteFileOperation } from "./operations/write-file-operation.js";
 import { createWorkspaceIgnoreStrategies } from "./traversal-ignore-strategy/workspace-ignore-strategies.js";
 import { WorkspaceSearchSnapshotController } from "./search-snapshot/workspace-search-snapshot-controller.js";
+import { resolveWorkspaceRelativePath } from "../workspaces/workspace-path-utils.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -76,19 +77,17 @@ export class WorkspaceFileExplorer {
       throw new Error("Workspace root path is not set");
     }
 
-    const rootPath = path.resolve(this.workspaceRootPath);
-    const absolutePath = path.resolve(rootPath, relativePath || ".");
-    const relativeToRoot = path.relative(rootPath, absolutePath);
-    if (
-      relativeToRoot &&
-      (relativeToRoot === ".." ||
-        relativeToRoot.startsWith(`..${path.sep}`) ||
-        path.isAbsolute(relativeToRoot))
-    ) {
-      throw new Error("Access denied: Path resolves outside the workspace.");
+    try {
+      return resolveWorkspaceRelativePath(this.workspaceRootPath, relativePath);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "Access denied: Path resolves outside the workspace boundary."
+      ) {
+        throw new Error("Access denied: Path resolves outside the workspace.");
+      }
+      throw error;
     }
-
-    return absolutePath;
   }
 
   findNodeByPath(relativePath: string): TreeNode | null {

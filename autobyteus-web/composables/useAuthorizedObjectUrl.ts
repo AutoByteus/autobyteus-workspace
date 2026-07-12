@@ -1,7 +1,9 @@
 import { onBeforeUnmount, ref, watch, type Ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import {
   fetchAuthorizedResourceBlob,
-  shouldLoadResourceThroughAuthorizedFetch,
+  shouldLoadResourceThroughAuthorizedFetchWithCredential,
 } from '~/utils/remoteAccess/authorizedResourceUrl';
 
 type UrlSource = () => string | null | undefined;
@@ -12,6 +14,10 @@ const revokeObjectUrl = (url: string | null): void => {
   }
 };
 
+const normalizedSources = (sources: string[]): string[] => (
+  [...new Set(sources.map((url) => url.trim()).filter(Boolean))]
+);
+
 export function useAuthorizedObjectUrl(source: UrlSource): {
   resolvedUrl: Ref<string | null>;
   error: Ref<string | null>;
@@ -21,6 +27,7 @@ export function useAuthorizedObjectUrl(source: UrlSource): {
   const error = ref<string | null>(null);
   let activeObjectUrl: string | null = null;
   let loadToken = 0;
+  const { activeCredential } = storeToRefs(useMobileNodeSessionStore());
 
   const clearObjectUrl = (): void => {
     revokeObjectUrl(activeObjectUrl);
@@ -30,6 +37,8 @@ export function useAuthorizedObjectUrl(source: UrlSource): {
   const refresh = async (): Promise<void> => {
     const currentToken = ++loadToken;
     const nextSource = source()?.trim() || null;
+    const credentialSnapshot = activeCredential.value;
+    resolvedUrl.value = null;
     error.value = null;
     clearObjectUrl();
 
@@ -38,13 +47,13 @@ export function useAuthorizedObjectUrl(source: UrlSource): {
       return;
     }
 
-    if (!shouldLoadResourceThroughAuthorizedFetch(nextSource)) {
+    if (!shouldLoadResourceThroughAuthorizedFetchWithCredential(nextSource, credentialSnapshot)) {
       resolvedUrl.value = nextSource;
       return;
     }
 
     try {
-      const blob = await fetchAuthorizedResourceBlob(nextSource);
+      const blob = await fetchAuthorizedResourceBlob(nextSource, {}, credentialSnapshot);
       if (currentToken !== loadToken) {
         return;
       }
@@ -59,12 +68,18 @@ export function useAuthorizedObjectUrl(source: UrlSource): {
     }
   };
 
-  watch(source, () => {
-    void refresh();
-  }, { immediate: true });
+  watch(
+    [() => source()?.trim() || null, activeCredential],
+    () => {
+      void refresh();
+    },
+    { immediate: true, flush: 'sync' },
+  );
 
   onBeforeUnmount(() => {
     loadToken += 1;
+    resolvedUrl.value = null;
+    error.value = null;
     clearObjectUrl();
   });
 
@@ -81,6 +96,7 @@ export function useAuthorizedObjectUrlMap(sourceUrls: () => string[]): {
   const errorsBySource = ref<Record<string, string>>({});
   let objectUrls: string[] = [];
   let loadToken = 0;
+  const { activeCredential } = storeToRefs(useMobileNodeSessionStore());
 
   const clearObjectUrls = (): void => {
     for (const objectUrl of objectUrls) {
@@ -91,51 +107,65 @@ export function useAuthorizedObjectUrlMap(sourceUrls: () => string[]): {
 
   const refresh = async (): Promise<void> => {
     const currentToken = ++loadToken;
-    const uniqueSources = [...new Set(sourceUrls().map((url) => url.trim()).filter(Boolean))];
-    clearObjectUrls();
+    const uniqueSources = normalizedSources(sourceUrls());
+    const credentialSnapshot = activeCredential.value;
+    resolvedUrlsBySource.value = {};
     errorsBySource.value = {};
+    clearObjectUrls();
 
     const nextResolved: Record<string, string> = {};
+    const nextErrors: Record<string, string> = {};
+    const generationObjectUrls: string[] = [];
+    const cleanStaleGeneration = (): void => {
+      for (const objectUrl of generationObjectUrls) {
+        revokeObjectUrl(objectUrl);
+      }
+    };
     for (const sourceUrl of uniqueSources) {
-      if (!shouldLoadResourceThroughAuthorizedFetch(sourceUrl)) {
+      if (!shouldLoadResourceThroughAuthorizedFetchWithCredential(sourceUrl, credentialSnapshot)) {
         nextResolved[sourceUrl] = sourceUrl;
         continue;
       }
 
       try {
-        const blob = await fetchAuthorizedResourceBlob(sourceUrl);
+        const blob = await fetchAuthorizedResourceBlob(sourceUrl, {}, credentialSnapshot);
         if (currentToken !== loadToken) {
+          cleanStaleGeneration();
           return;
         }
         const objectUrl = URL.createObjectURL(blob);
-        objectUrls.push(objectUrl);
+        generationObjectUrls.push(objectUrl);
         nextResolved[sourceUrl] = objectUrl;
       } catch (fetchError) {
         if (currentToken !== loadToken) {
+          cleanStaleGeneration();
           return;
         }
-        errorsBySource.value = {
-          ...errorsBySource.value,
-          [sourceUrl]: fetchError instanceof Error ? fetchError.message : String(fetchError),
-        };
+        nextErrors[sourceUrl] = fetchError instanceof Error ? fetchError.message : String(fetchError);
       }
     }
 
     if (currentToken === loadToken) {
+      objectUrls = generationObjectUrls;
       resolvedUrlsBySource.value = nextResolved;
+      errorsBySource.value = nextErrors;
+    } else {
+      cleanStaleGeneration();
     }
   };
 
   watch(
-    () => sourceUrls().join('\u0000'),
+    [() => JSON.stringify(normalizedSources(sourceUrls())), activeCredential],
     () => {
       void refresh();
     },
-    { immediate: true },
+    { immediate: true, flush: 'sync' },
   );
 
   onBeforeUnmount(() => {
     loadToken += 1;
+    resolvedUrlsBySource.value = {};
+    errorsBySource.value = {};
     clearObjectUrls();
   });
 
