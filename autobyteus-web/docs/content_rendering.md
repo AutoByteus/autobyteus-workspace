@@ -108,6 +108,41 @@ Markdown files are rendered using `MarkdownRenderer.vue`, which uses `markdown-i
 - **Math Support**: Uses KaTeX for explicit LaTeX equations (`$...$`, `$$...$$`, `\(...\)`, `\[...\]`, and `math` fences). The renderer does not infer inline math from ordinary prose or file paths.
 - **Mermaid Diagrams**: Native support for Mermaid diagrams.
 
+### Workspace-Relative Images
+
+Markdown opened from the workspace file explorer carries an explicit workspace
+identity and document path into `MarkdownPreviewer.vue`. That adapter resolves
+relative image sources against the Markdown document's containing directory, so
+forms such as `image.png`, `./assets/image.png`, and an in-workspace
+`../images/image.png` use the selected workspace content route. Paths with
+spaces or percent-encoded segments are decoded once and encoded once when the
+route is built.
+
+Resolution is intentionally opt-in:
+
+- `MarkdownRenderer.vue` remains generic and never guesses the active
+  workspace. Conversation, task, team-reference, and other Markdown surfaces
+  without an explicit file resource context retain browser/sanitizer-owned
+  behavior.
+- HTTP(S), protocol-relative, root-relative, `data:`, `blob:`, `file:`, and
+  other scheme-bearing image sources are not rewritten as workspace files.
+- Malformed relative paths, encoded path separators, and relative paths that
+  escape above the workspace root are left without a fetchable image source.
+  The surrounding document and image alt text remain renderable.
+
+Workspace image tokens are rendered without an initial `src`, sanitized, and
+then bound to their managed resource URL. Desktop previews can use the protected
+workspace content URL directly. With an active Phone Access credential, the
+authorized-resource helper fetches the image with the captured bearer
+credential and publishes an object URL. Changes to Markdown content, document
+path, workspace, bound node, or credential invalidate old bindings; stale
+requests cannot rebind an image, and obsolete object URLs are revoked.
+
+The server remains authoritative for containment. Workspace content paths are
+resolved lexically below the selected workspace root, and absolute or sibling
+prefix traversal candidates are rejected even if a client bypasses frontend
+normalization. Existing symlink semantics are unchanged.
+
 ### Mermaid Support
 
 AutoByteus supports rendering Mermaid diagrams directly within markdown files. This is handled by a custom client-side renderer that replaces the need for backend generation (like PlantUML).

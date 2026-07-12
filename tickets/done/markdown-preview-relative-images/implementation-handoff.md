@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/in-progress/markdown-preview-relative-images/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/in-progress/markdown-preview-relative-images/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/in-progress/markdown-preview-relative-images/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/done/markdown-preview-relative-images/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/done/markdown-preview-relative-images/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/done/markdown-preview-relative-images/design-spec.md`
 - Supplemental solution artifacts: `None`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/in-progress/markdown-preview-relative-images/design-review-report.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/done/markdown-preview-relative-images/design-review-report.md`
 
 ## What Changed
 

@@ -31,7 +31,7 @@ All three PNG files exist under the sibling `assets/` directory beside the Markd
 
 - Project Type (`Git`/`Non-Git`): `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/in-progress/markdown-preview-relative-images`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/done/markdown-preview-relative-images`
 - Current Branch: `codex/markdown-preview-relative-images`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images`
 - Bootstrap Base Branch: `origin/personal`
@@ -69,7 +69,7 @@ All three PNG files exist under the sibling `assets/` directory beside the Markd
 | 2026-07-12 | Test | `pnpm vitest run tests/unit/file-explorer/workspace-file-explorer.test.ts` | Check current replacement explorer suite | 11/11 passed | No |
 | 2026-07-12 | Doc | Required `solution-designer/design-principles.md` | Apply authoritative-boundary and spine rules | Resource identity must remain owned by the workspace preview boundary rather than guessed inside generic Markdown rendering | No |
 | 2026-07-12 | Other | User approval in task conversation | Lock intended user-visible behavior before design | User approved automatic workspace Markdown image preview and requested a design following the shared design principles | No |
-| 2026-07-12 | Doc | `tickets/in-progress/markdown-preview-relative-images/design-review-report.md`, round 1 | Review complete solution design | Core design passed, but `AR-MPRI-001` found that the authorized object URL helper is not reactive to credential changes and retains stale resolved-map entries during refresh | Yes — extend the authorized-resource owner and lifecycle design |
+| 2026-07-12 | Doc | `tickets/done/markdown-preview-relative-images/design-review-report.md`, round 1 | Review complete solution design | Core design passed, but `AR-MPRI-001` found that the authorized object URL helper is not reactive to credential changes and retains stale resolved-map entries during refresh | Yes — extend the authorized-resource owner and lifecycle design |
 | 2026-07-12 | Code | `autobyteus-web/composables/useAuthorizedObjectUrl.ts`; `stores/mobileNodeSessionStore.ts`; `utils/remoteAccess/authorizedResourceUrl.ts`; `authorizedTransport.ts` | Trace credential ownership and current refresh trigger | `mobileNodeSessionStore.activeCredential` is the reactive authority; both object URL helpers watch sources only, while classification/fetch read credential imperatively | No |
 
 ## Current Behavior / Current Flow
