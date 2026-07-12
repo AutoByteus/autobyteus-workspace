@@ -1,26 +1,24 @@
-# Consecutive Thinking Blocks and Reliable Tool Boundaries
+# Release Notes — Workspace Markdown Relative Images
 
-## Highlights
+## What's New
 
-- Groups consecutive Codex reasoning snapshots into one continuous **Thinking** block instead of rendering back-to-back cards for provider-internal item boundaries.
-- Preserves the same grouping after a new run is reopened from local history.
-- Starts a new Thinking block only when a real ordered conversation boundary is created, such as a new tool card or assistant-text boundary.
+- Workspace Markdown and README previews now render relative image references automatically from the Markdown file's directory.
+- Supported in-workspace paths include sibling images, nested asset folders, safe parent references, spaces, and encoded path characters.
+- Desktop and Phone Access previews use the existing workspace content boundary, with authorized loading for paired mobile sessions.
 
-## Tool Ordering And Reliability
+## Improvements
 
-- Keeps reasoning together when a matching tool result, status, log, approval, or completion updates a tool card that is already positioned in the conversation.
-- Places genuine result-first and provider-late tool calls at the correct point between separate Thinking blocks.
-- Distinguishes explicit empty tool arguments from missing arguments so valid calls persist while incomplete placeholders wait for authoritative details.
-- Prevents malformed, duplicate, or argument-less placeholder events from fabricating duplicate tool rows in history.
-- Persists each tool invocation as one correlated call/result pair for reliable live display, reload, Memory inspection, and generated work traces.
+- Image bindings now refresh safely when the open document, workspace, bound node, or Phone Access credential changes.
+- External, data-backed, root-relative, and generic non-workspace Markdown image behavior remains unchanged.
+- Missing or rejected images stay isolated so the surrounding Markdown and image alt text remain visible.
 
-## Compatibility And Data
+## Fixes
 
-- Existing historical runs are not rewritten; the corrected grouping applies to newly recorded runs.
-- No database migration, backfill, or user-data rebuild is required.
-- Codex reasoning deltas remain non-display transport noise; completed reasoning snapshots are the canonical visible and persisted content.
+- Fixed broken `assets/...` images in workspace Markdown previews that previously required opening the document in another editor.
+- Hardened workspace path containment against absolute and sibling-prefix traversal requests.
+- Prevented stale authorized image responses and obsolete object URLs from surviving context or credential transitions.
 
 ## Validation
 
-- Verified in the replacement macOS Electron application by the user before release.
-- Fresh API/E2E validation reached `98.4%` confidence across focused server, GraphQL, frontend hydration, authenticated Codex reasoning, real hosted search, broader regression, and packaged-runtime checks.
+- Focused frontend, server, REST E2E, and real Chromium validation passed.
+- macOS arm64 Electron packaging passed and the user verified the completed task before finalization.
