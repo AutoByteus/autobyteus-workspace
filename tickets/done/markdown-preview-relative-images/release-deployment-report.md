@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Initial delivery integration refresh, integrated-state recording, durable docs synchronization, packaging/commit preparation, a user-requested local macOS Electron test build, repository finalization, and the user-authorized next patch release are in scope. The user verification hold is lifted. Planned release: `1.4.10` / `v1.4.10`.
+Initial delivery integration refresh, integrated-state recording, durable docs synchronization, packaging/commit preparation, a user-requested local macOS Electron test build, repository finalization, and the user-authorized next patch release were in scope. All completed for release `1.4.10` / `v1.4.10`.
 
 ## Handoff Summary
 
@@ -49,7 +49,7 @@ Initial delivery integration refresh, integrated-state recording, durable docs s
 
 ## Version / Tag / Release Commit
 
-User requested a new version. Latest target version/tag is `1.4.9` / `v1.4.9`; the next patch release is planned as `1.4.10` / `v1.4.10`. Version bump, release commit, and tag will be created by the documented helper after repository finalization.
+The prior version/tag was `1.4.9` / `v1.4.9`. The documented helper created release commit `b57d5f51d4101135e2bcb2cc8745b9c10f9fee9a`, bumped desktop and messaging-gateway packages to `1.4.10`, and created/pushed annotated tag `v1.4.10`.
 
 ## User-Requested Electron Test Build
 
@@ -67,17 +67,17 @@ User requested a new version. Latest target version/tag is `1.4.9` / `v1.4.9`; t
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/done/markdown-preview-relative-images/investigation-notes.md`
 - Ticket branch: `codex/markdown-preview-relative-images`
-- Ticket branch commit result: Reviewed candidate checkpoint `6b127afb`; archived delivery commit pending in this report revision.
-- Ticket branch push result: Pending archived delivery commit.
+- Ticket branch commit result: `Completed` — `ea787c3379799c34a7ae344f5ba0ad902cf81a4b` (`docs(ticket): finalize markdown relative image delivery`).
+- Ticket branch push result: `Completed` — `origin/codex/markdown-preview-relative-images` created at `ea787c33`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`; `origin/personal` remained `73e2c333d89b09d70945139d3ce502230667a53f`.
 - Delivery-owned edits protected before re-integration: `Completed` via a bounded untracked-inclusive stash; restored cleanly after fetch.
 - Re-integration before final merge result: `Not needed`; target was unchanged.
-- Target branch update result: Pending ticket commit/push.
-- Merge into target result: Pending ticket commit/push.
-- Push target branch result: Pending ticket commit/push.
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` — local `personal` refreshed from unchanged `origin/personal` before merge.
+- Merge into target result: `Completed` — merge commit `53278c3a6cf39e0e48bd9004853adabb28b4df2c`.
+- Push target branch result: `Completed` — `origin/personal` advanced from `73e2c333` to `53278c3a` before release.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): None.
 
 ## Release / Publication / Deployment
@@ -85,28 +85,55 @@ User requested a new version. Latest target version/tag is `1.4.9` / `v1.4.9`; t
 - Applicable: `Yes`
 - Method: `Release Script`
 - Method reference / command: `pnpm release 1.4.10 -- --release-notes tickets/done/markdown-preview-relative-images/release-notes.md`
-- Release/publication/deployment result: `Pending repository finalization`
-- Release notes handoff result: `Pending`
+- Release/publication/deployment result: `Completed` — release preparation/tag push and all five tag-triggered rollout workflows succeeded.
+- Release notes handoff result: `Used`
 - Blocker (if applicable): None.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images`
-- Worktree cleanup result: `Pending`
-- Worktree prune result: `Pending`
-- Local ticket branch cleanup result: `Pending`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup waits for successful repository finalization and release kickoff.
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+- Blocker (if applicable): None.
+- Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images` and the temporary release clone were removed. Local and remote `codex/markdown-preview-relative-images` branches were deleted. Unrelated untracked primary-checkout content was protected during finalization and restored afterward.
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `No`; created immediately after explicit verification and release authorization.
-- Archived release notes artifact used for release/publication: `Pending`
+- Archived release notes artifact used for release/publication: `Used`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-Run the documented release helper from the clean `personal` target after the archived ticket branch is merged and pushed. The helper will bump desktop/gateway versions, sync curated notes and the managed messaging manifest, commit, tag, and push the tag-triggered multi-platform release workflows. Do not manually dispatch a duplicate release.
+The documented release helper was run from a temporary clean `personal` clone after the archived ticket branch was merged and pushed. This preserved unrelated untracked primary-checkout content while retaining the canonical branch/tag flow. No duplicate manual dispatch was started.
+
+Completed command: `pnpm release 1.4.10 -- --release-notes tickets/done/markdown-preview-relative-images/release-notes.md`.
+
+- Release commit: `b57d5f51d4101135e2bcb2cc8745b9c10f9fee9a`
+- Annotated tag: `v1.4.10` (tag object `2e9f5fb3ac0fdfb66ca9fd3e332e0adf01b0f517`)
+- Branch push: `origin/personal` advanced to `b57d5f51d4101135e2bcb2cc8745b9c10f9fee9a`
+- Tag push: `refs/tags/v1.4.10` created and peeled to the release commit.
+- Release helper evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/markdown-preview-relative-images/delivery-evidence/release-v1.4.10.log`
+
+## Rollout Verification
+
+The `v1.4.10` tag push created all five documented release workflows:
+
+| Workflow | Run ID | URL | Final Result |
+| --- | ---: | --- | --- |
+| Desktop Release | `29189730735` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29189730735` | `Success` |
+| Android APK Release | `29189730731` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29189730731` | `Success` |
+| iOS App Store Connect Release | `29189730757` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29189730757` | `Success` |
+| Release Messaging Gateway | `29189730750` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29189730750` | `Success` |
+| Server Docker Release | `29189730734` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29189730734` | `Success` |
+
+- Workflow evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/markdown-preview-relative-images/delivery-evidence/release-v1.4.10-workflows.json`
+- No manual-dispatch duplicate was started.
+- GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.10`
+- GitHub release result: published, non-draft, non-prerelease, target `b57d5f51d4101135e2bcb2cc8745b9c10f9fee9a`, with 21 release assets across desktop platforms, Android, messaging gateway, updater metadata, and release manifest.
+- GitHub release evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/markdown-preview-relative-images/delivery-evidence/release-v1.4.10-github-release.json`
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -124,7 +151,7 @@ Run the documented release helper from the clean `personal` target after the arc
 - Authoritative API/E2E result — `Pass`, `97%` confidence.
 - Authoritative proportional durable test review — `Pass`, round 2.
 - User-requested macOS arm64 Electron package build — `Pass`; integrated app/DMG/ZIP created from the current handoff state.
-- Delivery documentation diff hygiene — passed before the user handoff; final repository diff hygiene must be rerun after any post-verification refresh/archive edits.
+- Final delivery-record diff hygiene — passed for the release reports and structured rollout evidence. Original captured test logs retain their exact historical output whitespace.
 
 ## Rollback Criteria
 
@@ -133,4 +160,4 @@ Run the documented release helper from the clean `personal` target after the arc
 
 ## Final Status
 
-`User verified; repository finalization and release v1.4.10 in progress.` The post-verification target refresh remained current, the ticket is archived, release notes are prepared, and no renewed verification is required.
+`Completed.` Repository finalization, release `v1.4.10`, all five rollout workflows, durable final status recording, and dedicated ticket cleanup succeeded. A final post-tag delivery-record commit updates only archived reports/evidence and does not alter the tagged release contents.

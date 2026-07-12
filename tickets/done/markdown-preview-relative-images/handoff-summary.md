@@ -2,7 +2,7 @@
 
 ## Status
 
-User verified the task complete and explicitly authorized finalization plus a new release. The implementation, implementation source review, API/E2E execution, proportional durable test-code review, durable docs sync, and macOS Electron package build all passed. The ticket is archived under `tickets/done/`; branch push, merge, release `v1.4.10`, and cleanup are in progress.
+Completed. The user verified the task, the ticket was archived and merged into `personal`, and release `v1.4.10` was created and published. Desktop, Android, iOS/App Store Connect, messaging-gateway, and server Docker workflows all completed successfully. The dedicated ticket worktree and local/remote ticket branches were cleaned up.
 
 ## Worktree / Branch / Target
 
@@ -16,6 +16,10 @@ User verified the task complete and explicitly authorized finalization plus a ne
 - Integration method: `Already current`; after `git fetch origin personal`, the base remained identical to bootstrap and was already an ancestor of the ticket branch.
 - Branch relation at refresh: ticket branch `2` ahead / `0` behind `origin/personal`.
 - Post-verification refresh: `git fetch origin personal --tags` again confirmed `origin/personal` remained `73e2c333...`; no re-integration or renewed verification was required.
+- Final ticket commit: `ea787c3379799c34a7ae344f5ba0ad902cf81a4b`
+- `personal` merge commit: `53278c3a6cf39e0e48bd9004853adabb28b4df2c`
+- Release commit: `b57d5f51d4101135e2bcb2cc8745b9c10f9fee9a`
+- Release tag: `v1.4.10` (targets `b57d5f51d4101135e2bcb2cc8745b9c10f9fee9a`)
 
 ## What Changed
 
@@ -71,7 +75,12 @@ User verified the task complete and explicitly authorized finalization plus a ne
 - Post-verification target refresh: `Pass`; `origin/personal` did not advance.
 - Ticket archive: `tickets/done/markdown-preview-relative-images/`
 - Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/tickets/done/markdown-preview-relative-images/release-notes.md`
-- Planned release: next patch version `1.4.10` / tag `v1.4.10`, using the documented `pnpm release 1.4.10 -- --release-notes tickets/done/markdown-preview-relative-images/release-notes.md` flow after merging into `personal`.
+- Release completed: `1.4.10` / `v1.4.10` using the documented `pnpm release 1.4.10 -- --release-notes tickets/done/markdown-preview-relative-images/release-notes.md` flow.
+- Release helper result: desktop and messaging-gateway package versions updated to `1.4.10`, curated notes and the managed messaging manifest synchronized, release commit/tag created, and `personal` plus the tag pushed.
+- Release workflow kickoff: desktop run `29189730735`, Android run `29189730731`, iOS run `29189730757`, messaging-gateway run `29189730750`, and server Docker run `29189730734`.
+- Rollout result: all five workflows completed with `success`.
+- GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.10` — published, non-draft, non-prerelease, with 21 release assets.
+- Cleanup: dedicated ticket worktree removed; local and remote `codex/markdown-preview-relative-images` branches deleted; unrelated untracked primary-checkout content restored unchanged.
 
 ## Key Artifacts
 

@@ -61,3 +61,4 @@
 - Generated dependency, Nuxt, mobile, server-resource, app, DMG, ZIP, and blockmap outputs are ignored build artifacts.
 - No tracked source or lockfile changed as a result of dependency installation or packaging.
 - The user subsequently declared the task complete and authorized finalization plus a new release. This build remains the local verification artifact for the pre-release `1.4.9` handoff state; repository release `1.4.10` is handled separately by the documented release flow.
+- The dedicated worktree and its ignored local package outputs were removed after successful `v1.4.10` publication. Official release artifacts are available from `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.10`.
