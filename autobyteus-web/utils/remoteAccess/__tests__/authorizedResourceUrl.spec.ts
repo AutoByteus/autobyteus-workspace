@@ -4,6 +4,7 @@ import {
   fetchAuthorizedResourceBlob,
   isProtectedRemoteAccessResourceUrl,
   shouldLoadResourceThroughAuthorizedFetch,
+  shouldLoadResourceThroughAuthorizedFetchWithCredential,
 } from '~/utils/remoteAccess/authorizedResourceUrl';
 import { mobileCredentialStorage } from '~/utils/remoteAccess/mobileCredentialStorage';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
@@ -59,5 +60,10 @@ describe('authorized resource URLs', () => {
     const [, init] = fetchMock.mock.calls[0];
     const headers = init?.headers as Headers;
     expect(headers.get('Authorization')).toBe('Bearer mra_secret');
+  });
+
+  it('classifies protected resources from the supplied credential snapshot', () => {
+    expect(shouldLoadResourceThroughAuthorizedFetchWithCredential('/rest/files/media.png', null)).toBe(false);
+    expect(shouldLoadResourceThroughAuthorizedFetchWithCredential('/rest/files/media.png', 'credential-b')).toBe(true);
   });
 });

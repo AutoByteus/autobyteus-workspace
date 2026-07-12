@@ -11,6 +11,13 @@ vi.mock('~/components/fileExplorer/MonacoEditor.vue', () => ({
 vi.mock('~/components/fileExplorer/viewers/ImageViewer.vue', () => ({
   default: { name: 'ImageViewer', template: '<div class="image-mock" />', props: ['url'] }
 }));
+vi.mock('~/components/fileExplorer/viewers/MarkdownPreviewer.vue', () => ({
+  default: {
+    name: 'MarkdownPreviewer',
+    template: '<div class="markdown-preview-mock" />',
+    props: ['content', 'path', 'relativeResourceContext'],
+  }
+}));
 vi.mock('~/utils/highlighting/languageDetector', () => ({
   getLanguage: () => 'typescript'
 }));
@@ -61,5 +68,25 @@ describe('FileViewer.vue', () => {
     const image = wrapper.findComponent({ name: 'ImageViewer' });
     expect(image.exists()).toBe(true);
     expect(image.props('url')).toBe('http://example.com/img.png');
+  });
+
+  it('forwards explicit relative-resource identity to Markdown preview', () => {
+    const relativeResourceContext = { kind: 'workspace' as const, workspaceId: 'workspace-1' };
+    const wrapper = mount(FileViewer, {
+      props: {
+        file: {
+          path: 'docs/readme.md',
+          type: 'Text',
+          content: '![Card](assets/card.png)',
+          url: null,
+          relativeResourceContext,
+        },
+        mode: 'preview',
+      }
+    });
+
+    const preview = wrapper.findComponent({ name: 'MarkdownPreviewer' });
+    expect(preview.props('path')).toBe('docs/readme.md');
+    expect(preview.props('relativeResourceContext')).toEqual(relativeResourceContext);
   });
 });

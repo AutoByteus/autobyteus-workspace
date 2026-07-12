@@ -1,7 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
-import { getRemoteAccessAuthHeaders } from '~/utils/remoteAccess/authorizedTransport';
+import {
+  fetchWithRemoteAccessCredential,
+  getRemoteAccessAuthHeaders,
+} from '~/utils/remoteAccess/authorizedTransport';
 import { mobileCredentialStorage } from '~/utils/remoteAccess/mobileCredentialStorage';
 import type { MobileNodeSession } from '~/types/remoteAccess';
 
@@ -36,5 +39,21 @@ describe('authorized transport credential selection', () => {
 
   it('does not attach extra trusted-node credentials for remote-node windows', () => {
     expect(getRemoteAccessAuthHeaders()).toEqual({});
+  });
+
+  it('uses exactly the supplied credential snapshot', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true } as Response);
+
+    await fetchWithRemoteAccessCredential('/rest/workspaces/ws/content', {}, 'credential-a');
+    await fetchWithRemoteAccessCredential(
+      '/rest/workspaces/ws/content',
+      { headers: { Authorization: 'Bearer obsolete' } },
+      null,
+    );
+
+    expect((fetchMock.mock.calls[0]?.[1]?.headers as Headers).get('Authorization')).toBe(
+      'Bearer credential-a',
+    );
+    expect((fetchMock.mock.calls[1]?.[1]?.headers as Headers).get('Authorization')).toBeNull();
   });
 });

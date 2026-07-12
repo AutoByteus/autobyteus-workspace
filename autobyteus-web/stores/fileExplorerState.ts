@@ -6,12 +6,18 @@ export type FileDataType = 'Text' | 'Image' | 'Audio' | 'Video' | 'Excel' | 'PDF
 
 export type FileOpenMode = 'edit' | 'preview'
 
+export type FileRelativeResourceContext = {
+  kind: 'workspace'
+  workspaceId: string
+}
+
 export interface OpenFileState {
   path: string
   type: FileDataType
   mode: FileOpenMode
   content: string | null
   url: string | null
+  relativeResourceContext: FileRelativeResourceContext | null
   isLoading: boolean
   error: string | null
 }

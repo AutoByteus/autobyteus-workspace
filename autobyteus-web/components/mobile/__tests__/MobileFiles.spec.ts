@@ -215,6 +215,7 @@ describe('MobileFiles', () => {
         mode: 'preview',
         content: '# Notes',
         url: null,
+        relativeResourceContext: { kind: 'workspace', workspaceId },
         isLoading: false,
         error: null,
       });

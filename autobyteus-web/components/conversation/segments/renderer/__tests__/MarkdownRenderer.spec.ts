@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import MermaidDiagram from '~/components/conversation/segments/renderer/MermaidDiagram.vue';
+import { createPinia, setActivePinia, type Pinia } from 'pinia';
+import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
+import type { MobileNodeSession } from '~/types/remoteAccess';
 
 // Mock components
 vi.mock('~/components/conversation/segments/renderer/MermaidDiagram.vue', () => ({
@@ -13,15 +16,20 @@ vi.mock('~/components/conversation/segments/renderer/MermaidDiagram.vue', () => 
 }));
 
 describe('MarkdownRenderer', () => {
+  let pinia: Pinia;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    pinia = createPinia();
+    setActivePinia(pinia);
   });
 
   it('should render markdown content correctly', () => {
     const wrapper = mount(MarkdownRenderer, {
       props: {
         content: '# Hello World'
-      }
+      },
+      global: { plugins: [pinia] },
     });
 
     expect(wrapper.html()).toContain('<h1>Hello World</h1>');
@@ -38,6 +46,7 @@ describe('MarkdownRenderer', () => {
         content: '```mermaid\ngraph TD;\nA-->B;\n```'
       },
       global: {
+        plugins: [pinia],
         stubs: {
           MermaidDiagram: true // Stub it to verify it's rendered
         }
@@ -48,5 +57,57 @@ describe('MarkdownRenderer', () => {
     const mermaidComponent = wrapper.findComponent(MermaidDiagram);
     expect(mermaidComponent.exists()).toBe(true);
     expect(mermaidComponent.props('content')).toContain('graph TD;\nA-->B;');
+  });
+
+  it('binds a managed image only after authorized resolution completes', async () => {
+    const session: MobileNodeSession = {
+      version: 1,
+      nodeId: 'mobile-paired-node',
+      serverBaseUrl: 'http://node.example',
+      credential: 'credential-a',
+      pairedAt: '2026-07-12T00:00:00.000Z',
+      device: {
+        deviceId: 'device-1',
+        displayName: 'Phone',
+        clientFacingBaseUrl: 'http://node.example',
+        createdAt: '2026-07-12T00:00:00.000Z',
+        lastSeenAt: null,
+        revokedAt: null,
+      },
+    };
+    useMobileNodeSessionStore().$patch({ session });
+    let resolveFetch!: (response: Response) => void;
+    vi.spyOn(globalThis, 'fetch').mockReturnValue(new Promise((resolve) => {
+      resolveFetch = resolve;
+    }));
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:managed-image');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
+
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '![Diagram](assets/diagram.svg)',
+        imageResourceResolver: () => ({
+          kind: 'managed',
+          fetchUrl: '/rest/workspaces/ws/content?path=docs%2Fassets%2Fdiagram.svg',
+          fragment: '#node-a',
+        }),
+      },
+      global: { plugins: [pinia] },
+    });
+
+    const image = wrapper.get('img');
+    expect(image.attributes('src')).toBeUndefined();
+    expect(image.attributes('alt')).toBe('Diagram');
+
+    resolveFetch({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      blob: () => Promise.resolve(new Blob(['image'], { type: 'image/svg+xml' })),
+    } as Response);
+    await flushPromises();
+
+    expect(image.attributes('src')).toBe('blob:managed-image#node-a');
+    wrapper.unmount();
   });
 });
