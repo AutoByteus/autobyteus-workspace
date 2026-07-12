@@ -2,17 +2,17 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/design-spec.md`
 - Supplemental Solution Artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/design-review-report.md` (Architecture Round 6)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/implementation-handoff.md`
-- Delivery Integration Conflict Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/delivery-integration-conflict-report.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/code-review-report.md` (Source Review Round 8 authoritative)
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/api-e2e-coverage-investigation.md` (Round 4 authoritative)
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/design-review-report.md` (Architecture Round 6)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/implementation-handoff.md`
+- Delivery Integration Conflict Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/delivery-integration-conflict-report.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/code-review-report.md` (Source Review Round 8 authoritative)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/api-e2e-coverage-investigation.md` (Round 4 authoritative)
 - Current Execution Round: `4 — corrected head abd50be3`
 - Trigger: CR-CTB-003 fallback-terminal and CR-CTB-004 explicit-empty argument-presence fixes passed source review after Round 3 API failure.
 - Prior Round Reviewed: `Yes; Round 3 Fail was rechecked first and is diagnostic history only.`

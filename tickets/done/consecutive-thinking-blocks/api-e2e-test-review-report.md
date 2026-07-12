@@ -4,13 +4,13 @@
 
 - Review Round: `3`
 - Trigger: Fresh Round 4 API/E2E passed exact source head `abd50be3fa1ded276242dfc59673209b914f8bad` with six cumulative durable test paths in scope.
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/requirements.md`
 - Supplemental Solution Artifacts Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/code-review-report.md` (Implementation Review Round 8 Pass)
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/api-e2e-coverage-investigation.md` (Round 4 authoritative)
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/api-e2e-execution-coverage-report.md` (Round 4 authoritative)
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/code-review-report.md` (Implementation Review Round 8 Pass)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/api-e2e-coverage-investigation.md` (Round 4 authoritative)
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/api-e2e-execution-coverage-report.md` (Round 4 authoritative)
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `98.4%`
 - Prior unresolved test-review findings rechecked: `None`. Rounds 1 and 2 passed; their candidate evidence is superseded, but their durable tests remain part of the cumulative current-task scope where still applicable.
@@ -29,12 +29,12 @@ Temporary probes, package harnesses, logs, generated artifacts, and execution ev
 
 | Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts` | Updated | Exact matching update, result-first command, unseen-insufficient/later-ready terminal; `REQ-CTB-002`–`005`, `009`–`011`; `AC-CTB-005`, `006`, `010`–`013` | Provider-shaped Codex events -> production converter -> accumulator/files -> GraphQL projection | One named scenario asserts raw and projected ordering, permanent delta no-effect, result-first strict pair, and complete AC13 placement. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts` | Updated | `CR-CTB-003`, `CR-CTB-004`, unseen insufficient terminal; `REQ-CTB-009`, `011`; `AC-CTB-012`, `013` | Provider payload -> normalized lifecycle facts | Directly distinguishes fallback command arguments, explicit `{}`, true absence, and identity/name without fabricated arguments. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts` | Updated | Facade ordering/delegation around matching, deferred, result-first, and next-boundary sequences | Normalized event/segment facade -> raw trace order | Keeps facade behavior in the facade suite while lifecycle internals were moved to the sequencer suite. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts` | Added | `CR-CTB-001`, `CR-CTB-002`; `REQ-CTB-009`, `011`; `AC-CTB-012`, `013` | Provider-agnostic tool observation/readiness/physical lifecycle state machine | Covers insufficient/later-ready, malformed/later-valid, explicit empty, result-first, failures/denials, hydration/dedupe, compound identity, interruption, and cleanup. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts` | Updated | Exact live GPT-5.6-Sol completed-snapshot cadence; `REQ-CTB-002`, `005`, `008`, `010`; `AC-CTB-003`, `005`, `008`, `011` | Authenticated provider messages -> normalized events -> persisted memory | Environment-gated exact-current-cadence assertions compare completed snapshot content, normalized content, and one persisted trace while recording delta method counts. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/services/runHydration/__tests__/runProjectionConversation.spec.ts` | Updated | Matching A+B and deferred-card A/tool/B hydration; `REQ-CTB-004`–`006`, `009`; `AC-CTB-005`, `006`, `010`, `013` | Generic projection -> ordered frontend conversation segments | API/E2E-owned addition proves two Thinking segments around the deferred tool card without provider-specific frontend policy; cumulative A+B fixture proves one segment for a matching update. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts` | Updated | Exact matching update, result-first command, unseen-insufficient/later-ready terminal; `REQ-CTB-002`–`005`, `009`–`011`; `AC-CTB-005`, `006`, `010`–`013` | Provider-shaped Codex events -> production converter -> accumulator/files -> GraphQL projection | One named scenario asserts raw and projected ordering, permanent delta no-effect, result-first strict pair, and complete AC13 placement. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts` | Updated | `CR-CTB-003`, `CR-CTB-004`, unseen insufficient terminal; `REQ-CTB-009`, `011`; `AC-CTB-012`, `013` | Provider payload -> normalized lifecycle facts | Directly distinguishes fallback command arguments, explicit `{}`, true absence, and identity/name without fabricated arguments. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts` | Updated | Facade ordering/delegation around matching, deferred, result-first, and next-boundary sequences | Normalized event/segment facade -> raw trace order | Keeps facade behavior in the facade suite while lifecycle internals were moved to the sequencer suite. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts` | Added | `CR-CTB-001`, `CR-CTB-002`; `REQ-CTB-009`, `011`; `AC-CTB-012`, `013` | Provider-agnostic tool observation/readiness/physical lifecycle state machine | Covers insufficient/later-ready, malformed/later-valid, explicit empty, result-first, failures/denials, hydration/dedupe, compound identity, interruption, and cleanup. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts` | Updated | Exact live GPT-5.6-Sol completed-snapshot cadence; `REQ-CTB-002`, `005`, `008`, `010`; `AC-CTB-003`, `005`, `008`, `011` | Authenticated provider messages -> normalized events -> persisted memory | Environment-gated exact-current-cadence assertions compare completed snapshot content, normalized content, and one persisted trace while recording delta method counts. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/__tests__/runProjectionConversation.spec.ts` | Updated | Matching A+B and deferred-card A/tool/B hydration; `REQ-CTB-004`–`006`, `009`; `AC-CTB-005`, `006`, `010`, `013` | Generic projection -> ordered frontend conversation segments | API/E2E-owned addition proves two Thinking segments around the deferred tool card without provider-specific frontend policy; cumulative A+B fixture proves one segment for a matching update. |
 
 - No durable test file changed: `No`
 - Review result when no durable test file changed: `N/A`
@@ -61,12 +61,12 @@ None.
 
 - Result: `Pass`
 - Changed durable test paths reviewed:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web/services/runHydration/__tests__/runProjectionConversation.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/services/runHydration/__tests__/runProjectionConversation.spec.ts`
 - Unresolved finding IDs: `None`
 - Recommended Recipient: `delivery_engineer`
 - Notes: Round 3 is authoritative. The successful API/E2E workflow was not rerun by the reviewer because the changed assertions and supplied current execution evidence were sufficient. Delivery must preserve the explicit full-window replacement user-verification gate, the unsigned/non-notarized local-package status, and the user-owned service on port `29695` until finalization.

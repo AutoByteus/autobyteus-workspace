@@ -3,28 +3,28 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/requirements.md`
 - Supplemental Solution Artifacts Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
 - Current Review Round: `8`
 - Trigger: Fresh source review of the `CR-CTB-004` explicit-empty argument-presence correction at `abd50be3fa1ded276242dfc59673209b914f8bad`
 - Prior Review Round Reviewed: `7` (`8211504e`, Implementation Review Fail, `CR-CTB-004`)
 - Latest Authoritative Round: `8`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/design-review-report.md` (Architecture Round 6 Pass)
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/implementation-handoff.md`
-- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/api-e2e-coverage-investigation.md` (parent-head failure context only)
-- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/api-e2e-execution-coverage-report.md` (parent-head failure context only)
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/design-review-report.md` (Architecture Round 6 Pass)
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/implementation-handoff.md`
+- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/api-e2e-coverage-investigation.md` (parent-head failure context only)
+- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/api-e2e-execution-coverage-report.md` (parent-head failure context only)
 - Failing Scenario IDs: Prior `CTB-R6-E2E-FAIL-01` remains parent-head context; no API/E2E result is current for `abd50be3`.
 - Exact Failing Commands / Execution Mode: Parent-head GraphQL command retained as context; current entry point ran source-focused unit checks and a current-build explicit-empty/absent terminal probe.
 - Failure Evidence Paths:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/evidence/round-3/graphql-exact-sequence.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/evidence/round-3/result-first-normalization-probe.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/evidence/round-3/focused-server.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/evidence/round-3/explicit-empty-terminal-probe.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/evidence/round-3/explicit-empty-terminal-fix-probe.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/evidence/round-3/graphql-exact-sequence.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/evidence/round-3/result-first-normalization-probe.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/evidence/round-3/focused-server.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/evidence/round-3/explicit-empty-terminal-probe.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/evidence/round-3/explicit-empty-terminal-fix-probe.log`
 
 ## Round History
 

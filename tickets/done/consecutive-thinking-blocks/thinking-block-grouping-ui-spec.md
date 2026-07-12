@@ -1,6 +1,6 @@
 # Thinking Block Grouping UI Specification
 
-- **Canonical path:** `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
+- **Canonical path:** `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
 - **Scope:** User-visible grouping of reasoning summaries in live and reloaded agent/team conversations.
 - **Status:** `Deep Current-Base Redesign — User Approved for Architecture Re-review`
 - **Related requirements:** `REQ-CTB-002`–`REQ-CTB-005`, `REQ-CTB-008`–`REQ-CTB-011`

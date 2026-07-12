@@ -2,10 +2,10 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/design-spec.md`
-- Supplemental Solution Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/design-spec.md`
+- Supplemental Solution Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
 - Current Review Round: `6`
 - Trigger: Re-review after the user-approved deep current-base redesign split the unseen-terminal transitions and extracted `RuntimeToolTraceSequencer` from the rejected accumulator shape.
 - Prior Review Round Reviewed: `5`

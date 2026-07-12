@@ -2,16 +2,16 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/design-spec.md`
 - Supplemental Solution Artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/design-review-report.md` (Architecture Round 6 authoritative)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/implementation-handoff.md`
-- Delivery Integration Conflict Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/delivery-integration-conflict-report.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/done/consecutive-thinking-blocks/code-review-report.md` (Source Review Round 8 authoritative)
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/thinking-block-grouping-ui-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/user-verification-failure-analysis.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/design-review-report.md` (Architecture Round 6 authoritative)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/implementation-handoff.md`
+- Delivery Integration Conflict Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/delivery-integration-conflict-report.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/consecutive-thinking-blocks/code-review-report.md` (Source Review Round 8 authoritative)
 - Current Investigation Round: `4 — fresh corrected head abd50be3`
 - Trigger: focused failure-origin rework and fresh source review passed fallback-aware terminal arguments plus explicit-empty-vs-absent presence at `abd50be3fa1ded276242dfc59673209b914f8bad`.
 - Prior Investigation Reviewed: `Yes. Round 3 Fail is diagnostic history only; all repository, live, hosted-search, frontend, and package evidence must be fresh for abd50be3.`
@@ -65,7 +65,7 @@ Expected surviving-process live order: `Thinking(A) -> tool card -> Thinking(B)`
 
 ## Project Execution Discovery
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch/head: `codex/consecutive-thinking-blocks` / `abd50be3fa1ded276242dfc59673209b914f8bad`
 - Stack: pnpm, TypeScript/Fastify/GraphQL, Vitest, Nuxt/Vue, Electron.
 - Required secrets: existing authenticated Codex CLI identity is available; no secret values will be recorded.
