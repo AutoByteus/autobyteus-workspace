@@ -1,0 +1,12 @@
+=== unpacked Electron packaged-server live execution ===
+UTC 2026-07-13T19:03:58Z
+entry=AutoByteus.app/Contents/Resources/server/dist/app.js
+host=127.0.0.1 port=51814
+owned_server_pid=52604
+health={"status":"ok","message":"Server is running"}
+mutation={"data":{"updateServerSetting":"Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' has been updated successfully."}}
+persisted=AUTOBYTEUS_COMPACTION_STRATEGY=structured-json
+packaged server live execution: PASS
+{"level":30,"time":1783969440273,"pid":52604,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51814"}
+[2026-07-13T19:04:00.273Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51814
+Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' updated to 'structured-json'

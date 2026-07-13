@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
+import { WorkingContext } from '../../../src/memory/working-context.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
@@ -382,15 +383,15 @@ describe('MemoryManager', () => {
           toolArgs: { prompt: 'page two' }
         })
       ]);
-      manager.workingContextSnapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
-        content: 'Generating page two.',
-        tool_payload: new ToolCallPayload([
-          { id: 'call_crash', name: 'generate_image', arguments: { prompt: 'page two' } }
-        ])
-      }));
-      manager.workingContextSnapshot.appendMessage(new Message(MessageRole.USER, {
-        content: 'please continue there was a shutdown'
-      }));
+      manager.replaceWorkingContext(new WorkingContext([
+        new Message(MessageRole.ASSISTANT, {
+          content: 'Generating page two.',
+          tool_payload: new ToolCallPayload([
+            { id: 'call_crash', name: 'generate_image', arguments: { prompt: 'page two' } },
+          ]),
+        }),
+        new Message(MessageRole.USER, { content: 'please continue there was a shutdown' }),
+      ]));
 
       const firstRepair = manager.ensureWorkingContextToolProtocolSafeForNextLlm();
       const secondRepair = manager.ensureWorkingContextToolProtocolSafeForNextLlm();
@@ -426,12 +427,10 @@ describe('MemoryManager', () => {
       const manager = new MemoryManager({ store });
       const turnId = manager.startTurn();
 
-      manager.workingContextSnapshot.appendMessage(
-        new Message(MessageRole.SYSTEM, { content: 'stable system prompt' })
-      );
-      manager.workingContextSnapshot.appendMessage(
-        new Message(MessageRole.USER, { content: 'interrupted user input' })
-      );
+      manager.replaceWorkingContext(new WorkingContext([
+        new Message(MessageRole.SYSTEM, { content: 'stable system prompt' }),
+        new Message(MessageRole.USER, { content: 'interrupted user input' }),
+      ]));
       manager.ingestUserMessage(new LLMUserMessage({ content: 'interrupted user input' }), turnId, 'LLMUserMessageReadyEvent');
       manager.ingestToolIntent(new ToolInvocation('read_file', { path: '/tmp/incomplete.txt' }, 'inv-interrupt', turnId), turnId);
 

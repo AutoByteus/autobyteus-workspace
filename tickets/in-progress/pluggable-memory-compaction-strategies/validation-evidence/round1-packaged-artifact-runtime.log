@@ -1,0 +1,39 @@
+=== packaged artifact inclusion and native runtime verification ===
+UTC 2026-07-13T19:03:20Z
+packaged_server=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+--- artifact sizes ---
+-rw-r--r--@ 1 normy  staff   383M Jul 13 21:00 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.12.dmg
+-rw-r--r--@ 1 normy  staff   379M Jul 13 21:01 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.12.zip
+--- changed server/core artifact hashes: source build vs packaged ---
+autobyteus-server-ts/dist/services/server-settings-service.js
+ source=c1d05d7adfc2a2736623ceae3610690ca314f9a0f397473f8e12794e4ad2113d
+ package=c1d05d7adfc2a2736623ceae3610690ca314f9a0f397473f8e12794e4ad2113d
+autobyteus-ts/dist/memory/compaction/default-working-context-compaction-strategy-registry.js
+ source=9c97457917b9431021c490a8a8e533504a3498ce4894bb4b99263090ec9eef48
+ package=9c97457917b9431021c490a8a8e533504a3498ce4894bb4b99263090ec9eef48
+autobyteus-ts/dist/memory/compaction/structured-json-compaction-strategy.js
+ source=ead92eb7f62fe939dea96bfd144a3ac1ad5500216cafad6350b10b17cc2601ef
+ package=ead92eb7f62fe939dea96bfd144a3ac1ad5500216cafad6350b10b17cc2601ef
+autobyteus-ts/dist/memory/compaction/working-context-compaction-strategy-resolver.js
+ source=0043c38cb1fb276db8581567050df97230e42554c539ea0c084ba0b759312802
+ package=0043c38cb1fb276db8581567050df97230e42554c539ea0c084ba0b759312802
+autobyteus-ts/dist/memory/compaction/pending-compaction-executor.js
+ source=61dce8fc27d9a674d5f0dec55bcdbb23b982fd0139f3cfd4b98e52f12570f8bf
+ package=61dce8fc27d9a674d5f0dec55bcdbb23b982fd0139f3cfd4b98e52f12570f8bf
+autobyteus-ts/dist/memory/working-context.js
+ source=aaee263a4d5a679b064195476aa8e60c8613d501db69f351cfefe5dda224de5f
+ package=aaee263a4d5a679b064195476aa8e60c8613d501db69f351cfefe5dda224de5f
+artifact hash comparison: PASS
+--- packaged production symbols ---
+4:import { StructuredJsonCompactionStrategy } from './structured-json-compaction-strategy.js';
+17:    id: 'structured-json',
+18:    name: 'Structured JSON',
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/autobyteus-ts/dist/memory/compaction/working-context-compaction-strategy-setting.js:1:export const AUTOBYTEUS_COMPACTION_STRATEGY = 'AUTOBYTEUS_COMPACTION_STRATEGY';
+test-only identifier absent from executable production outputs: PASS
+obsolete package files absent: PASS
+--- project native terminal runtime verifier ---
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+packaged artifact/runtime verification: PASS

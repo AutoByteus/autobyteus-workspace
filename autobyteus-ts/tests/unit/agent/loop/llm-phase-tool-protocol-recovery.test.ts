@@ -22,6 +22,7 @@ import {
 } from '../../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
+import { WorkingContext } from '../../../../src/memory/working-context.js';
 import { RawTraceItem } from '../../../../src/memory/models/raw-trace-item.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 
@@ -76,18 +77,16 @@ describe('LlmPhase incomplete native tool-call resume recovery', () => {
         }),
       ]);
       const memoryManager = new MemoryManager({ store });
-      memoryManager.workingContextSnapshot.appendMessage(new Message(MessageRole.SYSTEM, {
-        content: 'System prompt',
-      }));
-      memoryManager.workingContextSnapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
-        content: 'I will generate page two.',
-        tool_payload: new ToolCallPayload([
-          { id: 'call_resume_missing', name: 'generate_image', arguments: { prompt: 'draw page two' } },
-        ]),
-      }));
-      memoryManager.workingContextSnapshot.appendMessage(new Message(MessageRole.USER, {
-        content: 'earlier failed continue attempt',
-      }));
+      memoryManager.replaceWorkingContext(new WorkingContext([
+        new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+        new Message(MessageRole.ASSISTANT, {
+          content: 'I will generate page two.',
+          tool_payload: new ToolCallPayload([
+            { id: 'call_resume_missing', name: 'generate_image', arguments: { prompt: 'draw page two' } },
+          ]),
+        }),
+        new Message(MessageRole.USER, { content: 'earlier failed continue attempt' }),
+      ]));
 
       const llm = new CapturingResumeLLM();
       const state = new AgentRuntimeState('agent_resume_repair');

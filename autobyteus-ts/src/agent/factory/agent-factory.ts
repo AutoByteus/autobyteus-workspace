@@ -9,9 +9,7 @@ import { BaseTool } from '../../tools/base-tool.js';
 import { SkillRegistry } from '../../skills/registry.js';
 import {
   CompactionPolicy,
-  Compactor,
   FileMemoryStore,
-  AgentCompactionSummarizer,
   MemoryManager,
   resolveMemoryBaseDir
 } from '../../memory/index.js';
@@ -134,17 +132,9 @@ export class AgentFactory extends Singleton {
     const memoryStore = new FileMemoryStore(memoryDir, agentId, memoryLayoutOptions);
     const snapshotStore = new WorkingContextSnapshotStore(memoryDir, agentId, memoryLayoutOptions);
     const compactionPolicy = new CompactionPolicy();
-    const compactor = config.compactionAgentRunner
-      ? new Compactor(memoryStore, new AgentCompactionSummarizer({
-          runner: config.compactionAgentRunner,
-          parentAgentId: agentId,
-          maxItemChars: compactionPolicy.maxItemChars
-        }))
-      : null;
     runtimeState.memoryManager = new MemoryManager({
       store: memoryStore,
       compactionPolicy,
-      compactor,
       workingContextSnapshotStore: snapshotStore
     });
     runtimeState.restoreOptions = restoreOptions;

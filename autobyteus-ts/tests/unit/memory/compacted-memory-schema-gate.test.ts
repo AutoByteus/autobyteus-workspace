@@ -5,7 +5,7 @@ import path from 'node:path';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
 import { CompactedMemorySchemaGate } from '../../../src/memory/restore/compacted-memory-schema-gate.js';
-import { WorkingContextSnapshot } from '../../../src/memory/working-context-snapshot.js';
+import { WorkingContext } from '../../../src/memory/working-context.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
@@ -45,7 +45,7 @@ describe('CompactedMemorySchemaGate', () => {
         'utf-8'
       );
 
-      const snapshot = new WorkingContextSnapshot();
+      const snapshot = new WorkingContext();
       snapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'stale' }));
       snapshotStore.write('agent_reset', WorkingContextSnapshotSerializer.serialize(snapshot, {
         schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,

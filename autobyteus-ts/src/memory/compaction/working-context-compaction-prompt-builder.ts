@@ -1,11 +1,33 @@
 import { MessageRole, ToolCallPayload, ToolResultPayload } from '../../llm/utils/messages.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
-import { clampRenderedLine } from '../compaction-snapshot-recent-turn-formatter.js';
-import { COMPACTION_RESULT_SHAPE } from './compaction-task-prompt-builder.js';
 import type {
   ToolProtocolMessageUnit,
   WorkingContextMessageUnit,
 } from './working-context-message-unit.js';
+
+const TRUNCATION_MARKER = ' …[truncated]';
+
+const clampRenderedLine = (line: string, maxItemChars: number | null | undefined): string => {
+  const limit = typeof maxItemChars === 'number' && Number.isFinite(maxItemChars) && maxItemChars > 0
+    ? Math.floor(maxItemChars)
+    : null;
+  if (limit === null || line.length <= limit) return line;
+  if (limit <= TRUNCATION_MARKER.length) return TRUNCATION_MARKER.slice(0, limit);
+  return `${line.slice(0, limit - TRUNCATION_MARKER.length)}${TRUNCATION_MARKER}`;
+};
+
+export const COMPACTION_RESULT_SHAPE = [
+  'Your final answer must be one JSON object with this shape:',
+  '{',
+  '  "episodic_summary": "string",',
+  '  "critical_issues": [{ "fact": "string" }],',
+  '  "unresolved_work": [{ "fact": "string" }],',
+  '  "durable_facts": [{ "fact": "string" }],',
+  '  "user_preferences": [{ "fact": "string" }],',
+  '  "important_artifacts": [{ "fact": "string" }]',
+  '}',
+  'Do not add Markdown fences or any text outside the JSON object.',
+].join('\n');
 
 export type WorkingContextCompactionPromptBuildOptions = {
   maxItemChars?: number | null;

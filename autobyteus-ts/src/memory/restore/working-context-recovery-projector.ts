@@ -1,11 +1,20 @@
 import { Message, MessageRole } from '../../llm/utils/messages.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
-import { clampRenderedLine } from '../compaction-snapshot-recent-turn-formatter.js';
 import { setMessageProvenance } from '../message-provenance.js';
 import type { RawTraceItem } from '../models/raw-trace-item.js';
 import { createToolCallIdentity, toolCallIdentityKey } from '../models/tool-call-identity.js';
 import { ToolInteractionStatus, type ToolInteraction } from '../models/tool-interaction.js';
 import { buildToolInteractions } from '../tool-interaction-builder.js';
+
+const TRUNCATION_MARKER = ' …[truncated]';
+const clampRenderedLine = (line: string, maxItemChars: number | null | undefined): string => {
+  const limit = typeof maxItemChars === 'number' && Number.isFinite(maxItemChars) && maxItemChars > 0
+    ? Math.floor(maxItemChars)
+    : null;
+  if (limit === null || line.length <= limit) return line;
+  if (limit <= TRUNCATION_MARKER.length) return TRUNCATION_MARKER.slice(0, limit);
+  return `${line.slice(0, limit - TRUNCATION_MARKER.length)}${TRUNCATION_MARKER}`;
+};
 
 export class WorkingContextRecoveryProjector {
   project(rawTraces: RawTraceItem[], maxItemChars?: number | null): Message[] {

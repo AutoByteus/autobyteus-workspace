@@ -36,6 +36,7 @@ import {
   STREAM_PARSER_PROVIDER_NATIVE_VALUE,
   STREAM_PARSER_SETTING_VALUES,
 } from "../../../src/config/stream-parser-setting.js";
+import { WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY } from "../../../src/config/working-context-compaction-strategy-setting.js";
 
 describe("ServerSettingsService", () => {
   beforeEach(() => {
@@ -111,6 +112,7 @@ describe("ServerSettingsService", () => {
       ({
         AUTOBYTEUS_COMPACTION_TRIGGER_RATIO: "0.8",
         AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID: "memory-compactor",
+        [WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY]: "structured-json",
         AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE: "4096",
         AUTOBYTEUS_COMPACTION_DEBUG_LOGS: "true",
       })[key],
@@ -128,6 +130,12 @@ describe("ServerSettingsService", () => {
     expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID")).toMatchObject({
       value: "memory-compactor",
       description: expect.stringContaining("Agent definition id"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(settings.find((item) => item.key === WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY)).toMatchObject({
+      value: "structured-json",
+      description: expect.stringContaining("Process-global working-context compaction strategy"),
       isEditable: true,
       isDeletable: false,
     });
@@ -222,6 +230,32 @@ describe("ServerSettingsService", () => {
     expect(ok).toBe(true);
     expect(message).toMatch(/updated successfully/i);
     expect(mockConfig.set).toHaveBeenCalledWith("CUSTOM_SETTING", "next");
+  });
+
+  it("normalizes a registered working-context compaction strategy before persistence", () => {
+    const service = new ServerSettingsService();
+    const [ok] = service.updateSetting(
+      WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
+      " structured-json ",
+    );
+
+    expect(ok).toBe(true);
+    expect(mockConfig.set).toHaveBeenCalledWith(
+      WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
+      "structured-json",
+    );
+  });
+
+  it("rejects an unknown working-context compaction strategy before persistence", () => {
+    const service = new ServerSettingsService();
+    const [ok, message] = service.updateSetting(
+      WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
+      "unknown",
+    );
+
+    expect(ok).toBe(false);
+    expect(message).toContain("structured-json");
+    expect(mockConfig.set).not.toHaveBeenCalled();
   });
 
   it.each([

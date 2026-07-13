@@ -3,12 +3,12 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentFactory, AgentInputUserMessage } from "autobyteus-ts";
-import { AgentStatus } from "autobyteus-ts/agent/status/status-enum.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import type { Message } from "autobyteus-ts/llm/utils/messages.js";
+import { buildLlmTokenUsageObservation } from "autobyteus-ts/llm/utils/llm-token-usage-observation.js";
 import { CompleteResponse, ChunkResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { SkillRegistry } from "autobyteus-ts/skills/registry.js";
@@ -82,11 +82,18 @@ class RecordingMainLLM extends BaseLLM {
     const promptTokens = this.promptTokensByCall[callIndex - 1] ?? 1;
     return {
       content: `parent-response-${callIndex}`,
-      usage: {
-        prompt_tokens: promptTokens,
-        completion_tokens: 1,
-        total_tokens: promptTokens + 1,
-      },
+      usage: buildLlmTokenUsageObservation({
+        inputTokens: promptTokens,
+        outputTokens: 1,
+        totalTokens: promptTokens + 1,
+        rawUsage: {
+          prompt_tokens: promptTokens,
+          completion_tokens: 1,
+          total_tokens: promptTokens + 1,
+        },
+        inputTokenSemantic: "gross_includes_cache",
+        cacheState: "not_reported",
+      }),
     };
   }
 }
@@ -322,7 +329,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
         expect(result.accepted).toBe(true);
         await waitFor(() =>
           parentLLM.requests.length === turnIndex &&
-          backend.getStatus() === AgentStatus.IDLE &&
+          backend.getStatusSnapshot().status === "idle" &&
           (backend.getContext().runtimeContext as any)?.state?.activeTurn === null,
         );
       }
@@ -330,15 +337,22 @@ describe("compaction agent parent runtime/model fallback executable validation",
       await backend.postUserMessage(new AgentInputUserMessage("Please remember the fallback behavior."));
       await waitFor(() =>
         parentLLM.requests.length === 4 &&
-        (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === true &&
-        backend.getStatus() === AgentStatus.IDLE,
+        (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
+        backend.getStatusSnapshot().status === "idle" &&
+        collectCompactionStatuses(serverEvents).some((event) => event.phase === "completed"),
       );
 
       await backend.postUserMessage(new AgentInputUserMessage("Continue after compaction."));
       await waitFor(() =>
         parentLLM.requests.length === 5 &&
         (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
-        backend.getStatus() === AgentStatus.IDLE,
+        backend.getStatusSnapshot().status === "idle",
+      );
+
+      const requestAfterCompaction = JSON.stringify(parentLLM.requests[4]);
+      expect(requestAfterCompaction).toContain("The parent run compacted prior seed turns.");
+      expect(requestAfterCompaction).toContain(
+        "The user asked the parent run to remember the fallback behavior.",
       );
 
       expect(compactionAgentRunnerFactory).toHaveBeenCalledWith({
@@ -362,7 +376,6 @@ describe("compaction agent parent runtime/model fallback executable validation",
         }),
       });
 
-      await waitFor(() => collectCompactionStatuses(serverEvents).some((event) => event.phase === "completed"));
       const statuses = collectCompactionStatuses(serverEvents);
       expect(statuses.map((event) => event.phase)).toEqual(expect.arrayContaining(["requested", "started", "completed"]));
       expect(statuses.find((event) => event.phase === "completed")).toMatchObject({

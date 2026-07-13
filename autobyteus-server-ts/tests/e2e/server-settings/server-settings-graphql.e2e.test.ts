@@ -5,6 +5,17 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+import { LLMRequestAssembler } from "autobyteus-ts/agent/llm-request-assembler.js";
+import { BasePromptRenderer } from "autobyteus-ts/llm/prompt-renderers/base-prompt-renderer.js";
+import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
+import { CompactionRuntimeSettingsResolver } from "autobyteus-ts/memory/compaction/compaction-runtime-settings.js";
+import { defaultWorkingContextCompactionStrategyRegistry } from "autobyteus-ts/memory/compaction/default-working-context-compaction-strategy-registry.js";
+import { PendingCompactionExecutor } from "autobyteus-ts/memory/compaction/pending-compaction-executor.js";
+import { AUTOBYTEUS_COMPACTION_STRATEGY } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-setting.js";
+import { WorkingContextCompactionStrategyResolver } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-resolver.js";
+import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
+import { FileMemoryStore } from "autobyteus-ts/memory/store/file-store.js";
+import { WorkingContext } from "autobyteus-ts/memory/working-context.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { normalizeSandboxMode } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
@@ -24,6 +35,13 @@ import {
   STREAM_PARSER_PROVIDER_NATIVE_VALUE,
   STREAM_PARSER_SETTING_VALUES,
 } from "../../../src/config/stream-parser-setting.js";
+import { WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY } from "../../../src/config/working-context-compaction-strategy-setting.js";
+
+class RecordingPromptRenderer extends BasePromptRenderer {
+  async render(messages: Message[]): Promise<Array<Record<string, unknown>>> {
+    return messages.map((message) => ({ role: message.role, content: message.content }));
+  }
+}
 
 describe("Server settings GraphQL e2e", () => {
   let schema: GraphQLSchema;
@@ -32,6 +50,7 @@ describe("Server settings GraphQL e2e", () => {
   let originalServerHostEnv: string | undefined;
   let originalCodexSandboxEnv: string | undefined;
   let originalCompactionAgentEnv: string | undefined;
+  let originalCompactionStrategyEnv: string | undefined;
   let originalFeaturedCatalogItemsEnv: string | undefined;
   let originalStreamParserEnv: string | undefined;
   let originalMediaModelEnv: Record<string, string | undefined>;
@@ -50,6 +69,7 @@ describe("Server settings GraphQL e2e", () => {
     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     originalCompactionAgentEnv = process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
+    originalCompactionStrategyEnv = process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     originalStreamParserEnv = process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
     originalMediaModelEnv = {
@@ -66,6 +86,7 @@ describe("Server settings GraphQL e2e", () => {
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
     delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
+    delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     delete process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
     delete process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY];
@@ -90,6 +111,11 @@ describe("Server settings GraphQL e2e", () => {
       delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     } else {
       process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID] = originalCompactionAgentEnv;
+    }
+    if (originalCompactionStrategyEnv === undefined) {
+      delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
+    } else {
+      process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = originalCompactionStrategyEnv;
     }
     if (originalFeaturedCatalogItemsEnv === undefined) {
       delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
@@ -652,6 +678,93 @@ describe("Server settings GraphQL e2e", () => {
     expect(streamParserSetting?.description).not.toBe("Custom user-defined setting");
     expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
       AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+    );
+  });
+
+  it("persists a registered global compaction strategy and selects it for an existing runtime's next operation", async () => {
+    const testStrategyId = "graphql-test-direct";
+    if (!defaultWorkingContextCompactionStrategyRegistry.get(testStrategyId)) {
+      defaultWorkingContextCompactionStrategyRegistry.register({
+        id: testStrategyId,
+        name: "GraphQL Test Direct",
+        create: () => ({
+          id: testStrategyId,
+          name: "GraphQL Test Direct",
+          compact: async (input) => new WorkingContext([
+            input.buildMessages()[0]!,
+            new Message(MessageRole.USER, { content: "selected by GraphQL update" }),
+          ]),
+        }),
+      });
+    }
+
+    const memoryStore = new FileMemoryStore(
+      path.join(tempDir, "existing-runtime-memory"),
+      "existing-runtime-agent",
+    );
+    const manager = new MemoryManager({ store: memoryStore });
+    manager.replaceWorkingContext(new WorkingContext([
+      new Message(MessageRole.SYSTEM, { content: "System" }),
+      new Message(MessageRole.USER, { content: "old context" }),
+    ]));
+    manager.requestCompaction("turn-before-setting-update");
+    const strategyResolver = new WorkingContextCompactionStrategyResolver({
+      registry: defaultWorkingContextCompactionStrategyRegistry,
+      settingsResolver: new CompactionRuntimeSettingsResolver(),
+      constructionContext: {
+        agentId: "existing-runtime-agent",
+        memoryStore,
+        compactionAgentRunner: null,
+        inputBudgetTokens: 100,
+        maxItemChars: 200,
+        diagnostics: null,
+      },
+    });
+    const assembler = new LLMRequestAssembler(
+      manager,
+      new RecordingPromptRenderer(),
+      new PendingCompactionExecutor(manager, { strategyResolver }),
+    );
+
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+    const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
+      value: `  ${testStrategyId}  `,
+    });
+    expect(updated.updateServerSetting).toContain("updated successfully");
+    expect(process.env[AUTOBYTEUS_COMPACTION_STRATEGY]).toBe(testStrategyId);
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toContain(
+      `${AUTOBYTEUS_COMPACTION_STRATEGY}=${testStrategyId}`,
+    );
+
+    const request = await assembler.prepareRequest(
+      "after GraphQL update",
+      "turn-after-setting-update",
+      "System",
+    );
+    expect(request.messages.map((message) => message.content)).toEqual([
+      "System",
+      "selected by GraphQL update",
+      "after GraphQL update",
+    ]);
+    expect(request.renderedPayload).toEqual([
+      { role: MessageRole.SYSTEM, content: "System" },
+      { role: MessageRole.USER, content: "selected by GraphQL update" },
+      { role: MessageRole.USER, content: "after GraphQL update" },
+    ]);
+
+    const invalid = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
+      value: "unknown-strategy",
+    });
+    expect(invalid.updateServerSetting).toContain("must be one of");
+    expect(process.env[AUTOBYTEUS_COMPACTION_STRATEGY]).toBe(testStrategyId);
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).not.toContain(
+      `${AUTOBYTEUS_COMPACTION_STRATEGY}=unknown-strategy`,
     );
   });
 });

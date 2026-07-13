@@ -163,7 +163,7 @@ describe('DeepSeekLLM reasoning continuation payloads', () => {
         store: new FileMemoryStore(tempDir, 'agent_deepseek_reasoning_continuation')
       });
       const turnId = manager.startTurn();
-      manager.workingContextSnapshot.appendUser('How is the weather in Hangzhou tomorrow?');
+      manager.appendWorkingContextUserMessage('How is the weather in Hangzhou tomorrow?');
 
       const invocation = new ToolInvocation(
         'get_weather',

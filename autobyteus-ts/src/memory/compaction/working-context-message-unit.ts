@@ -51,6 +51,3 @@ export type MessageCompactionPlan = {
   estimatedRetainedTokens: number;
   estimatedCompactedTokens: number;
 };
-
-export const getPlanSelectedUnitCount = (plan: MessageCompactionPlan): number =>
-  plan.compactableUnits.length;

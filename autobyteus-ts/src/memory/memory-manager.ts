@@ -8,11 +8,9 @@ import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.
 import { toolCallIdentityKey } from './models/tool-call-identity.js';
 import { MemoryType } from './models/memory-types.js';
 import { CompactionPolicy } from './policies/compaction-policy.js';
-import { Compactor } from './compaction/compactor.js';
-import { Retriever } from './retrieval/retriever.js';
 import { MemoryStore } from './store/base-store.js';
 import { TurnTracker } from './turn-tracker.js';
-import { WorkingContextSnapshot } from './working-context-snapshot.js';
+import { WorkingContext } from './working-context.js';
 import { WorkingContextSnapshotSerializer } from './working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
@@ -51,10 +49,8 @@ export class MemoryManager {
   store: MemoryStore;
   turnTracker: TurnTracker;
   compactionPolicy: CompactionPolicy;
-  compactor: Compactor | null;
-  retriever: Retriever;
   memoryTypes = MemoryType;
-  workingContextSnapshot: WorkingContextSnapshot;
+  private workingContext: WorkingContext;
   workingContextSnapshotStore: WorkingContextSnapshotStore | null;
   compactionRequired = false;
   private pendingCompactionRequest: PendingCompactionRequest | null = null;
@@ -63,14 +59,12 @@ export class MemoryManager {
   private readonly toolLifecycleGroups = new Map<string, ToolTraceLifecycleGroup>();
 
   constructor(options: { store: MemoryStore; turnTracker?: TurnTracker; compactionPolicy?: CompactionPolicy;
-    compactor?: Compactor | null; retriever?: Retriever; workingContextSnapshot?: WorkingContextSnapshot;
+    workingContext?: WorkingContext;
     workingContextSnapshotStore?: WorkingContextSnapshotStore | null }) {
     this.store = options.store;
     this.turnTracker = options.turnTracker ?? new TurnTracker();
     this.compactionPolicy = options.compactionPolicy ?? new CompactionPolicy();
-    this.compactor = options.compactor ?? null;
-    this.retriever = options.retriever ?? new Retriever(this.store);
-    this.workingContextSnapshot = options.workingContextSnapshot ?? new WorkingContextSnapshot();
+    this.workingContext = options.workingContext?.copy() ?? new WorkingContext();
     this.workingContextSnapshotStore = options.workingContextSnapshotStore ?? null;
     this.hydrateToolLifecycleGroups();
   }
@@ -246,14 +240,16 @@ export class MemoryManager {
       assistantContent: response.content ?? null,
       assistantReasoning: response.reasoning ?? null,
     });
-    const messages = this.workingContextSnapshot.buildMessages();
-    const latest = messages[messages.length - 1];
+    const messages = this.workingContext.buildMessages();
+    const latestIndex = messages.length - 1;
+    const latest = messages[latestIndex];
     if (messages.length > workingContextMessageCount && latest?.tool_payload instanceof ToolCallPayload && assistantTraceIds.length) {
       const provenance = getMessageProvenance(latest) ?? {};
       setMessageProvenance(latest, {
         ...provenance,
         rawTraceIds: [...assistantTraceIds, ...(provenance.rawTraceIds ?? [])],
       });
+      this.workingContext.replaceMessage(latestIndex, latest);
       this.persistWorkingContextSnapshot();
     }
   }
@@ -437,16 +433,16 @@ export class MemoryManager {
     this.store.pruneRawTracesById(traceIds, archive);
   }
 
-  getWorkingContextMessages() {
-    return this.workingContextSnapshot.buildMessages();
+  getWorkingContextMessages(): Message[] {
+    return this.workingContext.buildMessages();
   }
 
-  resetWorkingContextSnapshot(snapshotMessages: Iterable<any>, lastCompactionTs?: number | null): void {
-    if (arguments.length >= 2) {
-      this.workingContextSnapshot.reset(snapshotMessages, lastCompactionTs);
-    } else {
-      this.workingContextSnapshot.reset(snapshotMessages);
-    }
+  getWorkingContext(): WorkingContext {
+    return this.workingContext.copy();
+  }
+
+  replaceWorkingContext(workingContext: WorkingContext): void {
+    this.workingContext = workingContext.copy();
     this.persistWorkingContextSnapshot();
   }
 
@@ -458,18 +454,17 @@ export class MemoryManager {
     if (!agentId) {
       return;
     }
-    const payload = WorkingContextSnapshotSerializer.serialize(this.workingContextSnapshot, {
+    const payload = WorkingContextSnapshotSerializer.serialize(this.workingContext, {
       schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
       agent_id: agentId,
-      epoch_id: this.workingContextSnapshot.epochId,
-      last_compaction_ts: this.workingContextSnapshot.lastCompactionTs
     });
     this.workingContextSnapshotStore.write(agentId, payload);
   }
 
   private appendWorkingContextMessage(message: Message, options: WorkingContextAppendOptions = {}): void {
-    setMessageProvenance(message, options);
-    this.workingContextSnapshot.appendMessage(message);
+    const copiedMessage = new WorkingContext([message]).buildMessages()[0]!;
+    setMessageProvenance(copiedMessage, options);
+    this.workingContext.appendMessage(copiedMessage);
     if (options.persist !== false) {
       this.persistWorkingContextSnapshot();
     }
