@@ -129,7 +129,8 @@ Finalization and release completed after explicit user verification. The workspa
 - PowerShell/Windows runtime: unavailable; explicitly recorded as residual uncertainty.
 - Full Nuxt/TypeScript diagnostics: known repository baseline debt; no task-specific changed-path failure.
 - Broader browser/live API validation: Not Required for the static catalog/localization addition.
-- Pre-finalization record integrity: Passed before archival; final delivery/release record update is being committed on the finalized target.
+- Pre-finalization record integrity: Passed before archival; final delivery/release record update is committed on the finalized target.
+- Release workflow handoff: Tag-triggered workflows are in progress for `v1.4.12`: Desktop Release `29263968468`, Android APK Release `29263968297`, iOS App Store Connect Release `29263968303`, Release Messaging Gateway `29263968391`, and Server Docker Release `29263968469`.
 
 ## Rollback Criteria
 

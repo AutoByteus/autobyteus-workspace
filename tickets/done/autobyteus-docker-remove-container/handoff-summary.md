@@ -52,6 +52,7 @@
 - The user explicitly verified the handoff and requested finalization plus a new release version; repository finalization is now authorized.
 - The cumulative validation/report checkpoint `6f711c55` protects the follow-up evidence before the final delivery commit.
 - Ticket archived, ticket branch pushed and merged into `personal`, release `v1.4.12` pushed, and dedicated worktree/branch cleanup completed.
+- Tag-triggered release workflows are in progress for Desktop, Android, iOS, Messaging Gateway, and Server Docker; the run IDs are recorded in `release-deployment-report.md`.
 
 ## Persisted Data / Operational Safety
 
