@@ -5,13 +5,13 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/requirements.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/design-spec.md`
-- Supplemental Solution Artifacts: None
+- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/ui-ux-spec.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/code-review-report.md`
-- Current Investigation Round: 1
-- Trigger: Source review passed for implementation commit `39d4bb4c`
-- Prior Investigation Reviewed: N/A
+- Current Investigation Round: 2
+- Trigger: Frontend follow-up source review passed for implementation commit `73f09e5c`
+- Prior Investigation Reviewed: Round 1 backend/Docker coverage investigation and execution
 - Latest Authoritative Investigation: Yes
 
 ## Current Requirement And Design Basis
@@ -218,3 +218,151 @@ None. The approved requirements and design specify all targeted resolver cases, 
 - Reroute Required Before Validation Execution: No
 - Recommended Recipient If Reroute Required: N/A
 - Notes: Feature scenarios pass; full-suite baseline debt is preserved separately. The package is ready for proportional durable test-code review, with PowerShell/Windows runtime validation explicitly noted as residual risk.
+
+---
+
+# Frontend Follow-up Coverage Investigation — Round 2
+
+## Investigation Meta
+
+- Trigger: Frontend implementation source review passed for commit `73f09e5c`, code review Round 2.
+- Reviewed upstream supplement: `ui-ux-spec.md`, approved for the static Nodes -> Docker Guide follow-up.
+- Frontend changed paths:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/dockerNodeLauncherCommands.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/localization/messages/en/settings.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/localization/messages/zh-CN/settings.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
+
+## Frontend Requirement And Design Basis
+
+R-013/AC-013 require the in-app Docker Guide to show exactly `autobyteus-docker destroy --name <node-name>`, instruct users to replace the placeholder using an exact node from `autobyteus-docker status`, explain state/container removal with named-volume and workspace preservation, and explain indexed-slot reuse. R-014/AC-014 require equivalent English and Simplified Chinese meaning, existing copy/ARIA/feedback behavior, and no node picker, live lookup, backend/API call, Docker reachability check, or command execution.
+
+The UI supplement defines a static data flow: typed command catalog -> existing generic `DockerNodeStartGuideCard` / `CommandCard` -> locale title/description -> existing clipboard copy feedback. No API, service, persisted state, browser storage, or desktop-shell behavior is introduced.
+
+## Changed Surface And Boundary Classification
+
+| Surface / Boundary | Affected? | Evidence Directness | Residual Risk | Broader Validation Candidate |
+| --- | --- | --- | --- | --- |
+| Static frontend command catalog | Yes | Utility unit test inspects exact ID, order, command, phase, platform, and placeholder-only invariant. | Low; no runtime dependency. | None beyond repository tests. |
+| Localization / localized parity | Yes | Utility test inspects English and zh-CN title/description keys and required safety meaning. | Translation quality beyond required tokens is bounded by source review. | Optional manual locale render; not required for static data. |
+| Guide component rendering/copy/ARIA | Yes | Vue Test Utils component test mounts the real component, checks card text/pre, copy button, clipboard payload, copied feedback, ARIA label, and absence of fetch/target. | Browser layout/visual rendering not directly tested; existing generic component is unchanged. | Browser validation considered, but not required because no browser-specific behavior or responsive change was added. |
+| Backend/API/Docker runtime | No | Static test spies `window.fetch`; implementation source review confirms no API/runtime import or call. | None from this frontend patch. | None. |
+| Browser integration / user journey | No material new boundary | Existing component test exercises the same Vue render/copy boundary in happy-dom; no route or browser API beyond clipboard mock changed. | Real browser clipboard permission behavior is inherited from the existing card. | Browser smoke is optional, not required. |
+| Desktop shell / Electron | No | No Electron imports or shell lifecycle changed. | None. | None. |
+| Persisted data transition | No | UI only describes backend-owned discard/rebuild and volume-preservation semantics. | None in frontend. | None. |
+| External integration / live lookup | No | No node-status lookup, Docker call, or backend request exists. | None. | None. |
+
+## Project Execution Discovery — Frontend
+
+- Applicable instructions: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/AGENTS.md`.
+- Project/runtime: Nuxt/Vue 3, TypeScript, Vitest 3, Vue Test Utils, happy-dom/jsdom test environment, pnpm 10.
+- Authoritative commands from the instructions and implementation handoff:
+  - `pnpm exec nuxt prepare`
+  - `pnpm exec vitest run utils/__tests__/dockerNodeLauncherCommands.spec.ts components/settings/__tests__/DockerNodeStartGuideCard.spec.ts --config vitest.config.mts`
+  - `pnpm guard:localization-boundary`
+  - `pnpm guard:web-boundary`
+  - `pnpm audit:localization-literals`
+  - `pnpm exec tsc --noEmit --pretty false` (diagnostic repository-wide gate; known noisy baseline)
+- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web`.
+- Available setup: `node_modules` exists under `autobyteus-web`; no service, account, fixture, secret, or database is required.
+- Cleanup: commands are repository-local and do not start a persistent service or mutate user data.
+
+## Existing Durable Coverage Inventory — Frontend
+
+| Path / Scenario | Current Assertion / Intent | Related Requirement | Validity Decision | Action |
+| --- | --- | --- | --- | --- |
+| `utils/__tests__/dockerNodeLauncherCommands.spec.ts` exact command list and placeholder tests | Verifies command IDs/order, exact targeted command, no concrete node, locale guidance parity. | R-013/R-014; AC-013/AC-014 | Still Valid | Run unchanged; this is direct utility/catalog evidence. |
+| `components/settings/__tests__/DockerNodeStartGuideCard.spec.ts` guide rendering/copy tests | Verifies command appears in mounted guide, existing copy feedback, clipboard payload, ARIA label, no fetch/live target. | R-013/R-014; AC-013/AC-014 | Still Valid | Run unchanged; this is direct component-boundary evidence. |
+| Existing generic `CommandCard` behavior in `DockerNodeStartGuideCard.vue` | Owns rendering, copy, ARIA, and feedback for all commands. | R-014; AC-014 | Still Valid / Out Of Scope for source change | The follow-up does not alter component implementation; focused component tests exercise its behavior with the new catalog entry. |
+| Backend fake-Docker launcher tests and real-Docker probe from Round 1 | Prove runtime command semantics, not frontend rendering. | R-001–R-012; AC-001–AC-012 | Still Valid | No rerun required for a static frontend-only patch; prior authoritative report remains cumulative evidence. |
+
+## Durable Coverage Validity And Changes
+
+- No frontend durable test is stale, removed, or requires replacement.
+- Durable test code was added in the implementation follow-up commit and is now being executed/reviewed proportionally; this coverage stage does not add another test file.
+- No API, E2E browser, or live integration test is appropriate for a static instructional catalog with explicit no-execution requirements.
+
+## Planned Frontend Execution
+
+| Order | Command | Boundary / Evidence | Result |
+| --- | --- | --- | --- |
+| 1 | `pnpm exec nuxt prepare` | Nuxt-generated types/setup remains valid. | Planned |
+| 2 | Focused two-file Vitest run with `--run` | AC-013/AC-014 utility and component behavior. | Planned |
+| 3 | `pnpm guard:localization-boundary` | Locale boundary contract. | Planned |
+| 4 | `pnpm guard:web-boundary` | Static web-boundary restrictions; no runtime dependency leak. | Planned |
+| 5 | `pnpm audit:localization-literals` | Localization literal hygiene. | Planned |
+| 6 | `pnpm exec tsc --noEmit --pretty false` | Diagnostic type check; classify only follow-up-specific errors. | Planned |
+| 7 | Browser/live API validation decision | Determine whether repository checks directly prove the changed boundary. | Planned |
+
+## Initial Frontend Confidence And Broader Validation Decision
+
+- Initial confidence before rerun: 90% based on source review and implementation-reported focused checks; execution evidence is still independently required.
+- Browser decision: `Not Required` if focused mounted-component tests, utility tests, guards, and localization audit pass. The changed surface has no route, responsive behavior, real browser permission flow, API, live lookup, or shell-specific boundary; the generic copy interaction is directly exercised with a controlled clipboard mock.
+- Live API/Docker decision: `Not Required`; requirements explicitly forbid frontend live lookup/execution and production code has no such dependency.
+- Type-check expectation: repository-wide TypeScript may fail on known unrelated Vue/module declarations; any new error mentioning the changed five paths must be investigated before Pass.
+- No reroute is currently indicated.
+
+## Temporary / Not Tested
+
+| Boundary | Decision | Reason / Risk |
+| --- | --- | --- |
+| Real browser clipboard permissions | Not Tested | Existing generic component behavior is unchanged and focused component coverage proves the command's copy path with a deterministic clipboard mock. |
+| Live Docker/API/node status | Not Tested by design | The UI must remain static and must not execute or resolve a target. |
+| Electron shell | Not Applicable | No shell-specific code changed. |
+
+## Investigation Decision — Frontend Round 2
+
+- Proceed to frontend API/E2E execution: Yes.
+- Durable coverage changes by this stage: None; execute and validate the already-added focused utility/component tests.
+- Broader validation: Not Required if repository checks pass.
+- Reroute before execution: No.
+
+## Frontend Round 2 Execution Results
+
+| Order | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | `pnpm exec nuxt prepare` | Pass | `frontend-execution-evidence/nuxt-prepare.log`; `.nuxt` types generated. |
+| 2 | `pnpm exec vitest run utils/__tests__/dockerNodeLauncherCommands.spec.ts components/settings/__tests__/DockerNodeStartGuideCard.spec.ts --config vitest.config.mts` | Pass — 2 files, 7 tests | `frontend-execution-evidence/focused-vitest.log`. |
+| 3 | `pnpm guard:localization-boundary` | Pass | `frontend-execution-evidence/guard-localization-boundary.log`. |
+| 4 | `pnpm guard:web-boundary` | Pass | `frontend-execution-evidence/guard-web-boundary.log`. |
+| 5 | `pnpm audit:localization-literals` | Pass with non-blocking Node module-type warning | `frontend-execution-evidence/audit-localization-literals.log`. |
+| 6 | `pnpm exec tsc --noEmit --pretty false` | Diagnostic fail with repository baseline errors; no follow-up-specific production error | `frontend-execution-evidence/tsc.log`; changed test import reports the known missing Vue module declaration pattern. |
+| 7 | `pnpm test:nuxt --run` | Diagnostic fail: 350 files passed, 5 failed, 1 skipped; failures are unrelated to changed frontend paths | `frontend-execution-evidence/full-nuxt-vitest.log` and `.result`. |
+| 8 | `git diff --check` | Pass | `frontend-execution-evidence/git-diff-check.log`. |
+
+The five full-suite failures are in workspace-history draft integration, MemoryHome, CodexFullAccessCard, managedExtensionService, and zh-CN glossary consistency. None references the changed command catalog, locale entries, or Docker guide card. The focused changed-boundary tests pass.
+
+## Frontend Final Confidence Scorecard
+
+| Confidence Category | Score | Support | Residual Uncertainty |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 95% | Utility and mounted-component tests directly cover AC-013/AC-014: exact command/order, placeholder-only safety, status-first guidance, localized meaning, rendering, copy, feedback, ARIA, and no fetch/target. | Full browser rendering is not independently run, but no layout/route/component implementation changed. |
+| Changed-boundary execution directness | 95% | Real command catalog and real `DockerNodeStartGuideCard` component are executed in focused Vitest; Nuxt prepare and guards pass. | Browser clipboard permission behavior remains inherited. |
+| Cross-boundary integration realism and mock gap | 95% | The only production path is catalog -> existing component -> localization/copy; tests exercise that path directly. No API or Docker boundary exists by design. | Clipboard is mocked as in the existing component test environment. |
+| Environment, configuration, identity, and fixture fidelity | 95% | Nuxt/Vitest setup generated types and ran under the project Node/pnpm environment; locale catalogs and static command data load successfully. | Windows visual/browser runtime not exercised; command is platform-neutral installed CLI text. |
+| Failure, edge-case, lifecycle, and recovery evidence | 90% | Placeholder-only/no-execution and existing copied feedback assertions pass; no new lifecycle or error branch was added. | Real clipboard rejection and visual overflow are inherited component behavior, not changed by this patch. |
+| User-surface, browser, and desktop-shell confidence | 95% | Mounted component verifies rendered card, semantic button, ARIA label, `<pre>` command, copied feedback, and no live lookup. Browser validation is not materially additive for this static data-only addition. | No screenshot or real browser clipboard permission evidence. |
+| Durable regression coverage quality and relevance | 95% | Existing focused utility/component tests are requirement-linked, deterministic, and passed; source review found no test-structure issue. | Full repository suite retains unrelated baseline failures. |
+
+- Overall frontend confidence: 94.3% across seven applicable categories, simple average.
+- Every critical frontend acceptance criterion directly proven: Yes for the changed static/component boundary; no live API/browser validation is required by the approved static design.
+- Any applicable category below 90%: No.
+- Default clean-confidence target of 95% met: No; bounded browser clipboard/visual uncertainty remains, though it is inherited and not material to this change.
+- Material residual risks: repository-wide baseline TypeScript/Vitest failures unrelated to the follow-up; real browser clipboard permission behavior and screenshots not exercised.
+
+## Frontend Broader Validation Decision
+
+- Decision: Not Required.
+- Rationale: The changed behavior is a static typed catalog and localized copy rendered through an unchanged generic command card. Focused utility and mounted-component tests exercise the actual changed boundary, including no-fetch/no-execution behavior, command copy, feedback, ARIA, and placeholder safety. No route, responsive CSS, API, live lookup, Electron integration, or new browser-specific behavior was added.
+- Browser decision: Not Required; a browser run would not materially improve confidence over the direct component test for this patch. Existing generic clipboard behavior is authoritative and unchanged.
+- Live API/Docker decision: Not Required by explicit design; the frontend must not call these boundaries.
+- If a later requirement adds real browser visual/accessibility or clipboard-permission behavior, run targeted browser validation then.
+
+## Frontend Round 2 Investigation Decision
+
+- Proceed to API/E2E execution: Completed.
+- Durable coverage changes in this coverage stage: No; implementation-provided focused utility/component tests remain valid and passed.
+- Broader validation: Not Required.
+- Reroute: No.
+- Next workflow recipient: `code_reviewer` for the separate proportional durable test-code review of the frontend test changes.
