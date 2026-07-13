@@ -410,6 +410,8 @@ const settingsMessages = {
   'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.description': "Recreates all managed containers with each node's saved image ref while keeping named volumes.",
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.title': 'Destroy all Docker nodes',
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.description': 'Removes all managed containers and unused old images while keeping named volumes.',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.title': 'Destroy one Docker node',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.description': 'Run autobyteus-docker status first, then replace <node-name> with the exact managed node name. This removes only that node\'s container and launcher state while keeping named volumes and host workspaces; the freed indexed slot can be reused by the next new-container invocation.',
   'settings.components.settings.DockerNodeStartGuideCard.commands.reset.title': 'Reset Docker nodes',
   'settings.components.settings.DockerNodeStartGuideCard.commands.reset.description': 'Destroys all managed containers, keeps volumes, then creates a fresh autobyteus-server-0.',
   'settings.components.settings.DockerNodeStartGuideCard.commands.workspacePaths.title': 'Show workspace paths',

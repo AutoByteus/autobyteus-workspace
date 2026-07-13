@@ -1,0 +1,121 @@
+==> Would install 1 cask:
+powershell@preview
+Warning: The following taps are not trusted:
+  youssofal/mtplx
+
+Homebrew is currently ignoring formulae, casks and commands from these taps because tap trust is required.
+Prefer trusting only the specific formulae, casks or commands you need.
+Trust installed formulae from these taps with:
+  brew trust --formula youssofal/mtplx/mtplx
+Trust other specific casks and commands with:
+  brew trust --cask <user>/<tap>/<cask>
+  brew trust --command <user>/<tap>/<command>
+Whole-tap trust is broader and includes all current and future formulae,
+casks and commands from the listed taps. Trust whole taps with:
+  brew trust youssofal/mtplx
+Untap them with:
+  brew untap youssofal/mtplx
+To disable trust checks:
+  export HOMEBREW_NO_REQUIRE_TAP_TRUST=1
+This is not recommended and will be removed in a later release.
+For more information, see:
+  https://docs.brew.sh/Tap-Trust
+==> Fetching downloads for: powershell@preview
+✔︎ Cask powershell@preview (7.7.0-preview.2)
+==> Caveats
+To use Homebrew in PowerShell, set:
+  Add-Content -Path $PROFILE.CurrentUserAllHosts -Value '$(/opt/homebrew/bin/brew shellenv) | Invoke-Expression'
+
+==> Installing Cask powershell@preview
+==> Running installer for powershell@preview with `sudo` (which may request your password)...
+sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+sudo: a password is required
+Error: Failure while executing; `/usr/bin/sudo -u root -E LOGNAME=normy USER=normy USERNAME=normy -- /usr/sbin/installer -pkg /opt/homebrew/Caskroom/powershell@preview/7.7.0-preview.2/powershell-7.7.0-preview.2-osx-arm64.pkg -target /` exited with 1. Here's the output:
+sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+sudo: a password is required
+==> Purging files for version 7.7.0-preview.2 of Cask powershell@preview
+==> `brew cleanup` has not been run in the last 30 days, running now...
+Disable this behaviour by setting `HOMEBREW_NO_INSTALL_CLEANUP=1`.
+Hide these hints with `HOMEBREW_NO_ENV_HINTS=1` (see `man brew`).
+Removing: /Users/normy/Library/Caches/Homebrew/cocoapods_bottle_manifest--1.16.2_2... (14.2KB)
+Removing: /Users/normy/Library/Caches/Homebrew/cocoapods--1.16.2_2... (10MB)
+Removing: /Users/normy/Library/Caches/Homebrew/freetype_bottle_manifest--2.14.1_2... (9.2KB)
+Removing: /Users/normy/Library/Caches/Homebrew/gettext_bottle_manifest--1.0... (13.7KB)
+Removing: /Users/normy/Library/Caches/Homebrew/gettext--1.0... (10.2MB)
+Removing: /Users/normy/Library/Caches/Homebrew/gh_bottle_manifest--2.86.0... (7.4KB)
+Removing: /Users/normy/Library/Caches/Homebrew/gh--2.86.0... (12.6MB)
+Removing: /Users/normy/Library/Caches/Homebrew/gradle_bottle_manifest--9.3.1... (10.0KB)
+Removing: /Users/normy/Library/Caches/Homebrew/gradle--9.3.1... (203.0MB)
+Removing: /Users/normy/Library/Caches/Homebrew/gradle-completion_bottle_manifest--9.3.1... (2.0KB)
+Removing: /Users/normy/Library/Caches/Homebrew/gradle-completion--9.3.1... (15.5KB)
+Removing: /Users/normy/Library/Caches/Homebrew/harfbuzz_bottle_manifest--12.3.2... (29.9KB)
+Removing: /Users/normy/Library/Caches/Homebrew/harfbuzz--12.3.2... (3.1MB)
+Removing: /Users/normy/Library/Caches/Homebrew/icu4c@78_bottle_manifest--78.2-1... (9.7KB)
+Removing: /Users/normy/Library/Caches/Homebrew/icu4c@78--78.2... (31.8MB)
+Removing: /Users/normy/Library/Caches/Homebrew/libimobiledevice_bottle_manifest--1.4.0... (22.6KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libimobiledevice--1.4.0... (526.5KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libimobiledevice-glue_bottle_manifest--1.3.2... (10.8KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libimobiledevice-glue--1.3.2... (76.3KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libplist_bottle_manifest--2.7.0... (10.2KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libplist--2.7.0... (170.6KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libpng_bottle_manifest--1.6.55... (8.6KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libpng--1.6.55... (459.4KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libtatsu_bottle_manifest--1.0.5... (16.6KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libtatsu--1.0.5... (49.9KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libtiff_bottle_manifest--4.7.1_1... (12.6KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libtiff--4.7.1_1... (1.9MB)
+Removing: /opt/homebrew/Cellar/libunistring/1.4.1... (59 files, 5.8MB)
+Warning: Skipping mtplx: tap formula is not trusted
+Removing: /Users/normy/Library/Caches/Homebrew/libusb_bottle_manifest--1.0.29... (16.2KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libusb--1.0.29... (192.7KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libusbmuxd_bottle_manifest--2.1.1... (12.5KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libusbmuxd--2.1.1... (58.7KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libx11_bottle_manifest--1.8.13... (14.4KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libx11--1.8.13... (2.3MB)
+Removing: /Users/normy/Library/Caches/Homebrew/libxext_bottle_manifest--1.3.7... (11.5KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libxext--1.3.7... (109.6KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libyaml_bottle_manifest--0.2.5... (14.5KB)
+Removing: /Users/normy/Library/Caches/Homebrew/libyaml--0.2.5... (107.7KB)
+Removing: /Users/normy/Library/Caches/Homebrew/little-cms2_bottle_manifest--2.18... (12.2KB)
+Removing: /Users/normy/Library/Caches/Homebrew/little-cms2--2.18... (434.8KB)
+Removing: /Users/normy/Library/Caches/Homebrew/openjdk_bottle_manifest--25.0.2... (40KB)
+Removing: /Users/normy/Library/Caches/Homebrew/openjdk--25.0.2... (217.9MB)
+Removing: /Users/normy/Library/Caches/Homebrew/openjdk@17_bottle_manifest--17.0.18... (39.9KB)
+Removing: /Users/normy/Library/Caches/Homebrew/openjdk@17--17.0.18... (186.2MB)
+Removing: /Users/normy/Library/Caches/Homebrew/openjdk@21_bottle_manifest--21.0.10... (40.0KB)
+Removing: /Users/normy/Library/Caches/Homebrew/openjdk@21--21.0.10... (200.3MB)
+Removing: /Users/normy/Library/Caches/Homebrew/opus_bottle_manifest--1.6.1... (7.3KB)
+Removing: /Users/normy/Library/Caches/Homebrew/opus--1.6.1... (505.2KB)
+Removing: /Users/normy/Library/Caches/Homebrew/pcre2_bottle_manifest--10.47_1... (11.7KB)
+Removing: /Users/normy/Library/Caches/Homebrew/pcre2--10.47_1... (2.4MB)
+Removing: /Users/normy/Library/Caches/Homebrew/ripgrep_bottle_manifest--15.1.0... (8.8KB)
+Removing: /Users/normy/Library/Caches/Homebrew/ripgrep--15.1.0... (2.2MB)
+Removing: /Users/normy/Library/Caches/Homebrew/ruby_bottle_manifest--4.0.1... (18.4KB)
+Removing: /Users/normy/Library/Caches/Homebrew/ruby--4.0.1... (17.1MB)
+Removing: /Users/normy/Library/Caches/Homebrew/scrcpy_bottle_manifest--3.3.4... (99KB)
+Removing: /Users/normy/Library/Caches/Homebrew/scrcpy--3.3.4... (202.3KB)
+Removing: /Users/normy/Library/Caches/Homebrew/sqlite--3.53.2... (2.4MB)
+Removing: /Users/normy/Library/Caches/Homebrew/uv_bottle_manifest--0.10.2... (8KB)
+Removing: /Users/normy/Library/Caches/Homebrew/uv--0.10.2... (18.9MB)
+Removing: /Users/normy/Library/Caches/Homebrew/xcodegen_bottle_manifest--2.44.1... (5.2KB)
+Removing: /Users/normy/Library/Caches/Homebrew/xcodegen--2.44.1... (2.1MB)
+Removing: /Users/normy/Library/Caches/Homebrew/xorgproto_bottle_manifest--2025.1... (13.1KB)
+Removing: /Users/normy/Library/Caches/Homebrew/xorgproto--2025.1... (720KB)
+Removing: /Users/normy/Library/Caches/Homebrew/zstd_bottle_manifest--1.5.7_1... (13.2KB)
+Removing: /Users/normy/Library/Caches/Homebrew/zstd--1.5.7_1... (793.6KB)
+==> Autoremoving 1 unneeded formula:
+python@3.13
+Removing: /Users/normy/Library/Caches/Homebrew/portable-ruby-4.0.5.arm64_big_sur.bottle.tar.gz... (12.7MB)
+Removing: /Users/normy/Library/Caches/Homebrew/Cask/obs-studio-32.0.4-macos-apple.dmg--32.0.4.dmg... (187.3MB)
+Removing: /Users/normy/Library/Caches/Homebrew/Cask/commandlinetools-mac-14742923_latest.zip--14742923.zip... (150.7MB)
+Removing: /Users/normy/Library/Caches/Homebrew/Cask/platform-tools_r36.0.2-darwin.zip--36.0.2.zip... (15.7MB)
+Removing: /Users/normy/Library/Caches/Homebrew/bootsnap/b652ffca4415f01425a6d96d80cd16a3089b004d15edd0b0b2523e68e8d422ed... (1,034 files, 9.1MB)
+Removing: /Users/normy/Library/Caches/Homebrew/bootsnap/ef2555df5dcbaacf64096a0cf3397f7e94ff38d2dfe5dacc95041f0235047ee3... (1,027 files, 8.9MB)
+Removing: /Users/normy/Library/Caches/Homebrew/bootsnap/24aaff608e3cc55287e5741a1979c3d6749048538b10fbee7df5bb17fb2efb19... (1,031 files, 9.1MB)
+Removing: /Users/normy/Library/Logs/Homebrew/python@3.13... (64B)
+Removing: /Users/normy/Library/Logs/Homebrew/sqlite... (64B)
+Removing: /Users/normy/Library/Logs/Homebrew/xz... (64B)
+Removing: /Users/normy/Library/Logs/Homebrew/openssl@3... (64B)
+Removing: /Users/normy/Library/Logs/Homebrew/ca-certificates... (64B)
+Removing: /Users/normy/Library/Logs/Homebrew/mtplx... (2 files, 1.9KB)
+Removing: /opt/homebrew/var/homebrew/tmp/.cellar/sqlite... (12 files, 5.3MB)

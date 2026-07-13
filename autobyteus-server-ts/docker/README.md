@@ -115,6 +115,23 @@ Remove every managed Docker node while keeping named volumes:
 autobyteus-docker destroy --all
 ```
 
+Remove one launcher-managed node, including stale launcher state left after a
+manual `docker rm`, while keeping its named volumes and host workspaces. The
+next `new-container` call reuses the lowest available indexed slot:
+
+```bash
+autobyteus-docker destroy --name autobyteus-server-5
+autobyteus-docker new-container
+```
+
+Targeted destroy refuses ambiguous, conflicting, or unmanaged containers and
+does not own Docker Buildx infrastructure. The builder created by
+`build-multi-arch.sh` is removed through Buildx:
+
+```bash
+docker buildx rm multi-platform-builder
+```
+
 Reset to one fresh managed Docker node:
 
 ```bash
@@ -298,6 +315,7 @@ Public launcher commands for no-clone users:
 - `autobyteus-docker new-container`: Check/pull the configured image and create the next indexed managed Docker node (`autobyteus-server-0`, `autobyteus-server-1`, ...).
 - `autobyteus-docker upgrade --all`: Recreate all managed containers with each node's saved image ref while keeping named volumes; pass `--tag` or `--image` only when intentionally retargeting every node.
 - `autobyteus-docker destroy --all`: Remove all managed containers and unused old images while keeping named volumes.
+- `autobyteus-docker destroy --name <node>`: Remove one uniquely proven managed server container and its launcher state while keeping named volumes and host workspaces; stale state is explicitly forgotten.
 - `autobyteus-docker reset`: Destroy all managed containers, keep volumes, then create a fresh `autobyteus-server-0`.
 - `autobyteus-docker workspace paths`: Show the host folders backing `/home/autobyteus/workspace` and `/home/autobyteus/shared`.
 - `autobyteus-docker workspace apply --all`: Safely recreate managed containers to apply shared workspace bind mounts while keeping named volumes.

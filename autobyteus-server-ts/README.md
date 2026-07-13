@@ -299,6 +299,22 @@ Remove every managed Docker node while keeping named volumes:
 autobyteus-docker destroy --all
 ```
 
+Remove one launcher-managed node, including stale launcher state left after a
+manual `docker rm`, while keeping its named volumes and host workspaces:
+
+```bash
+autobyteus-docker destroy --name autobyteus-server-5
+autobyteus-docker new-container  # reuses the lowest available indexed slot
+```
+
+Only AutoByteus-managed server nodes are valid targeted destroy targets.
+Docker Buildx is separate infrastructure; remove its builder with its owning
+command instead:
+
+```bash
+docker buildx rm multi-platform-builder
+```
+
 Reset to one fresh managed Docker node:
 
 ```bash

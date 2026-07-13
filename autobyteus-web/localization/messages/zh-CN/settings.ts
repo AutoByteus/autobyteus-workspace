@@ -410,6 +410,8 @@ const settingsMessages = {
   'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.description': '使用每个节点保存的镜像引用重新创建所有已管理容器，同时保留命名卷。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.title': '销毁所有 Docker 节点',
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.description': '移除所有已管理容器和未使用的旧镜像，同时保留命名卷。',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.title': '销毁一个 Docker 节点',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.description': '请先运行 autobyteus-docker status，然后将 <node-name> 替换为准确的已管理节点名称。此操作只移除该节点的容器和启动器状态，同时保留命名卷和主机工作区；下次运行 new-container 时可以重新使用释放的编号槽位。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.reset.title': '重置 Docker 节点',
   'settings.components.settings.DockerNodeStartGuideCard.commands.reset.description': '销毁所有已管理容器、保留卷，然后创建一个新的 autobyteus-server-0。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.workspacePaths.title': '显示工作区路径',

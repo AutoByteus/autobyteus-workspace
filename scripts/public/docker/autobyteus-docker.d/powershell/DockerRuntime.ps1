@@ -15,16 +15,29 @@ function Test-ManagedContainer([string]$ContainerName) {
   $LASTEXITCODE -eq 0 -and $value -eq $Script:LauncherLabelValue
 }
 
+function Get-ContainerLabelValue([string]$ContainerName, [string]$LabelKey) {
+  $value = & docker inspect --format "{{ index .Config.Labels `"$LabelKey`" }}" $ContainerName 2>$null
+  if ($LASTEXITCODE -ne 0) { return $null }; [string]$value
+}
+
+function Get-ExactManagedContainerNames([string]$NodeName) {
+  $containers = & docker ps -a --filter "label=$Script:LauncherLabelKey=$Script:LauncherLabelValue" --filter "label=$Script:NodeLabelKey=$NodeName" --format '{{.Names}}' 2>$null
+  if ($LASTEXITCODE -ne 0) { Fail-Launcher "Could not enumerate Docker containers for $NodeName." }
+  $matches = [System.Collections.Generic.List[string]]::new()
+  foreach ($container in @($containers)) {
+    if (-not $container) { continue }
+    $launcher = Get-ContainerLabelValue $container $Script:LauncherLabelKey; $node = Get-ContainerLabelValue $container $Script:NodeLabelKey
+    if ($null -eq $launcher -or $null -eq $node) { Fail-Launcher "Could not verify Docker labels for $container." }; if ($launcher -ceq $Script:LauncherLabelValue -and $node -ceq $NodeName) { [void]$matches.Add([string]$container) }
+  }
+  $matches.ToArray()
+}
+
 function Get-ImageId([string]$ImageRef) { $value = & docker image inspect --format '{{.Id}}' $ImageRef 2>$null; if ($LASTEXITCODE -ne 0) { return '' }; [string]$value }
 function Get-ContainerImageId([string]$ContainerName) { $value = & docker inspect --format '{{.Image}}' $ContainerName 2>$null; if ($LASTEXITCODE -ne 0) { return '' }; [string]$value }
 function Get-ContainerConfigHash([string]$ContainerName) { $value = & docker inspect --format "{{ index .Config.Labels `"$Script:ConfigLabelKey`" }}" $ContainerName 2>$null; if ($LASTEXITCODE -ne 0 -or $value -eq '<no value>') { return '' }; [string]$value }
 function Test-ContainerRunning([string]$ContainerName) { $value = & docker inspect --format '{{.State.Running}}' $ContainerName 2>$null; $LASTEXITCODE -eq 0 -and $value -eq 'true' }
 
-function Get-ContainerForNode([string]$NodeName) {
-  $containers = & docker ps -a --filter "label=$Script:LauncherLabelKey=$Script:LauncherLabelValue" --filter "label=$Script:NodeLabelKey=$NodeName" --format '{{.Names}}' 2>$null
-  if ($containers) { return @($containers)[0] }
-  $null
-}
+function Get-ContainerForNode([string]$NodeName) { $containers = & docker ps -a --filter "label=$Script:LauncherLabelKey=$Script:LauncherLabelValue" --filter "label=$Script:NodeLabelKey=$NodeName" --format '{{.Names}}' 2>$null; if ($containers) { return @($containers)[0] }; $null }
 
 function Add-UniqueString($List, $Seen, [string]$Value) {
   if ([string]::IsNullOrWhiteSpace($Value)) { return }
@@ -425,11 +438,9 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
 }
 
 function Test-ImageIdInUse([string]$ImageId) {
-  if ([string]::IsNullOrWhiteSpace($ImageId)) { return $false }
-  $containers = & docker ps -a --format '{{.Names}}' 2>$null
+  if ([string]::IsNullOrWhiteSpace($ImageId)) { return $false }; $containers = & docker ps -a --format '{{.Names}}' 2>$null
   foreach ($container in @($containers)) {
-    if (-not $container) { continue }
-    if ((Get-ContainerImageId $container) -eq $ImageId) { return $true }
+    if (-not $container) { continue }; if ((Get-ContainerImageId $container) -eq $ImageId) { return $true }
   }
   $false
 }
@@ -466,20 +477,54 @@ function Remove-AllStateFiles {
   Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | Remove-Item -Force -ErrorAction SilentlyContinue
 }
 
+function Resolve-DestroyTarget([string]$NodeName) {
+  $statePath = Join-Path (Get-StateDir) "$NodeName.json"
+  $statePresent = Test-Path -LiteralPath $statePath
+  $state = $null
+  if ($statePresent) {
+    if ((Get-Item -LiteralPath $statePath).PSIsContainer) { Fail-Launcher "Cannot destroy ${NodeName}: launcher state is malformed." }; try { $state = Get-Content -Raw -Path $statePath | ConvertFrom-Json } catch { Fail-Launcher "Cannot destroy ${NodeName}: launcher state is malformed." }
+    if (-not $state -or [string]$state.nodeName -cne $NodeName -or [string]::IsNullOrWhiteSpace([string]$state.containerName)) { Fail-Launcher "Cannot destroy ${NodeName}: launcher state does not identify that node and its container." }
+  }
+
+  $candidates = @(Get-ExactManagedContainerNames $NodeName)
+  if ($candidates.Count -gt 1) { Fail-Launcher "Cannot destroy ${NodeName}: multiple managed containers carry the exact launcher and node labels. Resolve the ambiguity manually; no changes were made." }
+  if ($statePresent) {
+    if ($candidates.Count -eq 1) {
+      if (-not (Test-ContainerExists $state.containerName) -or $candidates[0] -cne $state.containerName) { Fail-Launcher "Cannot destroy ${NodeName}: launcher state and Docker labels disagree; no changes were made." }; $target = [string]$candidates[0]
+    } elseif (Test-ContainerExists $state.containerName) { Fail-Launcher "Cannot destroy ${NodeName}: container $($state.containerName) exists but is not proven to be launcher-managed; no changes were made." } else { $target = '' }
+  } elseif ($candidates.Count -eq 1) {
+    $target = [string]$candidates[0]
+  } else {
+    Fail-Launcher "No uniquely identified AutoByteus-managed Docker node was found for ${NodeName}; only managed server nodes can be destroyed."
+  }
+  [pscustomobject]@{ statePath = $statePath; statePresent = $statePresent; containerName = $target }
+}
+
+function Remove-NodeStateChecked([string]$StatePath) { if (-not (Test-Path -LiteralPath $StatePath)) { return $true }; try { Remove-Item -LiteralPath $StatePath -Force -ErrorAction Stop } catch { return $false }; -not (Test-Path -LiteralPath $StatePath) }
+
 function Destroy-AllNodes {
   $imageIds = @(Get-ManagedContainerImageIds)
   $any = $false
   foreach ($container in @(Get-ManagedContainerNames)) {
     if (-not $container) { continue }
-    if (Test-ContainerExists $container) {
-      & docker rm -f $container *> $null
-      Write-LauncherInfo "Removed managed container $container. Named volumes were kept."
-      $any = $true
-    }
+    if (Test-ContainerExists $container) { & docker rm -f $container *> $null; Write-LauncherInfo "Removed managed container $container. Named volumes were kept."; $any = $true }
   }
   Remove-AllStateFiles
   if (-not $any) { Write-LauncherInfo 'No managed Docker containers were found.' }
   Remove-UnusedImageIds $imageIds
+}
+
+function Destroy-Node([string]$NodeName) {
+  $resolved = Resolve-DestroyTarget $NodeName; $target = [string]$resolved.containerName; $imageId = ''
+  if ($target) {
+    $imageId = Get-ContainerImageId $target; if (-not $imageId) { Fail-Launcher "Cannot destroy ${NodeName}: could not capture the managed container image before removal; no changes were made." }
+    & docker rm -f $target *> $null; if ($LASTEXITCODE -ne 0) { Fail-Launcher "Could not remove managed container $target; launcher state was kept." }; if (Test-ContainerExists $target) { Fail-Launcher "Partial cleanup for ${NodeName}: Docker did not remove container $target; launcher state was kept." }; Write-LauncherInfo "Removed managed container $target for ${NodeName}. Named volumes and host workspaces were kept."
+  } else {
+    Write-LauncherInfo "Container for ${NodeName} was already absent; forgetting its stale launcher state. Named volumes and host workspaces were kept."
+  }
+  if (-not (Remove-NodeStateChecked $resolved.statePath)) { if ($target) { Fail-Launcher "Partial cleanup for ${NodeName}: container $target was removed, but launcher state could not be deleted or verified. No rollback was attempted; recover the state file manually." }; Fail-Launcher "Could not forget stale launcher state for ${NodeName}; no Docker container was changed." }
+  if ($resolved.statePresent) { Write-LauncherInfo "Removed launcher state for ${NodeName}." }
+  if ($imageId) { Remove-UnusedImageIds @($imageId) }
 }
 
 function Get-UpgradeImageRefForNode([string]$NodeName, [string]$OverrideImageRef, [bool]$HasImageRefOverride) {

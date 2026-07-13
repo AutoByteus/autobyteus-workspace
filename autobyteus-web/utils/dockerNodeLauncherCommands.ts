@@ -8,6 +8,7 @@ export type DockerLauncherCommandId =
   | 'direct-new-container'
   | 'direct-upgrade-all'
   | 'direct-destroy-all'
+  | 'direct-destroy-node'
   | 'direct-reset'
   | 'direct-workspace-paths'
   | 'direct-workspace-apply-all'
@@ -108,6 +109,16 @@ export function buildDockerNodeLauncherCommands(): DockerLauncherCommand[] {
       titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.title',
       descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.description',
       command: buildDirectLauncherCommand(['destroy', '--all']),
+      isPrimary: true,
+    },
+    {
+      id: 'direct-destroy-node',
+      phase: 'direct',
+      platform: 'installed-cli',
+      platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.description',
+      command: buildDirectLauncherCommand(['destroy', '--name', '<node-name>']),
       isPrimary: true,
     },
     {

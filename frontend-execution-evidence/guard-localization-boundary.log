@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.11 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.

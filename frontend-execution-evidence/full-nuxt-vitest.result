@@ -1,0 +1,4 @@
+exit=1
+summary=5 failed files, 350 passed files, 1 skipped; 5 failed tests, 1845 passed tests, 1 skipped
+failed_files=workspace-history-draft-send.integration.test.ts,MemoryHome.spec.ts,CodexFullAccessCard.spec.ts,managedExtensionService.spec.ts,zhCnGlossaryConsistency.spec.ts
+changed_frontend_paths_in_failures=none

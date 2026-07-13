@@ -1,0 +1,27 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web
+
+stderr | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/dockerNodeLauncherCommands.spec.ts (4 tests) 3ms
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (3 tests) 24ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  17:33:52
+   Duration  3.91s (transform 2.16s, setup 6.88s, collect 44ms, tests 27ms, environment 259ms, prepare 238ms)
+
