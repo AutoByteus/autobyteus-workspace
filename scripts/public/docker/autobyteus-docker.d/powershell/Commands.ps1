@@ -114,16 +114,24 @@ function Resolve-TargetName([string]$ExplicitName) {
   $Script:DefaultNodeName
 }
 
+function Get-StrictDestroyNodeName([string]$Raw) {
+  if ([string]::IsNullOrWhiteSpace($Raw)) { return $null }
+  $normalized = $Raw.ToLowerInvariant() -replace '[^a-z0-9]+', '-'
+  $normalized = $normalized.Trim('-')
+  if ([string]::IsNullOrWhiteSpace($normalized)) { return $null }
+  $normalized
+}
+
 function Invoke-AutoByteusDocker {
   param([Parameter(ValueFromRemainingArguments = $true)][string[]]$CommandArgs)
   $cmd = if ($CommandArgs.Count -gt 0) { $CommandArgs[0] } else { 'help' }
   if ($cmd -in @('help', '-h', '--help')) { Show-AutoByteusDockerHelp; return }
 
-  $stopAll = $false; $nameArg = ''; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $imageRefOverrideExplicit = $false; $extra = @()
+  $stopAll = $false; $nameArg = ''; $nameSeen = $false; $nameOptionCount = 0; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $imageRefOverrideExplicit = $false; $extra = @(); $destroyNodeName = ''
   for ($i = 1; $i -lt $CommandArgs.Count; $i += 1) {
     switch ($CommandArgs[$i]) {
       '--all' { $stopAll = $true }
-      '--name' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--name requires a value' }; $nameArg = $CommandArgs[$i] }
+      '--name' { $i += 1; if ($i -ge $CommandArgs.Count -or $CommandArgs[$i].StartsWith('-')) { Fail-Launcher '--name requires a value' }; $nameArg = $CommandArgs[$i]; $nameSeen = $true; $nameOptionCount += 1 }
       '--tag' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--tag requires a value' }; $tag = $CommandArgs[$i]; $imageRefOverrideExplicit = $true }
       '--image' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--image requires a value' }; $image = $CommandArgs[$i]; $imageRefOverrideExplicit = $true }
       { $_ -in @('-h', '--help') } { Show-AutoByteusDockerHelp; return }
@@ -143,9 +151,19 @@ function Invoke-AutoByteusDocker {
     Fail-Launcher "Unknown $cmd option(s): $($extra -join ' ')"
   }
 
+  if ($cmd -eq 'destroy') {
+    if ($stopAll -and $nameSeen) { Fail-Launcher 'destroy requires exactly one of --all or --name <node>; do not combine them.' }
+    if (-not $stopAll -and -not $nameSeen) { Fail-Launcher 'destroy requires exactly one of --all or --name <node>.' }
+    if ($nameOptionCount -gt 1) { Fail-Launcher 'destroy accepts only one --name selector.' }
+    if ($nameSeen) {
+      $destroyNodeName = Get-StrictDestroyNodeName $nameArg
+      if (-not $destroyNodeName) { Fail-Launcher 'destroy --name requires a non-empty managed node name.' }
+    }
+  }
+
   Ensure-StateDir
   Assert-Docker
-  $nodeName = Resolve-TargetName $nameArg
+  $nodeName = if ($cmd -eq 'destroy' -and -not $stopAll) { $destroyNodeName } else { Resolve-TargetName $nameArg }
   $imageRef = Get-ImageRef $image $tag
 
   switch ($cmd) {
@@ -162,10 +180,7 @@ function Invoke-AutoByteusDocker {
       Upgrade-AllNodes $imageRef $imageRefOverrideExplicit
     }
     'destroy' {
-      if ($extra.Count -gt 0) { Fail-Launcher "Unknown destroy option(s): $($extra -join ' ')" }
-      if (-not $stopAll) { Fail-Launcher 'destroy affects every managed node; rerun with --all.' }
-      if ($nameArg) { Fail-Launcher 'destroy --all does not accept --name.' }
-      Destroy-AllNodes
+      if ($stopAll) { Destroy-AllNodes } else { Destroy-Node $nodeName }
     }
     'reset' {
       if ($extra.Count -gt 0) { Fail-Launcher "Unknown reset option(s): $($extra -join ' ')" }

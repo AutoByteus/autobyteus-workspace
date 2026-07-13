@@ -441,7 +441,10 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
                         env=env,
                     )
                     self.assertNotEqual(0, result.returncode)
-                    self.assertIn("rerun with --all", result.stderr)
+                    if args == ("destroy",):
+                        self.assertIn("requires exactly one of --all or --name", result.stderr)
+                    else:
+                        self.assertIn("rerun with --all", result.stderr)
 
     def test_powershell_launcher_matches_the_shared_workspace_cli_contract(self) -> None:
         bash_text = read_combined_text(BASH_LAUNCHER_SOURCES)
