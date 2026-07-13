@@ -115,3 +115,37 @@ The API/E2E engineer should add or execute isolated Bash and PowerShell-equivale
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 Yes. Source implementation and local checks are complete. API/E2E environment discovery, durable coverage updates, repository executable coverage, PowerShell parity validation when available, percentage confidence scoring, and final API/E2E classification remain owned by `api_e2e_engineer`.
+
+## Frontend Docker Guide Follow-up Implementation
+
+Architecture review round 4 passed the approved follow-up scope. Implemented only the static frontend guide addition:
+
+- Added typed `direct-destroy-node` command catalog entry with the exact literal command `autobyteus-docker destroy --name <node-name>`.
+- Added equivalent English and Simplified Chinese status-first, placeholder-only descriptions covering exact node replacement, named volume and host workspace preservation, and freed indexed-slot reuse.
+- Reused the existing `DockerNodeStartGuideCard` generic command-card rendering, copy behavior, ARIA label, and copied/error feedback; no component runtime logic or launcher changes were added.
+- Extended utility/component tests for command ordering/text, placeholder-only behavior, locale parity, copy feedback, ARIA labeling, and static/no-fetch behavior.
+
+### Frontend Follow-up Files
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/dockerNodeLauncherCommands.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/localization/messages/en/settings.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/localization/messages/zh-CN/settings.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
+
+### Frontend Follow-up Checks
+
+- `pnpm exec nuxt prepare` — passed.
+- `pnpm exec vitest run utils/__tests__/dockerNodeLauncherCommands.spec.ts components/settings/__tests__/DockerNodeStartGuideCard.spec.ts --config vitest.config.mts` — 7 tests passed.
+- `pnpm guard:localization-boundary` — passed.
+- `pnpm guard:web-boundary` — passed.
+- `pnpm audit:localization-literals` — passed.
+- `git diff --check` — passed.
+- `pnpm exec tsc --noEmit --pretty false` — not a clean gate; the repository-wide check reports extensive pre-existing missing Vue module declarations and unrelated type errors. No follow-up-specific error was identified in the focused Vitest compilation/execution.
+
+### Frontend Follow-up Boundary Check
+
+- No concrete node target is present in the new command or targeted descriptions.
+- No node picker, live lookup, backend/API/Docker call, command execution, or new interactive control was added.
+- The only side effect remains the existing generic clipboard copy interaction.
+- The previous launcher/runtime implementation is unchanged by this follow-up.

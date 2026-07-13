@@ -136,3 +136,25 @@ Architecture review round 1 (`design-review-report.md`) returned `Fail / Design 
 - **F-002:** the original design did not specify checked state deletion or preflight ordering. The revised design and requirements now require selector grammar validation before state-directory creation and Docker reachability checks, checked/post-verified state deletion, and a nonzero partial-cleanup result with no rollback claim when state deletion fails after container removal.
 
 No new runtime or external evidence was needed to resolve these design findings. The relevant current-code facts remain that `container_for_node` uses a first-match pipeline, `managed_container` checks only the launcher label, and state deletion currently uses unchecked/suppressed primitives in the all-node path; these are implementation constraints that the targeted resolver and checked state-delete helper must address without broad refactoring.
+
+## Frontend Docker Guide requirement gap
+
+The user's follow-up request adds a small but user-visible requirement: the in-app **Nodes -> Docker Guide** must make the targeted launcher operation discoverable. This is distinct from the already-updated README documentation.
+
+### Evidence inspected
+
+- `autobyteus-web/components/settings/DockerNodeStartGuideCard.vue` renders the static direct-command catalog and existing copy feedback; it does not execute launcher commands or call a backend node API.
+- `autobyteus-web/utils/dockerNodeLauncherCommands.ts` is the canonical direct-command list. It currently contains `direct-destroy-all` but no targeted destroy entry.
+- `autobyteus-web/localization/messages/en/settings.ts` and `autobyteus-web/localization/messages/zh-CN/settings.ts` contain the localized command-card copy. Both need equivalent targeted-destroy title/description keys.
+- `autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts` and `autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts` are the existing focused frontend test owners.
+- The root and server Docker READMEs already describe `autobyteus-docker destroy --name <node>`; the gap is specifically the mounted frontend guide.
+
+### Scope and design consequence
+
+The frontend addition is a static, copyable command template exactly equal to `autobyteus-docker destroy --name <node-name>`, with status-first target identification, volume/workspace preservation, and slot-reuse guidance. It must not hard-code `autobyteus-server-5`, fetch live node names, add a node picker, execute the command, or call Docker/backend APIs. English and Simplified Chinese content must remain semantically equivalent and reuse existing command-card copy/accessibility behavior.
+
+This is a requirement/design supplement rather than an implementation shortcut: it changes user-visible behavior, so the updated cumulative package must pass the architecture gate and the normal source/API-E2E review stages even though the code delta is expected to be small.
+
+### Architecture review round 3 rework
+
+Round 3 identified one contract inconsistency: the UI journey included a concrete node name as a prose example while the requirements and design prohibit hard-coded destructive targets. The supplement now uses placeholder-only, status-first guidance in both locales; no concrete node name is part of the rendered-copy contract. The revised package is being rerouted for architecture review before frontend implementation.

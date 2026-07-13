@@ -1,0 +1,13 @@
+Delivery initial integration refresh
+Timestamp: 2026-07-13T14:55:30Z
+Command: git fetch origin personal
+Bootstrap base ref: 1d3cbe3cdc9c29962392f1189490ddcf95c823f8
+Latest tracked remote base: 1d3cbe3cdc9c29962392f1189490ddcf95c823f8
+Ticket HEAD: e3080fb1de4f83b7bfe8bb1f2a62e3f0fc9472d5
+Merge base: 1d3cbe3cdc9c29962392f1189490ddcf95c823f8
+Base advanced since bootstrap: No
+Commits origin/personal..HEAD:
+e3080fb1 chore(delivery): checkpoint reviewed docker removal
+39d4bb4c feat(docker): remove one managed node safely
+Commits HEAD..origin/personal:
+Integration method: Already current; no base commits required integration.

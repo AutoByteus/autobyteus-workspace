@@ -2,6 +2,7 @@
 
 **Status:** Design-ready; approved by user on 2026-07-13
 **Investigation:** [`investigation-notes.md`](./investigation-notes.md)
+**UI supplement:** [`ui-ux-spec.md`](./ui-ux-spec.md) — approved by the user's follow-up request on 2026-07-13
 **Task branch:** `codex/autobyteus-docker-remove-container`
 
 ## User intent
@@ -25,6 +26,14 @@ docker buildx rm multi-platform-builder
 ```
 
 The implementation should document this boundary clearly.
+
+The user later requested that this same targeted command also be discoverable in the in-app **Nodes -> Docker Guide**. The frontend scope is instructional only: add a copyable command template and safety guidance; do not execute the command, select a live node, or add a backend/API dependency.
+
+## Supplemental solution artifact inventory
+
+| Artifact | Scope | Linked requirements / acceptance criteria | Approval state |
+| --- | --- | --- | --- |
+| [`ui-ux-spec.md`](./ui-ux-spec.md) | Static frontend Docker Guide card for targeted destroy, localized copy, interaction, and safety boundaries | R-001, R-004, R-005, R-009, R-013, R-014; AC-013, AC-014 | Approved by the user's explicit follow-up request on 2026-07-13 |
 
 ## Functional requirements
 
@@ -84,6 +93,20 @@ After container removal, the launcher SHALL delete the selected state file with 
 
 For `destroy`, command grammar and selector exclusivity SHALL be validated before launcher state-directory creation, Docker reachability checks, image resolution, target resolution, or any Docker/state mutation. Invalid forms include an unqualified `destroy`, conflicting `--all` and `--name`, missing `--name` values, and unexpected extra arguments.
 
+### R-013 — Expose targeted destroy in the frontend Docker Guide
+
+The in-app **Nodes -> Docker Guide** SHALL render a copyable static command template:
+
+```text
+autobyteus-docker destroy --name <node-name>
+```
+
+The accompanying guidance SHALL tell the user to replace `<node-name>` with an exact managed node from `autobyteus-docker status`, explain that named volumes and host workspaces are kept, and explain that the freed indexed slot can be reused by a later `new-container` invocation. The guide SHALL NOT hard-code a destructive target or execute the command.
+
+### R-014 — Preserve localized and existing guide interaction behavior
+
+The targeted destroy card SHALL have equivalent English and Simplified Chinese title/description content, use the existing guide command-card copy interaction and accessibility feedback, and remain a static instructional surface with no node picker, backend/API call, Docker reachability check, or command execution.
+
 ## Use cases and scenario intent
 
 | Use case | Requirement IDs | Expected observable result |
@@ -95,6 +118,7 @@ For `destroy`, command grammar and selector exclusivity SHALL be validated befor
 | UC-005: Cross-platform usage | R-009 | Bash and PowerShell help/parser/runtime behavior agree. |
 | UC-006: Ambiguous or conflicting ownership | R-003, R-010 | Duplicate exact label candidates, state/label disagreement, malformed state, and unmanaged name collisions refuse without removal or state deletion. |
 | UC-007: Cleanup failure and validation preflight | R-011, R-012 | State-delete failure is reported as nonzero partial cleanup; invalid selectors fail before setup or Docker reachability checks. |
+| UC-008: Discover targeted removal in the frontend guide | R-013, R-014 | Nodes -> Docker Guide shows the copyable placeholder command and localized safety guidance without executing or selecting a node. |
 
 ## Acceptance criteria
 
@@ -112,6 +136,8 @@ For `destroy`, command grammar and selector exclusivity SHALL be validated befor
 | AC-010 | Isolated Bash and PowerShell-equivalent scenarios refuse duplicate exact launcher+node candidates, state/label disagreement, malformed/mismatched state, and an unmanaged same-name collision without invoking `docker rm` or deleting launcher state; a single exact label-only candidate is allowed when no conflicting state exists. | UC-006 |
 | AC-011 | An injected state-file deletion failure after successful container removal exits nonzero, reports partial cleanup, leaves the state record for operator recovery, does not claim rollback, and does not silently report success; named volumes remain untouched. | UC-007 |
 | AC-012 | Invalid destroy selector forms fail before state-directory creation and before Docker reachability checks in Bash and PowerShell; no runtime target-resolution or deletion call occurs. | UC-007 |
+| AC-013 | The mounted frontend Docker Guide renders a targeted-destroy card containing exactly `autobyteus-docker destroy --name <node-name>`, directs users to replace the placeholder with an exact node from `autobyteus-docker status`, explains volume/workspace preservation and slot reuse, and contains no hard-coded destructive target or execution control. | UC-008 |
+| AC-014 | Frontend unit/component checks verify equivalent English and Simplified Chinese targeted-destroy copy, existing copy feedback/ARIA behavior, and no Docker/backend/API call or live node lookup when the guide renders or copies the template. | UC-008 |
 
 ## Persisted data / state transition decision
 
@@ -129,12 +155,15 @@ For `destroy`, command grammar and selector exclusivity SHALL be validated befor
 - Refuse state/label disagreement, duplicate exact label candidates, malformed state, and unmanaged same-name collisions without Docker or launcher-state deletion.
 - Verify state-file deletion and report a nonzero partial-cleanup result if it fails after container removal; do not claim rollback.
 - Validate destroy selector grammar before creating the state directory or checking Docker reachability.
+- Keep the frontend guide instructional only: no node picker, live status query, backend/API call, command execution, or hard-coded destructive node.
 - Existing `destroy --all`, `stop`, `upgrade`, `reset`, and status behavior remain compatible except for the new targeted destroy form and the documented stale-state cleanup path.
 
 ## Supplemental solution artifacts
 
-None. The ownership distinction and command contract are sufficiently precise in this requirements document and the investigation notes; a separate UI/API artifact is not needed for a shell launcher.
+The still-relevant [`ui-ux-spec.md`](./ui-ux-spec.md) supplements this document with the frontend Docker Guide journey, localized content, static interaction states, and accessibility constraints. It extends, but does not replace, this requirements document.
 
 ## Approval record
 
 The user approved the recommended scope on 2026-07-13: implement targeted `autobyteus-docker destroy --name <managed-node>` and reuse the freed indexed slot on a later `new-container` invocation, while keeping Buildx outside launcher ownership. The design and implementation must preserve the existing lowest-available-index behavior: after removing node 5 while nodes 0–4 remain, the next new container selects `autobyteus-server-5`; if multiple gaps exist, it selects the lowest available index.
+
+The user subsequently approved adding the copyable targeted-destroy template and safety guidance to the in-app Nodes -> Docker Guide. The frontend addition remains static and localized; it does not expand the launcher ownership or runtime scope.

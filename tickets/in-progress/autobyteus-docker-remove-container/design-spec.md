@@ -3,6 +3,7 @@
 **Status:** Ready for architecture review
 **Requirements:** [`requirements.md`](./requirements.md) — Design-ready, user-approved 2026-07-13
 **Investigation:** [`investigation-notes.md`](./investigation-notes.md)
+**UI supplement:** [`ui-ux-spec.md`](./ui-ux-spec.md) — requirements-ready and approved by the user's follow-up request on 2026-07-13
 
 ## Current-State Read
 
@@ -47,6 +48,17 @@ The command requires exactly one of `--name <managed-node>` or `--all`. For a ta
 
 No generic arbitrary-container removal API is added. Buildx remains owned by Docker Buildx and is documented with its own cleanup command.
 
+### Frontend Docker Guide extension
+
+The in-app **Nodes -> Docker Guide** is extended as a static command-catalog entry, governed by [`ui-ux-spec.md`](./ui-ux-spec.md):
+
+1. Add a `direct-destroy-node` entry in `autobyteus-web/utils/dockerNodeLauncherCommands.ts` with the literal command `autobyteus-docker destroy --name <node-name>`.
+2. Reuse `DockerNodeStartGuideCard.vue`'s existing direct-command rendering, copy behavior, ARIA labels, and feedback states; no component-level execution or node-selection logic is introduced.
+3. Add equivalent English and Simplified Chinese title/description keys in the existing settings locale catalogs. The description must direct users to `autobyteus-docker status`, require replacing the placeholder with an exact managed node, and explain that volumes/workspaces remain while the indexed slot can be reused. Guidance is placeholder-only and must not include a concrete node name even as a prose example.
+4. Extend the existing frontend utility/component tests to prove command text, locale parity, copy behavior, and the absence of Docker/backend/API calls or live node lookup.
+
+The frontend guide remains instructional only. It must not show a hard-coded destructive target such as `autobyteus-server-5`, add a node picker, query node status, execute a terminal command, or absorb Buildx ownership.
+
 ### Targeted resolver contract (authoritative safety rule)
 
 `destroy_node` / `Destroy-Node` receives one normalized launcher node name, never a raw Docker container name. Resolution is deterministic and must complete before destructive mutation:
@@ -79,7 +91,7 @@ The command parser performs a pure grammar phase before `ensure_state_dir` / `En
 
 ## Supplemental Solution Artifacts
 
-None. The requirements doc and investigation notes contain the complete command contract, ownership distinction, and user-visible behavior. No UI/API/data-mapping supplement is needed for this shell launcher change.
+The still-relevant [`ui-ux-spec.md`](./ui-ux-spec.md) supplements this design with the frontend Docker Guide journey, component/localization mapping, static interaction states, accessibility constraints, and explicit non-goals. It extends, but does not replace, the mandatory requirements, investigation, and design artifacts.
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -88,6 +100,7 @@ None. The requirements doc and investigation notes contain the complete command 
 - **Root cause classification:** `Boundary Or Ownership Issue` plus `Missing Invariant`.
 - **Refactor needed now:** No broad refactor. A focused per-platform `destroy_node` / `Destroy-Node` helper is an extension of the existing lifecycle owner, not a new subsystem.
 - **Evidence:** `destroy_all_nodes` / `Destroy-AllNodes` already owns managed-container discovery, force removal, state cleanup, image cleanup, and volume-preserving semantics. `status` proves that manual Docker deletion bypasses state cleanup. `next_node_name` already supports lowest-free-index selection once state is removed.
+- **Frontend evidence:** the guide already renders a static direct-command catalog through `DockerNodeStartGuideCard.vue`; adding one command entry and two locale descriptions reuses that boundary without introducing a new UI subsystem or runtime dependency.
 - **Design response:** Extend the existing `destroy` boundary with an explicit selector and move one-node deletion through the same runtime owner. Make state cleanup and ownership validation part of that owner. Keep status read-only.
 - **Refactor rationale:** Creating a generic container manager would weaken ownership and risk deleting Buildx or unrelated containers. Splitting a new subsystem would duplicate the existing lifecycle policy. The current Bash/PowerShell module boundaries are healthy for this narrow change.
 - **Intentional deferrals and residual risk:** Buildx lifecycle is intentionally out of scope; users must use `docker buildx rm`. The existing unrelated Python baseline failures remain environment/test debt and must not be disguised as feature validation.
@@ -231,6 +244,7 @@ This ordering matters because invalid selectors must fail before setup, a state-
 | Launcher state | State path/read/write/delete | DS-001, DS-003, DS-004 | `core.sh`, `Core.ps1` plus runtime callers | Reuse | Deletion is invoked by runtime, not parser. |
 | Docker build tooling | Buildx builder lifecycle | Not in scope | `build-multi-arch.sh` / Docker CLI | Reuse externally; do not extend launcher | Document separate command only. |
 | Launcher documentation/tests | User contract and executable evidence | DS-001–DS-004 | README files and focused Python test | Extend | Update duplicated public launcher docs consistently. |
+| Frontend Docker Guide | Discoverability and copyable instructional command | DS-001, DS-004 (user guidance only) | `dockerNodeLauncherCommands.ts`, existing guide card, locale catalogs, focused frontend tests | Extend | Keep it static; no Docker/backend/API dependency or command execution. |
 
 ## Draft File Responsibility Mapping
 
@@ -244,6 +258,10 @@ This ordering matters because invalid selectors must fail before setup, a state-
 | `scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1` | Command surface | PowerShell help/common core | Update help | Existing help/constants owner | Existing normalization/state helpers. |
 | `scripts/tests/test_public_docker_launcher_shared_workspace.py` | Validation | Fake-Docker test owner | Targeted removal, stale state, slot reuse, safety | Existing fixture/test contract | Existing fake Docker. |
 | `README.md`, `autobyteus-server-ts/README.md`, `autobyteus-server-ts/docker/README.md` | Documentation | Public Docker user guidance | Targeted destroy, slot reuse, volume retention, Buildx distinction | These are the existing public launcher docs | Existing command examples. |
+| `autobyteus-web/utils/dockerNodeLauncherCommands.ts` | Frontend command catalog | Nodes -> Docker Guide | Add the copyable targeted-destroy template entry | Existing static command-list owner | Existing command object and locale keys. |
+| `autobyteus-web/components/settings/DockerNodeStartGuideCard.vue` | Frontend presentation | Nodes -> Docker Guide | Reuse existing generic command-card rendering; no new runtime logic expected | Existing component already maps direct commands to cards | Existing copy/ARIA/feedback behavior. |
+| `autobyteus-web/localization/messages/en/settings.ts`, `autobyteus-web/localization/messages/zh-CN/settings.ts` | Frontend localization | Settings locale catalogs | Add equivalent targeted-destroy title/description copy | Existing settings command-card locale owner | Existing localization shape. |
+| `autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`, `autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts` | Frontend validation | Nodes -> Docker Guide tests | Verify command, localized content, copy behavior, and static/no-call boundary | Existing focused test owners | Existing test setup and mocked clipboard. |
 
 ## Reusable Owned Structures Check
 
@@ -348,6 +366,10 @@ The Buildx builder is a separate authoritative boundary. No launcher caller may 
 | `scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1` | File | PowerShell common core | Help text/common helpers | Existing common owner | Lifecycle orchestration. |
 | `scripts/tests/test_public_docker_launcher_shared_workspace.py` | File | Launcher test subsystem | Fake-Docker targeted destroy/slot-reuse evidence | Existing public launcher test owner | Live Docker mutation. |
 | `README.md`, `autobyteus-server-ts/README.md`, `autobyteus-server-ts/docker/README.md` | Files | Public Docker docs | Command examples, slot reuse, volume/Buildx boundary | Existing public guidance locations | Implementation policy not reflected in code. |
+| `autobyteus-web/utils/dockerNodeLauncherCommands.ts` | File | Frontend command catalog | Copyable targeted-destroy template | Existing Nodes -> Docker Guide command owner | Runtime/API calls or hard-coded target. |
+| `autobyteus-web/components/settings/DockerNodeStartGuideCard.vue` | File | Frontend guide presentation | Render the new entry through existing generic cards | Existing guide presentation boundary | Destructive execution or node selection. |
+| `autobyteus-web/localization/messages/en/settings.ts`, `autobyteus-web/localization/messages/zh-CN/settings.ts` | Files | Frontend localization | English/zh-CN title and safety description parity | Existing settings locale catalogs | Unequal command semantics. |
+| `autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`, `autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts` | Files | Frontend test subsystem | Command, locale, copy, and no-runtime-call evidence | Existing focused frontend test owners | Live Docker/backend/API calls. |
 
 ## Folder Boundary Check
 
@@ -396,8 +418,9 @@ The parser never skips the managed lifecycle boundary, and the allocator remains
 4. Add Bash checked state deletion and post-delete verification. On failure after container removal, return nonzero partial cleanup with no rollback claim and stop before image cleanup. Preserve volumes.
 5. Apply equivalent selector preflight, candidate-set resolver, state/label agreement rules, checked state deletion, and partial-failure semantics to PowerShell.
 6. Extend isolated fake-Docker coverage for one-node removal, stale state, label-only single candidate, duplicate labels, state/label disagreement, unmanaged same-name collision, malformed state, injected state-delete failure, invalid-selector preflight ordering, state/volume safety, and lowest-free-index reuse. Keep existing all-node coverage intact.
-7. Update all public launcher documentation with targeted destroy syntax, slot reuse, volume retention, refusal behavior, and separate Buildx cleanup.
-8. Run Bash syntax checks, focused tests, parser/help checks, and PowerShell parsing when available. Record baseline unrelated test failures separately.
+7. Add the static `direct-destroy-node` frontend command entry, localized English/zh-CN guidance, and focused utility/component assertions. Reuse the existing generic guide card; do not add execution, node lookup, or a picker.
+8. Update all public launcher documentation with targeted destroy syntax, slot reuse, volume retention, refusal behavior, and separate Buildx cleanup.
+9. Run Bash syntax checks, focused launcher tests, frontend utility/component tests, parser/help checks, and PowerShell parsing when available. Record baseline unrelated test failures separately.
 
 No migration boundary is needed. No legacy compatibility path or generic removal wrapper is retained.
 
@@ -418,6 +441,7 @@ No migration boundary is needed. No legacy compatibility path or generic removal
 5. A state-delete failure after container removal leaves partial cleanup; the nonzero/no-rollback result must be tested and documented for operators.
 6. Duplicated Bash/PowerShell logic can drift; parity tests and help checks should cover both source contracts.
 7. Existing public launcher installations load downloaded modules; docs/tests must ensure the module files are updated along with the entrypoint when released.
+8. The static frontend template could be mistaken for an immediately valid target; explicit placeholder replacement and `status` guidance must remain visible in both locales, and no hard-coded node may be shown.
 
 ## Guidance For Implementation
 
@@ -431,6 +455,7 @@ No migration boundary is needed. No legacy compatibility path or generic removal
 - Perform destroy selector grammar validation before `ensure_state_dir`/`Ensure-StateDir` or `assert_docker`/`Assert-Docker`; test that invalid invocations do not create state directories or call Docker reachability checks.
 - Do not modify `next_node_name` / `Get-NextNodeName`; state removal already makes the lowest available index reusable. Add a regression test proving node 5 is selected after nodes 0–4 remain.
 - Preserve `destroy --all` and `reset` behavior and their volume safety.
+- Add the frontend guide entry exactly as specified in `ui-ux-spec.md`: `autobyteus-docker destroy --name <node-name>`, with status-first, exact-node, volume/workspace, and slot-reuse guidance in English and Simplified Chinese. Reuse existing copy/ARIA behavior and keep the guide static.
 - Document the exact current-user command:
 
   ```bash
