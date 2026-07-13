@@ -1,24 +1,23 @@
-# Release Notes — Workspace Markdown Relative Images
+# Release Notes — Claude Agent SDK Model Descriptions
 
-## What's New
+## Summary
 
-- Workspace Markdown and README previews now render relative image references automatically from the Markdown file's directory.
-- Supported in-workspace paths include sibling images, nested asset folders, safe parent references, spaces, and encoded path characters.
-- Desktop and Phone Access previews use the existing workspace content boundary, with authorized loading for paired mobile sessions.
+Claude Agent SDK model pickers now show the live model descriptions supplied by Claude's runtime catalog, making alias, model/version, and intended-use guidance visible before selection.
 
-## Improvements
+## Highlights
 
-- Image bindings now refresh safely when the open document, workspace, bound node, or Phone Access credential changes.
-- External, data-backed, root-relative, and generic non-workspace Markdown image behavior remains unchanged.
-- Missing or rejected images stay isolated so the surrounding Markdown and image alt text remain visible.
-
-## Fixes
-
-- Fixed broken `assets/...` images in workspace Markdown previews that previously required opening the document in another editor.
-- Hardened workspace path containment against absolute and sibling-prefix traversal requests.
-- Prevented stale authorized image responses and obsolete object URLs from surviving context or credential transitions.
+- Claude model descriptions flow through the shared model catalog and GraphQL contract as optional display metadata.
+- Runtime-scoped model selectors show descriptions as wrapping secondary text while keeping compact closed labels.
+- Search matches model identifiers, names, selected labels, and descriptions case-insensitively.
+- Selecting a model still emits and persists only the existing Claude alias identifier such as `default`, `sonnet`, `opus`, or `haiku`.
+- Models without descriptions keep the existing name-only presentation and remain selectable.
+- Description text is sourced from the live Claude Agent SDK catalog rather than hard-coded, so wording can reflect the current installed runtime and authenticated account.
 
 ## Validation
 
-- Focused frontend, server, REST E2E, and real Chromium validation passed.
-- macOS arm64 Electron packaging passed and the user verified the completed task before finalization.
+- Live Claude SDK catalog and built GraphQL schema validation passed.
+- Real HTTP GraphQL validation passed against an isolated local server.
+- Desktop-width and narrow-width browser journeys passed for rendering, search, wrapping, selection identity, close/reopen, runtime changes, shared selectors, and name-only fallback.
+- Focused server/frontend regression suites and production builds passed.
+- A fresh macOS ARM64 Electron package with the integrated backend built successfully for local user verification.
+- Final API/E2E confidence: `96.9%`; proportional durable-test review passed with no findings.
