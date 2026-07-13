@@ -4,11 +4,11 @@
 
 - Review Round: `2`
 - Trigger: Successful frontend API/E2E coverage handoff for follow-up commit `73f09e5c`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/requirements.md`
-- Supplemental Solution Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/ui-ux-spec.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md` (cumulative; frontend follow-up Round 2)
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/api-e2e-execution-coverage-report.md` (cumulative; frontend follow-up Round 2)
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/requirements.md`
+- Supplemental Solution Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/ui-ux-spec.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md` (cumulative; frontend follow-up Round 2)
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/api-e2e-execution-coverage-report.md` (cumulative; frontend follow-up Round 2)
 - API/E2E Result: `Pass` for backend/Docker and frontend static/component scopes; frontend broader browser/live API validation was correctly `Not Required`
 - Final Validation Confidence: `94.3%` for the frontend follow-up; prior backend/Docker confidence remains `94.5%`
 - Prior unresolved test-review findings rechecked: `None`

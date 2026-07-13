@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-spec.md`
 - Supplemental solution artifacts: None
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/design-review-report.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-review-report.md`
 
 ## What Changed
 

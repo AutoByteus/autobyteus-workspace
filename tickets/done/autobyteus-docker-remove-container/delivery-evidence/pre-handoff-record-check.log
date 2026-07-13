@@ -1,0 +1,22 @@
+Delivery pre-handoff cumulative record check
+Timestamp: 2026-07-13T15:46:16Z
+Command: git diff --check
+Result: tracked diff check passed
+Command: trailing-whitespace scan
+Result: no trailing whitespace
+Command: record existence and non-empty check
+Present and non-empty: tickets/done/autobyteus-docker-remove-container/docs-sync-report.md
+Present and non-empty: tickets/done/autobyteus-docker-remove-container/handoff-summary.md
+Present and non-empty: tickets/done/autobyteus-docker-remove-container/release-deployment-report.md
+Present and non-empty: tickets/done/autobyteus-docker-remove-container/delivery-evidence/integration-refresh.txt
+Command: git status --short --branch
+## codex/autobyteus-docker-remove-container...origin/personal [ahead 4] (archive moved to tickets/done)
+ M tickets/done/autobyteus-docker-remove-container/delivery-evidence/integration-refresh.txt
+ M tickets/done/autobyteus-docker-remove-container/delivery-evidence/pre-handoff-record-check.log
+ M tickets/done/autobyteus-docker-remove-container/docs-sync-report.md
+ M tickets/done/autobyteus-docker-remove-container/handoff-summary.md
+ M tickets/done/autobyteus-docker-remove-container/release-deployment-report.md
+Base: 1d3cbe3cdc9c29962392f1189490ddcf95c823f8
+HEAD: 6f711c555721023c5fe2a26f7adf9d6aaed39c89
+Merge base: 1d3cbe3cdc9c29962392f1189490ddcf95c823f8
+Result: delivery records are archived and prepared for the final delivery commit after explicit user verification; latest upstream checkpoint is 6f711c55.

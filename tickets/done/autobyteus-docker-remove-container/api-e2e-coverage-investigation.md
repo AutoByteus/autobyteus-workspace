@@ -2,13 +2,13 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/design-spec.md`
-- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/ui-ux-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/in-progress/autobyteus-docker-remove-container/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-spec.md`
+- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/ui-ux-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/code-review-report.md`
 - Current Investigation Round: 2
 - Trigger: Frontend follow-up source review passed for implementation commit `73f09e5c`
 - Prior Investigation Reviewed: Round 1 backend/Docker coverage investigation and execution
