@@ -1,0 +1,17 @@
+Release v1.4.11 finalization evidence
+Recorded: 2026-07-13T12:03:01+02:00
+ticket_commit=87de3b82b0b9c149535e432781bec30e3feff1aa
+release_commit=ed08285f8a9c2230b10e92fa91a274fef64d47c1
+tag_object=26210b96874068bca98c8abab2ff3bdf498f5e7a
+origin_personal=ed08285f8a9c2230b10e92fa91a274fef64d47c1
+origin_ticket=ed08285f8a9c2230b10e92fa91a274fef64d47c1
+web_version=1.4.11
+gateway_version=1.4.11
+release_notes_sha256=f0cde7159af32b294399f1bad37a3c158162c486ce3a35e412109ce0ba243f85
+curated_notes_sha256=f0cde7159af32b294399f1bad37a3c158162c486ce3a35e412109ce0ba243f85
+
+Remote refs:
+ed08285f8a9c2230b10e92fa91a274fef64d47c1	refs/heads/codex/claude-agent-sdk-model-descriptions
+ed08285f8a9c2230b10e92fa91a274fef64d47c1	refs/heads/personal
+26210b96874068bca98c8abab2ff3bdf498f5e7a	refs/tags/v1.4.11
+ed08285f8a9c2230b10e92fa91a274fef64d47c1	refs/tags/v1.4.11^{}

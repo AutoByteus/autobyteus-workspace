@@ -1,0 +1,160 @@
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:03.2388737Z #16 [linux/amd64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:dbd749ca4bcbdab7fefc48b2f2fa2741e24e5919b6078596ec59b41ab77f1daa
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:03.2422659Z #40 [linux/amd64 runtime  2/23] WORKDIR /app
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:05.6470235Z #14 [linux/arm64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:dbd749ca4bcbdab7fefc48b2f2fa2741e24e5919b6078596ec59b41ab77f1daa
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:05.7414971Z #14 [linux/arm64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:dbd749ca4bcbdab7fefc48b2f2fa2741e24e5919b6078596ec59b41ab77f1daa
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:05.7420018Z #30 [linux/amd64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:05.8504590Z #14 [linux/arm64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:dbd749ca4bcbdab7fefc48b2f2fa2741e24e5919b6078596ec59b41ab77f1daa
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:06.0375727Z #14 [linux/arm64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:dbd749ca4bcbdab7fefc48b2f2fa2741e24e5919b6078596ec59b41ab77f1daa
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:06.0380877Z #40 [linux/amd64 runtime  2/23] WORKDIR /app
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:06.2495706Z #14 [linux/arm64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:dbd749ca4bcbdab7fefc48b2f2fa2741e24e5919b6078596ec59b41ab77f1daa
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:06.3845394Z #14 [linux/arm64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:dbd749ca4bcbdab7fefc48b2f2fa2741e24e5919b6078596ec59b41ab77f1daa
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:06.3853277Z #30 [linux/amd64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:06.6395270Z #14 [linux/arm64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:dbd749ca4bcbdab7fefc48b2f2fa2741e24e5919b6078596ec59b41ab77f1daa
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:06.8055405Z #14 [linux/arm64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:dbd749ca4bcbdab7fefc48b2f2fa2741e24e5919b6078596ec59b41ab77f1daa
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:06.8059066Z #41 [linux/arm64 runtime  2/23] WORKDIR /app
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:07.7463531Z #40 [linux/amd64 runtime  2/23] WORKDIR /app
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:07.8974493Z #42 [linux/amd64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:07.9020407Z #41 [linux/arm64 runtime  2/23] WORKDIR /app
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:08.0555504Z #43 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:14.1851587Z #42 [linux/amd64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:14.6427098Z #43 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:17.4470528Z #42 [linux/amd64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:17.6976169Z #44 [linux/amd64 runtime  4/23] RUN echo "CLI install cache buster: 29239754476"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:17.8476849Z #30 [linux/amd64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:19.2846777Z #43 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:21.4058222Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:21.4791816Z #30 [linux/amd64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:25.3658174Z #43 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:30.5618165Z #30 [linux/amd64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:30.7340889Z #44 [linux/amd64 runtime  4/23] RUN echo "CLI install cache buster: 29239754476"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:30.8878465Z #45 [linux/amd64 runtime  5/23] RUN mkdir -p /home/***/workspace /home/***/data /root
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:32.4629750Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:32.6239867Z #30 [linux/amd64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:37.1009109Z #43 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:39.1379607Z #46 [linux/amd64 builder 13/20] COPY ***-ts ./***-ts
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:39.1381632Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:39.3384139Z #47 [linux/amd64 builder 14/20] COPY ***-application-sdk-contracts ./***-application-sdk-contracts
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:39.3386497Z #48 [linux/amd64 builder 15/20] COPY ***-application-backend-sdk ./***-application-backend-sdk
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:39.3388462Z #49 [linux/amd64 builder 16/20] COPY ***-server-ts ./***-server-ts
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:39.8319856Z #43 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:39.9373625Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:40.5052052Z #50 [linux/amd64 builder 17/20] COPY ***-web ./***-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:40.6573852Z #51 [linux/amd64 builder 18/20] RUN pnpm -C ***-server-ts exec prisma generate --schema prisma/schema.prisma
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:44.1905556Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:48.4240149Z #52 [linux/amd64 builder 19/20] RUN pnpm -C ***-server-ts build
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:50.4417520Z #43 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:39:50.5918188Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:00.3677489Z #52 [linux/amd64 builder 19/20] RUN pnpm -C ***-server-ts build
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:06.9985641Z #43 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:10.5943704Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:23.7835043Z #52 [linux/amd64 builder 19/20] RUN pnpm -C ***-server-ts build
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:24.4408109Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:24.5931484Z #53 [linux/amd64 builder 20/20] RUN pnpm -C ***-web build:mobile-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:24.9487652Z #53 0.506 > ***@1.4.11 build:mobile-web /app/***-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:27.0043900Z #53 2.562 > ***@1.4.11 generate /app/***-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:31.8604331Z #43 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:34.4777901Z #53 [linux/amd64 builder 20/20] RUN pnpm -C ***-web build:mobile-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:34.7189251Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:34.8697100Z #54 [linux/arm64 runtime  4/23] RUN echo "CLI install cache buster: 29239754476"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:40:41.1655814Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:41:21.2021725Z #53 [linux/amd64 builder 20/20] RUN pnpm -C ***-web build:mobile-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:41:31.7442343Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:41:42.3260807Z #54 [linux/arm64 runtime  4/23] RUN echo "CLI install cache buster: 29239754476"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:41:42.9429720Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:41:43.0955902Z #55 [linux/arm64 runtime  5/23] RUN mkdir -p /home/***/workspace /home/***/data /root
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:41:43.2464504Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:41:51.0157216Z #56 [linux/amd64 runtime  6/23] COPY --from=builder /app/node_modules ./node_modules
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:41:56.6911019Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:07.3578317Z #56 [linux/amd64 runtime  6/23] COPY --from=builder /app/node_modules ./node_modules
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:07.5095219Z #57 [linux/amd64 runtime  7/23] COPY --from=builder /app/***-ts/node_modules ./***-ts/node_modules
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:08.3472846Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:08.7572097Z #58 [linux/amd64 runtime  8/23] COPY --from=builder /app/***-ts/dist ./***-ts/dist
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:08.9872994Z #59 [linux/amd64 runtime  9/23] COPY --from=builder /app/***-ts/package.json ./***-ts/package.json
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:08.9875392Z #60 [linux/amd64 runtime 10/23] COPY --from=builder /app/***-application-sdk-contracts/dist ./***-application-sdk-contracts/dist
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:08.9877652Z #61 [linux/amd64 runtime 11/23] COPY --from=builder /app/***-application-sdk-contracts/package.json ./***-application-sdk-contracts/package.json
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:08.9879887Z #62 [linux/amd64 runtime 12/23] COPY --from=builder /app/***-server-ts/node_modules ./***-server-ts/node_modules
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:08.9882274Z #63 [linux/amd64 runtime 13/23] COPY --from=builder /app/***-server-ts/dist ./***-server-ts/dist
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.0506623Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.1970586Z #64 [linux/amd64 runtime 14/23] COPY --from=builder /app/***-server-ts/prisma ./***-server-ts/prisma
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.1974827Z #65 [linux/amd64 runtime 15/23] COPY --from=builder /app/***-server-ts/package.json ./***-server-ts/package.json
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.1976471Z #66 [linux/amd64 runtime 16/23] COPY --from=builder /app/***-web/dist-mobile/public ./***-server-ts/mobile-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.3763824Z #67 [linux/amd64 runtime 17/23] COPY ***-server-ts/docker/supervisor-***-server.conf /etc/supervisor/conf.d/supervisor-***-server.conf
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.3766234Z #68 [linux/amd64 runtime 18/23] COPY ***-server-ts/docker/bootstrap.sh /usr/local/bin/***-bootstrap.sh
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.3768777Z #69 [linux/amd64 runtime 19/23] COPY ***-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.3771063Z #70 [linux/amd64 runtime 20/23] COPY ***-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.3776030Z #71 [linux/amd64 runtime 21/23] COPY ***-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.3778469Z #72 [linux/amd64 runtime 22/23] COPY ***-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.3781026Z #73 [linux/amd64 runtime 23/23] RUN chmod +x   /usr/local/bin/***-bootstrap.sh   /usr/local/bin/entrypoint.sh   /usr/local/bin/open-vnc-browser-url.sh   /usr/local/bin/xdg-open   /usr/local/bin/exo-open
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:42:09.3783458Z #39 [linux/arm64 builder 12/20] RUN pnpm install --no-frozen-lockfile
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:43:07.7532420Z #74 [linux/arm64 builder 13/20] COPY ***-ts ./***-ts
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:43:09.0649512Z #75 [linux/arm64 builder 14/20] COPY ***-application-sdk-contracts ./***-application-sdk-contracts
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:43:09.0650568Z #76 [linux/arm64 builder 15/20] COPY ***-application-backend-sdk ./***-application-backend-sdk
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:43:09.0651677Z #77 [linux/arm64 builder 16/20] COPY ***-server-ts ./***-server-ts
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:43:09.3355320Z #78 [linux/arm64 builder 17/20] COPY ***-web ./***-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:43:09.6145764Z #79 [linux/arm64 builder 18/20] RUN pnpm -C ***-server-ts exec prisma generate --schema prisma/schema.prisma
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:43:31.4605246Z #80 [linux/arm64 builder 19/20] RUN pnpm -C ***-server-ts build
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:48:14.4931989Z #81 [linux/arm64 builder 20/20] RUN pnpm -C ***-web build:mobile-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:48:18.5692905Z #81 4.227 > ***@1.4.11 build:mobile-web /app/***-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:48:30.2638239Z #81 15.92 > ***@1.4.11 generate /app/***-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:40.4939463Z #82 [linux/arm64 runtime  6/23] COPY --from=builder /app/node_modules ./node_modules
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:52.7067657Z #83 [linux/arm64 runtime  7/23] COPY --from=builder /app/***-ts/node_modules ./***-ts/node_modules
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.4253576Z #84 [linux/arm64 runtime  8/23] COPY --from=builder /app/***-ts/dist ./***-ts/dist
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.7351138Z #85 [linux/arm64 runtime  9/23] COPY --from=builder /app/***-ts/package.json ./***-ts/package.json
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.7353055Z #86 [linux/arm64 runtime 10/23] COPY --from=builder /app/***-application-sdk-contracts/dist ./***-application-sdk-contracts/dist
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.7355733Z #87 [linux/arm64 runtime 11/23] COPY --from=builder /app/***-application-sdk-contracts/package.json ./***-application-sdk-contracts/package.json
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.7357925Z #88 [linux/arm64 runtime 12/23] COPY --from=builder /app/***-server-ts/node_modules ./***-server-ts/node_modules
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.7359492Z #89 [linux/arm64 runtime 13/23] COPY --from=builder /app/***-server-ts/dist ./***-server-ts/dist
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.8362224Z #90 [linux/arm64 runtime 14/23] COPY --from=builder /app/***-server-ts/prisma ./***-server-ts/prisma
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.8365111Z #91 [linux/arm64 runtime 15/23] COPY --from=builder /app/***-server-ts/package.json ./***-server-ts/package.json
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.8367675Z #92 [linux/arm64 runtime 16/23] COPY --from=builder /app/***-web/dist-mobile/public ./***-server-ts/mobile-web
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.8370309Z #93 [linux/arm64 runtime 17/23] COPY ***-server-ts/docker/supervisor-***-server.conf /etc/supervisor/conf.d/supervisor-***-server.conf
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.8372406Z #94 [linux/arm64 runtime 18/23] COPY ***-server-ts/docker/bootstrap.sh /usr/local/bin/***-bootstrap.sh
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.9981564Z #95 [linux/arm64 runtime 19/23] COPY ***-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.9984353Z #96 [linux/arm64 runtime 20/23] COPY ***-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.9987016Z #97 [linux/arm64 runtime 21/23] COPY ***-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.9988606Z #98 [linux/arm64 runtime 22/23] COPY ***-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:54:53.9990715Z #99 [linux/arm64 runtime 23/23] RUN chmod +x   /usr/local/bin/***-bootstrap.sh   /usr/local/bin/entrypoint.sh   /usr/local/bin/open-vnc-browser-url.sh   /usr/local/bin/xdg-open   /usr/local/bin/exo-open
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:56:09.2316173Z #100 pushing manifest for docker.io/***/***-server:1.4.11@sha256:c13aa01479d2548de777d86033c6381c22e228a1d3120d9c99b8b7ab09d49564
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T09:56:11.7742119Z #100 pushing manifest for docker.io/***/***-server:1.4.11@sha256:c13aa01479d2548de777d86033c6381c22e228a1d3120d9c99b8b7ab09d49564 2.5s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8618798Z   "buildx.build.provenance/linux/amd64": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8624768Z         "digest": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8628608Z         "digest": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8631695Z         "digest": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8658538Z           "compare": "https://github.com/AutoByteus/***-workspace/compare/v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8665380Z             "message": "chore(release): bump workspace release version to 1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8680001Z           "ref": "refs/tags/v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8765851Z         "github_ref": "refs/tags/v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8766141Z         "github_ref_name": "v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8773231Z         "github_workflow_ref": "AutoByteus/***-workspace/.github/workflows/release-server-docker.yml@refs/tags/v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8774240Z         "platform": "linux/amd64"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8775104Z   "buildx.build.provenance/linux/arm64": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8777294Z         "digest": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8779288Z         "digest": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8781874Z         "digest": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8796826Z           "compare": "https://github.com/AutoByteus/***-workspace/compare/v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8801577Z             "message": "chore(release): bump workspace release version to 1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8825576Z           "ref": "refs/tags/v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8885116Z         "github_ref": "refs/tags/v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8885406Z         "github_ref_name": "v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8892454Z         "github_workflow_ref": "AutoByteus/***-workspace/.github/workflows/release-server-docker.yml@refs/tags/v1.4.11",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8893566Z         "platform": "linux/amd64"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8896358Z     "digest": "sha256:c13aa01479d2548de777d86033c6381c22e228a1d3120d9c99b8b7ab09d49564",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8897386Z   "containerimage.digest": "sha256:c13aa01479d2548de777d86033c6381c22e228a1d3120d9c99b8b7ab09d49564",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-13T10:01:32.8898072Z   "image.name": "***/***-server:1.4.11,***/***-server:latest"
+Build And Push Server Image	Publish summary	﻿2026-07-13T10:01:32.8961070Z ##[group]Run {
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8961620Z [36;1m{[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8961892Z [36;1m  echo "### Server Docker image published"[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8962214Z [36;1m  echo ""[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8962557Z [36;1m  echo "Image: \`***/***-server\`"[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8962905Z [36;1m  echo "Release tag: \`v1.4.11\`"[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8963215Z [36;1m  echo "Variant: \`default\`"[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8963530Z [36;1m  echo "Prerelease: \`false\`"[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8963805Z [36;1m  echo ""[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8964039Z [36;1m  echo "Published tags:"[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8964374Z [36;1m  echo "***/***-server:1.4.11[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8964790Z [36;1m***/***-server:latest" | sed 's/^/- `/' | sed 's/$/`/'[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.8965144Z [36;1m} >> "${GITHUB_STEP_SUMMARY}"[0m
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.9022623Z shell: /usr/bin/bash -e {0}
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.9022906Z env:
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.9023207Z   DEFAULT_IMAGE_NAME: ***/***-server
+Build And Push Server Image	Publish summary	2026-07-13T10:01:32.9023505Z ##[endgroup]

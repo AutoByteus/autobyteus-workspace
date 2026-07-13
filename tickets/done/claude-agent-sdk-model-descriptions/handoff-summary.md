@@ -7,7 +7,7 @@
 - Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions`
 - Finalization target: `personal` / `origin/personal`
 - Reviewed implementation commit: `456f6bc7d1b4510c67d31495e082c70acad0349a` (`fix(models): surface Claude SDK descriptions`)
-- Current state: User verified the macOS Electron handoff on 2026-07-13 and explicitly requested finalization plus a new release. The ticket is archived under `tickets/done/`; repository finalization and release `v1.4.11` are in progress.
+- Current state: User verified the macOS Electron handoff; the ticket was archived and finalized into `personal`; release `v1.4.11` was published; all five tag-triggered workflows completed successfully. Final worktree/branch cleanup is pending the durable release-record commit.
 
 ## User-Facing Change
 
@@ -108,6 +108,28 @@ Retained evidence directory:
 
 Because descriptions are live vendor data, exact wording may differ from prior evidence while the behavior remains correct.
 
+
+## Repository And Release Completion
+
+- Ticket finalization commit: `87de3b82b0b9c149535e432781bec30e3feff1aa` (`chore(ticket): finalize Claude SDK model descriptions`).
+- Ticket branch push: completed.
+- Merge into `personal`: fast-forwarded from `2f2ddc0b` to `87de3b82`; `origin/personal` push completed.
+- Release helper: `pnpm release 1.4.11 -- --branch codex/claude-agent-sdk-model-descriptions --release-notes tickets/done/claude-agent-sdk-model-descriptions/release-notes.md --no-push`.
+- Release commit: `ed08285f8a9c2230b10e92fa91a274fef64d47c1` (`chore(release): bump workspace release version to 1.4.11`).
+- Annotated tag: `v1.4.11`; tag object `26210b96874068bca98c8abab2ff3bdf498f5e7a`; target `ed08285f8a9c2230b10e92fa91a274fef64d47c1`.
+- `origin/personal`, the remote ticket branch, and tag target all reached the release commit before the delivery-record update.
+- GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.11` — published, non-draft, stable, with 21 assets.
+- Release workflows: all completed successfully:
+  - Desktop Release `29239754554`
+  - Android APK Release `29239754502`
+  - iOS App Store Connect Release `29239754431`
+  - Release Messaging Gateway `29239754421`
+  - Server Docker Release `29239754476`
+- Desktop artifacts cover macOS ARM64/x64, Windows x64, and Linux ARM64/x64; Android and messaging assets are attached to the GitHub release.
+- iOS build/test, secret validation, archive, and App Store Connect upload completed successfully.
+- Server Docker default multi-architecture image published for `linux/amd64` and `linux/arm64` as version `1.4.11` and `latest`, digest `sha256:c13aa01479d2548de777d86033c6381c22e228a1d3120d9c99b8b7ab09d49564`.
+- No duplicate manual workflow dispatch was run.
+
 ## Residual Notes
 
 - Four unrelated, pre-existing full-Nuxt failures were reproduced independently with zero overlap with implementation commit `456f6bc7`; all affected frontend coverage is clean.
@@ -132,6 +154,10 @@ Because descriptions are live vendor data, exact wording may differ from prior e
 - Release notes draft: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-notes.md`
 - macOS Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/electron-build-mac-report.md`
 - Delivery report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-deployment-report.md`
+- Release finalization evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-v1.4.11.log`
+- Release workflow status: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-workflow-status-v1.4.11.log`
+- GitHub release asset inventory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-assets-v1.4.11.json`
+- Server Docker release evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/server-docker-release-v1.4.11.log`
 
 ## Finalization Authorization
 
