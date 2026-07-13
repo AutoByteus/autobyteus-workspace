@@ -1,0 +1,18 @@
+$ git diff --name-only 456f6bc7^..456f6bc7 -- <four failing tests and owning implementation/localization paths>
+# no output above: implementation commit 456f6bc7 did not change the failing tests or their owning implementation/localization paths
+$ git show --name-only --format= 456f6bc7 | grep relevant
+autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-model-normalizer.ts
+autobyteus-server-ts/tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts
+autobyteus-ts/src/llm/models.ts
+autobyteus-web/components/agentTeams/SearchableGroupedSelect.vue
+autobyteus-web/components/agentTeams/__tests__/SearchableGroupedSelect.spec.ts
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+autobyteus-web/generated/graphql.ts
+autobyteus-web/graphql/queries/llm_provider_queries.ts
+autobyteus-web/stores/llmProviderConfig.ts
+tickets/in-progress/claude-agent-sdk-model-descriptions/design-review-report.md
+tickets/in-progress/claude-agent-sdk-model-descriptions/implementation-handoff.md
+tickets/in-progress/claude-agent-sdk-model-descriptions/investigation-notes.md
+tickets/in-progress/claude-agent-sdk-model-descriptions/proposed-design.md
+tickets/in-progress/claude-agent-sdk-model-descriptions/requirements.md
+tickets/in-progress/claude-agent-sdk-model-descriptions/ui-ux-spec.md

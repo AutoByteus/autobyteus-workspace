@@ -1,0 +1,6 @@
+$ cleanup owned API/E2E resources
+port 29741 free
+port 30741 free
+temporary Nuxt page removed
+temporary Playwright driver removed
+isolated server data directory removed

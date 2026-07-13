@@ -1,0 +1,46 @@
+{
+  "httpGraphql": "pass",
+  "descriptionSchemaType": {
+    "kind": "SCALAR",
+    "name": "String",
+    "ofType": null
+  },
+  "requiredAliases": [
+    {
+      "modelIdentifier": "default",
+      "name": "Default (recommended)",
+      "description": "Sonnet 5 · Efficient for routine tasks",
+      "value": "default",
+      "canonicalName": "default",
+      "providerId": "ANTHROPIC",
+      "runtime": "api"
+    },
+    {
+      "modelIdentifier": "sonnet",
+      "name": "Sonnet",
+      "description": "Sonnet 5 · Efficient for routine tasks",
+      "value": "sonnet",
+      "canonicalName": "sonnet",
+      "providerId": "ANTHROPIC",
+      "runtime": "api"
+    },
+    {
+      "modelIdentifier": "opus",
+      "name": "Opus",
+      "description": "Opus 4.8 · Best for everyday, complex tasks · ~2× usage vs Sonnet",
+      "value": "opus",
+      "canonicalName": "opus",
+      "providerId": "ANTHROPIC",
+      "runtime": "api"
+    },
+    {
+      "modelIdentifier": "haiku",
+      "name": "Haiku",
+      "description": "Haiku 4.5 · Fastest for quick answers",
+      "value": "haiku",
+      "canonicalName": "haiku",
+      "providerId": "ANTHROPIC",
+      "runtime": "api"
+    }
+  ]
+}

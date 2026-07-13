@@ -509,6 +509,17 @@ reasoning enabled by default but no supported off value, the UI can show
 **Thinking** on in a non-disable-capable state instead of emitting an unsupported
 off payload.
 
+Runtime-scoped model catalog rows can also carry an optional plain-text
+description independently from their display name and executable identifier.
+`useRuntimeScopedModelSelection` projects that metadata into the shared
+`SearchableGroupedSelect`: the open option list renders a wrapping secondary
+line and search matches the identifier, display/selected labels, and description
+case-insensitively. The closed control remains compact, and selection still
+emits only the model identifier. Null, empty, or whitespace-only descriptions
+fall back to the existing name-only row without a placeholder. Claude Agent SDK
+descriptions come from its live runtime catalog and must not be hard-coded in
+the frontend.
+
 Editable primary/global agent and team launch config initializes **Advanced**
 from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**
 by default so users can see defaults such as Codex `reasoning_effort: "medium"`
