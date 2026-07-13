@@ -1,23 +1,16 @@
-# Release Notes — Claude Agent SDK Model Descriptions
+## What's New
 
-## Summary
+- Added `autobyteus-docker destroy --name <node>` to safely remove one proven AutoByteus-managed Docker server node.
+- Added a copyable, localized targeted-node command to the Nodes > Docker Guide.
 
-Claude Agent SDK model pickers now show the live model descriptions supplied by Claude's runtime catalog, making alias, model/version, and intended-use guidance visible before selection.
+## Improvements
 
-## Highlights
-
-- Claude model descriptions flow through the shared model catalog and GraphQL contract as optional display metadata.
-- Runtime-scoped model selectors show descriptions as wrapping secondary text while keeping compact closed labels.
-- Search matches model identifiers, names, selected labels, and descriptions case-insensitively.
-- Selecting a model still emits and persists only the existing Claude alias identifier such as `default`, `sonnet`, `opus`, or `haiku`.
-- Models without descriptions keep the existing name-only presentation and remain selectable.
-- Description text is sourced from the live Claude Agent SDK catalog rather than hard-coded, so wording can reflect the current installed runtime and authenticated account.
+- Targeted destroy cleans matching launcher state, forgets stale state explicitly, preserves named volumes and host workspaces, and reuses the freed indexed slot on a later `new-container` invocation.
+- Target resolution now fails closed for ambiguous, conflicting, malformed, or unmanaged targets and keeps Docker Buildx infrastructure outside launcher ownership.
+- Docker documentation now distinguishes AutoByteus node removal from `docker buildx rm multi-platform-builder`.
 
 ## Validation
 
-- Live Claude SDK catalog and built GraphQL schema validation passed.
-- Real HTTP GraphQL validation passed against an isolated local server.
-- Desktop-width and narrow-width browser journeys passed for rendering, search, wrapping, selection identity, close/reopen, runtime changes, shared selectors, and name-only fallback.
-- Focused server/frontend regression suites and production builds passed.
-- A fresh macOS ARM64 Electron package with the integrated backend built successfully for local user verification.
-- Final API/E2E confidence: `96.9%`; proportional durable-test review passed with no findings.
+- Backend/Docker focused coverage: 11 tests passed, including a disposable real-Docker lifecycle probe.
+- Frontend focused coverage: 7 Vitest tests passed, with Nuxt prepare, localization/web boundary guards, literal audit, and diff checks passing.
+- PowerShell/Windows executable runtime and repository-wide baseline diagnostics remain documented environment limitations.
