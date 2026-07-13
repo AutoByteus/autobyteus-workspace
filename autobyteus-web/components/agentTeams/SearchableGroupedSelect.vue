@@ -47,11 +47,19 @@
                 v-for="item in group.items"
                 :key="item.id"
                 @click="selectItem(item.id)"
-                class="pl-6 pr-3 py-2 text-sm text-gray-800 dark:text-gray-200 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 flex items-center justify-between"
+                class="pl-6 pr-3 py-2 text-sm text-gray-800 dark:text-gray-200 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 flex items-start justify-between"
                 :class="{ 'bg-blue-100 dark:bg-blue-800': modelValue === item.id }"
               >
-                <span class="truncate">{{ item.name }}</span>
-                <svg v-if="modelValue === item.id" class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="min-w-0 flex-1">
+                  <span class="block truncate">{{ item.name }}</span>
+                  <span
+                    v-if="normalizedDescription(item)"
+                    class="mt-0.5 block whitespace-normal break-words text-xs leading-4 text-gray-500 dark:text-gray-400"
+                  >
+                    {{ normalizedDescription(item) }}
+                  </span>
+                </div>
+                <svg v-if="modelValue === item.id" class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 ml-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                 </svg>
               </li>
@@ -70,6 +78,7 @@ import { useLocalization } from '~/composables/useLocalization'
 export interface SelectItem {
   id: string
   name: string
+  description?: string | null
   selectedLabel?: string
 }
 
@@ -126,6 +135,11 @@ const triggerClass = computed(() => [
     : 'border border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100',
 ])
 
+const normalizedDescription = (item: SelectItem): string | null => {
+  const normalized = item.description?.trim()
+  return normalized || null
+}
+
 const updatePopoverPosition = () => {
   if (!isOpen.value || !wrapperRef.value) return
   const rect = wrapperRef.value.getBoundingClientRect()
@@ -157,7 +171,8 @@ const filteredOptions = computed(() => {
       items: group.items.filter((item) =>
         item.name.toLowerCase().includes(searchLower) ||
         item.id.toLowerCase().includes(searchLower) ||
-        item.selectedLabel?.toLowerCase().includes(searchLower),
+        item.selectedLabel?.toLowerCase().includes(searchLower) ||
+        normalizedDescription(item)?.toLowerCase().includes(searchLower),
       ),
     }))
     .filter((group) => group.items.length > 0)

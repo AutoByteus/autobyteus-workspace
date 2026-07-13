@@ -140,7 +140,7 @@ describe('LlmProviderResolver', () => {
   });
 
   it('returns provider objects for availableLlmProvidersWithModels', async () => {
-    mockLlmProviderService.listProvidersWithModels.mockResolvedValue([
+    mockLlmProviderService.listProvidersWithModels.mockImplementation(async (_runtimeKind, mapModel) => [
       {
         provider: {
           id: 'provider_gateway',
@@ -153,22 +153,22 @@ describe('LlmProviderResolver', () => {
           statusMessage: null,
         },
         models: [
-          {
-            modelIdentifier: 'openai-compatible:provider_gateway:model-a',
-            name: 'model-a',
+          mapModel({
+            model_identifier: 'openai-compatible:provider_gateway:model-a',
+            display_name: 'model-a',
+            description: 'Model A · Efficient for routine tasks',
             value: 'model-a',
-            canonicalName: 'model-a',
-            providerId: 'provider_gateway',
-            providerName: 'Internal Gateway',
-            providerType: 'OPENAI_COMPATIBLE',
+            canonical_name: 'model-a',
+            provider_id: 'provider_gateway',
+            provider_name: 'Internal Gateway',
+            provider_type: 'OPENAI_COMPATIBLE',
             runtime: 'openai_compatible',
-            hostUrl: 'https://gateway.example.com/v1',
-            configSchema: null,
-            maxContextTokens: null,
-            activeContextTokens: null,
-            maxInputTokens: null,
-            maxOutputTokens: null,
-          },
+            host_url: 'https://gateway.example.com/v1',
+            max_context_tokens: null,
+            active_context_tokens: null,
+            max_input_tokens: null,
+            max_output_tokens: null,
+          }),
         ],
       },
     ]);
@@ -188,6 +188,7 @@ describe('LlmProviderResolver', () => {
       providerId: 'provider_gateway',
       providerName: 'Internal Gateway',
       providerType: 'OPENAI_COMPATIBLE',
+      description: 'Model A · Efficient for routine tasks',
     }));
   });
 

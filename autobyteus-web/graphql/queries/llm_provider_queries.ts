@@ -25,6 +25,7 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         __typename
         modelIdentifier
         name
+        description
         value
         canonicalName
         providerId

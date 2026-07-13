@@ -33,6 +33,9 @@ class ModelDetail {
   @Field(() => String)
   name!: string;
 
+  @Field(() => String, { nullable: true })
+  description?: string | null;
+
   @Field(() => String)
   value!: string;
 
@@ -205,6 +208,7 @@ const clearGeminiModeFields = (mode: GeminiSetupMode): void => {
 const mapLlmModel = (model: ModelInfo): ModelDetail => ({
   modelIdentifier: model.model_identifier,
   name: model.display_name,
+  description: model.description ?? null,
   value: model.value,
   canonicalName: model.canonical_name,
   providerId: model.provider_id,

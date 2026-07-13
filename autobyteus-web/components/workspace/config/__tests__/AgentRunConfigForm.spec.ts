@@ -143,7 +143,7 @@ describe('AgentRunConfigForm', () => {
   it('populates provider-grouped model options for non-AutoByteus runtimes', async () => {
     setProviders([
       buildProviderRow('OPENAI', 'OpenAI', [
-        { modelIdentifier: 'gpt-4', name: 'GPT-4', value: 'gpt-4', canonicalName: 'gpt-4', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api' },
+        { modelIdentifier: 'gpt-4', name: 'GPT-4', description: 'GPT-4 · General purpose', value: 'gpt-4', canonicalName: 'gpt-4', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api' },
       ]),
     ])
 
@@ -162,6 +162,7 @@ describe('AgentRunConfigForm', () => {
     expect(options).toHaveLength(1)
     expect(options[0].label).toBe('OpenAI')
     expect(options[0].items[0].name).toBe('GPT-4')
+    expect(options[0].items[0].description).toBe('GPT-4 · General purpose')
     expect(options[0].items[0].selectedLabel).toBe('OpenAI / GPT-4')
   })
 

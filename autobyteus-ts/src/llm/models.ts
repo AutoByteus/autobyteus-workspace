@@ -29,6 +29,7 @@ export interface LLMModelOptions {
 export interface ModelInfo {
   model_identifier: string;
   display_name: string;
+  description?: string | null;
   value: string;
   canonical_name: string;
   provider_id: string;

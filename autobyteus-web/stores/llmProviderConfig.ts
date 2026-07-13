@@ -37,6 +37,7 @@ export interface LlmProviderRecord {
 export interface ModelInfo {
   modelIdentifier: string
   name: string
+  description?: string | null
   value: string
   canonicalName: string
   providerId: string
