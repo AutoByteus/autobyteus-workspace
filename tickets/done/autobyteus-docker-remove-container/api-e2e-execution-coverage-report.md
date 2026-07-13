@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-spec.md`
-- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/ui-ux-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/design-spec.md`
+- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/ui-ux-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md`
 - Current Execution Round: 2
 - Trigger: Frontend follow-up source review passed for commit `73f09e5c`
 - Prior Round Reviewed: Round 1 backend/Docker coverage and proportional durable test review
@@ -23,7 +23,7 @@
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md`
 - Investigation completed before durable coverage changes or final execution: Yes
 - Investigation plan followed: Yes. Durable fake-Docker matrix ran first; the planned real Docker probe then closed the daemon/volume boundary gap. PowerShell parser was attempted and honestly skipped because neither `pwsh` nor `powershell` is installed; an attempted Homebrew preview install could not complete because `sudo` required an interactive password.
 - Existing coverage decisions revised during execution, with evidence: The existing source-contract parity test was updated to cover targeted destroy invariants and public docs; no coverage was removed or classified stale.
@@ -50,14 +50,14 @@
 | API-005 | R-011; AC-011 | Checked state cleanup and partial failure | Bash launcher with filesystem failure injection | Durable | Pass | Focused unittest; container removed, state retained, nonzero partial-cleanup message, no rollback claim, no image cleanup. |
 | API-006 | R-002/R-009/R-012; AC-006/AC-008/AC-012 | Selector preflight, help, docs, Bash/PowerShell parity | Bash executable tests plus source-contract parity; PowerShell parser conditional | Durable | Pass for available evidence; parser skipped | Focused unittest, Bash syntax log, docs/source parity; PowerShell availability log records both runtimes unavailable. |
 | API-007 | R-002/R-005/R-006; AC-007 | Existing all-node destroy safety | Bash launcher with isolated fake Docker | Durable | Pass | Focused unittest; all managed nodes removed, unrelated container retained, no volume/prune call. |
-| LIVE-001 | R-001/R-003/R-004/R-005/R-006; AC-001–AC-003 | Real Docker labels, rm, state/status, image holder, named volume | Bash launcher against disposable real Docker resources | Live/Temporary | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/execution-evidence/real-docker-targeted-destroy.log`; no `codex-api-e2e-*` leftovers. |
+| LIVE-001 | R-001/R-003/R-004/R-005/R-006; AC-001–AC-003 | Real Docker labels, rm, state/status, image holder, named volume | Bash launcher against disposable real Docker resources | Live/Temporary | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/execution-evidence/real-docker-targeted-destroy.log`; no `codex-api-e2e-*` leftovers. |
 | PS-001 | R-009; AC-008 | PowerShell parser/runtime | `pwsh` conditional test | Not Tested | Not Tested (environment unavailable) | `powershell-parser.log` is an honest skip; source parity evidence remains passing. |
 
 ## Additional Repository Coverage Execution
 
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `bash -n scripts/public/docker/autobyteus-docker.sh scripts/public/docker/autobyteus-docker.d/bash/{core.sh,docker-runtime.sh,commands.sh}` | Task worktree | Bash syntax | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/execution-evidence/bash-syntax.log` |
+| 1 | `bash -n scripts/public/docker/autobyteus-docker.sh scripts/public/docker/autobyteus-docker.d/bash/{core.sh,docker-runtime.sh,commands.sh}` | Task worktree | Bash syntax | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/execution-evidence/bash-syntax.log` |
 | 2 | `python3 -m py_compile scripts/tests/test_public_docker_launcher_shared_workspace.py` | Task worktree, Python 3.9.6 | Test syntax | Pass | `.../execution-evidence/python-compile.log` |
 | 3 | Focused unittest command covering 11 targeted tests | Task worktree; fake Docker | Durable targeted coverage, parity, docs | Pass | `.../execution-evidence/focused-unittest.log` |
 | 4 | `python3 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace` | Task worktree; Python 3.9.6 | Full launcher regression suite | Fail with baseline debt only | `.../execution-evidence/full-unittest.log`; 27 passed, 2 skipped, 2 pre-existing failures, 1 pre-existing error. |
@@ -144,7 +144,7 @@ None.
 ## Durable Coverage Changed In The Codebase
 
 - Repository-resident durable coverage added, updated, or removed this round: Yes
-- Paths added or updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/scripts/tests/test_public_docker_launcher_shared_workspace.py`
+- Paths added or updated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/tests/test_public_docker_launcher_shared_workspace.py`
 - Paths removed: None
 - Added or updated paths attached for proportional test-code review: Yes
 - Diff or repository evidence supplied for removed paths: N/A
@@ -153,12 +153,12 @@ None.
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/execution-evidence/focused-unittest.log` | Focused durable coverage output | Retained evidence | 11 tests passed. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/execution-evidence/full-unittest.log` | Full suite output | Retained evidence | Baseline failures/error documented above. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/execution-evidence/real-docker-targeted-destroy.sh` | Temporary real-Docker probe | Retained for reproducibility; resources cleaned | Uses unique names and cleanup trap. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/execution-evidence/real-docker-targeted-destroy.log` | Real-Docker output | Retained evidence | Exit 0; cleanup verified. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/execution-evidence/powershell-availability.log` | PowerShell availability | Retained evidence | Both runtimes unavailable. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/execution-evidence/powershell-preview-install.log` | Environment setup attempt | Retained evidence | Installation failed only because interactive sudo was unavailable. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/execution-evidence/focused-unittest.log` | Focused durable coverage output | Retained evidence | 11 tests passed. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/execution-evidence/full-unittest.log` | Full suite output | Retained evidence | Baseline failures/error documented above. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/execution-evidence/real-docker-targeted-destroy.sh` | Temporary real-Docker probe | Retained for reproducibility; resources cleaned | Uses unique names and cleanup trap. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/execution-evidence/real-docker-targeted-destroy.log` | Real-Docker output | Retained evidence | Exit 0; cleanup verified. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/execution-evidence/powershell-availability.log` | PowerShell availability | Retained evidence | Both runtimes unavailable. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/execution-evidence/powershell-preview-install.log` | Environment setup attempt | Retained evidence | Installation failed only because interactive sudo was unavailable. |
 
 ## Temporary Execution Methods / Scaffolding
 
@@ -237,7 +237,7 @@ No implementation, design, requirement, fixture, or execution failure was found.
 
 ## Investigation And Execution Basis
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md`, Frontend Follow-up Round 2.
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md`, Frontend Follow-up Round 2.
 - Investigation completed before final execution: Yes.
 - Investigation plan followed: Yes. Nuxt setup, focused utility/component tests, web/localization guards, localization audit, diagnostic TypeScript/full Nuxt checks, and browser decision were executed.
 - Existing coverage decisions revised during execution: None. Both changed frontend test files remain valid; no stale coverage was removed.
@@ -268,7 +268,7 @@ No implementation, design, requirement, fixture, or execution failure was found.
 
 | Order | Command | Working Directory / Configuration | Boundary / Scenario | Result | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm exec nuxt prepare` | `autobyteus-web`, Node 22/pnpm 10 | Nuxt generated setup/types | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/nuxt-prepare.log` |
+| 1 | `pnpm exec nuxt prepare` | `autobyteus-web`, Node 22/pnpm 10 | Nuxt generated setup/types | Pass | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/nuxt-prepare.log` |
 | 2 | `pnpm exec vitest run utils/__tests__/dockerNodeLauncherCommands.spec.ts components/settings/__tests__/DockerNodeStartGuideCard.spec.ts --config vitest.config.mts` | `autobyteus-web` | FE-001–FE-004 | Pass — 2 files, 7 tests | `.../focused-vitest.log` |
 | 3 | `pnpm guard:localization-boundary` | `autobyteus-web` | Locale boundary restrictions | Pass | `.../guard-localization-boundary.log` |
 | 4 | `pnpm guard:web-boundary` | `autobyteus-web` | No forbidden web/runtime boundary leak | Pass | `.../guard-web-boundary.log` |
@@ -355,8 +355,8 @@ None.
 
 - Repository-resident durable coverage added, updated, or removed this round: Yes, in the frontend implementation commit; no additional durable test edit was made during this API/E2E stage.
 - Paths added or updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
 - Paths removed: None.
 - Added/updated paths attached for proportional test-code review: Yes.
 - Removed-path evidence: N/A.
@@ -365,15 +365,15 @@ None.
 
 | Artifact Path | Type / Purpose | Retained / Temporary | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/focused-vitest.log` | Focused frontend test output | Retained evidence | 7 tests passed. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/nuxt-prepare.log` | Nuxt setup output | Retained evidence | Types generated; exit 0. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/guard-localization-boundary.log` | Localization guard output | Retained evidence | Passed. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/guard-web-boundary.log` | Web-boundary guard output | Retained evidence | Passed. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/audit-localization-literals.log` | Localization audit output | Retained evidence | Passed with non-blocking Node warning. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/tsc.log` | Repository type diagnostic | Retained evidence | Baseline failure; no follow-up-specific production error. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/full-nuxt-vitest.log` | Full Nuxt test output | Retained evidence | Baseline failure; 350 passed, 5 failed, 1 skipped files. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/full-nuxt-vitest.result` | Full-suite result summary | Retained evidence | Explicit exit/count summary and no changed-path failure. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/frontend-execution-evidence/git-diff-check.log` | Diff hygiene | Retained evidence | Passed. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/focused-vitest.log` | Focused frontend test output | Retained evidence | 7 tests passed. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/nuxt-prepare.log` | Nuxt setup output | Retained evidence | Types generated; exit 0. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/guard-localization-boundary.log` | Localization guard output | Retained evidence | Passed. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/guard-web-boundary.log` | Web-boundary guard output | Retained evidence | Passed. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/audit-localization-literals.log` | Localization audit output | Retained evidence | Passed with non-blocking Node warning. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/tsc.log` | Repository type diagnostic | Retained evidence | Baseline failure; no follow-up-specific production error. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/full-nuxt-vitest.log` | Full Nuxt test output | Retained evidence | Baseline failure; 350 passed, 5 failed, 1 skipped files. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/full-nuxt-vitest.result` | Full-suite result summary | Retained evidence | Explicit exit/count summary and no changed-path failure. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/frontend-execution-evidence/git-diff-check.log` | Diff hygiene | Retained evidence | Passed. |
 
 ## Temporary Execution Methods / Scaffolding
 

@@ -4,11 +4,11 @@
 
 - Review Round: `2`
 - Trigger: Successful frontend API/E2E coverage handoff for follow-up commit `73f09e5c`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/requirements.md`
-- Supplemental Solution Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/ui-ux-spec.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md` (cumulative; frontend follow-up Round 2)
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/api-e2e-execution-coverage-report.md` (cumulative; frontend follow-up Round 2)
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/requirements.md`
+- Supplemental Solution Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/ui-ux-spec.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/api-e2e-coverage-investigation.md` (cumulative; frontend follow-up Round 2)
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/api-e2e-execution-coverage-report.md` (cumulative; frontend follow-up Round 2)
 - API/E2E Result: `Pass` for backend/Docker and frontend static/component scopes; frontend broader browser/live API validation was correctly `Not Required`
 - Final Validation Confidence: `94.3%` for the frontend follow-up; prior backend/Docker confidence remains `94.5%`
 - Prior unresolved test-review findings rechecked: `None`
@@ -61,7 +61,7 @@ None. Both durable test-review rounds pass. The frontend tests are isolated, det
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Changed durable test paths reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/scripts/tests/test_public_docker_launcher_shared_workspace.py`, `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
+- Changed durable test paths reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/tests/test_public_docker_launcher_shared_workspace.py`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`, and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
 - Unresolved finding IDs: `None`
 - Recommended Recipient: `delivery_engineer`
 - Notes: Backend/Docker focused durable coverage passed 11 tests and the real-Docker probe passed; frontend focused Vitest passed 7 tests with Nuxt prepare and boundary/literal guards. No test-code findings exist. PowerShell/Windows runtime and inherited browser clipboard/visual behavior remain explicitly documented residuals, not test-code defects. The complete cumulative package is ready for delivery-stage integration/docs review.

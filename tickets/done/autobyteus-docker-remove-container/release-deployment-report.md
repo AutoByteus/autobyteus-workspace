@@ -2,11 +2,11 @@
 
 ## Release / Publication / Deployment Scope
 
-Finalization and release are now in scope. The user explicitly verified the handoff and requested a new release version. The recorded next stable version is `1.4.12`, released through the repository's `scripts/desktop-release.sh` helper after repository finalization.
+Finalization and release completed after explicit user verification. The workspace release `1.4.12` was created and pushed through the repository's `scripts/desktop-release.sh` helper.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: The user verified the cumulative runtime/frontend delivery and requested finalization plus a new release. Release notes were created before archival.
 
@@ -36,7 +36,7 @@ Finalization and release are now in scope. The user explicitly verified the hand
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: In-app Docker Guide command catalog plus English/Simplified Chinese settings catalogs in `73f09e5c`; canonical Docker READMEs were updated in `39d4bb4c` and rechecked.
 - No-impact rationale: No additional project Markdown edit was needed because the frontend guide is the required long-lived discoverability update.
@@ -44,31 +44,33 @@ Finalization and release are now in scope. The user explicitly verified the hand
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes` — archived before the final delivery commit.
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container` and is now authoritative.
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container` and is now authoritative.
 
 ## Version / Tag / Release Commit
 
 - Planned release version: `1.4.12`
 - Current synchronized package version before release: `1.4.11`
+- Release commit: `1b7ab459f935d12c6580ae0deff859497a46da91` (`chore(release): bump workspace release version to 1.4.12`)
+- Release tag: `v1.4.12` (`6f89403ca583ce2156be2604bfda2df048b67a89`)
 - Release helper: `pnpm release 1.4.12 -- --release-notes tickets/done/autobyteus-docker-remove-container/release-notes.md`
 - Expected release tag: `v1.4.12`
 - Release helper will bump `autobyteus-web/package.json`, `autobyteus-message-gateway/package.json`, synchronize the curated notes and managed messaging manifest, commit the release, create the tag, and push the target branch/tag.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
 - Ticket branch: `codex/autobyteus-docker-remove-container`
-- Ticket branch commit result: Pending archive/final delivery commit.
-- Ticket branch push result: Pending; push after final delivery commit and before target merge.
+- Ticket branch commit result: `Completed` — `65570a3eee054291125040befd61337c90b7d1f4` (`chore(delivery): finalize docker node removal`).
+- Ticket branch push result: `Completed` — pushed `origin/codex/autobyteus-docker-remove-container` before target merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`; target did not advance.
 - Re-integration before final merge result: `Not needed`; branch already includes the latest target base.
-- Target branch update result: Pending ticket-branch push and merge.
-- Merge into target result: Pending.
-- Push target branch result: Pending.
-- Repository finalization status: In progress after user verification.
+- Target branch update result: `Completed` — target was current at `1d3cbe3cdc9c29962392f1189490ddcf95c823f8` before merge.
+- Merge into target result: `Completed` — merge commit `edd08e95c24026be6e89bef6851197dccd5fa5a6` (`merge: docker node removal`).
+- Push target branch result: `Completed` — `origin/personal` now points to `edd08e95` before the release commit, then to `1b7ab459`.
+- Repository finalization status: `Completed` after user verification.
 - Blocker (if applicable): None.
 
 ## Release / Publication / Deployment
@@ -76,17 +78,17 @@ Finalization and release are now in scope. The user explicitly verified the hand
 - Applicable: `Yes`
 - Method: `Release Script`
 - Method reference / command: `pnpm release 1.4.12 -- --release-notes tickets/done/autobyteus-docker-remove-container/release-notes.md`
-- Release/publication/deployment result: Pending repository finalization and release-helper execution.
-- Release notes handoff result: `Used` — ticket-local notes created before verification and will be archived before the helper runs.
+- Release/publication/deployment result: `Completed` — release helper bumped synchronized package versions, synced curated notes and the managed messaging manifest, created the tag, pushed the branch and tag, and triggered the documented tag workflows.
+- Release notes handoff result: `Used` — archived notes were passed to the release helper.
 - Blocker (if applicable): None.
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container`
-- Worktree cleanup result: Pending successful target push and release preparation.
-- Worktree prune result: Pending successful target push and release preparation.
-- Local ticket branch cleanup result: Pending successful target merge.
-- Remote branch cleanup result: Pending successful target merge; delete the ticket branch after finalization.
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Worktree cleanup result: `Completed` — removed the dedicated worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container` after target/release finalization.
+- Worktree prune result: `Completed` — pruned stale worktree metadata.
+- Local ticket branch cleanup result: `Completed` — deleted `codex/autobyteus-docker-remove-container` after merge.
+- Remote branch cleanup result: `Completed` — deleted `origin/codex/autobyteus-docker-remove-container` after target push.
 - Blocker (if applicable): None.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
@@ -97,9 +99,9 @@ Finalization and release are now in scope. The user explicitly verified the hand
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `Yes` — `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/release-notes.md`
-- Archived release notes artifact used for release/publication: Pending archive.
-- Release notes status: `Updated`
+- Release notes artifact created before verification: `Yes` — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/release-notes.md`
+- Release notes status: `Used`
 
 ## Deployment Steps
 
@@ -119,7 +121,7 @@ Finalization and release are now in scope. The user explicitly verified the hand
 
 ## Verification Checks
 
-- Finalization-target refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/delivery-evidence/integration-refresh.txt`
+- Finalization-target refresh evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/delivery-evidence/integration-refresh.txt`
 - Runtime implementation source review Round 1 and frontend follow-up Round 2: Pass, no findings.
 - Backend/Docker focused durable execution: 11 passed; real-Docker probe passed and cleaned resources.
 - Frontend focused durable execution: 7 Vitest tests passed; Nuxt prepare, localization/web boundary guards, literal audit, and diff checks passed.
@@ -127,7 +129,7 @@ Finalization and release are now in scope. The user explicitly verified the hand
 - PowerShell/Windows runtime: unavailable; explicitly recorded as residual uncertainty.
 - Full Nuxt/TypeScript diagnostics: known repository baseline debt; no task-specific changed-path failure.
 - Broader browser/live API validation: Not Required for the static catalog/localization addition.
-- Pre-finalization record integrity: Pending final scan after archival and commits.
+- Pre-finalization record integrity: Passed before archival; final delivery/release record update is being committed on the finalized target.
 
 ## Rollback Criteria
 
@@ -138,4 +140,4 @@ Finalization and release are now in scope. The user explicitly verified the hand
 
 ## Final Status
 
-`Finalization in progress after explicit user verification; release 1.4.12 is prepared and awaits repository merge, release-helper execution, workflow evidence, and cleanup.`
+`Finalized: ticket archived, target branch updated and pushed, release v1.4.12/tag pushed, and ticket worktree/branches cleaned up.`

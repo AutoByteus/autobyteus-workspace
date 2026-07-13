@@ -17,7 +17,7 @@ The request concerns the public launcher under `scripts/public/docker`, includin
 Repository setup is isolated in a dedicated worktree before investigation:
 
 - Repository: `autobyteus-workspace-superrepo`
-- Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container`
+- Task worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Task branch: `codex/autobyteus-docker-remove-container`
 - Base: `origin/personal`
 - Expected finalization target: `personal`

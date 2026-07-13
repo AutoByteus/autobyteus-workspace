@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/design-spec.md`
 - Supplemental solution artifacts: None
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-review-report.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/design-review-report.md`
 
 ## What Changed
 
@@ -25,16 +25,16 @@ Implemented the reviewed targeted managed-node destroy lifecycle for Bash and Po
 
 ## Key Files Or Areas
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/scripts/public/docker/autobyteus-docker.d/bash/commands.sh`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/scripts/public/docker/autobyteus-docker.d/bash/core.sh`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/scripts/tests/test_public_docker_launcher_shared_workspace.py`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/README.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-server-ts/README.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-server-ts/docker/README.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/public/docker/autobyteus-docker.d/bash/commands.sh`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/public/docker/autobyteus-docker.d/bash/core.sh`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/tests/test_public_docker_launcher_shared_workspace.py`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/README.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docker/README.md`
 
 ## Important Assumptions
 
@@ -81,7 +81,7 @@ Implemented the reviewed targeted managed-node destroy lifecycle for Bash and Po
 
 ## Environment Or Dependency Notes
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/autobyteus-docker-remove-container`
 - Base: `origin/personal`
 - `pwsh` is unavailable locally.
@@ -127,11 +127,11 @@ Architecture review round 4 passed the approved follow-up scope. Implemented onl
 
 ### Frontend Follow-up Files
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/dockerNodeLauncherCommands.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/localization/messages/en/settings.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/localization/messages/zh-CN/settings.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/dockerNodeLauncherCommands.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/en/settings.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/zh-CN/settings.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
 
 ### Frontend Follow-up Checks
 

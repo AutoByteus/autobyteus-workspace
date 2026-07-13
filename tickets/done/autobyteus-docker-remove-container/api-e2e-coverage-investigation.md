@@ -2,13 +2,13 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-spec.md`
-- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/ui-ux-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/design-spec.md`
+- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/ui-ux-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/code-review-report.md`
 - Current Investigation Round: 2
 - Trigger: Frontend follow-up source review passed for implementation commit `73f09e5c`
 - Prior Investigation Reviewed: Round 1 backend/Docker coverage investigation and execution
@@ -50,7 +50,7 @@ Critical acceptance criteria are AC-001 through AC-012, with AC-010 covering dup
 
 ## Project Execution Discovery
 
-- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container`
+- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Project type and runtime stack: POSIX Bash/PowerShell public CLI modules, Docker CLI, Python `unittest` fake-Docker harness.
 - Conflicting, missing, or unclear project instructions: No task-specific `AGENTS.md` applies under `scripts/`; root README and `autobyteus-server-ts` Docker docs are the applicable operational guidance. `pwsh` is not installed in this environment. Python is 3.9.6, so the documented baseline `zip(..., strict=True)` error is expected and unrelated.
 - Required environment variables or secrets available: N/A; isolated tests set `HOME`, `AUTOBYTEUS_DOCKER_STATE_DIR`, `AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR`, `FAKE_DOCKER_ROOT`, and a test-only `PATH`.
@@ -228,11 +228,11 @@ None. The approved requirements and design specify all targeted resolver cases, 
 - Trigger: Frontend implementation source review passed for commit `73f09e5c`, code review Round 2.
 - Reviewed upstream supplement: `ui-ux-spec.md`, approved for the static Nodes -> Docker Guide follow-up.
 - Frontend changed paths:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/dockerNodeLauncherCommands.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/localization/messages/en/settings.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/localization/messages/zh-CN/settings.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/dockerNodeLauncherCommands.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/en/settings.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/zh-CN/settings.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts`
 
 ## Frontend Requirement And Design Basis
 
@@ -255,7 +255,7 @@ The UI supplement defines a static data flow: typed command catalog -> existing 
 
 ## Project Execution Discovery — Frontend
 
-- Applicable instructions: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web/AGENTS.md`.
+- Applicable instructions: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/AGENTS.md`.
 - Project/runtime: Nuxt/Vue 3, TypeScript, Vitest 3, Vue Test Utils, happy-dom/jsdom test environment, pnpm 10.
 - Authoritative commands from the instructions and implementation handoff:
   - `pnpm exec nuxt prepare`
@@ -264,7 +264,7 @@ The UI supplement defines a static data flow: typed command catalog -> existing 
   - `pnpm guard:web-boundary`
   - `pnpm audit:localization-literals`
   - `pnpm exec tsc --noEmit --pretty false` (diagnostic repository-wide gate; known noisy baseline)
-- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/autobyteus-web`.
+- Working directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web`.
 - Available setup: `node_modules` exists under `autobyteus-web`; no service, account, fixture, secret, or database is required.
 - Cleanup: commands are repository-local and do not start a persistent service or mutate user data.
 

@@ -6,7 +6,7 @@
 - Trigger: Delivery-stage refresh after the frontend Docker Guide follow-up, implementation source review Round 2, and cumulative proportional durable test-code review Round 2 passed.
 - Bootstrap base reference: `origin/personal` at `1d3cbe3cdc9c29962392f1189490ddcf95c823f8`
 - Integrated base reference used for docs sync: `origin/personal` at `1d3cbe3cdc9c29962392f1189490ddcf95c823f8`; the ticket branch remained current, so no merge/rebase was required.
-- Post-integration verification reference: cumulative `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/api-e2e-execution-coverage-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-docker-remove-container/tickets/done/autobyteus-docker-remove-container/api-e2e-test-review-report.md`; backend/Docker checks and the frontend static/component follow-up checks passed.
+- Post-integration verification reference: cumulative `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/api-e2e-execution-coverage-report.md` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-docker-remove-container/api-e2e-test-review-report.md`; backend/Docker checks and the frontend static/component follow-up checks passed.
 
 ## Why Docs Were Updated
 
