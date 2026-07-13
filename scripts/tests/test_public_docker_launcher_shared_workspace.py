@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Optional
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -33,6 +34,180 @@ MAX_PUBLIC_LAUNCHER_SOURCE_LINES = 500
 
 
 class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
+    def test_targeted_destroy_removes_only_selected_node_and_keeps_workspaces(self) -> None:
+        with fake_docker_environment() as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            shared_root = Path(env["AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR"])
+            selected_container = Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "autobyteus-server-1"
+            selected_state = state_path(env, "autobyteus-server-1")
+            selected_workspace = shared_root / "nodes" / "autobyteus-server-1"
+
+            result = run_launcher(env, "destroy", "--name", "AUTOBYTEUS_server_1")
+
+            self.assertIn("Removed managed container autobyteus-server-1", result.stdout)
+            self.assertIn("Named volumes and host workspaces were kept", result.stdout)
+            self.assertFalse(selected_container.exists())
+            self.assertFalse(selected_state.exists())
+            self.assertTrue((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "autobyteus-server-0").exists())
+            self.assertTrue(state_path(env, "autobyteus-server-0").exists())
+            self.assertTrue(selected_workspace.is_dir())
+
+            status = run_launcher(env, "status").stdout
+            self.assertIn("autobyteus-server-0", status)
+            self.assertNotIn("autobyteus-server-1", status)
+            self.assertNotIn("missing", status)
+            assert_no_volume_or_prune_calls(self, env)
+            rm_calls = [record for record in read_call_records(env) if record[:1] == ["rm"]]
+            self.assertIn(["rm", "-f", "autobyteus-server-1"], rm_calls)
+            self.assertNotIn(["rm", "-f", "autobyteus-server-0"], rm_calls)
+
+    def test_stale_targeted_destroy_forgets_state_and_reuses_lowest_free_slot(self) -> None:
+        with fake_docker_environment() as env:
+            for _ in range(5):
+                run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            write_node_state(env, "autobyteus-server-5", "autobyteus-server-5")
+
+            before = run_launcher(env, "status").stdout
+            self.assertIn("autobyteus-server-5", before)
+            self.assertIn("missing", before)
+
+            result = run_launcher(env, "destroy", "--name", "autobyteus-server-5")
+
+            self.assertIn("already absent; forgetting its stale launcher state", result.stdout)
+            self.assertFalse(state_path(env, "autobyteus-server-5").exists())
+            after = run_launcher(env, "status").stdout
+            self.assertNotIn("autobyteus-server-5", after)
+            self.assertNotIn("missing", after)
+
+            recreated = run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            self.assertIn("Started autobyteus-server-5", recreated.stdout)
+            self.assertTrue(state_path(env, "autobyteus-server-5").exists())
+
+    def test_label_only_targeted_destroy_allows_one_exact_managed_candidate(self) -> None:
+        with fake_docker_environment() as env:
+            write_fake_container(env, "container-for-label-only", "autobyteus-server-9")
+
+            result = run_launcher(env, "destroy", "--name", "autobyteus-server-9")
+
+            self.assertIn("Removed managed container container-for-label-only", result.stdout)
+            self.assertFalse((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "container-for-label-only").exists())
+            self.assertFalse(state_path(env, "autobyteus-server-9").exists())
+
+    def test_targeted_destroy_refuses_unknown_buildx_and_unmanaged_name_collisions(self) -> None:
+        with fake_docker_environment() as env:
+            write_fake_container(
+                env,
+                "buildx_buildkit_multi-platform-builder0",
+                "buildx_buildkit_multi-platform-builder0",
+                launcher_label="",
+            )
+            write_node_state(env, "autobyteus-server-7", "autobyteus-server-7")
+            write_fake_container(env, "autobyteus-server-7", "autobyteus-server-7", launcher_label="")
+
+            for node_name in ("buildx_buildkit_multi-platform-builder0", "unknown-node"):
+                with self.subTest(node_name=node_name):
+                    result = run_launcher_unchecked(env, "destroy", "--name", node_name)
+                    self.assertNotEqual(0, result.returncode)
+                    self.assertIn("only managed server nodes can be destroyed", result.stderr)
+
+            collision = run_launcher_unchecked(env, "destroy", "--name", "autobyteus-server-7")
+            self.assertNotEqual(0, collision.returncode)
+            self.assertIn("not proven to be launcher-managed", collision.stderr)
+            self.assertTrue(state_path(env, "autobyteus-server-7").exists())
+            self.assertTrue((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "autobyteus-server-7").exists())
+            self.assertTrue((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "buildx_buildkit_multi-platform-builder0").exists())
+            assert_no_rm_calls(self, env)
+
+    def test_targeted_destroy_refuses_duplicate_candidates_and_state_label_disagreement(self) -> None:
+        with fake_docker_environment() as env:
+            write_fake_container(env, "duplicate-a", "autobyteus-server-8")
+            write_fake_container(env, "duplicate-b", "autobyteus-server-8")
+
+            duplicate = run_launcher_unchecked(env, "destroy", "--name", "autobyteus-server-8")
+            self.assertNotEqual(0, duplicate.returncode)
+            self.assertIn("multiple managed containers carry the exact launcher and node labels", duplicate.stderr)
+            self.assertTrue((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "duplicate-a").exists())
+            self.assertTrue((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "duplicate-b").exists())
+            assert_no_rm_calls(self, env)
+
+            write_node_state(env, "autobyteus-server-10", "state-container")
+            write_fake_container(env, "state-container", "different-node")
+            write_fake_container(env, "label-container", "autobyteus-server-10")
+
+            disagreement = run_launcher_unchecked(env, "destroy", "--name", "autobyteus-server-10")
+            self.assertNotEqual(0, disagreement.returncode)
+            self.assertIn("state and Docker labels disagree", disagreement.stderr)
+            self.assertTrue(state_path(env, "autobyteus-server-10").exists())
+            self.assertTrue((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "state-container").exists())
+            self.assertTrue((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "label-container").exists())
+            assert_no_rm_calls(self, env)
+
+    def test_targeted_destroy_refuses_malformed_and_mismatched_state(self) -> None:
+        with fake_docker_environment() as env:
+            malformed = state_path(env, "autobyteus-server-11")
+            malformed.parent.mkdir(parents=True)
+            malformed.write_text("NODE_NAME='unclosed\n", encoding="utf-8")
+            malformed_result = run_launcher_unchecked(env, "destroy", "--name", "autobyteus-server-11")
+            self.assertNotEqual(0, malformed_result.returncode)
+            self.assertIn("launcher state is malformed", malformed_result.stderr)
+            self.assertTrue(malformed.exists())
+
+            write_node_state(env, "autobyteus-server-12", "container-12", node_name_field="other-node")
+            mismatched_result = run_launcher_unchecked(env, "destroy", "--name", "autobyteus-server-12")
+            self.assertNotEqual(0, mismatched_result.returncode)
+            self.assertIn("state does not identify that node", mismatched_result.stderr)
+            self.assertTrue(state_path(env, "autobyteus-server-12").exists())
+            assert_no_rm_calls(self, env)
+
+    def test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails(self) -> None:
+        with fake_docker_environment() as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            nodes_dir = state_path(env, "autobyteus-server-0").parent
+            nodes_dir.chmod(0o500)
+            try:
+                result = run_launcher_unchecked(env, "destroy", "--name", "autobyteus-server-0")
+            finally:
+                nodes_dir.chmod(0o700)
+
+            self.assertNotEqual(0, result.returncode)
+            self.assertIn("Partial cleanup for autobyteus-server-0", result.stderr)
+            self.assertIn("No rollback was attempted", result.stderr)
+            self.assertTrue(state_path(env, "autobyteus-server-0").exists())
+            self.assertFalse((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "autobyteus-server-0").exists())
+            self.assertFalse(any(record[:2] == ["image", "rm"] for record in read_call_records(env)))
+
+    def test_destroy_all_remains_explicit_and_volume_safe(self) -> None:
+        with fake_docker_environment() as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            write_fake_container(env, "unrelated-container", "unrelated-node", launcher_label="")
+
+            result = run_launcher(env, "destroy", "--all")
+
+            self.assertIn("Removed managed container autobyteus-server-0", result.stdout)
+            self.assertIn("Removed managed container autobyteus-server-1", result.stdout)
+            self.assertFalse((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "autobyteus-server-0").exists())
+            self.assertFalse((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "autobyteus-server-1").exists())
+            self.assertTrue((Path(env["FAKE_DOCKER_ROOT"]) / "containers" / "unrelated-container").exists())
+            self.assertFalse(any(state_path(env, node).exists() for node in ("autobyteus-server-0", "autobyteus-server-1")))
+            assert_no_volume_or_prune_calls(self, env)
+
+    def test_destroy_selector_preflight_happens_before_state_or_docker_setup(self) -> None:
+        invalid_forms = (
+            ("destroy",),
+            ("destroy", "--all", "--name", "autobyteus-server-0"),
+            ("destroy", "--name"),
+            ("destroy", "--name", "autobyteus-server-0", "extra"),
+            ("destroy", "--name", "!!!"),
+        )
+        for args in invalid_forms:
+            with self.subTest(args=args), fake_docker_environment() as env:
+                result = run_launcher_unchecked(env, *args)
+                self.assertNotEqual(0, result.returncode)
+                self.assertFalse(Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]).exists())
+                self.assertEqual([], read_call_records_or_empty(env))
+
     def test_new_container_adds_bind_mounts_without_removing_named_volumes(self) -> None:
         with fake_docker_environment() as env:
             shared_root = Path(env["AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR"])
@@ -468,10 +643,26 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("workspace apply", text)
             self.assertIn("storage", text)
             self.assertIn("type=bind,source=", text)
+            self.assertIn("destroy --name <node>", text)
+            self.assertIn("multiple managed containers carry the exact launcher and node labels", text)
+            self.assertIn("launcher state and Docker labels disagree", text)
+            self.assertIn("Partial cleanup", text)
+            self.assertIn("No rollback", text)
         self.assertIn("image_ref_override_explicit", bash_text)
         self.assertIn("upgrade_image_ref_for_node", bash_text)
         self.assertIn("imageRefOverrideExplicit", powershell_text)
         self.assertIn("Get-UpgradeImageRefForNode", powershell_text)
+        self.assertIn("exact_managed_container_names", bash_text)
+        self.assertIn("Get-ExactManagedContainerNames", powershell_text)
+        self.assertIn("remove_state_file_checked", bash_text)
+        self.assertIn("Remove-NodeStateChecked", powershell_text)
+
+    def test_public_docker_docs_keep_targeted_destroy_and_buildx_ownership_boundary(self) -> None:
+        for path in (REPO_ROOT / "README.md", REPO_ROOT / "autobyteus-server-ts/README.md", REPO_ROOT / "autobyteus-server-ts/docker/README.md"):
+            with self.subTest(path=path.relative_to(REPO_ROOT)):
+                text = path.read_text(encoding="utf-8")
+                self.assertIn("autobyteus-docker destroy --name", text)
+                self.assertIn("docker buildx rm multi-platform-builder", text)
 
     def test_public_launcher_source_files_stay_within_reviewable_size_guard(self) -> None:
         for path in PUBLIC_LAUNCHER_SOURCES:
@@ -505,6 +696,59 @@ def read_state_value(state_text: str, key: str) -> str:
     raise AssertionError(f"state key not found: {key}")
 
 
+def state_path(env: dict[str, str], node_name: str) -> Path:
+    return Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]) / "nodes" / f"{node_name}.env"
+
+
+def write_node_state(
+    env: dict[str, str],
+    node_name: str,
+    container_name: str,
+    node_name_field: Optional[str] = None,
+) -> None:
+    path = state_path(env, node_name)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "\n".join(
+            (
+                f"NODE_NAME={node_name_field or node_name}",
+                f"CONTAINER_NAME={container_name}",
+                "BACKEND_PORT=8001",
+                "VNC_PORT=5908",
+                "NOVNC_PORT=6080",
+                "DEBUG_PORT=9228",
+                "IMAGE_REF=autobyteus/test:v1",
+                "CREATED_AT=2026-07-13T00:00:00Z",
+                "CONFIG_HASH=fake-config-hash",
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def write_fake_container(
+    env: dict[str, str],
+    container_name: str,
+    node_name: str,
+    launcher_label: str = "server-docker",
+) -> None:
+    path = Path(env["FAKE_DOCKER_ROOT"]) / "containers" / container_name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "\n".join(
+            (
+                f"node_name={node_name}",
+                f"launcher_label={launcher_label}",
+                "image_id=sha256:fake-image",
+                "config_hash=fake-config-hash",
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
 def create_mixed_image_nodes(env: dict[str, str]) -> None:
     run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "latest")
     run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "latest-zh")
@@ -536,6 +780,36 @@ def run_launcher(env: dict[str, str], *args: str) -> subprocess.CompletedProcess
         capture_output=True,
         env=env,
     )
+
+
+def run_launcher_unchecked(env: dict[str, str], *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [str(BASH_LAUNCHER), *args],
+        check=False,
+        text=True,
+        capture_output=True,
+        env=env,
+    )
+
+
+def read_call_records_or_empty(env: dict[str, str]) -> list[list[str]]:
+    calls_path = Path(env["FAKE_DOCKER_ROOT"]) / "calls.nul"
+    if not calls_path.exists():
+        return []
+    return read_call_records(env)
+
+
+def assert_no_volume_or_prune_calls(test_case: unittest.TestCase, env: dict[str, str]) -> None:
+    test_case.assertFalse(
+        any(
+            record[:1] == ["volume"] or "prune" in record
+            for record in read_call_records_or_empty(env)
+        )
+    )
+
+
+def assert_no_rm_calls(test_case: unittest.TestCase, env: dict[str, str]) -> None:
+    test_case.assertFalse(any(record[:1] == ["rm"] for record in read_call_records_or_empty(env)))
 
 
 def read_last_run_args(env: dict[str, str]) -> list[str]:
@@ -646,7 +920,10 @@ case "${1:-}" in
       include=1
       for filter in "${filters[@]}"; do
         case "$filter" in
-          label=com.autobyteus.launcher=server-docker) ;;
+          label=com.autobyteus.launcher=*)
+            expected="${filter#label=com.autobyteus.launcher=}"
+            [[ "${launcher_label-server-docker}" == "$expected" ]] || include=0
+            ;;
           label=com.autobyteus.nodeName=*)
             expected="${filter#label=com.autobyteus.nodeName=}"
             [[ "${node_name:-$name}" == "$expected" ]] || include=0
@@ -670,12 +947,12 @@ case "${1:-}" in
     done
     read_meta "$name" || exit 1
     case "$fmt" in
-      *'.Image'*) printf 'sha256:fake-image\n' ;;
+      *'.Image'*) printf '%s\n' "${image_id:-sha256:fake-image}" ;;
       *'.State.Running'*) printf 'true\n' ;;
       *'.State.Status'*) printf 'running\n' ;;
       *'.State.ExitCode'*) printf '0\n' ;;
       *'.State.Error'*) printf '\n' ;;
-      *'.Config.Labels'*'com.autobyteus.launcher'*) printf 'server-docker\n' ;;
+      *'.Config.Labels'*'com.autobyteus.launcher'*) printf '%s\n' "${launcher_label-server-docker}" ;;
       *'.Config.Labels'*'com.autobyteus.nodeName'*) printf '%s\n' "${node_name:-$name}" ;;
       *'.Config.Labels'*'com.autobyteus.configHash'*) printf '%s\n' "${config_hash:-}" ;;
       *'{{json .State}}'*) printf '{"Running":true,"Status":"running","ExitCode":0,"Error":""}\n' ;;
@@ -693,12 +970,14 @@ case "${1:-}" in
     fi
     name=""
     node_name=""
+    launcher_label="server-docker"
     config_hash=""
     prev=""
     for arg in "$@"; do
       if [[ "$prev" == "--name" ]]; then name="$arg"; prev=""; continue; fi
       if [[ "$prev" == "--label" ]]; then
         case "$arg" in
+          com.autobyteus.launcher=*) launcher_label="${arg#*=}" ;;
           com.autobyteus.nodeName=*) node_name="${arg#*=}" ;;
           com.autobyteus.configHash=*) config_hash="${arg#*=}" ;;
         esac
@@ -712,6 +991,8 @@ case "${1:-}" in
     [[ -n "$name" ]] || name="unnamed"
     {
       printf 'node_name=%q\n' "${node_name:-$name}"
+      printf 'launcher_label=%q\n' "$launcher_label"
+      printf 'image_id=%q\n' 'sha256:fake-image'
       printf 'config_hash=%q\n' "$config_hash"
     } > "$(container_file "$name")"
     printf 'fake-container-id\n'
@@ -721,6 +1002,10 @@ case "${1:-}" in
     shift
     for arg in "$@"; do
       [[ "$arg" == "-f" ]] && continue
+      if [[ "${FAKE_DOCKER_FAIL_RM:-}" == "$arg" ]]; then
+        printf 'fake docker rm failure for %s\n' "$arg" >&2
+        exit 1
+      fi
       rm -f "$(container_file "$arg")"
     done
     exit 0
