@@ -1,6 +1,6 @@
 # Design Spec
 
-Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/proposed-design.md`
+Canonical path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/proposed-design.md`
 
 ## Current-State Read
 
@@ -44,7 +44,7 @@ The selected/closed trigger remains compact and unchanged. The open option row s
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md` | Defines option hierarchy, search, wrapping, selected-label behavior, fallback, and responsive states | REQ-003–REQ-006, REQ-008, REQ-010; AC-003–AC-005, AC-007–AC-009 | Constrains frontend option projection and shared selector rendering | `Refined`; approved by user on 2026-07-13 |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md` | Defines option hierarchy, search, wrapping, selected-label behavior, fallback, and responsive states | REQ-003–REQ-006, REQ-008, REQ-010; AC-003–AC-005, AC-007–AC-009 | Constrains frontend option projection and shared selector rendering | `Refined`; approved by user on 2026-07-13 |
 
 ## Task Design Health Assessment (Mandatory)
 

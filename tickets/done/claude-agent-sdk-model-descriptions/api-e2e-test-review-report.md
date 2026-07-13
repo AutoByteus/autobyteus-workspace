@@ -4,11 +4,11 @@
 
 - Review Round: `1`
 - Trigger: Successful API/E2E execution at implementation commit `456f6bc7`, with one updated durable live integration test submitted for proportional review
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/requirements.md`
-- Supplemental Solution Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-coverage-investigation.md`
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-execution-coverage-report.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/requirements.md`
+- Supplemental Solution Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-coverage-investigation.md`
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-execution-coverage-report.md`
 - API/E2E Result: `Pass — Live API + Browser + Lifecycle completed`
 - Final Validation Confidence: `96.9%`
 - Prior unresolved test-review findings rechecked: `N/A — first proportional test-review round`

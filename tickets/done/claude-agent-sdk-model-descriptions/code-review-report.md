@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/requirements.md`
-- Supplemental Solution Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/requirements.md`
+- Supplemental Solution Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
 - Current Review Round: `1`
 - Trigger: Implementation handoff for commit `456f6bc7` (`fix(models): surface Claude SDK descriptions`)
 - Prior Review Round Reviewed: `N/A`
 - Latest Authoritative Round: `1`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/proposed-design.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/proposed-design.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/implementation-handoff.md`
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - Failing Scenario IDs: `N/A`

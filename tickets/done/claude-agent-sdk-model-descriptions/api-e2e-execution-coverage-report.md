@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/proposed-design.md`
-- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/proposed-design.md`
+- Supplemental Solution Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-coverage-investigation.md`
 - Current Execution Round: `1`
 - Trigger: Implementation commit `456f6bc7` passed source/architecture review; execute the live Claude API and realistic responsive user journey.
 - Prior Round Reviewed: `N/A`
@@ -23,7 +23,7 @@
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-coverage-investigation.md`
 - Investigation completed before durable coverage changes or final execution: `Yes`
 - Investigation plan followed: `Yes` — the planned live API, browser, lifecycle, repository, build, and cleanup surfaces were executed. A preliminary server boot that inherited the host `DATABASE_URL` was stopped immediately after confirming there were no pending migrations and before any validation; the authoritative run explicitly used an owned SQLite database and data directory.
 - Existing coverage decisions revised during execution, with evidence: The existing gated Claude live integration was confirmed as the correct owner and updated rather than duplicated. Four failures discovered only by the full Nuxt run were classified out of scope after focused reproduction and zero implementation-commit overlap for both the failing tests and owning source/localization paths.
@@ -153,7 +153,7 @@ None.
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-evidence/` | Command logs, HTTP evidence, browser metrics, screenshots, cleanup | Retained | No credentials retained; unrelated local catalog identifiers were summarized/redacted. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-evidence/` | Command logs, HTTP evidence, browser metrics, screenshots, cleanup | Retained | No credentials retained; unrelated local catalog identifiers were summarized/redacted. |
 | `api-e2e-evidence/05-frontend-full-nuxt.log` | Full Nuxt execution | Retained | 4 unrelated failures, 351 passed and 1 skipped files; 1,843 passed tests. |
 | `api-e2e-evidence/06-frontend-preexisting-failures-focused-rerun.log` | Focused reproduction | Retained | Same four failures reproduced alone. |
 | `api-e2e-evidence/07-full-suite-failure-origin-git-evidence.log` | Failure-origin path comparison | Retained | No implementation-commit diff in failing test/owner paths. |

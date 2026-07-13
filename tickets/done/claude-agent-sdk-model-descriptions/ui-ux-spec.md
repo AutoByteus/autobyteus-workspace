@@ -1,6 +1,6 @@
 # UI/UX Specification
 
-Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
+Canonical path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
 
 ## Status (`Draft`/`Requirements-ready`/`Refined`)
 

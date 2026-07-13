@@ -4,10 +4,11 @@
 
 - Ticket: `claude-agent-sdk-model-descriptions`
 - Branch: `codex/claude-agent-sdk-model-descriptions`
-- Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions`
+- Final repository checkout: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Dedicated task worktree: removed after successful finalization/release
 - Finalization target: `personal` / `origin/personal`
 - Reviewed implementation commit: `456f6bc7d1b4510c67d31495e082c70acad0349a` (`fix(models): surface Claude SDK descriptions`)
-- Current state: User verified the macOS Electron handoff; the ticket was archived and finalized into `personal`; release `v1.4.11` was published; all five tag-triggered workflows completed successfully. Final worktree/branch cleanup is pending the durable release-record commit.
+- Current state: Finalized. The ticket is archived in `personal`; release `v1.4.11` is published; all five tag-triggered workflows passed; the dedicated ticket worktree plus local/remote ticket branches were removed.
 
 ## User-Facing Change
 
@@ -47,20 +48,20 @@ Frontend/shared selector:
 
 Durable coverage added during API/E2E:
 
-- Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/autobyteus-server-ts/tests/integration/services/claude-model-catalog.integration.test.ts` to validate current live non-empty/trimmed descriptions and exact aliases through the catalog and built GraphQL schema without hard-coding vendor wording.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/integration/services/claude-model-catalog.integration.test.ts` to validate current live non-empty/trimmed descriptions and exact aliases through the catalog and built GraphQL schema without hard-coding vendor wording.
 - The durable test and cumulative review/API/E2E artifacts are included in the final ticket-branch commit prepared after user verification.
 
 ## Documentation Sync
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/docs-sync-report.md`
 - Result: `Pass`.
 - Updated long-lived docs:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/autobyteus-server-ts/docs/modules/llm_management.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/autobyteus-web/docs/agent_execution_architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/llm_management.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
 - Reviewed with no change: root `README.md` and `autobyteus-web/docs/agent_teams.md`.
-- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-notes.md`
+- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/release-notes.md`
 
-## Current macOS Electron Build For User Testing
+## Verified macOS Electron Build (Historical Local Artifact)
 
 - README-selected command: `pnpm build:electron:mac` on `Darwin 25.2.0 arm64`.
 - Result: `Pass` (fresh `electron-dist`, exit code `0`).
@@ -71,7 +72,8 @@ Durable coverage added during API/E2E:
 - ZIP SHA-256: `45284973fde211e02920fdd6e89256d58a16f72f62334a5ddbfe7428786fab6d`
 - Architecture: Mach-O 64-bit `arm64`; app version `1.4.10`.
 - Signing: local ad-hoc/linker signature only; no Developer ID Team ID and no notarization. macOS may require right-click -> **Open** or Privacy & Security approval.
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/electron-build-mac-report.md`
+- Build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/electron-build-mac-report.md`
+- Cleanup note: the dedicated worktree and its local `electron-dist` artifacts were removed after user verification and successful `v1.4.11` publication. Checksums remain recorded; signed release artifacts are available from the GitHub release.
 
 ## Validation Evidence
 
@@ -95,7 +97,7 @@ Key passing evidence:
 
 Retained evidence directory:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-evidence`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-evidence`
 
 ## Suggested User Verification
 
@@ -129,6 +131,7 @@ Because descriptions are live vendor data, exact wording may differ from prior e
 - iOS build/test, secret validation, archive, and App Store Connect upload completed successfully.
 - Server Docker default multi-architecture image published for `linux/amd64` and `linux/arm64` as version `1.4.11` and `latest`, digest `sha256:c13aa01479d2548de777d86033c6381c22e228a1d3120d9c99b8b7ab09d49564`.
 - No duplicate manual workflow dispatch was run.
+- Post-finalization cleanup: dedicated worktree removed; worktree metadata pruned; local and remote `codex/claude-agent-sdk-model-descriptions` branches deleted.
 
 ## Residual Notes
 
@@ -140,24 +143,24 @@ Because descriptions are live vendor data, exact wording may differ from prior e
 
 ## Cumulative Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/proposed-design.md`
-- UI/UX specification: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
-- Design review: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/implementation-handoff.md`
-- Source review: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/code-review-report.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-coverage-investigation.md`
-- Execution coverage: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-execution-coverage-report.md`
-- Proportional durable-test review: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-test-review-report.md`
-- Docs sync: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/docs-sync-report.md`
-- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-notes.md`
-- macOS Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/electron-build-mac-report.md`
-- Delivery report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-deployment-report.md`
-- Release finalization evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-v1.4.11.log`
-- Release workflow status: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-workflow-status-v1.4.11.log`
-- GitHub release asset inventory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/release-assets-v1.4.11.json`
-- Server Docker release evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/server-docker-release-v1.4.11.log`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/proposed-design.md`
+- UI/UX specification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md`
+- Design review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/implementation-handoff.md`
+- Source review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/code-review-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-coverage-investigation.md`
+- Execution coverage: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-execution-coverage-report.md`
+- Proportional durable-test review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/api-e2e-test-review-report.md`
+- Docs sync: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/docs-sync-report.md`
+- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/release-notes.md`
+- macOS Electron build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/electron-build-mac-report.md`
+- Delivery report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/release-deployment-report.md`
+- Release finalization evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/release-v1.4.11.log`
+- Release workflow status: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/release-workflow-status-v1.4.11.log`
+- GitHub release asset inventory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/release-assets-v1.4.11.json`
+- Server Docker release evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/server-docker-release-v1.4.11.log`
 
 ## Finalization Authorization
 
@@ -165,4 +168,4 @@ Because descriptions are live vendor data, exact wording may differ from prior e
 - Continuation after host power restoration: user explicitly asked delivery to continue.
 - Final target refresh after verification: `git fetch --prune origin` passed; `origin/personal` remained `2f2ddc0bf97eddad7693764a6ad54393b5091d94`, so no re-integration or renewed verification was required.
 - Ticket archival: completed before the final ticket-branch commit.
-- Planned release: version `1.4.11`, tag `v1.4.11`, using the documented release helper and the archived `release-notes.md`.
+- Release completed: version `1.4.11`, tag `v1.4.11`, using the documented helper and archived `release-notes.md`.

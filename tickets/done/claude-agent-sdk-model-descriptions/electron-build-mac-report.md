@@ -87,4 +87,4 @@ None prevented the build from completing.
 
 ## Delivery State
 
-The build is ready for user testing. This is not user-verification completion by itself. Ticket archival, commit/push/merge, release, deployment, and cleanup remain on explicit user-verification hold.
+The user verified this local build and authorized finalization. Release `v1.4.11` completed successfully. The dedicated ticket worktree and its ignored `electron-dist` output were then removed during cleanup; this report and its checksums preserve the local-build evidence, while signed release artifacts are available from the published GitHub release.

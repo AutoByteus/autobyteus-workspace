@@ -29,7 +29,7 @@ Reference screenshots:
 
 - Project Type (`Git`/`Non-Git`): `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions`
 - Current Branch: `codex/claude-agent-sdk-model-descriptions`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions`
 - Bootstrap Base Branch: `origin/personal`
@@ -44,7 +44,7 @@ Reference screenshots:
 
 | Artifact Path | Purpose | Evidence Or Decision Captured | Related Requirement / Acceptance-Criteria IDs | Status | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md` | Define model-option content, search behavior, layout, fallback, and responsive states | Secondary description line; description-aware search; compact closed label; name-only fallback | REQ-003–REQ-006, REQ-008, REQ-010; AC-003–AC-005, AC-007–AC-009 | `Refined`; approved by the user on 2026-07-13 | Present with requirements.md |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-agent-sdk-model-descriptions/ui-ux-spec.md` | Define model-option content, search behavior, layout, fallback, and responsive states | Secondary description line; description-aware search; compact closed label; name-only fallback | REQ-003–REQ-006, REQ-008, REQ-010; AC-003–AC-005, AC-007–AC-009 | `Refined`; approved by the user on 2026-07-13 | Present with requirements.md |
 
 ## Source Log
 
