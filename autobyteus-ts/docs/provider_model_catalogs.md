@@ -27,6 +27,7 @@ or changing provider-specific request-shaping behavior.
 | LLM | `gpt-5.6-terra` | `gpt-5.6-terra` | OpenAI | 2026-07-10 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and tiered cache-read/cache-write-aware pricing. |
 | LLM | `gpt-5.6-luna` | `gpt-5.6-luna` | OpenAI | 2026-07-10 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and tiered cache-read/cache-write-aware pricing. |
 | LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
+| LLM | `grok-4.5` | `grok-4.5` | xAI / Grok | 2026-07-09 | Sole built-in Grok row; uses xAI Chat Completions, always-on low/medium/high reasoning (default high), 500k-token curated context metadata, and source-dated cache-aware pricing. |
 | LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
 | LLM | `claude-opus-4.8` | `claude-opus-4-8` | Anthropic | 2026-07-07 | Retained latest Opus row; uses the current adaptive-thinking/no-sampling request policy. |
 | LLM | `claude-sonnet-5` | `claude-sonnet-5` | Anthropic | 2026-07-07 | Latest Sonnet row; exact provider ID only, with no `claude-sonnet-4.8` alias. |
@@ -46,6 +47,30 @@ or changing provider-specific request-shaping behavior.
 | Video | `gemini-omni-flash-preview` | `gemini-omni-flash-preview` | Gemini | 2026-07-03 | Docs-backed registration for creation-only `text_to_video`, `image_to_video`, and `reference_to_video` through `GeminiVideoClient` and the Gemini Interactions API; live provider generation was not validated in the delivery environment. |
 | Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
 | Audio / TTS | `gemini-2.5-pro-tts` | `gemini-2.5-pro-preview-tts` | Gemini | 2026-04-25 | User-facing compact ID maps to the documented preview API value. |
+
+## xAI Grok 4.5
+
+`grok-4.5` is the only built-in Grok model. It keeps the existing xAI
+OpenAI-compatible Chat Completions endpoint at `https://api.x.ai/v1`, including
+streaming and function-tool calls. The model always reasons and accepts only
+`reasoning_effort: low | medium | high`, defaulting to `high`; `none` is not a
+supported value.
+
+The Grok adapter strips xAI-invalid `presence_penalty`, `frequency_penalty`,
+and `stop` request fields, including their snake_case and camelCase/raw stop
+spellings, before the shared compatible request builder runs. Provider-safe
+extra parameters, tools, `tool_choice`, and stream controls remain supported.
+
+The catalog records `$2.00` input, `$6.00` output, and `$0.50` cached-input-read
+pricing per million tokens effective 2026-07-08. Curated metadata records a
+500,000-token context limit verified 2026-07-09; no maximum output limit is
+asserted without official evidence.
+
+`grok-4.3` and `grok-build-0.1` were intentionally removed from active support
+without aliases, redirect fallbacks, or compatibility wrappers. The retired
+`grok-code-fast-1` identifier has no active catalog/runtime/docs support or
+alias; only a labeled absence assertion and historical ticket/audit evidence
+may mention it.
 
 ## Frontend Schema-Default Display And Disclosure Contract
 

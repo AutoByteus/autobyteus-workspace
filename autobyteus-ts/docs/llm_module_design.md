@@ -139,6 +139,10 @@ Current examples of provider-specific model rules:
 - `gemini-3.5-flash` uses the existing Gemini adapter, the shared Gemini
   thinking schema, docs-backed curated token limits, and explicit API-key /
   Vertex identity mapping in `src/utils/gemini-model-mapping.ts`.
+- `grok-4.5` is the sole built-in Grok row, uses the existing xAI Chat
+  Completions path, and exposes always-on `low`/`medium`/`high` reasoning with
+  `high` as the default. Its adapter removes xAI-invalid stop and penalty
+  fields locally before the shared OpenAI-compatible request builder runs.
 - `glm-5.2` replaces `glm-5.1` as the active GLM model and exposes
   `thinking_type` plus `reasoning_effort` schema fields. `GlmLLM` maps the flat
   thinking key to provider-native `thinking.type` and omits

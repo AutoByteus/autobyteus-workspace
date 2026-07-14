@@ -48,6 +48,13 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
       verifiedAt: '2026-04-09'
     }
   },
+  [LLMProvider.GROK]: {
+    'grok-4.5': {
+      maxContextTokens: 500000,
+      sourceUrl: 'https://docs.x.ai/developers/models',
+      verifiedAt: '2026-07-09'
+    }
+  },
   [LLMProvider.ANTHROPIC]: {
     'claude-fable-5': {
       maxContextTokens: 1000000,
