@@ -4,17 +4,17 @@ Status: Ready for full source re-review after Round 10 / `CR-PMCS-012` initial-r
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/design-spec.md`
 - Supplemental solution artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-domain-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-strategy-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/design-review-report.md`
-- Round 9 source-review/failure-origin context: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/code-review-report.md`
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-coverage-investigation.md`
-- API/E2E failure execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/working-context-compaction-domain-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/working-context-compaction-strategy-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/design-review-report.md`
+- Round 9 source-review/failure-origin context: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/code-review-report.md`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/api-e2e-coverage-investigation.md`
+- API/E2E failure execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/api-e2e-execution-coverage-report.md`
 
 Architecture Round 5 remains authoritative and supersedes Architecture Round 4. Round 10 confirms `CR-PMCS-010/011` resolved in source and assigns only `CR-PMCS-012` as a bounded initial-read recovery defect. `CR-PMCS-009` remains resolved. Historical delivery/user-verification results are not current gates.
 
@@ -170,12 +170,12 @@ These are implementation-scoped checks only, not API/E2E sign-off.
 1. From `autobyteus-web`: `pnpm test:nuxt --run components/settings/__tests__/ServerSettingsManager.spec.ts components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts components/settings/__tests__/CompactionConfigCard.spec.ts pages/__tests__/settings.spec.ts tests/stores/serverSettingsStore.test.ts`
    - Pass: 6 files / 51 tests.
    - Proves initial read rejection, localized accessible Retry, second fetch success, real Basics/Compaction mount with authoritative values, loaded-card persistence under the real shared mutation error, first-success/second-failure state, authoritative first write, dirty failed/unsent drafts, remaining-key-only retry, and the `390px` page composition contract.
-   - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-implementation-cr-pmcs-012-web-tests.log`
+   - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/validation-evidence/round10-implementation-cr-pmcs-012-web-tests.log`
 2. From `autobyteus-web`: `pnpm guard:web-boundary`, `pnpm guard:localization-boundary`, and `pnpm audit:localization-literals`
    - Pass; localization audit reports zero unresolved findings.
 3. From `autobyteus-web`: `pnpm build`
    - Pass. Nuxt client/static production build and `/settings` prerender completed.
-   - Evidence for checks 2-3: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-implementation-cr-pmcs-012-web-build.log`
+   - Evidence for checks 2-3: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/done/pluggable-memory-compaction-strategies/validation-evidence/round10-implementation-cr-pmcs-012-web-build.log`
 4. `git diff --check` and `git diff --cached --check`
    - Pass after the bounded source/test/handoff changes.
 5. Focused source-size and rejected-boundary checks

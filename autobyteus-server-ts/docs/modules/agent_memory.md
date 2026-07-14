@@ -60,7 +60,14 @@ Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The 
 
 `AUTOBYTEUS_COMPACTION_STRATEGY` selects the strategy for subsequent native compaction operations. Blank values normalize to `structured-json`, the only production registration. `ServerSettingsService` validates updates against registry metadata and persists them through the normal `.env` plus current-process environment path, so already-created native agents resolve the new value on their next compaction. This is process-local convergence; no cross-process broadcast or provider-session reconciliation is added.
 
-The global strategy setting is distinct from `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`: the former selects the working-context algorithm, while the latter selects the visible Memory Compactor agent used inside the current structured-JSON algorithm. Neither is a per-agent, per-team, or per-run field, and there is no dedicated frontend discovery/selector contract yet.
+GraphQL keeps option discovery and effective selection separate:
+
+- `getWorkingContextCompactionStrategies` projects only registry `{ id, name }` metadata;
+- `getEffectiveWorkingContextCompactionStrategyId` applies the same normalizer as runtime, so absent/blank selects `structured-json` while an explicit unknown ID stays explicit for truthful recovery UI.
+
+Settings -> Server Settings -> Basics uses these reads for a registry-backed Compaction strategy selector. The card keeps the trigger ratio, effective-context override, and detailed-log controls, persists only changed valid fields through the existing per-key mutation, and stops after the first failed write while retaining failed and unsent drafts for retry. Catalog/effective-read errors and unknown IDs are shown without guessing or silently writing a default.
+
+The `structured-json` strategy always invokes the built-in `autobyteus-memory-compactor`; blank launch fields inherit the parent run's runtime/model. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting or runtime selection path. A stale custom value is inert, and a missing/invalid built-in definition fails without arbitrary-agent fallback.
 
 Compaction status metadata includes stable `compaction_strategy_id` and `compaction_strategy_name` in addition to operation/turn and current runner diagnostics. A resolver, strategy, validation, or replacement failure preserves the pending request and does not emit a false completed state.
 

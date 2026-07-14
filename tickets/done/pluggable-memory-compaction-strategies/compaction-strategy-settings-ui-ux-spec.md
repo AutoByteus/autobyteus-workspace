@@ -4,7 +4,7 @@
 
 `Reconciled after Code Review Round 7 / ready for architecture re-review` — the user-approved product direction and server-normalized effective-ID baseline are unchanged. CR-PMCS-009 removes the unsupported same-window rebinding journey and its Compaction-specific revision-fenced patch states. The authoritative desktop journey is now the real product flow: open one node's own window, edit its Compaction settings, save through the existing per-key setting action, and continue using that node.
 
-Canonical path: `tickets/in-progress/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md`
+Canonical path: `tickets/done/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md`
 
 ## UX Goal
 

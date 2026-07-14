@@ -158,8 +158,13 @@ configuration, `AgentFactory` public API, and `WorkingContext`.
 Server `ServerSettingsService` persists
 `AUTOBYTEUS_COMPACTION_STRATEGY` through the existing `.env`/`process.env`
 setting path and validates the normalized value against production registry
-metadata. There is no dedicated strategy discovery endpoint or frontend selector
-in this change.
+metadata. The server also exposes a read-only GraphQL catalog containing only
+registry `{ id, name }` metadata and a separate effective-selection read that
+uses the same normalization policy as runtime. Settings -> Server Settings ->
+Basics uses those two authorities for its Compaction strategy selector: the
+catalog supplies available options, while the effective read supplies the clean
+selected-ID baseline. The web client never derives a default from catalog order
+or hard-codes a strategy option.
 
 ## 7. PendingCompactionExecutor Ownership
 
@@ -223,7 +228,7 @@ boundary. It owns:
 2. active-model input budget interpretation;
 3. protected/retained suffix and complete tool-unit selection;
 4. oversized tool-result condensation through the current planner;
-5. the configured visible Memory Compactor agent call;
+5. the fixed built-in Memory Compactor agent call;
 6. JSON result normalization;
 7. episodic and semantic item writes;
 8. archive/prune of selected raw trace ids;
@@ -233,9 +238,12 @@ boundary. It owns:
 
 The exact task prompt retains the required structured final JSON shape before the
 conversation content. The result still yields one episodic summary and categorized
-semantic facts. The selected Memory Compactor agent and parent runtime/model
-fallback remain configured by `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` and the
-existing runner composition.
+semantic facts. The server runner always resolves the built-in
+`autobyteus-memory-compactor` definition. Its blank launch fields inherit the
+parent run's runtime/model; a missing or invalid built-in definition fails
+truthfully without trying an arbitrary agent definition. The former
+`AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` selector is not part of runtime or
+predefined server settings, and a stale environment value is inert.
 
 The strategy reports algorithm diagnostics through the supplied diagnostics
 interface. Lifecycle status adds `compaction_strategy_id` and
@@ -321,10 +329,14 @@ AutoByteus compacted memory into the external provider session.
 | Setting | Meaning |
 | --- | --- |
 | `AUTOBYTEUS_COMPACTION_STRATEGY` | Process-global strategy id resolved for each subsequent pending operation; blank defaults to `structured-json`. |
-| `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | Visible Memory Compactor agent definition used by `structured-json`; blank runtime/model fields inherit from the parent run. |
 | `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO` | Optional post-response threshold ratio override. |
 | `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` | Optional effective context budget override. |
 | `AUTOBYTEUS_COMPACTION_DEBUG_LOGS` | Enables detailed diagnostics. |
+
+A stale custom `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` entry may still be
+visible for manual cleanup, but normal compaction code does not read it. The
+`structured-json` strategy uses the fixed built-in Memory Compactor and parent
+launch fallback described above.
 
 A strategy-setting update is process-local: it updates current process
 configuration and persistence, but this ticket does not add multi-process
@@ -365,3 +377,7 @@ Composition and settings:
 - `src/agent/compaction/compaction-runtime-reporter.ts`
 - `autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts`
 - `autobyteus-server-ts/src/services/server-settings-service.ts`
+- `autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts`
+- `autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts`
+- `autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts`
+- `autobyteus-web/components/settings/CompactionConfigCard.vue`

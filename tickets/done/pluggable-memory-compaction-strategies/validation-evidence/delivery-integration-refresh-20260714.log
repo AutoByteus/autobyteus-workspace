@@ -137,3 +137,31 @@ Authoritative gates inspected:
 ?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round9-implementation-web-tests.log
 
 checkpoint=0a2f31c94b6c418fdad8404d90341a1b35f1f8fa
+
+## Checkpoint correction
+The initial checkpoint was amended to include this evidence file. Authoritative delivery-safety checkpoint:
+checkpoint=49aad336666ec1a4661bfaf62d10f15f7d3e5faf
+The earlier `0a2f31c9...` line is the pre-amend object and is superseded.
+
+## Remote refresh
+command=git fetch origin personal
+latest_tracked_remote_base=21a526b8bddcc7441cd8039fbe455f1c2847e7ed
+base_advanced_since_recorded_fdb370d4=yes
+remote_only_commits=5
+remote_only_tip=21a526b8b chore(release): bump workspace release version to 1.4.13
+remote_scope=Grok model support, archived ticket/release records, messaging manifest, and autobyteus-web package version; no compaction source overlap
+
+## Integration
+command=git merge --no-edit origin/personal
+method=merge (ort)
+result=completed without conflicts
+integrated_head=4514aa6ed15433ab403eafbfbf4dedcecc8b2513
+merge_base_with_origin_personal=21a526b8bddcc7441cd8039fbe455f1c2847e7ed
+relation_after_merge=0 3 # left=remote-only right=branch-only
+
+## Post-integration executable check
+command=NUXT_TEST=true pnpm exec vitest --run <10 mapped current frontend files>
+result=Pass
+files=10/10
+tests=84/84
+evidence=validation-evidence/delivery-integrated-web-targeted-20260714.log

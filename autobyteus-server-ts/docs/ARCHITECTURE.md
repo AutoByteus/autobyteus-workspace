@@ -117,19 +117,27 @@ the manager to replace it, and owns lifecycle/request clearing.
 
 The process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting is resolved for each
 subsequent pending operation through the default strategy registry. The only
-production registration is `structured-json` (`Structured JSON`); it preserves
-the current Memory Compactor agent, structured episodic/semantic writes, retained
+production registration is `structured-json` (`Structured JSON`); it uses the
+fixed built-in `autobyteus-memory-compactor`, structured episodic/semantic writes, retained
 suffix, compacted-memory projection, and raw-trace archive behavior behind the
 stable `compact(WorkingContext): Promise<WorkingContext>` contract. Strategy
 selection is not stored on agent definitions, runs, teams, `AgentConfig`, or the
-working context.
+working context. The built-in compactor inherits blank runtime/model launch
+fields from the parent run; the removed
+`AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` key is not a runtime selector and a
+stale custom value is inert.
 
 `ServerSettingsService` exposes the global setting through the existing
 `.env`/`process.env` persistence path and rejects values not present in production
-registry metadata. There is no dedicated discovery endpoint or frontend selector
-in the current scope. The selected strategy id/name is included in native
-compaction lifecycle metadata. See `autobyteus-ts/docs/agent_memory_design.md` for
-the domain, validation, restore, extension, and failure contracts.
+registry metadata. GraphQL exposes `getWorkingContextCompactionStrategies` as a
+read-only `{ id, name }` registry projection and
+`getEffectiveWorkingContextCompactionStrategyId` as the separate normalized ID
+runtime will attempt. The Settings -> Server Settings -> Basics Compaction card
+uses that catalog/effective-ID pair, persists changed valid values through the
+existing one-setting mutation, and never infers a default from catalog order.
+The selected strategy id/name is included in native compaction lifecycle
+metadata. See `autobyteus-ts/docs/agent_memory_design.md` for the domain,
+validation, restore, extension, and failure contracts.
 
 ## Agent Work Trace Projection
 
