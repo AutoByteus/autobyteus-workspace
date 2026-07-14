@@ -3,8 +3,8 @@
 ## Status
 
 - Delivery status: `Complete`
-- Repository finalization: `Completed` — archived ticket merged into `personal` and pushed; no new release, version, tag, or deployment was created.
-- Dedicated worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies` (scheduled for post-push cleanup)
+- Repository finalization: `Completed` — archived ticket merged into `personal` at `c41d4bb18bf67c93a4a90a0924cd8ad66ea220ab` and pushed; no new release, version, tag, or deployment was created.
+- Dedicated worktree: removed after successful target push
 - Ticket branch: `codex/pluggable-memory-compaction-strategies`
 - Finalization target: `personal` / `origin/personal`
 - Archived ticket folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/pluggable-memory-compaction-strategies`
@@ -81,7 +81,7 @@ The three current durable frontend test changes passed separate proportional rev
 
 ## User-Verified Package (Historical Delivery Artifact)
 
-The user completed verification against the latest integrated `v1.4.13` state. These were the verified local build paths. Hashes and build/package evidence remain archived; the ignored binaries are removed with the dedicated worktree during post-merge cleanup:
+The user completed verification against the latest integrated `v1.4.13` state. These were the verified local build paths. The ignored binaries and dedicated worktree were removed after successful finalization; hashes and build/package evidence remain archived:
 
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.13.dmg`
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.13.zip`
