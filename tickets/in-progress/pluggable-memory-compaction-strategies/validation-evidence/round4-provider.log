@@ -1,0 +1,31 @@
+COMMAND: pnpm -C autobyteus-ts exec vitest run provider renderer/request files
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-ts
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/provider-native-request-payloads.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts (12 tests) 13ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (8 tests) 22ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  14:18:53
+   Duration  830ms (transform 486ms, setup 73ms, import 1.01s, tests 34ms, environment 0ms)
+

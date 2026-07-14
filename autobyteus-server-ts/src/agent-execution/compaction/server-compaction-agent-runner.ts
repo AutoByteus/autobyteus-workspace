@@ -16,14 +16,14 @@ import {
   getAgentRunService,
 } from "../services/agent-run-service.js";
 import {
-  CompactionAgentSettingsResolver,
+  MemoryCompactorAgentLaunchResolver,
   type CompactionParentLaunchFallback,
-} from "./compaction-agent-settings-resolver.js";
+} from "./memory-compactor-agent-launch-resolver.js";
 import { CompactionRunOutputCollector } from "./compaction-run-output-collector.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 
 export type ServerCompactionAgentRunnerOptions = {
-  settingsResolver?: CompactionAgentSettingsResolver;
+  launchResolver?: MemoryCompactorAgentLaunchResolver;
   agentRunService?: AgentRunService;
   timeoutMs?: number;
   workspaceRootPath?: string | null;
@@ -39,14 +39,14 @@ const normalizeOptionalString = (value: string | null | undefined): string | nul
 };
 
 export class ServerCompactionAgentRunner implements CompactionAgentRunner {
-  private readonly settingsResolver: CompactionAgentSettingsResolver | null;
+  private readonly launchResolver: MemoryCompactorAgentLaunchResolver | null;
   private readonly agentRunService: AgentRunService | null;
   private readonly timeoutMs: number;
   private readonly workspaceRootPath: string;
   private readonly parentLaunchFallback: CompactionParentLaunchFallback | null;
 
   constructor(options: ServerCompactionAgentRunnerOptions = {}) {
-    this.settingsResolver = options.settingsResolver ?? null;
+    this.launchResolver = options.launchResolver ?? null;
     this.agentRunService = options.agentRunService ?? null;
     this.timeoutMs = options.timeoutMs ?? 120_000;
     this.workspaceRootPath =
@@ -56,7 +56,7 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
   }
 
   async runCompactionTask(task: CompactionAgentTask): Promise<CompactionAgentRunnerResult> {
-    const resolved = await this.getSettingsResolver().resolve(this.parentLaunchFallback);
+    const resolved = await this.getLaunchResolver().resolve(this.parentLaunchFallback);
     let runId: string | null = null;
     let unsubscribe: (() => void) | null = null;
 
@@ -116,18 +116,8 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
     }
   }
 
-  async describeConfiguredCompactor() {
-    const resolved = await this.getSettingsResolver().resolve(this.parentLaunchFallback);
-    return {
-      compactionAgentDefinitionId: resolved.agentDefinitionId,
-      compactionAgentName: resolved.agentName,
-      runtimeKind: resolved.runtimeKind,
-      modelIdentifier: resolved.llmModelIdentifier,
-    };
-  }
-
-  private getSettingsResolver(): CompactionAgentSettingsResolver {
-    return this.settingsResolver ?? new CompactionAgentSettingsResolver();
+  private getLaunchResolver(): MemoryCompactorAgentLaunchResolver {
+    return this.launchResolver ?? new MemoryCompactorAgentLaunchResolver();
   }
 
   private getAgentRunService(): AgentRunService {
@@ -143,7 +133,7 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
   }
 
   private buildExecutionMetadata(
-    resolved: Awaited<ReturnType<CompactionAgentSettingsResolver["resolve"]>>,
+    resolved: Awaited<ReturnType<MemoryCompactorAgentLaunchResolver["resolve"]>>,
     runId: string | null,
     taskId: string,
   ): CompactionAgentExecutionMetadata {
@@ -190,12 +180,3 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
     });
   }
 }
-
-let cachedServerCompactionAgentRunner: ServerCompactionAgentRunner | null = null;
-
-export const getServerCompactionAgentRunner = (): ServerCompactionAgentRunner => {
-  if (!cachedServerCompactionAgentRunner) {
-    cachedServerCompactionAgentRunner = new ServerCompactionAgentRunner();
-  }
-  return cachedServerCompactionAgentRunner;
-};

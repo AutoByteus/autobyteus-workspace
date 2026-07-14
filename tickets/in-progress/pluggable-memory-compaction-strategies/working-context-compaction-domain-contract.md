@@ -2,7 +2,7 @@
 
 ## Status
 
-`Refined` — the user approved this supplement and the complete solution direction for architecture review on 2026-07-13. Architecture Review Round 1 requested bounded invariant-enforcement clarification under ARCH-PMCS-003; the reconciliation preserves the approved domain contract. This supplement clarifies REQ-PMCS-001 through REQ-PMCS-007, REQ-PMCS-013, REQ-PMCS-019 through REQ-PMCS-020, REQ-PMCS-023, AC-PMCS-001 through AC-PMCS-004, AC-PMCS-016 through AC-PMCS-017, and AC-PMCS-019 through AC-PMCS-021.
+`Reconciled after Code Review Round 7 / ready for architecture re-review` — the stable context-to-context contract remains unchanged. ARCH-PMCS-005's global effective-selection read remains valid; CR-PMCS-009 removes the unsupported ARCH-PMCS-006 desktop rebind/save fence. This supplement clarifies REQ-PMCS-001 through REQ-PMCS-007, REQ-PMCS-013, REQ-PMCS-019 through REQ-PMCS-020, REQ-PMCS-023, REQ-PMCS-025 through REQ-PMCS-030, AC-PMCS-001 through AC-PMCS-004, AC-PMCS-016 through AC-PMCS-017, and AC-PMCS-019 through AC-PMCS-029.
 
 ## Purpose
 
@@ -18,7 +18,7 @@ next LLM request renders the replacement
 
 It separates this invariant domain result from the current strategy's prefix/suffix planning and episodic/semantic implementation.
 
-The related replaceable API is defined in `working-context-compaction-strategy-contract.md`.
+The related replaceable API is defined in `working-context-compaction-strategy-contract.md`. The user-visible global selection journey is defined in `compaction-strategy-settings-ui-ux-spec.md`.
 
 ## Domain Subjects
 
@@ -61,6 +61,10 @@ AUTOBYTEUS_COMPACTION_STRATEGY
 ```
 
 Changing the global value affects the next compaction operation. It does not rewrite an agent's context and does not interrupt or swap a strategy that is already executing.
+
+The existing Compaction card presents registry-provided strategy names and writes a deliberately changed stable selected ID. Its selected/clean baseline comes from a separate server read that uses the same core normalization as runtime: absent/blank becomes `structured-json`, while an explicit unknown ID remains explicit and unavailable. Catalog entries stay `{id,name}` and do not own default/selected state.
+
+The card does not ask each agent to choose a strategy and does not expose the current strategy's internal compactor agent. Desktop settings are edited in the separate window already bound to one node and saved through the existing per-key server-setting action. No Compaction-specific binding revision, captured-client session, or patch-result protocol belongs to this domain contract. A future strategy may use no agent, one agent, an agent team, files, or another mechanism without changing this domain selection subject.
 
 ## Stable Input and Output
 
@@ -249,7 +253,7 @@ The current strategy internally performs:
 
 ```text
 selected prefix/tool-safe units
-    -> structured JSON from one compaction agent
+    -> structured JSON from the fixed built-in Memory Compactor
     -> episodic and semantic memory writes
     -> bounded retrieval
     -> compacted-memory user message
@@ -257,6 +261,8 @@ selected prefix/tool-safe units
 ```
 
 This explains why current compacted memory contains a selected projection of episodic/semantic information. It does not make episodic and semantic memory mandatory outputs of the `WorkingContextCompactionStrategy` interface.
+
+The built-in `autobyteus-memory-compactor` is part of this concrete strategy's implementation. It is not a freely selectable framework compactor and is not a universal strategy dependency. Its blank launch configuration continues to inherit the parent run's runtime/model through the existing server runner.
 
 Procedural memory/skill improvement is a different domain and is outside this ticket.
 
@@ -291,4 +297,4 @@ This ticket models the functional continuation result, not biological memory mec
 
 ## Approval
 
-The user approved this domain contract and explicitly authorized architecture review on 2026-07-13. ARCH-PMCS-003 adds the pre-install enforcement split without changing the approved context-to-context contract. Architecture re-review is authorized.
+The user-approved domain contract remains unchanged. ARCH-PMCS-005's effective-selection read remains incorporated; CR-PMCS-009 removes the unsupported ARCH-PMCS-006 desktop rebind-save premise. The contract is ready for architecture re-review.

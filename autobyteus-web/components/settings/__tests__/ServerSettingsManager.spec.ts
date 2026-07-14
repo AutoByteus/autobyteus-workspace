@@ -51,8 +51,8 @@ const mountComponent = async (
   initialSettings: TestServerSetting[] = [],
   options: {
     sectionMode?: 'quick' | 'advanced' | 'migrations'
-    isLoading?: boolean
-    error?: string | null
+    fetchError?: string
+    keepFetchPending?: boolean
   } = {},
 ) => {
   const normalizedSettings = initialSettings.map((setting) => ({
@@ -67,8 +67,8 @@ const mountComponent = async (
     initialState: {
       serverSettings: {
         settings: normalizedSettings,
-        isLoading: options.isLoading ?? false,
-        error: options.error ?? null,
+        isLoading: false,
+        error: null,
         isUpdating: false,
       },
     },
@@ -76,7 +76,16 @@ const mountComponent = async (
   setActivePinia(pinia)
 
   const store = useServerSettingsStore()
-  store.fetchServerSettings = vi.fn().mockResolvedValue(normalizedSettings)
+  if (options.keepFetchPending) {
+    store.fetchServerSettings = vi.fn().mockReturnValue(new Promise(() => {}))
+  } else if (options.fetchError) {
+    store.fetchServerSettings = vi
+      .fn()
+      .mockRejectedValueOnce(new Error(options.fetchError))
+      .mockResolvedValue(normalizedSettings)
+  } else {
+    store.fetchServerSettings = vi.fn().mockResolvedValue(normalizedSettings)
+  }
   store.fetchSearchConfig = vi.fn().mockResolvedValue(undefined)
   store.setSearchConfig = vi.fn().mockResolvedValue(true)
   store.updateServerSetting = vi.fn().mockResolvedValue(true)
@@ -124,14 +133,28 @@ describe('ServerSettingsManager', () => {
     expect(store.fetchSearchConfig).not.toHaveBeenCalled()
   })
 
-  it('shows shared loading and error states before routing panels', async () => {
-    const loading = await mountComponent([], { isLoading: true })
+  it('shows initial read loading and offers a retry that restores the Basics panel', async () => {
+    const loading = await mountComponent([], { keepFetchPending: true })
     expect(loading.wrapper.find('[data-testid="server-settings-basics-panel-stub"]').exists()).toBe(false)
-    expect(loading.wrapper.find('.animate-spin').exists()).toBe(true)
+    expect(loading.wrapper.find('[data-testid="server-settings-initial-loading"]').exists()).toBe(true)
 
-    const errored = await mountComponent([], { error: 'Unable to load settings' })
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const errored = await mountComponent([], { fetchError: 'Unable to load settings' })
     expect(errored.wrapper.text()).toContain('Unable to load settings')
+    expect(errored.wrapper.find('[data-testid="server-settings-initial-error"]').attributes('role')).toBe('alert')
     expect(errored.wrapper.find('[data-testid="server-settings-basics-panel-stub"]').exists()).toBe(false)
+
+    const retry = errored.wrapper.get('[data-testid="server-settings-initial-retry"]')
+    expect(retry.text()).toBe('Retry')
+    expect(retry.attributes('aria-label')).toBe('Retry')
+    await retry.trigger('click')
+    await flushPromises()
+
+    expect(errored.store.fetchServerSettings).toHaveBeenCalledTimes(2)
+    expect(errored.wrapper.find('[data-testid="server-settings-initial-error"]').exists()).toBe(false)
+    expect(errored.wrapper.find('[data-testid="server-settings-basics-panel-stub"]').exists()).toBe(true)
+    expect(errored.wrapper.text()).not.toContain('Failed to load server settings')
+    consoleError.mockRestore()
   })
 
   it('reacts to section mode changes without owning Basics card details', async () => {

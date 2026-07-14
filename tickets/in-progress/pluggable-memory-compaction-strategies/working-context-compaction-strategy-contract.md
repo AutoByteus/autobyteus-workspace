@@ -2,7 +2,7 @@
 
 ## Status
 
-`Refined` — the user approved this supplement and the complete solution direction for architecture review on 2026-07-13. Architecture Review Round 1 requested bounded reconciliation of construction, validation, and shared projection ownership under ARCH-PMCS-002 through ARCH-PMCS-004; those revisions preserve the approved context-to-context, process-global direction. This supplement clarifies REQ-PMCS-001, REQ-PMCS-004, REQ-PMCS-005, REQ-PMCS-008, REQ-PMCS-010, and REQ-PMCS-017 through REQ-PMCS-024.
+`Reconciled after Code Review Round 7 / ready for architecture re-review` — the user-approved context-to-context/process-global contract and ARCH-PMCS-005 effective selected-ID read are unchanged. CR-PMCS-009 removes the unsupported ARCH-PMCS-006 desktop rebind premise and returns the Compaction card to the existing simple per-key setting action in its one-node desktop window. It clarifies REQ-PMCS-001, REQ-PMCS-004, REQ-PMCS-005, REQ-PMCS-008, REQ-PMCS-010, and REQ-PMCS-017 through REQ-PMCS-030.
 
 ## Scope
 
@@ -12,13 +12,16 @@ This document defines the backend extension architecture completed by this ticke
 - stable strategy identity and user-facing name;
 - a global registry of strategy registrations;
 - one global environment-backed strategy selection;
+- a bounded server strategy catalog and existing Compaction-card selector using the same registry metadata;
+- a separate server effective selected-ID read using the same core normalization/default as runtime;
+- reuse of the existing per-key server-setting write for the real one-window/one-node desktop journey;
 - operation-time resolution so settings changes apply to all subsequent compactions;
-- the one registered current strategy;
+- the one registered current strategy and its fixed built-in Memory Compactor;
 - proof that another strategy can later be implemented and registered without refactoring compaction execution or agent configuration.
 
-The ticket does not implement a second production strategy or per-agent strategy choice. It integrates the global setting with the existing server-settings persistence path, but a dedicated discovery API and frontend dropdown remain future presentation work.
+The ticket does not implement a second production strategy, per-agent strategy choice, generic strategy-configuration schema, arbitrary compactor-agent choice, or separate compaction model/runtime setting.
 
-The stable working-context meaning and examples are defined in `working-context-compaction-domain-contract.md`.
+The stable working-context meaning and examples are defined in `working-context-compaction-domain-contract.md`. The user-visible settings states are defined in `compaction-strategy-settings-ui-ux-spec.md`.
 
 ## Exact Strategy Boundary
 
@@ -130,7 +133,7 @@ Registry rules:
 4. Enumeration order is deterministic and covered by tests.
 5. The registry does not inspect a `WorkingContext`, invoke `compact`, choose a default, read environment variables, manage fallback, or own pending-operation lifecycle.
 
-The registry is global because it catalogs process-wide strategy kinds, not agent-specific choices or strategy instances.
+The registry is global because it catalogs process-wide strategy kinds, not agent-specific choices or strategy instances. Its tight `id`/`name` enumeration is also the server catalog's authoritative source. It does not gain `configurationKind`, frontend component IDs, a generic settings schema, or mostly-optional strategy configuration metadata.
 
 ## Construction Callback Boundary
 
@@ -172,7 +175,7 @@ It shall not gain arbitrary maps, strategy IDs, a `MemoryManager`, an `AgentConf
 
 `WorkingContextCompactionDiagnostics` is a narrow compaction-owned callback interface for optional strategy details. The agent-layer reporter may adapt to it, but the strategy contract must not depend upward on the concrete agent reporter.
 
-The global registry stores registrations/factories rather than agent-specific strategy instances. This allows server settings and future UI discovery to enumerate strategies without constructing an agent.
+The global registry stores registrations/factories rather than agent-specific strategy instances. This allows server settings and the current UI catalog to enumerate strategies without constructing an agent.
 
 ## Global Selection Setting
 
@@ -192,8 +195,9 @@ default: structured-json
 
 Rules:
 
-- absent or blank setting resolves to `structured-json`;
-- an explicit ID is normalized and looked up exactly;
+- absent or blank setting resolves to `structured-json` through the shared `normalizeWorkingContextCompactionStrategyId` function;
+- the server effective-selection read calls that same function and exposes the normalized ID without writing configuration;
+- an explicit ID is normalized and looked up exactly; the read returns an explicit unknown ID unchanged so the UI can show it as unavailable;
 - an unknown explicit ID never silently falls back;
 - the setting applies to every agent/team run using AutoByteus working-context compaction;
 - there is no `AgentConfig.memoryCompactionStrategyId` or equivalent per-agent field.
@@ -244,7 +248,7 @@ export class StructuredJsonCompactionStrategy
 }
 ```
 
-Its global registration constructs the implementation from the construction context and current private collaborators. Missing current compaction-agent runner remains a truthful compaction preparation failure.
+Its global registration constructs the implementation from the construction context and current private collaborators. Missing current compaction-agent runner remains a truthful compaction preparation failure. The runner itself is server-composed to execute only the built-in `autobyteus-memory-compactor`; the strategy cannot be redirected to an arbitrary agent definition through settings.
 
 Exact current registration mapping:
 
@@ -265,6 +269,18 @@ create: (context) => new StructuredJsonCompactionStrategy({
 ```
 
 The example is an exact dependency map, not a mandate for positional constructors. It deliberately carries no strategy selection and passes no second argument to `compact(...)`.
+
+Current worker ownership:
+
+```text
+StructuredJsonCompactionStrategy
+    -> CompactionAgentRunner
+    -> server resolves built-in id autobyteus-memory-compactor
+    -> built-in definition's blank launch config inherits parent runtime/model
+    -> structured JSON result
+```
+
+`AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is removed as a predefined/runtime selection. The built-in-agent bootstrap continues synchronizing the Memory Compactor definition but no longer writes a setting default for it. A stale environment value is ignored by normal runtime code. If the built-in definition is missing or invalid, current-strategy preparation fails with that identity named; it never falls back to another visible agent.
 
 Internal current-strategy spine:
 
@@ -318,7 +334,7 @@ No strategy selection is added to `AgentConfig`, agent definitions, team-member 
 
 `AgentFactory` gains no strategy-ID/default branch and does not read `AUTOBYTEUS_COMPACTION_STRATEGY`. Its existing concrete `Compactor` construction is removed as part of deleting the obsolete ownership path; it continues creating the memory store, policy, snapshot store, and `MemoryManager` as before.
 
-The existing `compactionAgentRunner` remains an execution dependency already present on `AgentConfig`. It is not a strategy choice. The active LLM/compaction call site supplies `AgentContext.agentId`, that existing runner, `MemoryManager.store`, the current resolved input budget, `MemoryManager.compactionPolicy.maxItemChars`, and a compaction-owned diagnostics callback/adapter to the resolver's exact construction context. The memory compaction contract does not import the agent-layer `CompactionRuntimeReporter` concrete type.
+The existing `compactionAgentRunner` remains an execution dependency already present on `AgentConfig`. It is not a strategy or worker choice: server composition binds it to the built-in Memory Compactor. The active LLM/compaction call site supplies `AgentContext.agentId`, that existing runner, `MemoryManager.store`, the current resolved input budget, `MemoryManager.compactionPolicy.maxItemChars`, and a compaction-owned diagnostics callback/adapter to the resolver's exact construction context. The memory compaction contract does not import the agent-layer `CompactionRuntimeReporter` concrete type.
 
 This preserves the user-facing principle:
 
@@ -345,14 +361,71 @@ frontend/server-settings mutation
 
 This ticket registers `AUTOBYTEUS_COMPACTION_STRATEGY` as a predefined editable setting. Its normalization validates the ID against the global strategy registry at update time.
 
-A future frontend dropdown can use registry `list()` metadata through a bounded discovery API and write the same existing server setting. No agent form or agent-definition schema change is needed.
+The existing Compaction card writes deliberate setting changes through the existing `ServerSettingsStore.updateServerSetting(key, value)` action and per-key mutation. It does not add a Compaction-specific batch, binding revision, captured-client session, or patch-result API. The removed `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer predefined or read by current compaction. No agent form or agent-definition schema change is needed.
+
+`ServerSettingsService` also owns this read-only method:
+
+```ts
+getEffectiveWorkingContextCompactionStrategyId(): string;
+```
+
+It obtains the current `AUTOBYTEUS_COMPACTION_STRATEGY` value from `AppConfig` and calls the exported core `normalizeWorkingContextCompactionStrategyId`. It does not validate an explicit unknown into a fallback, consult registry order, or persist the returned default. Therefore absent and blank configuration both read as `structured-json`, while explicit valid and explicit unknown values read as themselves.
+
+## Server Catalog And Frontend Selection
+
+The server exposes a read-only query whose result is derived directly from the registry:
+
+```graphql
+type WorkingContextCompactionStrategyOption {
+  id: String!
+  name: String!
+}
+
+type Query {
+  getWorkingContextCompactionStrategies: [WorkingContextCompactionStrategyOption!]!
+  getEffectiveWorkingContextCompactionStrategyId: String!
+}
+```
+
+`getWorkingContextCompactionStrategies` maps `defaultWorkingContextCompactionStrategyRegistry.list()` without constructing strategies or reading agent definitions. `getEffectiveWorkingContextCompactionStrategyId` delegates to the ServerSettingsService method above. They are sibling reads: catalog entries remain exactly `{id,name}` and never acquire `isDefault`, `isSelected`, configured value, or factory data.
+
+Frontend data flow:
+
+```text
+opened node window's registry catalog -> [{ id, name }]
+                              -> CompactionConfigCard option labels/values
+ServerSettingsService        -> effective selected ID via shared core normalizer
+                              -> ServerSettingsStore clean/dirty baseline
+existing generic settings    -> trigger/context/log values
+save                          -> existing ServerSettingsStore.updateServerSetting
+                              -> one call per changed key, sequentially
+```
+
+The frontend uses a binding-aware working-context-compaction strategy catalog store for catalog read state and the existing server-settings store for the effective selected ID plus universal values. The settings read loads generic settings and the effective scalar for one current bound-node revision; stale read responses remain governed by existing generic binding invalidation. On desktop, both read from the server already bound to that node's separate window. These are sibling authoritative subjects; the card coordinates their loaded results without inventing a Compaction-specific save/binding session. It never hard-codes available strategy names/IDs/default, derives the default from catalog order, or fetches the agent-definition catalog.
+
+The card initializes its strategy field and dirty baseline from the effective ID. Absent/blank persisted configuration is therefore a clean `structured-json` state and is not written on load or while saving only a universal field. An explicit unknown ID remains the baseline, appears as unavailable against the catalog, and is replaced only after the user selects and saves a valid ID.
+
+The Compaction card order is strategy, trigger ratio, effective context override, then detailed logs. It handles catalog/effective-selection loading, empty/error, unknown configured ID, validation, dirty/saving/same-node save failure, localization, responsive layout, and accessibility exactly as defined in `compaction-strategy-settings-ui-ux-spec.md`.
+
+Desktop save contract:
+
+```ts
+for (const { key, value } of changedValidSettings) {
+  await serverSettingsStore.updateServerSetting(key, value);
+}
+```
+
+The card orders only deliberately changed valid fields, awaits each existing action, and stops at the first thrown server error. Each successful action uses the existing mutation and authoritative settings reload. Full completion leaves the form clean. If a later same-node call fails after an earlier success, the error remains visible, later keys are not sent, failed/unsent draft values remain dirty against the authoritative store, and the card does not claim rollback or whole-card success. The card/save path does not consume generic `settingsBindingRevision` and has no `expectedBindingRevision`, `updateSettingsForBinding`, `BoundServerSettingsPatchResult`, confirmed/unconfirmed key protocol, or previous-node presentation. Existing generic binding-aware read state remains unchanged.
+
+Electron desktop lifecycle is authoritative: `openNodeWindow(nodeId)` focuses or creates a separate window, and window bootstrap binds that window once. Mobile `bindNodeContext(...)` behavior and generic node-binding safeguards belong to another subsystem and are neither extended nor removed here.
 
 ## Runtime Composition And Compaction Spine
 
 Global setting path:
 
 ```text
-Server Settings update
+registry-backed Compaction card selection
+    -> existing Server Settings update
     -> ServerSettingsService
     -> AppConfig.set(AUTOBYTEUS_COMPACTION_STRATEGY, id)
     -> process.env + persisted .env
@@ -494,16 +567,16 @@ A future production strategy therefore requires:
 
 1. its implementation and private collaborators;
 2. one identified/named registration with its construction callback;
-3. inclusion in the registry-backed server setting/discovery list;
+3. no manual inclusion in a frontend list—the registry-backed catalog enumerates it;
 4. selecting its stable global ID.
 
-It does not require another compaction architecture or agent-configuration refactor.
+It does not require another compaction architecture, discovery API, effective-selection API, Compaction-card option branch, bound-save mechanism, or agent-configuration refactor. If it has genuinely different user-facing configuration, that future product work adds a bounded surface deliberately; the universal registry is not expanded pre-emptively into a generic form schema.
 
 ## Failure Semantics
 
 - Absent/blank global value: use `structured-json`.
 - Explicit unknown ID: fail the pending compaction and identify the ID; do not replace context or clear success state.
-- Selected registration cannot construct because a required runner/dependency is unavailable: truthful compaction preparation failure.
+- Selected registration cannot construct because a required runner/dependency is unavailable: truthful compaction preparation failure. For `structured-json`, a missing/invalid `autobyteus-memory-compactor` is identified and there is no arbitrary-agent fallback.
 - Strategy throws: leave current working context installed and emit failed lifecycle.
 - Strategy returns an invalid context: validator identifies the invariant before replacement; leave exact live context and pending request installed, emit failed, and never emit completed.
 - Manager persistence/replacement fails: do not clear the request or emit completed; propagate the existing failure path. Atomic durability beyond current manager/store semantics remains outside scope.
@@ -564,7 +637,7 @@ if (agentConfig.memoryCompactionStrategyId === "structured-json") {
 
 ## Authority And Dependency Rules
 
-- Server settings own persistence/update of the one global environment value.
+- Server settings own persistence/update of the one global environment value and the subject-specific normalized effective selected-ID read.
 - `CompactionRuntimeSettingsResolver` owns reading/normalizing the current global value.
 - `WorkingContextCompactionStrategyRegistry` owns registration, exact lookup, and metadata enumeration.
 - `WorkingContextCompactionStrategyResolver` owns defaulting, exact resolution, and selected registration construction.
@@ -575,7 +648,12 @@ if (agentConfig.memoryCompactionStrategyId === "structured-json") {
 - `AgentConfig` carries no strategy selection.
 - `AgentFactory` carries no strategy ID/default/selection policy.
 - A future strategy is added by implementation and registration—not by `if/else` branches in agent construction or execution.
+- The server strategy catalog depends only on registry metadata; it does not depend on selected/default state, strategy instances, factories, current-strategy workers, or `AgentDefinitionService`.
+- The effective-selection GraphQL field delegates to `ServerSettingsService`, which uses the core normalizer; it does not duplicate the default or write configuration.
+- The existing `ServerSettingsStore.updateServerSetting` remains the one-setting web write boundary; the Compaction card may sequence it for changed fields but does not create a second settings-session owner.
+- The Compaction card depends on the strategy catalog and server-settings boundaries; it does not depend on the agent-definition catalog, a hard-coded default, Apollo client selection, or binding-revision state.
+- The server compaction runner resolves the fixed built-in Memory Compactor identity; no server setting selects its agent definition.
 
 ## Approval
 
-The user approved this strategy contract and explicitly authorized architecture review on 2026-07-13. ARCH-PMCS-002 through ARCH-PMCS-004 complete bounded current-behavior construction, validation, and shared projection ownership without changing the approved clean API or global selection model. Architecture re-review is authorized.
+The user-approved strategy direction remains unchanged. The ARCH-PMCS-005 read authority remains incorporated above; CR-PMCS-009 removes the unsupported ARCH-PMCS-006 desktop write-session machinery and restores proportionate reuse of the existing setting action. The reconciled contract is ready for architecture re-review.

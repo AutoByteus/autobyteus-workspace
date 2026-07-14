@@ -1,12 +1,30 @@
 <template>
   <div class="server-settings-manager h-full flex flex-col overflow-hidden">
-    <div class="flex-1 overflow-auto p-8 pt-6 bg-slate-50">
-      <div v-if="store.isLoading" class="flex justify-center items-center py-8">
+    <div class="flex-1 overflow-auto bg-slate-50 p-3 sm:p-5 md:p-8 md:pt-6">
+      <div
+        v-if="isInitialLoading"
+        class="flex justify-center items-center py-8"
+        data-testid="server-settings-initial-loading"
+      >
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
 
-      <div v-else-if="store.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        <p>{{ store.error }}</p>
+      <div
+        v-else-if="initialReadError"
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+        role="alert"
+        data-testid="server-settings-initial-error"
+      >
+        <p>{{ initialReadError }}</p>
+        <button
+          type="button"
+          class="mt-3 inline-flex h-9 items-center justify-center rounded-lg border border-red-300 bg-white px-4 text-sm font-medium text-red-800 transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+          :aria-label="$t('settings.components.settings.ServerSettingsManager.retry')"
+          data-testid="server-settings-initial-retry"
+          @click="loadInitialSettings"
+        >
+          {{ $t('settings.components.settings.ServerSettingsManager.retry') }}
+        </button>
       </div>
 
       <ServerSettingsBasicsPanel v-else-if="activeTab === 'quick'" />
@@ -176,6 +194,8 @@ const canAccessEmbeddedDiagnostics = computed(() => windowNodeContextStore.isEmb
 const activeTab = ref<SettingsTab>(props.sectionMode)
 const advancedPanel = ref<AdvancedPanel>('raw-settings')
 const notification = ref<{ type: 'success' | 'error'; message: string } | null>(null)
+const isInitialLoading = ref(true)
+const initialReadError = ref<string | null>(null)
 
 const editedSettings = reactive<Record<string, string>>({})
 const originalSettings = reactive<Record<string, string>>({})
@@ -247,13 +267,23 @@ watch(
   { immediate: true },
 )
 
-onMounted(async () => {
+const loadInitialSettings = async (): Promise<void> => {
+  isInitialLoading.value = true
+  initialReadError.value = null
+  notification.value = null
   try {
     await store.fetchServerSettings()
-  } catch (error) {
+  } catch (error: any) {
+    initialReadError.value = error?.message ?? 'Failed to load server settings'
     console.error('Failed to load server settings:', error)
     showNotification('Failed to load server settings', 'error')
+  } finally {
+    isInitialLoading.value = false
   }
+}
+
+onMounted(() => {
+  void loadInitialSettings()
 })
 
 const showNotification = (message: string, type: 'success' | 'error') => {

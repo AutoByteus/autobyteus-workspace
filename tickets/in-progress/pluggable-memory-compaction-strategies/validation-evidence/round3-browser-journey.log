@@ -1,0 +1,68 @@
+{
+  "setup": {
+    "baseUrl": "http://127.0.0.1:59631",
+    "dataDir": "/tmp/pmcs-round3-data.umhIlZ",
+    "chrome": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    }
+  },
+  "scenarios": {
+    "laterKeyFailureAndRetry": {
+      "status": "Fail",
+      "expected": "first real key persists; later failure error remains visible; failed/unsent drafts remain dirty; save stays enabled for retry",
+      "observed": {
+        "mutationKeys": [
+          "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
+          "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE"
+        ],
+        "mutationValues": [
+          "0.65",
+          "8192"
+        ],
+        "faultIntercepted": 1,
+        "controlCount": 0,
+        "ratio": null,
+        "override": null,
+        "logs": null,
+        "saveDisabled": null,
+        "status": "",
+        "managerError": "forced override rejection from browser E2E",
+        "persisted": {
+          "ratio65": true,
+          "overrideStill4096": true,
+          "logsStillTrue": true
+        }
+      },
+      "analysis": "The first successful update reloads authoritative settings. The rejected second key then sets the shared store error, causing ServerSettingsManager to replace the entire Basics panel with a global error. The Compaction card and failed/unsent drafts disappear, so they are not dirty and the user cannot retry from the card."
+    },
+    "narrowResponsiveAccessibility": {
+      "status": "Fail",
+      "expected": "single-column card remains usable on a 390px narrow surface, with labels above full-width controls",
+      "observed": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "cardBox": {
+          "x": 304,
+          "y": -65,
+          "width": 50,
+          "height": 990
+        },
+        "documentScrollWidth": 390,
+        "bodyClientWidth": 390,
+        "strategyLabelCount": 1,
+        "ratioLabelCount": 1,
+        "overrideLabelCount": 1,
+        "saveAccessibleName": "Save compaction configuration"
+      }
+    }
+  },
+  "consoleErrors": [
+    "Failed to update server setting AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE: Error: forced override rejection from browser E2E\n    at Proxy.updateServerSetting (http://127.0.0.1:59631/_nuxt/stores/serverSettings.ts:275:15)\n    at async save (http://127.0.0.1:59631/_nuxt/components/settings/CompactionConfigCard.vue:144:11)"
+  ],
+  "overall": "Fail"
+}
+BROWSER_EXIT=1

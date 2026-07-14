@@ -77,7 +77,7 @@ The built-in-agent bootstrapper owns this lifecycle:
 
 Internal built-in agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting; app-data edits to registry-defined built-in ids are product-managed and will be overwritten by startup sync.
 
-Do not add separate one-off built-in-agent bootstrappers or scatter platform templates under feature-runtime folders. Compaction runtime depends on `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; it does not own the Memory Compactor template/sync lifecycle. Daily Assistant is not a server built-in or server-selected featured default; keep it in a user/private agent package such as `/Users/normy/autobyteus_org/autobyteus-private-agents/agents/daily-assistant/` and feature it through Settings when desired.
+Do not add separate one-off built-in-agent bootstrappers or scatter platform templates under feature-runtime folders. The current `structured-json` compaction strategy depends on `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; it does not own the Memory Compactor template/sync lifecycle. The separate process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting selects the registered working-context algorithm for subsequent operations and must not be added to `AgentConfig` or agent definitions. Daily Assistant is not a server built-in or server-selected featured default; keep it in a user/private agent package such as `/Users/normy/autobyteus_org/autobyteus-private-agents/agents/daily-assistant/` and feature it through Settings when desired.
 
 ## Notes
 

@@ -1,0 +1,255 @@
+## git boundary
+df7ade6ea461eec32aff37cdd8084be7b8c51d10
+codex/pluggable-memory-compaction-strategies
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_definition.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+ D autobyteus-server-ts/src/agent-execution/compaction/compaction-agent-settings-resolver.ts
+ M autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+ M autobyteus-server-ts/src/api/graphql/schema.ts
+ M autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+ M autobyteus-server-ts/src/services/server-settings-service.ts
+ M autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+ D autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-agent-settings-resolver.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+ M autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-ts/src/memory/compaction/compaction-agent-runner.ts
+ M autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts
+ M autobyteus-ts/tests/unit/memory/working-context-compaction-strategy-registry.test.ts
+ M autobyteus-web/components/settings/CompactionConfigCard.vue
+ M autobyteus-web/components/settings/__tests__/CompactionConfigCard.spec.ts
+ M autobyteus-web/components/settings/__tests__/NodeManager.spec.ts
+ M autobyteus-web/graphql/queries/server_settings_queries.ts
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/stores/serverSettings.ts
+ M autobyteus-web/tests/stores/serverSettingsStore.test.ts
+ M tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-coverage-investigation.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/code-review-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/design-review-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/design-spec.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/implementation-handoff.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/investigation-notes.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/requirements.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-domain-contract.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-strategy-contract.md
+?? autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts
+?? autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts
+?? autobyteus-server-ts/tests/unit/api/graphql/types/working-context-compaction-strategy.test.ts
+?? autobyteus-web/graphql/queries/workingContextCompactionStrategyQueries.ts
+?? autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts
+?? autobyteus-web/tests/stores/workingContextCompactionStrategyCatalogStore.test.ts
+?? tickets/in-progress/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/docs-sync-report.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/handoff-summary.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/release-deployment-report.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-electron-artifact-verification-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-final-consistency-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-integration-refresh-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-user-requested-electron-artifacts-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-user-requested-electron-build-mac-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-builds-guards.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-core-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-provider-renderers.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-server-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-server-graphql-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-static-boundary.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-web-broader.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-web-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-builds.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-core.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-electron-contract.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-provider.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-server-graphql.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-server.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-static.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-web-window-settings.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-web.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round8-code-review-validation-20260714.log
+## diff hygiene
+## rejected Compaction save-session API absent
+autobyteus-web/stores/workspace.ts:228:    async fetchAllWorkspaces(force = false, expectedBindingRevision?: number) {
+autobyteus-web/stores/workspace.ts:235:          expectedBindingRevision ?? windowNodeContextStore.bindingRevision;
+PASS
+## card save has no rebind/revision/previous-node branch
+autobyteus-web/components/settings/__tests__/CompactionConfigCard.spec.ts:72:        bindingRevision: options.catalogError ? null : 0,
+autobyteus-web/components/settings/CompactionConfigCard.vue:178:const currentRevision = computed(() => windowNodeContextStore.bindingRevision)
+autobyteus-web/components/settings/CompactionConfigCard.vue:182:const catalogReady = computed(() => catalogStore.bindingRevision === currentRevision.value)
+autobyteus-web/components/settings/CompactionConfigCard.vue:262:  () => windowNodeContextStore.bindingRevision,
+PASS
+## simple per-key authority present
+autobyteus-web/stores/serverSettings.ts-348-      }
+autobyteus-web/stores/serverSettings.ts-349-    },
+autobyteus-web/stores/serverSettings.ts-350-    
+autobyteus-web/stores/serverSettings.ts:351:    async updateServerSetting(key: string, value: string) {
+autobyteus-web/stores/serverSettings.ts-352-      this.isUpdating = true
+autobyteus-web/stores/serverSettings.ts-353-      this.error = null
+autobyteus-web/stores/serverSettings.ts-354-      
+--
+autobyteus-web/stores/serverSettings.ts-363-          throw new Error(errors.map((e: any) => e.message).join(', '))
+autobyteus-web/stores/serverSettings.ts-364-        }
+autobyteus-web/stores/serverSettings.ts-365-        
+autobyteus-web/stores/serverSettings.ts:366:        const responseMessage = data?.updateServerSetting
+autobyteus-web/stores/serverSettings.ts-367-        
+autobyteus-web/stores/serverSettings.ts-368-        if (responseMessage && responseMessage.includes("successfully")) {
+autobyteus-web/stores/serverSettings.ts-369-          // Reload settings from server to ensure state is consistent
+--
+autobyteus-web/components/settings/CompactionConfigCard.vue-271-  void loadForCurrentBinding(true)
+autobyteus-web/components/settings/CompactionConfigCard.vue-272-}
+autobyteus-web/components/settings/CompactionConfigCard.vue-273-
+autobyteus-web/components/settings/CompactionConfigCard.vue:274:const buildChanges = (): ReadonlyArray<Readonly<{ key: string; value: string }>> => {
+autobyteus-web/components/settings/CompactionConfigCard.vue-275-  const changes: Array<Readonly<{ key: string; value: string }>> = []
+autobyteus-web/components/settings/CompactionConfigCard.vue-276-  if (strategyDirty.value) {
+autobyteus-web/components/settings/CompactionConfigCard.vue-277-    changes.push({ key: COMPACTION_STRATEGY_KEY, value: normalizeText(strategyId.value) })
+--
+autobyteus-web/components/settings/CompactionConfigCard.vue-295-  statusMessage.value = ''
+autobyteus-web/components/settings/CompactionConfigCard.vue-296-  let completed = false
+autobyteus-web/components/settings/CompactionConfigCard.vue-297-  try {
+autobyteus-web/components/settings/CompactionConfigCard.vue:298:    for (const change of buildChanges()) {
+autobyteus-web/components/settings/CompactionConfigCard.vue:299:      await settingsStore.updateServerSetting(change.key, change.value)
+autobyteus-web/components/settings/CompactionConfigCard.vue-300-    }
+autobyteus-web/components/settings/CompactionConfigCard.vue-301-    completed = true
+autobyteus-web/components/settings/CompactionConfigCard.vue-302-  } catch (error: any) {
+## generic/mobile read safeguards preserved
+autobyteus-web/stores/mobileNodeSessionStore.ts:90:    nodeContext.bindNodeContext(nextSession.nodeId || EMBEDDED_NODE_ID, nextSession.serverBaseUrl);
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:14:  bindingRevision: number | null
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:36:  bindingRevision: number,
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:39:  useWindowNodeContextStore().bindingRevision === bindingRevision
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:52:    () => windowNodeContextStore.bindingRevision,
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:74:      bindingRevision: null as number | null,
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:82:        this.bindingRevision = null
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:90:        const currentRevision = windowNodeContextStore.bindingRevision
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:91:        if (this.bindingRevision !== null && this.bindingRevision !== currentRevision) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:94:        if (!force && this.bindingRevision === currentRevision) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:98:        const bindingRevisionAtStart = currentRevision
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:106:          if (!isCurrentCatalogRead(this as BindingAwareCatalogStore, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:118:          if (!isCurrentCatalogRead(this as BindingAwareCatalogStore, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:130:          this.bindingRevision = bindingRevisionAtStart
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:133:          if (isCurrentCatalogRead(this as BindingAwareCatalogStore, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:136:            this.bindingRevision = null
+autobyteus-web/stores/serverSettings.ts:61:  settingsBindingRevision: number | null
+autobyteus-web/stores/serverSettings.ts:82:  bindingRevision: number,
+autobyteus-web/stores/serverSettings.ts:85:  useWindowNodeContextStore().bindingRevision === bindingRevision
+autobyteus-web/stores/serverSettings.ts:103:    () => windowNodeContextStore.bindingRevision,
+autobyteus-web/stores/serverSettings.ts:130:  store: Pick<ServerSettingsBindingAwareStore, 'settingsBindingRevision' | 'searchConfigBindingRevision' | 'invalidateBoundNodeState'>,
+autobyteus-web/stores/serverSettings.ts:134:    (store.settingsBindingRevision !== null && store.settingsBindingRevision !== currentBindingRevision) ||
+autobyteus-web/stores/serverSettings.ts:143:  const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
+autobyteus-web/stores/serverSettings.ts:150:  return bindingRevisionAtStart
+autobyteus-web/stores/serverSettings.ts:156:    settingsBindingRevision: null as number | null,
+autobyteus-web/stores/serverSettings.ts:173:      this.settingsBindingRevision = null
+autobyteus-web/stores/serverSettings.ts:186:      const bindingRevision = windowNodeContextStore.bindingRevision
+autobyteus-web/stores/serverSettings.ts:187:      invalidateStaleBindingCache(store, bindingRevision)
+autobyteus-web/stores/serverSettings.ts:188:      if (this.settingsBindingRevision === bindingRevision) {
+autobyteus-web/stores/serverSettings.ts:194:        const bindingRevisionAtStart = await ensureBoundBackendReady()
+autobyteus-web/stores/serverSettings.ts:195:        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/serverSettings.ts:202:        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/serverSettings.ts:212:        this.settingsBindingRevision = bindingRevisionAtStart
+autobyteus-web/stores/serverSettings.ts:215:        if (isCurrentSettingsRead(store, requestToken, bindingRevision)) {
+autobyteus-web/stores/serverSettings.ts:219:          this.settingsBindingRevision = null
+autobyteus-web/stores/serverSettings.ts:233:      const bindingRevision = windowNodeContextStore.bindingRevision
+autobyteus-web/stores/serverSettings.ts:234:      invalidateStaleBindingCache(store, bindingRevision)
+autobyteus-web/stores/serverSettings.ts:238:        const bindingRevisionAtStart = await ensureBoundBackendReady()
+autobyteus-web/stores/serverSettings.ts:239:        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/serverSettings.ts:247:        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
+## removed arbitrary worker authority absent from production source
+PASS
+## obsolete compactor/epoch symbols absent
+PASS
+## fixed built-in and single production registration
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-2-  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-3-} from "../services/server-settings-service.js";
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-4-
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts:5:export const MEMORY_COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-6-export const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = "autobyteus-retrospective-skill-improver";
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-7-
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-8-export type BuiltInAgentSettingDefault = {
+--
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-18-
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-19-export const BUILT_IN_AGENT_DEFINITIONS = [
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-20-  {
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts:21:    id: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-22-    templateDirName: "memory-compactor",
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-23-    displayName: "Memory Compactor",
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-24-  },
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-1-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-2-import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:3:import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../built-in-agents/built-in-agent-registry.js";
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-4-import { runtimeKindFromString, type RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-5-
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-6-export type ResolvedMemoryCompactorAgentLaunch = {
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-47-    const definition = await this.loadDefinition();
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-48-    if (!definition) {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-49-      throw new Error(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:50:        `Built-in Memory Compactor agent definition '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' was not found.`,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-51-      );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-52-    }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-53-
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-57-    const runtimeKind = explicitRuntimeKind ?? fallbackRuntimeKind;
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-58-    if (!runtimeKind) {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-59-      throw new Error(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:60:        `Built-in Memory Compactor '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' is missing a valid default runtime kind and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent runtime kind fallback.`,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-61-      );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-62-    }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-63-
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-66-    const llmModelIdentifier = explicitModelIdentifier ?? fallbackModelIdentifier;
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-67-    if (!llmModelIdentifier) {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-68-      throw new Error(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:69:        `Built-in Memory Compactor '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' is missing a default model identifier and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent model identifier fallback.`,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-70-      );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-71-    }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-72-
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-73-    return {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:74:      agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-75-      agentName: definition.name,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-76-      runtimeKind,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-77-      llmModelIdentifier,
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-85-    if (typeof freshLoader === "function") {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-86-      return freshLoader.call(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-87-        this.agentDefinitionService,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:88:        MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-89-      );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-90-    }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-91-    return this.agentDefinitionService.getAgentDefinitionById(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:92:      MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-93-    );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-94-  }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-95-
+2-import { Retriever } from '../retrieval/retriever.js';
+3-import { CompactedMemoryContextProjector } from '../projection/compacted-memory-context-projector.js';
+4-import type { CompactionAgentRunner } from './compaction-agent-runner.js';
+5:import { StructuredJsonCompactionStrategy } from './structured-json-compaction-strategy.js';
+6-import { WorkingContextCompactionStrategyRegistry } from './working-context-compaction-strategy-registry.js';
+7-
+8-const requireCompactionRunner = (runner: CompactionAgentRunner | null): CompactionAgentRunner => {
+--
+15-export const defaultWorkingContextCompactionStrategyRegistry =
+16-  new WorkingContextCompactionStrategyRegistry();
+17-
+18:defaultWorkingContextCompactionStrategyRegistry.register({
+19:  id: 'structured-json',
+20-  name: 'Structured JSON',
+21-  create: (context) => new StructuredJsonCompactionStrategy({
+22-    store: context.memoryStore,
+## projector allowed consumers
+autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts
+autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts
+autobyteus-ts/src/memory/index.ts
+autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts
+autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts
+## source sizes
+autobyteus-web/stores/serverSettings.ts 366
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts 133
+autobyteus-web/components/settings/CompactionConfigCard.vue 290
+autobyteus-server-ts/src/services/server-settings-service.ts 360
+autobyteus-ts/src/memory/memory-manager.ts 481

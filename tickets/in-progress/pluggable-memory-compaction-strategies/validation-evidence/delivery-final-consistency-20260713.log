@@ -1,0 +1,33 @@
+Delivery final consistency — pluggable memory compaction strategies
+UTC 2026-07-13T19:18:54Z
+HEAD df7ade6ea461eec32aff37cdd8084be7b8c51d10
+origin/personal fdb370d48106df252f77b684f76675a77226fffc
+ahead-behind 1	0
+> git diff --check
+> canonical/nodejs doc body parity
+> required strategy/settings documentation probes
+tickets/in-progress/pluggable-memory-compaction-strategies/docs-sync-report.md:34:| `autobyteus-server-ts/docs/ARCHITECTURE.md` | New focused section | Core ownership, `AUTOBYTEUS_COMPACTION_STRATEGY`, only production registration, server validation/persistence | Promotes the cross-package composition boundary. |
+tickets/in-progress/pluggable-memory-compaction-strategies/docs-sync-report.md:44:| Global selection | `AUTOBYTEUS_COMPACTION_STRATEGY` is process-global, validated, and resolved for each later operation; no per-agent field | Requirements and strategy contract | Core/server architecture and agent-definition docs |
+tickets/in-progress/pluggable-memory-compaction-strategies/docs-sync-report.md:46:| Current strategy ownership | Prefix/suffix planning, budget, compactor JSON, durable memory writes, retrieval, and projection remain inside `structured-json` | Design spec and implementation handoff | Core/server memory docs |
+tickets/in-progress/pluggable-memory-compaction-strategies/handoff-summary.md:46:- The only production registration is `structured-json` / `Structured JSON`; it preserves current prefix/suffix, compactor JSON, episodic/semantic writes, retrieval, compacted-memory projection, and raw-trace archive behavior.
+tickets/in-progress/pluggable-memory-compaction-strategies/handoff-summary.md:47:- `AUTOBYTEUS_COMPACTION_STRATEGY` is a validated process-global server setting. Changes apply to subsequent compactions for already-created agents; strategy selection is absent from agent/team/run configs and `AgentFactory`.
+tickets/in-progress/pluggable-memory-compaction-strategies/handoff-summary.md:101:Please verify the v1.4.12 package, focusing on native compaction continuation and the global `AUTOBYTEUS_COMPACTION_STRATEGY=structured-json` setting if that is part of your workflow. Reply with explicit approval/completion or the exact issue observed. Only after approval will delivery archive the ticket, refresh `origin/personal` again, commit/push the ticket branch, merge/push `personal`, and perform safe cleanup.
+autobyteus-server-ts/docs/ARCHITECTURE.md:118:The process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting is resolved for each
+autobyteus-server-ts/docs/ARCHITECTURE.md:120:production registration is `structured-json` (`Structured JSON`); it preserves
+tickets/in-progress/pluggable-memory-compaction-strategies/release-deployment-report.md:104:- Approved persisted-data decision: `Directly Usable — No Migration`
+tickets/in-progress/pluggable-memory-compaction-strategies/release-deployment-report.md:123:Before finalization, retain the checkpoint and all uncommitted delivery artifacts. After finalization, rollback should be a new revert commit rather than history rewriting. Operationally, stop strategy rollout and preserve snapshots/raw traces if an unknown strategy is resolved, framework output validation fails, the pending request clears after a failed replacement, tool protocol is not provider-renderable, or persisted schema-v4 data cannot restore directly. The strategy setting can be returned to `structured-json`; this ticket does not guarantee rollback of already-written episodic/semantic effects or partially failed replacement ordering.
+autobyteus-server-ts/docs/modules/agent_memory.md:57:Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, and compacted memory are not duplicated. Native AutoByteus compaction is a pluggable context-to-context boundary: the executor resolves the process-global strategy for each pending operation, validates its returned detached `WorkingContext`, and only then asks `MemoryManager` to replace/persist it. The current `structured-json` strategy preserves semantic/episodic writes and rotates selected raw traces through shared direct segments with `boundary_type = "native_compaction"`.
+autobyteus-server-ts/docs/modules/agent_memory.md:61:`AUTOBYTEUS_COMPACTION_STRATEGY` selects the strategy for subsequent native compaction operations. Blank values normalize to `structured-json`, the only production registration. `ServerSettingsService` validates updates against registry metadata and persists them through the normal `.env` plus current-process environment path, so already-created native agents resolve the new value on their next compaction. This is process-local convergence; no cross-process broadcast or provider-session reconciliation is added.
+autobyteus-ts/docs/agent_memory_design.md:109:  compact(workingContext: WorkingContext): Promise<WorkingContext>;
+autobyteus-ts/docs/agent_memory_design.md:142:| `structured-json` | `Structured JSON` | Default and only production registration |
+autobyteus-ts/docs/agent_memory_design.md:147:   `AUTOBYTEUS_COMPACTION_STRATEGY` from the current process environment;
+autobyteus-ts/docs/agent_memory_design.md:148:2. blank/unset normalizes to `structured-json`;
+autobyteus-ts/docs/agent_memory_design.md:159:`AUTOBYTEUS_COMPACTION_STRATEGY` through the existing `.env`/`process.env`
+autobyteus-ts/docs/agent_memory_design.md:191:`WorkingContextCompactionOutputValidator` runs after every strategy and before
+autobyteus-ts/docs/agent_memory_design.md:316:`AUTOBYTEUS_COMPACTION_STRATEGY`, write episodic/semantic memory, or inject
+autobyteus-ts/docs/agent_memory_design.md:323:| `AUTOBYTEUS_COMPACTION_STRATEGY` | Process-global strategy id resolved for each subsequent pending operation; blank defaults to `structured-json`. |
+autobyteus-ts/docs/agent_memory_design.md:324:| `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | Visible Memory Compactor agent definition used by `structured-json`; blank runtime/model fields inherit from the parent run. |
+autobyteus-ts/docs/agent_memory_design.md:355:- `src/memory/compaction/structured-json-compaction-strategy.ts`
+> required source paths exist
+> removed production files remain absent
+RESULT PASS

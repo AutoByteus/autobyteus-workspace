@@ -107,6 +107,30 @@ Each major business area is isolated under `src/<module>` and usually contains:
 - `services/`
 
 
+## Native Working-Context Compaction
+
+Native AutoByteus semantic compaction is composed in `autobyteus-ts` as a
+context-to-context strategy boundary. `MemoryManager` owns the live
+`WorkingContext` and persistence, while `PendingCompactionExecutor` resolves and
+invokes the configured strategy, validates the returned detached context, asks
+the manager to replace it, and owns lifecycle/request clearing.
+
+The process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting is resolved for each
+subsequent pending operation through the default strategy registry. The only
+production registration is `structured-json` (`Structured JSON`); it preserves
+the current Memory Compactor agent, structured episodic/semantic writes, retained
+suffix, compacted-memory projection, and raw-trace archive behavior behind the
+stable `compact(WorkingContext): Promise<WorkingContext>` contract. Strategy
+selection is not stored on agent definitions, runs, teams, `AgentConfig`, or the
+working context.
+
+`ServerSettingsService` exposes the global setting through the existing
+`.env`/`process.env` persistence path and rejects values not present in production
+registry metadata. There is no dedicated discovery endpoint or frontend selector
+in the current scope. The selected strategy id/name is included in native
+compaction lifecycle metadata. See `autobyteus-ts/docs/agent_memory_design.md` for
+the domain, validation, restore, extension, and failure contracts.
+
 ## Agent Work Trace Projection
 
 The shared work-trace subsystem lives under `src/agent-work-traces`. It owns the

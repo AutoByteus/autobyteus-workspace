@@ -2,29 +2,30 @@
 
 ## Review Meta
 
-- Review Round: `1`
-- Trigger: Successful API/E2E Round 1 (`97.3%` final confidence) with four updated durable test files.
+- Review Round: `2`
+- Trigger: Successful API/E2E Execution Round 3 (`98.3%` final confidence) after the Round 11 source-review pass, with three implementation-owned durable frontend test paths added or updated since the prior failed execution.
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/requirements.md`
 - Supplemental Solution Artifacts Reviewed As Context:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/design-spec.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-domain-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-strategy-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md`
 - Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/code-review-report.md`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-execution-coverage-report.md`
 - API/E2E Result: `Pass`
-- Final Validation Confidence: `97.3%`
-- Prior unresolved test-review findings rechecked: `None` — this is the first proportional test-code review round.
+- Final Validation Confidence: `98.3%`
+- Prior unresolved test-review findings rechecked: `None` — Review Round 1 passed without findings; its four durable paths are outside this round's changed scope.
 
 ## Changed Durable Test Scope
 
-Temporary live-server probes, package checks, logs, and generated artifacts were treated as execution evidence rather than durable test code.
+Temporary browser probes, logs, screenshots, generated packages, and execution-only harnesses were treated as evidence rather than durable test code. API/E2E authored no source or durable test changes in Execution Round 3; this review covers the implementation-owned durable rework exercised by that successful run.
 
 | Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts` | Updated | `PMCS-E2E-001`; `REQ-PMCS-019`, `REQ-PMCS-021`; `AC-PMCS-014`, `AC-PMCS-017` | Pass | Adds one settings-surface scenario covering normalized GraphQL update, process and physical `.env` state, next-operation selection on a pre-composed runtime, rendered replacement, and invalid-update rejection. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts` | Updated | `PMCS-E2E-002`; `REQ-PMCS-006`, `REQ-PMCS-009`; `AC-PMCS-003`, `AC-PMCS-011` | Pass | Replaces synthetic result injection with actual registered `read_file` execution through `ToolPhase`, canonical result ingestion, deferred compaction, and complete OpenAI-compatible call/result rendering. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts` | Updated | `PMCS-E2E-003`; `REQ-PMCS-004`, `REQ-PMCS-009`, `REQ-PMCS-022`; `AC-PMCS-002`, `AC-PMCS-011`, `AC-PMCS-018` | Pass | Updates the existing compactor integration to current status/token-usage contracts and proves immediate completion, parent lineage/diagnostics, structured projection, and its presence in the next provider request. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts` | Updated | `PMCS-E2E-004`; `REQ-PMCS-011`, `REQ-PMCS-014`; `AC-PMCS-007`, `AC-PMCS-008` | Pass | Extends the normal agent restore lifecycle with a physical schema-v4 superset and verifies the next ordinary write preserves current context while omitting obsolete epoch/timestamp keys. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts` | Added | `PMCS-E2E-013`, `PMCS-E2E-016`; `REQ-PMCS-027`, `REQ-PMCS-030`; `AC-PMCS-025`, `AC-PMCS-026`, `AC-PMCS-029` | Pass | A joined real-Pinia surface proves that a later-key failure retains the loaded card, local error, and failed/unsent drafts; retry sends only remaining keys. It separately proves first-read error, accessible Retry, and authoritative recovery. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts` | Updated | `PMCS-E2E-013`, `PMCS-E2E-016`; `REQ-PMCS-027`, `REQ-PMCS-030`; `AC-PMCS-025`, `AC-PMCS-026`, `AC-PMCS-029` | Pass | Keeps the manager's initial loading/error/Retry ownership distinct from an already-loaded card's mutation state, while retaining the suite's existing Basics/Advanced routing and read-only behaviors. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/pages/__tests__/settings.spec.ts` | Updated | `PMCS-E2E-014`; `REQ-PMCS-027`; `AC-PMCS-026` | Pass | Adds a bounded responsive-composition contract for stacked narrow navigation/content, full-width/min-width-safe content, and the retained `md` desktop sidebar row. |
 
 - No durable test file changed: `No`
 - Review result when no durable test file changed: `N/A`
@@ -33,15 +34,15 @@ Temporary live-server probes, package checks, logs, and generated artifacts were
 
 | Check | Result (`Pass`/`Fail`/`N/A`) | Evidence / Notes |
 | --- | --- | --- |
-| Scenario grouping and names make intent clear | Pass | Each update remains under its existing surface-focused suite. The names state the observable lifecycle: settings selection, terminal tool result/compaction/render, parent-triggered compaction, and v4 restore/write contraction. |
-| Assertions prove approved requirements instead of incidental implementation details | Pass | Assertions target external effects and lifecycle invariants: normalized setting/process/file state and next request; actual tool result and complete call/result group; parent metadata/status and projected next request; restored messages and physical contracted payload. Current status/usage APIs replace stale fixture shapes rather than preserving old implementation details. |
-| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | The settings test reuses the established GraphQL/temp-app-data harness; the tool test reuses the production `read_file` registration and canonical continuation builder; the compactor test retains shared runner/backend/status helpers; the restore test adds one bounded polling helper around the existing physical store. |
-| Test isolation and determinism are appropriate for the exercised boundary | Pass | Tests use isolated temp directories, deterministic LLM/compactor outputs, controlled token usage, process-environment restoration, agent/backend teardown, and tool-registry snapshot/restore. The test-only GraphQL strategy is confined to the isolated final test/worker and was verified absent from production executable output. |
-| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | The 770-line settings file still covers one GraphQL settings surface, and the 551-line compactor file still covers one parent-fallback integration family. The added scenarios do not introduce unrelated responsibilities or unstructured mega-scenarios. |
-| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | The execution-discovered stale `getStatus()` and legacy token-usage fixture were updated to current public/canonical contracts. No test was disabled, no deleted compactor API was restored, and no parallel duplicate fixture was added. |
-| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | Exactly the four reported existing files changed; none was added or removed during API/E2E. Focused, broader, server, provider, build, live HTTP, and packaged-runtime evidence all passed, and the reports identify the one corrected test-owned failure transparently. |
+| Scenario grouping and names make intent clear | Pass | The joined failure/recovery suite names the two user-visible recovery journeys explicitly; the manager cases describe initial load/retry ownership; the page case describes narrow stacking while retaining desktop composition. |
+| Assertions prove approved requirements instead of incidental implementation details | Pass | The joined tests assert observable card presence, accessible error/Retry state, draft values, Save availability, request keys/order, and clean recovery. The manager test asserts visible error, accessible Retry, fetch count, and Basics mount. The page utility-class assertions are implementation-aware but narrowly guard the approved responsive composition and are supplemented by real 390x844 and desktop browser measurements rather than used as sole proof. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | The manager helper was extended rather than duplicated. The joined suite shares authoritative settings, catalog, mount, and deferred-flush setup while using real Pinia/store behavior where cross-component state is material. Existing page mount and route helpers remain shared. |
+| Test isolation and determinism are appropriate for the exercised boundary | Pass | Apollo calls and failures are deterministic, Pinia state is recreated per test, mocks are restored, and assertions wait for Vue task completion. No network, timing race, paid model, or mutable external node is required by these durable tests. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | Each file stays within one surface: joined Server Settings/Compaction recovery, Server Settings manager rendering, or Settings page routing/layout. The added cases do not create unrelated scenario collections. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | No test is disabled or compatibility-only. Shell-level manager coverage and joined real-store coverage are complementary, and the removed Compaction save-session/rebind model is not preserved in test code. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | The investigation and execution reports identify exactly one added and two updated durable paths, with no removal. All three participated in the current 10-file / 84-test frontend pass, and live browser scenarios `PMCS-E2E-013`, `PMCS-E2E-014`, and `PMCS-E2E-016` passed. |
 
-No additional test execution was needed for this proportional review. The changed assertions were directly judgeable from the diffs, and the supplied focused and broader execution evidence was complete.
+No additional test execution was needed for this proportional review. The changed assertions were directly judgeable from the tests and current diff, while the supplied targeted suite and live-browser evidence exercised the same behaviors successfully.
 
 ## Findings
 
@@ -49,12 +50,12 @@ No actionable test-code quality or correctness findings.
 
 | Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
 | --- | --- | --- | --- | --- |
-| None | N/A | The four updates are clear, requirement-linked, isolated, current-contract coverage and all supplied execution evidence passes. | None | N/A |
+| None | N/A | The three durable test changes are clear, requirement-linked, deterministic, current-contract coverage and agree with the successful execution package. | None | N/A |
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Changed durable test paths reviewed: `4` updated, `0` added, `0` removed
+- Changed durable test paths reviewed: `1` added, `2` updated, `0` removed
 - Unresolved finding IDs: `None`
 - Recommended Recipient: `delivery_engineer`
-- Notes: The successful API/E2E package receives proportional test-code approval. This result does not reopen the implementation scorecard or repeat execution confidence scoring.
+- Notes: The successful API/E2E package receives proportional durable-test approval. This report does not reopen the implementation source scorecard or repeat API/E2E execution.

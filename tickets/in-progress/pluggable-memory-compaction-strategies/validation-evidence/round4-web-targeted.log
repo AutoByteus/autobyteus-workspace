@@ -1,0 +1,98 @@
+COMMAND: NUXT_TEST=true pnpm exec vitest --run <10 mapped current files>
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web
+
+stderr | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/windowNodeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/workingContextCompactionStrategyCatalogStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/serverSettingsStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/settings.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CompactionConfigCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ServerSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/windowNodeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/CompactionConfigCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/serverSettingsStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/workingContextCompactionStrategyCatalogStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/settings.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/windowNodeContextStore.spec.ts (10 tests) 19ms
+stderr | tests/stores/serverSettingsStore.test.ts > serverSettings store > fails deterministically when the bound backend is not ready
+Failed to fetch server settings: Error: backend readiness timed out
+    at ensureBoundBackendReady (/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/stores/serverSettings.ts:147:11)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Proxy.fetchServerSettings (/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/stores/serverSettings.ts:194:40)
+
+ ✓ tests/stores/workingContextCompactionStrategyCatalogStore.test.ts (5 tests) 160ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 74ms
+ ✓ tests/stores/serverSettingsStore.test.ts (11 tests) 182ms
+ ✓ components/settings/__tests__/CompactionConfigCard.spec.ts (9 tests) 137ms
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (3 tests) 64ms
+ ✓ components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts (2 tests) 72ms
+ ✓ components/settings/__tests__/ServerSettingsManager.spec.ts (8 tests) 94ms
+stderr | stores/__tests__/nodeStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ pages/__tests__/settings.spec.ts (18 tests) 90ms
+stdout | stores/__tests__/nodeStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/nodeStore.spec.ts (8 tests) 9ms
+
+ Test Files  10 passed (10)
+      Tests  84 passed (84)
+   Start at  14:18:34
+   Duration  9.60s (transform 5.76s, setup 58.53s, collect 5.56s, tests 901ms, environment 3.37s, prepare 2.57s)
+

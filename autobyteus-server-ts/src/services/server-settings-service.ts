@@ -29,6 +29,7 @@ import {
   WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
   normalizeWorkingContextCompactionStrategyForPersistence,
 } from "../config/working-context-compaction-strategy-setting.js";
+import { normalizeWorkingContextCompactionStrategyId } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-setting.js";
 
 export {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
@@ -59,7 +60,6 @@ type ServerSettingValueValidation = {
 };
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
-export const AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID = "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID";
 export { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID, SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY };
 
 export class ServerSettingsService {
@@ -99,11 +99,6 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
       "Decimal compaction trigger ratio used for post-response budget checks (default 0.8)",
-    );
-
-    this.registerPredefinedSetting(
-      AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-      "Agent definition id for the memory compactor agent. Blank runtime/model fields on the selected compactor inherit from the running parent agent.",
     );
 
     this.registerPredefinedSetting(
@@ -403,8 +398,10 @@ export class ServerSettingsService {
     return normalized.length > 0 ? normalized : null;
   }
 
-  getCompactionAgentDefinitionId(): string | null {
-    return this.getSettingValue(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID);
+  getEffectiveWorkingContextCompactionStrategyId(): string {
+    return normalizeWorkingContextCompactionStrategyId(
+      appConfigProvider.config.get(WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY),
+    );
   }
 
   getSkillImprovementDefaultImproverAgentDefinitionId(): string | null {

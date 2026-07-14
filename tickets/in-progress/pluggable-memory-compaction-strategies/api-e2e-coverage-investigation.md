@@ -8,228 +8,252 @@
 - Supplemental Solution Artifacts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-domain-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-strategy-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/code-review-report.md`
-- Current Investigation Round: `1`
-- Trigger: Source Review Round 2 Pass; fresh API/E2E investigation and realistic execution requested by `code_reviewer`.
-- Prior Investigation Reviewed: `None`
-- Latest Authoritative Investigation: `Round 1`
+- Current Investigation Round: `4`
+- Trigger: Source Review Round 11 Pass at working HEAD `df7ade6ea461eec32aff37cdd8084be7b8c51d10`, score 94/100, no open findings. `CR-PMCS-010`, `CR-PMCS-011`, and `CR-PMCS-012` are resolved in source; fresh API/E2E must recheck the two prior browser failures plus initial-read Retry recovery.
+- Prior Investigation Reviewed: Round 3 / Execution Round 2 Fail, including PMCS-E2E-013 and PMCS-E2E-014 evidence. Earlier revision-fenced plans remain obsolete and non-authoritative.
+- Latest Authoritative Investigation: `Round 4`
 
 ## Current Requirement And Design Basis
 
-The reviewed change is a clean-cut structural refactor of AutoByteus semantic working-context compaction, not a new algorithm. The critical executable outcome is: a pending, tool-safe operation resolves the current process-global strategy at operation time; a detached `WorkingContext` is transformed by the selected strategy; framework validation rejects invalid head/message/tool/alias output before installation; `MemoryManager` replaces and persists only an accepted complete context; and the next provider request renders that replacement. The only production registration is `structured-json` / `Structured JSON`.
+The reviewed current spine is: one pending tool-safe operation resolves the process-global strategy at operation time; a detached `WorkingContext` is transformed; framework validation rejects invalid head/message/tool/alias output before installation; `MemoryManager` installs and persists only an accepted complete context; and the next provider request renders the replacement. `structured-json` / `Structured JSON` is the sole production registration and invokes only the fixed built-in `autobyteus-memory-compactor`, preserving parent runtime/model fallback and truthful failure. Real tool execution, two sequential projection replacements, exact construction inputs/private retrieval limits, lifecycle failure, provider rendering, and schema-v4 superset direct use remain critical executable behavior.
 
-The global `AUTOBYTEUS_COMPACTION_STRATEGY` setting must travel through the existing GraphQL -> `ServerSettingsService` -> `AppConfig.set` transport, validate against registered IDs, update `process.env`, persist the isolated app-data `.env`, and affect the next pending operation of an already-composed runtime. The current structured strategy must preserve parent lineage, active budget, `maxItemChars`, diagnostics, episodic/semantic durable effects, private `3`/`20` projection limits, sequential projection replacement, complete tool units, and next-request continuation. Current schema-v4 working-context snapshot supersets remain directly readable without migration, and the next ordinary write omits obsolete epoch/timestamp keys.
+The server exposes a registry-backed `{id,name}` catalog and a separate runtime-effective strategy ID. Absent/blank configuration reads as `structured-json` without writing; explicit unknown values remain explicit for recovery. The normal desktop user journey remains the actual product lifecycle: Node Manager opens or focuses one separate Electron window for the chosen node; window bootstrap binds it once; the Compaction card loads that node's catalog/effective settings; the card builds only changed valid fields and sequentially awaits the existing `ServerSettingsStore.updateServerSetting(key,value)` action. Each successful key persists and reloads authoritative settings without allowing shared mutation loading/error state to replace the loaded card. The first same-node failure stops later writes, retains failed/unsent drafts, exposes the concrete local error, and never claims rollback or whole-card success. Initial settings/effective-read failure is a separate manager-owned state with a localized accessible Retry that reuses the authoritative initial load and mounts the real card on recovery.
 
-The no-compatibility rule remains active: no deleted `Compactor`/`CompactionPlan` path, alias, epoch/timestamp runtime state, per-agent strategy selection, or dual snapshot reader may be protected by new coverage. Approved residual risks are the existing non-transactional durable-side-effect/replacement ordering, lack of a new manager rollback guarantee, process-local rather than multi-process setting convergence, provider-session reconciliation, and provider-native compaction.
+No Compaction write-session revision parameter, captured client, batch/patch DTO, confirmed/unconfirmed result, rebind classification, or previous-node presentation is allowed. Generic binding-aware catalog/settings reads and mobile-session safeguards remain separate existing behavior. The clean-cut removal and `Directly Usable — No Migration` persisted-data decision remain mandatory.
 
 ## Changed Behavior Summary
 
 | Behavior / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
 | --- | --- | --- | --- |
-| `WorkingContext -> WorkingContext` strategy contract, stable ID/name, registry, operation-time resolver | Added | REQ-PMCS-001, 008, 010, 017-019; AC-PMCS-001, 013-015 | Exercise registry/resolver through normal pending execution and the next rendered request; exact production registration and explicit unknown failure remain covered. |
-| Process-global server setting transport and persistence | Added | REQ-PMCS-019, 021; AC-PMCS-017 | Add GraphQL E2E coverage spanning isolated `.env`, live process value, invalid-update preservation, and a runtime composed before the update. |
-| Complete structured-JSON algorithm behind one strategy | Changed / Preserved | REQ-PMCS-004-005, 009, 022, 024; AC-PMCS-002, 004, 010, 018, 022 | Execute current deterministic strategy, configured server compactor boundary, durable effects, sequential compactions, diagnostics, and next request. |
-| Tool-safe call -> real execution -> result ingestion -> compaction -> provider render | Changed / Preserved | REQ-PMCS-006, 009; AC-PMCS-003 | Existing new-boundary test begins at a synthetic terminal result. Update it to execute a real registered tool through `ToolPhase` before result ingestion and compaction. |
-| Framework pre-install output validation/failure lifecycle | Added | REQ-PMCS-013, 023; AC-PMCS-006, 019-021 | Existing validator/executor scenarios are valid; run malformed shape, changed head, alias, tool protocol, unknown selection, strategy throw, and persistence failure coverage. |
-| Messages-only deep-detached runtime context | Changed | REQ-PMCS-002-003, 011; AC-PMCS-007, 021 | Existing deep-copy and manager controlled-replacement scenarios remain valid and are included in focused/broader core suites. |
-| Schema-v4 stored superset direct use and contracted next write | Changed | REQ-PMCS-014; AC-PMCS-008 | Update real agent bootstrap integration to start from an on-disk superset, continue a turn, and inspect the ordinary contracted write. |
-| Obsolete block/raw-trace compactor family and compatibility names | Removed | REQ-PMCS-012; AC-PMCS-009 | No compatibility tests may be added. Run source/package boundary checks and include untracked files in packaging validation. |
-| Provider rendering of replacement contexts | Preserved, newly material to strategy output | REQ-PMCS-006, 009, 023; AC-PMCS-002-004 | Run the comprehensive provider-native renderer/request-payload suite plus actual OpenAI-compatible next-render integration. |
-| Electron-bundled server packaging | Preserved consumer of changed server/core packages | Code review residual risks; repository packaging instructions | Prepare/build the supported Darwin ARM64 Electron package and verify packaged server/core artifacts contain the changed runtime. |
+| Context-to-context compaction, tool-safe continuation, next render | Preserved current behavior behind new boundary | REQ-PMCS-001-010, 022-024; AC-PMCS-001-006, 018-022 | Freshly run real tool lifecycle, sequential strategy, validator/failure, and provider suites. |
+| Process-global strategy setting and operation-time reselection | Added/preserved | REQ-PMCS-019, 021; AC-PMCS-014, 017 | Re-run durable GraphQL `.env`/process/existing-runtime E2E and live HTTP. |
+| Registry catalog and effective-ID GraphQL reads | Added | REQ-PMCS-025, 029; AC-PMCS-023, 028 | Re-run durable schema-level query/no-write scenario and live HTTP/browser reads. |
+| Fixed built-in Memory Compactor | Changed | REQ-PMCS-026; AC-PMCS-024, 027 | Re-run fixed resolver, bootstrap, runner, and visible parent-fallback integration; check stale removed key is inert. |
+| Strategy-first Compaction card | Changed | REQ-PMCS-027; AC-PMCS-023, 025-026, 028 | Re-run component/catalog/store suites and actual browser DOM/Apollo journey. |
+| Simple node-window sequential save | Changed after CR-PMCS-009 | REQ-PMCS-030; AC-PMCS-029; UXJ-PMCS-007 | Re-run NodeManager/nodeStore/card coverage; browser proves full same-node save and fault-injected later-key stop while first real write remains. |
+| Loaded-card mutation recovery | Fixed after PMCS-E2E-013 / CR-PMCS-010 | REQ-PMCS-030; AC-PMCS-029 | Real browser must prove card/drafts/error survive a later failure and retry sends only remaining keys. |
+| Initial settings/effective-read recovery | Added after CR-PMCS-012 | REQ-PMCS-027; AC-PMCS-025-026 | Real browser faults the first settings read, proves localized accessible Retry, then successful authoritative card mount. |
+| Narrow responsive settings composition | Fixed after PMCS-E2E-014 / CR-PMCS-011 | REQ-PMCS-027; UI/UX Responsive and Accessibility | Real 390x844 browser must prove usable navigation and full-width card/controls; desktop md row remains. |
+| Compaction-specific write-fence/session state | Removed | REQ-PMCS-030; AC-PMCS-029 | Static checks must reject removed types/actions/rebind copy/tests; do not restore old coverage. |
+| Schema-v4 superset restore and contracted next write | Preserved | REQ-PMCS-014; AC-PMCS-008 | Re-run physical restore/continue/write lifecycle test. |
+| Electron package consumer | Indirectly affected | implementation handoff and repository distribution path | Build supported macOS package and inspect current web/server artifacts and removed symbols. |
 
 ## Changed Surface And Boundary Classification
 
 | Surface / Boundary | Affected? | Actual Changed Boundary | Repository Evidence Available | Material Risk Not Exercised By That Evidence | Candidate Broader Validation Mode |
 | --- | --- | --- | --- | --- | --- |
-| Domain / backend logic | Yes | Context value, strategy/registry/resolver, validator, current algorithm, manager replacement | Extensive core unit/integration suites | Mocked compactor runner in deterministic tests | Existing server compactor integration plus isolated executable probes |
-| API / transport / contract | Yes | Global setting is registered on existing GraphQL server-settings transport | Service unit tests only for new key | Real GraphQL resolver plus HTTP server persistence | Durable GraphQL E2E and live HTTP API |
-| Frontend component / state | No | Dedicated selector/discovery UI is explicitly out of scope | N/A | None in approved scope | None |
-| Browser integration / user journey | No | No frontend source or user journey changed | N/A | None; generic settings UI is unchanged and no selector is shipped | Browser not required |
-| Authentication / session / permissions | No | Local server-settings transport has no changed auth/session policy | Existing server API architecture | None specific to this change | None |
-| Desktop renderer / web-equivalent UI | No | No renderer source changed | N/A | None | None |
-| Desktop shell / Electron-specific integration | Indirectly Yes | Bundled server/core package must include uncommitted new files | Build/package scripts | Source package omission could pass package-local tests | Project desktop package build and packaged artifact inspection |
-| Process / lifecycle | Yes | Environment update is read per pending operation; requested/started/completed/failed phases | Core executor/runtime and server compactor integration tests | GraphQL-to-process-to-existing-runtime span | Live API plus durable cross-boundary GraphQL scenario |
-| Persisted-data transition | Yes | v4 reader ignores obsolete extras; normal write contracts payload | Serializer unit tests | Existing agent bootstrap + later ordinary write not covered together | Durable agent restore integration |
-| Worker / queue / distributed coordination | No for required scope | Multi-process setting convergence is explicitly out of scope | N/A | Process-local only, approved residual | None; record residual |
-| External integration | Bounded | Configured compactor can launch a normal server agent run; provider APIs unchanged | Server compactor integration with real backend composition and fake run events | Live paid/nondeterministic LLM output | Use deterministic server integration; live external LLM only if safe and necessary |
+| Domain / backend logic | Yes | strategy/resolver/validator/current algorithm/manager | extensive core unit/integration | external model output is deterministic-emulated | focused and broader repository execution |
+| API / transport / contract | Yes | catalog/effective queries and existing setting mutation | resolver/service units and GraphQL E2E | actual built HTTP and browser Apollo transport | Live API + Browser |
+| Frontend component / state | Yes | card/catalog/effective read/sequential save | joined ten-file current web suite | real DOM plus actual backend reloads | Browser |
+| Browser integration / user journey | Yes | fixed-node window equivalent Settings -> Basics -> Compaction | component tests only | proxy, Apollo, actual inputs/save/reload | Browser |
+| Authentication / session / permissions | No | local node settings auth unchanged | existing local architecture | none ticket-specific | None |
+| Desktop renderer / web-equivalent UI | Yes | Nuxt renderer used in Electron | browser-equivalent source/tests | actual renderer/server join | Browser + package build |
+| Desktop shell / Electron-specific integration | Bounded | existing `openNodeWindow` and one-window-per-node lifecycle; main shell source unchanged | NodeManager/nodeStore delegation tests; Electron compile/package | actual separate-window focus not directly launched | package integrity; no app launch unless evidence exposes shell risk |
+| Process / lifecycle | Yes | process-global setting and restart persistence | durable GraphQL/runtime tests | built process and physical `.env` restart | Live API + Lifecycle |
+| Persisted-data transition | Yes | v4 superset reader/current writer | physical restore integration | freshness only | repository lifecycle rerun |
+| Worker / queue / distributed coordination | Bounded | visible child compactor run | server parent-fallback integration | true paid LLM event stream | deterministic real composition |
+| External integration | Bounded | provider APIs unchanged | renderer/request payload suites | live provider network/model compliance | Not required; residual recorded |
 
 ## Project Execution Discovery
 
 - Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies`
-- Project type and runtime stack: pnpm 10 workspace; Node.js/TypeScript; Vitest; Fastify + TypeGraphQL/GraphQL; Prisma/SQLite; Nuxt/Electron desktop packaging.
-- Conflicting, missing, or unclear project instructions: None material. Server `AGENTS.md` requires one-shot `vitest run`; web instructions likewise prohibit watch mode. Root/server README require isolated `--data-dir` with `.env` for server execution. Electron packaging must use the project `prepare-server`/`build:electron:mac` boundary.
-- Required environment variables or secrets available: `Yes` for optional OpenAI/Anthropic keys (values not recorded); no secret is required for deterministic planned proof. A live external compactor is not assumed merely because keys exist.
+- Project type and runtime stack: pnpm 10 workspace, Node.js 22, TypeScript, Vitest, Fastify/TypeGraphQL, Nuxt 3, Electron 42, Prisma/SQLite, macOS ARM64.
+- Conflicting, missing, or unclear project instructions: None. Server and web instructions require one-shot test runs. Browser development is the preferred proof for web-equivalent desktop behavior. Actual Electron execution remains last resort because no preload/IPC/window implementation changed.
+- Required environment variables or secrets available: No secret is required. External model keys are not needed or printed.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
 | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/README.md` | Workspace setup/build and release overview | `pnpm install`; workspace package builds; no release actions in validation. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts/AGENTS.md` | Closest server test instruction | Use `pnpm -C autobyteus-server-ts exec vitest run ... --no-watch`. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts/README.md` | Server setup/runtime | Build, then `node autobyteus-server-ts/dist/app.js --data-dir <isolated> --host 127.0.0.1 --port <owned>`; `.env` must provide `AUTOBYTEUS_SERVER_HOST`; stop only owned process. |
-| `autobyteus-ts/vitest.config.ts` | Core test configuration | Node environment, `tests/setup.ts`, 20-second default timeout. |
-| `autobyteus-server-ts/vitest.config.ts` | Server test configuration | Fork pool, file parallelism disabled, Prisma setup/global setup. |
-| `autobyteus-web/AGENTS.md`, `autobyteus-web/README.md` | Electron packaging/testing | Use one-shot tests; `pnpm prepare-server`; supported macOS package path is `pnpm build:electron:mac`. |
-| `autobyteus-web/scripts/prepare-server-dispatch.mjs` and `prepare-server.mjs` | Bundled server boundary | Builds/deploys the current server and local workspace dependencies into `resources/server`; validates portable runtime dependencies. |
-| Root/core/server/web `package.json` files | Script authority | Core/server builds, server tests, Electron package commands and package manager versions. |
+| root `README.md` and package manifests | workspace build/runtime | use workspace package scripts; no release/finalization actions |
+| `autobyteus-server-ts/AGENTS.md`, `README.md` | server tests/live execution | one-shot Vitest; build then run `dist/app.js --data-dir <isolated> --host 127.0.0.1 --port <owned>` |
+| `autobyteus-web/AGENTS.md`, `README.md` | Nuxt/browser/Electron | one-shot Nuxt Vitest; `pnpm dev` normal browser path; `pnpm build:electron:mac` supported package path |
+| `autobyteus-web/nuxt.config.ts` | dev backend routing | set `BACKEND_NODE_BASE_URL`; Vite proxies `/graphql` and `/rest` |
+| `autobyteus-web/package.json` | available harnesses | `playwright-core` installed; system Google Chrome available; no repository Playwright E2E command/harness |
+| core/server/web Vitest configs | test runner setup | Node core, forked server/Prisma, happy-dom Nuxt component tests |
 
 | Component / Dependency | Working Directory | Start / Setup Command | Runtime / Resource Notes | Readiness Check | Stop / Cleanup Method |
 | --- | --- | --- | --- | --- | --- |
-| Core/server dependencies | Worktree root | Already installed via reviewed `pnpm install --frozen-lockfile`; re-use lockfile state | No shared service | `node --version`, `pnpm --version` | None |
-| Isolated live server | Worktree root | Build, create temp data `.env`, then `node autobyteus-server-ts/dist/app.js --data-dir <temp> --host 127.0.0.1 --port <owned>` | Own temp SQLite/log/memory state and port | HTTP GraphQL query/health response plus server log | Terminate recorded PID; remove only created temp directory |
-| Electron packaging | `autobyteus-web` | `pnpm build:electron:mac` | Uses current worktree and generated ignored artifacts | Successful package output and packaged server hash/symbol inspection | Remove temporary verification scripts only; package outputs are ignored build artifacts |
+| Isolated built server | worktree root | build; temp `.env`; run `autobyteus-server-ts/dist/app.js` on owned loopback port | isolated DB/config/memory only | `/rest/health` and GraphQL | terminate recorded PID; remove temp data |
+| Nuxt development frontend | `autobyteus-web` | `BACKEND_NODE_BASE_URL=<isolated> pnpm dev -- --host 127.0.0.1 --port <owned>` | owned port/process | HTTP page and semantic DOM | terminate recorded PID |
+| Browser | Playwright Core + installed Chrome | headless isolated context | no user Chrome profile | DOM/network assertions | close browser/context |
+| Electron package | `autobyteus-web` | `pnpm build:electron:mac` | generated ignored app/DMG/ZIP | build result and artifact inspection | no installed/running app touched |
 
 | Data / Fixture / Identity Need | Existing Project Mechanism Or Creation Method | Environment / Data-Safety Notes | Cleanup / Retention |
 | --- | --- | --- | --- |
-| Server settings `.env` | Existing GraphQL E2E appConfig temp directory and live server `--data-dir` | Never use default `~/.autobyteus`; no secret values printed | Remove temp directory after test/probe |
-| Existing agent/runtime before setting update | Pre-compose core manager/resolver/executor/assembler in GraphQL E2E before mutation | In-memory + temp FileMemoryStore only | Vitest/afterEach cleanup |
-| Real tool execution | Register existing `read_file` tool and read a deterministic temp fixture through `ToolPhase` | No shell/network; workspace limited to temp directory | Remove temp directory and restore registry state |
-| Existing v4 snapshot | Write representative schema-v4 JSON with extra epoch/timestamp to temp snapshot store, restore with `AgentFactory`, continue one turn | No user data accessed | Agent stop + temp directory removal |
-| Compactor execution | Existing deterministic `ServerCompactionAgentRunner` integration fixture with normal backend composition and isolated memory/workspace | No paid external provider required | Existing test teardown |
+| Absent/default settings node | isolated server temp `.env` | seed only required server host and stale removed worker key | remove temp directory |
+| Full browser save | edit ratio/override/log through real card | same isolated node; no user data | restart/cleanup temp node |
+| Later-key failure | route-intercept only the second GraphQL mutation after allowing first real mutation | verifies UI sequencing; server remains isolated | clear route/context |
+| Existing runtime reselection | durable GraphQL E2E fixture | temp FileMemoryStore and test-only registry ID | test teardown |
+| Real tool lifecycle/current restore | committed temp fixtures | no network/user data | test teardown |
 
 ## Persisted Data Transition Coverage Basis
 
 - Approved decision: `Directly Usable — No Migration`
-- Design-spec and implementation-handoff references: Design “Persisted Data / State Transition Decision”; implementation “Persisted Data Transition Check”; REQ-PMCS-014 / AC-PMCS-008.
-- Representative existing-data setup and required behavior: current schema version 4 payload with `agent_id`, serialized messages, and obsolete `epoch_id` / `last_compaction_ts`; normal agent bootstrap must restore messages and the next ordinary snapshot write must retain current messages while omitting both extras.
-- Evidence planned: durable agent restore integration using the physical `WorkingContextSnapshotStore`, `AgentFactory.restoreAgent`, one normal posted message/LLM continuation, and final raw JSON inspection.
-- Migration-specific completion/recovery scenarios: N/A; migration is prohibited/unnecessary.
+- Design-spec and implementation-handoff references: design persisted-data decision; implementation `Persisted Data Transition Check`; REQ-PMCS-014/026; AC-PMCS-008/024.
+- Representative existing-data setup and required behavior: schema-v4 snapshot with current messages plus obsolete epoch/timestamp keys restores normally; the next ordinary turn writes the current contracted schema. A stale removed compactor-agent environment key remains an inert custom extra.
+- Evidence planned: fresh physical restore/continue/write integration; live server started with stale removed key; package/source checks prove only fixed built-in launch authority.
+- Migration-specific completion/recovery scenarios: N/A.
 - Upstream ambiguity or reroute required: None.
 
 ## Existing Durable Coverage Inventory
 
 | Path / Scenario | Current Assertion Or Intent | Related Requirement / Acceptance Criteria / Design | Validity Decision | Evidence | Action |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts` | Threshold request waits for injected terminal result, current strategy compacts, OpenAI render contains complete tool group | AC-PMCS-002-003, 011, 018 | Needs Update | Starts at constructed `ToolResultEvent`; bypasses real registered tool lookup/execution | Execute existing registered `read_file` through `ToolPhase`, then ingest its actual result and retain existing compaction/render assertions |
-| `autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts` | Test-only strategy selection, per-operation env reread, render, failure lifecycle | AC-PMCS-001, 006, 014-015, 019-021 | Still Valid | Direct new-boundary behavior and stable failure assertions | Run focused and broader core suites |
-| `autobyteus-ts/tests/unit/memory/structured-json-compaction-strategy.test.ts` | Durable effects, private 3/20, sequential projection replacement | AC-PMCS-002, 004, 010, 018 | Still Valid | Real FileMemoryStore used for sequential case; deterministic runner | Run focused suite |
-| `autobyteus-ts/tests/unit/memory/working-context-compaction-strategy-registry.test.ts` | Exact production registration/construction mapping | AC-PMCS-013, 015, 018 | Still Valid | Exact six-field mapping and private policy asserted | Run focused suite |
-| `autobyteus-ts/tests/unit/memory/working-context-compaction-output-validator.test.ts` | Head, role/payload, tool protocol, alias invariants | AC-PMCS-019-021 | Still Valid | Direct invariant-coded validation | Run focused suite |
-| `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts` | Runtime trigger, structured compaction, diagnostics/lifecycle | AC-PMCS-002, 006, 011 | Still Valid | Real runtime with deterministic provider/runner | Run core regression |
-| `autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts` | Normal server backend triggers visible compactor run, parent runtime/model lineage, next turn | AC-PMCS-002, 011, 018 | Revised During Execution: Needs Update | Its intended boundary remained valid, but fresh execution exposed stale `backend.getStatus()` calls and legacy `prompt_tokens`-shaped usage that no longer drove current budget evaluation | Use `getStatusSnapshot()`, canonical `LlmTokenUsageObservation`, immediate-completion semantics, and assert the next provider request contains the compacted projection |
-| `autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts` | GraphQL settings persistence for other predefined keys | AC-PMCS-017 | Needs Update | New strategy key has only service-unit coverage | Add strategy key GraphQL persistence, invalid preservation, and existing-runtime operation-time selection scenario |
-| `autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts` and `tests/unit/config/app-config.test.ts` | Normalization/delegation; `.env` and `process.env` semantics | REQ-PMCS-021 / AC-PMCS-017 | Still Valid | Correct owning unit boundaries | Run with GraphQL E2E |
-| `autobyteus-ts/tests/unit/memory/working-context-snapshot-serializer.test.ts` | Direct v4 superset read + contracted serialization | AC-PMCS-008 | Still Valid | Direct adapter proof | Run; supplement with lifecycle integration |
-| `autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts` | Normal agent bootstrap from current snapshot | AC-PMCS-008, 022 | Needs Update | Fixture is newly serialized and does not prove old superset plus later write | Seed extras and continue a normal turn before inspecting contracted physical write |
-| `autobyteus-ts/tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts` and `tests/unit/llm/api/provider-native-request-payloads.test.ts` | Native tool history/request shapes for Gemini, Ollama, Anthropic, Mistral, OpenAI Responses and OpenAI Chat | AC-PMCS-002-003; strategy/test-owned provider quality | Still Valid | Real renderer/request construction with canonical tool payloads | Run comprehensive provider set |
-| Deleted compactor/block-plan tests listed in implementation diff | Obsolete `Compactor` / `CompactionPlan` APIs | REQ-PMCS-012 / AC-PMCS-009 | Stale / Remove (already removed upstream) | Reviewed clean-cut implementation deletion | Do not restore or replace compatibility-only assertions; current behavior is covered through new boundaries |
-| Web/browser tests | Unchanged UI | Out of scope | Out Of Scope | No frontend source or approved UI selector | No browser run; package only |
+| `autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts` | schema catalog/effective default/no-write; mutation persists strategy and changes existing runtime's next operation | AC-PMCS-014, 017, 023, 028 | Still Valid | direct GraphQL schema/service/process/filesystem/runtime boundary | fresh whole-file run |
+| `autobyteus-web/components/settings/__tests__/CompactionConfigCard.spec.ts` | deterministic changed-key order, clean default, unknown/error/validation, full success, first/later failure and retry | AC-PMCS-023, 025-026, 028-029 | Still Valid | approved current same-node flow | fresh run; browser supplement |
+| `autobyteus-web/components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts` | real-Pinia joined later-key failure/remaining-key retry and initial read Retry recovery | AC-PMCS-025-026, 029 | Still Valid | directly targets CR-PMCS-010/012 with real store behavior | fresh run; browser recheck |
+| `autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts` | distinct initial loading/error/Retry and loaded mutation state | AC-PMCS-025-026, 029 | Still Valid | manager ownership matches reviewed fix | fresh run |
+| `autobyteus-web/pages/__tests__/settings.spec.ts` | narrow stacked/full-width and md sidebar row contract | REQ-PMCS-027; AC-PMCS-026 | Still Valid | directly targets CR-PMCS-011 | fresh run; 390x844 browser recheck |
+| `autobyteus-web/tests/stores/serverSettingsStore.test.ts` | generic reads plus one-key mutation/authoritative reload | AC-PMCS-029 | Still Valid | correct existing one-key authority | fresh run |
+| `autobyteus-web/tests/stores/workingContextCompactionStrategyCatalogStore.test.ts` | catalog mapping/empty/retry/stale read invalidation | AC-PMCS-023, 025 | Still Valid | generic read invalidation remains approved | fresh run |
+| `autobyteus-web/components/settings/__tests__/NodeManager.spec.ts` and `stores/__tests__/nodeStore.spec.ts` | each selected node delegates to `openNodeWindow`; upsert opens node window | AC-PMCS-029 / DS-PMCS-007 | Still Valid | actual desktop journey entrypoint contract | fresh run |
+| `autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts` | real backend composition, fixed built-in fallback, visible run, compaction, next request | AC-PMCS-002, 011, 018, 027 | Still Valid | current fixed resolver composition | fresh run |
+| fixed worker/service/catalog unit tests | exact built-in ID/fallback/failure and effective read/registry projection | AC-PMCS-023-024, 027-028 | Still Valid | direct owning boundaries | fresh server suite |
+| `autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts` | real registered tool -> result -> compaction -> complete render | AC-PMCS-002-003 | Still Valid | durable cross-boundary proof | fresh run |
+| structured strategy/validator/executor suites | sequential projection, exact construction, durable effects, invalid-output failed-only semantics | AC-PMCS-001-006, 013-022 | Still Valid | direct current boundaries | fresh broader core run |
+| `autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts` | v4 superset restore and contracted next write | AC-PMCS-008 | Still Valid | physical lifecycle proof | fresh run |
+| provider renderer/request suites | complete supported native tool history/payloads | AC-PMCS-002-003 | Still Valid | direct render adapters | fresh run |
+| removed Compaction revision-fence/rebind save tests and old arbitrary worker setting test | obsolete rejected behavior | REQ-PMCS-026, 030; AC-PMCS-024, 029 | Stale / Remove (already removed) | architecture/code review explicitly reject these subjects | do not restore; static absence proof |
 
 ## Stale Or Obsolete Coverage Decisions
 
 | Path / Scenario | Obsolete Assertion | Why It Is Obsolete | Upstream Evidence | Replacement Coverage | No-Replacement Rationale |
 | --- | --- | --- | --- | --- | --- |
-| Implementation-removed `compactor.test.ts`, `compaction-window-planner.test.ts`, block snapshot/prompt/digest tests, and legacy memory-compaction flow files | Protect deleted `Compactor.compact(CompactionPlan)` or old fragmented executor ownership | Clean-cut removal is required; restoring those tests would recreate invalid compatibility pressure | REQ-PMCS-012, AC-PMCS-009, design removal plan, reviewed implementation/code-review Pass | New strategy/registry/executor/structured-strategy/runtime tests cover current behavior | No API/E2E removal is performed this round; upstream deletions are validated, not altered |
+| removed Compaction save-session/rebind tests | desktop save owns expected revision/captured client/partial prior-node classification | real desktop uses a separate window per node and existing one-key action | REQ-PMCS-030; AC-PMCS-029; CR-PMCS-009 | NodeManager/nodeStore + current full/first/later same-node save tests | compatibility with rejected candidate is prohibited |
+| removed arbitrary compactor-agent GraphQL scenario | arbitrary agent setting is predefined and redirects worker | current strategy uses fixed built-in only | REQ-PMCS-026; AC-PMCS-024, 027 | fixed resolver/runner/bootstrap and live/static inertness proof | subject no longer exists |
 
 ## Durable Coverage To Add
 
-No new standalone test file is planned. The initial investigation selected three existing durable integration/E2E files. Fresh execution then invalidated one additional existing configured-compactor fixture; that fourth file was updated rather than preserving a false pass or creating a parallel fixture.
+None. The previously added schema-level catalog/effective default/no-write scenario remains in the current reviewed GraphQL E2E file and closes the material API durability gap.
 
 ## Durable Coverage To Update
 
-| Scenario ID | Existing Path / Scenario | Required Update | Requirement / Acceptance Criteria / Design Evidence | Notes |
-| --- | --- | --- | --- | --- |
-| PMCS-E2E-001 | `autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts` | Cover normalized registered strategy update through GraphQL, isolated `.env`, live `process.env`, rejection without replacement, and a manager/resolver/executor composed before the update using the selected test-only registration on its next operation | REQ-PMCS-019, 021; AC-PMCS-014, 017 | Register test-only strategy only inside the isolated Vitest worker/file; production registration remains unchanged |
-| PMCS-E2E-002 | `autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts` | Execute a real existing registered `read_file` tool through `ToolPhase`, ingest the returned event through the canonical continuation builder, then preserve compaction/diagnostic/OpenAI render assertions | REQ-PMCS-006, 009; AC-PMCS-003, 011 | Temp workspace/file; no network or shell dependency |
-| PMCS-E2E-003 | `autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts` | Replace stale backend/status and token-usage fixture shapes with current public/canonical shapes; wait for immediate compaction completion; assert parent runtime/model lineage, status diagnostics, durable structured projection, and its presence in the next provider request | REQ-PMCS-004, 009, 022; AC-PMCS-002, 004, 011, 018 | Execution-discovered API/E2E-owned local fix; the initially intended server integration boundary remains valid |
-| PMCS-E2E-004 | `autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts` | Seed a schema-v4 physical superset, restore through normal agent bootstrap, post a normal next turn, then assert the physical next write omits epoch/timestamp and preserves context | REQ-PMCS-011, 014; AC-PMCS-007-008 | Proves direct use and ordinary contraction together |
+None planned. Current repository tests represent the approved Round 11 behavior.
 
 ## Durable Coverage To Remove
 
-None in this API/E2E round.
+None in this stage; obsolete implementation-owned tests are already absent.
 
 ## Repository Coverage Execution Plan And Results
 
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | One-shot focused Vitest for the initial three updated files | Worktree; core files serialized, server `--no-watch` | GraphQL reselection, real tool lifecycle, v4 restore/write contraction | Pass: core `1/1` + `1/1`; server `10/10` | `validation-evidence/round1-focused-durable-tests.log` |
-| 2 | Focused core compaction/validator/registry/restore/runtime/tool suite | `autobyteus-ts`; `--no-file-parallelism` | Critical transformation, validation, failure, persisted-data, tool, and runtime behavior | Pass: `11` files / `45` tests | `validation-evidence/round1-core-provider-focused.log` |
-| 3 | Provider renderer directory plus provider-native request payloads | `autobyteus-ts`; `--no-file-parallelism` | Gemini, Ollama, Anthropic, Mistral, DeepSeek, LM Studio, OpenAI Chat/Responses rendering | Pass: `11` files / `56` tests | `validation-evidence/round1-core-provider-focused.log` |
-| 4 | Server settings service, AppConfig, GraphQL E2E, compactor integration, runner unit | `autobyteus-server-ts`; `--no-watch` | Settings transport plus configured compactor lineage/diagnostics/next request | Initial fail exposed stale test API/usage fixture; API/E2E local fix; final Pass: `5` files / `80` tests | `validation-evidence/round1-server-settings-compactor.log`, `validation-evidence/round1-configured-compactor-rerun3.log`, `validation-evidence/round1-server-settings-compactor-final.log` |
-| 5 | Broader affected core memory/runtime regression | `autobyteus-ts`; `--no-file-parallelism` | Regression across changed memory and runtime packages | Pass: `38` files / `158` tests | `validation-evidence/round1-broader-core-regression.log` |
-| 6 | `pnpm --filter autobyteus-ts build`; `pnpm --filter autobyteus-server-ts build` | Worktree root | Production TypeScript, runtime dependencies, Prisma, built-in-agent bootstrap | Pass | `validation-evidence/round1-builds.log` |
-| 7 | Full status, staged/unstaged/untracked boundary, diff checks, effective-size guard, obsolete/selection/registration/test-only probes | Worktree root | Clean-cut source and complete working-tree package boundary | Pass | `validation-evidence/round1-static-boundary.log` |
+| 1 | one-shot Vitest over 38 mapped core memory/tool/restore files | `autobyteus-ts`; current worktree | PMCS-E2E-002/004/005/006/007, including real registered tool -> result -> compaction -> next provider request, two sequential compactions, validator/failure semantics, and schema-v4 physical restore/write | Pass — 38 files / 158 tests | `validation-evidence/round4-core.log` |
+| 2 | one-shot Vitest over 8 server fixed-worker/settings/GraphQL files | `autobyteus-server-ts`; current worktree | PMCS-E2E-001/003/008/011, including catalog/effective default/no-write, persisted mutation, operation-time reselection, fixed built-in parent fallback, bootstrap, and runner | Pass — 8 files / 92 tests | `validation-evidence/round4-server.log` |
+| 3 | one-shot Vitest over two provider request/renderer files | `autobyteus-ts`; current worktree | complete supported provider render after compaction/tool continuation | Pass — 2 files / 20 tests | `validation-evidence/round4-provider.log` |
+| 4 | one-shot Vitest over ten joined settings/catalog/window web files | `autobyteus-web`; `NUXT_TEST=true` | PMCS-E2E-012/013/014/016, current real-Pinia failure/retry, initial Retry, responsive contract, NodeManager/node/window binding | Pass — 10 files / 84 tests | `validation-evidence/round4-web-targeted.log` |
+| 5 | Electron preload/node registry contract Vitest | launched from `autobyteus-web` | bounded unchanged shell bridge/store contract | Pass — 2 files / 5 tests | `validation-evidence/round4-electron-contract.log` |
+| 6 | core/server/web builds, server bootstrap smoke, boundary/localization guards and audit | package-specific documented commands | current production compilation, runtime dependency/bootstrap and `/settings` prerender integrity | Pass | `validation-evidence/round4-builds.log` |
+| 7 | scoped diff/rejected-machinery/registration/responsive/initial-vs-local-error static checks | worktree root | PMCS-E2E-009/010 and source boundary invariants | Pass | `validation-evidence/round4-static.log` |
+
+An accidentally over-broad `pnpm run test:nuxt -- ...` invocation ran the entire web suite rather than the intended file list. It produced 353 passed files, one skipped file, and four failing files (1,861 passed / 4 failed tests). The four assertions are invalid as ticket-gating evidence: all three involved source/test pairs are unchanged from base `fdb370d...`, and the zh-CN deprecated glossary string exists exactly in that base while this ticket changes only Compaction localization. This does not override the correctly invoked current-boundary ten-file pass, but is preserved rather than hidden. Evidence: `validation-evidence/round4-web.log` and `validation-evidence/round4-web-full-suite-validity.log`.
 
 ## Post-Repository Confidence Scorecard
 
-Repository execution completed against the full uncommitted boundary at `fdb370d48106df252f77b684f76675a77226fffc`. Scores below deliberately exclude the later live HTTP and Electron-package evidence so that the broader-validation decision remains evidence-based.
-
 | Confidence Category | Score | What Supports The Score | Remaining Uncertainty | Additional Validation That Could Improve It |
-| --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 97% | Mapped focused/server/provider/broader suites pass, including all four updated durable scenarios | External-model compliance remains deterministic rather than live | Live package/API cannot materially improve model nondeterminism; retain approved residual |
-| Changed-boundary execution directness | 96% | Actual registered `read_file`, normal restore/next write, GraphQL resolver/service, current executor/strategy, and configured server backend executed | Live HTTP and package entrypoint not yet counted | Execute planned live API and package runtime |
-| Cross-boundary integration realism and mock gap | 93% | Real manager/resolver/executor/provider render and server backend composition pass | Configured compactor response remains a deterministic fake run; HTTP/package startup not yet counted | Live HTTP and packaged-server startup |
-| Environment, configuration, identity, and fixture fidelity | 95% | Isolated app data, physical `.env`, FileMemoryStore, real tool registry/workspace, Prisma, parent lineage | No packaged runtime yet counted | Package and run built server from owned temp data |
-| Failure, edge-case, lifecycle, and recovery evidence | 96% | Unknown selection, malformed output, changed head, alias/tool invariants, throw/persistence failure, pending retention, invalid setting preservation, v4 contraction all pass | Existing non-transactional ordering remains approved | None proportionate in current scope |
-| User-surface, browser, and desktop-shell confidence | 90% | No UI changed and browser is inapplicable; production builds pass | Electron package inclusion/execution not yet proven | Supported macOS package build and artifact/runtime verification |
-| Durable regression coverage quality and relevance | 97% | Four narrow current-boundary updates plus `38/158` broader core and `5/80` final server suites pass | Proportional test-code review still required | Code reviewer review after API/E2E pass |
+| --- | ---: | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 97% | all mapped core/server/web repository scenarios pass, including real tool compression/continuation, sequential compaction, fixed worker, GraphQL, restore and the three current rework journeys | live transport/UI freshness remains | execute isolated live journey |
+| Changed-boundary execution directness | 96% | direct owner tests plus real runtime/GraphQL/real-Pinia joined tests execute the changed code | browser/Apollo boundary not yet rechecked | Live API + Browser |
+| Cross-boundary integration realism and mock gap | 93% | real tool/runtime, physical store, GraphQL and joined frontend state are covered | actual browser Apollo/backend proxy join remains | Browser |
+| Environment, configuration, identity, and fixture fidelity | 93% | current builds, server bootstrap, SQLite/temp fixtures and Electron contracts pass | physical isolated `.env` restart and fresh package remain | lifecycle/package |
+| Failure, edge-case, lifecycle, and recovery evidence | 97% | invalid output, runtime failure, later-key retry, initial Retry, schema restore, unknown/default and partial durable effects pass | real route faults and restart remain | browser route faults + lifecycle |
+| User-surface, browser, and desktop-shell confidence | 88% | ten-file web pass, responsive DOM contract, shell contracts and production build pass | prior real-browser failures require direct confirmation; package is not yet rebuilt | browser/package |
+| Durable regression coverage quality and relevance | 97% | current tests directly target CR-PMCS-010/011/012 and full core/API lifecycle | incidental unrelated baseline suite assertions remain stale | no ticket coverage change; preserve classification evidence |
 
-- Overall post-repository confidence: `94.9%` (`664 / 7`)
-- Calculation method: Simple average of applicable categories after execution; browser inapplicability does not remove the desktop-package portion of category 6.
-- Every critical acceptance criterion directly proven: `Yes` at the repository boundary.
-- Any applicable category below `90%`: `No`.
-- Default clean-confidence target of `95%` met: `No` — `94.9%`, so the already-selected broader validation remains required.
-- Material residual risks: Approved non-transactional durable effect/replacement ordering; process-local multi-process convergence; provider-session reconciliation; provider-native compaction; live external LLM nondeterminism/cost.
+- Overall post-repository confidence: `94.4%` (`661 / 7`).
+- Calculation method: arithmetic mean of seven applicable categories.
+- Every critical acceptance criterion directly proven: `No — the current browser/restart/package recheck is still required because PMCS-E2E-013/014 previously failed there.`
+- Any applicable category below `90%`: `Yes — user-surface/browser/desktop-shell is 88%.`
+- Default clean-confidence target of `95%` met: `No`.
+- Material residual risks: actual Apollo/backend state transitions for first-read recovery and later-key retry, current narrow browser layout, physical restart, fresh package inclusion, plus approved non-transactional memory/settings effects, process-local convergence, provider session/native compaction, and external-model output.
 
 ## Broader Validation Decision
 
 - Decision: `Required`
-- Selected execution mode: `Live API` + `Project Desktop Validation` + `Lifecycle`
-- Specific confidence gap or residual risk addressed: GraphQL HTTP/process/`.env` fidelity and Electron-bundled current-server inclusion are not fully proven by direct schema tests/builds; repository tests still use deterministic provider/compactor doubles.
-- Why the selected mode can materially improve confidence: An isolated live server proves the actual built HTTP transport and physical app-data file. The supported Electron package path proves untracked new core/server files are included in the distributable runtime. Existing server lifecycle integration provides proportionate configured-compactor execution without an uncontrolled paid model.
-- Expected confidence after selected validation: At least 95%, with every applicable category at least 90%, if all critical mapped scenarios pass.
-- Browser-specific decision and rationale: Browser validation is not required because no frontend component, route, renderer state, or selector changed. A browser would only proxy the unchanged generic GraphQL settings UI and add less direct evidence than the GraphQL/live API checks.
-- If `Not Required`: N/A.
-- If `Blocked`: N/A.
+- Selected execution mode: `Live API + Browser + Lifecycle + Project Desktop Validation`
+- Specific confidence gap or residual risk addressed: actual GraphQL/physical `.env`, initial-read failure/Retry/recovery, fixed-node Compaction DOM/Apollo load and save, truthful later-key stop plus dirty retention/remaining-key retry after one real write, responsive 390x844 layout, restart persistence, and supported Electron package inclusion.
+- Why the selected mode can materially improve confidence: repository frontend tests mock store/transport; browser plus isolated server exercises the real join. Package build proves the web/server changes ship together.
+- Expected confidence after selected validation: at least 95% overall with no category below 90%.
+- Browser-specific decision and rationale: Required for the changed web-equivalent desktop journey. Use semantic DOM/network assertions and supporting screenshots.
+- If Not Required: N/A.
+- If Blocked: N/A.
 
 ## Desktop Application Validation Decision
 
-- Desktop framework / shell: Electron, with bundled Node server.
-- Relevant README or development instructions: `autobyteus-web/AGENTS.md`, `autobyteus-web/README.md`, `autobyteus-web/scripts/prepare-server-dispatch.mjs`, `prepare-server.mjs`.
-- Web-equivalent behavior: None changed; no dedicated strategy UI is in scope.
-- Shell-specific or lifecycle behavior: Bundled server/package inclusion only.
-- Chosen validation approach and why it fits the project: Use the project-supported macOS Electron package build and inspect packaged server/core runtime artifacts; do not launch or disrupt the user's installed desktop app.
-- Server/frontend setup when browser validation is used: N/A.
+- Desktop framework / shell: Electron 42 with Nuxt renderer and bundled server.
+- Relevant README or development instructions: `autobyteus-web/README.md`, `AGENTS.md`, `package.json` and prepare-server/build scripts.
+- Web-equivalent behavior: catalog/effective reads and same-node sequential Compaction save; validate in browser.
+- Shell-specific or lifecycle behavior: Node Manager delegates to existing `openNodeWindow`; main-process window implementation is unchanged. Validate repository delegation tests, Electron compilation, and package integrity.
+- Chosen validation approach and why it fits the project: browser plus supported macOS package build. Do not launch/install the desktop app unless package or repository evidence reveals a shell-specific uncertainty; actual launch could collide with the user's fixed embedded port/application state without adding direct changed-source evidence.
+- Server/frontend setup when browser validation is used: isolated built server, Vite proxy, owned Nuxt port, isolated Chrome context.
 - Effect on any already-running desktop application: `None`.
-- Behavior not directly proven and confidence consequence: No manual UI selection (out of scope); no multi-process server setting convergence (approved residual).
+- Behavior not directly proven and confidence consequence: physical multi-window focus is not manually exercised; bounded residual because Electron main lifecycle is unchanged and direct delegation/package compile are covered.
 
 ## Live Environment And Fixture Plan
 
-- Startup order and commands: complete builds; create `mktemp` app data with minimal `.env`; start built server on an owned high port; wait for GraphQL response; issue list/update/invalid/list mutations; inspect `.env`; stop recorded PID; then run supported Electron package build.
-- Environment choices that materially affect the run: Darwin ARM64 host; Node 22.23.1; pnpm 10.28.2; isolated `APP_ENV=test`, SQLite, loopback host/port; no default user app data.
-- Health / readiness checks: HTTP GraphQL query succeeds and server log reports ready.
-- Seed data / fixtures: Only `.env`; Prisma startup creates isolated DB.
-- Test identities, authentication, permissions, or session state: Local owner GraphQL path, no changed auth boundary.
-- Requirement-linked journeys or scenarios: PMCS-E2E-001 live HTTP setting; PMCS-E2E-008 package inclusion.
-- Evidence to capture: exact commands, GraphQL JSON, `.env` key, server log, packaged file hashes/symbols/package output.
-- Owned processes and temporary state to clean up: one server PID, one temporary app-data directory, temporary probe scripts if any.
+- Startup order and commands: use fresh built outputs; create isolated data `.env`; start built server with a clean environment; query default/no-write live API; restart with an explicit unknown strategy; start Nuxt with isolated backend; launch headless Chrome; fault the first settings read then Retry; perform full save; perform later-key fault/remaining-key retry; verify responsive desktop/narrow layouts; restart verification; package build/inspection.
+- Environment choices: owned loopback ports, temp app data, stale removed worker key, no default user data, English locale, desktop and narrow viewports.
+- Health / readiness checks: `/rest/health`, GraphQL catalog/effective query, Nuxt HTTP, semantic DOM.
+- Seed data / fixtures: absent strategy/default controls; then full changed universal save; separate clean restart for fault scenario.
+- Test identities/authentication/permissions/session: local unauthenticated development node and fresh browser context.
+- Requirement-linked journeys: PMCS-E2E-008 live API; PMCS-E2E-012 full browser save; PMCS-E2E-013 later-key failure/dirty retention/remaining-key retry; PMCS-E2E-014 responsive/accessibility/node-window equivalent; PMCS-E2E-015 package integrity; PMCS-E2E-016 initial-read error/Retry/recovery.
+- Evidence to capture: API JSON, `.env`, process logs, mutation order/count/payloads, DOM values/save busy/error/dirty state, screenshot, package hashes/symbol searches.
+- Owned processes and temporary state to clean up: server/Nuxt PIDs, Chrome, ports, temp app data/profile.
 
 ## Temporary Executable Validation Plan
 
 | Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven | Why This Should Not Remain As Durable Coverage |
 | --- | --- | --- | --- |
-| PMCS-E2E-008 | Live built server on isolated data/port plus curl GraphQL requests | Actual HTTP transport, physical `.env`, invalid update preservation | Durable schema-level GraphQL scenario covers the behavior deterministically; live port/process startup is environment orchestration |
-| PMCS-E2E-009 | Electron package build plus packaged-server/core file hash and symbol checks | Current untracked implementation is present in supported package | Packaging scripts are already durable; ticket-specific symbol/hash probe would be brittle as a permanent test |
+| PMCS-E2E-012 | Playwright Core with normal Nuxt dev and isolated built server | actual catalog/effective load and changed-key full save/reload | repository has no Playwright E2E harness; component tests own durability |
+| PMCS-E2E-013 | browser route fault on second GraphQL mutation after first real success | stop remaining calls, earlier value persists, error/dirty state remains | deterministic component test already owns this failure; temporary probe adds transport realism |
+| PMCS-E2E-014 | browser desktop/narrow viewports and semantic assertions | responsive/accessibility/browser-equivalent node-window surface | screenshot/viewport check is supplemental |
+| PMCS-E2E-015 | Electron mac package build and artifact inspection | current server/web files included and rejected/obsolete symbols absent | generated platform artifact is not a source fixture |
+| PMCS-E2E-016 | browser faults first `GetServerSettings`, then allows Retry | initial localized accessible recovery mounts the authoritative real card | joined durable tests own regression; browser adds transport realism |
 
 ## Not Tested / Infeasible / Deferred
 
 | Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- |
-| True multi-process setting convergence | Explicitly outside scope; setting is process-local | Different processes can diverge until separately updated/restarted | Record approved residual; no escalation |
-| Provider-session reconciliation and provider-native compaction | Explicitly outside scope | Some remote session caches may not reflect generic context replacement | Record approved residual |
-| Live paid/nondeterministic external LLM compactor | Secrets exist, but no validation-only selected compactor definition/model fixture has yet been established; deterministic server/core runner boundaries directly prove this ticket | Bounded uncertainty in actual model compliance, which is pre-existing rather than changed strategy architecture | Reassess after repository/server integration; do not use user app data or uncontrolled paid calls merely to increase a score |
-| Manual browser/Electron UI | No UI/source change and strategy selector is out of scope | Negligible for changed scope | No follow-up |
+| True multi-process setting convergence | explicitly out of scope | approved residual | none |
+| Live paid compactor/model output | nondeterministic provider boundary unchanged; deterministic visible-run integration is stronger for architecture | small model-compliance residual | no gate |
+| Provider-session reconciliation/native compaction | explicitly out of scope | approved residual | none |
+| Actual installed Electron app/multi-window manual run | shell implementation unchanged; fixed port/user app collision risk; repository/package/browser evidence is proportionate | bounded focus/window residual | run only if current evidence exposes shell defect |
+| Simultaneous independent human actions | outside authoritative one-window journey | bounded race | none |
+
+## Prior Failure Recheck Plan
+
+- `PMCS-E2E-013`: first real ratio write -> forced override rejection -> card remains -> local error visible -> override/log drafts remain -> Save enabled -> retry sends only override/log -> clean authoritative card.
+- `PMCS-E2E-014`: 390x844 page stacks navigation/content, card remains at a usable near-full viewport width, labels/controls remain usable; 1440px preserves the desktop row and 256px navigation.
+- `PMCS-E2E-016`: first real settings/effective query rejection -> visible localized Retry with accessible name -> retry succeeds -> real Compaction card shows authoritative strategy/ratio/override/log values.
 
 ## Ambiguities Or Reroute Triggers
 
-None at initial investigation.
+| Issue | Classification | Evidence | Recommended Recipient |
+| --- | --- | --- | --- |
+| None at investigation time | N/A | Source Review Round 11 and current requirements align on all three targeted journeys | N/A |
 
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — update four existing files; add/remove none.
-- Post-repository confidence: `94.9%`.
-- Broader validation decision: `Required`.
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No additional API/E2E-authored change`; the current reviewed GraphQL E2E file already contains the catalog/effective no-write scenario. The three implementation-owned Round 11 frontend rework test paths are identified in the execution report for the separate proportional review.
+- Post-repository confidence: `94.4%`; broader validation remains required because user-surface/browser confidence is 88%.
+- Broader validation decision: `Required — Live API + Browser + Lifecycle + Project Desktop Validation`
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: N/A
-- Notes: Investigation was written before durable coverage edits or final execution. Existing tests were treated as evidence, not authority. Three gaps were identified initially; fresh execution invalidated a fourth stale configured-compactor fixture, which received the bounded API/E2E-owned update recorded above.
+- Notes: Round 4 supersedes the Round 3 failure outcome for planning purposes but preserves its scenario IDs and evidence. No test or validation may reintroduce rejected write-session behavior.
+
+## Broader Validation Execution Outcome
+
+- Execution status: `Completed — Pass`
+- Canonical execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-execution-coverage-report.md`
+- Final confidence: `98.3%`; no category below 90%; every critical acceptance criterion directly proven.
+- PMCS-E2E-013: `Pass` — the first ratio write persisted, the forced override failure left the loaded card/local error and failed/unsent drafts intact, and retry sent only override/log.
+- PMCS-E2E-014: `Pass` — desktop remains a row with 256px navigation; 390x844 stacks at full content width with a 318px card, 268px input, and no horizontal overflow.
+- PMCS-E2E-016: `Pass` — first real settings-read fault showed localized accessible Retry; retry mounted authoritative unknown/80/blank/false values.
+- Live API/lifecycle: `Pass` — default no-write, explicit unknown, physical sequential writes and final restart persistence all matched; stale removed worker key was inert.
+- Supported package: `Pass` — fresh macOS ARM64 app/DMG/ZIP built; compiled/deployed/packaged server hashes matched; required renderer/main/preload and current authorities were present; rejected machinery was absent.
+- Cleanup: `Pass` — owned processes stopped, ports freed, browser closed, temporary harness/state and isolated app data removed. Ignored package artifacts were retained as evidence without installing or launching the app.
+- Durable-test handoff: no API/E2E-authored durable test change. The current implementation-owned `ServerSettingsCompactionFailure.spec.ts`, `ServerSettingsManager.spec.ts`, and `pages/__tests__/settings.spec.ts` are the proportional review paths.

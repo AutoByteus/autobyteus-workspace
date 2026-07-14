@@ -7,201 +7,202 @@
 - Supplemental Solution Artifacts Reviewed As Context:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-domain-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-strategy-contract.md`
-- Current Review Round: `2`
-- Trigger: Full source/architecture re-review after the implementation engineer's bounded Round 1 fixes for `CR-PMCS-001` and `CR-PMCS-002`.
-- Prior Review Round Reviewed: `1`
-- Latest Authoritative Round: `2`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md`
+- Current Review Round: `11`
+- Trigger: Full source/architecture re-review after bounded implementation fix for `CR-PMCS-012`.
+- Prior Review Round Reviewed: `10`
+- Latest Authoritative Round: `11`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/implementation-handoff.md`
-- Coverage Investigation Reviewed (failure-origin entry point): `N/A`
-- Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
-- Failing Scenario IDs: `N/A`
-- Exact Failing Commands / Execution Mode: `N/A`
-- Failure Evidence Paths: `N/A`
-- Repository Review Boundary: complete staged, unstaged, and untracked working-tree change against `fdb370d48106df252f77b684f76675a77226fffc` on `codex/pluggable-memory-compaction-strategies`.
+- Coverage Investigation Reviewed As Failure Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed As Failure Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-execution-coverage-report.md`
+- Prior Failing Scenario IDs Rechecked In Source: `PMCS-E2E-013`, `PMCS-E2E-014`
+- Repository Review Boundary: committed candidate range `fdb370d48106df252f77b684f76675a77226fffc..df7ade6ea461eec32aff37cdd8084be7b8c51d10`, plus the complete current staged, unstaged, deleted, renamed, and important untracked package in `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies`.
+- Reviewer Validation Evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-code-review-core.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-code-review-server.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round11-code-review-web.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round11-code-review-static.log`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial implementation review | N/A | `CR-PMCS-001`, `CR-PMCS-002` | Fail | No | The main ownership refactor was sound, but the pre-install validator had one invariant-reporting defect and mandatory behavior scenarios were deleted without equivalent replacement coverage. |
-| 2 | Full re-review after bounded local fixes | `CR-PMCS-001`, `CR-PMCS-002` | None | Pass | Yes | Both findings are resolved without reopening the design or restoring deleted compatibility APIs; the complete source boundary is ready for API/E2E. |
+| 1 | Initial implementation review | N/A | `CR-PMCS-001/002` | Fail | No | Validator ordering and replacement coverage gaps. |
+| 2 | Re-review after bounded fixes | `CR-PMCS-001/002` | None | Pass | No | Later scope expansion superseded this backend-only gate. |
+| 3 | Frontend/server reconciliation | Earlier findings | `CR-PMCS-003/004/005` | Fail | No | Binding-state/reporting findings. |
+| 4 | Re-review after Round 3 fixes | `CR-PMCS-003/004/005` | `CR-PMCS-006/007/008` | Fail | No | Over-scoped hypothetical settings interleavings. |
+| 5 | User-journey correction | `CR-PMCS-006/007/008` | None | Pass | No | Speculative reload findings withdrawn. |
+| 6 | Current-snapshot re-review | All prior findings | None | Pass | No | Superseded because the desktop rebind premise remained unsupported. |
+| 7 | User correction and lifecycle audit | Round 6 alignment | `CR-PMCS-009` | Fail | No | Package encoded unwanted Compaction save-session complexity. |
+| 8 | Architecture Round 5 implementation | `CR-PMCS-009` | None | Pass | No | Simple node-window/per-key save restored; later API/E2E superseded the source gate. |
+| 9 | API/E2E Round 2 failure-origin review | Round 8 source result | `CR-PMCS-010/011` | Fail | No | Real browser exposed card unmount and narrow-layout defects. |
+| 10 | Full source re-review after frontend fixes | `CR-PMCS-010/011` | `CR-PMCS-012` | Fail | No | Browser-origin defects resolved in source; initial-read Retry was missing. |
+| 11 | Full source re-review after initial-read recovery fix | `CR-PMCS-012` | None | Pass | Yes | Initial rejection now has localized accessible Retry and real-store recovery coverage; all current source gates pass. |
 
 ## Review Scope
 
-The re-review covered the complete reviewed artifact chain and the full implementation working tree, including untracked added source/tests that do not appear in ordinary `git diff HEAD` output. It rechecked both prior findings first and then repeated the full architecture, ownership, cleanup, source-size, and readiness assessment. Review emphasis was:
+The complete current solution and implementation package was re-reviewed, with the Round 10 local fix inspected in the context of all prior architecture and API/E2E findings:
 
-- literal `WorkingContext -> WorkingContext` strategy contract and deep detachment;
-- registry identity, operation-time process-global selection, exact construction, and server setting validation;
-- `PendingCompactionExecutor` resolve/compact/validate/replace/clear ordering;
-- `MemoryManager` authoritative live-context and persistence boundary;
-- current structured-JSON behavior, shared compacted-memory projection, and restore path;
-- tool-protocol and required-head pre-install validation;
-- schema-v4 direct use and epoch/timestamp removal;
-- clean-cut deletion of the obsolete block/raw-trace compactor family;
-- retained and removed test scenarios; and
-- source size/placement/ownership pressure in every changed implementation file.
+- Core context-to-context strategy, construction, validation, replacement, projection, restore, persistence, and clean-cut removals remain unchanged from Round 10; the same current-snapshot core build and 37-file/157-test evidence remains valid.
+- Server registry catalog/effective selection, settings authority, fixed Memory Compactor launch, GraphQL, bootstrap, and clean-cut removal remain unchanged from Round 10; the same current-snapshot server build/bootstrap and 7-file/82-test evidence remains valid.
+- Web initial settings/effective-selection read, localized retry, one-key save, joined later-key failure behavior, manager routing, responsive page composition, accessibility, localization, and rejected save-session boundaries were reviewed and freshly executed.
+- The current joined flow is coherent: `Settings page -> Manager initial load/retry -> Basics/Compaction card -> existing ServerSettingsStore one-key mutation/reload -> card-local success/failure/retry`.
+- `CR-PMCS-010`, `CR-PMCS-011`, and `CR-PMCS-012` are resolved without restoring revision-fenced save machinery or adding another settings API.
 
-Reviewer-executed Round 2 evidence:
+### Task Design Health Assessment
 
-1. Rework-focused core suite: `5` files / `31` tests passed.
-2. Broader core memory/runtime suite: `37` files / `157` tests passed.
-3. Focused server settings/store suite: `3` files / `62` tests passed.
-4. `pnpm --filter autobyteus-ts build`: passed, including runtime dependency verification.
-5. `git diff HEAD --check` and `git diff --cached --check`: passed.
-6. Obsolete-symbol, selection-leakage, projector-consumer, production-registration, and executor/manager dependency searches passed for the intended clean-cut source boundaries.
-7. Source inspection confirmed that every returned message is runtime-shape validated before required-head comparison calls `Message.toDict()`.
-8. Durable tests now cover malformed-head invariant reporting, executor failed-only semantics, current-strategy tool continuation, sequential projection replacement, and exact default construction mapping.
+- Change posture: bounded bug fix on top of the reviewed refactor.
+- Root cause: local implementation defect in initial-read recovery presentation.
+- Refactor needed now: no.
+- Design health: the existing manager/card/store/page ownership model absorbs the fix cleanly.
+- The shared initial-load function owns one concrete state transition; it is not an extra orchestration layer.
 
-## Prior Findings Resolution Check (Mandatory On Round >1)
+### Reviewer-Executed Evidence
+
+1. Preserved current-snapshot core build and focused/broader suite passed: 37 files / 157 tests.
+2. Preserved current-snapshot server full build/bootstrap and focused suite passed: 7 files / 82 tests.
+3. Fresh web focused suite passed: 6 files / 51 tests.
+4. Fresh web boundary guard, localization boundary guard, and localization literal audit passed.
+5. Fresh Nuxt production build and `/settings` prerender passed.
+6. `git diff --check` and `git diff --cached --check` passed.
+7. Scoped searches found no `BoundServerSettingsPatchResult`, `ServerSettingChange`, `updateSettingsForBinding`, expected-revision/captured-client/confirmed-key state, previous-node branch, or rollback machinery in the Compaction save path.
+8. Source and tests prove initial rejection -> localized accessible Retry -> second authoritative fetch -> real Compaction card with effective strategy and universal values.
+9. Existing real-Pinia coverage still proves first successful write -> later rejection -> mounted card, dirty failed/unsent drafts, visible local error, and remaining-key-only retry.
+10. Responsive source remains `flex-col`/full-width bounded navigation below `md` and `md:flex-row`/`md:w-64` at desktop.
+
+## Prior Findings Resolution Check
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `CR-PMCS-001` | High | Resolved | `working-context-compaction-output-validator.ts:46-64` validates all returned messages before head comparison; validator and executor tests pass and assert `invalid-message-shape`, no replace, no clear, and failed-only reporting. | Valid omitted/reordered/changed heads still report `changed-required-head`. |
-| 1 | `CR-PMCS-002` | High | Resolved | `memory-compaction-strategy-tool-lifecycle.test.ts`, the sequential scenario in `structured-json-compaction-strategy.test.ts`, and the default construction scenario in `working-context-compaction-strategy-registry.test.ts` pass. | The replacement tests exercise only the new strategy/registry/resolver/executor boundaries; no deleted `Compactor` or `CompactionPlan` API was restored. |
+| 1 | `CR-PMCS-001` | High | Resolved | Runtime message-shape validation precedes message methods; suites pass. | No regression. |
+| 1 | `CR-PMCS-002` | High | Resolved | Tool lifecycle, sequential replacement, and registry construction coverage passes. | No compatibility API restored. |
+| 3-4 | `CR-PMCS-003/004/006/007/008` | High/Medium | Superseded/Withdrawn | Current save path has no Compaction-specific rebind/session contract. | No regression. |
+| 3 | `CR-PMCS-005` | Medium | Resolved | Obsolete configured-compactor description API remains absent. | No regression. |
+| 7 | `CR-PMCS-009` | High | Resolved | Existing per-key action and actual node-window journey remain authoritative; rejected symbols are absent. | No regression. |
+| 9 | `CR-PMCS-010` | High | Resolved in source; API/E2E recheck pending | Manager initial-read state remains separate from shared mutation/reload state; joined real-Pinia test passes. | No revision/session machinery added. |
+| 9 | `CR-PMCS-011` | Medium | Resolved in source; API/E2E recheck pending | Narrow responsive composition and page contract remain intact; production build passes. | Real `390x844` browser recheck remains downstream. |
+| 10 | `CR-PMCS-012` | Medium | Resolved | `loadInitialSettings` serves mount and Retry; localized visible/accessibly named control; shell and real-store recovery tests pass. | Later mutation errors still keep loaded Basics mounted. |
 
 ## Source File Size And Structure Audit
 
-Effective counts are non-empty lines. Deleted implementation files were reviewed under cleanup rather than size pressure. Rename deltas use the prior source path where applicable.
+Effective counts are non-empty lines. Tests, fixtures, localization dictionaries, generated output, and evidence are excluded from source thresholds.
 
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts` | 19 | Pass | Pass (`+19`) | Pass | Pass | Healthy | None |
-| `autobyteus-server-ts/src/agent-memory/store/run-memory-writer.ts` | 179 | Pass | Pass (`0`) | Pass | Pass | Healthy | None |
-| `autobyteus-server-ts/src/services/server-settings-service.ts` | 362 | Pass | Pass (`+12`) | Pass; existing settings owner remains coherent | Pass | Existing large file, bounded change | None |
-| `autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts` | 127 | Pass | Pass (`+68`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/agent/factory/agent-factory.ts` | 220 | Pass | Pass (`-10`) | Pass; compactor wiring removed | Pass | Healthy | None |
-| `autobyteus-ts/src/agent/llm-request-assembler.ts` | 88 | Pass | Pass (`-2`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/agent/loop/llm-phase.ts` | 327 | Pass | Pass (`+54`) | Pass; active-runtime construction/diagnostic adapter is design-approved | Pass | Existing large lifecycle file, bounded change | None |
-| `autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts` | 74 | Pass | Pass (`-44`) | Pass | Pass | Tightened current-strategy adapter | None |
-| `autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts` | 58 | Pass | Pass (`+6`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts` | 34 | Pass | Pass (`+34`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts` | 99 | Pass | Pass (`+99`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts` | 191 | Pass | Pass (`+191`) | Pass; shape validation now precedes message-method use | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-registry.ts` | 43 | Pass | Pass (`+43`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-resolver.ts` | 29 | Pass | Pass (`+29`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-setting.ts` | 8 | Pass | Pass (`+8`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/compaction/working-context-compaction-strategy.ts` | 39 | Pass | Pass (`+39`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts` | 91 | Pass | Pass (`-79`) | Pass | Pass | Material simplification | None |
-| `autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts` | 182 | Pass | Pass (`+19`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/index.ts` | 58 | Pass | Pass (`-20`) | Pass | Pass | Clean-cut export update | None |
-| `autobyteus-ts/src/memory/memory-manager-tool-protocol-safety.ts` | 128 | Pass | Pass (`-6`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/memory-manager.ts` | 481 | Pass | Pass (`-6`) | Pass; large but slightly reduced and still the coherent live-memory owner | Pass | Near hard limit, no new pressure | None |
-| `autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts` | 41 | Pass | Pass (`+41`) | Pass | Pass | Healthy shared owner | None |
-| `autobyteus-ts/src/memory/projection/compacted-memory-message-builder.ts` | 54 | Pass | Pass (`0`, move) | Pass | Pass | Healthy move | None |
-| `autobyteus-ts/src/memory/restore/working-context-recovery-projector.ts` | 102 | Pass | Pass (`+8`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts` | 73 | Pass | Pass (`-13`) | Pass | Pass | Healthy | None |
-| `autobyteus-ts/src/memory/store/run-memory-file-store.ts` | 291 | Pass | Pass (`0`) | Pass; existing persistence owner | Pass | Type-only adaptation | None |
-| `autobyteus-ts/src/memory/working-context-snapshot-serializer.ts` | 133 | Pass | Pass (`-12`) | Pass | Pass | Contracted current-schema adapter | None |
-| `autobyteus-ts/src/memory/working-context.ts` | 123 | Pass | Pass (`+50` vs renamed 73-line runtime value) | Pass | Pass | Healthy domain value | None |
+| Source File / Group | Effective Non-Empty Lines | `>500` Hard Limit | `>220` Assessment | SoC / Ownership | Placement | Result / Required Action |
+| --- | ---: | --- | --- | --- | --- | --- |
+| `ServerSettingsManager.vue` | 316 | Pass | Assessed | Initial load/retry and existing settings-panel routing are coherent; no save policy moved here. | Pass | Healthy. |
+| `pages/settings.vue` | 339 | Pass | Assessed | Page owns navigation/content composition and responsive breakpoint. | Pass | Healthy. |
+| `CompactionConfigCard.vue` | 290 | Pass | Assessed | Card owns bounded form validation, changed-key sequencing, and local status. | Pass | Healthy. |
+| `stores/serverSettings.ts` | 366 | Pass | Assessed | Existing generic read/one-key write authority; no Compaction session owner. | Pass | Healthy. |
+| `workingContextCompactionStrategyCatalog.ts` | 133 | Pass | Pass | Tight read-only catalog owner. | Pass | Healthy. |
+| Core strategy/validator/projector files | 8-191 each | Pass | Pass | Reviewed specialist owners remain intact. | Pass | Healthy. |
+| `memory-manager.ts` | 481 | Pass | Assessed | Large established context/persistence owner; concrete strategy policy remains removed. | Pass | Keep unrelated growth out. |
 
-No changed implementation source exceeds 500 effective lines, and no implementation-source delta exceeds 220 effective lines.
+No changed implementation source exceeds 500 effective lines. Files above 220 lines remain cohesive under their current owners.
 
 ## Structural / Design Checks
 
-| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The implementation replaces the fragmented owner chain and removes the dead parallel compactor family. | None |
-| Implementation matches approved supplemental solution artifacts that constrain observable behavior | Pass | Malformed returned messages now report the stable shape invariant before head comparison, while valid changed heads retain their distinct invariant. | None |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Threshold/pending execution, global resolution, strategy transformation, validation, replacement, render, restore, and setting-update spines remain visible. | None |
-| Ownership boundary preservation and clarity | Pass | Resolver selects/constructs, strategy transforms, validator checks, manager replaces/persists. | None |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Diagnostics, projection, registry lookup, persistence, and restore remain bounded. | None |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing compaction runtime settings, server settings/AppConfig, retriever, manager, and snapshot subsystems are reused. | None |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | WorkingContext, strategy registration, validator, and durable-memory projector have explicit owners. | None |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Six-field construction context and messages-only WorkingContext are tight. | None |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Global default/lookup/construction is centralized in the setting/registry/resolver sequence. | None |
-| Empty indirection check (no pass-through-only boundary) | Pass | Registry, resolver, validator, projector, executor, and manager each own a distinct invariant or lifecycle step. | None |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | New files follow the reviewed responsibility map. | None |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Executor/manager do not import structured strategy internals or projector; restore does not import the structured strategy. | None |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | LlmPhase uses resolver/executor; executor uses strategy/validator/manager; no mixed-level planner/retriever bypass remains. | None |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Strategy/composition, shared projection, restore, persistence, server config, and server service locations match ownership. | None |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | One current strategy does not yet justify a deeper strategy folder; projection has a real cross-path owner. | None |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Strategy, registry, resolver, validator, and manager APIs are narrow and literal. | None |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Runtime context is `WorkingContext`; snapshot naming remains physical; machine ID and display name are distinct. | None |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No material business-policy duplication was introduced. | None |
-| Patch-on-patch complexity control | Pass | The implementation deletes 3,318 tracked lines while adding a smaller explicit boundary set. | None |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete compactor, block plan/build/digest/prompt, epoch/timestamp, aliases, and exports are gone from production source. | None |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Durable new-boundary tests cover tool-safe continuation, two sequential current-strategy compactions, exact default construction mapping, and malformed-output failed-only semantics. | None |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | New registry/executor/strategy/projector tests use bounded fixtures and focused doubles. | None |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Tests tied solely to deleted APIs are removed, while current behavior is covered through the new strategy/registry/resolver/executor boundaries. | None |
-| API/E2E readiness for the next workflow stage | Pass | Core/server suites, build, boundary searches, and all mandatory replacement scenarios pass; remaining realistic transport/provider/package checks belong to API/E2E. | Proceed to API/E2E. |
+| Task design health assessment is present and preserved | Pass | Bounded recovery change stays within the existing manager owner. | None. |
+| Approved supplemental artifacts are implemented | Pass | Loading, initial error/retry, mutation recovery, responsive, localization, and accessibility behavior now align. | None. |
+| Data-flow spine inventory clarity and preservation | Pass | Runtime, catalog/effective read, initial recovery, simple save, later failure/retry, and responsive spines are explicit. | None. |
+| Ownership boundary preservation and clarity | Pass | Manager owns initial read/retry; card owns Compaction drafts/status; store owns one-key read/write/reload. | None. |
+| Off-spine concern clarity | Pass | Catalog, projection, diagnostics, persistence, and read invalidation serve named owners. | None. |
+| Existing subsystem reuse | Pass | Retry reuses `fetchServerSettings`; no new service/action/API exists. | None. |
+| Reusable owned structures | Pass | Shared initial-load function removes duplicate mount/retry behavior. | None. |
+| Shared-structure/data-model tightness | Pass | Catalog remains `{id,name}`; no patch/session DTO exists. | None. |
+| Repeated coordination ownership | Pass | Selection/construction remain centralized; manager/card own only local UI transitions. | None. |
+| Empty indirection | Pass | `loadInitialSettings` owns loading/error/notification lifecycle for mount and retry. | None. |
+| Separation of concerns and file responsibility | Pass | Retry lands in manager without absorbing mutation/draft policy. | None. |
+| Ownership-driven dependency direction | Pass | UI continues through stores/services and registry boundaries. | None. |
+| Authoritative Boundary Rule | Pass | No caller bypasses store/service or registry owners. | None. |
+| File placement | Pass | Manager/page/store/card/test/localization paths match their concerns. | None. |
+| Flat-vs-over-split layout | Pass | No artificial helper or layer was added. | None. |
+| Interface/API/query/command clarity | Pass | Existing one-key update and tight catalog/effective read remain unchanged. | None. |
+| Naming quality | Pass | Initial load/retry names are direct; rejected save-session vocabulary remains absent. | None. |
+| No unjustified duplication | Pass | Mount and retry share one function; tests use real store behavior where cross-component semantics matter. | None. |
+| Patch-on-patch complexity control | Pass | Direct retry state transition; no new concurrency/session abstraction. | None. |
+| Dead/obsolete cleanup | Pass | Rejected save-session and arbitrary-worker paths remain absent. | None. |
+| Relevant tests are requirement-aligned | Pass | Shell and real-Pinia tests prove initial retry; existing failure and responsive scenarios remain covered. | None. |
+| Test fixtures/helpers are coherent | Pass | Joined tests are deterministic and focused on user-observable state. | None. |
+| No stale/compatibility-only tests remain | Pass | Current tests target the approved architecture. | None. |
+| API/E2E readiness | Pass | All source gates pass; the two prior browser failures and new initial retry are ready for fresh executable validation. | Proceed to API/E2E. |
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.3`
-- Overall score (`/100`): `93`
-- Score calculation note: rounded simple average across the ten mandatory categories. Every category meets the clean-pass target; the review decision is also supported independently by the absence of open findings.
+- Overall score (`/10`): `9.4`
+- Overall score (`/100`): `94`
+- Score calculation note: rounded simple average; every mandatory category meets the 9.0 clean-pass target.
 
-| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | The request, operation-time selection, transformation, validation, replacement, render, restore, and setting spines are explicit in source and tests. | Real server transport/provider/package execution is not source-review evidence. | API/E2E should validate those outer executable spans without changing this spine. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Registry/resolver/executor/strategy/validator/manager/projector authority is clean and no mixed-level bypass was found. | `LlmPhase` remains the active-runtime composition point and therefore carries several bounded adapters. | Keep future strategy additions behind registration rather than expanding composition branches. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.3 | The identified context-to-context strategy, exact six-field construction context, and invariant-coded validator are narrow and deterministic. | Strategy discovery remains programmatic rather than a dedicated product API by approved scope. | Add future discovery through the registry metadata boundary, not the execution contract. |
-| `4` | `Separation of Concerns and File Placement` | 9.2 | Transformation, validation, projection, restore, server config, and live-context ownership land in coherent reviewed locations. | `MemoryManager` remains near the 500-line guardrail, though it shrank and this change did not broaden it. | Avoid adding strategy policy to `MemoryManager`; continue extracting only real owned concerns. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Messages-only `WorkingContext`, exact construction context, registration metadata, and shared projector are tight and non-overlapping. | Mutable domain values still rely on disciplined copy boundaries by design. | Preserve deep-detached construction/append/copy/exposure semantics for future message fields. |
-| `6` | `Naming Quality and Local Readability` | 9.3 | Names distinguish runtime context, physical snapshots, strategy identity, projection, resolution, and validation accurately. | Physical snapshot method names remain similar to the removed runtime type name, but correctly describe persistence. | Keep runtime and persistence terminology distinct in future APIs. |
-| `7` | `API/E2E Readiness` | 9.2 | Core/server suites, build, exact construction, sequential current-strategy, tool continuation, restore, and failed-only scenarios pass. | Real settings transport, configured compactor execution, broader providers, and packaging remain unexecuted by this review. | API/E2E should perform the planned realistic validation. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Malformed returned messages now fail with the stable invariant before method use; alias, head, tool protocol, unknown selection, thrown strategy, and persistence failures have focused coverage. | Existing durable side-effect/replacement atomicity remains intentionally unchanged. | Treat the approved non-transactional boundary as residual risk and test failure reporting broadly. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Obsolete runtime types, epoch/timestamp state, block compactor path, aliases, and dual paths are removed. | Physical `snapshot` names correctly remain for current persistence operations. | None. |
-| `10` | `Cleanup Completeness` | 9.3 | Production obsolete-path searches are clean and all still-current mandatory behavior scenarios now have new-boundary coverage. | The working tree remains uncommitted with important untracked files, so later integration must include them. | Delivery must verify complete file inclusion when finalizing the branch. |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Runtime, server, initial recovery, save/failure, and responsive flows are explicit. | Multi-key persistence remains intentionally non-transactional. | Preserve the simple stop-on-first-error path. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | Manager, card, store, page, registry, and runtime owners remain distinct. | Established settings and memory owners remain broad. | Keep unrelated behavior out. |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | Context transform, catalog/effective reads, and one-key update remain subject-specific. | Existing mutation success is inferred from a message string. | Address only in a dedicated settings API change. |
+| 4 | Separation of Concerns and File Placement | 9.2 | Recovery and responsive changes land in their correct UI owners. | Established files remain above 220 lines. | Avoid unrelated growth. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.6 | No generic forms, patch result, or session object exists. | Future strategy metadata may pressure the tight catalog. | Preserve current shape until a real need exists. |
+| 6 | Naming Quality and Local Readability | 9.3 | Initial-read lifecycle and save responsibilities are readable. | Existing generic binding-read code remains verbose. | Do not broaden this ticket. |
+| 7 | API/E2E Readiness | 9.3 | Builds, suites, guards, real-store recovery, joined mutation failure, and responsive source all pass. | Live browser/API/package re-execution remains downstream. | Re-run prior failing browser scenarios plus initial recovery. |
+| 8 | Runtime Correctness Under Edge Cases | 9.3 | Initial query failure, later mutation failure, invalid strategy output, tool lifecycle, restore, and unknown selection are covered. | Approved non-transactional boundaries remain. | Preserve truthful failure behavior. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.7 | No dual runtime, compatibility wrapper, or old worker/save path exists. | Stale removed environment data remains inert by approved decision. | None. |
+| 10 | Cleanup Completeness | 9.6 | Obsolete runtime, worker-selection, and rejected save-session code/tests remain removed. | Historical ticket/delivery artifacts remain in the worktree. | Delivery must finalize only the current package. |
 
 ## Findings
 
-No open findings remain in Round 2.
+No open implementation-review findings.
 
-### Resolved prior findings
-
-- `CR-PMCS-001` (`High`, prior `Local Fix`) — Resolved. Output message shape validation now precedes required-head comparison and message-method use. A system-shaped non-`Message` reports `invalid-message-shape`; executor coverage proves no replace, no clear, no completed event, and stable failed reporting.
-- `CR-PMCS-002` (`High`, prior `Local Fix`) — Resolved. New-boundary durable tests now cover the canonical terminal tool-result continuation safe point and complete native render, two sequential structured compactions with one synthetic projection, and exact default registry/resolver construction mapping including the private `3`/`20` limits. No deleted compatibility API was restored.
+`CR-PMCS-012` is resolved. `CR-PMCS-010` and `CR-PMCS-011` are resolved in source and require fresh browser/API re-execution. `CR-PMCS-009` remains resolved. No new `Local Fix`, `Design Impact`, `Requirement Gap`, or `Unclear` finding was identified.
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Check | Result (`Pass`/`Fail`) | Notes |
+| Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No runtime aliases, dual paths, version branches, or fallback compactor remain. |
-| No legacy old-behavior retention in changed scope | Pass | The obsolete block/raw-trace API family is deleted. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Production obsolete-symbol searches are clean; descriptive “compactor agent” text is not the deleted class. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Schema-v4 reader tolerates old extras and new writes omit them. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Current v4 logic remains version-agnostic within the approved schema. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | `Directly Usable — No Migration` is implemented. |
+| No backward-compatibility mechanisms in changed scope | Pass | No alias, dual path, or old-version branch. |
+| No legacy old-behavior retention | Pass | Arbitrary compactor-agent and rejected save-fence behavior remain absent. |
+| Dead/obsolete cleanup complete | Pass | Obsolete runtime, setting, UI, and test paths remain removed. |
+| Persisted-data decision followed | Pass | Schema-v4 supersets remain directly usable; no migration added. |
+| No version-specific dual reads/writes or request-time fallback | Pass | Current runtime remains version-agnostic. |
+| Transition mechanics match reviewed design | Pass | `Directly Usable — No Migration`. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-`None remaining in production source.` The deleted compactor, plan, snapshot-builder, interaction-block, tool-digest, summarizer wrapper, rebuilder, epoch/timestamp, and compatibility export families were verified absent. Required current-behavior coverage now exercises only the replacement boundaries.
+None.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: The public memory API replaces `WorkingContextSnapshot`/concrete compactor ownership with `WorkingContext` plus identified strategy/registry/resolver boundaries, and adds `AUTOBYTEUS_COMPACTION_STRATEGY` as a global setting.
-- Files or areas likely affected: memory architecture/API documentation, server settings documentation, compaction configuration documentation, and any examples importing removed memory exports. Delivery remains the documentation owner after review/API-E2E pass.
+- Why: Public memory architecture, global strategy selection/catalog, fixed built-in worker, and Compaction settings behavior changed.
+- Files or areas likely affected: core/server memory architecture, server settings/agent-definition documentation, and Compaction settings journey. Delivery owns final synchronization after current gates pass.
 
 ## Classification
 
-- Active classification: `N/A — Pass`
-- Rationale: Both prior local-fix findings are resolved and no new implementation, design, requirement, packaging, or test-readiness finding was identified.
+`Pass` — no failure classification.
 
 ## Recommended Recipient
 
 `api_e2e_engineer`
 
-Proceed with fresh API/E2E coverage investigation and execution against the complete current working-tree boundary. Preserve the cumulative artifact package and return both successful and failed outcomes to `code_reviewer` through their distinct workflow paths.
+Perform fresh API/E2E and broader executable validation. Re-run `PMCS-E2E-013` and `PMCS-E2E-014`, include initial settings/effective-read failure -> Retry -> recovery, and preserve the complete current package boundary.
 
 ## Residual Risks
 
-- Existing episodic/semantic writes and raw-trace pruning remain non-transactional with outer context replacement by approved scope.
-- `MemoryManager.replaceWorkingContext` still installs live state before persistence and has no new rollback guarantee by approved scope.
-- Process-global strategy updates are immediate only within one process; multi-process convergence remains outside scope.
-- Provider-session reconciliation and provider-native compaction remain outside scope.
-- The current branch is an uncommitted working tree with relevant untracked source/tests; any later packaging/integration step must include them explicitly.
-- API/E2E still must investigate real server-setting persistence/live update, a real registered tool-execution continuation rather than only the canonical post-execution event boundary, broader provider rendering/tool paths, restoration through normal runtime, and supported packaged execution.
+- `PMCS-E2E-013` and `PMCS-E2E-014` are repaired in source but still require the same real-browser re-execution.
+- Initial settings/effective-read retry has strong component/real-store evidence but still requires live browser/API validation.
+- Multi-key settings writes remain sequential and non-transactional by approved scope; earlier successful values are not rolled back after a later failure.
+- Generic/mobile read invalidation remains outside the desktop Compaction save contract.
+- Episodic/semantic writes and raw pruning remain non-transactional with outer context replacement.
+- `MemoryManager` replacement retains its existing no-rollback behavior if persistence throws.
+- Strategy-setting convergence remains process-local; provider-session reconciliation, provider-native compaction, a second production strategy, and generic forms remain out of scope.
+- Important untracked current source/tests coexist with superseded historical/delivery artifacts; integration must preserve the current package deliberately.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Score Summary: `9.3/10` (`93/100`); every mandatory category is at or above the 9.0 clean-pass target.
-- Failure Origin (when applicable): `N/A` — this is implementation review, not API/E2E failure-origin review.
-- Recommended Recipient (when applicable): `api_e2e_engineer`
-- Notes: `CR-PMCS-001` and `CR-PMCS-002` are resolved, no new findings remain, and the complete implementation boundary is ready for API/E2E.
+- Score Summary: `9.4/10` (`94/100`); every mandatory category is at least 9.0.
+- Failure Origin: `N/A`
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: Round 11 supersedes Round 10. `CR-PMCS-012` is resolved through a localized accessible Retry that reuses the existing settings read. All source-review gates pass without Compaction-specific revision/session machinery.

@@ -1,13 +1,9 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../built-in-agents/built-in-agent-registry.js";
 import { runtimeKindFromString, type RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import {
-  AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-  getServerSettingsService,
-  type ServerSettingsService,
-} from "../../services/server-settings-service.js";
 
-export type ResolvedCompactionAgentSettings = {
+export type ResolvedMemoryCompactorAgentLaunch = {
   agentDefinitionId: string;
   agentName: string;
   runtimeKind: RuntimeKind;
@@ -22,6 +18,11 @@ export type CompactionParentLaunchFallback = {
   sourceAgentDefinitionId?: string | null;
 };
 
+type MemoryCompactorDefinitionLookup = Pick<
+  AgentDefinitionService,
+  "getFreshAgentDefinitionById" | "getAgentDefinitionById"
+>;
+
 const asTrimmedString = (value: unknown): string | null => {
   if (typeof value !== "string") {
     return null;
@@ -35,25 +36,19 @@ const asObjectRecord = (value: unknown): Record<string, unknown> | null =>
     ? (value as Record<string, unknown>)
     : null;
 
-export class CompactionAgentSettingsResolver {
+export class MemoryCompactorAgentLaunchResolver {
   constructor(
-    private readonly serverSettingsService: Pick<ServerSettingsService, "getCompactionAgentDefinitionId"> = getServerSettingsService(),
-    private readonly agentDefinitionService: Pick<AgentDefinitionService, "getFreshAgentDefinitionById" | "getAgentDefinitionById"> = AgentDefinitionService.getInstance(),
+    private readonly agentDefinitionService: MemoryCompactorDefinitionLookup = AgentDefinitionService.getInstance(),
   ) {}
 
   async resolve(
     parentLaunchFallback: CompactionParentLaunchFallback | null = null,
-  ): Promise<ResolvedCompactionAgentSettings> {
-    const selectedAgentId = this.serverSettingsService.getCompactionAgentDefinitionId();
-    if (!selectedAgentId) {
-      throw new Error(
-        `No compactor agent is configured. Set ${AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID} in Server Settings -> Basics -> Compaction.`,
-      );
-    }
-
-    const definition = await this.loadDefinition(selectedAgentId);
+  ): Promise<ResolvedMemoryCompactorAgentLaunch> {
+    const definition = await this.loadDefinition();
     if (!definition) {
-      throw new Error(`Configured compactor agent definition '${selectedAgentId}' was not found.`);
+      throw new Error(
+        `Built-in Memory Compactor agent definition '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' was not found.`,
+      );
     }
 
     const launchConfig = definition.defaultLaunchConfig;
@@ -62,7 +57,7 @@ export class CompactionAgentSettingsResolver {
     const runtimeKind = explicitRuntimeKind ?? fallbackRuntimeKind;
     if (!runtimeKind) {
       throw new Error(
-        `Compactor agent '${selectedAgentId}' is missing a valid default runtime kind and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent runtime kind fallback.`,
+        `Built-in Memory Compactor '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' is missing a valid default runtime kind and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent runtime kind fallback.`,
       );
     }
 
@@ -71,12 +66,12 @@ export class CompactionAgentSettingsResolver {
     const llmModelIdentifier = explicitModelIdentifier ?? fallbackModelIdentifier;
     if (!llmModelIdentifier) {
       throw new Error(
-        `Compactor agent '${selectedAgentId}' is missing a default model identifier and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent model identifier fallback.`,
+        `Built-in Memory Compactor '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' is missing a default model identifier and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent model identifier fallback.`,
       );
     }
 
     return {
-      agentDefinitionId: selectedAgentId,
+      agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
       agentName: definition.name,
       runtimeKind,
       llmModelIdentifier,
@@ -85,12 +80,17 @@ export class CompactionAgentSettingsResolver {
     };
   }
 
-  private async loadDefinition(selectedAgentId: string) {
+  private async loadDefinition() {
     const freshLoader = this.agentDefinitionService.getFreshAgentDefinitionById;
     if (typeof freshLoader === "function") {
-      return freshLoader.call(this.agentDefinitionService, selectedAgentId);
+      return freshLoader.call(
+        this.agentDefinitionService,
+        MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+      );
     }
-    return this.agentDefinitionService.getAgentDefinitionById(selectedAgentId);
+    return this.agentDefinitionService.getAgentDefinitionById(
+      MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+    );
   }
 
   private formatFallbackSource(

@@ -1,0 +1,81 @@
+# Round 4 static boundary validation
+UTC 2026-07-14T12:22:15Z
+## git identity
+codex/pluggable-memory-compaction-strategies
+df7ade6ea461eec32aff37cdd8084be7b8c51d10
+## production/test diff whitespace checks (legacy evidence logs excluded)
+PASS scoped diff checks
+## rejected save-session machinery absent in changed production source
+PASS rejected machinery absent
+## production compaction strategy registration/fixed worker signals
+autobyteus-ts/src/memory/index.ts:25:export { StructuredJsonCompactionStrategy } from './compaction/structured-json-compaction-strategy.js';
+autobyteus-ts/src/memory/index.ts:26:export type { StructuredJsonCompactionStrategyOptions } from './compaction/structured-json-compaction-strategy.js';
+autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-setting.ts:2:export const DEFAULT_WORKING_CONTEXT_COMPACTION_STRATEGY_ID = 'structured-json';
+autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts:5:import { StructuredJsonCompactionStrategy } from './structured-json-compaction-strategy.js';
+autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts:19:  id: 'structured-json',
+autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts:26:  readonly id = 'structured-json';
+autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts:21:} from "./memory-compactor-agent-launch-resolver.js";
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:50:        `Built-in Memory Compactor agent definition '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' was not found.`,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:60:        `Built-in Memory Compactor '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' is missing a valid default runtime kind and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent runtime kind fallback.`,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:69:        `Built-in Memory Compactor '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' is missing a default model identifier and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent model identifier fallback.`,
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts:5:export const MEMORY_COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts:22:    templateDirName: "memory-compactor",
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts:23:    displayName: "Memory Compactor",
+autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md:2:name: Memory Compactor
+## obsolete API source files absent
+PASS obsolete API source files absent
+## responsive settings contract
+3:    class="flex h-full min-w-0 flex-col bg-white md:flex-row"
+8:      class="max-h-[38dvh] w-full shrink-0 overflow-y-auto border-b border-gray-200 bg-white md:max-h-none md:w-64 md:border-b-0 md:border-r"
+12:        <nav class="w-full">
+13:          <ul class="w-full space-y-2">
+14:            <li class="w-full border-b border-gray-100 pb-2">
+19:                class="flex w-full items-center justify-start rounded-md px-4 py-2 text-gray-600 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-800"
+26:            <li class="w-full">
+29:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+38:            <li class="w-full">
+41:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+50:            <li class="w-full">
+53:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+62:            <li class="w-full">
+66:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+75:            <li class="w-full">
+79:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+88:            <li class="w-full">
+91:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+100:            <li class="w-full">
+103:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+112:            <li class="w-full">
+116:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+125:            <li class="w-full">
+129:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+138:            <li class="w-full">
+142:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+154:                  class="w-full text-left px-3 py-1.5 text-base rounded-md transition-colors duration-200"
+163:                  class="w-full text-left px-3 py-1.5 text-base rounded-md transition-colors duration-200"
+172:                  class="w-full text-left px-3 py-1.5 text-base rounded-md transition-colors duration-200"
+180:            <li class="w-full">
+184:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+193:            <li class="w-full">
+197:                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+213:      class="min-h-0 min-w-0 flex-1 overflow-auto bg-white p-2 sm:p-3 md:py-4 md:pl-0 md:pr-4"
+216:      <div class="h-full w-full flex flex-col">
+236:          class="flex h-full min-h-0 flex-col"
+## initial-load and local mutation failure separation
+autobyteus-web/components/settings/CompactionConfigCard.vue:30:      data-testid="compaction-status-message"
+autobyteus-web/components/settings/CompactionConfigCard.vue:303:    const errorDetail = error?.message ?? t('settings.components.settings.CompactionConfigCard.saveError')
+autobyteus-web/components/settings/CompactionConfigCard.vue:304:    statusMessage.value = t('settings.components.settings.CompactionConfigCard.saveErrorWithDetail', {
+autobyteus-web/components/settings/ServerSettingsManager.vue:16:        data-testid="server-settings-initial-error"
+autobyteus-web/components/settings/ServerSettingsManager.vue:24:          @click="loadInitialSettings"
+autobyteus-web/components/settings/ServerSettingsManager.vue:270:const loadInitialSettings = async (): Promise<void> => {
+autobyteus-web/components/settings/ServerSettingsManager.vue:286:  void loadInitialSettings()
+## current implementation-owned durable rework tests
+M	autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts
+M	autobyteus-web/pages/__tests__/settings.spec.ts
+## source sizes
+     351 autobyteus-web/components/settings/ServerSettingsManager.vue
+     312 autobyteus-web/components/settings/CompactionConfigCard.vue
+     351 autobyteus-web/pages/settings.vue
+     421 autobyteus-web/stores/serverSettings.ts
+    1435 total
+STATIC_RESULT=PASS

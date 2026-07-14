@@ -20,7 +20,6 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { normalizeSandboxMode } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import {
-  AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
@@ -49,7 +48,6 @@ describe("Server settings GraphQL e2e", () => {
   let tempDir: string;
   let originalServerHostEnv: string | undefined;
   let originalCodexSandboxEnv: string | undefined;
-  let originalCompactionAgentEnv: string | undefined;
   let originalCompactionStrategyEnv: string | undefined;
   let originalFeaturedCatalogItemsEnv: string | undefined;
   let originalStreamParserEnv: string | undefined;
@@ -68,7 +66,6 @@ describe("Server settings GraphQL e2e", () => {
     appConfigProvider.resetForTests();
     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
-    originalCompactionAgentEnv = process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     originalCompactionStrategyEnv = process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     originalStreamParserEnv = process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
@@ -85,7 +82,6 @@ describe("Server settings GraphQL e2e", () => {
     );
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
     delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
-    delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     delete process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
@@ -106,11 +102,6 @@ describe("Server settings GraphQL e2e", () => {
       delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     } else {
       process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY] = originalCodexSandboxEnv;
-    }
-    if (originalCompactionAgentEnv === undefined) {
-      delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
-    } else {
-      process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID] = originalCompactionAgentEnv;
     }
     if (originalCompactionStrategyEnv === undefined) {
       delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
@@ -474,65 +465,6 @@ describe("Server settings GraphQL e2e", () => {
     expect(envFileContents).not.toContain(`${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=yaml`);
   });
 
-  it("persists the selected compactor agent definition id as a predefined GraphQL setting", async () => {
-    const updateMutation = `
-      mutation UpdateServerSetting($key: String!, $value: String!) {
-        updateServerSetting(key: $key, value: $value)
-      }
-    `;
-    const listQuery = `
-      query GetServerSettings {
-        getServerSettings {
-          key
-          value
-          description
-          isEditable
-          isDeletable
-        }
-      }
-    `;
-
-    const selectedDefinitionId = "memory-compactor-agent";
-    const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
-      key: AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-      value: selectedDefinitionId,
-    });
-    expect(updated.updateServerSetting).toContain("updated successfully");
-    expect(process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID]).toBe(selectedDefinitionId);
-
-    const listed = await execGraphql<{
-      getServerSettings: Array<{
-        key: string;
-        value: string;
-        description: string;
-        isEditable: boolean;
-        isDeletable: boolean;
-      }>;
-    }>(listQuery);
-
-    const compactorSetting = listed.getServerSettings.find(
-      (entry) => entry.key === AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-    );
-    expect(compactorSetting).toMatchObject({
-      value: selectedDefinitionId,
-      isEditable: true,
-      isDeletable: false,
-    });
-    expect(compactorSetting?.description).toContain("memory compactor agent");
-    expect(compactorSetting?.description).not.toBe("Custom user-defined setting");
-    expect(
-      listed.getServerSettings.find(
-        (entry) => entry.key === "AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER",
-      ),
-    ).toBeUndefined();
-
-    const envFileContents = fs.readFileSync(path.join(tempDir, ".env"), "utf-8");
-    expect(envFileContents).toContain(
-      `${AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID}=${selectedDefinitionId}`,
-    );
-    expect(envFileContents).not.toContain("AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER=");
-  });
-
   it("persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation", async () => {
     const updateMutation = `
       mutation UpdateServerSetting($key: String!, $value: String!) {
@@ -678,6 +610,34 @@ describe("Server settings GraphQL e2e", () => {
     expect(streamParserSetting?.description).not.toBe("Custom user-defined setting");
     expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
       AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+    );
+  });
+
+  it("exposes the production compaction strategy catalog and effective default without persisting it", async () => {
+    const strategyQuery = `
+      query GetWorkingContextCompactionStrategyState {
+        getWorkingContextCompactionStrategies {
+          id
+          name
+        }
+        getEffectiveWorkingContextCompactionStrategyId
+      }
+    `;
+
+    const result = await execGraphql<{
+      getWorkingContextCompactionStrategies: Array<{ id: string; name: string }>;
+      getEffectiveWorkingContextCompactionStrategyId: string;
+    }>(strategyQuery);
+
+    expect(result).toEqual({
+      getWorkingContextCompactionStrategies: [
+        { id: "structured-json", name: "Structured JSON" },
+      ],
+      getEffectiveWorkingContextCompactionStrategyId: "structured-json",
+    });
+    expect(process.env[AUTOBYTEUS_COMPACTION_STRATEGY]).toBeUndefined();
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).not.toContain(
+      AUTOBYTEUS_COMPACTION_STRATEGY,
     );
   });
 

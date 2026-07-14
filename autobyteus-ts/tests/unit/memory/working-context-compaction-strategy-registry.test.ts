@@ -50,7 +50,9 @@ describe('WorkingContextCompactionStrategyRegistry', () => {
 
   it('keeps the missing current compaction runner as a truthful construction failure', () => {
     const registration = defaultWorkingContextCompactionStrategyRegistry.get('structured-json')!;
-    expect(() => registration.create(constructionContext())).toThrow('No compactor agent is configured');
+    expect(() => registration.create(constructionContext())).toThrow(
+      'Structured JSON compaction requires a compaction agent runner',
+    );
   });
 
   it('rejects blank identity fields and duplicate exact IDs deterministically', () => {

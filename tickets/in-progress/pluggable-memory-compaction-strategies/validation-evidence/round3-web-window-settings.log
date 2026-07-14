@@ -1,0 +1,35 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web
+
+stderr | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/windowNodeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ServerSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/windowNodeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/windowNodeContextStore.spec.ts (10 tests) 18ms
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (3 tests) 49ms
+ ✓ components/settings/__tests__/ServerSettingsManager.spec.ts (8 tests) 74ms
+
+ Test Files  3 passed (3)
+      Tests  21 passed (21)
+   Start at  13:08:55
+   Duration  5.47s (transform 3.18s, setup 13.52s, collect 690ms, tests 142ms, environment 533ms, prepare 416ms)
+

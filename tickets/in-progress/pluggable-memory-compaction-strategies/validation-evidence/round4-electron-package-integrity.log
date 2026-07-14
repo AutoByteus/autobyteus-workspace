@@ -1,0 +1,58 @@
+# Round 4 fresh Electron package integrity
+UTC 2026-07-14T12:38:21Z
+## fresh enterprise artifacts
+-rw-r--r--@ 1 normy  staff   383M Jul 14 14:34 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.dmg
+-rw-r--r--@ 1 normy  staff   379M Jul 14 14:36 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.zip
+-rw-r--r--@ 1 normy  staff   297M Jul 14 14:33 electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+ec87c53755210463b84a604e40e7f3e53ebe0ff4b3ffaaa88c18b3baa779ee6a  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.dmg
+d6cff32aef6d4eeb50ba0510a61922680595d822497f4c507263a40dd44443cf  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.zip
+fb6accc3956570371e483669f3834fc11fcaec50cb987fdc0ffd953a446973be  electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+## server compiled/deployed/packaged equality
+188df1ea72fa4d849bbf9d9608c88ac3309b0c38c7e20a99a9d7d9eea3a643cc  ../autobyteus-server-ts/dist/services/server-settings-service.js
+188df1ea72fa4d849bbf9d9608c88ac3309b0c38c7e20a99a9d7d9eea3a643cc  resources/server/dist/services/server-settings-service.js
+188df1ea72fa4d849bbf9d9608c88ac3309b0c38c7e20a99a9d7d9eea3a643cc  electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/services/server-settings-service.js
+d7fc1132d4356fc2601a4ff4bdc5fdb2d4159c632ae1e4a3e398afc3e8da61ca  ../autobyteus-server-ts/dist/agent-execution/compaction/memory-compactor-agent-launch-resolver.js
+d7fc1132d4356fc2601a4ff4bdc5fdb2d4159c632ae1e4a3e398afc3e8da61ca  resources/server/dist/agent-execution/compaction/memory-compactor-agent-launch-resolver.js
+d7fc1132d4356fc2601a4ff4bdc5fdb2d4159c632ae1e4a3e398afc3e8da61ca  electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/compaction/memory-compactor-agent-launch-resolver.js
+d6945257b6a7afebad56a7a4278d4c186fde24514003b09bc51142cad4278ebe  ../autobyteus-server-ts/dist/agent-execution/compaction/server-compaction-agent-runner.js
+d6945257b6a7afebad56a7a4278d4c186fde24514003b09bc51142cad4278ebe  resources/server/dist/agent-execution/compaction/server-compaction-agent-runner.js
+d6945257b6a7afebad56a7a4278d4c186fde24514003b09bc51142cad4278ebe  electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/compaction/server-compaction-agent-runner.js
+43f1acb9e8ce9c6c14edf426af449fba2daee2e5f006cadfdc3ee299fb511506  ../autobyteus-server-ts/dist/api/graphql/types/working-context-compaction-strategy.js
+43f1acb9e8ce9c6c14edf426af449fba2daee2e5f006cadfdc3ee299fb511506  resources/server/dist/api/graphql/types/working-context-compaction-strategy.js
+43f1acb9e8ce9c6c14edf426af449fba2daee2e5f006cadfdc3ee299fb511506  electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/working-context-compaction-strategy.js
+ea55fc350aa682cfb42206a205c8e746c33a9b8b129c5b7662d2ea933126edc2  ../autobyteus-server-ts/dist/built-in-agents/built-in-agent-registry.js
+ea55fc350aa682cfb42206a205c8e746c33a9b8b129c5b7662d2ea933126edc2  resources/server/dist/built-in-agents/built-in-agent-registry.js
+ea55fc350aa682cfb42206a205c8e746c33a9b8b129c5b7662d2ea933126edc2  electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/built-in-agents/built-in-agent-registry.js
+ASSERT server build/deploy/package hashes equal PASS
+## packaged server current authority
+30:    getWorkingContextCompactionStrategies() {
+35:    getEffectiveWorkingContextCompactionStrategyId() {
+36:        return getServerSettingsService().getEffectiveWorkingContextCompactionStrategyId();
+44:], WorkingContextCompactionStrategyResolver.prototype, "getWorkingContextCompactionStrategies", null);
+50:], WorkingContextCompactionStrategyResolver.prototype, "getEffectiveWorkingContextCompactionStrategyId", null);
+2:export const MEMORY_COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
+8:        displayName: "Memory Compactor",
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/autobyteus-ts/dist/memory/compaction/default-working-context-compaction-strategy-registry.js:4:import { StructuredJsonCompactionStrategy } from './structured-json-compaction-strategy.js';
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/autobyteus-ts/dist/memory/compaction/default-working-context-compaction-strategy-registry.js:14:    id: 'structured-json',
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/autobyteus-ts/dist/memory/compaction/working-context-compaction-strategy-setting.js:2:export const DEFAULT_WORKING_CONTEXT_COMPACTION_STRATEGY_ID = 'structured-json';
+## rejected/obsolete packaged server symbols absent
+ASSERT rejected server symbols absent PASS
+## asar inventory summary
+asar_entries=   12746
+/dist/electron/main.js
+/dist/electron/preload.js
+/dist/renderer/index.html
+ASSERT renderer/main/preload present in app.asar PASS
+## current renderer strings and corresponding asar entries
+dist/renderer/_nuxt/entry.DlLnRNly.js
+/dist/renderer/_nuxt/entry.DlLnRNly.js
+Retry-bearing renderer bundles:
+dist/renderer/_nuxt/memory.BcSXk7XA.js
+dist/renderer/_nuxt/MobileRemoteAccessShell.vue.Ct_QEZ2Z.js
+dist/renderer/_nuxt/FileExplorerTabs.vue.C52Vv9P5.js
+dist/renderer/_nuxt/workspace.yxXLaPTD.js
+dist/renderer/_nuxt/settings.j4ObVj0m.js
+dist/renderer/_nuxt/entry.DlLnRNly.js
+dist/renderer/_nuxt/useWorkspaceFileExplorer.BnPDw_Bj.js
+ASSERT rejected renderer symbols absent PASS
+PACKAGE_INTEGRITY_RESULT=PASS

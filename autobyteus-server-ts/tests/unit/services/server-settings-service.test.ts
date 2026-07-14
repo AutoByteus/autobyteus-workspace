@@ -111,7 +111,6 @@ describe("ServerSettingsService", () => {
     mockConfig.get.mockImplementation((key: string) =>
       ({
         AUTOBYTEUS_COMPACTION_TRIGGER_RATIO: "0.8",
-        AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID: "memory-compactor",
         [WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY]: "structured-json",
         AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE: "4096",
         AUTOBYTEUS_COMPACTION_DEBUG_LOGS: "true",
@@ -127,12 +126,7 @@ describe("ServerSettingsService", () => {
       isEditable: true,
       isDeletable: false,
     });
-    expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID")).toMatchObject({
-      value: "memory-compactor",
-      description: expect.stringContaining("Agent definition id"),
-      isEditable: true,
-      isDeletable: false,
-    });
+    expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID")).toBeUndefined();
     expect(settings.find((item) => item.key === WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY)).toMatchObject({
       value: "structured-json",
       description: expect.stringContaining("Process-global working-context compaction strategy"),
@@ -574,13 +568,17 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_APPLICATIONS', 'false');
   });
 
-  it("reads the typed compactor agent definition id setting", () => {
+  it.each([
+    [undefined, "structured-json"],
+    ["", "structured-json"],
+    ["   ", "structured-json"],
+    [" structured-json ", "structured-json"],
+    [" removed-strategy ", "removed-strategy"],
+  ])("reads runtime-effective compaction strategy %j as %s without persisting", (configured, expected) => {
     const service = new ServerSettingsService();
+    mockConfig.get.mockReturnValueOnce(configured);
 
-    mockConfig.get.mockReturnValueOnce(' memory-compactor ');
-    expect(service.getCompactionAgentDefinitionId()).toBe('memory-compactor');
-
-    mockConfig.get.mockReturnValueOnce('   ');
-    expect(service.getCompactionAgentDefinitionId()).toBeNull();
+    expect(service.getEffectiveWorkingContextCompactionStrategyId()).toBe(expected);
+    expect(mockConfig.set).not.toHaveBeenCalled();
   });
 });

@@ -7,10 +7,7 @@ import { WorkingContextCompactionStrategyRegistry } from './working-context-comp
 
 const requireCompactionRunner = (runner: CompactionAgentRunner | null): CompactionAgentRunner => {
   if (!runner) {
-    throw new Error([
-      'No compactor agent is configured.',
-      'Set AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID in Server Settings -> Basics -> Compaction.',
-    ].join(' '));
+    throw new Error('Structured JSON compaction requires a compaction agent runner.');
   }
   return runner;
 };
