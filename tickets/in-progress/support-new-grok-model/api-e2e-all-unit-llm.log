@@ -1,0 +1,418 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/support-new-grok-model/autobyteus-ts
+
+stdout | tests/unit/llm/supported-model-definitions.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/utils/llm-config.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/anthropic-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/token-usage-normalizers.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/kimi-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/openai-compatible-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/provider-native-request-payloads.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/utils/llm-config.test.ts (26 tests) 7ms
+ ✓ tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts (6 tests) 6ms
+ ✓ tests/unit/llm/api/token-usage-normalizers.test.ts (8 tests) 4ms
+stdout | tests/unit/llm/prompt-renderers/openai-responses-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/autobyteus-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/api/kimi-llm.test.ts (13 tests) 9ms
+ ✓ tests/unit/llm/api/openai-compatible-llm.test.ts (12 tests) 9ms
+stdout | tests/unit/llm/metadata/model-metadata-resolver.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/api/anthropic-llm.test.ts (24 tests) 10ms
+stderr | tests/unit/llm/prompt-renderers/openai-responses-renderer.test.ts > OpenAIResponsesRenderer > degrades user audio input in responses renderer and keeps text content
+OpenAI Responses input audio is not supported in this runtime path; skipping.
+
+stdout | tests/unit/llm/utils/media-payload-formatter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/prompt-renderers/openai-responses-renderer.test.ts (6 tests) 4ms
+stdout | tests/unit/llm/api/ollama-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/metadata/model-metadata-resolver.test.ts (7 tests) 5ms
+stdout | tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/api/autobyteus-llm.test.ts (10 tests) 11ms
+stdout | tests/unit/llm/api/grok-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/glm-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts (8 tests) 6ms
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stderr | tests/unit/llm/utils/media-payload-formatter.test.ts > media_payload_formatter > fileToBase64 reads files
+Failed to read and encode file at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-pW2m3m/missing.png: Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-pW2m3m/missing.png'
+
+stderr | tests/unit/llm/utils/media-payload-formatter.test.ts > media_payload_formatter > urlToBase64 downloads content
+Failed to download from URL https://example.com/notfound.jpg: Error: Not Found
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/api/lmstudio-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts (12 tests) 10ms
+ ✓ tests/unit/llm/api/ollama-llm.test.ts (3 tests) 19ms
+ ✓ tests/unit/llm/api/grok-llm.test.ts (2 tests) 6ms
+ ✓ tests/unit/llm/api/glm-llm.test.ts (6 tests) 6ms
+ ✓ tests/unit/llm/utils/media-payload-formatter.test.ts (11 tests) 305ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (8 tests) 20ms
+stdout | tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/llm-factory-config-composition.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/autobyteus-provider.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/ollama-provider.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/deepseek-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/utils/llm-config-overrides.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/utils/llm-config-overrides.test.ts (4 tests) 3ms
+ ✓ tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts (5 tests) 13ms
+stdout | tests/unit/llm/autobyteus-provider.test.ts > AutobyteusModelProvider > keeps unknown context metadata as null instead of defaulting to 8192
+Discovering Autobyteus models from host: https://autobyteus.example
+
+stdout | tests/unit/llm/autobyteus-provider.test.ts > AutobyteusModelProvider > prefers explicit server metadata when present
+Discovering Autobyteus models from host: https://autobyteus.example
+
+stdout | tests/unit/llm/autobyteus-provider.test.ts > AutobyteusModelProvider > parses server config_schema into discovered model metadata
+Discovering Autobyteus models from host: https://autobyteus.example
+
+ ✓ tests/unit/llm/autobyteus-provider.test.ts (3 tests) 4ms
+ ✓ tests/unit/llm/api/lmstudio-llm.test.ts (3 tests) 5ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (10 tests) 22ms
+ ✓ tests/unit/llm/api/deepseek-llm.test.ts (2 tests) 4ms
+stdout | tests/unit/llm/api/openai-compatible-request-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/llm-factory-provider-helper.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/base.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/deepseek-chat-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/api/openai-compatible-request-builder.test.ts (2 tests) 3ms
+stdout | tests/unit/llm/models.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/ollama-provider.test.ts > OllamaModelProvider > keeps discovered Ollama models in the OLLAMA provider bucket and captures context metadata
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stdout | tests/unit/llm/ollama-provider.test.ts > OllamaModelProvider > falls back to configured num_ctx when the model is not currently running
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stdout | tests/unit/llm/ollama-provider.test.ts > OllamaModelProvider > keeps the listed model when detail enrichment fails and leaves metadata unknown
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/unit/llm/ollama-provider.test.ts > OllamaModelProvider > keeps the listed model when detail enrichment fails and leaves metadata unknown
+Failed to fetch Ollama model details for 'llama3.3:70b' from http://127.0.0.1:11434: show failed
+
+ ✓ tests/unit/llm/ollama-provider.test.ts (3 tests) 4ms
+ ✓ tests/unit/llm/base.test.ts (4 tests) 4ms
+stdout | tests/unit/llm/utils/messages.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/utils/messages.test.ts (6 tests) 3ms
+stdout | tests/unit/llm/utils/token-usage-tracker.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/lmstudio-provider.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/prompt-renderers/deepseek-chat-renderer.test.ts (3 tests) 3ms
+ ✓ tests/unit/llm/utils/token-usage-tracker.test.ts (3 tests) 2ms
+stdout | tests/unit/llm/converters/ollama-tool-call-converter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/converters/ollama-tool-call-converter.test.ts (3 tests) 2ms
+stdout | tests/unit/llm/extensions/token-usage-tracking-extension.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/models.test.ts (4 tests) 4ms
+ ✓ tests/unit/llm/extensions/token-usage-tracking-extension.test.ts (2 tests) 4ms
+stdout | tests/unit/llm/extensions/extension-registry.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/transport/local-long-running-fetch.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/anthropic-prompt-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/extensions/extension-registry.test.ts (4 tests) 3ms
+ ✓ tests/unit/llm/transport/local-long-running-fetch.test.ts (2 tests) 9ms
+stdout | tests/unit/llm/prompt-renderers/mistral-prompt-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/lmstudio-provider.test.ts > LMStudioModelProvider > uses the LM Studio native model list to capture supported and active context metadata
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/unit/llm/lmstudio-provider.test.ts > LMStudioModelProvider > returns null active context when loaded instances disagree on configured context length
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+ ✓ tests/unit/llm/lmstudio-provider.test.ts (2 tests) 3ms
+ ✓ tests/unit/llm/llm-factory-config-composition.test.ts (3 tests) 3ms
+stdout | tests/unit/llm/prompt-renderers/ollama-prompt-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/prompt-renderers/anthropic-prompt-renderer.test.ts (2 tests) 2ms
+stdout | tests/unit/llm/prompt-renderers/lmstudio-text-tool-history-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/prompt-renderers/mistral-prompt-renderer.test.ts (2 tests) 2ms
+stdout | tests/unit/llm/converters/gemini-tool-call-converter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/converters/gemini-tool-call-converter.test.ts (3 tests) 2ms
+stdout | tests/unit/llm/api/provider-request-kwargs.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/prompt-renderers/ollama-prompt-renderer.test.ts (2 tests) 2ms
+stdout | tests/unit/llm/utils/response-types.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/api/provider-request-kwargs.test.ts (2 tests) 2ms
+ ✓ tests/unit/llm/utils/response-types.test.ts (4 tests) 3ms
+stdout | tests/unit/llm/converters/anthropic-tool-call-converter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/extensions/base-extension.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/prompt-renderers/lmstudio-text-tool-history-renderer.test.ts (2 tests) 5ms
+stderr | tests/unit/llm/llm-factory-provider-helper.test.ts > LLMFactory.getProvider > returns null when model is not found
+Could not find model with identifier 'missing-model' to get its provider.
+
+ ✓ tests/unit/llm/llm-factory-provider-helper.test.ts (4 tests) 4ms
+ ✓ tests/unit/llm/converters/anthropic-tool-call-converter.test.ts (3 tests) 2ms
+ ✓ tests/unit/llm/extensions/base-extension.test.ts (1 test) 1ms
+stdout | tests/unit/llm/token-counter/base-token-counter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/token-counter/base-token-counter.test.ts (2 tests) 1ms
+stdout | tests/unit/llm/converters-media.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/utils/tool-call-delta.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/user-message.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/openai-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/utils/token-usage.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/utils/tool-call-delta.test.ts (3 tests) 3ms
+ ✓ tests/unit/llm/user-message.test.ts (4 tests) 3ms
+stdout | tests/unit/llm/converters/openai-tool-call-converter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/enums.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/converters/openai-tool-call-converter.test.ts (2 tests) 2ms
+ ✓ tests/unit/llm/enums.test.ts (2 tests) 2ms
+ ✓ tests/unit/llm/converters-media.test.ts (4 tests) 2ms
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+ ✓ tests/unit/llm/utils/token-usage.test.ts (3 tests) 3ms
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+Finished Ollama discovery. Total models registered: 4
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+Finished LM Studio discovery. Total models registered: 10
+
+ ✓ tests/unit/llm/api/openai-llm.test.ts (1 test) 2ms
+stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+Discovering Autobyteus models from host: https://localhost:51739
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+
+stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
+Finished Autobyteus discovery. Total models registered: 74
+
+ ✓ tests/unit/llm/openai-compatible-endpoint-provider.test.ts (4 tests) 3827ms
+     ✓ registers synced provider-backed models and can instantiate an endpoint-aware LLM  3816ms
+
+ Test Files  54 passed (54)
+      Tests  280 passed (280)
+   Start at  12:41:55
+   Duration  5.32s (transform 2.82s, setup 855ms, import 10.08s, tests 4.41s, environment 4ms)
+

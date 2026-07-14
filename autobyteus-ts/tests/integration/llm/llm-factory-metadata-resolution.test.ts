@@ -65,6 +65,7 @@ describe('LLMFactory metadata resolution', () => {
     const kimiModels = await LLMFactory.listModelsByProvider(LLMProvider.KIMI);
     const glmModels = await LLMFactory.listModelsByProvider(LLMProvider.GLM);
     const qwenModels = await LLMFactory.listModelsByProvider(LLMProvider.QWEN);
+    const grokModels = await LLMFactory.listModelsByProvider(LLMProvider.GROK);
 
     const gpt55 = openaiModels.find((model) => model.model_identifier === 'gpt-5.5');
     expect(gpt55).toMatchObject({
@@ -233,6 +234,24 @@ describe('LLMFactory metadata resolution', () => {
     expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2-thinking');
     expect(glmModels.map((model) => model.model_identifier)).not.toContain('glm-5.1');
     expect(qwenModels.find((model) => model.model_identifier === 'qwen3-max')?.max_context_tokens).toBe(262144);
+    expect(grokModels).toHaveLength(1);
+    expect(grokModels[0]).toMatchObject({
+      model_identifier: 'grok-4.5',
+      display_name: 'grok-4.5',
+      value: 'grok-4.5',
+      canonical_name: 'grok-4.5',
+      provider_type: LLMProvider.GROK,
+      max_context_tokens: 500000,
+    });
+    expect(grokModels[0]?.max_output_tokens).toBeNull();
+    expect(grokModels[0]?.config_schema).toMatchObject({
+      properties: {
+        reasoning_effort: {
+          default: 'high',
+          enum: ['low', 'medium', 'high'],
+        },
+      },
+    });
     expect(mockFetch).not.toHaveBeenCalled();
   });
 

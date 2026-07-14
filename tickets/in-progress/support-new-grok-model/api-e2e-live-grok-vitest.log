@@ -1,0 +1,48 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/support-new-grok-model/autobyteus-ts
+
+stdout | tests/integration/llm/api/grok-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ❯ tests/integration/llm/api/grok-llm.test.ts (2 tests | 2 failed) 527ms
+     × should successfully make a simple completion call 332ms
+     × should stream response incrementally 195ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should successfully make a simple completion call
+Error: Error in API request: Error: 403 "The model grok-4.5 is not available in your region."
+ ❯ GrokLLM._sendMessagesToLLM src/llm/api/openai-compatible-llm.ts:133:13
+    131|       });
+    132|     } catch (e) {
+    133|       throw new Error(`Error in API request: ${e}`);
+       |             ^
+    134|     }
+    135|   }
+ ❯ tests/integration/llm/api/grok-llm.test.ts:25:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
+Error: Error in API streaming: Error: 403 "The model grok-4.5 is not available in your region."
+ ❯ GrokLLM._streamMessagesToLLM src/llm/api/openai-compatible-llm.ts:182:13
+    180| 
+    181|     } catch (e) {
+    182|       throw new Error(`Error in API streaming: ${e}`);
+       |             ^
+    183|     }
+    184|   }
+ ❯ GrokLLM._streamMessagesToLLM src/llm/api/grok-llm.ts:120:5
+ ❯ GrokLLM._streamUserMessageToLLM src/llm/base.ts:180:22
+ ❯ tests/integration/llm/api/grok-llm.test.ts:43:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  12:41:04
+   Duration  838ms (transform 101ms, setup 26ms, import 196ms, tests 527ms, environment 0ms)
+

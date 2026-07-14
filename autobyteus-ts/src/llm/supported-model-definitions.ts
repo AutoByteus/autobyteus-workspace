@@ -178,6 +178,17 @@ const glmSchema = new ParameterSchema([
   })
 ]);
 
+const grokReasoningSchema = new ParameterSchema([
+  new ParameterDefinition({
+    name: 'reasoning_effort',
+    type: ParameterType.ENUM,
+    description: 'Controls Grok 4.5 reasoning effort. Reasoning is always enabled.',
+    required: false,
+    defaultValue: 'high',
+    enumValues: ['low', 'medium', 'high']
+  })
+]);
+
 export const supportedModelDefinitions: SupportedModelDefinition[] = [
   ...([
     ['gpt-5.6-sol', 5.0, 30.0],
@@ -236,20 +247,19 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.4, 2.0) })
   },
   {
-    name: 'grok-4.3',
-    value: 'grok-4.3',
+    name: 'grok-4.5',
+    value: 'grok-4.5',
     provider: LLMProvider.GROK,
     llmClass: GrokLLM,
-    canonicalName: 'grok-4.3',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.25, 2.5, { cachedInputReadTokenPricing: 0.2 }) })
-  },
-  {
-    name: 'grok-build-0.1',
-    value: 'grok-build-0.1',
-    provider: LLMProvider.GROK,
-    llmClass: GrokLLM,
-    canonicalName: 'grok-build-0.1',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.0, 2.0, { cachedInputReadTokenPricing: 0.2 }) })
+    canonicalName: 'grok-4.5',
+    defaultConfig: new LLMConfig({
+      extraParams: { reasoning_effort: 'high' },
+      pricingConfig: pricing(2.0, 6.0, {
+        pricingEffectiveDate: '2026-07-08',
+        cachedInputReadTokenPricing: 0.5,
+      }),
+    }),
+    configSchema: grokReasoningSchema,
   },
   {
     name: 'claude-fable-5',
