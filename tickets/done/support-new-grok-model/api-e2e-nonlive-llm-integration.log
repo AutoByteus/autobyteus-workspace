@@ -143,7 +143,7 @@ stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models 
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels replaces old models with new ones on success
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels replaces old models with new ones on success
 Discovering Autobyteus models from host: https://192.168.2.142:51739
@@ -182,7 +182,7 @@ stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models 
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels preserves existing provider models when fetch fails
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels preserves existing provider models when fetch fails
 Discovering Autobyteus models from host: https://192.168.2.142:51739
@@ -224,7 +224,7 @@ stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models 
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels repopulates the requested Ollama bucket for vendor-keyword model names
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels repopulates the requested Ollama bucket for vendor-keyword model names
 Discovering Autobyteus models from host: https://192.168.2.142:51739
@@ -263,7 +263,7 @@ stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models 
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels leaves unsupported providers unchanged
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels leaves unsupported providers unchanged
 Discovering Autobyteus models from host: https://192.168.2.142:51739
@@ -302,7 +302,7 @@ AssertionError: expected { Object (role, content, ...) } to deeply equal { Objec
       "video.mp4",
 
  ❯ tests/integration/llm/utils/messages.test.ts:14:18
-     12| 
+     12|
      13|     const dict = msg.toDict();
      14|     expect(dict).toEqual({
        |                  ^
@@ -316,4 +316,3 @@ AssertionError: expected { Object (role, content, ...) } to deeply equal { Objec
       Tests  1 failed | 26 passed (27)
    Start at  12:42:08
    Duration  11.26s (transform 1.34s, setup 431ms, import 2.46s, tests 10.44s, environment 1ms)
-

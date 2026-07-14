@@ -28,7 +28,7 @@ Error: Error in API request: Error: 403 "The model grok-4.5 is not available in 
  FAIL  tests/integration/llm/api/grok-llm.test.ts > GrokLLM Integration > should stream response incrementally
 Error: Error in API streaming: Error: 403 "The model grok-4.5 is not available in your region."
  ❯ GrokLLM._streamMessagesToLLM src/llm/api/openai-compatible-llm.ts:182:13
-    180| 
+    180|
     181|     } catch (e) {
     182|       throw new Error(`Error in API streaming: ${e}`);
        |             ^
@@ -45,4 +45,3 @@ Error: Error in API streaming: Error: 403 "The model grok-4.5 is not available i
       Tests  2 failed (2)
    Start at  12:41:04
    Duration  838ms (transform 101ms, setup 26ms, import 196ms, tests 527ms, environment 0ms)
-

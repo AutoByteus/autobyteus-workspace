@@ -397,7 +397,7 @@ stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 
 stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 
 stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers synced provider-backed models and can instantiate an endpoint-aware LLM
 Discovering Autobyteus models from host: https://192.168.2.142:51739
@@ -415,4 +415,3 @@ Finished Autobyteus discovery. Total models registered: 74
       Tests  280 passed (280)
    Start at  12:41:55
    Duration  5.32s (transform 2.82s, setup 855ms, import 10.08s, tests 4.41s, environment 4ms)
-

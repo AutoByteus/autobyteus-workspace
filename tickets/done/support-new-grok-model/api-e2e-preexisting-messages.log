@@ -31,7 +31,7 @@ AssertionError: expected { Object (role, content, ...) } to deeply equal { Objec
       "video.mp4",
 
  ❯ tests/integration/llm/utils/messages.test.ts:14:18
-     12| 
+     12|
      13|     const dict = msg.toDict();
      14|     expect(dict).toEqual({
        |                  ^
@@ -45,4 +45,3 @@ AssertionError: expected { Object (role, content, ...) } to deeply equal { Objec
       Tests  1 failed (1)
    Start at  12:42:55
    Duration  132ms (transform 26ms, setup 25ms, import 16ms, tests 5ms, environment 0ms)
-
