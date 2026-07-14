@@ -22,7 +22,7 @@ describe('supportedModelDefinitions', () => {
         'claude-fable-5',
         'claude-opus-4.8',
         'claude-sonnet-5',
-        'grok-4.3',
+        'grok-4.5',
         'kimi-k2.7-code',
         'kimi-k2.7-code-highspeed',
         'qwen3-max',
@@ -149,8 +149,14 @@ describe('supportedModelDefinitions', () => {
     await expect(LLMFactory.getModelPricingInfo({ modelIdentifier: 'claude-opus-4.8', modelProvider: LLMProvider.ANTHROPIC }))
       .resolves.toMatchObject({ input_price_per_million: 5, output_price_per_million: 25 });
 
-    await expect(LLMFactory.getModelPricingInfo({ modelIdentifier: 'grok-4.3', modelProvider: LLMProvider.GROK }))
-      .resolves.toMatchObject({ input_price_per_million: 1.25, output_price_per_million: 2.5, cached_input_read_price_per_million: 0.2 });
+    await expect(LLMFactory.getModelPricingInfo({ modelIdentifier: 'grok-4.5', modelProvider: LLMProvider.GROK }))
+      .resolves.toMatchObject({
+        pricing_status: 'trusted',
+        pricing_source: 'autobyteus_model_catalog',
+        input_price_per_million: 2,
+        output_price_per_million: 6,
+        cached_input_read_price_per_million: 0.5,
+      });
 
     await expect(LLMFactory.getModelPricingInfo({ modelIdentifier: 'kimi-k2.7-code', modelProvider: LLMProvider.KIMI }))
       .resolves.toMatchObject({ input_price_per_million: 0.95, output_price_per_million: 4, cached_input_read_price_per_million: 0.19 });
@@ -311,8 +317,7 @@ describe('supportedModelDefinitions', () => {
       'claude-fable-5',
       'claude-opus-4.8',
       'claude-sonnet-5',
-      'grok-4.3',
-      'grok-build-0.1',
+      'grok-4.5',
       'minimax-m3',
       'qwen3.7-max',
     ]));
@@ -322,7 +327,41 @@ describe('supportedModelDefinitions', () => {
     expect(values).toContain('MiniMax-M3');
     expect(names).not.toContain('claude-haiku-4.5');
     expect(names).not.toContain('claude-sonnet-4.8');
+    expect(names).not.toContain('grok-4.3');
+    expect(names).not.toContain('grok-build-0.1');
     expect(names).not.toContain('grok-4-1-fast-reasoning');
     expect(names).not.toContain('grok-code-fast-1');
+  });
+
+  it('exposes only Grok 4.5 with the provider reasoning contract', async () => {
+    const grokDefinitions = supportedModelDefinitions.filter((definition) => definition.provider === LLMProvider.GROK);
+    expect(grokDefinitions.map((definition) => definition.name)).toEqual(['grok-4.5']);
+    expect(grokDefinitions[0]).toMatchObject({
+      name: 'grok-4.5',
+      value: 'grok-4.5',
+      canonicalName: 'grok-4.5',
+    });
+    expect(grokDefinitions[0]?.defaultConfig).toMatchObject({
+      extraParams: { reasoning_effort: 'high' },
+    });
+    expect(grokDefinitions[0]?.configSchema?.toJsonSchema()).toMatchObject({
+      properties: {
+        reasoning_effort: {
+          default: 'high',
+          enum: ['low', 'medium', 'high'],
+        },
+      },
+    });
+    expect(grokDefinitions[0]?.defaultConfig?.pricingConfig.pricingEffectiveDate).toBe('2026-07-08');
+    expect(await LLMFactory.getModelPricingInfo({
+      modelIdentifier: 'grok-4.5',
+      modelProvider: LLMProvider.GROK,
+    })).toMatchObject({
+      input_price_per_million: 2,
+      output_price_per_million: 6,
+      cached_input_read_price_per_million: 0.5,
+    });
+    await expect(LLMFactory.createLLM('grok-4.3')).rejects.toThrow("Model with identifier 'grok-4.3' not found.");
+    await expect(LLMFactory.createLLM('grok-build-0.1')).rejects.toThrow("Model with identifier 'grok-build-0.1' not found.");
   });
 });

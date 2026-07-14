@@ -1,0 +1,35 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/support-new-grok-model/autobyteus-ts
+
+stdout | tests/unit/llm/supported-model-definitions.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/llm/llm-factory-metadata-resolution.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/openai-compatible-request-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/grok-llm.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (4) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/api/openai-compatible-request-builder.test.ts (2 tests) 3ms
+ ✓ tests/unit/llm/api/grok-llm.test.ts (2 tests) 6ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (10 tests) 7ms
+stderr | tests/integration/llm/llm-factory-metadata-resolution.test.ts > LLMFactory metadata resolution > falls back to curated metadata when a resolver-backed provider metadata call times out during initialization
+Failed to resolve model metadata for provider GEMINI: metadata load timed out after 10ms for provider GEMINI
+
+ ✓ tests/integration/llm/llm-factory-metadata-resolution.test.ts (4 tests) 30ms
+
+ Test Files  4 passed (4)
+      Tests  18 passed (18)
+   Start at  12:41:13
+   Duration  749ms (transform 719ms, setup 97ms, import 1.50s, tests 46ms, environment 0ms)
