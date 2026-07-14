@@ -14,7 +14,6 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from "../../../src/config/featured-catalog-items-setting.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
-  AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
   AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
   ServerSettingsService,
 } from "../../../src/services/server-settings-service.js";
@@ -34,17 +33,14 @@ const readTemplate = async (templateDirName: string, fileName: string): Promise<
 describe("BuiltInAgentBootstrapper", () => {
   let tempDataDir: string;
   let previousFeaturedSetting: string | undefined;
-  let previousCompactorSetting: string | undefined;
   let previousSkillImproverSetting: string | undefined;
   let previousAgentPackageRoots: string | undefined;
 
   beforeEach(async () => {
     previousFeaturedSetting = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
-    previousCompactorSetting = process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     previousSkillImproverSetting = process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID];
     previousAgentPackageRoots = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
     delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
-    delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     delete process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID];
     process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = "";
     appConfigProvider.resetForTests();
@@ -58,11 +54,6 @@ describe("BuiltInAgentBootstrapper", () => {
       delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     } else {
       process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY] = previousFeaturedSetting;
-    }
-    if (previousCompactorSetting === undefined) {
-      delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
-    } else {
-      process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID] = previousCompactorSetting;
     }
     if (previousSkillImproverSetting === undefined) {
       delete process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID];
@@ -108,7 +99,7 @@ describe("BuiltInAgentBootstrapper", () => {
     return item as T["builtInAgents"][number];
   };
 
-  it("syncs registry-defined built-ins and initializes blank built-in settings", async () => {
+  it("syncs registry-defined built-ins and initializes only declared built-in settings", async () => {
     const services = createServices();
 
     const result = await bootstrapBuiltInAgents(services);
@@ -126,7 +117,7 @@ describe("BuiltInAgentBootstrapper", () => {
       syncedAgentConfig: true,
       syncedSkills: true,
       resolved: true,
-      initializedSetting: true,
+      initializedSetting: false,
     });
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       agentDefinitionId: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
@@ -153,9 +144,6 @@ describe("BuiltInAgentBootstrapper", () => {
     });
     await expect(fs.stat(dailyAssistantAgentDir())).rejects.toMatchObject({ code: "ENOENT" });
     expect(services.serverSettingsService.getFeaturedCatalogItemsSettingValue()).toBeNull();
-    expect(services.serverSettingsService.getCompactionAgentDefinitionId()).toBe(
-      MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-    );
     expect(services.serverSettingsService.getSkillImprovementDefaultImproverAgentDefinitionId()).toBe(
       RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     );
@@ -194,10 +182,6 @@ describe("BuiltInAgentBootstrapper", () => {
   it("preserves existing built-in settings and leaves featured settings untouched", async () => {
     const services = createServices();
     services.serverSettingsService.updateSetting(
-      AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-      "custom-memory-compactor",
-    );
-    services.serverSettingsService.updateSetting(
       AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
       "custom-retrospective-skill-improver",
     );
@@ -212,9 +196,6 @@ describe("BuiltInAgentBootstrapper", () => {
       resolved: true,
       initializedSetting: false,
     });
-    expect(services.serverSettingsService.getCompactionAgentDefinitionId()).toBe(
-      "custom-memory-compactor",
-    );
     expect(services.serverSettingsService.getSkillImprovementDefaultImproverAgentDefinitionId()).toBe(
       "custom-retrospective-skill-improver",
     );
@@ -265,7 +246,7 @@ describe("BuiltInAgentBootstrapper", () => {
       syncedAgentConfig: true,
       syncedSkills: true,
       resolved: true,
-      initializedSetting: true,
+      initializedSetting: false,
     });
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       syncedAgentMd: true,
@@ -360,11 +341,8 @@ describe("BuiltInAgentBootstrapper", () => {
       syncedAgentConfig: true,
       syncedSkills: true,
       resolved: true,
-      initializedSetting: true,
+      initializedSetting: false,
     });
-    expect(services.serverSettingsService.getCompactionAgentDefinitionId()).toBe(
-      MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-    );
     await expect(fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
       await readTemplate("memory-compactor", "agent.md"),
     );

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WorkingContextSnapshot } from '../../../src/memory/working-context-snapshot.js';
+import { WorkingContext } from '../../../src/memory/working-context.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotBootstrapper, WorkingContextSnapshotBootstrapOptions } from '../../../src/memory/restore/working-context-snapshot-bootstrapper.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
@@ -20,7 +20,7 @@ describe('WorkingContextSnapshot restore integration', () => {
   it('uses cache when valid', () => {
     const tempDir = makeTempDir();
     try {
-      const snapshot = new WorkingContextSnapshot();
+      const snapshot = new WorkingContext();
       snapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
       snapshot.appendMessage(new Message(MessageRole.USER, { content: 'Hello' }));
 
@@ -104,7 +104,7 @@ describe('WorkingContextSnapshot restore integration', () => {
         'utf-8'
       );
 
-      const staleSnapshot = new WorkingContextSnapshot();
+      const staleSnapshot = new WorkingContext();
       staleSnapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
       staleSnapshot.appendMessage(new Message(MessageRole.USER, { content: 'Stale semantic-derived context' }));
       snapshotStore.write('agent_schema_reset', WorkingContextSnapshotSerializer.serialize(staleSnapshot, {
@@ -127,7 +127,7 @@ describe('WorkingContextSnapshot restore integration', () => {
         throw new Error('Expected rebuilt snapshot payload to be persisted after schema reset.');
       }
       expect(WorkingContextSnapshotSerializer.validate(rebuiltPayload)).toBe(true);
-      const { snapshot: rebuiltSnapshot } = WorkingContextSnapshotSerializer.deserialize(rebuiltPayload);
+      const { workingContext: rebuiltSnapshot } = WorkingContextSnapshotSerializer.deserialize(rebuiltPayload);
       const rebuiltMessages = rebuiltSnapshot.buildMessages();
       expect(rebuiltMessages).toHaveLength(1);
       expect(rebuiltMessages[0]?.role).toBe(MessageRole.SYSTEM);

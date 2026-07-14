@@ -79,6 +79,9 @@ describe('AgentConfig', () => {
     clone.skills.push('skill-b');
     expect(config.skills).toEqual(['skill-a']);
     expect(clone.skillAccessMode).toBe(config.skillAccessMode);
+    expect(config).not.toHaveProperty('memoryCompactionStrategyId');
+    expect(clone).not.toHaveProperty('memoryCompactionStrategyId');
+    expect(config).not.toHaveProperty('compactionStrategyId');
   });
 
   it('defaults skillAccessMode to PRELOADED_ONLY when skills are configured', () => {

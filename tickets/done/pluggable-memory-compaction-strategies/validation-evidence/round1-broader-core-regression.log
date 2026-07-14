@@ -1,0 +1,596 @@
+=== broader core memory/runtime regression ===
+UTC 2026-07-13T18:53:41Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-ts
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_7667'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_7667'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_5503'. Total registered contexts: 1
+
+·stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_5503'.
+
+·stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'agent_restore'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'agent_restore': No tools provided in config.
+Agent 'agent_restore': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'agent_restore'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'agent_restore' with config: 'RestoreAgent'.
+AgentWorker initialized for agent_id 'agent_restore'.
+Registered AgentContext for agent_id 'agent_restore'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'agent_restore'. Context registered.
+Agent facade initialized for agent_id 'agent_restore'.
+Agent 'agent_restore' restored and stored successfully.
+Agent 'agent_restore' requesting runtime to start.
+AgentRuntime for 'agent_restore': Starting worker.
+AgentWorker 'agent_restore': Starting...
+AgentWorker 'agent_restore' asyncRun(): Starting.
+Agent 'agent_restore': Runtime init completed (event store initialized).
+Agent 'agent_restore': Runtime init completed (status deriver initialized).
+Agent 'agent_restore': Runtime init completed (AgentEventInbox initialized).
+Agent 'agent_restore': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore': Bootstrapper starting direct lifecycle execution.
+Agent 'agent_restore': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'agent_restore': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'agent_restore': Executing SystemPromptProcessingStep.
+Agent 'agent_restore': No configured skills. Skipping injection.
+Agent 'agent_restore': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'agent_restore': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentWorker 'agent_restore' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_restore',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentWorker 'agent_restore': Stop requested.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 59c09abd-1d65-4f32-9832-3a427c71732e, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentWorker 'agent_restore' asyncRun() loop has finished.
+AgentWorker 'agent_restore': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentWorker 'agent_restore': Shutdown resource cleanup completed successfully.
+AgentWorker 'agent_restore': Shutdown sequence completed.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Unregistered AgentContext for agent_id 'agent_restore'.
+AgentRuntime for 'agent_restore': Context unregistered.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentRuntime for 'agent_restore' stop() method completed.
+
+·stdout | tests/unit/memory/memory-manager.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···················stdout | tests/unit/memory/run-memory-file-store.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+·····stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+Successfully registered tool definition: 'read_file'
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'tool-lifecycle-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'tool-lifecycle-agent'. Config and State linked.
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'tool-lifecycle-agent',
+  prompt_tokens: 200,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrjkz6cq_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_started {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'started',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrjkz6cq_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+compaction_execution_context {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrjkz6cq_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  pending_compaction: true,
+  selected_unit_count: 3,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 5,
+  working_context_message_count: 9,
+  raw_trace_count: 1
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_result_summary {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrjkz6cq_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  compacted_block_count: 3,
+  raw_trace_count: 1,
+  episodic_summary_length: 48,
+  semantic_fact_count: 1,
+  compaction_agent_definition_id: null,
+  compaction_agent_name: null,
+  compaction_runtime_kind: null,
+  compaction_model_identifier: null,
+  compaction_run_id: null,
+  compaction_task_id: 'compaction_task_776f95e1a10246b5a37a446fcf27c133'
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_completed {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'completed',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrjkz6cq_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 3,
+  compacted_block_count: 3,
+  raw_trace_count: 1,
+  semantic_fact_count: 1,
+  compaction_agent_definition_id: null,
+  compaction_agent_name: null,
+  compaction_runtime_kind: null,
+  compaction_model_identifier: null,
+  compaction_run_id: null,
+  compaction_task_id: 'compaction_task_776f95e1a10246b5a37a446fcf27c133'
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_budget_evaluated {
+  agent_id: 'tool-lifecycle-agent',
+  prompt_tokens: 10,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: false
+}
+
+·stdout | tests/unit/memory/file-store.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+········stdout | tests/unit/memory/raw-trace-archive-manager.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+····stdout | tests/unit/agent/llm-request-assembler.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+····stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AgentRuntimeState initialized for agent_id 'agent_resume_repair'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_resume_repair'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_resume_repair',
+  turn_id: 'turn_after_restart',
+  reason: 'missing_usage'
+}
+
+·stdout | tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···stdout | tests/unit/memory/pending-compaction-executor.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+·······stdout | tests/unit/memory/structured-json-compaction-strategy.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···stdout | tests/integration/memory/working-context-snapshot-restore.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···stdout | tests/unit/memory/working-context-compaction-strategy-registry.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+······stdout | tests/unit/agent/factory/agent-factory.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > initializes without legacy dependencies
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > does not expose a default turn-control handler registry
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > creates agents and stores them
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'factorytestagent_factory_tester_2909'.
+Agent 'factorytestagent_factory_tester_2909' created and stored successfully.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > rejects invalid config types
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > prepares tool instances by name
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > warns and overwrites duplicate tool names
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > populates runtime state with LLM and tools
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'test-runtime-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test-runtime-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'test-runtime-agent'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test-runtime-agent' with config: 'FactoryTestAgent'.
+AgentWorker initialized for agent_id 'test-runtime-agent'.
+Registered AgentContext for agent_id 'test-runtime-agent'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test-runtime-agent'. Context registered.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > restores agents with existing id
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'restored-agent'.
+Agent 'restored-agent' restored and stored successfully.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > treats explicit config memoryDir as a leaf directory without team metadata branching
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'explicit-memory-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'explicit-memory-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'explicit-memory-agent'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'explicit-memory-agent' with config: 'FactoryTestAgent'.
+AgentWorker initialized for agent_id 'explicit-memory-agent'.
+Registered AgentContext for agent_id 'explicit-memory-agent'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'explicit-memory-agent'. Context registered.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > keeps stopping agents known to removal but non-routable until stop completes
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'stopping-agent'.
+Agent 'stopping-agent' created and stored successfully.
+Removing agent 'stopping-agent'. Attempting graceful shutdown.
+Agent 'stopping-agent' requesting runtime to stop (timeout: 10s).
+Agent 'stopping-agent' is already stopping. Awaiting existing shutdown.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > retains a non-routable stopping entry when graceful stop fails
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'failing-stop-agent'.
+Agent 'failing-stop-agent' created and stored successfully.
+Removing agent 'failing-stop-agent'. Attempting graceful shutdown.
+Agent 'failing-stop-agent' requesting runtime to stop (timeout: 10s).
+
+···········stdout | tests/unit/memory/working-context-snapshot-bootstrapper.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···stdout | tests/unit/memory/compacted-memory-schema-gate.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···stdout | tests/unit/memory/working-context-snapshot-store.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+··stdout | tests/unit/memory/memory-tool-continuation-reasoning.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+·stdout | tests/unit/agent/context/agent-config.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > uses default system prompt processors when not in api_tool_call format
+AgentConfig created for name='name', role='role'. Tool call format: xml
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > filters tool manifest injector in api_tool_call format
+AgentConfig created for name='name', role='role'. Tool call format: api_tool_call
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > copy creates a new config with cloned lists and data
+AgentConfig created for name='name', role='role'. Tool call format: xml
+AgentConfig created for name='name', role='role'. Tool call format: xml
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when skills are configured
+AgentConfig created for name='name', role='role'. Tool call format: api_tool_call
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when no skills are configured
+AgentConfig created for name='name', role='role'. Tool call format: api_tool_call
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > respects explicit skillAccessMode
+AgentConfig created for name='name', role='role'. Tool call format: api_tool_call
+
+·······stdout | tests/unit/memory/working-context-compaction-output-validator.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+··············stdout | tests/unit/memory/working-context-message-window-planner.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+·····stdout | tests/unit/memory/agent-compaction-summarizer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···stdout | tests/unit/memory/retriever.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+·stdout | tests/unit/memory/tool-interaction-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+·····stdout | tests/unit/memory/working-context-snapshot-serializer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+····stdout | tests/unit/memory/compaction-result-normalizer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+··stdout | tests/unit/memory/working-context-compaction-prompt-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+·····stdout | tests/unit/memory/working-context.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+··stdout | tests/unit/memory/compacted-memory-context-projector.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+··stdout | tests/unit/memory/raw-trace-item.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···stdout | tests/unit/memory/working-context-tool-protocol-repairer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···stdout | tests/unit/memory/compaction-response-parser.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+··stdout | tests/unit/memory/tool-trace-lifecycle-index.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+··stdout | tests/unit/memory/path-resolver.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+····stdout | tests/unit/memory/compaction-runtime-settings.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+··stdout | tests/unit/memory/turn-tracker.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+··stdout | tests/unit/memory/compaction-policy.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+···
+
+ Test Files  38 passed (38)
+      Tests  158 passed (158)
+   Start at  20:53:41
+   Duration  6.61s (transform 974ms, setup 295ms, import 2.61s, tests 667ms, environment 3ms)
+

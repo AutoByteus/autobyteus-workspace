@@ -1,0 +1,201 @@
+## PMCS-E2E-008 absent/default live API startup
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies
+data_dir=/tmp/pmcs-round3-data.umhIlZ
+server=http://127.0.0.1:59630
+command=curl POST /graphql LiveCompactionSettings
+{
+    "data": {
+        "getWorkingContextCompactionStrategies": [
+            {
+                "id": "structured-json",
+                "name": "Structured JSON"
+            }
+        ],
+        "getEffectiveWorkingContextCompactionStrategyId": "structured-json",
+        "getServerSettings": [
+            {
+                "key": "APP_ENV",
+                "value": "test",
+                "isEditable": true,
+                "isDeletable": true
+            },
+            {
+                "key": "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID",
+                "value": "obsolete-worker-must-remain-inert",
+                "isEditable": true,
+                "isDeletable": true
+            },
+            {
+                "key": "AUTOBYTEUS_MEMORY_DIR",
+                "value": "/tmp/pmcs-round3-data.umhIlZ/memory",
+                "isEditable": true,
+                "isDeletable": true
+            },
+            {
+                "key": "AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID",
+                "value": "autobyteus-retrospective-skill-improver",
+                "isEditable": true,
+                "isDeletable": false
+            },
+            {
+                "key": "AUTOBYTEUS_SERVER_HOST",
+                "value": "http://127.0.0.1:59630",
+                "isEditable": false,
+                "isDeletable": false
+            },
+            {
+                "key": "DATABASE_URL",
+                "value": "file:/tmp/pmcs-round3-data.umhIlZ/db/test.db",
+                "isEditable": true,
+                "isDeletable": true
+            },
+            {
+                "key": "DB_TYPE",
+                "value": "sqlite",
+                "isEditable": true,
+                "isDeletable": true
+            },
+            {
+                "key": "DISABLE_HTTP_REQUEST_LOGS",
+                "value": "false",
+                "isEditable": true,
+                "isDeletable": true
+            },
+            {
+                "key": "LOG_LEVEL",
+                "value": "INFO",
+                "isEditable": true,
+                "isDeletable": true
+            },
+            {
+                "key": "PRISMA_LOG_QUERIES",
+                "value": "0",
+                "isEditable": true,
+                "isDeletable": true
+            }
+        ]
+    }
+}
+## isolated .env after read
+APP_ENV=test
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:59630
+DB_TYPE=sqlite
+LOG_LEVEL=INFO
+PRISMA_LOG_QUERIES=0
+DISABLE_HTTP_REQUEST_LOGS=false
+AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID=obsolete-worker-must-remain-inert
+
+DATABASE_URL=file:/tmp/pmcs-round3-data.umhIlZ/db/test.db
+AUTOBYTEUS_MEMORY_DIR=/tmp/pmcs-round3-data.umhIlZ/memory
+AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID=autobyteus-retrospective-skill-improver## PMCS-E2E-008 restart with explicit unknown current value
+{
+    "data": {
+        "getWorkingContextCompactionStrategies": [
+            {
+                "id": "structured-json",
+                "name": "Structured JSON"
+            }
+        ],
+        "getEffectiveWorkingContextCompactionStrategyId": "removed-strategy-live-recovery"
+    }
+}
+PASS: explicit unknown preserved for UI recovery; fixed catalog unchanged
+
+## PMCS-E2E-008 restart after browser writes/failure
+{
+    "data": {
+        "getEffectiveWorkingContextCompactionStrategyId": "structured-json",
+        "getWorkingContextCompactionStrategies": [
+            {
+                "id": "structured-json",
+                "name": "Structured JSON"
+            }
+        ],
+        "getServerSettings": [
+            {
+                "key": "APP_ENV",
+                "value": "test"
+            },
+            {
+                "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+                "value": "4096"
+            },
+            {
+                "key": "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID",
+                "value": "obsolete-worker-must-remain-inert"
+            },
+            {
+                "key": "AUTOBYTEUS_COMPACTION_DEBUG_LOGS",
+                "value": "true"
+            },
+            {
+                "key": "AUTOBYTEUS_COMPACTION_STRATEGY",
+                "value": "structured-json"
+            },
+            {
+                "key": "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
+                "value": "0.65"
+            },
+            {
+                "key": "AUTOBYTEUS_MEMORY_DIR",
+                "value": "/tmp/pmcs-round3-data.umhIlZ/memory"
+            },
+            {
+                "key": "AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID",
+                "value": "autobyteus-retrospective-skill-improver"
+            },
+            {
+                "key": "AUTOBYTEUS_SERVER_HOST",
+                "value": "http://127.0.0.1:59630"
+            },
+            {
+                "key": "DATABASE_URL",
+                "value": "file:/tmp/pmcs-round3-data.umhIlZ/db/test.db"
+            },
+            {
+                "key": "DB_TYPE",
+                "value": "sqlite"
+            },
+            {
+                "key": "DISABLE_HTTP_REQUEST_LOGS",
+                "value": "false"
+            },
+            {
+                "key": "ENABLE_APPLICATIONS",
+                "value": "false"
+            },
+            {
+                "key": "ENABLE_SKILL_IMPROVEMENT",
+                "value": "false"
+            },
+            {
+                "key": "LOG_LEVEL",
+                "value": "INFO"
+            },
+            {
+                "key": "PRISMA_LOG_QUERIES",
+                "value": "0"
+            }
+        ]
+    }
+}
+PASS: strategy and successful ratio write survived restart; rejected override and unsent logs remained at prior values; stale removed worker setting remained inert
+## isolated .env at lifecycle verification
+APP_ENV=test
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:59630
+DB_TYPE=sqlite
+LOG_LEVEL=INFO
+PRISMA_LOG_QUERIES=0
+DISABLE_HTTP_REQUEST_LOGS=false
+AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID=obsolete-worker-must-remain-inert
+
+DATABASE_URL=file:/tmp/pmcs-round3-data.umhIlZ/db/test.db
+AUTOBYTEUS_MEMORY_DIR=/tmp/pmcs-round3-data.umhIlZ/memory
+AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID=autobyteus-retrospective-skill-improver
+AUTOBYTEUS_COMPACTION_STRATEGY=structured-json
+
+ENABLE_APPLICATIONS=false
+ENABLE_SKILL_IMPROVEMENT=false
+AUTOBYTEUS_COMPACTION_TRIGGER_RATIO=0.65
+AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE=4096
+AUTOBYTEUS_COMPACTION_DEBUG_LOGS=true

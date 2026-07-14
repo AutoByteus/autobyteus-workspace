@@ -4,6 +4,38 @@
 
 This document outlines the end-to-end architecture of how Agent and Agent Team executions are managed in the frontend. The architecture has evolved to offload complex parsing to the backend. The frontend now acts as a **Renderer** of structured events rather than a parser of raw text.
 
+## Server Settings: Working-Context Compaction
+
+Settings -> Server Settings -> Basics contains the global Compaction card. Its
+strategy selector is registry-backed and node-bound:
+
+- `getWorkingContextCompactionStrategies` supplies available `{ id, name }`
+  options from the bound server;
+- `getEffectiveWorkingContextCompactionStrategyId` supplies the normalized ID
+  runtime will attempt and is the card's clean baseline; and
+- generic server settings supply trigger ratio, active-context token override,
+  and detailed-log values.
+
+Absent or blank strategy configuration is returned as effective
+`structured-json` without writing that default merely because the card loaded or
+another field was saved. An explicit unknown ID remains visible as unavailable
+until the user selects a catalog option. Catalog or effective-read failures keep
+strategy selection unavailable and expose Retry rather than guessing from a web
+constant or catalog order.
+
+Save builds a deterministic list of changed valid fields and awaits the existing
+one-setting mutation for each key. It stops on the first failure; prior successful
+writes remain authoritative, while the failed and unsent drafts stay dirty for a
+remaining-only retry. The card never claims transactionality or whole-card
+success after a partial failure. Initial settings-read failure is owned by the
+Server Settings manager and also provides an accessible Retry path.
+
+The Compaction card does not fetch agent definitions or expose a compactor-agent
+selector. `structured-json` uses the server's fixed built-in Memory Compactor and
+inherits its blank runtime/model launch fields from the parent run. The card
+stacks navigation/content and uses full-width controls on narrow screens while
+retaining the desktop sidebar row.
+
 The data flow follows a top-down approach:
 
 1.  **Orchestration Layer (Stores)**: Manages lifecycle, user input, and WebSocket streaming connections.

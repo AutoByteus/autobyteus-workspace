@@ -1,0 +1,205 @@
+## artifacts
+electron-dist
+electron-dist/.DS_Store
+electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.dmg
+electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.dmg.blockmap
+electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.zip
+electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.zip.blockmap
+electron-dist/AutoByteus_personal_macos-arm64-1.4.12.dmg
+electron-dist/AutoByteus_personal_macos-arm64-1.4.12.dmg.blockmap
+electron-dist/AutoByteus_personal_macos-arm64-1.4.12.zip
+electron-dist/AutoByteus_personal_macos-arm64-1.4.12.zip.blockmap
+electron-dist/builder-debug.yml
+electron-dist/latest-mac.yml
+electron-dist/mac-arm64
+electron-dist/mac-arm64/AutoByteus.app
+electron-dist/mac-arm64/AutoByteus.app/Contents
+## app resources
+electron-dist/mac-arm64
+electron-dist/mac-arm64/AutoByteus.app
+electron-dist/mac-arm64/AutoByteus.app/Contents
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app/Contents
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app/Contents
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework
+electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions
+electron-dist/mac-arm64/AutoByteus.app/Contents/Info.plist
+electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS
+electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+electron-dist/mac-arm64/AutoByteus.app/Contents/PkgInfo
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/af.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/am.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app-update.yml
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar.unpacked
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ar.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/bg.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/bn.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ca.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/cs.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/da.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/de.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/el.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/en.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/en_GB.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/es.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/es_419.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/et.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/fa.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/fi.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/fil.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/fr.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/gu.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/he.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/hi.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/hr.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/hu.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icon.icns
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/1024x1024.png
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/128x128.png
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/16x16.png
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/256x256.png
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/32x32.png
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/48x48.png
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/512x512.png
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/64x64.png
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/icon.icns
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/icons/icon.ico
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/id.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/it.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ja.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/kn.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ko.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/lt.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/lv.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ml.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/mr.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ms.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/nb.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/nl.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/pl.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/pt_BR.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/pt_PT.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ro.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ru.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/.env.example
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/AGENTS.md
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/README.md
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/autobyteus-web
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/canuse-ok.txt
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/docker
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/docs
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/external-channel
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/package.json
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/scripts
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/src
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tickets
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tsconfig.build.json
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tsconfig.json
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/vitest.config.ts
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/sk.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/sl.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/sr.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/sv.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/sw.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ta.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/te.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/th.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/tr.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/uk.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/ur.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/vi.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/zh_CN.lproj
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/zh_TW.lproj
+## sizes and hashes
+-rw-r--r--@ 1 normy  staff   383M Jul 14 13:26 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.dmg
+-rw-r--r--@ 1 normy  staff   379M Jul 14 13:28 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.zip
+440bf48bd050ff3fa2fa0707b9bbe429912f33716bc2d473843964f37463ac59  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.dmg
+c14208b94cb8bdd3229c4f08e54956d51fa467ebad4f29af991115a51689a938  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.zip
+## server compiled source/deploy/package hashes
+188df1ea72fa4d849bbf9d9608c88ac3309b0c38c7e20a99a9d7d9eea3a643cc  ../autobyteus-server-ts/dist/services/server-settings-service.js
+188df1ea72fa4d849bbf9d9608c88ac3309b0c38c7e20a99a9d7d9eea3a643cc  resources/server/dist/services/server-settings-service.js
+188df1ea72fa4d849bbf9d9608c88ac3309b0c38c7e20a99a9d7d9eea3a643cc  electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/services/server-settings-service.js
+d7fc1132d4356fc2601a4ff4bdc5fdb2d4159c632ae1e4a3e398afc3e8da61ca  ../autobyteus-server-ts/dist/agent-execution/compaction/memory-compactor-agent-launch-resolver.js
+d7fc1132d4356fc2601a4ff4bdc5fdb2d4159c632ae1e4a3e398afc3e8da61ca  resources/server/dist/agent-execution/compaction/memory-compactor-agent-launch-resolver.js
+d7fc1132d4356fc2601a4ff4bdc5fdb2d4159c632ae1e4a3e398afc3e8da61ca  electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/compaction/memory-compactor-agent-launch-resolver.js
+## packaged server required authority
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/services/server-settings-service.js:210:    getEffectiveWorkingContextCompactionStrategyId() {
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/built-in-agents/built-in-agent-registry.js:2:export const MEMORY_COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/working-context-compaction-strategy.js:30:    getWorkingContextCompactionStrategies() {
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/working-context-compaction-strategy.js:35:    getEffectiveWorkingContextCompactionStrategyId() {
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/working-context-compaction-strategy.js:36:        return getServerSettingsService().getEffectiveWorkingContextCompactionStrategyId();
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/working-context-compaction-strategy.js:44:], WorkingContextCompactionStrategyResolver.prototype, "getWorkingContextCompactionStrategies", null);
+electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/working-context-compaction-strategy.js:50:], WorkingContextCompactionStrategyResolver.prototype, "getEffectiveWorkingContextCompactionStrategyId", null);
+## rejected server symbols absent
+PASS
+## asar inventory
+## asar inventory summary
+/node_modules/@antfu/install-pkg/package.json
+/node_modules/@braintree/sanitize-url/package.json
+/node_modules/@chevrotain/cst-dts-gen/package.json
+/node_modules/@chevrotain/gast/package.json
+/node_modules/@chevrotain/regexp-to-ast/package.json
+/node_modules/@chevrotain/types/package.json
+/node_modules/@chevrotain/utils/package.json
+/node_modules/@fortawesome/fontawesome-common-types/package.json
+/node_modules/@fortawesome/fontawesome-svg-core/package.json
+/node_modules/@fortawesome/free-solid-svg-icons/package.json
+/node_modules/@fortawesome/vue-fontawesome/package.json
+/node_modules/@iconify/types/package.json
+/node_modules/@iconify/utils/package.json
+/node_modules/@iconify/vue/offline/package.json
+/node_modules/@iconify/vue/package.json
+/node_modules/@isaacs/fs-minipass/dist/commonjs/package.json
+/node_modules/@isaacs/fs-minipass/dist/esm/package.json
+/node_modules/@isaacs/fs-minipass/package.json
+/node_modules/@kurkle/color/package.json
+/node_modules/@mdit/helper/package.json
+/node_modules/@mdit/plugin-katex/package.json
+/node_modules/@mdit/plugin-tex/package.json
+/node_modules/@mermaid-js/parser/package.json
+/node_modules/@napi-rs/canvas/package.json
+/node_modules/@napi-rs/canvas-darwin-arm64/package.json
+/node_modules/@nuxt/schema/package.json
+/node_modules/@vue/devtools-api/package.json
+/node_modules/@vue/shared/package.json
+/node_modules/@xterm/addon-fit/package.json
+/node_modules/@xterm/xterm/package.json
+/node_modules/acorn/package.json
+/node_modules/adler-32/package.json
+/node_modules/ansi-regex/package.json
+/node_modules/ansi-styles/package.json
+/node_modules/argparse/package.json
+/node_modules/asynckit/package.json
+/node_modules/axios/package.json
+/node_modules/base64-arraybuffer/package.json
+/node_modules/builder-util-runtime/package.json
+/node_modules/call-bind-apply-helpers/package.json
+asar_entries=12746
+PASS: renderer/main/preload present in app.asar
+## rejected renderer symbols absent in built renderer
+PASS
+## current compaction UI strings in built renderer
+dist/renderer/_nuxt/entry.D_d1lNO7.js
+PACKAGE_INTEGRITY=PASS

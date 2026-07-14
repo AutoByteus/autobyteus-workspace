@@ -1,8 +1,14 @@
 <template>
-  <div class="flex h-full bg-white">
+  <div
+    class="flex h-full min-w-0 flex-col bg-white md:flex-row"
+    data-testid="settings-page-layout"
+  >
     <!-- Sidebar -->
-    <div class="w-64 border-r border-gray-200 bg-white">
-      <div class="px-4 py-5">
+    <div
+      class="max-h-[38dvh] w-full shrink-0 overflow-y-auto border-b border-gray-200 bg-white md:max-h-none md:w-64 md:border-b-0 md:border-r"
+      data-testid="settings-page-navigation"
+    >
+      <div class="px-2 py-3 sm:px-4 sm:py-4 md:py-5">
         <nav class="w-full">
           <ul class="w-full space-y-2">
             <li class="w-full border-b border-gray-100 pb-2">
@@ -203,7 +209,10 @@
     </div>
 
     <!-- Content section -->
-    <div class="flex-1 overflow-auto bg-white pr-4 pt-4">
+    <div
+      class="min-h-0 min-w-0 flex-1 overflow-auto bg-white p-2 sm:p-3 md:py-4 md:pl-0 md:pr-4"
+      data-testid="settings-page-content"
+    >
       <div class="h-full w-full flex flex-col">
         <ProviderAPIKeyManager v-if="activeSection === 'api-keys'" />
         <TokenUsageStatistics v-if="activeSection === 'token-usage'" />

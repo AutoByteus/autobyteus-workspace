@@ -1,0 +1,1333 @@
+=== reviewer round8 core build ===
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+=== reviewer round8 core focused ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-ts
+
+stdout | tests/unit/memory/raw-trace-archive-manager.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/file-store.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/pending-compaction-executor.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/structured-json-compaction-strategy.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/run-memory-file-store.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/memory-manager.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-compaction-strategy-registry.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/raw-trace-archive-manager.test.ts (4 tests) 14ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts (5 tests) 21ms
+ ✓ tests/unit/memory/file-store.test.ts (8 tests) 20ms
+ ✓ tests/unit/memory/working-context-compaction-strategy-registry.test.ts (6 tests) 10ms
+stdout | tests/integration/memory/working-context-snapshot-restore.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/structured-json-compaction-strategy.test.ts (3 tests) 13ms
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (7 tests) 12ms
+ ✓ tests/unit/memory/memory-manager.test.ts (19 tests) 48ms
+stdout | tests/unit/memory/working-context-snapshot-bootstrapper.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/integration/memory/working-context-snapshot-restore.test.ts (3 tests) 11ms
+stdout | tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-compaction-output-validator.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts (3 tests) 10ms
+stdout | tests/unit/memory/compacted-memory-schema-gate.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts (3 tests) 9ms
+ ✓ tests/unit/memory/compacted-memory-schema-gate.test.ts (3 tests) 8ms
+ ✓ tests/unit/memory/working-context-compaction-output-validator.test.ts (14 tests) 7ms
+stdout | tests/unit/agent/llm-request-assembler.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/memory-tool-continuation-reasoning.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/context/agent-config.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-message-window-planner.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-snapshot-store.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/working-context-snapshot-store.test.ts (2 tests) 5ms
+ ✓ tests/unit/memory/working-context-message-window-planner.test.ts (5 tests) 6ms
+ ✓ tests/unit/agent/llm-request-assembler.test.ts (4 tests) 8ms
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > uses default system prompt processors when not in api_tool_call format
+AgentConfig created for name='name', role='role'. Tool call format: xml
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > filters tool manifest injector in api_tool_call format
+AgentConfig created for name='name', role='role'. Tool call format: api_tool_call
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > copy creates a new config with cloned lists and data
+AgentConfig created for name='name', role='role'. Tool call format: xml
+AgentConfig created for name='name', role='role'. Tool call format: xml
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when skills are configured
+AgentConfig created for name='name', role='role'. Tool call format: api_tool_call
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when no skills are configured
+AgentConfig created for name='name', role='role'. Tool call format: api_tool_call
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > respects explicit skillAccessMode
+AgentConfig created for name='name', role='role'. Tool call format: api_tool_call
+
+ ✓ tests/unit/memory/memory-tool-continuation-reasoning.test.ts (1 test) 8ms
+ ✓ tests/unit/agent/context/agent-config.test.ts (7 tests) 6ms
+stdout | tests/unit/memory/agent-compaction-summarizer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/retriever.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/agent-compaction-summarizer.test.ts (3 tests) 4ms
+ ✓ tests/unit/memory/retriever.test.ts (1 test) 4ms
+stdout | tests/unit/memory/working-context-snapshot-serializer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/tool-interaction-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-result-normalizer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/working-context-snapshot-serializer.test.ts (4 tests) 4ms
+ ✓ tests/unit/memory/compaction-result-normalizer.test.ts (2 tests) 3ms
+ ✓ tests/unit/memory/tool-interaction-builder.test.ts (5 tests) 4ms
+stdout | tests/unit/memory/compacted-memory-context-projector.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/compacted-memory-context-projector.test.ts (2 tests) 3ms
+stdout | tests/unit/memory/working-context-tool-protocol-repairer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/working-context.test.ts (2 tests) 3ms
+ ✓ tests/unit/memory/working-context-tool-protocol-repairer.test.ts (3 tests) 3ms
+stdout | tests/unit/memory/raw-trace-item.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/working-context-compaction-prompt-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/raw-trace-item.test.ts (3 tests) 3ms
+ ✓ tests/unit/memory/working-context-compaction-prompt-builder.test.ts (5 tests) 3ms
+stdout | tests/unit/memory/tool-trace-lifecycle-index.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-response-parser.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AgentRuntimeState initialized for agent_id 'agent_resume_repair'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_resume_repair'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_resume_repair',
+  turn_id: 'turn_after_restart',
+  reason: 'missing_usage'
+}
+
+ ✓ tests/unit/memory/tool-trace-lifecycle-index.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts (1 test) 10ms
+stdout | tests/unit/memory/path-resolver.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/compaction-response-parser.test.ts (2 tests) 3ms
+ ✓ tests/unit/memory/path-resolver.test.ts (4 tests) 2ms
+stdout | tests/unit/memory/compaction-runtime-settings.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/memory/compaction-policy.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/compaction-runtime-settings.test.ts (2 tests) 3ms
+ ✓ tests/unit/memory/compaction-policy.test.ts (3 tests) 2ms
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+Successfully registered tool definition: 'read_file'
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'tool-lifecycle-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'tool-lifecycle-agent'. Config and State linked.
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'tool-lifecycle-agent',
+  prompt_tokens: 200,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrkjclw3_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_started {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'started',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrkjclw3_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+compaction_execution_context {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrkjclw3_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  pending_compaction: true,
+  selected_unit_count: 3,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 5,
+  working_context_message_count: 9,
+  raw_trace_count: 1
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_result_summary {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrkjclw3_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  compacted_block_count: 3,
+  raw_trace_count: 1,
+  episodic_summary_length: 48,
+  semantic_fact_count: 1,
+  compaction_agent_definition_id: null,
+  compaction_agent_name: null,
+  compaction_runtime_kind: null,
+  compaction_model_identifier: null,
+  compaction_run_id: null,
+  compaction_task_id: 'compaction_task_9a8d44ef542e46adba0b266c7c8b9358'
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_completed {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'completed',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mrkjclw3_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 3,
+  compacted_block_count: 3,
+  raw_trace_count: 1,
+  semantic_fact_count: 1,
+  compaction_agent_definition_id: null,
+  compaction_agent_name: null,
+  compaction_runtime_kind: null,
+  compaction_model_identifier: null,
+  compaction_run_id: null,
+  compaction_task_id: 'compaction_task_9a8d44ef542e46adba0b266c7c8b9358'
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_budget_evaluated {
+  agent_id: 'tool-lifecycle-agent',
+  prompt_tokens: 10,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: false
+}
+
+ ✓ tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts (1 test) 23ms
+stdout | tests/unit/memory/turn-tracker.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/memory/turn-tracker.test.ts (2 tests) 2ms
+stdout | tests/unit/agent/factory/agent-factory.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > initializes without legacy dependencies
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > does not expose a default turn-control handler registry
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > creates agents and stores them
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'factorytestagent_factory_tester_5519'.
+Agent 'factorytestagent_factory_tester_5519' created and stored successfully.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > rejects invalid config types
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > prepares tool instances by name
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > warns and overwrites duplicate tool names
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_1647'. Total registered contexts: 1
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > populates runtime state with LLM and tools
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'test-runtime-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test-runtime-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'test-runtime-agent'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test-runtime-agent' with config: 'FactoryTestAgent'.
+AgentWorker initialized for agent_id 'test-runtime-agent'.
+Registered AgentContext for agent_id 'test-runtime-agent'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test-runtime-agent'. Context registered.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > restores agents with existing id
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'restored-agent'.
+Agent 'restored-agent' restored and stored successfully.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > treats explicit config memoryDir as a leaf directory without team metadata branching
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'explicit-memory-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'explicit-memory-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'explicit-memory-agent'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'explicit-memory-agent' with config: 'FactoryTestAgent'.
+AgentWorker initialized for agent_id 'explicit-memory-agent'.
+Registered AgentContext for agent_id 'explicit-memory-agent'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'explicit-memory-agent'. Context registered.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > keeps stopping agents known to removal but non-routable until stop completes
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'stopping-agent'.
+Agent 'stopping-agent' created and stored successfully.
+Removing agent 'stopping-agent'. Attempting graceful shutdown.
+Agent 'stopping-agent' requesting runtime to stop (timeout: 10s).
+Agent 'stopping-agent' is already stopping. Awaiting existing shutdown.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > retains a non-routable stopping entry when graceful stop fails
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'failing-stop-agent'.
+Agent 'failing-stop-agent' created and stored successfully.
+Removing agent 'failing-stop-agent'. Attempting graceful shutdown.
+Agent 'failing-stop-agent' requesting runtime to stop (timeout: 10s).
+
+ ✓ tests/unit/agent/factory/agent-factory.test.ts (11 tests) 10ms
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_1647'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_1118'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_1118'.
+
+ ✓ tests/integration/agent/runtime/agent-runtime-compaction.test.ts (2 tests) 339ms
+
+ Test Files  37 passed (37)
+      Tests  157 passed (157)
+   Start at  12:55:56
+   Duration  1.78s (transform 3.70s, setup 571ms, import 6.11s, tests 647ms, environment 3ms)
+
+=== reviewer round8 server build ===
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 79ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:95762) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+=== reviewer round8 server focused ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:95775) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts > compaction agent parent runtime/model fallback executable validation > runs parent-triggered memory compaction with an unconfigured built-in compactor using the parent runtime and model
+Registered AgentContext for agent_id 'parent-run-1'. Total registered contexts: 1
+
+stdout | tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts > compaction agent parent runtime/model fallback executable validation > runs parent-triggered memory compaction with an unconfigured built-in compactor using the parent runtime and model
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts > compaction agent parent runtime/model fallback executable validation > runs parent-triggered memory compaction with an unconfigured built-in compactor using the parent runtime and model
+Finished LM Studio discovery. Total models registered: 10
+
+stdout | tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts > compaction agent parent runtime/model fallback executable validation > runs parent-triggered memory compaction with an unconfigured built-in compactor using the parent runtime and model
+Unregistered AgentContext for agent_id 'parent-run-1'.
+
+ ✓ tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts (5 tests) 3887ms
+     ✓ runs parent-triggered memory compaction with an unconfigured built-in compactor using the parent runtime and model  3879ms
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:95779) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-gzIGFr
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated to 'autobyteus-retrospective-skill-improver'
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs registry-defined built-ins and initializes only declared built-in settings
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-wBDaWQ
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated to 'custom-retrospective-skill-improver'
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves existing built-in settings and leaves featured settings untouched
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites stale built-in files for both registry ids and preserves standalone local agents
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-lOhudy
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites stale built-in files for both registry ids and preserves standalone local agents
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites stale built-in files for both registry ids and preserves standalone local agents
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated to 'autobyteus-retrospective-skill-improver'
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites stale built-in files for both registry ids and preserves standalone local agents
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites stale built-in files for both registry ids and preserves standalone local agents
+Agent definition cache populated with 3 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-6g1Zru
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-6g1Zru
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated to 'autobyteus-retrospective-skill-improver'
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites invalid stale Memory Compactor instructions before resolving defaults
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-iNBlK8
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites invalid stale Memory Compactor instructions before resolving defaults
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites invalid stale Memory Compactor instructions before resolving defaults
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated to 'autobyteus-retrospective-skill-improver'
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites invalid stale Memory Compactor instructions before resolving defaults
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > overwrites invalid stale Memory Compactor instructions before resolving defaults
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-bMiERC
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated to 'autobyteus-retrospective-skill-improver'
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
+Agent definition cache populated with 2 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
+In-memory cache: Updated agent definition with ID autobyteus-memory-compactor.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
+Agent Definition with ID autobyteus-memory-compactor updated successfully.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists synced built-ins through normal paths and restores product-managed files on the next startup
+Agent definition cache populated with 2 items.
+
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts (6 tests) 72ms
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > lists available settings excluding API keys
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > sorts settings by key
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > includes predefined settings from effective runtime values even when not persisted in config data
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes compaction predefined settings with typed descriptions
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes Codex sandbox mode as predefined editable metadata
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes media default model settings as predefined editable metadata
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes stream parser as predefined editable metadata
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > updates settings successfully
+Initialized server settings service with 19 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated to 'next'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes a registered working-context compaction strategy before persistence
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' updated to 'structured-json'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects an unknown working-context compaction strategy before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value read-only
+Initialized server settings service with 19 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated to 'read-only'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value workspace-write
+Initialized server settings service with 19 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated to 'workspace-write'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value danger-full-access
+Initialized server settings service with 19 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated to 'danger-full-access'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined Codex sandbox values before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value xml
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated to 'xml'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value json
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated to 'json'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value sentinel
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated to 'sentinel'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value api_tool_call
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated to 'api_tool_call'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined stream parser values before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > saves api_tool_call as the canonical stream parser provider-native value
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated to 'api_tool_call'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > preserves custom setting values without predefined normalization
+Initialized server settings service with 19 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated to '  raw value  '
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists dynamic media model identifiers without static allowed-value validation
+Initialized server settings service with 19 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated to 'nano-banana-pro-app-rpa@host'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes featured catalog items as predefined editable metadata
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes valid featured catalog settings before persistence
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated to '{"version":1,"items":[{"resourceKind":"AGENT_TEAM","definitionId":"team-a","sortOrder":20},{"resourceKind":"AGENT","definitionId":"agent-a","sortOrder":20}]}'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects duplicate featured catalog identities before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid featured catalog JSON before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_EDIT_MODEL
+Initialized server settings service with 19 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated to 'next-media-model'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_GENERATION_MODEL
+Initialized server settings service with 19 predefined settings
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated to 'next-media-model'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_SPEECH_GENERATION_MODEL
+Initialized server settings service with 19 predefined settings
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated to 'next-media-model'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas after successful unrelated setting updates
+Initialized server settings service with 19 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated to 'next'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when an update fails before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Initialized server settings service with 19 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Error updating server setting 'DEFAULT_IMAGE_GENERATION_MODEL': Error: boom
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Initialized server settings service with 19 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Error updating server setting 'CUSTOM_SETTING': Error: boom
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects updating system-managed settings
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > accepts any setting key
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > deletes custom settings successfully
+Initialized server settings service with 19 predefined settings
+Server setting 'CUSTOM_SETTING' deleted
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects deleting predefined settings
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when deleting missing settings
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads the typed applications capability setting as true, false, or null
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists the typed applications capability setting as normalized strings
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy undefined as structured-json without persisting
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy "" as structured-json without persisting
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy "   " as structured-json without persisting
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy " structured-json " as structured-json without persisting
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy " removed-strategy " as removed-strategy without persisting
+Initialized server settings service with 19 predefined settings
+
+ ✓ tests/unit/services/server-settings-service.test.ts (45 tests) 23ms
+stdout | tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:95782) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts (5 tests) 19ms
+stdout | tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:95783) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts (7 tests) 5ms
+ ✓ tests/unit/api/graphql/types/server-settings.test.ts (11 tests) 5ms
+ ✓ tests/unit/api/graphql/types/working-context-compaction-strategy.test.ts (3 tests) 2ms
+
+ Test Files  7 passed (7)
+      Tests  82 passed (82)
+   Start at  12:56:09
+   Duration  10.41s (transform 2.36s, setup 55ms, import 5.43s, tests 4.01s, environment 0ms)
+
+=== reviewer round8 web focused ===
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web
+
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/workingContextCompactionStrategyCatalogStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/serverSettingsStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/nodeStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CompactionConfigCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/CompactionConfigCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/workingContextCompactionStrategyCatalogStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/nodeStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/serverSettingsStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/nodeStore.spec.ts (8 tests) 8ms
+stderr | tests/stores/serverSettingsStore.test.ts > serverSettings store > fails deterministically when the bound backend is not ready
+Failed to fetch server settings: Error: backend readiness timed out
+    at ensureBoundBackendReady (/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/stores/serverSettings.ts:147:11)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Proxy.fetchServerSettings (/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/stores/serverSettings.ts:194:40)
+
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 43ms
+ ✓ components/settings/__tests__/CompactionConfigCard.spec.ts (9 tests) 85ms
+ ✓ tests/stores/workingContextCompactionStrategyCatalogStore.test.ts (5 tests) 164ms
+ ✓ tests/stores/serverSettingsStore.test.ts (11 tests) 169ms
+
+ Test Files  5 passed (5)
+      Tests  43 passed (43)
+   Start at  12:56:21
+   Duration  4.80s (transform 2.68s, setup 20.02s, collect 500ms, tests 468ms, environment 985ms, prepare 743ms)
+
+=== reviewer round8 web guards ===
+
+> autobyteus@1.4.12 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.12 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.4.12 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:95877) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+=== reviewer round8 web build ===
+
+> autobyteus@1.4.12 build /Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/autobyteus-web
+> nuxt build
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+●  Nitro preset: static
+ℹ Building client...
+ℹ vite v7.3.1 building client environment for production...
+ℹ transforming...
+ℹ ✓ 3550 modules transformed.
+ℹ rendering chunks...
+ℹ computing gzip size...
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff              4.42 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.Dl5lxZxV.woff2             4.93 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.Dy4dx90m.woff2             5.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.mCD8mA8B.woff2             5.47 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.BF-4gkZK.woff              5.98 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.oD1tc_U0.woff              6.19 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.C195tn64.woff              6.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2       6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2          6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.DgpXs0kz.ttf               7.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.CTRA-rTL.woff        7.66 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.BEiXGLvX.woff           7.72 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D3wIWfF6.woff2            9.64 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2        10.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.DWFBv043.ttf              10.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D5yQViql.woff            10.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CTYiF6lA.woff2          11.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.CL6g_b3V.woff2             11.35 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.B7gKUWhC.ttf              11.51 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.C3H0VqGB.woff2         12.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.D1sUS0GD.woff2           12.22 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.Dbsnue_I.ttf              12.23 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.CS6fqUqJ.woff         12.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.wX97UBjC.ttf        12.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf           12.37 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.Dxdc4cR9.woff           13.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BsDP51OF.woff              13.30 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.CO6r4hn1.woff2       13.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.DN2j7dab.woff          14.11 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.DbIhKOiC.woff            14.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.C0xS9mPB.woff        16.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2          16.40 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.t53AETM-.woff2              16.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.C5JkGWo-.ttf             16.65 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2          16.78 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.NWA7e6Wa.woff2              16.99 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.iY-2wyZ7.woff           18.67 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.DA0__PXp.woff               18.75 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.SpSLRI95.woff           19.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.BNo7hRIc.ttf          19.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CB_wures.ttf            19.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BdnERNNW.ttf               19.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.BMLOBm91.woff               19.68 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf           22.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.CFMepnvq.ttf             24.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Cx986IdX.woff2                25.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.B22Nviop.woff2             26.27 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf         27.56 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.BQhdFMY1.woff2              28.08 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Jm3AIy58.woff                 29.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.Dr94JaBh.woff              30.77 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.B3XSjfu4.ttf            31.20 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.flOr_0UB.ttf                31.31 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DzxPMmG6.ttf            32.97 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DMm9YOAa.woff               33.52 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.3WenGoN9.ttf                33.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf                  51.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf               53.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf                63.63 kB
+ℹ .nuxt/dist/client/manifest.json                                       63.78 kB │ gzip:     6.04 kB
+ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.CJV_gWfn.css                 0.20 kB │ gzip:     0.12 kB
+ℹ .nuxt/dist/client/_nuxt/media.yjOJmL4q.css                             0.23 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/settings.Bue39q7f.css                          0.27 kB │ gzip:     0.21 kB
+ℹ .nuxt/dist/client/_nuxt/AgentDefinitionForm.B4uhkLvJ.css               0.28 kB │ gzip:     0.15 kB
+ℹ .nuxt/dist/client/_nuxt/FullScreenImageModal.aod6xn15.css              0.35 kB │ gzip:     0.17 kB
+ℹ .nuxt/dist/client/_nuxt/default.yVeVNvNV.css                           0.86 kB │ gzip:     0.35 kB
+ℹ .nuxt/dist/client/_nuxt/FileExplorerTabs.BrK5oVEn.css                  3.20 kB │ gzip:     1.02 kB
+ℹ .nuxt/dist/client/_nuxt/useTeamRunRuntimeCatalogSync.MxjQ927l.css      3.51 kB │ gzip:     1.19 kB
+ℹ .nuxt/dist/client/_nuxt/workspace.DgXoTOrX.css                        10.15 kB │ gzip:     2.56 kB
+ℹ .nuxt/dist/client/_nuxt/skills.hZg4z6X7.css                           14.02 kB │ gzip:     3.04 kB
+ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.HwLe4nKg.css         46.65 kB │ gzip:    12.11 kB
+ℹ .nuxt/dist/client/_nuxt/entry.CAk5aHcx.css                           116.83 kB │ gzip:    18.25 kB
+ℹ .nuxt/dist/client/_nuxt/D1adNbFP.js                                    0.09 kB │ gzip:     0.10 kB
+ℹ .nuxt/dist/client/_nuxt/CDVW43-r.js                                    0.10 kB │ gzip:     0.11 kB
+ℹ .nuxt/dist/client/_nuxt/Gi6I4Gst.js                                    0.15 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/BQZ2d7OE.js                                    0.18 kB │ gzip:     0.15 kB
+ℹ .nuxt/dist/client/_nuxt/B_igPoux.js                                    0.21 kB │ gzip:     0.16 kB
+ℹ .nuxt/dist/client/_nuxt/BkeOe3wa.js                                    0.22 kB │ gzip:     0.20 kB
+ℹ .nuxt/dist/client/_nuxt/C_j_9X3K.js                                    0.23 kB │ gzip:     0.20 kB
+ℹ .nuxt/dist/client/_nuxt/CRrHN8mG.js                                    0.26 kB │ gzip:     0.21 kB
+ℹ .nuxt/dist/client/_nuxt/CljzWvRk.js                                    0.35 kB │ gzip:     0.25 kB
+ℹ .nuxt/dist/client/_nuxt/DQ9j-nNh.js                                    0.35 kB │ gzip:     0.26 kB
+ℹ .nuxt/dist/client/_nuxt/1rie-8WA.js                                    0.36 kB │ gzip:     0.26 kB
+ℹ .nuxt/dist/client/_nuxt/BW5O7gt9.js                                    0.39 kB │ gzip:     0.26 kB
+ℹ .nuxt/dist/client/_nuxt/CGEtQ6xK.js                                    0.39 kB │ gzip:     0.26 kB
+ℹ .nuxt/dist/client/_nuxt/C8GzXhN_.js                                    0.48 kB │ gzip:     0.23 kB
+ℹ .nuxt/dist/client/_nuxt/zjwzmgqd.js                                    0.49 kB │ gzip:     0.35 kB
+ℹ .nuxt/dist/client/_nuxt/BT69KuhL.js                                    0.66 kB │ gzip:     0.43 kB
+ℹ .nuxt/dist/client/_nuxt/CE1G-McA.js                                    0.76 kB │ gzip:     0.40 kB
+ℹ .nuxt/dist/client/_nuxt/B3HtHpRt.js                                    0.92 kB │ gzip:     0.56 kB
+ℹ .nuxt/dist/client/_nuxt/vX0vfb3P.js                                    0.94 kB │ gzip:     0.45 kB
+ℹ .nuxt/dist/client/_nuxt/CWxag-n9.js                                    1.06 kB │ gzip:     0.58 kB
+ℹ .nuxt/dist/client/_nuxt/CmKTTxBW.js                                    1.18 kB │ gzip:     0.57 kB
+ℹ .nuxt/dist/client/_nuxt/B-zZ6vOr.js                                    1.42 kB │ gzip:     0.63 kB
+ℹ .nuxt/dist/client/_nuxt/BfckMJqq.js                                    1.82 kB │ gzip:     0.83 kB
+ℹ .nuxt/dist/client/_nuxt/BPYkaYx8.js                                    2.03 kB │ gzip:     0.97 kB
+ℹ .nuxt/dist/client/_nuxt/Bv4L8bhO.js                                    2.39 kB │ gzip:     1.01 kB
+ℹ .nuxt/dist/client/_nuxt/BZEiWEfs.js                                    2.56 kB │ gzip:     1.27 kB
+ℹ .nuxt/dist/client/_nuxt/BjeRpXgX.js                                    3.43 kB │ gzip:     1.48 kB
+ℹ .nuxt/dist/client/_nuxt/BuBm4Pe2.js                                    3.83 kB │ gzip:     1.50 kB
+ℹ .nuxt/dist/client/_nuxt/CWjFsV4b.js                                    4.27 kB │ gzip:     1.84 kB
+ℹ .nuxt/dist/client/_nuxt/DX6XiGOO.js                                    4.69 kB │ gzip:     2.18 kB
+ℹ .nuxt/dist/client/_nuxt/QJm4o5qo.js                                    4.74 kB │ gzip:     1.86 kB
+ℹ .nuxt/dist/client/_nuxt/BvxrWROu.js                                    4.74 kB │ gzip:     1.88 kB
+ℹ .nuxt/dist/client/_nuxt/DlvD41rB.js                                    4.85 kB │ gzip:     1.45 kB
+ℹ .nuxt/dist/client/_nuxt/BMjaER1V.js                                    4.95 kB │ gzip:     2.03 kB
+ℹ .nuxt/dist/client/_nuxt/CRyR_L8O.js                                    5.19 kB │ gzip:     2.27 kB
+ℹ .nuxt/dist/client/_nuxt/BVu9sYqQ.js                                    5.63 kB │ gzip:     2.31 kB
+ℹ .nuxt/dist/client/_nuxt/CGCwK9af.js                                    5.63 kB │ gzip:     2.29 kB
+ℹ .nuxt/dist/client/_nuxt/CdHLEMmY.js                                    5.84 kB │ gzip:     2.33 kB
+ℹ .nuxt/dist/client/_nuxt/CJMSEi1q.js                                    5.87 kB │ gzip:     2.45 kB
+ℹ .nuxt/dist/client/_nuxt/Ds3n7LlE.js                                    5.90 kB │ gzip:     1.85 kB
+ℹ .nuxt/dist/client/_nuxt/BBi7mgDb.js                                    7.25 kB │ gzip:     1.85 kB
+ℹ .nuxt/dist/client/_nuxt/Bdcfxmg-.js                                    8.63 kB │ gzip:     1.79 kB
+ℹ .nuxt/dist/client/_nuxt/B468h93c.js                                    9.24 kB │ gzip:     1.90 kB
+ℹ .nuxt/dist/client/_nuxt/DP0xGyRb.js                                   10.32 kB │ gzip:     3.58 kB
+ℹ .nuxt/dist/client/_nuxt/BvA1nXVF.js                                   10.98 kB │ gzip:     4.08 kB
+ℹ .nuxt/dist/client/_nuxt/BwzeyIV_.js                                   11.88 kB │ gzip:     4.64 kB
+ℹ .nuxt/dist/client/_nuxt/De9VoR8X.js                                   13.22 kB │ gzip:     4.45 kB
+ℹ .nuxt/dist/client/_nuxt/CFSwIVRp.js                                   14.16 kB │ gzip:     4.43 kB
+ℹ .nuxt/dist/client/_nuxt/DOZCfhg7.js                                   15.79 kB │ gzip:     5.60 kB
+ℹ .nuxt/dist/client/_nuxt/LJkl0U-L.js                                   17.63 kB │ gzip:     5.17 kB
+ℹ .nuxt/dist/client/_nuxt/BKH2xFKH.js                                   18.29 kB │ gzip:     4.58 kB
+ℹ .nuxt/dist/client/_nuxt/B7OykbEP.js                                   18.47 kB │ gzip:     7.20 kB
+ℹ .nuxt/dist/client/_nuxt/CVni8O12.js                                   20.03 kB │ gzip:     6.89 kB
+ℹ .nuxt/dist/client/_nuxt/DiViTnLz.js                                   20.20 kB │ gzip:     7.16 kB
+ℹ .nuxt/dist/client/_nuxt/MMtEZAD9.js                                   21.57 kB │ gzip:     6.31 kB
+ℹ .nuxt/dist/client/_nuxt/BqyenZvM.js                                   22.12 kB │ gzip:     8.12 kB
+ℹ .nuxt/dist/client/_nuxt/X5IUKhfA.js                                   23.53 kB │ gzip:     8.30 kB
+ℹ .nuxt/dist/client/_nuxt/9MBbbIU8.js                                   23.60 kB │ gzip:     8.23 kB
+ℹ .nuxt/dist/client/_nuxt/sFgQP8Vt.js                                   24.08 kB │ gzip:     7.38 kB
+ℹ .nuxt/dist/client/_nuxt/BS2Zvcrj.js                                   25.22 kB │ gzip:     8.80 kB
+ℹ .nuxt/dist/client/_nuxt/DgsB4xDJ.js                                   25.61 kB │ gzip:    10.06 kB
+ℹ .nuxt/dist/client/_nuxt/Bkt2IiUX.js                                   27.35 kB │ gzip:     9.70 kB
+ℹ .nuxt/dist/client/_nuxt/DfIdeuJY.js                                   28.19 kB │ gzip:     8.21 kB
+ℹ .nuxt/dist/client/_nuxt/B29rgphz.js                                   30.07 kB │ gzip:     9.40 kB
+ℹ .nuxt/dist/client/_nuxt/tTjFyxow.js                                   31.20 kB │ gzip:     9.84 kB
+ℹ .nuxt/dist/client/_nuxt/BuPWrveF.js                                   33.83 kB │ gzip:     9.92 kB
+ℹ .nuxt/dist/client/_nuxt/nUh-jcaJ.js                                   36.30 kB │ gzip:    11.79 kB
+ℹ .nuxt/dist/client/_nuxt/DUE5M77e.js                                   36.41 kB │ gzip:     9.18 kB
+ℹ .nuxt/dist/client/_nuxt/8MzDqis6.js                                   40.17 kB │ gzip:    11.32 kB
+ℹ .nuxt/dist/client/_nuxt/DkwtAcAF.js                                   45.25 kB │ gzip:    14.64 kB
+ℹ .nuxt/dist/client/_nuxt/BcSXk7XA.js                                   46.40 kB │ gzip:    10.15 kB
+ℹ .nuxt/dist/client/_nuxt/DK9EsVhs.js                                   50.50 kB │ gzip:    13.44 kB
+ℹ .nuxt/dist/client/_nuxt/z2wYo7Xz.js                                   60.41 kB │ gzip:    19.39 kB
+ℹ .nuxt/dist/client/_nuxt/COiWhMjh.js                                   60.59 kB │ gzip:    15.57 kB
+ℹ .nuxt/dist/client/_nuxt/Dc4NZ5iC.js                                   67.26 kB │ gzip:    15.75 kB
+ℹ .nuxt/dist/client/_nuxt/CFqzVb7F.js                                   68.30 kB │ gzip:    23.14 kB
+ℹ .nuxt/dist/client/_nuxt/Bt-cBtpX.js                                   70.14 kB │ gzip:    19.67 kB
+ℹ .nuxt/dist/client/_nuxt/OVxd8v1M.js                                   70.93 kB │ gzip:    20.89 kB
+ℹ .nuxt/dist/client/_nuxt/xomQFepi.js                                   71.76 kB │ gzip:    20.47 kB
+ℹ .nuxt/dist/client/_nuxt/D5WJGwGy.js                                   73.90 kB │ gzip:    16.98 kB
+ℹ .nuxt/dist/client/_nuxt/DA6csmqQ.js                                   74.80 kB │ gzip:    17.32 kB
+ℹ .nuxt/dist/client/_nuxt/CDMGlPeh.js                                   81.71 kB │ gzip:    22.47 kB
+ℹ .nuxt/dist/client/_nuxt/DGDSHGIS.js                                   97.79 kB │ gzip:    26.83 kB
+ℹ .nuxt/dist/client/_nuxt/WZhYx85X.js                                  110.96 kB │ gzip:    29.88 kB
+ℹ .nuxt/dist/client/_nuxt/DCs6VfPK.js                                  133.88 kB │ gzip:    34.86 kB
+ℹ .nuxt/dist/client/_nuxt/Ba7EVj8H.js                                  141.76 kB │ gzip:    35.35 kB
+ℹ .nuxt/dist/client/_nuxt/DA6YH20L.js                                  148.58 kB │ gzip:    41.99 kB
+ℹ .nuxt/dist/client/_nuxt/5J0xJHOV.js                                  441.64 kB │ gzip:   141.47 kB
+ℹ .nuxt/dist/client/_nuxt/Bi2FPLC_.js                                  452.84 kB │ gzip:   107.02 kB
+ℹ .nuxt/dist/client/_nuxt/Bjqn4ujt.js                                  477.97 kB │ gzip:   125.57 kB
+ℹ .nuxt/dist/client/_nuxt/C_6Jwb2v.js                                  669.61 kB │ gzip:   179.72 kB
+ℹ .nuxt/dist/client/_nuxt/TrJObuyB.js                                  952.41 kB │ gzip:   261.32 kB
+ℹ .nuxt/dist/client/_nuxt/CbMHka7g.js                                3,745.04 kB │ gzip: 1,205.45 kB
+
+ WARN 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+ℹ ✓ built in 13.78s
+✔ Client built in 13787ms
+ℹ Building server...
+ℹ vite v7.3.1 building ssr environment for production...
+ℹ transforming...
+ℹ ✓ 1 modules transformed.
+ℹ rendering chunks...
+ℹ ✓ built in 8ms
+✔ Server built in 58ms
+[nitro] ℹ Initializing prerenderer
+[nitro] ℹ Prerendering 15 initial routes with crawler
+[nitro]   ├─ /media (26ms)
+[nitro]   ├─ /agents (27ms)
+[nitro]   ├─ /nodes (26ms)
+[nitro]   ├─ /tools (27ms)
+[nitro]   ├─ /memory (27ms)
+[nitro]   ├─ /mobile (27ms)
+[nitro]   ├─ /workspace (28ms)
+[nitro]   ├─ /skills (27ms)
+[nitro]   ├─ /agent-teams (28ms)
+[nitro]   ├─ / (27ms)
+[nitro]   ├─ /applications (28ms)
+[nitro]   ├─ /settings (28ms)
+[nitro]   ├─ /index.html (29ms)
+[nitro]   ├─ /200.html (28ms)
+[nitro]   ├─ /404.html (29ms)
+[nitro] ℹ Prerendered 15 routes in 0.599 seconds
+[nitro] ✔ Generated public dist/public
+[nitro] ✔ You can preview this build using npx serve dist/public
+│
+└  ✨ Build complete!
+=== reviewer round8 diff checks ===

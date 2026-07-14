@@ -3,12 +3,12 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentFactory, AgentInputUserMessage } from "autobyteus-ts";
-import { AgentStatus } from "autobyteus-ts/agent/status/status-enum.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import type { Message } from "autobyteus-ts/llm/utils/messages.js";
+import { buildLlmTokenUsageObservation } from "autobyteus-ts/llm/utils/llm-token-usage-observation.js";
 import { CompleteResponse, ChunkResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { SkillRegistry } from "autobyteus-ts/skills/registry.js";
@@ -21,7 +21,7 @@ import {
   type AgentRunEvent,
 } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { ServerCompactionAgentRunner } from "../../../../src/agent-execution/compaction/server-compaction-agent-runner.js";
-import { CompactionAgentSettingsResolver } from "../../../../src/agent-execution/compaction/compaction-agent-settings-resolver.js";
+import { MemoryCompactorAgentLaunchResolver } from "../../../../src/agent-execution/compaction/memory-compactor-agent-launch-resolver.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
 const PARENT_AGENT_DEFINITION_ID = "parent-agent";
@@ -82,11 +82,18 @@ class RecordingMainLLM extends BaseLLM {
     const promptTokens = this.promptTokensByCall[callIndex - 1] ?? 1;
     return {
       content: `parent-response-${callIndex}`,
-      usage: {
-        prompt_tokens: promptTokens,
-        completion_tokens: 1,
-        total_tokens: promptTokens + 1,
-      },
+      usage: buildLlmTokenUsageObservation({
+        inputTokens: promptTokens,
+        outputTokens: 1,
+        totalTokens: promptTokens + 1,
+        rawUsage: {
+          prompt_tokens: promptTokens,
+          completion_tokens: 1,
+          total_tokens: promptTokens + 1,
+        },
+        inputTokenSemantic: "gross_includes_cache",
+        cacheState: "not_reported",
+      }),
     };
   }
 }
@@ -167,12 +174,10 @@ const createCompactorDefinition = (
     defaultLaunchConfig,
   });
 
-const createSettingsResolver = (
+const createLaunchResolver = (
   defaultLaunchConfig: ConstructorParameters<typeof AgentDefinition>[0]["defaultLaunchConfig"],
 ) =>
-  new CompactionAgentSettingsResolver(
-    { getCompactionAgentDefinitionId: () => COMPACTOR_AGENT_DEFINITION_ID } as never,
-    {
+  new MemoryCompactorAgentLaunchResolver({
       getFreshAgentDefinitionById: vi.fn(async (definitionId: string) =>
         definitionId === COMPACTOR_AGENT_DEFINITION_ID
           ? createCompactorDefinition(defaultLaunchConfig)
@@ -255,7 +260,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     }
   });
 
-  it("runs parent-triggered memory compaction with an unconfigured selected compactor using the parent runtime and model", async () => {
+  it("runs parent-triggered memory compaction with an unconfigured built-in compactor using the parent runtime and model", async () => {
     const visibleCompactorRun = new FakeCompactorRun("visible-compaction-run-1");
     const agentRunService = createAgentRunService(visibleCompactorRun);
     const parentLLM = new RecordingMainLLM(
@@ -270,7 +275,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     );
     const compactionAgentRunnerFactory = vi.fn((input: CompactionAgentRunnerFactoryInput) =>
       new ServerCompactionAgentRunner({
-        settingsResolver: createSettingsResolver(null),
+        launchResolver: createLaunchResolver(null),
         agentRunService: agentRunService as never,
         timeoutMs: 1000,
         workspaceRootPath: input.workspaceRootPath,
@@ -322,7 +327,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
         expect(result.accepted).toBe(true);
         await waitFor(() =>
           parentLLM.requests.length === turnIndex &&
-          backend.getStatus() === AgentStatus.IDLE &&
+          backend.getStatusSnapshot().status === "idle" &&
           (backend.getContext().runtimeContext as any)?.state?.activeTurn === null,
         );
       }
@@ -330,15 +335,22 @@ describe("compaction agent parent runtime/model fallback executable validation",
       await backend.postUserMessage(new AgentInputUserMessage("Please remember the fallback behavior."));
       await waitFor(() =>
         parentLLM.requests.length === 4 &&
-        (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === true &&
-        backend.getStatus() === AgentStatus.IDLE,
+        (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
+        backend.getStatusSnapshot().status === "idle" &&
+        collectCompactionStatuses(serverEvents).some((event) => event.phase === "completed"),
       );
 
       await backend.postUserMessage(new AgentInputUserMessage("Continue after compaction."));
       await waitFor(() =>
         parentLLM.requests.length === 5 &&
         (backend.getContext().runtimeContext as any)?.state?.memoryManager?.compactionRequired === false &&
-        backend.getStatus() === AgentStatus.IDLE,
+        backend.getStatusSnapshot().status === "idle",
+      );
+
+      const requestAfterCompaction = JSON.stringify(parentLLM.requests[4]);
+      expect(requestAfterCompaction).toContain("The parent run compacted prior seed turns.");
+      expect(requestAfterCompaction).toContain(
+        "The user asked the parent run to remember the fallback behavior.",
       );
 
       expect(compactionAgentRunnerFactory).toHaveBeenCalledWith({
@@ -362,7 +374,6 @@ describe("compaction agent parent runtime/model fallback executable validation",
         }),
       });
 
-      await waitFor(() => collectCompactionStatuses(serverEvents).some((event) => event.phase === "completed"));
       const statuses = collectCompactionStatuses(serverEvents);
       expect(statuses.map((event) => event.phase)).toEqual(expect.arrayContaining(["requested", "started", "completed"]));
       expect(statuses.find((event) => event.phase === "completed")).toMatchObject({
@@ -377,7 +388,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     }
   }, 30000);
 
-  it("uses explicit selected compactor runtime and model over parent fallback when creating the visible compactor run", async () => {
+  it("uses explicit built-in compactor runtime and model over parent fallback when creating the visible compactor run", async () => {
     const visibleCompactorRun = new FakeCompactorRun("visible-compaction-run-2", [
       createCompactorEvent("visible-compaction-run-2", AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
@@ -388,7 +399,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     ]);
     const agentRunService = createAgentRunService(visibleCompactorRun);
     const runner = new ServerCompactionAgentRunner({
-      settingsResolver: createSettingsResolver({
+      launchResolver: createLaunchResolver({
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         llmModelIdentifier: "explicit-compactor-model",
         llmConfig: { reasoning_effort: "low" },
@@ -422,7 +433,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     });
   });
 
-  it("applies parent fallback field-by-field for partially configured selected compactor launch defaults", async () => {
+  it("applies parent fallback field-by-field for partially configured built-in compactor launch defaults", async () => {
     const visibleCompactorRun = new FakeCompactorRun("visible-compaction-run-3", [
       createCompactorEvent("visible-compaction-run-3", AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
@@ -433,7 +444,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     ]);
     const agentRunService = createAgentRunService(visibleCompactorRun);
     const runner = new ServerCompactionAgentRunner({
-      settingsResolver: createSettingsResolver({
+      launchResolver: createLaunchResolver({
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
         llmModelIdentifier: null,
         llmConfig: null,
@@ -467,11 +478,11 @@ describe("compaction agent parent runtime/model fallback executable validation",
     });
   });
 
-  it("fails before creating a visible compactor run when neither selected defaults nor parent fallback provide required fields", async () => {
+  it("fails before creating a visible compactor run when neither built-in defaults nor parent fallback provide required fields", async () => {
     const visibleCompactorRun = new FakeCompactorRun("visible-compaction-run-4");
     const agentRunService = createAgentRunService(visibleCompactorRun);
     const runner = new ServerCompactionAgentRunner({
-      settingsResolver: createSettingsResolver(null),
+      launchResolver: createLaunchResolver(null),
       agentRunService: agentRunService as never,
       workspaceRootPath: workspaceDir,
       parentLaunchFallback: {
@@ -506,7 +517,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
     ]);
     const agentRunService = createAgentRunService(visibleCompactorRun);
     const runner = new ServerCompactionAgentRunner({
-      settingsResolver: createSettingsResolver(null),
+      launchResolver: createLaunchResolver(null),
       agentRunService: agentRunService as never,
       workspaceRootPath: workspaceDir,
       parentLaunchFallback: {

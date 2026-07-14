@@ -1,0 +1,29 @@
+Delivery user-test artifact verification — pluggable memory compaction strategies
+UTC 2026-07-13T19:16:53Z
+checkpoint df7ade6ea461eec32aff37cdd8084be7b8c51d10
+> hdiutil verify autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.12.dmg
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $D029FCFC
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $0B219D0B
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $C323BBDA
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $4B63E371
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $C323BBDA
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $476E79EE
+Die überprüfte CRC32-Prüfsumme ist $9059C0B1
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.12.dmg" is VALID
+> shasum -a 256
+e5ee6cc909d4e403417edd300a78c4aed710999e63b3b940f30e17e46ae6473d  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.12.dmg
+63c529d4bf06c514b22fc82c8da20a95c88a2a91edde1f421c9ce341c9aefeed  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.12.zip
+> ls -lh
+-rw-r--r--@ 1 normy  staff   383M Jul 13 21:00 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.12.dmg
+-rw-r--r--@ 1 normy  staff   379M Jul 13 21:01 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.12.zip
+RESULT PASS

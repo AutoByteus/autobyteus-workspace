@@ -25,6 +25,11 @@ import {
   STREAM_PARSER_SETTING_VALUES,
 } from "../config/stream-parser-setting.js";
 import { reloadMediaToolSchemas } from "../agent-tools/media/register-media-tools.js";
+import {
+  WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
+  normalizeWorkingContextCompactionStrategyForPersistence,
+} from "../config/working-context-compaction-strategy-setting.js";
+import { normalizeWorkingContextCompactionStrategyId } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-setting.js";
 
 export {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
@@ -55,7 +60,6 @@ type ServerSettingValueValidation = {
 };
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
-export const AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID = "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID";
 export { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID, SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY };
 
 export class ServerSettingsService {
@@ -98,8 +102,12 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
-      AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-      "Agent definition id for the memory compactor agent. Blank runtime/model fields on the selected compactor inherit from the running parent agent.",
+      WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
+      "Process-global working-context compaction strategy used by subsequent compaction operations.",
+      true,
+      {
+        normalizeForPersistence: normalizeWorkingContextCompactionStrategyForPersistence,
+      },
     );
 
     this.registerPredefinedSetting(
@@ -390,8 +398,10 @@ export class ServerSettingsService {
     return normalized.length > 0 ? normalized : null;
   }
 
-  getCompactionAgentDefinitionId(): string | null {
-    return this.getSettingValue(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID);
+  getEffectiveWorkingContextCompactionStrategyId(): string {
+    return normalizeWorkingContextCompactionStrategyId(
+      appConfigProvider.config.get(WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY),
+    );
   }
 
   getSkillImprovementDefaultImproverAgentDefinitionId(): string | null {

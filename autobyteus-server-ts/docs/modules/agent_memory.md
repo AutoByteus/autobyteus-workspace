@@ -37,7 +37,7 @@ Canonical active memory file names are imported from `autobyteus-ts/memory/store
 Common files/directories:
 
 - `raw_traces_active.jsonl` — active ordered raw trace records.
-- `working_context_snapshot.json` — generic working-context snapshot state.
+- `working_context_snapshot.json` — schema-v4 persisted `WorkingContext` messages. New writes contain only schema version, agent id, and messages; existing v4 supersets remain directly readable.
 - `raw_traces_manifest.json` — rotated raw-trace manifest owned internally by `RawTraceArchiveManager`.
 - `raw_traces_<zero-padded-index>.jsonl` — immutable rotated raw-trace segment files in the same run memory directory, one complete segment per native compaction or provider-boundary rotation.
 - `episodic.jsonl`, `semantic.jsonl`, `compacted_memory_manifest.json` — native AutoByteus compacted memory artifacts when native semantic/episodic compaction has run.
@@ -54,14 +54,29 @@ runtime memory provider.
 
 ## Runtime Ownership
 
-Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, and compacted memory are not duplicated. Native AutoByteus compaction still owns semantic/episodic/snapshot compaction, but it now rotates compacted raw traces through shared direct raw-trace segments with `boundary_type = "native_compaction"`.
+Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, and compacted memory are not duplicated. Native AutoByteus compaction is a pluggable context-to-context boundary: the executor resolves the process-global strategy for each pending operation, validates its returned detached `WorkingContext`, and only then asks `MemoryManager` to replace/persist it. The current `structured-json` strategy preserves semantic/episodic writes and rotates selected raw traces through shared direct segments with `boundary_type = "native_compaction"`.
+
+### Global Compaction Strategy Setting
+
+`AUTOBYTEUS_COMPACTION_STRATEGY` selects the strategy for subsequent native compaction operations. Blank values normalize to `structured-json`, the only production registration. `ServerSettingsService` validates updates against registry metadata and persists them through the normal `.env` plus current-process environment path, so already-created native agents resolve the new value on their next compaction. This is process-local convergence; no cross-process broadcast or provider-session reconciliation is added.
+
+GraphQL keeps option discovery and effective selection separate:
+
+- `getWorkingContextCompactionStrategies` projects only registry `{ id, name }` metadata;
+- `getEffectiveWorkingContextCompactionStrategyId` applies the same normalizer as runtime, so absent/blank selects `structured-json` while an explicit unknown ID stays explicit for truthful recovery UI.
+
+Settings -> Server Settings -> Basics uses these reads for a registry-backed Compaction strategy selector. The card keeps the trigger ratio, effective-context override, and detailed-log controls, persists only changed valid fields through the existing per-key mutation, and stops after the first failed write while retaining failed and unsent drafts for retry. Catalog/effective-read errors and unknown IDs are shown without guessing or silently writing a default.
+
+The `structured-json` strategy always invokes the built-in `autobyteus-memory-compactor`; blank launch fields inherit the parent run's runtime/model. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting or runtime selection path. A stale custom value is inert, and a missing/invalid built-in definition fails without arbitrary-agent fallback.
+
+Compaction status metadata includes stable `compaction_strategy_id` and `compaction_strategy_name` in addition to operation/turn and current runner diagnostics. A resolver, strategy, validation, or replacement failure preserves the pending request and does not emit a false completed state.
 
 Codex and Claude runs are recorded by the server as **storage-only** memory:
 
 1. `AgentRunManager` attaches `AgentRunMemoryRecorder` as an active-run sidecar when the run has a `memoryDir` and the runtime is not native AutoByteus.
 2. Accepted user messages are observed only after `AgentRun.postUserMessage(...)` returns `accepted: true`.
 3. Assistant text, reasoning, tool lifecycle outcomes, and normalized provider compaction-boundary payloads are captured from normalized `AgentRunEvent`s.
-4. `RunMemoryWriter` writes shared `RawTraceItem` records and updates `WorkingContextSnapshot` through `RunMemoryFileStore`.
+4. `RunMemoryWriter` writes shared `RawTraceItem` records and updates `WorkingContext` messages through `RunMemoryFileStore`.
 
 Tool execution uses a strict split physical contract shared with native memory:
 

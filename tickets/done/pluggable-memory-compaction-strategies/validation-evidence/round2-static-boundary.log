@@ -1,0 +1,174 @@
+## git state
+df7ade6ea461eec32aff37cdd8084be7b8c51d10
+codex/pluggable-memory-compaction-strategies
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_definition.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+ D autobyteus-server-ts/src/agent-execution/compaction/compaction-agent-settings-resolver.ts
+ M autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+ M autobyteus-server-ts/src/api/graphql/schema.ts
+ M autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+ M autobyteus-server-ts/src/services/server-settings-service.ts
+ M autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+ D autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-agent-settings-resolver.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+ M autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-ts/src/memory/compaction/compaction-agent-runner.ts
+ M autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts
+ M autobyteus-ts/tests/unit/memory/working-context-compaction-strategy-registry.test.ts
+ M autobyteus-web/components/settings/CompactionConfigCard.vue
+ M autobyteus-web/components/settings/__tests__/CompactionConfigCard.spec.ts
+ M autobyteus-web/graphql/queries/server_settings_queries.ts
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/stores/serverSettings.ts
+ M autobyteus-web/tests/stores/serverSettingsStore.test.ts
+ M tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-coverage-investigation.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/code-review-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/design-review-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/design-spec.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/implementation-handoff.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/investigation-notes.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/requirements.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-domain-contract.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-strategy-contract.md
+?? autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts
+?? autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts
+?? autobyteus-server-ts/tests/unit/api/graphql/types/working-context-compaction-strategy.test.ts
+?? autobyteus-web/graphql/queries/workingContextCompactionStrategyQueries.ts
+?? autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts
+?? autobyteus-web/tests/stores/workingContextCompactionStrategyCatalogStore.test.ts
+?? tickets/in-progress/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/docs-sync-report.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/handoff-summary.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/release-deployment-report.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-electron-artifact-verification-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-final-consistency-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-integration-refresh-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-user-requested-electron-artifacts-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-user-requested-electron-build-mac-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-builds-guards.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-core-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-provider-renderers.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-server-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-server-graphql-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-static-boundary.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-web-broader.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-web-focused.log
+## diff checks
+## no removed compactor-agent runtime authority
+PASS: no production reference
+## no Compactor/CompactionPlan compatibility source
+PASS: no obsolete source symbols
+## production registry
+1-import { AgentCompactionSummarizer } from './agent-compaction-summarizer.js';
+2-import { Retriever } from '../retrieval/retriever.js';
+3-import { CompactedMemoryContextProjector } from '../projection/compacted-memory-context-projector.js';
+4-import type { CompactionAgentRunner } from './compaction-agent-runner.js';
+5:import { StructuredJsonCompactionStrategy } from './structured-json-compaction-strategy.js';
+6-import { WorkingContextCompactionStrategyRegistry } from './working-context-compaction-strategy-registry.js';
+7-
+8-const requireCompactionRunner = (runner: CompactionAgentRunner | null): CompactionAgentRunner => {
+9-  if (!runner) {
+--
+14-
+15-export const defaultWorkingContextCompactionStrategyRegistry =
+16-  new WorkingContextCompactionStrategyRegistry();
+17-
+18:defaultWorkingContextCompactionStrategyRegistry.register({
+19:  id: 'structured-json',
+20-  name: 'Structured JSON',
+21-  create: (context) => new StructuredJsonCompactionStrategy({
+22-    store: context.memoryStore,
+23-    summarizer: new AgentCompactionSummarizer({
+## fixed built-in launch
+## GraphQL schema/catalog
+autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts:15:export class WorkingContextCompactionStrategyResolver {
+autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts:17:  getWorkingContextCompactionStrategies(): WorkingContextCompactionStrategyOption[] {
+autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts:24:  getEffectiveWorkingContextCompactionStrategyId(): string {
+autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts:25:    return getServerSettingsService().getEffectiveWorkingContextCompactionStrategyId();
+autobyteus-server-ts/src/api/graphql/schema.ts:4:import { WorkingContextCompactionStrategyResolver } from './types/working-context-compaction-strategy.js';
+autobyteus-server-ts/src/api/graphql/schema.ts:41:      WorkingContextCompactionStrategyResolver,
+autobyteus-web/graphql/queries/workingContextCompactionStrategyQueries.ts:5:    getWorkingContextCompactionStrategies {
+autobyteus-web/graphql/queries/server_settings_queries.ts:13:    getEffectiveWorkingContextCompactionStrategyId
+## compaction card lacks agent catalog
+PASS: no agent catalog dependency
+## source sizes
+autobyteus-web/stores/serverSettings.ts 482
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts 133
+autobyteus-web/components/settings/CompactionConfigCard.vue 341
+autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts 23
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts 95
+## generated stale-output note
+autobyteus-web/dist-mobile/public/_nuxt/X4xYSqmX.js
+NOTE: ignored/generated outputs may retain historical text and are rebuilt/packaged separately; not source authority
+## fixed built-in definition identity (supplement)
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-2-  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-3-} from "../services/server-settings-service.js";
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-4-
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts:5:export const MEMORY_COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-6-export const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = "autobyteus-retrospective-skill-improver";
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-7-
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-8-export type BuiltInAgentSettingDefault = {
+--
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-18-
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-19-export const BUILT_IN_AGENT_DEFINITIONS = [
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-20-  {
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts:21:    id: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-22-    templateDirName: "memory-compactor",
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-23-    displayName: "Memory Compactor",
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts-24-  },
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-1-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-2-import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:3:import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../built-in-agents/built-in-agent-registry.js";
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-4-import { runtimeKindFromString, type RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-5-
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-6-export type ResolvedMemoryCompactorAgentLaunch = {
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-47-    const definition = await this.loadDefinition();
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-48-    if (!definition) {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-49-      throw new Error(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:50:        `Built-in Memory Compactor agent definition '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' was not found.`,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-51-      );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-52-    }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-53-
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-57-    const runtimeKind = explicitRuntimeKind ?? fallbackRuntimeKind;
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-58-    if (!runtimeKind) {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-59-      throw new Error(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:60:        `Built-in Memory Compactor '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' is missing a valid default runtime kind and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent runtime kind fallback.`,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-61-      );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-62-    }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-63-
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-66-    const llmModelIdentifier = explicitModelIdentifier ?? fallbackModelIdentifier;
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-67-    if (!llmModelIdentifier) {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-68-      throw new Error(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:69:        `Built-in Memory Compactor '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' is missing a default model identifier and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent model identifier fallback.`,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-70-      );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-71-    }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-72-
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-73-    return {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:74:      agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-75-      agentName: definition.name,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-76-      runtimeKind,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-77-      llmModelIdentifier,
+--
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-85-    if (typeof freshLoader === "function") {
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-86-      return freshLoader.call(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-87-        this.agentDefinitionService,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:88:        MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-89-      );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-90-    }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-91-    return this.agentDefinitionService.getAgentDefinitionById(
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts:92:      MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-93-    );
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-94-  }
+autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts-95-

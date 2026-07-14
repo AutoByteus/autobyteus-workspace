@@ -86,6 +86,7 @@ const mountSettings = () =>
 
 describe('settings page', () => {
   beforeEach(() => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1024 })
     routeMock.query = {}
     serverStoreMock.status = 'running'
     windowNodeContextStoreMock.isEmbeddedWindow = true
@@ -110,6 +111,24 @@ describe('settings page', () => {
     const sidebarText = wrapper.text()
     expect(sidebarText.indexOf('Server Settings')).toBeLessThan(sidebarText.indexOf('Updates'))
     expect(wrapper.get('[data-testid="settings-nav-back"]').attributes('aria-label')).toBe('Back to workspace')
+  })
+
+  it('gives navigation and content usable full-width regions at narrow viewports while preserving the desktop row', () => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
+    const wrapper = mountSettings()
+    const layout = wrapper.get('[data-testid="settings-page-layout"]')
+    const navigation = wrapper.get('[data-testid="settings-page-navigation"]')
+    const content = wrapper.get('[data-testid="settings-page-content"]')
+
+    expect(layout.classes()).toEqual(expect.arrayContaining(['flex-col', 'min-w-0', 'md:flex-row']))
+    expect(navigation.classes()).toEqual(expect.arrayContaining([
+      'w-full',
+      'max-h-[38dvh]',
+      'overflow-y-auto',
+      'md:max-h-none',
+      'md:w-64',
+    ]))
+    expect(content.classes()).toEqual(expect.arrayContaining(['min-h-0', 'min-w-0', 'flex-1']))
   })
 
 

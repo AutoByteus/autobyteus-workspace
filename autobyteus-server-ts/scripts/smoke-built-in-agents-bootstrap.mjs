@@ -45,7 +45,6 @@ const {
   "../dist/built-in-agents/built-in-agent-registry.js"
 );
 const {
-  AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
   AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } = await import(
   "../dist/services/server-settings-service.js"
@@ -70,10 +69,7 @@ const fakeServerSettingsService = {
     return settingsByKey.get(key) ?? null;
   },
   updateSetting(key, value) {
-    if (
-      key === AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID ||
-      key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID
-    ) {
+    if (key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID) {
       settingsByKey.set(key, value);
       return [true, "ok"];
     }
@@ -138,7 +134,6 @@ try {
   assert.equal(skillImproverAgentMd, skillImproverDistAgentMd);
   assert.equal(skillImproverAgentConfig, skillImproverDistAgentConfig);
   assert.match(skillImproverAgentMd, /Retrospective Skill Improver/);
-  assert.equal(settingsByKey.get(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID), MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
   assert.equal(settingsByKey.get(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID), RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   const standaloneAgentMd = await fs.readFile(path.join(standaloneAgentDir, "agent.md"), "utf8");
   const standaloneAgentConfig = await fs.readFile(path.join(standaloneAgentDir, "agent-config.json"), "utf8");

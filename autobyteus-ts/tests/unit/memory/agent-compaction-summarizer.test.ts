@@ -1,35 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
+import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import { AgentCompactionSummarizer } from '../../../src/memory/compaction/agent-compaction-summarizer.js';
 import { CompactionAgentRunnerError } from '../../../src/memory/compaction/compaction-agent-runner.js';
 import type { CompactionAgentRunner, CompactionAgentTask } from '../../../src/memory/compaction/compaction-agent-runner.js';
-import type { InteractionBlock } from '../../../src/memory/compaction/interaction-block.js';
+import type { WorkingContextMessageUnit } from '../../../src/memory/compaction/working-context-message-unit.js';
 
-const makeTrace = (content: string) =>
-  new RawTraceItem({
-    id: `rt_${content}`,
-    ts: Date.now() / 1000,
-    turnId: 'turn-1',
-    seq: 1,
-    traceType: 'user',
-    content,
-    sourceEvent: 'test',
-  });
-
-const makeBlock = (trace: RawTraceItem): InteractionBlock => ({
-  blockId: 'block_0001',
-  turnId: trace.turnId,
-  traceIds: [trace.id],
-  traces: [trace],
-  openingTraceId: trace.id,
-  closingTraceId: trace.id,
-  blockKind: 'user',
-  hasAssistantTrace: false,
-  toolCallIds: [],
-  matchedToolCallIds: [],
-  hasMalformedToolTrace: false,
-  isStructurallyComplete: true,
-  toolResultDigests: [],
+const makeUnit = (content: string): WorkingContextMessageUnit => ({
+  id: 'message_0001',
+  kind: 'message',
+  startIndex: 0,
+  endIndex: 0,
+  messages: [new Message(MessageRole.USER, { content })],
+  rawTraceIds: ['rt-1'],
 });
 
 class FakeRunner implements CompactionAgentRunner {
@@ -65,7 +47,7 @@ describe('AgentCompactionSummarizer', () => {
       taskIdFactory: () => 'task-1',
     });
 
-    const result = await summarizer.summarize([makeBlock(makeTrace('a very long trace that should appear in the prompt'))]);
+    const result = await summarizer.summarizeMessageUnits([makeUnit('a very long trace that should appear in the prompt')]);
 
     expect(result.episodicSummary).toBe('Durable summary');
     expect(result.criticalIssues).toEqual([
@@ -75,7 +57,7 @@ describe('AgentCompactionSummarizer', () => {
     expect(runner.calls[0]).toMatchObject({
       taskId: 'task-1',
       parentAgentId: 'parent-agent',
-      parentTurnId: 'turn-1',
+      parentTurnId: null,
       blockCount: 1,
       traceCount: 1,
     });
@@ -96,13 +78,13 @@ describe('AgentCompactionSummarizer', () => {
     runner.outputText = 'not valid json';
     const summarizer = new AgentCompactionSummarizer({ runner });
 
-    await expect(summarizer.summarize([makeBlock(makeTrace('trace'))])).rejects.toThrow(
+    await expect(summarizer.summarizeMessageUnits([makeUnit('trace')])).rejects.toThrow(
       'Could not parse a valid JSON object'
     );
   });
   it('preserves runner failure metadata for parent compaction status', async () => {
     class FailingRunner implements CompactionAgentRunner {
-      async runCompactionTask(task: CompactionAgentTask) {
+      async runCompactionTask(task: CompactionAgentTask): Promise<never> {
         throw new CompactionAgentRunnerError('tool approval requested', {
           compactionAgentDefinitionId: 'memory-compactor',
           compactionAgentName: 'Memory Compactor',
@@ -119,7 +101,7 @@ describe('AgentCompactionSummarizer', () => {
       taskIdFactory: () => 'task-1',
     });
 
-    await expect(summarizer.summarize([makeBlock(makeTrace('trace'))])).rejects.toThrow('tool approval requested');
+    await expect(summarizer.summarizeMessageUnits([makeUnit('trace')])).rejects.toThrow('tool approval requested');
     expect(summarizer.getLastCompactionExecutionMetadata()).toEqual({
       compactionAgentDefinitionId: 'memory-compactor',
       compactionAgentName: 'Memory Compactor',

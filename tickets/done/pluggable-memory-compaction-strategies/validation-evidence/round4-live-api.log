@@ -1,0 +1,26 @@
+# Round 4 isolated live API and lifecycle validation
+UTC 2026-07-14T12:24:24Z
+RUN_DIR=/tmp/pmcs-round4-MxRBCO SERVER_PORT=61457
+## default catalog/effective/settings query
+{"data":{"getWorkingContextCompactionStrategies":[{"id":"structured-json","name":"Structured JSON"}],"getEffectiveWorkingContextCompactionStrategyId":"structured-json","getServerSettings":[{"key":"APP_ENV","value":"test","isEditable":true,"isDeletable":true},{"key":"AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID","value":"obsolete-worker-must-remain-inert","isEditable":true,"isDeletable":true},{"key":"AUTOBYTEUS_MEMORY_DIR","value":"/tmp/pmcs-round4-MxRBCO/memory","isEditable":true,"isDeletable":true},{"key":"AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID","value":"autobyteus-retrospective-skill-improver","isEditable":true,"isDeletable":false},{"key":"AUTOBYTEUS_SERVER_HOST","value":"http://127.0.0.1:61457","isEditable":false,"isDeletable":false},{"key":"DATABASE_URL","value":"file:/tmp/pmcs-round4-MxRBCO/db/test.db","isEditable":true,"isDeletable":true},{"key":"DB_TYPE","value":"sqlite","isEditable":true,"isDeletable":true},{"key":"DISABLE_HTTP_REQUEST_LOGS","value":"false","isEditable":true,"isDeletable":true},{"key":"LOG_LEVEL","value":"INFO","isEditable":true,"isDeletable":true},{"key":"PRISMA_LOG_QUERIES","value":"0","isEditable":true,"isDeletable":true}]}}
+ASSERT default catalog/effective/no-write PASS
+## isolated .env after read (must have no strategy write)
+APP_ENV=test
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:61457
+DB_TYPE=sqlite
+LOG_LEVEL=INFO
+PRISMA_LOG_QUERIES=0
+DISABLE_HTTP_REQUEST_LOGS=false
+AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID=obsolete-worker-must-remain-inert
+
+DATABASE_URL=file:/tmp/pmcs-round4-MxRBCO/db/test.db
+AUTOBYTEUS_MEMORY_DIR=/tmp/pmcs-round4-MxRBCO/memory
+AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID=autobyteus-retrospective-skill-improverASSERT no read-side strategy write PASS
+## restart with explicit unknown strategy
+{"data":{"getWorkingContextCompactionStrategies":[{"id":"structured-json","name":"Structured JSON"}],"getEffectiveWorkingContextCompactionStrategyId":"removed-strategy-live-recovery","getServerSettings":[{"key":"APP_ENV","value":"test","isEditable":true,"isDeletable":true},{"key":"AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID","value":"obsolete-worker-must-remain-inert","isEditable":true,"isDeletable":true},{"key":"AUTOBYTEUS_COMPACTION_STRATEGY","value":"removed-strategy-live-recovery","isEditable":true,"isDeletable":false},{"key":"AUTOBYTEUS_MEMORY_DIR","value":"/tmp/pmcs-round4-MxRBCO/memory","isEditable":true,"isDeletable":true},{"key":"AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID","value":"autobyteus-retrospective-skill-improver","isEditable":true,"isDeletable":false},{"key":"AUTOBYTEUS_SERVER_HOST","value":"http://127.0.0.1:61457","isEditable":false,"isDeletable":false},{"key":"DATABASE_URL","value":"file:/tmp/pmcs-round4-MxRBCO/db/test.db","isEditable":true,"isDeletable":true},{"key":"DB_TYPE","value":"sqlite","isEditable":true,"isDeletable":true},{"key":"DISABLE_HTTP_REQUEST_LOGS","value":"false","isEditable":true,"isDeletable":true},{"key":"LOG_LEVEL","value":"INFO","isEditable":true,"isDeletable":true},{"key":"PRISMA_LOG_QUERIES","value":"0","isEditable":true,"isDeletable":true}]}}
+ASSERT explicit unknown preserved and catalog remains supported-only PASS
+## restart after browser writes
+{"data":{"getWorkingContextCompactionStrategies":[{"id":"structured-json","name":"Structured JSON"}],"getEffectiveWorkingContextCompactionStrategyId":"structured-json","getServerSettings":[{"key":"APP_ENV","value":"test","isEditable":true,"isDeletable":true},{"key":"AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE","value":"8192","isEditable":true,"isDeletable":false},{"key":"AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID","value":"obsolete-worker-must-remain-inert","isEditable":true,"isDeletable":true},{"key":"AUTOBYTEUS_COMPACTION_DEBUG_LOGS","value":"false","isEditable":true,"isDeletable":false},{"key":"AUTOBYTEUS_COMPACTION_STRATEGY","value":"structured-json","isEditable":true,"isDeletable":false},{"key":"AUTOBYTEUS_COMPACTION_TRIGGER_RATIO","value":"0.62","isEditable":true,"isDeletable":false},{"key":"AUTOBYTEUS_MEMORY_DIR","value":"/tmp/pmcs-round4-MxRBCO/memory","isEditable":true,"isDeletable":true},{"key":"AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID","value":"autobyteus-retrospective-skill-improver","isEditable":true,"isDeletable":false},{"key":"AUTOBYTEUS_SERVER_HOST","value":"http://127.0.0.1:61457","isEditable":false,"isDeletable":false},{"key":"DATABASE_URL","value":"file:/tmp/pmcs-round4-MxRBCO/db/test.db","isEditable":true,"isDeletable":true},{"key":"DB_TYPE","value":"sqlite","isEditable":true,"isDeletable":true},{"key":"DISABLE_HTTP_REQUEST_LOGS","value":"false","isEditable":true,"isDeletable":true},{"key":"ENABLE_APPLICATIONS","value":"false","isEditable":true,"isDeletable":false},{"key":"ENABLE_SKILL_IMPROVEMENT","value":"false","isEditable":true,"isDeletable":false},{"key":"LOG_LEVEL","value":"INFO","isEditable":true,"isDeletable":true},{"key":"PRISMA_LOG_QUERIES","value":"0","isEditable":true,"isDeletable":true}]}}
+ASSERT restart persisted strategy/ratio/override/logs PASS
+ASSERT stale removed compaction-agent key remains inert custom extra PASS
+LIVE_API_LIFECYCLE_RESULT=PASS

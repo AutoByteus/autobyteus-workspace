@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { AgentFactory } from '../../../src/agent/factory/agent-factory.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
+import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { BaseLLM } from '../../../src/llm/base.js';
 import { LLMModel } from '../../../src/llm/models.js';
@@ -13,10 +14,9 @@ import { LLMRuntime } from '../../../src/llm/runtimes.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../src/llm/utils/response-types.js';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
-import { WorkingContextSnapshot } from '../../../src/memory/working-context-snapshot.js';
+import { WorkingContext } from '../../../src/memory/working-context.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
-import type { LLMUserMessage } from '../../../src/llm/user-message.js';
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -51,6 +51,26 @@ const waitForStatus = async (
   return false;
 };
 
+const waitForSnapshotMessage = async (
+  snapshotStore: WorkingContextSnapshotStore,
+  agentId: string,
+  expectedContent: string,
+  timeoutMs = 5000,
+): Promise<Record<string, unknown>> => {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const payload = snapshotStore.read(agentId) as Record<string, unknown> | null;
+    const messages = Array.isArray(payload?.messages)
+      ? payload.messages as Array<Record<string, unknown>>
+      : [];
+    if (messages.some((message) => message.content === expectedContent)) {
+      return payload!;
+    }
+    await delay(25);
+  }
+  throw new Error(`Snapshot for '${agentId}' did not persist '${expectedContent}' within ${timeoutMs}ms.`);
+};
+
 const resetFactory = () => {
   (AgentFactory as any).instance = undefined;
 };
@@ -70,17 +90,21 @@ describe('Working context snapshot restore flow (agent)', () => {
     }
   });
 
-  it('loads working context snapshot during bootstrap', async () => {
+  it('loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write', async () => {
     const agentId = 'agent_restore';
 
-    const snapshot = new WorkingContextSnapshot();
+    const snapshot = new WorkingContext();
     snapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
     snapshot.appendMessage(new Message(MessageRole.USER, { content: 'Hello' }));
 
-    const payload = WorkingContextSnapshotSerializer.serialize(snapshot, {
+    const payload = {
+      ...WorkingContextSnapshotSerializer.serialize(snapshot, {
       schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
       agent_id: agentId
-    });
+      }),
+      epoch_id: 19,
+      last_compaction_ts: 123.5,
+    };
 
     const snapshotStore = new WorkingContextSnapshotStore(tempDir, agentId);
     snapshotStore.write(agentId, payload);
@@ -108,6 +132,21 @@ describe('Working context snapshot restore flow (agent)', () => {
     const messages = agent.context.state.memoryManager?.getWorkingContextMessages() ?? [];
     expect(messages.map((message) => message.role)).toEqual([MessageRole.SYSTEM, MessageRole.USER]);
     expect(messages[1]?.content).toBe('Hello');
+
+    await agent.postUserMessage(new AgentInputUserMessage('Continue after restore.'));
+    const contractedPayload = await waitForSnapshotMessage(
+      snapshotStore,
+      agentId,
+      'Continue after restore.',
+    );
+    expect(contractedPayload).not.toHaveProperty('epoch_id');
+    expect(contractedPayload).not.toHaveProperty('last_compaction_ts');
+    const { workingContext: contractedContext } = WorkingContextSnapshotSerializer.deserialize(
+      contractedPayload,
+    );
+    expect(contractedContext.buildMessages().map((message) => message.content)).toEqual(
+      expect.arrayContaining(['System', 'Hello', 'Continue after restore.']),
+    );
 
     await agent.stop();
   });

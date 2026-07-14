@@ -1,0 +1,73 @@
+## diff hygiene
+## source sizes effective non-empty
+autobyteus-web/components/settings/ServerSettingsManager.vue 302
+autobyteus-web/pages/settings.vue 339
+autobyteus-web/components/settings/CompactionConfigCard.vue 290
+autobyteus-web/stores/serverSettings.ts 366
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts 133
+autobyteus-ts/src/memory/memory-manager.ts 481
+## rejected save-session symbols
+autobyteus-web/stores/workspace.ts:228:    async fetchAllWorkspaces(force = false, expectedBindingRevision?: number) {
+autobyteus-web/stores/workspace.ts:235:          expectedBindingRevision ?? windowNodeContextStore.bindingRevision;
+## scoped rejected save-session symbols
+none
+## current compaction save/read state
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:14:  bindingRevision: number | null
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:36:  bindingRevision: number,
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:39:  useWindowNodeContextStore().bindingRevision === bindingRevision
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:52:    () => windowNodeContextStore.bindingRevision,
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:74:      bindingRevision: null as number | null,
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:82:        this.bindingRevision = null
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:90:        const currentRevision = windowNodeContextStore.bindingRevision
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:91:        if (this.bindingRevision !== null && this.bindingRevision !== currentRevision) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:94:        if (!force && this.bindingRevision === currentRevision) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:98:        const bindingRevisionAtStart = currentRevision
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:106:          if (!isCurrentCatalogRead(this as BindingAwareCatalogStore, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:118:          if (!isCurrentCatalogRead(this as BindingAwareCatalogStore, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:130:          this.bindingRevision = bindingRevisionAtStart
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:133:          if (isCurrentCatalogRead(this as BindingAwareCatalogStore, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts:136:            this.bindingRevision = null
+autobyteus-web/stores/serverSettings.ts:61:  settingsBindingRevision: number | null
+autobyteus-web/stores/serverSettings.ts:82:  bindingRevision: number,
+autobyteus-web/stores/serverSettings.ts:85:  useWindowNodeContextStore().bindingRevision === bindingRevision
+autobyteus-web/stores/serverSettings.ts:103:    () => windowNodeContextStore.bindingRevision,
+autobyteus-web/stores/serverSettings.ts:130:  store: Pick<ServerSettingsBindingAwareStore, 'settingsBindingRevision' | 'searchConfigBindingRevision' | 'invalidateBoundNodeState'>,
+autobyteus-web/stores/serverSettings.ts:134:    (store.settingsBindingRevision !== null && store.settingsBindingRevision !== currentBindingRevision) ||
+autobyteus-web/stores/serverSettings.ts:143:  const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
+autobyteus-web/stores/serverSettings.ts:150:  return bindingRevisionAtStart
+autobyteus-web/stores/serverSettings.ts:156:    settingsBindingRevision: null as number | null,
+autobyteus-web/stores/serverSettings.ts:173:      this.settingsBindingRevision = null
+autobyteus-web/stores/serverSettings.ts:186:      const bindingRevision = windowNodeContextStore.bindingRevision
+autobyteus-web/stores/serverSettings.ts:187:      invalidateStaleBindingCache(store, bindingRevision)
+autobyteus-web/stores/serverSettings.ts:188:      if (this.settingsBindingRevision === bindingRevision) {
+autobyteus-web/stores/serverSettings.ts:194:        const bindingRevisionAtStart = await ensureBoundBackendReady()
+autobyteus-web/stores/serverSettings.ts:195:        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/serverSettings.ts:202:        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/serverSettings.ts:212:        this.settingsBindingRevision = bindingRevisionAtStart
+autobyteus-web/stores/serverSettings.ts:215:        if (isCurrentSettingsRead(store, requestToken, bindingRevision)) {
+autobyteus-web/stores/serverSettings.ts:219:          this.settingsBindingRevision = null
+autobyteus-web/stores/serverSettings.ts:233:      const bindingRevision = windowNodeContextStore.bindingRevision
+autobyteus-web/stores/serverSettings.ts:234:      invalidateStaleBindingCache(store, bindingRevision)
+autobyteus-web/stores/serverSettings.ts:238:        const bindingRevisionAtStart = await ensureBoundBackendReady()
+autobyteus-web/stores/serverSettings.ts:239:        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/serverSettings.ts:247:        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
+autobyteus-web/stores/serverSettings.ts:257:        this.settingsBindingRevision = bindingRevisionAtStart
+autobyteus-web/stores/serverSettings.ts:260:        if (isCurrentSettingsRead(store, requestToken, bindingRevision)) {
+autobyteus-web/stores/serverSettings.ts:264:          this.settingsBindingRevision = null
+autobyteus-web/stores/serverSettings.ts:277:      invalidateStaleBindingCache(this, windowNodeContextStore.bindingRevision)
+autobyteus-web/stores/serverSettings.ts:278:      if (!force && this.searchConfigBindingRevision === windowNodeContextStore.bindingRevision) {
+autobyteus-web/stores/serverSettings.ts:285:        const bindingRevisionAtStart = await ensureBoundBackendReady()
+autobyteus-web/stores/serverSettings.ts:286:        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+autobyteus-web/stores/serverSettings.ts:295:        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+autobyteus-web/stores/serverSettings.ts:300:        this.searchConfigBindingRevision = bindingRevisionAtStart
+autobyteus-web/stores/serverSettings.ts:351:    async updateServerSetting(key: string, value: string) {
+autobyteus-web/components/settings/CompactionConfigCard.vue:178:const currentRevision = computed(() => windowNodeContextStore.bindingRevision)
+autobyteus-web/components/settings/CompactionConfigCard.vue:180:  settingsStore.settingsBindingRevision === currentRevision.value && Boolean(currentStrategyId.value),
+autobyteus-web/components/settings/CompactionConfigCard.vue:182:const catalogReady = computed(() => catalogStore.bindingRevision === currentRevision.value)
+autobyteus-web/components/settings/CompactionConfigCard.vue:246:    settingsStore.settingsBindingRevision,
+autobyteus-web/components/settings/CompactionConfigCard.vue:262:  () => windowNodeContextStore.bindingRevision,
+autobyteus-web/components/settings/CompactionConfigCard.vue:299:      await settingsStore.updateServerSetting(change.key, change.value)
+## page responsive classes
+3:    class="flex h-full min-w-0 flex-col bg-white md:flex-row"
+8:      class="max-h-[38dvh] w-full shrink-0 overflow-y-auto border-b border-gray-200 bg-white md:max-h-none md:w-64 md:border-b-0 md:border-r"
+213:      class="min-h-0 min-w-0 flex-1 overflow-auto bg-white p-2 sm:p-3 md:py-4 md:pl-0 md:pr-4"

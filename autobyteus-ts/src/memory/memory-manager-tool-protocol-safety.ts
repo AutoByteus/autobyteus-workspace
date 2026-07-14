@@ -1,4 +1,5 @@
 import { Message } from '../llm/utils/messages.js';
+import { WorkingContext } from './working-context.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
 import { ToolInteractionStatus } from './models/tool-interaction.js';
 import { createToolCallIdentity, toolCallIdentityKey } from './models/tool-call-identity.js';
@@ -27,16 +28,11 @@ export type MemoryManagerToolProtocolSafetyInput = {
 type AppendRawTraceLikeInput = Omit<RawTraceItemOptions, 'id' | 'ts' | 'seq'> &
   Partial<Pick<RawTraceItemOptions, 'id' | 'ts' | 'seq'>>;
 
-type WorkingContextSnapshotLike = {
-  buildMessages(): Message[];
-  lastCompactionTs: number | null;
-};
-
 type MemoryManagerToolProtocolSafetyBoundary = {
-  workingContextSnapshot: WorkingContextSnapshotLike;
+  getWorkingContextMessages(): Message[];
+  replaceWorkingContext(workingContext: WorkingContext): void;
   listRawTracesOrdered(limit?: number): RawTraceItem[];
   listRawTraceCorpusOrdered(limit?: number): RawTraceItem[];
-  resetWorkingContextSnapshot(snapshotMessages: Iterable<Message>, lastCompactionTs?: number | null): void;
   appendRawTrace(input: AppendRawTraceLikeInput): RawTraceItem;
 };
 
@@ -51,7 +47,7 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
   const rawTraces = memoryManager.listRawTraceCorpusOrdered();
   const interactions = buildToolInteractions(rawTraces);
   const result = repairWorkingContextToolProtocol(
-    memoryManager.workingContextSnapshot.buildMessages(),
+    memoryManager.getWorkingContextMessages(),
     {
       completedToolResultsByIdentity: input.includeCommittedFacts === false
         ? new Map()
@@ -65,10 +61,7 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
 
   if (!result.didRepair) return result;
 
-  memoryManager.resetWorkingContextSnapshot(
-    result.messages,
-    memoryManager.workingContextSnapshot.lastCompactionTs,
-  );
+  memoryManager.replaceWorkingContext(new WorkingContext(result.messages));
   appendSyntheticRecoveryMarkers(memoryManager, rawTraces, result.repairs, input);
   return result;
 }

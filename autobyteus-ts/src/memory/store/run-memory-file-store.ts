@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { MemoryType, MemoryItem } from '../models/memory-types.js';
 import { RawTraceItem } from '../models/raw-trace-item.js';
-import { WorkingContextSnapshot } from '../working-context-snapshot.js';
+import { WorkingContext } from '../working-context.js';
 import { WorkingContextSnapshotSerializer } from '../working-context-snapshot-serializer.js';
 import type { SnapshotMetadata } from '../working-context-snapshot-serializer.js';
 import type { CompactedMemoryManifest } from './compacted-memory-manifest.js';
@@ -285,7 +285,7 @@ export class RunMemoryFileStore {
     return JSON.parse(raw) as Record<string, unknown>;
   }
 
-  readWorkingContextSnapshotState(): { snapshot: WorkingContextSnapshot; metadata: SnapshotMetadata } | null {
+  readWorkingContextSnapshotState(): { workingContext: WorkingContext; metadata: SnapshotMetadata } | null {
     const payload = this.readWorkingContextSnapshot();
     if (!payload) {
       return null;
@@ -298,11 +298,11 @@ export class RunMemoryFileStore {
   }
 
   writeWorkingContextSnapshotState(
-    snapshot: WorkingContextSnapshot,
+    workingContext: WorkingContext,
     options: WorkingContextSnapshotWriteOptions = {},
   ): void {
     this.writeWorkingContextSnapshot(
-      WorkingContextSnapshotSerializer.serialize(snapshot, {
+      WorkingContextSnapshotSerializer.serialize(workingContext, {
         agent_id: options.agentId ?? undefined,
       }),
     );

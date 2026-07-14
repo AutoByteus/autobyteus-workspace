@@ -1,0 +1,192 @@
+{
+  "scenarioIds": [
+    "PMCS-E2E-012",
+    "PMCS-E2E-013",
+    "PMCS-E2E-014",
+    "PMCS-E2E-016"
+  ],
+  "baseUrl": "http://127.0.0.1:61458",
+  "initialRead": {
+    "status": "PASS",
+    "forcedFailures": 1,
+    "retryAriaLabel": "Retry",
+    "authoritative": {
+      "strategy": "removed-strategy-live-recovery",
+      "ratio": "80",
+      "override": "",
+      "logs": false
+    }
+  },
+  "fullSave": {
+    "status": "PASS",
+    "mutations": [
+      {
+        "phase": "full-save",
+        "key": "AUTOBYTEUS_COMPACTION_STRATEGY",
+        "value": "structured-json"
+      },
+      {
+        "phase": "full-save",
+        "key": "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
+        "value": "0.61"
+      },
+      {
+        "phase": "full-save",
+        "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+        "value": "4096"
+      },
+      {
+        "phase": "full-save",
+        "key": "AUTOBYTEUS_COMPACTION_DEBUG_LOGS",
+        "value": "true"
+      }
+    ],
+    "persisted": {
+      "strategy": "structured-json",
+      "ratio": "0.61",
+      "override": "4096",
+      "logs": "true"
+    }
+  },
+  "laterFailureRetry": {
+    "status": "PASS",
+    "failureText": "Compaction configuration was not saved. PMCS forced later override rejection",
+    "failureMutations": [
+      {
+        "phase": "later-failure",
+        "key": "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
+        "value": "0.62"
+      },
+      {
+        "phase": "later-failure",
+        "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+        "value": "8192"
+      }
+    ],
+    "retryMutations": [
+      {
+        "phase": "remaining-retry",
+        "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+        "value": "8192"
+      },
+      {
+        "phase": "remaining-retry",
+        "key": "AUTOBYTEUS_COMPACTION_DEBUG_LOGS",
+        "value": "false"
+      }
+    ],
+    "retainedDrafts": {
+      "ratio": "62",
+      "override": "8192",
+      "logs": false
+    },
+    "persisted": {
+      "ratio": "0.62",
+      "override": "8192",
+      "logs": "false"
+    }
+  },
+  "responsive": {
+    "status": "PASS",
+    "desktop": {
+      "flexDirection": "row",
+      "navigation": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 1000
+      },
+      "content": {
+        "x": 256,
+        "y": 0,
+        "width": 1184,
+        "height": 1000
+      }
+    },
+    "narrow": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "flexDirection": "column",
+      "navigation": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 320.71875
+      },
+      "content": {
+        "x": 0,
+        "y": 320.71875,
+        "width": 390,
+        "height": 523.28125
+      },
+      "card": {
+        "x": 36,
+        "y": 325.71875,
+        "width": 318,
+        "height": 514
+      },
+      "ratioControl": {
+        "x": 61,
+        "y": 650.71875,
+        "width": 268,
+        "height": 44
+      },
+      "widths": {
+        "document": 390,
+        "body": 390,
+        "viewport": 390
+      }
+    }
+  },
+  "mutations": [
+    {
+      "phase": "full-save",
+      "key": "AUTOBYTEUS_COMPACTION_STRATEGY",
+      "value": "structured-json"
+    },
+    {
+      "phase": "full-save",
+      "key": "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
+      "value": "0.61"
+    },
+    {
+      "phase": "full-save",
+      "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+      "value": "4096"
+    },
+    {
+      "phase": "full-save",
+      "key": "AUTOBYTEUS_COMPACTION_DEBUG_LOGS",
+      "value": "true"
+    },
+    {
+      "phase": "later-failure",
+      "key": "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
+      "value": "0.62"
+    },
+    {
+      "phase": "later-failure",
+      "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+      "value": "8192"
+    },
+    {
+      "phase": "remaining-retry",
+      "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+      "value": "8192"
+    },
+    {
+      "phase": "remaining-retry",
+      "key": "AUTOBYTEUS_COMPACTION_DEBUG_LOGS",
+      "value": "false"
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to fetch server settings: ApolloError: PMCS initial read forced failure\n    at new ApolloError (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46b0e744:59:28)\n    at http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=46b0e744:795:47\n    at both (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:35:31)\n    at http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:24:24)\n    at Object.next (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:37:49)\n    at notifySubscription (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46b0e744:132:18)\n    at onNotify (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46b0e744:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46b0e744:225:5)",
+    "Failed to load server settings: ApolloError: PMCS initial read forced failure\n    at new ApolloError (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46b0e744:59:28)\n    at http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=46b0e744:795:47\n    at both (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:35:31)\n    at http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:24:24)\n    at Object.next (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:37:49)\n    at notifySubscription (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46b0e744:132:18)\n    at onNotify (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46b0e744:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46b0e744:225:5)",
+    "Failed to update server setting AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE: ApolloError: PMCS forced later override rejection\n    at new ApolloError (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46b0e744:59:28)\n    at http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=46b0e744:129:47\n    at both (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:35:31)\n    at http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:24:24)\n    at Object.next (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46b0e744:37:49)\n    at notifySubscription (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46b0e744:132:18)\n    at onNotify (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46b0e744:176:3)\n    at SubscriptionObserver.next (http://127.0.0.1:61458/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/pluggable-memory-compaction-strategies/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46b0e744:225:5)"
+  ],
+  "status": "PASS"
+}
