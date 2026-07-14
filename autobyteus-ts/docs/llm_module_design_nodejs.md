@@ -196,6 +196,9 @@ The current latest-model support set is summarized in
 - DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
 - Gemini `gemini-3.5-flash` with the same provider value for API-key and
   Vertex runtimes (verified 2026-05-20).
+- xAI Grok `grok-4.5` as the sole built-in Grok row (verified 2026-07-09),
+  using the existing Chat Completions path with always-on low/medium/high
+  reasoning and no legacy alias.
 - Moonshot/Kimi `kimi-k2.6` general-purpose model plus the K2.7 Code
   `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` serving routes. HighSpeed is
   a distinct official provider identifier for the faster K2.7 Code route, not a
@@ -223,6 +226,9 @@ Provider adapters own request-shape differences:
 - `GeminiLLM` uses the exact `gemini-3.5-flash` ID for both API-key and Vertex
   modes through `src/utils/gemini-model-mapping.ts`, while sharing the existing
   Gemini thinking config schema.
+- `GrokLLM` keeps the xAI Chat Completions transport, defaults reasoning to
+  `high`, and strips provider-invalid stop and penalty fields from copied config
+  and invocation kwargs before the shared request builder runs.
 - `GlmLLM` maps GLM `thinking_type` to provider-native `thinking.type`, sends
   `reasoning_effort` for enabled thinking, and omits stale effort values when
   thinking is disabled.
