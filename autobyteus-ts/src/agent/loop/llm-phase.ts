@@ -53,7 +53,11 @@ export class LlmPhase {
     const llmInstance = context.state.llmInstance as BaseLLM | null;
     if (!llmInstance) {
       const errorMessage = `Agent '${agentId}' requires an initialized LLM instance.`;
-      notifier?.notifyAgentErrorOutputGeneration('LlmPhase.pre_llm_check', errorMessage);
+      notifier?.notifyAgentErrorOutputGeneration({
+        source: 'LlmPhase.pre_llm_check',
+        message: errorMessage,
+        classification: { scope: 'turn', effect: 'diagnostic', turnId: turn.turnId }
+      });
       throw new Error(errorMessage);
     }
 
@@ -173,7 +177,12 @@ export class LlmPhase {
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
         turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
-        notifier?.notifyAgentErrorOutputGeneration('LlmPhase.prepareRequest', error.message, String(error.cause ?? error));
+        notifier?.notifyAgentErrorOutputGeneration({
+          source: 'LlmPhase.prepareRequest',
+          message: error.message,
+          details: String(error.cause ?? error),
+          classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
+        });
         return {
           kind: 'final',
           isError: true,
@@ -272,7 +281,12 @@ export class LlmPhase {
         );
         currentReasoningPartId = null;
       }
-      notifier?.notifyAgentErrorOutputGeneration('LlmPhase.stream', errorMessage, String(error));
+      notifier?.notifyAgentErrorOutputGeneration({
+        source: 'LlmPhase.stream',
+        message: errorMessage,
+        details: String(error),
+        classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
+      });
       return {
         kind: 'final',
         isError: true,
@@ -341,7 +355,12 @@ export class LlmPhase {
         });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        notifier?.notifyAgentErrorOutputGeneration('LlmPhase.immediateCompaction', errorMessage, String(error));
+        notifier?.notifyAgentErrorOutputGeneration({
+          source: 'LlmPhase.immediateCompaction',
+          message: errorMessage,
+          details: String(error),
+          classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
+        });
       }
     }
     if (toolInvocations.length) {

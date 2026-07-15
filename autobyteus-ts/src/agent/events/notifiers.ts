@@ -6,6 +6,17 @@ import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-o
 
 const ENV_VERBOSE_AGENT_EVENT_LOGS = 'AUTOBYTEUS_VERBOSE_AGENT_EVENT_LOGS';
 
+export type AgentErrorNotificationClassification =
+  | { scope: 'turn'; effect: 'diagnostic' | 'terminal'; turnId: string }
+  | { scope: 'runtime'; effect: 'terminal' };
+
+export type AgentErrorNotification = {
+  source: string;
+  message: string;
+  details?: string;
+  classification: AgentErrorNotificationClassification;
+};
+
 export class AgentExternalEventNotifier extends EventEmitter {
   agentId: string;
 
@@ -192,8 +203,16 @@ export class AgentExternalEventNotifier extends EventEmitter {
     this.emitEvent(EventType.AGENT_DATA_TODO_LIST_UPDATED, { todos: todoList });
   }
 
-  notifyAgentErrorOutputGeneration(errorSource: string, errorMessage: string, errorDetails?: string): void {
-    const payload = { source: errorSource, message: errorMessage, details: errorDetails };
+  notifyAgentErrorOutputGeneration(notification: AgentErrorNotification): void {
+    const classification = notification.classification;
+    const payload = {
+      source: notification.source,
+      message: notification.message,
+      details: notification.details,
+      error_scope: classification.scope,
+      error_effect: classification.effect,
+      ...(classification.scope === 'turn' ? { turn_id: classification.turnId } : {})
+    };
     this.emitEvent(EventType.AGENT_ERROR_OUTPUT_GENERATION, payload);
   }
 

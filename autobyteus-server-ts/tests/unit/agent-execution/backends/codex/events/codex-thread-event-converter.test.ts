@@ -607,6 +607,72 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
+  it("emits effect-aware Codex errors before their status companion", () => {
+    const converter = new CodexThreadEventConverter("run-1", null, () => ({
+      status: "error",
+      can_interrupt: false,
+    }));
+    const converted = converter.convert({
+      method: CodexThreadEventName.ERROR,
+      params: {
+        code: "TURN_FAILED",
+        message: "failed",
+        error_scope: "turn",
+        error_effect: "terminal",
+        turn_id: "turn-1",
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.ERROR,
+      AgentRunEventType.AGENT_STATUS,
+    ]);
+    expect(converted[0].payload).toMatchObject({
+      error_scope: "turn",
+      error_effect: "terminal",
+      turn_id: "turn-1",
+    });
+    expect(converted[0].statusHint).toBe("ERROR");
+  });
+
+  it("keeps unclassified Codex errors as content without a guessed status", () => {
+    const converter = new CodexThreadEventConverter("run-1", null, () => ({
+      status: "error",
+      can_interrupt: false,
+    }));
+    const converted = converter.convert({
+      method: CodexThreadEventName.ERROR,
+      params: { code: "UNKNOWN", message: "unclassified" },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0].eventType).toBe(AgentRunEventType.ERROR);
+    expect(converted[0].statusHint).toBeNull();
+  });
+
+  it("does not emit a status companion for a terminal error rejected by native turn guards", () => {
+    const converter = new CodexThreadEventConverter("run-1", null, () => ({
+      status: "running",
+      can_interrupt: true,
+    }));
+    const converted = converter.convert({
+      method: CodexThreadEventName.ERROR,
+      params: {
+        code: "TURN_FAILED",
+        message: "old failure",
+        error_scope: "turn",
+        error_effect: "terminal",
+        turn_id: "turn-a",
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.ERROR,
+      payload: { turn_id: "turn-a" },
+    });
+  });
+
   it("maps local MCP tool approval requests into TOOL_APPROVAL_REQUESTED", () => {
     const converter = new CodexThreadEventConverter("run-1");
 

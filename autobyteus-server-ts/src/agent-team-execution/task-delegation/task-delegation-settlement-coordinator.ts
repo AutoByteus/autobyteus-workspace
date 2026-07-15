@@ -57,11 +57,9 @@ const eventMemberRouteKey = (event: TeamRunEvent): string | null => {
 };
 
 const isIdleAgentEvent = (event: AgentRunEvent): boolean => {
-  if (event.eventType === AgentRunEventType.AGENT_STATUS) {
-    const status = normalizeAgentApiStatus(event.payload.status);
-    return status === "idle" || status === "offline";
-  }
-  return event.statusHint === "IDLE";
+  if (event.eventType !== AgentRunEventType.AGENT_STATUS) return false;
+  const status = normalizeAgentApiStatus(event.payload.status);
+  return status === "idle" || status === "offline";
 };
 
 export class TaskDelegationSettlementCoordinator {

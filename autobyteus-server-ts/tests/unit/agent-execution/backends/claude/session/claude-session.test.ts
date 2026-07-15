@@ -240,6 +240,16 @@ describe("ClaudeSession", () => {
     );
   });
 
+  it("does not clear an identified active turn for missing or mismatched completion identity", () => {
+    const { session } = createSession({ activeTurnId: "turn-b" });
+
+    session.markTurnCompleted(null);
+    session.markTurnCompleted("turn-a");
+
+    expect(session.activeTurnId).toBe("turn-b");
+    expect(session.getStatusSnapshotSource().currentStatus).toBe("RUNNING");
+  });
+
   it("caches and sends local context file reference paths in user content", async () => {
     const { session, sessionMessageCache, startQueryTurn } = createSession({
       query: createResultQuery("run-1"),
@@ -510,6 +520,11 @@ describe("ClaudeSession", () => {
     );
 
     const errorEvent = events.find((event) => event.method === ClaudeSessionEventName.ERROR);
+    expect(errorEvent?.params).toMatchObject({
+      error_scope: "turn",
+      error_effect: "terminal",
+      turn_id: expect.any(String),
+    });
     expect(String(errorEvent?.params?.message)).toContain("Claude Code process exited with code 1");
     expect(String(errorEvent?.params?.message)).toContain(
       "--dangerously-skip-permissions cannot be used with root/sudo privileges",

@@ -11,6 +11,7 @@ describe("AgentRunCommandRegistry", () => {
       dedupeKey: "dedupe-1",
     });
     expect(first.kind).toBe("accepted");
+    expect(first.record.association).toEqual({ kind: "PENDING_IDENTITY" });
 
     const duplicate = registry.begin({
       runId: "run-1",
@@ -28,6 +29,30 @@ describe("AgentRunCommandRegistry", () => {
     expect(busy.kind).toBe("busy");
     expect(busy.record.state).toBe("REJECTED");
     expect(busy.record.code).toBe("RUN_COMMAND_IN_PROGRESS");
+  });
+
+  it("uses discriminated association transitions and never overwrites a terminal record", () => {
+    const registry = new AgentRunCommandRegistry();
+    registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "dedupe-1" });
+    registry.markForwarded({ runId: "run-1", messageId: "msg-1" });
+    registry.awaitAnonymousStart({ runId: "run-1", messageId: "msg-1" });
+    expect(registry.getRecord("run-1", "msg-1")?.association)
+      .toEqual({ kind: "AWAITING_ANONYMOUS_START" });
+    registry.armAnonymous({ runId: "run-1", messageId: "msg-1", armedAtSequence: 4 });
+    expect(registry.getRecord("run-1", "msg-1")?.association)
+      .toEqual({ kind: "ANONYMOUS_ARMED", armedAtSequence: 4 });
+    registry.associateIdentified({ runId: "run-1", messageId: "msg-1", turnId: "turn-1" });
+    expect(registry.getRecord("run-1", "msg-1")?.association)
+      .toEqual({ kind: "IDENTIFIED", turnId: "turn-1" });
+    registry.markCompleted({ runId: "run-1", messageId: "msg-1", turnId: "turn-1" });
+    registry.markFailed({
+      runId: "run-1",
+      messageId: "msg-1",
+      code: "RUNTIME_REJECTED",
+      message: "late",
+    });
+    registry.markForwarded({ runId: "run-1", messageId: "msg-1" });
+    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("COMPLETED");
   });
 
   it("retains terminal records during ttl and purges them after ttl", () => {

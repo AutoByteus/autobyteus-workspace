@@ -31,7 +31,10 @@ import {
   SkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
-import { TeamRunEventSourceType } from "../domain/team-run-event.js";
+import {
+  TeamRunEventSourceType,
+  type TeamRunAgentEventPayload,
+} from "../domain/team-run-event.js";
 import { TeamRunMetadataMapper } from "./team-run-metadata-mapper.js";
 import { TeamDefinitionTopologyPlanner } from "./team-definition-topology-planner.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
@@ -39,6 +42,7 @@ import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { TeamRunLaunchIdentityAssignment } from "./team-run-launch-identity-assignment.js";
+import { AgentRunCanonicalFailureObserver } from "../../agent-execution/events/agent-run-canonical-failure-observer.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -175,6 +179,7 @@ export class TeamRunService {
     });
 
     let terminalPhase: ObservedRunLifecycleEvent["phase"] | null = null;
+    const agentFailureObserver = new AgentRunCanonicalFailureObserver();
     const unsubscribe = run.subscribeToEvents((event) => {
       if (terminalPhase) {
         return;
@@ -197,22 +202,17 @@ export class TeamRunService {
       }
 
       if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
-        const payload = event.data as { agentEvent?: { statusHint?: string | null; payload?: Record<string, unknown> } };
-        if (payload.agentEvent?.statusHint === "ERROR") {
-          terminalPhase = "FAILED";
-          listener({
-            runtimeSubject: "TEAM_RUN",
-            runId: run.runId,
-            phase: "FAILED",
-            occurredAt: new Date().toISOString(),
-            errorMessage:
-              typeof payload.agentEvent.payload?.message === "string"
-                ? payload.agentEvent.payload.message
-                : typeof payload.agentEvent.payload?.error === "string"
-                  ? payload.agentEvent.payload.error
-                  : null,
-          });
-        }
+        const agentEvent = (event.data as TeamRunAgentEventPayload).agentEvent;
+        const failure = agentFailureObserver.observe(agentEvent);
+        if (!failure) return;
+        terminalPhase = "FAILED";
+        listener({
+          runtimeSubject: "TEAM_RUN",
+          runId: run.runId,
+          phase: "FAILED",
+          occurredAt: new Date().toISOString(),
+          errorMessage: failure.message,
+        });
       }
     });
 

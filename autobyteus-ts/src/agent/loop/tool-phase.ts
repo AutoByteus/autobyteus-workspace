@@ -85,7 +85,11 @@ export class ToolPhase {
         tool_name: toolName,
         turn_id: activeTurnId
       });
-      notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.ToolNotFound.${toolName}`, errorMessage);
+      notifier?.notifyAgentErrorOutputGeneration({
+        source: `ToolExecution.ToolNotFound.${toolName}`,
+        message: errorMessage,
+        classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
+      });
       return new ToolResultEvent(toolName, null, invocationId, errorMessage, undefined, activeTurnId, false);
     }
 
@@ -172,7 +176,12 @@ export class ToolPhase {
         tool_name: toolName,
         turn_id: activeTurnId
       });
-      notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.Exception.${toolName}`, errorMessage, errorDetails);
+      notifier?.notifyAgentErrorOutputGeneration({
+        source: `ToolExecution.Exception.${toolName}`,
+        message: errorMessage,
+        details: errorDetails,
+        classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
+      });
       return new ToolResultEvent(toolName, null, invocationId, errorMessage, undefined, activeTurnId, false);
     }
   }
@@ -206,7 +215,12 @@ export class ToolPhase {
         tool_name: toolInvocation.name,
         turn_id: toolInvocation.turnId ?? turn.turnId
       });
-      notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.Prepare.${toolInvocation.name}`, errorMessage, errorDetails);
+      notifier?.notifyAgentErrorOutputGeneration({
+        source: `ToolExecution.Prepare.${toolInvocation.name}`,
+        message: errorMessage,
+        details: errorDetails,
+        classification: { scope: 'turn', effect: 'diagnostic', turnId: toolInvocation.turnId ?? turn.turnId }
+      });
       return new ToolResultEvent(
         toolInvocation.name,
         null,
@@ -280,7 +294,11 @@ export class ToolPhase {
       turn_id: message.turnId ?? turn.turnId
     });
     if (message.error) {
-      notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.ExternalResult.${toolName}`, message.error);
+      notifier?.notifyAgentErrorOutputGeneration({
+        source: `ToolExecution.ExternalResult.${toolName}`,
+        message: message.error,
+        classification: { scope: 'turn', effect: 'diagnostic', turnId: message.turnId ?? turn.turnId }
+      });
     }
   }
 

@@ -5,6 +5,8 @@ import { TeamRunService } from "../../../src/agent-team-execution/services/team-
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-registry-store.js";
+import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 describe("TeamRunService", () => {
   const createSubject = (activeRun: unknown = null) => {
@@ -92,6 +94,58 @@ describe("TeamRunService", () => {
     const result = await service.resolveTeamRun("team-1");
 
     expect(result).toBeNull();
+  });
+
+  it("uses canonical member error status rather than diagnostic error content", async () => {
+    let runtimeListener: ((event: TeamRunEvent) => void) | null = null;
+    const activeRun = {
+      runId: "team-1",
+      subscribeToEvents: vi.fn((listener) => {
+        runtimeListener = listener;
+        return vi.fn();
+      }),
+      isActive: vi.fn(() => true),
+    };
+    const { service } = createSubject(activeRun);
+    const observed: Array<{ phase: string; errorMessage?: string | null }> = [];
+    const unsubscribe = await service.observeTeamRunLifecycle("team-1", (item) => observed.push(item));
+    const emitAgentEvent = (eventType: AgentRunEventType, payload: Record<string, unknown>) => {
+      runtimeListener!({
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        teamRunId: "team-1",
+        sourcePath: ["member"],
+        data: {
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          memberName: "Member",
+          memberRunId: "member-run-1",
+          memberPath: ["member"],
+          memberRouteKey: "member",
+          agentEvent: { runId: "member-run-1", eventType, payload, statusHint: null },
+        },
+      });
+    };
+
+    emitAgentEvent(AgentRunEventType.ERROR, {
+      message: "recoverable",
+      error_scope: "turn",
+      error_effect: "diagnostic",
+      turn_id: "turn-b",
+    });
+    emitAgentEvent(AgentRunEventType.AGENT_STATUS, { status: "running" });
+    expect(observed.map((item) => item.phase)).toEqual(["ATTACHED"]);
+
+    emitAgentEvent(AgentRunEventType.ERROR, {
+      message: "terminal failure",
+      error_scope: "turn",
+      error_effect: "terminal",
+      turn_id: "turn-b",
+    });
+    emitAgentEvent(AgentRunEventType.AGENT_STATUS, { status: "error" });
+    expect(observed).toEqual([
+      expect.objectContaining({ phase: "ATTACHED" }),
+      expect.objectContaining({ phase: "FAILED", errorMessage: "terminal failure" }),
+    ]);
+    unsubscribe?.();
   });
 
   it("selects the mixed team backend when member runtimes span multiple runtimes", async () => {

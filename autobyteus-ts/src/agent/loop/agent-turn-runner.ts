@@ -154,11 +154,12 @@ export class AgentTurnRunner {
       }
 
       const errorMessage = `Agent turn '${turnId}' failed: ${String(error)}`;
-      this.notifier?.notifyAgentErrorOutputGeneration(
-        'AgentTurnRunner',
-        errorMessage,
-        error instanceof Error ? error.stack : String(error)
-      );
+      this.notifier?.notifyAgentErrorOutputGeneration({
+        source: 'AgentTurnRunner',
+        message: errorMessage,
+        details: error instanceof Error ? error.stack : String(error),
+        classification: { scope: 'turn', effect: 'terminal', turnId }
+      });
       await this.applyStatusEvent(new AgentErrorEvent(errorMessage, String(error)));
       return { kind: 'failed', turnId, error };
     }

@@ -21,6 +21,7 @@ export const handleAppServerNotification = (
   emitEvent: (codexThread: CodexThread, event: CodexAppServerMessage) => void,
 ): void => {
   const eventMethod = method.trim();
+  let eventParams = params;
   const item = asObject(params.item);
   const itemType = asString(item?.type)?.replace(/[_-]/g, "").toLowerCase();
   if (eventMethod === CodexThreadEventName.TURN_STARTED) {
@@ -47,10 +48,34 @@ export const handleAppServerNotification = (
     ) {
       codexThread.setCurrentStatus("RUNNING");
     } else if (statusType === "error" || statusType === "failed") {
+      const turnId = resolveTurnIdFromAppServerMessage(params) ?? codexThread.activeTurnId;
+      if (turnId) {
+        codexThread.markTurnFailed(turnId);
+        emitEvent(codexThread, {
+          method: CodexThreadEventName.ERROR,
+          params: {
+            code: "CODEX_THREAD_STATUS_FAILED",
+            message: asString(params.message) ?? "Codex thread status changed to error.",
+            error_scope: "turn",
+            error_effect: "terminal",
+            turn_id: turnId,
+          },
+        });
+        return;
+      }
       codexThread.setCurrentStatus("ERROR");
     }
   } else if (eventMethod === CodexThreadEventName.ERROR) {
-    codexThread.setCurrentStatus("ERROR");
+    const turnId = resolveTurnIdFromAppServerMessage(params) ?? codexThread.activeTurnId;
+    if (turnId) {
+      codexThread.markTurnFailed(turnId);
+      eventParams = {
+        ...params,
+        error_scope: "turn",
+        error_effect: "terminal",
+        turn_id: turnId,
+      };
+    }
   } else if (eventMethod === CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED) {
     const nextThreadId = resolveThreadIdFromAppServerMessage(params);
     if (nextThreadId) {
@@ -114,5 +139,5 @@ export const handleAppServerNotification = (
     }
   }
 
-  emitEvent(codexThread, { method: eventMethod, params });
+  emitEvent(codexThread, { method: eventMethod, params: eventParams });
 };

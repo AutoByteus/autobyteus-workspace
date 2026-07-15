@@ -65,6 +65,26 @@ describe("channel output event parsing and eligibility", () => {
     });
   });
 
+  it("preserves strict diagnostic error evidence for downstream output collection", () => {
+    const parsed = parseDirectChannelOutputEvent({
+      eventType: AgentRunEventType.ERROR,
+      runId: "agent-run-1",
+      statusHint: null,
+      payload: {
+        source: "ToolPhase",
+        message: "recoverable",
+        error_scope: "turn",
+        error_effect: "diagnostic",
+        turn_id: "turn-1",
+      },
+    });
+
+    expect(parsed?.errorEvidence).toEqual({
+      kind: "TURN_DIAGNOSTIC",
+      turnId: "turn-1",
+    });
+  });
+
   it("parses team member events and filters to the coordinator member", () => {
     const event = {
       eventSourceType: TeamRunEventSourceType.AGENT,

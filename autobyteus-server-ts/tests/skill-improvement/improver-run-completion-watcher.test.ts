@@ -17,25 +17,21 @@ const expectRejectsBeforeDelay = async (promise: Promise<unknown>, delayMs = 50)
 };
 
 describe("ImproverRunCompletionWatcher", () => {
-  it("rejects a pending waiter immediately when an ERROR event is observed", async () => {
+  it("rejects a pending waiter immediately when a classified terminal ERROR is observed", async () => {
     const watcher = new ImproverRunCompletionWatcher("improver-run-1");
     const pending = watcher.waitForCompletion(10_000);
 
     watcher.observe({
       runId: "improver-run-1",
       eventType: AgentRunEventType.ERROR,
-      statusHint: null,
-      payload: { message: "boom" },
+      statusHint: "ERROR",
+      payload: {
+        message: "boom",
+        error_scope: "turn",
+        error_effect: "terminal",
+        turn_id: "turn-1",
+      },
     });
-
-    await expectRejectsBeforeDelay(pending);
-    await expect(pending).rejects.toThrow("Retrospective Skill Improver run 'improver-run-1' failed.");
-  });
-
-  it("rejects a pending waiter immediately when statusHint is ERROR", async () => {
-    const watcher = new ImproverRunCompletionWatcher("improver-run-1");
-    const pending = watcher.waitForCompletion(10_000);
-
     watcher.observe({
       runId: "improver-run-1",
       eventType: AgentRunEventType.AGENT_STATUS,
@@ -45,5 +41,36 @@ describe("ImproverRunCompletionWatcher", () => {
 
     await expectRejectsBeforeDelay(pending);
     await expect(pending).rejects.toThrow("Retrospective Skill Improver run 'improver-run-1' failed.");
+  });
+
+  it("preserves diagnostic ERROR content and completes on a later terminal boundary", async () => {
+    const watcher = new ImproverRunCompletionWatcher("improver-run-1");
+    const pending = watcher.waitForCompletion(10_000);
+
+    watcher.observe({
+      runId: "improver-run-1",
+      eventType: AgentRunEventType.ERROR,
+      statusHint: null,
+      payload: {
+        message: "recoverable",
+        error_scope: "turn",
+        error_effect: "diagnostic",
+        turn_id: "turn-1",
+      },
+    });
+    watcher.observe({
+      runId: "improver-run-1",
+      eventType: AgentRunEventType.ASSISTANT_COMPLETE,
+      statusHint: null,
+      payload: { content: "improved" },
+    });
+    watcher.observe({
+      runId: "improver-run-1",
+      eventType: AgentRunEventType.TURN_COMPLETED,
+      statusHint: "IDLE",
+      payload: { turn_id: "turn-1" },
+    });
+
+    await expect(pending).resolves.toBe("improved");
   });
 });

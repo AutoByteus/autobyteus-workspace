@@ -77,6 +77,36 @@ describe('AgentExternalEventNotifier', () => {
     expect(infoSpy).toHaveBeenCalledWith(expect.stringContaining('emitted agent_turn_completed'));
   });
 
+  it('emits structured effect-aware error evidence without defaults', () => {
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    vi.spyOn(console, 'debug').mockImplementation(() => undefined);
+    const notifier = new AgentExternalEventNotifier('agent-errors');
+    let receivedPayload: any;
+    notifier.subscribe(EventType.AGENT_ERROR_OUTPUT_GENERATION, (payload) => {
+      receivedPayload = payload;
+    });
+
+    notifier.notifyAgentErrorOutputGeneration({
+      source: 'ToolPhase',
+      message: 'recoverable',
+      details: 'detail',
+      classification: {
+        scope: 'turn',
+        effect: 'diagnostic',
+        turnId: 'turn-1',
+      },
+    });
+
+    expect(receivedPayload).toEqual({
+      source: 'ToolPhase',
+      message: 'recoverable',
+      details: 'detail',
+      error_scope: 'turn',
+      error_effect: 'diagnostic',
+      turn_id: 'turn-1',
+    });
+  });
+
   it('logs streaming details only when verbose agent event logs are enabled', () => {
     process.env.AUTOBYTEUS_VERBOSE_AGENT_EVENT_LOGS = 'true';
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);

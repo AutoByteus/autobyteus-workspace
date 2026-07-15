@@ -37,9 +37,7 @@ describe("AutoByteusStreamEventConverter", () => {
         ? { status: "offline", can_interrupt: false }
         : { invocation_id: "inv-1", detail: "ok" },
       statusHint:
-        streamEventType === StreamEventType.ERROR_EVENT
-          ? "ERROR"
-          : streamEventType === StreamEventType.TURN_STARTED
+        streamEventType === StreamEventType.TURN_STARTED
             ? "ACTIVE"
             : streamEventType === StreamEventType.TURN_COMPLETED
               ? "IDLE"
@@ -47,6 +45,73 @@ describe("AutoByteusStreamEventConverter", () => {
                 ? "IDLE"
               : null,
     });
+  });
+
+  it("preserves effect-aware errors and does not clear active state for diagnostics or old terminal ids", () => {
+    let snapshotStatus: "idle" | "error" = "idle";
+    const converter = new AutoByteusStreamEventConverter("run-1", () => ({
+      status: snapshotStatus,
+      can_interrupt: false,
+    }));
+    converter.convert({
+      event_type: StreamEventType.TURN_STARTED,
+      data: { turn_id: "turn-b" },
+    } as any);
+
+    expect(converter.convert({
+      event_type: StreamEventType.ERROR_EVENT,
+      data: {
+        source: "ToolPhase",
+        message: "recoverable",
+        error_scope: "turn",
+        error_effect: "diagnostic",
+        turn_id: "turn-b",
+      },
+    } as any)).toMatchObject({
+      eventType: AgentRunEventType.ERROR,
+      statusHint: null,
+      payload: { error_effect: "diagnostic", turn_id: "turn-b" },
+    });
+    expect(converter.convert({
+      event_type: StreamEventType.ERROR_EVENT,
+      data: {
+        source: "runner",
+        message: "old failure",
+        error_scope: "turn",
+        error_effect: "terminal",
+        turn_id: "turn-a",
+      },
+    } as any)).toMatchObject({ statusHint: "ERROR" });
+
+    snapshotStatus = "idle";
+    expect(converter.convert({
+      event_type: StreamEventType.AGENT_STATUS,
+      data: {},
+    } as any)).toMatchObject({ payload: { status: "running" } });
+  });
+
+  it("does not grant status or lifecycle authority to malformed terminal error payloads", () => {
+    const converter = new AutoByteusStreamEventConverter("run-1", () => ({
+      status: "idle",
+      can_interrupt: false,
+    }));
+    converter.convert({
+      event_type: StreamEventType.TURN_STARTED,
+      data: {},
+    } as any);
+
+    expect(converter.convert({
+      event_type: StreamEventType.ERROR_EVENT,
+      data: {
+        message: "missing turn identity",
+        error_scope: "turn",
+        error_effect: "terminal",
+      },
+    } as any)).toMatchObject({ statusHint: null });
+    expect(converter.convert({
+      event_type: StreamEventType.AGENT_STATUS,
+      data: {},
+    } as any)).toMatchObject({ payload: { status: "running" } });
   });
 
   it("uses explicit current status payloads before stale snapshots", () => {

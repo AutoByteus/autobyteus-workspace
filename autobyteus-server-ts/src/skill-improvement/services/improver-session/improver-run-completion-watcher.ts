@@ -1,4 +1,5 @@
 import { AgentRunEventType, isAgentRunEvent, type AgentRunEvent } from "../../../agent-execution/domain/agent-run-event.js";
+import { AgentRunCanonicalFailureObserver } from "../../../agent-execution/events/agent-run-canonical-failure-observer.js";
 
 type CompletionWaiter = {
   resolve: (value: string) => void;
@@ -7,6 +8,7 @@ type CompletionWaiter = {
 };
 
 export class ImproverRunCompletionWatcher {
+  private readonly failureObserver = new AgentRunCanonicalFailureObserver();
   private readonly segmentTextById = new Map<string, string>();
   private assistantCompleteText: string | null = null;
   private terminal = false;
@@ -19,7 +21,7 @@ export class ImproverRunCompletionWatcher {
     if (!isAgentRunEvent(event) || event.runId !== this.runId || this.failure || this.terminal) {
       return;
     }
-    if (event.eventType === AgentRunEventType.ERROR || event.statusHint === "ERROR") {
+    if (this.failureObserver.observe(event)) {
       this.fail(new Error(`Retrospective Skill Improver run '${this.runId}' failed.`));
       return;
     }

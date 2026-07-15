@@ -1,6 +1,7 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
+import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
@@ -349,12 +350,21 @@ export class CodexThreadEventConverter {
             ...payload,
           }
         : payload;
-    return {
+    const event: AgentRunEvent = {
       eventType,
       runId: this.runId,
       payload: normalizedPayload,
-      statusHint,
+      statusHint: eventType === AgentRunEventType.ERROR ? null : statusHint,
     };
+    if (eventType !== AgentRunEventType.ERROR) {
+      return event;
+    }
+
+    const evidence = resolveAgentRunErrorEvidence(event);
+    event.statusHint = evidence?.kind === "TURN_TERMINAL" || evidence?.kind === "RUNTIME_GLOBAL"
+      ? "ERROR"
+      : null;
+    return event;
   }
 
   private createCodexProviderCompactionStatusEvent(

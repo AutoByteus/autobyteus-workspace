@@ -17,7 +17,8 @@ import {
 } from "../../run-history/services/agent-run-history-catalog-service.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
-import { AgentRunEventType, isAgentRunEvent } from "../domain/agent-run-event.js";
+import { isAgentRunEvent } from "../domain/agent-run-event.js";
+import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
 import { AgentRunProvisioningService } from "./agent-run-provisioning-service.js";
 import type { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
 
@@ -163,6 +164,7 @@ export class AgentRunService {
     });
 
     let terminalPhase: ObservedRunLifecycleEvent["phase"] | null = null;
+    const failureObserver = new AgentRunCanonicalFailureObserver();
     const unsubscribe = run.subscribeToEvents((event) => {
       if (!isAgentRunEvent(event)) {
         return;
@@ -170,21 +172,15 @@ export class AgentRunService {
       if (terminalPhase) {
         return;
       }
-      if (event.eventType !== AgentRunEventType.ERROR && event.statusHint !== "ERROR") {
-        return;
-      }
+      const failure = failureObserver.observe(event);
+      if (!failure) return;
       terminalPhase = "FAILED";
       listener({
         runtimeSubject: "AGENT_RUN",
         runId: run.runId,
         phase: "FAILED",
         occurredAt: new Date().toISOString(),
-        errorMessage:
-          typeof event.payload.message === "string"
-            ? event.payload.message
-            : typeof event.payload.error === "string"
-              ? event.payload.error
-              : null,
+        errorMessage: failure.message,
       });
     });
 

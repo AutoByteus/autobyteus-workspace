@@ -969,6 +969,52 @@ describe("ClaudeSessionEventConverter", () => {
     });
   });
 
+  it("emits classified terminal error before its post-mutation status", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter", () => ({
+      status: "error",
+      can_interrupt: false,
+    }));
+    const converted = converter.convert({
+      method: ClaudeSessionEventName.ERROR,
+      params: {
+        code: "CLAUDE_RUNTIME_TURN_FAILED",
+        message: "failed",
+        error_scope: "turn",
+        error_effect: "terminal",
+        turn_id: "turn-claude-3",
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.ERROR,
+      AgentRunEventType.AGENT_STATUS,
+    ]);
+    expect(converted[0].payload).toMatchObject({
+      error_scope: "turn",
+      error_effect: "terminal",
+      turn_id: "turn-claude-3",
+    });
+    expect(converted[0].statusHint).toBe("ERROR");
+    expect(converted[1].payload).toMatchObject({ status: "error" });
+  });
+
+  it("keeps unclassified Claude errors as content without a guessed status", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter", () => ({
+      status: "error",
+      can_interrupt: false,
+    }));
+    const converted = converter.convert({
+      method: ClaudeSessionEventName.ERROR,
+      params: { code: "UNKNOWN", message: "unclassified" },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.ERROR,
+      statusHint: null,
+    });
+  });
+
 
 
   it("maps Claude token usage session events to TOKEN_USAGE_UPDATED agent-run events", () => {
