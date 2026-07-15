@@ -74,6 +74,23 @@ describe('TabList.vue', () => {
     expect(tabs.every((tab) => tab.props().density === 'compact')).toBe(true);
   });
 
+  it('wraps tabs when the parent requests multi-row presentation', () => {
+    const wrapper = mount(TabList, {
+      props: {
+        tabs: sampleTabs,
+        selectedTab: 'Tab1',
+        wrap: true,
+      },
+      global: {
+        stubs: { Tab: TabStub },
+      },
+    });
+
+    expect(wrapper.classes()).toContain('flex-wrap');
+    expect(wrapper.classes()).toContain('overflow-x-hidden');
+    expect(wrapper.classes()).not.toContain('overflow-x-auto');
+  });
+
   it('emits the select event with the correct tab name when a Tab is clicked', async () => {
     const wrapper = mount(TabList, {
       props: {

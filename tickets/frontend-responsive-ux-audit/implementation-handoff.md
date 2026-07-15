@@ -14,6 +14,8 @@ Architecture review Round 3 is `Pass`. The production implementation was already
 
 After delivery integrated latest `origin/personal` at `456694fa8`, the base branch added the authoritative `usage` right-side tool after `progress`. The bounded local fix updates only `utils/layout/__tests__/workspaceSurfaceOrder.spec.ts` to assert that integrated catalog order. No production source change was made for this fix.
 
+API/E2E Round 4 then identified a production tab-capacity defect (`CR-003`): the six/eight current right-tool tabs overflowed the visible docked/drawer tab-list bounds, leaving `VNC Viewer` clipped. The bounded implementation fix adds an explicit wrapping presentation to `TabList`, enables it for `RightSideTabs`, and adds focused component coverage. The canonical catalog and tab labels/order remain unchanged, including `Usage` after `Activity`.
+
 ## What Changed
 
 - Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
@@ -26,6 +28,7 @@ After delivery integrated latest `origin/personal` at `456694fa8`, the base bran
 - Removed the obsolete standard-route `WorkspaceMobileLayout.vue`, `useMobilePanels.ts`, and desktop-layout implementation/test path. `/mobile` remains independent.
 - Updated center headers for constrained action wrapping and synchronized frontend startup documentation with current backend/dev-proxy configuration.
 - Reconciled the durable order test with the integrated `usage` tool without changing the canonical source catalog.
+- Made the full right-tool tab catalog wrap into readable multi-row docked/drawer presentation instead of horizontally clipping the final tab.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -66,6 +69,9 @@ Modified:
 - `autobyteus-web/components/tabs/Tab.vue`
 - `autobyteus-web/components/tabs/TabList.vue`
 - `autobyteus-web/utils/layout/__tests__/workspaceSurfaceOrder.spec.ts` (updated expectations only for the integrated `usage` catalog entry)
+- `autobyteus-web/components/tabs/TabList.vue` (added opt-in wrapped presentation)
+- `autobyteus-web/components/layout/RightSideTabs.vue` (enabled wrapped presentation for the right-tool catalog)
+- `autobyteus-web/components/tabs/__tests__/TabList.spec.ts` and `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts` (focused wrapping regression coverage)
 - Agent/team center workspace headers, shell localization, frontend README, and workspace layout docs
 
 Removed:
@@ -86,6 +92,7 @@ Removed:
 ## Known Risks
 
 - Exact threshold/mode tuning and the comprehensive current-state browser matrix remain downstream validation responsibilities.
+- The current right-tool tab header now wraps into multiple rows when needed; downstream API/E2E must confirm all tabs remain within the visible list in docked and drawer modes at the full matrix.
 - The shell-level adaptive layout verifies tool reachability and ordering but does not deeply validate every Terminal/Browser/VNC internal responsive state.
 - `workspace-responsive-probe.mjs` is cohesive and test-exempt from source-size limits but is near 500 effective lines; split it if future scenario families materially grow it.
 - `vue-tsc` is not installed in `autobyteus-web`; production Nuxt build is the available build/type confidence check.
@@ -130,7 +137,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off:
 
 - `git diff --check` — Passed.
 - `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
-- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, mobile shell, app-left-panel, and default layout — Passed after the latest-base fix (`11` files, `67` tests).
+- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, mobile shell, app-left-panel, and default layout — Passed after the `CR-003` fix (`11` files, `68` tests).
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.

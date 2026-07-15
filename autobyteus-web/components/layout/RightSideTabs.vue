@@ -8,6 +8,7 @@
         :tabs="visibleTabs"
         :selected-tab="effectiveActiveTab"
         density="compact"
+        :wrap="true"
         @select="handleTabSelect"
       />
       <button 

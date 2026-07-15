@@ -1,5 +1,8 @@
 <template>
-  <div class="flex items-end border-b border-gray-200 bg-white px-1 overflow-x-auto no-scrollbar">
+  <div
+    class="flex items-end border-b border-gray-200 bg-white px-1 no-scrollbar"
+    :class="wrap ? 'flex-wrap overflow-x-hidden' : 'overflow-x-auto'"
+  >
     <Tab 
       v-for="tab in tabs" 
       :key="tab.name" 
@@ -25,8 +28,10 @@ interface TabInfo {
 const props = withDefaults(defineProps<{  tabs: TabInfo[];
   selectedTab: string;
   density?: 'comfortable' | 'compact';
+  wrap?: boolean;
 }>(), {
   density: 'comfortable',
+  wrap: false,
 });
 
 const emit = defineEmits(["select"]);

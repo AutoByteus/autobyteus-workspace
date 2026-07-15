@@ -89,7 +89,7 @@ describe('RightSideTabs', () => {
       stubs: {
         TabList: {
           name: 'TabList',
-          props: ['tabs', 'selectedTab', 'density'],
+          props: ['tabs', 'selectedTab', 'density', 'wrap'],
           template: '<div class="tab-list-stub" />',
         },
         TeamOverviewPanel: { template: '<div class="team-overview-stub" />' },
@@ -124,6 +124,7 @@ describe('RightSideTabs', () => {
 
     const tabList = wrapper.getComponent({ name: 'TabList' });
     expect(tabList.props('density')).toBe('compact');
+    expect(tabList.props('wrap')).toBe(true);
   });
 
   it('does not switch to Artifacts when a touched file becomes newly visible', async () => {
