@@ -1,0 +1,41 @@
+# Initial Delivery Integration Refresh
+
+timestamp_utc=2026-07-15T04:46:42Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-tool-name-restoration-analysis
+ticket_branch=codex/tool-result-trace-tool-name-restoration-analysis
+bootstrap_base=2f93caf4a8aea932c12a9c7c5942e4c69f9d88d6
+tracked_remote_base=origin/personal
+tracked_remote_base_after_fetch=2f93caf4a8aea932c12a9c7c5942e4c69f9d88d6
+implementation_commit=0bfe1e41ce289df30cde885a036649a2731837c1
+delivery_checkpoint_commit=35e0044929d3e315f3c887b5996b9cf06bcf0237
+merge_base=2f93caf4a8aea932c12a9c7c5942e4c69f9d88d6
+ahead_behind=0 2
+base_is_ancestor=yes
+base_advanced_since_bootstrap=no
+integration_method=already-current
+new_base_commits_integrated=no
+post_integration_rerun=no
+no_rerun_rationale=The freshly fetched tracked remote base is byte-identical to the bootstrap/review base, is already an ancestor of the ticket checkpoint, and the API/E2E pass at 97.2% plus proportional test review therefore already apply to the integrated state.
+
+## git status --short --branch
+## codex/tool-result-trace-tool-name-restoration-analysis...origin/personal [ahead 2]
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_work_traces.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+?? tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/delivery-evidence/
+
+## recent graph
+* 35e004492 (HEAD -> codex/tool-result-trace-tool-name-restoration-analysis) chore: checkpoint validated tool-result trace delivery state
+* 0bfe1e41c Restore canonical tool names on result traces
+* 2f93caf4a (origin/personal, origin/HEAD, personal, codex/memory-compaction-evidence-formatters, codex/autobyteus-ts-agent-memory-compaction-investigation) docs(delivery): record pluggable compaction finalization
+*   c41d4bb18 merge: pluggable memory compaction strategies
+|\  
+| * c2b160a86 docs(delivery): finalize pluggable memory compaction
+
+## Pre-handoff remote audit
+timestamp_utc=2026-07-15T04:49:18Z
+tracked_remote_base=2f93caf4a8aea932c12a9c7c5942e4c69f9d88d6
+ahead_behind=0 2
+base_is_ancestor=yes

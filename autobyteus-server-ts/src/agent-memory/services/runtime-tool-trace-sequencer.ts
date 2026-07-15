@@ -79,7 +79,14 @@ export class RuntimeToolTraceSequencer {
     const existing = this.tools.get(key);
     if (existing?.resultRawTraceId) return { resolvedTurnId: identity.turnId };
     const observedName = extractToolName(event.payload);
-    const knownName = existing?.toolName?.trim() || observedName?.trim();
+    const existingName = existing?.toolName?.trim() || null;
+    if (existingName && observedName && observedName !== existingName) {
+      console.warn(
+        `[RuntimeToolTraceSequencer] skipped terminal tool event '${identity.toolCallId}' in turn '${identity.turnId}' because observed tool name '${observedName}' does not match expected tool name '${existingName}'.`,
+      );
+      return { resolvedTurnId: identity.turnId };
+    }
+    const knownName = existingName || (!existing?.callRawTraceId ? observedName : null);
     if (!knownName) {
       console.warn(
         `[RuntimeToolTraceSequencer] skipped terminal tool event '${identity.toolCallId}' in turn '${identity.turnId}' because it cannot create or match a tool card without a usable tool name.`,
@@ -185,6 +192,7 @@ export class RuntimeToolTraceSequencer {
         content,
         sourceEvent: event.eventType,
         ts: extractTimestamp(event.payload),
+        toolName: tool.toolName,
         toolCallId: tool.identity.toolCallId,
         toolResult: result === undefined ? null : result,
         toolError: error,

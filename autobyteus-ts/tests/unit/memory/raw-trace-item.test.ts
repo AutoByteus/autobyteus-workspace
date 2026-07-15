@@ -25,7 +25,7 @@ describe('RawTraceItem outcome presence', () => {
     expect(roundTrip.toolError).toBeUndefined();
   });
 
-  it('serializes explicit null outcome keys on a minimal result', () => {
+  it('keeps historical name-less results readable with explicit null outcomes', () => {
     const trace = new RawTraceItem({
       ...base,
       traceType: 'tool_result',

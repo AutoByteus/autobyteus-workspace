@@ -171,7 +171,7 @@ describe("Memory view GraphQL e2e", () => {
     for (const trace of [
       new RawTraceItem({ id: "rt-user", traceType: "user", sourceEvent: "AgentRun.postUserMessage", content: "hello", ts: 1, turnId: "t1", seq: 1 }),
       new RawTraceItem({ id: "rt-tool-call", traceType: "tool_call", sourceEvent: "TOOL_EXECUTION_STARTED", content: "", toolCallId: "1", toolName: "search", toolArgs: { q: "x" }, ts: 2, turnId: "t1", seq: 2 }),
-      new RawTraceItem({ id: "rt-tool-result", traceType: "tool_result", sourceEvent: "TOOL_EXECUTION_SUCCEEDED", content: "", toolCallId: "1", toolResult: { ok: true }, ts: 3, turnId: "t1", seq: 3 }),
+      new RawTraceItem({ id: "rt-tool-result", traceType: "tool_result", sourceEvent: "TOOL_EXECUTION_SUCCEEDED", content: "", toolCallId: "1", toolName: "search", toolResult: { ok: true }, toolError: null, ts: 3, turnId: "t1", seq: 3 }),
     ]) {
       runStore.appendRawTrace(trace);
     }
@@ -183,12 +183,12 @@ describe("Memory view GraphQL e2e", () => {
           workingContext { role content reasoning }
           episodic
           semantic
-          rawTraces { id traceType sourceEvent content }
+          rawTraces { id traceType sourceEvent content toolName toolCallId toolArgs toolResult toolError }
         }
       }
     `;
 
-    const data = await execGraphql<{ getAgentRunMemoryView: { runId: string; workingContext: Array<{ role: string }>; rawTraces: Array<{ id: string | null; traceType: string; sourceEvent: string | null }> } }>(
+    const data = await execGraphql<{ getAgentRunMemoryView: { runId: string; workingContext: Array<{ role: string }>; rawTraces: Array<{ id: string | null; traceType: string; sourceEvent: string | null; toolName: string | null; toolCallId: string | null; toolArgs: unknown; toolResult: unknown; toolError: string | null }> } }>(
       query,
       { runId: agentId },
     );
@@ -202,6 +202,13 @@ describe("Memory view GraphQL e2e", () => {
       ["rt-tool-call", "tool_call", "TOOL_EXECUTION_STARTED"],
       ["rt-tool-result", "tool_result", "TOOL_EXECUTION_SUCCEEDED"],
     ]);
+    expect(data.getAgentRunMemoryView.rawTraces.find((trace) => trace.id === "rt-tool-result")).toMatchObject({
+      toolName: "search",
+      toolCallId: "1",
+      toolArgs: null,
+      toolResult: { ok: true },
+      toolError: null,
+    });
   });
 
   it("returns active raw trace file metadata and defaults to the active file", async () => {

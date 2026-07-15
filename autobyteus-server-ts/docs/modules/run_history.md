@@ -356,14 +356,17 @@ team member metadata -> member memoryDir -> raw trace corpus -> historical repla
   transformer.
 - Tool projection first builds physical lifecycle groups across that complete
   corpus using compound `(turn_id, tool_call_id)` identity. A current call row
-  owns name/arguments; its separate minimal result row owns terminal
-  result/error. The transformer emits one conversation tool item and one
-  Activity per lifecycle, anchored to the call even when call and result are in
-  different raw-trace files.
-- Existing historical result rows may contain duplicated or late/effective
-  name/arguments. `buildToolInteractions(...)` may use those fields as a
-  read-only historical override, but run-history projection never feeds that
-  overlay back into recorder/writer state or creates a compatibility write.
+  owns canonical name/arguments; its separate minimal result row repeats the
+  verified canonical name, owns terminal result/error, and omits arguments. The
+  transformer emits one conversation tool item and one Activity per lifecycle,
+  anchored to the call even when call and result are in different raw-trace
+  files. A result-local name supports partial evidence, but does not replace
+  call correlation for arguments, anchoring, ordering, or lifecycle integrity.
+- Existing historical results may omit a name or may contain duplicated or
+  late/effective name/arguments. `buildToolInteractions(...)` reads both shapes
+  normally and may use result-side fields as a read-only historical override,
+  but run-history projection never feeds that overlay back into recorder/writer
+  state or creates a compatibility write.
 - `RuntimeMemoryEventAccumulator` owns the live event-to-raw-trace write
   boundary for runtime streams. A new ordered tool card flushes preceding
   same-turn reasoning at its first normalized call observation, even when the

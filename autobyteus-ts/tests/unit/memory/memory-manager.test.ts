@@ -90,9 +90,9 @@ describe('MemoryManager', () => {
       expect(raw[0].toDict()).not.toHaveProperty('tool_result');
       expect(raw[0].toDict()).not.toHaveProperty('tool_error');
       expect(raw[1].toDict()).toMatchObject({
-        trace_type: 'tool_result', tool_call_id: 'call_1', tool_result: 'ok', tool_error: null,
+        trace_type: 'tool_result', tool_call_id: 'call_1', tool_name: 'write_file',
+        tool_result: 'ok', tool_error: null,
       });
-      expect(raw[1].toDict()).not.toHaveProperty('tool_name');
       expect(raw[1].toDict()).not.toHaveProperty('tool_args');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -116,6 +116,37 @@ describe('MemoryManager', () => {
       expect(interactions).toHaveLength(1);
       expect(interactions[0].toolName).toBe('read_file');
       expect(interactions[0].status).toBe(ToolInteractionStatus.SUCCESS);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('persists denied native results with the canonical name and without arguments', () => {
+    const tempDir = makeTempDir();
+    try {
+      const manager = new MemoryManager({ store: new FileMemoryStore(tempDir, 'agent_mem_denied_tool') });
+      const turnId = manager.startTurn();
+      manager.ingestToolIntent(new ToolInvocation('run_bash', { command: 'rm -rf /' }, 'call_denied', turnId), turnId);
+
+      manager.ingestToolResult(new ToolResultEvent(
+        'run_bash',
+        undefined,
+        'call_denied',
+        undefined,
+        { command: 'rm -rf /' },
+        turnId,
+        true,
+      ), turnId);
+
+      const result = manager.listRawTracesOrdered()[1]!.toDict();
+      expect(result).toMatchObject({
+        trace_type: 'tool_result',
+        tool_call_id: 'call_denied',
+        tool_name: 'run_bash',
+        tool_result: null,
+        tool_error: 'Tool execution denied.',
+      });
+      expect(result).not.toHaveProperty('tool_args');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -472,7 +503,7 @@ describe('MemoryManager', () => {
       )).toBe(true);
       expect(rawItems.some((item) => item.traceType === 'tool_result' &&
         item.sourceEvent === 'AgentTurnInterruptedEvent' && item.toolCallId === 'inv-interrupt' &&
-        item.toolResult === null && item.toolError === 'user_interrupt')).toBe(true);
+        item.toolName === 'read_file' && item.toolResult === null && item.toolError === 'user_interrupt')).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -554,7 +585,7 @@ describe('MemoryManager', () => {
       )).toBe(true);
       expect(rawItems.some((item) =>
         item.traceType === 'tool_result' && item.sourceEvent === 'AgentTurnInterruptedEvent' &&
-        item.toolCallId === 'call_B' && item.toolError === 'user_interrupt'
+        item.toolCallId === 'call_B' && item.toolName === 'slow_tool' && item.toolError === 'user_interrupt'
       )).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -584,11 +615,11 @@ describe('MemoryManager', () => {
       });
       expect(manager.listRawTracesOrdered()[1]).toMatchObject({
         traceType: 'tool_result',
+        toolName: 'edit_image',
         toolResult: null,
         toolError: 'execution failed',
       });
       expect(manager.listRawTracesOrdered()[1].toDict()).not.toHaveProperty('tool_args');
-      expect(manager.listRawTracesOrdered()[1].toDict()).not.toHaveProperty('tool_name');
       expect((manager.getWorkingContextMessages()[0].tool_payload as ToolCallPayload).toolCalls[0].arguments).toEqual({
         input: 'relative.png',
       });
@@ -621,6 +652,43 @@ describe('MemoryManager', () => {
     }
   });
 
+  it('rejects a conflicting terminal name before batch mutation and accepts a later name-less terminal', () => {
+    const tempDir = makeTempDir();
+    try {
+      const manager = new MemoryManager({ store: new FileMemoryStore(tempDir, 'agent_mem_conflicting_names') });
+      const turnId = manager.startTurn();
+      manager.ingestToolIntents([
+        new ToolInvocation('tool_A', {}, 'call_A', turnId),
+        new ToolInvocation('tool_B', {}, 'call_B', turnId),
+      ], turnId);
+      const messageCount = manager.getWorkingContextMessages().length;
+
+      expect(() => manager.ingestToolResults([
+        new ToolResultEvent('tool_A', 'ok', 'call_A', undefined, undefined, turnId),
+        new ToolResultEvent('wrong_tool', 'bad', 'call_B', undefined, undefined, turnId),
+      ], turnId)).toThrow(
+        `Native tool result 'call_B' in turn '${turnId}' names 'wrong_tool' but the persisted tool call names 'tool_B'`,
+      );
+
+      expect(manager.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
+        'tool_call', 'tool_call',
+      ]);
+      expect(manager.getWorkingContextMessages()).toHaveLength(messageCount);
+
+      manager.ingestToolResults([
+        new ToolResultEvent('tool_A', 'ok', 'call_A', undefined, undefined, turnId),
+        new ToolResultEvent('   ', 'ok', 'call_B', undefined, undefined, turnId),
+      ], turnId);
+      expect(manager.listRawTracesOrdered().slice(2).map((trace) => trace.toDict())).toEqual([
+        expect.objectContaining({ tool_call_id: 'call_A', tool_name: 'tool_A', tool_result: 'ok' }),
+        expect.objectContaining({ tool_call_id: 'call_B', tool_name: 'tool_B', tool_result: 'ok' }),
+      ]);
+      expect(manager.listRawTracesOrdered().slice(2).every((trace) => !('tool_args' in trace.toDict()))).toBe(true);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('rejects result-before-call and suppresses reconstructed duplicate results', () => {
     const tempDir = makeTempDir();
     try {
@@ -647,7 +715,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('hydrates an archived native call before appending one active minimal result', () => {
+  it('hydrates an archived native call before appending one active name-bearing result', () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_archived_call');
@@ -665,7 +733,8 @@ describe('MemoryManager', () => {
 
       expect(reconstructed.listRawTracesOrdered()).toHaveLength(1);
       expect(reconstructed.listRawTracesOrdered()[0]).toMatchObject({
-        traceType: 'tool_result', toolCallId: 'call_archive', toolResult: 'contents', toolError: null,
+        traceType: 'tool_result', toolCallId: 'call_archive', toolName: 'read_file',
+        toolResult: 'contents', toolError: null,
       });
       expect(reconstructed.listRawTraceCorpusOrdered().map((trace) => trace.traceType)).toEqual([
         'tool_call', 'tool_result',

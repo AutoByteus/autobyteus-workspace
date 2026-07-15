@@ -198,7 +198,7 @@ describe("RuntimeToolTraceSequencer", () => {
     warn.mockRestore();
   });
 
-  it("flushes an unseen ready result-first terminal before strict call and minimal result writes", async () => {
+  it("flushes an unseen ready result-first terminal before strict call and argument-free result writes", async () => {
     const memoryDir = await mkTempDir();
     const { sequencer, flushReasoningBoundary } = createSequencer(memoryDir);
 
@@ -222,10 +222,10 @@ describe("RuntimeToolTraceSequencer", () => {
     expect(dicts[1]).toMatchObject({
       trace_type: "tool_result",
       tool_call_id: "result-first",
+      tool_name: "run_bash",
       tool_result: { stdout: "/tmp" },
       tool_error: null,
     });
-    expect(dicts[1]).not.toHaveProperty("tool_name");
     expect(dicts[1]).not.toHaveProperty("tool_args");
   });
 
@@ -260,16 +260,58 @@ describe("RuntimeToolTraceSequencer", () => {
     expect(results).toEqual([
       expect.objectContaining({
         tool_call_id: "failed-1",
+        tool_name: "run_bash",
         tool_result: { partial: true },
         tool_error: "boom",
       }),
       expect.objectContaining({
         tool_call_id: "denied-1",
+        tool_name: "run_bash",
         tool_result: { status: "denied", reason: "not approved" },
         tool_error: "not approved",
       }),
     ]);
-    expect(results.every((trace) => !("tool_name" in trace) && !("tool_args" in trace))).toBe(true);
+    expect(results.every((trace) => !("tool_args" in trace))).toBe(true);
+  });
+
+  it("rejects a conflicting terminal name without completing the lifecycle", async () => {
+    const memoryDir = await mkTempDir();
+    const { sequencer, flushReasoningBoundary } = createSequencer(memoryDir);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    sequencer.recordCallObservation(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "mismatch-1",
+      turn_id: "turn-1",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }), "turn-1");
+
+    sequencer.recordTerminal(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "mismatch-1",
+      turn_id: "turn-1",
+      tool_name: "read_file",
+      result: "wrong",
+    }), "turn-1");
+
+    expect(readTraces(memoryDir).map((trace) => trace.traceType)).toEqual(["tool_call"]);
+    expect(flushReasoningBoundary).toHaveBeenCalledTimes(1);
+    expect(warn).toHaveBeenCalledWith(
+      "[RuntimeToolTraceSequencer] skipped terminal tool event 'mismatch-1' in turn 'turn-1' because observed tool name 'read_file' does not match expected tool name 'run_bash'.",
+    );
+
+    sequencer.recordTerminal(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "mismatch-1",
+      turn_id: "turn-1",
+      result: "correct",
+    }), "turn-1");
+    expect(readTraces(memoryDir)).toEqual([
+      expect.objectContaining({ traceType: "tool_call", toolName: "run_bash" }),
+      expect.objectContaining({
+        traceType: "tool_result",
+        toolName: "run_bash",
+        toolResult: "correct",
+      }),
+    ]);
+    warn.mockRestore();
   });
 
   it("hydrates physical lifecycle state and suppresses duplicate call/result writes", async () => {
@@ -299,6 +341,7 @@ describe("RuntimeToolTraceSequencer", () => {
       "tool_call",
       "tool_result",
     ]);
+    expect(readTraces(memoryDir)[1]).toMatchObject({ toolName: "read_file" });
 
     const completedReconstruction = createSequencer(memoryDir);
     completedReconstruction.sequencer.recordTerminal(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
@@ -370,7 +413,11 @@ describe("RuntimeToolTraceSequencer", () => {
       ["tool_call", "physical-1"],
       ["tool_result", "physical-1"],
     ]);
-    expect(readTraces(memoryDir)[1]).toMatchObject({ toolResult: null, toolError: "user stopped" });
+    expect(readTraces(memoryDir)[1]).toMatchObject({
+      toolName: "run_bash",
+      toolResult: null,
+      toolError: "user stopped",
+    });
 
     sequencer.recordTerminal(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
       invocation_id: "deferred-1",

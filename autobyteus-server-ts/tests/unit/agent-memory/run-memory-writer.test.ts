@@ -134,6 +134,7 @@ describe("RunMemoryWriter", () => {
         turnId: "turn-1",
         content: "",
         sourceEvent: "TOOL_EXECUTION_SUCCEEDED",
+        toolName: "no_output_tool",
         toolCallId: "call-1",
         toolResult: null,
         toolError: null,
@@ -144,9 +145,9 @@ describe("RunMemoryWriter", () => {
       },
     });
     expect(store.listRawTraceDicts()[0]).toMatchObject({
-      trace_type: "tool_result", tool_call_id: "call-1", tool_result: null, tool_error: null,
+      trace_type: "tool_result", tool_call_id: "call-1", tool_name: "no_output_tool",
+      tool_result: null, tool_error: null,
     });
-    expect(store.listRawTraceDicts()[0]).not.toHaveProperty("tool_name");
     expect(store.listRawTraceDicts()[0]).not.toHaveProperty("tool_args");
 
     const groups = new RunMemoryWriter({ memoryDir }).readToolTraceLifecycleGroups();

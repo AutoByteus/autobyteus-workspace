@@ -168,10 +168,13 @@ Codex runtime runs now receive server-owned durable memory in addition to Codex-
 New Codex tool traces use the shared split physical contract. A `tool_call`
 owns compound `(turn_id, tool_call_id)` identity, canonical name, and explicit
 arguments. Its separate `tool_result` owns the same identity plus physically
-present result/error keys and omits name/arguments. The accumulator reconstructs
-call-written/result-written state from active plus complete rotated segments,
-suppresses duplicate terminals, and never rewrites the call into a combined
-terminal row.
+present result/error keys, repeats the matched call's verified canonical name,
+and omits arguments. The accumulator reconstructs call-written/result-written
+state from active plus complete rotated segments, suppresses duplicate
+terminals, and never rewrites the call into a combined terminal row. When a
+terminal supplies a non-empty name, it must match the canonical lifecycle name;
+a conflict is logged and skipped without completion. A name-omitting terminal
+uses the matched lifecycle name.
 
 Call timing follows provider argument readiness. Ordinary Codex command, file,
 dynamic, and MCP starts with explicit argument objects are written early. A
@@ -345,10 +348,11 @@ boundary, the local replay can still be incomplete rather than recovered from
 Codex native history.
 
 Tool replay uses one complete-corpus logical interaction per compound identity.
-New minimal results obtain name/arguments from their call even when rotation
-places the pair in different files. Historical result-side name/argument
-supersets can override historical call metadata only inside the read projection;
-that overlay is never used to decide a new write.
+New minimal results carry the verified canonical name locally and obtain
+arguments from their call even when rotation places the pair in different
+files. Historical name-less results and result-side name/argument supersets
+remain readable; supersets can override historical call metadata only inside
+the read projection. That overlay is never used to decide a new write.
 
 `AgentRunViewProjectionService` owns the source-authority policy and always
 loads local replay projection through `LocalMemoryRunViewProjectionProvider`,
@@ -390,7 +394,7 @@ conversation is being applied.
 
 - Raw Codex event interpretation stays inside `src/agent-execution/backends/codex/events/`.
 - `item/started` / `item/completed` with `item.type = dynamicToolCall` are the authoritative raw owners for non-migrated Codex dynamic-tool execution lifecycle. The converter emits display segments and execution lifecycle separately: start produces `SEGMENT_START(tool_call)` plus `TOOL_EXECUTION_STARTED`, and completion produces exactly one terminal `TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED` before `SEGMENT_END(tool_call)`.
-- `item/started` with `item.type = mcpToolCall` follows the split surface and is the canonical start authority for storage-only memory. `item/completed(mcpToolCall)` closes the display segment, while `codex/local/mcpToolExecutionCompleted` emits exactly one terminal lifecycle event enriched with the pending call's canonicalized tool name, turn id, and arguments. Those repeated terminal fields serve live lifecycle consumers and missing-call materialization only; raw results never duplicate them.
+- `item/started` with `item.type = mcpToolCall` follows the split surface and is the canonical start authority for storage-only memory. `item/completed(mcpToolCall)` closes the display segment, while `codex/local/mcpToolExecutionCompleted` emits exactly one terminal lifecycle event enriched with the pending call's canonicalized tool name, turn id, and arguments. Those terminal fields serve live lifecycle consumers and missing-call materialization; the recorder verifies any supplied terminal name against lifecycle state, persists that canonical name on the raw result, and continues to keep arguments call-only.
 - `item/started` / `item/completed` with `item.type = webSearch` are the authoritative raw owners for Codex built-in `search_web` execution lifecycle. The converter emits the same separated transcript and lifecycle surfaces: start produces `SEGMENT_START(tool_call, tool_name=search_web)` plus `TOOL_EXECUTION_STARTED(search_web)` but omits `arguments` for a provider placeholder; completion supplies the authoritative action arguments in exactly one terminal lifecycle event before `SEGMENT_END(tool_call)`. Storage therefore defers the call until terminal readiness instead of persisting placeholder `{}`.
 - Raw `function_call_output` remains diagnostic `TOOL_LOG` output for dynamic tools. It is not the terminal lifecycle authority and must not be used as a substitute for success/error Activity state.
 - Browser/media/task-delegation/communication/published-artifact tools from

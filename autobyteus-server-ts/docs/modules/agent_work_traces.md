@@ -84,11 +84,13 @@ messages, visible assistant messages, tool calls/results/errors, corrections,
 retries, feedback signals, and neutral trace events such as compaction-boundary
 notes when present.
 
-For current tool traces, name/arguments come from the call and terminal
-result/error from the separate minimal result. Historical result-side
-name/argument supersets are interpreted only by the shared logical read
-projection. The renderer does not own raw correlation or writer compatibility
-policy.
+For current tool traces, the call owns canonical name/arguments and the separate
+minimal result repeats the verified canonical name while owning terminal
+result/error and omitting arguments. A result-local name keeps partial evidence
+descriptive, but the shared logical read projection still correlates the call
+for arguments, anchoring, ordering, and lifecycle integrity. Historical
+name-less results and result-side name/argument supersets remain readable there.
+The renderer does not own raw correlation or writer compatibility policy.
 
 Each Markdown file starts exactly with `# Work Trace`. Body entries use canonical
 role/event labels:
