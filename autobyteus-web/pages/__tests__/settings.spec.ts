@@ -1,7 +1,11 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import SettingsPage from '../settings.vue'
+
+const settingsPageSource = readFileSync(resolve(process.cwd(), 'pages/settings.vue'), 'utf8')
 
 const translationMap: Record<string, string> = {
   'settings.page.backAriaLabel': 'Back to workspace',
@@ -148,6 +152,7 @@ describe('settings page', () => {
     const navigation = wrapper.get('[data-testid="settings-page-navigation"]')
     const anchor = wrapper.get('[data-testid="settings-navigation-separator-anchor"]')
     const line = wrapper.get('[data-testid="settings-navigation-separator-line"]')
+    const feedback = wrapper.get('[data-testid="settings-navigation-separator-feedback"]')
     const separator = wrapper.get('[data-testid="settings-navigation-resize-handle"]')
 
     expect(layout.attributes('style')).toContain('--settings-navigation-width: 256px')
@@ -155,7 +160,19 @@ describe('settings page', () => {
     expect(navigation.attributes('inert')).toBeUndefined()
     expect(navigation.attributes('aria-hidden')).toBeUndefined()
     expect(anchor.classes()).toEqual(expect.arrayContaining(['relative', 'w-0', 'overflow-visible', 'z-20']))
+    expect(line.classes()).toEqual(expect.arrayContaining([
+      'settings-navigation-separator-edge',
+      'pointer-events-none',
+      'w-px',
+    ]))
     expect(line.attributes('style')).toContain('left: -1px')
+    expect(feedback.classes()).toEqual(expect.arrayContaining([
+      'settings-navigation-separator-feedback',
+      'pointer-events-none',
+      'w-1',
+      'bg-transparent',
+    ]))
+    expect(feedback.attributes('style')).toContain('left: -2px')
     expect(separator.attributes('style')).toContain('left: -4px')
     expect(separator.attributes('role')).toBe('separator')
     expect(separator.attributes('aria-orientation')).toBe('vertical')
@@ -165,6 +182,46 @@ describe('settings page', () => {
     expect(separator.attributes('aria-valuenow')).toBe('256')
     expect(wrapper.find('[data-testid="settings-collapsed-header"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="left-panel-toggle-icon"]').exists()).toBe(false)
+    expect(wrapper.html()).not.toContain('blue-')
+  })
+
+  it('defines the exact workspace-gray separator feedback and focus state precedence', () => {
+    const hoverSelector = [
+      '.settings-navigation-separator-anchor:hover .settings-navigation-separator-feedback,',
+      '.settings-navigation-separator-anchor:focus-within .settings-navigation-separator-feedback {',
+      '  background-color: #9ca3af;',
+      '}',
+    ].join('\n')
+    const activeSelector = [
+      '.settings-navigation-separator-anchor .settings-navigation-separator-feedback.is-resizing {',
+      '  background-color: #6b7280;',
+      '}',
+    ].join('\n')
+
+    expect(settingsPageSource).toContain([
+      '.settings-navigation-separator-edge {',
+      '  background: #e5e7eb;',
+      '  box-shadow: 1px 0 3px rgb(0 0 0 / 10%);',
+      '}',
+    ].join('\n'))
+    expect(settingsPageSource).toContain([
+      '.settings-navigation-separator-feedback {',
+      '  background-color: transparent;',
+      '  transition: background-color 0.2s ease;',
+      '}',
+    ].join('\n'))
+    expect(settingsPageSource).toContain(hoverSelector)
+    expect(settingsPageSource).toContain(activeSelector)
+    expect(settingsPageSource.indexOf(activeSelector)).toBeGreaterThan(
+      settingsPageSource.indexOf(hoverSelector),
+    )
+    expect(settingsPageSource).toContain([
+      '.settings-navigation-resize-target:focus-visible {',
+      '  outline: 2px solid #6b7280;',
+      '  outline-offset: -2px;',
+      '}',
+    ].join('\n'))
+    expect(settingsPageSource).not.toContain('blue-')
   })
 
   it('keeps direct Token Statistics at the default manual width', async () => {
@@ -190,6 +247,7 @@ describe('settings page', () => {
     expect(separator.attributes('aria-valuenow')).toBe('0')
     expect(separator.attributes('style')).toContain('left: 0px')
     expect(wrapper.get('[data-testid="settings-navigation-separator-line"]').attributes('style')).toContain('left: 0px')
+    expect(wrapper.get('[data-testid="settings-navigation-separator-feedback"]').attributes('style')).toContain('left: 0px')
     expect(navigation.attributes('inert')).toBe('')
     expect(navigation.attributes('aria-hidden')).toBe('true')
     expect(wrapper.get('[data-testid="section-api-keys"]').element).toBe(managerElement)
@@ -197,6 +255,7 @@ describe('settings page', () => {
     await separator.trigger('keydown', { key: 'ArrowRight' })
     expect(separator.attributes('aria-valuenow')).toBe('16')
     expect(separator.attributes('style')).toContain('left: -4px')
+    expect(wrapper.get('[data-testid="settings-navigation-separator-feedback"]').attributes('style')).toContain('left: -2px')
     expect(navigation.attributes('inert')).toBeUndefined()
     expect(navigation.attributes('aria-hidden')).toBeUndefined()
     expect(wrapper.get('[data-testid="section-api-keys"]').element).toBe(managerElement)

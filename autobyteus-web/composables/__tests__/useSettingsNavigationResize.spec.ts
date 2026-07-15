@@ -93,6 +93,7 @@ describe('useSettingsNavigationResize', () => {
     expect(resize.navigationWidth.value).toBe(256);
     expect(resize.navigationWidthStyle.value).toEqual({ '--settings-navigation-width': '256px' });
     expect(resize.separatorLineStyle.value).toEqual({ left: '-1px' });
+    expect(resize.separatorFeedbackStyle.value).toEqual({ left: '-2px' });
     expect(resize.separatorTargetStyle.value).toEqual({ left: '-4px' });
     expect(resize.isDesktop.value).toBe(true);
     expect(resize.isNavigationInteractionHidden.value).toBe(false);
@@ -108,11 +109,13 @@ describe('useSettingsNavigationResize', () => {
     expect(home.defaultPrevented).toBe(true);
     expect(resize.navigationWidth.value).toBe(0);
     expect(resize.separatorLineStyle.value).toEqual({ left: '0px' });
+    expect(resize.separatorFeedbackStyle.value).toEqual({ left: '0px' });
     expect(resize.separatorTargetStyle.value).toEqual({ left: '0px' });
     expect(resize.isNavigationInteractionHidden.value).toBe(true);
 
     resize.handleSeparatorKeydown(keyboardEvent('ArrowRight'));
     expect(resize.navigationWidth.value).toBe(16);
+    expect(resize.separatorFeedbackStyle.value).toEqual({ left: '-2px' });
     expect(resize.separatorTargetStyle.value).toEqual({ left: '-4px' });
     resize.handleSeparatorKeydown(keyboardEvent('ArrowLeft'));
     resize.handleSeparatorKeydown(keyboardEvent('ArrowLeft'));
@@ -126,6 +129,32 @@ describe('useSettingsNavigationResize', () => {
     resize.handleSeparatorKeydown(unhandled);
     expect(unhandled.defaultPrevented).toBe(false);
     expect(resize.navigationWidth.value).toBe(256);
+    wrapper.unmount();
+  });
+
+  it('clamps feedback and target overlays independently near the viewport edge', () => {
+    installMatchMedia(true);
+    const { resize, wrapper } = mountComposable();
+
+    resize.handleSeparatorKeydown(keyboardEvent('Home'));
+    resize.handleSeparatorKeydown(keyboardEvent('ArrowRight'));
+    const separator = document.createElement('div');
+    resize.separatorRef.value = separator;
+    resize.startResize(pointerEvent('pointerdown', {
+      isPrimary: true,
+      pointerType: 'mouse',
+      button: 0,
+      pointerId: 9,
+      clientX: 16,
+    }));
+    window.dispatchEvent(pointerEvent('pointermove', { pointerId: 9, clientX: 1 }));
+
+    expect(resize.navigationWidth.value).toBe(1);
+    expect(resize.separatorLineStyle.value).toEqual({ left: '-1px' });
+    expect(resize.separatorFeedbackStyle.value).toEqual({ left: '-1px' });
+    expect(resize.separatorTargetStyle.value).toEqual({ left: '-1px' });
+
+    window.dispatchEvent(pointerEvent('pointerup', { pointerId: 9 }));
     wrapper.unmount();
   });
 

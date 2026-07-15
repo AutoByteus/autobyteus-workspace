@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Design-reset investigation complete; round-3 requirement/geometry gaps resolved; revised package awaiting architecture review round 4.
+- Current Status: Manual-separator implementation reached downstream review/delivery, then user supplied a new workspace-separator visual reference; visual-contract design impact investigated and awaiting a new architecture review.
 - Investigation Goal: Preserve the original Settings presentation while replacing the fixed desktop separator with a manual 0..256px splitter and removing the rejected collapsed-header implementation.
 - Scope Classification: `Medium`
 - Scope Rationale: The target behavior is frontend-shell-local, but the existing rejected commit must be cleanly removed and pointer, keyboard, responsive-focus, state-preservation, and browser geometry behavior require explicit coverage.
@@ -24,7 +24,7 @@
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`
 - Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width`
 - Current Branch: `codex/token-statistics-full-width`
-- Current HEAD / rejected implementation: `530587a707a48567d9bcf0a04736c091453f51fb`
+- Current HEAD: `d22085f9c` delivery checkpoint; manual-separator source implementation commit `173848dea`; historical rejected collapsed-header commit `530587a70`.
 - Bootstrap Base: refreshed `origin/personal` at `9fda25eac8fc70df97599758760b47f25620cec8`
 - Expected Base / Finalization Target: `personal`
 - Bootstrap Blockers: None
@@ -54,6 +54,9 @@
 | 2026-07-15 | Design authority | Solution designer `design-principles.md` | Keep the page as governing shell owner and isolate pointer/lifecycle mechanics | Add one focused Settings resize composable; avoid generic drawer/navigation framework |
 | 2026-07-15 | Architecture review | `design-review-report.md`, round 3, findings `AR-005`/`AR-006` | Overflow clipping alone leaves 0px navigation controls focusable/AT-visible; a 1px sibling consumes an extra pixel and the hit target lacked exact stacking | Add desktop-zero `inert`/`aria-hidden` with narrow restoration/focus transfer; change separator to zero-width anchored overlay with exact coordinates/z-order |
 | 2026-07-15 | User clarification | User confirmed incomplete menu text while sliding left is acceptable | Partial widths may clip text/content without an icon-only transformation | Keep navigation interactive at every width above 0; reserve unavailable state for exactly 0px |
+| 2026-07-15 | User visual reference | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_f8725fbb062147e9891e697e68f17792/implementation_engineer_479d17db173542fb94ef1df73eace1d9/context_files/ctx_a16c8fa96db8__image.png` | User wants the Settings separator to look like the workspace center/right-tabs separator | Revise visual tokens/layers without changing manual splitter geometry, range, or accessibility |
+| 2026-07-15 | Reference implementation | `autobyteus-web/components/layout/WorkspaceDesktopLayout.vue`, `.drag-handle` | 4px flex handle, transparent rest, `col-resize`, `background-color 0.2s ease`, z-index 10, margin-left -2px; hover `#9ca3af`, active `#6b7280`; adjacent right-panel `shadow` creates soft resting edge | Reuse exact transition/colors and soft edge language, but do not copy width-consuming flex geometry or mouse-only contract |
+| 2026-07-15 | Current Settings implementation | `pages/settings.vue` at `173848dea` | Uses one-pixel gray line with blue hover/focus/active (`blue-400/500`) on reviewed zero-width anchor/8px target | Blue interaction styling is the bounded design mismatch; source remains unchanged pending architecture review |
 
 ## Current Execution Spine And Ownership
 
@@ -85,6 +88,9 @@
 9. Width is page-local memory. Navigation among sections keeps it because the page remains mounted; leaving/remounting resets it.
 10. Pointer cleanup must cover up/cancel/unmount and restore body cursor/user selection even after interruption.
 11. Breakpoint focus is bidirectional at retained 0px: desktop separator -> narrow Back; narrow navigation descendant -> desktop separator before/when navigation becomes inert. CSS still owns layout; JavaScript owns only interaction availability and focus safety.
+12. Visual consistency can be achieved without invalidating round-4 geometry: retain the 1px overlaid resting edge and 8px target, add a separate absolute 4px feedback overlay, and use workspace gray tokens/transition rather than blue.
+13. The 4px feedback overlay global left is `max(0, boundary-2)`; coordinates are x=254..258 at default and x=0..4 at zero. It is pointer-transparent beneath the 8px semantic target.
+14. The resting edge can reproduce the reference's adjacent-panel softness with a restrained right-edge shadow while remaining inside the original boundary and consuming no layout width.
 
 ## Persisted Data Transition Evidence
 
@@ -97,6 +103,7 @@
 - No requirement unknown remains after the user's clarified direction.
 - Browser validation must confirm exact default/zero/partial nav, content, line, anchor, and 8px target coordinates; target hitability/z-order; and no document overflow.
 - Browser validation must confirm desktop-zero Tab and accessibility-tree exclusion plus narrow restoration at retained width 0.
+- Browser validation must compare rest/hover/focus/active separator appearance against the workspace reference and prove no blue feedback remains.
 - Browser validation must confirm actual table fit after manual resize rather than assuming zero-width geometry.
 - Focus recovery must be validated in a real browser because the prior unit-level design missed the `BUTTON -> BODY` transition.
 

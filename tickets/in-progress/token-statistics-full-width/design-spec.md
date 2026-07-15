@@ -2,7 +2,11 @@
 
 ## Status
 
-`Ready for architecture review round 4 — round-3 gaps resolved`
+`Ready for architecture review round 5 — workspace-separator visual impact`
+
+## Post-Implementation Visual Impact
+
+Round 4 passed and manual-separator source was implemented at `173848dea`. During downstream review/delivery, the user supplied the workspace center/right-tabs separator as the required visual reference. The current Settings implementation uses blue hover/focus/active feedback, while `WorkspaceDesktopLayout.vue` uses transparent rest, gray `#9ca3af` hover, gray `#6b7280` active, and a 0.2s background transition with a soft divider contributed by the adjacent panel shadow. This is a bounded visual design impact. It does not reopen width, layout, accessibility, focus, persistence, or Token Statistics behavior.
 
 ## Architecture Review Round 3 Resolution
 
@@ -25,7 +29,7 @@ The base `personal` implementation at `9fda25eac8fc70df97599758760b47f25620cec8`
 - page-owned active section, Server Settings mode, route normalization, Back action, and manager mounting;
 - table-local horizontal overflow and unchanged data/API owners.
 
-Current branch HEAD `530587a70` replaces that menu with `SettingsNavigation`, automatically collapses Token Statistics, and inserts `SettingsCollapsedHeader` above content. The 1440×900 browser screenshot proves that the extra row shifts the content downward. The user rejected that result and chose manual separator resizing with the original UI at rest.
+The rejected collapsed-header code was removed and the round-4 manual separator was implemented at `173848dea`; current branch HEAD is delivery checkpoint `d22085f9c`. The implementation correctly restores inline Settings navigation and the reviewed zero-width anchor/1px edge/8px target behavior, but uses `blue-400/500` transient separator colors. The new user reference requires workspace-style gray feedback instead.
 
 Existing `useHorizontalSplitResize.ts` and team communication panes establish local `col-resize` interaction language, but that composable clamps to a nonzero minimum, has mouse-only behavior, lacks keyboard/ARIA/focus recovery, and does not own cursor/user-selection restoration. Extending it would broaden risk for existing consumers. A Settings-specific composable is proportionate.
 
@@ -38,12 +42,14 @@ Existing `useHorizontalSplitResize.ts` and team communication panes establish lo
 5. At desktop zero width, keep the separator operable at the far left, make invisible navigation descendants unavailable via `inert`/`aria-hidden`, and show no alternate header, icon, label, rail, or overlay.
 6. Preserve the original below-`md` stacked navigation. Use JavaScript media observation only to apply/remove desktop-zero interaction accessibility and to recover focus; CSS remains the layout authority.
 7. Keep the active manager mounted and every route/data/API behavior unchanged.
+8. Match the workspace center/right-tabs separator visual language by layering a transparent 4px feedback strip and soft resting edge on the existing zero-width anchor: `#9ca3af` hover/focus, `#6b7280` active/resizing, and `background-color 0.2s ease`; retain the 8px semantic target and all round-4 geometry.
 
 ## Supplemental Solution Artifacts
 
 | Artifact | Purpose | Related IDs | Status / Relationship |
 | --- | --- | --- | --- |
 | `tickets/in-progress/token-statistics-full-width/ui-ux-spec.md` | Approved visual invariance, pointer/keyboard journeys, zero-width and responsive states | `REQ-001`–`REQ-012`, `AC-001`–`AC-015` | `Refined`; user-approved; governs observable UI |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_f8725fbb062147e9891e697e68f17792/implementation_engineer_479d17db173542fb94ef1df73eace1d9/context_files/ctx_a16c8fa96db8__image.png` | User-selected workspace separator visual reference | `REQ-002`, `AC-002`, `AC-015` | Approved reference evidence; exact source values resolved from `WorkspaceDesktopLayout.vue` |
 | Earlier drawer mockups and collapsed-header browser screenshots | Rejected direction evidence | N/A | Superseded; preserve only as history |
 
 ## Task Design Health Assessment
@@ -51,15 +57,16 @@ Existing `useHorizontalSplitResize.ts` and team communication panes establish lo
 - Change posture: `Behavior Change`
 - Current target design issue: `No`
 - Root cause classification: `No Design Issue Found`
-- Refactor needed now: `Yes`, but only clean-cut removal of the rejected implementation plus extraction of resize mechanics into a focused composable.
-- Evidence: the base SettingsPage is the correct shell owner and all manager/data boundaries are healthy. The former fixed width is not a defect against a prior invariant. The resize concern is a bounded shell interaction.
+- Refactor needed now: `No further structural refactor`; the round-4 cleanup/composable extraction is implemented. The new impact is a bounded separator visual-layer/CSS adjustment.
+- Evidence: the implemented SettingsPage/composable boundary is healthy and the new workspace visual reference changes no state or interface. Visual feedback belongs with existing separator markup/CSS in `settings.vue`.
 - Deferred refactor: the original page retains its long inline navigation. The revised task adds no destination/context mapping, so extracting navigation would not support the requirement and would unnecessarily preserve structure introduced for the rejected design.
 - Residual risk: pointer and breakpoint-focus behavior can be browser-sensitive; exact live validation is mandatory.
 
 ## Terminology
 
 - **Navigation width:** desktop Settings menu allocation, range `0..256px`.
-- **Separator line:** the persistent one-pixel visual boundary.
+- **Resting edge:** the persistent soft one-pixel boundary/shadow at the original in-box coordinate.
+- **Feedback strip:** transparent 4px overlay that becomes workspace gray on hover/focus/active resize.
 - **Resize hit target:** transparent ~8px focusable/pointer area associated with the line.
 - **Narrow layout:** original stacked navigation below `md`/768px; no separator.
 
@@ -108,6 +115,7 @@ export function useSettingsNavigationResize(): {
   narrowFocusFallbackRef: Ref<HTMLButtonElement | null>;
   navigationWidthStyle: ComputedRef<Record<'--settings-navigation-width', string>>;
   separatorLineStyle: ComputedRef<{ left: string }>;
+  separatorFeedbackStyle: ComputedRef<{ left: string }>;
   separatorTargetStyle: ComputedRef<{ left: string }>;
   startResize: (event: PointerEvent) => void;
   handleSeparatorKeydown: (event: KeyboardEvent) => void;
@@ -129,6 +137,7 @@ Internal invariants:
 - Keyboard mapping is exact: Left `-16`, Right `+16`, Home `0`, End `256`; other keys pass through.
 - `navigationWidthStyle` yields `{'--settings-navigation-width': '<n>px'}`.
 - `separatorLineStyle.left` is `0px` at width 0 and `-1px` otherwise.
+- `separatorFeedbackStyle.left` is `${Math.max(-navigationWidth, -2)}px`; with a fixed 4px overlay its global coordinates are `max(0, navigationWidth-2)..+4`.
 - `separatorTargetStyle.left` is `${Math.max(-navigationWidth, -4)}px`; because the anchor sits at x=`navigationWidth`, the global 8px target left is exactly `max(0, navigationWidth-4)`.
 
 ## Breakpoint Focus Contract
@@ -166,8 +175,14 @@ Separator geometry uses a **zero-width flex anchor**, not a one-pixel sibling al
   class="settings-navigation-separator-anchor relative z-20 hidden w-0 shrink-0 self-stretch overflow-visible md:block"
 >
   <div
-    class="settings-navigation-separator-line pointer-events-none absolute inset-y-0 w-px bg-gray-200"
+    class="settings-navigation-separator-edge pointer-events-none absolute inset-y-0 w-px bg-gray-200"
     :style="separatorLineStyle"
+    aria-hidden="true"
+  />
+  <div
+    class="settings-navigation-separator-feedback pointer-events-none absolute inset-y-0 z-10 w-1 bg-transparent"
+    :class="{ 'is-resizing': isResizing }"
+    :style="separatorFeedbackStyle"
     aria-hidden="true"
   />
   <div
@@ -190,11 +205,39 @@ Separator geometry uses a **zero-width flex anchor**, not a one-pixel sibling al
 
 - The anchor has `width:0`, is `position:relative`, and participates in the desktop flex row only as a coordinate origin. Therefore `navigation right == anchor x == content left`; it contributes zero pixels.
 - At the default width the common boundary/content origin is x=256 relative to the Settings shell. The absolute line uses `left:-1px`, occupying x=255..256 exactly where the original in-box right border rendered.
-- At widths `w >= 4`, the 8px target uses `left:-4px`, occupying x=`w-4..w+4` over both adjacent panes. For `0 <= w < 4`, local left is `-w`, so global target coordinates remain x=0..8. The target is `z-index:20`; the anchor is also a defined stacking context above default-z navigation/content. The decorative line is `pointer-events:none`; the target alone receives pointer events.
-- At width 0, the line changes to `left:0` (x=0..1) and the target remains x=0..8. Nothing extends into negative viewport coordinates, and neither absolute child contributes to flex/document width.
+- The resting edge uses `#e5e7eb` plus a restrained right-edge shadow (`1px 0 3px rgb(0 0 0 / 0.10)`) to reproduce the soft divider created by the workspace right-panel shadow without applying a full panel shadow to Settings content.
+- The 4px feedback strip uses local left `max(-navigationWidth, -2)`: x=254..258 by default, centered at all widths >=2, and x=0..4 below 2. It is transparent at rest, `#9ca3af` when the anchor is hovered or contains keyboard focus, and `#6b7280` while `isResizing`; active/resizing wins over hover/focus. Its only transition is `background-color 0.2s ease`, matching `WorkspaceDesktopLayout.vue`.
+- At widths `w >= 4`, the 8px target uses `left:-4px`, occupying x=`w-4..w+4` over both adjacent panes. For `0 <= w < 4`, local left is `-w`, so global target coordinates remain x=0..8. The target is `z-index:20`; the anchor is also a defined stacking context above default-z navigation/content. Both decorative edge and feedback are `pointer-events:none`; the target alone receives pointer events.
+- At width 0, the edge is x=0..1, feedback x=0..4, and target x=0..8. Nothing extends into negative viewport coordinates, and no absolute child contributes to flex/document width.
 - The page root must not add horizontal padding/margin to the anchor and must retain `min-w-0`; browser validation proves `document.scrollWidth === document.clientWidth` at 0 and 256.
-- Resting state remains transparent; hover/focus/active state highlights only the one-pixel line/outline.
+- No blue separator feedback or focus style remains. The 8px target uses `outline:2px solid #6b7280; outline-offset:-2px` on `:focus-visible`, while the 4px strip simultaneously uses workspace focus gray `#9ca3af`.
 - The content wrapper retains its original classes and receives no conditional top padding/header.
+
+Scoped CSS state precedence is exact:
+
+```css
+.settings-navigation-separator-edge {
+  background: #e5e7eb;
+  box-shadow: 1px 0 3px rgb(0 0 0 / 10%);
+}
+.settings-navigation-separator-feedback {
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+.settings-navigation-separator-anchor:hover .settings-navigation-separator-feedback,
+.settings-navigation-separator-anchor:focus-within .settings-navigation-separator-feedback {
+  background-color: #9ca3af;
+}
+.settings-navigation-separator-anchor .settings-navigation-separator-feedback.is-resizing {
+  background-color: #6b7280;
+}
+.settings-navigation-resize-target:focus-visible {
+  outline: 2px solid #6b7280;
+  outline-offset: -2px;
+}
+```
+
+The `is-resizing` selector has equal specificity and is ordered after hover/focus so active gray wins. Do not import/copy the workspace handle's `width:4px`, `flex:0 0 4px`, `margin-left:-2px`, z-index, or mouse handlers; only its visual state tokens are shared by value because Settings geometry and semantics are stricter.
 
 ## Accessibility Interface
 
@@ -214,7 +257,8 @@ Separator geometry uses a **zero-width flex anchor**, not a one-pixel sibling al
 
 | Need | Existing Capability | Decision | Reason |
 | --- | --- | --- | --- |
-| Horizontal splitter visual language | Team communication/delegated-task panes | Reuse visual convention | Matches established `col-resize` separator |
+| Required separator appearance | `WorkspaceDesktopLayout.vue .drag-handle` plus adjacent right-panel shadow | Reuse exact gray/transition/soft-edge language by value | User supplied this exact visual reference; Settings geometry/accessibility differ |
+| Other horizontal splitters | Team communication/delegated-task panes | Do not use as visual authority | Their blue-hover language is not the user-selected reference |
 | `useHorizontalSplitResize` | Generic 168..360 mouse-only clamp | Do not extend/reuse | Missing zero width, pointer cancel, keyboard, focus, cleanup contract; modifying impacts other panes |
 | Settings navigation | Original inline page markup | Restore/reuse unchanged | User explicitly wants original UI |
 | Rejected navigation model/header | Current commit | Remove | Exists solely for rejected behavior |
@@ -224,12 +268,12 @@ Separator geometry uses a **zero-width flex anchor**, not a one-pixel sibling al
 
 | File | Responsibility | Change |
 | --- | --- | --- |
-| `autobyteus-web/pages/settings.vue` | Restore base navigation/content UI; bind width, separator, Back fallback ref | Replace rejected implementation, then modify minimally |
-| `autobyteus-web/composables/useSettingsNavigationResize.ts` | Settings-specific resize state/input, desktop-zero interaction state, focus, cleanup | Add |
-| `autobyteus-web/composables/__tests__/useSettingsNavigationResize.spec.ts` | Clamp, pointer, cleanup, keyboard, inert-state computation, bidirectional media-focus contract | Add |
-| `autobyteus-web/pages/__tests__/settings.spec.ts` | Original route/section coverage plus separator DOM/style/session behavior | Replace rejected-collapse tests and extend |
-| `autobyteus-web/localization/messages/{en,zh-CN}/settings.ts` | Accessible `Resize Settings menu` label only | Remove rejected labels; add one label |
-| Rejected files listed below | No remaining target responsibility | Remove/revert |
+| `autobyteus-web/pages/settings.vue` | Existing manual separator markup/CSS; resting edge, 4px feedback layer, 8px target | Modify visual layer/tokens only; remove blue states |
+| `autobyteus-web/composables/useSettingsNavigationResize.ts` | Existing Settings resize authority; add derived feedback offset alongside existing line/target offsets | Modify minimally |
+| `autobyteus-web/composables/__tests__/useSettingsNavigationResize.spec.ts` | Existing resize contract; assert feedback offset at default/partial/near-zero/zero | Modify |
+| `autobyteus-web/pages/__tests__/settings.spec.ts` | Existing shell/semantic coverage; assert workspace gray classes/styles and no blue feedback | Modify |
+| `WorkspaceDesktopLayout.vue` | Visual reference only | No change |
+| Previously rejected files listed below | No remaining target responsibility | Already removed/reverted; must remain absent |
 
 ## Removal / Decommission Plan
 
@@ -254,6 +298,7 @@ Allowed:
 - SettingsPage imports `useSettingsNavigationResize`.
 - The composable depends only on Vue lifecycle/reactivity and browser DOM APIs guarded for SSR.
 - Page binds refs directly to its separator and existing Back button.
+- Settings separator CSS may mirror the documented workspace handle color/transition values without importing scoped workspace CSS.
 
 Forbidden:
 
@@ -263,18 +308,18 @@ Forbidden:
 - No table/API/store changes.
 - No JavaScript breakpoint-driven visual layout; media observation is limited to desktop-zero `inert`/`aria-hidden` synchronization and focus recovery.
 - No parent/child selector queries when refs provide the boundary.
+- Do not copy the workspace handle's 4px flex allocation, negative flex margin, z-index contract, or mouse-only input path; do not retain blue separator feedback.
 
 ## Change / Refactor Sequence
 
-1. Restore rejected implementation files to the exact pre-commit behavior or remove files added by `530587a70`; retain ticket evidence/artifacts.
-2. Confirm original focused Settings/AppLeftPanel tests are restored before adding revised behavior.
-3. Add `useSettingsNavigationResize.ts` and its focused tests.
-4. Modify original `settings.vue`: bind width style, replace desktop border with sibling separator, add Back fallback ref, and keep all selection/manager code otherwise unchanged.
-5. Replace rejected localization entries with the separator accessible label.
-6. Add page tests for semantic markup, default/session width, no automatic Token behavior, zero/max bounds, absence of rejected UI, and narrow classes.
-7. Run implementation checks; send through source review and full API/E2E again.
+Round-4 structural implementation is complete. After this visual impact passes architecture review:
 
-There is no temporary seam in the final working tree: rejected components/config/tests are removed before handoff, and only one width authority exists.
+1. Add `separatorFeedbackStyle` to the existing composable with global left `max(0, width-2)` and focused unit coverage.
+2. In `settings.vue`, retain the zero-width anchor/resting edge/8px target, insert the 4px pointer-transparent feedback overlay, and replace blue hover/focus/resizing styling with the exact workspace gray/transition contract.
+3. Add/adjust page tests for layer presence, state precedence, exact colors/transition, edge shadow, coordinates, and absence of blue separator classes.
+4. Re-run implementation checks, source review, targeted browser visual/geometry validation, and proportional downstream flow before delivery resumes.
+
+Do not amend `WorkspaceDesktopLayout.vue`, the resize input/focus/accessibility logic, or any manager/data behavior for this visual-only rework.
 
 ## Failure / Edge Behavior
 
@@ -303,14 +348,18 @@ Implementation-scoped durable coverage:
 - section changes retain width and manager resize does not cause remount;
 - rejected header/icon/model elements are absent;
 - narrow stacked class behavior remains.
+- feedback offset at 256, partial, 1, and 0px;
+- exact resting edge/soft shadow, transparent feedback rest, gray hover/focus/active values, 0.2s transition, and active-state precedence;
+- no `blue-*` separator feedback class remains.
 
 API/E2E/browser coverage must re-investigate old scenarios because prior durable tests encode rejected requirements. Required live evidence includes:
 
 - 1440×900 original 256px resting visual equivalence and zero extra top offset;
 - pointer drag through partial, 0, and back to 256 widths;
-- exact default geometry: nav right, zero-width anchor x, and content left all x=256; line x=255..256; target x=252..260;
-- exact zero geometry: nav right, anchor, and content left x=0; line x=0..1; target x=0..8; pointer hit at x=4 restores width; no document overflow;
+- exact default geometry: nav right, zero-width anchor x, and content left all x=256; resting edge x=255..256; feedback x=254..258; target x=252..260;
+- exact zero geometry: nav right, anchor, and content left x=0; resting edge x=0..1; feedback x=0..4; target x=0..8; pointer hit at x=4 restores width; no document overflow;
 - partial geometry: nav right/anchor/content share the chosen width and the 8px z-ordered target receives pointer input over both panes;
+- visual-state screenshots/computed styles at rest, hover, keyboard focus, and active drag prove workspace gray values/transition/soft edge and no blue feedback;
 - desktop-zero Tab order and accessibility snapshot omit Back/destinations while retaining separator; narrow at retained 0 restores them;
 - Created Time fit/no table scroll after sufficient manual shrink;
 - request count, manager identity, statistics state, and scroll preservation;
@@ -335,11 +384,13 @@ No telemetry or backend observability is needed. Browser DOM geometry, focus ide
 - Overlay drawer/backdrop: changes layout model and is unnecessary.
 - Extending the generic horizontal resize composable: disproportionate impact and insufficient contract.
 - Persisting width: contradicts original-on-fresh-mount simplicity and was not requested.
+- Copying `WorkspaceDesktopLayout .drag-handle` markup/CSS wholesale: rejected because it would reintroduce width accounting and accessibility gaps; only its visual state language is applicable.
 
 ## Design Review Checklist
 
 - Revised user-approved direction reflected: Yes.
 - Original UI at rest, no extra vertical space: Yes.
+- Workspace separator visual language and exact gray state tokens: Yes.
 - Manual-only 0..256 splitter: Yes.
 - Zero-width recovery without header/rail/icon: Yes.
 - Desktop-zero Tab/AT removal and narrow restoration: Yes.

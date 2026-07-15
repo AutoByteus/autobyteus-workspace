@@ -2,11 +2,11 @@
 
 ## Status
 
-`Refined` — revised and approved by the user on 2026-07-15 after rejection of the collapsed-header implementation.
+`Refined` — manual separator direction and later workspace-separator visual reference approved by the user on 2026-07-15.
 
 ## Goal / Problem Statement
 
-Preserve the original `personal`-branch Settings page appearance and behavior while making the existing vertical separator between Settings navigation and page content horizontally draggable at desktop widths. Users manually drag the separator left to give data-dense pages such as Token Statistics more width, or right to restore the menu. The change must add no category header, icon rail, automatic section-specific collapse, or visible control inside the content area.
+Preserve the original `personal`-branch Settings page structure and behavior while making the existing vertical separator between Settings navigation and page content horizontally draggable at desktop widths. Its interaction appearance shall match the established workspace separator between center content and right-side tabs: a soft light-gray resting edge, transparent four-pixel feedback strip, and gray hover/active transition. Users manually drag left to give data-dense pages such as Token Statistics more width, or right to restore the menu. The change must add no category header, icon rail, automatic section-specific collapse, or visible control inside the content area.
 
 ## User Decision And Superseded Direction
 
@@ -14,6 +14,7 @@ Preserve the original `personal`-branch Settings page appearance and behavior wh
 - The user then selected the simpler split-pane direction: keep the original Settings UI visually unchanged and make its existing separator draggable.
 - The earlier normally-open/contextually-auto-collapsed header design is no longer approved and must be removed rather than patched.
 - Token Statistics receives no special automatic layout rule. Resizing is manual and applies to the overall Settings shell.
+- The user subsequently supplied the workspace center/right-tabs separator as the required visual reference. This changes separator styling only; the approved zero-width anchor, 8px accessible target, manual range, and content geometry remain intact.
 
 ## Supplemental Solution Artifacts
 
@@ -26,9 +27,9 @@ Preserve the original `personal`-branch Settings page appearance and behavior wh
 
 - Change posture: `Behavior Change`
 - Root cause classification: `No Design Issue Found`
-- Refactor posture: `Bounded local replacement required`; no navigation-model refactor is needed for the revised behavior.
+- Refactor posture: `No further structural refactor`; the reviewed manual-separator replacement is implemented, and only its visual overlay/tokens require bounded adjustment.
 - Evidence: the original Settings page has the correct route, navigation, manager, and responsive ownership. Its fixed 256px desktop allocation was a valid prior product choice; the new request adds manual width allocation rather than repairing a violated invariant.
-- Current implementation impact: commit `530587a707a48567d9bcf0a04736c091453f51fb` implements the now-rejected header/auto-collapse direction and must be cleanly removed before the splitter behavior is added.
+- Current implementation impact: commit `173848dea` implements the approved manual behavior and cleanly removes historical rejected commit `530587a70` source paths. The new impact is limited to replacing its blue separator feedback with the user-selected workspace visual language.
 - Residual design note: the original inline navigation is long, but the revised behavior neither duplicates nor changes its destination policy. Refactoring it is intentionally out of scope.
 
 ## In-Scope Use Cases
@@ -53,9 +54,9 @@ Preserve the original `personal`-branch Settings page appearance and behavior wh
 ## Functional Requirements
 
 - `REQ-001` — On every new Settings-page mount at `md` and wider, the navigation shall have its original 256px width and all original navigation/content visual structure shall remain unchanged at rest.
-- `REQ-002` — The existing one-pixel vertical boundary between navigation and content shall become the visual track for a horizontal resize separator with a larger transparent interaction hit area and `col-resize` cursor. The line and hit target shall overlay a zero-width layout anchor so the original 256px navigation/content boundary remains at exactly 256px rather than shifting to 257px.
+- `REQ-002` — The separator shall use the workspace center/right-tabs resize-handle visual language without copying its width-consuming geometry: a zero-width layout anchor, soft one-pixel resting edge, transparent four-pixel feedback strip, larger transparent 8px interaction target, and `col-resize` cursor. The overlay shall keep the original 256px navigation/content boundary at exactly 256px rather than shifting it.
 - `REQ-003` — Pointer dragging shall resize navigation continuously from `0px` through `256px`; dragging left increases content width and dragging right restores navigation width.
-- `REQ-004` — At desktop `0px`, navigation content shall be clipped/hidden, marked `aria-hidden="true"`, and made `inert` so its Back/destination controls are absent from sequential focus and the accessibility tree. The mounted navigation state remains intact, and the one-pixel separator plus its interaction hit area remains operable at the far left. No icon rail or header shall appear.
+- `REQ-004` — At desktop `0px`, navigation content shall be clipped/hidden, marked `aria-hidden="true"`, and made `inert` so its Back/destination controls are absent from sequential focus and the accessibility tree. The mounted navigation state remains intact, and the resting edge, four-pixel feedback strip, and 8px interaction target remain operable at the far left. No icon rail or header shall appear.
 - `REQ-005` — Resizing shall be wholly manual. Section selection, route initialization, Server Settings fallback, and Token Statistics direct links shall not modify navigation width.
 - `REQ-006` — The current width shall remain stable when selecting other Settings sections during the same mounted page session and shall reset to `256px` only after the Settings page is remounted.
 - `REQ-007` — Resizing shall change only shell geometry; the active manager shall stay mounted and shall not reset, refetch, mutate data, or lose its relevant scroll/interaction state solely due to resizing.
@@ -68,9 +69,9 @@ Preserve the original `personal`-branch Settings page appearance and behavior wh
 ## Acceptance Criteria
 
 - `AC-001` — At 1440×900 on a fresh Settings mount, the menu measures 256px, the navigation right edge and content left edge both resolve to x=256 relative to the Settings shell, and the page is visually equivalent to the original `personal` branch: no one-pixel horizontal shift, new header, label, icon, rail, or vertical displacement.
-- `AC-002` — The resting separator is an overlaid one-pixel gray line occupying x=255..256 at the default width; its zero-width flex anchor does not consume layout space. The 8px hit target is centered over boundaries at least 4px from the viewport edge and clamps its left edge to x=0 for widths below 4px. Hover/focus/drag may reveal a subtle interaction highlight without adding a persistent visible control.
+- `AC-002` — At default width, the zero-width anchor consumes no layout space; the soft resting edge occupies x=255..256, the transparent four-pixel feedback strip occupies x=254..258, and the 8px hit target occupies x=252..260. The feedback strip uses the workspace values: transparent at rest, `#9ca3af` on hover/keyboard focus, `#6b7280` while actively resizing, and `background-color 0.2s ease`. Keyboard focus also uses a visible inset `2px` `#6b7280` outline. The resting edge uses the specified restrained shadow to reproduce the workspace right-panel divider.
 - `AC-003` — Dragging left updates menu width continuously and correspondingly expands content without whole-page horizontal overflow.
-- `AC-004` — The menu can reach 0px; at desktop no menu content is visible or reachable by Tab/assistive technology, no replacement header/rail appears, content begins at x=0, and the separator target remains operable at x=0..8 without increasing document scroll width.
+- `AC-004` — The menu can reach 0px; at desktop no menu content is visible or reachable by Tab/assistive technology, no replacement header/rail appears, content begins at x=0, and the overlaid resting edge x=0..1, feedback strip x=0..4, and target x=0..8 remain operable without increasing document scroll width.
 - `AC-005` — Dragging right from 0px restores the menu, up to exactly 256px, with its original contents and active styling intact.
 - `AC-006` — Selecting/direct-linking Token Statistics initially leaves the menu at 256px; only a user resize changes it.
 - `AC-007` — After manually resizing while on Token Statistics, all columns through Created Time are visible without horizontal table scrolling at 1440×900 when sufficient width is reclaimed.
@@ -81,14 +82,15 @@ Preserve the original `personal`-branch Settings page appearance and behavior wh
 - `AC-012` — At 390×844 the original stacked navigation/content containment is unchanged, the separator is absent from the accessibility tree, any retained 0px desktop state does not leave navigation inert/hidden, and no vertical rail appears.
 - `AC-013` — Desktop-to-narrow with separator focus moves focus to Back, not `BODY`; narrow-to-desktop at retained 0px moves focus from a navigation descendant to the separator before/when that navigation becomes inert; other viewport changes do not steal focus.
 - `AC-014` — Back to Workspace, Server Settings Basics/Advanced/Migrations, legacy route normalization, embedded defaults, loading/error/empty/form states, Browser, and Electron retain current behavior.
-- `AC-015` — Durable tests and browser evidence cover default coordinate equivalence, overlay line/hit-target coordinates and z-order hitability, pointer bounds, zero-width Tab/AT removal and recovery, keyboard/ARIA, section-session continuity, data/request preservation, narrow restoration, breakpoint focus recovery, and unchanged document width.
+- `AC-015` — Durable tests and browser evidence cover default coordinate equivalence; resting/hover/focus/active visual tokens and transition; edge/feedback/target coordinates and z-order hitability; pointer bounds; zero-width Tab/AT removal and recovery; keyboard/ARIA; section-session continuity; data/request preservation; narrow restoration; breakpoint focus recovery; and unchanged document width.
 
 ## Constraints / Dependencies
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`
-- Branch: `codex/token-statistics-full-width`; current rejected implementation commit `530587a707a48567d9bcf0a04736c091453f51fb`; base/final target `origin/personal`/`personal` at bootstrap commit `9fda25eac8fc70df97599758760b47f25620cec8`.
+- Branch: `codex/token-statistics-full-width`; current delivery checkpoint `d22085f9c`; manual-separator source commit `173848dea`; historical rejected commit `530587a70`; base/final target `origin/personal`/`personal` at bootstrap commit `9fda25eac8fc70df97599758760b47f25620cec8`.
 - Desktop breakpoint remains Tailwind `md` (`768px`).
 - Desktop width range is exactly `0..256px`; no persistence.
+- Visual reference: `autobyteus-web/components/layout/WorkspaceDesktopLayout.vue` `.drag-handle`; match transparent/gray interaction colors and 0.2s transition while retaining Settings-specific zero-width/8px geometry and accessible semantics.
 - English and Simplified Chinese accessible labels are required.
 
 ## Persisted Data Outcome
@@ -118,4 +120,4 @@ Preserve the original `personal`-branch Settings page appearance and behavior wh
 
 ## Approval Status
 
-Approved on 2026-07-15. The user explicitly directed that the original `personal`-branch Settings UI remain the same and only the separator become draggable so they can manually slide the menu left for more content space. This approval supersedes the earlier collapsed-header/automatic Token Statistics design.
+Approved on 2026-07-15. The user explicitly directed that the original `personal`-branch Settings UI remain structurally the same and only the separator become draggable so they can manually slide the menu left for more content space. This approval supersedes the earlier collapsed-header/automatic Token Statistics design. The later user-supplied workspace center/right-tabs separator is the approved visual reference for the splitter's resting/hover/focus/active treatment.

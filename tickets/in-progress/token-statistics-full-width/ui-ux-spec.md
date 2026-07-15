@@ -2,7 +2,7 @@
 
 ## Status
 
-`Refined` — revised direction approved by the user on 2026-07-15. The prior collapsed-header UI is rejected and superseded.
+`Refined` — manual direction and workspace-separator visual reference approved by the user on 2026-07-15. The prior collapsed-header UI is rejected and superseded.
 
 ## Scope And Relationship
 
@@ -13,7 +13,7 @@
 
 ## UX Goal
 
-Make the Settings/content boundary adjustable without redesigning Settings. At rest, users should see the original page. When more horizontal space is needed, they drag the existing vertical separator left. Nothing appears above the content and content keeps its original vertical position.
+Make the Settings/content boundary adjustable without redesigning Settings. At rest, users see the original page structure with the same soft divider language as the workspace separator between center content and right-side tabs. When more horizontal space is needed, they drag left. Nothing appears above the content and content keeps its original vertical position.
 
 ## Approved Behavior
 
@@ -79,13 +79,15 @@ Make the Settings/content boundary adjustable without redesigning Settings. At r
 
 ## Visual Treatment
 
-- Resting line: the same one-pixel gray separator/border as the original page, overlaid inside the navigation's original rightmost pixel at nonzero widths.
-- Layout accounting: navigation and content still meet at x=256 initially. A zero-width relative flex anchor sits at that coordinate; its absolute line/target consume no flex width.
-- Hit target: exactly 8px wide. At widths of at least 4px it spans 4px on each side of the boundary. For widths below 4px its left edge clamps to viewport x=0 (including x=0..8 at zero) so it never extends negative. It must not reserve visible layout pixels.
-- Stacking: the zero-width anchor and hit target sit above adjacent navigation/content (`z-index` contract), while only the target receives pointer events; the decorative line does not intercept events.
-- Pointer cursor: `col-resize`.
-- Hover/drag/focus: subtle blue or darker-gray line highlight is allowed as transient feedback.
-- Focus: visible focus treatment on the separator without adding a toolbar, button, or category row.
+The exact reference is `WorkspaceDesktopLayout.vue`'s separator between workspace center content and right-side tabs, including the soft divider visible beside the right-panel shadow. Reuse its visual language, not its width-consuming four-pixel flex geometry or mouse-only behavior.
+
+- Layout accounting: navigation and content still meet at x=256 initially. A zero-width relative flex anchor sits at that coordinate; all visual/interactive layers are absolute overlays and consume no flex width.
+- Resting edge: one pixel at the original in-box boundary (`x=255..256` by default), light gray with a restrained right-edge shadow approximating the workspace panel edge. It is decorative and `pointer-events:none`.
+- Feedback strip: exactly 4px, transparent at rest, centered over boundaries at least 2px from the viewport edge, and clamped to x=0 below that. It uses `transition: background-color 0.2s ease`, workspace hover/focus gray `#9ca3af`, and workspace active/resizing gray `#6b7280`. No blue hover/active color is permitted.
+- Hit target: exactly 8px, centered over boundaries at least 4px from the viewport edge and clamped to x=0 below that. It remains transparent, provides the `col-resize` cursor, and on keyboard focus uses an inset `2px solid #6b7280` outline (`outline-offset:-2px`) while the feedback strip uses `#9ca3af`. No blue focus styling remains.
+- Default coordinates: resting edge x=255..256, feedback x=254..258, target x=252..260.
+- Zero coordinates: resting edge x=0..1, feedback x=0..4, target x=0..8.
+- Stacking: zero-width anchor and overlays sit above adjacent navigation/content; decorative edge/feedback layers are pointer-transparent and only the 8px target receives input.
 - Navigation content uses `overflow: hidden` horizontally while narrower than its original width; incomplete text is intentionally clipped as the user confirmed, and no responsive icon conversion occurs.
 
 ## Accessibility
@@ -120,4 +122,4 @@ All current manager states remain untouched. Resizing is shell geometry only and
 
 ## Approval Status
 
-Approved on 2026-07-15 after the user reviewed and rejected the implemented collapsed-header screenshot. The final instruction is: keep the original `personal`-branch Settings UI the same and make only the separator draggable so the menu can be manually slid left.
+Approved on 2026-07-15 after the user reviewed and rejected the implemented collapsed-header screenshot. The final structure remains the original `personal` Settings UI with only a manual separator. The user subsequently approved the existing workspace center/right-tabs separator as the visual reference; this supplement now fixes its transparent/gray transition language while retaining the reviewed Settings-specific geometry and accessibility.

@@ -214,19 +214,25 @@
     </div>
 
     <div
-      class="settings-navigation-separator-anchor group relative z-20 hidden w-0 shrink-0 self-stretch overflow-visible md:block"
+      class="settings-navigation-separator-anchor relative z-20 hidden w-0 shrink-0 self-stretch overflow-visible md:block"
       data-testid="settings-navigation-separator-anchor"
     >
       <div
-        class="settings-navigation-separator-line pointer-events-none absolute inset-y-0 w-px group-hover:bg-blue-400 group-focus-within:bg-blue-500"
-        :class="isResizing ? 'bg-blue-500' : 'bg-gray-200'"
+        class="settings-navigation-separator-edge pointer-events-none absolute inset-y-0 w-px"
         :style="separatorLineStyle"
         aria-hidden="true"
         data-testid="settings-navigation-separator-line"
       ></div>
       <div
+        class="settings-navigation-separator-feedback pointer-events-none absolute inset-y-0 z-10 w-1 bg-transparent"
+        :class="{ 'is-resizing': isResizing }"
+        :style="separatorFeedbackStyle"
+        aria-hidden="true"
+        data-testid="settings-navigation-separator-feedback"
+      ></div>
+      <div
         ref="separatorRef"
-        class="settings-navigation-resize-target absolute inset-y-0 z-20 w-2 cursor-col-resize touch-none bg-transparent focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-[-2px]"
+        class="settings-navigation-resize-target absolute inset-y-0 z-20 w-2 cursor-col-resize touch-none bg-transparent"
         :style="separatorTargetStyle"
         role="separator"
         aria-orientation="vertical"
@@ -335,6 +341,7 @@ const {
   narrowFocusFallbackRef,
   navigationWidthStyle,
   separatorLineStyle,
+  separatorFeedbackStyle,
   separatorTargetStyle,
   startResize,
   handleSeparatorKeydown,
@@ -407,5 +414,29 @@ onMounted(() => {
     width: var(--settings-navigation-width);
     overflow-x: hidden;
   }
+}
+
+.settings-navigation-separator-edge {
+  background: #e5e7eb;
+  box-shadow: 1px 0 3px rgb(0 0 0 / 10%);
+}
+
+.settings-navigation-separator-feedback {
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.settings-navigation-separator-anchor:hover .settings-navigation-separator-feedback,
+.settings-navigation-separator-anchor:focus-within .settings-navigation-separator-feedback {
+  background-color: #9ca3af;
+}
+
+.settings-navigation-separator-anchor .settings-navigation-separator-feedback.is-resizing {
+  background-color: #6b7280;
+}
+
+.settings-navigation-resize-target:focus-visible {
+  outline: 2px solid #6b7280;
+  outline-offset: -2px;
 }
 </style>

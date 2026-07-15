@@ -27,6 +27,7 @@ export interface SettingsNavigationResize {
   narrowFocusFallbackRef: Ref<HTMLButtonElement | null>;
   navigationWidthStyle: ComputedRef<Record<'--settings-navigation-width', string>>;
   separatorLineStyle: ComputedRef<{ left: string }>;
+  separatorFeedbackStyle: ComputedRef<{ left: string }>;
   separatorTargetStyle: ComputedRef<{ left: string }>;
   startResize: (event: PointerEvent) => void;
   handleSeparatorKeydown: (event: KeyboardEvent) => void;
@@ -60,6 +61,9 @@ export function useSettingsNavigationResize(): SettingsNavigationResize {
   }));
   const separatorLineStyle = computed(() => ({
     left: navigationWidth.value === SETTINGS_NAVIGATION_MIN_WIDTH ? '0px' : '-1px',
+  }));
+  const separatorFeedbackStyle = computed(() => ({
+    left: `${Math.max(-navigationWidth.value, -2)}px`,
   }));
   const separatorTargetStyle = computed(() => ({
     left: `${Math.max(-navigationWidth.value, -4)}px`,
@@ -224,6 +228,7 @@ export function useSettingsNavigationResize(): SettingsNavigationResize {
     narrowFocusFallbackRef,
     navigationWidthStyle,
     separatorLineStyle,
+    separatorFeedbackStyle,
     separatorTargetStyle,
     startResize,
     handleSeparatorKeydown,
