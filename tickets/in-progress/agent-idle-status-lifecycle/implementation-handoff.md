@@ -8,7 +8,16 @@
 - Supplemental task artifacts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/production-trace-evidence.md` — retained production evidence; approval applicability `N/A`.
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/design-review-report.md`
-- Implementation commit: `58bb00ce5` (`fix(agent): reconcile lifecycle by exact turn`)
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`
+- Primary implementation commit: `58bb00ce5` (`fix(agent): reconcile lifecycle by exact turn`)
+- Source-review rework commit: `d8d077d85` (`fix(agent): align accepted command status projection`)
+
+## Implementation Review Rework
+
+- Review round 1 decision: `Fail — Local Fix`; authoritative findings `CR-001` and `CR-002` are recorded in `code-review-report.md`.
+- `CR-001` resolved: accepted-result/start reconciliation now returns the exact replacement status it publishes and uses it for the still-in-flight command ACK. Active-idle commands whose run snapshot is still `initializing` receive the same explicit running replacement even without an inactive-run overlay. Regressions assert `initializing -> running -> ACK running` for inactive restore and `running -> ACK running` for the active-idle reconciliation path when the canonical start has not yet updated the snapshot.
+- `CR-002` resolved: removed the dormant `publish-processed-team-agent-events.ts` direct default-pipeline caller and its sole test. A source/test audit finds no remaining reference to that helper or direct `getDefaultAgentRunEventPipeline().process(...)` invocation.
+- The rework did not change approved requirements, design, public protocol, dependencies, persistence, SDK code, or frontend code.
 
 ## What Changed
 
@@ -18,7 +27,9 @@
 - Updated AutoByteus, Claude, and Codex native owners/converters to capture identity before terminal mutation, reject mismatched/missing terminal identity, map status-change failure correctly, and emit authoritative error before status. AutoByteus SDK publishers now use a required structured classification with no default effect.
 - Made `AGENT_STATUS` the only backend event shape that updates `AgentRun.statusOverride`. Lifecycle observers, team settlement, compaction/improver watchers, and external-channel output collection now consume canonical status/effect rather than raw error/activity hints.
 - Reworked command correlation around discriminated pending/identified/awaiting-anonymous/anonymous-armed association, buffered evidence replay, latest-record reads, matching settlement, runtime-global failure, and terminal-record guards.
+- Kept accepted-result live replacement and command ACK status atomic by carrying the exact published status through reconciliation; the active-idle pre-canonical-start ordering can no longer emit `running` followed by an `initializing` ACK.
 - Removed the frontend activity-driven `error -> running` repair. Streamed activity still reaches its existing content handlers; only canonical status/snapshot/command-overlay inputs change lifecycle presentation.
+- Removed the unused team-agent event helper/test that directly invoked the default pipeline outside the authoritative per-run processing/dispatch facade.
 - Preserved the public five-value status protocol, status colors/labels, team route/path identity, standalone/team event content, and existing persistence formats.
 
 ## Reviewed Behavior Implementation Trace
@@ -28,7 +39,7 @@
 | BEH-001 | Only accepted start or explicit active status establishes running. | `agent-run-event-dispatch-queue.ts` -> `dispatch-processed-agent-run-events.ts` -> `lifecycle-status-event-transformer.ts` / `agent-turn-lifecycle-state.ts` | Implemented. Boundary-only fallback remains; ordinary activity cannot open a turn. |
 | BEH-002 | Matching terminal closes the current turn; old/duplicate/late evidence is idempotent. | Shared turn-ID resolver/state machine plus Claude/Codex/AutoByteus native matching guards | Implemented. Exact production late-tool sequence and A/B supersession are unit-covered. |
 | BEH-003 | Only canonical statuses mutate backend/frontend lifecycle; delayed content remains visible. | `agent-run.ts`, `agent-run-canonical-failure-observer.ts`, team/task/external-channel consumers, `AgentStreamingService.ts`, `agentRuntimeStatusState.ts` | Implemented. Hint-based consumers found during source audit were aligned to accepted status/effect evidence. |
-| BEH-004 | Diagnostics remain content-only; only matching terminal/global evidence settles B. | `agent-run-error-evidence.ts`, runtime publishers/converters, SDK notifier/call sites, command coordinator/registry | Implemented. Pending replay, delayed A, fast B failure, diagnostic continuation, anonymous arming, and global failure are covered. |
+| BEH-004 | Diagnostics remain content-only; only matching terminal/global evidence settles B. | `agent-run-error-evidence.ts`, runtime publishers/converters, SDK notifier/call sites, command coordinator/registry | Implemented. Pending replay, delayed A, fast B failure, diagnostic continuation, anonymous arming, global failure, and result-before-canonical-start ACK ordering are covered. |
 | BEH-005 | Offline remains distinct and clears active runtime lifecycle. | `AgentTurnLifecycleState.observeExplicitStatus`, existing termination/status projection path | Preserved. No public vocabulary or termination protocol change. |
 | BEH-006 | Presentation/colors remain; browser activity inference is removed. | Frontend streaming and run-status services/tests | Implemented. Activity categories preserve error; explicit canonical running still recovers the UI. |
 
@@ -53,7 +64,7 @@
 ## Known Risks
 
 - `AgentTurnLifecycleState.retiredTurnIds` intentionally retains identities for the runtime-context lifetime so arbitrarily delayed events cannot reopen a retired turn. This is one string per identified turn and therefore grows with exceptionally long-lived contexts; no unsafe eviction window was introduced.
-- `agent-run-command-coordinator.ts` is 488 effective non-empty lines and its implementation delta exceeded the `>220` review signal. The size was assessed: association data/atomic transitions are already split into command types/registry, while further extraction would fragment the single evidence sequencing/settlement owner. It remains below the 500-line hard guardrail.
+- `agent-run-command-coordinator.ts` is 498 effective non-empty lines after the bounded review fix and its implementation delta exceeds the `>220` review signal. The size was reassessed: association data/atomic transitions are already split into command types/registry, while accepted-result status reconciliation belongs to the same evidence sequencing/settlement owner. A further extraction would fragment that transition; the file remains below the 500-line hard guardrail.
 - API/E2E, live browser, and realistic provider-runtime validation have not been performed by implementation engineering and remain downstream work.
 
 ## Task Design Health Assessment Implementation Check
@@ -73,7 +84,7 @@
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: The superseded lifecycle processor/test and frontend repair helper/type set were deleted. Claude terminal error event construction was moved to its existing output-event owner to keep the changed session file at 495 effective lines. The coordinator delta signal was assessed as noted under Known Risks.
+- Notes: The superseded lifecycle processor/test, frontend repair helper/type set, and dormant direct-pipeline team helper/test were deleted. Claude terminal error event construction was moved to its existing output-event owner to keep the changed session file at 495 effective lines. The coordinator delta signal was reassessed after review rework as noted under Known Risks.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -97,11 +108,13 @@
 
 - `pnpm -C autobyteus-server-ts build:full` — pass, including built-in agent bootstrap smoke check.
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — pass.
-- Focused server Vitest suite spanning lifecycle/error/queue/run/command/runtime/team/compaction/improver/external-channel paths — **18 files, 247 tests passed**.
+- Focused server Vitest suite spanning lifecycle/error/queue/run/command/runtime/team/compaction/improver/external-channel paths — **18 files, 248 tests passed** after rework.
 - `pnpm -C autobyteus-ts build` — pass, including runtime dependency verification.
 - `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` — pass.
 - Focused AutoByteus SDK Vitest suite — **3 files, 14 tests passed**.
 - Focused Nuxt Vitest suite for streaming/status projection — **2 files, 28 tests passed**. Expected KaTeX quirks warning and intentional transport-error logs were non-failing.
+- Rework source-boundary audit — no direct `getDefaultAgentRunEventPipeline().process(...)`, removed-helper, or removed-test references remain under server source/tests.
+- Rework source-size audit — `agent-run-command-coordinator.ts` is 498 effective non-empty lines; all changed implementation source remains below 500.
 - `git diff --check` / staged diff check — pass.
 - Non-passing baseline checks are recorded under Environment Or Dependency Notes and are not represented as implementation passes.
 
