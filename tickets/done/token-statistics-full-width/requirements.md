@@ -20,7 +20,7 @@ Preserve the original `personal`-branch Settings page structure and behavior whi
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Authoritative Relationship |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/ui-ux-spec.md` | UI/UX specification for the visually unchanged, manually resizable Settings split pane | `REQ-001`–`REQ-012` | `AC-001`–`AC-015` | `Refined`; revised direction approved on 2026-07-15 | Clarifies observable interaction; this requirements doc remains authoritative |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/ui-ux-spec.md` | UI/UX specification for the visually unchanged, manually resizable Settings split pane | `REQ-001`–`REQ-012` | `AC-001`–`AC-015` | `Refined`; revised direction approved on 2026-07-15 | Clarifies observable interaction; this requirements doc remains authoritative |
 | `proposed-settings-drawer-closed.png`, `proposed-settings-drawer-open.png`, `proposed-settings-drawer.html`, and the collapsed-header browser screenshots/evidence in this ticket | Superseded visual and implementation evidence | N/A for target behavior | N/A for target behavior | Rejected/superseded | Historical evidence only; must not drive implementation |
 
 ## Design Health Assessment

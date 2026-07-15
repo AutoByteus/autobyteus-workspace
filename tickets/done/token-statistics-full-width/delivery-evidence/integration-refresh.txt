@@ -1,0 +1,42 @@
+Delivery integration refresh evidence — workspace visual candidate
+Recorded at: 2026-07-15T12:20:56+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width
+Branch: codex/token-statistics-full-width
+Current visual candidate: c448824203a9fd4ffc97e7884a992a7c03863b6f
+Delivery validation checkpoint: 440eada0ba098d05bc20deb149e829c72b7116d5
+Recorded bootstrap base: 9fda25eac8fc70df97599758760b47f25620cec8
+Latest tracked remote base after git fetch origin personal --prune: 9fda25eac8fc70df97599758760b47f25620cec8
+
+$ git rev-list --left-right --count 9fda25eac8fc70df97599758760b47f25620cec8...origin/personal
+0	0
+
+$ git rev-list --left-right --count origin/personal...HEAD
+0	5
+
+$ git merge-base --is-ancestor origin/personal HEAD
+PASS: origin/personal is an ancestor of HEAD
+
+$ git log --oneline 9fda25eac8fc70df97599758760b47f25620cec8..origin/personal
+
+(no commits)
+
+Integration conclusion:
+- origin/personal remains exactly at the recorded bootstrap/review base.
+- No base commit required merge or rebase.
+- No base-driven minimum executable rerun was required.
+- Delivery nevertheless rebuilt the full personal macOS arm64 Electron package after this refresh for current-candidate user verification; that build passed and is recorded under delivery-evidence/workspace-visual-electron-build/.
+- Delivery-owned report edits began only after the current review/API-E2E package was checkpointed at 440eada0b.
+
+Post-build pre-handoff remote audit
+Recorded at: 2026-07-15T12:24:21+02:00
+origin/personal: 9fda25eac8fc70df97599758760b47f25620cec8
+Ticket HEAD: 440eada0ba098d05bc20deb149e829c72b7116d5
+origin/personal...HEAD: 0 5
+Result: Pass — tracked base remains unchanged and is contained by the current delivery checkpoint.
+
+Post-verification finalization-target refresh
+Recorded at: 2026-07-15
+User verification: received for the current c44882420 candidate and current 440eada0b delivery checkpoint.
+origin/personal after git fetch origin personal --prune: 9fda25eac8fc70df97599758760b47f25620cec8
+Ticket HEAD before archival commit: 440eada0ba098d05bc20deb149e829c72b7116d5
+Result: Pass — finalization target did not advance, the verified handoff state did not change, and renewed verification is not required.

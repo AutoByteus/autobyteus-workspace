@@ -6,7 +6,7 @@
 - Candidate: `c448824203a9fd4ffc97e7884a992a7c03863b6f`
 - Trigger: round-5 workspace-separator visual impact
 - Pre-impact manual behavior: `173848dea`; round-5 checkpoint: `d22085f9c`; bootstrap base: `9fda25eac8fc70df97599758760b47f25620cec8`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/api-e2e-coverage-investigation.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/api-e2e-coverage-investigation.md`
 - Complete current upstream package reviewed: requirements, investigation, design, UI/UX supplement, round-5 design review, current implementation handoff and round-3 code review. Pre-impact API/E2E/test-review/delivery records are historical only.
 
 ## Round History
@@ -69,7 +69,7 @@ Default rectangles were edge x=255..256, feedback x=254..258, and target x=252..
 
 Authoritative structured evidence:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/execution-evidence/workspace-visual-round-3/browser-validation-results.json`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/execution-evidence/workspace-visual-round-3/browser-validation-results.json`
 
 Supporting fresh screenshots and logs are in the same directory. Historical round-2 evidence is not authoritative for this candidate.
 

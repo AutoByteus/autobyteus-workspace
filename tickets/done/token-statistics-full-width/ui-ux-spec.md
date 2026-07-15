@@ -6,7 +6,7 @@
 
 ## Scope And Relationship
 
-- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/ui-ux-spec.md`
+- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/ui-ux-spec.md`
 - Requirements: `REQ-001`–`REQ-012`
 - Acceptance criteria: `AC-001`–`AC-015`
 - This supplement defines observable interaction. `requirements.md` remains authoritative.
