@@ -175,8 +175,11 @@ describe("RuntimeMemoryEventAccumulator", () => {
       ["tool_call", "", "inferred-tool-after-reasoning"],
       ["tool_result", "", "inferred-tool-after-reasoning"],
     ]);
-    expect(traces[2]).toMatchObject({ toolResult: { stdout: "/tmp" }, toolError: null });
-    expect(traces[2]?.toolName).toBeNull();
+    expect(traces[2]).toMatchObject({
+      toolName: "run_bash",
+      toolResult: { stdout: "/tmp" },
+      toolError: null,
+    });
     expect(traces[2]?.toolArgs).toBeNull();
   });
 
@@ -583,7 +586,8 @@ describe("RuntimeMemoryEventAccumulator", () => {
     ]);
     expect(traces[0]).toMatchObject({ content: "Before tool." });
     expect(traces[1]).toMatchObject({ toolName: "Bash", toolCallId: "tool-bash-text-order" });
-    expect(traces[2]).toMatchObject({ toolName: null, toolResult: "/tmp/project", toolError: null });
+    expect(traces[2]).toMatchObject({ toolName: "Bash", toolResult: "/tmp/project", toolError: null });
+    expect(traces[2]?.toolArgs).toBeNull();
     expect(traces[3]).toMatchObject({ content: "After tool." });
   });
 

@@ -1,0 +1,8 @@
+$ pnpm -C autobyteus-ts build
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-tool-name-restoration-analysis/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+$ pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+$ git diff --check

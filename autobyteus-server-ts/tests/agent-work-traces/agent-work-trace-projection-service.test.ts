@@ -270,7 +270,7 @@ describe("AgentWorkTraceProjectionService", () => {
     expect(second.manifest.schemaVersion).toBe(3);
   });
 
-  it("renders an archived call with an active minimal result exactly once across the package", async () => {
+  it("renders an archived call with an active name-bearing result exactly once across the package", async () => {
     await fs.writeFile(path.join(memoryDir, "raw_traces_archive_manifest.json"), JSON.stringify({
       schema_version: 1,
       next_segment_index: 2,
@@ -298,6 +298,7 @@ describe("AgentWorkTraceProjectionService", () => {
       id: "active-result",
       trace_type: "tool_result",
       tool_call_id: "call-split",
+      tool_name: "search_web",
       tool_result: "done",
       tool_error: null,
       ts: 1_788_000_200,
@@ -313,7 +314,10 @@ describe("AgentWorkTraceProjectionService", () => {
     const archiveContent = contents.get("archive:1")!;
     const activeContent = contents.get("active")!;
     const packageContent = [...contents.values()].join("\n");
+    const activeRawContent = await fs.readFile(path.join(memoryDir, "raw_traces_active.jsonl"), "utf-8");
 
+    expect(activeRawContent).toContain('"tool_name":"search_web"');
+    expect(activeRawContent).not.toContain('"tool_args"');
     expect(archiveContent).toContain("tool:\nname: search_web\nstatus: success");
     expect(archiveContent).toContain('"query": "cross-file context"');
     expect(archiveContent).toContain("result:\n  done");

@@ -312,7 +312,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
     });
   });
 
-  it("projects an archived call with an active minimal result exactly once through GraphQL", async () => {
+  it("projects an archived call with an active name-bearing result exactly once through GraphQL", async () => {
     const metadataStore = new AgentRunMetadataStore(memoryDir);
     const runId = "run-codex-cross-file-toolcalls-graphql";
     const runDir = path.join(memoryDir, "agents", runId);
@@ -365,6 +365,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       sourceEvent: "TOOL_EXECUTION_SUCCEEDED",
       ts: TOOL_TS + 0.2,
       toolCallId: "cross-file-tool-1",
+      toolName: "functions.exec_command",
       toolResult: { stdout: "cross-file", exit_code: 0 },
       toolError: null,
     });
@@ -374,7 +375,11 @@ describe("Run projection tool-call GraphQL e2e", () => {
       expect.objectContaining({
         identity: { turnId: "turn-cross-file", toolCallId: "cross-file-tool-1" },
         call: expect.objectContaining({ toolName: "functions.exec_command" }),
-        result: expect.objectContaining({ toolResult: { stdout: "cross-file", exit_code: 0 } }),
+        result: expect.objectContaining({
+          toolName: "functions.exec_command",
+          toolArgs: null,
+          toolResult: { stdout: "cross-file", exit_code: 0 },
+        }),
       }),
     ]);
 

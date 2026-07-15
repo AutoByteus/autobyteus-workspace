@@ -112,10 +112,10 @@ describe("Codex MCP tool arguments memory/projection integration", () => {
     expect(physicalCall).not.toHaveProperty("tool_result");
     expect(physicalCall).not.toHaveProperty("tool_error");
     expect(physicalResult).toMatchObject({
+      tool_name: "generate_image",
       tool_result: toolResult,
       tool_error: null,
     });
-    expect(physicalResult).not.toHaveProperty("tool_name");
     expect(physicalResult).not.toHaveProperty("tool_args");
 
     const traces = readRawTraces(memoryDir);
@@ -131,10 +131,10 @@ describe("Codex MCP tool arguments memory/projection integration", () => {
     });
     expect(traces[2]).toMatchObject({
       toolCallId: "call_generate_image",
+      toolName: "generate_image",
       toolResult,
       toolError: null,
     });
-    expect(traces[2]?.toolName).toBeNull();
     expect(traces[2]?.toolArgs).toBeNull();
 
     const replayEvents = buildHistoricalReplayEvents(traces);
