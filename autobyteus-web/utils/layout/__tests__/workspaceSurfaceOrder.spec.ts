@@ -20,6 +20,7 @@ describe('workspaceSurfaceOrder', () => {
       'teamMembers',
       'terminal',
       'progress',
+      'usage',
       'artifacts',
       'browser',
       'vnc',
@@ -34,6 +35,7 @@ describe('workspaceSurfaceOrder', () => {
     })).toEqual([
       'terminal',
       'progress',
+      'usage',
       'artifacts',
       'vnc',
     ])
