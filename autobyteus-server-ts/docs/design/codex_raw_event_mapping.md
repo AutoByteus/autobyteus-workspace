@@ -107,10 +107,11 @@ Normalized result:
 has finished display parsing. They are not execution success/failure authority.
 `TOOL_EXECUTION_*` events drive Activity terminal state and storage-only memory
 tool-call/tool-result traces. The memory writer persists call metadata once on a
-`tool_call` and writes only identity plus result/error on the later
-`tool_result`; terminal lifecycle payloads do not authorize duplicated raw
-result metadata. Migrated server-owned backend tools must not be reintroduced on
-this dynamic-tool mapping as compatibility fallbacks.
+`tool_call`; the later `tool_result` repeats the matched call's verified
+canonical name with identity plus result/error, while arguments remain
+call-only. Terminal payloads do not override conflicting lifecycle identity or
+authorize duplicated raw arguments. Migrated server-owned backend tools must
+not be reintroduced on this dynamic-tool mapping as compatibility fallbacks.
 
 ## MCP Tool Lifecycle Spine
 
@@ -186,6 +187,7 @@ result/error, logs, and storage-only memory tool traces for `search_web`. The
 memory accumulator writes no placeholder `{}` call. When the terminal event is
 the first argument-ready observation, it appends the `tool_call` with the real
 action first and then a separate minimal `tool_result`.
+Here, minimal means canonical name plus result/error with no repeated arguments.
 
 ## Thread History Replay Mapping
 
@@ -398,9 +400,9 @@ Output shape:
 
 - Treat `fileChange` item lifecycle as the authoritative owner for Codex `edit_file` lifecycle and changed-file availability.
 - Treat `dynamicToolCall` item lifecycle as the authoritative owner for Codex dynamic-tool execution lifecycle. Use its lifecycle events, not display-only `SEGMENT_*` events or diagnostic `TOOL_LOG`, for Activity success/error status and storage-only memory tool traces.
-- Treat `mcpToolCall` start plus the enriched local MCP completion event as the authoritative owner for Codex MCP tool execution lifecycle. Preserve pending call arguments in live terminal events when required, but persist them only on the call; the raw result remains minimal.
+- Treat `mcpToolCall` start plus the enriched local MCP completion event as the authoritative owner for Codex MCP tool execution lifecycle. Preserve pending call arguments in live terminal events when required, but persist them only on the call; the raw result remains minimal by repeating the verified canonical name with the outcome but not the arguments.
 - Treat `webSearch` item lifecycle as the authoritative owner for Codex `search_web` execution status and storage-only memory tool traces. Segment events may seed pending Activity visibility, but lifecycle events own Activity executing/success/error status. Do not fabricate `{}` arguments for a placeholder start; defer persistence until the terminal action can be written as call-then-result.
-- For every newly persisted Codex tool lifecycle, use compound `(turn_id, tool_call_id)` identity. A call owns name/arguments; a separate result physically owns both result/error keys and omits name/arguments. Existing historical supersets remain a read-only projection concern, not a writer input.
+- For every newly persisted Codex tool lifecycle, use compound `(turn_id, tool_call_id)` identity. A call owns canonical name/arguments; a separate result repeats the matched canonical name, physically owns both result/error keys, and omits arguments. Reject and log a supplied non-empty terminal name that conflicts with lifecycle state without writing or completing the result; accept an omitted terminal name when the matched call supplies it. Existing historical name-less results and supersets remain a normal read-only projection concern, not a writer input.
 - Treat local application-owned raw traces as the focused Codex UI reload
   source. `thread/read` replay is diagnostic/runtime-native mapping support;
   keep supported history item families aligned with the live lifecycle families

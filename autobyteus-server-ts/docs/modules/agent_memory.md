@@ -82,11 +82,11 @@ Tool execution uses a strict split physical contract shared with native memory:
 
 - a call row owns non-empty `turn_id`, `tool_call_id`, and `tool_name` plus an
   explicit `tool_args` object;
-- a separate result row owns the same `turn_id` and `tool_call_id` plus
-  physically present `tool_result` and `tool_error` keys, including explicit
-  `null` values;
-- new result rows never repeat `tool_name` or `tool_args`, and a call is never
-  rewritten into a combined terminal row.
+- a separate result row owns the same `turn_id` and `tool_call_id`, repeats the
+  matched call's non-empty canonical `tool_name`, and has physically present
+  `tool_result` and `tool_error` keys, including explicit `null` values;
+- new result rows never repeat `tool_args`, and a call is never rewritten into
+  a combined terminal row.
 
 `RuntimeMemoryEventAccumulator` remains the normalized event/segment facade:
 it owns turn context, reasoning/assistant segment buffering and flushing, and
@@ -99,12 +99,18 @@ suppression. The sequencer may request a reasoning boundary through one
 segment maps; the facade cannot inspect or mutate sequencer tool state.
 
 The sequencer persists a call at the first approval/start/terminal event that
-has valid identity, name, and authoritative arguments.
+has valid identity, name, and authoritative arguments. For a known lifecycle,
+the matched call/state name is authoritative for the result row. A supplied
+non-empty terminal name must match it; a conflict is skipped and logged without
+writing the result or marking the lifecycle complete, so a later valid terminal
+can still finish the call. A terminal that omits its name remains valid when the
+matched lifecycle supplies the canonical name.
 Provider converters own the difference between an absent argument field (“not
 yet available”) and an explicit `{}` (a valid no-argument call); memory must not
 parse provider-native payloads or branch on tool names. If a terminal event is
 the first event with authoritative arguments, the sequencer appends the call
-first and then the minimal result. Missing arguments defer physical writes;
+first and then the minimal result (canonical name plus outcome, but no
+arguments). Missing arguments defer physical writes;
 missing identity/name that cannot create a card and ambiguous reused call ids
 are skipped and logged instead of receiving fabricated state. Sequencer record
 methods accept the facade's current active turn and return
@@ -137,8 +143,9 @@ authoritative arguments, or lost to hard process failure before the call is
 written, no raw tool row is fabricated and the transient observation cannot be
 hydrated. A crash after call append but before result append leaves an honest
 unmatched call; reconstruction hydrates that physical call as observed and a
-later matching terminal may append only the result. Historical result-side
-argument overlays remain read-only and never reconstruct current writer state.
+later matching terminal may append only the result, using the hydrated call's
+canonical name. Historical result-side name/argument overlays remain read-only
+and never reconstruct current writer state.
 
 The recorder does not instantiate a Codex/Claude memory manager, retrieve memory for those runtimes, inject recorded memory into prompts, or alter provider/runtime session state. Memory persistence is independent of websocket clients; the sidecar is attached by the run manager, not by live stream subscribers.
 
@@ -228,10 +235,11 @@ Raw traces preserve provenance needed by future analyzers:
 - `source_event` / GraphQL `sourceEvent`
 - `content`, `media`, tool identity, tool args/result/error, correlation id, and timestamp fields when present
 
-The inspector exposes physical rows. For current writes, call-side name/args
-appear only on `tool_call`, while result/error appear only on `tool_result`.
-Working Context may retain a tool name on its provider-protocol result message;
-that separate projection does not change the raw result shape.
+The inspector exposes physical rows. For current writes, the canonical name
+appears on both `tool_call` and `tool_result`; arguments remain call-only, while
+result/error remain result-only. This makes result-only inspection descriptive
+without changing compound lifecycle correlation or argument ownership. Working
+Context also retains the canonical name on its provider-protocol result message.
 
 GraphQL memory-view queries:
 
@@ -295,12 +303,14 @@ Run-history remains the owner of conversation/activity replay DTOs. Agent-memory
 When runtime-native Codex or Claude history cannot be read, the local-memory projection fallback can build a replay bundle from the complete raw-trace corpus using the explicit persisted `memoryDir` basename as the local run/member id. Provider-boundary markers are provenance and are not converted into user-visible conversation/activity items.
 
 Run-history and work-trace projection build one logical interaction from the
-physical call/result pair. New minimal results obtain name/arguments from their
-call. Existing historical result rows that contain duplicated or late/effective
-name/arguments remain readable through a logical read-only override; that
-historical overlay is never fed back into recorder/writer decisions. Existing
-files are directly usable: this contract requires no raw-file rewrite, schema
-branch, Memory Sync change, or migration.
+physical call/result pair. New minimal results carry the verified canonical name
+locally and obtain arguments from their call. Full interaction reconstruction
+still correlates the call for arguments, anchoring, ordering, and lifecycle
+integrity. Existing historical name-less results and result rows containing
+duplicated or late/effective name/arguments remain readable through the normal
+logical read-only projection; that historical overlay is never fed back into
+recorder/writer decisions. Existing files are directly usable: this contract
+requires no raw-file rewrite, schema branch, Memory Sync change, or migration.
 
 ## Key Source Files
 
