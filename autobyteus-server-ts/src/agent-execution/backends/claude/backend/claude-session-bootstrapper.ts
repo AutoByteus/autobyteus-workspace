@@ -15,7 +15,7 @@ import {
 } from "../claude-workspace-skill-materializer.js";
 import {
   buildClaudeSessionConfig,
-  resolveClaudePermissionMode,
+  DEFAULT_CLAUDE_PERMISSION_MODE,
 } from "../session/claude-session-config.js";
 import { ClaudeAgentRunContext, type ClaudeRunContext } from "./claude-agent-run-context.js";
 import {
@@ -96,7 +96,8 @@ export class ClaudeSessionBootstrapper {
     const sessionConfig = buildClaudeSessionConfig({
       model: runContext.config.llmModelIdentifier,
       workingDirectory,
-      permissionMode: resolveClaudePermissionMode(runContext.config.autoExecuteTools),
+      permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
+      autoExecuteTools: runContext.config.autoExecuteTools,
     });
     const runtimeContextInput = await this.prepareRuntimeContextInput(runContext);
 

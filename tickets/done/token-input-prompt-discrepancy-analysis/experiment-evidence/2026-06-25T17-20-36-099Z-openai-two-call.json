@@ -1,0 +1,74 @@
+{
+  "provider": "openai",
+  "mode": "two-call",
+  "model": {
+    "name": "gpt-5.4-mini",
+    "value": "gpt-5.4-mini",
+    "provider": "OPENAI"
+  },
+  "started_at": "2026-06-25T17:20:34.144Z",
+  "completed_at": "2026-06-25T17:20:36.099Z",
+  "env_files_loaded": [],
+  "prompt_shape": {
+    "repeated_prefix_line_count": 260,
+    "stable_system_prefix_chars": 40474,
+    "calls": [
+      "same system prefix; user suffix differs"
+    ]
+  },
+  "calls": [
+    {
+      "marker": "warmup",
+      "content_preview": "WARMUP",
+      "normalized_usage": {
+        "input_tokens": 8887,
+        "output_tokens": 7,
+        "total_tokens": 8894,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": 0,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "input_tokens": 8887,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 7,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 8894
+        }
+      }
+    },
+    {
+      "marker": "probe",
+      "content_preview": "PROBE",
+      "normalized_usage": {
+        "input_tokens": 8886,
+        "output_tokens": 6,
+        "total_tokens": 8892,
+        "cache_read_input_tokens": 8448,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": 0,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "input_tokens": 8886,
+          "input_tokens_details": {
+            "cached_tokens": 8448
+          },
+          "output_tokens": 6,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 8892
+        }
+      }
+    }
+  ],
+  "semantic_inference_from_probe_call": "likely_gross_includes_cache"
+}

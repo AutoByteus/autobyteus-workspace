@@ -52,7 +52,7 @@ describe('DeepSeekLLM request normalization', () => {
     }
   });
 
-  it('maps flat thinking_type to extra_body.thinking.type without leaking raw thinking fields', async () => {
+  it('maps flat thinking_type to root thinking.type without leaking raw thinking fields', async () => {
     const callerExtraParams = {
       reasoning_effort: 'high',
       thinking_type: 'enabled',
@@ -75,15 +75,11 @@ describe('DeepSeekLLM request normalization', () => {
 
     const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
     expect(params.reasoning_effort).toBe('high');
+    expect(params.thinking).toEqual({ type: 'enabled' });
     expect(params.extra_body).toEqual({
-      trace_id: 'trace-1',
-      thinking: {
-        provider_note: 'preserve',
-        type: 'enabled'
-      }
+      trace_id: 'trace-1'
     });
     expect(params).not.toHaveProperty('thinking_type');
-    expect(params).not.toHaveProperty('thinking');
     expect(callerExtraParams).toEqual(originalExtraParams);
     expect(llm.config.extraParams).not.toBe(callerExtraParams);
     expect(llm.config.extraParams.extra_body).not.toBe(callerExtraParams.extra_body);
@@ -103,7 +99,8 @@ describe('DeepSeekLLM request normalization', () => {
     await llm.sendMessages(userMessages);
 
     const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
-    expect(params.extra_body).toEqual({ thinking: { type: 'disabled' } });
+    expect(params.thinking).toEqual({ type: 'disabled' });
+    expect(params).not.toHaveProperty('extra_body');
     expect(params).not.toHaveProperty('reasoning_effort');
     expect(params.reasoning_effort).not.toBe('none');
     expect(params).not.toHaveProperty('thinking_type');

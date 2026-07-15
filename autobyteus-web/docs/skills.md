@@ -55,6 +55,12 @@ The skills page uses component-based navigation (not URL query parameters):
 | `list` (default) | SkillsList  | Browse available skills        |
 | `detail`         | SkillDetail | View/edit files within a skill |
 
+The list view starts directly with the search/action toolbar (`Search skills`,
+`Sources`, `Reload`, and `Create Skill`) and then renders alerts plus the skill
+card grid. It intentionally does not render a duplicate page-level `Skills`
+heading or explanatory subtitle in the main content because the sidebar already
+communicates the active top-level module.
+
 
 ## Skill Detail Header
 
@@ -166,7 +172,7 @@ Manages skill metadata (NOT file operations - those are delegated to the FileExp
 
 > **Note:** File operations (view, edit, save) are now handled by the generic `FileExplorerStore` via the skill's transient workspace.
 
-The Skills list header exposes a localized **Reload** action backed by the
+The Skills list toolbar exposes a localized **Reload** action backed by the
 GraphQL `reloadSkillCatalog` mutation. Reload updates card metadata such as
 description, file count, added skills, removed skills, and source counts after
 external file edits. The button has its own `reloading` state and success/error
@@ -211,34 +217,37 @@ users can browse and open those bundled skill files normally. Duplicate skill
 names use first-seen catalog precedence, so package authors should choose unique
 logical skill names.
 
-## Self-Evolution And Skill Files
+## Skill Improvement And Skill Files
 
-Manual self-evolution is a skill-first workflow. When the backend deems a run or
-team agent-member eligible, the visible evolver helper may edit only the exact
+Manual Skill Improvement is a skill-first workflow. When the backend deems a run or
+team agent-member eligible, the visible improver helper may edit only the exact
 configured skill root directories returned by backend eligibility. `SKILL.md`
-is the primary guidance file, but supporting files inside the same listed root
-may be changed when a reusable improvement needs them. Agent/team definitions,
-MCP/tool config, source code, run memory, sibling skills, and files outside the
-listed roots are out of MVP scope.
+is the package entry file; supporting files inside the same listed root may be
+changed when a reusable improvement needs them. Agent/team definitions, MCP/tool
+config, source code, run memory, sibling skills, and files outside the listed
+roots are out of MVP scope.
 
-The frontend does not decide whether a skill is eligible for evolution. The
-composer-adjacent **Self improve** CTA lazy-loads backend eligibility for the
-selected active run or team member and stays hidden for ineligible, old, or
-pre-snapshot runs. Run-history rows do not own self-evolution actions. The
-backend launches a visible helper run with anonymized work-history evidence and
-records minimal provenance; it does not compute changed paths or
+The frontend does not decide whether a skill is eligible for Skill Improvement. The
+composer-adjacent **Improve skills** CTA lazy-loads backend eligibility for the
+selected active run or team member and stays hidden when the backend says the
+current target is ineligible. Run-history rows and launch forms do not own
+Skill Improvement actions. Before messaging the visible improver, the backend
+projects the target's raw trace corpus into readable work trace files and sends
+the improver a concise task packet with paths, editable skill roots, and a
+bounded relative package tree that marks each `SKILL.md` as `[entry]`; it does
+not inline the work trace body or ask the improver to read raw trace JSONL. The
+backend records minimal provenance and does not compute changed paths or
 policy-violation metrics in the MVP. After launch, the workspace may show only a
-short transient start status. Only after meaningful durable skill package file changes, the helper
-reports through one direct `send_message_to` call with
+short transient start status. Only after meaningful durable skill package file
+changes, the improver reports through one direct `send_message_to` call with
 `message_type: "skill_update"` to the still-active target run. Its content should
 explain what changed, why it matters, and how the target should use or reload the
 updated guidance, while dynamic references are absolute paths to changed or
-directly relevant surviving files inside editable roots; the
-backend record distinguishes sent, rejected, target-inactive, and not-attempted
-outcomes. That helper-authored message is not a runtime/model skill-refresh
-instruction; next-run correctness is the MVP baseline. Users should still
-inspect any Git-backed skill changes directly before treating them as accepted
-improvements.
+directly relevant surviving files inside editable roots; the backend record
+distinguishes sent, rejected, target-inactive, and not-attempted outcomes. That
+helper-authored message is not a runtime/model skill-refresh instruction;
+next-run correctness is the MVP baseline. Users should still inspect any
+Git-backed skill changes directly before treating them as accepted improvements.
 
 Git-backed skill packages remain the recommended testing and rollback mode for
 this MVP when a skill source is owned by an external repository. AutoByteus does
@@ -248,6 +257,6 @@ separate proposal/apply UI or product audit service.
 
 ## Related Documentation
 
-- **[Server Self-Evolution](../../autobyteus-server-ts/docs/modules/self_evolution.md)**: Backend capability, snapshot, skill-root edit, anonymized evidence, and minimal provenance contract.
+- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, shared work-trace package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Skills are attached to agents to provide capabilities.
 - **[File Explorer](./file_explorer.md)**: Skills use the generic, workspace-agnostic File Explorer.

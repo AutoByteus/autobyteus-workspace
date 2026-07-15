@@ -15,3 +15,14 @@ export const CreateWorkspace = gql`
     }
   }
 `
+
+export const RemoveWorkspace = gql`
+  mutation RemoveWorkspace($input: RemoveWorkspaceInput!) {
+    removeWorkspace(input: $input) {
+      success
+      message
+      workspaceId
+      workspaceRootPath
+    }
+  }
+`

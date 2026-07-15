@@ -91,6 +91,8 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.AGENT_STATUS, normalizeStatusPayload(payload));
       case AgentRunEventType.COMPACTION_STATUS:
         return new ServerMessage(ServerMessageType.COMPACTION_STATUS, normalizeCompactionPayload(payload));
+      case AgentRunEventType.TOKEN_USAGE_UPDATED:
+        return new ServerMessage(ServerMessageType.TOKEN_USAGE_UPDATED, payload);
       case AgentRunEventType.ASSISTANT_COMPLETE:
         return new ServerMessage(ServerMessageType.ASSISTANT_COMPLETE, payload);
       case AgentRunEventType.TOOL_APPROVAL_REQUESTED:

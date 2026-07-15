@@ -3,7 +3,6 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import { useTeamWorkspaceViewStore, type TeamWorkspaceViewMode } from '~/stores/teamWorkspaceViewStore';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
@@ -20,10 +19,7 @@ import {
   resolveInitialFocusedMemberRouteKey,
 } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
-import {
-  ensureHistoricalTeamMemberHydrated,
-  ensureHistoricalTeamMembersHydrated,
-} from '~/services/runHydration/teamRunContextHydrationService';
+import { ensureHistoricalTeamMemberHydrated } from '~/services/runHydration/teamRunContextHydrationService';
 import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
 
 interface AgentTeamContextsState {
@@ -151,7 +147,6 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           autoExecuteTools: memberRecord.autoExecuteTools,
           skillAccessMode: memberRecord.skillAccessMode,
           llmConfig: memberRecord.llmConfig,
-          selfEvolution: memberRecord.selfEvolution ?? null,
           isLocked: false,
         };
 
@@ -230,7 +225,6 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
 
       this.teams.delete(temporaryTeamRunId);
       this.teams.set(permanentTeamRunId, context);
-      useTeamWorkspaceViewStore().migrateMode(temporaryTeamRunId, permanentTeamRunId);
 
       const selectionStore = useAgentSelectionStore();
       if (
@@ -306,7 +300,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       if (targetNode.memberKind !== 'agent') {
         return;
       }
-      if (targetNode.isTaskAgentInstance) {
+      if (targetNode.isTaskAgentInstance || targetNode.isTaskTeamChildProjection || targetNode.isTaskTeamInstance) {
         return;
       }
 
@@ -316,23 +310,5 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       });
     },
 
-    async ensureHistoricalMembersHydratedForView(
-      teamRunId: string,
-      mode: TeamWorkspaceViewMode,
-    ): Promise<void> {
-      if (mode === 'focus') {
-        return;
-      }
-
-      const teamContext = this.teams.get(teamRunId);
-      if (!teamContext?.historicalHydration) {
-        return;
-      }
-
-      await ensureHistoricalTeamMembersHydrated({
-        teamContext,
-        memberRouteKeys: Array.from(teamContext.leafAgentContextsByRouteKey.keys()),
-      });
-    },
   },
 });

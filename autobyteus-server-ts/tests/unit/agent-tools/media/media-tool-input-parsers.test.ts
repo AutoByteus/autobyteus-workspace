@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   parseGenerateImageInput,
+  parseGenerateVideoInput,
   parseMediaInputImages,
 } from "../../../../src/agent-tools/media/media-tool-input-parsers.js";
 
@@ -38,4 +39,19 @@ describe("media tool input parsers", () => {
       generation_config: null,
     });
   });
+
+  it("parses generate_video input with optional image references", () => {
+    expect(parseGenerateVideoInput({
+      prompt: "animate",
+      input_images: [DATA_URI],
+      output_file_path: "out.mp4",
+      generation_config: { delivery: "inline" },
+    })).toEqual({
+      prompt: "animate",
+      input_images: [DATA_URI],
+      output_file_path: "out.mp4",
+      generation_config: { delivery: "inline" },
+    });
+  });
+
 });

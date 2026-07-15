@@ -6,7 +6,7 @@ import path from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { RAW_TRACES_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
@@ -20,6 +20,8 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
+import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 
 const { readThreadMock } = vi.hoisted(() => ({
   readThreadMock: vi.fn(),
@@ -95,7 +97,7 @@ const writeLocalReplayToolTrace = async (
 ): Promise<void> => {
   await fs.mkdir(runDir, { recursive: true });
   await fs.writeFile(
-    path.join(runDir, RAW_TRACES_MEMORY_FILE_NAME),
+    path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
     [
       {
         trace_type: "user",
@@ -142,9 +144,8 @@ const writeLocalReplayToolTrace = async (
       {
         trace_type: "tool_result",
         tool_call_id: input.dynamicInvocationId,
-        tool_name: "send_message_to",
-        tool_args: input.dynamicArgs,
         tool_result: { delivered: true },
+        tool_error: null,
         turn_id: "turn-1",
         seq: 6,
         ts: TOOL_TS + 0.3,
@@ -311,6 +312,115 @@ describe("Run projection tool-call GraphQL e2e", () => {
     });
   });
 
+  it("projects an archived call with an active name-bearing result exactly once through GraphQL", async () => {
+    const metadataStore = new AgentRunMetadataStore(memoryDir);
+    const runId = "run-codex-cross-file-toolcalls-graphql";
+    const runDir = path.join(memoryDir, "agents", runId);
+    await metadataStore.writeMetadata(runId, {
+      runId,
+      agentDefinitionId: "agent-codex-cross-file-toolcalls",
+      workspaceRootPath,
+      memoryDir: runDir,
+      llmModelIdentifier: "gpt-5.2-codex",
+      llmConfig: null,
+      autoExecuteTools: false,
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      platformAgentRunId: "native-thread-should-not-recover-cross-file",
+    } satisfies AgentRunMetadata);
+
+    const writer = new RunMemoryWriter({ memoryDir: runDir });
+    writer.appendRawTrace({
+      traceType: "tool_call",
+      turnId: "turn-cross-file",
+      sourceEvent: "TOOL_EXECUTION_STARTED",
+      ts: TOOL_TS,
+      toolCallId: "cross-file-tool-1",
+      toolName: "functions.exec_command",
+      toolArgs: { cmd: "printf cross-file" },
+    });
+    const boundaryKey = "codex:thread-cross-file:projection-boundary";
+    const boundary = writer.appendRawTrace({
+      traceType: "provider_compaction_boundary",
+      turnId: "turn-cross-file",
+      sourceEvent: "COMPACTION_STATUS",
+      ts: TOOL_TS + 0.1,
+      content: "Provider compaction boundary",
+      correlationId: boundaryKey,
+      toolResult: {
+        provider: "codex",
+        rotation_eligible: true,
+      },
+    });
+    writer.rotateActiveRawTracesBeforeBoundary({
+      boundaryTraceId: boundary.id,
+      boundaryKey,
+      boundaryType: "provider_compaction_boundary",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      sourceEvent: "codex.thread_compacted",
+    });
+    writer.appendRawTrace({
+      traceType: "tool_result",
+      turnId: "turn-cross-file",
+      sourceEvent: "TOOL_EXECUTION_SUCCEEDED",
+      ts: TOOL_TS + 0.2,
+      toolCallId: "cross-file-tool-1",
+      toolName: "functions.exec_command",
+      toolResult: { stdout: "cross-file", exit_code: 0 },
+      toolError: null,
+    });
+
+    const lifecycle = writer.readToolTraceLifecycleGroups();
+    expect([...lifecycle.values()]).toEqual([
+      expect.objectContaining({
+        identity: { turnId: "turn-cross-file", toolCallId: "cross-file-tool-1" },
+        call: expect.objectContaining({ toolName: "functions.exec_command" }),
+        result: expect.objectContaining({
+          toolName: "functions.exec_command",
+          toolArgs: null,
+          toolResult: { stdout: "cross-file", exit_code: 0 },
+        }),
+      }),
+    ]);
+
+    const result = await execGraphql<{ getRunProjection: ProjectionPayload }>(
+      `
+        query RunProjection($runId: String!) {
+          getRunProjection(runId: $runId) {
+            runId
+            summary
+            lastActivityAt
+            conversation
+            activities
+          }
+        }
+      `,
+      { runId },
+    );
+
+    const conversationRows = result.getRunProjection.conversation.filter(
+      (row) => row.invocationId === "cross-file-tool-1",
+    );
+    const activityRows = result.getRunProjection.activities.filter(
+      (row) => row.invocationId === "cross-file-tool-1",
+    );
+    expect(readThreadMock).not.toHaveBeenCalled();
+    expect(conversationRows).toHaveLength(1);
+    expect(activityRows).toHaveLength(1);
+    expect(conversationRows[0]).toMatchObject({
+      kind: "tool_call",
+      toolName: "functions.exec_command",
+      toolArgs: { cmd: "printf cross-file" },
+      toolResult: { stdout: "cross-file", exit_code: 0 },
+    });
+    expect(activityRows[0]).toMatchObject({
+      toolName: "functions.exec_command",
+      arguments: { cmd: "printf cross-file" },
+      result: { stdout: "cross-file", exit_code: 0 },
+      status: "success",
+    });
+  });
+
   it("preserves Codex reasoning across runtime writes and reloads through getRunProjection", async () => {
     const metadataStore = new AgentRunMetadataStore(memoryDir);
     const runId = "run-codex-reasoning-durability-graphql";
@@ -328,9 +438,11 @@ describe("Run projection tool-call GraphQL e2e", () => {
       platformAgentRunId: "native-thread-should-not-recover-reasoning",
     } satisfies AgentRunMetadata);
 
+    const writer = new RunMemoryWriter({ memoryDir: runDir });
     const accumulator = new RuntimeMemoryEventAccumulator({
       runId,
-      writer: new RunMemoryWriter({ memoryDir: runDir }),
+      writer,
+      toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
     });
 
     accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-tool" }));
@@ -520,6 +632,302 @@ describe("Run projection tool-call GraphQL e2e", () => {
       status: "success",
       result: { stdout: "inferred\n" },
     });
+  });
+
+  it("preserves the exact packaged tool-update reasoning sequence through GraphQL reload", async () => {
+    const metadataStore = new AgentRunMetadataStore(memoryDir);
+    const runId = "run-codex-ordered-tool-reasoning-graphql";
+    const runDir = path.join(memoryDir, "agents", runId);
+    await metadataStore.writeMetadata(runId, {
+      runId,
+      agentDefinitionId: "agent-codex-ordered-tool-reasoning",
+      workspaceRootPath,
+      memoryDir: runDir,
+      llmModelIdentifier: "gpt-5.6-sol",
+      llmConfig: { reasoning_effort: "max" },
+      autoExecuteTools: false,
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      platformAgentRunId: "native-thread-must-not-recover-ordered-tool-reasoning",
+    } satisfies AgentRunMetadata);
+
+    const writer = new RunMemoryWriter({ memoryDir: runDir });
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId,
+      writer,
+      toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
+    });
+    const converter = new CodexThreadEventConverter(runId);
+    const recordConverted = (method: string, params: Record<string, unknown>): AgentRunEvent[] => {
+      const converted = converter.convert({ method, params });
+      converted.forEach((convertedEvent) => accumulator.recordRunEvent(convertedEvent));
+      return converted;
+    };
+    const completedReasoning = (turnId: string, itemId: string, text: string): AgentRunEvent => {
+      const converted = recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+        turnId,
+        item: { id: itemId, type: "reasoning", summary: [{ text }] },
+      });
+      const reasoningEvent = converted.find(
+        (runtimeEvent) =>
+          runtimeEvent.eventType === AgentRunEventType.SEGMENT_CONTENT &&
+          runtimeEvent.payload.segment_type === "reasoning",
+      );
+      if (!reasoningEvent) throw new Error(`Expected reasoning event for ${itemId}.`);
+      return reasoningEvent;
+    };
+    const ignoredReasoningDeltas = (turnId: string): AgentRunEvent[] => [
+      CodexThreadEventName.ITEM_REASONING_SUMMARY_TEXT_DELTA,
+      CodexThreadEventName.ITEM_REASONING_DELTA,
+      CodexThreadEventName.ITEM_REASONING_SUMMARY_PART_ADDED,
+    ].flatMap((method) => recordConverted(method, {
+      turnId,
+      itemId: "ignored-reasoning-delta",
+      delta: "must never be displayed or persisted",
+    }));
+
+    recordConverted(CodexThreadEventName.TURN_STARTED, {
+      turn: { id: "turn-matching-update" },
+    });
+    expect(ignoredReasoningDeltas("turn-matching-update")).toEqual([]);
+    recordConverted(CodexThreadEventName.ITEM_STARTED, {
+      turnId: "turn-matching-update",
+      item: {
+        id: "tool-1",
+        type: "commandExecution",
+        command: "sleep 1",
+        status: "inProgress",
+      },
+    });
+    const reasoningA = completedReasoning("turn-matching-update", "provider-a", "A");
+    expect(ignoredReasoningDeltas("turn-matching-update")).toEqual([]);
+    recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-matching-update",
+      item: {
+        id: "tool-1",
+        type: "commandExecution",
+        command: "sleep 1",
+        status: "completed",
+        aggregatedOutput: "done\n",
+      },
+    });
+    const reasoningB = completedReasoning("turn-matching-update", "provider-b", "B");
+    expect(recordConverted(CodexThreadEventName.ITEM_REASONING_COMPLETED, {
+      turnId: "turn-matching-update",
+      item: { id: "provider-b", summary: [{ text: "B" }] },
+    })).toEqual([]);
+    expect(ignoredReasoningDeltas("turn-matching-update")).toEqual([]);
+    recordConverted(CodexThreadEventName.ITEM_STARTED, {
+      turnId: "turn-matching-update",
+      item: {
+        id: "tool-2",
+        type: "commandExecution",
+        command: "pwd",
+        status: "inProgress",
+      },
+    });
+    const reasoningAfterNextTool = completedReasoning(
+      "turn-matching-update",
+      "provider-c",
+      "after next tool",
+    );
+    recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-matching-update",
+      item: {
+        id: "tool-2",
+        type: "commandExecution",
+        command: "pwd",
+        status: "completed",
+        aggregatedOutput: "/tmp/project\n",
+      },
+    });
+    recordConverted(CodexThreadEventName.TURN_COMPLETED, {
+      turn: { id: "turn-matching-update" },
+    });
+
+    recordConverted(CodexThreadEventName.TURN_STARTED, {
+      turn: { id: "turn-result-first" },
+    });
+    const reasoningBeforeResultFirst = completedReasoning(
+      "turn-result-first",
+      "provider-result-first-a",
+      "before result-first",
+    );
+    recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-result-first",
+      item: {
+        id: "tool-result-first",
+        type: "commandExecution",
+        command: "echo inferred",
+        status: "completed",
+        aggregatedOutput: "inferred\n",
+      },
+    });
+    const reasoningAfterResultFirst = completedReasoning(
+      "turn-result-first",
+      "provider-result-first-b",
+      "after result-first",
+    );
+    recordConverted(CodexThreadEventName.TURN_COMPLETED, {
+      turn: { id: "turn-result-first" },
+    });
+
+    recordConverted(CodexThreadEventName.TURN_STARTED, {
+      turn: { id: "turn-unseen-insufficient-terminal" },
+    });
+    const reasoningBeforeInsufficientTerminal = completedReasoning(
+      "turn-unseen-insufficient-terminal",
+      "provider-insufficient-a",
+      "before insufficient terminal",
+    );
+    const insufficientTerminalEvents = recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-unseen-insufficient-terminal",
+      item: {
+        id: "web-search-insufficient",
+        type: "webSearch",
+        status: "completed",
+        query: "",
+        action: { type: "other" },
+      },
+    });
+    const insufficientTerminal = insufficientTerminalEvents.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    );
+    expect(insufficientTerminal?.payload).toMatchObject({
+      invocation_id: "web-search-insufficient",
+      turn_id: "turn-unseen-insufficient-terminal",
+      tool_name: "search_web",
+    });
+    expect(insufficientTerminal?.payload).not.toHaveProperty("arguments");
+    const reasoningAfterInsufficientTerminal = completedReasoning(
+      "turn-unseen-insufficient-terminal",
+      "provider-insufficient-b",
+      "after insufficient terminal",
+    );
+    recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-unseen-insufficient-terminal",
+      item: {
+        id: "web-search-insufficient",
+        type: "webSearch",
+        status: "completed",
+        query: "AutoByteus",
+        action: { type: "search", query: "AutoByteus" },
+      },
+    });
+    recordConverted(CodexThreadEventName.TURN_COMPLETED, {
+      turn: { id: "turn-unseen-insufficient-terminal" },
+    });
+
+    expect(reasoningB.payload).toMatchObject({
+      id: reasoningA.payload.id,
+      delta: "\n\nB",
+    });
+    expect(reasoningAfterNextTool.payload.id).not.toBe(reasoningA.payload.id);
+    expect(reasoningAfterResultFirst.payload.id).not.toBe(reasoningBeforeResultFirst.payload.id);
+    expect(reasoningAfterInsufficientTerminal.payload.id).not.toBe(
+      reasoningBeforeInsufficientTerminal.payload.id,
+    );
+
+    const persistedRows = (await fs.readFile(
+      path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
+      "utf-8",
+    ))
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line) as Record<string, unknown>);
+    const persistedRelevant = persistedRows
+      .filter((row) => ["reasoning", "tool_call", "tool_result"].includes(String(row.trace_type)))
+      .map((row) => ({
+        type: row.trace_type,
+        content: row.content ?? "",
+        toolCallId: row.tool_call_id ?? null,
+      }));
+    expect(persistedRelevant).toEqual([
+      { type: "tool_call", content: "", toolCallId: "tool-1" },
+      { type: "tool_result", content: "", toolCallId: "tool-1" },
+      { type: "reasoning", content: "A\n\nB", toolCallId: null },
+      { type: "tool_call", content: "", toolCallId: "tool-2" },
+      { type: "tool_result", content: "", toolCallId: "tool-2" },
+      { type: "reasoning", content: "after next tool", toolCallId: null },
+      { type: "reasoning", content: "before result-first", toolCallId: null },
+      { type: "tool_call", content: "", toolCallId: "tool-result-first" },
+      { type: "tool_result", content: "", toolCallId: "tool-result-first" },
+      { type: "reasoning", content: "after result-first", toolCallId: null },
+      { type: "reasoning", content: "before insufficient terminal", toolCallId: null },
+      { type: "tool_call", content: "", toolCallId: "web-search-insufficient" },
+      { type: "tool_result", content: "", toolCallId: "web-search-insufficient" },
+      { type: "reasoning", content: "after insufficient terminal", toolCallId: null },
+    ]);
+    expect(JSON.stringify(persistedRows)).not.toContain("must never be displayed or persisted");
+
+    const result = await execGraphql<{ getRunProjection: ProjectionPayload }>(
+      `
+        query RunProjection($runId: String!) {
+          getRunProjection(runId: $runId) {
+            runId
+            summary
+            lastActivityAt
+            conversation
+            activities
+          }
+        }
+      `,
+      { runId },
+    );
+    const projection = result.getRunProjection;
+    const reasoningRows = projection.conversation.filter((row) => row.kind === "reasoning");
+    const reasoningContents = reasoningRows.map((row) => row.content);
+    const toolOneIndex = projection.conversation.findIndex(
+      (row) => row.kind === "tool_call" && row.invocationId === "tool-1",
+    );
+    const matchingReasoningIndex = projection.conversation.findIndex(
+      (row) => row.kind === "reasoning" && row.content === "A\n\nB",
+    );
+    const toolTwoIndex = projection.conversation.findIndex(
+      (row) => row.kind === "tool_call" && row.invocationId === "tool-2",
+    );
+    const beforeResultFirstIndex = projection.conversation.findIndex(
+      (row) => row.kind === "reasoning" && row.content === "before result-first",
+    );
+    const resultFirstToolIndex = projection.conversation.findIndex(
+      (row) => row.kind === "tool_call" && row.invocationId === "tool-result-first",
+    );
+    const afterResultFirstIndex = projection.conversation.findIndex(
+      (row) => row.kind === "reasoning" && row.content === "after result-first",
+    );
+    const beforeInsufficientTerminalIndex = projection.conversation.findIndex(
+      (row) => row.kind === "reasoning" && row.content === "before insufficient terminal",
+    );
+    const insufficientTerminalToolIndex = projection.conversation.findIndex(
+      (row) => row.kind === "tool_call" && row.invocationId === "web-search-insufficient",
+    );
+    const afterInsufficientTerminalIndex = projection.conversation.findIndex(
+      (row) => row.kind === "reasoning" && row.content === "after insufficient terminal",
+    );
+
+    expect(readThreadMock).not.toHaveBeenCalled();
+    expect(reasoningContents).toEqual([
+      "A\n\nB",
+      "after next tool",
+      "before result-first",
+      "after result-first",
+      "before insufficient terminal",
+      "after insufficient terminal",
+    ]);
+    expect(toolOneIndex).toBeLessThan(matchingReasoningIndex);
+    expect(matchingReasoningIndex).toBeLessThan(toolTwoIndex);
+    expect(beforeResultFirstIndex).toBeLessThan(resultFirstToolIndex);
+    expect(resultFirstToolIndex).toBeLessThan(afterResultFirstIndex);
+    expect(beforeInsufficientTerminalIndex).toBeLessThan(insufficientTerminalToolIndex);
+    expect(insufficientTerminalToolIndex).toBeLessThan(afterInsufficientTerminalIndex);
+    expect(findToolRow(projection.conversation, "tool-1")).toMatchObject({
+      kind: "tool_call",
+      invocationId: "tool-1",
+    });
+    expect(findToolRow(projection.activities, "tool-1")).toMatchObject({
+      status: "success",
+    });
+    expect(JSON.stringify(projection)).not.toContain("must never be displayed or persisted");
   });
 
   it("returns empty standalone Codex projection instead of native recovery when local replay is absent", async () => {

@@ -1,0 +1,18 @@
+# Initial Delivery Base Refresh Evidence
+
+- Recorded at: 2026-07-12T09:13:16Z
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images`
+- Ticket branch: `codex/markdown-preview-relative-images`
+- Command: `git fetch origin personal`
+- Fetch result: `Pass`
+- Bootstrap base: `73e2c333d89b09d70945139d3ce502230667a53f`
+- Latest tracked remote base: `73e2c333d89b09d70945139d3ce502230667a53f`
+- Reviewed-candidate checkpoint: `6b127afb87a70cf07d6e31873cad6f658706e5a2`
+- Branch head at refresh: `6b127afb87a70cf07d6e31873cad6f658706e5a2`
+- Bootstrap-to-remote count (left/right): `0 0`
+- Branch-to-remote count (left/right): `2 0`
+- Latest base contained by ticket branch: `Yes`
+- Base advanced since bootstrap: `No`
+- Integration method: `Already current`
+- New base commits integrated: `No`
+- Post-integration executable rerun: `Not required`; the fetched base is byte-identical to the bootstrap/reviewed base, so the authoritative API/E2E pass at 97% confidence remains against the same effective base state.

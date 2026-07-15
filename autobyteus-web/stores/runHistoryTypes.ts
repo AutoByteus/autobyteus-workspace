@@ -4,6 +4,7 @@ import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
+import type { TaskDelegationRecord } from '~/stores/taskDelegationTypes';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
@@ -178,6 +179,11 @@ export interface TeamMemberTreeRow {
   children: TeamMemberTreeRow[];
 }
 
+export interface TeamMemberFocusTarget {
+  teamRunId: string;
+  memberRouteKey: string;
+}
+
 export interface TeamTreeNode {
   teamRunId: string;
   teamDefinitionId: string;
@@ -196,6 +202,10 @@ export interface TeamTreeNode {
 
 export interface ListWorkspaceRunHistoryQueryData {
   listWorkspaceRunHistory: RunHistoryWorkspaceGroup[];
+}
+
+export interface GetWorkspaceRunHistoryQueryData {
+  workspaceRunHistory: RunHistoryWorkspaceGroup;
 }
 
 export interface TeamMemberRunProjectionPayload {
@@ -249,4 +259,8 @@ export interface ArchiveStoredTeamRunMutationData {
 
 export interface GetTeamCommunicationMessagesQueryData {
   getTeamCommunicationMessages: TeamCommunicationMessage[];
+}
+
+export interface GetTaskDelegationRecordsQueryData {
+  getTaskDelegationRecords: TaskDelegationRecord[];
 }

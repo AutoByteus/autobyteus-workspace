@@ -1,0 +1,65 @@
+{
+  "provider": "kimi",
+  "mode": "two-call",
+  "model": {
+    "name": "kimi-k2.7-code",
+    "value": "kimi-k2.7-code",
+    "provider": "KIMI"
+  },
+  "started_at": "2026-06-25T17:14:26.862Z",
+  "completed_at": "2026-06-25T17:14:30.238Z",
+  "prompt_shape": {
+    "repeated_prefix_line_count": 260,
+    "stable_system_prefix_chars": 40474,
+    "calls": [
+      "same system prefix; user suffix differs"
+    ]
+  },
+  "calls": [
+    {
+      "marker": "warmup",
+      "content_preview": "",
+      "normalized_usage": {
+        "input_tokens": 8628,
+        "output_tokens": 16,
+        "total_tokens": 8644,
+        "cache_read_input_tokens": null,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "prompt_tokens": 8628,
+          "completion_tokens": 16,
+          "total_tokens": 8644
+        }
+      }
+    },
+    {
+      "marker": "probe",
+      "content_preview": "",
+      "normalized_usage": {
+        "input_tokens": 8627,
+        "output_tokens": 16,
+        "total_tokens": 8643,
+        "cache_read_input_tokens": 8448,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": null,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "prompt_tokens": 8627,
+          "completion_tokens": 16,
+          "total_tokens": 8643,
+          "cached_tokens": 8448,
+          "prompt_tokens_details": {
+            "cached_tokens": 8448
+          }
+        }
+      }
+    }
+  ],
+  "semantic_inference_from_probe_call": "likely_gross_includes_cache"
+}

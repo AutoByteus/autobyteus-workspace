@@ -8,6 +8,8 @@ import type { TeamRunBackend } from "../team-run-backend.js";
 import type { TeamManager } from "../team-manager.js";
 import type { MixedTeamRunContextEnvelope } from "./mixed-team-run-context.js";
 import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
+import type { StartTaskTeamInstanceRequest } from "../../domain/task-team-instance.js";
+import type { ConversationTargetAddress } from "../../domain/conversation-target-address.js";
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
   accepted: false,
@@ -83,6 +85,21 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     }
   }
 
+  async postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+
+    try {
+      return await this.teamManager.postMessageToConversationTarget(message, address);
+    } catch (error) {
+      return buildCommandFailure("post team conversation target message", error);
+    }
+  }
+
   async deliverInterAgentMessage(
     intent: InterAgentMessageDeliveryIntent,
   ): Promise<AgentOperationResult> {
@@ -102,6 +119,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     approved: boolean,
     reason: string | null = null,
     targetMemberRunId: string | null = null,
+    taskTeamRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
@@ -113,6 +131,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
         approved,
         reason,
         targetMemberRunId,
+        taskTeamRunId,
       );
     } catch (error) {
       return buildCommandFailure("approve team tool", error);
@@ -195,10 +214,59 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     }
   }
 
-  async terminate(): Promise<AgentOperationResult> {
+
+  async startTaskTeamInstance(
+    request: StartTaskTeamInstanceRequest,
+  ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
+    try {
+      return await this.teamManager.startTaskTeamInstance(request);
+    } catch (error) {
+      return buildCommandFailure("start task-team instance", error);
+    }
+  }
+
+  async postMessageToTaskTeamInstance(
+    logicalTeamRouteKey: string,
+    taskTeamRunId: string,
+    message: AgentInputUserMessage,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+    try {
+      return await this.teamManager.postMessageToTaskTeamInstance(
+        logicalTeamRouteKey,
+        taskTeamRunId,
+        message,
+      );
+    } catch (error) {
+      return buildCommandFailure("post task-team message", error);
+    }
+  }
+
+  async settleTaskTeamInstance(
+    logicalTeamRouteKey: string,
+    taskTeamRunId: string,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+    try {
+      return await this.teamManager.settleTaskTeamInstance(
+        logicalTeamRouteKey,
+        taskTeamRunId,
+        reason,
+      );
+    } catch (error) {
+      return buildCommandFailure("settle task-team instance", error);
+    }
+  }
+
+  async terminate(): Promise<AgentOperationResult> {
     try {
       return await this.teamManager.terminate();
     } catch (error) {

@@ -1,0 +1,167 @@
+# Delivery integration refresh — 2026-07-14
+
+## Pre-checkpoint reviewed candidate
+timestamp_utc=2026-07-14T12:48:13Z
+branch=codex/pluggable-memory-compaction-strategies
+head=df7ade6ea461eec32aff37cdd8084be7b8c51d10
+upstream=origin/personal
+tracked_remote_before_fetch=21a526b8bddcc7441cd8039fbe455f1c2847e7ed
+relation_before_checkpoint=5	1 # left=remote-only right=branch-only
+
+Authoritative gates inspected:
+- api-e2e-execution-coverage-report.md: Pass, 98.3% confidence
+- api-e2e-test-review-report.md: Pass, no unresolved findings
+
+### git status --short --branch before checkpoint
+## codex/pluggable-memory-compaction-strategies...origin/personal [ahead 1, behind 5]
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_definition.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+ D autobyteus-server-ts/src/agent-execution/compaction/compaction-agent-settings-resolver.ts
+ M autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+ M autobyteus-server-ts/src/api/graphql/schema.ts
+ M autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+ M autobyteus-server-ts/src/services/server-settings-service.ts
+ M autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+ D autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-agent-settings-resolver.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+ M autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-ts/src/memory/compaction/compaction-agent-runner.ts
+ M autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts
+ M autobyteus-ts/tests/unit/memory/working-context-compaction-strategy-registry.test.ts
+ M autobyteus-web/components/settings/CompactionConfigCard.vue
+ M autobyteus-web/components/settings/ServerSettingsManager.vue
+ M autobyteus-web/components/settings/__tests__/CompactionConfigCard.spec.ts
+ M autobyteus-web/components/settings/__tests__/NodeManager.spec.ts
+ M autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts
+ M autobyteus-web/graphql/queries/server_settings_queries.ts
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/pages/__tests__/settings.spec.ts
+ M autobyteus-web/pages/settings.vue
+ M autobyteus-web/stores/serverSettings.ts
+ M autobyteus-web/tests/stores/serverSettingsStore.test.ts
+ M tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-coverage-investigation.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-test-review-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/code-review-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/design-review-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/design-spec.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/implementation-handoff.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/investigation-notes.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/requirements.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-domain-contract.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-strategy-contract.md
+?? autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts
+?? autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts
+?? autobyteus-server-ts/tests/unit/api/graphql/types/working-context-compaction-strategy.test.ts
+?? autobyteus-web/components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+?? autobyteus-web/graphql/queries/workingContextCompactionStrategyQueries.ts
+?? autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts
+?? autobyteus-web/tests/stores/workingContextCompactionStrategyCatalogStore.test.ts
+?? tickets/in-progress/pluggable-memory-compaction-strategies/compaction-strategy-settings-ui-ux-spec.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/docs-sync-report.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/handoff-summary.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/release-deployment-report.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-electron-artifact-verification-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-final-consistency-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-integration-refresh-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-integration-refresh-20260714.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-user-requested-electron-artifacts-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-user-requested-electron-build-mac-20260713.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-code-review-core.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-code-review-server.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-code-review-static.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-code-review-web.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-implementation-cr-pmcs-012-web-build.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round10-implementation-cr-pmcs-012-web-tests.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round11-code-review-static.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round11-code-review-web.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-builds-guards.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-core-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-provider-renderers.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-server-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-server-graphql-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-static-boundary.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-web-broader.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round2-web-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-browser-full-save.png
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-browser-journey.json
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-browser-journey.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-browser-later-key-failure.png
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-browser-narrow.png
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-builds.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-cleanup.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-core.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-electron-build.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-electron-contract.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-electron-package-integrity.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-live-api.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-provider.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-server-graphql.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-server.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-static.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-web-window-settings.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round3-web.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-browser-full-save.png
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-browser-initial-read-error.png
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-browser-initial-retry-recovered.png
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-browser-journey.json
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-browser-journey.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-browser-later-key-failure.png
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-browser-narrow.png
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-builds.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-cleanup.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-core.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-electron-build.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-electron-contract.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-electron-package-integrity.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-final-consistency.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-live-api.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-live-server.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-provider.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-server.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-static.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-web-dev-server.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-web-full-suite-validity.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-web-targeted.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round4-web.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round8-code-review-validation-20260714.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round9-implementation-web-build.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round9-implementation-web-tests.log
+
+checkpoint=0a2f31c94b6c418fdad8404d90341a1b35f1f8fa
+
+## Checkpoint correction
+The initial checkpoint was amended to include this evidence file. Authoritative delivery-safety checkpoint:
+checkpoint=49aad336666ec1a4661bfaf62d10f15f7d3e5faf
+The earlier `0a2f31c9...` line is the pre-amend object and is superseded.
+
+## Remote refresh
+command=git fetch origin personal
+latest_tracked_remote_base=21a526b8bddcc7441cd8039fbe455f1c2847e7ed
+base_advanced_since_recorded_fdb370d4=yes
+remote_only_commits=5
+remote_only_tip=21a526b8b chore(release): bump workspace release version to 1.4.13
+remote_scope=Grok model support, archived ticket/release records, messaging manifest, and autobyteus-web package version; no compaction source overlap
+
+## Integration
+command=git merge --no-edit origin/personal
+method=merge (ort)
+result=completed without conflicts
+integrated_head=4514aa6ed15433ab403eafbfbf4dedcecc8b2513
+merge_base_with_origin_personal=21a526b8bddcc7441cd8039fbe455f1c2847e7ed
+relation_after_merge=0 3 # left=remote-only right=branch-only
+
+## Post-integration executable check
+command=NUXT_TEST=true pnpm exec vitest --run <10 mapped current frontend files>
+result=Pass
+files=10/10
+tests=84/84
+evidence=validation-evidence/delivery-integrated-web-targeted-20260714.log

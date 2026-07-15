@@ -54,7 +54,7 @@ describe("AgentMemoryExplorerService", () => {
     await writeMetadata("codex-run-1", "codex", "2026-01-01T00:00:00Z");
     await writeMetadata("codex-run-2", "codex", "2026-01-02T00:00:00Z");
     await writeMetadata("empty-run", "empty-agent", "2026-01-03T00:00:00Z");
-    touch(path.join(tempDir, "agents", "codex-run-1", "raw_traces.jsonl"), 1000);
+    touch(path.join(tempDir, "agents", "codex-run-1", "raw_traces_active.jsonl"), 1000);
     touch(path.join(tempDir, "agents", "codex-run-2", "semantic.jsonl"), 2000);
 
     const page = await createService().listAgentsWithMemory();
@@ -83,8 +83,8 @@ describe("AgentMemoryExplorerService", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-explorer-"));
     await writeMetadata("alpha-run", "alpha", "2026-01-01T00:00:00Z");
     await writeMetadata("beta-run", "beta", "2026-01-02T00:00:00Z");
-    touch(path.join(tempDir, "agents", "alpha-run", "raw_traces.jsonl"), 1000);
-    touch(path.join(tempDir, "agents", "beta-run", "raw_traces.jsonl"), 2000);
+    touch(path.join(tempDir, "agents", "alpha-run", "raw_traces_active.jsonl"), 1000);
+    touch(path.join(tempDir, "agents", "beta-run", "raw_traces_active.jsonl"), 2000);
 
     const page = await createService().listAgentRunsWithMemory(
       { attribution: "DEFINITION", agentDefinitionId: "alpha" },

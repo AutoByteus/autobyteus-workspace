@@ -4,7 +4,12 @@ import {
   resolveCodexToolItemFamily,
 } from "../items/codex-tool-item-family.js";
 import { CodexToolPayloadParser } from "../items/codex-tool-payload-parser.js";
-import { CodexReasoningPayloadParser } from "./codex-reasoning-payload-parser.js";
+import {
+  CodexReasoningEventNormalizer,
+} from "./codex-reasoning-event-normalizer.js";
+import type {
+  CodexReasoningBlockUpdate,
+} from "./codex-reasoning-block-tracker.js";
 import {
   normalizeCodexAgentToolsToolNameForEvent,
 } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
@@ -58,7 +63,7 @@ const asSegmentType = (value: string | null): string => {
 
 export class CodexItemEventPayloadParser {
   private readonly fileChangePayloadHelper = new CodexFileChangePayloadHelper();
-  private readonly reasoningPayloadParser = new CodexReasoningPayloadParser();
+  private readonly reasoningEventNormalizer = new CodexReasoningEventNormalizer();
   private readonly toolPayloadParser = new CodexToolPayloadParser(
     this.fileChangePayloadHelper,
   );
@@ -151,10 +156,6 @@ export class CodexItemEventPayloadParser {
     return typeof candidate === "string" ? candidate : "";
   }
 
-  public resolveReasoningSnapshot(payload: Record<string, unknown>): string {
-    return this.reasoningPayloadParser.resolveReasoningSnapshot(payload);
-  }
-
   public resolveSegmentId(
     payload: Record<string, unknown>,
     fallback = "runtime-segment",
@@ -169,12 +170,18 @@ export class CodexItemEventPayloadParser {
     return typeof candidate === "string" && candidate.length > 0 ? candidate : fallback;
   }
 
-  public resolveReasoningSegmentId(payload: Record<string, unknown>): string {
-    return this.reasoningPayloadParser.resolveReasoningSegmentId(payload);
+  public resolveCompletedReasoningSnapshot(
+    payload: Record<string, unknown>,
+  ): CodexReasoningBlockUpdate | null {
+    return this.reasoningEventNormalizer.resolveCompletedSnapshot(payload);
   }
 
-  public clearReasoningSegmentForTurn(payload: Record<string, unknown>): void {
-    this.reasoningPayloadParser.clearReasoningSegmentForTurn(payload);
+  public clearReasoningBlockForBoundary(payload: Record<string, unknown>): void {
+    this.reasoningEventNormalizer.clearForBoundary(payload);
+  }
+
+  public clearAllReasoningBlocks(): void {
+    this.reasoningEventNormalizer.clearAll();
   }
 
   public resolveItemType(payload: Record<string, unknown>): string | null {
@@ -262,6 +269,10 @@ export class CodexItemEventPayloadParser {
     return this.toolPayloadParser.resolveDynamicToolArguments(payload);
   }
 
+  public hasExplicitToolArguments(payload: Record<string, unknown>): boolean {
+    return this.toolPayloadParser.hasExplicitToolArguments(payload);
+  }
+
   public resolveCommandValue(payload: Record<string, unknown>): string | null {
     return this.toolPayloadParser.resolveCommandValue(payload);
   }
@@ -288,10 +299,6 @@ export class CodexItemEventPayloadParser {
 
   public isExecutionFailure(payload: Record<string, unknown>): boolean {
     return this.toolPayloadParser.isExecutionFailure(payload);
-  }
-
-  public resolveReasoningDelta(payload: Record<string, unknown>): string {
-    return this.reasoningPayloadParser.resolveReasoningDelta(payload, this.resolveDelta(payload));
   }
 
   private sanitizeRecord(value: Record<string, unknown>): Record<string, unknown> {

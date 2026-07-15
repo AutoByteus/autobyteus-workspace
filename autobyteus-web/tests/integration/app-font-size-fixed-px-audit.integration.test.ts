@@ -33,7 +33,6 @@ const TARGETED_FILES = Array.from(new Set([
   'components/workspace/common/WorkspaceHeaderActions.vue',
   'components/conversation/segments/InterAgentMessageSegment.vue',
   'components/workspace/agent/AgentConversationFeed.vue',
-  'components/workspace/team/TeamMemberMonitorTile.vue',
   'components/workspace/running/TeamMemberRow.vue',
   'components/fileExplorer/MonacoEditor.vue',
   'components/workspace/tools/Terminal.vue',

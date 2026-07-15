@@ -1,0 +1,10 @@
+Post-release cleanup evidence
+Recorded: 2026-07-15
+
+- Dedicated worktree /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width: removed successfully.
+- git worktree prune: completed.
+- Local branch codex/token-statistics-full-width: deleted after personal contained f0384dd26bc6082641bdaefb0b1da2c5ac7b1692.
+- Remote branch origin/codex/token-statistics-full-width: deleted successfully.
+- Target branch before final cleanup-record commit: personal == origin/personal == f0384dd26bc6082641bdaefb0b1da2c5ac7b1692.
+- Remote release tag v1.4.14 remains published and targets release commit 20da4ff39fbed74949fddc7ef8e8848ce9b072cd.
+- Unrelated main-worktree files remained untouched: .article-work/, .local-build-logs/, docs/articles/, tickets/in-progress/app-store-publishing-pipeline-investigation/.

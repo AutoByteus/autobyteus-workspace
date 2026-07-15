@@ -8,8 +8,10 @@ export const GET_AGENT_RUN_MEMORY_VIEW = gql`
     $includeEpisodic: Boolean
     $includeSemantic: Boolean
     $includeRawTraces: Boolean
+    $includeRawTraceFiles: Boolean
     $includeArchive: Boolean
     $rawTraceLimit: Int
+    $rawTraceFileName: String
   ) {
     getAgentRunMemoryView(
       runId: $runId
@@ -18,8 +20,10 @@ export const GET_AGENT_RUN_MEMORY_VIEW = gql`
       includeEpisodic: $includeEpisodic
       includeSemantic: $includeSemantic
       includeRawTraces: $includeRawTraces
+      includeRawTraceFiles: $includeRawTraceFiles
       includeArchive: $includeArchive
       rawTraceLimit: $rawTraceLimit
+      rawTraceFileName: $rawTraceFileName
     ) {
       runId
       workingContext {
@@ -31,8 +35,19 @@ export const GET_AGENT_RUN_MEMORY_VIEW = gql`
       }
       episodic
       semantic
+      rawTraceFiles {
+        fileName
+        kind
+        recordCount
+        segmentIndex
+        firstTimestamp
+        lastTimestamp
+      }
+      selectedRawTraceFileName
       rawTraces {
+        id
         traceType
+        sourceEvent
         content
         toolName
         toolCallId
@@ -57,8 +72,10 @@ export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
     $includeEpisodic: Boolean
     $includeSemantic: Boolean
     $includeRawTraces: Boolean
+    $includeRawTraceFiles: Boolean
     $includeArchive: Boolean
     $rawTraceLimit: Int
+    $rawTraceFileName: String
   ) {
     getTeamMemberRunMemoryView(
       teamRunId: $teamRunId
@@ -68,8 +85,10 @@ export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
       includeEpisodic: $includeEpisodic
       includeSemantic: $includeSemantic
       includeRawTraces: $includeRawTraces
+      includeRawTraceFiles: $includeRawTraceFiles
       includeArchive: $includeArchive
       rawTraceLimit: $rawTraceLimit
+      rawTraceFileName: $rawTraceFileName
     ) {
       runId
       workingContext {
@@ -81,8 +100,19 @@ export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
       }
       episodic
       semantic
+      rawTraceFiles {
+        fileName
+        kind
+        recordCount
+        segmentIndex
+        firstTimestamp
+        lastTimestamp
+      }
+      selectedRawTraceFileName
       rawTraces {
+        id
         traceType
+        sourceEvent
         content
         toolName
         toolCallId

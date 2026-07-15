@@ -110,7 +110,7 @@ describe('LLMFactory reload models', () => {
     expect(currentIds).toContain(newModel2.modelIdentifier);
   });
 
-  it('reloadModels clears models when fetch fails (fail fast)', async () => {
+  it('reloadModels preserves existing provider models when fetch fails', async () => {
     const initialModel = new LLMModel({
       name: 'precious-data',
       value: 'precious',
@@ -127,8 +127,10 @@ describe('LLMFactory reload models', () => {
     vi.spyOn(OllamaModelProvider, 'getModels').mockRejectedValue(new Error('Server Down'));
 
     const count = await LLMFactory.reloadModels(LLMProvider.OLLAMA);
-    expect(count).toBe(0);
-    expect((await LLMFactory.listModelsByProvider(LLMProvider.OLLAMA)).length).toBe(0);
+    expect(count).toBe(1);
+    const ollamaModels = await LLMFactory.listModelsByProvider(LLMProvider.OLLAMA);
+    expect(ollamaModels).toHaveLength(1);
+    expect(ollamaModels[0]?.model_identifier).toBe(initialModel.modelIdentifier);
   });
 
   it('reloadModels repopulates the requested Ollama bucket for vendor-keyword model names', async () => {

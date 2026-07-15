@@ -1,0 +1,118 @@
+Round 3 Electron backend task-node probe
+Endpoint: http://127.0.0.1:29695/graphql
+Timestamp UTC: 2026-06-28T16:21:42.039Z
+HTTP status: 200
+Workspace count: 22
+Team run count: 121
+Active team run count: 2
+Active/running/pending team runs:
+[
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "workspaceName": "autobyteus-workspace-superrepo",
+    "teamDefinitionName": "Software Engineering Team",
+    "teamRunId": "software_engineering_team_8728209cf99e46cabf104b5e707a3287",
+    "status": "running",
+    "isActive": true,
+    "memberCount": 6,
+    "members": [
+      {
+        "memberRouteKey": "solution_designer",
+        "memberName": "solution_designer",
+        "memberRunId": "solution_designer_1ec26a15fc6f4bd4aa2acf3e15fb42cb",
+        "status": "idle",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "architecture_reviewer",
+        "memberName": "architecture_reviewer",
+        "memberRunId": "architecture_reviewer_5498a05eded24cec8a8c78b5d3bbd417",
+        "status": "idle",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "implementation_engineer",
+        "memberName": "implementation_engineer",
+        "memberRunId": "implementation_engineer_53e6421e189a4fdca6d4b5e4f4abf6a7",
+        "status": "idle",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "code_reviewer",
+        "memberName": "code_reviewer",
+        "memberRunId": "code_reviewer_61f7bd06ebfe43faa4f04570ee0b2e7f",
+        "status": "idle",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "api_e2e_engineer",
+        "memberName": "api_e2e_engineer",
+        "memberRunId": "api_e2e_engineer_bf3e13fab79145d39b881a854f77821b",
+        "status": "running",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "delivery_engineer",
+        "memberName": "delivery_engineer",
+        "memberRunId": "delivery_engineer_85e81f4c67a1400696f37dd0179f05d7",
+        "status": "idle",
+        "runtimeKind": "codex_app_server"
+      }
+    ]
+  },
+  {
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "workspaceName": "autobyteus-workspace-superrepo",
+    "teamDefinitionName": "Software Engineering Team",
+    "teamRunId": "team_software-engineering-team_c23502de",
+    "status": "idle",
+    "isActive": true,
+    "memberCount": 6,
+    "members": [
+      {
+        "memberRouteKey": "solution_designer",
+        "memberName": "solution_designer",
+        "memberRunId": "solution_designer_23d0e1ef944fec1c",
+        "status": "idle",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "architecture_reviewer",
+        "memberName": "architecture_reviewer",
+        "memberRunId": "architecture_reviewer_f67ff80e605b75fb",
+        "status": "offline",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "implementation_engineer",
+        "memberName": "implementation_engineer",
+        "memberRunId": "implementation_engineer_cdb3b9ce7e4f031c",
+        "status": "offline",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "code_reviewer",
+        "memberName": "code_reviewer",
+        "memberRunId": "code_reviewer_395fd10207f54712",
+        "status": "idle",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "api_e2e_engineer",
+        "memberName": "api_e2e_engineer",
+        "memberRunId": "api_e2e_engineer_0b7a1c172b854fbe",
+        "status": "idle",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "memberRouteKey": "delivery_engineer",
+        "memberName": "delivery_engineer",
+        "memberRunId": "delivery_engineer_5cd4b494519fa710",
+        "status": "idle",
+        "runtimeKind": "codex_app_server"
+      }
+    ]
+  }
+]
+Task-like memberTree/member hits count: 0
+[]

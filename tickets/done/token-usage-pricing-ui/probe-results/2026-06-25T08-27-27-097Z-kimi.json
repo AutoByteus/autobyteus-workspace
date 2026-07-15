@@ -1,0 +1,39 @@
+{
+  "provider": "kimi",
+  "attempted": true,
+  "ok": true,
+  "status": 200,
+  "durationMs": 1121,
+  "model": "kimi-k2.7-code",
+  "summary": {
+    "topLevelKeys": [
+      "id",
+      "object",
+      "created",
+      "model",
+      "choices",
+      "usage"
+    ],
+    "usage": {
+      "prompt_tokens": 14,
+      "completion_tokens": 13,
+      "total_tokens": 27
+    },
+    "usageKeys": [
+      "prompt_tokens",
+      "completion_tokens",
+      "total_tokens"
+    ],
+    "promptDetails": null,
+    "completionDetails": null,
+    "messageKeys": [
+      "role",
+      "content",
+      "reasoning_content"
+    ],
+    "deltaKeys": [],
+    "hasReasoningContent": true,
+    "hasReasoningTextField": false,
+    "finishReason": "stop"
+  }
+}

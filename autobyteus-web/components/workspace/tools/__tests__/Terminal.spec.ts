@@ -24,12 +24,14 @@ const {
   sessionOptions: [] as any[],
   terminalConstructorSpy: vi.fn(),
   terminalInstances: [] as Array<{
+    cols: number;
     dispose: ReturnType<typeof vi.fn>;
     loadAddon: ReturnType<typeof vi.fn>;
     onData: ReturnType<typeof vi.fn>;
     onResize: ReturnType<typeof vi.fn>;
     open: ReturnType<typeof vi.fn>;
     options: Record<string, unknown>;
+    rows: number;
     write: ReturnType<typeof vi.fn>;
     writeln: ReturnType<typeof vi.fn>;
   }>,
@@ -46,7 +48,9 @@ const {
 
 vi.mock('@xterm/xterm', () => ({
   Terminal: class MockTerminal {
+    cols = 80;
     options: Record<string, unknown>;
+    rows = 24;
     loadAddon = vi.fn();
     open = vi.fn();
     onData = vi.fn();
@@ -225,6 +229,31 @@ describe('Terminal.vue', () => {
     wrapper.unmount();
   });
 
+  it('treats an explicit null target as server home instead of falling back to workspace metadata', async () => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+
+    const wrapper = mount(TerminalComponent, {
+      props: {
+        target: null,
+      },
+      global: {
+        plugins: [pinia],
+      },
+      attachTo: document.body,
+    });
+
+    await nextTick();
+    await nextTick();
+    await flushPromises();
+
+    expect(sessionOptions[0].target.value).toBeNull();
+    expect(sessionOptions[0].defaultCwd).toBe('server-home');
+    expect(sessionMock.connect).toHaveBeenCalledTimes(1);
+
+    wrapper.unmount();
+  });
+
   it('reconnects when switching from an explicit terminal target to server home', async () => {
     workspaceStoreState.activeWorkspaceMetadata = null as any;
     const pinia = createPinia();
@@ -291,5 +320,74 @@ describe('Terminal.vue', () => {
     expect(fitAddonInstances[0].fit.mock.calls.length).toBeGreaterThan(fitCallCountBeforeChange);
 
     wrapper.unmount();
+  });
+
+  it('refits and sends resize when becoming active without disconnecting while inactive', async () => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+
+    const wrapper = mount(TerminalComponent, {
+      props: {
+        active: false,
+      },
+      global: {
+        plugins: [pinia],
+      },
+      attachTo: document.body,
+    });
+
+    await nextTick();
+    await nextTick();
+    await flushPromises();
+
+    expect(terminalInstances).toHaveLength(1);
+    expect(fitAddonInstances).toHaveLength(1);
+
+    sessionMock.disconnect.mockClear();
+    sessionMock.sendResize.mockClear();
+    const fitCallCountBeforeActivation = fitAddonInstances[0].fit.mock.calls.length;
+
+    sessionMock.isConnected.value = true;
+    await wrapper.setProps({ active: true });
+    await nextTick();
+    await flushPromises();
+
+    expect(sessionMock.disconnect).not.toHaveBeenCalled();
+    expect(fitAddonInstances[0].fit.mock.calls.length).toBeGreaterThan(fitCallCountBeforeActivation);
+    expect(sessionMock.sendResize).toHaveBeenCalledWith(24, 80);
+
+    wrapper.unmount();
+  });
+
+  it('disconnects only on true component unmount', async () => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+
+    const wrapper = mount(TerminalComponent, {
+      props: {
+        active: false,
+      },
+      global: {
+        plugins: [pinia],
+      },
+      attachTo: document.body,
+    });
+
+    await nextTick();
+    await nextTick();
+    await flushPromises();
+
+    sessionMock.disconnect.mockClear();
+
+    await wrapper.setProps({ active: true });
+    await nextTick();
+    await wrapper.setProps({ active: false });
+    await nextTick();
+
+    expect(sessionMock.disconnect).not.toHaveBeenCalled();
+
+    wrapper.unmount();
+
+    expect(sessionMock.disconnect).toHaveBeenCalledTimes(1);
   });
 });

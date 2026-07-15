@@ -1,0 +1,41 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/openai-new-api-models/autobyteus-ts
+
+stdout | tests/integration/llm/llm-factory-metadata-resolution.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/supported-model-definitions.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/provider-native-request-payloads.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/metadata/model-metadata-resolver.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/api/token-usage-normalizers.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/llm/metadata/model-metadata-resolver.test.ts (7 tests) 5ms
+ ✓ tests/unit/llm/api/token-usage-normalizers.test.ts (8 tests) 4ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (8 tests) 17ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (9 tests) 6ms
+stderr | tests/integration/llm/llm-factory-metadata-resolution.test.ts > LLMFactory metadata resolution > falls back to curated metadata when a resolver-backed provider metadata call times out during initialization
+Failed to resolve model metadata for provider GEMINI: metadata load timed out after 10ms for provider GEMINI
+
+ ✓ tests/integration/llm/llm-factory-metadata-resolution.test.ts (4 tests) 30ms
+
+ Test Files  5 passed (5)
+      Tests  36 passed (36)
+   Start at  17:15:53
+   Duration  991ms (transform 1.22s, setup 146ms, import 2.58s, tests 62ms, environment 0ms)

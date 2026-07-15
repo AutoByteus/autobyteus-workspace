@@ -1,0 +1,8 @@
+lrwxr-xr-x@ 1 normy  staff  92 Jul 11 07:33 autobyteus-server-ts/node_modules -> /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/node_modules
+lrwxr-xr-x@ 1 normy  staff  85 Jul 11 07:33 autobyteus-ts/node_modules -> /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/node_modules
+lrwxr-xr-x@ 1 normy  staff  71 Jul 11 07:33 node_modules -> /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules
+vitest/4.0.18 darwin-arm64 node-v22.23.1
+server node_modules replaced with API/E2E-owned local symlink overlay
+drwxr-xr-x@ 31 normy  staff  992 Jun 28 10:12 autobyteus-server-ts/node_modules
+lrwxr-xr-x@  1 normy  staff   19 Jun 28 10:12 autobyteus-server-ts/node_modules/autobyteus-ts -> ../../autobyteus-ts
+resolved autobyteus-ts link: /Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/autobyteus-ts

@@ -1,3 +1,6 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
@@ -16,7 +19,10 @@ import { projectClaudeAgentStatus } from "../../../../../../src/agent-execution/
 import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
 import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import type { ClaudeSdkQueryLike } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import type {
+  ClaudeSdkQueryLike,
+  ClaudeSdkStartQueryTurnOptions,
+} from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
 
 const waitFor = async (predicate: () => boolean, label: string): Promise<void> => {
   const deadline = Date.now() + 1_000;
@@ -27,6 +33,15 @@ const waitFor = async (predicate: () => boolean, label: string): Promise<void> =
     await new Promise((resolve) => setTimeout(resolve, 0));
   }
   throw new Error(`Timed out waiting for ${label}`);
+};
+
+const pathExists = async (targetPath: string): Promise<boolean> => {
+  try {
+    await fs.access(targetPath);
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 const createResultQuery = (sessionId = "claude-session-1"): ClaudeSdkQueryLike => ({
@@ -46,6 +61,37 @@ const createQueryFromChunks = (chunks: unknown[]): ClaudeSdkQueryLike => ({
     for (const chunk of chunks) {
       yield chunk;
     }
+  },
+  interrupt: vi.fn(async () => undefined),
+  close: vi.fn(() => undefined),
+});
+
+type PermissionHarnessRequest = {
+  id: string;
+  toolName: string;
+  input: Record<string, unknown>;
+  onAllow: () => Promise<void>;
+};
+
+const createPermissionHarnessQuery = (
+  canUseTool: NonNullable<ClaudeSdkStartQueryTurnOptions["canUseTool"]>,
+  requests: PermissionHarnessRequest[],
+): ClaudeSdkQueryLike => ({
+  async *[Symbol.asyncIterator]() {
+    for (const request of requests) {
+      const decision = await canUseTool(request.toolName, request.input, {
+        toolUseID: request.id,
+      });
+      if (decision["behavior"] !== "allow") {
+        return;
+      }
+      await request.onAllow();
+    }
+    yield {
+      type: "result",
+      session_id: "claude-session-permission-harness",
+      result: "done",
+    };
   },
   interrupt: vi.fn(async () => undefined),
   close: vi.fn(() => undefined),
@@ -105,12 +151,19 @@ const createSession = (input: {
   autoExecuteTools?: boolean;
   query?: ClaudeSdkQueryLike;
   queries?: ClaudeSdkQueryLike[];
+  startQueryTurnImplementation?: (
+    options: ClaudeSdkStartQueryTurnOptions,
+  ) => Promise<ClaudeSdkQueryLike>;
   contextFileLocalPathResolver?: { resolve: (uri: string) => string | null };
 } = {}) => {
   const sessionMessageCache = new ClaudeSessionMessageCache();
   const interruptQuery = vi.fn(async () => undefined);
   const queryQueue = [...(input.queries ?? (input.query ? [input.query] : []))];
-  const startQueryTurn = vi.fn(async () => queryQueue.shift() ?? createResultQuery());
+  const defaultStartQueryTurn = async (_options: ClaudeSdkStartQueryTurnOptions) =>
+    queryQueue.shift() ?? createResultQuery();
+  const startQueryTurn = vi.fn(
+    input.startQueryTurnImplementation ?? defaultStartQueryTurn,
+  );
   const closeQuery = vi.fn((query: ClaudeSdkQueryLike | null) => {
     query?.close();
   });
@@ -139,6 +192,7 @@ const createSession = (input: {
         model: "haiku",
         workingDirectory: "/tmp",
         permissionMode: "default",
+        autoExecuteTools: input.autoExecuteTools ?? false,
       }),
       configuredToolExposure: buildConfiguredAgentToolExposure([]),
       sessionId: input.sessionId ?? "run-1",
@@ -286,6 +340,216 @@ describe("ClaudeSession", () => {
       can_interrupt: false,
     });
     expect(session.hasCompletedTurn).toBe(true);
+  });
+
+  it("auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode", async () => {
+    const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-claude-workspace-"));
+    const outsideRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-claude-outside-"));
+    try {
+      const workspaceWrite = path.join(workspaceRoot, "write.txt");
+      const workspaceDelete = path.join(workspaceRoot, "delete.txt");
+      const workspaceShell = path.join(workspaceRoot, "shell.txt");
+      const outsideWrite = path.join(outsideRoot, "write.txt");
+      const outsideDelete = path.join(outsideRoot, "delete.txt");
+      const outsideShell = path.join(outsideRoot, "shell.txt");
+      await fs.writeFile(workspaceDelete, "delete me", "utf8");
+      await fs.writeFile(outsideDelete, "delete me", "utf8");
+
+      const requests: PermissionHarnessRequest[] = [
+        {
+          id: "toolu-workspace-write",
+          toolName: "Write",
+          input: { file_path: workspaceWrite, content: "workspace write" },
+          onAllow: () => fs.writeFile(workspaceWrite, "workspace write", "utf8"),
+        },
+        {
+          id: "toolu-workspace-delete",
+          toolName: "Bash",
+          input: { command: `rm ${workspaceDelete}` },
+          onAllow: () => fs.rm(workspaceDelete, { force: true }),
+        },
+        {
+          id: "toolu-workspace-shell",
+          toolName: "Bash",
+          input: { command: `printf workspace-shell > ${workspaceShell}` },
+          onAllow: () => fs.writeFile(workspaceShell, "workspace shell", "utf8"),
+        },
+        {
+          id: "toolu-outside-write",
+          toolName: "Write",
+          input: { file_path: outsideWrite, content: "outside write" },
+          onAllow: () => fs.writeFile(outsideWrite, "outside write", "utf8"),
+        },
+        {
+          id: "toolu-outside-delete",
+          toolName: "Bash",
+          input: { command: `rm ${outsideDelete}` },
+          onAllow: () => fs.rm(outsideDelete, { force: true }),
+        },
+        {
+          id: "toolu-outside-shell",
+          toolName: "Bash",
+          input: { command: `printf outside-shell > ${outsideShell}` },
+          onAllow: () => fs.writeFile(outsideShell, "outside shell", "utf8"),
+        },
+      ];
+      const { session, startQueryTurn } = createSession({
+        autoExecuteTools: true,
+        startQueryTurnImplementation: async (startOptions) => {
+          expect(startOptions.permissionMode).toBe("default");
+          expect(Object.prototype.hasOwnProperty.call(startOptions, "autoExecuteTools")).toBe(false);
+          expect(startOptions.canUseTool).toEqual(expect.any(Function));
+          return createPermissionHarnessQuery(startOptions.canUseTool!, requests);
+        },
+      });
+      const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
+      session.subscribeRuntimeEvents((event) => events.push(event));
+
+      await session.sendTurn(new AgentInputUserMessage("exercise permission harness"));
+      await waitFor(
+        () => events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED),
+        "auto permission harness completion",
+      );
+
+      expect(startQueryTurn).toHaveBeenCalledTimes(1);
+      expect(
+        events.some(
+          (event) =>
+            event.method === ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
+        ),
+      ).toBe(false);
+      expect(
+        events.filter(
+          (event) => event.method === ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_APPROVED,
+        ),
+      ).toHaveLength(requests.length);
+      await expect(fs.readFile(workspaceWrite, "utf8")).resolves.toBe("workspace write");
+      await expect(pathExists(workspaceDelete)).resolves.toBe(false);
+      await expect(fs.readFile(workspaceShell, "utf8")).resolves.toBe("workspace shell");
+      await expect(fs.readFile(outsideWrite, "utf8")).resolves.toBe("outside write");
+      await expect(pathExists(outsideDelete)).resolves.toBe(false);
+      await expect(fs.readFile(outsideShell, "utf8")).resolves.toBe("outside shell");
+    } finally {
+      await fs.rm(workspaceRoot, { recursive: true, force: true });
+      await fs.rm(outsideRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps manual mode gated for a safe outside-scratch permission request until approval resolves", async () => {
+    const outsideRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-claude-manual-outside-"));
+    try {
+      const outsideTarget = path.join(outsideRoot, "manual-shell.txt");
+      let sideEffectCount = 0;
+      const requests: PermissionHarnessRequest[] = [
+        {
+          id: "toolu-manual-outside-shell",
+          toolName: "Bash",
+          input: { command: `printf manual-shell > ${outsideTarget}` },
+          onAllow: async () => {
+            sideEffectCount += 1;
+            await fs.writeFile(outsideTarget, "manual shell", "utf8");
+          },
+        },
+      ];
+      const { session, startQueryTurn } = createSession({
+        autoExecuteTools: false,
+        startQueryTurnImplementation: async (startOptions) => {
+          expect(startOptions.permissionMode).toBe("default");
+          expect(Object.prototype.hasOwnProperty.call(startOptions, "autoExecuteTools")).toBe(false);
+          expect(startOptions.canUseTool).toEqual(expect.any(Function));
+          return createPermissionHarnessQuery(startOptions.canUseTool!, requests);
+        },
+      });
+      const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
+      session.subscribeRuntimeEvents((event) => events.push(event));
+
+      await session.sendTurn(new AgentInputUserMessage("manual outside scratch request"));
+      await waitFor(
+        () =>
+          events.some(
+            (event) =>
+              event.method === ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
+          ),
+        "manual approval request",
+      );
+
+      expect(startQueryTurn).toHaveBeenCalledTimes(1);
+      expect(sideEffectCount).toBe(0);
+      await expect(pathExists(outsideTarget)).resolves.toBe(false);
+      expect(events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED)).toBe(false);
+
+      await session.approveTool("toolu-manual-outside-shell", false, "Denied by test");
+      await waitFor(
+        () => events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED),
+        "manual denial turn settlement",
+      );
+      await expect(pathExists(outsideTarget)).resolves.toBe(false);
+    } finally {
+      await fs.rm(outsideRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("enriches generic Claude process exits with bounded redacted stderr diagnostics", async () => {
+    const { session } = createSession({
+      startQueryTurnImplementation: async (startOptions) => {
+        startOptions.stderr?.("Authorization: Bearer ");
+        startOptions.stderr?.("abc.def_SECRET-token\nANTHROPIC_API");
+        startOptions.stderr?.(
+          "_KEY=sk-ant-super-secret\n--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons",
+        );
+        throw new Error("Claude Code process exited with code 1");
+      },
+    });
+    const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
+    session.subscribeRuntimeEvents((event) => events.push(event));
+
+    await session.sendTurn(new AgentInputUserMessage("start claude"));
+    await waitFor(
+      () => events.some((event) => event.method === ClaudeSessionEventName.ERROR),
+      "diagnostic error event",
+    );
+
+    const errorEvent = events.find((event) => event.method === ClaudeSessionEventName.ERROR);
+    expect(String(errorEvent?.params?.message)).toContain("Claude Code process exited with code 1");
+    expect(String(errorEvent?.params?.message)).toContain(
+      "--dangerously-skip-permissions cannot be used with root/sudo privileges",
+    );
+    expect(String(errorEvent?.params?.message)).toContain("Bearer [redacted]");
+    expect(String(errorEvent?.params?.message)).toContain("ANTHROPIC_API_KEY=[redacted]");
+    expect(String(errorEvent?.params?.message)).not.toContain("abc.def_SECRET-token");
+    expect(String(errorEvent?.params?.message)).not.toContain("sk-ant-super-secret");
+  });
+
+  it("classifies Claude terminal auth result chunks as runtime errors instead of completed turns", async () => {
+    const { session, sessionMessageCache } = createSession({
+      query: createQueryFromChunks([
+        {
+          type: "result",
+          session_id: "claude-session-auth",
+          is_error: true,
+          error: "authentication_failed",
+          result: "Not logged in · Please run /login",
+        },
+      ]),
+    });
+    const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
+    session.subscribeRuntimeEvents((event) => events.push(event));
+
+    await session.sendTurn(new AgentInputUserMessage("hello unauthenticated claude"));
+    await waitFor(
+      () => events.some((event) => event.method === ClaudeSessionEventName.ERROR),
+      "auth result error event",
+    );
+
+    expect(events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED)).toBe(false);
+    const errorEvent = events.find((event) => event.method === ClaudeSessionEventName.ERROR);
+    expect(String(errorEvent?.params?.message)).toContain("Not logged in · Please run /login");
+    expect(session.hasCompletedTurn).toBe(false);
+    expect(
+      sessionMessageCache
+        .getCachedMessages("claude-session-auth")
+        .some((message) => message["role"] === "assistant"),
+    ).toBe(false);
   });
 
   it("settles an interrupted active turn before emitting TURN_INTERRUPTED", async () => {

@@ -21,10 +21,12 @@ import {
 } from "../../../domain/team-run-member-identity.js";
 import { TeamRunEventSourceType, type TeamRunStatusUpdateData } from "../../../domain/team-run-event.js";
 import type { TeamSubTeamMemberRunConfig } from "../../../domain/team-run-config.js";
+import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 import type { MixedTeamRunContext, MixedSubTeamMemberContext } from "../mixed-team-run-context.js";
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-agent-message-runtime-builders.js";
 import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
+import { getTokenUsageExecutionAddressBuilder } from "../../../services/token-usage-execution-address-builder.js";
 import { prefixMixedSubTeamEvent } from "../events/mixed-team-event-bridge.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 
@@ -66,6 +68,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
   private childRun: TeamRun | null = null;
   private unsubscribe: (() => void) | null = null;
   private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
+  private readonly tokenUsageAddressBuilder = getTokenUsageExecutionAddressBuilder();
 
   constructor(private readonly options: {
     parentContext: TeamRunContext<MixedTeamRunContext>;
@@ -110,6 +113,29 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     try {
       const childRun = await this.ensureReady();
       const result = await childRun.postMessage(message, null);
+      if (!result.accepted) {
+        this.publishCommandStatus("error", result.message ?? null);
+      }
+      this.options.notifyStatusChange();
+      return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
+    } catch (error) {
+      this.publishCommandStatus("error", String(error));
+      throw error;
+    }
+  }
+
+  async postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult> {
+    if (address.segments.length === 0) {
+      return this.postMessage(message);
+    }
+
+    this.publishCommandStatus("initializing");
+    try {
+      const childRun = await this.ensureReady();
+      const result = await childRun.postMessageToConversationTarget(message, address);
       if (!result.accepted) {
         this.publishCommandStatus("error", result.message ?? null);
       }
@@ -188,7 +214,9 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
 
   async terminate(): Promise<AgentOperationResult> {
     const result = this.childRun ? await this.childRun.terminate() : { accepted: true };
-    this.dispose();
+    if (result.accepted) {
+      this.dispose();
+    }
     return result;
   }
 
@@ -244,6 +272,10 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
         parentMembers: this.buildParentBoundaryMembers(),
         deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       },
+      tokenUsageTeamScope: this.tokenUsageAddressBuilder.buildSubTeamScope({
+        parentScope: this.options.parentContext.runtimeContext.tokenUsageTeamScope,
+        representedMemberRouteKey: this.context.memberRouteKey,
+      }),
     });
     this.context.childTeamRunId = this.childRun.runId;
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;

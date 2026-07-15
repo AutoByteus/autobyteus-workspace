@@ -20,7 +20,6 @@ const messages = {
   'skills.components.skills.SkillsList.clear_search': 'Clear Search',
   'skills.components.skills.SkillsList.create_skill': 'Create Skill',
   'skills.components.skills.SkillsList.loading_skills': 'Loading skills...',
-  'skills.components.skills.SkillsList.manage_and_create_file_based_capabilities': 'Manage and create file-based capabilities for your agents.',
   'skills.components.skills.SkillsList.manage_skill_sources': 'Manage Skill Sources',
   'skills.components.skills.SkillsList.no_skills_found': 'No skills found',
   'skills.components.skills.SkillsList.search_skills': 'Search skills...',

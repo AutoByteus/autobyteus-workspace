@@ -1,0 +1,14 @@
+TEMP-SOURCE-001 cleanup check — 2026-07-05T13:38:32Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-table-ux
+Note: historical ticket artifacts may mention prior temporary routes/old visuals; this cleanup check targets live source, locale, and test files only. Current group-hover underline on the value-plus-triangle button is allowed because the solid triangle/button remains always visible; component/browser checks verify Input/Output cost cells have no buttons.
+
+PASS file absent: autobyteus-web/pages/__token-usage-task-table-fixture.vue
+PASS no stale match: temporary token table fixture route in live source
+PASS no stale match: old token-statistics Details localization key
+PASS no stale match: old rowTypeLabel helper
+PASS no stale match: old inline status helper/badge path
+PASS no stale match: old detail-row colspan
+PASS no stale match: old duplicate hidden cost detail button marker
+PASS no stale match: old visible text Details button in task table
+
+TEMP-SOURCE-001 RESULT: PASS

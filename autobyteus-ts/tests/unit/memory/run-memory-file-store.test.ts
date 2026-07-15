@@ -4,9 +4,9 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { RunMemoryFileStore } from '../../../src/memory/store/run-memory-file-store.js';
-import { WorkingContextSnapshot } from '../../../src/memory/working-context-snapshot.js';
+import { WorkingContext } from '../../../src/memory/working-context.js';
 import {
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from '../../../src/memory/store/memory-file-names.js';
 
@@ -76,15 +76,15 @@ describe('RunMemoryFileStore', () => {
       content: 'hello',
       sourceEvent: 'test',
     }));
-    store.writeWorkingContextSnapshotState(new WorkingContextSnapshot(), { agentId: 'agent-1' });
+    store.writeWorkingContextSnapshotState(new WorkingContext(), { agentId: 'agent-1' });
 
-    expect(store.getRawTracesPath()).toBe(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME));
+    expect(store.getRawTracesPath()).toBe(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME));
     expect(store.getWorkingContextSnapshotPath()).toBe(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME));
     expect(store.listRawTracesOrdered()).toEqual([
       expect.objectContaining({ id: 'rt-1', traceType: 'user', content: 'hello' }),
     ]);
     expect(store.readWorkingContextSnapshot()).toMatchObject({ agent_id: 'agent-1' });
-    expect(store.readWorkingContextSnapshotState()?.snapshot.buildMessages()).toEqual([]);
+    expect(store.readWorkingContextSnapshotState()?.workingContext.buildMessages()).toEqual([]);
   });
 
   it('archives pruned raw traces with the shared segmented archive manifest', async () => {

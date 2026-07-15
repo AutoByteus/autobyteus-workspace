@@ -1,11 +1,9 @@
 import { Message, MessageRole, ToolCallPayload, ToolCallSpec, ToolResultPayload } from '../llm/utils/messages.js';
-import { WorkingContextSnapshot } from './working-context-snapshot.js';
+import { WorkingContext } from './working-context.js';
 
 export type SnapshotMetadata = {
   schema_version?: number;
   agent_id?: string;
-  epoch_id?: number;
-  last_compaction_ts?: number | null;
 };
 
 type SerializedPayload = Record<string, unknown>;
@@ -26,39 +24,29 @@ const safeJsonValue = (value: unknown): unknown => {
 export class WorkingContextSnapshotSerializer {
   static readonly CURRENT_SCHEMA_VERSION = 4;
 
-  static serialize(snapshot: WorkingContextSnapshot, metadata: SnapshotMetadata = {}): SerializedPayload {
+  static serialize(workingContext: WorkingContext, metadata: SnapshotMetadata = {}): SerializedPayload {
     return {
       schema_version: metadata.schema_version ?? this.CURRENT_SCHEMA_VERSION,
       agent_id: metadata.agent_id,
-      epoch_id: metadata.epoch_id ?? snapshot.epochId,
-      last_compaction_ts: metadata.last_compaction_ts ?? snapshot.lastCompactionTs,
-      messages: snapshot.buildMessages().map((message) => this.serializeMessage(message))
+      messages: workingContext.buildMessages().map((message) => this.serializeMessage(message))
     };
   }
 
-  static deserialize(payload: SerializedPayload): { snapshot: WorkingContextSnapshot; metadata: SnapshotMetadata } {
+  static deserialize(payload: SerializedPayload): { workingContext: WorkingContext; metadata: SnapshotMetadata } {
     const messages = Array.isArray(payload.messages)
       ? payload.messages
           .filter((message) => typeof message === 'object' && message !== null)
           .map((message) => this.deserializeMessage(message as SerializedMessage))
       : [];
 
-    const snapshot = new WorkingContextSnapshot(messages);
+    const workingContext = new WorkingContext(messages);
     const metadata: SnapshotMetadata = {
       schema_version: typeof payload.schema_version === 'number' ? payload.schema_version : undefined,
-      agent_id: typeof payload.agent_id === 'string' ? payload.agent_id : undefined,
-      epoch_id: typeof payload.epoch_id === 'number' ? payload.epoch_id : undefined,
-      last_compaction_ts: typeof payload.last_compaction_ts === 'number' ? payload.last_compaction_ts : null
+      agent_id: typeof payload.agent_id === 'string' ? payload.agent_id : undefined
     };
 
-    if (typeof metadata.epoch_id === 'number') {
-      snapshot.epochId = metadata.epoch_id;
-    }
-    if (metadata.last_compaction_ts !== null && metadata.last_compaction_ts !== undefined) {
-      snapshot.lastCompactionTs = metadata.last_compaction_ts;
-    }
 
-    return { snapshot, metadata };
+    return { workingContext, metadata };
   }
 
   static validate(payload: SerializedPayload): boolean {

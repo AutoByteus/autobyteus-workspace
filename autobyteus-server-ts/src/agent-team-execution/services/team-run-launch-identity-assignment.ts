@@ -37,7 +37,6 @@ export class TeamRunLaunchIdentityAssignment {
       teamBackendKind: TeamBackendKind.MIXED,
       coordinatorMemberName: config.coordinatorMemberName,
       coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
-      selfEvolution: config.selfEvolution,
       memberTree: assignedTree,
     });
   }

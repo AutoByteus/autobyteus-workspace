@@ -92,16 +92,44 @@ Existing files under `/home/autobyteus/data/temp_workspace` remain in the data
 named volume, but `/home/autobyteus/workspace` becomes the default temp
 workspace after apply.
 
-Upgrade every managed Docker node to the latest image while keeping named volumes:
+Upgrade every managed Docker node while keeping named volumes. A plain upgrade
+uses each node's saved image ref, so mixed fleets stay on their current image
+line (for example, `latest` nodes stay on `latest` and `latest-zh` nodes stay
+on `latest-zh`):
 
 ```bash
 autobyteus-docker upgrade --all
+```
+
+To intentionally retarget every managed node to a new tag or image, make that
+explicit:
+
+```bash
+autobyteus-docker upgrade --all --tag latest-zh
+autobyteus-docker upgrade --all --image autobyteus/custom-server:latest-zh
 ```
 
 Remove every managed Docker node while keeping named volumes:
 
 ```bash
 autobyteus-docker destroy --all
+```
+
+Remove one launcher-managed node, including stale launcher state left after a
+manual `docker rm`, while keeping its named volumes and host workspaces. The
+next `new-container` call reuses the lowest available indexed slot:
+
+```bash
+autobyteus-docker destroy --name autobyteus-server-5
+autobyteus-docker new-container
+```
+
+Targeted destroy refuses ambiguous, conflicting, or unmanaged containers and
+does not own Docker Buildx infrastructure. The builder created by
+`build-multi-arch.sh` is removed through Buildx:
+
+```bash
+docker buildx rm multi-platform-builder
 ```
 
 Reset to one fresh managed Docker node:
@@ -254,6 +282,15 @@ Codex CLI and Claude Code are preinstalled in the image. The intended auth flow 
 Use `codex login` directly in the default container shell. The container runs as
 `root`, so `sudo codex login` is not required in the normal Docker setup.
 
+Browser-opening auth commands run from the root shell route through the packaged
+VNC browser bridge. The image sets `BROWSER=/usr/local/bin/open-vnc-browser-url.sh`;
+that helper switches to `vncuser` only from root, skips the switch when it is
+already running as `vncuser`, clears inherited `BROWSER`, and dispatches to the
+system `/usr/bin/xdg-open` inside the VNC desktop session. This keeps CLI
+device-login URLs opening in the container's Chromium/noVNC session without
+recursing back through the root bridge. Existing containers need to be recreated
+or upgraded to pick up browser-bridge script changes from a rebuilt image.
+
 The container runs as `root`, and `/root` is persisted in a Docker-managed named volume per launcher node or source-helper project. That means:
 
 - auth state is isolated per Docker node/instance,
@@ -276,8 +313,9 @@ Public launcher commands for no-clone users:
 
 - `autobyteus-docker install`: Install or replace the local launcher without touching Docker containers, volumes, or state.
 - `autobyteus-docker new-container`: Check/pull the configured image and create the next indexed managed Docker node (`autobyteus-server-0`, `autobyteus-server-1`, ...).
-- `autobyteus-docker upgrade --all`: Recreate all managed containers with the latest image while keeping named volumes.
+- `autobyteus-docker upgrade --all`: Recreate all managed containers with each node's saved image ref while keeping named volumes; pass `--tag` or `--image` only when intentionally retargeting every node.
 - `autobyteus-docker destroy --all`: Remove all managed containers and unused old images while keeping named volumes.
+- `autobyteus-docker destroy --name <node>`: Remove one uniquely proven managed server container and its launcher state while keeping named volumes and host workspaces; stale state is explicitly forgotten.
 - `autobyteus-docker reset`: Destroy all managed containers, keep volumes, then create a fresh `autobyteus-server-0`.
 - `autobyteus-docker workspace paths`: Show the host folders backing `/home/autobyteus/workspace` and `/home/autobyteus/shared`.
 - `autobyteus-docker workspace apply --all`: Safely recreate managed containers to apply shared workspace bind mounts while keeping named volumes.

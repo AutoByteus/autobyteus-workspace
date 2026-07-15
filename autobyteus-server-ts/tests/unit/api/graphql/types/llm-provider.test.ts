@@ -12,8 +12,10 @@ const mockModelCatalogService = vi.hoisted(() => ({
   reloadLlmModels: vi.fn(),
   reloadAudioModels: vi.fn(),
   reloadImageModels: vi.fn(),
+  reloadVideoModels: vi.fn(),
   listAudioModels: vi.fn(),
   listImageModels: vi.fn(),
+  listVideoModels: vi.fn(),
 }));
 
 const mockLlmProviderService = vi.hoisted(() => ({
@@ -72,10 +74,13 @@ describe('LlmProviderResolver', () => {
     mockModelCatalogService.reloadLlmModels.mockReset();
     mockModelCatalogService.reloadAudioModels.mockReset();
     mockModelCatalogService.reloadImageModels.mockReset();
+    mockModelCatalogService.reloadVideoModels.mockReset();
     mockModelCatalogService.listAudioModels.mockReset();
     mockModelCatalogService.listImageModels.mockReset();
+    mockModelCatalogService.listVideoModels.mockReset();
     mockModelCatalogService.listAudioModels.mockResolvedValue([]);
     mockModelCatalogService.listImageModels.mockResolvedValue([]);
+    mockModelCatalogService.listVideoModels.mockResolvedValue([]);
 
     mockLlmProviderService.getProviderApiKeyConfigured.mockReset();
     mockLlmProviderService.listProvidersWithModels.mockReset();
@@ -135,7 +140,7 @@ describe('LlmProviderResolver', () => {
   });
 
   it('returns provider objects for availableLlmProvidersWithModels', async () => {
-    mockLlmProviderService.listProvidersWithModels.mockResolvedValue([
+    mockLlmProviderService.listProvidersWithModels.mockImplementation(async (_runtimeKind, mapModel) => [
       {
         provider: {
           id: 'provider_gateway',
@@ -148,22 +153,22 @@ describe('LlmProviderResolver', () => {
           statusMessage: null,
         },
         models: [
-          {
-            modelIdentifier: 'openai-compatible:provider_gateway:model-a',
-            name: 'model-a',
+          mapModel({
+            model_identifier: 'openai-compatible:provider_gateway:model-a',
+            display_name: 'model-a',
+            description: 'Model A · Efficient for routine tasks',
             value: 'model-a',
-            canonicalName: 'model-a',
-            providerId: 'provider_gateway',
-            providerName: 'Internal Gateway',
-            providerType: 'OPENAI_COMPATIBLE',
+            canonical_name: 'model-a',
+            provider_id: 'provider_gateway',
+            provider_name: 'Internal Gateway',
+            provider_type: 'OPENAI_COMPATIBLE',
             runtime: 'openai_compatible',
-            hostUrl: 'https://gateway.example.com/v1',
-            configSchema: null,
-            maxContextTokens: null,
-            activeContextTokens: null,
-            maxInputTokens: null,
-            maxOutputTokens: null,
-          },
+            host_url: 'https://gateway.example.com/v1',
+            max_context_tokens: null,
+            active_context_tokens: null,
+            max_input_tokens: null,
+            max_output_tokens: null,
+          }),
         ],
       },
     ]);
@@ -183,6 +188,7 @@ describe('LlmProviderResolver', () => {
       providerId: 'provider_gateway',
       providerName: 'Internal Gateway',
       providerType: 'OPENAI_COMPATIBLE',
+      description: 'Model A · Efficient for routine tasks',
     }));
   });
 
@@ -207,6 +213,49 @@ describe('LlmProviderResolver', () => {
       expect.objectContaining({
         provider: expect.objectContaining({ id: 'OPENAI', name: 'OpenAI' }),
         models: [expect.objectContaining({ modelIdentifier: 'whisper-1', providerId: 'OPENAI' })],
+      }),
+    ]);
+  });
+
+  it('groups video models under built-in provider objects', async () => {
+    mockModelCatalogService.listVideoModels.mockResolvedValue([
+      {
+        modelIdentifier: 'gemini-omni-flash-preview',
+        name: 'Gemini Omni Flash Preview',
+        value: 'gemini-omni-flash-preview',
+        provider: 'GEMINI',
+        runtime: 'api',
+        hostUrl: null,
+        parameterSchema: {
+          toJsonSchemaDict: () => ({
+            type: 'object',
+            properties: {
+              aspect_ratio: { type: 'string', enum: ['16:9', '9:16'] },
+            },
+          }),
+        },
+      },
+    ]);
+
+    const resolver = new LlmProviderResolver();
+    const result = await resolver.availableVideoProvidersWithModels('autobyteus');
+
+    expect(mockModelCatalogService.listVideoModels).toHaveBeenCalledWith('autobyteus');
+    expect(mockBuiltInCatalog.getProvider).toHaveBeenCalledWith('GEMINI');
+    expect(result).toEqual([
+      expect.objectContaining({
+        provider: expect.objectContaining({ id: 'GEMINI' }),
+        models: [
+          expect.objectContaining({
+            modelIdentifier: 'gemini-omni-flash-preview',
+            providerId: 'GEMINI',
+            configSchema: expect.objectContaining({
+              properties: expect.objectContaining({
+                aspect_ratio: expect.objectContaining({ enum: ['16:9', '9:16'] }),
+              }),
+            }),
+          }),
+        ],
       }),
     ]);
   });
@@ -262,5 +311,16 @@ describe('LlmProviderResolver', () => {
 
     expect(mockLlmProviderService.reloadProviderModels).toHaveBeenCalledWith('provider_gateway', 'autobyteus');
     expect(result).toContain('Reloaded 3 models for provider provider_gateway successfully.');
+  });
+
+  it('reloads LLM and multimedia model catalogs including video models', async () => {
+    const resolver = new LlmProviderResolver();
+    const result = await resolver.reloadLlmModels('autobyteus');
+
+    expect(result).toBe('All models (LLM and Multimedia) reloaded successfully.');
+    expect(mockModelCatalogService.reloadLlmModels).toHaveBeenCalledWith('autobyteus');
+    expect(mockModelCatalogService.reloadAudioModels).toHaveBeenCalledWith('autobyteus');
+    expect(mockModelCatalogService.reloadImageModels).toHaveBeenCalledWith('autobyteus');
+    expect(mockModelCatalogService.reloadVideoModels).toHaveBeenCalledWith('autobyteus');
   });
 });

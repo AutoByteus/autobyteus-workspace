@@ -168,6 +168,7 @@ export const useRuntimeScopedModelSelection = (params: {
       items: providerGroup.models.map((model) => ({
         id: model.modelIdentifier,
         name: getModelSelectionOptionLabel(model, effectiveRuntimeKind.value),
+        description: model.description,
         selectedLabel: getModelSelectionSelectedLabel(
           providerGroup.provider.name,
           model,

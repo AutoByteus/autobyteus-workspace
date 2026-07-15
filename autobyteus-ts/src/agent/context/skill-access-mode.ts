@@ -1,5 +1,4 @@
 export enum SkillAccessMode {
-  GLOBAL_DISCOVERY = 'GLOBAL_DISCOVERY',
   PRELOADED_ONLY = 'PRELOADED_ONLY',
   NONE = 'NONE'
 }
@@ -8,17 +7,19 @@ export function resolveSkillAccessMode(
   requestedMode: SkillAccessMode | string | null | undefined,
   preloadedSkillCount: number
 ): SkillAccessMode {
-  if (
-    requestedMode === SkillAccessMode.GLOBAL_DISCOVERY ||
-    requestedMode === SkillAccessMode.PRELOADED_ONLY ||
-    requestedMode === SkillAccessMode.NONE
-  ) {
-    return requestedMode;
-  }
+  void preloadedSkillCount;
 
-  if (preloadedSkillCount > 0) {
+  if (
+    requestedMode === undefined ||
+    requestedMode === null ||
+    requestedMode === SkillAccessMode.PRELOADED_ONLY
+  ) {
     return SkillAccessMode.PRELOADED_ONLY;
   }
 
-  return SkillAccessMode.GLOBAL_DISCOVERY;
+  if (requestedMode === SkillAccessMode.NONE) {
+    return SkillAccessMode.NONE;
+  }
+
+  throw new Error(`Unsupported skill access mode '${requestedMode}'.`);
 }

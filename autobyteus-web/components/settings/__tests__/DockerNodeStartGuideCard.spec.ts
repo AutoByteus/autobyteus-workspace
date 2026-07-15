@@ -43,6 +43,8 @@ describe('DockerNodeStartGuideCard', () => {
     expect(wrapper.text()).not.toContain('--profile');
     expect(wrapper.text()).toContain('autobyteus-docker upgrade --all');
     expect(wrapper.text()).toContain('autobyteus-docker destroy --all');
+    expect(wrapper.text()).toContain('autobyteus-docker destroy --name <node-name>');
+    expect(wrapper.text()).toContain('settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.description');
     expect(wrapper.text()).toContain('autobyteus-docker reset');
     expect(wrapper.text()).toContain('autobyteus-docker workspace paths');
     expect(wrapper.text()).toContain('autobyteus-docker workspace apply --all');
@@ -66,5 +68,27 @@ describe('DockerNodeStartGuideCard', () => {
     expect(wrapper.get('[data-testid="copy-docker-launcher-command-macos-linux-install"]').text()).toBe(
       '__settings.components.settings.DockerNodeStartGuideCard.copied__',
     );
+  });
+
+  it('copies the targeted destroy placeholder without live lookup or command execution', async () => {
+    const wrapper = mount(DockerNodeStartGuideCard);
+    const statusSpy = vi.spyOn(window, 'fetch');
+
+    await wrapper.get('[data-testid="copy-docker-launcher-command-direct-destroy-node"]').trigger('click');
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('autobyteus-docker destroy --name <node-name>');
+    expect(wrapper.get('[data-testid="copy-docker-launcher-command-direct-destroy-node"]').text()).toBe(
+      '__settings.components.settings.DockerNodeStartGuideCard.copied__',
+    );
+    expect(wrapper.get('[data-testid="copy-docker-launcher-command-direct-destroy-node"]').attributes('aria-label')).toBe(
+      'copy __settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.title__',
+    );
+    expect(statusSpy).not.toHaveBeenCalled();
+    expect(wrapper.find('[data-testid="docker-launcher-command-direct-destroy-node"] button').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="docker-launcher-command-direct-destroy-node"] pre').text()).toBe(
+      'autobyteus-docker destroy --name <node-name>',
+    );
+    expect(wrapper.get('[data-testid="docker-launcher-command-direct-destroy-node"]').text()).not.toContain('autobyteus-server-');
+    statusSpy.mockRestore();
   });
 });

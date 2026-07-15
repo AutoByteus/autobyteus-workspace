@@ -2,6 +2,7 @@ import type {
   EditImageInput,
   GenerateImageInput,
   GenerateSpeechInput,
+  GenerateVideoInput,
 } from "./media-tool-contract.js";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -83,6 +84,15 @@ export const parseGenerateSpeechInput = (
   rawArguments: Record<string, unknown>,
 ): GenerateSpeechInput => ({
   prompt: requireNonEmptyString(rawArguments, "prompt"),
+  output_file_path: requireNonEmptyString(rawArguments, "output_file_path"),
+  generation_config: parseGenerationConfig(rawArguments.generation_config),
+});
+
+export const parseGenerateVideoInput = (
+  rawArguments: Record<string, unknown>,
+): GenerateVideoInput => ({
+  prompt: requireNonEmptyString(rawArguments, "prompt"),
+  input_images: parseMediaInputImages(rawArguments.input_images),
   output_file_path: requireNonEmptyString(rawArguments, "output_file_path"),
   generation_config: parseGenerationConfig(rawArguments.generation_config),
 });

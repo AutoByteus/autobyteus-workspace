@@ -1,9 +1,9 @@
 <template>
-  <div class="space-y-2" data-test="member-override-tree">
+  <div :class="treeClass" data-test="member-override-tree">
     <template v-for="node in memberNodes" :key="node.memberRouteKey">
       <div
         v-if="node.memberKind === 'agent_team'"
-        class="rounded-md border border-slate-200 bg-slate-50 p-3"
+        class="bg-slate-50/70 p-3"
         data-test="member-override-group"
       >
         <div class="flex min-w-0 flex-wrap items-center gap-2">
@@ -17,7 +17,7 @@
             {{ node.memberRouteKey }}
           </span>
         </div>
-        <div class="mt-3 border-l border-slate-200 pl-3">
+        <div class="mt-3">
           <MemberOverrideTree
             :member-nodes="node.children"
             :config="config"
@@ -26,9 +26,9 @@
             :global-llm-config="globalLlmConfig"
             :coordinator-member-route-key="coordinatorMemberRouteKey"
             :disabled="disabled"
-            :self-evolution-controls-enabled="selfEvolutionControlsEnabled"
             :advanced-initially-expanded="advancedInitiallyExpanded"
             :read-only-mode="readOnlyMode"
+            :nested="true"
             @update:override="forwardOverrideUpdate"
           />
         </div>
@@ -46,7 +46,6 @@
         :global-llm-config="globalLlmConfig"
         :is-coordinator="node.memberRouteKey === coordinatorMemberRouteKey"
         :disabled="disabled"
-        :self-evolution-controls-enabled="selfEvolutionControlsEnabled"
         :advanced-initially-expanded="advancedInitiallyExpanded"
         :missing-historical-config="memberMissingHistoricalConfig(node.memberRouteKey)"
         @update:override="forwardOverrideUpdate"
@@ -56,6 +55,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { MemberConfigOverride, TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import MemberOverrideItem from './MemberOverrideItem.vue';
@@ -71,14 +71,21 @@ const props = defineProps<{
   globalLlmConfig?: Record<string, unknown> | null;
   coordinatorMemberRouteKey: string;
   disabled: boolean;
-  selfEvolutionControlsEnabled?: boolean;
   advancedInitiallyExpanded?: boolean;
   readOnlyMode?: boolean;
+  nested?: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: 'update:override', memberRouteKey: string, override: MemberConfigOverride | null): void;
 }>();
+
+const treeClass = computed(() => [
+  'divide-y',
+  props.nested
+    ? 'border-l border-slate-300 pl-3 divide-slate-300'
+    : 'overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm divide-slate-300',
+]);
 
 const memberMissingHistoricalConfig = (memberRouteKey: string) => {
   if (!props.readOnlyMode) return false;

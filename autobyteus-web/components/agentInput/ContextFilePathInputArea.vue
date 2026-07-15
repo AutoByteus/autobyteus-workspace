@@ -173,7 +173,7 @@ import {
   buildAgentDraftContextFileOwner,
   buildTeamMemberDraftContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner';
-import { resolveTeamUserMessageTarget } from '~/utils/teamUserMessageTarget';
+import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
 import FullScreenImageModal from '~/components/common/FullScreenImageModal.vue';
 
 const activeContextStore = useActiveContextStore();
@@ -217,7 +217,7 @@ const resolveDraftOwnerForContext = (targetContext: AgentContext | null) => {
     return null;
   }
 
-  const messageTarget = resolveTeamUserMessageTarget(activeTeam, {
+  const messageTarget = resolveTeamConversationTargetAddress(activeTeam, {
     allowActiveExecutionSafetyFallback: true,
   });
   if (!messageTarget?.context || messageTarget.context !== targetContext) {

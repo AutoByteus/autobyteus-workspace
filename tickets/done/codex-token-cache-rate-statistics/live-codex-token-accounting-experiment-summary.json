@@ -1,0 +1,843 @@
+{
+  "createdAt": "2026-06-28T04:13:32.007829+00:00",
+  "probe": "codex_token_accounting_live_probe_synthesis",
+  "purpose": "Determine whether Autobyteus accounts every Codex token-usage update/increment in tool-heavy turns and whether the full normalized usage object contains both per-call and cumulative data.",
+  "method": "Monkey-patched CodexThread.recordTurnTokenUsage during live gpt-5.5 Codex runs, sent a baseline turn and a tool-heavy turn requiring separate shell commands, then compared recordTurnTokenUsage calls, full normalized usage objects, websocket TOKEN_USAGE_UPDATED messages, and persisted ledger rows.",
+  "result": "The latest full-capture run reproduced the undercount path and preserved the full normalized usage object. Each recordTurnTokenUsage call included raw_usage_json from tokenUsage.last and raw_event_json containing tokenUsage.total, tokenUsage.last, and modelContextWindow. For the tool-heavy turn, three usage updates were received for the same turn; the later two had hadPendingBefore=true. Only the final same-turn payload was persisted/emitted, so earlier last increments were overwritten before ledger accounting.",
+  "latestFullCaptureEvidence": {
+    "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T04-05-58-694Z-codex-token-accounting-live-probe.json",
+    "model": "gpt-5.5",
+    "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+    "completedAt": "2026-06-28T04:05:58.694Z",
+    "conclusion": "Potential undercount/reconciliation issue observed: either pending usage was overwritten before persistence or cumulative total deltas exceeded the accounted last payload.",
+    "recordTurnTokenUsageCallCount": 4,
+    "ledgerRowCount": 2,
+    "websocketTokenUsageCount": 2,
+    "overwrittenPendingCallCount": 2,
+    "unreconciledPositiveCount": 0,
+    "capturesFullNormalizedUsage": true,
+    "recordCalls": [
+      {
+        "index": 0,
+        "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+        "hadPendingBefore": false,
+        "readyBefore": false,
+        "last": {
+          "inputTokens": 10851,
+          "cachedInputTokens": 4992,
+          "outputTokens": 15,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 10866
+        },
+        "total": {
+          "inputTokens": 10851,
+          "cachedInputTokens": 4992,
+          "outputTokens": 15,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 10866
+        },
+        "totalDeltaVsPreviousRecordCall": null,
+        "capturedUsageKeys": [
+          "cache_read_input_tokens",
+          "cache_state",
+          "context_window_usage_percent",
+          "effective_context_window_tokens",
+          "idempotency_key",
+          "ingestion_kind",
+          "input_token_semantic",
+          "latest_prompt_tokens",
+          "model_identifier",
+          "model_provider",
+          "model_value",
+          "quality_flags",
+          "raw_event_json",
+          "raw_usage_json",
+          "reasoning_output_tokens",
+          "reported_input_tokens",
+          "reported_output_tokens",
+          "reported_total_tokens",
+          "runtime_kind",
+          "snapshot_series_key",
+          "turnId",
+          "usage_scope"
+        ],
+        "rawEventKeys": [
+          "threadId",
+          "tokenUsage",
+          "turnId"
+        ],
+        "rawUsageKeys": [
+          "cachedInputTokens",
+          "inputTokens",
+          "outputTokens",
+          "reasoningOutputTokens",
+          "totalTokens"
+        ]
+      },
+      {
+        "index": 1,
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "hadPendingBefore": false,
+        "readyBefore": false,
+        "last": {
+          "inputTokens": 11050,
+          "cachedInputTokens": 10624,
+          "outputTokens": 89,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 11139
+        },
+        "total": {
+          "inputTokens": 21901,
+          "cachedInputTokens": 15616,
+          "outputTokens": 104,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 22005
+        },
+        "totalDeltaVsPreviousRecordCall": {
+          "inputTokens": 11050,
+          "cachedInputTokens": 10624,
+          "outputTokens": 89,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 11139
+        },
+        "capturedUsageKeys": [
+          "cache_read_input_tokens",
+          "cache_state",
+          "context_window_usage_percent",
+          "effective_context_window_tokens",
+          "idempotency_key",
+          "ingestion_kind",
+          "input_token_semantic",
+          "latest_prompt_tokens",
+          "model_identifier",
+          "model_provider",
+          "model_value",
+          "quality_flags",
+          "raw_event_json",
+          "raw_usage_json",
+          "reasoning_output_tokens",
+          "reported_input_tokens",
+          "reported_output_tokens",
+          "reported_total_tokens",
+          "runtime_kind",
+          "snapshot_series_key",
+          "turnId",
+          "usage_scope"
+        ],
+        "rawEventKeys": [
+          "threadId",
+          "tokenUsage",
+          "turnId"
+        ],
+        "rawUsageKeys": [
+          "cachedInputTokens",
+          "inputTokens",
+          "outputTokens",
+          "reasoningOutputTokens",
+          "totalTokens"
+        ]
+      },
+      {
+        "index": 2,
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "hadPendingBefore": true,
+        "readyBefore": false,
+        "last": {
+          "inputTokens": 11200,
+          "cachedInputTokens": 10624,
+          "outputTokens": 89,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 11289
+        },
+        "total": {
+          "inputTokens": 33101,
+          "cachedInputTokens": 26240,
+          "outputTokens": 193,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 33294
+        },
+        "totalDeltaVsPreviousRecordCall": {
+          "inputTokens": 11200,
+          "cachedInputTokens": 10624,
+          "outputTokens": 89,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 11289
+        },
+        "capturedUsageKeys": [
+          "cache_read_input_tokens",
+          "cache_state",
+          "context_window_usage_percent",
+          "effective_context_window_tokens",
+          "idempotency_key",
+          "ingestion_kind",
+          "input_token_semantic",
+          "latest_prompt_tokens",
+          "model_identifier",
+          "model_provider",
+          "model_value",
+          "quality_flags",
+          "raw_event_json",
+          "raw_usage_json",
+          "reasoning_output_tokens",
+          "reported_input_tokens",
+          "reported_output_tokens",
+          "reported_total_tokens",
+          "runtime_kind",
+          "snapshot_series_key",
+          "turnId",
+          "usage_scope"
+        ],
+        "rawEventKeys": [
+          "threadId",
+          "tokenUsage",
+          "turnId"
+        ],
+        "rawUsageKeys": [
+          "cachedInputTokens",
+          "inputTokens",
+          "outputTokens",
+          "reasoningOutputTokens",
+          "totalTokens"
+        ]
+      },
+      {
+        "index": 3,
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "hadPendingBefore": true,
+        "readyBefore": false,
+        "last": {
+          "inputTokens": 11349,
+          "cachedInputTokens": 11136,
+          "outputTokens": 32,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 11381
+        },
+        "total": {
+          "inputTokens": 44450,
+          "cachedInputTokens": 37376,
+          "outputTokens": 225,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 44675
+        },
+        "totalDeltaVsPreviousRecordCall": {
+          "inputTokens": 11349,
+          "cachedInputTokens": 11136,
+          "outputTokens": 32,
+          "reasoningOutputTokens": 0,
+          "totalTokens": 11381
+        },
+        "capturedUsageKeys": [
+          "cache_read_input_tokens",
+          "cache_state",
+          "context_window_usage_percent",
+          "effective_context_window_tokens",
+          "idempotency_key",
+          "ingestion_kind",
+          "input_token_semantic",
+          "latest_prompt_tokens",
+          "model_identifier",
+          "model_provider",
+          "model_value",
+          "quality_flags",
+          "raw_event_json",
+          "raw_usage_json",
+          "reasoning_output_tokens",
+          "reported_input_tokens",
+          "reported_output_tokens",
+          "reported_total_tokens",
+          "runtime_kind",
+          "snapshot_series_key",
+          "turnId",
+          "usage_scope"
+        ],
+        "rawEventKeys": [
+          "threadId",
+          "tokenUsage",
+          "turnId"
+        ],
+        "rawUsageKeys": [
+          "cachedInputTokens",
+          "inputTokens",
+          "outputTokens",
+          "reasoningOutputTokens",
+          "totalTokens"
+        ]
+      }
+    ],
+    "ledgerRows": [
+      {
+        "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+        "accountingInputTokens": 10851,
+        "cacheReadInputTokens": 4992,
+        "standardInputTokens": 5859,
+        "accountingOutputTokens": 15,
+        "reasoningOutputTokens": 0,
+        "rawUsageJson": {
+          "totalTokens": 10866,
+          "inputTokens": 10851,
+          "cachedInputTokens": 4992,
+          "outputTokens": 15,
+          "reasoningOutputTokens": 0
+        }
+      },
+      {
+        "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+        "accountingInputTokens": 11349,
+        "cacheReadInputTokens": 11136,
+        "standardInputTokens": 213,
+        "accountingOutputTokens": 32,
+        "reasoningOutputTokens": 0,
+        "rawUsageJson": {
+          "totalTokens": 11381,
+          "inputTokens": 11349,
+          "cachedInputTokens": 11136,
+          "outputTokens": 32,
+          "reasoningOutputTokens": 0
+        }
+      }
+    ]
+  },
+  "evidences": [
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T03-55-50-007Z-codex-token-accounting-live-probe.json",
+      "model": "gpt-5.5",
+      "runId": "codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c",
+      "completedAt": "2026-06-28T03:55:50.006Z",
+      "conclusion": "No overwrite or cumulative-vs-last positive gap observed in this probe run.",
+      "recordTurnTokenUsageCallCount": 2,
+      "ledgerRowCount": 1,
+      "websocketTokenUsageCount": 1,
+      "overwrittenPendingCallCount": 0,
+      "unreconciledPositiveCount": 0,
+      "capturesFullNormalizedUsage": false,
+      "recordCalls": [
+        {
+          "index": 0,
+          "turnId": "019f0c5e-4dcd-71b2-9e87-c548f5db3a60",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 10847,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10860
+          },
+          "total": {
+            "inputTokens": 10847,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10860
+          },
+          "totalDeltaVsPreviousRecordCall": null,
+          "capturedUsageKeys": null,
+          "rawEventKeys": null,
+          "rawUsageKeys": null
+        },
+        {
+          "index": 1,
+          "turnId": "019f0c5e-7008-75b2-b6e6-9ad02ac6a2a1",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 11038,
+            "cachedInputTokens": 10624,
+            "outputTokens": 86,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11124
+          },
+          "total": {
+            "inputTokens": 21885,
+            "cachedInputTokens": 15616,
+            "outputTokens": 99,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 21984
+          },
+          "totalDeltaVsPreviousRecordCall": {
+            "inputTokens": 11038,
+            "cachedInputTokens": 10624,
+            "outputTokens": 86,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11124
+          },
+          "capturedUsageKeys": null,
+          "rawEventKeys": null,
+          "rawUsageKeys": null
+        }
+      ],
+      "ledgerRows": [
+        {
+          "turnId": "019f0c5e-4dcd-71b2-9e87-c548f5db3a60",
+          "accountingInputTokens": 10847,
+          "cacheReadInputTokens": 4992,
+          "standardInputTokens": 5855,
+          "accountingOutputTokens": 13,
+          "reasoningOutputTokens": 0,
+          "rawUsageJson": {
+            "totalTokens": 10860,
+            "inputTokens": 10847,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0
+          }
+        }
+      ]
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T03-57-58-441Z-codex-token-accounting-live-probe.json",
+      "model": "gpt-5.5",
+      "runId": "codex_token_accounting_live_probe_90a24236_b65_cc2fad9226a640349777a09c974eafd4",
+      "completedAt": "2026-06-28T03:57:58.441Z",
+      "conclusion": "Potential undercount/reconciliation issue observed: either pending usage was overwritten before persistence or cumulative total deltas exceeded the accounted last payload.",
+      "recordTurnTokenUsageCallCount": 4,
+      "ledgerRowCount": 2,
+      "websocketTokenUsageCount": 2,
+      "overwrittenPendingCallCount": 2,
+      "unreconciledPositiveCount": 0,
+      "capturesFullNormalizedUsage": false,
+      "recordCalls": [
+        {
+          "index": 0,
+          "turnId": "019f0c5f-e36e-7ac2-a654-8eac1c0af70a",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 10353,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10366
+          },
+          "total": {
+            "inputTokens": 10353,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10366
+          },
+          "totalDeltaVsPreviousRecordCall": null,
+          "capturedUsageKeys": null,
+          "rawEventKeys": null,
+          "rawUsageKeys": null
+        },
+        {
+          "index": 1,
+          "turnId": "019f0c60-2de4-7a41-9ca3-e642094d69f9",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 10546,
+            "cachedInputTokens": 10112,
+            "outputTokens": 87,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10633
+          },
+          "total": {
+            "inputTokens": 20899,
+            "cachedInputTokens": 15104,
+            "outputTokens": 100,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 20999
+          },
+          "totalDeltaVsPreviousRecordCall": {
+            "inputTokens": 10546,
+            "cachedInputTokens": 10112,
+            "outputTokens": 87,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10633
+          },
+          "capturedUsageKeys": null,
+          "rawEventKeys": null,
+          "rawUsageKeys": null
+        },
+        {
+          "index": 2,
+          "turnId": "019f0c60-2de4-7a41-9ca3-e642094d69f9",
+          "hadPendingBefore": true,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 10691,
+            "cachedInputTokens": 10112,
+            "outputTokens": 87,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10778
+          },
+          "total": {
+            "inputTokens": 31590,
+            "cachedInputTokens": 25216,
+            "outputTokens": 187,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 31777
+          },
+          "totalDeltaVsPreviousRecordCall": {
+            "inputTokens": 10691,
+            "cachedInputTokens": 10112,
+            "outputTokens": 87,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10778
+          },
+          "capturedUsageKeys": null,
+          "rawEventKeys": null,
+          "rawUsageKeys": null
+        },
+        {
+          "index": 3,
+          "turnId": "019f0c60-2de4-7a41-9ca3-e642094d69f9",
+          "hadPendingBefore": true,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 10836,
+            "cachedInputTokens": 4992,
+            "outputTokens": 28,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10864
+          },
+          "total": {
+            "inputTokens": 42426,
+            "cachedInputTokens": 30208,
+            "outputTokens": 215,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 42641
+          },
+          "totalDeltaVsPreviousRecordCall": {
+            "inputTokens": 10836,
+            "cachedInputTokens": 4992,
+            "outputTokens": 28,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10864
+          },
+          "capturedUsageKeys": null,
+          "rawEventKeys": null,
+          "rawUsageKeys": null
+        }
+      ],
+      "ledgerRows": [
+        {
+          "turnId": "019f0c5f-e36e-7ac2-a654-8eac1c0af70a",
+          "accountingInputTokens": 10353,
+          "cacheReadInputTokens": 4992,
+          "standardInputTokens": 5361,
+          "accountingOutputTokens": 13,
+          "reasoningOutputTokens": 0,
+          "rawUsageJson": {
+            "totalTokens": 10366,
+            "inputTokens": 10353,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0
+          }
+        },
+        {
+          "turnId": "019f0c60-2de4-7a41-9ca3-e642094d69f9",
+          "accountingInputTokens": 10836,
+          "cacheReadInputTokens": 4992,
+          "standardInputTokens": 5844,
+          "accountingOutputTokens": 28,
+          "reasoningOutputTokens": 0,
+          "rawUsageJson": {
+            "totalTokens": 10864,
+            "inputTokens": 10836,
+            "cachedInputTokens": 4992,
+            "outputTokens": 28,
+            "reasoningOutputTokens": 0
+          }
+        }
+      ]
+    },
+    {
+      "evidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-token-cache-rate-statistics/tickets/in-progress/codex-token-cache-rate-statistics/experiment-evidence/2026-06-28T04-05-58-694Z-codex-token-accounting-live-probe.json",
+      "model": "gpt-5.5",
+      "runId": "codex_token_accounting_live_probe_2999b709_7d0_69d66f901cc64d7aa4cf13085f4309a8",
+      "completedAt": "2026-06-28T04:05:58.694Z",
+      "conclusion": "Potential undercount/reconciliation issue observed: either pending usage was overwritten before persistence or cumulative total deltas exceeded the accounted last payload.",
+      "recordTurnTokenUsageCallCount": 4,
+      "ledgerRowCount": 2,
+      "websocketTokenUsageCount": 2,
+      "overwrittenPendingCallCount": 2,
+      "unreconciledPositiveCount": 0,
+      "capturesFullNormalizedUsage": true,
+      "recordCalls": [
+        {
+          "index": 0,
+          "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 10851,
+            "cachedInputTokens": 4992,
+            "outputTokens": 15,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10866
+          },
+          "total": {
+            "inputTokens": 10851,
+            "cachedInputTokens": 4992,
+            "outputTokens": 15,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10866
+          },
+          "totalDeltaVsPreviousRecordCall": null,
+          "capturedUsageKeys": [
+            "cache_read_input_tokens",
+            "cache_state",
+            "context_window_usage_percent",
+            "effective_context_window_tokens",
+            "idempotency_key",
+            "ingestion_kind",
+            "input_token_semantic",
+            "latest_prompt_tokens",
+            "model_identifier",
+            "model_provider",
+            "model_value",
+            "quality_flags",
+            "raw_event_json",
+            "raw_usage_json",
+            "reasoning_output_tokens",
+            "reported_input_tokens",
+            "reported_output_tokens",
+            "reported_total_tokens",
+            "runtime_kind",
+            "snapshot_series_key",
+            "turnId",
+            "usage_scope"
+          ],
+          "rawEventKeys": [
+            "threadId",
+            "tokenUsage",
+            "turnId"
+          ],
+          "rawUsageKeys": [
+            "cachedInputTokens",
+            "inputTokens",
+            "outputTokens",
+            "reasoningOutputTokens",
+            "totalTokens"
+          ]
+        },
+        {
+          "index": 1,
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 11050,
+            "cachedInputTokens": 10624,
+            "outputTokens": 89,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11139
+          },
+          "total": {
+            "inputTokens": 21901,
+            "cachedInputTokens": 15616,
+            "outputTokens": 104,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 22005
+          },
+          "totalDeltaVsPreviousRecordCall": {
+            "inputTokens": 11050,
+            "cachedInputTokens": 10624,
+            "outputTokens": 89,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11139
+          },
+          "capturedUsageKeys": [
+            "cache_read_input_tokens",
+            "cache_state",
+            "context_window_usage_percent",
+            "effective_context_window_tokens",
+            "idempotency_key",
+            "ingestion_kind",
+            "input_token_semantic",
+            "latest_prompt_tokens",
+            "model_identifier",
+            "model_provider",
+            "model_value",
+            "quality_flags",
+            "raw_event_json",
+            "raw_usage_json",
+            "reasoning_output_tokens",
+            "reported_input_tokens",
+            "reported_output_tokens",
+            "reported_total_tokens",
+            "runtime_kind",
+            "snapshot_series_key",
+            "turnId",
+            "usage_scope"
+          ],
+          "rawEventKeys": [
+            "threadId",
+            "tokenUsage",
+            "turnId"
+          ],
+          "rawUsageKeys": [
+            "cachedInputTokens",
+            "inputTokens",
+            "outputTokens",
+            "reasoningOutputTokens",
+            "totalTokens"
+          ]
+        },
+        {
+          "index": 2,
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "hadPendingBefore": true,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 11200,
+            "cachedInputTokens": 10624,
+            "outputTokens": 89,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11289
+          },
+          "total": {
+            "inputTokens": 33101,
+            "cachedInputTokens": 26240,
+            "outputTokens": 193,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 33294
+          },
+          "totalDeltaVsPreviousRecordCall": {
+            "inputTokens": 11200,
+            "cachedInputTokens": 10624,
+            "outputTokens": 89,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11289
+          },
+          "capturedUsageKeys": [
+            "cache_read_input_tokens",
+            "cache_state",
+            "context_window_usage_percent",
+            "effective_context_window_tokens",
+            "idempotency_key",
+            "ingestion_kind",
+            "input_token_semantic",
+            "latest_prompt_tokens",
+            "model_identifier",
+            "model_provider",
+            "model_value",
+            "quality_flags",
+            "raw_event_json",
+            "raw_usage_json",
+            "reasoning_output_tokens",
+            "reported_input_tokens",
+            "reported_output_tokens",
+            "reported_total_tokens",
+            "runtime_kind",
+            "snapshot_series_key",
+            "turnId",
+            "usage_scope"
+          ],
+          "rawEventKeys": [
+            "threadId",
+            "tokenUsage",
+            "turnId"
+          ],
+          "rawUsageKeys": [
+            "cachedInputTokens",
+            "inputTokens",
+            "outputTokens",
+            "reasoningOutputTokens",
+            "totalTokens"
+          ]
+        },
+        {
+          "index": 3,
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "hadPendingBefore": true,
+          "readyBefore": false,
+          "last": {
+            "inputTokens": 11349,
+            "cachedInputTokens": 11136,
+            "outputTokens": 32,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11381
+          },
+          "total": {
+            "inputTokens": 44450,
+            "cachedInputTokens": 37376,
+            "outputTokens": 225,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 44675
+          },
+          "totalDeltaVsPreviousRecordCall": {
+            "inputTokens": 11349,
+            "cachedInputTokens": 11136,
+            "outputTokens": 32,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11381
+          },
+          "capturedUsageKeys": [
+            "cache_read_input_tokens",
+            "cache_state",
+            "context_window_usage_percent",
+            "effective_context_window_tokens",
+            "idempotency_key",
+            "ingestion_kind",
+            "input_token_semantic",
+            "latest_prompt_tokens",
+            "model_identifier",
+            "model_provider",
+            "model_value",
+            "quality_flags",
+            "raw_event_json",
+            "raw_usage_json",
+            "reasoning_output_tokens",
+            "reported_input_tokens",
+            "reported_output_tokens",
+            "reported_total_tokens",
+            "runtime_kind",
+            "snapshot_series_key",
+            "turnId",
+            "usage_scope"
+          ],
+          "rawEventKeys": [
+            "threadId",
+            "tokenUsage",
+            "turnId"
+          ],
+          "rawUsageKeys": [
+            "cachedInputTokens",
+            "inputTokens",
+            "outputTokens",
+            "reasoningOutputTokens",
+            "totalTokens"
+          ]
+        }
+      ],
+      "ledgerRows": [
+        {
+          "turnId": "019f0c67-3969-7461-80c4-c9dc72e59d66",
+          "accountingInputTokens": 10851,
+          "cacheReadInputTokens": 4992,
+          "standardInputTokens": 5859,
+          "accountingOutputTokens": 15,
+          "reasoningOutputTokens": 0,
+          "rawUsageJson": {
+            "totalTokens": 10866,
+            "inputTokens": 10851,
+            "cachedInputTokens": 4992,
+            "outputTokens": 15,
+            "reasoningOutputTokens": 0
+          }
+        },
+        {
+          "turnId": "019f0c67-85c7-7843-b54f-51267f1b41e5",
+          "accountingInputTokens": 11349,
+          "cacheReadInputTokens": 11136,
+          "standardInputTokens": 213,
+          "accountingOutputTokens": 32,
+          "reasoningOutputTokens": 0,
+          "rawUsageJson": {
+            "totalTokens": 11381,
+            "inputTokens": 11349,
+            "cachedInputTokens": 11136,
+            "outputTokens": 32,
+            "reasoningOutputTokens": 0
+          }
+        }
+      ]
+    }
+  ],
+  "conclusion": "Output tokens and reasoning/thinking tokens are cumulative in Codex tokenUsage.total, but tokenUsage.last is the per-update increment. Autobyteus currently selects last and should accumulate/persist every update or compute deltas from total. Because pending usage is keyed only by turnId until idle, same-turn increments can overwrite each other before persistence."
+}

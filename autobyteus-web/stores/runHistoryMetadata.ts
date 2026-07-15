@@ -30,7 +30,7 @@ const readNullableString = (value: unknown): string | null => {
 };
 
 const normalizeSkillAccessMode = (value: unknown): SkillAccessMode | null => {
-  if (value === 'PRELOADED_ONLY' || value === 'GLOBAL_DISCOVERY' || value === 'NONE') {
+  if (value === 'PRELOADED_ONLY' || value === 'NONE') {
     return value;
   }
   return null;

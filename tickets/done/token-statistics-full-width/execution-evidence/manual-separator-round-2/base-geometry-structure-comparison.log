@@ -1,0 +1,8 @@
+BASE 9fda25e... original structural classes:
+3:    class="flex h-full min-w-0 flex-col bg-white md:flex-row"
+11:      <div class="px-2 py-3 sm:px-4 sm:py-4 md:py-5">
+213:      class="min-h-0 min-w-0 flex-1 overflow-auto bg-white p-2 sm:p-3 md:py-4 md:pl-0 md:pr-4"
+CURRENT 173848dea structural classes:
+3:    class="flex h-full min-w-0 flex-col bg-white md:flex-row"
+15:      <div class="px-2 py-3 sm:px-4 sm:py-4 md:py-5">
+246:      class="min-h-0 min-w-0 flex-1 overflow-auto bg-white p-2 sm:p-3 md:py-4 md:pl-0 md:pr-4"

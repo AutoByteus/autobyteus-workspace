@@ -45,6 +45,25 @@ describe('ModelMetadataResolver', () => {
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
+  it('returns the official GPT-5.6 limits for every canonical model without live requests', async () => {
+    const resolver = new ModelMetadataResolver();
+
+    for (const modelId of ['gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna']) {
+      const metadata = await resolver.resolve({
+        provider: LLMProvider.OPENAI,
+        name: modelId,
+        value: modelId,
+        canonicalName: modelId,
+      });
+
+      expect(metadata).toMatchObject({
+        maxContextTokens: 1050000,
+        maxOutputTokens: 128000,
+      });
+    }
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
   it('prefers live Anthropic metadata when available and falls back to curated values for missing models', async () => {
     process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
     mockFetch.mockResolvedValue({

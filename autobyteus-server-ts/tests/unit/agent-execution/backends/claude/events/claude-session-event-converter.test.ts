@@ -376,6 +376,244 @@ describe("ClaudeSessionEventConverter", () => {
     });
   });
 
+  it("normalizes Agent Tools MCP task-delegation envelopes to canonical task results", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+    const taskResult = {
+      task_id: "task_0001",
+      status: "active",
+    };
+
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-delegate-task",
+        tool_name: "mcp__autobyteus_agent_tools__delegate_task",
+        result: {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(taskResult),
+            },
+          ],
+          structuredContent: null,
+          _meta: null,
+        },
+      },
+    });
+
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "invoke-delegate-task",
+        tool_name: "delegate_task",
+        result: taskResult,
+      },
+    });
+    expect(completed?.payload.result).not.toHaveProperty("content");
+    expect(completed?.payload.result).not.toHaveProperty("structuredContent");
+    expect(completed?.payload.result).not.toHaveProperty("_meta");
+  });
+
+  it("projects generic Claude MCP JSON text envelopes into parsed results", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-generic-json",
+        tool_name: "mcp__custom_server__custom_tool",
+        result: {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({ ok: true, count: 2 }),
+            },
+          ],
+          structuredContent: null,
+          _meta: { hidden: true },
+        },
+      },
+    });
+
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "invoke-generic-json",
+        tool_name: "mcp__custom_server__custom_tool",
+        result: { ok: true, count: 2 },
+      },
+    });
+    expect(completed?.payload.result).not.toHaveProperty("content");
+    expect(completed?.payload.result).not.toHaveProperty("_meta");
+  });
+
+  it("projects generic Claude MCP plain text envelopes into text results", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-generic-text",
+        tool_name: "mcp__custom_server__plain_text_tool",
+        result: {
+          content: [{ type: "text", text: "completed" }],
+          structuredContent: null,
+        },
+      },
+    });
+
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "invoke-generic-text",
+        result: "completed",
+      },
+    });
+  });
+
+  it("projects generic Claude MCP structuredContent before text fallback", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-generic-structured",
+        tool_name: "mcp__custom_server__structured_tool",
+        result: {
+          structuredContent: { answer: 42 },
+          content: [{ type: "text", text: "fallback" }],
+          _meta: { hidden: true },
+        },
+      },
+    });
+
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        result: { answer: 42 },
+      },
+    });
+    expect(completed?.payload.result).not.toHaveProperty("_meta");
+  });
+
+  it("projects generic Claude MCP multi-text envelopes with deterministic separators", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-generic-multitext",
+        tool_name: "mcp__custom_server__multi_text_tool",
+        result: {
+          content: [
+            { type: "text", text: "one" },
+            { type: "text", text: "two" },
+          ],
+        },
+      },
+    });
+
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        result: "one\n\ntwo",
+      },
+    });
+  });
+
+  it("projects generic Claude MCP rich content envelopes into sanitized items", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-generic-rich",
+        tool_name: "mcp__custom_server__rich_tool",
+        result: {
+          content: [
+            { type: "text", text: "see image", _meta: { hidden: true } },
+            {
+              type: "image",
+              data: "abc123",
+              mimeType: "image/png",
+              _meta: { hidden: true },
+            },
+          ],
+          _meta: { hidden: true },
+        },
+      },
+    });
+
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        result: {
+          items: [
+            { type: "text", text: "see image" },
+            { type: "image", data: "abc123", mimeType: "image/png" },
+          ],
+        },
+      },
+    });
+  });
+
+  it("maps Claude MCP isError result envelopes into failure events without result", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [failed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-generic-error",
+        tool_name: "mcp__custom_server__error_tool",
+        result: {
+          isError: true,
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({ error: { message: "bad input" } }),
+            },
+          ],
+        },
+      },
+    });
+
+    expect(failed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_FAILED,
+      payload: {
+        invocation_id: "invoke-generic-error",
+        error: "bad input",
+      },
+    });
+    expect(failed?.payload).not.toHaveProperty("result");
+  });
+
+  it("does not project exact envelope-shaped non-MCP Claude results", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+    const rawEnvelopeLikeResult = {
+      content: [{ type: "text", text: JSON.stringify({ should: "stay wrapped" }) }],
+      structuredContent: null,
+      _meta: { domain: true },
+    };
+
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-non-mcp-envelope",
+        tool_name: "Write",
+        result: rawEnvelopeLikeResult,
+      },
+    });
+
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "invoke-non-mcp-envelope",
+        tool_name: "Write",
+        result: rawEnvelopeLikeResult,
+      },
+    });
+  });
+
   it("normalizes browser MCP content-block results to canonical browser result objects", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
@@ -729,6 +967,46 @@ describe("ClaudeSessionEventConverter", () => {
       },
       statusHint: "ACTIVE",
     });
+  });
+
+
+
+  it("maps Claude token usage session events to TOKEN_USAGE_UPDATED agent-run events", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [event] = converter.convert({
+      method: ClaudeSessionEventName.TOKEN_USAGE_UPDATED,
+      params: {
+        turn_id: "turn-claude-usage-1",
+        session_id: "session-1",
+        runtime_kind: "claude_agent_sdk",
+        ingestion_kind: "claude_sdk_result",
+        usage_scope: "per_turn",
+        model_provider: "ANTHROPIC",
+        model_identifier: "claude-sonnet-4-6",
+        reported_input_tokens: 100,
+        reported_output_tokens: 20,
+        reported_total_tokens: 120,
+        cache_read_input_tokens: 10,
+        raw_usage_json: { input_tokens: 100, output_tokens: 20, cache_read_input_tokens: 10 },
+      },
+    });
+
+    expect(event).toEqual(expect.objectContaining({
+      eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+      runId: "run-claude-converter",
+      payload: expect.objectContaining({
+        turn_id: "turn-claude-usage-1",
+        runtime_kind: "claude_agent_sdk",
+        ingestion_kind: "claude_sdk_result",
+        usage_scope: "per_turn",
+        reported_input_tokens: 100,
+        reported_output_tokens: 20,
+        reported_total_tokens: 120,
+        cache_read_input_tokens: 10,
+        raw_usage_json: { input_tokens: 100, output_tokens: 20, cache_read_input_tokens: 10 },
+      }),
+    }));
   });
 
   it("normalizes compacting status without rotation eligibility", () => {

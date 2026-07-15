@@ -63,7 +63,7 @@ const waitFor = async (
 };
 
 const readRawTraces = async (memoryDir: string, agentId: string): Promise<Record<string, unknown>[]> => {
-  const rawPath = path.join(memoryDir, 'agents', agentId, 'raw_traces.jsonl');
+  const rawPath = path.join(memoryDir, 'agents', agentId, 'raw_traces_active.jsonl');
   try {
     const content = await fs.readFile(rawPath, 'utf-8');
     return content
@@ -75,6 +75,9 @@ const readRawTraces = async (memoryDir: string, agentId: string): Promise<Record
     return [];
   }
 };
+
+const readRawTraceText = async (memoryDir: string, agentId: string): Promise<string> =>
+  fs.readFile(path.join(memoryDir, 'agents', agentId, 'raw_traces_active.jsonl'), 'utf-8');
 
 const createAgentFixture = async (tools: any[]): Promise<AgentFixture> => {
   const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tool-approval-'));
@@ -122,6 +125,12 @@ const runToolPhaseForApprovalTest = async (
   if (!turn) {
     throw new Error('Tool approval test requires an active turn.');
   }
+
+  const memoryManager = fixture.agent.context.state.memoryManager;
+  if (!memoryManager) {
+    throw new Error('Tool approval test requires a memory manager.');
+  }
+  memoryManager.ingestToolIntents([invocation], turn.turnId);
 
   let outcome: TurnOutcome = { kind: 'completed', turnId: turn.turnId };
   try {
@@ -192,7 +201,7 @@ describe('Tool approval integration flow', () => {
     const turnId = startApprovalTestTurn(fixture);
 
     const finalPath = path.join(fixture.workspaceDir, 'poem.txt');
-    const content = 'hello from approval';
+    const content = `approval-large-content-${'x'.repeat(32_768)}-end`;
     const invocationId = `write-${Date.now()}`;
     const invocation = new ToolInvocation('write_file', { path: finalPath, content }, invocationId, turnId);
 
@@ -204,6 +213,14 @@ describe('Tool approval integration flow', () => {
       50,
       'pending tool approval'
     );
+
+    const pendingTraces = await readRawTraces(fixture.memoryDir, fixture.agent.agentId);
+    expect(pendingTraces.filter(
+      (trace) => trace.trace_type === 'tool_call' && trace.tool_call_id === invocationId
+    )).toHaveLength(1);
+    expect(pendingTraces.some(
+      (trace) => trace.trace_type === 'tool_result' && trace.tool_call_id === invocationId
+    )).toBe(false);
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
     await phasePromise;
@@ -224,6 +241,28 @@ describe('Tool approval integration flow', () => {
 
     const written = await fs.readFile(finalPath, 'utf-8');
     expect(written).toBe(content);
+
+    const traces = await readRawTraces(fixture.memoryDir, fixture.agent.agentId);
+    const call = traces.find(
+      (trace) => trace.trace_type === 'tool_call' && trace.tool_call_id === invocationId
+    );
+    const result = traces.find(
+      (trace) => trace.trace_type === 'tool_result' && trace.tool_call_id === invocationId
+    );
+    expect(call).toMatchObject({
+      tool_name: 'write_file',
+      tool_args: { path: finalPath, content }
+    });
+    expect(call).not.toHaveProperty('tool_result');
+    expect(call).not.toHaveProperty('tool_error');
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('tool_result');
+    expect(result).toHaveProperty('tool_error', null);
+    expect(result).not.toHaveProperty('tool_name');
+    expect(result).not.toHaveProperty('tool_args');
+
+    const rawJsonl = await readRawTraceText(fixture.memoryDir, fixture.agent.agentId);
+    expect(rawJsonl.split(content)).toHaveLength(2);
   });
 
   it('executes read_file after approval and records tool output', async () => {
@@ -256,7 +295,7 @@ describe('Tool approval integration flow', () => {
         return traces.some(
           (trace) =>
             trace.trace_type === 'tool_result' &&
-            trace.tool_name === 'read_file' &&
+            trace.tool_call_id === invocationId &&
             String(trace.tool_result ?? '').includes('1: line1')
         );
       },
@@ -269,10 +308,18 @@ describe('Tool approval integration flow', () => {
     const lastToolTrace = traces.find(
       (trace) =>
         trace.trace_type === 'tool_result' &&
-        trace.tool_name === 'read_file' &&
+        trace.tool_call_id === invocationId &&
         String(trace.tool_result ?? '').includes('1: line1')
     );
     expect(lastToolTrace).toBeDefined();
+    expect(lastToolTrace).not.toHaveProperty('tool_name');
+    expect(lastToolTrace).not.toHaveProperty('tool_args');
+    expect(traces.find(
+      (trace) => trace.trace_type === 'tool_call' && trace.tool_call_id === invocationId
+    )).toMatchObject({
+      tool_name: 'read_file',
+      tool_args: { path: targetPath }
+    });
   });
 
   it('executes edit_file after approval', async () => {

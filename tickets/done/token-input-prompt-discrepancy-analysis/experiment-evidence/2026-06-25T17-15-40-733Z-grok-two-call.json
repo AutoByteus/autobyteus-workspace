@@ -1,0 +1,89 @@
+{
+  "provider": "grok",
+  "mode": "two-call",
+  "model": {
+    "name": "grok-build-0.1",
+    "value": "grok-build-0.1",
+    "provider": "GROK"
+  },
+  "started_at": "2026-06-25T17:15:36.545Z",
+  "completed_at": "2026-06-25T17:15:40.733Z",
+  "prompt_shape": {
+    "repeated_prefix_line_count": 260,
+    "stable_system_prefix_chars": 40474,
+    "calls": [
+      "same system prefix; user suffix differs"
+    ]
+  },
+  "calls": [
+    {
+      "marker": "warmup",
+      "content_preview": "WARMUP",
+      "normalized_usage": {
+        "input_tokens": 8224,
+        "output_tokens": 3,
+        "total_tokens": 8526,
+        "cache_read_input_tokens": 64,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": 299,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "prompt_tokens": 8224,
+          "completion_tokens": 3,
+          "total_tokens": 8526,
+          "prompt_tokens_details": {
+            "text_tokens": 8224,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "cached_tokens": 64
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 299,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          },
+          "num_sources_used": 0,
+          "cost_in_usd_ticks": 87768000
+        }
+      }
+    },
+    {
+      "marker": "probe",
+      "content_preview": "PROBE",
+      "normalized_usage": {
+        "input_tokens": 8223,
+        "output_tokens": 2,
+        "total_tokens": 8502,
+        "cache_read_input_tokens": 64,
+        "cache_creation_input_tokens": null,
+        "reasoning_output_tokens": 277,
+        "billable_input_tokens": null,
+        "billable_output_tokens": null,
+        "quality_flags": [],
+        "raw_usage_json": {
+          "prompt_tokens": 8223,
+          "completion_tokens": 2,
+          "total_tokens": 8502,
+          "prompt_tokens_details": {
+            "text_tokens": 8223,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "cached_tokens": 64
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 277,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          },
+          "num_sources_used": 0,
+          "cost_in_usd_ticks": 87298000
+        }
+      }
+    }
+  ],
+  "semantic_inference_from_probe_call": "likely_gross_includes_cache"
+}

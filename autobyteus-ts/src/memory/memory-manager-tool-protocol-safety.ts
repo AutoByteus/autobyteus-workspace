@@ -1,5 +1,9 @@
 import { Message } from '../llm/utils/messages.js';
+import { WorkingContext } from './working-context.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
+import { ToolInteractionStatus } from './models/tool-interaction.js';
+import { createToolCallIdentity, toolCallIdentityKey } from './models/tool-call-identity.js';
+import { buildToolInteractions } from './tool-interaction-builder.js';
 import {
   repairWorkingContextToolProtocol,
   SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT,
@@ -24,15 +28,11 @@ export type MemoryManagerToolProtocolSafetyInput = {
 type AppendRawTraceLikeInput = Omit<RawTraceItemOptions, 'id' | 'ts' | 'seq'> &
   Partial<Pick<RawTraceItemOptions, 'id' | 'ts' | 'seq'>>;
 
-type WorkingContextSnapshotLike = {
-  buildMessages(): Message[];
-  lastCompactionTs: number | null;
-};
-
 type MemoryManagerToolProtocolSafetyBoundary = {
-  workingContextSnapshot: WorkingContextSnapshotLike;
+  getWorkingContextMessages(): Message[];
+  replaceWorkingContext(workingContext: WorkingContext): void;
   listRawTracesOrdered(limit?: number): RawTraceItem[];
-  resetWorkingContextSnapshot(snapshotMessages: Iterable<Message>, lastCompactionTs?: number | null): void;
+  listRawTraceCorpusOrdered(limit?: number): RawTraceItem[];
   appendRawTrace(input: AppendRawTraceLikeInput): RawTraceItem;
 };
 
@@ -44,14 +44,15 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
   memoryManager: MemoryManagerToolProtocolSafetyBoundary,
   input: MemoryManagerToolProtocolSafetyInput = {},
 ): WorkingContextToolProtocolRepairResult {
-  const rawTraces = memoryManager.listRawTracesOrdered();
+  const rawTraces = memoryManager.listRawTraceCorpusOrdered();
+  const interactions = buildToolInteractions(rawTraces);
   const result = repairWorkingContextToolProtocol(
-    memoryManager.workingContextSnapshot.buildMessages(),
+    memoryManager.getWorkingContextMessages(),
     {
-      completedToolResultsByCallId: input.includeCommittedFacts === false
+      completedToolResultsByIdentity: input.includeCommittedFacts === false
         ? new Map()
-        : buildCompletedToolResultFactsByCallId(rawTraces),
-      toolCallFactsByCallId: buildToolCallFactsByCallId(rawTraces),
+        : buildCompletedToolResultFactsByIdentity(interactions),
+      toolCallFactsByIdentity: buildToolCallFactsByIdentity(interactions),
       syntheticInterruptedToolResultContent:
         input.syntheticInterruptedToolResultContent ?? SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT,
       fallbackTurnId: input.scope?.id ?? null,
@@ -60,39 +61,40 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
 
   if (!result.didRepair) return result;
 
-  memoryManager.resetWorkingContextSnapshot(
-    result.messages,
-    memoryManager.workingContextSnapshot.lastCompactionTs,
-  );
+  memoryManager.replaceWorkingContext(new WorkingContext(result.messages));
   appendSyntheticRecoveryMarkers(memoryManager, rawTraces, result.repairs, input);
   return result;
 }
 
-function buildCompletedToolResultFactsByCallId(rawTraces: RawTraceItem[]): Map<string, CompletedToolResultFact> {
+function buildCompletedToolResultFactsByIdentity(
+  interactions: ReturnType<typeof buildToolInteractions>,
+): Map<string, CompletedToolResultFact> {
   const facts = new Map<string, CompletedToolResultFact>();
-  for (const trace of rawTraces) {
-    if (trace.traceType !== 'tool_result' || !trace.toolCallId) continue;
-    facts.set(trace.toolCallId, {
-      toolCallId: trace.toolCallId,
-      toolName: trace.toolName ?? 'unknown_tool',
-      toolResult: trace.toolResult,
-      toolError: trace.toolError ?? null,
-      turnId: trace.turnId ?? null,
-      rawTraceId: trace.id,
+  for (const interaction of interactions) {
+    if (interaction.status === ToolInteractionStatus.PENDING || !interaction.turnId) continue;
+    facts.set(toolCallIdentityKey({ turnId: interaction.turnId, toolCallId: interaction.toolCallId }), {
+      toolCallId: interaction.toolCallId,
+      toolName: interaction.toolName ?? 'unknown_tool',
+      toolResult: interaction.result,
+      toolError: interaction.error,
+      turnId: interaction.turnId,
+      rawTraceId: interaction.terminalRawTraceId ?? undefined,
     });
   }
   return facts;
 }
 
-function buildToolCallFactsByCallId(rawTraces: RawTraceItem[]): Map<string, ToolCallFact> {
+function buildToolCallFactsByIdentity(
+  interactions: ReturnType<typeof buildToolInteractions>,
+): Map<string, ToolCallFact> {
   const facts = new Map<string, ToolCallFact>();
-  for (const trace of rawTraces) {
-    if (trace.traceType !== 'tool_call' || !trace.toolCallId) continue;
-    facts.set(trace.toolCallId, {
-      toolCallId: trace.toolCallId,
-      toolName: trace.toolName ?? 'unknown_tool',
-      turnId: trace.turnId ?? null,
-      rawTraceId: trace.id,
+  for (const interaction of interactions) {
+    if (!interaction.turnId) continue;
+    facts.set(toolCallIdentityKey({ turnId: interaction.turnId, toolCallId: interaction.toolCallId }), {
+      toolCallId: interaction.toolCallId,
+      toolName: interaction.toolName ?? 'unknown_tool',
+      turnId: interaction.turnId,
+      rawTraceId: interaction.anchorRawTraceId ?? undefined,
     });
   }
   return facts;
@@ -112,7 +114,9 @@ function appendSyntheticRecoveryMarkers(
   const sourceEvent = input.recoverySourceEvent ?? DEFAULT_RECOVERY_SOURCE_EVENT;
   for (const repair of repairs) {
     if (repair.source !== 'synthetic_interrupted') continue;
-    const correlationId = `${RECOVERY_CORRELATION_PREFIX}:${repair.toolCallId}`;
+    const identity = createToolCallIdentity(repair.turnId ?? input.scope?.id, repair.toolCallId);
+    if (!identity) continue;
+    const correlationId = `${RECOVERY_CORRELATION_PREFIX}:${toolCallIdentityKey(identity)}`;
     if (existingCorrelations.has(correlationId)) continue;
     existingCorrelations.add(correlationId);
     memoryManager.appendRawTrace({

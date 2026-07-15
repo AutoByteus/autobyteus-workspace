@@ -1,0 +1,134 @@
+[
+  {
+    "provider": "openai",
+    "attempted": false,
+    "ok": false,
+    "skipped": true,
+    "reason": "OPENAI_API_KEY missing/unusable"
+  },
+  {
+    "provider": "deepseek",
+    "attempted": false,
+    "ok": false,
+    "skipped": true,
+    "reason": "DEEPSEEK_API_KEY missing/unusable"
+  },
+  {
+    "provider": "kimi",
+    "attempted": false,
+    "ok": false,
+    "skipped": true,
+    "reason": "KIMI_API_KEY missing/unusable"
+  },
+  {
+    "provider": "glm",
+    "attempted": true,
+    "ok": true,
+    "status": 200,
+    "durationMs": 3927,
+    "model": "glm-5.2",
+    "summary": {
+      "topLevelKeys": [
+        "choices",
+        "created",
+        "id",
+        "model",
+        "object",
+        "request_id",
+        "usage"
+      ],
+      "usage": {
+        "completion_tokens": 64,
+        "completion_tokens_details": {
+          "reasoning_tokens": 64
+        },
+        "prompt_tokens": 19,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 83
+      },
+      "usageKeys": [
+        "completion_tokens",
+        "completion_tokens_details",
+        "prompt_tokens",
+        "prompt_tokens_details",
+        "total_tokens"
+      ],
+      "promptDetails": {
+        "cached_tokens": 0
+      },
+      "completionDetails": {
+        "reasoning_tokens": 64
+      },
+      "messageKeys": [
+        "content",
+        "reasoning_content",
+        "role"
+      ],
+      "deltaKeys": [],
+      "hasReasoningContent": true,
+      "hasReasoningTextField": false,
+      "finishReason": "length"
+    }
+  },
+  {
+    "provider": "qwen",
+    "attempted": false,
+    "ok": false,
+    "skipped": true,
+    "reason": "DASHSCOPE_API_KEY/QWEN_API_KEY missing/unusable"
+  },
+  {
+    "provider": "minimax",
+    "attempted": false,
+    "ok": false,
+    "skipped": true,
+    "reason": "MINIMAX_API_KEY missing/unusable"
+  },
+  {
+    "provider": "anthropic",
+    "attempted": false,
+    "ok": false,
+    "skipped": true,
+    "reason": "ANTHROPIC_API_KEY missing/unusable"
+  },
+  {
+    "provider": "gemini",
+    "attempted": true,
+    "ok": false,
+    "status": 403,
+    "durationMs": 185,
+    "model": "gemini-3.5-flash",
+    "summary": {
+      "errorKeys": [
+        "error"
+      ],
+      "error": {
+        "error": {
+          "code": 403,
+          "message": "Requests to this API generativelanguage.…(144 chars)",
+          "status": "PERMISSION_DENIED",
+          "details": [
+            {
+              "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+              "reason": "API_KEY_SERVICE_BLOCKED",
+              "domain": "googleapis.com",
+              "metadata": {
+                "service": "generativelanguage.googleapis.com",
+                "methodName": "google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent",
+                "consumer": "projects/303290304011",
+                "apiName": "generativelanguage.googleapis.com"
+              }
+            },
+            {
+              "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+              "locale": "en-US",
+              "message": "Requests to this API generativelanguage.…(144 chars)"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

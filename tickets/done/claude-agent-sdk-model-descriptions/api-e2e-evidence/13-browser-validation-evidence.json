@@ -1,0 +1,644 @@
+{
+  "url": "http://127.0.0.1:30741/api-e2e-model-descriptions",
+  "chromeExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "browserVersion": "150.0.7871.115",
+  "locale": "en-US",
+  "timezone": "Europe/Berlin",
+  "graphqlOperations": [
+    {
+      "operationName": "GetRuntimeAvailabilities",
+      "status": 200,
+      "hasErrors": false
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "status": 200,
+      "hasErrors": false,
+      "claudeModels": [
+        {
+          "modelIdentifier": "default",
+          "name": "Default (recommended)",
+          "description": "Sonnet 5 · Efficient for routine tasks",
+          "value": "default",
+          "canonicalName": "default"
+        },
+        {
+          "modelIdentifier": "haiku",
+          "name": "Haiku",
+          "description": "Haiku 4.5 · Fastest for quick answers",
+          "value": "haiku",
+          "canonicalName": "haiku"
+        },
+        {
+          "modelIdentifier": "opus",
+          "name": "Opus",
+          "description": "Opus 4.8 · Best for everyday, complex tasks · ~2× usage vs Sonnet",
+          "value": "opus",
+          "canonicalName": "opus"
+        },
+        {
+          "modelIdentifier": "sonnet",
+          "name": "Sonnet",
+          "description": "Sonnet 5 · Efficient for routine tasks",
+          "value": "sonnet",
+          "canonicalName": "sonnet"
+        }
+      ]
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "status": 200,
+      "hasErrors": false,
+      "runtimeSwitchCatalog": {
+        "modelCount": 101,
+        "rowsWithDescriptions": 0,
+        "note": "Non-Claude/autobyteus runtime response summarized to avoid retaining unrelated local catalog identifiers."
+      }
+    }
+  ],
+  "scenarios": {
+    "liveCatalogRender": {
+      "result": "Pass",
+      "initialRows": [
+        "Default (recommended)Sonnet 5 · Efficient for routine tasks",
+        "HaikuHaiku 4.5 · Fastest for quick answers",
+        "OpusOpus 4.8 · Best for everyday, complex tasks · ~2× usage vs Sonnet",
+        "SonnetSonnet 5 · Efficient for routine tasks"
+      ]
+    },
+    "descriptionSearch": {
+      "result": "Pass",
+      "searchResults": [
+        {
+          "query": "sOnNeT 5",
+          "rows": [
+            "Default (recommended)Sonnet 5 · Efficient for routine tasks",
+            "SonnetSonnet 5 · Efficient for routine tasks"
+          ]
+        },
+        {
+          "query": "ROUTINE TASKS",
+          "rows": [
+            "Default (recommended)Sonnet 5 · Efficient for routine tasks",
+            "SonnetSonnet 5 · Efficient for routine tasks"
+          ]
+        },
+        {
+          "query": "CoMpLeX TaSkS",
+          "rows": [
+            "OpusOpus 4.8 · Best for everyday, complex tasks · ~2× usage vs Sonnet"
+          ]
+        },
+        {
+          "query": "QUICK ANSWERS",
+          "rows": [
+            "HaikuHaiku 4.5 · Fastest for quick answers"
+          ]
+        }
+      ],
+      "narrowSearchRows": [
+        "OpusOpus 4.8 · Best for everyday, complex tasks · ~2× usage vs Sonnet"
+      ]
+    },
+    "exactSelectionAndPersistence": {
+      "result": "Pass",
+      "initialPrimaryConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "default",
+        "llmConfig": null
+      },
+      "selectedOpusConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "opus",
+        "llmConfig": null
+      },
+      "autoByteusConfig": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "",
+        "llmConfig": null
+      },
+      "selectedHaikuConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "haiku",
+        "llmConfig": null
+      },
+      "overrideConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "default",
+        "llmConfig": null
+      }
+    },
+    "closeReopenAndRuntimeChange": {
+      "result": "Pass"
+    },
+    "sharedOverrideSurface": {
+      "result": "Pass",
+      "initialOverrideLabel": "Anthropic / Sonnet",
+      "overrideRows": [
+        "Default (recommended)Sonnet 5 · Efficient for routine tasks",
+        "HaikuHaiku 4.5 · Fastest for quick answers",
+        "OpusOpus 4.8 · Best for everyday, complex tasks · ~2× usage vs Sonnet",
+        "SonnetSonnet 5 · Efficient for routine tasks"
+      ]
+    },
+    "missingWhitespaceAndNonModel": {
+      "result": "Pass",
+      "fixtureRows": [
+        {
+          "text": "Long description modelThis deliberately long vendor-provided description verifies that secondary text wraps across multiple readable lines inside a narrow model option without introducing horizontal overflow or colliding with the selected checkmark.",
+          "spanCount": 2,
+          "descriptionCount": 1
+        },
+        {
+          "text": "Null description model",
+          "spanCount": 1,
+          "descriptionCount": 0
+        },
+        {
+          "text": "Whitespace description model",
+          "spanCount": 1,
+          "descriptionCount": 0
+        },
+        {
+          "text": "Current Workspace",
+          "spanCount": 1,
+          "descriptionCount": 0
+        }
+      ]
+    },
+    "desktopLayout": {
+      "result": "Pass",
+      "measurement": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "documentClientWidth": 1440,
+        "documentScrollWidth": 1440,
+        "popover": {
+          "top": 493,
+          "right": 1025,
+          "bottom": 775,
+          "left": 353,
+          "width": 672,
+          "height": 282
+        },
+        "popoverClientWidth": 670,
+        "popoverScrollWidth": 670,
+        "rows": [
+          {
+            "text": "Long description modelThis deliberately long vendor-provided description verifies that secondary text wraps across multiple readable lines inside a narrow model option without introducing horizontal overflow or colliding with the selected checkmark.",
+            "row": {
+              "top": 576,
+              "right": 1024,
+              "bottom": 662,
+              "left": 354,
+              "width": 670,
+              "height": 86
+            },
+            "rowClientWidth": 670,
+            "rowScrollWidth": 670,
+            "description": {
+              "top": 606,
+              "right": 984,
+              "bottom": 654,
+              "left": 378,
+              "width": 606,
+              "height": 48
+            },
+            "descriptionClientWidth": 606,
+            "descriptionScrollWidth": 606,
+            "descriptionLineCount": 3,
+            "textColumn": {
+              "top": 584,
+              "right": 984,
+              "bottom": 654,
+              "left": 378,
+              "width": 606,
+              "height": 70
+            },
+            "checkmark": {
+              "top": 586,
+              "right": 1012,
+              "bottom": 602,
+              "left": 996,
+              "width": 16,
+              "height": 16
+            },
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          },
+          {
+            "text": "Null description model",
+            "row": {
+              "top": 662,
+              "right": 1024,
+              "bottom": 698,
+              "left": 354,
+              "width": 670,
+              "height": 36
+            },
+            "rowClientWidth": 670,
+            "rowScrollWidth": 670,
+            "description": null,
+            "descriptionClientWidth": null,
+            "descriptionScrollWidth": null,
+            "descriptionLineCount": null,
+            "textColumn": {
+              "top": 670,
+              "right": 1012,
+              "bottom": 690,
+              "left": 378,
+              "width": 634,
+              "height": 20
+            },
+            "checkmark": null,
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          },
+          {
+            "text": "Whitespace description model",
+            "row": {
+              "top": 698,
+              "right": 1024,
+              "bottom": 734,
+              "left": 354,
+              "width": 670,
+              "height": 36
+            },
+            "rowClientWidth": 670,
+            "rowScrollWidth": 670,
+            "description": null,
+            "descriptionClientWidth": null,
+            "descriptionScrollWidth": null,
+            "descriptionLineCount": null,
+            "textColumn": {
+              "top": 706,
+              "right": 1012,
+              "bottom": 726,
+              "left": 378,
+              "width": 634,
+              "height": 20
+            },
+            "checkmark": null,
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          },
+          {
+            "text": "Current Workspace",
+            "row": {
+              "top": 734,
+              "right": 1024,
+              "bottom": 770,
+              "left": 354,
+              "width": 670,
+              "height": 36
+            },
+            "rowClientWidth": 670,
+            "rowScrollWidth": 670,
+            "description": null,
+            "descriptionClientWidth": null,
+            "descriptionScrollWidth": null,
+            "descriptionLineCount": null,
+            "textColumn": {
+              "top": 742,
+              "right": 1012,
+              "bottom": 762,
+              "left": 378,
+              "width": 634,
+              "height": 20
+            },
+            "checkmark": null,
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          }
+        ]
+      }
+    },
+    "narrowLiveLayout": {
+      "result": "Pass",
+      "measurement": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "documentClientWidth": 390,
+        "documentScrollWidth": 390,
+        "popover": {
+          "top": 360,
+          "right": 357,
+          "bottom": 840,
+          "left": 33,
+          "width": 324,
+          "height": 480
+        },
+        "popoverClientWidth": 322,
+        "popoverScrollWidth": 322,
+        "rows": [
+          {
+            "text": "Default (recommended)Sonnet 5 · Efficient for routine tasks",
+            "row": {
+              "top": 443,
+              "right": 356,
+              "bottom": 497,
+              "left": 34,
+              "width": 322,
+              "height": 54
+            },
+            "rowClientWidth": 322,
+            "rowScrollWidth": 322,
+            "description": {
+              "top": 473,
+              "right": 344,
+              "bottom": 489,
+              "left": 58,
+              "width": 286,
+              "height": 16
+            },
+            "descriptionClientWidth": 286,
+            "descriptionScrollWidth": 286,
+            "descriptionLineCount": 1,
+            "textColumn": {
+              "top": 451,
+              "right": 344,
+              "bottom": 489,
+              "left": 58,
+              "width": 286,
+              "height": 38
+            },
+            "checkmark": null,
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          },
+          {
+            "text": "HaikuHaiku 4.5 · Fastest for quick answers",
+            "row": {
+              "top": 497,
+              "right": 356,
+              "bottom": 551,
+              "left": 34,
+              "width": 322,
+              "height": 54
+            },
+            "rowClientWidth": 322,
+            "rowScrollWidth": 322,
+            "description": {
+              "top": 527,
+              "right": 344,
+              "bottom": 543,
+              "left": 58,
+              "width": 286,
+              "height": 16
+            },
+            "descriptionClientWidth": 286,
+            "descriptionScrollWidth": 286,
+            "descriptionLineCount": 1,
+            "textColumn": {
+              "top": 505,
+              "right": 344,
+              "bottom": 543,
+              "left": 58,
+              "width": 286,
+              "height": 38
+            },
+            "checkmark": null,
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          },
+          {
+            "text": "OpusOpus 4.8 · Best for everyday, complex tasks · ~2× usage vs Sonnet",
+            "row": {
+              "top": 551,
+              "right": 356,
+              "bottom": 621,
+              "left": 34,
+              "width": 322,
+              "height": 70
+            },
+            "rowClientWidth": 322,
+            "rowScrollWidth": 322,
+            "description": {
+              "top": 581,
+              "right": 316,
+              "bottom": 613,
+              "left": 58,
+              "width": 258,
+              "height": 32
+            },
+            "descriptionClientWidth": 258,
+            "descriptionScrollWidth": 258,
+            "descriptionLineCount": 2,
+            "textColumn": {
+              "top": 559,
+              "right": 316,
+              "bottom": 613,
+              "left": 58,
+              "width": 258,
+              "height": 54
+            },
+            "checkmark": {
+              "top": 561,
+              "right": 344,
+              "bottom": 577,
+              "left": 328,
+              "width": 16,
+              "height": 16
+            },
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          },
+          {
+            "text": "SonnetSonnet 5 · Efficient for routine tasks",
+            "row": {
+              "top": 621,
+              "right": 356,
+              "bottom": 675,
+              "left": 34,
+              "width": 322,
+              "height": 54
+            },
+            "rowClientWidth": 322,
+            "rowScrollWidth": 322,
+            "description": {
+              "top": 651,
+              "right": 344,
+              "bottom": 667,
+              "left": 58,
+              "width": 286,
+              "height": 16
+            },
+            "descriptionClientWidth": 286,
+            "descriptionScrollWidth": 286,
+            "descriptionLineCount": 1,
+            "textColumn": {
+              "top": 629,
+              "right": 344,
+              "bottom": 667,
+              "left": 58,
+              "width": 286,
+              "height": 38
+            },
+            "checkmark": null,
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          }
+        ]
+      }
+    },
+    "narrowFixtureLayout": {
+      "result": "Pass",
+      "measurement": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "documentClientWidth": 390,
+        "documentScrollWidth": 390,
+        "popover": {
+          "top": 545,
+          "right": 357,
+          "bottom": 875,
+          "left": 33,
+          "width": 324,
+          "height": 330
+        },
+        "popoverClientWidth": 322,
+        "popoverScrollWidth": 322,
+        "rows": [
+          {
+            "text": "Long description modelThis deliberately long vendor-provided description verifies that secondary text wraps across multiple readable lines inside a narrow model option without introducing horizontal overflow or colliding with the selected checkmark.",
+            "row": {
+              "top": 628,
+              "right": 356,
+              "bottom": 762,
+              "left": 34,
+              "width": 322,
+              "height": 134
+            },
+            "rowClientWidth": 322,
+            "rowScrollWidth": 322,
+            "description": {
+              "top": 658,
+              "right": 316,
+              "bottom": 754,
+              "left": 58,
+              "width": 258,
+              "height": 96
+            },
+            "descriptionClientWidth": 258,
+            "descriptionScrollWidth": 258,
+            "descriptionLineCount": 6,
+            "textColumn": {
+              "top": 636,
+              "right": 316,
+              "bottom": 754,
+              "left": 58,
+              "width": 258,
+              "height": 118
+            },
+            "checkmark": {
+              "top": 638,
+              "right": 344,
+              "bottom": 654,
+              "left": 328,
+              "width": 16,
+              "height": 16
+            },
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          },
+          {
+            "text": "Null description model",
+            "row": {
+              "top": 762,
+              "right": 356,
+              "bottom": 798,
+              "left": 34,
+              "width": 322,
+              "height": 36
+            },
+            "rowClientWidth": 322,
+            "rowScrollWidth": 322,
+            "description": null,
+            "descriptionClientWidth": null,
+            "descriptionScrollWidth": null,
+            "descriptionLineCount": null,
+            "textColumn": {
+              "top": 770,
+              "right": 344,
+              "bottom": 790,
+              "left": 58,
+              "width": 286,
+              "height": 20
+            },
+            "checkmark": null,
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          },
+          {
+            "text": "Whitespace description model",
+            "row": {
+              "top": 798,
+              "right": 356,
+              "bottom": 834,
+              "left": 34,
+              "width": 322,
+              "height": 36
+            },
+            "rowClientWidth": 322,
+            "rowScrollWidth": 322,
+            "description": null,
+            "descriptionClientWidth": null,
+            "descriptionScrollWidth": null,
+            "descriptionLineCount": null,
+            "textColumn": {
+              "top": 806,
+              "right": 344,
+              "bottom": 826,
+              "left": 58,
+              "width": 286,
+              "height": 20
+            },
+            "checkmark": null,
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          },
+          {
+            "text": "Current Workspace",
+            "row": {
+              "top": 834,
+              "right": 356,
+              "bottom": 870,
+              "left": 34,
+              "width": 322,
+              "height": 36
+            },
+            "rowClientWidth": 322,
+            "rowScrollWidth": 322,
+            "description": null,
+            "descriptionClientWidth": null,
+            "descriptionScrollWidth": null,
+            "descriptionLineCount": null,
+            "textColumn": {
+              "top": 842,
+              "right": 344,
+              "bottom": 862,
+              "left": 58,
+              "width": 286,
+              "height": 20
+            },
+            "checkmark": null,
+            "checkmarkSeparated": true,
+            "checkmarkInsideRow": true
+          }
+        ]
+      }
+    }
+  },
+  "screenshots": {
+    "desktop": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/in-progress/claude-agent-sdk-model-descriptions/api-e2e-evidence/11-browser-desktop-long-description.png",
+    "narrow": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/in-progress/claude-agent-sdk-model-descriptions/api-e2e-evidence/12-browser-narrow-long-description.png"
+  },
+  "consoleErrors": [],
+  "pageErrors": []
+}

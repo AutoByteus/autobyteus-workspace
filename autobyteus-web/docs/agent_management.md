@@ -86,13 +86,20 @@ Those values are used in two places:
 
 Definition editors can leave runtime blank to mean “choose when launching”, while run-config forms resolve to an effective runtime immediately.
 
+Direct run-config forms do not expose a launch-time skill-access selector.
+Runtime skill exposure is defined by the agent definition's configured
+`skillNames`: configured skills are available to the run, and an agent with no
+configured skills exposes no AutoByteus-managed skills by default. The former
+legacy all-installed-skill launch option is not available in the UI or generated
+GraphQL enum.
 
-Self-evolution is explicitly excluded from persisted agent definition defaults.
-A run may carry a run-launch `selfEvolution` override and backend metadata
-snapshot, but `AgentDefinition`, `agent-config.json`, and the agent create/edit
-forms do not own self-evolution eligibility. The standalone run configuration
-form, not the definition editor, exposes the launch-time **Self-evolution
-eligibility** control when the global capability is enabled.
+
+Skill Improvement is explicitly excluded from persisted agent definition defaults
+and run-launch configuration. `AgentDefinition`, `agent-config.json`, the agent
+create/edit forms, and the standalone run configuration form do not own
+Skill Improvement eligibility. The composer-adjacent **Improve skills** CTA asks the
+backend for current eligibility for the selected active run, and the backend
+resolves that from global Skill Improvement settings plus current target state.
 
 ## Store Ownership
 

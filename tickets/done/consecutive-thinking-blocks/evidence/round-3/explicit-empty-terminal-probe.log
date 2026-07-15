@@ -1,0 +1,16 @@
+{
+  "turnId": "turn-explicit-empty",
+  "item": {
+    "type": "dynamicToolCall",
+    "id": "no-arg-result-first",
+    "name": "no_arg_tool",
+    "arguments": {},
+    "status": "completed",
+    "result": "ok"
+  },
+  "invocation_id": "no-arg-result-first",
+  "turn_id": "turn-explicit-empty",
+  "tool_name": "no_arg_tool",
+  "result": "ok"
+}
+normalized_has_top_level_arguments=false

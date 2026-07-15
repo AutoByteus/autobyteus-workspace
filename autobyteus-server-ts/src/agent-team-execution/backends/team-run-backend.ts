@@ -8,6 +8,8 @@ import type { TeamBackendKind } from "../domain/team-backend-kind.js";
 import type { AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import type { TeamStatusPayload } from "../domain/team-status-payload.js";
 import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
+import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
+import type { ConversationTargetAddress } from "../domain/conversation-target-address.js";
 
 export interface TeamRunBackend {
   readonly runId: string;
@@ -23,6 +25,10 @@ export interface TeamRunBackend {
     target?: TeamMemberSelector | null,
     targetMemberRunId?: string | null,
   ): Promise<AgentOperationResult>;
+  postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult>;
   deliverInterAgentMessage(
     intent: InterAgentMessageDeliveryIntent,
   ): Promise<AgentOperationResult>;
@@ -32,6 +38,7 @@ export interface TeamRunBackend {
     approved: boolean,
     reason?: string | null,
     targetMemberRunId?: string | null,
+    taskTeamRunId?: string | null,
   ): Promise<AgentOperationResult>;
   interruptMember(
     targetMemberRouteKey: string,
@@ -48,6 +55,19 @@ export interface TeamRunBackend {
   settleTaskAgentInstance(
     logicalMemberRouteKey: string,
     taskAgentRunId: string,
+    reason?: string | null,
+  ): Promise<AgentOperationResult>;
+  startTaskTeamInstance(
+    request: StartTaskTeamInstanceRequest,
+  ): Promise<AgentOperationResult>;
+  postMessageToTaskTeamInstance(
+    logicalTeamRouteKey: string,
+    taskTeamRunId: string,
+    message: AgentInputUserMessage,
+  ): Promise<AgentOperationResult>;
+  settleTaskTeamInstance(
+    logicalTeamRouteKey: string,
+    taskTeamRunId: string,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;

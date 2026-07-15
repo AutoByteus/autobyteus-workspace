@@ -5,41 +5,237 @@
 export interface TokenPricingConfigData {
   input_token_pricing?: number;
   output_token_pricing?: number;
+  cached_input_read_token_pricing?: number;
+  cached_input_write_token_pricing?: number;
+  cached_input_write_5m_token_pricing?: number;
+  cached_input_write_1h_token_pricing?: number;
+  currency?: string;
+  pricing_source?: string;
+  pricing_effective_date?: string;
+  input_token_pricing_tiers?: TokenPricingTierData[];
 }
 
 export interface TokenPricingConfigInput {
   inputTokenPricing?: number;
   outputTokenPricing?: number;
+  cachedInputReadTokenPricing?: number;
+  cachedInputWriteTokenPricing?: number;
+  cachedInputWrite5mTokenPricing?: number;
+  cachedInputWrite1hTokenPricing?: number;
+  currency?: string;
+  pricingSource?: string;
+  pricingEffectiveDate?: string;
+  inputTokenPricingTiers?: TokenPricingTierInput[];
 }
+
+export interface TokenPricingTierData {
+  tier_id?: string;
+  max_input_tokens?: number | null;
+  input_token_pricing?: number;
+  output_token_pricing?: number;
+  cached_input_read_token_pricing?: number;
+  cached_input_write_token_pricing?: number;
+  cached_input_write_5m_token_pricing?: number;
+  cached_input_write_1h_token_pricing?: number;
+}
+
+export interface TokenPricingTierInput {
+  tierId?: string;
+  maxInputTokens?: number | null;
+  inputTokenPricing?: number;
+  outputTokenPricing?: number;
+  cachedInputReadTokenPricing?: number;
+  cachedInputWriteTokenPricing?: number;
+  cachedInputWrite5mTokenPricing?: number;
+  cachedInputWrite1hTokenPricing?: number;
+}
+
+const hasOwn = (value: object, key: string): boolean =>
+  Object.prototype.hasOwnProperty.call(value, key);
+
+const optionalString = (value: unknown): string | null =>
+  typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
+
+const optionalNumber = (value: unknown): number | undefined =>
+  typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+
+const normalizeTierInput = (tier: TokenPricingTierInput | TokenPricingTierData): TokenPricingTierInput => {
+  const raw = tier as Record<string, unknown>;
+  return {
+    tierId: optionalString(raw.tierId) ?? optionalString(raw.tier_id) ?? undefined,
+    maxInputTokens: hasOwn(raw, 'maxInputTokens')
+      ? (raw.maxInputTokens === null ? null : optionalNumber(raw.maxInputTokens))
+      : hasOwn(raw, 'max_input_tokens')
+        ? (raw.max_input_tokens === null ? null : optionalNumber(raw.max_input_tokens))
+        : undefined,
+    inputTokenPricing: optionalNumber(raw.inputTokenPricing ?? raw.input_token_pricing),
+    outputTokenPricing: optionalNumber(raw.outputTokenPricing ?? raw.output_token_pricing),
+    cachedInputReadTokenPricing: optionalNumber(raw.cachedInputReadTokenPricing ?? raw.cached_input_read_token_pricing),
+    cachedInputWriteTokenPricing: optionalNumber(raw.cachedInputWriteTokenPricing ?? raw.cached_input_write_token_pricing),
+    cachedInputWrite5mTokenPricing: optionalNumber(raw.cachedInputWrite5mTokenPricing ?? raw.cached_input_write_5m_token_pricing),
+    cachedInputWrite1hTokenPricing: optionalNumber(raw.cachedInputWrite1hTokenPricing ?? raw.cached_input_write_1h_token_pricing),
+  };
+};
+
+const tierToDict = (tier: TokenPricingTierInput): TokenPricingTierData => {
+  const data: TokenPricingTierData = {};
+  if (tier.tierId) data.tier_id = tier.tierId;
+  if (tier.maxInputTokens !== undefined) data.max_input_tokens = tier.maxInputTokens;
+  if (tier.inputTokenPricing !== undefined) data.input_token_pricing = tier.inputTokenPricing;
+  if (tier.outputTokenPricing !== undefined) data.output_token_pricing = tier.outputTokenPricing;
+  if (tier.cachedInputReadTokenPricing !== undefined) {
+    data.cached_input_read_token_pricing = tier.cachedInputReadTokenPricing;
+  }
+  if (tier.cachedInputWriteTokenPricing !== undefined) {
+    data.cached_input_write_token_pricing = tier.cachedInputWriteTokenPricing;
+  }
+  if (tier.cachedInputWrite5mTokenPricing !== undefined) {
+    data.cached_input_write_5m_token_pricing = tier.cachedInputWrite5mTokenPricing;
+  }
+  if (tier.cachedInputWrite1hTokenPricing !== undefined) {
+    data.cached_input_write_1h_token_pricing = tier.cachedInputWrite1hTokenPricing;
+  }
+  return data;
+};
 
 export class TokenPricingConfig {
   public inputTokenPricing: number;
   public outputTokenPricing: number;
+  public cachedInputReadTokenPricing: number;
+  public cachedInputWriteTokenPricing: number;
+  public cachedInputWrite5mTokenPricing: number;
+  public cachedInputWrite1hTokenPricing: number;
+  public inputTokenPricingTrusted: boolean;
+  public outputTokenPricingTrusted: boolean;
+  public cachedInputReadTokenPricingTrusted: boolean;
+  public cachedInputWriteTokenPricingTrusted: boolean;
+  public cachedInputWrite5mTokenPricingTrusted: boolean;
+  public cachedInputWrite1hTokenPricingTrusted: boolean;
+  public currency: string;
+  private currencyExplicit: boolean;
+  public pricingSource: string | null;
+  public pricingEffectiveDate: string | null;
+  public inputTokenPricingTiers: TokenPricingTierInput[];
 
   constructor(data: TokenPricingConfigInput = {}) {
-    this.inputTokenPricing = data.inputTokenPricing ?? 0.0;
-    this.outputTokenPricing = data.outputTokenPricing ?? 0.0;
+    this.inputTokenPricingTrusted = hasOwn(data, 'inputTokenPricing');
+    this.outputTokenPricingTrusted = hasOwn(data, 'outputTokenPricing');
+    this.cachedInputReadTokenPricingTrusted = hasOwn(data, 'cachedInputReadTokenPricing');
+    this.cachedInputWriteTokenPricingTrusted = hasOwn(data, 'cachedInputWriteTokenPricing');
+    this.cachedInputWrite5mTokenPricingTrusted = hasOwn(data, 'cachedInputWrite5mTokenPricing');
+    this.cachedInputWrite1hTokenPricingTrusted = hasOwn(data, 'cachedInputWrite1hTokenPricing');
+    this.inputTokenPricing = this.inputTokenPricingTrusted ? data.inputTokenPricing ?? 0.0 : 0.0;
+    this.outputTokenPricing = this.outputTokenPricingTrusted ? data.outputTokenPricing ?? 0.0 : 0.0;
+    this.cachedInputReadTokenPricing = this.cachedInputReadTokenPricingTrusted
+      ? data.cachedInputReadTokenPricing ?? 0.0
+      : 0.0;
+    this.cachedInputWriteTokenPricing = this.cachedInputWriteTokenPricingTrusted
+      ? data.cachedInputWriteTokenPricing ?? 0.0
+      : 0.0;
+    this.cachedInputWrite5mTokenPricing = this.cachedInputWrite5mTokenPricingTrusted
+      ? data.cachedInputWrite5mTokenPricing ?? 0.0
+      : 0.0;
+    this.cachedInputWrite1hTokenPricing = this.cachedInputWrite1hTokenPricingTrusted
+      ? data.cachedInputWrite1hTokenPricing ?? 0.0
+      : 0.0;
+    this.currencyExplicit = hasOwn(data, 'currency');
+    this.currency = data.currency?.trim() || 'USD';
+    this.pricingSource = data.pricingSource?.trim() || null;
+    this.pricingEffectiveDate = data.pricingEffectiveDate?.trim() || null;
+    this.inputTokenPricingTiers = (data.inputTokenPricingTiers ?? []).map(normalizeTierInput);
+  }
+
+  get hasTrustedPricing(): boolean {
+    return this.inputTokenPricingTrusted && this.outputTokenPricingTrusted;
   }
 
   static fromDict(data: Record<string, unknown>): TokenPricingConfig {
-    return new TokenPricingConfig({
-      inputTokenPricing: (data as { input_token_pricing?: number }).input_token_pricing ?? 0.0,
-      outputTokenPricing: (data as { output_token_pricing?: number }).output_token_pricing ?? 0.0
-    });
+    const input: TokenPricingConfigInput = {};
+    if (hasOwn(data, 'input_token_pricing')) {
+      input.inputTokenPricing = (data as { input_token_pricing?: number }).input_token_pricing;
+    }
+    if (hasOwn(data, 'output_token_pricing')) {
+      input.outputTokenPricing = (data as { output_token_pricing?: number }).output_token_pricing;
+    }
+    if (hasOwn(data, 'cached_input_read_token_pricing')) {
+      input.cachedInputReadTokenPricing =
+        (data as { cached_input_read_token_pricing?: number }).cached_input_read_token_pricing;
+    }
+    if (hasOwn(data, 'cached_input_write_token_pricing')) {
+      input.cachedInputWriteTokenPricing =
+        (data as { cached_input_write_token_pricing?: number }).cached_input_write_token_pricing;
+    }
+    if (hasOwn(data, 'cached_input_write_5m_token_pricing')) {
+      input.cachedInputWrite5mTokenPricing =
+        (data as { cached_input_write_5m_token_pricing?: number }).cached_input_write_5m_token_pricing;
+    }
+    if (hasOwn(data, 'cached_input_write_1h_token_pricing')) {
+      input.cachedInputWrite1hTokenPricing =
+        (data as { cached_input_write_1h_token_pricing?: number }).cached_input_write_1h_token_pricing;
+    }
+    const currency = optionalString(data.currency);
+    if (currency) input.currency = currency;
+    const pricingSource = optionalString(data.pricing_source);
+    if (pricingSource) input.pricingSource = pricingSource;
+    const pricingEffectiveDate = optionalString(data.pricing_effective_date);
+    if (pricingEffectiveDate) input.pricingEffectiveDate = pricingEffectiveDate;
+    const tiers = data.input_token_pricing_tiers;
+    if (Array.isArray(tiers)) {
+      input.inputTokenPricingTiers = tiers
+        .filter((tier): tier is TokenPricingTierData => Boolean(tier) && typeof tier === 'object' && !Array.isArray(tier))
+        .map(normalizeTierInput);
+    }
+    return new TokenPricingConfig(input);
   }
 
   toDict(): TokenPricingConfigData {
-    return {
-      input_token_pricing: this.inputTokenPricing,
-      output_token_pricing: this.outputTokenPricing
-    };
+    const data: TokenPricingConfigData = {};
+    if (this.inputTokenPricingTrusted) {
+      data.input_token_pricing = this.inputTokenPricing;
+    }
+    if (this.outputTokenPricingTrusted) {
+      data.output_token_pricing = this.outputTokenPricing;
+    }
+    if (this.cachedInputReadTokenPricingTrusted) {
+      data.cached_input_read_token_pricing = this.cachedInputReadTokenPricing;
+    }
+    if (this.cachedInputWriteTokenPricingTrusted) {
+      data.cached_input_write_token_pricing = this.cachedInputWriteTokenPricing;
+    }
+    if (this.cachedInputWrite5mTokenPricingTrusted) {
+      data.cached_input_write_5m_token_pricing = this.cachedInputWrite5mTokenPricing;
+    }
+    if (this.cachedInputWrite1hTokenPricingTrusted) {
+      data.cached_input_write_1h_token_pricing = this.cachedInputWrite1hTokenPricing;
+    }
+    if (this.currencyExplicit || this.currency !== 'USD') data.currency = this.currency;
+    if (this.pricingSource) data.pricing_source = this.pricingSource;
+    if (this.pricingEffectiveDate) data.pricing_effective_date = this.pricingEffectiveDate;
+    if (this.inputTokenPricingTiers.length > 0) {
+      data.input_token_pricing_tiers = this.inputTokenPricingTiers.map(tierToDict);
+    }
+    return data;
   }
 
   mergeWith(override: TokenPricingConfig | null | undefined): void {
     if (!override) return;
-    // Match Python behavior: any override value (including 0.0) replaces current.
+    this.inputTokenPricingTrusted = override.inputTokenPricingTrusted;
+    this.outputTokenPricingTrusted = override.outputTokenPricingTrusted;
+    this.cachedInputReadTokenPricingTrusted = override.cachedInputReadTokenPricingTrusted;
+    this.cachedInputWriteTokenPricingTrusted = override.cachedInputWriteTokenPricingTrusted;
+    this.cachedInputWrite5mTokenPricingTrusted = override.cachedInputWrite5mTokenPricingTrusted;
+    this.cachedInputWrite1hTokenPricingTrusted = override.cachedInputWrite1hTokenPricingTrusted;
     this.inputTokenPricing = override.inputTokenPricing;
     this.outputTokenPricing = override.outputTokenPricing;
+    this.cachedInputReadTokenPricing = override.cachedInputReadTokenPricing;
+    this.cachedInputWriteTokenPricing = override.cachedInputWriteTokenPricing;
+    this.cachedInputWrite5mTokenPricing = override.cachedInputWrite5mTokenPricing;
+    this.cachedInputWrite1hTokenPricing = override.cachedInputWrite1hTokenPricing;
+    this.currency = override.currency;
+    this.currencyExplicit = override.currencyExplicit;
+    this.pricingSource = override.pricingSource;
+    this.pricingEffectiveDate = override.pricingEffectiveDate;
+    this.inputTokenPricingTiers = override.inputTokenPricingTiers.map((tier) => ({ ...tier }));
   }
 }
 
@@ -136,10 +332,7 @@ export class LLMConfig {
       presencePenalty: (data as { presence_penalty?: number | null }).presence_penalty ?? null,
       stopSequences: (data as { stop_sequences?: string[] | null }).stop_sequences ?? null,
       extraParams: (data as { extra_params?: Record<string, unknown> }).extra_params ?? {},
-      pricingConfig: new TokenPricingConfig({
-        inputTokenPricing: pricingData.input_token_pricing,
-        outputTokenPricing: pricingData.output_token_pricing
-      })
+      pricingConfig: TokenPricingConfig.fromDict(pricingData as Record<string, unknown>)
     };
 
     return new LLMConfig(configData);

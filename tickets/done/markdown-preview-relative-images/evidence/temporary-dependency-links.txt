@@ -1,0 +1,7 @@
+node_modules
+autobyteus-web/node_modules
+autobyteus-server-ts/node_modules
+autobyteus-ts/node_modules
+autobyteus-application-sdk-contracts/node_modules
+autobyteus-application-backend-sdk/node_modules
+autobyteus-message-gateway/node_modules

@@ -7,24 +7,6 @@ import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 
-const {
-  selfEvolutionCapabilityState,
-  selfEvolutionCapabilityStoreMock,
-} = vi.hoisted(() => {
-  const selfEvolutionCapabilityState = {
-    isEnabled: false,
-  }
-  return {
-    selfEvolutionCapabilityState,
-    selfEvolutionCapabilityStoreMock: {
-      get isEnabled() {
-        return selfEvolutionCapabilityState.isEnabled
-      },
-      ensureResolved: vi.fn(async () => null),
-    },
-  }
-})
-
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: vi.fn(),
 }))
@@ -37,9 +19,6 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: vi.fn(),
 }))
 
-vi.mock('~/stores/selfEvolutionCapabilityStore', () => ({
-  useSelfEvolutionCapabilityStore: () => selfEvolutionCapabilityStoreMock,
-}))
 
 const mockTeamDef = {
   id: 'team-1',
@@ -49,6 +28,20 @@ const mockTeamDef = {
     { memberName: 'Member B', refType: 'AGENT', ref: 'agent-b' },
   ],
   coordinatorMemberName: 'Member A',
+}
+
+const sixMemberTeamDef = {
+  id: 'team-6',
+  name: 'Six Member Team',
+  nodes: [
+    { memberName: 'solution_designer', refType: 'AGENT', ref: 'agent-solution' },
+    { memberName: 'architecture_reviewer', refType: 'AGENT', ref: 'agent-architecture' },
+    { memberName: 'implementation_engineer', refType: 'AGENT', ref: 'agent-implementation' },
+    { memberName: 'code_reviewer', refType: 'AGENT', ref: 'agent-code' },
+    { memberName: 'api_e2e_engineer', refType: 'AGENT', ref: 'agent-api' },
+    { memberName: 'delivery_engineer', refType: 'AGENT', ref: 'agent-delivery' },
+  ],
+  coordinatorMemberName: 'solution_designer',
 }
 
 const nestedTeamDef = {
@@ -245,8 +238,6 @@ describe('TeamRunConfigForm', () => {
     ;(useLLMProviderConfigStore as any).mockReturnValue(llmStore)
     ;(useRuntimeAvailabilityStore as any).mockReturnValue(runtimeStore)
     ;(useAgentTeamDefinitionStore as any).mockReturnValue(teamDefinitionStore)
-    selfEvolutionCapabilityState.isEnabled = false
-    selfEvolutionCapabilityStoreMock.ensureResolved.mockClear()
   })
 
   const buildWrapper = (
@@ -274,7 +265,7 @@ describe('TeamRunConfigForm', () => {
           MemberOverrideItem: {
             name: 'MemberOverrideItem',
             template: '<div class="member-override-item-stub"></div>',
-            props: ['memberName', 'memberRouteKey', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'selfEvolutionControlsEnabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
+            props: ['memberName', 'memberRouteKey', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
             emits: ['update:override'],
           },
         },
@@ -282,6 +273,61 @@ describe('TeamRunConfigForm', () => {
     })
     return { wrapper, config }
   }
+
+  const expandMemberOverrides = async (wrapper: any) => {
+    await wrapper.get('[data-test="team-member-overrides-toggle"]').trigger('click')
+    await wrapper.vm.$nextTick()
+  }
+
+  it('places team auto approve before a collapsed accessible member override disclosure', async () => {
+    const { wrapper } = buildWrapper({}, sixMemberTeamDef)
+
+    const renderedHtml = wrapper.html()
+    expect(renderedHtml.indexOf('data-test="team-auto-approve-row"')).toBeGreaterThan(-1)
+    expect(renderedHtml.indexOf('data-test="team-member-overrides-toggle"')).toBeGreaterThan(-1)
+    expect(renderedHtml.indexOf('data-test="team-auto-approve-row"')).toBeLessThan(
+      renderedHtml.indexOf('data-test="team-member-overrides-toggle"'),
+    )
+
+    const toggle = wrapper.get('[data-test="team-member-overrides-toggle"]')
+    const panel = wrapper.get('[data-test="team-member-overrides-panel"]')
+    const chevron = wrapper.get('[data-test="team-member-overrides-chevron"]')
+
+    expect(toggle.text()).toContain('Team Members Override (6)')
+    expect(toggle.attributes('aria-expanded')).toBe('false')
+    expect(toggle.attributes('aria-controls')).toBe('team-member-overrides-panel')
+    expect(panel.attributes('id')).toBe('team-member-overrides-panel')
+    expect(panel.attributes('style')).toContain('display: none')
+    expect(chevron.classes()).toContain('-rotate-90')
+
+    await toggle.trigger('click')
+
+    expect(toggle.attributes('aria-expanded')).toBe('true')
+    expect(panel.attributes('style') ?? '').not.toContain('display: none')
+    expect(chevron.classes()).not.toContain('-rotate-90')
+  })
+
+  it('toggles the member override disclosure without mutating config fields', async () => {
+    const { wrapper, config } = buildWrapper({
+      autoExecuteTools: true,
+      memberOverrides: {
+        'Member B': {
+          agentDefinitionId: 'agent-b',
+          autoExecuteTools: false,
+        },
+      },
+    })
+
+    expect(wrapper.get('[data-test="team-member-overrides-count"]').text()).toContain('1 overridden')
+    const initialMemberOverrides = JSON.parse(JSON.stringify(config.memberOverrides))
+
+    await expandMemberOverrides(wrapper)
+    await wrapper.get('[data-test="team-member-overrides-toggle"]').trigger('click')
+
+    expect(wrapper.get('[data-test="team-member-overrides-toggle"]').attributes('aria-expanded')).toBe('false')
+    expect(config.autoExecuteTools).toBe(true)
+    expect(config.memberOverrides).toEqual(initialMemberOverrides)
+  })
 
   it('renders runtime selector and member override entries', () => {
     const { wrapper } = buildWrapper()
@@ -330,33 +376,6 @@ describe('TeamRunConfigForm', () => {
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
   })
 
-  it('marks team launch configs self-evolution eligible and passes controls to member overrides', async () => {
-    selfEvolutionCapabilityState.isEnabled = true
-    const { wrapper, config } = buildWrapper({
-      selfEvolution: null,
-    })
-
-    await wrapper.vm.$nextTick()
-    await flushPromises()
-
-    expect(selfEvolutionCapabilityStoreMock.ensureResolved).toHaveBeenCalledTimes(1)
-    expect(wrapper.get('[data-testid="team-run-self-evolution-control"]').text()).toContain('Self evolution eligibility')
-    const toggle = wrapper.get('[data-testid="team-run-self-evolution-toggle"]')
-    expect(toggle.attributes('aria-checked')).toBe('false')
-    expect(wrapper.findAllComponents({ name: 'MemberOverrideItem' })[0].props('selfEvolutionControlsEnabled')).toBe(true)
-
-    await toggle.trigger('click')
-    await wrapper.vm.$nextTick()
-
-    expect(config.selfEvolution).toEqual({ enabled: true })
-    expect(toggle.attributes('aria-checked')).toBe('true')
-
-    await toggle.trigger('click')
-    await wrapper.vm.$nextTick()
-
-    expect(config.selfEvolution).toEqual({ enabled: false })
-    expect(toggle.attributes('aria-checked')).toBe('false')
-  })
 
   it('renders Codex effort-only reasoning defaults visibly on the team-global config path', async () => {
     const { wrapper, config } = buildWrapper({
@@ -477,6 +496,7 @@ describe('TeamRunConfigForm', () => {
   it('renders nested leaf overrides under their subteam group and keeps route-key override identity', async () => {
     const { wrapper } = buildWrapper({}, nestedTeamDef)
     await wrapper.vm.$nextTick()
+    await expandMemberOverrides(wrapper)
 
     const groups = wrapper.findAll('[data-test="member-override-group"]')
     expect(groups).toHaveLength(1)
@@ -516,11 +536,15 @@ describe('TeamRunConfigForm', () => {
 
     expect(wrapper.find('select#team-run-runtime-kind').element.disabled).toBe(true)
     expect(wrapper.find('button#team-auto-execute').element.disabled).toBe(true)
-    expect(wrapper.find('select#team-skill-access-mode').element.disabled).toBe(true)
+    expect(wrapper.find('select#team-skill-access-mode').exists()).toBe(false)
     expect(wrapper.findComponent({ name: 'WorkspaceSelector' }).props('disabled')).toBe(true)
 
-    const overrideDisclosure = wrapper.find('button.w-full')
+    const overrideDisclosure = wrapper.get('[data-test="team-member-overrides-toggle"]')
     expect(overrideDisclosure.attributes('disabled')).toBeUndefined()
+    expect(overrideDisclosure.attributes('aria-expanded')).toBe('false')
+
+    await overrideDisclosure.trigger('click')
+    expect(overrideDisclosure.attributes('aria-expanded')).toBe('true')
 
     const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
     expect(items).toHaveLength(2)
@@ -544,6 +568,7 @@ describe('TeamRunConfigForm', () => {
 
     await wrapper.setProps({ readOnly: true })
     await wrapper.vm.$nextTick()
+    await expandMemberOverrides(wrapper)
 
     const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
     expect(items).toHaveLength(2)

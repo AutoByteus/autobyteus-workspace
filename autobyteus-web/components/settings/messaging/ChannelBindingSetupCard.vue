@@ -340,20 +340,6 @@
           </button>
         </div>
 
-        <div v-if="showSkillAccessControl">
-          <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.skill_access') }}</label>
-          <select
-            :value="selectedLaunchPreset.skillAccessMode"
-            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-            data-testid="binding-skill-access-select"
-            @change="updateSkillAccessMode(($event.target as HTMLSelectElement).value)"
-          >
-            <option value="PRELOADED_ONLY">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.configured_skills_only_recommended') }}</option>
-            <option value="GLOBAL_DISCOVERY">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.all_installed_skills') }}</option>
-            <option value="NONE">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.no_skills') }}</option>
-          </select>
-        </div>
-
         <div class="md:col-span-2">
           <ModelConfigSection
             :schema="modelConfigSchema"
@@ -499,7 +485,6 @@ const {
   selectedRuntimeUnavailableReason,
   selectedWorkspaceId,
   setWorkspaceSelectionMode,
-  showSkillAccessControl,
   showDiscordIdentityHint,
   showPeerDiscoveryInstruction,
   showTeamResponsePolicyHint,
@@ -509,7 +494,6 @@ const {
   updateModel,
   updateModelConfig,
   updateRuntimeKind,
-  updateSkillAccessMode,
   useManualPeerInput,
   workspaceOptions,
   workspaceSelectionMode,

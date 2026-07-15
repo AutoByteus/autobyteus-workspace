@@ -54,6 +54,7 @@
         :placeholder="$t('workspace.components.workspace.config.WorkspaceSelector.select_a_workspace')"
         search-placeholder="Search workspaces..."
         empty-message="No workspaces loaded yet."
+        :variant="controlVariant"
       />
     </div>
 
@@ -64,10 +65,9 @@
           <input
             type="text"
             v-model="tempPath"
-            @keydown.enter="handleLoad"
+            @keydown.enter.prevent
             :disabled="isLoading || isInteractionDisabled"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 py-2.5 px-3"
-            :class="{ 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500': error }"
+            :class="newWorkspaceInputClass"
             :placeholder="$t('workspace.components.workspace.config.WorkspaceSelector.absolute_path_to_workspace')"
           />
         </div>
@@ -80,27 +80,13 @@
           class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
           :title="$t('workspace.components.workspace.config.WorkspaceSelector.browse_for_folder')"
         >
-          <Icon icon="heroicons:folder-open" class="w-5 h-5" />
-        </button>
-        <button
-          v-else
-          type="button"
-          @click="handleLoad"
-          :disabled="isLoading || isInteractionDisabled || !tempPath.trim()"
-          class="inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-          :title="$t('workspace.components.workspace.config.WorkspaceSelector.load_workspace')"
-        >
-          <span v-if="isLoading" class="flex items-center gap-2">
-            <Icon icon="heroicons:arrow-path" class="w-5 h-5 animate-spin" />
-            <span>Loading</span>
-          </span>
-          <span v-else>Load</span>
+            <Icon icon="heroicons:folder-open" class="w-5 h-5" />
         </button>
       </div>
     </div>
     
     <!-- Helper Text Area -->
-    <div class="mt-2.5 min-h-[1.5em]">
+    <div v-if="showHelperTextArea" class="mt-2.5">
       <p v-if="workspaceLocked && !error" class="text-sm text-amber-600 flex items-center">
         <span class="i-heroicons-lock-closed-20-solid h-5 w-5 mr-2 flex-shrink-0"></span>
         {{ workspaceLockedMessageToUse }}
@@ -111,21 +97,15 @@
         {{ error }}
       </p>
       
-      <p v-else-if="successMessage" class="text-sm text-green-600 flex items-center font-medium">
+      <p v-else-if="showSuccessMessage" class="text-sm text-green-600 flex items-center font-medium">
         <span class="i-heroicons-check-circle-20-solid h-5 w-5 mr-2 flex-shrink-0 text-green-500"></span>
         {{ successMessage }}
       </p>
       
-      <p v-else class="text-sm text-gray-500 flex items-center">
-        <template v-if="mode === 'existing'">
-          <span v-if="existingDisabled" class="text-amber-600 flex items-center">
-            <span class="i-heroicons-information-circle-20-solid h-4 w-4 mr-1.5"></span>{{ $t('workspace.components.workspace.config.WorkspaceSelector.no_workspaces_loaded_yet_switch_to') }}</span>
-          <span v-else>{{ $t('workspace.components.workspace.config.WorkspaceSelector.select_a_previously_loaded_workspace') }}</span>
-        </template>
-        <template v-else>
-          {{ canBrowseForFolder ? 'Browse for a folder or enter path manually.' : 'Enter path to load a new workspace.' }}
-          <span class="i-heroicons-information-circle-20-solid h-4 w-4 ml-1.5 text-gray-400 cursor-help" title="Path must be an absolute file system path"></span>
-        </template>
+      <p v-else-if="mode === 'existing'" class="text-sm text-gray-500 flex items-center">
+        <span v-if="existingDisabled" class="text-amber-600 flex items-center">
+          <span class="i-heroicons-information-circle-20-solid h-4 w-4 mr-1.5"></span>{{ $t('workspace.components.workspace.config.WorkspaceSelector.no_workspaces_loaded_yet_switch_to') }}</span>
+        <span v-else>{{ $t('workspace.components.workspace.config.WorkspaceSelector.select_a_previously_loaded_workspace') }}</span>
       </p>
     </div>
   </div>
@@ -149,11 +129,12 @@ const props = defineProps<{
   disabled?: boolean;
   workspaceLocked?: boolean;
   workspaceLockedMessage?: string;
+  controlVariant?: 'default' | 'quiet';
 }>();
 
 const emit = defineEmits<{
   (e: 'select-existing', workspaceId: string): void;
-  (e: 'load-new', path: string): void;
+  (e: 'workspace-input-change', input: { mode: 'existing' | 'new'; pendingPath: string }): void;
 }>();
 
 const workspaceStore = useWorkspaceStore();
@@ -173,6 +154,14 @@ const workspaceLocked = computed(() => props.workspaceLocked === true);
 const workspaceLockedMessageToUse = computed(() => {
   return props.workspaceLockedMessage || 'Workspace is fixed for this run.';
 });
+const controlVariant = computed(() => props.controlVariant ?? 'default');
+const newWorkspaceInputClass = computed(() => [
+  'block w-full rounded-md border px-3 py-2.5 text-sm text-gray-900 transition-colors focus:outline-none disabled:bg-gray-100 disabled:text-gray-500',
+  controlVariant.value === 'quiet'
+    ? 'border-transparent bg-blue-50/40 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50'
+    : 'border-gray-300 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500',
+  props.error ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500' : '',
+]);
 
 // Computed
 const workspaceOptions = computed(() => {
@@ -208,6 +197,23 @@ const selectedWorkspace = computed(() => {
   if (!props.workspaceId) return null;
   return workspaceStore.workspaces[props.workspaceId] || null;
 });
+const trimmedPendingPath = computed(() => tempPath.value.trim());
+const showSuccessMessage = computed(() =>
+  Boolean(successMessage.value) &&
+  (mode.value === 'existing' || isInteractionDisabled.value),
+);
+const showHelperTextArea = computed(() =>
+  workspaceLocked.value ||
+  Boolean(props.error) ||
+  showSuccessMessage.value ||
+  mode.value === 'existing',
+);
+const emitWorkspaceInput = () => {
+  emit('workspace-input-change', {
+    mode: mode.value,
+    pendingPath: mode.value === 'new' ? trimmedPendingPath.value : '',
+  });
+};
 
 const updateDisplayOnlyState = () => {
   if (props.workspaceId && selectedWorkspace.value) {
@@ -343,12 +349,6 @@ const handleExistingSelect = (workspaceId: string) => {
   emit('select-existing', workspaceId);
 };
 
-const handleLoad = () => {
-  if (props.isLoading || isInteractionDisabled.value || !tempPath.value.trim()) return;
-  successMessage.value = null;
-  emit('load-new', tempPath.value.trim());
-};
-
 // Native folder picker (Electron only)
 const handleBrowse = async () => {
   if (!canBrowseForFolder.value) return;
@@ -356,7 +356,9 @@ const handleBrowse = async () => {
   const selectedPath = await pickFolderPath();
   if (selectedPath) {
     tempPath.value = selectedPath;
-    handleLoad();
+    successMessage.value = null;
   }
 };
+
+watch([mode, tempPath], emitWorkspaceInput, { immediate: true });
 </script>

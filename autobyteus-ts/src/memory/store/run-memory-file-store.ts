@@ -4,18 +4,18 @@ import path from 'node:path';
 
 import { MemoryType, MemoryItem } from '../models/memory-types.js';
 import { RawTraceItem } from '../models/raw-trace-item.js';
-import { WorkingContextSnapshot } from '../working-context-snapshot.js';
+import { WorkingContext } from '../working-context.js';
 import { WorkingContextSnapshotSerializer } from '../working-context-snapshot-serializer.js';
 import type { SnapshotMetadata } from '../working-context-snapshot-serializer.js';
 import type { CompactedMemoryManifest } from './compacted-memory-manifest.js';
 import {
   COMPACTED_MEMORY_MANIFEST_FILE_NAME,
   EPISODIC_MEMORY_FILE_NAME,
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from './memory-file-names.js';
-import type { RawTraceArchiveManifest } from './raw-trace-archive-manifest.js';
+import type { RawTraceArchiveManifest, RawTraceArchiveSegmentEntry } from './raw-trace-archive-manifest.js';
 import {
   RawTraceArchiveManager,
   type RawTraceArchiveBoundaryInput,
@@ -86,7 +86,7 @@ export class RunMemoryFileStore {
 
   getFilePath(memoryType: MemoryType): string {
     if (memoryType === MemoryType.RAW_TRACE) {
-      return path.join(this.runDir, RAW_TRACES_MEMORY_FILE_NAME);
+      return path.join(this.runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
     }
     if (memoryType === MemoryType.EPISODIC) {
       return path.join(this.runDir, EPISODIC_MEMORY_FILE_NAME);
@@ -142,6 +142,10 @@ export class RunMemoryFileStore {
     return this.readMemoryDicts(MemoryType.RAW_TRACE, limit).map((record) => RawTraceItem.fromDict(record));
   }
 
+  listRawTraceCorpusOrdered(limit?: number): RawTraceItem[] {
+    return this.readCompleteRawTraceCorpusDicts(limit).map((record) => RawTraceItem.fromDict(record));
+  }
+
   listRawTraceDicts(): Record<string, unknown>[] {
     return this.readMemoryDicts(MemoryType.RAW_TRACE);
   }
@@ -176,6 +180,18 @@ export class RunMemoryFileStore {
 
   readCompleteArchiveRawTraceDicts(): Record<string, unknown>[] {
     return this.archiveManager.readCompleteArchiveRawTraceDicts();
+  }
+
+  listCompleteRawTraceArchiveSegments(): RawTraceArchiveSegmentEntry[] {
+    return this.archiveManager.listCompleteSegments();
+  }
+
+  getCompleteRawTraceArchiveSegmentPathByFileName(fileName: string): string | null {
+    return this.archiveManager.getCompleteSegmentPathByFileName(fileName);
+  }
+
+  readCompleteRawTraceArchiveSegmentDictsByFileName(fileName: string): Record<string, unknown>[] | null {
+    return this.archiveManager.readCompleteSegmentRawTraceDictsByFileName(fileName);
   }
 
   listArchiveRawTracesOrdered(): RawTraceItem[] {
@@ -269,7 +285,7 @@ export class RunMemoryFileStore {
     return JSON.parse(raw) as Record<string, unknown>;
   }
 
-  readWorkingContextSnapshotState(): { snapshot: WorkingContextSnapshot; metadata: SnapshotMetadata } | null {
+  readWorkingContextSnapshotState(): { workingContext: WorkingContext; metadata: SnapshotMetadata } | null {
     const payload = this.readWorkingContextSnapshot();
     if (!payload) {
       return null;
@@ -282,11 +298,11 @@ export class RunMemoryFileStore {
   }
 
   writeWorkingContextSnapshotState(
-    snapshot: WorkingContextSnapshot,
+    workingContext: WorkingContext,
     options: WorkingContextSnapshotWriteOptions = {},
   ): void {
     this.writeWorkingContextSnapshot(
-      WorkingContextSnapshotSerializer.serialize(snapshot, {
+      WorkingContextSnapshotSerializer.serialize(workingContext, {
         agent_id: options.agentId ?? undefined,
       }),
     );

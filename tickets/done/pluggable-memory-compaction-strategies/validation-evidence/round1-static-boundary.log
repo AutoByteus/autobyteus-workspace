@@ -1,0 +1,195 @@
+=== static and complete working-tree boundary ===
+UTC 2026-07-13T18:56:16Z
+HEAD=fdb370d48106df252f77b684f76675a77226fffc
+branch=codex/pluggable-memory-compaction-strategies
+--- full status (tracked + staged + unstaged + untracked) ---
+ M autobyteus-server-ts/src/agent-memory/store/run-memory-writer.ts
+ M autobyteus-server-ts/src/services/server-settings-service.ts
+ M autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+ M autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts
+ M autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts
+ M autobyteus-ts/src/agent/factory/agent-factory.ts
+ M autobyteus-ts/src/agent/llm-request-assembler.ts
+ M autobyteus-ts/src/agent/loop/llm-phase.ts
+ D autobyteus-ts/src/memory/compaction-snapshot-builder.ts
+ D autobyteus-ts/src/memory/compaction-snapshot-recent-turn-formatter.ts
+ M autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts
+ D autobyteus-ts/src/memory/compaction/compaction-plan.ts
+ M autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts
+ D autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts
+ D autobyteus-ts/src/memory/compaction/compaction-window-planner.ts
+ D autobyteus-ts/src/memory/compaction/compactor.ts
+ D autobyteus-ts/src/memory/compaction/interaction-block-builder.ts
+ D autobyteus-ts/src/memory/compaction/interaction-block.ts
+ M autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts
+ D autobyteus-ts/src/memory/compaction/summarizer.ts
+ D autobyteus-ts/src/memory/compaction/tool-result-digest-builder.ts
+ D autobyteus-ts/src/memory/compaction/tool-result-digest.ts
+ M autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts
+ D autobyteus-ts/src/memory/compaction/working-context-compactor.ts
+ M autobyteus-ts/src/memory/compaction/working-context-message-unit.ts
+ D autobyteus-ts/src/memory/compaction/working-context-snapshot-rebuilder.ts
+ M autobyteus-ts/src/memory/index.ts
+ M autobyteus-ts/src/memory/memory-manager-tool-protocol-safety.ts
+ M autobyteus-ts/src/memory/memory-manager.ts
+R  autobyteus-ts/src/memory/compaction/compacted-memory-message-builder.ts -> autobyteus-ts/src/memory/projection/compacted-memory-message-builder.ts
+ M autobyteus-ts/src/memory/restore/working-context-recovery-projector.ts
+ M autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts
+ M autobyteus-ts/src/memory/store/run-memory-file-store.ts
+ M autobyteus-ts/src/memory/working-context-snapshot-serializer.ts
+RM autobyteus-ts/src/memory/working-context-snapshot.ts -> autobyteus-ts/src/memory/working-context.ts
+ M autobyteus-ts/tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts
+ D autobyteus-ts/tests/integration/agent/memory-compaction-flow.test.ts
+ D autobyteus-ts/tests/integration/agent/memory-compaction-quality-flow.test.ts
+ D autobyteus-ts/tests/integration/agent/memory-compaction-real-scenario-flow.test.ts
+ D autobyteus-ts/tests/integration/agent/memory-compaction-real-summarizer-flow.test.ts
+ D autobyteus-ts/tests/integration/agent/memory-compaction-runtime-e2e.test.ts
+ D autobyteus-ts/tests/integration/agent/memory-compaction-tool-tail-flow.test.ts
+ M autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+ M autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+ M autobyteus-ts/tests/integration/llm/api/deepseek-llm.test.ts
+ M autobyteus-ts/tests/integration/memory/working-context-snapshot-restore.test.ts
+ M autobyteus-ts/tests/unit/agent/context/agent-config.test.ts
+ M autobyteus-ts/tests/unit/agent/llm-request-assembler.test.ts
+ M autobyteus-ts/tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts
+ M autobyteus-ts/tests/unit/memory/agent-compaction-summarizer.test.ts
+ M autobyteus-ts/tests/unit/memory/compacted-memory-schema-gate.test.ts
+ M autobyteus-ts/tests/unit/memory/compaction-runtime-settings.test.ts
+ D autobyteus-ts/tests/unit/memory/compaction-snapshot-builder.test.ts
+ D autobyteus-ts/tests/unit/memory/compaction-task-prompt-builder.test.ts
+ D autobyteus-ts/tests/unit/memory/compaction-window-planner.test.ts
+ D autobyteus-ts/tests/unit/memory/compactor.test.ts
+ M autobyteus-ts/tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts
+ M autobyteus-ts/tests/unit/memory/memory-manager.test.ts
+ M autobyteus-ts/tests/unit/memory/run-memory-file-store.test.ts
+ D autobyteus-ts/tests/unit/memory/summarizer-message-units.test.ts
+ M autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts
+ M autobyteus-ts/tests/unit/memory/working-context-snapshot-serializer.test.ts
+RM autobyteus-ts/tests/unit/memory/working-context-snapshot.test.ts -> autobyteus-ts/tests/unit/memory/working-context.test.ts
+?? autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts
+?? autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts
+?? autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts
+?? autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts
+?? autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-registry.ts
+?? autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-resolver.ts
+?? autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-setting.ts
+?? autobyteus-ts/src/memory/compaction/working-context-compaction-strategy.ts
+?? autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts
+?? autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts
+?? autobyteus-ts/tests/unit/memory/compacted-memory-context-projector.test.ts
+?? autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts
+?? autobyteus-ts/tests/unit/memory/structured-json-compaction-strategy.test.ts
+?? autobyteus-ts/tests/unit/memory/working-context-compaction-output-validator.test.ts
+?? autobyteus-ts/tests/unit/memory/working-context-compaction-strategy-registry.test.ts
+?? tickets/in-progress/pluggable-memory-compaction-strategies/api-e2e-coverage-investigation.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/code-review-report.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/design-review-report.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/design-spec.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/implementation-handoff.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/investigation-notes.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/requirements.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-broader-core-regression.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-builds.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-configured-compactor-rerun.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-configured-compactor-rerun2.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-configured-compactor-rerun3.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-core-provider-focused.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-focused-durable-tests.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-server-settings-compactor-final.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-server-settings-compactor.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/round1-static-boundary.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-domain-contract.md
+?? tickets/in-progress/pluggable-memory-compaction-strategies/working-context-compaction-strategy-contract.md
+--- diff checks ---
+diff checks: PASS
+--- implementation source effective-line hard guard ---
+  179 autobyteus-server-ts/src/agent-memory/store/run-memory-writer.ts
+   19 autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts
+  362 autobyteus-server-ts/src/services/server-settings-service.ts
+  127 autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts
+  220 autobyteus-ts/src/agent/factory/agent-factory.ts
+   88 autobyteus-ts/src/agent/llm-request-assembler.ts
+  327 autobyteus-ts/src/agent/loop/llm-phase.ts
+   74 autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts
+   58 autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts
+   34 autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts
+   91 autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts
+   99 autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts
+  191 autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts
+  182 autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts
+   43 autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-registry.ts
+   29 autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-resolver.ts
+    8 autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-setting.ts
+   39 autobyteus-ts/src/memory/compaction/working-context-compaction-strategy.ts
+   45 autobyteus-ts/src/memory/compaction/working-context-message-unit.ts
+   58 autobyteus-ts/src/memory/index.ts
+  128 autobyteus-ts/src/memory/memory-manager-tool-protocol-safety.ts
+  481 autobyteus-ts/src/memory/memory-manager.ts
+   41 autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts
+   54 autobyteus-ts/src/memory/projection/compacted-memory-message-builder.ts
+  102 autobyteus-ts/src/memory/restore/working-context-recovery-projector.ts
+   73 autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts
+  291 autobyteus-ts/src/memory/store/run-memory-file-store.ts
+  133 autobyteus-ts/src/memory/working-context-snapshot-serializer.ts
+  123 autobyteus-ts/src/memory/working-context.ts
+effective source-size >500 guard: PASS
+--- deleted obsolete API path/type boundary ---
+obsolete API declaration boundary: PASS
+--- legacy epoch/timestamp runtime key boundary ---
+legacy epoch/timestamp source boundary: PASS
+--- production strategy registration ---
+import { AgentCompactionSummarizer } from './agent-compaction-summarizer.js';
+import { Retriever } from '../retrieval/retriever.js';
+import { CompactedMemoryContextProjector } from '../projection/compacted-memory-context-projector.js';
+import type { CompactionAgentRunner } from './compaction-agent-runner.js';
+import { StructuredJsonCompactionStrategy } from './structured-json-compaction-strategy.js';
+import { WorkingContextCompactionStrategyRegistry } from './working-context-compaction-strategy-registry.js';
+
+const requireCompactionRunner = (runner: CompactionAgentRunner | null): CompactionAgentRunner => {
+  if (!runner) {
+    throw new Error([
+      'No compactor agent is configured.',
+      'Set AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID in Server Settings -> Basics -> Compaction.',
+    ].join(' '));
+  }
+  return runner;
+};
+
+export const defaultWorkingContextCompactionStrategyRegistry =
+  new WorkingContextCompactionStrategyRegistry();
+
+defaultWorkingContextCompactionStrategyRegistry.register({
+  id: 'structured-json',
+  name: 'Structured JSON',
+  create: (context) => new StructuredJsonCompactionStrategy({
+    store: context.memoryStore,
+    summarizer: new AgentCompactionSummarizer({
+      runner: requireCompactionRunner(context.compactionAgentRunner),
+      parentAgentId: context.agentId,
+      maxItemChars: context.maxItemChars,
+    }),
+    inputBudgetTokens: context.inputBudgetTokens,
+    compactedMemoryProjector: new CompactedMemoryContextProjector(
+      new Retriever(context.memoryStore),
+    ),
+    diagnostics: context.diagnostics,
+  }),
+});
+structured-json registration count=1
+production registration boundary: PASS
+--- per-agent selection leakage ---
+per-agent selection boundary: PASS
+--- test-only identifier absent from production/build outputs ---
+test-only identifier boundary: PASS
+--- expected untracked production files all present ---
+present autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts
+present autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts
+present autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts
+present autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts
+present autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-registry.ts
+present autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-resolver.ts
+present autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-setting.ts
+present autobyteus-ts/src/memory/compaction/working-context-compaction-strategy.ts
+present autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts
+static boundary: PASS

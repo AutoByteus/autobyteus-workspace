@@ -1,0 +1,60 @@
+== delivery final consistency 2026-07-14 ==
+timestamp_utc=2026-07-14T12:57:13Z
+branch=codex/pluggable-memory-compaction-strategies
+head=4514aa6ed15433ab403eafbfbf4dedcecc8b2513
+origin_personal=21a526b8bddcc7441cd8039fbe455f1c2847e7ed
+merge_base=21a526b8bddcc7441cd8039fbe455f1c2847e7ed
+relation=0	3 # left=remote-only right=ticket-only
+
+== diff check ==
+PASS git diff --check
+
+== uncommitted tracked paths (delivery-owned only) ==
+autobyteus-server-ts/docs/ARCHITECTURE.md
+autobyteus-server-ts/docs/modules/agent_definition.md
+autobyteus-server-ts/docs/modules/agent_memory.md
+autobyteus-ts/docs/agent_memory_design.md
+autobyteus-ts/docs/agent_memory_design_nodejs.md
+autobyteus-web/docs/settings.md
+tickets/in-progress/pluggable-memory-compaction-strategies/docs-sync-report.md
+tickets/in-progress/pluggable-memory-compaction-strategies/handoff-summary.md
+tickets/in-progress/pluggable-memory-compaction-strategies/release-deployment-report.md
+tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-integration-refresh-20260714.log
+PASS delivery-only uncommitted tracked boundary
+
+== authoritative gate markers ==
+136:- Overall score (`/10`): `9.4`
+92:- Overall final confidence: `98.3%` (`688 / 7`)
+57:- Result: `Pass`
+
+== integrated executable evidence ==
+ Test Files  10 passed (10)
+      Tests  84 passed (84)
+1376:Build completed: [
+23:hdiutil: verify: checksum of "electron-dist/AutoByteus_enterprise_macos-arm64-1.4.13.dmg" is VALID
+
+== artifact hashes ==
+1e558cbc44713b67dd6544630dbf08a160c6c2a220dac1d7b0b196eab03cd72e  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.13.dmg
+20d6000d723621660f6a5b819fb4a83c88927b41407d082143fe57ce2e87e7fa  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.13.zip
+
+== stale docs assertions ==
+PASS no stale active-selector/discovery assertion
+
+== repository status ==
+## codex/pluggable-memory-compaction-strategies...origin/personal [ahead 3]
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/modules/agent_definition.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+ M autobyteus-web/docs/settings.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/docs-sync-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/handoff-summary.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/release-deployment-report.md
+ M tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-integration-refresh-20260714.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-final-consistency-20260714.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-integrated-electron-artifacts-20260714.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-integrated-electron-build-mac-20260714.log
+?? tickets/in-progress/pluggable-memory-compaction-strategies/validation-evidence/delivery-integrated-web-targeted-20260714.log
+
+FINAL RESULT: PASS — ready for explicit user verification; finalization held.

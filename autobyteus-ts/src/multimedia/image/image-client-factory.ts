@@ -134,22 +134,32 @@ export class ImageClientFactory extends Singleton {
       description: 'Fast conversational multimodal image model.'
     });
 
-    const gemini31FlashImageModel = new ImageModel({
-      name: 'gemini-3.1-flash-image-preview',
-      value: 'gemini-3.1-flash-image-preview',
+    const gemini31FlashLiteImageModel = new ImageModel({
+      name: 'gemini-3.1-flash-lite-image',
+      value: 'gemini-3.1-flash-lite-image',
       provider: MultimediaProvider.GEMINI,
       clientClass: GeminiImageClient,
       parameterSchema: null,
-      description: 'Fast Gemini 3.1 Flash Image Preview model for conversational image generation and editing.'
+      description:
+        'Fast, cost-efficient Gemini 3.1 Flash-Lite Image model with 1K output; best for lightweight image generation and edits, not multiple references or multi-turn editing.'
+    });
+
+    const gemini31FlashImageModel = new ImageModel({
+      name: 'gemini-3.1-flash-image',
+      value: 'gemini-3.1-flash-image',
+      provider: MultimediaProvider.GEMINI,
+      clientClass: GeminiImageClient,
+      parameterSchema: null,
+      description: 'GA Nano Banana 2 / Gemini 3.1 Flash Image model for versatile image generation and editing.'
     });
 
     const geminiProImageModel = new ImageModel({
-      name: 'gemini-3-pro-image-preview',
-      value: 'gemini-3-pro-image-preview',
+      name: 'gemini-3-pro-image',
+      value: 'gemini-3-pro-image',
       provider: MultimediaProvider.GEMINI,
       clientClass: GeminiImageClient,
       parameterSchema: null,
-      description: 'High-quality conversational image model for complex edits.'
+      description: 'GA Nano Banana Pro / Gemini 3 Pro Image model for high-quality complex image tasks.'
     });
 
     const modelsToRegister = [
@@ -157,6 +167,7 @@ export class ImageClientFactory extends Singleton {
       gptImage2Model,
       imagenModel,
       geminiFlashImageModel,
+      gemini31FlashLiteImageModel,
       gemini31FlashImageModel,
       geminiProImageModel
     ];

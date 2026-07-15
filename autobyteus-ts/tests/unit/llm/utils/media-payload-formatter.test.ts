@@ -6,6 +6,7 @@ import axios from 'axios';
 import {
   isValidMediaPath,
   isBase64,
+  getMimeType,
   fileToBase64,
   urlToBase64,
   mediaSourceToBase64,
@@ -22,15 +23,18 @@ describe('media_payload_formatter', () => {
   let tempDir: string;
   let imageFile: string;
   let audioFile: string;
+  let audioM4aFile: string;
   let videoFile: string;
 
   beforeEach(async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'media-test-'));
     imageFile = path.join(tempDir, 'test.png');
     audioFile = path.join(tempDir, 'test.mp3');
+    audioM4aFile = path.join(tempDir, 'test.m4a');
     videoFile = path.join(tempDir, 'test.mp4');
     await fs.writeFile(imageFile, IMAGE_BYTES);
     await fs.writeFile(audioFile, Buffer.from('dummy audio content'));
+    await fs.writeFile(audioM4aFile, Buffer.from('dummy m4a content'));
     await fs.writeFile(videoFile, Buffer.from('dummy video content'));
   });
 
@@ -42,6 +46,7 @@ describe('media_payload_formatter', () => {
   it('isValidMediaPath detects valid media files', async () => {
     expect(await isValidMediaPath(imageFile)).toBe(true);
     expect(await isValidMediaPath(audioFile)).toBe(true);
+    expect(await isValidMediaPath(audioM4aFile)).toBe(true);
     expect(await isValidMediaPath(videoFile)).toBe(true);
     expect(await isValidMediaPath('non_existent_file.jpg')).toBe(false);
     expect(await isValidMediaPath(tempDir)).toBe(false);
@@ -89,6 +94,10 @@ describe('media_payload_formatter', () => {
     const fromAudio = await mediaSourceToBase64(audioFile);
     expect(fromAudio).toBe(audioBase64);
 
+    const m4aBase64 = Buffer.from('dummy m4a content').toString('base64');
+    const fromM4a = await mediaSourceToBase64(audioM4aFile);
+    expect(fromM4a).toBe(m4aBase64);
+
     const fromUrl = await mediaSourceToBase64(USER_PROVIDED_IMAGE_URL);
     expect(fromUrl).toBe(VALID_BASE64_IMAGE);
 
@@ -99,6 +108,12 @@ describe('media_payload_formatter', () => {
     expect(fromDataUri).toBe(VALID_BASE64_IMAGE);
 
     await expect(mediaSourceToBase64('this is not a valid source')).rejects.toBeTruthy();
+  });
+
+  it('resolves MIME types for .m4a paths, URLs, and data URIs', () => {
+    expect(getMimeType(audioM4aFile)).toBe('audio/mp4');
+    expect(getMimeType('https://example.com/uploads/meeting.m4a?download=1')).toBe('audio/mp4');
+    expect(getMimeType('data:audio/mp4;base64,AAAA')).toBe('audio/mp4');
   });
 
   it('mediaSourceToDataUri returns data URI input unchanged', async () => {

@@ -8,7 +8,10 @@ import { LLMRequestAssembler, type RequestPackage } from '../llm-request-assembl
 import { CompactionPreparationError } from '../compaction/compaction-preparation-error.js';
 import { CompactionRuntimeReporter } from '../compaction/compaction-runtime-reporter.js';
 import { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
+import { defaultWorkingContextCompactionStrategyRegistry } from '../../memory/compaction/default-working-context-compaction-strategy-registry.js';
 import { PendingCompactionExecutor } from '../../memory/compaction/pending-compaction-executor.js';
+import type { WorkingContextCompactionDiagnostics } from '../../memory/compaction/working-context-compaction-strategy.js';
+import { WorkingContextCompactionStrategyResolver } from '../../memory/compaction/working-context-compaction-strategy-resolver.js';
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
 import { buildToolArgumentSchemaResolver, resolveTurnToolNames } from './llm-phase-tools.js';
 import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
@@ -18,11 +21,26 @@ import type { AgentTurn } from '../agent-turn.js';
 import type { AgentInputPipelineResult } from '../pipelines/agent-input-pipeline.js';
 import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 import type { ToolInvocation } from '../tool-invocation.js';
-import type { TokenUsage } from '../../llm/utils/token-usage.js';
+import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
 
 export type LlmPhaseOutcome =
   | { kind: 'final'; response: CompleteResponse; isError?: boolean }
   | { kind: 'tool_invocations'; response: CompleteResponse; toolInvocations: ToolInvocation[] };
+
+const resolveLatestPromptTokens = (usage: LlmTokenUsageObservation): number | null => {
+  if (usage.input_tokens === null) return null;
+  if (usage.input_token_semantic === 'base_excludes_cache') {
+    return usage.input_tokens +
+      (usage.cache_read_input_tokens ?? 0) +
+      (usage.cache_creation_input_tokens ?? 0);
+  }
+  return usage.input_tokens;
+};
+
+const percentOf = (numerator: number | null, denominator: number | null | undefined): number | null => {
+  if (numerator === null || !denominator || denominator <= 0) return null;
+  return (numerator / denominator) * 100;
+};
 
 export class LlmPhase {
   async run(
@@ -47,7 +65,7 @@ export class LlmPhase {
 
     let completeResponseText = '';
     let completeReasoningText = '';
-    let tokenUsage: TokenUsage | null = null;
+    let tokenUsage: LlmTokenUsageObservation | null = null;
     const completeImageUrls: string[] = [];
     const completeAudioUrls: string[] = [];
     const completeVideoUrls: string[] = [];
@@ -82,12 +100,64 @@ export class LlmPhase {
     }
 
     const renderer = (llmInstance as any)._renderer ?? new OpenAIChatRenderer();
+    const compactionDiagnostics: WorkingContextCompactionDiagnostics = {
+      reportPlan: (details) => {
+        compactionReporter.recordStrategyPlanDiagnostics(details);
+        const pending = memoryManager.getPendingCompactionRequest();
+        compactionReporter.logExecutionContext({
+          turn_id: activeTurnId,
+          compaction_operation_id: pending?.operationId ?? null,
+          requested_turn_id: pending?.requestedTurnId ?? null,
+          execution_turn_id: activeTurnId,
+          pending_compaction: true,
+          selected_unit_count: details.selectedUnitCount,
+          protected_suffix_unit_count: details.protectedSuffixUnitCount,
+          retained_unit_count: details.retainedUnitCount,
+          working_context_message_count: details.workingContextMessageCount,
+          raw_trace_count: details.rawTraceCount,
+        }, runtimeSettingsResolver.resolve().detailedLogsEnabled);
+      },
+      reportResult: (details) => {
+        compactionReporter.recordStrategyResultDiagnostics(details);
+        const pending = memoryManager.getPendingCompactionRequest();
+        const metadata = details.compactionMetadata;
+        compactionReporter.logResultSummary({
+          turn_id: activeTurnId,
+          compaction_operation_id: pending?.operationId ?? null,
+          requested_turn_id: pending?.requestedTurnId ?? null,
+          execution_turn_id: activeTurnId,
+          selected_block_count: details.selectedUnitCount,
+          compacted_block_count: details.compactedUnitCount,
+          raw_trace_count: details.rawTraceCount,
+          episodic_summary_length: details.episodicSummaryLength,
+          semantic_fact_count: details.semanticFactCount,
+          compaction_agent_definition_id: metadata?.compactionAgentDefinitionId ?? null,
+          compaction_agent_name: metadata?.compactionAgentName ?? null,
+          compaction_runtime_kind: metadata?.runtimeKind ?? null,
+          compaction_model_identifier: metadata?.modelIdentifier ?? null,
+          compaction_run_id: metadata?.compactionRunId ?? null,
+          compaction_task_id: metadata?.taskId ?? null,
+        }, runtimeSettingsResolver.resolve().detailedLogsEnabled);
+      },
+      reportFailure: (metadata) => {
+        compactionReporter.recordStrategyFailureMetadata(metadata);
+      },
+    };
+    const strategyResolver = new WorkingContextCompactionStrategyResolver({
+      registry: defaultWorkingContextCompactionStrategyRegistry,
+      settingsResolver: runtimeSettingsResolver,
+      constructionContext: {
+        agentId,
+        memoryStore: memoryManager.store,
+        compactionAgentRunner: context.config.compactionAgentRunner,
+        inputBudgetTokens: requestTokenBudget?.inputBudget ?? null,
+        maxItemChars: memoryManager.compactionPolicy.maxItemChars,
+        diagnostics: compactionDiagnostics,
+      },
+    });
     const pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
       reporter: compactionReporter,
-      runtimeSettingsResolver,
-      inputBudgetTokens: requestTokenBudget?.inputBudget ?? null,
-      maxEpisodic: 3,
-      maxSemantic: 20
+      strategyResolver,
     });
     const assembler = new LLMRequestAssembler(memoryManager, renderer, pendingCompactionExecutor);
     const systemPrompt = context.state.processedSystemPrompt ?? llmInstance.config.systemMessage ?? null;
@@ -114,6 +184,8 @@ export class LlmPhase {
     }
     turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
 
+    const llmCallSequence = turn.toolInvocationBatches.length + 1;
+    const llmCallId = `${activeTurnId}:llm:${llmCallSequence}`;
     const segmentIdPrefix = `segment_${randomUUID().replace(/-/g, '')}:`;
     let currentReasoningPartId: string | null = null;
     let parsedToolInvocationCount = 0;
@@ -218,6 +290,22 @@ export class LlmPhase {
       video_urls: completeVideoUrls
     });
 
+    if (tokenUsage) {
+      const latestPromptTokens = resolveLatestPromptTokens(tokenUsage);
+      notifier?.notifyAgentTokenUsageUpdated({
+        usage: tokenUsage,
+        turn_id: activeTurnId,
+        llm_call_id: llmCallId,
+        call_sequence: llmCallSequence,
+        runtime_kind: 'autobyteus',
+        ingestion_kind: 'autobyteus_llm_phase',
+        idempotency_key: `${agentId}:${llmCallId}`,
+        latest_prompt_tokens: latestPromptTokens,
+        effective_context_window_tokens: requestTokenBudget?.effectiveContextCapacity ?? null,
+        context_window_usage_percent: percentOf(latestPromptTokens, requestTokenBudget?.effectiveContextCapacity)
+      });
+    }
+
     if (toolNames.length) {
       const toolInvocations = streamingHandler.getAllInvocations();
       if (toolInvocations.length) {
@@ -250,7 +338,6 @@ export class LlmPhase {
       try {
         await pendingCompactionExecutor.executeIfRequired({
           turnId: activeTurnId,
-          systemPrompt: systemPrompt ?? ''
         });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);

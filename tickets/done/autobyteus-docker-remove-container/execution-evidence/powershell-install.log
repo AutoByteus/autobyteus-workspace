@@ -1,0 +1,167 @@
+==> Auto-updating Homebrew...
+Adjust how often this is run with `$HOMEBREW_AUTO_UPDATE_SECS` or disable with
+`$HOMEBREW_NO_AUTO_UPDATE=1`. Hide these hints with `$HOMEBREW_NO_ENV_HINTS=1` (see `man brew`).
+==> Auto-updated Homebrew!
+Updated 3 taps (youssofal/mtplx, homebrew/core and homebrew/cask).
+==> New Formulae
+actions-languageserver: Language server for GitHub Actions YAML files
+adrs: Architectural Decision Record tool in Rust
+ai-cli: Generate images, video, audio, and text from the terminal
+asar: SNES assembler for applying patches to ROM images or building ROMs
+auth0: Build, manage and test your Auth0 integrations from the command-line
+bbrew: TUI for managing Homebrew, Flatpak, and Mac App Store packages
+beets: Music library manager and tagger
+bismark: Bisulfite read mapper and methylation caller
+bomctl: Format-agnostic SBOM tooling for the stages between SBOM generation and analysis
+bracken: Bayesian estimation of species abundance from Kraken output
+buffa: Pure-Rust Protocol Buffers implementation with editions support
+civetweb: C/C++ embeddable web server with optional CGI, SSL and Lua support
+coacd: Approximate convex decomposition for 3D meshes with collision-aware concavity
+container2wasm: Container to WASM converter
+cve-bin-tool: Scans binaries and SBOMs for known vulnerabilities and prepares reports
+cyclonedx-cli: Tool for analysis and manipulation of CycloneDX SBOMs
+cyclonedx-npm: Creates CycloneDX Software Bill of Materials (SBOM) from npm projects
+dbxcli: Command-line tool for Dropbox users and team admins
+depsguard: Harden package manager configs against supply chain attacks
+diskwatch: Cross-platform disk diagnostics TUI
+draw-things-cli: Local inference and LoRA training CLI for Draw Things
+epics-base: Experimental Physics and Industrial Control System
+esbmc: Efficient SMT-based context-bounded model checker for C, C++, and Python
+esbonio: Language server for working with Sphinx projects
+fakecloud: Free, open-source local AWS cloud emulator for integration testing
+faker: Python-based fake data generator
+filtlong: Quality filtering of long noisy DNA sequencing reads
+gcc@15: GNU compiler collection
+gnhf: Autonomous agent orchestrator for long-running coding tasks
+goimapnotify: Execute scripts on IMAP mailbox changes using IDLE
+hunk: Review-first terminal diff viewer for agent-authored changesets
+ip2location: C library and CLI to geolocate IP addresses
+isponsorblocktv: SponsorBlock client for all YouTube TV clients
+just-lsp: Language server for just
+jwt-ui: TUI for decoding and encoding JWT tokens
+kotofetch: Small, configurable CLI that displays Japanese quotes in the terminal
+kubectl-klock: Kubectl plugin to render watch output in a more readable fashion
+librefang: Self-hostable operating system for autonomous AI agents
+libyojimbo: Secure client/server network protocol library for multiplayer games
+liquidsoap: Audio and video streaming language
+minibwa: Successor of BWA-MEM for short-read alignment
+mktxp: Prometheus Exporter for Mikrotik RouterOS devices
+mosdepth: Fast BAM/CRAM depth calculation for WGS, exome, or targeted sequencing
+msdf-atlas-gen: Generator of multi-channel signed distance field atlases from fonts
+msdfgen: Multi-channel signed distance field generator
+msgvault: Archive a lifetime of email and chat with offline search and analytics
+netcode: Secure client/server protocol for multiplayer games built on top of UDP
+nvi2: Multibyte fork of the nvi editor for BSD
+opencv@4: Open source computer vision library
+openturns: Probabilistic modelling and uncertainty quantification library
+perlnavigator: Perl language server
+poppler-qt6: PDF rendering library (based on the xpdf-3.0 code base)
+proton-pass-cli: Command-line interface for Proton Pass
+prrte: PMIx Reference RunTime Environment
+pv-migrate: CLI tool to migrate or backup/restore Kubernetes persistent volumes
+pypy3.11: Implementation of Python 3 in Python
+rancher-machine: Machine management for a container-centric world
+rawtoaces: Utility for converting camera RAW image files to ACES
+redli: Humane alternative to redis-cli with TLS support
+reliable: Simple packet acknowledgement system for UDP-based protocols
+rocq-micromega-plugin: Micromega decision procedures plugin for the Rocq prover
+salmon: Transcript-level quantification from RNA-seq reads
+sbom-utility: Tool to validate, analyze, query and edit Software Bills of Materials (SBOMs)
+sdl3_sound: Abstract soundfile decoder
+serialize: Single-header bitpacking serializer for C++ aimed at game networking
+slint-compiler: Compiler for the Slint UI markup language
+slint-cpp: C++ library and headers for the Slint UI toolkit
+smithery-cli: Install and list Model Context Protocol servers from Smithery
+soar: Fast, modern package manager for Static Binaries, Portable Formats and more
+socktainer: Docker-compatible REST API on top of Apple container
+splitrail: Real-time token usage tracker and cost monitor for CLI coding agents
+taproom: Interactive TUI for Homebrew
+tirith: Detect terminal injection, homograph, and pipe-to-shell attacks
+tpack: Drop-in replacement for tmux-plugin-manager (tpm) with a TUI
+trim-galore: Quality and adapter trimming for FastQ sequencing reads
+tubeup: Use yt-dlp to download video/metadata and upload to the Internet Archive
+tuxedo: Fast, keyboard-driven terminal UI for todo.txt
+unuran: UNU.RAN - Universal Non-Uniform RANdom number generator
+vdt: Math library of fast, approximate and vectorisable trascendental functions
+vsview: Next-generation VapourSynth previewer
+webfont: Generator of fonts from SVG icons, with TTF encoding and WOFF/WOFF2 decoding
+zero: Terminal coding agent you own
+==> New Casks
+8bitdo-firmware-updater: Firmware updater for 8BitDo controllers
+adrafinil: Keep your computer awake while AI coding agents are working
+altersend: Secure, peer-to-peer file transfer app
+annotate: Keyboard-driven screen annotation tool
+ariax: Aria2 download manager
+aside: Web browser with built-in AI assistant
+atoll: Dynamic Island for the MacBook notch
+baseline: Automate onboardings by installing apps and running scripts
+bettercmdtab: Replacement for the built-in Cmd+Tab app switcher
+brave-origin: Privacy-focused web browser
+brave-origin@beta: Privacy-focused web browser
+brave-origin@nightly: Privacy-focused web browser
+caldigit-usb-hub-support-driver: Apple SuperDrive, Apple Keyboard, and Improved iPhone/iPad Charging
+chatgpt-classic: OpenAI's previous ChatGPT desktop app
+clarify: Autonomous CRM
+cotypist: System-wide AI autocomplete
+ctivo: Download and convert Tivo shows
+dockspace: Widgets for your dock
+font-caacupe-one
+font-geomini
+font-hibur-mono
+font-scoutie-sans
+geolibre: GIS platform
+gitcomet: Git GUI
+gnome: Menu bar GIF search and creation tool
+go2tv: Cast media files to Smart TVs and Chromecast devices
+greensignal: Pre-call check for camera, microphone, speaker, and network quality
+harper-desktop: Grammar checker for developers
+itermcompanion: Pairs iTerm2 with the iTerm2 Companion iPhone app
+itsypad: Tiny, fast scratchpad and clipboard manager
+kde-connect: Communicate with your handheld devices
+keeperdb: Database management tool for Postgres, MySQL, SQLite, MSSQL, Oracle, Redshift
+libifd-cyberjack: Driver for REINER SCT cyberJack smart card readers
+lumide: Agent-native code editor
+mac-sai: System cleaner, optimiser, and malware scanner
+meta-quest-remote-desktop: Remote desktop companion app for Meta Quest headsets
+muesli: Local-first dictation and meeting transcription
+navigator: Companion app for ZSA's Navigator trackpad
+onexrayse: Cross-platform Xray-core client
+open-design: Local-first, agent-native design tool
+openhuman: Personal AI assistant with local memory and integrations
+otty: Terminal emulator built for code agents
+palmier-pro: Video Editor built for AI
+pique: Quick Look extension for syntax-highlighted file previews
+platinum-notes: Improve audio quality of music files
+pocket-bard: TTRPG ambient audio and sound effects
+proxybridge: Proxy client with per-application traffic routing rules
+pycharm-oss: Open-source edition of PyCharm
+radix: Disk space analyzer
+raycast-glaze: Create desktop apps by chatting with AI
+seekfast: Search text in documents and files
+silkypix-developer-studio-se: RAW image development software used with Panasonic products
+slashy: Email client for Gmail
+snapzy: Native screenshots, recording, annotation, and editing from the menu bar
+snippety: Snippet manager & text expander
+sonarqube-cli: Code quality and security for terminal workflows, scripts, and AI agents
+subtitle-studio: Offline AI subtitle generator
+supaterm: Terminal emulator with built-in agent automation
+tikz-editor: WYSIWYG editor for TikZ diagrams in LaTeX
+toolhive-studio: Desktop application to install, manage, and run MCP servers
+tunarr: Create your own live TV channels from media on Plex, Jellyfin, Emby
+typewhisper: Speech-to-text and AI text processing
+uniclipboard: Cross-device clipboard syncing tool
+valkey-admin: Administration tool for Valkey clusters and standalone instances
+vicinae: Application launcher and command palette
+zush: AI-powered file renamer and organiser
+==> Deleted Installed Formulae
+sdl2
+
+You have 79 outdated formulae and 2 outdated casks installed.
+
+Warning: Cask 'powershell' is unavailable: No Cask with this name exists.
+==> Searching for similarly named casks...
+==> Casks
+powershell@preview
+
+To install powershell@preview, run:
+  brew install --cask powershell@preview

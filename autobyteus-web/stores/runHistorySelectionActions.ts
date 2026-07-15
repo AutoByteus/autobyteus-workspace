@@ -1,5 +1,5 @@
 import type {
-  TeamMemberTreeRow,
+  TeamMemberFocusTarget,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
@@ -62,7 +62,7 @@ export const openTeamMemberRunFromHistory = async (
 
 export const selectTreeRunFromHistory = async (
   store: RunHistorySelectionStoreLike,
-  row: RunTreeRow | TeamMemberTreeRow,
+  row: RunTreeRow | TeamMemberFocusTarget,
 ): Promise<void> => {
   if ('teamRunId' in row) {
     const teamContextsStore = useAgentTeamContextsStore();

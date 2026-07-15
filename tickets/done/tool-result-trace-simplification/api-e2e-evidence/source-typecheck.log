@@ -1,0 +1,19 @@
+=== core source typecheck ===
+=== core build for server package resolution ===
+=== server source typecheck ===
+src/agent-memory/services/runtime-memory-event-accumulator.ts(5,84): error TS2307: Cannot find module 'autobyteus-ts/memory/models/tool-call-identity.js' or its corresponding type declarations.
+src/agent-memory/services/runtime-memory-event-accumulator.ts(6,46): error TS2307: Cannot find module 'autobyteus-ts/memory/tool-trace-lifecycle-index.js' or its corresponding type declarations.
+src/agent-memory/store/run-memory-writer.ts(6,76): error TS2307: Cannot find module 'autobyteus-ts/memory/tool-trace-lifecycle-index.js' or its corresponding type declarations.
+src/agent-memory/store/run-memory-writer.ts(82,52): error TS2551: Property 'listRawTraceCorpusOrdered' does not exist on type 'RunMemoryFileStore'. Did you mean 'listRawTracesOrdered'?
+src/agent-work-traces/services/agent-work-trace-projection-service.ts(8,37): error TS2307: Cannot find module 'autobyteus-ts/memory/models/tool-call-identity.js' or its corresponding type declarations.
+src/agent-work-traces/services/agent-work-trace-projection-service.ts(79,65): error TS2345: Argument of type 'MemoryTraceEvent[]' is not assignable to parameter of type 'RawTraceItem[]'.
+  Type 'MemoryTraceEvent' is missing the following properties from type 'RawTraceItem': correlationId, memoryType, toDict
+src/agent-work-traces/services/agent-work-trace-projection-service.ts(85,36): error TS2339: Property 'anchorRawTraceId' does not exist on type 'ToolInteraction'.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(1,61): error TS2307: Cannot find module 'autobyteus-ts/memory/models/tool-call-identity.js' or its corresponding type declarations.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(4,38): error TS2307: Cannot find module 'autobyteus-ts/memory/tool-trace-lifecycle-index.js' or its corresponding type declarations.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(135,38): error TS2554: Expected 1 arguments, but got 2.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(173,11): error TS2353: Object literal may only specify known properties, and 'anchorRawTraceId' does not exist in type '{ toolCallId: string; turnId: string | null; toolName: string | null; arguments: Record<string, unknown> | null; result: unknown; error: string | null; status: ToolInteractionStatus; }'.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(186,32): error TS2339: Property 'anchorRawTraceId' does not exist on type 'ToolInteraction'.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(186,77): error TS2339: Property 'anchorRawTraceId' does not exist on type 'ToolInteraction'.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(189,34): error TS2339: Property 'terminalRawTraceId' does not exist on type 'ToolInteraction'.
+src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts(190,35): error TS2339: Property 'terminalRawTraceId' does not exist on type 'ToolInteraction'.

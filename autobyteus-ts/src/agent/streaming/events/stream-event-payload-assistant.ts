@@ -1,4 +1,4 @@
-import type { TokenUsage } from '../../../llm/utils/token-usage.js';
+import type { LlmTokenUsageObservation } from '../../../llm/utils/llm-token-usage-observation.js';
 import {
   assertRequiredKeys,
   BaseStreamPayload,
@@ -9,7 +9,7 @@ import {
 export class AssistantCompleteResponseData extends BaseStreamPayload {
   content: string;
   reasoning?: string;
-  usage?: TokenUsage;
+  usage?: LlmTokenUsageObservation;
   image_urls?: string[];
   audio_urls?: string[];
   video_urls?: string[];

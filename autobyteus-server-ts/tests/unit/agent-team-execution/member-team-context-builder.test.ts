@@ -45,6 +45,11 @@ describe("MemberTeamContextBuilder", () => {
     expect(result.teamInstruction).toBe("Coordinate carefully.");
     expect(result.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(result.memberName).toBe("Professor");
+    expect(result.tokenUsageExecutionScope).toEqual({
+      rootTeamRunId: "team-1",
+      teamScopeAddress: { segments: [] },
+      currentRunAddress: { segments: [{ kind: "member", memberRouteKey: "professor" }] },
+    });
     expect(result.members).toEqual([
       expect.objectContaining({ memberName: "Professor", runtimeKind: RuntimeKind.AUTOBYTEUS }),
       expect.objectContaining({ memberName: "Writer", runtimeKind: RuntimeKind.CODEX_APP_SERVER }),

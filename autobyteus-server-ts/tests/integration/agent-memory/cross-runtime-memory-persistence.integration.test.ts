@@ -30,7 +30,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
 import {
   EPISODIC_MEMORY_FILE_NAME,
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
@@ -307,7 +307,7 @@ describe("cross-runtime memory persistence integration", () => {
     emit(AgentRunEventType.TURN_COMPLETED, { turnId: `turn-${run.runId}-complete` });
     await recorder.waitForIdle(run.runId);
 
-    const rawTraceLines = await readLines(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME));
+    const rawTraceLines = await readLines(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME));
     const persistedRelevantRows = rawTraceLines
       .filter((trace) =>
         trace.trace_type === "reasoning" ||
@@ -509,7 +509,7 @@ describe("cross-runtime memory persistence integration", () => {
       }));
       await recorder.waitForIdle(run.runId);
 
-      await expect(fs.access(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME))).resolves.toBeUndefined();
+      await expect(fs.access(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).resolves.toBeUndefined();
       await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).resolves.toBeUndefined();
       expect(new RunMemoryFileStore(memoryDir).getRawTraceArchiveRevisionInfo()).toBeNull();
 
@@ -573,7 +573,7 @@ describe("cross-runtime memory persistence integration", () => {
     run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, { id: "text-1" }));
     await recorder.waitForIdle(run.runId);
 
-    await expect(fs.access(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME))).rejects.toThrow();
+    await expect(fs.access(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).rejects.toThrow();
     await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).rejects.toThrow();
   });
 
@@ -670,6 +670,163 @@ describe("cross-runtime memory persistence integration", () => {
       ts: 3,
     });
     expect(continued.seq).toBe(3);
+  });
+
+  it("defers a captured Codex hosted-search placeholder and writes the terminal call before its name-bearing result", async () => {
+    const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
+      "codex-hosted-search-memory-run",
+    );
+    const rawPath = path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitConverted(run, converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws-hosted-search-1",
+          query: "",
+          action: { type: "other" },
+        },
+        turnId,
+      },
+    }));
+    await recorder.waitForIdle(run.runId);
+
+    await expect(fs.access(rawPath)).rejects.toThrow();
+
+    emitConverted(run, converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws-hosted-search-1",
+          status: "completed",
+          query: "AutoByteus provider lifecycle",
+          action: {
+            type: "search",
+            query: "AutoByteus provider lifecycle",
+            queries: ["AutoByteus provider lifecycle"],
+          },
+        },
+        turnId,
+      },
+    }));
+    await recorder.waitForIdle(run.runId);
+
+    const traces = await readLines(rawPath);
+    expect(traces.map((trace) => trace.trace_type)).toEqual(["tool_call", "tool_result"]);
+    expect(traces[0]).toMatchObject({
+      tool_call_id: "ws-hosted-search-1",
+      tool_name: "search_web",
+      tool_args: {
+        query: "AutoByteus provider lifecycle",
+        action_type: "search",
+        queries: ["AutoByteus provider lifecycle"],
+      },
+    });
+    expect(traces[0]).not.toHaveProperty("tool_result");
+    expect(traces[0]).not.toHaveProperty("tool_error");
+    expect(traces[1]).toMatchObject({
+      tool_call_id: "ws-hosted-search-1",
+      tool_name: "search_web",
+      tool_result: {
+        status: "completed",
+        query: "AutoByteus provider lifecycle",
+        action_type: "search",
+        queries: ["AutoByteus provider lifecycle"],
+      },
+      tool_error: null,
+    });
+    expect(traces[1]).not.toHaveProperty("tool_args");
+  });
+
+  it("persists a normalized Claude MCP tool name on both the observed call and later result", async () => {
+    const memoryDir = await mkTempDir();
+    const recorder = new AgentRunMemoryRecorder();
+    const { factory } = createRuntimeBackendFactory(RuntimeKind.CLAUDE_AGENT_SDK);
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createRuntimeBackendFactory(RuntimeKind.AUTOBYTEUS).factory,
+      codexBackendFactory: createRuntimeBackendFactory(RuntimeKind.CODEX_APP_SERVER).factory,
+      claudeBackendFactory: factory,
+      runFileChangeService: createNoopSidecar() as never,
+      publishedArtifactRelayService: createNoopSidecar() as never,
+      memoryRecorder: recorder,
+    });
+    const run = await manager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        agentDefinitionId: "agent-def-claude-tool-memory",
+        llmModelIdentifier: "claude-sonnet",
+        autoExecuteTools: true,
+        workspaceId: "workspace-claude-tool-memory",
+        memoryDir,
+        skillAccessMode: SkillAccessMode.NONE,
+      }),
+      "claude-tool-memory-run",
+    );
+    const converter = new ClaudeSessionEventConverter(run.runId);
+    const turnId = "turn-claude-tool-memory";
+    const toolArgs = {
+      url: "https://example.com/claude",
+    };
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    emitConverted(run, converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
+      params: {
+        invocation_id: "claude-write-1",
+        turn_id: turnId,
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
+        arguments: toolArgs,
+      },
+    }));
+    await recorder.waitForIdle(run.runId);
+
+    const rawPath = path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
+    let traces = await readLines(rawPath);
+    expect(traces).toHaveLength(1);
+    expect(traces[0]).toMatchObject({
+      trace_type: "tool_call",
+      tool_call_id: "claude-write-1",
+      tool_name: "open_tab",
+      tool_args: toolArgs,
+    });
+
+    emitConverted(run, converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "claude-write-1",
+        turn_id: turnId,
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
+        arguments: toolArgs,
+        result: [{
+          type: "text",
+          text: JSON.stringify({
+            tab_id: "claude-browser-tab",
+            status: "opened",
+            url: "https://example.com/claude",
+            title: "Claude Browser",
+          }),
+        }],
+      },
+    }));
+    await recorder.waitForIdle(run.runId);
+
+    traces = await readLines(rawPath);
+    expect(traces.map((trace) => trace.trace_type)).toEqual(["tool_call", "tool_result"]);
+    expect(traces[1]).toMatchObject({
+      tool_call_id: "claude-write-1",
+      tool_name: "open_tab",
+      tool_result: {
+        tab_id: "claude-browser-tab",
+        status: "opened",
+        url: "https://example.com/claude",
+        title: "Claude Browser",
+      },
+      tool_error: null,
+    });
+    expect(traces[1]).not.toHaveProperty("tool_args");
   });
 
   it("keeps Codex contextCompaction start non-rotating in the recorder flow", async () => {
@@ -1145,6 +1302,7 @@ describe("cross-runtime memory persistence integration", () => {
     expect(traces[2]).toMatchObject({
       toolCallId: "denied-tool-1",
       toolName: "run_bash",
+      toolArgs: null,
       toolError: "policy denied",
       toolResult: { status: "denied", reason: "policy denied" },
     });
@@ -1235,7 +1393,7 @@ describe("cross-runtime memory persistence integration", () => {
     memberBackend.emit(AgentRunEventType.SEGMENT_END, { id: "team-text-1" });
     await recorder.waitForIdle(memberRunId);
 
-    const traces = await readLines(path.join(memberMemoryDir, RAW_TRACES_MEMORY_FILE_NAME));
+    const traces = await readLines(path.join(memberMemoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME));
     expect(traces.map((trace) => trace.trace_type)).toEqual(["user", "assistant"]);
     expect(traces.map((trace) => trace.turn_id)).toEqual([
       `turn-${memberRunId}`,

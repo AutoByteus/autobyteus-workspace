@@ -22,6 +22,7 @@ import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
 import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
 import type { TaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
+import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 import {
   getMemberTeamContextBuilder,
   type MemberTeamContextBuilder,
@@ -32,6 +33,10 @@ import {
   buildInterAgentDeliveryInputMessage,
 } from "../../../services/inter-agent-message-runtime-builders.js";
 import { buildTeamMemberInputEventPayload } from "../../../services/team-member-input-event-builder.js";
+import {
+  buildTaskDelegationSystemTaskNotificationEvent,
+  isTaskDelegationSystemTaskNotificationMessage,
+} from "../../../task-delegation/task-delegation-system-message-visibility.js";
 import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
 import type { MixedTeamRunContext, MixedAgentMemberContext } from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
@@ -102,7 +107,11 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       const result = await run.postUserMessage(message);
       this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
       if (result.accepted) {
-        this.publishMemberInput(message);
+        if (isTaskDelegationSystemTaskNotificationMessage(message)) {
+          run.emitLocalEvent(buildTaskDelegationSystemTaskNotificationEvent(run.runId, message));
+        } else {
+          this.publishMemberInput(message);
+        }
       } else {
         this.publishCommandStatus("error", result.message ?? null);
       }
@@ -112,6 +121,17 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       this.publishCommandStatus("error", String(error));
       throw error;
     }
+  }
+
+  async postMessageToConversationTarget(
+    _message: AgentInputUserMessage,
+    _address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult> {
+    return {
+      accepted: false,
+      code: "INVALID_TARGET",
+      message: `Agent member '${this.context.memberRouteKey}' cannot contain child conversation target segments.`,
+    };
   }
 
   async deliverInterMemberMessage(
@@ -180,13 +200,11 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   }
 
   async terminate(): Promise<AgentOperationResult> {
-    const canRestore = typeof this.context.platformAgentRunId === "string"
-      && this.context.platformAgentRunId.trim().length > 0;
-    const run = this.agentRun?.isActive() || canRestore
-      ? await this.ensureReady()
-      : this.agentRun;
+    const run = this.agentRun;
     const result = run ? await run.terminate() : { accepted: true };
-    this.dispose();
+    if (result.accepted) {
+      this.dispose();
+    }
     return result;
   }
 
@@ -253,6 +271,8 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       parentBoundary: this.options.teamContext.runtimeContext.parentBoundary,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       taskAgentInstance: this.options.taskAgentInstance ?? null,
+      taskTeamInstance: this.resolveTaskTeamIngressBinding(),
+      tokenUsageTeamScope: this.options.teamContext.runtimeContext.tokenUsageTeamScope,
     });
 
     return new AgentRunConfig({
@@ -266,8 +286,17 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       runtimeKind: this.options.config.runtimeKind,
       memberTeamContext,
       applicationExecutionContext: this.options.config.applicationExecutionContext ?? null,
-      selfEvolution: this.options.config.selfEvolutionEffective ?? this.options.config.selfEvolution ?? null,
     });
+  }
+
+  private resolveTaskTeamIngressBinding() {
+    const taskTeamInstance = this.options.teamContext.runtimeContext.taskTeamInstance ?? null;
+    if (!taskTeamInstance) {
+      return null;
+    }
+    return taskTeamInstance.ingress.memberRouteKey === this.context.memberRouteKey
+      ? taskTeamInstance
+      : null;
   }
 
   private assertRecordableMemberMemoryDir(): void {

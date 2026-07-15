@@ -22,7 +22,7 @@ team-scoped communication rosters, or team stream rebroadcasting.
   `TeamRun` / `MixedTeamManager`; exact active-run `target_agent_run_id`
   delivery runs through the server `agent-communication` direct route. Neither
   path is implemented by native AutoByteus team classes.
-- Server-managed task delegation (`delegate_tasks`, `submit_task_result`, and `review_task_result`) remains owned by `autobyteus-server-ts`.
+- Server-managed task delegation (`delegate_task`, `submit_task_result`, and `review_task_result`) remains owned by `autobyteus-server-ts`.
   Personal ToDo tools remain local single-agent tools.
 
 ## Removed Native Surface

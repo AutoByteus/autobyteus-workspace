@@ -47,6 +47,7 @@ The GraphQL boundary stays provider-centered through
 - `availableLlmProvidersWithModels(runtimeKind?)`
 - `availableAudioProvidersWithModels(runtimeKind?)`
 - `availableImageProvidersWithModels(runtimeKind?)`
+- `availableVideoProvidersWithModels(runtimeKind?)`
 - `getLlmProviderApiKeyConfigured(providerId)`
 - `getGeminiSetupConfig()`
 
@@ -76,11 +77,32 @@ The GraphQL boundary stays provider-centered through
 `ProviderWithModels.models[*]` carries provider-owned model metadata:
 
 - `modelIdentifier`
+- `name`, `value`, and `canonicalName`
+- nullable `description` display metadata
 - `providerId`
 - `providerName`
 - `providerType`
 - `runtime`
 - optional host/config/token-limit fields
+
+Model `description` is optional plain-text catalog metadata, not model identity.
+Runtime-specific catalogs should preserve it when their authoritative discovery
+source provides it, while callers must continue to support name-only rows.
+`modelIdentifier` remains the executable and persisted selection value.
+
+### Claude Agent SDK Model Descriptions
+
+The Claude Agent SDK catalog reads the live `supportedModels()` response and
+normalizes each non-empty description independently from the alias display name
+and identifier. The nullable value is carried through the shared `ModelInfo`
+contract and exposed as `ModelDetail.description` by
+`availableLlmProvidersWithModels(runtimeKind: "claude_agent_sdk")`.
+
+Descriptions can change with the installed Claude runtime, authenticated
+account, or vendor catalog. Do not replace this path with curated model/version
+copy and do not resolve aliases into different persisted identifiers. Frontend
+runtime-model selectors may render and search the optional description as
+selection guidance; missing descriptions remain valid name-only options.
 
 ## Built-In vs. Custom Providers
 

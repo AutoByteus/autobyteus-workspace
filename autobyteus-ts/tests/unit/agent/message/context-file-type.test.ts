@@ -13,6 +13,12 @@ describe('ContextFileType', () => {
     expect(ContextFileType.fromPath('https://example.com/index.html')).toBe(ContextFileType.HTML);
   });
 
+  it('uses shared media classification for supported media extensions', () => {
+    expect(ContextFileType.fromPath('meeting.m4a')).toBe(ContextFileType.AUDIO);
+    expect(ContextFileType.fromPath('https://example.com/video.mpeg?download=1')).toBe(ContextFileType.VIDEO);
+    expect(ContextFileType.fromPath('file:///tmp/photo.webp')).toBe(ContextFileType.IMAGE);
+  });
+
   it('returns UNKNOWN for unrecognized extensions', () => {
     expect(ContextFileType.fromPath('archive.bin')).toBe(ContextFileType.UNKNOWN);
   });

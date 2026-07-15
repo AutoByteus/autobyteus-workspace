@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
 import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
 
 const flushPromises = async () => {
@@ -38,12 +39,22 @@ const {
 
   const normalizeTeamNodes = (teams: any[]): any[] => teams.map(normalizeTeamNode);
 
+  const workspaceIdFromRoot = (workspaceRootPath: string | null | undefined): string =>
+    `workspace:${workspaceRootPath || 'unknown'}`;
+
+  const normalizeWorkspaceNode = (workspace: any): any => ({
+    ...workspace,
+    workspaceId: workspace.workspaceId ?? workspaceIdFromRoot(workspace.workspaceRootPath),
+  });
+
   const state = {
     loading: false,
     error: null as string | null,
     selectedRunId: null as string | null,
     selectedTeamRunId: null as string | null,
     workspaceGroups: [] as any[],
+    workspaceHistoryLoadingById: {} as Record<string, boolean>,
+    workspaceHistoryErrorById: {} as Record<string, string | null>,
     nodes: [
       {
         workspaceRootPath: '/ws/a',
@@ -98,9 +109,18 @@ const {
       get workspaceGroups() {
         return state.workspaceGroups;
       },
+      get workspaceHistoryLoadingById() {
+        return state.workspaceHistoryLoadingById;
+      },
+      get workspaceHistoryErrorById() {
+        return state.workspaceHistoryErrorById;
+      },
       fetchTree: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
-      getTreeNodes: vi.fn(() => state.nodes),
+      fetchWorkspaceHistory: vi.fn().mockResolvedValue(undefined),
+      refreshWorkspaceHistoryQuietly: vi.fn().mockResolvedValue(undefined),
+      pruneWorkspace: vi.fn(),
+      getTreeNodes: vi.fn(() => state.nodes.map(normalizeWorkspaceNode)),
       getTeamNodes: vi.fn((workspaceRootPath?: string) => {
         if (!workspaceRootPath) {
           return normalizeTeamNodes(Object.values(state.teamNodesByWorkspace).flat());
@@ -122,6 +142,7 @@ const {
         },
       },
       fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
+      removeWorkspace: vi.fn().mockResolvedValue({ workspaceRootPath: '/ws/a', message: 'removed' }),
     },
     selectionStoreMock: {
       selectedType: null as 'agent' | 'team' | null,
@@ -207,11 +228,14 @@ vi.mock('~/composables/useToasts', () => ({
 
 describe('WorkspaceAgentRunsTreePanel regressions', () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     vi.clearAllMocks();
     runHistoryState.loading = false;
     runHistoryState.error = null;
     runHistoryState.selectedRunId = null;
     runHistoryState.selectedTeamRunId = null;
+    runHistoryState.workspaceHistoryLoadingById = {};
+    runHistoryState.workspaceHistoryErrorById = {};
     runHistoryState.workspaceGroups = [];
     runHistoryState.teamNodesByWorkspace = {};
     selectionStoreMock.selectedType = null;
@@ -250,7 +274,7 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
       `[data-test="workspace-row"][data-workspace-root="${workspaceRootPath}"]`,
     );
     if (workspaceRow.attributes('aria-expanded') !== 'true') {
-      await workspaceRow.trigger('click');
+      await workspaceRow.get('button').trigger('click');
       await flushPromises();
     }
   };

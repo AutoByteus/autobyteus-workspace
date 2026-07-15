@@ -1,0 +1,38 @@
+{
+  "result": "Pass",
+  "browserVersion": "150.0.7871.115",
+  "graphqlOperations": [
+    {
+      "operationName": "GetRuntimeAvailabilities",
+      "status": 200,
+      "hasErrors": false
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "status": 200,
+      "hasErrors": false,
+      "claudeModelCount": 4
+    },
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "status": 200,
+      "hasErrors": false,
+      "claudeModelCount": 101
+    }
+  ],
+  "scenarioIds": [
+    "liveCatalogRender",
+    "descriptionSearch",
+    "exactSelectionAndPersistence",
+    "closeReopenAndRuntimeChange",
+    "sharedOverrideSurface",
+    "missingWhitespaceAndNonModel",
+    "desktopLayout",
+    "narrowLiveLayout",
+    "narrowFixtureLayout"
+  ],
+  "screenshots": {
+    "desktop": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/in-progress/claude-agent-sdk-model-descriptions/api-e2e-evidence/11-browser-desktop-long-description.png",
+    "narrow": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-model-descriptions/tickets/in-progress/claude-agent-sdk-model-descriptions/api-e2e-evidence/12-browser-narrow-long-description.png"
+  }
+}

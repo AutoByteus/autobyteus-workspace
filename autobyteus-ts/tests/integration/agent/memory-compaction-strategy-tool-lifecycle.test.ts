@@ -1,0 +1,265 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, describe, expect, it } from 'vitest';
+import { AgentTurn } from '../../../src/agent/agent-turn.js';
+import type { CompactionStatusPayload } from '../../../src/agent/compaction/compaction-runtime-reporter.js';
+import { AgentConfig } from '../../../src/agent/context/agent-config.js';
+import { AgentContext } from '../../../src/agent/context/agent-context.js';
+import { AgentRuntimeState } from '../../../src/agent/context/agent-runtime-state.js';
+import { ToolResultEvent, UserMessageReceivedEvent } from '../../../src/agent/events/agent-events.js';
+import { LlmPhase } from '../../../src/agent/loop/llm-phase.js';
+import { ToolPhase } from '../../../src/agent/loop/tool-phase.js';
+import { ToolResultContinuationBuilder } from '../../../src/agent/loop/tool-result-continuation-builder.js';
+import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
+import { BaseLLM, type LLMInvocationOptions } from '../../../src/llm/base.js';
+import { LLMModel } from '../../../src/llm/models.js';
+import { LLMProvider } from '../../../src/llm/providers.js';
+import { LLMUserMessage } from '../../../src/llm/user-message.js';
+import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
+import { buildLlmTokenUsageObservation } from '../../../src/llm/utils/llm-token-usage-observation.js';
+import { Message, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
+import { ChunkResponse, CompleteResponse } from '../../../src/llm/utils/response-types.js';
+import type {
+  CompactionAgentRunner,
+  CompactionAgentTask,
+} from '../../../src/memory/compaction/compaction-agent-runner.js';
+import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../src/memory/compaction/working-context-compaction-strategy-setting.js';
+import { MemoryManager } from '../../../src/memory/memory-manager.js';
+import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
+import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
+import { WorkingContext } from '../../../src/memory/working-context.js';
+import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
+import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
+
+const originalParser = process.env.AUTOBYTEUS_STREAM_PARSER;
+const originalStrategy = process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
+
+class SequencedStreamingLLM extends BaseLLM {
+  readonly requests: Message[][] = [];
+  readonly renderedPayloads: unknown[] = [];
+  private sequenceIndex = 0;
+
+  constructor(private readonly sequences: ChunkResponse[][]) {
+    super(
+      new LLMModel({
+        name: 'tool-lifecycle-model',
+        value: 'tool-lifecycle-model',
+        canonicalName: 'tool-lifecycle-model',
+        provider: LLMProvider.OPENAI,
+        maxInputTokens: 1_000,
+        defaultCompactionRatio: 0.1,
+        defaultSafetyMarginTokens: 0,
+      }),
+      new LLMConfig({
+        systemMessage: 'System prompt',
+        maxTokens: 64,
+        compactionRatio: 0.1,
+        safetyMarginTokens: 0,
+      }),
+    );
+  }
+
+  override async *streamMessages(
+    messages: Message[],
+    renderedPayload: unknown = null,
+    _kwargs: Record<string, unknown> = {},
+    _options: LLMInvocationOptions = {},
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.requests.push(new WorkingContext(messages).buildMessages());
+    this.renderedPayloads.push(renderedPayload);
+    const chunks = this.sequences[this.sequenceIndex++] ?? [];
+    for (const chunk of chunks) yield chunk;
+  }
+
+  protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'unused' });
+  }
+
+  protected async *_streamMessagesToLLM(): AsyncGenerator<ChunkResponse, void, unknown> {
+    throw new Error('SequencedStreamingLLM records calls through streamMessages.');
+  }
+}
+
+class RecordingCompactionRunner implements CompactionAgentRunner {
+  readonly tasks: CompactionAgentTask[] = [];
+
+  async runCompactionTask(task: CompactionAgentTask) {
+    this.tasks.push(task);
+    return {
+      outputText: JSON.stringify({
+        episodic_summary: 'Settled history before the active tool protocol.',
+        critical_issues: [],
+        unresolved_work: [],
+        durable_facts: [{ fact: 'The active lookup result must remain available.' }],
+        user_preferences: [],
+        important_artifacts: [],
+      }),
+    };
+  }
+}
+
+const usage = (inputTokens: number) => buildLlmTokenUsageObservation({
+  inputTokens,
+  outputTokens: 10,
+  totalTokens: inputTokens + 10,
+  rawUsage: null,
+});
+
+const makeInput = (turn: AgentTurn, content: string, mode?: 'tool_history_only') => ({
+  llmUserMessage: new LLMUserMessage({ content }),
+  turnId: turn.turnId,
+  sourceEvent: new UserMessageReceivedEvent(new AgentInputUserMessage(content)),
+  ...(mode ? { llmRequestMode: mode } : {}),
+});
+
+const seedSettledHistory = (manager: MemoryManager): void => {
+  for (let index = 1; index <= 3; index += 1) {
+    const turnId = manager.startTurn();
+    manager.appendWorkingContextUserMessage(`settled user ${index}`, { turnId });
+    manager.ingestAssistantResponse(
+      new CompleteResponse({ content: `settled assistant ${index}` }),
+      turnId,
+      'test',
+    );
+  }
+};
+
+afterEach(() => {
+  if (originalParser === undefined) delete process.env.AUTOBYTEUS_STREAM_PARSER;
+  else process.env.AUTOBYTEUS_STREAM_PARSER = originalParser;
+  if (originalStrategy === undefined) delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
+  else process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = originalStrategy;
+});
+
+describe('structured strategy tool-safe lifecycle', () => {
+  it('waits for the terminal result, compacts through the current strategy, and renders the complete native tool group', async () => {
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
+    process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'structured-json';
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'structured-tool-lifecycle-'));
+    const registrySnapshot = defaultToolRegistry.snapshot();
+    try {
+      fs.writeFileSync(path.join(tempDir, 'runtime-status.txt'), 'runtime status: ready\n', 'utf8');
+      const readFileTool = registerReadFileTool();
+      const manager = new MemoryManager({
+        store: new FileMemoryStore(tempDir, 'tool-lifecycle-agent'),
+        compactionPolicy: new CompactionPolicy({ triggerRatio: 0.1, safetyMarginTokens: 0 }),
+      });
+      seedSettledHistory(manager);
+      const runner = new RecordingCompactionRunner();
+      const llm = new SequencedStreamingLLM([
+        [new ChunkResponse({
+          content: 'I will inspect the runtime.',
+          tool_calls: [{
+            index: 0,
+            call_id: 'call-lookup-1',
+            name: 'read_file',
+            arguments_delta: '{"path":"runtime-status.txt","include_line_numbers":false}',
+          }],
+          is_complete: true,
+          usage: usage(200),
+        })],
+        [new ChunkResponse({
+          content: 'The lookup completed.',
+          is_complete: true,
+          usage: usage(10),
+        })],
+      ]);
+      const config = new AgentConfig(
+        'agent',
+        'role',
+        'description',
+        llm,
+        'System prompt',
+        [readFileTool],
+      );
+      config.compactionAgentRunner = runner;
+      const state = new AgentRuntimeState('tool-lifecycle-agent', tempDir);
+      state.llmInstance = llm;
+      state.memoryManager = manager;
+      state.toolInstances = { read_file: readFileTool };
+      const statuses: CompactionStatusPayload[] = [];
+      state.statusManagerRef = {
+        notifier: {
+          notifyAgentCompactionStatus: (payload: CompactionStatusPayload) => statuses.push(payload),
+        },
+      } as any;
+      const turn = new AgentTurn(manager.startTurn());
+      state.activeTurn = turn;
+      const context = new AgentContext('tool-lifecycle-agent', config, state);
+
+      const toolOutcome = await new LlmPhase().run(
+        makeInput(turn, 'Check the runtime status.'),
+        context,
+        turn,
+        null,
+      );
+
+      expect(toolOutcome.kind).toBe('tool_invocations');
+      expect(statuses.map((status) => status.phase)).toEqual(['requested']);
+      expect(manager.compactionRequired).toBe(true);
+      expect(runner.tasks).toHaveLength(0);
+
+      if (toolOutcome.kind !== 'tool_invocations') {
+        throw new Error('Expected the first LLM leg to request a tool.');
+      }
+      const invocation = toolOutcome.toolInvocations[0]!;
+      const toolResults = await new ToolPhase().run(
+        toolOutcome.toolInvocations,
+        context,
+        turn,
+        null,
+      );
+      expect(toolResults).toHaveLength(1);
+      expect(toolResults[0]).toBeInstanceOf(ToolResultEvent);
+      expect(toolResults[0]).toMatchObject({
+        toolName: 'read_file',
+        toolInvocationId: invocation.id,
+        result: 'runtime status: ready\n',
+      });
+      new ToolResultContinuationBuilder().build(toolResults, { context, turn });
+
+      expect(manager.getWorkingContextMessages().at(-1)?.tool_payload).toBeInstanceOf(ToolResultPayload);
+      expect(runner.tasks).toHaveLength(0);
+      expect(manager.compactionRequired).toBe(true);
+
+      const finalOutcome = await new LlmPhase().run(
+        makeInput(turn, 'Tool results are ready.', 'tool_history_only'),
+        context,
+        turn,
+        null,
+      );
+
+      expect(finalOutcome.kind).toBe('final');
+      expect(runner.tasks).toHaveLength(1);
+      expect(statuses.map((status) => status.phase)).toEqual(['requested', 'started', 'completed']);
+      expect(statuses[2]).toMatchObject({
+        compaction_strategy_id: 'structured-json',
+        compaction_strategy_name: 'Structured JSON',
+      });
+      expect(manager.compactionRequired).toBe(false);
+
+      const nextRequest = llm.requests[1]!;
+      const toolCallIndex = nextRequest.findIndex((message) =>
+        message.tool_payload instanceof ToolCallPayload
+        && message.tool_payload.toolCalls.some((call) => call.id === 'call-lookup-1'));
+      expect(toolCallIndex).toBeGreaterThanOrEqual(0);
+      expect(nextRequest[toolCallIndex + 1]?.tool_payload).toBeInstanceOf(ToolResultPayload);
+      expect((nextRequest[toolCallIndex + 1]?.tool_payload as ToolResultPayload).toolCallId)
+        .toBe('call-lookup-1');
+      expect(runner.tasks[0]?.prompt).not.toContain('call-lookup-1');
+
+      const rendered = llm.renderedPayloads[1] as Array<Record<string, any>>;
+      const renderedCallIndex = rendered.findIndex((message) => Array.isArray(message.tool_calls));
+      expect(renderedCallIndex).toBeGreaterThanOrEqual(0);
+      expect(rendered[renderedCallIndex]?.tool_calls?.[0]?.id).toBe('call-lookup-1');
+      expect(rendered[renderedCallIndex + 1]).toMatchObject({
+        role: 'tool',
+        tool_call_id: 'call-lookup-1',
+      });
+    } finally {
+      defaultToolRegistry.restore(registrySnapshot);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+});

@@ -1,0 +1,3 @@
+# delivery post-integration TypeScript build check
+Command: pnpm exec tsc -p tsconfig.build.json --noEmit
+Exit status: 0

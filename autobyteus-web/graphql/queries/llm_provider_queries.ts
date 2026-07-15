@@ -25,6 +25,7 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         __typename
         modelIdentifier
         name
+        description
         value
         canonicalName
         providerId
@@ -66,6 +67,32 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
       }
     }
     availableImageProvidersWithModels(runtimeKind: $runtimeKind) {
+      __typename
+      provider {
+        __typename
+        id
+        name
+        providerType
+        isCustom
+        baseUrl
+        apiKeyConfigured
+        status
+        statusMessage
+      }
+      models {
+        __typename
+        modelIdentifier
+        name
+        value
+        canonicalName
+        providerId
+        providerName
+        providerType
+        runtime
+        hostUrl
+      }
+    }
+    availableVideoProvidersWithModels(runtimeKind: $runtimeKind) {
       __typename
       provider {
         __typename

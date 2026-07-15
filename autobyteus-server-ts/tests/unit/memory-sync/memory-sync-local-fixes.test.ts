@@ -66,9 +66,9 @@ describe("Memory Sync local fix regressions", () => {
     await store.updateState(hubBaseUrl, "old-source", (state) => ({
       ...state,
       files: {
-        "agents/agent-a/raw_traces.jsonl": {
+        "agents/agent-a/raw_traces_active.jsonl": {
           kind: "agents",
-          relativePath: "agent-a/raw_traces.jsonl",
+          relativePath: "agent-a/raw_traces_active.jsonl",
           size: 8,
           sha256: "old-sha",
           mtimeMs: 1,
@@ -81,7 +81,7 @@ describe("Memory Sync local fix regressions", () => {
     const oldState = await store.readState(hubBaseUrl, "old-source");
     const newState = await store.readState(hubBaseUrl, "new-source");
 
-    expect(Object.keys(oldState.files)).toEqual(["agents/agent-a/raw_traces.jsonl"]);
+    expect(Object.keys(oldState.files)).toEqual(["agents/agent-a/raw_traces_active.jsonl"]);
     expect(newState.sourceNodeId).toBe("new-source");
     expect(newState.files).toEqual({});
     expect(store.getFilePath(hubBaseUrl, "old-source")).not.toBe(store.getFilePath(hubBaseUrl, "new-source"));

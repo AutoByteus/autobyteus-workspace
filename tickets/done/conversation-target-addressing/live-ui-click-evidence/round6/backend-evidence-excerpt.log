@@ -1,0 +1,1570 @@
+361:AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+362:AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+363:[CodexAppServerNotification] {
+364:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+365:  method: 'remoteControl/status/changed',
+366:  matchesThread: true,
+367:  threadId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+368:  activeTurnId: null,
+
+---
+
+364:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+365:  method: 'remoteControl/status/changed',
+366:  matchesThread: true,
+367:  threadId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+368:  activeTurnId: null,
+369:  threadCount: 1,
+370:  paramKeys: [ 'status', 'serverName', 'installationId', 'environmentId' ]
+371:}
+
+---
+
+370:  paramKeys: [ 'status', 'serverName', 'installationId', 'environmentId' ]
+371:}
+372:[CodexEmitAppServerMessage] {
+373:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+374:  method: 'remoteControl/status/changed',
+375:  listenerCount: 0,
+376:  paramKeys: [ 'status', 'serverName', 'installationId', 'environmentId' ]
+377:}
+
+---
+
+375:  listenerCount: 0,
+376:  paramKeys: [ 'status', 'serverName', 'installationId', 'environmentId' ]
+377:}
+378:Successfully created codex_app_server agent run 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f'.
+379:[CodexSendTurnStart] {
+380:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+381:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+382:  activeTurnId: null,
+
+---
+
+376:  paramKeys: [ 'status', 'serverName', 'installationId', 'environmentId' ]
+377:}
+378:Successfully created codex_app_server agent run 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f'.
+379:[CodexSendTurnStart] {
+380:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+381:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+382:  activeTurnId: null,
+383:  startupStatus: 'ready',
+
+---
+
+377:}
+378:Successfully created codex_app_server agent run 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f'.
+379:[CodexSendTurnStart] {
+380:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+381:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+382:  activeTurnId: null,
+383:  startupStatus: 'ready',
+384:  contentPreview: 'Your team has been activated as accountable task target team:BuildSquad for the delegated task below. This task-scoped team run exits after acceptance and safe '
+
+---
+
+384:  contentPreview: 'Your team has been activated as accountable task target team:BuildSquad for the delegated task below. This task-scoped team run exits after acceptance and safe '
+385:}
+386:[CodexAppServerNotification] {
+387:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+388:  method: 'thread/started',
+389:  matchesThread: true,
+390:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+391:  activeTurnId: null,
+
+---
+
+393:  paramKeys: [ 'thread' ]
+394:}
+395:[CodexEmitAppServerMessage] {
+396:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+397:  method: 'thread/started',
+398:  listenerCount: 1,
+399:  paramKeys: [ 'thread' ]
+400:}
+
+---
+
+399:  paramKeys: [ 'thread' ]
+400:}
+401:[CodexAppServerNotification] {
+402:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+403:  method: 'warning',
+404:  matchesThread: true,
+405:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+406:  activeTurnId: null,
+
+---
+
+408:  paramKeys: [ 'threadId', 'message' ]
+409:}
+410:[CodexEmitAppServerMessage] {
+411:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+412:  method: 'warning',
+413:  listenerCount: 1,
+414:  paramKeys: [ 'threadId', 'message' ]
+415:}
+
+---
+
+462:  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+463:}
+464:[CodexSendTurnResponse] {
+465:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+466:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+467:  turnId: '019f0877-b698-7a43-a813-08d34452e906',
+468:  payloadType: 'object',
+469:  payloadKeys: [ 'turn' ]
+
+---
+
+476:AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+477:AgentExternalEventNotifier (NotifierID: c15b3381-8508-462e-b768-4bc48b5ce703, AgentID: program_manager_live_ui_click_supported_17825532_0cdc50ea520145d6a08bc9859e800d57) emitted agent_status. Kwarg keys for emit: agent_id,payload
+478:[CodexAppServerNotification] {
+479:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+480:  method: 'thread/settings/updated',
+481:  matchesThread: true,
+482:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+483:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+485:  paramKeys: [ 'threadId', 'threadSettings' ]
+486:}
+487:[CodexEmitAppServerMessage] {
+488:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+489:  method: 'thread/settings/updated',
+490:  listenerCount: 1,
+491:  paramKeys: [ 'threadId', 'threadSettings' ]
+492:}
+
+---
+
+491:  paramKeys: [ 'threadId', 'threadSettings' ]
+492:}
+493:[CodexAppServerNotification] {
+494:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+495:  method: 'thread/status/changed',
+496:  matchesThread: true,
+497:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+498:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+500:  paramKeys: [ 'threadId', 'status' ]
+501:}
+502:[CodexEmitAppServerMessage] {
+503:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+504:  method: 'thread/status/changed',
+505:  listenerCount: 1,
+506:  paramKeys: [ 'threadId', 'status' ]
+507:}
+
+---
+
+506:  paramKeys: [ 'threadId', 'status' ]
+507:}
+508:[CodexAppServerNotification] {
+509:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+510:  method: 'turn/started',
+511:  matchesThread: true,
+512:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+513:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+515:  paramKeys: [ 'threadId', 'turn' ]
+516:}
+517:[CodexEmitAppServerMessage] {
+518:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+519:  method: 'turn/started',
+520:  listenerCount: 1,
+521:  paramKeys: [ 'threadId', 'turn' ]
+522:}
+
+---
+
+545:  paramKeys: [ 'threadId', 'name', 'status', 'error' ]
+546:}
+547:[CodexAppServerNotification] {
+548:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+549:  method: 'rawResponseItem/completed',
+550:  matchesThread: true,
+551:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+552:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+554:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+555:}
+556:[CodexEmitAppServerMessage] {
+557:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+558:  method: 'rawResponseItem/completed',
+559:  listenerCount: 1,
+560:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+561:}
+
+---
+
+560:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+561:}
+562:[CodexAppServerNotification] {
+563:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+564:  method: 'rawResponseItem/completed',
+565:  matchesThread: true,
+566:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+567:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+569:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+570:}
+571:[CodexEmitAppServerMessage] {
+572:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+573:  method: 'rawResponseItem/completed',
+574:  listenerCount: 1,
+575:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+576:}
+
+---
+
+575:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+576:}
+577:[CodexAppServerNotification] {
+578:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+579:  method: 'rawResponseItem/completed',
+580:  matchesThread: true,
+581:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+582:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+584:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+585:}
+586:[CodexEmitAppServerMessage] {
+587:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+588:  method: 'rawResponseItem/completed',
+589:  listenerCount: 1,
+590:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+591:}
+
+---
+
+590:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+591:}
+592:[CodexAppServerNotification] {
+593:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+594:  method: 'item/started',
+595:  matchesThread: true,
+596:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+597:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+599:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+600:}
+601:[CodexEmitAppServerMessage] {
+602:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+603:  method: 'item/started',
+604:  listenerCount: 1,
+605:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+606:}
+
+---
+
+605:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+606:}
+607:[CodexAppServerNotification] {
+608:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+609:  method: 'item/completed',
+610:  matchesThread: true,
+611:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+612:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+614:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+615:}
+616:[CodexEmitAppServerMessage] {
+617:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+618:  method: 'item/completed',
+619:  listenerCount: 1,
+620:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+621:}
+
+---
+
+620:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+621:}
+622:[CodexAppServerNotification] {
+623:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+624:  method: 'item/started',
+625:  matchesThread: true,
+626:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+627:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+629:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+630:}
+631:[CodexEmitAppServerMessage] {
+632:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+633:  method: 'item/started',
+634:  listenerCount: 1,
+635:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+636:}
+
+---
+
+635:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+636:}
+637:[CodexAppServerNotification] {
+638:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+639:  method: 'item/completed',
+640:  matchesThread: true,
+641:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+642:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+644:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+645:}
+646:[CodexEmitAppServerMessage] {
+647:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+648:  method: 'item/completed',
+649:  listenerCount: 1,
+650:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+651:}
+
+---
+
+650:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+651:}
+652:[CodexAppServerNotification] {
+653:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+654:  method: 'rawResponseItem/completed',
+655:  matchesThread: true,
+656:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+657:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+659:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+660:}
+661:[CodexEmitAppServerMessage] {
+662:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+663:  method: 'rawResponseItem/completed',
+664:  listenerCount: 1,
+665:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+666:}
+
+---
+
+665:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+666:}
+667:[CodexAppServerNotification] {
+668:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+669:  method: 'item/started',
+670:  matchesThread: true,
+671:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+672:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+674:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+675:}
+676:[CodexEmitAppServerMessage] {
+677:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+678:  method: 'item/started',
+679:  listenerCount: 1,
+680:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+681:}
+
+---
+
+680:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+681:}
+682:[CodexAppServerNotification] {
+683:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+684:  method: 'item/agentMessage/delta',
+685:  matchesThread: true,
+686:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+687:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+689:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+690:}
+691:[CodexEmitAppServerMessage] {
+692:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+693:  method: 'item/agentMessage/delta',
+694:  listenerCount: 1,
+695:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+696:}
+
+---
+
+695:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+696:}
+697:[CodexAppServerNotification] {
+698:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+699:  method: 'item/agentMessage/delta',
+700:  matchesThread: true,
+701:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+702:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+704:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+705:}
+706:[CodexEmitAppServerMessage] {
+707:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+708:  method: 'item/agentMessage/delta',
+709:  listenerCount: 1,
+710:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+711:}
+
+---
+
+710:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+711:}
+712:[CodexAppServerNotification] {
+713:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+714:  method: 'item/agentMessage/delta',
+715:  matchesThread: true,
+716:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+717:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+719:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+720:}
+721:[CodexEmitAppServerMessage] {
+722:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+723:  method: 'item/agentMessage/delta',
+724:  listenerCount: 1,
+725:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+726:}
+
+---
+
+725:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+726:}
+727:[CodexAppServerNotification] {
+728:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+729:  method: 'item/agentMessage/delta',
+730:  matchesThread: true,
+731:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+732:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+734:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+735:}
+736:[CodexEmitAppServerMessage] {
+737:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+738:  method: 'item/agentMessage/delta',
+739:  listenerCount: 1,
+740:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+741:}
+
+---
+
+740:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+741:}
+742:[CodexAppServerNotification] {
+743:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+744:  method: 'item/agentMessage/delta',
+745:  matchesThread: true,
+746:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+747:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+749:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+750:}
+751:[CodexEmitAppServerMessage] {
+752:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+753:  method: 'item/agentMessage/delta',
+754:  listenerCount: 1,
+755:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+756:}
+
+---
+
+755:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+756:}
+757:[CodexAppServerNotification] {
+758:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+759:  method: 'item/agentMessage/delta',
+760:  matchesThread: true,
+761:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+762:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+764:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+765:}
+766:[CodexEmitAppServerMessage] {
+767:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+768:  method: 'item/agentMessage/delta',
+769:  listenerCount: 1,
+770:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+771:}
+
+---
+
+770:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+771:}
+772:[CodexAppServerNotification] {
+773:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+774:  method: 'item/agentMessage/delta',
+775:  matchesThread: true,
+776:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+777:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+779:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+780:}
+781:[CodexEmitAppServerMessage] {
+782:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+783:  method: 'item/agentMessage/delta',
+784:  listenerCount: 1,
+785:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+786:}
+
+---
+
+785:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+786:}
+787:[CodexAppServerNotification] {
+788:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+789:  method: 'item/agentMessage/delta',
+790:  matchesThread: true,
+791:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+792:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+794:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+795:}
+796:[CodexEmitAppServerMessage] {
+797:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+798:  method: 'item/agentMessage/delta',
+799:  listenerCount: 1,
+800:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+801:}
+
+---
+
+800:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+801:}
+802:[CodexAppServerNotification] {
+803:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+804:  method: 'item/agentMessage/delta',
+805:  matchesThread: true,
+806:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+807:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+809:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+810:}
+811:[CodexEmitAppServerMessage] {
+812:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+813:  method: 'item/agentMessage/delta',
+814:  listenerCount: 1,
+815:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+816:}
+
+---
+
+815:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+816:}
+817:[CodexAppServerNotification] {
+818:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+819:  method: 'item/agentMessage/delta',
+820:  matchesThread: true,
+821:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+822:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+824:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+825:}
+826:[CodexEmitAppServerMessage] {
+827:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+828:  method: 'item/agentMessage/delta',
+829:  listenerCount: 1,
+830:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+831:}
+
+---
+
+830:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+831:}
+832:[CodexAppServerNotification] {
+833:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+834:  method: 'item/agentMessage/delta',
+835:  matchesThread: true,
+836:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+837:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+839:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+840:}
+841:[CodexEmitAppServerMessage] {
+842:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+843:  method: 'item/agentMessage/delta',
+844:  listenerCount: 1,
+845:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+846:}
+
+---
+
+845:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+846:}
+847:[CodexAppServerNotification] {
+848:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+849:  method: 'item/agentMessage/delta',
+850:  matchesThread: true,
+851:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+852:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+854:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+855:}
+856:[CodexEmitAppServerMessage] {
+857:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+858:  method: 'item/agentMessage/delta',
+859:  listenerCount: 1,
+860:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+861:}
+
+---
+
+860:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+861:}
+862:[CodexAppServerNotification] {
+863:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+864:  method: 'item/agentMessage/delta',
+865:  matchesThread: true,
+866:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+867:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+869:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+870:}
+871:[CodexEmitAppServerMessage] {
+872:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+873:  method: 'item/agentMessage/delta',
+874:  listenerCount: 1,
+875:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+876:}
+
+---
+
+875:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+876:}
+877:[CodexAppServerNotification] {
+878:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+879:  method: 'item/agentMessage/delta',
+880:  matchesThread: true,
+881:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+882:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+884:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+885:}
+886:[CodexEmitAppServerMessage] {
+887:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+888:  method: 'item/agentMessage/delta',
+889:  listenerCount: 1,
+890:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+891:}
+
+---
+
+890:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+891:}
+892:[CodexAppServerNotification] {
+893:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+894:  method: 'item/agentMessage/delta',
+895:  matchesThread: true,
+896:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+897:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+899:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+900:}
+901:[CodexEmitAppServerMessage] {
+902:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+903:  method: 'item/agentMessage/delta',
+904:  listenerCount: 1,
+905:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+906:}
+
+---
+
+905:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+906:}
+907:[CodexAppServerNotification] {
+908:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+909:  method: 'item/agentMessage/delta',
+910:  matchesThread: true,
+911:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+912:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+914:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+915:}
+916:[CodexEmitAppServerMessage] {
+917:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+918:  method: 'item/agentMessage/delta',
+919:  listenerCount: 1,
+920:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+921:}
+
+---
+
+920:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+921:}
+922:[CodexAppServerNotification] {
+923:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+924:  method: 'item/agentMessage/delta',
+925:  matchesThread: true,
+926:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+927:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+929:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+930:}
+931:[CodexEmitAppServerMessage] {
+932:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+933:  method: 'item/agentMessage/delta',
+934:  listenerCount: 1,
+935:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+936:}
+
+---
+
+935:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+936:}
+937:[CodexAppServerNotification] {
+938:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+939:  method: 'item/agentMessage/delta',
+940:  matchesThread: true,
+941:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+942:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+944:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+945:}
+946:[CodexEmitAppServerMessage] {
+947:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+948:  method: 'item/agentMessage/delta',
+949:  listenerCount: 1,
+950:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+951:}
+
+---
+
+950:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+951:}
+952:[CodexAppServerNotification] {
+953:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+954:  method: 'item/agentMessage/delta',
+955:  matchesThread: true,
+956:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+957:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+959:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+960:}
+961:[CodexEmitAppServerMessage] {
+962:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+963:  method: 'item/agentMessage/delta',
+964:  listenerCount: 1,
+965:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+966:}
+
+---
+
+965:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+966:}
+967:[CodexAppServerNotification] {
+968:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+969:  method: 'item/agentMessage/delta',
+970:  matchesThread: true,
+971:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+972:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+974:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+975:}
+976:[CodexEmitAppServerMessage] {
+977:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+978:  method: 'item/agentMessage/delta',
+979:  listenerCount: 1,
+980:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+981:}
+
+---
+
+980:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+981:}
+982:[CodexAppServerNotification] {
+983:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+984:  method: 'item/agentMessage/delta',
+985:  matchesThread: true,
+986:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+987:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+989:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+990:}
+991:[CodexEmitAppServerMessage] {
+992:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+993:  method: 'item/agentMessage/delta',
+994:  listenerCount: 1,
+995:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+996:}
+
+---
+
+995:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+996:}
+997:[CodexAppServerNotification] {
+998:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+999:  method: 'item/completed',
+1000:  matchesThread: true,
+1001:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1002:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+1004:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+1005:}
+1006:[CodexEmitAppServerMessage] {
+1007:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1008:  method: 'item/completed',
+1009:  listenerCount: 1,
+1010:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+1011:}
+
+---
+
+1010:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+1011:}
+1012:[CodexAppServerNotification] {
+1013:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1014:  method: 'rawResponseItem/completed',
+1015:  matchesThread: true,
+1016:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1017:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+1019:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+1020:}
+1021:[CodexEmitAppServerMessage] {
+1022:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1023:  method: 'rawResponseItem/completed',
+1024:  listenerCount: 1,
+1025:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+1026:}
+
+---
+
+1025:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+1026:}
+1027:[CodexAppServerNotification] {
+1028:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1029:  method: 'thread/tokenUsage/updated',
+1030:  matchesThread: true,
+1031:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1032:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+1034:  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+1035:}
+1036:[CodexEmitAppServerMessage] {
+1037:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1038:  method: 'thread/tokenUsage/updated',
+1039:  listenerCount: 1,
+1040:  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+1041:}
+
+---
+
+1046:  paramKeys: [ 'rateLimits' ]
+1047:}
+1048:[CodexAppServerNotification] {
+1049:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1050:  method: 'thread/status/changed',
+1051:  matchesThread: true,
+1052:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1053:  activeTurnId: '019f0877-b698-7a43-a813-08d34452e906',
+
+---
+
+1055:  paramKeys: [ 'threadId', 'status' ]
+1056:}
+1057:[CodexEmitAppServerMessage] {
+1058:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1059:  method: 'thread/status/changed',
+1060:  listenerCount: 1,
+1061:  paramKeys: [ 'threadId', 'status' ]
+1062:}
+
+---
+
+1061:  paramKeys: [ 'threadId', 'status' ]
+1062:}
+1063:[CodexAppServerNotification] {
+1064:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1065:  method: 'turn/completed',
+1066:  matchesThread: true,
+1067:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1068:  activeTurnId: null,
+
+---
+
+1070:  paramKeys: [ 'threadId', 'turn' ]
+1071:}
+1072:[CodexEmitAppServerMessage] {
+1073:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1074:  method: 'turn/completed',
+1075:  listenerCount: 1,
+1076:  paramKeys: [ 'threadId', 'turn' ]
+1077:}
+
+---
+
+1075:  listenerCount: 1,
+1076:  paramKeys: [ 'threadId', 'turn' ]
+1077:}
+1078:[CodexSendTurnStart] {
+1079:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1080:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1081:  activeTurnId: null,
+1082:  startupStatus: 'ready',
+
+---
+
+1076:  paramKeys: [ 'threadId', 'turn' ]
+1077:}
+1078:[CodexSendTurnStart] {
+1079:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1080:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1081:  activeTurnId: null,
+1082:  startupStatus: 'ready',
+1083:  contentPreview: 'LIVE_UI_ROUND6_CHILD_CHAT_1782553528825'
+
+---
+
+1080:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1081:  activeTurnId: null,
+1082:  startupStatus: 'ready',
+1083:  contentPreview: 'LIVE_UI_ROUND6_CHILD_CHAT_1782553528825'
+1084:}
+1085:[CodexSendTurnResponse] {
+1086:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1087:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+
+---
+
+1083:  contentPreview: 'LIVE_UI_ROUND6_CHILD_CHAT_1782553528825'
+1084:}
+1085:[CodexSendTurnResponse] {
+1086:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1087:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1088:  turnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+1089:  payloadType: 'object',
+1090:  payloadKeys: [ 'turn' ]
+
+---
+
+1090:  payloadKeys: [ 'turn' ]
+1091:}
+1092:[CodexAppServerNotification] {
+1093:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1094:  method: 'thread/status/changed',
+1095:  matchesThread: true,
+1096:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1097:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1099:  paramKeys: [ 'threadId', 'status' ]
+1100:}
+1101:[CodexEmitAppServerMessage] {
+1102:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1103:  method: 'thread/status/changed',
+1104:  listenerCount: 1,
+1105:  paramKeys: [ 'threadId', 'status' ]
+1106:}
+
+---
+
+1105:  paramKeys: [ 'threadId', 'status' ]
+1106:}
+1107:[CodexAppServerNotification] {
+1108:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1109:  method: 'turn/started',
+1110:  matchesThread: true,
+1111:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1112:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1114:  paramKeys: [ 'threadId', 'turn' ]
+1115:}
+1116:[CodexEmitAppServerMessage] {
+1117:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1118:  method: 'turn/started',
+1119:  listenerCount: 1,
+1120:  paramKeys: [ 'threadId', 'turn' ]
+1121:}
+
+---
+
+1120:  paramKeys: [ 'threadId', 'turn' ]
+1121:}
+1122:[CodexAppServerNotification] {
+1123:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1124:  method: 'rawResponseItem/completed',
+1125:  matchesThread: true,
+1126:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1127:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1129:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+1130:}
+1131:[CodexEmitAppServerMessage] {
+1132:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1133:  method: 'rawResponseItem/completed',
+1134:  listenerCount: 1,
+1135:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+1136:}
+
+---
+
+1135:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+1136:}
+1137:[CodexAppServerNotification] {
+1138:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1139:  method: 'item/started',
+1140:  matchesThread: true,
+1141:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1142:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1144:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+1145:}
+1146:[CodexEmitAppServerMessage] {
+1147:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1148:  method: 'item/started',
+1149:  listenerCount: 1,
+1150:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+1151:}
+
+---
+
+1150:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+1151:}
+1152:[CodexAppServerNotification] {
+1153:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1154:  method: 'item/completed',
+1155:  matchesThread: true,
+1156:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1157:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1159:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+1160:}
+1161:[CodexEmitAppServerMessage] {
+1162:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1163:  method: 'item/completed',
+1164:  listenerCount: 1,
+1165:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+1166:}
+
+---
+
+1165:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+1166:}
+1167:[CodexAppServerNotification] {
+1168:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1169:  method: 'item/started',
+1170:  matchesThread: true,
+1171:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1172:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1174:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+1175:}
+1176:[CodexEmitAppServerMessage] {
+1177:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1178:  method: 'item/started',
+1179:  listenerCount: 1,
+1180:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+1181:}
+
+---
+
+1180:  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+1181:}
+1182:[CodexAppServerNotification] {
+1183:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1184:  method: 'item/agentMessage/delta',
+1185:  matchesThread: true,
+1186:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1187:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1189:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1190:}
+1191:[CodexEmitAppServerMessage] {
+1192:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1193:  method: 'item/agentMessage/delta',
+1194:  listenerCount: 1,
+1195:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1196:}
+
+---
+
+1195:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1196:}
+1197:[CodexAppServerNotification] {
+1198:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1199:  method: 'item/agentMessage/delta',
+1200:  matchesThread: true,
+1201:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1202:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1204:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1205:}
+1206:[CodexEmitAppServerMessage] {
+1207:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1208:  method: 'item/agentMessage/delta',
+1209:  listenerCount: 1,
+1210:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1211:}
+
+---
+
+1210:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1211:}
+1212:[CodexAppServerNotification] {
+1213:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1214:  method: 'item/agentMessage/delta',
+1215:  matchesThread: true,
+1216:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1217:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1219:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1220:}
+1221:[CodexEmitAppServerMessage] {
+1222:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1223:  method: 'item/agentMessage/delta',
+1224:  listenerCount: 1,
+1225:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1226:}
+
+---
+
+1225:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1226:}
+1227:[CodexAppServerNotification] {
+1228:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1229:  method: 'item/agentMessage/delta',
+1230:  matchesThread: true,
+1231:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1232:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1234:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1235:}
+1236:[CodexEmitAppServerMessage] {
+1237:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1238:  method: 'item/agentMessage/delta',
+1239:  listenerCount: 1,
+1240:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1241:}
+
+---
+
+1240:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1241:}
+1242:[CodexAppServerNotification] {
+1243:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1244:  method: 'item/agentMessage/delta',
+1245:  matchesThread: true,
+1246:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1247:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1249:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1250:}
+1251:[CodexEmitAppServerMessage] {
+1252:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1253:  method: 'item/agentMessage/delta',
+1254:  listenerCount: 1,
+1255:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1256:}
+
+---
+
+1255:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1256:}
+1257:[CodexAppServerNotification] {
+1258:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1259:  method: 'item/agentMessage/delta',
+1260:  matchesThread: true,
+1261:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1262:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1264:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1265:}
+1266:[CodexEmitAppServerMessage] {
+1267:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1268:  method: 'item/agentMessage/delta',
+1269:  listenerCount: 1,
+1270:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1271:}
+
+---
+
+1270:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1271:}
+1272:[CodexAppServerNotification] {
+1273:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1274:  method: 'item/agentMessage/delta',
+1275:  matchesThread: true,
+1276:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1277:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1279:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1280:}
+1281:[CodexEmitAppServerMessage] {
+1282:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1283:  method: 'item/agentMessage/delta',
+1284:  listenerCount: 1,
+1285:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1286:}
+
+---
+
+1285:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1286:}
+1287:[CodexAppServerNotification] {
+1288:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1289:  method: 'item/agentMessage/delta',
+1290:  matchesThread: true,
+1291:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1292:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1294:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1295:}
+1296:[CodexEmitAppServerMessage] {
+1297:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1298:  method: 'item/agentMessage/delta',
+1299:  listenerCount: 1,
+1300:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1301:}
+
+---
+
+1300:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1301:}
+1302:[CodexAppServerNotification] {
+1303:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1304:  method: 'item/agentMessage/delta',
+1305:  matchesThread: true,
+1306:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1307:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1309:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1310:}
+1311:[CodexEmitAppServerMessage] {
+1312:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1313:  method: 'item/agentMessage/delta',
+1314:  listenerCount: 1,
+1315:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1316:}
+
+---
+
+1315:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1316:}
+1317:[CodexAppServerNotification] {
+1318:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1319:  method: 'item/agentMessage/delta',
+1320:  matchesThread: true,
+1321:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1322:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1324:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1325:}
+1326:[CodexEmitAppServerMessage] {
+1327:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1328:  method: 'item/agentMessage/delta',
+1329:  listenerCount: 1,
+1330:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1331:}
+
+---
+
+1330:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1331:}
+1332:[CodexAppServerNotification] {
+1333:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1334:  method: 'item/agentMessage/delta',
+1335:  matchesThread: true,
+1336:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1337:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1339:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1340:}
+1341:[CodexEmitAppServerMessage] {
+1342:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1343:  method: 'item/agentMessage/delta',
+1344:  listenerCount: 1,
+1345:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1346:}
+
+---
+
+1345:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1346:}
+1347:[CodexAppServerNotification] {
+1348:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1349:  method: 'item/agentMessage/delta',
+1350:  matchesThread: true,
+1351:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1352:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1354:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1355:}
+1356:[CodexEmitAppServerMessage] {
+1357:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1358:  method: 'item/agentMessage/delta',
+1359:  listenerCount: 1,
+1360:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1361:}
+
+---
+
+1360:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1361:}
+1362:[CodexAppServerNotification] {
+1363:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1364:  method: 'item/agentMessage/delta',
+1365:  matchesThread: true,
+1366:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1367:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1369:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1370:}
+1371:[CodexEmitAppServerMessage] {
+1372:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1373:  method: 'item/agentMessage/delta',
+1374:  listenerCount: 1,
+1375:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1376:}
+
+---
+
+1375:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1376:}
+1377:[CodexAppServerNotification] {
+1378:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1379:  method: 'item/agentMessage/delta',
+1380:  matchesThread: true,
+1381:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1382:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1384:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1385:}
+1386:[CodexEmitAppServerMessage] {
+1387:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1388:  method: 'item/agentMessage/delta',
+1389:  listenerCount: 1,
+1390:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1391:}
+
+---
+
+1390:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1391:}
+1392:[CodexAppServerNotification] {
+1393:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1394:  method: 'item/agentMessage/delta',
+1395:  matchesThread: true,
+1396:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1397:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1399:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1400:}
+1401:[CodexEmitAppServerMessage] {
+1402:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1403:  method: 'item/agentMessage/delta',
+1404:  listenerCount: 1,
+1405:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1406:}
+
+---
+
+1405:  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+1406:}
+1407:[CodexAppServerNotification] {
+1408:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1409:  method: 'item/completed',
+1410:  matchesThread: true,
+1411:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1412:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1414:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+1415:}
+1416:[CodexEmitAppServerMessage] {
+1417:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1418:  method: 'item/completed',
+1419:  listenerCount: 1,
+1420:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+1421:}
+
+---
+
+1420:  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+1421:}
+1422:[CodexAppServerNotification] {
+1423:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1424:  method: 'rawResponseItem/completed',
+1425:  matchesThread: true,
+1426:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1427:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1429:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+1430:}
+1431:[CodexEmitAppServerMessage] {
+1432:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1433:  method: 'rawResponseItem/completed',
+1434:  listenerCount: 1,
+1435:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+1436:}
+
+---
+
+1435:  paramKeys: [ 'threadId', 'turnId', 'item' ]
+1436:}
+1437:[CodexAppServerNotification] {
+1438:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1439:  method: 'thread/tokenUsage/updated',
+1440:  matchesThread: true,
+1441:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1442:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1444:  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+1445:}
+1446:[CodexEmitAppServerMessage] {
+1447:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1448:  method: 'thread/tokenUsage/updated',
+1449:  listenerCount: 1,
+1450:  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+1451:}
+
+---
+
+1456:  paramKeys: [ 'rateLimits' ]
+1457:}
+1458:[CodexAppServerNotification] {
+1459:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1460:  method: 'thread/status/changed',
+1461:  matchesThread: true,
+1462:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1463:  activeTurnId: '019f0878-4a97-7f63-b31d-3b0314efce96',
+
+---
+
+1465:  paramKeys: [ 'threadId', 'status' ]
+1466:}
+1467:[CodexEmitAppServerMessage] {
+1468:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1469:  method: 'thread/status/changed',
+1470:  listenerCount: 1,
+1471:  paramKeys: [ 'threadId', 'status' ]
+1472:}
+
+---
+
+1471:  paramKeys: [ 'threadId', 'status' ]
+1472:}
+1473:[CodexAppServerNotification] {
+1474:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1475:  method: 'turn/completed',
+1476:  matchesThread: true,
+1477:  threadId: '019f0877-b59d-7032-85c7-79fcc4c7b4b3',
+1478:  activeTurnId: null,
+
+---
+
+1480:  paramKeys: [ 'threadId', 'turn' ]
+1481:}
+1482:[CodexEmitAppServerMessage] {
+1483:  runId: 'review_lead_live_ui_click_supported_178255328248_d4426d11769c4244ace0464bfceffd8f',
+1484:  method: 'turn/completed',
+1485:  listenerCount: 1,
+1486:  paramKeys: [ 'threadId', 'turn' ]
+1487:}

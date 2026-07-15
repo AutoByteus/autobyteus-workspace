@@ -226,7 +226,9 @@ manifests:
   workspace root, run id, and sender identity used by media execution.
 - Task-delegation tools reuse the task-delegation manifest and
   `TaskDelegationToolService`. They are available only for sessions with an
-  active `MemberTeamContext`.
+  active `MemberTeamContext`; review feedback uses the canonical
+  `review_task_result.comment` field rather than the ordinary-message
+  `message` field.
 - `publish_artifacts` reuses the published-artifact contract and
   `PublishedArtifactPublicationService`. It publishes against the owning active
   run id and uses session execution context as fallback runtime context for
@@ -236,14 +238,21 @@ The MCP result mapper returns standard MCP text content and sets `isError` when
 the shared `AgentOperationResult` is not accepted. Configured MCP-origin tools
 may also return raw MCP tool results; their `content`, `isError`,
 `structuredContent`, and `_meta` fields are preserved for the provider runtime.
+This raw envelope behavior is the MCP protocol boundary and must not be changed
+by application-facing result projection.
 
-For Codex App Server and Claude Agent SDK, route-backed Agent Tools MCP lifecycle
-events are normalized to canonical application-facing tool names such as
-`send_message_to`, `open_tab`, `generate_image`, `delegate_tasks`, and
+For Codex App Server and Claude Agent SDK, route-backed Agent Tools MCP
+lifecycle events are normalized to canonical application-facing tool names such
+as `send_message_to`, `open_tab`, `generate_image`, `delegate_task`, and
 `publish_artifacts`. Provider/server-qualified names such as
 `mcp__autobyteus_agent_tools__generate_image`, `autobyteus_agent_tools`, and
 bearer/header config details must not leak into frontend events, run history, or
-memory read models.
+memory read models. Source-confirmed MCP terminal results also pass through the
+general effective-result projector at the runtime lifecycle boundary: successful
+MCP `content` / `structuredContent` envelopes become effective app-facing
+results, and `isError: true` envelopes become failed tool lifecycle events. That
+projection applies after provider event conversion has MCP source evidence and
+must not be applied to the Agent Tools MCP JSON-RPC route response itself.
 
 ## Adding Future Tool Adapters
 

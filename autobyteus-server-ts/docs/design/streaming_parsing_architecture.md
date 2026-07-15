@@ -56,16 +56,18 @@ authorities. `TeamCommunicationMessageProcessor` emits one normalized
 `TEAM_COMMUNICATION_MESSAGE` event per accepted message, and
 `TeamCommunicationService` persists those derived events once per team run in
 `agent_teams/<teamRunId>/team_communication_messages.json`. The persisted
-message stores sender and receiver `memberKind`, `memberPath`,
-`memberRouteKey`, and optional `representedSubTeam` metadata. Parent-to-
-representative messages can therefore display the represented subteam while
-projecting the actual leaf recipient path, and upward child-to-parent reports
-can display the child representative's subteam without inventing a reply alias.
-The frontend
-projects focused-member sent/received message views in the Team tab from
-`TEAM_COMMUNICATION_MESSAGE`, while raw `INTER_AGENT_MESSAGE` remains the
-conversation display source. Recipient runtime input may include one generated
-**Reference files:** block from the structured list, while the original
+projection stores `teamRunId` once at the projection level and each message
+stores `senderAddress` and `receiverAddress` as canonical
+`ConversationTargetAddress` values. Parent-to-representative,
+child-to-parent, task-team, and task-agent communication retain their concrete
+runtime scope through address segments instead of flat sender/receiver member
+fields or represented-subteam wrappers. The frontend projects focused-member
+sent/received message views in the Team tab from `TEAM_COMMUNICATION_MESSAGE`
+by exact normalized address equality, while raw `INTER_AGENT_MESSAGE` remains
+the conversation display source. Old flat projection files are handled by the
+registered app-data migration, not by runtime read fallback. Recipient runtime
+input may include one generated **Reference files:** block from the structured
+list, while the original
 inter-agent message content remains natural and self-contained. Runtime
 diagnostics for this path use the `[team-communication]` prefix and log concise
 event-level metadata rather than full message content.

@@ -37,6 +37,7 @@ export interface LlmProviderRecord {
 export interface ModelInfo {
   modelIdentifier: string
   name: string
+  description?: string | null
   value: string
   canonicalName: string
   providerId: string
@@ -149,6 +150,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
     providersWithModels: [] as ProviderWithModels[],
     audioProvidersWithModels: [] as ProviderWithModels[],
     imageProvidersWithModels: [] as ProviderWithModels[],
+    videoProvidersWithModels: [] as ProviderWithModels[],
     providerConfigs: {} as Record<string, LLMProviderConfig>,
     isLoadingModels: false,
     isReloadingModels: false,
@@ -170,6 +172,9 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
     },
     imageModels(state): string[] {
       return state.imageProvidersWithModels.flatMap((row) => row.models.map((model) => model.modelIdentifier))
+    },
+    videoModels(state): string[] {
+      return state.videoProvidersWithModels.flatMap((row) => row.models.map((model) => model.modelIdentifier))
     },
     providerById(state): (providerId: string | null | undefined) => LlmProviderRecord | null {
       return (providerId: string | null | undefined) => {
@@ -259,6 +264,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         this.providersWithModels = data?.availableLlmProvidersWithModels ?? []
         this.audioProvidersWithModels = data?.availableAudioProvidersWithModels ?? []
         this.imageProvidersWithModels = data?.availableImageProvidersWithModels ?? []
+        this.videoProvidersWithModels = data?.availableVideoProvidersWithModels ?? []
         this.providerConfigs = syncProviderConfiguredState(this.providersWithModels, this.providerConfigs)
         this.modelRuntimeKind = runtimeKind
         this.hasFetchedProviders = true
@@ -268,6 +274,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         this.providersWithModels = []
         this.audioProvidersWithModels = []
         this.imageProvidersWithModels = []
+        this.videoProvidersWithModels = []
         throw error
       } finally {
         this.isLoadingModels = false
@@ -292,6 +299,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         this.providersWithModels = data?.availableLlmProvidersWithModels ?? []
         this.audioProvidersWithModels = data?.availableAudioProvidersWithModels ?? []
         this.imageProvidersWithModels = data?.availableImageProvidersWithModels ?? []
+        this.videoProvidersWithModels = data?.availableVideoProvidersWithModels ?? []
         this.providerConfigs = syncProviderConfiguredState(this.providersWithModels, this.providerConfigs)
         this.modelRuntimeKind = runtimeKind
         this.hasFetchedProviders = true
@@ -301,6 +309,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         this.providersWithModels = []
         this.audioProvidersWithModels = []
         this.imageProvidersWithModels = []
+        this.videoProvidersWithModels = []
         throw error
       } finally {
         if (showLoading) {

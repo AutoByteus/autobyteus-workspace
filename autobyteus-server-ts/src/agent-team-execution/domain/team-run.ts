@@ -22,6 +22,8 @@ import {
 } from "./team-run-event.js";
 import type { TeamStatusPayload } from "./team-status-payload.js";
 import type { StartTaskAgentInstanceRequest } from "./task-agent-instance.js";
+import type { StartTaskTeamInstanceRequest } from "./task-team-instance.js";
+import type { ConversationTargetAddress } from "./conversation-target-address.js";
 
 type TeamRunOptions = {
   context?: TeamRunContext<RuntimeTeamRunContext>;
@@ -93,6 +95,13 @@ export class TeamRun {
     );
   }
 
+  async postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<AgentOperationResult> {
+    return this.backend.postMessageToConversationTarget(message, address);
+  }
+
   async deliverInterAgentMessage(
     intent: InterAgentMessageDeliveryIntent,
   ): Promise<AgentOperationResult> {
@@ -105,6 +114,7 @@ export class TeamRun {
     approved: boolean,
     reason: string | null = null,
     targetMemberRunId: string | null = null,
+    taskTeamRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     return this.backend.approveToolInvocation(
       target,
@@ -112,6 +122,7 @@ export class TeamRun {
       approved,
       reason,
       targetMemberRunId,
+      taskTeamRunId,
     );
   }
 
@@ -176,6 +187,55 @@ export class TeamRun {
     return this.backend.settleTaskAgentInstance(
       normalizedLogicalMemberRouteKey,
       normalizedTaskAgentRunId,
+      reason,
+    );
+  }
+
+
+  async startTaskTeamInstance(
+    request: StartTaskTeamInstanceRequest,
+  ): Promise<AgentOperationResult> {
+    return this.backend.startTaskTeamInstance(request);
+  }
+
+  async postMessageToTaskTeamInstance(
+    logicalTeamRouteKey: string,
+    taskTeamRunId: string,
+    message: AgentInputUserMessage,
+  ): Promise<AgentOperationResult> {
+    const normalizedLogicalTeamRouteKey = logicalTeamRouteKey.trim();
+    const normalizedTaskTeamRunId = taskTeamRunId.trim();
+    if (!normalizedLogicalTeamRouteKey || !normalizedTaskTeamRunId) {
+      return {
+        accepted: false,
+        code: "TASK_TEAM_TARGET_REQUIRED",
+        message: "logicalTeamRouteKey and taskTeamRunId are required.",
+      };
+    }
+    return this.backend.postMessageToTaskTeamInstance(
+      normalizedLogicalTeamRouteKey,
+      normalizedTaskTeamRunId,
+      message,
+    );
+  }
+
+  async settleTaskTeamInstance(
+    logicalTeamRouteKey: string,
+    taskTeamRunId: string,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    const normalizedLogicalTeamRouteKey = logicalTeamRouteKey.trim();
+    const normalizedTaskTeamRunId = taskTeamRunId.trim();
+    if (!normalizedLogicalTeamRouteKey || !normalizedTaskTeamRunId) {
+      return {
+        accepted: false,
+        code: "TASK_TEAM_TARGET_REQUIRED",
+        message: "logicalTeamRouteKey and taskTeamRunId are required.",
+      };
+    }
+    return this.backend.settleTaskTeamInstance(
+      normalizedLogicalTeamRouteKey,
+      normalizedTaskTeamRunId,
       reason,
     );
   }

@@ -1,0 +1,3 @@
+# final report diff hygiene check after v1.4.0 release status update
+Command: git diff --check
+Exit status: 0

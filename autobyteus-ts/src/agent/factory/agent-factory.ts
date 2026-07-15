@@ -9,9 +9,7 @@ import { BaseTool } from '../../tools/base-tool.js';
 import { SkillRegistry } from '../../skills/registry.js';
 import {
   CompactionPolicy,
-  Compactor,
   FileMemoryStore,
-  AgentCompactionSummarizer,
   MemoryManager,
   resolveMemoryBaseDir
 } from '../../memory/index.js';
@@ -32,10 +30,23 @@ const normalizeExplicitMemoryDir = (value: string | null | undefined): string | 
   return normalized.length > 0 ? normalized : null;
 };
 
+type ActiveAgentEntry = {
+  state: 'active';
+  agent: Agent;
+};
+
+type StoppingAgentEntry = {
+  state: 'stopping';
+  agent: Agent;
+  stopPromise: Promise<boolean>;
+};
+
+type AgentLifecycleEntry = ActiveAgentEntry | StoppingAgentEntry;
+
 export class AgentFactory extends Singleton {
   protected static instance?: AgentFactory;
 
-  private activeAgents: Map<string, Agent> = new Map();
+  private agents: Map<string, AgentLifecycleEntry> = new Map();
 
   constructor() {
     super();
@@ -121,17 +132,9 @@ export class AgentFactory extends Singleton {
     const memoryStore = new FileMemoryStore(memoryDir, agentId, memoryLayoutOptions);
     const snapshotStore = new WorkingContextSnapshotStore(memoryDir, agentId, memoryLayoutOptions);
     const compactionPolicy = new CompactionPolicy();
-    const compactor = config.compactionAgentRunner
-      ? new Compactor(memoryStore, new AgentCompactionSummarizer({
-          runner: config.compactionAgentRunner,
-          parentAgentId: agentId,
-          maxItemChars: compactionPolicy.maxItemChars
-        }))
-      : null;
     runtimeState.memoryManager = new MemoryManager({
       store: memoryStore,
       compactionPolicy,
-      compactor,
       workingContextSnapshotStore: snapshotStore
     });
     runtimeState.restoreOptions = restoreOptions;
@@ -165,7 +168,7 @@ export class AgentFactory extends Singleton {
     }
 
     let agentId = generateReadableAgentId(config.name, config.role);
-    while (this.activeAgents.has(agentId)) {
+    while (this.hasKnownAgent(agentId)) {
       agentId = generateReadableAgentId(config.name, config.role);
     }
 
@@ -179,13 +182,13 @@ export class AgentFactory extends Singleton {
     if (!agentId || typeof agentId !== 'string') {
       throw new Error('createAgentWithId requires a non-empty string agentId.');
     }
-    if (this.activeAgents.has(agentId)) {
-      throw new Error(`Agent '${agentId}' is already active.`);
+    if (this.hasKnownAgent(agentId)) {
+      throw new Error(`Agent '${agentId}' is already active or stopping.`);
     }
 
     const runtime = this.createRuntimeWithId(agentId, config);
     const agent = new Agent(runtime);
-    this.activeAgents.set(agentId, agent);
+    this.agents.set(agentId, { state: 'active', agent });
     console.info(`Agent '${agentId}' created and stored successfully.`);
     return agent;
   }
@@ -194,37 +197,58 @@ export class AgentFactory extends Singleton {
     if (!agentId || typeof agentId !== 'string') {
       throw new Error('restoreAgent requires a non-empty string agentId.');
     }
-    if (this.activeAgents.has(agentId)) {
-      throw new Error(`Agent '${agentId}' is already active.`);
+    if (this.hasKnownAgent(agentId)) {
+      throw new Error(`Agent '${agentId}' is already active or stopping.`);
     }
 
     const restoreOptions = new WorkingContextSnapshotBootstrapOptions();
     const runtime = this.createRuntimeWithId(agentId, config, memoryDir, restoreOptions);
     const agent = new Agent(runtime);
-    this.activeAgents.set(agentId, agent);
+    this.agents.set(agentId, { state: 'active', agent });
     console.info(`Agent '${agentId}' restored and stored successfully.`);
     return agent;
   }
 
   getAgent(agentId: string): Agent | undefined {
-    return this.activeAgents.get(agentId);
+    const entry = this.agents.get(agentId);
+    return entry?.state === 'active' ? entry.agent : undefined;
   }
 
   async removeAgent(agentId: string, shutdownTimeout: number = 10.0): Promise<boolean> {
-    const agent = this.activeAgents.get(agentId);
-    if (!agent) {
+    const entry = this.agents.get(agentId);
+    if (!entry) {
       console.warn(`Agent with ID '${agentId}' not found for removal.`);
       return false;
     }
+    if (entry.state === 'stopping') {
+      console.info(`Agent '${agentId}' is already stopping. Awaiting existing shutdown.`);
+      return entry.stopPromise;
+    }
 
-    this.activeAgents.delete(agentId);
+    const agent = entry.agent;
     console.info(`Removing agent '${agentId}'. Attempting graceful shutdown.`);
-    await agent.stop(shutdownTimeout);
-    return true;
+    let stoppingEntry!: StoppingAgentEntry;
+    const stopPromise = (async () => {
+      await agent.stop(shutdownTimeout);
+      const currentEntry = this.agents.get(agentId);
+      if (currentEntry === stoppingEntry) {
+        this.agents.delete(agentId);
+      }
+      return true;
+    })();
+    stoppingEntry = { state: 'stopping', agent, stopPromise };
+    this.agents.set(agentId, stoppingEntry);
+    return stopPromise;
   }
 
   listActiveAgentIds(): string[] {
-    return Array.from(this.activeAgents.keys());
+    return Array.from(this.agents.entries())
+      .filter(([, entry]) => entry.state === 'active')
+      .map(([agentId]) => agentId);
+  }
+
+  private hasKnownAgent(agentId: string): boolean {
+    return this.agents.has(agentId);
   }
 }
 

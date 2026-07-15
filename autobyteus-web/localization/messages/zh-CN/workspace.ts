@@ -17,44 +17,36 @@ const messages = {
     "配置",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
-  "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility":
-    "自我演进资格",
-  "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility_help":
-    "允许此运行在工作完成后显示“自我改进”。该设置会在启动时快照保存。",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
-  "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility":
-    "自我演进资格",
-  "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility_help":
-    "允许此团队运行的成员在工作完成后显示“自我改进”。成员覆盖可在启动前进一步调整。",
+  "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
+    "团队成员覆盖",
+  "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
+    "{{count}} 个已覆盖",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "协调者",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
     "已覆盖",
   "workspace.components.workspace.config.MemberOverrideItem.runtime_override":
-    "运行时覆盖",
+    "运行时",
   "workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default":
-    "使用全局运行时默认值",
+    "全局默认",
+  "workspace.components.workspace.config.MemberOverrideItem.llm_model_override":
+    "LLM 模型",
+  "workspace.components.workspace.config.MemberOverrideItem.use_global_model_default":
+    "全局默认",
   "workspace.components.workspace.config.MemberOverrideItem.search_models":
     "搜索模型...",
   "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
     "选择兼容的成员模型",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve":
+    "自动批准",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
-    "自动执行：使用全局设置",
+    "全局默认",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
-    "自动执行：开启",
+    "开启",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
-    "自动执行：关闭",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_override":
-    "自我演进覆盖",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_use_team_default":
-    "使用团队默认值",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_enabled":
-    "符合资格",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_disabled":
-    "不符合资格",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_help":
-    "此成员自我演进资格快照的可选启动时覆盖。",
+    "关闭",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "智能体",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":
@@ -104,12 +96,8 @@ const messages = {
     "代表",
   "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
     "当前聚焦的子团队",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
-    "子团队成员",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
-    "任务智能体",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.member_badge":
-    "成员",
+  "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
+    "还没有活动。",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
     "团队名册",
   "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
@@ -122,6 +110,52 @@ const messages = {
     "任务智能体",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "需要审批",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.tasks":
+    "任务",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_singular":
+    "个任务",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural":
+    "个任务",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_agent":
+    "聚焦智能体",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_team":
+    "聚焦团队",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus":
+    "聚焦",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.technical_details":
+    "技术详情",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.select_task":
+    "选择一个任务进行阅读。",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice":
+    "正在等待在 Activity 中处理用户操作。",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.target_kind":
+    "目标类型",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_type":
+    "任务类型",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.target":
+    "目标",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty":
+    "暂无委派任务",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail":
+    "委派工作会从已保存的任务记录显示在这里。",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_agent":
+    "任务智能体",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_team":
+    "任务团队",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
+    "需要审批",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_id":
+    "任务 ID",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_run_id":
+    "智能体运行 ID",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_team_run_id":
+    "智能体团队运行 ID",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable":
+    "任务描述不可用",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
+    "成员",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
+    "临时任务执行",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "向此子团队发送消息",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
@@ -158,13 +192,13 @@ const messages = {
     "模型",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "选择模型",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.self_improve": "自我改进",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.standalone_scope": "此运行",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.team_member_scope": "该成员的运行",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.aria_label": "为{{scope}}进行自我改进",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.tooltip": "为{{scope}}启动一个可见的 Skill Self-Evolver。它可能更新已配置的技能包，也可能不做更改。",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.run_not_eligible": "此运行不符合自我改进条件。",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.started_toast": "自我改进已启动。技能可能会被更新，也可能不做更改。",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.improve_skills": "改进技能",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.standalone_scope": "此运行",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.team_member_scope": "该成员的运行",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.aria_label": "为{{scope}}改进技能",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.tooltip": "为{{scope}}启动一个可见的 Retrospective Skill Improver。它可能更新已配置的技能包，也可能不做更改。",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.run_not_eligible": "此运行不符合技能改进条件。",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.started_toast": "技能改进已启动。技能可能会被更新，也可能不做更改。",
 } satisfies TranslationCatalog;
 
 export default messages;

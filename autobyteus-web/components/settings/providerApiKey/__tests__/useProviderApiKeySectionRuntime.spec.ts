@@ -107,6 +107,13 @@ const geminiRow = {
   models: [{ modelIdentifier: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', providerType: 'GEMINI' }],
 }
 
+const geminiVideoRow = {
+  provider: {
+    ...geminiRow.provider,
+  },
+  models: [{ modelIdentifier: 'gemini-omni-flash-preview', name: 'Gemini Omni Flash Preview', providerType: 'GEMINI' }],
+}
+
 const deepFreeze = <T>(value: T): T => {
   if (value && typeof value === 'object') {
     Object.freeze(value)
@@ -129,6 +136,7 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
         providersWithModels: [],
         audioProvidersWithModels: [],
         imageProvidersWithModels: [],
+        videoProvidersWithModels: [],
         geminiSetup: {
           mode: 'AI_STUDIO',
           geminiApiKeyConfigured: false,
@@ -175,6 +183,7 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
     store.providersWithModels = store.providersWithModels.filter((row) => row.provider.id !== providerId)
     store.audioProvidersWithModels = store.audioProvidersWithModels.filter((row) => row.provider.id !== providerId)
     store.imageProvidersWithModels = store.imageProvidersWithModels.filter((row) => row.provider.id !== providerId)
+    store.videoProvidersWithModels = store.videoProvidersWithModels.filter((row) => row.provider.id !== providerId)
     return true
   })
 
@@ -255,6 +264,20 @@ describe('useProviderApiKeySectionRuntime', () => {
       vertexLocation: null,
     })
     expect((wrapper.vm as any).notification.message).toBe('Gemini setup saved successfully')
+  })
+
+  it('includes video models in provider totals and selected-provider model details', async () => {
+    const { wrapper } = mountRuntime({
+      providersWithModels: [geminiRow],
+      videoProvidersWithModels: [geminiVideoRow],
+    })
+
+    await (wrapper.vm as any).initialize()
+    await flushPromises()
+
+    const geminiSummary = (wrapper.vm as any).allProvidersWithModels.find((provider: any) => provider.id === 'GEMINI')
+    expect(geminiSummary.totalModels).toBe(2)
+    expect((wrapper.vm as any).selectedProviderVideoModels).toEqual(geminiVideoRow.models)
   })
 
   it('probes and saves custom providers through the provider-centered draft flow', async () => {

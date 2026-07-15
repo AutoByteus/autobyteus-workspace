@@ -1,0 +1,39 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/rpa-xml-read-media-duplication/autobyteus-ts
+
+stdout | tests/unit/agent/message/tool-continuation-display-text.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/loop/tool-result-continuation-builder.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/agent/message/tool-continuation-display-text.test.ts (3 tests) 2ms
+ ✓ tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts (6 tests) 6ms
+ ✓ tests/unit/agent/loop/tool-result-continuation-builder.test.ts (4 tests) 5ms
+ ✓ tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts (8 tests) 4ms
+ ✓ tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts (5 tests) 6ms
+
+ Test Files  5 passed (5)
+      Tests  26 passed (26)
+   Start at  18:30:09
+   Duration  309ms (transform 450ms, setup 175ms, import 592ms, tests 23ms, environment 0ms)
+

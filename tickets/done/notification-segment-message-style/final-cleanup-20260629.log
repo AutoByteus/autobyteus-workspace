@@ -1,0 +1,15 @@
+Final cleanup for notification-segment-message-style at 2026-06-29T14:57:16Z
+--- ticket worktree status before removal ---
+## codex/notification-segment-message-style...origin/codex/notification-segment-message-style
+--- remove dedicated worktree ---
+--- prune worktrees ---
+--- delete local ticket branch ---
+Deleted branch codex/notification-segment-message-style (was ea814d52).
+--- delete remote ticket branch ---
+remote: 
+remote: GitHub found 580 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (14 critical, 237 high, 279 moderate, 50 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]           codex/notification-segment-message-style
+--- remaining worktree entry check ---

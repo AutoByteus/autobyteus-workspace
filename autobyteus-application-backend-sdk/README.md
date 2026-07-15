@@ -57,6 +57,7 @@ export default defineApplication({
 - `backend/bundle.json` declares the backend entry module plus optional migrations/assets directories.
 - `application.json` may declare `executionResourceSlots[]`; app backends should resolve launch resources through `context.runtimeControl.getConfiguredExecutionResource(slotKey)` instead of hardcoded runtime targets.
 - The execution-resource rename is a clean break: app code and manifests must use `executionResourceRef` / `source` and the execution-resource runtime-control method names. Old `resourceRef` / `owner` execution-resource shapes are not migrated by the platform.
+- Launch-profile helpers normalize missing skill access to `PRELOADED_ONLY`, which means the selected agent or team member uses the skills configured on its definition. `NONE` is the only explicit no-skill override. `GLOBAL_DISCOVERY` is rejected; app-owned broad agents must be configured with the desired skill names instead of requesting all-installed skills at launch.
 - `artifactHandlers.persisted` is the live published-artifact callback. It is separate from lifecycle `eventHandlers`, which continue to receive only `RUN_*` journal envelopes.
 - Applications that need guaranteed artifact catch-up should use `runtimeControl.listRunBindings(...)`, `getRunPublishedArtifacts(...)`, and `getPublishedArtifactRevisionText(...)`, then apply their own idempotency keyed by `revisionId`.
 - App-authored migrations run only against `app.sqlite`; platform-owned `platform.sqlite` remains reserved.

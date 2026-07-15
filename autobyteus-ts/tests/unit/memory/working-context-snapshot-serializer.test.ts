@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { Message, MessageRole, ToolCallPayload, ToolCallSpec, ToolResultPayload } from '../../../src/llm/utils/messages.js';
-import { WorkingContextSnapshot } from '../../../src/memory/working-context-snapshot.js';
+import { WorkingContext } from '../../../src/memory/working-context.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 
 describe('WorkingContextSnapshotSerializer', () => {
   it('serializes and deserializes tool payloads with the current schema version', () => {
-    const snapshot = new WorkingContextSnapshot();
+    const snapshot = new WorkingContext();
     snapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
     snapshot.appendMessage(new Message(MessageRole.USER, {
       content: 'Hello',
@@ -44,9 +44,11 @@ describe('WorkingContextSnapshotSerializer', () => {
     });
 
     expect(payload.schema_version).toBe(WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION);
+    expect(payload).not.toHaveProperty('epoch_id');
+    expect(payload).not.toHaveProperty('last_compaction_ts');
     expect(WorkingContextSnapshotSerializer.validate(payload)).toBe(true);
 
-    const { snapshot: restored, metadata } = WorkingContextSnapshotSerializer.deserialize(payload);
+    const { workingContext: restored, metadata } = WorkingContextSnapshotSerializer.deserialize(payload);
     expect(metadata.agent_id).toBe('agent_1');
 
     const messages = restored.buildMessages();
@@ -72,6 +74,33 @@ describe('WorkingContextSnapshotSerializer', () => {
     expect(messages[4].tool_payload).toBeInstanceOf(ToolResultPayload);
   });
 
+  it('directly reads existing v4 supersets and omits obsolete extras on the next write', () => {
+    const existingV4 = {
+      schema_version: 4,
+      agent_id: 'agent_existing',
+      epoch_id: 19,
+      last_compaction_ts: 123.5,
+      messages: [{
+        role: 'system',
+        content: 'System',
+        reasoning_content: null,
+        image_urls: [],
+        audio_urls: [],
+        video_urls: [],
+        tool_payload: null,
+        metadata: null,
+      }],
+    };
+
+    expect(WorkingContextSnapshotSerializer.validate(existingV4)).toBe(true);
+    const { workingContext, metadata } = WorkingContextSnapshotSerializer.deserialize(existingV4);
+    expect(workingContext.buildMessages()[0]?.content).toBe('System');
+    expect(metadata).toEqual({ schema_version: 4, agent_id: 'agent_existing' });
+    const rewritten = WorkingContextSnapshotSerializer.serialize(workingContext, metadata);
+    expect(rewritten).not.toHaveProperty('epoch_id');
+    expect(rewritten).not.toHaveProperty('last_compaction_ts');
+  });
+
   it('rejects stale schema versions', () => {
     expect(
       WorkingContextSnapshotSerializer.validate({
@@ -89,7 +118,7 @@ describe('WorkingContextSnapshotSerializer', () => {
       }
     }
 
-    const snapshot = new WorkingContextSnapshot();
+    const snapshot = new WorkingContext();
     snapshot.appendMessage(new Message(MessageRole.TOOL, {
       content: null,
       tool_payload: new ToolResultPayload('call_2', 'weird', new Weird(), null),

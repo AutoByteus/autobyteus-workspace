@@ -4,16 +4,21 @@ import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-
 import type { TeamRun } from "../domain/team-run.js";
 import type { TeamMemberRunConfig, TeamRunMemberConfig } from "../domain/team-run-config.js";
 import type { TaskAgentDirectory } from "./task-agent-directory.js";
+import { getTaskExecutionKind } from "./task-execution-instance.js";
+import type { ActiveTaskDelegationStartingEntry } from "./task-delegation-active-entry.js";
 import type { TaskDelegationLedger } from "./task-delegation-ledger.js";
 import {
   TaskDelegationError,
   type TaskDelegationActivationResult,
   type TaskDelegationDelegatorIdentity,
-  type TaskDelegationMemberIdentity,
 } from "./task-delegation-record.js";
+import type { TaskDelegationMemberIdentity } from "./task-delegation-target.js";
+import { getTaskDelegationTargetName } from "./task-delegation-target.js";
 import { buildTaskAgentInstanceIdentity } from "./task-agent-instance-identity.js";
-import { TaskDelegationEventPublisher } from "./task-delegation-event-publisher.js";
+import { TaskDelegationVisibleNotificationRenderer } from "./task-delegation-visible-notification-renderer.js";
 import { TaskDelegationWorkPacketRenderer } from "./task-delegation-work-packet-renderer.js";
+import { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
+import { markTaskDelegationSystemTaskNotificationMetadata } from "./task-delegation-system-message-visibility.js";
 
 type DelegatorReplySelector = {
   recipientName: string | null;
@@ -27,125 +32,166 @@ export class TaskDelegationActivationCoordinator {
     private readonly ledger: TaskDelegationLedger,
     private readonly taskAgentDirectory: TaskAgentDirectory,
     private readonly renderer = new TaskDelegationWorkPacketRenderer(),
-    private readonly eventPublisher = new TaskDelegationEventPublisher(),
+    private readonly visibleNotificationRenderer = new TaskDelegationVisibleNotificationRenderer(),
     private readonly agentRunIdentityAllocator: AgentRunIdentityAllocatorLike = AgentRunIdentityAllocator.getInstance(),
+    private readonly taskTeamRunIdentityFactory = new TaskTeamRunIdentityFactory(agentRunIdentityAllocator),
   ) {}
 
-  async activateRunnableTasks(teamRun: TeamRun): Promise<TaskDelegationActivationResult[]> {
-    const runnable = this.ledger.listRunnableNotStarted();
-    if (runnable.length === 0) {
-      return [];
+  async activateTask(
+    teamRun: TeamRun,
+    taskId: string,
+  ): Promise<TaskDelegationActivationResult> {
+    const entry = this.ledger.getStartingEntry(taskId);
+    if (!entry) throw new TaskDelegationError("TASK_NOT_FOUND", `Delegated task '${taskId}' was not found or is already active.`);
+    return entry.target.kind === "member"
+      ? this.activateMemberTask(teamRun, entry.taskId, entry.target.member)
+      : this.activateTeamTask(teamRun, entry.taskId, entry.target.team);
+  }
+
+  private async activateMemberTask(
+    teamRun: TeamRun,
+    taskId: string,
+    member: TaskDelegationMemberIdentity,
+  ): Promise<TaskDelegationActivationResult> {
+    let taskAgentRunId: string;
+    try {
+      const targetMemberConfig = this.resolveTargetAgentMemberConfig(teamRun, member);
+      taskAgentRunId = await this.agentRunIdentityAllocator.allocateForAgentDefinition(targetMemberConfig.agentDefinitionId);
+    } catch (error) {
+      return this.rejected("member", member.memberName, taskId, error);
     }
-    const results: TaskDelegationActivationResult[] = [];
 
-    for (const runnableRecord of runnable) {
-      let taskAgentRunId: string;
-      try {
-        const targetMemberConfig = this.resolveTargetAgentMemberConfig(
-          teamRun,
-          runnableRecord.member,
-        );
-        taskAgentRunId = await this.agentRunIdentityAllocator.allocateForAgentDefinition(
-          targetMemberConfig.agentDefinitionId,
-        );
-      } catch (error) {
-        results.push({
-          memberName: runnableRecord.member.memberName,
-          taskCount: 1,
-          accepted: false,
-          task_id: runnableRecord.taskId,
-          target_agent_run_id: null,
-          message: error instanceof Error ? error.message : String(error),
-        });
-        continue;
-      }
-
-      const taskAgentInstance = buildTaskAgentInstanceIdentity({
-        teamRunId: this.ledger.teamRunId,
-        taskId: runnableRecord.taskId,
-        taskAgentRunId,
-        logicalMember: runnableRecord.member,
+    const taskAgentInstance = buildTaskAgentInstanceIdentity({
+      teamRunId: this.ledger.teamRunId,
+      taskId,
+      taskAgentRunId,
+      logicalMember: member,
+    });
+    const entryBeforeBind = this.ledger.getStartingEntry(taskId)!;
+    const delegatorReply = this.resolveDelegatorReplySelector(entryBeforeBind.reviewOwner);
+    try {
+      this.taskAgentDirectory.registerStartingTask({
+        taskId,
+        logicalMember: member,
+        delegator: entryBeforeBind.reviewOwner,
+        taskAgentInstance,
+        delegatorReplyRecipientName: delegatorReply.recipientName,
+        delegatorReplyTargetAgentRunId: delegatorReply.targetAgentRunId,
       });
-      const delegatorReply = this.resolveDelegatorReplySelector(runnableRecord.delegator);
-      try {
-        this.taskAgentDirectory.registerStartingTask({
-          taskId: runnableRecord.taskId,
-          logicalMember: runnableRecord.member,
-          delegator: runnableRecord.delegator,
-          taskAgentInstance,
-          delegatorReplyRecipientName: delegatorReply.recipientName,
-          delegatorReplyTargetAgentRunId: delegatorReply.targetAgentRunId,
-        });
-      } catch (error) {
-        results.push({
-          memberName: runnableRecord.member.memberName,
-          taskCount: 1,
-          accepted: false,
-          task_id: runnableRecord.taskId,
-          target_agent_run_id: null,
-          message: error instanceof Error ? error.message : String(error),
-        });
-        continue;
-      }
-
-      let record = runnableRecord;
-      try {
-        record = this.ledger.bindTaskAgent({
-          taskId: runnableRecord.taskId,
-          taskAgentInstance,
-          delegatorReplyRecipientName: delegatorReply.recipientName,
-          delegatorReplyTargetAgentRunId: delegatorReply.targetAgentRunId,
-        });
-        const message = new AgentInputUserMessage(
-          this.renderer.render([record]),
-          SenderType.SYSTEM,
-          null,
-          {
-            sender_id: "system.task_delegation",
-            team_run_id: this.ledger.teamRunId,
-            task_id: record.taskId,
-            task_ids: [record.taskId],
-            target_agent_run_id: taskAgentInstance.taskAgentRunId,
-            message_type: "task_delegation_work_packet",
-          },
-        );
-        const result = await teamRun.startTaskAgentInstance({
-          identity: taskAgentInstance,
-          message,
-        });
-        if (!result.accepted) {
-          this.rollbackStartingTask(record.taskId);
-        } else {
-          const activeRecord = this.ledger.markActive(record.taskId);
-          this.taskAgentDirectory.markActive(record.taskId);
-          this.eventPublisher.publishActivated({
-            teamRun,
-            teamRunId: this.ledger.teamRunId,
-            record: activeRecord,
-          });
-        }
-        results.push({
-          memberName: record.member.memberName,
-          taskCount: 1,
-          accepted: result.accepted,
-          task_id: record.taskId,
-          target_agent_run_id: result.accepted ? taskAgentInstance.taskAgentRunId : null,
-          message: result.message ?? null,
-        });
-      } catch (error) {
-        this.rollbackStartingTask(record.taskId);
-        results.push({
-          memberName: runnableRecord.member.memberName,
-          taskCount: 1,
-          accepted: false,
-          task_id: runnableRecord.taskId,
-          target_agent_run_id: null,
-          message: error instanceof Error ? error.message : String(error),
-        });
-      }
+      const entry = this.ledger.bindTaskAgent({
+        taskId,
+        taskAgentInstance,
+        delegatorReplyRecipientName: delegatorReply.recipientName,
+        delegatorReplyTargetAgentRunId: delegatorReply.targetAgentRunId,
+      });
+      const result = await teamRun.startTaskAgentInstance({
+        identity: taskAgentInstance,
+        message: this.buildWorkPacketMessage(entry, {
+          target_agent_run_id: taskAgentInstance.taskAgentRunId,
+          message_type: "task_delegation_work_packet",
+        }),
+      });
+      if (!result.accepted) this.rollbackStartingTask(taskId);
+      else this.taskAgentDirectory.markActive(taskId);
+      const current = this.ledger.getStartingEntry(taskId) ?? entry;
+      return this.resultFromEntry(current, result.accepted, result.message ?? null);
+    } catch (error) {
+      this.rollbackStartingTask(taskId);
+      return this.rejected("member", member.memberName, taskId, error);
     }
+  }
 
-    return results;
+  private async activateTeamTask(
+    teamRun: TeamRun,
+    taskId: string,
+    team: import("./task-delegation-target.js").TaskDelegationTeamIdentity,
+  ): Promise<TaskDelegationActivationResult> {
+    const entryBeforeBind = this.ledger.getStartingEntry(taskId)!;
+    const delegatorReply = this.resolveDelegatorReplySelector(entryBeforeBind.reviewOwner);
+    let materialization: Awaited<ReturnType<TaskTeamRunIdentityFactory["create"]>>;
+    try {
+      materialization = await this.taskTeamRunIdentityFactory.create({ teamRun, taskId, teamTarget: team });
+    } catch (error) {
+      return this.rejected("team", team.memberName, taskId, error);
+    }
+    try {
+      const entry = this.ledger.bindTaskTeam({
+        taskId,
+        taskTeamInstance: materialization.identity,
+        delegatorReplyRecipientName: delegatorReply.recipientName,
+        delegatorReplyTargetAgentRunId: delegatorReply.targetAgentRunId,
+      });
+      const result = await teamRun.startTaskTeamInstance({
+        identity: materialization.identity,
+        teamConfig: materialization.teamConfig,
+        message: this.buildWorkPacketMessage(entry, {
+          task_team_run_id: materialization.identity.taskTeamRunId,
+          task_team_instance_id: materialization.identity.taskTeamInstanceId,
+          message_type: "task_team_delegation_work_packet",
+        }),
+      });
+      if (!result.accepted) this.rollbackStartingTask(taskId, true);
+      const current = this.ledger.getStartingEntry(taskId) ?? entry;
+      return this.resultFromEntry(current, result.accepted, result.message ?? null);
+    } catch (error) {
+      this.rollbackStartingTask(taskId, true);
+      return this.rejected("team", team.memberName, taskId, error);
+    }
+  }
+
+  private buildWorkPacketMessage(
+    entry: ActiveTaskDelegationStartingEntry,
+    metadata: Record<string, unknown>,
+  ): AgentInputUserMessage {
+    return new AgentInputUserMessage(
+      this.renderer.render([entry]),
+      SenderType.SYSTEM,
+      null,
+      markTaskDelegationSystemTaskNotificationMetadata({
+        sender_id: "system.task_delegation",
+        team_run_id: this.ledger.teamRunId,
+        task_id: entry.taskId,
+        task_ids: [entry.taskId],
+        execution_kind: entry.boundExecution?.kind ?? null,
+        ...metadata,
+      }, {
+        displayContent: this.visibleNotificationRenderer.renderActivation(entry),
+      }),
+    );
+  }
+
+
+  private resultFromEntry(
+    entry: ActiveTaskDelegationStartingEntry,
+    accepted: boolean,
+    message: string | null,
+  ): TaskDelegationActivationResult {
+    return {
+      target: { kind: entry.target.kind, name: getTaskDelegationTargetName(entry.target) },
+      accepted,
+      task_id: entry.taskId,
+      execution_kind: getTaskExecutionKind(entry.boundExecution),
+      task_agent_run_id: entry.boundExecution?.kind === "task_agent" ? entry.boundExecution.taskAgentInstance.taskAgentRunId : null,
+      task_team_run_id: entry.boundExecution?.kind === "task_team" ? entry.boundExecution.taskTeamInstance.taskTeamRunId : null,
+      message,
+    };
+  }
+
+  private rejected(
+    kind: "member" | "team",
+    name: string,
+    taskId: string,
+    error: unknown,
+  ): TaskDelegationActivationResult {
+    return {
+      target: { kind, name },
+      accepted: false,
+      task_id: taskId,
+      execution_kind: null,
+      task_agent_run_id: null,
+      task_team_run_id: null,
+      message: error instanceof Error ? error.message : String(error),
+    };
   }
 
   private resolveTargetAgentMemberConfig(
@@ -154,24 +200,11 @@ export class TaskDelegationActivationCoordinator {
   ): TeamMemberRunConfig {
     const config = teamRun.config;
     if (!config) {
-      throw new TaskDelegationError(
-        "TARGET_MEMBER_CONFIG_NOT_FOUND",
-        `Team run '${teamRun.runId}' is missing config needed to allocate task-agent identity for member '${member.memberRouteKey}'.`,
-      );
+      throw new TaskDelegationError("TARGET_MEMBER_CONFIG_NOT_FOUND", `Team run '${teamRun.runId}' is missing config needed to allocate task-agent identity for member '${member.memberRouteKey}'.`);
     }
     const target = this.findMemberConfig(config.memberTree, member.memberRouteKey, member.memberRunId);
-    if (!target) {
-      throw new TaskDelegationError(
-        "TARGET_MEMBER_CONFIG_NOT_FOUND",
-        `Member '${member.memberRouteKey}' was not found in team run '${teamRun.runId}' config.`,
-      );
-    }
-    if (target.memberKind !== "agent") {
-      throw new TaskDelegationError(
-        "TARGET_MEMBER_NOT_AGENT",
-        `Task delegation target '${member.memberRouteKey}' is not an agent member.`,
-      );
-    }
+    if (!target) throw new TaskDelegationError("TARGET_MEMBER_CONFIG_NOT_FOUND", `Member '${member.memberRouteKey}' was not found in team run '${teamRun.runId}' config.`);
+    if (target.memberKind !== "agent") throw new TaskDelegationError("TARGET_MEMBER_NOT_AGENT", `Task delegation target '${member.memberRouteKey}' is not an agent member.`);
     return target;
   }
 
@@ -181,31 +214,23 @@ export class TaskDelegationActivationCoordinator {
     memberRunId: string,
   ): TeamRunMemberConfig | null {
     for (const member of members) {
-      if (member.memberRouteKey === memberRouteKey || member.memberRunId === memberRunId) {
-        return member;
-      }
+      if (member.memberRouteKey === memberRouteKey || member.memberRunId === memberRunId) return member;
       if (member.memberKind === "agent_team") {
         const child = this.findMemberConfig(member.memberConfigs, memberRouteKey, memberRunId);
-        if (child) {
-          return child;
-        }
+        if (child) return child;
       }
     }
     return null;
   }
 
-  private resolveDelegatorReplySelector(
-    delegator: TaskDelegationDelegatorIdentity,
-  ): DelegatorReplySelector {
+  private resolveDelegatorReplySelector(delegator: TaskDelegationDelegatorIdentity): DelegatorReplySelector {
     const parentTaskAgentRunId = delegator.taskAgentRunId?.trim() || null;
-    if (parentTaskAgentRunId) {
-      return { recipientName: null, targetAgentRunId: parentTaskAgentRunId };
-    }
-    return { recipientName: delegator.memberName, targetAgentRunId: null };
+    return parentTaskAgentRunId
+      ? { recipientName: null, targetAgentRunId: parentTaskAgentRunId }
+      : { recipientName: delegator.memberName, targetAgentRunId: null };
   }
 
-  private rollbackStartingTask(taskId: string): void {
-    this.taskAgentDirectory.unregisterStartingTask(taskId);
-    this.ledger.markNotStarted([taskId]);
+  private rollbackStartingTask(taskId: string, taskTeamTask = false): void {
+    if (!taskTeamTask) this.taskAgentDirectory.unregisterStartingTask(taskId);
   }
 }

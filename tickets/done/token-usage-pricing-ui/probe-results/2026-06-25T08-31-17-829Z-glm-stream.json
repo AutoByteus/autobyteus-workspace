@@ -1,0 +1,49 @@
+{
+  "provider": "glm",
+  "attempted": true,
+  "ok": true,
+  "stream": true,
+  "status": 200,
+  "durationMs": 5260,
+  "model": "glm-5.2",
+  "summary": {
+    "parsedEvents": 63,
+    "parseErrors": 0,
+    "usageChunks": 1,
+    "usage": {
+      "prompt_tokens": 19,
+      "completion_tokens": 64,
+      "total_tokens": 83,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 62
+      }
+    },
+    "usageKeys": [
+      "prompt_tokens",
+      "completion_tokens",
+      "total_tokens",
+      "prompt_tokens_details",
+      "completion_tokens_details"
+    ],
+    "promptDetails": {
+      "cached_tokens": 0
+    },
+    "completionDetails": {
+      "reasoning_tokens": 62
+    },
+    "deltaKeys": [
+      "role",
+      "reasoning_content",
+      "content"
+    ],
+    "sawReasoningDelta": true,
+    "sawReasoningTextField": false,
+    "sawContentDelta": false,
+    "finishReasons": [
+      "length"
+    ]
+  }
+}

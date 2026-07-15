@@ -1,0 +1,12 @@
+Name:      docker.io/autobyteus/autobyteus-server:1.4.8
+MediaType: application/vnd.docker.distribution.manifest.list.v2+json
+Digest:    sha256:0301a2d12986a5774bd3bb5ae986991e5258e76a0bee0438b9fccf0186a4f9fc
+           
+Manifests: 
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.8@sha256:3d850530add6ab1476e3f25414a12a6bb45d507d924f448ae38408a3939aea8b
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/amd64
+             
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.8@sha256:5140c1aea8aa426fe1cc12d132ceb6d4741558291ece018411c24189de64d395
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/arm64

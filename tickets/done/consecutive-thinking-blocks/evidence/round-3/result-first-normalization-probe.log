@@ -1,0 +1,21 @@
+undefined
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "tsx" not found
+[
+  {
+    "eventType": "TOOL_EXECUTION_SUCCEEDED",
+    "payload": {
+      "turnId": "turn-result-first",
+      "item": {
+        "id": "tool-result-first",
+        "type": "commandExecution",
+        "command": "echo inferred",
+        "status": "completed",
+        "aggregatedOutput": "inferred\n"
+      },
+      "invocation_id": "tool-result-first",
+      "turn_id": "turn-result-first",
+      "tool_name": "run_bash",
+      "result": "inferred\n"
+    }
+  }
+]

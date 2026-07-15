@@ -1,0 +1,25 @@
+[
+  {
+    "provider": "openai",
+    "attempted": true,
+    "ok": false,
+    "status": 401,
+    "durationMs": 402,
+    "model": "gpt-5.4-mini",
+    "summary": {
+      "errorKeys": [
+        "error",
+        "status"
+      ],
+      "error": {
+        "error": {
+          "message": "Incorrect API key provided: sk-proj-****…(268 chars)",
+          "type": "invalid_request_error",
+          "code": "invalid_api_key",
+          "param": null
+        },
+        "status": 401
+      }
+    }
+  }
+]

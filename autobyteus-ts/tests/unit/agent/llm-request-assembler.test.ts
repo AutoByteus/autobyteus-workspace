@@ -3,7 +3,7 @@ import { CompactionPreparationError } from '../../../src/agent/compaction/compac
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
 import { BasePromptRenderer } from '../../../src/llm/prompt-renderers/base-prompt-renderer.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
-import { WorkingContextSnapshot } from '../../../src/memory/working-context-snapshot.js';
+import { WorkingContext } from '../../../src/memory/working-context.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { OpenAIChatRenderer } from '../../../src/llm/prompt-renderers/openai-chat-renderer.js';
@@ -19,29 +19,29 @@ class FakeRenderer extends BasePromptRenderer {
 }
 
 class FakeMemoryManager {
-  workingContextSnapshot = new WorkingContextSnapshot();
+  workingContext = new WorkingContext();
   ensureWorkingContextToolProtocolSafeForNextLlm = vi.fn(() => ({
-    messages: this.workingContextSnapshot.buildMessages(),
+    messages: this.workingContext.buildMessages(),
     didRepair: false,
     repairs: [],
   }));
 
   getWorkingContextMessages(): Message[] {
-    return this.workingContextSnapshot.buildMessages();
+    return this.workingContext.buildMessages();
   }
 
   ensureWorkingContextSystemMessage(content: string): boolean {
     if (this.getWorkingContextMessages().length) return false;
-    this.workingContextSnapshot.appendMessage(new Message(MessageRole.SYSTEM, { content }));
+    this.workingContext.appendMessage(new Message(MessageRole.SYSTEM, { content }));
     return true;
   }
 
   appendWorkingContextUserMessage(message: Message): void {
-    this.workingContextSnapshot.appendMessage(message);
+    this.workingContext.appendMessage(message);
   }
 
-  resetWorkingContextSnapshot(messages: Message[]): void {
-    this.workingContextSnapshot.reset(messages);
+  replaceWorkingContext(context: WorkingContext): void {
+    this.workingContext = context.copy();
   }
 }
 
@@ -54,7 +54,7 @@ describe('LLMRequestAssembler', () => {
 
     expect(request.didCompact).toBe(false);
     expect(request.messages.map((message) => message.role)).toEqual([MessageRole.SYSTEM, MessageRole.USER]);
-    expect(memoryManager.workingContextSnapshot.buildMessages()).toEqual(request.messages);
+    expect(memoryManager.workingContext.buildMessages()).toEqual(request.messages);
     expect(memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm).toHaveBeenCalledTimes(2);
   });
 
@@ -64,10 +64,10 @@ describe('LLMRequestAssembler', () => {
     const executor = {
       executeIfRequired: vi.fn(async (input: Record<string, unknown>) => {
         executorCalls.push(input);
-        memoryManager.resetWorkingContextSnapshot([
+        memoryManager.replaceWorkingContext(new WorkingContext([
           new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
           new Message(MessageRole.USER, { content: 'Earlier progress:\n1. Durable summary' }),
-        ]);
+        ]));
         return true;
       })
     };
@@ -82,7 +82,6 @@ describe('LLMRequestAssembler', () => {
     expect(executorCalls).toEqual([
       {
         turnId: 'turn_0002',
-        systemPrompt: 'System prompt',
       }
     ]);
     expect(request.messages.map((message) => message.role)).toEqual([
@@ -114,16 +113,16 @@ describe('LLMRequestAssembler', () => {
         }),
       ]);
       const memoryManager = new MemoryManager({ store });
-      memoryManager.workingContextSnapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System prompt' }));
-      memoryManager.workingContextSnapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
-        content: 'I will draw page two.',
-        tool_payload: new ToolCallPayload([
-          { id: 'call_missing', name: 'generate_image', arguments: { prompt: 'draw a sheep' } },
-        ]),
-      }));
-      memoryManager.workingContextSnapshot.appendMessage(new Message(MessageRole.USER, {
-        content: 'already failed continue attempt',
-      }));
+      memoryManager.replaceWorkingContext(new WorkingContext([
+        new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+        new Message(MessageRole.ASSISTANT, {
+          content: 'I will draw page two.',
+          tool_payload: new ToolCallPayload([
+            { id: 'call_missing', name: 'generate_image', arguments: { prompt: 'draw a sheep' } },
+          ]),
+        }),
+        new Message(MessageRole.USER, { content: 'already failed continue attempt' }),
+      ]));
 
       const request = await new LLMRequestAssembler(
         memoryManager,

@@ -30,9 +30,10 @@ The TypeScript server follows a layered domain architecture:
 3. Initialize `AppConfig` (loads `.env`, resolves paths, sets DB URL for SQLite).
 4. Dynamically import `src/server-runtime.ts` only after config bootstrap completes.
 5. Run Prisma migrations when the schema is present.
-6. Build and start Fastify transports.
-7. Create temp workspace.
-8. Schedule non-critical background startup tasks.
+6. Run required app-data migrations against the expanded schema.
+7. Build and start Fastify transports.
+8. Create temp workspace.
+9. Schedule non-critical background startup tasks.
 
 ## Caching and Singleton Pattern
 
@@ -69,6 +70,13 @@ Persistence is subsystem-owned rather than selected through a global mode.
   corpus files are kept under the configured memory root at
   `memory/imports/<sourceNodeId>/`.
 - SQLite URL derivation is controlled by DB config (`DB_TYPE=sqlite` with optional `DATABASE_URL` override), and startup runs the normal Prisma migration path whenever the Prisma schema exists.
+- Required app-data migrations run after Prisma schema migrations so data repair
+  and guarded local schema contracts can rely on newly added columns before
+  runtime/API reads begin. For example, token usage execution-address backfill
+  writes historical `execution_address_json` values after the schema expand
+  migration has added the column, and the later token-usage legacy-path-column
+  contract migration drops obsolete physical path columns only after that
+  backfill has reached terminal success.
 
 External-channel persistence has one deliberate exception:
 
@@ -99,18 +107,69 @@ Each major business area is isolated under `src/<module>` and usually contains:
 - `services/`
 
 
-## Self-Evolution Runtime
+## Native Working-Context Compaction
 
-The self-evolution subsystem is a control-plane workflow under `src/self-evolution`.
-It is globally disabled by default through `ENABLE_SELF_EVOLUTION`, then run-owned
-when enabled: launch APIs snapshot the effective self-evolution config into
-standalone run metadata or team agent-member metadata. Agent/team definitions do
-not own self-evolution eligibility. Manual starts use the stored snapshot, launch
-a separate visible helper `AgentRun`, provide anonymized work-history evidence,
-list exact editable skill root directories, and persist minimal provenance plus
-notification outcome. The MVP intentionally has no product change-audit or
-metrics/reporting service; Git/manual inspection remains the review surface. See
-`modules/self_evolution.md` for the detailed contract.
+Native AutoByteus semantic compaction is composed in `autobyteus-ts` as a
+context-to-context strategy boundary. `MemoryManager` owns the live
+`WorkingContext` and persistence, while `PendingCompactionExecutor` resolves and
+invokes the configured strategy, validates the returned detached context, asks
+the manager to replace it, and owns lifecycle/request clearing.
+
+The process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting is resolved for each
+subsequent pending operation through the default strategy registry. The only
+production registration is `structured-json` (`Structured JSON`); it uses the
+fixed built-in `autobyteus-memory-compactor`, structured episodic/semantic writes, retained
+suffix, compacted-memory projection, and raw-trace archive behavior behind the
+stable `compact(WorkingContext): Promise<WorkingContext>` contract. Strategy
+selection is not stored on agent definitions, runs, teams, `AgentConfig`, or the
+working context. The built-in compactor inherits blank runtime/model launch
+fields from the parent run; the removed
+`AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` key is not a runtime selector and a
+stale custom value is inert.
+
+`ServerSettingsService` exposes the global setting through the existing
+`.env`/`process.env` persistence path and rejects values not present in production
+registry metadata. GraphQL exposes `getWorkingContextCompactionStrategies` as a
+read-only `{ id, name }` registry projection and
+`getEffectiveWorkingContextCompactionStrategyId` as the separate normalized ID
+runtime will attempt. The Settings -> Server Settings -> Basics Compaction card
+uses that catalog/effective-ID pair, persists changed valid values through the
+existing one-setting mutation, and never infers a default from catalog order.
+The selected strategy id/name is included in native compaction lifecycle
+metadata. See `autobyteus-ts/docs/agent_memory_design.md` for the domain,
+validation, restore, extension, and failure contracts.
+
+## Agent Work Trace Projection
+
+The shared work-trace subsystem lives under `src/agent-work-traces`. It owns the
+raw-trace-to-readable-Markdown projection boundary for target run memory
+directories. Consumers call
+`AgentWorkTraceProjectionService.ensureCurrent({ target, memoryDir, targetDisplayName })`;
+the capability reads canonical raw traces through
+`RawTraceFileSourceService`, writes derived files under
+`<memoryDir>/work_traces/`, and returns a clean manifest/package with target metadata, file paths, and a summary hash over rendered evidence. The older skill-improvement-owned
+generated cache root `<memoryDir>/skill_improvement/work_traces/` is not a runtime
+fallback or dual-write target because work traces are regenerable from canonical
+raw traces.
+See `modules/agent_work_traces.md` for the detailed shared contract.
+
+## Skill Improvement Runtime
+
+The skill-improvement subsystem is a control-plane workflow under `src/skill-improvement`.
+It is globally disabled by default through `ENABLE_SKILL_IMPROVEMENT`. Manual starts
+resolve eligibility from current global Skill Improvement settings and the current
+live target state, not from launch-time run overrides or stored launch snapshots.
+Agent/team definitions and launch inputs do not own Skill Improvement eligibility.
+Manual starts consume the shared Agent Work Trace Projection package for the
+selected standalone run or team member, then activate or reuse a visible
+target-scoped Retrospective Skill Improver `AgentRun` and send it a small path-based trigger. The
+Retrospective Skill Improver reads work trace files, may edit only exact configured skill roots, and
+can report a meaningful durable skill update through the grant-scoped
+`send_message_to` contract. A required startup migration removes obsolete
+`skillImprovementEffective` fields from existing run and team-member metadata. The
+MVP intentionally has no product change-audit or metrics/reporting service;
+Git/manual inspection remains the review surface. See `modules/skill_improvement.md`
+for the detailed consumer contract.
 
 ## External-Channel Messaging Runtime
 

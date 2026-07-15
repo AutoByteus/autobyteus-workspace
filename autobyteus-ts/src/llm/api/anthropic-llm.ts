@@ -3,11 +3,20 @@ import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
-import { TokenUsage } from '../utils/token-usage.js';
+import {
+  createAnthropicTokenUsageObservation,
+  createAnthropicUsageAccumulator,
+  createAnthropicTokenUsageObservationFromAccumulator,
+  foldAnthropicUsage,
+} from './anthropic-token-usage-normalizer.js';
 import { Message, MessageRole } from '../utils/messages.js';
 import { convertAnthropicToolCall } from '../converters/anthropic-tool-call-converter.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createAnthropicPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import {
+  applySafeProviderRequestKwargs,
+  cloneSafeProviderRequestKwargs,
+} from './provider-request-kwargs.js';
 import type {
   ContentBlock,
   MessageCreateParamsNonStreaming,
@@ -33,28 +42,72 @@ const ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS = new Set([
   'thinking_display'
 ]);
 
-const isClaudeOpus47 = (modelValue: string): boolean => modelValue === 'claude-opus-4-7' || modelValue.startsWith('claude-opus-4-7-');
+const ANTHROPIC_SAMPLING_PARAM_KEYS = new Set(['temperature', 'top_p', 'top_k']);
+const ANTHROPIC_CONTROLLED_KWARG_KEYS = new Set(['stream', 'tools']);
+
+type AnthropicModelRequestPolicy = {
+  usesAdaptiveThinking: boolean;
+  supportsThinkingDisabled: boolean;
+  rejectsSamplingParameters: boolean;
+};
+
+const matchesAnthropicModelFamily = (modelValue: string, familyValue: string): boolean =>
+  modelValue === familyValue || modelValue.startsWith(`${familyValue}-`);
+
+const resolveAnthropicModelRequestPolicy = (modelValue: string): AnthropicModelRequestPolicy => {
+  const isCurrentAdaptiveModel = [
+    'claude-opus-4-8',
+    'claude-opus-4-7',
+    'claude-sonnet-5',
+    'claude-fable-5',
+  ].some((familyValue) => matchesAnthropicModelFamily(modelValue, familyValue));
+
+  return {
+    usesAdaptiveThinking: isCurrentAdaptiveModel,
+    supportsThinkingDisabled: matchesAnthropicModelFamily(modelValue, 'claude-sonnet-5'),
+    rejectsSamplingParameters: isCurrentAdaptiveModel,
+  };
+};
+
+const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+
+const sanitizeThinkingParam = (
+  thinking: unknown,
+  policy: AnthropicModelRequestPolicy
+): unknown | undefined => {
+  if (!policy.usesAdaptiveThinking || !isObjectRecord(thinking)) {
+    return thinking;
+  }
+
+  if (thinking.type === 'enabled') {
+    return undefined;
+  }
+
+  if (thinking.type === 'disabled' && !policy.supportsThinkingDisabled) {
+    return undefined;
+  }
+
+  return thinking;
+};
 
 const filterInternalExtraParams = (
   extraParams: Record<string, unknown> | null | undefined
 ): Record<string, unknown> => {
-  const filtered: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(extraParams ?? {})) {
-    if (!ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS.has(key)) {
-      filtered[key] = value;
-    }
-  }
-  return filtered;
+  return cloneSafeProviderRequestKwargs(extraParams, { controlledKeys: ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS });
 };
 
 const buildThinkingParam = (
-  modelValue: string,
+  policy: AnthropicModelRequestPolicy,
   extraParams: Record<string, unknown> | null | undefined
 ): Record<string, unknown> | null => {
   if (!extraParams) return null;
   const enabled = extraParams.thinking_enabled;
+  if (enabled === false && policy.supportsThinkingDisabled) {
+    return { type: 'disabled' };
+  }
   if (enabled !== true) return null;
-  if (isClaudeOpus47(modelValue)) {
+  if (policy.usesAdaptiveThinking) {
     const thinking: Record<string, unknown> = { type: 'adaptive' };
     if (extraParams.thinking_display === 'summarized') {
       thinking.display = 'summarized';
@@ -73,27 +126,41 @@ const applyAnthropicRequestParams = (
   kwargs: Record<string, unknown>
 ): void => {
   const request = params as unknown as Record<string, unknown>;
+  const policy = resolveAnthropicModelRequestPolicy(modelValue);
   const providerExtraParams = filterInternalExtraParams(configExtraParams);
 
-  Object.assign(request, providerExtraParams);
-
-  const paramOverrides = { ...kwargs } as Record<string, unknown>;
-  delete paramOverrides.stream;
-  Object.assign(request, paramOverrides);
+  applySafeProviderRequestKwargs(request, providerExtraParams);
+  applySafeProviderRequestKwargs(request, kwargs, { controlledKeys: ANTHROPIC_CONTROLLED_KWARG_KEYS });
 
   if (Array.isArray(kwargs.tools)) {
     request.tools = kwargs.tools as ToolUnion[];
   }
 
   const explicitThinking = providerExtraParams.thinking !== undefined || kwargs.thinking !== undefined;
+  if (request.thinking !== undefined) {
+    const sanitizedThinking = sanitizeThinkingParam(request.thinking, policy);
+    if (sanitizedThinking === undefined) {
+      delete request.thinking;
+    } else {
+      request.thinking = sanitizedThinking;
+    }
+  }
+
   if (!explicitThinking) {
-    const thinkingParam = buildThinkingParam(modelValue, configExtraParams);
+    const thinkingParam = buildThinkingParam(policy, configExtraParams);
     if (thinkingParam) {
       request.thinking = thinkingParam;
     }
   }
 
-  if (request.thinking === undefined && !isClaudeOpus47(modelValue) && request.temperature === undefined) {
+  if (policy.rejectsSamplingParameters) {
+    for (const key of ANTHROPIC_SAMPLING_PARAM_KEYS) {
+      delete request[key];
+    }
+    return;
+  }
+
+  if (request.thinking === undefined && request.temperature === undefined) {
     request.temperature = 0;
   }
 };
@@ -169,12 +236,7 @@ export class AnthropicLLM extends BaseLLM {
       return new CompleteResponse({
         content: content ?? '',
         reasoning,
-        usage: {
-          prompt_tokens: response.usage.input_tokens,
-          completion_tokens: response.usage.output_tokens,
-          total_tokens: response.usage.input_tokens + response.usage.output_tokens
-        }
-      });
+usage: createAnthropicTokenUsageObservation(response.usage, this.model)      });
     } catch (e) {
       throw new Error(`Error in Anthropic API: ${e}`);
     }
@@ -202,7 +264,12 @@ export class AnthropicLLM extends BaseLLM {
       const requestOptions = options.signal ? { signal: options.signal } : undefined;
       const stream = await this.client.messages.create(params, requestOptions as any);
       
+      const usageAccumulator = createAnthropicUsageAccumulator();
+
       for await (const event of stream as AsyncIterable<RawMessageStreamEvent>) {
+        if (event.type === 'message_start' && event.message?.usage) {
+          foldAnthropicUsage(usageAccumulator, event.message.usage);
+        }
         if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
           yield new ChunkResponse({ content: event.delta.text });
         }
@@ -224,14 +291,12 @@ export class AnthropicLLM extends BaseLLM {
         }
         
         if (event.type === 'message_delta' && event.usage) {
-           yield new ChunkResponse({
-             content: "", is_complete: true,
-             usage: {
-               prompt_tokens: 0, // Not provided in delta usually? Start event has input tokens?
-               completion_tokens: event.usage.output_tokens,
-               total_tokens: event.usage.output_tokens 
-             }
-           });
+          foldAnthropicUsage(usageAccumulator, event.usage);
+          yield new ChunkResponse({
+            content: "",
+            is_complete: true,
+            usage: createAnthropicTokenUsageObservationFromAccumulator(usageAccumulator, this.model)
+          });
         }
       }
     } catch (e) {

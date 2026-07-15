@@ -1,9 +1,10 @@
+import { CompactedMemoryContextProjector } from '../projection/compacted-memory-context-projector.js';
+import { Retriever } from '../retrieval/retriever.js';
 import { WorkingContextSnapshotSerializer } from '../working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from '../store/working-context-snapshot-store.js';
 import type { MemoryManager } from '../memory-manager.js';
 import { CompactedMemorySchemaGate } from './compacted-memory-schema-gate.js';
 import { WorkingContextRecoveryProjector } from './working-context-recovery-projector.js';
-import { WorkingContextSnapshotRebuilder } from '../compaction/working-context-snapshot-rebuilder.js';
 import type { MemoryStore } from '../store/base-store.js';
 
 export type WorkingContextSnapshotBootstrapOptionsInit = {
@@ -25,37 +26,27 @@ export class WorkingContextSnapshotBootstrapOptions {
 }
 
 export class WorkingContextSnapshotBootstrapper {
-  private snapshotStore: WorkingContextSnapshotStore | null;
-  private snapshotRebuilder: WorkingContextSnapshotRebuilder;
-  private recoveryProjector: WorkingContextRecoveryProjector;
-  private schemaGate: CompactedMemorySchemaGate;
-
   constructor(
-    snapshotStore: WorkingContextSnapshotStore | null = null,
-    snapshotRebuilder: WorkingContextSnapshotRebuilder | null = null,
-    recoveryProjector: WorkingContextRecoveryProjector | null = null,
-    schemaGate: CompactedMemorySchemaGate | null = null,
-  ) {
-    this.snapshotStore = snapshotStore;
-    this.snapshotRebuilder = snapshotRebuilder ?? new WorkingContextSnapshotRebuilder();
-    this.recoveryProjector = recoveryProjector ?? new WorkingContextRecoveryProjector();
-    this.schemaGate = schemaGate ?? new CompactedMemorySchemaGate();
-  }
+    private readonly snapshotStore: WorkingContextSnapshotStore | null = null,
+    private readonly compactedMemoryProjector: CompactedMemoryContextProjector | null = null,
+    private readonly recoveryProjector = new WorkingContextRecoveryProjector(),
+    private readonly schemaGate = new CompactedMemorySchemaGate(),
+  ) {}
 
   bootstrap(memoryManager: MemoryManager, systemPrompt: string, options: WorkingContextSnapshotBootstrapOptions): void {
     const snapshotStore = this.resolveSnapshotStore(memoryManager);
-    const memoryStore = this.resolveMemoryStore(memoryManager);
+    const memoryStore = memoryManager.store;
     const agentId = this.resolveAgentId(memoryManager, snapshotStore);
 
-    const schemaGateResult = memoryStore && this.schemaGate.supports(memoryStore)
+    const schemaGateResult = this.schemaGate.supports(memoryStore)
       ? this.schemaGate.ensureCurrentSchema(memoryStore, snapshotStore, agentId)
       : { didReset: false };
 
     if (!schemaGateResult.didReset && snapshotStore && agentId && snapshotStore.exists(agentId)) {
       const payload = snapshotStore.read(agentId);
       if (payload && WorkingContextSnapshotSerializer.validate(payload)) {
-        const { snapshot } = WorkingContextSnapshotSerializer.deserialize(payload);
-        memoryManager.resetWorkingContextSnapshot(snapshot.buildMessages());
+        const { workingContext } = WorkingContextSnapshotSerializer.deserialize(payload);
+        memoryManager.replaceWorkingContext(workingContext);
         memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
           recoverySourceEvent: 'WorkingContextSnapshotBootstrapper',
         });
@@ -63,36 +54,30 @@ export class WorkingContextSnapshotBootstrapper {
       }
     }
 
-    const bundle = memoryManager.retriever.retrieve(options.maxEpisodic, options.maxSemantic);
     const maxItemChars = options.maxItemChars ?? memoryManager.compactionPolicy.maxItemChars ?? null;
-    const recoveredMessages = this.recoveryProjector.project(memoryManager.listRawTracesOrdered(), maxItemChars);
-    const snapshotMessages = this.snapshotRebuilder.rebuild({
+    const recoveredMessages = this.recoveryProjector.project(
+      memoryManager.listRawTraceCorpusOrdered(),
+      maxItemChars,
+    );
+    const projector = this.compactedMemoryProjector
+      ?? new CompactedMemoryContextProjector(new Retriever(memoryStore));
+    memoryManager.replaceWorkingContext(projector.project({
       systemPrompt,
-      bundle,
-      retainedMessages: recoveredMessages,
-    });
-    memoryManager.resetWorkingContextSnapshot(snapshotMessages);
+      continuationMessages: recoveredMessages,
+      maxEpisodic: options.maxEpisodic,
+      maxSemantic: options.maxSemantic,
+    }));
     memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
       recoverySourceEvent: 'WorkingContextSnapshotBootstrapper',
     });
   }
 
   private resolveSnapshotStore(memoryManager: MemoryManager): WorkingContextSnapshotStore | null {
-    if (this.snapshotStore) {
-      return this.snapshotStore;
-    }
-    return (memoryManager as any).workingContextSnapshotStore ?? null;
-  }
-
-  private resolveMemoryStore(memoryManager: MemoryManager): MemoryStore | null {
-    return ((memoryManager as any).store ?? null) as MemoryStore | null;
+    return this.snapshotStore ?? memoryManager.workingContextSnapshotStore;
   }
 
   private resolveAgentId(memoryManager: MemoryManager, store: WorkingContextSnapshotStore | null): string | null {
-    if (store?.agentId) {
-      return store.agentId;
-    }
-    const storeObj = (memoryManager as any).store;
-    return storeObj?.agentId ?? null;
+    if (store?.agentId) return store.agentId;
+    return (memoryManager.store as MemoryStore & { agentId?: string | null }).agentId ?? null;
   }
 }

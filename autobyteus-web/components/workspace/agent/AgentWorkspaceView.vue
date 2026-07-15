@@ -45,7 +45,7 @@
         class="h-full"
       >
         <template #composerContext>
-          <SelfEvolutionComposerCta :target="selfEvolutionTarget" />
+          <SkillImprovementComposerCta :target="skillImprovementTarget" />
         </template>
       </AgentEventMonitor>
       <div v-else class="p-4 text-center text-gray-500">{{ $t('workspace.components.workspace.agent.AgentWorkspaceView.select_an_agent_or_start_a') }}</div>
@@ -60,8 +60,8 @@ import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vu
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import CopyButton from '~/components/common/CopyButton.vue';
-import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/SelfEvolutionComposerCta.vue';
-import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
+import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue';
+import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
@@ -79,7 +79,7 @@ const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 
 const selectedAgent = computed(() => agentContextsStore.activeRun);
 const headerAvatarLoadError = ref(false);
-const SKILL_EVOLVER_AGENT_DEFINITION_ID = 'autobyteus-skill-evolver';
+const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = 'autobyteus-retrospective-skill-improver';
 
 const headerTitle = computed(() => {
   if (selectedAgent.value) {
@@ -126,7 +126,7 @@ const headerAvatarInitials = computed(() => {
   );
 });
 
-const selfEvolutionTarget = computed<SelfEvolutionComposerCtaTarget | null>(() => {
+const skillImprovementTarget = computed<SkillImprovementComposerCtaTarget | null>(() => {
   const run = selectedAgent.value;
   if (!run) {
     return null;
@@ -135,8 +135,8 @@ const selfEvolutionTarget = computed<SelfEvolutionComposerCtaTarget | null>(() =
     kind: 'agent',
     runId: run.state.runId,
     isHelperRun:
-      run.config.agentDefinitionId === SKILL_EVOLVER_AGENT_DEFINITION_ID ||
-      run.config.agentDefinitionName === 'Skill Self-Evolver',
+      run.config.agentDefinitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ||
+      run.config.agentDefinitionName === 'Retrospective Skill Improver',
   };
 });
 

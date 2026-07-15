@@ -1,0 +1,90 @@
+Delivery pre-integration candidate capture — pluggable memory compaction strategies
+UTC 2026-07-13T19:13:43Z
+HEAD fdb370d48106df252f77b684f76675a77226fffc
+branch codex/pluggable-memory-compaction-strategies
+origin/personal-before-fetch fdb370d48106df252f77b684f76675a77226fffc
+ahead-behind-before-fetch 0	0
+> git diff HEAD --check
+> git diff --cached --check
+status-count 80
+status-v2
+1 .M N... 100644 100644 100644 105c3e0fc3733c72f5f5ec1a7326a0d1629a8fd4 105c3e0fc3733c72f5f5ec1a7326a0d1629a8fd4 autobyteus-server-ts/src/agent-memory/store/run-memory-writer.ts
+1 .M N... 100644 100644 100644 3a64403753ee381e12409d618b7b8d048a79da8b 3a64403753ee381e12409d618b7b8d048a79da8b autobyteus-server-ts/src/services/server-settings-service.ts
+1 .M N... 100644 100644 100644 37847da8c3f7ceca8e29eefa915b41a615d96f12 37847da8c3f7ceca8e29eefa915b41a615d96f12 autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+1 .M N... 100644 100644 100644 6e92bd9d7bd22f23fa9dadd1017a39038fd1e69a 6e92bd9d7bd22f23fa9dadd1017a39038fd1e69a autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+1 .M N... 100644 100644 100644 c21f1756944aac89d93e7624b4735b9f0adcbe7b c21f1756944aac89d93e7624b4735b9f0adcbe7b autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts
+1 .M N... 100644 100644 100644 1943a0452c087231ed7a940233c5ab13eb17c679 1943a0452c087231ed7a940233c5ab13eb17c679 autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts
+1 .M N... 100644 100644 100644 05907a668b3247649fc30ef83e87d9300adcaf53 05907a668b3247649fc30ef83e87d9300adcaf53 autobyteus-ts/src/agent/factory/agent-factory.ts
+1 .M N... 100644 100644 100644 91062bbc1a36ec1a3a38736a71776134aa51ee4d 91062bbc1a36ec1a3a38736a71776134aa51ee4d autobyteus-ts/src/agent/llm-request-assembler.ts
+1 .M N... 100644 100644 100644 de21261c51a443102e11c0d1fe0676cd250f5cab de21261c51a443102e11c0d1fe0676cd250f5cab autobyteus-ts/src/agent/loop/llm-phase.ts
+1 .D N... 100644 100644 000000 68beafa7356b58d9db2dc0d5f16b796641643d1d 68beafa7356b58d9db2dc0d5f16b796641643d1d autobyteus-ts/src/memory/compaction-snapshot-builder.ts
+1 .D N... 100644 100644 000000 a7aff6d53ead1a4e31a933bbf71900c408c5ab60 a7aff6d53ead1a4e31a933bbf71900c408c5ab60 autobyteus-ts/src/memory/compaction-snapshot-recent-turn-formatter.ts
+1 .M N... 100644 100644 100644 c62cfa9c8aa8f9e56d43d2e29c4cfb1e56032f02 c62cfa9c8aa8f9e56d43d2e29c4cfb1e56032f02 autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts
+1 .D N... 100644 100644 000000 48153bc2b2d2c2c4d7ae5f10fc028ec148af1f6d 48153bc2b2d2c2c4d7ae5f10fc028ec148af1f6d autobyteus-ts/src/memory/compaction/compaction-plan.ts
+1 .M N... 100644 100644 100644 4a7f348b6a2cd3465b83cf781eb103636c69ff2a 4a7f348b6a2cd3465b83cf781eb103636c69ff2a autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts
+1 .D N... 100644 100644 000000 15ca379aca79c030aafe1d55f2cac68a09c98044 15ca379aca79c030aafe1d55f2cac68a09c98044 autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts
+1 .D N... 100644 100644 000000 faf2272f58c1b9d0297e5bc1c8478074e04abd18 faf2272f58c1b9d0297e5bc1c8478074e04abd18 autobyteus-ts/src/memory/compaction/compaction-window-planner.ts
+1 .D N... 100644 100644 000000 29085b1261e42da05083c5f9fced131216e3fc66 29085b1261e42da05083c5f9fced131216e3fc66 autobyteus-ts/src/memory/compaction/compactor.ts
+1 .D N... 100644 100644 000000 10e05e1a34929f6440386e2fb5c6854a18c6b97e 10e05e1a34929f6440386e2fb5c6854a18c6b97e autobyteus-ts/src/memory/compaction/interaction-block-builder.ts
+1 .D N... 100644 100644 000000 861dcc4cb43eff56ea8e422a2b1695c2136281bd 861dcc4cb43eff56ea8e422a2b1695c2136281bd autobyteus-ts/src/memory/compaction/interaction-block.ts
+1 .M N... 100644 100644 100644 ce3bcb19bedd66b4e42e298e6bb69c429271474a ce3bcb19bedd66b4e42e298e6bb69c429271474a autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts
+1 .D N... 100644 100644 000000 573150f12be49e8617a46a13b080b537f2448927 573150f12be49e8617a46a13b080b537f2448927 autobyteus-ts/src/memory/compaction/summarizer.ts
+1 .D N... 100644 100644 000000 e2b08e95eecdf68b43c87376997422eee49fde32 e2b08e95eecdf68b43c87376997422eee49fde32 autobyteus-ts/src/memory/compaction/tool-result-digest-builder.ts
+1 .D N... 100644 100644 000000 f8aab8c2c52c19c9e9830c4a46d9a364642f14b5 f8aab8c2c52c19c9e9830c4a46d9a364642f14b5 autobyteus-ts/src/memory/compaction/tool-result-digest.ts
+1 .M N... 100644 100644 100644 eb26eb663adaa040af0d5b6f290de348baa3a763 eb26eb663adaa040af0d5b6f290de348baa3a763 autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts
+1 .D N... 100644 100644 000000 4200894848e1f288e900b7a8d9f605d65a8b0e2c 4200894848e1f288e900b7a8d9f605d65a8b0e2c autobyteus-ts/src/memory/compaction/working-context-compactor.ts
+1 .M N... 100644 100644 100644 9e6a3066c9a575b199fe631a315e3922e485de0a 9e6a3066c9a575b199fe631a315e3922e485de0a autobyteus-ts/src/memory/compaction/working-context-message-unit.ts
+1 .D N... 100644 100644 000000 caef2aa77acf11251d4b31092ed41dec6044cce7 caef2aa77acf11251d4b31092ed41dec6044cce7 autobyteus-ts/src/memory/compaction/working-context-snapshot-rebuilder.ts
+1 .M N... 100644 100644 100644 7a52cc41633cb5ac28762b5d45704eb52feb1c4a 7a52cc41633cb5ac28762b5d45704eb52feb1c4a autobyteus-ts/src/memory/index.ts
+1 .M N... 100644 100644 100644 83bb88270a19f3303ef90703bcae2579f37fcd00 83bb88270a19f3303ef90703bcae2579f37fcd00 autobyteus-ts/src/memory/memory-manager-tool-protocol-safety.ts
+1 .M N... 100644 100644 100644 bf3de7d61634f68a09af8b4b73257e1a245e6fe3 bf3de7d61634f68a09af8b4b73257e1a245e6fe3 autobyteus-ts/src/memory/memory-manager.ts
+2 R. N... 100644 100644 100644 4d12d3f977979159a3066bbe3679cb869b2a767e 4d12d3f977979159a3066bbe3679cb869b2a767e R100 autobyteus-ts/src/memory/projection/compacted-memory-message-builder.ts	autobyteus-ts/src/memory/compaction/compacted-memory-message-builder.ts
+1 .M N... 100644 100644 100644 51dcb565526a240cc04f2448f165cca8115528fb 51dcb565526a240cc04f2448f165cca8115528fb autobyteus-ts/src/memory/restore/working-context-recovery-projector.ts
+1 .M N... 100644 100644 100644 4828ee375d885d0f525c26538fb928cc6c9074b5 4828ee375d885d0f525c26538fb928cc6c9074b5 autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts
+1 .M N... 100644 100644 100644 22e3900e3791fb167b5e7b16f68424cfd3757a40 22e3900e3791fb167b5e7b16f68424cfd3757a40 autobyteus-ts/src/memory/store/run-memory-file-store.ts
+1 .M N... 100644 100644 100644 868af4524d9c0538c631fa0a110903baf33130fb 868af4524d9c0538c631fa0a110903baf33130fb autobyteus-ts/src/memory/working-context-snapshot-serializer.ts
+2 RM N... 100644 100644 100644 d5e8b230f2da6b96134c939227b801abf4a27b4b d5e8b230f2da6b96134c939227b801abf4a27b4b R100 autobyteus-ts/src/memory/working-context.ts	autobyteus-ts/src/memory/working-context-snapshot.ts
+1 .M N... 100644 100644 100644 35975f42c778c2609e7b50f189faab3b355c7200 35975f42c778c2609e7b50f189faab3b355c7200 autobyteus-ts/tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts
+1 .D N... 100644 100644 000000 c2a60b1172e6a99139f0460f1967a2ebe33febbc c2a60b1172e6a99139f0460f1967a2ebe33febbc autobyteus-ts/tests/integration/agent/memory-compaction-flow.test.ts
+1 .D N... 100644 100644 000000 b3fabc84573a1b7f10b9c3817916a2581cc08e67 b3fabc84573a1b7f10b9c3817916a2581cc08e67 autobyteus-ts/tests/integration/agent/memory-compaction-quality-flow.test.ts
+1 .D N... 100644 100644 000000 7320800684ef7831a51d00a5a9dd3a192a0647c3 7320800684ef7831a51d00a5a9dd3a192a0647c3 autobyteus-ts/tests/integration/agent/memory-compaction-real-scenario-flow.test.ts
+1 .D N... 100644 100644 000000 e8d42a8bce7d7c717a8f3bd0351a20a74ae6046c e8d42a8bce7d7c717a8f3bd0351a20a74ae6046c autobyteus-ts/tests/integration/agent/memory-compaction-real-summarizer-flow.test.ts
+1 .D N... 100644 100644 000000 7a24963a63b4a3efc436be66cd332656b69a683d 7a24963a63b4a3efc436be66cd332656b69a683d autobyteus-ts/tests/integration/agent/memory-compaction-runtime-e2e.test.ts
+1 .D N... 100644 100644 000000 65e4a5ad910f7a775ee497060f9f6e57974e55f3 65e4a5ad910f7a775ee497060f9f6e57974e55f3 autobyteus-ts/tests/integration/agent/memory-compaction-tool-tail-flow.test.ts
+1 .M N... 100644 100644 100644 b04fb572ae5c2de8a151fbe633c24efb4ff8cc94 b04fb572ae5c2de8a151fbe633c24efb4ff8cc94 autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+1 .M N... 100644 100644 100644 cfb1632fc2bb4eb8b92801b74427392755f00f9a cfb1632fc2bb4eb8b92801b74427392755f00f9a autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+1 .M N... 100644 100644 100644 82f19018ebf5368e99fc4d8f849e2cdcaaff9fc6 82f19018ebf5368e99fc4d8f849e2cdcaaff9fc6 autobyteus-ts/tests/integration/llm/api/deepseek-llm.test.ts
+1 .M N... 100644 100644 100644 816622a071d2be87e17b099851a3c120e2d1c5b9 816622a071d2be87e17b099851a3c120e2d1c5b9 autobyteus-ts/tests/integration/memory/working-context-snapshot-restore.test.ts
+1 .M N... 100644 100644 100644 9df94a433fcec65733f319c72ee4b01c253c6fd5 9df94a433fcec65733f319c72ee4b01c253c6fd5 autobyteus-ts/tests/unit/agent/context/agent-config.test.ts
+1 .M N... 100644 100644 100644 0351344f9e412ebdf43eea5df8ee28fda9569693 0351344f9e412ebdf43eea5df8ee28fda9569693 autobyteus-ts/tests/unit/agent/llm-request-assembler.test.ts
+1 .M N... 100644 100644 100644 a8598d489cd0ab80210221a871ae7ff6ceaa9d7a a8598d489cd0ab80210221a871ae7ff6ceaa9d7a autobyteus-ts/tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts
+1 .M N... 100644 100644 100644 f85b9d5a6b71cc6b0a7e196b7d3a9e794e9257c6 f85b9d5a6b71cc6b0a7e196b7d3a9e794e9257c6 autobyteus-ts/tests/unit/memory/agent-compaction-summarizer.test.ts
+1 .M N... 100644 100644 100644 a24b3fc231b2f3cc91515690977c308626680690 a24b3fc231b2f3cc91515690977c308626680690 autobyteus-ts/tests/unit/memory/compacted-memory-schema-gate.test.ts
+1 .M N... 100644 100644 100644 a158c5ea640df3d61411ad289bb86c03061300ec a158c5ea640df3d61411ad289bb86c03061300ec autobyteus-ts/tests/unit/memory/compaction-runtime-settings.test.ts
+1 .D N... 100644 100644 000000 0fb51a95cb1aab9712a7a2b9ac77d1cf2395c417 0fb51a95cb1aab9712a7a2b9ac77d1cf2395c417 autobyteus-ts/tests/unit/memory/compaction-snapshot-builder.test.ts
+1 .D N... 100644 100644 000000 649ed6d9e2278a24f76422b4631a61ec9d7eb127 649ed6d9e2278a24f76422b4631a61ec9d7eb127 autobyteus-ts/tests/unit/memory/compaction-task-prompt-builder.test.ts
+1 .D N... 100644 100644 000000 ab68b2a5132e56022c03b6b71e82f13d5da0b0c0 ab68b2a5132e56022c03b6b71e82f13d5da0b0c0 autobyteus-ts/tests/unit/memory/compaction-window-planner.test.ts
+1 .D N... 100644 100644 000000 42b8dc9ce4a7ecfa00f74f1b0866751045283b93 42b8dc9ce4a7ecfa00f74f1b0866751045283b93 autobyteus-ts/tests/unit/memory/compactor.test.ts
+1 .M N... 100644 100644 100644 bd3d016fefa6c8b468e3bb7ca5a3332db923687d bd3d016fefa6c8b468e3bb7ca5a3332db923687d autobyteus-ts/tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts
+1 .M N... 100644 100644 100644 ac1b12939e671f5aab227077b8c82bb8fa796f38 ac1b12939e671f5aab227077b8c82bb8fa796f38 autobyteus-ts/tests/unit/memory/memory-manager.test.ts
+1 .M N... 100644 100644 100644 d767e139b68f69c0d98e4c6e5acf44a8a088c33d d767e139b68f69c0d98e4c6e5acf44a8a088c33d autobyteus-ts/tests/unit/memory/run-memory-file-store.test.ts
+1 .D N... 100644 100644 000000 b1b39cd67b40dda1a158e6995d688480ca419569 b1b39cd67b40dda1a158e6995d688480ca419569 autobyteus-ts/tests/unit/memory/summarizer-message-units.test.ts
+1 .M N... 100644 100644 100644 a5eb5f69eed8dffa01af8d929d7d38dbf04fcff3 a5eb5f69eed8dffa01af8d929d7d38dbf04fcff3 autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts
+1 .M N... 100644 100644 100644 ea66c229799ba518791d18b1b35567cbbc0710a3 ea66c229799ba518791d18b1b35567cbbc0710a3 autobyteus-ts/tests/unit/memory/working-context-snapshot-serializer.test.ts
+2 RM N... 100644 100644 100644 40098c52ed73a914f5ee2b09aca9d7bc292fdb21 40098c52ed73a914f5ee2b09aca9d7bc292fdb21 R100 autobyteus-ts/tests/unit/memory/working-context.test.ts	autobyteus-ts/tests/unit/memory/working-context-snapshot.test.ts
+? autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts
+? autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts
+? autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts
+? autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts
+? autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-registry.ts
+? autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-resolver.ts
+? autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-setting.ts
+? autobyteus-ts/src/memory/compaction/working-context-compaction-strategy.ts
+? autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts
+? autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts
+? autobyteus-ts/tests/unit/memory/compacted-memory-context-projector.test.ts
+? autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts
+? autobyteus-ts/tests/unit/memory/structured-json-compaction-strategy.test.ts
+? autobyteus-ts/tests/unit/memory/working-context-compaction-output-validator.test.ts
+? autobyteus-ts/tests/unit/memory/working-context-compaction-strategy-registry.test.ts
+? tickets/in-progress/pluggable-memory-compaction-strategies/

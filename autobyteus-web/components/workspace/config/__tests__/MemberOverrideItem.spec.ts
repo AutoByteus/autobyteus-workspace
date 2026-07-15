@@ -201,6 +201,27 @@ describe('MemberOverrideItem', () => {
     isCoordinator: false,
   }
 
+  it('renders concise member override copy', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: defaultProps,
+    })
+
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    const text = wrapper.text()
+    expect(text).toContain('Runtime')
+    expect(text).toContain('LLM Model')
+    expect(text).toContain('Auto approve')
+    expect(text).toContain('Global default')
+    expect(text).not.toContain('Runtime Override')
+    expect(text).not.toContain('LLM Model Override')
+    expect(text).not.toContain('Use global runtime default')
+    expect(text).not.toContain('Use global model (default)')
+    expect(text).not.toContain('Auto-execute')
+  })
+
   it('renders a blocking warning when a runtime override breaks inherited global model availability', async () => {
     const wrapper = mount(MemberOverrideItem, {
       props: {
@@ -365,52 +386,6 @@ describe('MemberOverrideItem', () => {
     ])
   })
 
-  it('emits member self-evolution launch overrides while preserving other override fields', async () => {
-    const wrapper = mount(MemberOverrideItem, {
-      props: {
-        ...defaultProps,
-        selfEvolutionControlsEnabled: true,
-        override: {
-          agentDefinitionId: 'agent-reviewer',
-          autoExecuteTools: true,
-        },
-      },
-    })
-
-    await nextTick()
-    await flushPromises()
-
-    await wrapper.get('[data-testid="member-self-evolution-override"]').setValue('enabled')
-    await nextTick()
-
-    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
-      'reviewer',
-      {
-        agentDefinitionId: 'agent-reviewer',
-        autoExecuteTools: true,
-        selfEvolution: { enabled: true },
-      },
-    ])
-
-    await wrapper.setProps({
-      override: {
-        agentDefinitionId: 'agent-reviewer',
-        autoExecuteTools: true,
-        selfEvolution: { enabled: true },
-      },
-    })
-    await wrapper.get('[data-testid="member-self-evolution-override"]').setValue('')
-    await nextTick()
-
-    expect(wrapper.emitted('update:override')?.at(-1)).toEqual([
-      'reviewer',
-      {
-        agentDefinitionId: 'agent-reviewer',
-        autoExecuteTools: true,
-      },
-    ])
-  })
-
   it('feeds cleaned inherited-global fallback rows into readiness and materialization without stale config', async () => {
     const wrapper = mount(MemberOverrideItem, {
       props: {
@@ -494,7 +469,6 @@ describe('MemberOverrideItem', () => {
         workspaceId: 'ws-1',
         workspaceMetadata: null,
         workspaceRootPath: undefined,
-        selfEvolution: null,
       },
     ])
   })

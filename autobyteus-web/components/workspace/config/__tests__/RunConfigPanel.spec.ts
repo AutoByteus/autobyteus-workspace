@@ -15,9 +15,23 @@ const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.
     updateAgentConfig: vi.fn((patch: Record<string, unknown>) => {
       agentRunState.config = { ...(agentRunState.config || {}), ...patch } as any
     }),
-    setWorkspaceLoading: vi.fn(),
-    setWorkspaceLoaded: vi.fn(),
-    setWorkspaceError: vi.fn(),
+    setWorkspaceLoading: vi.fn((isLoading: boolean) => {
+      agentRunState.workspaceLoadingState.isLoading = isLoading
+      if (isLoading) agentRunState.workspaceLoadingState.error = null
+    }),
+    setWorkspaceLoaded: vi.fn((workspaceId: string, path: string, workspaceMetadata: any) => {
+      agentRunState.workspaceLoadingState = { isLoading: false, error: null, loadedPath: path }
+      agentRunState.config = {
+        ...(agentRunState.config || {}),
+        workspaceId,
+        workspaceMetadata,
+      } as any
+      agentRunState.isConfigured = Boolean(agentRunState.config?.llmModelIdentifier && workspaceId)
+    }),
+    setWorkspaceError: vi.fn((message: string) => {
+      agentRunState.workspaceLoadingState.isLoading = false
+      agentRunState.workspaceLoadingState.error = message
+    }),
     clearConfig: vi.fn(),
   },
   teamRunState: {
@@ -27,9 +41,22 @@ const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.
     updateConfig: vi.fn((patch: Record<string, unknown>) => {
       teamRunState.config = { ...(teamRunState.config || {}), ...patch } as any
     }),
-    setWorkspaceLoading: vi.fn(),
-    setWorkspaceLoaded: vi.fn(),
-    setWorkspaceError: vi.fn(),
+    setWorkspaceLoading: vi.fn((isLoading: boolean) => {
+      teamRunState.workspaceLoadingState.isLoading = isLoading
+      if (isLoading) teamRunState.workspaceLoadingState.error = null
+    }),
+    setWorkspaceLoaded: vi.fn((workspaceId: string, path: string, workspaceMetadata: any) => {
+      teamRunState.workspaceLoadingState = { isLoading: false, error: null, loadedPath: path }
+      teamRunState.config = {
+        ...(teamRunState.config || {}),
+        workspaceId,
+        workspaceMetadata,
+      } as any
+    }),
+    setWorkspaceError: vi.fn((message: string) => {
+      teamRunState.workspaceLoadingState.isLoading = false
+      teamRunState.workspaceLoadingState.error = message
+    }),
     clearConfig: vi.fn(),
   },
   agentContextState: {
@@ -41,9 +68,24 @@ const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.
     createRunFromTemplate: vi.fn(),
   },
 }))
-const { workspaceCenterViewStoreMock } = vi.hoisted(() => ({
+const { workspaceCenterViewStoreMock, workspaceStoreMock } = vi.hoisted(() => ({
   workspaceCenterViewStoreMock: {
     showChat: vi.fn(),
+  },
+  workspaceStoreMock: {
+    createWorkspace: vi.fn(),
+    workspaces: {} as Record<string, any>,
+    workspaceMetadataById: {} as Record<string, any>,
+    registerWorkspaceInfoMetadata: vi.fn((workspace: any) => ({
+      workspaceId: workspace.workspaceId,
+      workspaceRootPath: workspace.workspaceRootPath || workspace.absolutePath,
+      displayName: workspace.name || workspace.workspaceId,
+      kind: workspace.kind || 'filesystem',
+    })),
+    allWorkspaces: [] as any[],
+    tempWorkspaceId: null as string | null,
+    tempWorkspace: null as any,
+    fetchAllWorkspaces: vi.fn().mockResolvedValue([]),
   },
 }))
 
@@ -68,16 +110,7 @@ vi.mock('~/stores/agentTeamContextsStore', async () => {
 })
 
 vi.mock('~/stores/workspace', () => ({
-  useWorkspaceStore: () => ({
-    createWorkspace: vi.fn(),
-    workspaces: {},
-    workspaceMetadataById: {},
-    registerWorkspaceInfoMetadata: vi.fn(),
-    allWorkspaces: [],
-    tempWorkspaceId: null,
-    tempWorkspace: null,
-    fetchAllWorkspaces: vi.fn().mockResolvedValue([]),
-  }),
+  useWorkspaceStore: () => workspaceStoreMock,
 }))
 
 vi.mock('~/stores/agentDefinitionStore', () => ({
@@ -101,18 +134,53 @@ describe('RunConfigPanel', () => {
     setActivePinia(createPinia())
     workspaceCenterViewStoreMock.showChat.mockReset()
     agentRunState.config = null
+    agentRunState.workspaceLoadingState = { isLoading: false, error: null, loadedPath: null }
+    agentRunState.isConfigured = false
     teamRunState.config = null
+    teamRunState.workspaceLoadingState = { isLoading: false, error: null, loadedPath: null }
     teamRunState.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] }
     agentRunState.updateAgentConfig.mockClear()
+    agentRunState.setWorkspaceLoading.mockClear()
+    agentRunState.setWorkspaceLoaded.mockClear()
     agentRunState.setWorkspaceError.mockReset()
+    agentRunState.setWorkspaceError.mockImplementation((message: string) => {
+      agentRunState.workspaceLoadingState.isLoading = false
+      agentRunState.workspaceLoadingState.error = message
+    })
     agentRunState.clearConfig.mockReset()
     teamRunState.updateConfig.mockClear()
+    teamRunState.setWorkspaceLoading.mockClear()
+    teamRunState.setWorkspaceLoaded.mockClear()
     teamRunState.setWorkspaceError.mockReset()
+    teamRunState.setWorkspaceError.mockImplementation((message: string) => {
+      teamRunState.workspaceLoadingState.isLoading = false
+      teamRunState.workspaceLoadingState.error = message
+    })
     teamRunState.clearConfig.mockReset()
     agentContextState.activeRun = null
     agentContextState.createRunFromTemplate.mockReset()
     teamContextState.activeTeamContext = null
     teamContextState.createRunFromTemplate.mockReset()
+    workspaceStoreMock.createWorkspace.mockReset()
+    workspaceStoreMock.createWorkspace.mockImplementation(async ({ root_path }: { root_path: string }) => {
+      workspaceStoreMock.workspaces['ws-created'] = {
+        workspaceId: 'ws-created',
+        workspaceRootPath: root_path,
+        absolutePath: root_path,
+        name: 'Created Workspace',
+        workspaceConfig: { root_path },
+      }
+      workspaceStoreMock.workspaceMetadataById['ws-created'] = {
+        workspaceId: 'ws-created',
+        workspaceRootPath: root_path,
+        displayName: 'Created Workspace',
+        kind: 'filesystem',
+      }
+      return 'ws-created'
+    })
+    workspaceStoreMock.workspaces = {}
+    workspaceStoreMock.workspaceMetadataById = {}
+    workspaceStoreMock.registerWorkspaceInfoMetadata.mockClear()
   })
 
   it('renders placeholder when nothing selected', () => {
@@ -177,6 +245,166 @@ describe('RunConfigPanel', () => {
     expect(teamStore.clearConfig).toHaveBeenCalled()
   })
 
+  it('loads a pending New workspace path before creating an agent run', async () => {
+    const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
+    const agentStore = useAgentRunConfigStore() as any
+    agentStore.config = {
+      agentDefinitionId: 'def-1',
+      agentDefinitionName: 'Agent def-1',
+      llmModelIdentifier: 'model-x',
+      workspaceId: 'temp_ws_default',
+      workspaceMetadata: { workspaceRootPath: '/tmp/default' },
+      isLocked: false,
+    } as any
+    agentStore.isConfigured = true
+    workspaceStoreMock.workspaces.temp_ws_default = {
+      workspaceId: 'temp_ws_default',
+      absolutePath: '/tmp/default',
+      workspaceRootPath: '/tmp/default',
+      workspaceConfig: { root_path: '/tmp/default' },
+    }
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    wrapper.findComponent(AgentRunConfigForm).vm.$emit('workspace-input-change', {
+      mode: 'new',
+      pendingPath: '/home/autobyteus/workspace',
+    })
+    await wrapper.find('.run-btn').trigger('click')
+    await Promise.resolve()
+
+    expect(workspaceStoreMock.createWorkspace).toHaveBeenCalledWith({
+      root_path: '/home/autobyteus/workspace',
+    })
+    expect(agentStore.setWorkspaceLoaded).toHaveBeenCalledWith(
+      'ws-created',
+      '/home/autobyteus/workspace',
+      expect.objectContaining({
+        workspaceId: 'ws-created',
+        workspaceRootPath: '/home/autobyteus/workspace',
+      }),
+    )
+    expect(agentContextState.createRunFromTemplate).toHaveBeenCalledTimes(1)
+    expect(agentStore.clearConfig).toHaveBeenCalledTimes(1)
+  })
+
+  it('blocks agent run creation when pending New workspace loading fails', async () => {
+    const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
+    const agentStore = useAgentRunConfigStore() as any
+    agentStore.config = {
+      agentDefinitionId: 'def-1',
+      agentDefinitionName: 'Agent def-1',
+      llmModelIdentifier: 'model-x',
+      workspaceId: 'temp_ws_default',
+      workspaceMetadata: { workspaceRootPath: '/tmp/default' },
+      isLocked: false,
+    } as any
+    agentStore.isConfigured = true
+    workspaceStoreMock.workspaces.temp_ws_default = {
+      workspaceId: 'temp_ws_default',
+      absolutePath: '/tmp/default',
+      workspaceRootPath: '/tmp/default',
+      workspaceConfig: { root_path: '/tmp/default' },
+    }
+    workspaceStoreMock.createWorkspace.mockRejectedValueOnce(new Error('Cannot create workspace'))
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    wrapper.findComponent(AgentRunConfigForm).vm.$emit('workspace-input-change', {
+      mode: 'new',
+      pendingPath: '/bad/path',
+    })
+    await wrapper.find('.run-btn').trigger('click')
+    await Promise.resolve()
+
+    expect(agentStore.setWorkspaceError).toHaveBeenCalledWith('Cannot create workspace')
+    expect(agentContextState.createRunFromTemplate).not.toHaveBeenCalled()
+    expect(agentStore.clearConfig).not.toHaveBeenCalled()
+  })
+
+  it('allows Run Agent with a non-empty pending New path even before it is preloaded', async () => {
+    const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
+    const agentStore = useAgentRunConfigStore() as any
+    agentStore.config = {
+      agentDefinitionId: 'def-1',
+      agentDefinitionName: 'Agent def-1',
+      llmModelIdentifier: 'model-x',
+      workspaceId: null,
+      workspaceMetadata: null,
+      isLocked: false,
+    } as any
+    agentStore.isConfigured = false
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+    wrapper.findComponent(AgentRunConfigForm).vm.$emit('workspace-input-change', {
+      mode: 'new',
+      pendingPath: '/home/autobyteus/workspace',
+    })
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeUndefined()
+  })
+
+  it('loads a pending New workspace path before creating a team run', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore() as any
+    teamStore.config = {
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team team-def-1',
+      llmModelIdentifier: 'model-x',
+      workspaceId: 'temp_ws_default',
+      workspaceMetadata: { workspaceRootPath: '/tmp/default' },
+      isLocked: false,
+    } as any
+    teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
+    workspaceStoreMock.workspaces.temp_ws_default = {
+      workspaceId: 'temp_ws_default',
+      absolutePath: '/tmp/default',
+      workspaceRootPath: '/tmp/default',
+      workspaceConfig: { root_path: '/tmp/default' },
+    }
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    wrapper.findComponent(TeamRunConfigForm).vm.$emit('workspace-input-change', {
+      mode: 'new',
+      pendingPath: '/home/autobyteus/team-workspace',
+    })
+    await wrapper.find('.run-btn').trigger('click')
+    await Promise.resolve()
+
+    expect(workspaceStoreMock.createWorkspace).toHaveBeenCalledWith({
+      root_path: '/home/autobyteus/team-workspace',
+    })
+    expect(teamStore.setWorkspaceLoaded).toHaveBeenCalledWith(
+      'ws-created',
+      '/home/autobyteus/team-workspace',
+      expect.objectContaining({
+        workspaceRootPath: '/home/autobyteus/team-workspace',
+      }),
+    )
+    expect(teamContextState.createRunFromTemplate).toHaveBeenCalledTimes(1)
+    expect(teamStore.clearConfig).toHaveBeenCalledTimes(1)
+  })
+
   it('disables team run and shows the blocking message when mixed-runtime readiness fails', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
     const teamStore = useTeamRunConfigStore() as any
@@ -233,16 +461,16 @@ describe('RunConfigPanel', () => {
     expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toContain('Workspace is required to run a team.')
   })
 
-  it('blocks agent run when workspace is missing (defensive path)', async () => {
+  it('disables agent run when workspace is missing', async () => {
     const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
     const agentStore = useAgentRunConfigStore() as any
     agentStore.config = {
       agentDefinitionId: 'def-1',
       agentDefinitionName: 'Agent def-1',
+      llmModelIdentifier: 'model-x',
       workspaceId: null,
       isLocked: false,
     } as any
-    agentStore.isConfigured = true
 
     const wrapper = mount(RunConfigPanel, {
       global: {
@@ -250,12 +478,8 @@ describe('RunConfigPanel', () => {
       },
     })
 
-    await wrapper.find('.run-btn').trigger('click')
-
-    const { useAgentContextsStore } = await import('~/stores/agentContextsStore')
-    const contextStore = useAgentContextsStore() as any
-    expect(contextStore.createRunFromTemplate).not.toHaveBeenCalled()
-    expect(agentStore.setWorkspaceError).toHaveBeenCalledWith('Workspace is required to run an agent.')
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+    expect(agentContextState.createRunFromTemplate).not.toHaveBeenCalled()
   })
 
   it('keeps draft agent configuration editable for workspace selection events', async () => {

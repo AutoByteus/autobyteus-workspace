@@ -79,6 +79,9 @@ describe('AgentConfig', () => {
     clone.skills.push('skill-b');
     expect(config.skills).toEqual(['skill-a']);
     expect(clone.skillAccessMode).toBe(config.skillAccessMode);
+    expect(config).not.toHaveProperty('memoryCompactionStrategyId');
+    expect(clone).not.toHaveProperty('memoryCompactionStrategyId');
+    expect(config).not.toHaveProperty('compactionStrategyId');
   });
 
   it('defaults skillAccessMode to PRELOADED_ONLY when skills are configured', () => {
@@ -86,13 +89,19 @@ describe('AgentConfig', () => {
     expect(config.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
   });
 
-  it('defaults skillAccessMode to GLOBAL_DISCOVERY when no skills are configured', () => {
+  it('defaults skillAccessMode to PRELOADED_ONLY when no skills are configured', () => {
     const config = new AgentConfig('name', 'role', 'desc', makeLLM());
-    expect(config.skillAccessMode).toBe(SkillAccessMode.GLOBAL_DISCOVERY);
+    expect(config.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
   });
 
   it('respects explicit skillAccessMode', () => {
     const config = new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, null, ['skill-a'], null, SkillAccessMode.NONE);
     expect(config.skillAccessMode).toBe(SkillAccessMode.NONE);
+  });
+
+  it('rejects unsupported skillAccessMode values', () => {
+    expect(() => new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, null, [], null, 'GLOBAL_DISCOVERY' as any)).toThrow(
+      "Unsupported skill access mode",
+    );
   });
 });

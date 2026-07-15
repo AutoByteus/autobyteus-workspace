@@ -8,16 +8,16 @@ import { serializeAgentMd } from "../../../src/agent-definition/utils/agent-md-p
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
 import {
   MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-  SKILL_EVOLVER_AGENT_DEFINITION_ID,
+  RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } from "../../../src/built-in-agents/built-in-agent-registry.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from "../../../src/config/featured-catalog-items-setting.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
-  AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-  AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
+  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
   ServerSettingsService,
 } from "../../../src/services/server-settings-service.js";
+import { SkillService } from "../../../src/skills/services/skill-service.js";
 
 const TEMPLATES_DIR = fileURLToPath(new URL("../../../src/built-in-agents/templates/", import.meta.url));
 
@@ -33,18 +33,15 @@ const readTemplate = async (templateDirName: string, fileName: string): Promise<
 describe("BuiltInAgentBootstrapper", () => {
   let tempDataDir: string;
   let previousFeaturedSetting: string | undefined;
-  let previousCompactorSetting: string | undefined;
-  let previousSkillEvolverSetting: string | undefined;
+  let previousSkillImproverSetting: string | undefined;
   let previousAgentPackageRoots: string | undefined;
 
   beforeEach(async () => {
     previousFeaturedSetting = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
-    previousCompactorSetting = process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
-    previousSkillEvolverSetting = process.env[AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID];
+    previousSkillImproverSetting = process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID];
     previousAgentPackageRoots = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
     delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
-    delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
-    delete process.env[AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID];
+    delete process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID];
     process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = "";
     appConfigProvider.resetForTests();
     tempDataDir = await createTempDataDir();
@@ -58,15 +55,10 @@ describe("BuiltInAgentBootstrapper", () => {
     } else {
       process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY] = previousFeaturedSetting;
     }
-    if (previousCompactorSetting === undefined) {
-      delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
+    if (previousSkillImproverSetting === undefined) {
+      delete process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID];
     } else {
-      process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID] = previousCompactorSetting;
-    }
-    if (previousSkillEvolverSetting === undefined) {
-      delete process.env[AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID];
-    } else {
-      process.env[AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID] = previousSkillEvolverSetting;
+      process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID] = previousSkillImproverSetting;
     }
     if (previousAgentPackageRoots === undefined) {
       delete process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
@@ -88,7 +80,12 @@ describe("BuiltInAgentBootstrapper", () => {
   );
 
   const compactorAgentDir = (): string => agentDir(MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
-  const skillEvolverAgentDir = (): string => agentDir(SKILL_EVOLVER_AGENT_DEFINITION_ID);
+  const skillImproverAgentDir = (): string => agentDir(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
+  const skillImproverPrivateSkillDir = (): string => path.join(
+    skillImproverAgentDir(),
+    "skills",
+    "retrospective-skill-improver",
+  );
   const dailyAssistantAgentDir = (): string => path.join(tempDataDir, "agents", "daily-assistant");
 
   const resultFor = <T extends { builtInAgents: Array<{ agentDefinitionId: string }> }>(
@@ -102,7 +99,7 @@ describe("BuiltInAgentBootstrapper", () => {
     return item as T["builtInAgents"][number];
   };
 
-  it("syncs registry-defined built-ins and initializes blank built-in settings", async () => {
+  it("syncs registry-defined built-ins and initializes only declared built-in settings", async () => {
     const services = createServices();
 
     const result = await bootstrapBuiltInAgents(services);
@@ -118,15 +115,17 @@ describe("BuiltInAgentBootstrapper", () => {
       agentDir: compactorAgentDir(),
       syncedAgentMd: true,
       syncedAgentConfig: true,
+      syncedSkills: true,
       resolved: true,
-      initializedSetting: true,
+      initializedSetting: false,
     });
-    expect(resultFor(result, SKILL_EVOLVER_AGENT_DEFINITION_ID)).toMatchObject({
-      agentDefinitionId: SKILL_EVOLVER_AGENT_DEFINITION_ID,
-      displayName: "Skill Self-Evolver",
-      agentDir: skillEvolverAgentDir(),
+    expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
+      agentDefinitionId: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+      displayName: "Retrospective Skill Improver",
+      agentDir: skillImproverAgentDir(),
       syncedAgentMd: true,
       syncedAgentConfig: true,
+      syncedSkills: true,
       resolved: true,
       initializedSetting: true,
     });
@@ -135,15 +134,18 @@ describe("BuiltInAgentBootstrapper", () => {
       fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8"),
     ).resolves.toContain("name: Memory Compactor");
     await expect(
-      fs.readFile(path.join(skillEvolverAgentDir(), "agent.md"), "utf-8"),
-    ).resolves.toContain("name: Skill Self-Evolver");
+      fs.readFile(path.join(skillImproverAgentDir(), "agent.md"), "utf-8"),
+    ).resolves.toContain("name: Retrospective Skill Improver");
+    await expect(
+      fs.readFile(path.join(skillImproverPrivateSkillDir(), "SKILL.md"), "utf-8"),
+    ).resolves.toContain("name: retrospective-skill-improver");
+    expect(await readJson(path.join(skillImproverAgentDir(), "agent-config.json"))).toMatchObject({
+      skillNames: ["retrospective-skill-improver"],
+    });
     await expect(fs.stat(dailyAssistantAgentDir())).rejects.toMatchObject({ code: "ENOENT" });
     expect(services.serverSettingsService.getFeaturedCatalogItemsSettingValue()).toBeNull();
-    expect(services.serverSettingsService.getCompactionAgentDefinitionId()).toBe(
-      MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-    );
-    expect(services.serverSettingsService.getSelfEvolutionDefaultEvolverAgentDefinitionId()).toBe(
-      SKILL_EVOLVER_AGENT_DEFINITION_ID,
+    expect(services.serverSettingsService.getSkillImprovementDefaultImproverAgentDefinitionId()).toBe(
+      RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     );
 
     await expect(services.agentDefinitionService.getFreshAgentDefinitionById(
@@ -154,14 +156,24 @@ describe("BuiltInAgentBootstrapper", () => {
       ownershipScope: "shared",
       defaultLaunchConfig: null,
     });
-    await expect(services.agentDefinitionService.getFreshAgentDefinitionById(
-      SKILL_EVOLVER_AGENT_DEFINITION_ID,
-    )).resolves.toMatchObject({
-      id: SKILL_EVOLVER_AGENT_DEFINITION_ID,
-      name: "Skill Self-Evolver",
+    const skillImproverDefinition = await services.agentDefinitionService.getFreshAgentDefinitionById(
+      RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+    );
+    expect(skillImproverDefinition).toMatchObject({
+      id: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+      name: "Retrospective Skill Improver",
+      skillNames: ["retrospective-skill-improver"],
       ownershipScope: "shared",
       defaultLaunchConfig: null,
     });
+    const resolvedConfiguredSkills = new SkillService().resolveConfiguredSkillsForAgent(skillImproverDefinition);
+    expect(resolvedConfiguredSkills).toHaveLength(1);
+    expect(resolvedConfiguredSkills[0]).toMatchObject({
+      name: "retrospective-skill-improver",
+      rootPath: path.resolve(skillImproverPrivateSkillDir()),
+    });
+    expect(resolvedConfiguredSkills[0]?.content).toContain("Retrospective Skill Improver");
+
     await expect(
       services.agentDefinitionService.getFreshAgentDefinitionById("daily-assistant"),
     ).resolves.toBeNull();
@@ -170,12 +182,8 @@ describe("BuiltInAgentBootstrapper", () => {
   it("preserves existing built-in settings and leaves featured settings untouched", async () => {
     const services = createServices();
     services.serverSettingsService.updateSetting(
-      AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-      "custom-memory-compactor",
-    );
-    services.serverSettingsService.updateSetting(
-      AUTOBYTEUS_SKILL_EVOLVER_AGENT_DEFINITION_ID,
-      "custom-skill-evolver",
+      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+      "custom-retrospective-skill-improver",
     );
 
     const result = await bootstrapBuiltInAgents(services);
@@ -184,15 +192,12 @@ describe("BuiltInAgentBootstrapper", () => {
       resolved: true,
       initializedSetting: false,
     });
-    expect(resultFor(result, SKILL_EVOLVER_AGENT_DEFINITION_ID)).toMatchObject({
+    expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       resolved: true,
       initializedSetting: false,
     });
-    expect(services.serverSettingsService.getCompactionAgentDefinitionId()).toBe(
-      "custom-memory-compactor",
-    );
-    expect(services.serverSettingsService.getSelfEvolutionDefaultEvolverAgentDefinitionId()).toBe(
-      "custom-skill-evolver",
+    expect(services.serverSettingsService.getSkillImprovementDefaultImproverAgentDefinitionId()).toBe(
+      "custom-retrospective-skill-improver",
     );
     expect(services.serverSettingsService.getFeaturedCatalogItemsSettingValue()).toBeNull();
     await expect(fs.stat(dailyAssistantAgentDir())).rejects.toMatchObject({ code: "ENOENT" });
@@ -200,7 +205,7 @@ describe("BuiltInAgentBootstrapper", () => {
 
   it("overwrites stale built-in files for both registry ids and preserves standalone local agents", async () => {
     await fs.mkdir(compactorAgentDir(), { recursive: true });
-    await fs.mkdir(skillEvolverAgentDir(), { recursive: true });
+    await fs.mkdir(skillImproverAgentDir(), { recursive: true });
     const staleCompactorMd = serializeAgentMd(
       {
         name: "Stale Memory Compactor",
@@ -212,8 +217,12 @@ describe("BuiltInAgentBootstrapper", () => {
     );
     await fs.writeFile(path.join(compactorAgentDir(), "agent.md"), staleCompactorMd, "utf-8");
     await fs.writeFile(path.join(compactorAgentDir(), "agent-config.json"), JSON.stringify({ toolNames: ["stale_tool"] }), "utf-8");
-    await fs.writeFile(path.join(skillEvolverAgentDir(), "agent.md"), "stale skill evolver", "utf-8");
-    await fs.writeFile(path.join(skillEvolverAgentDir(), "agent-config.json"), JSON.stringify({ skillNames: ["stale_skill"] }), "utf-8");
+    await fs.mkdir(path.join(compactorAgentDir(), "skills", "stale-compactor-skill"), { recursive: true });
+    await fs.writeFile(path.join(compactorAgentDir(), "skills", "stale-compactor-skill", "SKILL.md"), "# stale\n", "utf-8");
+    await fs.writeFile(path.join(skillImproverAgentDir(), "agent.md"), "stale retrospective skill improver", "utf-8");
+    await fs.writeFile(path.join(skillImproverAgentDir(), "agent-config.json"), JSON.stringify({ skillNames: ["stale_skill"] }), "utf-8");
+    await fs.mkdir(skillImproverPrivateSkillDir(), { recursive: true });
+    await fs.writeFile(path.join(skillImproverPrivateSkillDir(), "stale.md"), "stale private skill file\n", "utf-8");
 
     await fs.mkdir(dailyAssistantAgentDir(), { recursive: true });
     const dailyAgentMd = serializeAgentMd(
@@ -235,12 +244,14 @@ describe("BuiltInAgentBootstrapper", () => {
     expect(resultFor(result, MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toMatchObject({
       syncedAgentMd: true,
       syncedAgentConfig: true,
+      syncedSkills: true,
       resolved: true,
-      initializedSetting: true,
+      initializedSetting: false,
     });
-    expect(resultFor(result, SKILL_EVOLVER_AGENT_DEFINITION_ID)).toMatchObject({
+    expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       syncedAgentMd: true,
       syncedAgentConfig: true,
+      syncedSkills: true,
       resolved: true,
       initializedSetting: true,
     });
@@ -250,11 +261,16 @@ describe("BuiltInAgentBootstrapper", () => {
     await expect(fs.readFile(path.join(compactorAgentDir(), "agent-config.json"), "utf-8")).resolves.toBe(
       await readTemplate("memory-compactor", "agent-config.json"),
     );
-    await expect(fs.readFile(path.join(skillEvolverAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
-      await readTemplate("skill-evolver", "agent.md"),
+    await expect(fs.readFile(path.join(skillImproverAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
+      await readTemplate("retrospective-skill-improver", "agent.md"),
     );
-    await expect(fs.readFile(path.join(skillEvolverAgentDir(), "agent-config.json"), "utf-8")).resolves.toBe(
-      await readTemplate("skill-evolver", "agent-config.json"),
+    await expect(fs.readFile(path.join(skillImproverAgentDir(), "agent-config.json"), "utf-8")).resolves.toBe(
+      await readTemplate("retrospective-skill-improver", "agent-config.json"),
+    );
+    await expect(fs.stat(path.join(compactorAgentDir(), "skills"))).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(fs.stat(path.join(skillImproverPrivateSkillDir(), "stale.md"))).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(fs.readFile(path.join(skillImproverPrivateSkillDir(), "SKILL.md"), "utf-8")).resolves.toBe(
+      await readTemplate("retrospective-skill-improver", "skills/retrospective-skill-improver/SKILL.md"),
     );
     await expect(fs.readFile(path.join(dailyAssistantAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
       dailyAgentMd,
@@ -279,6 +295,12 @@ describe("BuiltInAgentBootstrapper", () => {
     );
     await fs.writeFile(path.join(packageCompactorDir, "agent.md"), packageCompactorMd, "utf-8");
     await fs.writeFile(path.join(packageCompactorDir, "agent-config.json"), JSON.stringify({ skillNames: ["package_skill"] }), "utf-8");
+    await fs.mkdir(path.join(packageCompactorDir, "skills", "package_skill"), { recursive: true });
+    await fs.writeFile(
+      path.join(packageCompactorDir, "skills", "package_skill", "SKILL.md"),
+      "---\nname: package_skill\ndescription: Package-owned skill.\n---\n\n# Package Skill\n",
+      "utf-8",
+    );
 
     process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = packageRoot;
     appConfigProvider.resetForTests();
@@ -296,6 +318,9 @@ describe("BuiltInAgentBootstrapper", () => {
     expect(await readJson(path.join(packageCompactorDir, "agent-config.json"))).toMatchObject({
       skillNames: ["package_skill"],
     });
+    await expect(
+      fs.readFile(path.join(packageCompactorDir, "skills", "package_skill", "SKILL.md"), "utf-8"),
+    ).resolves.toContain("Package-owned skill");
   });
 
   it("overwrites invalid stale Memory Compactor instructions before resolving defaults", async () => {
@@ -314,12 +339,10 @@ describe("BuiltInAgentBootstrapper", () => {
     expect(resultFor(result, MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toMatchObject({
       syncedAgentMd: true,
       syncedAgentConfig: true,
+      syncedSkills: true,
       resolved: true,
-      initializedSetting: true,
+      initializedSetting: false,
     });
-    expect(services.serverSettingsService.getCompactionAgentDefinitionId()).toBe(
-      MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-    );
     await expect(fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
       await readTemplate("memory-compactor", "agent.md"),
     );
@@ -335,7 +358,7 @@ describe("BuiltInAgentBootstrapper", () => {
       visibleDefinitions.some((definition) => definition.id === MEMORY_COMPACTOR_AGENT_DEFINITION_ID),
     ).toBe(true);
     expect(
-      visibleDefinitions.some((definition) => definition.id === SKILL_EVOLVER_AGENT_DEFINITION_ID),
+      visibleDefinitions.some((definition) => definition.id === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID),
     ).toBe(true);
     expect(visibleDefinitions.some((definition) => definition.id === "daily-assistant")).toBe(false);
 
@@ -356,6 +379,7 @@ describe("BuiltInAgentBootstrapper", () => {
     expect(resultFor(result, MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toMatchObject({
       syncedAgentMd: true,
       syncedAgentConfig: true,
+      syncedSkills: true,
       resolved: true,
       initializedSetting: false,
     });

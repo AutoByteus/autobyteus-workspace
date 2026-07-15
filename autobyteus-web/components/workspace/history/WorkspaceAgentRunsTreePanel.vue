@@ -72,7 +72,7 @@
       <div v-else class="space-y-1">
         <WorkspaceHistoryWorkspaceSection
           v-for="workspaceNode in workspaceNodes"
-          :key="workspaceNode.workspaceRootPath"
+          :key="workspaceNode.workspaceId"
           :workspace-node="workspaceNode"
           :workspace-teams="workspaceTeams(workspaceNode.workspaceRootPath)"
           :workspace-team-history-groups="workspaceTeamHistoryGroups(workspaceNode.workspaceRootPath)"
@@ -93,6 +93,17 @@
       @confirm="confirmDeleteRun"
       @cancel="closeDeleteConfirmation"
     />
+
+    <ConfirmationModal
+      :show="showRemoveWorkspaceConfirmation"
+      :title="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_title')"
+      :message="removeWorkspaceConfirmationMessage"
+      :confirm-button-text="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_confirm')"
+      variant="danger"
+      typography-size="large"
+      @confirm="confirmRemoveWorkspace"
+      @cancel="closeRemoveWorkspaceConfirmation"
+    />
   </div>
 </template>
 
@@ -112,6 +123,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -121,7 +133,10 @@ import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState
 import { useWorkspaceHistorySelectionActions } from '~/composables/useWorkspaceHistorySelectionActions';
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
 import { useWorkspaceHistoryWorkspaceCreation } from '~/composables/useWorkspaceHistoryWorkspaceCreation';
+import { useWorkspaceHistoryWorkspaceRemoval } from '~/composables/useWorkspaceHistoryWorkspaceRemoval';
 import { useWorkspaceHistoryMutations } from '~/composables/useWorkspaceHistoryMutations';
+import { useLocalization } from '~/composables/useLocalization';
+import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 const emit = defineEmits<{
   (e: 'run-selected', payload: { type: 'agent'; runId: string }): void;
@@ -136,11 +151,13 @@ const workspaceStore = useWorkspaceStore();
 const selectionStore = useAgentSelectionStore();
 const agentRunStore = useAgentRunStore();
 const teamRunStore = useAgentTeamRunStore();
+const agentTeamContextsStore = useAgentTeamContextsStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
+const { t } = useLocalization();
 const addWorkspaceToast = (message: string, type: 'success' | 'error' | 'warning' | 'info'): void => {
   addToast(message, type === 'warning' ? 'info' : type);
 };
@@ -184,7 +201,7 @@ const {
   fetchAllWorkspaces: () => workspaceStore.fetchAllWorkspaces(),
   pickFolderPath,
   onWorkspaceCreated: (workspaceRootPath: string) => {
-    treeState.setWorkspaceExpanded(workspaceRootPath, true);
+    treeState.setWorkspaceExpandedByRootPath(workspaceRootPath, true);
   },
 });
 
@@ -221,6 +238,20 @@ const {
 });
 
 const {
+  pendingWorkspace,
+  removingWorkspaceIds,
+  showRemoveConfirmation: showRemoveWorkspaceConfirmation,
+  onRemoveWorkspace,
+  closeRemoveConfirmation: closeRemoveWorkspaceConfirmation,
+  confirmRemoveWorkspace,
+} = useWorkspaceHistoryWorkspaceRemoval({
+  removeWorkspace: (workspaceId: string) => workspaceStore.removeWorkspace(workspaceId),
+  pruneWorkspaceHistory: (workspaceId, rootPath) => runHistoryStore.pruneWorkspace(workspaceId, rootPath),
+  pruneWorkspaceExpansion: (workspaceId) => treeState.pruneWorkspace(workspaceId),
+  addToast: addWorkspaceToast,
+});
+
+const {
   onSelectRun,
   onSelectTeam,
   onSelectTeamMember,
@@ -230,6 +261,7 @@ const {
   selectionStore,
   setTeamExpanded: treeState.setTeamExpanded,
   toggleTeam: treeState.toggleTeam,
+  expandTeamMemberAncestors: treeState.expandTeamMemberAncestors,
   emitRunSelected: (payload) => {
     if (payload.type === 'agent') {
       emit('run-selected', { type: 'agent', runId: payload.runId });
@@ -240,29 +272,67 @@ const {
   emitRunCreated: (payload) => emit('run-created', payload),
 });
 
+const onToggleWorkspace = async (workspaceNode: RunTreeWorkspaceNode): Promise<void> => {
+  const wasExpanded = treeState.isWorkspaceExpanded(workspaceNode.workspaceId);
+  treeState.toggleWorkspace(workspaceNode.workspaceId);
+  if (!wasExpanded) {
+    await runHistoryStore.fetchWorkspaceHistory(workspaceNode.workspaceId).catch(() => undefined);
+  }
+};
+
+const escapeHtml = (value: string): string => value
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
+const removeWorkspaceConfirmationMessage = computed(() => {
+  const workspace = pendingWorkspace.value;
+  if (!workspace) return '';
+  const name = escapeHtml(workspace.workspaceName || t(
+    'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.this_workspace',
+  ));
+  const root = escapeHtml(workspace.workspaceRootPath);
+  const questionPrefix = escapeHtml(t(
+    'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_question_prefix',
+  ));
+  const questionSuffix = escapeHtml(t(
+    'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_question_suffix',
+  ));
+  const body = escapeHtml(t(
+    'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_non_destructive_body',
+  ));
+  return `${questionPrefix} <strong>${name}</strong> ${questionSuffix}<br><br>${body}<br><br><span class="break-all text-xs text-gray-500">${root}</span>`;
+});
+
 const sectionState: WorkspaceHistorySectionState = {
   get selectedRunId() {
     return treeState.selectedRunId.value;
   },
-  activeStatusClass: treeState.activeStatusClass,
   isRunTerminating: (runId: string) => Boolean(terminatingRunIds.value[runId]),
   isTeamTerminating: (teamRunId: string) => Boolean(terminatingTeamIds.value[teamRunId]),
   isRunDeleting: (runId: string) => Boolean(deletingRunIds.value[runId]),
   isTeamDeleting: (teamRunId: string) => Boolean(deletingTeamIds.value[teamRunId]),
   isRunArchiving: (runId: string) => Boolean(archivingRunIds.value[runId]),
   isTeamArchiving: (teamRunId: string) => Boolean(archivingTeamIds.value[teamRunId]),
+  isWorkspaceRemoving: (workspaceId: string) => Boolean(removingWorkspaceIds.value[workspaceId]),
+  isWorkspaceHistoryLoading: (workspaceId: string) => Boolean(runHistoryStore.workspaceHistoryLoadingById[workspaceId]),
+  workspaceHistoryError: (workspaceId: string) => runHistoryStore.workspaceHistoryErrorById[workspaceId] || null,
   formatRelativeTime: (isoTime: string) => runHistoryStore.formatRelativeTime(isoTime),
   isWorkspaceExpanded: treeState.isWorkspaceExpanded,
-  toggleWorkspace: treeState.toggleWorkspace,
+  toggleWorkspace: onToggleWorkspace,
   isAgentExpanded: treeState.isAgentExpanded,
   toggleAgent: treeState.toggleAgent,
   isTeamDefinitionExpanded: treeState.isTeamDefinitionExpanded,
   toggleTeamDefinition: treeState.toggleTeamDefinition,
   isTeamExpanded: treeState.isTeamExpanded,
-  runStatusClass: treeState.runStatusClass,
-  teamStatusClass: treeState.teamStatusClass,
+  getLiveTeamContext: (teamRunId: string) => agentTeamContextsStore.getTeamContextById(teamRunId) ?? null,
+  isTeamMemberExpanded: treeState.isTeamMemberExpanded,
+  toggleTeamMember: treeState.toggleTeamMember,
   canTerminateTeam: treeState.canTerminateTeam,
 };
+
 
 const sectionAvatarBindings: WorkspaceHistoryAvatarBindings = {
   showAgentAvatar,
@@ -280,6 +350,7 @@ const sectionAvatarBindings: WorkspaceHistoryAvatarBindings = {
 };
 
 const sectionActions: WorkspaceHistorySectionActions = {
+  onRemoveWorkspace,
   onCreateRun,
   onSelectRun,
   onTerminateRun,
@@ -300,9 +371,10 @@ onMounted(async () => {
     agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
     agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
   ]);
-  await runHistoryStore.fetchTree();
   refreshTimerId = setInterval(() => {
-    void runHistoryStore.refreshTreeQuietly();
+    for (const workspaceId of treeState.expandedWorkspaceIds()) {
+      void runHistoryStore.refreshWorkspaceHistoryQuietly(workspaceId);
+    }
   }, HISTORY_REFRESH_INTERVAL_MS);
 });
 

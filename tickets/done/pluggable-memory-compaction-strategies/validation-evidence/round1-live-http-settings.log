@@ -1,0 +1,55 @@
+=== isolated built-server live HTTP validation ===
+UTC 2026-07-13T18:57:39Z
+command=node autobyteus-server-ts/dist/app.js --data-dir <isolated-temp> --host 127.0.0.1 --port <owned-port>
+host=127.0.0.1 port=51679
+secrets=explicitly removed from child environment
+owned_server_pid=47116
+health={"status":"ok","message":"Server is running"}
+--- initial setting query ---
+[]
+--- valid normalized strategy update ---
+{"data":{"updateServerSetting":"Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' has been updated successfully."}}
+--- persisted .env after valid update ---
+AUTOBYTEUS_COMPACTION_STRATEGY=structured-json
+--- effective setting query after valid update ---
+[{"isDeletable": false, "isEditable": true, "key": "AUTOBYTEUS_COMPACTION_STRATEGY", "value": "structured-json"}]
+--- invalid update must not replace persisted/effective value ---
+{"data":{"updateServerSetting":"Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' must be one of: structured-json."}}
+[{"isDeletable": false, "isEditable": true, "key": "AUTOBYTEUS_COMPACTION_STRATEGY", "value": "structured-json"}]
+live HTTP setting validation: PASS
+--- server log tail (isolated process) ---
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=139
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=131
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=37
+Finished Autobyteus image model discovery. Total models registered: 12
+[2026-07-13T18:57:41.079Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 28 items.
+Pre-loaded 28 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=49
+Finished Autobyteus audio model discovery. Total models registered: 8
+Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' updated to 'structured-json'

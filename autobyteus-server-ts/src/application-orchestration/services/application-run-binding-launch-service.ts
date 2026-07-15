@@ -49,10 +49,13 @@ const collectBindingRunIds = (binding: ApplicationRunBindingSummary): string[] =
 const toSkillAccessMode = (
   value: SkillAccessMode | string | null | undefined,
 ): SkillAccessMode => {
-  if (value === SkillAccessMode.GLOBAL_DISCOVERY || value === SkillAccessMode.NONE) {
-    return value;
+  if (value === undefined || value === null || value === SkillAccessMode.PRELOADED_ONLY) {
+    return SkillAccessMode.PRELOADED_ONLY;
   }
-  return SkillAccessMode.PRELOADED_ONLY;
+  if (value === SkillAccessMode.NONE) {
+    return SkillAccessMode.NONE;
+  }
+  throw new Error(`Unsupported skillAccessMode '${value}'.`);
 };
 
 const requireLaunchKind = (

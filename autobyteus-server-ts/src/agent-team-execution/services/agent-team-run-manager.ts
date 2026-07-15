@@ -79,7 +79,6 @@ export class AgentTeamRunManager {
       coordinatorMemberName: config.coordinatorMemberName,
       coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberTree: this.attachRuntimeMemberIds(config.memberTree),
-      selfEvolution: config.selfEvolution,
     });
     const activeRun = new TeamRun({
       context: new TeamRunContext({
@@ -263,7 +262,6 @@ export class AgentTeamRunManager {
       coordinatorMemberName: config.coordinatorMemberName,
       coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberTree: config.memberTree,
-      selfEvolution: config.selfEvolution,
     });
   }
 }

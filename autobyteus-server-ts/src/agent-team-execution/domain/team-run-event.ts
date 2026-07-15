@@ -2,7 +2,8 @@ import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
-import type { TeamMemberAddress, TeamRepresentedSubTeam } from "./inter-agent-message-delivery.js";
+import type { TaskTeamInstanceIdentity } from "./task-team-instance.js";
+import type { ConversationTargetAddress } from "./conversation-target-address.js";
 import { buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
 
 export enum TeamRunEventSourceType {
@@ -47,23 +48,11 @@ export type TeamCommunicationReferenceFile = {
   updatedAt: string;
 };
 
-export type TeamCommunicationParticipant = {
-  memberKind: "agent" | "agent_team";
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  address?: TeamMemberAddress | null;
-  platformRunId?: string | null;
-  teamDefinitionId?: string | null;
-  representedSubTeam?: TeamRepresentedSubTeam | null;
-};
-
 export type TeamRunCommunicationEventPayload = {
   messageId: string;
   teamRunId: string;
-  sender: TeamCommunicationParticipant;
-  receiver: TeamCommunicationParticipant;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
   content: string;
   messageType: string;
   referenceFiles: TeamCommunicationReferenceFile[];
@@ -112,6 +101,8 @@ export type TeamRunEvent = {
   data: TeamRunEventData;
   /** Canonical runtime source identity. Root/team-level events use an empty path. */
   sourcePath: string[];
+  /** Concrete task-team execution marker for child-run events republished to the parent stream. */
+  taskTeamInstance?: TaskTeamInstanceIdentity | null;
   /** Deprecated transport/display alias only. Do not use as domain identity. */
   subTeamNodeName?: string | null;
 };

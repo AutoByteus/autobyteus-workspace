@@ -24,7 +24,7 @@ export type ApplicationRouteMethod =
   | "DELETE"
   | "HEAD"
   | "OPTIONS";
-export type ApplicationSkillAccessMode = "GLOBAL_DISCOVERY" | "PRELOADED_ONLY" | "NONE";
+export type ApplicationSkillAccessMode = "PRELOADED_ONLY" | "NONE";
 
 export type ApplicationBackendSupportedExposures = {
   queries: boolean;

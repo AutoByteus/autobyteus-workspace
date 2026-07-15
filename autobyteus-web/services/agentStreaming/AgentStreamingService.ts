@@ -23,6 +23,7 @@ import {
   handleToolLog,
   handleAgentStatus,
   handleCompactionStatus,
+  handleTokenUsageUpdated,
   handleAssistantComplete,
   handleTurnCompleted,
   handleTurnInterrupted,
@@ -326,6 +327,10 @@ export class AgentStreamingService {
 
       case 'COMPACTION_STATUS':
         handleCompactionStatus(message.payload, context);
+        break;
+
+      case 'TOKEN_USAGE_UPDATED':
+        handleTokenUsageUpdated(message.payload, context);
         break;
 
       case 'TURN_STARTED':

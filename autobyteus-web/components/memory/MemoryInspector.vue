@@ -24,7 +24,16 @@
           <WorkingContextTab v-else-if="store.activeTab === 'working'" :messages="store.memoryView?.workingContext ?? null" />
           <EpisodicTab v-else-if="store.activeTab === 'episodic'" :items="store.memoryView?.episodic ?? null" />
           <SemanticTab v-else-if="store.activeTab === 'semantic'" :items="store.memoryView?.semantic ?? null" />
-          <RawTracesTab v-else :traces="store.memoryView?.rawTraces ?? null" :limit="store.rawTraceLimit" :loading="store.loading" @updateLimit="store.setRawTraceLimit" />
+          <RawTracesTab
+            v-else
+            :traces="store.memoryView?.rawTraces ?? null"
+            :raw-trace-files="store.memoryView?.rawTraceFiles ?? null"
+            :selected-raw-trace-file-name="store.memoryView?.selectedRawTraceFileName ?? store.selectedRawTraceFileName"
+            :limit="store.rawTraceLimit"
+            :loading="store.loading"
+            @updateLimit="store.setRawTraceLimit"
+            @selectFile="store.setRawTraceFileName"
+          />
         </div>
       </div>
     </section>

@@ -67,6 +67,7 @@ const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.AGENT_STATUS, AgentRunEventType.AGENT_STATUS],
   [StreamEventType.COMPACTION_STATUS, AgentRunEventType.COMPACTION_STATUS],
   [StreamEventType.ASSISTANT_COMPLETE_RESPONSE, AgentRunEventType.ASSISTANT_COMPLETE],
+  [StreamEventType.TOKEN_USAGE_UPDATED, AgentRunEventType.TOKEN_USAGE_UPDATED],
   [StreamEventType.TOOL_APPROVAL_REQUESTED, AgentRunEventType.TOOL_APPROVAL_REQUESTED],
   [StreamEventType.TOOL_APPROVED, AgentRunEventType.TOOL_APPROVED],
   [StreamEventType.TOOL_DENIED, AgentRunEventType.TOOL_DENIED],
@@ -150,12 +151,21 @@ export class AutoByteusStreamEventConverter {
       return null;
     }
 
+    const normalizedPayload = eventType === AgentRunEventType.AGENT_STATUS
+      ? (statusPayload ?? this.getStatusPayload())
+      : eventType === AgentRunEventType.TOKEN_USAGE_UPDATED
+        ? {
+            ...payload,
+            observed_at: event.timestamp instanceof Date
+              ? event.timestamp.toISOString()
+              : new Date().toISOString(),
+          }
+        : payload;
+
     return {
       eventType,
       runId: this.runId,
-      payload: eventType === AgentRunEventType.AGENT_STATUS
-        ? (statusPayload ?? this.getStatusPayload())
-        : payload,
+      payload: normalizedPayload,
       statusHint,
     };
   }

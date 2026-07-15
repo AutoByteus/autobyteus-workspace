@@ -1,0 +1,10 @@
+# Round 4 cleanup
+UTC 2026-07-14T12:39:33Z
+owned_run_dir=/tmp/pmcs-round4-MxRBCO owned_ports=61457,61458
+## process/port check before removal
+PORT_FREE 61457
+PORT_FREE 61458
+TEMP_HARNESS_REMOVED PASS
+ISOLATED_DATA_REMOVED PASS
+Generated ignored Electron build/package artifacts retained as validation and delivery evidence; no application was installed or launched.
+CLEANUP_RESULT=PASS

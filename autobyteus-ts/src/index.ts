@@ -8,6 +8,8 @@ export * from './multimedia/audio/index.js';
 export * from './multimedia/audio/api/index.js';
 export * from './multimedia/image/index.js';
 export * from './multimedia/image/api/index.js';
+export * from './multimedia/video/index.js';
+export * from './multimedia/video/api/index.js';
 export * from './multimedia/utils/index.js';
 export * from './task-management/index.js';
 export * from './task-management/schemas/index.js';

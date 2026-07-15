@@ -1,0 +1,41 @@
+USER VERIFICATION FAILURE CORRELATION
+observed_date=2026-07-11
+team_run_id=software_engineering_team_15eb25f9280f4cc0910708e1495c53a4
+member_route_key=delivery_engineer
+member_run_id=delivery_engineer_44d7b48c4c834b6a9401367e0e2238c9
+turn_id=019f4fd9-7733-7680-a3e4-9d8603f028d3
+graphql_endpoint=http://127.0.0.1:29695/graphql
+projection_query=getTeamMemberRunProjection
+raw_trace=/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_15eb25f9280f4cc0910708e1495c53a4/delivery_engineer_44d7b48c4c834b6a9401367e0e2238c9/raw_traces_active.jsonl
+
+projection_pair=165,166
+between_raw_seq=38
+between_type=tool_result
+between_source=TOOL_EXECUTION_SUCCEEDED
+between_invocation=exec-9987d136-64e2-4af7-b25a-b88da0bfbbe5
+
+projection_pair=180,181
+between_raw_seq=61
+between_type=tool_result
+between_source=TOOL_EXECUTION_SUCCEEDED
+between_invocation=exec-cc1f2fd7-860a-4dd2-9e99-b12817b63bd3
+
+projection_pair=191,192
+between_raw_seq=77
+between_type=tool_result
+between_source=TOOL_EXECUTION_SUCCEEDED
+between_invocation=exec-83785722-228c-4c82-99a3-ffe2ad26f5f3
+
+projection_pair=200,201
+first_reasoning_raw_seq=89
+first_reasoning=Removing large node_modules directory
+between_raw_seq=90
+between_type=tool_result
+between_source=TOOL_EXECUTION_SUCCEEDED
+between_invocation=exec-f087e951-ded5-45de-b8db-1f0d78aa8fe0
+second_reasoning_raw_seq=91
+second_reasoning=Planning post-build summary file generation
+next_tool_call_raw_seq=92
+
+classification=DESIGN_IMPACT
+cause=matching terminal tool update cleared reasoning identity and flushed memory even though the UI attached the result to an earlier tool card

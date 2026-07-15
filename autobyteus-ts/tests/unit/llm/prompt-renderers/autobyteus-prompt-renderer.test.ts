@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect } from 'vitest';
 import { AutobyteusPromptRenderer } from '../../../../src/llm/prompt-renderers/autobyteus-prompt-renderer.js';
 import {
   Message,
@@ -6,6 +6,19 @@ import {
   ToolCallPayload,
   ToolResultPayload
 } from '../../../../src/llm/utils/messages.js';
+
+const originalParser = process.env.AUTOBYTEUS_STREAM_PARSER;
+
+afterEach(() => {
+  if (originalParser === undefined) {
+    delete process.env.AUTOBYTEUS_STREAM_PARSER;
+  } else {
+    process.env.AUTOBYTEUS_STREAM_PARSER = originalParser;
+  }
+});
+
+const countOccurrences = (content: string, needle: string): number =>
+  content.split(needle).length - 1;
 
 describe('AutobyteusPromptRenderer', () => {
   it('renders the transcript and marks the latest user message as current', async () => {
@@ -121,6 +134,102 @@ describe('AutobyteusPromptRenderer', () => {
       'tool_error: null'
     ].join('\n'));
     expect(rendered.messages[0]).not.toHaveProperty('tool_payload');
+  });
+
+  it('keeps a media continuation user message current with completed-tool wording', async () => {
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'xml';
+    const renderer = new AutobyteusPromptRenderer();
+    const messages = [
+      new Message(MessageRole.USER, 'Please transcribe the audio.'),
+      new Message(MessageRole.ASSISTANT, {
+        tool_payload: new ToolCallPayload([
+          { id: 'call-media', name: 'read_media_file', arguments: { file_path: '/tmp/audio.m4a' } }
+        ])
+      }),
+      new Message(MessageRole.TOOL, {
+        tool_payload: new ToolResultPayload('call-media', 'read_media_file', {
+          uri: '/tmp/audio.m4a',
+          file_type: 'audio'
+        })
+      }),
+      new Message(MessageRole.USER, {
+        content: 'The read_media_file tool call completed successfully.',
+        audio_urls: ['/tmp/audio.m4a']
+      })
+    ];
+
+    const rendered = await renderer.render(messages);
+
+    expect(rendered.current_message_index).toBe(3);
+    expect(rendered.messages[3]).toEqual({
+      role: 'user',
+      content: 'The read_media_file tool call completed successfully.',
+      image_urls: [],
+      audio_urls: ['/tmp/audio.m4a'],
+      video_urls: []
+    });
+    expect(JSON.stringify(rendered)).not.toContain('Tool history continuation');
+    expect(JSON.stringify(rendered)).not.toContain('XML tool-call text');
+    expect(JSON.stringify(rendered)).not.toContain('markdown triple backticks');
+  });
+
+  it('synthesizes a current user continuation without duplicating trailing text-only tool results in XML mode', async () => {
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'xml';
+    const renderer = new AutobyteusPromptRenderer();
+    const messages = [
+      new Message(MessageRole.USER, {
+        content: 'Please inspect the project.',
+        image_urls: ['old-image.png']
+      }),
+      new Message(MessageRole.ASSISTANT, {
+        tool_payload: new ToolCallPayload([
+          { id: 'call-1', name: 'list_directory', arguments: { path: 'src' } }
+        ])
+      }),
+      new Message(MessageRole.TOOL, {
+        tool_payload: new ToolResultPayload('call-1', 'list_directory', ['index.ts'])
+      })
+    ];
+
+    const rendered = await renderer.render(messages);
+
+    expect(messages).toHaveLength(3);
+    expect(rendered.messages).toHaveLength(4);
+    expect(rendered.current_message_index).toBe(3);
+    expect(rendered.messages[0]).toMatchObject({
+      role: 'user',
+      image_urls: [],
+      content: 'Please inspect the project.\n\nHistorical media not reattached: 1 image attachment.'
+    });
+    expect(rendered.messages[2]).toEqual({
+      role: 'tool',
+      content: [
+        'Tool result:',
+        'tool_call_id: call-1',
+        'tool_name: list_directory',
+        'tool_result: ["index.ts"]',
+        'tool_error: null'
+      ].join('\n'),
+      image_urls: [],
+      audio_urls: [],
+      video_urls: []
+    });
+    expect(rendered.messages[3]).toEqual({
+      role: 'user',
+      content: 'The list_directory tool call completed successfully.',
+      image_urls: [],
+      audio_urls: [],
+      video_urls: []
+    });
+    expect(rendered.messages[2].content).toContain('index.ts');
+    expect(rendered.messages[2].content).toContain('tool_result: ["index.ts"]');
+    expect(rendered.messages[3].content).not.toContain('Tool result:');
+    expect(countOccurrences(rendered.messages.map((message) => message.content).join('\n\n'), 'tool_result: ["index.ts"]'))
+      .toBe(1);
+    expect(JSON.stringify(rendered)).not.toContain('Tool history continuation');
+    expect(JSON.stringify(rendered)).not.toContain('Native API tool continuation');
+    expect(JSON.stringify(rendered)).not.toContain('XML tool-call text');
+    expect(JSON.stringify(rendered)).not.toContain('markdown triple backticks');
   });
 
   it('requires at least one user message', async () => {

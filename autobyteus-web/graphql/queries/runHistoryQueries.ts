@@ -50,6 +50,57 @@ export const ListWorkspaceRunHistory = gql`
   }
 `;
 
+
+export const GetWorkspaceRunHistory = gql`
+  query GetWorkspaceRunHistory($workspaceId: String!, $limitPerAgent: Int = 6) {
+    workspaceRunHistory(workspaceId: $workspaceId, limitPerAgent: $limitPerAgent) {
+      workspaceRootPath
+      workspaceName
+      agentDefinitions {
+        agentDefinitionId
+        agentName
+        runs {
+          runId
+          summary
+          createdAt
+          archivedAt
+          terminatedAt
+          status
+          isActive
+          shouldConnectStream
+          statusSource
+        }
+      }
+      teamDefinitions {
+        teamDefinitionId
+        teamDefinitionName
+        runs {
+          teamRunId
+          teamDefinitionId
+          teamDefinitionName
+          coordinatorMemberRouteKey
+          workspaceRootPath
+          summary
+          createdAt
+          archivedAt
+          terminatedAt
+          status
+          isActive
+          memberTree
+          members {
+            memberRouteKey
+            memberName
+            memberRunId
+            status
+            runtimeKind
+            workspaceRootPath
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const GetRunProjection = gql`
   query GetRunProjection($runId: String!) {
     getRunProjection(runId: $runId) {
@@ -106,49 +157,27 @@ export const GetTeamCommunicationMessages = gql`
   query GetTeamCommunicationMessages($teamRunId: String!) {
     getTeamCommunicationMessages(teamRunId: $teamRunId) {
       messageId
-      teamRunId
-      senderRunId
-      senderMemberKind
-      senderMemberName
-      senderMemberPath
-      senderMemberRouteKey
-      senderRepresentedSubTeam {
-        memberKind
-        memberName
-        memberPath
-        memberRouteKey
-        memberRunId
-        teamDefinitionId
-        childTeamRunId
-        address {
-          teamRunId
-          memberPath
+      senderAddress {
+        segments {
+          kind
           memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
         }
       }
-      receiverRunId
-      receiverMemberKind
-      receiverMemberName
-      receiverMemberPath
-      receiverMemberRouteKey
-      receiverRepresentedSubTeam {
-        memberKind
-        memberName
-        memberPath
-        memberRouteKey
-        memberRunId
-        teamDefinitionId
-        childTeamRunId
-        address {
-          teamRunId
-          memberPath
+      receiverAddress {
+        segments {
+          kind
           memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
         }
       }
       content
       messageType
       createdAt
-      updatedAt
       referenceFiles {
         referenceId
         path
@@ -156,6 +185,96 @@ export const GetTeamCommunicationMessages = gql`
         createdAt
         updatedAt
       }
+    }
+  }
+`;
+
+
+
+export const GetTaskDelegationRecords = gql`
+  query GetTaskDelegationRecords($teamRunId: String!) {
+    getTaskDelegationRecords(teamRunId: $teamRunId) {
+      taskId
+      status
+      senderAddress {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      receiverAddress {
+        parentTeamRunId
+        segments {
+          kind
+          memberRouteKey
+          memberPath
+          taskTeamRunId
+          taskAgentRunId
+        }
+      }
+      receiverTargetKind
+      content
+      referenceFiles {
+        referenceId
+        path
+        type
+        createdAt
+        updatedAt
+      }
+      taskRun {
+        address {
+          parentTeamRunId
+          segments {
+            kind
+            memberRouteKey
+            memberPath
+            taskTeamRunId
+            taskAgentRunId
+          }
+        }
+        startedAt
+      }
+      updates {
+        kind
+        submissionId
+        reviewId
+        reviewedSubmissionId
+        decision
+        senderAddress {
+          parentTeamRunId
+          segments {
+            kind
+            memberRouteKey
+            memberPath
+            taskTeamRunId
+            taskAgentRunId
+          }
+        }
+        receiverAddress {
+          parentTeamRunId
+          segments {
+            kind
+            memberRouteKey
+            memberPath
+            taskTeamRunId
+            taskAgentRunId
+          }
+        }
+        content
+        referenceFiles {
+          referenceId
+          path
+          type
+          createdAt
+          updatedAt
+        }
+        createdAt
+      }
+      createdAt
     }
   }
 `;

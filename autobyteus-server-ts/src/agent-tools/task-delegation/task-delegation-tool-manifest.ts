@@ -1,21 +1,21 @@
 import type { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import type {
-  DelegateTasksInput,
-  DelegateTasksResult,
+  DelegateTaskInput,
+  DelegateTaskResult,
   ReviewTaskResultInput,
   ReviewTaskResultResult,
   SubmitTaskResultInput,
   SubmitTaskResultResult,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
 import {
-  DELEGATE_TASKS_TOOL_NAME,
+  DELEGATE_TASK_TOOL_NAME,
   REVIEW_TASK_RESULT_TOOL_NAME,
   SUBMIT_TASK_RESULT_TOOL_NAME,
   type TaskDelegationToolContext,
   type TaskDelegationToolName,
 } from "./task-delegation-tool-contract.js";
 import {
-  parseDelegateTasksInput,
+  parseDelegateTaskInput,
   parseReviewTaskResultInput,
   parseSubmitTaskResultInput,
 } from "./task-delegation-tool-input-parsers.js";
@@ -23,11 +23,11 @@ import { buildTaskDelegationToolParameterSchema } from "./task-delegation-tool-p
 import type { TaskDelegationToolService } from "./task-delegation-tool-service.js";
 
 type TaskDelegationToolParsedInput =
-  | DelegateTasksInput
+  | DelegateTaskInput
   | SubmitTaskResultInput
   | ReviewTaskResultInput;
 type TaskDelegationToolExecutionResult =
-  | DelegateTasksResult
+  | DelegateTaskResult
   | SubmitTaskResultResult
   | ReviewTaskResultResult;
 
@@ -45,18 +45,18 @@ export type TaskDelegationToolManifestEntry = {
 
 export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = [
   {
-    name: DELEGATE_TASKS_TOOL_NAME,
+    name: DELEGATE_TASK_TOOL_NAME,
     description:
-      "Delegate one or more ready-to-run task work packets to exact logical team members. The framework derives you as delegator from tool context and starts one concrete task-agent per task. Task-agents submit reviewable results with submit_task_result; delegators accept or request revision with review_task_result.",
-    parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASKS_TOOL_NAME),
-    parseInput: parseDelegateTasksInput,
+      'Delegate one ready-to-run task to an explicit accountable target. Provide target={kind:"member"|"team", name}, complete task details in description (objective, context, constraints, done conditions, expected output, and reference guidance), and optional reference_files containing absolute local file paths only. Member targets start one task-agent; team targets start one task-scoped team run whose ingress coordinator receives the packet. The execution target later submits its result with submit_task_result.',
+    parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASK_TOOL_NAME),
+    parseInput: parseDelegateTaskInput,
     execute: (service, context, input) =>
-      service.delegateTasks(context, input as DelegateTasksInput),
+      service.delegateTask(context, input as DelegateTaskInput),
   },
   {
     name: SUBMIT_TASK_RESULT_TOOL_NAME,
     description:
-      "Submit a reviewable result for the delegated task bound to the current task-agent context. This tool is task-agent-only and selector-free: do not pass task_id, member_name, task_name, status, or generic completion fields. The system records the submission, moves the task to awaiting_review, and notifies the original delegator.",
+      "Submit a reviewable result for the delegated task bound to the current task-agent or task-team ingress context. Provide a non-empty message and optional reference_files containing absolute local file paths only. The system records the submission, moves the task to awaiting_review, and notifies the task review owner.",
     parameterSchema: buildTaskDelegationToolParameterSchema(SUBMIT_TASK_RESULT_TOOL_NAME),
     parseInput: parseSubmitTaskResultInput,
     execute: (service, context, input) =>
@@ -65,7 +65,7 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
   {
     name: REVIEW_TASK_RESULT_TOOL_NAME,
     description:
-      "Review the latest pending result submission for a delegated task as the original delegator. Use decision=accept to finalize and request safe settlement, or decision=request_revision with a non-empty message to send system revision instructions to the same task-agent.",
+      "Review the latest pending result submission for a delegated task this execution owns for review. Use decision=accept to finalize and request safe settlement, or decision=request_revision with a non-empty task-result comment describing the needed revisions for the same task-agent or task-team execution instance. Optional reference_files must be absolute local file paths.",
     parameterSchema: buildTaskDelegationToolParameterSchema(REVIEW_TASK_RESULT_TOOL_NAME),
     parseInput: parseReviewTaskResultInput,
     execute: (service, context, input) =>

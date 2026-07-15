@@ -157,8 +157,8 @@ describe("AgentRunService real memory layout integration", () => {
     expect(firstMessageResult?.accepted).toBe(true);
     await waitFor(() => createdRun?.getStatusSnapshot().status === "idle");
 
-    const runRawTracePath = path.join(memoryDir, "agents", runId.runId, "raw_traces.jsonl");
-    const rootRawTracePath = path.join(memoryDir, "raw_traces.jsonl");
+    const runRawTracePath = path.join(memoryDir, "agents", runId.runId, "raw_traces_active.jsonl");
+    const rootRawTracePath = path.join(memoryDir, "raw_traces_active.jsonl");
 
     await waitFor(async () => {
       try {

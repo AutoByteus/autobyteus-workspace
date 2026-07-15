@@ -26,6 +26,22 @@ const waitForCondition = async (
 describe("TeamCommunicationService", () => {
   const tempDirs: string[] = [];
 
+  const memberAddress = (memberRouteKey: string) => ({
+    segments: [{ kind: "member" as const, memberRouteKey }],
+  });
+
+  const taskTeamChildAddress = (
+    sourceTeamRouteKey: string,
+    taskTeamRunId: string,
+    memberRouteKey: string,
+  ) => ({
+    segments: [
+      { kind: "member" as const, memberRouteKey: sourceTeamRouteKey },
+      { kind: "task_team" as const, taskTeamRunId },
+      { kind: "member" as const, memberRouteKey },
+    ],
+  });
+
   const createTempDir = async (): Promise<string> => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "team-communication-service-"));
     tempDirs.push(dir);
@@ -68,7 +84,7 @@ describe("TeamCommunicationService", () => {
     await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
   });
 
-  it("persists normalized team communication messages with child reference files by message id", async () => {
+  it("persists address-first team communication messages with child reference files by message id", async () => {
     const memoryDir = await createTempDir();
     const service = new TeamCommunicationService({ memoryDir });
     const { teamRun, emit } = createFakeTeamRun("team-1");
@@ -80,10 +96,8 @@ describe("TeamCommunicationService", () => {
       payload: {
         messageId: "message-1",
         teamRunId: "team-1",
-        senderRunId: "sender-run-1",
-        senderMemberName: "Sender",
-        receiverRunId: "receiver-run-1",
-        receiverMemberName: "Receiver",
+        senderAddress: memberAddress("sender"),
+        receiverAddress: memberAddress("receiver"),
         content: "Please review the attached report.",
         messageType: "handoff",
         referenceFiles: [
@@ -117,19 +131,21 @@ describe("TeamCommunicationService", () => {
     unsubscribe();
 
     const projection = JSON.parse(await fs.readFile(projectionPath, "utf-8"));
+    expect(projection).toEqual(expect.objectContaining({ teamRunId: "team-1" }));
     expect(projection.messages).toEqual([
       expect.objectContaining({
         messageId: "message-1",
-        teamRunId: "team-1",
-        senderRunId: "sender-run-1",
-        senderMemberName: "Sender",
-        receiverRunId: "receiver-run-1",
-        receiverMemberName: "Receiver",
+        senderAddress: memberAddress("sender"),
+        receiverAddress: memberAddress("receiver"),
         content: "Please review the attached report.",
         messageType: "handoff",
         referenceFiles: [expect.objectContaining({ referenceId: "ref-1", path: "/tmp/report.md" })],
       }),
     ]);
+    expect(projection.messages[0]).not.toHaveProperty("teamRunId");
+    expect(projection.messages[0]).not.toHaveProperty("senderRunId");
+    expect(projection.messages[0]).not.toHaveProperty("receiverRunId");
+    expect(projection.messages[0]).not.toHaveProperty("updatedAt");
   });
 
   it("does not derive references by scanning natural message content", async () => {
@@ -144,8 +160,8 @@ describe("TeamCommunicationService", () => {
       payload: {
         messageId: "message-with-prose-path",
         teamRunId: "team-1",
-        senderRunId: "sender-run-1",
-        receiverRunId: "receiver-run-1",
+        senderAddress: memberAddress("sender"),
+        receiverAddress: memberAddress("receiver"),
         content: "The prose may mention /tmp/not-an-artifact.md, but reference_files is the only source.",
         messageType: "handoff",
         createdAt: "2026-04-08T00:00:00.000Z",
@@ -162,7 +178,7 @@ describe("TeamCommunicationService", () => {
     ]);
   });
 
-  it("persists represented-subteam metadata from canonical communication events", async () => {
+  it("persists canonical communication events by sender and receiver addresses", async () => {
     const memoryDir = await createTempDir();
     const service = new TeamCommunicationService({ memoryDir });
     const { teamRun, emitTeamEvent } = createFakeTeamRun("team-1");
@@ -173,45 +189,10 @@ describe("TeamCommunicationService", () => {
       teamRunId: "team-1",
       sourcePath: ["program_manager"],
       data: {
-        messageId: "message-representative",
+        messageId: "message-task-team-child",
         teamRunId: "team-1",
-        sender: {
-          memberKind: "agent",
-          memberName: "program_manager",
-          memberPath: ["program_manager"],
-          memberRouteKey: "program_manager",
-          memberRunId: "program-manager-run",
-          address: {
-            teamRunId: "team-1",
-            memberPath: ["program_manager"],
-            memberRouteKey: "program_manager",
-          },
-        },
-        receiver: {
-          memberKind: "agent",
-          memberName: "review_lead",
-          memberPath: ["BuildSquad", "review_lead"],
-          memberRouteKey: "BuildSquad/review_lead",
-          memberRunId: "review-lead-run",
-          address: {
-            teamRunId: "team-1",
-            memberPath: ["BuildSquad", "review_lead"],
-            memberRouteKey: "BuildSquad/review_lead",
-          },
-          representedSubTeam: {
-            memberKind: "agent_team",
-            memberName: "BuildSquad",
-            memberPath: ["BuildSquad"],
-            memberRouteKey: "BuildSquad",
-            memberRunId: "build-squad-run",
-            teamDefinitionId: "build-squad-team",
-            address: {
-              teamRunId: "team-1",
-              memberPath: ["BuildSquad"],
-              memberRouteKey: "BuildSquad",
-            },
-          },
-        },
+        senderAddress: memberAddress("program_manager"),
+        receiverAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "review_lead"),
         content: "Please coordinate this build.",
         messageType: "assignment",
         referenceFiles: [],
@@ -222,13 +203,9 @@ describe("TeamCommunicationService", () => {
     const projection = await service.getProjectionForTeamRun(teamRun);
     expect(projection.messages).toEqual([
       expect.objectContaining({
-        messageId: "message-representative",
-        receiverMemberKind: "agent",
-        receiverMemberRouteKey: "BuildSquad/review_lead",
-        receiverRepresentedSubTeam: expect.objectContaining({
-          memberName: "BuildSquad",
-          memberRouteKey: "BuildSquad",
-        }),
+        messageId: "message-task-team-child",
+        senderAddress: memberAddress("program_manager"),
+        receiverAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "review_lead"),
       }),
     ]);
   });
@@ -246,30 +223,8 @@ describe("TeamCommunicationService", () => {
       data: {
         messageId: "message-child-internal",
         teamRunId: "team-child",
-        sender: {
-          memberKind: "agent",
-          memberName: "review_lead",
-          memberPath: ["BuildSquad", "review_lead"],
-          memberRouteKey: "BuildSquad/review_lead",
-          memberRunId: "review-lead-run",
-          address: {
-            teamRunId: "team-parent",
-            memberPath: ["BuildSquad", "review_lead"],
-            memberRouteKey: "BuildSquad/review_lead",
-          },
-        },
-        receiver: {
-          memberKind: "agent",
-          memberName: "qa_specialist",
-          memberPath: ["BuildSquad", "qa_specialist"],
-          memberRouteKey: "BuildSquad/qa_specialist",
-          memberRunId: "qa-run",
-          address: {
-            teamRunId: "team-parent",
-            memberPath: ["BuildSquad", "qa_specialist"],
-            memberRouteKey: "BuildSquad/qa_specialist",
-          },
-        },
+        senderAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "review_lead"),
+        receiverAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "qa_specialist"),
         content: "Please test this.",
         messageType: "child_internal",
         referenceFiles: [],
@@ -278,12 +233,12 @@ describe("TeamCommunicationService", () => {
     });
 
     const parentProjection = await service.getProjectionForTeamRun(teamRun);
+    expect(parentProjection).toEqual(expect.objectContaining({ teamRunId: "team-parent" }));
     expect(parentProjection.messages).toEqual([
       expect.objectContaining({
         messageId: "message-child-internal",
-        teamRunId: "team-parent",
-        senderMemberRouteKey: "BuildSquad/review_lead",
-        receiverMemberRouteKey: "BuildSquad/qa_specialist",
+        senderAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "review_lead"),
+        receiverAddress: taskTeamChildAddress("BuildSquad", "task-team-run-1", "qa_specialist"),
       }),
     ]);
   });

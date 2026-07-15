@@ -1,14 +1,14 @@
 <template>
-  <div class="rounded-md border border-gray-200 bg-white p-3">
+  <div class="bg-white p-3" data-test="member-override-item">
     <div class="mb-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <span class="text-sm font-medium text-gray-700">{{ memberName }}</span>
+        <span class="text-[0.95rem] font-semibold text-slate-800">{{ memberName }}</span>
         <span v-if="isCoordinator" class="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-xs text-indigo-600">
-          {{ $t('workspace.components.workspace.config.MemberOverrideItem.coordinator') }}
+          {{ t('workspace.components.workspace.config.MemberOverrideItem.coordinator') }}
         </span>
       </div>
       <span v-if="hasOverride" class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">
-        {{ $t('workspace.components.workspace.config.MemberOverrideItem.overridden') }}
+        {{ t('workspace.components.workspace.config.MemberOverrideItem.overridden') }}
       </span>
     </div>
     <p
@@ -21,15 +21,15 @@
     </p>
 
     <div class="mb-3">
-      <label class="mb-1 block text-xs text-gray-500">{{ $t('workspace.components.workspace.config.MemberOverrideItem.runtime_override') }}</label>
+      <label class="mb-1 block text-xs text-gray-500">{{ t('workspace.components.workspace.config.MemberOverrideItem.runtime_override') }}</label>
       <select
         :id="`override-runtime-${inputIdSuffix}`"
         :value="storedRuntimeOverrideValue"
         :disabled="disabled"
-        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+        class="block w-full rounded-md border border-transparent bg-blue-50/40 px-3 py-2 text-sm text-gray-900 ring-1 ring-inset ring-blue-100/80 transition-colors hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
         @change="handleRuntimeChange(($event.target as HTMLSelectElement).value)"
       >
-        <option value="">{{ $t('workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default') }}</option>
+        <option value="">{{ t('workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default') }}</option>
         <option
           v-for="option in runtimeOptions"
           :key="option.value"
@@ -49,19 +49,23 @@
     </div>
 
     <div class="mb-3">
-      <label class="mb-1 block text-xs text-gray-500">{{ $t('workspace.components.workspace.config.MemberOverrideItem.llm_model_override') }}</label>
+      <label class="mb-1 block text-xs text-gray-500">{{ t('workspace.components.workspace.config.MemberOverrideItem.llm_model_override') }}</label>
       <SearchableGroupedSelect
         :model-value="explicitModelIdentifier"
         @update:modelValue="handleModelChange"
         :options="groupedModelOptions"
         :disabled="disabled"
         :placeholder="modelPlaceholder"
-        :search-placeholder="$t('workspace.components.workspace.config.MemberOverrideItem.search_models')"
+        :search-placeholder="t('workspace.components.workspace.config.MemberOverrideItem.search_models')"
+        variant="quiet"
         class="w-full"
       />
     </div>
 
-    <div class="mb-3 flex items-center">
+    <div class="mb-3">
+      <div class="mb-1 text-xs text-gray-500">
+        {{ t('workspace.components.workspace.config.MemberOverrideItem.auto_approve') }}
+      </div>
       <input
         :id="`override-auto-${inputIdSuffix}`"
         type="checkbox"
@@ -72,29 +76,8 @@
         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
       />
       <label :for="`override-auto-${inputIdSuffix}`" class="ml-2 select-none text-xs text-gray-600">
-        {{ autoExecuteLabel }}
+        {{ autoExecuteStateLabel }}
       </label>
-    </div>
-
-    <div v-if="selfEvolutionControlsEnabled" class="mb-3">
-      <label :for="`override-self-evolution-${inputIdSuffix}`" class="mb-1 block text-xs text-gray-500">
-        {{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_override') }}
-      </label>
-      <select
-        :id="`override-self-evolution-${inputIdSuffix}`"
-        data-testid="member-self-evolution-override"
-        :value="selfEvolutionOverrideValue"
-        :disabled="disabled"
-        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
-        @change="handleSelfEvolutionChange(($event.target as HTMLSelectElement).value)"
-      >
-        <option value="">{{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_use_team_default') }}</option>
-        <option value="enabled">{{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_enabled') }}</option>
-        <option value="disabled">{{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_disabled') }}</option>
-      </select>
-      <p class="mt-1 text-xs text-gray-500">
-        {{ $t('workspace.components.workspace.config.MemberOverrideItem.self_evolution_help') }}
-      </p>
     </div>
 
     <ModelConfigSection
@@ -107,6 +90,7 @@
       :id-prefix="`config-${inputIdSuffix}`"
       :advanced-initially-expanded="effectiveAdvancedInitiallyExpanded"
       :missing-historical-config="missingHistoricalConfig"
+      control-variant="quiet"
       @update:config="emitOverrideWithConfig"
     />
   </div>
@@ -145,7 +129,6 @@ const props = defineProps<{
   globalLlmModel: string
   globalLlmConfig?: Record<string, unknown> | null
   disabled: boolean
-  selfEvolutionControlsEnabled?: boolean
   isCoordinator?: boolean
   advancedInitiallyExpanded?: boolean
   missingHistoricalConfig?: boolean
@@ -154,7 +137,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:override', memberRouteKey: string, override: MemberConfigOverride | null): void
 }>()
-const { t: $t } = useLocalization()
+const { t } = useLocalization()
 
 const {
   effectiveRuntimeKind,
@@ -170,15 +153,6 @@ const {
 const storedRuntimeOverrideValue = computed(() => props.override?.runtimeKind || '')
 const inputIdSuffix = computed(() => props.memberRouteKey.replace(/[^a-zA-Z0-9_-]+/g, '-'))
 const explicitModelIdentifier = computed(() => props.override?.llmModelIdentifier || '')
-const selfEvolutionOverrideValue = computed(() => {
-  if (props.override?.selfEvolution?.enabled === true) {
-    return 'enabled'
-  }
-  if (props.override?.selfEvolution?.enabled === false) {
-    return 'disabled'
-  }
-  return ''
-})
 const memberAdvancedExplicitlyExpanded = ref(false)
 const hasOverride = computed(() => hasMeaningfulMemberOverride(props.override))
 const globalModelIdentifier = computed(() => props.globalLlmModel || '')
@@ -273,17 +247,17 @@ const maybeOpenMemberAdvancedForSchema = (
 
 const modelPlaceholder = computed(() =>
   isUnresolvedInheritedModel.value
-    ? $t('workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model')
-    : $t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default'),
+    ? t('workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model')
+    : t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default'),
 )
 
-const autoExecuteLabel = computed(() => {
+const autoExecuteStateLabel = computed(() => {
   if (props.override?.autoExecuteTools === undefined) {
-    return $t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global')
+    return t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global')
   }
   return props.override.autoExecuteTools
-    ? $t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
-    : $t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_off')
+    ? t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
+    : t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_off')
 })
 
 const buildOverride = (input: {
@@ -291,7 +265,6 @@ const buildOverride = (input: {
   llmModelIdentifier?: string
   autoExecuteTools?: boolean
   llmConfig?: Record<string, unknown> | null
-  selfEvolution?: MemberConfigOverride['selfEvolution']
 }): MemberConfigOverride | null => {
   const override: MemberConfigOverride = {
     agentDefinitionId: props.agentDefinitionId,
@@ -311,10 +284,6 @@ const buildOverride = (input: {
 
   if (input.llmConfig !== undefined) {
     override.llmConfig = input.llmConfig
-  }
-
-  if (input.selfEvolution !== undefined) {
-    override.selfEvolution = input.selfEvolution
   }
 
   return hasMeaningfulMemberOverride(override) ? override : null
@@ -341,7 +310,6 @@ watch(
       buildOverride({
         runtimeKind: props.override?.runtimeKind,
         autoExecuteTools: props.override?.autoExecuteTools,
-        selfEvolution: props.override?.selfEvolution,
       }),
     )
   },
@@ -374,7 +342,6 @@ const handleRuntimeChange = async (value: string) => {
       runtimeKind: nextRuntimeKind,
       llmModelIdentifier: retainedExplicitModel,
       autoExecuteTools: props.override?.autoExecuteTools,
-      selfEvolution: props.override?.selfEvolution,
       llmConfig:
         !runtimeChanged && retainedExplicitModel && hasExplicitMemberLlmConfigOverride(props.override)
           ? (props.override?.llmConfig ?? null)
@@ -403,7 +370,6 @@ const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | und
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: props.override?.llmModelIdentifier,
       autoExecuteTools: props.override?.autoExecuteTools,
-      selfEvolution: props.override?.selfEvolution,
       llmConfig: explicitConfig,
     }),
   )
@@ -426,7 +392,6 @@ const handleModelChange = (value: string) => {
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: value || undefined,
       autoExecuteTools: props.override?.autoExecuteTools,
-      selfEvolution: props.override?.selfEvolution,
       llmConfig:
         !modelChanged && hasExplicitMemberLlmConfigOverride(props.override)
           ? (props.override?.llmConfig ?? null)
@@ -453,33 +418,9 @@ const handleAutoExecuteChange = () => {
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: props.override?.llmModelIdentifier,
       autoExecuteTools: newValue,
-      selfEvolution: props.override?.selfEvolution,
       llmConfig: hasExplicitMemberLlmConfigOverride(props.override)
         ? (props.override?.llmConfig ?? null)
         : undefined,
-    }),
-  )
-}
-
-const handleSelfEvolutionChange = (value: string) => {
-  if (props.disabled) return
-  const selfEvolution = value === 'enabled'
-    ? { enabled: true }
-    : value === 'disabled'
-      ? { enabled: false }
-      : undefined
-
-  emit(
-    'update:override',
-    props.memberRouteKey,
-    buildOverride({
-      runtimeKind: props.override?.runtimeKind,
-      llmModelIdentifier: props.override?.llmModelIdentifier,
-      autoExecuteTools: props.override?.autoExecuteTools,
-      llmConfig: hasExplicitMemberLlmConfigOverride(props.override)
-        ? (props.override?.llmConfig ?? null)
-        : undefined,
-      selfEvolution,
     }),
   )
 }

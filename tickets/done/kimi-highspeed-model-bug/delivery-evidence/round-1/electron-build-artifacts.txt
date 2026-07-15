@@ -1,0 +1,17 @@
+# Electron Build Artifacts
+
+- Date (UTC): `2026-06-26T08:06:49Z`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug`
+- Branch: `codex/kimi-highspeed-model-bug`
+- HEAD: `3c82aa2f6fe2bfd51430bc0a7a8aa156acb5b10f`
+- Integrated origin/personal: `1472e852c3df347f7c6683ff0b16a0874add282b`
+- Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac` from `autobyteus-web/`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug/tickets/kimi-highspeed-model-bug/delivery-evidence/round-1/logs/electron-mac-build.log`
+
+## Files
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.dmg` — 400802737 bytes — SHA256 `b671e43385dea6ff28f1ecd562df4d34ee9e1263b35b871ea70656b7aa7ab80d`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.dmg.blockmap` — 419736 bytes — SHA256 `6d878d549c0113cbd859a429f53a2af974cda52137bfce1e8cbe7abb4bd8b057`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.zip` — 396752887 bytes — SHA256 `55d927869f48b3501ecd8932a4b96909703e25d60228a0c4417ab591e9349f12`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.76.zip.blockmap` — 408253 bytes — SHA256 `1ea980c8790a10e19323482977d4956ab768a07b0a842ba2261ac8d2c6c402ec`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-highspeed-model-bug/autobyteus-web/electron-dist/latest-mac.yml` — 555 bytes — SHA256 `5b9d3e5c7118d493d1a12da4a79edb44c3d35764f707b446107fe4bd3d004eac`

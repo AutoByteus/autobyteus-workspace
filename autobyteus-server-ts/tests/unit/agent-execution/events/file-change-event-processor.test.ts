@@ -191,6 +191,8 @@ describe("FileChangeEventProcessor", () => {
     ["generate_image", "assets/image.png", "image"],
     ["edit_image", "assets/edited.png", "image"],
     ["generate_speech", "audio/speech.wav", "audio"],
+    ["generate_video", "video/generated.mp4", "video"],
+    ["mcp__autobyteus_agent_tools__generate_video", "video/mcp-generated.mp4", "video"],
   ] as const)("emits generated-output FILE_CHANGE for %s", async (toolName, outputPath, artifactType) => {
     const workspaceRoot = "/tmp/workspace";
     const resolvedPath = path.join(workspaceRoot, outputPath);

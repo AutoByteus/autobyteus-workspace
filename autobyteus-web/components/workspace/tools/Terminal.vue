@@ -44,9 +44,12 @@ const terminalElement = ref<HTMLDivElement | null>(null);
 const terminalInstance = shallowRef<Terminal | null>(null);
 const fitAddon = shallowRef<FitAddon | null>(null);
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   target?: TerminalTarget | null;
-}>();
+  active?: boolean;
+}>(), {
+  active: true,
+});
 
 const appFontSizeStore = useAppFontSizeStore();
 const { resolvedMetrics } = storeToRefs(appFontSizeStore);
@@ -55,8 +58,9 @@ const workspaceStore = useWorkspaceStore();
 const { t: $t } = useLocalization();
 const effectiveTerminalTarget = computed<TerminalTarget | null>(
   () =>
-    props.target ||
-    terminalTargetFromWorkspaceMetadata(workspaceStore.activeWorkspaceMetadata),
+    props.target === undefined
+      ? terminalTargetFromWorkspaceMetadata(workspaceStore.activeWorkspaceMetadata)
+      : props.target,
 );
 const terminalConnectionKey = computed(() => {
   const target = effectiveTerminalTarget.value;
@@ -78,16 +82,49 @@ let pendingConnect = false;
 
 const safeFit = () => {
   if (!fitAddon.value || !terminalElement.value || !terminalInstance.value) {
-    return;
+    return false;
   }
   const { clientWidth, clientHeight } = terminalElement.value;
   if (clientWidth === 0 || clientHeight === 0) {
-    return;
+    return false;
   }
   try {
     fitAddon.value.fit();
+    return true;
   } catch (error) {
     console.warn("[Terminal] Fit skipped:", error);
+    return false;
+  }
+};
+
+const waitForVisibleFrame = () =>
+  new Promise<void>((resolve) => {
+    if (typeof requestAnimationFrame !== "function") {
+      resolve();
+      return;
+    }
+    requestAnimationFrame(() => resolve());
+  });
+
+const sendCurrentResize = () => {
+  const terminal = terminalInstance.value;
+  if (!terminal || !session.isConnected.value) {
+    return;
+  }
+
+  const { rows, cols } = terminal;
+  if (rows <= 0 || cols <= 0) {
+    return;
+  }
+
+  session.sendResize(rows, cols);
+};
+
+const refitAfterVisible = async () => {
+  await nextTick();
+  await waitForVisibleFrame();
+  if (safeFit()) {
+    sendCurrentResize();
   }
 };
 
@@ -240,6 +277,15 @@ watch(terminalFontPx, (nextFontPx) => {
     safeFit();
   });
 });
+
+watch(
+  () => props.active,
+  (isActive) => {
+    if (isActive) {
+      void refitAfterVisible();
+    }
+  },
+);
 
 onMounted(() => {
   scheduleInitializeTerminal();

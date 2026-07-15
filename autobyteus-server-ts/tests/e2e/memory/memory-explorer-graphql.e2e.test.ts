@@ -83,8 +83,8 @@ describe("Memory explorer GraphQL e2e", () => {
     createdAgentRunIds.push(alphaRun, betaRun);
     await writeAgentMetadata(alphaRun, "gql-memory-alpha-agent");
     await writeAgentMetadata(betaRun, "gql-memory-beta-agent");
-    touch(path.join(memoryDir, "agents", alphaRun, "raw_traces.jsonl"), 4000000000);
-    touch(path.join(memoryDir, "agents", betaRun, "raw_traces.jsonl"), 4000000100);
+    touch(path.join(memoryDir, "agents", alphaRun, "raw_traces_active.jsonl"), 4000000000);
+    touch(path.join(memoryDir, "agents", betaRun, "raw_traces_active.jsonl"), 4000000100);
 
     const agentsQuery = `
       query ListAgentsWithMemory($search: String!) {

@@ -76,6 +76,18 @@ const waitForStatus = async (
   return false;
 };
 
+const readPhysicalRawTraces = (memoryDir: string): Record<string, unknown>[] => {
+  const rawPath = path.join(memoryDir, 'raw_traces_active.jsonl');
+  if (!fsSync.existsSync(rawPath)) {
+    return [];
+  }
+  return fsSync.readFileSync(rawPath, 'utf8')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as Record<string, unknown>);
+};
+
 const resetFactory = () => {
   (AgentFactory as any).instance = undefined;
 };
@@ -95,6 +107,7 @@ const buildOpenAIFlowLLM = () =>
 
 runIntegration('OpenAI single-agent flow', () => {
   let tempDir: string;
+  let memoryDir: string;
   let originalParserEnv: string | undefined;
 
   beforeEach(async () => {
@@ -103,6 +116,7 @@ runIntegration('OpenAI single-agent flow', () => {
     SkillRegistry.getInstance().clear();
     resetFactory();
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'openai-agent-flow-'));
+    memoryDir = path.join(tempDir, '.memory');
   });
 
   afterEach(async () => {
@@ -116,7 +130,7 @@ runIntegration('OpenAI single-agent flow', () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it('uses GPT-5.5 by default to execute a single-agent tool flow and complete the turn', async () => {
+  it('executes a real OpenAI tool flow and persists strict call/result JSONL', async () => {
     const workspace = tempDir;
     const artifactPath = path.join(workspace, 'openai-agent-single-flow.md');
     const expectedSnippets = [
@@ -131,7 +145,7 @@ runIntegration('OpenAI single-agent flow', () => {
     const config = new AgentConfig(
       'OpenAISingleFlowAgent',
       'Integration test agent',
-      'OpenAI GPT-5.5 single-agent tool-use flow validation.',
+      'OpenAI single-agent tool-use and memory persistence validation.',
       llm,
       [
         'You are a precise integration-test agent.',
@@ -145,7 +159,11 @@ runIntegration('OpenAI single-agent flow', () => {
       null,
       null,
       null,
-      workspace
+      workspace,
+      null,
+      null,
+      null,
+      memoryDir
     );
 
     const factory = new AgentFactory();
@@ -157,10 +175,16 @@ runIntegration('OpenAI single-agent flow', () => {
     };
     const onToolSucceeded = record(EventType.AGENT_TOOL_EXECUTION_SUCCEEDED);
     const onToolFailed = record(EventType.AGENT_TOOL_EXECUTION_FAILED);
+    let rawTracesAtFirstToolStart: Record<string, unknown>[] | null = null;
+    const onToolStarted = (payload?: unknown) => {
+      observedEvents.push({ type: EventType.AGENT_TOOL_EXECUTION_STARTED, payload });
+      rawTracesAtFirstToolStart ??= readPhysicalRawTraces(memoryDir);
+    };
     const onAssistantComplete = record(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE);
     const onTurnCompleted = record(EventType.AGENT_TURN_COMPLETED);
     const onError = record(EventType.AGENT_ERROR_OUTPUT_GENERATION);
 
+    notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_STARTED, onToolStarted);
     notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_SUCCEEDED, onToolSucceeded);
     notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_FAILED, onToolFailed);
     notifier?.subscribe(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, onAssistantComplete);
@@ -240,12 +264,54 @@ runIntegration('OpenAI single-agent flow', () => {
         finalAssistantPayload?.payload?.content ?? finalAssistantPayload?.content ?? finalAssistantPayload ?? ''
       );
       expect(finalContent).toContain(artifactPath);
+
+      expect(rawTracesAtFirstToolStart).not.toBeNull();
+      const startCall = rawTracesAtFirstToolStart!.find(
+        (trace) => trace.trace_type === 'tool_call' && trace.tool_name === 'write_file'
+      );
+      expect(startCall).toBeDefined();
+      expect(startCall).toMatchObject({
+        tool_name: 'write_file',
+        tool_args: expect.objectContaining({ path: artifactPath })
+      });
+      expect(startCall).not.toHaveProperty('tool_result');
+      expect(startCall).not.toHaveProperty('tool_error');
+      const toolCallId = String(startCall!.tool_call_id ?? '');
+      expect(toolCallId).not.toBe('');
+      expect(rawTracesAtFirstToolStart!.some(
+        (trace) => trace.trace_type === 'tool_result' && trace.tool_call_id === toolCallId
+      )).toBe(false);
+
+      const rawTraces = readPhysicalRawTraces(memoryDir);
+      const calls = rawTraces.filter(
+        (trace) => trace.trace_type === 'tool_call' && trace.tool_name === 'write_file'
+      );
+      const results = rawTraces.filter(
+        (trace) => trace.trace_type === 'tool_result' && trace.tool_call_id === toolCallId
+      );
+      expect(calls).toHaveLength(1);
+      expect(results).toHaveLength(1);
+      expect(calls[0].tool_call_id).toBe(toolCallId);
+      expect(calls[0].tool_args).toEqual(expect.objectContaining({ path: artifactPath }));
+      const issuedContent = String((calls[0].tool_args as Record<string, unknown>).content ?? '');
+      for (const snippet of expectedSnippets) {
+        expect(issuedContent).toContain(snippet);
+      }
+      expect(calls[0]).not.toHaveProperty('tool_result');
+      expect(calls[0]).not.toHaveProperty('tool_error');
+      expect(results[0]).toHaveProperty('tool_result');
+      expect(results[0]).toHaveProperty('tool_error', null);
+      expect(results[0]).not.toHaveProperty('tool_name');
+      expect(results[0]).not.toHaveProperty('tool_args');
+      expect(rawTraces.indexOf(calls[0])).toBeLessThan(rawTraces.indexOf(results[0]));
+      console.info('OPENAI_LIVE_TOOL_MEMORY_ASSERTIONS=PASS');
     } catch (error) {
       if (skipIfProviderAccessError('OpenAI', modelId, error)) {
         return;
       }
       throw error;
     } finally {
+      notifier?.unsubscribe(EventType.AGENT_TOOL_EXECUTION_STARTED, onToolStarted);
       notifier?.unsubscribe(EventType.AGENT_TOOL_EXECUTION_SUCCEEDED, onToolSucceeded);
       notifier?.unsubscribe(EventType.AGENT_TOOL_EXECUTION_FAILED, onToolFailed);
       notifier?.unsubscribe(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, onAssistantComplete);

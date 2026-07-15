@@ -115,9 +115,23 @@ export const parseToolApprovalTarget = (payload: {
   taskAgentRunId?: unknown;
   target_member_run_id?: unknown;
   targetMemberRunId?: unknown;
+  task_team_run_id?: unknown;
+  taskTeamRunId?: unknown;
+  team_route_key?: unknown;
+  teamRouteKey?: unknown;
+  team_path?: unknown;
+  teamPath?: unknown;
+  task_team_relative_member_route_key?: unknown;
+  taskTeamRelativeMemberRouteKey?: unknown;
+  task_team_relative_member_path?: unknown;
+  taskTeamRelativeMemberPath?: unknown;
 }): ToolApprovalTarget | null => {
   const memberPath = normalizePathSegments(payload.member_path);
   const sourcePath = normalizePathSegments(payload.source_path);
+  const teamPath = normalizePathSegments(payload.team_path) ?? normalizePathSegments(payload.teamPath);
+  const taskTeamRelativeMemberPath =
+    normalizePathSegments(payload.task_team_relative_member_path) ??
+    normalizePathSegments(payload.taskTeamRelativeMemberPath);
   const memberRouteKey = normalizeOptionalString(payload.member_route_key) ?? routeKeyFromPath(memberPath);
   const sourceRouteKey = normalizeOptionalString(payload.source_route_key) ?? routeKeyFromPath(sourcePath);
   const taskAgentRunId =
@@ -125,8 +139,25 @@ export const parseToolApprovalTarget = (payload: {
     normalizeOptionalString(payload.taskAgentRunId) ??
     normalizeOptionalString(payload.target_member_run_id) ??
     normalizeOptionalString(payload.targetMemberRunId);
+  const taskTeamRunId = normalizeOptionalString(payload.task_team_run_id) ?? normalizeOptionalString(payload.taskTeamRunId);
+  const teamRouteKey = normalizeOptionalString(payload.team_route_key) ?? normalizeOptionalString(payload.teamRouteKey);
+  const taskTeamRelativeMemberRouteKey =
+    normalizeOptionalString(payload.task_team_relative_member_route_key) ??
+    normalizeOptionalString(payload.taskTeamRelativeMemberRouteKey) ??
+    routeKeyFromPath(taskTeamRelativeMemberPath);
 
-  if (!memberRouteKey && !sourceRouteKey && !memberPath && !sourcePath && !taskAgentRunId) {
+  if (
+    !memberRouteKey &&
+    !sourceRouteKey &&
+    !memberPath &&
+    !sourcePath &&
+    !taskAgentRunId &&
+    !taskTeamRunId &&
+    !teamRouteKey &&
+    !teamPath &&
+    !taskTeamRelativeMemberRouteKey &&
+    !taskTeamRelativeMemberPath
+  ) {
     return null;
   }
 
@@ -136,6 +167,11 @@ export const parseToolApprovalTarget = (payload: {
     sourceRouteKey,
     sourcePath,
     taskAgentRunId,
+    taskTeamRunId,
+    teamRouteKey,
+    teamPath,
+    taskTeamRelativeMemberRouteKey,
+    taskTeamRelativeMemberPath,
   };
 };
 

@@ -1,0 +1,25 @@
+cleanup_started_at=2026-07-11T05:46:34Z
+removed root dependency symlink
+removed core dependency symlink
+removed API/E2E-owned server dependency overlay
+removed API/E2E-owned core build output
+removed API/E2E-owned server test DB directory
+removed API/E2E-created ignored test artifact: autobyteus-ts/mcp-config-0okonj/
+removed API/E2E-created ignored test artifact: autobyteus-ts/mcp-config-Q7ZKxr/
+removed API/E2E-created ignored test artifact: autobyteus-ts/mcp-config-V1b1HQ/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-edit-file-20Xxcy/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-edit-file-Czwwbd/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-edit-file-QGrTpJ/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-edit-file-hKBgKO/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-edit-file-huFdve/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-edit-file-xWZ033/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-insert-in-file-2rE3WJ/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-insert-in-file-rU1VZP/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-insert-in-file-sx3Dcs/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-insert-in-file-yS9jUd/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-replace-in-file-32GudB/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-replace-in-file-TollL0/
+removed API/E2E-created ignored test artifact: autobyteus-ts/tmp-replace-in-file-wF6nRG/
+new ignored artifacts remaining versus baseline:
+CLEANUP=PASS
+cleanup_finished_at=2026-07-11T05:46:34Z

@@ -74,12 +74,14 @@ import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 const makeContextAndTurn = () => {
   const state = new AgentRuntimeState('agent-1');
   const ingestToolResults = vi.fn();
+  const finalizePendingToolCallsForTurn = vi.fn();
   const appendRawTrace = vi.fn();
   const buildOperationBoundaryNote = vi.fn(() => 'operation boundary note');
   const projectWorkingContextForNextLlm = vi.fn(async () => undefined);
   state.memoryManager = {
     startTurn: () => 'turn-1',
     ingestToolResults,
+    finalizePendingToolCallsForTurn,
     appendRawTrace,
     buildOperationBoundaryNote,
     projectWorkingContextForNextLlm
@@ -100,7 +102,7 @@ const makeContextAndTurn = () => {
       }
     }
   } as any;
-  return { context, turn, ingestToolResults, appendRawTrace, buildOperationBoundaryNote, projectWorkingContextForNextLlm };
+  return { context, turn, ingestToolResults, finalizePendingToolCallsForTurn, appendRawTrace, buildOperationBoundaryNote, projectWorkingContextForNextLlm };
 };
 
 const makeTrigger = () => new UserMessageReceivedEvent(new AgentInputUserMessage('hello'));
@@ -118,7 +120,7 @@ describe('AgentTurnRunner interruption fences', () => {
   });
 
   it('does not publish final LLM completion after an interrupt accepted at the post-LLM seam', async () => {
-    const { context, turn, ingestToolResults, appendRawTrace, buildOperationBoundaryNote, projectWorkingContextForNextLlm } = makeContextAndTurn();
+    const { context, turn, ingestToolResults, finalizePendingToolCallsForTurn, appendRawTrace, buildOperationBoundaryNote, projectWorkingContextForNextLlm } = makeContextAndTurn();
     mocks.llmRun.mockImplementation(async (_nextInput, _context, activeTurn) => {
       activeTurn.interrupt('post_llm_interrupt');
       return {
@@ -134,6 +136,9 @@ describe('AgentTurnRunner interruption fences', () => {
     expect(ingestToolResults).toHaveBeenCalledWith([], 'turn-1', {
       source: 'ToolResultEvent',
       appendToWorkingContext: false
+    });
+    expect(finalizePendingToolCallsForTurn).toHaveBeenCalledWith('turn-1', 'post_llm_interrupt', {
+      source: 'AgentTurnInterruptedEvent', appendToWorkingContext: false,
     });
     expect(buildOperationBoundaryNote).toHaveBeenCalledWith({
       scope: { kind: 'agent_turn', id: 'turn-1' },
@@ -170,11 +175,11 @@ describe('AgentTurnRunner interruption fences', () => {
         kind: 'final',
         response: new CompleteResponse({ content: 'done' })
       });
-    mocks.toolRun.mockResolvedValue([
-      new ToolResultEvent('tool', { ok: true }, 'inv-1', undefined, {}, 'turn-1', false)
-    ]);
+    mocks.toolRun.mockImplementation(async () => {
+      return [new ToolResultEvent('tool', { ok: true }, 'inv-1', undefined, {}, 'turn-1', false)];
+    });
     mocks.inputProcessToolContinuation.mockResolvedValue({
-      llmUserMessage: { role: 'tool', content: 'Native API tool continuation' },
+      llmUserMessage: { role: 'tool', content: 'The tool tool call completed successfully.' },
       sourceEvent: {} as any,
       llmRequestMode: 'tool_history_only'
     });
@@ -193,7 +198,7 @@ describe('AgentTurnRunner interruption fences', () => {
         (event) =>
           event instanceof LLMUserMessageReadyEvent &&
           String((event as LLMUserMessageReadyEvent).llmUserMessage?.content ?? '').includes(
-            'Native API tool continuation'
+            'The tool tool call completed successfully.'
           )
       )
     ).toHaveLength(0);
@@ -203,7 +208,7 @@ describe('AgentTurnRunner interruption fences', () => {
   });
 
   it('does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam', async () => {
-    const { context, turn, ingestToolResults, appendRawTrace, projectWorkingContextForNextLlm } = makeContextAndTurn();
+    const { context, turn, ingestToolResults, finalizePendingToolCallsForTurn, appendRawTrace, projectWorkingContextForNextLlm } = makeContextAndTurn();
     const invocation = new ToolInvocation('tool', {}, 'inv-1', 'turn-1');
     mocks.llmRun.mockResolvedValue({
       kind: 'tool_invocations',
@@ -232,6 +237,15 @@ describe('AgentTurnRunner interruption fences', () => {
       source: 'ToolResultEvent',
       appendToWorkingContext: false
     });
+    expect(finalizePendingToolCallsForTurn).toHaveBeenCalledWith('turn-1', 'post_tool_interrupt', {
+      source: 'AgentTurnInterruptedEvent', appendToWorkingContext: false,
+    });
+    expect(ingestToolResults.mock.invocationCallOrder[0]).toBeLessThan(
+      finalizePendingToolCallsForTurn.mock.invocationCallOrder[0]
+    );
+    expect(finalizePendingToolCallsForTurn.mock.invocationCallOrder[0]).toBeLessThan(
+      appendRawTrace.mock.invocationCallOrder[0]
+    );
     expect(appendRawTrace).toHaveBeenCalledWith({
       turnId: 'turn-1',
       traceType: 'operation_boundary',

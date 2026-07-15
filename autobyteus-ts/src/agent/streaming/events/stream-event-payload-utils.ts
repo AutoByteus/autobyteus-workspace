@@ -1,4 +1,7 @@
-import { TokenUsageSchema, type TokenUsage } from '../../../llm/utils/token-usage.js';
+import {
+  LlmTokenUsageObservationSchema,
+  type LlmTokenUsageObservation,
+} from '../../../llm/utils/llm-token-usage-observation.js';
 
 export const isRecord = (value: unknown): value is Record<string, any> =>
   typeof value === 'object' && value !== null;
@@ -22,11 +25,11 @@ export class BaseStreamPayload {
   }
 }
 
-export const parseUsage = (usageData: unknown): TokenUsage | undefined => {
+export const parseUsage = (usageData: unknown): LlmTokenUsageObservation | undefined => {
   if (!usageData) {
     return undefined;
   }
-  const parsed = TokenUsageSchema.safeParse(usageData);
+  const parsed = LlmTokenUsageObservationSchema.safeParse(usageData);
   if (!parsed.success) {
     console.warn(`Unsupported usage payload for stream event: ${parsed.error.message}`);
     return undefined;

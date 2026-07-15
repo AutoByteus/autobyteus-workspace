@@ -1,0 +1,10 @@
+--- git diff --check ---
+--- active stale-term scan ---
+unexpected_matches=0
+allowed_matches=6
+ALLOWED self-evolution autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+ALLOWED self-evolution autobyteus-server-ts/src/app-data-migrations/migrations/remove-self-evolution-run-metadata-migration.ts
+ALLOWED selfEvolution autobyteus-server-ts/src/agent-definition/providers/agent-definition-config.ts
+ALLOWED self-evolution autobyteus-server-ts/tests/skill-improvement/remove-self-evolution-run-metadata-migration.test.ts
+ALLOWED self_evolution autobyteus-server-ts/docs/modules/run_history.md
+ALLOWED self_evolution autobyteus-server-ts/docs/modules/skill_improvement.md

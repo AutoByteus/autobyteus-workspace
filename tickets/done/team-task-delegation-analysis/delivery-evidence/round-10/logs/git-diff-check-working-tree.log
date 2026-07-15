@@ -1,0 +1,6 @@
+# Delivery integrated-state working tree whitespace check
+started_at=2026-06-26T13:08:54Z
+head=ab5ce30950f899240d1838ff5fbbe159fbffaa5a
+command=git diff --check
+exit_status=0
+ended_at=2026-06-26T13:08:54Z

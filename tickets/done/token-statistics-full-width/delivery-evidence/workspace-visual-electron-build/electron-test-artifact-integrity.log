@@ -1,0 +1,41 @@
+Candidate: c448824203a9fd4ffc97e7884a992a7c03863b6f
+Delivery checkpoint: 440eada0ba098d05bc20deb149e829c72b7116d5
+Recorded at: 2026-07-15T12:20:12+02:00
+
+$ file electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+$ /usr/libexec/PlistBuddy -c Print\ :CFBundleShortVersionString .../Info.plist
+1.4.13
+
+$ shasum -a 256 DMG ZIP
+6ce6bac4bfa8cbf1f4e26f8943e87863a84052ff47393bd568712e0d7c7967e9  electron-dist/AutoByteus_personal_macos-arm64-1.4.13.dmg
+3becdcac35ca0a8a0facc827c778b574d733254742467888a0702c27c33837ac  electron-dist/AutoByteus_personal_macos-arm64-1.4.13.zip
+
+$ hdiutil verify DMG
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $DA945AC8
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $618DF674
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $4A4FDD85
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $9664D330
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $4A4FDD85
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $45364C35
+Die überprüfte CRC32-Prüfsumme ist $212788DB
+hdiutil: verify: checksum of "electron-dist/AutoByteus_personal_macos-arm64-1.4.13.dmg" is VALID
+
+$ unzip -tq ZIP
+No errors detected in compressed data of electron-dist/AutoByteus_personal_macos-arm64-1.4.13.zip.
+
+$ packaged node-pty spawn-helper execute bits
+-rwxr-xr-x electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+-rwxr-xr-x electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+-rwxr-xr-x electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper

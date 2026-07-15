@@ -4,14 +4,15 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { MixedTeamMemberRegistry } from "../../../src/agent-team-execution/backends/mixed/members/mixed-team-member-registry.js";
+import { MixedTaskAgentInstanceRegistry } from "../../../src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.js";
+import { MixedTeamMemberConfigResolver } from "../../../src/agent-team-execution/backends/mixed/members/mixed-team-member-config-resolver.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
-describe("MixedTeamMemberRegistry task-agent memory", () => {
+describe("MixedTaskAgentInstanceRegistry task-agent memory", () => {
   it("starts task agents with their own memoryDir under the logical member team path", async () => {
     const createdConfigs: unknown[] = [];
     const createAgentRun = vi.fn(async (config, runId) => {
@@ -62,9 +63,9 @@ describe("MixedTeamMemberRegistry task-agent memory", () => {
         memberContexts: [logicalMember],
       }),
     });
-    const registry = new MixedTeamMemberRegistry({
+    const registry = new MixedTaskAgentInstanceRegistry({
       teamContext,
-      subTeamRunFactory: {} as never,
+      configResolver: new MixedTeamMemberConfigResolver(teamContext),
       agentRunManager: { createAgentRun } as never,
       publish: vi.fn(),
       notifyStatusChange: vi.fn(),
@@ -72,7 +73,7 @@ describe("MixedTeamMemberRegistry task-agent memory", () => {
     });
     const taskAgentRunId = "worker_00000000000000000000000000000001";
 
-    const result = await registry.startTaskAgentInstance({
+    const result = await registry.start({
       identity: {
         taskAgentInstanceId: "task-agent-instance-1",
         taskAgentRunId,

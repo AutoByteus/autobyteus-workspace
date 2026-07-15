@@ -9,6 +9,10 @@ import {
   TOOL_HISTORY_ONLY_CONTINUATION_MODE,
   TOOL_CONTINUATION_MODE_METADATA_KEY
 } from '../message/tool-continuation-metadata.js';
+import {
+  buildToolContinuationDisplayText,
+  type CompletedToolContinuationSummary
+} from '../message/tool-continuation-display-text.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 
@@ -36,14 +40,16 @@ export class ToolResultContinuationBuilder {
       );
     }
 
-    const isNativeApiMode = resolveToolCallFormat() === 'api_tool_call';
+    const toolCallFormat = resolveToolCallFormat();
+    const isNativeApiMode = toolCallFormat === 'api_tool_call';
     context.state.memoryManager?.ingestToolResults(processedEvents, turnId, {
       source: isNativeApiMode ? 'native_api_ordered_batch' : 'text_history_ordered_batch'
     });
     const contextFiles = this.collectContextFiles(processedEvents);
+    const content = buildToolContinuationDisplayText(this.buildDisplayTextSummaries(processedEvents));
 
     return new AgentInputUserMessage(
-      isNativeApiMode ? 'Native API tool continuation' : 'Tool history continuation',
+      content,
       SenderType.TOOL,
       contextFiles.length > 0 ? contextFiles : null,
       {
@@ -63,6 +69,13 @@ export class ToolResultContinuationBuilder {
       }
     }
     return turn.turnId ?? null;
+  }
+
+  private buildDisplayTextSummaries(processedEvents: ToolResultEvent[]): CompletedToolContinuationSummary[] {
+    return processedEvents.map((event) => ({
+      toolName: event.toolName,
+      error: event.error ?? null
+    }));
   }
 
   private collectContextFiles(processedEvents: ToolResultEvent[]): ContextFile[] {

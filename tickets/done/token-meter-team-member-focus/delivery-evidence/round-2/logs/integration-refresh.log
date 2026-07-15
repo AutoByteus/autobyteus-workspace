@@ -1,0 +1,27 @@
+$ git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+
+$ git rev-parse HEAD origin/personal $(git merge-base HEAD origin/personal)
+HEAD=a0a3d52fd7adc7f82029ba5c30a7a1e6351177e6
+origin/personal=a0a3d52fd7adc7f82029ba5c30a7a1e6351177e6
+merge-base=a0a3d52fd7adc7f82029ba5c30a7a1e6351177e6
+
+$ git status --short --branch
+## codex/token-meter-team-member-focus...origin/personal
+ M autobyteus-web/components/workspace/agent/AgentWorkspaceView.vue
+ M autobyteus-web/components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+ M autobyteus-web/components/workspace/team/TeamWorkspaceView.vue
+ M autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+ D autobyteus-web/components/workspace/usage/TokenUsageHeaderChip.vue
+ M autobyteus-web/components/workspace/usage/TokenUsageMeterPanel.vue
+ M autobyteus-web/components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+ M autobyteus-web/localization/messages/en/shell.ts
+ M autobyteus-web/localization/messages/zh-CN/shell.ts
+?? autobyteus-web/components/workspace/usage/TeamTokenUsageSummary.vue
+?? autobyteus-web/components/workspace/usage/tokenUsageFormatting.ts
+?? autobyteus-web/composables/tokenUsageTeamMemberRows.ts
+?? autobyteus-web/composables/useTokenUsageWorkspaceScope.ts
+?? tickets/token-meter-team-member-focus/

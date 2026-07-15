@@ -11,7 +11,6 @@ import {
   defaultToolInvocationPreprocessorRegistry,
   registerSystemPromptProcessors,
 } from "autobyteus-ts";
-import { TokenUsagePersistenceProcessor } from "../agent-customization/processors/persistence/token-usage-persistence-processor.js";
 import { UserInputContextBuildingProcessor } from "../agent-customization/processors/prompt/user-input-context-building-processor.js";
 import { WorkspacePathSanitizationProcessor } from "../agent-customization/processors/security-processor/workspace-path-sanitization-processor.js";
 import { MediaInputPathNormalizationPreprocessor } from "../agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.js";
@@ -80,7 +79,6 @@ export function loadAgentCustomizations(): void {
   registerInputProcessor(WorkspacePathSanitizationProcessor);
   registerInputProcessor(UserInputContextBuildingProcessor);
 
-  registerLlmResponseProcessor(TokenUsagePersistenceProcessor);
   registerLlmResponseProcessor(MediaUrlTransformerProcessor);
 
   registerToolInvocationPreprocessor(MediaInputPathNormalizationPreprocessor);

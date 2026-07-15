@@ -40,25 +40,51 @@ Official OpenAI remains on the Responses API path:
 - **`OpenAILLM`** (`src/llm/api/openai-llm.ts`) extends
   `OpenAIResponsesLLM`.
 
-This ticket did **not** move official OpenAI onto the generic
-OpenAI-compatible path.
+The exact built-in GPT-5.6 IDs are `gpt-5.6-sol`, `gpt-5.6-terra`, and
+`gpt-5.6-luna`. They use this same Responses path, a family-specific reasoning
+schema that adds `max` and defaults to `medium`, and trusted tiered pricing for
+standard, cache-read, cache-write, and output components. The shared usage
+normalizer maps nested OpenAI `cache_write_tokens` into the generic
+cache-creation input component so server accounting and frontend presentation do
+not need a provider-specific branch. Catalog registration is independent of the
+configured account's limited-preview entitlement; do not add an unsuffixed
+`gpt-5.6` alias or substitute another model when invocation is rejected.
+
+This direct API usage contract must not be projected onto Codex app-server
+events. The Codex protocol verified on 2026-07-10 exposes total, input,
+cached-input, output, and reasoning counts but no cache-write count.
+`cachedInputTokens` maps to cache read only; cache creation stays unknown/null,
+and a catalog write rate without a reported quantity produces no write cost or
+Token Meter write row. Never infer the uncached remainder as a write. A future
+Codex write field must first be confirmed in generated supported bindings and
+mapped in the server Codex runtime adapter with its `total`/`last` semantics,
+not added to `OpenAIResponsesLLM` or its usage normalizer.
+
+Official OpenAI does **not** use the generic OpenAI-compatible runtime path.
 
 ### 3.2 OpenAI-Compatible Providers
 
 Two OpenAI-style paths coexist:
 
 - **Built-in OpenAI-style providers** such as DeepSeek, Grok, Kimi, Qwen, GLM,
-  and MiniMax still use `OpenAICompatibleLLM`.
+  and the retained MiniMax M3 entry still use `OpenAICompatibleLLM`.
 - OpenAI-compatible Chat Completions payloads are built through
   `OpenAICompatibleRequestBuilder`, which maps `LLMConfig` generation controls,
-  merges provider-specific `extraParams`, filters framework-internal kwargs, owns
-  `tools` placement, and preserves explicit lower-level `tool_choice`
-  pass-through. The default agent/server path leaves `tool_choice` unset.
+  merges provider-specific `extraParams`, uses the shared provider-request
+  kwarg sanitizer for framework-internal kwargs, owns `tools` placement, and
+  preserves explicit lower-level `tool_choice` pass-through. The default
+  agent/server path leaves `tool_choice` unset.
+- `src/llm/api/provider-request-kwargs.ts` owns shared external-provider
+  filtering for internal invocation fields such as `logicalConversationId`,
+  `logical_conversation_id`, `conversationId`, `agentId`, `turnId`,
+  `requestId`, and `renderedPayload`. Provider adapters name their own
+  controlled fields; the sanitizer must not own provider-specific model policy.
 - Provider adapters keep provider-specific request legality local before
   delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.6`
   requests to Moonshot-safe temperature defaults and applies separate
-  `kimi-k2.7-code` fixed sampling/tool-choice constraints. `GlmLLM` maps the
-  flat GLM thinking schema to provider-native request fields.
+  fixed sampling/tool-choice constraints for both K2.7 Code official IDs:
+  `kimi-k2.7-code` and `kimi-k2.7-code-highspeed`. `GlmLLM` maps the flat GLM
+  thinking schema to provider-native request fields.
 - **Saved custom providers** use:
   - `openai-compatible-endpoint-discovery.ts` for `/models` probing
   - `OpenAICompatibleEndpointModel`
@@ -67,6 +93,35 @@ Two OpenAI-style paths coexist:
 
 Custom providers keep `provider_type = OPENAI_COMPATIBLE` while each saved
 provider gets its own `provider_id` and `provider_name`.
+
+### 3.3 Factory Config Composition
+
+`LLMFactory.createLLM(modelIdentifier, configInput?)` is the effective runtime
+config composition boundary for factory-created LLMs. It clones
+`LLMModel.defaultConfig` when the selected model defines one, otherwise it
+starts from a normal `LLMConfig`.
+
+The second argument has two meanings:
+
+- `LLMConfig` input is treated as an already-effective config and merged over
+  the model defaults.
+- Plain object input is treated as a sparse raw run/default-launch `llmConfig`.
+  Only keys that are explicitly present override defaults.
+
+The raw override applier maps standard keys such as `temperature`, `top_p`,
+`max_tokens`, penalties, and stop sequences into first-class `LLMConfig`
+fields. Missing fields preserve model defaults, unknown provider-specific keys
+flow into `extraParams`, and standard/reserved keys are filtered out of nested
+`extra_params` / `extraParams` containers so they cannot collide with
+first-class fields later. Server-side AutoByteus run assembly should pass raw
+persisted `llmConfig` objects to `LLMFactory`; it should not wrap the entire
+record as `new LLMConfig({ extraParams: llmConfig })`.
+
+Provider/model invariants are enforced after this factory composition and
+before request construction. The Kimi K2.7 Code policy is the concrete example:
+both `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` seed fixed defaults from
+the catalog and are still normalized by `KimiLLM` before the OpenAI-compatible
+request builder runs.
 
 ## 4. Provider Implementations
 
@@ -131,26 +186,49 @@ loads those definitions, resolves curated metadata from
 The current latest-model support set is summarized in
 `docs/provider_model_catalogs.md`. Notable LLM entries include:
 
-- OpenAI `gpt-5.5` (verified 2026-04-25).
-- Anthropic `claude-opus-4.7` with API value `claude-opus-4-7` (verified
-  2026-04-25).
+- OpenAI `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` (verified
+  2026-07-10), plus retained `gpt-5.5`. GPT-5.6 uses exact provider IDs with no
+  separate unsuffixed alias.
+- Anthropic `claude-fable-5`, `claude-opus-4.8`, and `claude-sonnet-5`
+  (verified 2026-07-07) with exact Claude API values and no
+  `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
+  or fallback.
 - DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
 - Gemini `gemini-3.5-flash` with the same provider value for API-key and
   Vertex runtimes (verified 2026-05-20).
-- Moonshot/Kimi `kimi-k2.6` general-purpose model and `kimi-k2.7-code`
-  coding/agentic model (verified 2026-06-16).
+- xAI Grok `grok-4.5` as the sole built-in Grok row (verified 2026-07-09),
+  using the existing Chat Completions path with always-on low/medium/high
+  reasoning and no legacy alias.
+- Moonshot/Kimi `kimi-k2.6` general-purpose model plus the K2.7 Code
+  `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` serving routes. HighSpeed is
+  a distinct official provider identifier for the faster K2.7 Code route, not a
+  compatibility alias (standard K2.7 verified 2026-06-16; HighSpeed verified
+  2026-06-26).
 - Zhipu GLM `glm-5.2` (verified 2026-06-16).
+- MiniMax `minimax-m3` / `MiniMax-M3` (verified 2026-06-24). MiniMax M2.7 is
+  removed and must not be retained as an alias.
 
 Provider adapters own request-shape differences:
 
-- `AnthropicLLM` maps Opus 4.7 adaptive-thinking config without sending fixed
-  thinking budgets or an adapter-injected default `temperature`.
+- `OpenAILLM` keeps GPT-5.6 on the official Responses path. The shared OpenAI
+  usage normalizer preserves gross input while mapping documented
+  `cache_write_tokens` detail fields into generic cache-creation input usage.
+- `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 4.8,
+  Opus 4.7, Sonnet 5, and Fable 5 without sending fixed thinking budgets,
+  manual-budget overrides, or unsupported sampling fields (`temperature`,
+  `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
+  before Anthropic Messages API calls. Older Claude rows keep the legacy
+  fixed-budget path unless a separate provider migration changes them.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4 and
   maps the flat user-facing `thinking_type` config to
-  `extra_body.thinking.type` before the shared request builder runs.
+  top-level `thinking.type` before the shared request builder runs, dropping
+  stale caller-supplied `thinking` / `extra_body.thinking` values.
 - `GeminiLLM` uses the exact `gemini-3.5-flash` ID for both API-key and Vertex
   modes through `src/utils/gemini-model-mapping.ts`, while sharing the existing
   Gemini thinking config schema.
+- `GrokLLM` keeps the xAI Chat Completions transport, defaults reasoning to
+  `high`, and strips provider-invalid stop and penalty fields from copied config
+  and invocation kwargs before the shared request builder runs.
 - `GlmLLM` maps GLM `thinking_type` to provider-native `thinking.type`, sends
   `reasoning_effort` for enabled thinking, and omits stale effort values when
   thinking is disabled.
@@ -158,8 +236,10 @@ Provider adapters own request-shape differences:
   thinking when tool workflows have no explicit thinking override. Kimi also
   normalizes provider-safe temperature defaults for `kimi-k2.6`: `0.6` for tool
   workflows and `1` for non-tool requests, while preserving explicit
-  per-request temperature kwargs. For `kimi-k2.7-code`, it keeps thinking on and
-  normalizes fixed sampling/tool-choice fields to provider-valid values.
+  per-request temperature kwargs. For `kimi-k2.7-code` and
+  `kimi-k2.7-code-highspeed`, it keeps thinking on and normalizes fixed
+  sampling/tool-choice fields to provider-valid values through the shared Kimi
+  K2.7 policy.
 
 For image and audio/TTS catalogs, including OpenAI `gpt-image-2` and Gemini TTS
 models, see `docs/provider_model_catalogs.md`.
@@ -170,6 +250,8 @@ models, see `docs/provider_model_catalogs.md`.
   runtimes.
 - `LLMFactory.reloadModels(provider)` supports provider-scoped reload for
   reloadable built-in providers such as LM Studio, Ollama, and Autobyteus.
+- Anthropic provider-scoped reload is not dynamic discovery. It returns the
+  current static Anthropic catalog count until the built-in catalog is updated.
 - Reload is **replace-on-success / preserve-on-failure**. Failed built-in
   reloads do not wipe the existing provider slice.
 - Saved custom OpenAI-compatible providers are synced through
@@ -208,8 +290,13 @@ agent/server path leaves `tool_choice` unset, and LM Studio uses
 `assistant.tool_calls` plus `role: "tool"` history instead of prompt-template
 `[TOOL_CALL]` / `[TOOL_RESULT]` text. Legacy text-shaped LM Studio history
 remains available only when an explicit text-parser mode is selected. Native
-tool-result continuations render the existing working context directly and do
-not append an extra aggregate `role: "user"` message containing tool results.
+text-only tool-result continuations render the existing working context directly
+and do not append an extra aggregate `role: "user"` message containing tool
+results. If a processed tool result includes context-file media, the request
+keeps a user/media carrier so the media can be sent; that carrier uses semantic
+completed-tool wording such as `The read_media_file tool call completed
+successfully.` rather than internal continuation labels or generated tool-call
+formatting instructions.
 
 DeepSeek is the provider-specific reasoning replay exception on this shared
 OpenAI-compatible transport: `DeepSeekLLM` installs `DeepSeekChatRenderer`, which
@@ -254,9 +341,39 @@ the batch. When `resolveToolCallFormat()` is `xml`, `json`, or `sentinel`, the
 same providers use their explicit text-history renderers and keep legacy
 `[TOOL_CALL]` / `[TOOL_RESULT]` history isolated to those non-native modes.
 Native provider payloads must also omit the older synthetic aggregate
-tool-result user text, including the
-`The following tool executions have completed...` prefix, legacy
-`Tool: <name> (ID: ...)` lines, and aggregate `Status: Success` markers.
+tool-result user text, including the `The following tool executions have
+completed...` prefix, legacy `Tool: <name> (ID: ...)` lines, aggregate `Status:
+Success` markers, and internal continuation labels as user-facing text.
+Provider-required media carrier messages remain valid when their text is the
+semantic completed-tool wording and their attachments are the current
+context-file media.
+
+### Provider Media Payload Rendering
+
+`Message.image_urls`, `Message.audio_urls`, and `Message.video_urls` are
+declared current-turn media input for provider renderers. The image/audio/video
+extension policy is centralized in `src/utils/media-file-kind.ts`; context-file
+typing and `src/llm/utils/media-payload-formatter.ts` both depend on that
+classifier instead of owning separate media allowlists.
+
+Provider prompt renderers own the provider-specific media part shape, not media
+extension policy. Direct Gemini renders declared media through the formatter as
+`inlineData` with the resolved MIME type; local `.m4a` audio therefore becomes
+`inlineData` with `mimeType: 'audio/mp4'`. If a declared media source cannot be
+converted, the renderer must fail before provider invocation with an actionable
+media-conversion error rather than silently sending a text-only request.
+
+The direct-Gemini `.m4a` path has an opt-in live proof in
+`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`. Default test
+runs keep it skipped unless `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1` is set. The
+fixture at `tests/data/test_audio.m4a` is a small synthetic/non-private spoken
+sample; the live test renders the exact local file bytes as Gemini
+`inlineData`, verifies `mimeType: 'audio/mp4'`, calls direct Gemini through
+`sendMessages(request.messages, request.renderedPayload)`, and asserts the
+response contains the spoken word `hello`. `AUTOBYTEUS_GEMINI_M4A_LIVE_MODEL`
+can override the default live model for targeted provider compatibility checks.
+The test is a provider-acceptance and simple transcription-signal guard; token
+accounting and broad transcription-quality validation remain separate concerns.
 
 ## 9. Autobyteus RPA Runtime Conversation Contract
 
@@ -345,6 +462,10 @@ The payload invariants are:
   message `content`: assistant tool calls become canonical AutoByteus XML, and
   tool results become deterministic records containing id, tool name, result,
   and error information.
+- If XML-mode history ends with tool results and no current user/media carrier,
+  `AutobyteusPromptRenderer` may synthesize a current user continuation whose
+  content is only semantic completed-tool wording. It does not duplicate the
+  deterministic `Tool result:` record inside that synthetic current message.
 - Current-turn media stays attached to the current user message.
 - Historical media is represented textually by the renderer and is not
   re-uploaded in prior transcript entries.
@@ -373,7 +494,10 @@ with only `[current user]` appears as exactly the current user content. Multi-
 turn reconstruction keeps the unlabeled system preface, then uses ordered
 `User:`, `Assistant:`, and `Tool:` blocks for non-system history and ends with
 the current `User:` block. The server does not parse tool payloads and does not
-generate tool XML.
+generate tool XML. The TypeScript renderer therefore provides deterministic
+rendered `Tool:` records and minimal completed-tool current-user wording; the
+browser-cache-hit composition that decides how much prior rendered `Tool:`
+history to include remains an RPA-server responsibility.
 
 ## 10. Testing
 
@@ -384,17 +508,31 @@ Focused unit coverage for this contract lives in:
 - `tests/unit/llm/api/autobyteus-llm.test.ts`
 - `tests/unit/llm/api/provider-native-request-payloads.test.ts`
 - `tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts`
+- `tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts`
+- `tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts`
+- `tests/unit/llm/utils/media-payload-formatter.test.ts`
+- `tests/unit/utils/media-file-kind.test.ts`
 - `tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts`
 - `tests/unit/clients/autobyteus-client.test.ts`
 - `tests/unit/agent/loop/agent-turn-input-box.test.ts`
 - `tests/unit/agent/loop/tool-result-continuation-builder.test.ts`
+- `tests/unit/agent/message/tool-continuation-display-text.test.ts`
+- `tests/unit/agent/message/context-file-type.test.ts`
 
 Provider-native continuation integration coverage lives in
 `tests/integration/agent/provider-native-tool-continuation-flow.test.ts`; it
 drives the local agent event loop across the in-scope native providers, verifies
 that native tool results continue through provider-native carriers, and rejects
-the old synthetic aggregate user message. Broader integration tests remain
-under `tests/integration/llm/...`.
+the old synthetic aggregate user message. Renderer unit coverage also verifies
+semantic media-carrier wording for OpenAI-compatible, Gemini, and AutoByteus RPA
+payloads. Broader integration tests remain under `tests/integration/llm/...`.
+
+Direct-Gemini media continuation coverage also includes
+`tests/integration/agent/read-media-file-continuation-flow.test.ts` for the
+local `read_media_file -> LLMUserMessage.audio_urls -> Gemini inlineData` path
+and the env-gated
+`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts` for live
+`.m4a` provider acceptance.
 
 ## 11. Where to Update
 

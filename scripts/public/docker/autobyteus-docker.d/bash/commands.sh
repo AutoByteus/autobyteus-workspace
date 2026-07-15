@@ -79,6 +79,16 @@ resolve_target_name() {
   printf '%s\n' "$DEFAULT_NODE_NAME"
 }
 
+strict_destroy_node_name() {
+  local raw="$1" normalized
+  [[ -n "$raw" ]] || return 1
+  normalized="$(printf '%s' "$raw" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-')"
+  normalized="${normalized#-}"
+  normalized="${normalized%-}"
+  [[ -n "$normalized" ]] || return 1
+  printf '%s\n' "$normalized"
+}
+
 show_urls_for_node() {
   local node_name="$1" file
   file="$(state_path_for "$node_name")"
@@ -157,15 +167,15 @@ show_logs() {
 }
 
 main() {
-  local cmd="${1:-help}" stop_all=0 name_arg="" tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" extra=()
+  local cmd="${1:-help}" stop_all=0 name_arg="" name_seen=0 name_option_count=0 tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" image_ref_override_explicit=0 extra=() destroy_node_name=""
   [[ "$cmd" == "help" || "$cmd" == "--help" || "$cmd" == "-h" ]] && { usage; return; }
   shift || true
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --all) stop_all=1; shift ;;
-      --name) [[ $# -gt 1 ]] || fail "--name requires a value"; name_arg="$2"; shift 2 ;;
-      --tag) [[ $# -gt 1 ]] || fail "--tag requires a value"; tag="$2"; shift 2 ;;
-      --image) [[ $# -gt 1 ]] || fail "--image requires a value"; image="$2"; shift 2 ;;
+      --name) [[ $# -gt 1 && "$2" != -* ]] || fail "--name requires a value"; name_arg="$2"; name_seen=1; name_option_count=$((name_option_count + 1)); shift 2 ;;
+      --tag) [[ $# -gt 1 ]] || fail "--tag requires a value"; tag="$2"; image_ref_override_explicit=1; shift 2 ;;
+      --image) [[ $# -gt 1 ]] || fail "--image requires a value"; image="$2"; image_ref_override_explicit=1; shift 2 ;;
       -h|--help) usage; return ;;
       --) shift; extra+=("$@"); break ;;
       *) if [[ -z "$name_arg" && "$cmd" =~ ^(urls|ports|status|ps|stop|logs)$ ]]; then name_arg="$1"; else extra+=("$1"); fi; shift ;;
@@ -185,9 +195,25 @@ main() {
       ;;
   esac
 
+  if [[ "$cmd" == "destroy" ]]; then
+    [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown destroy option(s): ${extra[*]}"
+    [[ "$name_option_count" -le 1 ]] || fail "destroy accepts only one --name selector."
+    if [[ "$stop_all" == "1" && "$name_seen" == "1" ]]; then
+      fail "destroy requires exactly one of --all or --name <node>; do not combine them."
+    fi
+    [[ "$stop_all" == "1" || "$name_seen" == "1" ]] || fail "destroy requires exactly one of --all or --name <node>."
+    if [[ "$name_seen" == "1" ]]; then
+      destroy_node_name="$(strict_destroy_node_name "$name_arg")" || fail "destroy --name requires a non-empty managed node name."
+    fi
+  fi
+
   ensure_state_dir
   assert_docker
-  node_name="$(resolve_target_name "$name_arg")"
+  if [[ "$cmd" == "destroy" && "$stop_all" != "1" ]]; then
+    node_name="$destroy_node_name"
+  else
+    node_name="$(resolve_target_name "$name_arg")"
+  fi
   image_ref="$(image_ref_for "$image" "$tag")"
 
   case "$cmd" in
@@ -201,13 +227,14 @@ main() {
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown upgrade option(s): ${extra[*]}"
       [[ "$stop_all" == "1" ]] || fail "upgrade affects every managed node; rerun with --all."
       [[ -z "$name_arg" ]] || fail "upgrade --all does not accept --name."
-      upgrade_all_nodes "$image_ref"
+      upgrade_all_nodes "$image_ref" "$image_ref_override_explicit"
       ;;
     destroy)
-      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown destroy option(s): ${extra[*]}"
-      [[ "$stop_all" == "1" ]] || fail "destroy affects every managed node; rerun with --all."
-      [[ -z "$name_arg" ]] || fail "destroy --all does not accept --name."
-      destroy_all_nodes
+      if [[ "$stop_all" == "1" ]]; then
+        destroy_all_nodes
+      else
+        destroy_node "$node_name"
+      fi
       ;;
     reset)
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown reset option(s): ${extra[*]}"

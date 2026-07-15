@@ -11,8 +11,6 @@ import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import { getAgentRunService } from "../../../agent-execution/services/agent-run-service.js";
-import { toDomainSelfEvolutionConfigOverride } from "./self-evolution-graphql-converters.js";
-import { GraphqlSelfEvolutionConfigOverrideInput } from "./self-evolution-graphql-types.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -61,9 +59,6 @@ export class CreateAgentRunInput {
 
   @Field(() => String, { nullable: true })
   initialSummary?: string | null;
-
-  @Field(() => GraphqlSelfEvolutionConfigOverrideInput, { nullable: true })
-  selfEvolution?: GraphqlSelfEvolutionConfigOverrideInput | null;
 }
 
 @ObjectType()
@@ -177,7 +172,6 @@ export class AgentRunResolver {
         llmConfig: input.llmConfig ?? null,
         skillAccessMode: input.skillAccessMode,
         runtimeKind: input.runtimeKind.trim(),
-        selfEvolution: toDomainSelfEvolutionConfigOverride(input.selfEvolution),
       });
 
       return {
@@ -210,7 +204,6 @@ export class AgentRunResolver {
         skillAccessMode: input.skillAccessMode,
         runtimeKind: input.runtimeKind.trim(),
         initialSummary: input.initialSummary ?? null,
-        selfEvolution: toDomainSelfEvolutionConfigOverride(input.selfEvolution),
       });
 
       return {

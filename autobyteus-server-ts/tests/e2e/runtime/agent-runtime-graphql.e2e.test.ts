@@ -517,7 +517,7 @@ const defineRuntimeSuite = (input: {
       llmModelIdentifier: string;
       workspaceRootPath: string;
       autoExecuteTools: boolean;
-      skillAccessMode?: "NONE" | "PRELOADED_ONLY" | "GLOBAL_DISCOVERY";
+      skillAccessMode?: "NONE" | "PRELOADED_ONLY" | "PRELOADED_ONLY";
     }): Promise<string> => {
       const mutation = `
         mutation CreateAgentRun($input: CreateAgentRunInput!) {
@@ -1376,6 +1376,262 @@ const defineRuntimeSuite = (input: {
         await terminateAgentRun(runId).catch(() => undefined);
       }
     }, 180_000);
+
+    if (input.runtimeKind === "claude_agent_sdk") {
+      it(
+        "auto-approves workspace and outside-scratch write/delete/shell operations without frontend approval prompts",
+        async () => {
+          const workspaceRootPath = await mkdtemp(
+            path.join(os.tmpdir(), `${input.runtimeKind}-runtime-autoapprove-workspace-`),
+          );
+          createdWorkspaceRoots.add(workspaceRootPath);
+          const outsideScratchRootPath = await mkdtemp(
+            path.join(os.tmpdir(), `${input.runtimeKind}-runtime-autoapprove-outside-`),
+          );
+          expect(path.relative(workspaceRootPath, outsideScratchRootPath).startsWith("..")).toBe(
+            true,
+          );
+
+          const llmModelIdentifier = await fetchModelIdentifier();
+          const agentDefinitionId = await createAgentDefinition([]);
+          const runId = await createAgentRun({
+            agentDefinitionId,
+            llmModelIdentifier,
+            workspaceRootPath,
+            autoExecuteTools: true,
+          });
+
+          const { app, socket, messages } = await openAgentSocket(runId);
+          const suffix = randomUUID().replace(/-/g, "_");
+          const workspaceWritePath = path.join(
+            workspaceRootPath,
+            `autoapprove-workspace-write-${suffix}.txt`,
+          );
+          const workspaceShellPath = path.join(
+            workspaceRootPath,
+            `autoapprove-workspace-shell-${suffix}.txt`,
+          );
+          const workspaceDeletePath = path.join(
+            workspaceRootPath,
+            `autoapprove-workspace-delete-${suffix}.txt`,
+          );
+          const outsideWritePath = path.join(
+            outsideScratchRootPath,
+            `autoapprove-outside-write-${suffix}.txt`,
+          );
+          const outsideShellPath = path.join(
+            outsideScratchRootPath,
+            `autoapprove-outside-shell-${suffix}.txt`,
+          );
+          const outsideDeletePath = path.join(
+            outsideScratchRootPath,
+            `autoapprove-outside-delete-${suffix}.txt`,
+          );
+
+          const previewTurnMessages = (startIndex: number): string =>
+            messages
+              .slice(startIndex)
+              .map((message) => `${message.type}:${JSON.stringify(message.payload).slice(0, 180)}`)
+              .join(" | ");
+
+          const failIfApprovalOrError = (startIndex: number, label: string): void => {
+            const approvalRequested = messages
+              .slice(startIndex)
+              .find((message) => message.type === "TOOL_APPROVAL_REQUESTED");
+            expect(
+              approvalRequested,
+              `${label} must not emit TOOL_APPROVAL_REQUESTED. Messages: ${previewTurnMessages(startIndex)}`,
+            ).toBeUndefined();
+
+            const errorMessage = messages
+              .slice(startIndex)
+              .find((message) => message.type === "ERROR");
+            expect(
+              errorMessage,
+              `${label} must not emit ERROR. Messages: ${previewTurnMessages(startIndex)}`,
+            ).toBeUndefined();
+          };
+
+          const waitForAutoApprovedToolStart = async (
+            startIndex: number,
+            label: string,
+            timeoutMs = 120_000,
+          ): Promise<WsMessage> => {
+            const deadline = Date.now() + timeoutMs;
+            while (Date.now() < deadline) {
+              failIfApprovalOrError(startIndex, label);
+              const started = messages
+                .slice(startIndex)
+                .find((message) => message.type === "TOOL_EXECUTION_STARTED");
+              if (started) {
+                return started;
+              }
+              await wait(250);
+            }
+            throw new Error(
+              `Timed out waiting for ${label} TOOL_EXECUTION_STARTED. Messages: ${previewTurnMessages(startIndex)}`,
+            );
+          };
+
+          const runAutoApprovedTurn = async (inputTurn: {
+            label: string;
+            content: string;
+            verify: () => Promise<void>;
+          }): Promise<void> => {
+            const startIndex = messages.length;
+            sendE2eSendMessageCommand(socket, {
+              content: inputTurn.content,
+            });
+
+            const startedMessage = await waitForAutoApprovedToolStart(
+              startIndex,
+              inputTurn.label,
+            );
+            const startedInvocationId = resolveInvocationId(startedMessage.payload);
+
+            await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) =>
+                message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+                matchesInvocationId(message.payload, startedInvocationId),
+              `${inputTurn.label} TOOL_EXECUTION_SUCCEEDED`,
+              120_000,
+            );
+            await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) =>
+                message.type === "AGENT_STATUS" && message.payload.status === "idle",
+              `${inputTurn.label} AGENT_STATUS IDLE`,
+              120_000,
+            );
+            await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) => isFinalAssistantMessage(message),
+              `${inputTurn.label} final assistant message`,
+              120_000,
+            );
+
+            failIfApprovalOrError(startIndex, inputTurn.label);
+            await inputTurn.verify();
+          };
+
+          const buildShellCommand = (inputCommand: {
+            outputPath: string;
+            outputContent: string;
+            deletePath: string;
+          }): string =>
+            `printf '${escapeForSingleQuotedShell(inputCommand.outputContent)}\\n' > '${escapeForSingleQuotedShell(inputCommand.outputPath)}' && rm -f '${escapeForSingleQuotedShell(inputCommand.deletePath)}'`;
+
+          try {
+            await writeFile(workspaceDeletePath, "workspace delete target\n", "utf-8");
+            await writeFile(outsideDeletePath, "outside delete target\n", "utf-8");
+
+            const workspaceWriteContent = `WORKSPACE_WRITE_${suffix}`;
+            await runAutoApprovedTurn({
+              label: "workspace Write",
+              content: [
+                "Use the Claude Code Write tool exactly once.",
+                "Do not use Bash.",
+                "Do not ask for approval; the runtime is configured to approve tools automatically.",
+                `Create this exact absolute file path: ${workspaceWritePath}`,
+                `Write exactly this content: ${workspaceWriteContent}`,
+                `After the tool succeeds, reply with exactly WORKSPACE_WRITE_DONE_${suffix}.`,
+              ].join("\n"),
+              verify: async () => {
+                expect(await readFile(workspaceWritePath, "utf-8")).toContain(
+                  workspaceWriteContent,
+                );
+              },
+            });
+
+            const workspaceShellContent = `WORKSPACE_SHELL_${suffix}`;
+            const workspaceShellCommand = buildShellCommand({
+              outputPath: workspaceShellPath,
+              outputContent: workspaceShellContent,
+              deletePath: workspaceDeletePath,
+            });
+            await runAutoApprovedTurn({
+              label: "workspace Bash write and delete",
+              content: [
+                "Use the Claude Code Bash tool exactly once to run this exact command:",
+                workspaceShellCommand,
+                "Do not use Write.",
+                "Do not ask for approval; the runtime is configured to approve tools automatically.",
+                `After the command succeeds, reply with exactly WORKSPACE_SHELL_DONE_${suffix}.`,
+              ].join("\n"),
+              verify: async () => {
+                expect(await readFile(workspaceShellPath, "utf-8")).toContain(
+                  workspaceShellContent,
+                );
+                await expect(readFile(workspaceDeletePath, "utf-8")).rejects.toMatchObject({
+                  code: "ENOENT",
+                });
+              },
+            });
+
+            const outsideWriteContent = `OUTSIDE_WRITE_${suffix}`;
+            await runAutoApprovedTurn({
+              label: "outside-scratch Write",
+              content: [
+                "Use the Claude Code Write tool exactly once.",
+                "Do not use Bash.",
+                "Do not ask for approval; the runtime is configured to approve tools automatically.",
+                "The target path is in a disposable outside-workspace scratch directory that is safe to modify.",
+                `Create this exact absolute file path: ${outsideWritePath}`,
+                `Write exactly this content: ${outsideWriteContent}`,
+                `After the tool succeeds, reply with exactly OUTSIDE_WRITE_DONE_${suffix}.`,
+              ].join("\n"),
+              verify: async () => {
+                expect(await readFile(outsideWritePath, "utf-8")).toContain(
+                  outsideWriteContent,
+                );
+              },
+            });
+
+            const outsideShellContent = `OUTSIDE_SHELL_${suffix}`;
+            const outsideShellCommand = buildShellCommand({
+              outputPath: outsideShellPath,
+              outputContent: outsideShellContent,
+              deletePath: outsideDeletePath,
+            });
+            await runAutoApprovedTurn({
+              label: "outside-scratch Bash write and delete",
+              content: [
+                "Use the Claude Code Bash tool exactly once to run this exact command:",
+                outsideShellCommand,
+                "Do not use Write.",
+                "Do not ask for approval; the runtime is configured to approve tools automatically.",
+                "The command only touches a disposable outside-workspace scratch directory that is safe to modify.",
+                `After the command succeeds, reply with exactly OUTSIDE_SHELL_DONE_${suffix}.`,
+              ].join("\n"),
+              verify: async () => {
+                expect(await readFile(outsideShellPath, "utf-8")).toContain(
+                  outsideShellContent,
+                );
+                await expect(readFile(outsideDeletePath, "utf-8")).rejects.toMatchObject({
+                  code: "ENOENT",
+                });
+              },
+            });
+
+            expect(
+              messages.some((message) => message.type === "TOOL_APPROVAL_REQUESTED"),
+            ).toBe(false);
+          } finally {
+            socket.close();
+            await app.close();
+            await rm(outsideScratchRootPath, { recursive: true, force: true }).catch(
+              () => undefined,
+            );
+            await terminateAgentRun(runId).catch(() => undefined);
+          }
+        },
+        300_000,
+      );
+    }
 
     if (input.runtimeKind === "codex_app_server") {
       it("terminates an active Codex approval run, restores it, reconnects, and continues streaming", async () => {

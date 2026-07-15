@@ -1,0 +1,126 @@
+Post-integration validation for token-usage-ledger-drop-legacy-path-columns
+Started: 2026-07-03T15:11:25Z
+Branch: codex/token-usage-ledger-drop-legacy-path-columns
+HEAD: 44f001e9757092a5f641ba225fd7cb325e281fac
+origin/personal: 75a42b9ccca76bcdb8e224a00c5950e9a108bc2e
+
+== git diff --check ==
+
+== legacy path drop e2e + backfill unit reproducer ==
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-ledger-drop-legacy-path-columns/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-ledger-drop-legacy-path-columns/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts > token usage legacy path column drop startup E2E
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:19309) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts > token usage legacy path column drop startup E2E > records a clear failure and leaves schema unchanged when the backfill prerequisite has not succeeded
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-ledger-drop-legacy-path-columns/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-usage-ledger-drop-legacy-path-columns/autobyteus-server-ts
+
+stdout | tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts > token usage legacy path column drop startup E2E > runs backfill before the guarded contract drop, preserves token data, and keeps GraphQL statistics working
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+·····
+
+ Test Files  2 passed (2)
+      Tests  5 passed (5)
+   Start at  17:11:25
+   Duration  4.49s (transform 3.68s, setup 22ms, import 74ms, tests 3.88s, environment 0ms)
+
+
+== server tsc ==
+src/agent-tools/media/media-generation-service.ts(3,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-client-factory.js' or its corresponding type declarations.
+src/agent-tools/media/media-generation-service.ts(6,15): error TS2724: '"autobyteus-ts/multimedia/utils/response-types.js"' has no exported member named 'VideoGenerationResponse'. Did you mean 'ImageGenerationResponse'?
+src/agent-tools/media/media-tool-model-resolver.ts(5,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-client-factory.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-model-resolver.ts(6,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+src/agent-tools/media/media-tool-model-resolver.ts(52,10): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+src/api/graphql/types/llm-provider.ts(8,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+src/llm-management/services/model-catalog-service.ts(4,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+src/multimedia-management/providers/cached-video-model-provider.ts(1,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+src/multimedia-management/providers/video-model-provider.ts(1,36): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-client-factory.js' or its corresponding type declarations.
+src/multimedia-management/providers/video-model-provider.ts(2,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+src/multimedia-management/services/video-model-service.ts(1,33): error TS2307: Cannot find module 'autobyteus-ts/multimedia/video/video-model.js' or its corresponding type declarations.
+
+Finished: 2026-07-03T15:11:34Z

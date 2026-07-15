@@ -3,46 +3,51 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { TeamRun } from "../domain/team-run.js";
 import { selectorFromMemberRouteKey } from "../domain/team-run-member-identity.js";
+import type { ActiveTaskDelegationRecordEntry } from "./task-delegation-active-entry.js";
 import type {
   TaskDelegationNotificationDeliveryOutcome,
   TaskDelegationNotificationType,
-  TaskDelegationRecord,
   TaskDelegationWarning,
+  TaskReferenceFile,
   TaskResultReview,
   TaskResultSubmission,
 } from "./task-delegation-record.js";
+import { markTaskDelegationSystemTaskNotificationMetadata } from "./task-delegation-system-message-visibility.js";
+import { TaskDelegationVisibleNotificationRenderer } from "./task-delegation-visible-notification-renderer.js";
 
-type NotificationTarget = {
-  memberRouteKey: string;
-  taskAgentRunId: string | null;
-};
-
-const renderReferenceFiles = (referenceFiles: readonly string[]): string =>
+const renderReferenceFiles = (referenceFiles: readonly TaskReferenceFile[]): string =>
   referenceFiles.length > 0
-    ? referenceFiles.map((referenceFile) => `- ${referenceFile}`).join("\n")
+    ? referenceFiles.map((referenceFile) => `- ${referenceFile.path}`).join("\n")
     : "- None specified";
 
 const renderOperationResultMessage = (result: AgentOperationResult): string =>
-  result.message?.trim() ||
-  result.code?.trim() ||
-  "The target runtime rejected the system task notification.";
+  result.message?.trim() || result.code?.trim() || "The target runtime rejected the system task notification.";
+
+type NotificationTarget =
+  | { kind: "member"; memberRouteKey: string; taskAgentRunId: string | null }
+  | { kind: "task_team"; memberRouteKey: string; taskTeamRunId: string };
 
 export class TaskDelegationNotificationDispatcher {
+  constructor(
+    private readonly visibleNotificationRenderer = new TaskDelegationVisibleNotificationRenderer(),
+  ) {}
+
   async notifyResultSubmitted(input: {
     teamRun: TeamRun;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
     submission: TaskResultSubmission;
   }): Promise<TaskDelegationNotificationDeliveryOutcome> {
-    const target = this.resolveDelegatorTarget(input.record);
     return this.deliver({
       teamRun: input.teamRun,
-      record: input.record,
-      target,
+      entry: input.entry,
+      target: this.resolveDelegatorTarget(input.entry),
       notificationType: "result_submitted",
-      content: this.renderResultSubmitted(input.record, input.submission),
+      content: this.renderResultSubmitted(input.entry, input.submission),
+      displayContent: this.visibleNotificationRenderer.renderResultSubmitted(input.entry, input.submission),
       metadata: {
-        task_id: input.record.taskId,
+        task_id: input.entry.record.taskId,
         submission_id: input.submission.submissionId,
+        execution_kind: input.submission.execution.kind,
         message_type: "task_result_submitted",
       },
     });
@@ -50,20 +55,21 @@ export class TaskDelegationNotificationDispatcher {
 
   async notifyRevisionRequested(input: {
     teamRun: TeamRun;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
     review: TaskResultReview;
   }): Promise<TaskDelegationNotificationDeliveryOutcome> {
-    const target = this.resolveTaskAgentTarget(input.record);
     return this.deliver({
       teamRun: input.teamRun,
-      record: input.record,
-      target,
+      entry: input.entry,
+      target: this.resolveExecutionTarget(input.entry),
       notificationType: "revision_requested",
-      content: this.renderRevisionRequested(input.record, input.review),
+      content: this.renderRevisionRequested(input.entry, input.review),
+      displayContent: this.visibleNotificationRenderer.renderRevisionRequested(input.entry, input.review),
       metadata: {
-        task_id: input.record.taskId,
+        task_id: input.entry.record.taskId,
         review_id: input.review.reviewId,
         reviewed_submission_id: input.review.reviewedSubmissionId,
+        execution_kind: input.entry.taskRunExecution.kind,
         message_type: "task_revision_requested",
       },
     });
@@ -71,64 +77,71 @@ export class TaskDelegationNotificationDispatcher {
 
   private async deliver(input: {
     teamRun: TeamRun;
-    record: TaskDelegationRecord;
+    entry: ActiveTaskDelegationRecordEntry;
     target: NotificationTarget;
     notificationType: TaskDelegationNotificationType;
     content: string;
+    displayContent: string;
     metadata: Record<string, unknown>;
   }): Promise<TaskDelegationNotificationDeliveryOutcome> {
-    const message = new AgentInputUserMessage(
-      input.content,
-      SenderType.SYSTEM,
-      null,
-      {
-        ...input.metadata,
-        sender_id: "system.task_delegation",
-        team_run_id: input.teamRun.runId,
-        input_origin: "task_delegation_notification",
-        task_notification_type: input.notificationType,
-        target_member_route_key: input.target.memberRouteKey,
-        target_task_agent_run_id: input.target.taskAgentRunId,
-      },
-    );
+    const message = new AgentInputUserMessage(input.content, SenderType.SYSTEM, null, markTaskDelegationSystemTaskNotificationMetadata({
+      ...input.metadata,
+      sender_id: "system.task_delegation",
+      team_run_id: input.teamRun.runId,
+      input_origin: "task_delegation_notification",
+      task_notification_type: input.notificationType,
+      target_member_route_key: input.target.memberRouteKey,
+      target_task_agent_run_id: input.target.kind === "member" ? input.target.taskAgentRunId : null,
+      target_task_team_run_id: input.target.kind === "task_team" ? input.target.taskTeamRunId : null,
+    }, {
+      displayContent: input.displayContent,
+    }));
 
     try {
-      const result = await input.teamRun.postMessage(
-        message,
-        selectorFromMemberRouteKey(input.target.memberRouteKey),
-        input.target.taskAgentRunId,
-      );
-      if (result.accepted) {
-        return this.delivered(input.notificationType, input.target);
-      }
-      return this.rejected(input.notificationType, input.record, input.target, renderOperationResultMessage(result));
+      const result = input.target.kind === "task_team"
+        ? await input.teamRun.postMessageToTaskTeamInstance(
+            input.target.memberRouteKey,
+            input.target.taskTeamRunId,
+            message,
+          )
+        : await input.teamRun.postMessage(
+            message,
+            selectorFromMemberRouteKey(input.target.memberRouteKey),
+            input.target.taskAgentRunId,
+          );
+      if (result.accepted) return this.delivered(input.notificationType, input.target);
+      return this.rejected(input.notificationType, input.entry, input.target, renderOperationResultMessage(result));
     } catch (error) {
       return this.rejected(
         input.notificationType,
-        input.record,
+        input.entry,
         input.target,
         error instanceof Error ? error.message : String(error),
       );
     }
   }
 
-  private resolveDelegatorTarget(record: TaskDelegationRecord): NotificationTarget {
-    const taskAgentRunId = record.delegator.taskAgentRunId?.trim() || null;
+  private resolveDelegatorTarget(entry: ActiveTaskDelegationRecordEntry): NotificationTarget {
+    const taskAgentRunId = entry.reviewOwner.taskAgentRunId?.trim() || null;
     return {
-      memberRouteKey:
-        record.delegator.logicalMemberRouteKey?.trim() ||
-        record.delegator.memberRouteKey,
+      kind: "member",
+      memberRouteKey: entry.reviewOwner.logicalMemberRouteKey?.trim() || entry.reviewOwner.memberRouteKey,
       taskAgentRunId,
     };
   }
 
-  private resolveTaskAgentTarget(record: TaskDelegationRecord): NotificationTarget {
-    if (!record.taskAgentInstance) {
-      throw new Error(`Task '${record.taskId}' has no bound task-agent instance.`);
+  private resolveExecutionTarget(entry: ActiveTaskDelegationRecordEntry): NotificationTarget {
+    if (entry.taskRunExecution.kind === "task_agent") {
+      return {
+        kind: "member",
+        memberRouteKey: entry.taskRunExecution.taskAgentInstance.logicalMember.memberRouteKey,
+        taskAgentRunId: entry.taskRunExecution.taskAgentInstance.taskAgentRunId,
+      };
     }
     return {
-      memberRouteKey: record.taskAgentInstance.logicalMember.memberRouteKey,
-      taskAgentRunId: record.taskAgentInstance.taskAgentRunId,
+      kind: "task_team",
+      memberRouteKey: entry.taskRunExecution.taskTeamInstance.logicalTeam.memberRouteKey,
+      taskTeamRunId: entry.taskRunExecution.taskTeamInstance.taskTeamRunId,
     };
   }
 
@@ -140,77 +153,72 @@ export class TaskDelegationNotificationDispatcher {
       notificationType,
       delivered: true,
       targetMemberRouteKey: target.memberRouteKey,
-      targetTaskAgentRunId: target.taskAgentRunId,
+      targetTaskAgentRunId: target.kind === "member" ? target.taskAgentRunId : null,
+      targetTaskTeamRunId: target.kind === "task_team" ? target.taskTeamRunId : null,
       warning: null,
     };
   }
 
   private rejected(
     notificationType: TaskDelegationNotificationType,
-    record: TaskDelegationRecord,
+    entry: ActiveTaskDelegationRecordEntry,
     target: NotificationTarget,
     reason: string,
   ): TaskDelegationNotificationDeliveryOutcome {
     const warning: TaskDelegationWarning = {
       code: "TASK_NOTIFICATION_DELIVERY_FAILED",
       notification_type: notificationType,
-      task_id: record.taskId,
+      task_id: entry.record.taskId,
       target_member_route_key: target.memberRouteKey,
-      target_task_agent_run_id: target.taskAgentRunId,
+      target_task_agent_run_id: target.kind === "member" ? target.taskAgentRunId : null,
+      target_task_team_run_id: target.kind === "task_team" ? target.taskTeamRunId : null,
       message: reason,
     };
     return {
       notificationType,
       delivered: false,
       targetMemberRouteKey: target.memberRouteKey,
-      targetTaskAgentRunId: target.taskAgentRunId,
+      targetTaskAgentRunId: warning.target_task_agent_run_id ?? null,
+      targetTaskTeamRunId: warning.target_task_team_run_id ?? null,
       warning,
     };
   }
 
-  private renderResultSubmitted(
-    record: TaskDelegationRecord,
-    submission: TaskResultSubmission,
-  ): string {
+  private renderResultSubmitted(entry: ActiveTaskDelegationRecordEntry, submission: TaskResultSubmission): string {
     return [
-      `Task result submitted for review.`,
+      "Task result submitted for review.",
       "",
-      `Task ID: ${record.taskId}`,
-      `Submission ID: ${submission.submissionId}`,
-      `Task-agent run: ${submission.taskAgentRunId}`,
+      `Task ID: ${entry.record.taskId}`,
+      "Task:",
+      entry.record.content,
       "",
-      "Result message:",
-      submission.message,
+      "Submitted result:",
+      submission.content,
       "",
       "Reference files:",
       renderReferenceFiles(submission.referenceFiles),
       "",
-      "Review instructions:",
-      `- Accept with review_task_result({"task_id":"${record.taskId}","decision":"accept"}).`,
-      `- Request revision with review_task_result({"task_id":"${record.taskId}","decision":"request_revision","message":"<revision instructions>"}).`,
-      "- Do not use send_message_to for task acceptance or revision requests.",
+      "Task review guidance:",
+      "- Use review_task_result with decision=accept when the result is ready to finalize.",
+      "- Use review_task_result with decision=request_revision and a non-empty comment when the task result needs changes.",
     ].join("\n");
   }
 
-  private renderRevisionRequested(
-    record: TaskDelegationRecord,
-    review: TaskResultReview,
-  ): string {
+  private renderRevisionRequested(entry: ActiveTaskDelegationRecordEntry, review: TaskResultReview): string {
     return [
-      `Revision requested for delegated task.`,
+      "Revision requested for delegated task.",
       "",
-      `Task ID: ${record.taskId}`,
-      `Review ID: ${review.reviewId}`,
-      `Reviewed submission ID: ${review.reviewedSubmissionId}`,
+      `Task ID: ${entry.record.taskId}`,
+      "Task:",
+      entry.record.content,
       "",
-      "Revision instructions:",
-      review.message ?? "",
+      "Review comment:",
+      review.content ?? "",
       "",
       "Reference files:",
       renderReferenceFiles(review.referenceFiles),
       "",
       "When the revision is ready, call submit_task_result with the revised result message and optional reference_files.",
-      "Do not use send_message_to as the task result submission protocol.",
     ].join("\n");
   }
 }

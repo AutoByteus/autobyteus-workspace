@@ -54,6 +54,7 @@ describe('MobileFileViewer', () => {
       mode: 'preview',
       content: null,
       url: `http://127.0.0.1:4100/rest/workspaces/workspace-1/content?path=${encodeURIComponent(path)}`,
+      relativeResourceContext: { kind: 'workspace', workspaceId: 'workspace-1' },
       isLoading: false,
       error: null,
     }, path);
@@ -71,6 +72,7 @@ describe('MobileFileViewer', () => {
       mode: 'preview',
       content: '<h1>Page</h1>',
       url: null,
+      relativeResourceContext: { kind: 'workspace', workspaceId: 'workspace-1' },
       isLoading: false,
       error: null,
     });

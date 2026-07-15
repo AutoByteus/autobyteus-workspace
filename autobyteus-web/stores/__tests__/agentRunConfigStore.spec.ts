@@ -75,12 +75,12 @@ describe('agentRunConfigStore', () => {
       store.updateAgentConfig({
         llmModelIdentifier: 'gpt-4-turbo',
         autoExecuteTools: true,
-        skillAccessMode: 'GLOBAL_DISCOVERY',
+        skillAccessMode: 'PRELOADED_ONLY',
       })
 
       expect(store.config?.llmModelIdentifier).toBe('gpt-4-turbo')
       expect(store.config?.autoExecuteTools).toBe(true)
-      expect(store.config?.skillAccessMode).toBe('GLOBAL_DISCOVERY')
+      expect(store.config?.skillAccessMode).toBe('PRELOADED_ONLY')
     })
   })
 

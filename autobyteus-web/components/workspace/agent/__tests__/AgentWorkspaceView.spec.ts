@@ -123,12 +123,13 @@ describe('AgentWorkspaceView', () => {
           props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl'],
           template: '<div data-test="agent-event-monitor"><slot name="composerContext" /></div>',
         },
-        SelfEvolutionComposerCta: {
+        SkillImprovementComposerCta: {
           props: ['target'],
-          template: '<div data-test="self-evolution-cta" :data-run-id="target && target.runId" :data-helper-run="target && String(target.isHelperRun)" />',
+          template: '<div data-test="skill-improvement-cta" :data-run-id="target && target.runId" :data-helper-run="target && String(target.isHelperRun)" />',
         },
         AgentStatusDisplay: { template: '<div data-test="header-status" />' },
         CopyButton: { template: '<button type="button" data-test="copy-button" />' },
+        TokenUsageHeaderChip: { template: '<div data-test="token-usage-header-chip" />' },
         WorkspaceHeaderActions: {
           template: `
             <div>
@@ -148,6 +149,11 @@ describe('AgentWorkspaceView', () => {
     const avatar = wrapper.find('img[alt="Story Agent avatar"]');
     expect(avatar.exists()).toBe(true);
     expect(avatar.attributes('src')).toBe('https://example.com/from-context.png');
+  });
+
+  it('does not render the token usage header chip', () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find('[data-test="token-usage-header-chip"]').exists()).toBe(false);
   });
 
   it('falls back to definition avatar URL in header when context avatar is missing', () => {
@@ -172,25 +178,25 @@ describe('AgentWorkspaceView', () => {
     expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
   });
 
-  it('passes the selected run to the composer self-evolution CTA', () => {
+  it('passes the selected run to the composer skill-improvement CTA', () => {
     const wrapper = mountComponent();
-    const cta = wrapper.get('[data-test="self-evolution-cta"]');
+    const cta = wrapper.get('[data-test="skill-improvement-cta"]');
     expect(cta.attributes('data-run-id')).toBe('agent-1234');
     expect(cta.attributes('data-helper-run')).toBe('false');
   });
 
-  it('marks the Skill Self-Evolver helper run for CTA hiding', () => {
+  it('marks the Retrospective Skill Improver helper run for CTA hiding', () => {
     state.activeRun = buildAgentContext({
       config: {
-        agentDefinitionId: 'autobyteus-skill-evolver',
-        agentDefinitionName: 'Skill Self-Evolver',
+        agentDefinitionId: 'autobyteus-retrospective-skill-improver',
+        agentDefinitionName: 'Retrospective Skill Improver',
         agentAvatarUrl: null,
         isLocked: true,
       },
     });
 
     const wrapper = mountComponent();
-    const cta = wrapper.get('[data-test="self-evolution-cta"]');
+    const cta = wrapper.get('[data-test="skill-improvement-cta"]');
     expect(cta.attributes('data-helper-run')).toBe('true');
   });
 
@@ -204,7 +210,7 @@ describe('AgentWorkspaceView', () => {
         runtimeKind: 'codex_app_server',
         workspaceId: 'ws-1',
         autoExecuteTools: true,
-        skillAccessMode: 'GLOBAL_DISCOVERY',
+        skillAccessMode: 'PRELOADED_ONLY',
         isLocked: true,
         llmConfig: {
           reasoning_effort: 'xhigh',

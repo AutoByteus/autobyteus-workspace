@@ -1,100 +1,60 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { TokenUsagePersistenceProcessor } from "../../../../../src/agent-customization/processors/persistence/token-usage-persistence-processor.js";
-import { LLMCompleteResponseReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
-import { CompleteResponse } from "autobyteus-ts/llm/utils/response-types.js";
-import type { TokenUsage } from "autobyteus-ts";
-import type { AgentContext } from "autobyteus-ts";
+import { describe, expect, it, vi } from "vitest";
+import { createTokenUsageUpdatedPayload } from "../../../../../src/agent-execution/domain/agent-run-token-usage.js";
+import { TokenUsageSnapshotDeltaNormalizer } from "../../../../../src/token-usage/projections/token-usage-snapshot-delta-normalizer.js";
 
-const mockTokenUsageStore = vi.hoisted(() => ({
-  createConversationTokenUsageRecords: vi.fn(),
-}));
-
-vi.mock("../../../../../src/token-usage/providers/token-usage-store.js", () => {
-  class MockTokenUsageStore {
-    createConversationTokenUsageRecords = mockTokenUsageStore.createConversationTokenUsageRecords;
-  }
-
-  return {
-    TokenUsageStore: MockTokenUsageStore,
-  };
-});
-
-describe("TokenUsagePersistenceProcessor", () => {
-  beforeEach(() => {
-    mockTokenUsageStore.createConversationTokenUsageRecords.mockReset();
-  });
-
-  it("persists detailed token usage", async () => {
-    const processor = new TokenUsagePersistenceProcessor();
-    const context = {
-      agentId: "agent_xyz",
-      llmInstance: { model: { value: "test-llm-v1" } },
-    } as AgentContext;
-
-    const tokenUsage: TokenUsage = {
-      prompt_tokens: 100,
-      completion_tokens: 50,
-      total_tokens: 150,
-      prompt_cost: 0.001,
-      completion_cost: 0.002,
-      total_cost: 0.003,
-    };
-
-    const completeResponse = new CompleteResponse({
-      content: "some response",
-      usage: tokenUsage,
+describe("token usage event-ledger accounting replacement", () => {
+  it("builds a native token usage event payload without old response-processor persistence", () => {
+    const payload = createTokenUsageUpdatedPayload({
+      runId: "run_1",
+      payload: {
+        turn_id: "turn_1",
+        llm_call_id: "turn_1:llm:1",
+        idempotency_key: "run_1:turn_1:llm:1",
+        runtime_kind: "autobyteus",
+        ingestion_kind: "autobyteus_llm_phase",
+        usage: {
+          input_tokens: 12,
+          output_tokens: 7,
+          total_tokens: 19,
+          model_provider: "OPENAI",
+          model_identifier: "gpt-test",
+          raw_usage_json: { prompt_tokens: 12, completion_tokens: 7, total_tokens: 19 },
+          quality_flags: [],
+        },
+      },
+      observedAt: "2026-06-24T10:00:00.000Z",
     });
 
-    const triggeringEvent = new LLMCompleteResponseReceivedEvent(completeResponse);
-
-    const result = await processor.processResponse(
-      completeResponse,
-      context,
-      triggeringEvent,
-    );
-
-    expect(result).toBe(false);
-    expect(mockTokenUsageStore.createConversationTokenUsageRecords).toHaveBeenCalledWith(
-      "agent_xyz",
-      tokenUsage,
-      "test-llm-v1",
-    );
+    expect(payload.run_id).toBe("run_1");
+    expect(payload.turn_id).toBe("turn_1");
+    expect(payload.reported_input_tokens).toBe(12);
+    expect(payload.reported_output_tokens).toBe(7);
+    expect(payload.reported_total_tokens).toBe(19);
+    expect(payload.raw_usage_json).toEqual({ prompt_tokens: 12, completion_tokens: 7, total_tokens: 19 });
+    expect(payload.pricing_status).toBe("missing");
+    expect(payload.estimated_api_total_cost).toBeNull();
   });
 
-  it("skips persistence without usage", async () => {
-    const processor = new TokenUsagePersistenceProcessor();
-    const context = { agentId: "test_agent_xyz" } as AgentContext;
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
-    const completeResponse = new CompleteResponse({
-      content: "response",
-      usage: null,
+  it("uses reported readings as accounting deltas for per-turn usage", async () => {
+    const normalizer = new TokenUsageSnapshotDeltaNormalizer({
+      getLatestCumulativeSnapshot: vi.fn(),
+    } as never);
+    const payload = createTokenUsageUpdatedPayload({
+      runId: "run_2",
+      payload: {
+        usage_scope: "per_turn",
+        idempotency_key: "run_2:turn_1",
+        reported_input_tokens: 30,
+        reported_output_tokens: 10,
+        reported_total_tokens: 40,
+      },
     });
 
-    const triggeringEvent = new LLMCompleteResponseReceivedEvent(completeResponse);
+    const normalized = await normalizer.normalizeAccountingDelta(payload);
 
-    const result = await processor.processResponse(
-      completeResponse,
-      context,
-      triggeringEvent,
-    );
-
-    expect(result).toBe(false);
-    expect(mockTokenUsageStore.createConversationTokenUsageRecords).not.toHaveBeenCalled();
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("No token usage data in response"),
-    );
-
-    warnSpy.mockRestore();
-  });
-
-  it("exposes name", () => {
-    expect(TokenUsagePersistenceProcessor.getName()).toBe(
-      "TokenUsagePersistenceProcessor",
-    );
-  });
-
-  it("is optional", () => {
-    expect(TokenUsagePersistenceProcessor.isMandatory()).toBe(false);
+    expect(normalized.accounting_input_tokens).toBe(30);
+    expect(normalized.accounting_output_tokens).toBe(10);
+    expect(normalized.accounting_total_tokens).toBe(40);
+    expect(normalized.meter_delta_total_tokens).toBe(40);
   });
 });

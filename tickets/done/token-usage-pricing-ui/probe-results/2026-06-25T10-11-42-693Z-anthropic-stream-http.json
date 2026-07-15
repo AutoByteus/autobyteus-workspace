@@ -1,0 +1,52 @@
+{
+  "provider": "anthropic-stream-http",
+  "attempted": true,
+  "ok": true,
+  "status": 200,
+  "summary": {
+    "parsedEvents": 12,
+    "usageEvents": [
+      {
+        "type": "message_start",
+        "usage": {
+          "input_tokens": 43,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1,
+          "service_tier": "standard",
+          "inference_geo": "global"
+        }
+      },
+      {
+        "type": "message_delta",
+        "usage": {
+          "input_tokens": 43,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 13,
+          "output_tokens_details": {
+            "thinking_tokens": 7
+          }
+        }
+      }
+    ],
+    "eventTypes": [
+      "message_start",
+      "content_block_start",
+      "ping",
+      "content_block_delta",
+      "content_block_stop",
+      "message_delta",
+      "message_stop"
+    ],
+    "contentDeltaTypes": [
+      "thinking_delta",
+      "signature_delta",
+      "text_delta"
+    ]
+  }
+}

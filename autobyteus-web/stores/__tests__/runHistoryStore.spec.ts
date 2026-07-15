@@ -141,7 +141,15 @@ const {
     },
     workspaceStoreMock: {
       workspacesFetched: true,
-      allWorkspaces: [] as Array<{ workspaceId: string; absolutePath: string; name?: string }>,
+      allWorkspaces: [] as Array<{
+        workspaceId: string;
+        absolutePath: string;
+        workspaceRootPath?: string;
+        name?: string;
+        displayName?: string;
+        kind?: string;
+        isTemp?: boolean;
+      }>,
       workspaces: {} as Record<string, any>,
       workspaceMetadataById: {} as Record<string, any>,
       fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
@@ -229,7 +237,6 @@ const {
           teamContext.focusedMemberRouteKey = memberName;
         }
       }),
-      ensureHistoricalMembersHydratedForView: vi.fn().mockResolvedValue(undefined),
     },
     selectionStoreMock: selection,
     agentRunConfigStoreMock: {
@@ -268,6 +275,7 @@ vi.mock('~/utils/apolloClient', () => ({
 
 vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   ListWorkspaceRunHistory: 'ListWorkspaceRunHistory',
+  GetWorkspaceRunHistory: 'GetWorkspaceRunHistory',
   GetRunProjection: 'GetRunProjection',
   GetRunFileChanges: 'GetRunFileChanges',
   GetAgentRunResumeConfig: 'GetAgentRunResumeConfig',
@@ -607,6 +615,247 @@ describe('runHistoryStore', () => {
       }],
     });
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-live-1');
+  });
+
+  it('fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace', async () => {
+    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables: Record<string, unknown> }) => {
+      expect(query).toBe('GetWorkspaceRunHistory');
+      expect(variables).toEqual({ workspaceId: 'ws-a', limitPerAgent: 6 });
+      return {
+        data: {
+          workspaceRunHistory: buildWorkspaceHistoryGroup({
+            workspaceRootPath: '/ws/a',
+            workspaceName: 'a',
+            agents: [],
+            teamRuns: [],
+          }),
+        },
+        errors: [],
+      };
+    });
+
+    const activeAgentContext = {
+      config: { workspaceId: 'ws-b', agentDefinitionId: 'agent-def-1' },
+      state: {
+        currentStatus: 'running',
+        conversation: { messages: [] },
+      },
+      isSubscribed: true,
+    };
+    const activeTeamMemberContext = {
+      config: { workspaceId: 'ws-b', agentDefinitionId: 'agent-def-1' },
+      state: {
+        currentStatus: 'running',
+        conversation: { messages: [] },
+      },
+    };
+    const activeTeamContext = {
+      teamRunId: 'team-b-active',
+      currentStatus: 'running',
+      isSubscribed: true,
+      config: { workspaceId: 'ws-b', isLocked: true },
+      leafAgentContextsByRouteKey: new Map([
+        ['member_b', activeTeamMemberContext],
+      ]),
+    };
+    agentContextsStoreMock.runs.set('run-b-active', activeAgentContext);
+    teamContextsStoreMock.teams.set('team-b-active', activeTeamContext);
+
+    const store = useRunHistoryStore();
+    await store.fetchWorkspaceHistory('ws-a');
+
+    expect(store.workspaceGroups).toHaveLength(1);
+    expect(store.workspaceGroups[0]?.workspaceRootPath).toBe('/ws/a');
+    expect(agentRunStoreMock.disconnectAgentStream).not.toHaveBeenCalled();
+    expect(agentTeamRunStoreMock.disconnectTeamStream).not.toHaveBeenCalled();
+    expect(activeAgentContext.state.currentStatus).toBe('running');
+    expect(activeTeamContext.currentStatus).toBe('running');
+    expect(activeTeamMemberContext.state.currentStatus).toBe('running');
+  });
+
+  it('projects backend-visible temp workspace descriptors as non-removable roots with local drafts', () => {
+    workspaceStoreMock.allWorkspaces = [
+      {
+        workspaceId: 'temp_ws_default',
+        absolutePath: '/tmp/autobyteus-temp',
+        workspaceRootPath: '/tmp/autobyteus-temp',
+        name: 'Temp Workspace',
+        kind: 'temp',
+        isTemp: true,
+      },
+    ];
+    workspaceStoreMock.workspaces = {
+      temp_ws_default: {
+        workspaceId: 'temp_ws_default',
+        absolutePath: '/tmp/autobyteus-temp',
+        workspaceRootPath: '/tmp/autobyteus-temp',
+        workspaceConfig: { root_path: '/tmp/autobyteus-temp' },
+      },
+    };
+    agentContextsStoreMock.runs.set('temp-123', {
+      config: {
+        agentDefinitionId: 'agent-def-1',
+        agentDefinitionName: 'SuperAgent',
+        workspaceId: 'temp_ws_default',
+        workspaceMetadata: { workspaceRootPath: '/tmp/autobyteus-temp' },
+      },
+      state: {
+        currentStatus: 'offline',
+        conversation: {
+          id: 'temp-123',
+          messages: [],
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-01T00:00:00.000Z',
+        },
+      },
+    });
+
+    const store = useRunHistoryStore();
+    const nodes = store.getTreeNodes();
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0]).toMatchObject({
+      workspaceId: 'temp_ws_default',
+      workspaceName: 'Temp Workspace',
+      workspaceKind: 'temp',
+      canRemoveFromWorkspaces: false,
+    });
+    expect(nodes[0]?.agents[0]?.runs[0]).toMatchObject({
+      runId: 'temp-123',
+      source: 'draft',
+      isDraft: true,
+    });
+  });
+
+  it('prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root', () => {
+    workspaceStoreMock.allWorkspaces = [
+      {
+        workspaceId: 'agent_ws_duplicate',
+        absolutePath: '/tmp/autobyteus-temp',
+        workspaceRootPath: '/tmp/autobyteus-temp',
+        name: 'Registered duplicate',
+        kind: 'filesystem',
+        isTemp: false,
+      },
+      {
+        workspaceId: 'temp_ws_default',
+        absolutePath: '/tmp/autobyteus-temp',
+        workspaceRootPath: '/tmp/autobyteus-temp',
+        name: 'Temp Workspace',
+        kind: 'temp',
+        isTemp: true,
+      },
+    ];
+
+    const store = useRunHistoryStore();
+    const nodes = store.getTreeNodes();
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0]).toMatchObject({
+      workspaceId: 'temp_ws_default',
+      workspaceName: 'Temp Workspace',
+      workspaceKind: 'temp',
+      canRemoveFromWorkspaces: false,
+    });
+  });
+
+  it('keeps permanent local standalone contexts visible until history reconciliation dedupes them', () => {
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'ws-1', absolutePath: '/ws/a', workspaceRootPath: '/ws/a', name: 'Workspace A' },
+    ];
+    workspaceStoreMock.workspaces = {
+      'ws-1': {
+        workspaceId: 'ws-1',
+        absolutePath: '/ws/a',
+        workspaceRootPath: '/ws/a',
+        workspaceConfig: { root_path: '/ws/a' },
+      },
+    };
+    agentContextsStoreMock.runs.set('run-permanent', {
+      config: {
+        agentDefinitionId: 'agent-def-1',
+        agentDefinitionName: 'SuperAgent',
+        workspaceId: 'ws-1',
+        workspaceMetadata: { workspaceRootPath: '/ws/a' },
+      },
+      state: {
+        currentStatus: 'running',
+        conversation: {
+          id: 'run-permanent',
+          messages: [],
+          createdAt: '2026-01-02T00:00:00.000Z',
+          updatedAt: '2026-01-02T00:00:00.000Z',
+        },
+      },
+    });
+
+    const store = useRunHistoryStore();
+    let rows = store.getTreeNodes()[0]?.agents[0]?.runs ?? [];
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      runId: 'run-permanent',
+      source: 'local',
+      isDraft: false,
+    });
+
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Workspace A',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            runs: [
+              {
+                runId: 'run-permanent',
+                summary: 'Persisted row',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                status: 'offline',
+                isActive: false,
+              },
+            ],
+          },
+        ],
+        teamRuns: [],
+      }),
+    ];
+
+    rows = store.getTreeNodes()[0]?.agents[0]?.runs ?? [];
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      runId: 'run-permanent',
+      source: 'history',
+      summary: 'Persisted row',
+    });
+  });
+
+  it('does not project history-only removed workspace roots without visible descriptors', () => {
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/removed',
+        workspaceName: 'Removed',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            runs: [
+              {
+                runId: 'run-removed',
+                summary: 'Removed root history',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                status: 'offline',
+                isActive: false,
+              },
+            ],
+          },
+        ],
+        teamRuns: [],
+      }),
+    ];
+
+    expect(store.getTreeNodes()).toEqual([]);
   });
 
   it('preserves backend member-scoped statuses when refreshing an active running team', async () => {
@@ -1336,7 +1585,7 @@ describe('runHistoryStore', () => {
         llmModelIdentifier: 'model-selected',
         runtimeKind: 'codex_app_server',
         autoExecuteTools: true,
-        skillAccessMode: 'GLOBAL_DISCOVERY',
+        skillAccessMode: 'PRELOADED_ONLY',
         isLocked: true,
         llmConfig: {
           reasoning_effort: 'xhigh',
@@ -1360,7 +1609,7 @@ describe('runHistoryStore', () => {
     expect(seed).toEqual(expect.objectContaining({
       llmModelIdentifier: 'model-selected',
       autoExecuteTools: true,
-      skillAccessMode: 'GLOBAL_DISCOVERY',
+      skillAccessMode: 'PRELOADED_ONLY',
       isLocked: false,
       llmConfig: {
         reasoning_effort: 'xhigh',
@@ -1512,10 +1761,96 @@ describe('runHistoryStore', () => {
     expect(alphaAgent?.runs[1]?.source).toBe('history');
 
     expect(nodes[1]).toEqual({
+      workspaceId: 'ws-2',
       workspaceRootPath: '/ws/b',
       workspaceName: 'Beta',
+      workspaceKind: 'filesystem',
+      canRemoveFromWorkspaces: true,
       agents: [],
     });
+  });
+
+  it('pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace', () => {
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Alpha',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            runs: [
+              {
+                runId: 'run-removed',
+                summary: 'Removed workspace run',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                isActive: false,
+              },
+            ],
+          },
+        ],
+        teamRuns: [],
+      }),
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/b',
+        workspaceName: 'Beta',
+        agents: [],
+        teamRuns: [],
+      }),
+    ];
+    store.selectedRunId = 'run-removed';
+    selectionStoreMock.selectedType = 'agent';
+    selectionStoreMock.selectedRunId = 'run-removed';
+
+    store.pruneWorkspace('ws-a', '/ws/a');
+
+    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+    expect(store.selectedRunId).toBeNull();
+    expect(store.workspaceGroups.map((group) => group.workspaceRootPath)).toEqual(['/ws/b']);
+  });
+
+  it('pruneWorkspace clears global team selection when the selected team belongs to the removed workspace', () => {
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Alpha',
+        agents: [],
+        teamRuns: [
+          {
+            teamRunId: 'team-removed',
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            workspaceRootPath: '/ws/a',
+            summary: 'Removed workspace team',
+            lastActivityAt: '2026-01-01T00:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            deleteLifecycle: 'READY',
+            isActive: false,
+            members: [],
+          },
+        ],
+      }),
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/b',
+        workspaceName: 'Beta',
+        agents: [],
+        teamRuns: [],
+      }),
+    ];
+    store.selectedTeamRunId = 'team-removed';
+    store.selectedTeamMemberRouteKey = 'super_agent';
+    selectionStoreMock.selectedType = 'team';
+    selectionStoreMock.selectedRunId = 'team-removed';
+
+    store.pruneWorkspace('ws-a', '/ws/a');
+
+    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+    expect(store.selectedTeamRunId).toBeNull();
+    expect(store.selectedTeamMemberRouteKey).toBeNull();
+    expect(store.workspaceGroups.map((group) => group.workspaceRootPath)).toEqual(['/ws/b']);
   });
 
   it('overlays persisted run status with matching live context only', () => {
@@ -2184,6 +2519,78 @@ describe('runHistoryStore', () => {
     expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
     expect(store.selectedTeamRunId).toBe('team-1');
     expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
+  });
+
+  it('selectTreeRun focuses a live transient task-agent target through the local team context', async () => {
+    const store = useRunHistoryStore();
+    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
+    const workerNode = {
+      memberKind: 'agent',
+      memberRouteKey: 'worker',
+      memberPath: ['worker'],
+      memberName: 'worker',
+      displayName: 'Worker',
+      memberRunId: 'worker-run',
+      agentDefinitionId: 'worker-def',
+    };
+    const taskAgentNode = {
+      memberKind: 'agent',
+      memberRouteKey: 'task-agent-run-1',
+      memberPath: ['worker', 'task-agent-run-1'],
+      memberName: 'worker · task_0001',
+      displayName: 'worker · task_0001',
+      memberRunId: 'task-agent-run-1',
+      agentDefinitionId: 'worker-def',
+      isTaskAgentInstance: true,
+      taskAgentRunId: 'task-agent-run-1',
+      taskId: 'task_0001',
+      logicalMemberRouteKey: 'worker',
+    };
+
+    teamContextsStoreMock.teams.set('team-1', {
+      teamRunId: 'team-1',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        memberOverrides: {},
+        isLocked: true,
+      },
+      coordinatorMemberRouteKey: 'worker',
+      memberTree: [workerNode, taskAgentNode],
+      memberNodesByRouteKey: new Map([
+        ['worker', workerNode],
+        ['task-agent-run-1', taskAgentNode],
+      ]),
+      leafAgentContextsByRouteKey: new Map([
+        ['task-agent-run-1', {
+          config: { workspaceId: 'ws-1', agentDefinitionName: 'Worker' },
+          state: {
+            runId: 'task-agent-run-1',
+            currentStatus: 'running',
+            conversation: { messages: [] },
+          },
+        }],
+      ]),
+      focusedMemberRouteKey: 'worker',
+      currentStatus: 'running',
+      isSubscribed: true,
+    });
+
+    await store.selectTreeRun({
+      teamRunId: 'team-1',
+      memberRouteKey: 'task-agent-run-1',
+    });
+
+    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
+    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'task-agent-run-1');
+    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
+    expect(store.selectedTeamRunId).toBe('team-1');
+    expect(store.selectedTeamMemberRouteKey).toBe('task-agent-run-1');
+    expect(teamContextsStoreMock.teams.get('team-1')?.focusedMemberRouteKey).toBe('task-agent-run-1');
   });
 
   it('selectTreeRun keeps a clicked roster member as visual focus instead of active-execution-normalizing to coordinator', async () => {

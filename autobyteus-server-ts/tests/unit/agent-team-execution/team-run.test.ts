@@ -18,6 +18,7 @@ const createBackend = () => ({
   getMemberStatusSnapshots: () => [],
   subscribeToEvents: vi.fn().mockImplementation(() => () => undefined),
   postMessage: vi.fn().mockResolvedValue({ accepted: true }),
+  postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
   deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
   approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
   interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
@@ -129,6 +130,34 @@ describe("TeamRun", () => {
     });
 
     expect(backend.interruptMember).toHaveBeenCalledWith("code_reviewer", "member-run-2");
+  });
+
+  it("delegates conversation target messages through the backend address boundary", async () => {
+    const backend = createBackend();
+    const run = new TeamRun({
+      context: new TeamRunContext({
+        runId: "team-run-1",
+        teamBackendKind: TeamBackendKind.MIXED,
+        coordinatorMemberName: null,
+        config: null,
+        runtimeContext: { memberContexts: [] },
+      }),
+      backend: backend as never,
+    });
+    const address = {
+      segments: [
+        { kind: "member" as const, memberRouteKey: "BuildSquad" },
+        { kind: "task_team" as const, taskTeamRunId: "task-team-run-1" },
+        { kind: "member" as const, memberRouteKey: "review_lead" },
+      ],
+    };
+
+    await run.postMessageToConversationTarget(new AgentInputUserMessage("continue"), address);
+
+    expect(backend.postMessageToConversationTarget).toHaveBeenCalledWith(
+      expect.any(AgentInputUserMessage),
+      address,
+    );
   });
 
   it("rejects member interrupt without a route key", async () => {

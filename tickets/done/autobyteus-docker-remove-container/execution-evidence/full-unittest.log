@@ -1,0 +1,29 @@
+.F...F.....E.ss.................
+======================================================================
+ERROR: test_new_containers_prefer_sequential_friendly_ports (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 521, in test_new_containers_prefer_sequential_friendly_ports
+    for record, mappings in zip(records, expected_mappings, strict=True):
+TypeError: zip() takes no keyword arguments
+
+======================================================================
+FAIL: test_bash_install_no_update_path_skips_profile_write (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 501, in test_bash_install_no_update_path_skips_profile_write
+    self.assertIn(export_line, install.stdout)
+AssertionError: 'export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-l2hl48ey/install bin\'\\\'\'s\':"$PATH"' not found in '[AutoByteus Docker] Installed AutoByteus Docker launcher: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-l2hl48ey/install bin\'s/autobyteus-docker\n[AutoByteus Docker] Install directory is not on this shell\'s PATH: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-l2hl48ey/install bin\'s\n[AutoByteus Docker] Persistent PATH update skipped by request; add the export command below to your shell profile if you want persistence.\nRun now:\n  Direct path: \'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-l2hl48ey/install bin\\\'\\\\\'\\\'s/autobyteus-docker\' new-container\n  Or update this shell first: export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-l2hl48ey/install bin\\\'\\\\\'\\\'s\':"$PATH"\nCurrent-shell note: this installer process cannot change the PATH of the terminal that launched it.\nPersistent PATH setup (copy/paste for future shells):\n  autobyteus_docker_profile=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-l2hl48ey/home/.bashrc\'\n  autobyteus_docker_path_line=\'export PATH=\\\'\\\\\'\\\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-l2hl48ey/install bin\\\\\'\\\\\'\\\'\\\\\\\'\\\\\'\\\'\\\\\'\\\\\'\\\'s\\\'\\\\\'\\\':"$PATH"\'\n  touch "$autobyteus_docker_profile"\n  grep -qxF "$autobyteus_docker_path_line" "$autobyteus_docker_profile" || printf \'%s\\n\' "$autobyteus_docker_path_line" >> "$autobyteus_docker_profile"\n  source "$autobyteus_docker_profile"\n  unset autobyteus_docker_profile autobyteus_docker_path_line\nAfter applying the export above, or after opening a new terminal if the persistent profile update above succeeded, you can run:\n  autobyteus-docker new-container\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
+
+======================================================================
+FAIL: test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 554, in test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt
+    self.assertIn(mapping, records[0])
+AssertionError: '8001:8000' not found in ['run', '-d', '--name', 'autobyteus-server-0', '--restart', 'unless-stopped', '--label', 'com.autobyteus.launcher=server-docker', '--label', 'com.autobyteus.nodeName=autobyteus-server-0', '--label', 'com.autobyteus.configHash=bf2753820bf0376d65a54d529ae96107082b1f5e831b1f9a0168d186fdfe4b31', '-e', 'AUTOBYTEUS_WORKSPACE_ROOT=/app', '-e', 'AUTOBYTEUS_DATA_DIR=/home/autobyteus/data', '-e', 'AUTOBYTEUS_BIND_HOST=0.0.0.0', '-e', 'AUTOBYTEUS_SERVER_PORT=8000', '-e', 'AUTOBYTEUS_SERVER_HOST=http://localhost:62925', '-e', 'AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:62928', '-e', 'APP_ENV=production', '-e', 'DB_TYPE=sqlite', '-e', 'LOG_LEVEL=INFO', '-e', 'AUTOBYTEUS_SKIP_SYNC=1', '-e', 'AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace', '-v', 'autobyteus-server-0-workspace:/app/autobyteus-server-ts/workspace', '-v', 'autobyteus-server-0-data:/home/autobyteus/data', '-v', 'autobyteus-server-0-root-home:/root', '-v', 'autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium', '--cap-add', 'SYS_ADMIN', '--security-opt', 'seccomp=unconfined', '-p', '62925:8000', '-p', '62926:5900', '-p', '62928:6080', '-p', '62929:9223', '--mount', 'type=bind,source=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-ieq3ces2/shared workspace/nodes/autobyteus-server-0,target=/home/autobyteus/workspace', '--mount', 'type=bind,source=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-ieq3ces2/shared workspace/shared,target=/home/autobyteus/shared', 'autobyteus/test:v1']
+
+----------------------------------------------------------------------
+Ran 32 tests in 25.073s
+
+FAILED (failures=2, errors=1, skipped=2)

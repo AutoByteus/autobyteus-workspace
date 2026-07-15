@@ -72,6 +72,7 @@ export const toModelInfo = (descriptor: NormalizedModelDescriptor): ModelInfo =>
     (typeof descriptor.displayName === "string" && descriptor.displayName.trim().length > 0
       ? descriptor.displayName.trim()
       : null) ?? descriptor.identifier,
+  description: descriptor.description,
   value: descriptor.identifier,
   canonical_name: descriptor.identifier,
   provider_id: LLMProvider.ANTHROPIC,
@@ -90,6 +91,7 @@ export const toModelInfo = (descriptor: NormalizedModelDescriptor): ModelInfo =>
 export type NormalizedModelDescriptor = {
   identifier: string;
   displayName: string | null;
+  description: string | null;
   supportsEffort: boolean;
   supportedEffortLevels: string[];
   supportsAdaptiveThinking: boolean;
@@ -117,6 +119,7 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
         descriptors.set(row, {
           identifier: row,
           displayName: null,
+          description: null,
           supportsEffort: false,
           supportedEffortLevels: [],
           supportsAdaptiveThinking: false,
@@ -146,6 +149,7 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
       asString(payload.display_name) ??
       asString(payload.label) ??
       (asString(payload.name) !== identifier ? asString(payload.name) : null);
+    const description = asString(payload.description);
     const supportsEffort =
       asBoolean(payload.supportsEffort ?? payload.supports_effort ?? payload.effortSupported) ?? false;
     const supportedEffortLevels = toStringArray(
@@ -163,6 +167,7 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
       descriptors.set(identifier, {
         identifier,
         displayName,
+        description,
         supportsEffort,
         supportedEffortLevels,
         supportsAdaptiveThinking,
@@ -173,6 +178,7 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
     descriptors.set(identifier, {
       identifier,
       displayName: existing.displayName ?? displayName,
+      description: existing.description ?? description,
       supportsEffort: existing.supportsEffort || supportsEffort,
       supportedEffortLevels: Array.from(
         new Set([...existing.supportedEffortLevels, ...supportedEffortLevels]),

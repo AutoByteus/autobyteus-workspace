@@ -12,12 +12,11 @@ const {
   agentRunConfigStoreMock,
   selectionStoreMock,
   workspaceCenterViewStoreMock,
-  teamWorkspaceViewStoreMock,
+  agentTeamRunStoreMock,
 } = vi.hoisted(() => {
   const localState = {
     activeTeamContext: null as any,
     activeExecutionFocusedMemberRouteKey: '' as string,
-    currentMode: 'focus' as 'focus' | 'grid' | 'spotlight',
   };
 
   return {
@@ -43,7 +42,6 @@ const {
       },
       setFocusedMember: vi.fn(),
       focusMemberAndEnsureHydrated: vi.fn().mockResolvedValue(undefined),
-      ensureHistoricalMembersHydratedForView: vi.fn().mockResolvedValue(undefined),
     },
     agentDefinitionStoreMock: {
       agentDefinitions: [
@@ -77,11 +75,8 @@ const {
     workspaceCenterViewStoreMock: {
       showConfig: vi.fn(),
     },
-    teamWorkspaceViewStoreMock: {
-      getMode: vi.fn(() => localState.currentMode),
-      setMode: vi.fn((_: string, mode: 'focus' | 'grid' | 'spotlight') => {
-        localState.currentMode = mode;
-      }),
+    agentTeamRunStoreMock: {
+      sendMessageToFocusedMember: vi.fn().mockResolvedValue(undefined),
     },
   };
 });
@@ -110,8 +105,8 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
 }));
 
-vi.mock('~/stores/teamWorkspaceViewStore', () => ({
-  useTeamWorkspaceViewStore: () => teamWorkspaceViewStoreMock,
+vi.mock('~/stores/agentTeamRunStore', () => ({
+  useAgentTeamRunStore: () => agentTeamRunStoreMock,
 }));
 
 const buildAgentMemberNode = (memberRouteKey: string, displayName: string, memberRunId: string, agentDefinitionId: string) => ({
@@ -174,7 +169,6 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => {
 describe('TeamWorkspaceView', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    state.currentMode = 'focus';
     state.activeTeamContext = buildTeamContext();
     state.activeExecutionFocusedMemberRouteKey = 'professor';
   });
@@ -183,21 +177,9 @@ describe('TeamWorkspaceView', () => {
     global: {
       stubs: {
         AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor"><slot name="composerContext" /></div>' },
-        SelfEvolutionComposerCta: {
+        SkillImprovementComposerCta: {
           props: ['target'],
-          template: '<div data-test="self-evolution-cta" :data-kind="target && target.kind" :data-team-run-id="target && target.teamRunId" :data-member-run-id="target && target.memberRunId" />',
-        },
-        TeamGridView: {
-          props: ['focusedMemberRouteKey'],
-          template: '<button type="button" data-test="team-grid" :data-focused-route-key="focusedMemberRouteKey" @click="$emit(\'select-member\', \'student\')" />',
-        },
-        TeamSpotlightView: {
-          props: ['focusedMemberRouteKey'],
-          template: '<div data-test="team-spotlight" :data-focused-route-key="focusedMemberRouteKey" />',
-        },
-        TeamWorkspaceModeSwitch: {
-          props: ['mode'],
-          template: '<button type="button" data-test="mode-switch" @click="$emit(\'update:mode\', \'grid\')">{{ mode }}</button>',
+          template: '<div data-test="skill-improvement-cta" :data-kind="target && target.kind" :data-team-run-id="target && target.teamRunId" :data-member-run-id="target && target.memberRunId" />',
         },
         AgentUserInputForm: { template: '<div data-test="agent-user-input-form" />' },
         WorkspaceHeaderActions: {
@@ -208,6 +190,7 @@ describe('TeamWorkspaceView', () => {
             </div>
           `,
         },
+        TokenUsageHeaderChip: { template: '<div data-test="token-usage-header-chip" />' },
         AgentStatusDisplay: {
           props: ['status'],
           template: '<div data-test="header-status">{{ status }}</div>',
@@ -219,6 +202,11 @@ describe('TeamWorkspaceView', () => {
   it('shows focused member name in header', () => {
     const wrapper = mountComponent();
     expect(wrapper.find('h4').text()).toBe('Professor');
+  });
+
+  it('does not render the token usage header chip', () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find('[data-test="token-usage-header-chip"]').exists()).toBe(false);
   });
 
   it('shows focused member status in header', () => {
@@ -260,8 +248,7 @@ describe('TeamWorkspaceView', () => {
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Initializing);
   });
 
-  it('passes roster focus to roster views and labels the shared composer with the user-message target', () => {
-    state.currentMode = 'grid';
+  it('keeps roster focus in the header after simplifying the shell controls', () => {
     state.activeTeamContext = buildTeamContext({
       coordinatorMemberRouteKey: 'professor',
       focusedMemberRouteKey: 'student',
@@ -271,9 +258,6 @@ describe('TeamWorkspaceView', () => {
     const wrapper = mountComponent();
 
     expect(wrapper.find('h4').text()).toBe('Student');
-    expect(wrapper.get('[data-test="team-grid"]').attributes('data-focused-route-key')).toBe('student');
-    expect(wrapper.text()).toContain('Replying to');
-    expect(wrapper.text()).toContain('Student');
   });
 
   it('opens selected team config from header action', async () => {
@@ -291,7 +275,7 @@ describe('TeamWorkspaceView', () => {
         runtimeKind: 'codex_app_server',
         workspaceId: 'ws-1',
         autoExecuteTools: true,
-        skillAccessMode: 'GLOBAL_DISCOVERY',
+        skillAccessMode: 'PRELOADED_ONLY',
         isLocked: true,
         llmConfig: {
           reasoning_effort: 'xhigh',
@@ -339,36 +323,80 @@ describe('TeamWorkspaceView', () => {
     expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the focused monitor in focus mode by default', () => {
+  it('renders the focused monitor directly', () => {
     const wrapper = mountComponent();
     expect(wrapper.find('[data-test="team-event-monitor"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-delegated-task-executions-bar"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(false);
   });
 
-  it('passes the focused member run to the composer self-evolution CTA', () => {
+  it('passes the focused member run to the composer skill-improvement CTA', () => {
     const wrapper = mountComponent();
-    const cta = wrapper.get('[data-test="self-evolution-cta"]');
+    const cta = wrapper.get('[data-test="skill-improvement-cta"]');
     expect(cta.attributes('data-kind')).toBe('team-member');
     expect(cta.attributes('data-team-run-id')).toBe('team-1');
     expect(cta.attributes('data-member-run-id')).toBe('professor-run');
   });
 
-  it('sets the requested mode from the mode switcher', async () => {
-    const wrapper = mountComponent();
-    await wrapper.get('[data-test="mode-switch"]').trigger('click');
-    expect(teamWorkspaceViewStoreMock.setMode).toHaveBeenCalledWith('team-1', 'grid');
-  });
+  it('preserves the shared composer only for a focused subteam', async () => {
+    const professorNode = buildAgentMemberNode('professor', 'Professor', 'professor-run', 'agent-professor-def');
+    const studentNode = buildAgentMemberNode('subteam/student', 'Student', 'student-run', 'agent-student-def');
+    const subteamNode = {
+      memberKind: 'agent_team',
+      memberName: 'subteam',
+      displayName: 'Review Subteam',
+      memberPath: ['subteam'],
+      memberRouteKey: 'subteam',
+      children: [studentNode],
+    };
 
-  it('shows shared composer in grid mode and routes tile focus changes', async () => {
-    state.currentMode = 'grid';
+    state.activeTeamContext = buildTeamContext({
+      focusedMemberRouteKey: 'subteam',
+      memberTree: [professorNode, subteamNode],
+      memberNodesByRouteKey: new Map<string, any>([
+        ['professor', professorNode],
+        ['subteam', subteamNode],
+        ['subteam/student', studentNode],
+      ]),
+      leafAgentContextsByRouteKey: new Map<string, any>([
+        ['professor', {
+          config: {
+            agentDefinitionId: 'agent-professor-def',
+            agentDefinitionName: 'Professor',
+            agentAvatarUrl: null,
+          },
+          state: {
+            runId: 'professor-run',
+            currentStatus: AgentStatus.Running,
+            conversation: { agentName: 'Professor', messages: [] },
+          },
+        }],
+        ['subteam/student', {
+          config: {
+            agentDefinitionId: 'agent-student-def',
+            agentDefinitionName: 'Student',
+            agentAvatarUrl: null,
+          },
+          state: {
+            runId: 'student-run',
+            currentStatus: AgentStatus.Idle,
+            conversation: { agentName: 'Student', messages: [] },
+          },
+        }],
+      ]),
+    });
+    state.activeExecutionFocusedMemberRouteKey = 'professor';
+
     const wrapper = mountComponent();
-    expect(wrapper.find('[data-test="team-grid"]').exists()).toBe(true);
+
     expect(wrapper.text()).toContain('Replying to');
-    expect(wrapper.text()).toContain('Professor');
-    expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Review Subteam');
+    expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(false);
+    expect(wrapper.find('textarea').exists()).toBe(true);
 
-    await wrapper.get('[data-test="team-grid"]').trigger('click');
-    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'student');
-    expect(teamContextsStoreMock.ensureHistoricalMembersHydratedForView).toHaveBeenCalledWith('team-1', 'grid');
+    await wrapper.find('textarea').setValue('hello subteam');
+    await wrapper.get('button[type="submit"]').trigger('submit');
+
+    expect(agentTeamRunStoreMock.sendMessageToFocusedMember).toHaveBeenCalledWith('hello subteam', []);
   });
 });

@@ -1,0 +1,11 @@
+server-docker autobyteus-server-e2e-e01dcd0985
+before_target_exists=0
+[AutoByteus Docker] Removed managed container codex-api-e2e-target-e01dcd0985 for autobyteus-server-e2e-e01dcd0985. Named volumes and host workspaces were kept.
+[AutoByteus Docker] Removed launcher state for autobyteus-server-e2e-e01dcd0985.
+[AutoByteus Docker] Keeping image sha256:c13aa01479d2548de777d86033c6381c22e228a1d3120d9c99b8b7ab09d49564; it is still used by a Docker container.
+after_target_exists=1
+state_exists=1
+volume_exists=0
+holder_exists=0
+NODE                     CONTAINER                STATUS         BACKEND                         
+[AutoByteus Docker] No managed Docker nodes found.

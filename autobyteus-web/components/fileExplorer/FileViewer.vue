@@ -28,8 +28,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import type { Component } from 'vue';
 import { getLanguage } from '~/utils/highlighting/languageDetector';
-import type { FileDataType, FileOpenMode } from '~/stores/fileExplorerState';
+import type { FileDataType, FileOpenMode, FileRelativeResourceContext } from '~/stores/fileExplorerState';
 
 // Import Viewers
 import MonacoEditor from '~/components/fileExplorer/MonacoEditor.vue';
@@ -47,6 +48,7 @@ const props = defineProps<{
     type: FileDataType;
     content: string | null;
     url: string | null;
+    relativeResourceContext?: FileRelativeResourceContext | null;
   };
   mode: FileOpenMode;
   loading?: boolean;
@@ -59,7 +61,7 @@ const emit = defineEmits<{
   (e: 'save'): void;
 }>();
 
-const activeComponent = computed(() => {
+const activeComponent = computed<Component | null>(() => {
   const { type, path } = props.file;
   const lowerPath = (path || '').toLowerCase();
 
@@ -88,6 +90,7 @@ const componentProps = computed(() => {
       return {
         content: props.file.content || '',
         path: props.file.path,
+        relativeResourceContext: props.file.relativeResourceContext ?? null,
       };
     }
     return {

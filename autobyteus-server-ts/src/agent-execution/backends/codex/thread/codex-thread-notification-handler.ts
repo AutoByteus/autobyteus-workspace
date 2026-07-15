@@ -59,7 +59,15 @@ export const handleAppServerNotification = (
     const turnId =
       resolveTurnIdFromAppServerMessage(params) ??
       codexThread.activeTurnId;
-    const usage = resolveCodexThreadTokenUsage(params);
+    const usage = turnId
+      ? resolveCodexThreadTokenUsage({
+          params,
+          runId: codexThread.runId,
+          turnId,
+          threadId: codexThread.threadId,
+          model: codexThread.model,
+        })
+      : null;
     if (!turnId) {
       logger.warn(
         `Run '${codexThread.runId}': Codex token-usage update arrived without a turn id. Skipping persistence.`,
@@ -69,7 +77,7 @@ export const handleAppServerNotification = (
         `Run '${codexThread.runId}': Codex token-usage update for turn '${turnId}' did not include usable token counts.`,
       );
     } else {
-      codexThread.recordTurnTokenUsage(turnId, usage);
+      codexThread.recordTokenUsageUpdate(usage);
     }
   }
 

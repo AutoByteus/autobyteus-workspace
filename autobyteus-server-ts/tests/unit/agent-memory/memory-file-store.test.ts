@@ -58,7 +58,7 @@ describe("MemoryFileStore", () => {
 
   it("reads JSONL and skips malformed lines", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
-    const filePath = path.join(tempDir, "agents", "agent", "raw_traces.jsonl");
+    const filePath = path.join(tempDir, "agents", "agent", "raw_traces_active.jsonl");
     writeJsonl(filePath, [JSON.stringify({ a: 1 }), "{", JSON.stringify({ b: 2 }), ""]);
 
     const store = new MemoryFileStore(tempDir);
@@ -98,7 +98,7 @@ describe("MemoryFileStore", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
     const memberDir = path.join(tempDir, "member-run-a");
     fs.mkdirSync(memberDir, { recursive: true });
-    writeJsonl(path.join(memberDir, "raw_traces.jsonl"), [JSON.stringify({ trace_type: "user" })]);
+    writeJsonl(path.join(memberDir, "raw_traces_active.jsonl"), [JSON.stringify({ trace_type: "user" })]);
 
     const store = new MemoryFileStore(tempDir, { runRootSubdir: "" });
     expect(store.listRunDirs()).toEqual(["member-run-a"]);

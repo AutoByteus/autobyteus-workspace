@@ -1,0 +1,273 @@
+{
+  "note": "Read-only recovery candidates generated during investigation; not applied to ~/.autobyteus/server-data/workspaces.json.",
+  "currentRegistryPath": "/Users/normy/.autobyteus/server-data/workspaces.json",
+  "currentRegistry": {
+    "agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "agent_ws_7469afd0ad3e4800e6b203f34c6f12d2230e0aa6f7646e1c620b9fe3262f4a20": "/Users/normy/.autobyteus/server-data/temp_workspace"
+  },
+  "oldRegistryLikePathsFromServerLog2026-07-05T18:06Z": [
+    {
+      "workspaceId": "agent_ws_7469afd0ad3e4800e6b203f34c6f12d2230e0aa6f7646e1c620b9fe3262f4a20",
+      "workspaceRootPath": "/Users/normy/.autobyteus/server-data/temp_workspace",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_f0ad61276b55b8b91b29edb39781022d000b6fc57fccc8961f885fb97260ccd7",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_company_operation",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_ba1d6764e9a0e96eac8df08e4e6856db12b15c0d36b70061a0e5bccc21865faa",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_mcps",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_2947325c086dad9a88aa6edb59b82b954389a7da07425d1a560941260bb23a61",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_private_mcps",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_032aee6ead3b927a3130020471f49ff6767d8ef096b2e0a22e4d02294db111b0",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_2bf90a4b12de6c41a704ec81eac9fb6e4d3d5e11c762e382a03ec408f652b54d",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_9267c5824cbbc47c90729af0a71cc51d1e31422c88b1b942c5d5eef381c6c2d6",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-com-workspace",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_3e11784e6f0c2ae9afc442ade5497ed3fcba4d5000944380e2baad0897140eee",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-manga-videos",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_eb4a1e2fb4ef16caeddd7a20a7e98804764a4746fca20c591c8cee3ffe1b5140",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-marketing-workspace",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_9fc928b8b8f20eb605a68b9a74ba57a174c6174ed997a2bb6b92f941de78a865",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_6d10239f5f8cec08acf982a784d46824bd276f3514d3c3dd9b700a01bae88525",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-social-media",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_2fd29a5807b23567e23657acd511b1731610f07bd69c020aa0770583641af2b8",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_22f606b09fff42160f65ac5f94776b012424ef12bdb2414b3791df323478aae8",
+      "workspaceRootPath": "/Users/normy/church",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_5deddbca4489763c65acaa69f38c308783600f44d45c892d02094559cacaf6c4",
+      "workspaceRootPath": "/Users/normy/church/2026-05-25-roma-fuqi-church",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_4d4b108e16f413d85dc46c013cf2c1c773e5217db07d56e9be9f5b5a396ee8ec",
+      "workspaceRootPath": "/Users/normy/church/bible_children_manga_book",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_1e378d70bc4e3829283ee1c6da032b3bf668aa4d1aa3822b861a695af291cc24",
+      "workspaceRootPath": "/Users/normy/normy_job_search",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_3d0725c889c123cf5f11f4f1848b35db70b1dbf03b22d9113a3afe439a7003e7",
+      "workspaceRootPath": "/Users/normy/normy_projects/german_online_practice",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_0ea1f98dbf27f65b3b797c8339b2ea28d421432984d3bfa172dae6fe7edb5853",
+      "workspaceRootPath": "/Users/normy/reonic_hackerthon",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_ded0509941c21bc547fd93279de06809ca3315ecbfc8771ff538bf0720a68e19",
+      "workspaceRootPath": "/Users/normy/reonic_hackerthon/enpal-smart-energy-companion",
+      "existsOnDisk": true
+    }
+  ],
+  "historyDerivedWorkspaceRoots": [
+    {
+      "workspaceId": "agent_ws_7469afd0ad3e4800e6b203f34c6f12d2230e0aa6f7646e1c620b9fe3262f4a20",
+      "workspaceRootPath": "/Users/normy/.autobyteus/server-data/temp_workspace",
+      "historyCount": 209,
+      "latestCreatedAt": "2026-07-05T18:19:52.607Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_2bf90a4b12de6c41a704ec81eac9fb6e4d3d5e11c762e382a03ec408f652b54d",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents",
+      "historyCount": 2,
+      "latestCreatedAt": "2026-07-04T09:20:28.774Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_9267c5824cbbc47c90729af0a71cc51d1e31422c88b1b942c5d5eef381c6c2d6",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-com-workspace",
+      "historyCount": 3,
+      "latestCreatedAt": "2026-06-01T18:59:50.067Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_3e11784e6f0c2ae9afc442ade5497ed3fcba4d5000944380e2baad0897140eee",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-manga-videos",
+      "historyCount": 7,
+      "latestCreatedAt": "2026-04-26T06:17:42.487Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_eb4a1e2fb4ef16caeddd7a20a7e98804764a4746fca20c591c8cee3ffe1b5140",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-marketing-workspace",
+      "historyCount": 2,
+      "latestCreatedAt": "2026-06-03T13:28:12.189Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_9fc928b8b8f20eb605a68b9a74ba57a174c6174ed997a2bb6b92f941de78a865",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+      "historyCount": 1,
+      "latestCreatedAt": "2026-06-24T15:17:40.534Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_6d10239f5f8cec08acf982a784d46824bd276f3514d3c3dd9b700a01bae88525",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-social-media",
+      "historyCount": 1,
+      "latestCreatedAt": "2026-05-29T11:21:26.012Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_2fd29a5807b23567e23657acd511b1731610f07bd69c020aa0770583641af2b8",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos",
+      "historyCount": 21,
+      "latestCreatedAt": "2026-06-26T10:15:31.504Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+      "historyCount": 254,
+      "latestCreatedAt": "2026-07-05T18:19:29.357Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_f0ad61276b55b8b91b29edb39781022d000b6fc57fccc8961f885fb97260ccd7",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_company_operation",
+      "historyCount": 2,
+      "latestCreatedAt": "2026-06-24T04:46:04.541Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_ba1d6764e9a0e96eac8df08e4e6856db12b15c0d36b70061a0e5bccc21865faa",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_mcps",
+      "historyCount": 1,
+      "latestCreatedAt": "2026-06-22T10:24:15.036Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_2947325c086dad9a88aa6edb59b82b954389a7da07425d1a560941260bb23a61",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_private_mcps",
+      "historyCount": 1,
+      "latestCreatedAt": "2026-05-05T04:00:51.038Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_032aee6ead3b927a3130020471f49ff6767d8ef096b2e0a22e4d02294db111b0",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace",
+      "historyCount": 1,
+      "latestCreatedAt": "2026-06-09T15:10:56.467Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_e47d7714f2b89672bfda9d00a6da7669626b20508312f91dd46d4435f3753648",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/mlx-qwen3-mtp",
+      "historyCount": 1,
+      "latestCreatedAt": "2026-05-22T08:28:29.993Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_c381858dd58cac2ec4fb0d38ceee547adc6860aca0e6ebc79353981ef378b224",
+      "workspaceRootPath": "/Users/normy/bible",
+      "historyCount": 2,
+      "latestCreatedAt": "2026-05-02T06:30:02.125Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_22f606b09fff42160f65ac5f94776b012424ef12bdb2414b3791df323478aae8",
+      "workspaceRootPath": "/Users/normy/church",
+      "historyCount": 26,
+      "latestCreatedAt": "2026-07-05T17:31:16.905Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_5deddbca4489763c65acaa69f38c308783600f44d45c892d02094559cacaf6c4",
+      "workspaceRootPath": "/Users/normy/church/2026-05-25-roma-fuqi-church",
+      "historyCount": 29,
+      "latestCreatedAt": "2026-05-29T06:14:25.865Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_4d4b108e16f413d85dc46c013cf2c1c773e5217db07d56e9be9f5b5a396ee8ec",
+      "workspaceRootPath": "/Users/normy/church/bible_children_manga_book",
+      "historyCount": 10,
+      "latestCreatedAt": "2026-06-26T12:47:59.558Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_3d0725c889c123cf5f11f4f1848b35db70b1dbf03b22d9113a3afe439a7003e7",
+      "workspaceRootPath": "/Users/normy/normy_projects/german_online_practice",
+      "historyCount": 1,
+      "latestCreatedAt": "2026-06-24T17:40:23.508Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_0ea1f98dbf27f65b3b797c8339b2ea28d421432984d3bfa172dae6fe7edb5853",
+      "workspaceRootPath": "/Users/normy/reonic_hackerthon",
+      "historyCount": 4,
+      "latestCreatedAt": "2026-06-20T09:49:02.749Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_ded0509941c21bc547fd93279de06809ca3315ecbfc8771ff538bf0720a68e19",
+      "workspaceRootPath": "/Users/normy/reonic_hackerthon/enpal-smart-energy-companion",
+      "historyCount": 8,
+      "latestCreatedAt": "2026-06-21T11:15:29.977Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_769955ff81319cc4fc96cf6aa22438c1341020fc0ef7ec491fab1e231274dd51",
+      "workspaceRootPath": "/Users/normy/wechat-workspace",
+      "historyCount": 3,
+      "latestCreatedAt": "2026-06-03T09:40:52.954Z",
+      "existsOnDisk": true
+    },
+    {
+      "workspaceId": "agent_ws_1e54b5c4a636f64fa8ee5c3d40cfd92f5eb44d044a3abb3be19565cc525cfe77",
+      "workspaceRootPath": "/tmp/autobyteus-classroom-readme-e8bc4d35",
+      "historyCount": 1,
+      "latestCreatedAt": "2026-06-03T18:26:35.585Z",
+      "existsOnDisk": false
+    }
+  ]
+}

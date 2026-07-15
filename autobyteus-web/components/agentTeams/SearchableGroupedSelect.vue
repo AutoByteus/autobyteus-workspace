@@ -5,8 +5,7 @@
         @click="toggleDropdown"
         :disabled="disabled || loading"
         type="button"
-        class="px-3 py-2 text-sm text-left border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200 flex items-center justify-between w-full"
-        :class="{ 'cursor-not-allowed opacity-50': disabled || loading }"
+        :class="[triggerClass, { 'cursor-not-allowed opacity-50': disabled || loading }]"
       >
         <span v-if="loading" class="text-gray-500">{{ loadingLabel }}</span>
         <span v-else-if="modelValue" class="truncate">{{ selectedItemLabel }}</span>
@@ -48,11 +47,19 @@
                 v-for="item in group.items"
                 :key="item.id"
                 @click="selectItem(item.id)"
-                class="pl-6 pr-3 py-2 text-sm text-gray-800 dark:text-gray-200 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 flex items-center justify-between"
+                class="pl-6 pr-3 py-2 text-sm text-gray-800 dark:text-gray-200 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/50 flex items-start justify-between"
                 :class="{ 'bg-blue-100 dark:bg-blue-800': modelValue === item.id }"
               >
-                <span class="truncate">{{ item.name }}</span>
-                <svg v-if="modelValue === item.id" class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="min-w-0 flex-1">
+                  <span class="block truncate">{{ item.name }}</span>
+                  <span
+                    v-if="normalizedDescription(item)"
+                    class="mt-0.5 block whitespace-normal break-words text-xs leading-4 text-gray-500 dark:text-gray-400"
+                  >
+                    {{ normalizedDescription(item) }}
+                  </span>
+                </div>
+                <svg v-if="modelValue === item.id" class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 ml-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                 </svg>
               </li>
@@ -71,6 +78,7 @@ import { useLocalization } from '~/composables/useLocalization'
 export interface SelectItem {
   id: string
   name: string
+  description?: string | null
   selectedLabel?: string
 }
 
@@ -86,9 +94,11 @@ const props = withDefaults(defineProps<{
   searchPlaceholder?: string
   loading?: boolean
   disabled?: boolean
+  variant?: 'default' | 'quiet'
 }>(), {
   loading: false,
   disabled: false,
+  variant: 'default',
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -118,6 +128,17 @@ const effectiveSearchPlaceholder = computed(() => (
 ))
 
 const loadingLabel = computed(() => t('agentTeams.components.agentTeams.SearchableGroupedSelect.loading'))
+const triggerClass = computed(() => [
+  'flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors duration-200 focus:outline-none',
+  props.variant === 'quiet'
+    ? 'border border-transparent bg-blue-50/40 text-gray-900 ring-1 ring-inset ring-blue-100/80 hover:bg-blue-50/70 hover:ring-blue-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/50'
+    : 'border border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100',
+])
+
+const normalizedDescription = (item: SelectItem): string | null => {
+  const normalized = item.description?.trim()
+  return normalized || null
+}
 
 const updatePopoverPosition = () => {
   if (!isOpen.value || !wrapperRef.value) return
@@ -150,7 +171,8 @@ const filteredOptions = computed(() => {
       items: group.items.filter((item) =>
         item.name.toLowerCase().includes(searchLower) ||
         item.id.toLowerCase().includes(searchLower) ||
-        item.selectedLabel?.toLowerCase().includes(searchLower),
+        item.selectedLabel?.toLowerCase().includes(searchLower) ||
+        normalizedDescription(item)?.toLowerCase().includes(searchLower),
       ),
     }))
     .filter((group) => group.items.length > 0)

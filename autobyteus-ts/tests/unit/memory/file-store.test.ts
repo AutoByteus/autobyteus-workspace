@@ -223,7 +223,7 @@ describe('FileMemoryStore', () => {
 
     store.add([trace]);
 
-    expect(fs.existsSync(path.join(teamMemberDir, 'raw_traces.jsonl'))).toBe(true);
+    expect(fs.existsSync(path.join(teamMemberDir, 'raw_traces_active.jsonl'))).toBe(true);
     expect(fs.existsSync(path.join(teamMemberDir, 'agents', 'member_professor_abc'))).toBe(false);
   });
 });

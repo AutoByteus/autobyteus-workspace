@@ -15,45 +15,30 @@ import {
   type ServerMessage,
   type TeamClientMessage,
   type InterruptGenerationPayload,
+  type ConversationTargetAddressPayload,
 } from './protocol';
 import {
-  handleSegmentStart,
-  handleSegmentContent,
-  handleSegmentEnd,
-  handleToolApprovalRequested,
-  handleToolApproved,
-  handleToolDenied,
-  handleToolExecutionStarted,
-  handleToolExecutionSucceeded,
-  handleToolExecutionFailed,
-  handleToolExecutionInterrupted,
-  handleToolLog,
-  handleAgentStatus,
-  handleCompactionStatus,
-  handleAssistantComplete,
-  handleTurnCompleted,
-  handleTurnInterrupted,
-  handleExternalUserMessage,
-  handleMemberInputMessage,
-  handleTodoListUpdate,
-  handleError,
-  handleInterAgentMessage,
   handleTeamCommunicationMessage,
-  handleSystemTaskNotification,
   handleTeamStatus,
-  handleFileChange,
 } from './handlers';
-import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 import {
-  ensureTaskAgentContext,
   extractTaskAgentIdentity,
   removeTaskAgentContext,
   shouldRemoveTaskAgentAfterMessage,
 } from './teamTaskAgentContextProjection';
 import { resolveTeamStreamMemberContext } from './teamStreamMemberContextResolver';
+import { handleTaskExecutionProjectionMessage } from './teamTaskExecutionEventRouter';
+import { removeTaskTeamExecutionProjection } from './teamTaskTeamExecutionProjection';
+import { dispatchGenericTeamMemberMessage } from './teamStreamGenericMessageDispatcher';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
+import { getApolloClient } from '~/utils/apolloClient';
+import { scheduleTaskDelegationRecordsRefresh } from '~/services/runHydration/taskDelegationHydrationService';
+import type {
+  ConversationTargetAddress,
+  ConversationTargetSegment,
+} from '~/types/agent/ConversationTargetAddress';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -80,6 +65,29 @@ export interface TeamInterruptGenerationTarget {
   targetMemberRouteKey: string;
   targetMemberRunId?: string | null;
 }
+
+const toConversationTargetSegmentPayload = (
+  segment: ConversationTargetSegment,
+): ConversationTargetAddressPayload['segments'][number] => {
+  if (segment.kind === 'member') {
+    return {
+      kind: 'member',
+      ...(segment.memberRouteKey ? { member_route_key: segment.memberRouteKey } : {}),
+      ...(segment.memberPath ? { member_path: [...segment.memberPath] } : {}),
+    };
+  }
+  if (segment.kind === 'task_team') {
+    return { kind: 'task_team', task_team_run_id: segment.taskTeamRunId };
+  }
+  return { kind: 'task_agent', task_agent_run_id: segment.taskAgentRunId };
+};
+
+const toConversationTargetAddressPayload = (
+  address: ConversationTargetAddress,
+): ConversationTargetAddressPayload => ({
+  ...(address.parentTeamRunId ? { parent_team_run_id: address.parentTeamRunId } : {}),
+  segments: address.segments.map(toConversationTargetSegmentPayload),
+});
 
 export class TeamStreamingService {
   private wsClient: IWebSocketClient;
@@ -138,7 +146,7 @@ export class TeamStreamingService {
 
   sendMessage(
     content: string,
-    targetMemberRouteKey?: string,
+    conversationTargetAddress: ConversationTargetAddress,
     contextFilePaths?: string[],
     imageUrls?: string[],
     identity?: { messageId?: string; dedupeKey?: string },
@@ -149,7 +157,7 @@ export class TeamStreamingService {
         content,
         context_file_paths: contextFilePaths,
         image_urls: imageUrls,
-        target_member_route_key: targetMemberRouteKey,
+        conversation_target_address: toConversationTargetAddressPayload(conversationTargetAddress),
         message_id: identity?.messageId,
         dedupe_key: identity?.dedupeKey,
       },
@@ -285,6 +293,16 @@ export class TeamStreamingService {
       source_path?: string[];
       task_agent_run_id?: string;
       taskAgentRunId?: string;
+      task_team_run_id?: string;
+      taskTeamRunId?: string;
+      team_route_key?: string;
+      teamRouteKey?: string;
+      team_path?: string[];
+      teamPath?: string[];
+      task_team_relative_member_route_key?: string;
+      taskTeamRelativeMemberRouteKey?: string;
+      task_team_relative_member_path?: string[];
+      taskTeamRelativeMemberPath?: string[];
     };
     if (!payload?.invocation_id) return;
     if (payload.approval_token) {
@@ -297,6 +315,11 @@ export class TeamStreamingService {
       sourceRouteKey: payload.source_route_key,
       sourcePath: payload.source_path,
       taskAgentRunId: payload.task_agent_run_id ?? payload.taskAgentRunId,
+      taskTeamRunId: payload.task_team_run_id ?? payload.taskTeamRunId,
+      teamRouteKey: payload.team_route_key ?? payload.teamRouteKey,
+      teamPath: payload.team_path ?? payload.teamPath,
+      taskTeamRelativeMemberRouteKey: payload.task_team_relative_member_route_key ?? payload.taskTeamRelativeMemberRouteKey,
+      taskTeamRelativeMemberPath: payload.task_team_relative_member_path ?? payload.taskTeamRelativeMemberPath,
     });
     if (approvalTarget) {
       this.approvalTargetByInvocationId.set(payload.invocation_id, approvalTarget);
@@ -325,8 +348,31 @@ export class TeamStreamingService {
     const memberRouteKey = target.memberRouteKey?.trim() || memberPath?.join('/') || null;
     const sourceRouteKey = target.sourceRouteKey?.trim() || sourcePath?.join('/') || null;
     const taskAgentRunId = target.taskAgentRunId?.trim() || null;
+    const taskTeamRunId = target.taskTeamRunId?.trim() || null;
+    const teamPath = Array.isArray(target.teamPath)
+      ? target.teamPath.map((part) => String(part).trim()).filter(Boolean)
+      : null;
+    const taskTeamRelativeMemberPath = Array.isArray(target.taskTeamRelativeMemberPath)
+      ? target.taskTeamRelativeMemberPath.map((part) => String(part).trim()).filter(Boolean)
+      : null;
+    const teamRouteKey = target.teamRouteKey?.trim() || teamPath?.join('/') || null;
+    const taskTeamRelativeMemberRouteKey =
+      target.taskTeamRelativeMemberRouteKey?.trim() ||
+      taskTeamRelativeMemberPath?.join('/') ||
+      null;
 
-    if (!memberRouteKey && !sourceRouteKey && !memberPath?.length && !sourcePath?.length && !taskAgentRunId) {
+    if (
+      !memberRouteKey &&
+      !sourceRouteKey &&
+      !memberPath?.length &&
+      !sourcePath?.length &&
+      !taskAgentRunId &&
+      !taskTeamRunId &&
+      !teamRouteKey &&
+      !teamPath?.length &&
+      !taskTeamRelativeMemberRouteKey &&
+      !taskTeamRelativeMemberPath?.length
+    ) {
       return null;
     }
 
@@ -336,6 +382,11 @@ export class TeamStreamingService {
       sourceRouteKey,
       sourcePath: sourcePath?.length ? sourcePath : null,
       taskAgentRunId,
+      taskTeamRunId,
+      teamRouteKey,
+      teamPath: teamPath?.length ? teamPath : null,
+      taskTeamRelativeMemberRouteKey,
+      taskTeamRelativeMemberPath: taskTeamRelativeMemberPath?.length ? taskTeamRelativeMemberPath : null,
     };
   }
 
@@ -349,31 +400,83 @@ export class TeamStreamingService {
       source_route_key: target.sourceRouteKey || undefined,
       source_path: target.sourcePath || undefined,
       task_agent_run_id: target.taskAgentRunId || undefined,
+      task_team_run_id: target.taskTeamRunId || undefined,
+      team_route_key: target.teamRouteKey || undefined,
+      team_path: target.teamPath || undefined,
+      task_team_relative_member_route_key: target.taskTeamRelativeMemberRouteKey || undefined,
+      task_team_relative_member_path: target.taskTeamRelativeMemberPath || undefined,
     };
   }
 
+  private scheduleTaskTeamCleanup(teamContext: AgentTeamContext, taskTeamRunId?: string | null): void {
+    if (!taskTeamRunId) return;
+    const cleanup = () => removeTaskTeamExecutionProjection(teamContext, taskTeamRunId);
+    if (typeof setTimeout === 'function') {
+      setTimeout(cleanup, 0);
+      return;
+    }
+    Promise.resolve().then(cleanup);
+  }
+
+  private refreshTaskDelegationRecords(message: ServerMessage, teamContext: AgentTeamContext): void {
+    if (message.type !== 'TASK_DELEGATION_EVENT') return;
+    const payload = message.payload as Record<string, unknown>;
+    const rootTeamRunId = (
+      typeof payload.root_team_run_id === 'string' ? payload.root_team_run_id.trim() : ''
+    ) || (
+      typeof payload.rootTeamRunId === 'string' ? payload.rootTeamRunId.trim() : ''
+    ) || (
+      typeof payload.team_run_id === 'string' ? payload.team_run_id.trim() : ''
+    ) || (
+      typeof payload.teamRunId === 'string' ? payload.teamRunId.trim() : ''
+    ) || teamContext.teamRunId;
+    scheduleTaskDelegationRecordsRefresh({
+      client: getApolloClient(),
+      teamRunId: rootTeamRunId,
+    });
+  }
+
   private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {
+    this.refreshTaskDelegationRecords(message, teamContext);
     if (message.type === 'TEAM_STATUS') {
+      const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
+      if (projectionResult.outcome === 'drop') {
+        console.warn(projectionResult.reason);
+        return;
+      }
+      if (projectionResult.outcome === 'handled') {
+        this.scheduleTaskTeamCleanup(teamContext, projectionResult.cleanupTaskTeamRunId);
+        return;
+      }
       handleTeamStatus(message.payload, teamContext);
       return;
     }
 
-    if (message.type === 'TASK_DELEGATION_EVENT') {
-      const taskAgentIdentity = extractTaskAgentIdentity(message);
-      if (taskAgentIdentity) {
-        ensureTaskAgentContext(teamContext, taskAgentIdentity);
-      }
-      return;
-    }
-
     if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
+      const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
+      if (projectionResult.outcome === 'drop') {
+        console.warn(projectionResult.reason);
+        return;
+      }
       handleTeamCommunicationMessage(message.payload);
       return;
     }
 
-    const taskAgentIdentity = extractTaskAgentIdentity(message);
+    const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
+    if (projectionResult.outcome === 'drop') {
+      console.warn(projectionResult.reason);
+      return;
+    }
+    if (projectionResult.outcome === 'handled') {
+      this.scheduleTaskTeamCleanup(teamContext, projectionResult.cleanupTaskTeamRunId);
+      return;
+    }
+
+    const taskAgentIdentity = projectionResult.taskAgentIdentity ?? extractTaskAgentIdentity(message);
     const removeTaskAgentAfterMessage = shouldRemoveTaskAgentAfterMessage(message, taskAgentIdentity);
-    const memberResolution = resolveTeamStreamMemberContext(teamContext, message);
+    const memberResolution = projectionResult.outcome === 'memberContext'
+      ? { context: projectionResult.context }
+      : resolveTeamStreamMemberContext(teamContext, message);
 
     if (!memberResolution) {
       if (message.type === 'AGENT_STATUS') {
@@ -389,111 +492,7 @@ export class TeamStreamingService {
       return;
     }
 
-    const memberContext = memberResolution.context;
-    memberContext.conversation.updatedAt = new Date().toISOString();
-    switch (message.type) {
-      case 'SEGMENT_START':
-        handleSegmentStart(message.payload, memberContext);
-        break;
-
-      case 'SEGMENT_CONTENT':
-        handleSegmentContent(message.payload, memberContext);
-        break;
-
-      case 'SEGMENT_END':
-        handleSegmentEnd(message.payload, memberContext);
-        break;
-
-      case 'TOOL_APPROVAL_REQUESTED':
-        handleToolApprovalRequested(message.payload, memberContext);
-        break;
-
-      case 'TOOL_APPROVED':
-        handleToolApproved(message.payload, memberContext);
-        break;
-
-      case 'TOOL_DENIED':
-        handleToolDenied(message.payload, memberContext);
-        break;
-
-      case 'TOOL_EXECUTION_STARTED':
-        handleToolExecutionStarted(message.payload, memberContext);
-        break;
-
-      case 'TOOL_EXECUTION_SUCCEEDED':
-        handleToolExecutionSucceeded(message.payload, memberContext);
-        void handleBrowserToolExecutionSucceeded(message.payload);
-        break;
-
-      case 'TOOL_EXECUTION_FAILED':
-        handleToolExecutionFailed(message.payload, memberContext);
-        break;
-
-      case 'TOOL_EXECUTION_INTERRUPTED':
-        handleToolExecutionInterrupted(message.payload, memberContext);
-        break;
-
-      case 'TOOL_LOG':
-        handleToolLog(message.payload, memberContext);
-        break;
-
-      case 'AGENT_STATUS':
-        handleAgentStatus(message.payload, memberContext);
-        break;
-
-      case 'COMPACTION_STATUS':
-        handleCompactionStatus(message.payload, memberContext);
-        break;
-
-      case 'TURN_STARTED':
-        break;
-
-      case 'TURN_COMPLETED':
-        handleTurnCompleted(message.payload, memberContext);
-        break;
-
-      case 'TURN_INTERRUPTED':
-        handleTurnInterrupted(message.payload, memberContext);
-        break;
-
-      case 'ASSISTANT_COMPLETE':
-        handleAssistantComplete(message.payload, memberContext);
-        break;
-
-      case 'EXTERNAL_USER_MESSAGE':
-        handleExternalUserMessage(message.payload, memberContext);
-        break;
-
-      case 'MEMBER_INPUT_MESSAGE':
-        handleMemberInputMessage(message.payload, memberContext);
-        break;
-
-      case 'TODO_LIST_UPDATE':
-        handleTodoListUpdate(message.payload, memberContext);
-        break;
-
-      case 'ERROR':
-        handleError(message.payload, memberContext);
-        break;
-
-      case 'INTER_AGENT_MESSAGE':
-        handleInterAgentMessage(message.payload, memberContext);
-        break;
-
-      case 'SYSTEM_TASK_NOTIFICATION':
-        handleSystemTaskNotification(message.payload, memberContext);
-        break;
-
-      case 'FILE_CHANGE':
-        handleFileChange(message.payload, memberContext);
-        break;
-
-      case 'CONNECTED':
-        break;
-
-      default:
-        console.warn('Unhandled team message type:', (message as any).type);
-    }
+    dispatchGenericTeamMemberMessage(message, memberResolution.context);
 
     if (removeTaskAgentAfterMessage && taskAgentIdentity) {
       removeTaskAgentContext(teamContext, taskAgentIdentity);

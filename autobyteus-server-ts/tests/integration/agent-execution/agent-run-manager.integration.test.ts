@@ -84,7 +84,13 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: claude,
     });
 
-    const run = await manager.createAgentRun(createConfig(runtimeKind));
+    const expectedRunId =
+      runtimeKind === RuntimeKind.AUTOBYTEUS
+        ? "run-auto"
+        : runtimeKind === RuntimeKind.CODEX_APP_SERVER
+          ? "run-codex"
+          : "run-claude";
+    const run = await manager.createAgentRun(createConfig(runtimeKind), expectedRunId);
 
     expect(run.runtimeKind).toBe(runtimeKind);
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
@@ -132,6 +138,35 @@ describe("AgentRunManager integration", () => {
     expect(claude.restoreBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? 1 : 0);
   });
 
+  it("restores Claude platform state with auto approval separate from provider permission mode", async () => {
+    const claude = {
+      createBackend: vi.fn(),
+      restoreBackend: vi.fn(async (context: AgentRunContext<unknown | null>) =>
+        createBackend({
+          runId: context.runId,
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          context,
+        }).backend,
+      ),
+    };
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
+      codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
+      claudeBackendFactory: claude,
+    });
+
+    await manager.restoreAgentRunFromPlatformState({
+      runId: "run-restore-claude-platform",
+      config: createConfig(RuntimeKind.CLAUDE_AGENT_SDK),
+      platformAgentRunId: "claude-session-restored",
+    });
+
+    const restoredContext = claude.restoreBackend.mock.calls[0]?.[0] as AgentRunContext<any>;
+    expect(restoredContext.runtimeContext.sessionConfig.permissionMode).toBe("default");
+    expect(restoredContext.runtimeContext.sessionConfig.autoExecuteTools).toBe(true);
+    expect(restoredContext.runtimeContext.autoExecuteTools).toBe(true);
+  });
+
   it("evicts inactive runs when queried or listed", async () => {
     const active = createBackend({ runId: "run-active", runtimeKind: RuntimeKind.AUTOBYTEUS });
     const manager = new AgentRunManager({
@@ -140,7 +175,10 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    const run = await manager.createAgentRun(createConfig(RuntimeKind.AUTOBYTEUS));
+    const run = await manager.createAgentRun(
+      createConfig(RuntimeKind.AUTOBYTEUS),
+      "run-active",
+    );
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
 
     active.state.active = false;
@@ -159,7 +197,10 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    const run = await manager.createAgentRun(createConfig(RuntimeKind.CODEX_APP_SERVER));
+    const run = await manager.createAgentRun(
+      createConfig(RuntimeKind.CODEX_APP_SERVER),
+      "run-terminate-ok",
+    );
     const success = await manager.terminateAgentRun(run.runId);
 
     expect(success).toBe(true);
@@ -183,7 +224,10 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: createFactory(created.backend),
     });
 
-    const run = await manager.createAgentRun(createConfig(RuntimeKind.CLAUDE_AGENT_SDK));
+    const run = await manager.createAgentRun(
+      createConfig(RuntimeKind.CLAUDE_AGENT_SDK),
+      "run-terminate-no",
+    );
 
     await expect(manager.terminateAgentRun("missing-run")).resolves.toBe(false);
     await expect(manager.terminateAgentRun(run.runId)).resolves.toBe(false);
@@ -202,7 +246,10 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    const run = await manager.createAgentRun(createConfig(RuntimeKind.AUTOBYTEUS));
+    const run = await manager.createAgentRun(
+      createConfig(RuntimeKind.AUTOBYTEUS),
+      "run-terminate-error",
+    );
 
     await expect(manager.terminateAgentRun(run.runId)).rejects.toThrow(AgentTerminationError);
   });
@@ -221,7 +268,7 @@ describe("AgentRunManager integration", () => {
       runtimeContext: null,
     });
 
-    await expect(manager.createAgentRun(config)).rejects.toThrow(AgentCreationError);
+    await expect(manager.createAgentRun(config, "unsupported-run")).rejects.toThrow(AgentCreationError);
     await expect(manager.restoreAgentRun(context)).rejects.toThrow(AgentCreationError);
   });
 });

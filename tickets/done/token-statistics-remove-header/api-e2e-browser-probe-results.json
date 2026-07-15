@@ -1,0 +1,268 @@
+{
+  "status": "passed",
+  "endpoint": "http://127.0.0.1:3037/settings?section=token-usage",
+  "browser": "Google Chrome via playwright-core chromium.launch",
+  "graphqlRequests": [
+    {
+      "operationName": "GetAvailableLLMProvidersWithModels",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetTokenUsageTaskStatisticsInPeriod",
+      "variables": {
+        "startTime": "2026-06-23",
+        "endTime": "2026-06-30"
+      }
+    },
+    {
+      "operationName": "GetUsageStatisticsInPeriod",
+      "variables": {
+        "startTime": "2026-06-23",
+        "endTime": "2026-06-30"
+      }
+    },
+    {
+      "operationName": "GetGeminiSetupConfig",
+      "variables": {}
+    }
+  ],
+  "desktop": {
+    "label": "desktop-1280",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "componentText": "TaskModeltoFetch StatisticsNo agent or team usage found for this date range.Try a wider date range or switch to Model.",
+    "hasDuplicateHeading": false,
+    "staleTextPresence": {
+      "usageDuringPeriod": false,
+      "selectDateRange": false,
+      "groupBy": false,
+      "byTask": false,
+      "byModel": false
+    },
+    "controlOrder": [
+      {
+        "tag": "select",
+        "id": "token-usage-grouping",
+        "text": "TaskModel"
+      },
+      {
+        "tag": "input",
+        "id": "token-usage-start-date",
+        "text": null
+      },
+      {
+        "tag": "input",
+        "id": "token-usage-end-date",
+        "text": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "text": "Fetch Statistics"
+      }
+    ],
+    "select": {
+      "value": "task",
+      "ariaLabel": "Result grouping",
+      "text": "TaskModel",
+      "options": [
+        {
+          "value": "task",
+          "text": "Task"
+        },
+        {
+          "value": "model",
+          "text": "Model"
+        }
+      ],
+      "rect": {
+        "x": 305,
+        "y": 67,
+        "width": 87,
+        "height": 37,
+        "right": 392,
+        "bottom": 104
+      }
+    },
+    "start": {
+      "value": "2026-06-23",
+      "ariaLabel": "Start date",
+      "rect": {
+        "x": 404,
+        "y": 65,
+        "width": 126,
+        "height": 40,
+        "right": 530,
+        "bottom": 105
+      }
+    },
+    "end": {
+      "value": "2026-06-30",
+      "ariaLabel": "End date",
+      "rect": {
+        "x": 569,
+        "y": 65,
+        "width": 141,
+        "height": 40,
+        "right": 710,
+        "bottom": 105
+      }
+    },
+    "button": {
+      "text": "Fetch Statistics",
+      "rect": {
+        "x": 1080,
+        "y": 67,
+        "width": 135,
+        "height": 36,
+        "right": 1215,
+        "bottom": 103
+      }
+    },
+    "card": {
+      "rect": {
+        "x": 288,
+        "y": 48,
+        "width": 944,
+        "height": 74,
+        "right": 1232,
+        "bottom": 122
+      },
+      "text": "TaskModeltoFetch Statistics"
+    },
+    "allControlsInSameCard": true,
+    "rowYs": [
+      67,
+      65,
+      65,
+      67
+    ]
+  },
+  "afterSwitch": {
+    "selectedValue": "model",
+    "startDate": "2026-06-23",
+    "endDate": "2026-06-30",
+    "text": "TaskModeltoFetch StatisticsNo runtime/model usage found for this date range."
+  },
+  "narrow": {
+    "label": "narrow-620",
+    "viewport": {
+      "width": 620,
+      "height": 900
+    },
+    "componentText": "TaskModeltoFetch StatisticsNo runtime/model usage found for this date range.",
+    "hasDuplicateHeading": false,
+    "staleTextPresence": {
+      "usageDuringPeriod": false,
+      "selectDateRange": false,
+      "groupBy": false,
+      "byTask": false,
+      "byModel": false
+    },
+    "controlOrder": [
+      {
+        "tag": "select",
+        "id": "token-usage-grouping",
+        "text": "TaskModel"
+      },
+      {
+        "tag": "input",
+        "id": "token-usage-start-date",
+        "text": null
+      },
+      {
+        "tag": "input",
+        "id": "token-usage-end-date",
+        "text": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "text": "Fetch Statistics"
+      }
+    ],
+    "select": {
+      "value": "model",
+      "ariaLabel": "Result grouping",
+      "text": "TaskModel",
+      "options": [
+        {
+          "value": "task",
+          "text": "Task"
+        },
+        {
+          "value": "model",
+          "text": "Model"
+        }
+      ],
+      "rect": {
+        "x": 305,
+        "y": 67,
+        "width": 87,
+        "height": 37,
+        "right": 392,
+        "bottom": 104
+      }
+    },
+    "start": {
+      "value": "2026-06-23",
+      "ariaLabel": "Start date",
+      "rect": {
+        "x": 404,
+        "y": 65,
+        "width": 126,
+        "height": 40,
+        "right": 530,
+        "bottom": 105
+      }
+    },
+    "end": {
+      "value": "2026-06-30",
+      "ariaLabel": "End date",
+      "rect": {
+        "x": 332,
+        "y": 117,
+        "width": 141,
+        "height": 40,
+        "right": 473,
+        "bottom": 157
+      }
+    },
+    "button": {
+      "text": "Fetch Statistics",
+      "rect": {
+        "x": 420,
+        "y": 169,
+        "width": 135,
+        "height": 36,
+        "right": 555,
+        "bottom": 205
+      }
+    },
+    "card": {
+      "rect": {
+        "x": 288,
+        "y": 48,
+        "width": 284,
+        "height": 174,
+        "right": 572,
+        "bottom": 222
+      },
+      "text": "TaskModeltoFetch Statistics"
+    },
+    "allControlsInSameCard": true,
+    "rowYs": [
+      67,
+      65,
+      117,
+      169
+    ]
+  },
+  "consoleMessages": [],
+  "pageErrors": [],
+  "failures": []
+}

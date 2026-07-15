@@ -13,7 +13,7 @@ import {
   runtimeKindFromString,
 } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import { FILESYSTEM_WORKSPACE_ID_PREFIX } from "../../workspaces/workspace-id-mapping-store.js";
+import { FILESYSTEM_WORKSPACE_ID_PREFIX } from "../../workspaces/workspace-registry-store.js";
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
 import {
   AgentMemoryLocationService,
@@ -35,9 +35,6 @@ import { TeamRunEventSourceType } from "../domain/team-run-event.js";
 import { TeamRunMetadataMapper } from "./team-run-metadata-mapper.js";
 import { TeamDefinitionTopologyPlanner } from "./team-definition-topology-planner.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
-import type { SelfEvolutionConfigOverride } from "../../self-evolution/domain/models.js";
-import { normalizeSelfEvolutionConfigOverride } from "../../self-evolution/domain/config.js";
-import { SelfEvolutionEffectiveConfigResolver } from "../../self-evolution/services/self-evolution-effective-config-resolver.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
@@ -67,13 +64,11 @@ type TeamRunMemberConfigInput = {
   llmConfig?: Record<string, unknown> | null;
   runtimeKind?: RuntimeKind | string | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
-  selfEvolution?: SelfEvolutionConfigOverride | null;
 };
 
 export interface CreateTeamRunInput {
   teamDefinitionId: string;
   memberConfigs: TeamRunMemberConfigInput[];
-  selfEvolution?: SelfEvolutionConfigOverride | null;
 }
 
 const hasNonBlankString = (value: unknown): value is string =>
@@ -292,10 +287,7 @@ export class TeamRunService {
       teamDefinitionId: input.teamDefinitionId,
       memberConfigs: memberConfigs as DomainTeamRunMemberConfigInput[],
     });
-    const config = await this.attachSelfEvolutionSnapshots(
-      plan.config,
-      normalizeSelfEvolutionConfigOverride(input.selfEvolution),
-    );
+    const config = plan.config;
     const identityAssignment = this.teamRunLaunchIdentityAssignment;
     identityAssignment.assertNoManualRunIdsForLaunch(config);
     const teamRunId = await this.allocateTeamRunId(config.teamDefinitionId);
@@ -328,51 +320,6 @@ export class TeamRunService {
       teamDefinitionService: this.teamDefinitionService,
       agentRunIdentityAllocator: this.agentRunIdentityAllocator,
     });
-  }
-
-  private async attachSelfEvolutionSnapshots(
-    config: TeamRunConfig,
-    teamRunOverride: SelfEvolutionConfigOverride | null,
-  ): Promise<TeamRunConfig> {
-    return new TeamRunConfig({
-      teamDefinitionId: config.teamDefinitionId,
-      teamBackendKind: config.teamBackendKind,
-      coordinatorMemberName: config.coordinatorMemberName,
-      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
-      selfEvolution: teamRunOverride,
-      memberTree: await this.attachSelfEvolutionSnapshotsToMembers(
-        config.memberTree,
-        teamRunOverride,
-      ),
-    });
-  }
-
-  private async attachSelfEvolutionSnapshotsToMembers(
-    memberTree: readonly TeamRunMemberConfig[],
-    teamRunOverride: SelfEvolutionConfigOverride | null,
-  ): Promise<TeamRunMemberConfig[]> {
-    return Promise.all(memberTree.map(async (member): Promise<TeamRunMemberConfig> => {
-      if (member.memberKind === "agent_team") {
-        return {
-          ...member,
-          memberConfigs: await this.attachSelfEvolutionSnapshotsToMembers(
-            member.memberConfigs,
-            teamRunOverride,
-          ),
-        };
-      }
-
-      const memberOverride = normalizeSelfEvolutionConfigOverride(member.selfEvolution);
-      const selfEvolutionEffective = new SelfEvolutionEffectiveConfigResolver().resolveForTeamMember({
-        teamRunOverride,
-        teamMemberOverride: memberOverride,
-      });
-      return {
-        ...member,
-        selfEvolution: memberOverride,
-        selfEvolutionEffective,
-      };
-    }));
   }
 
   async restoreTeamRun(teamRunId: string): Promise<TeamRun> {

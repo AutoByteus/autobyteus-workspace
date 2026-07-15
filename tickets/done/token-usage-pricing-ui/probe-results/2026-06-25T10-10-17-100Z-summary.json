@@ -1,0 +1,87 @@
+[
+  {
+    "provider": "openai",
+    "attempted": true,
+    "ok": false,
+    "status": 401,
+    "durationMs": 389,
+    "model": "gpt-5.4-mini",
+    "summary": {
+      "errorKeys": [
+        "error",
+        "status"
+      ],
+      "error": {
+        "error": {
+          "message": "Incorrect API key provided: sk-proj-****…(268 chars)",
+          "type": "invalid_request_error",
+          "code": "invalid_api_key",
+          "param": null
+        },
+        "status": 401
+      }
+    }
+  },
+  {
+    "provider": "anthropic",
+    "attempted": true,
+    "ok": true,
+    "status": 200,
+    "durationMs": 1751,
+    "model": "claude-sonnet-4-6",
+    "summary": {
+      "topLevelKeys": [
+        "model",
+        "id",
+        "type",
+        "role",
+        "content",
+        "stop_reason",
+        "stop_sequence",
+        "stop_details",
+        "usage"
+      ],
+      "usage": {
+        "input_tokens": 43,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 13,
+        "output_tokens_details": {
+          "thinking_tokens": 7
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "usageKeys": [
+        "input_tokens",
+        "cache_creation_input_tokens",
+        "cache_read_input_tokens",
+        "cache_creation",
+        "output_tokens",
+        "output_tokens_details",
+        "service_tier",
+        "inference_geo"
+      ],
+      "contentTypes": [
+        "thinking",
+        "text"
+      ],
+      "contentKeys": [
+        [
+          "type",
+          "thinking",
+          "signature"
+        ],
+        [
+          "type",
+          "text"
+        ]
+      ],
+      "stopReason": "end_turn"
+    }
+  }
+]

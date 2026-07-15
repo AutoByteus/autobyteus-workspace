@@ -6,6 +6,9 @@ const memoryMessages = {
   'memory.components.memory.MemoryHome.localRunnableMemory': 'Local runnable memory',
   'memory.components.memory.MemoryHome.lastImported': 'Last imported {{timestamp}}',
   'memory.components.memory.MemoryInspector.importedReadOnlyCorpus': 'Imported memory · read-only corpus',
+  'memory.components.memory.RawTracesTab.raw_trace_file': 'Raw trace file',
+  'memory.components.memory.RawTracesTab.active_file': 'active',
+  'memory.components.memory.RawTracesTab.records': 'records',
 } satisfies TranslationCatalog;
 
 export default memoryMessages;

@@ -1,0 +1,27 @@
+== delivery finalization authorization 2026-07-14 ==
+user_signal=the task is done. lets finalize no need to release a new version
+explicit_completion_received=yes
+release_or_version_requested=no
+post_verification_command=git fetch origin personal
+origin_personal=21a526b8bddcc7441cd8039fbe455f1c2847e7ed
+approved_integrated_head=4514aa6ed15433ab403eafbfbf4dedcecc8b2513
+remote_only_commits_after_verification=0
+renewed_verification_required=no
+archived_ticket_path=tickets/done/pluggable-memory-compaction-strategies
+finalization_target=origin/personal
+ticket_final_commit=c2b160a86f058956adc0fd8d803273b85f406e71
+ticket_branch_push=completed
+ticket_remote=origin/codex/pluggable-memory-compaction-strategies
+target_premerge_head=21a526b8bddcc7441cd8039fbe455f1c2847e7ed
+target_update=already_current
+target_merge=prepared_without_conflicts
+release_action=none_by_user_instruction
+target_merge_commit=c41d4bb18bf67c93a4a90a0924cd8ad66ea220ab
+target_push=completed
+origin_personal_after_merge=c41d4bb18bf67c93a4a90a0924cd8ad66ea220ab
+worktree_cleanup=completed
+worktree_prune=completed
+local_ticket_branch_cleanup=completed
+remote_ticket_branch_cleanup=completed
+release_or_version_action=none
+final_status=complete

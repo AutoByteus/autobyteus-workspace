@@ -21,6 +21,7 @@ import {
   createTodoListUpdateData,
   createArtifactPersistedData,
   createArtifactUpdatedData,
+  createTokenUsageUpdatedData,
   AssistantCompleteResponseData,
   ToolInteractionLogEntryData,
   TurnLifecycleData,
@@ -40,6 +41,7 @@ import {
   ToDoListUpdateData,
   ArtifactPersistedData,
   ArtifactUpdatedData,
+  TokenUsageUpdatedData,
   type StreamDataPayload
 } from '../events/stream-event-payloads.js';
 import { streamQueueItems, SimpleQueue } from '../utils/queue-streamer.js';
@@ -127,6 +129,10 @@ export class AgentEventStream extends EventEmitter {
         case EventType.AGENT_DATA_TOOL_LOG:
           typedPayload = createToolInteractionLogEntryData(payload);
           streamEventType = StreamEventType.TOOL_INTERACTION_LOG_ENTRY;
+          break;
+        case EventType.AGENT_TOKEN_USAGE_UPDATED:
+          typedPayload = createTokenUsageUpdatedData(payload);
+          streamEventType = StreamEventType.TOKEN_USAGE_UPDATED;
           break;
         case EventType.AGENT_TOOL_APPROVAL_REQUESTED:
           typedPayload = createToolApprovalRequestedData(payload);

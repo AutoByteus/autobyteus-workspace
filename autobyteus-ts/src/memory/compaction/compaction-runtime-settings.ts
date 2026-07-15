@@ -1,4 +1,10 @@
+import {
+  AUTOBYTEUS_COMPACTION_STRATEGY,
+  normalizeWorkingContextCompactionStrategyId,
+} from './working-context-compaction-strategy-setting.js';
+
 export type CompactionRuntimeSettings = {
+  strategyId: string;
   triggerRatioOverride: number | null;
   activeContextTokensOverride: number | null;
   detailedLogsEnabled: boolean;
@@ -54,6 +60,7 @@ const parseBoolean = (value: string | undefined): boolean => {
 export class CompactionRuntimeSettingsResolver {
   resolve(env: NodeJS.ProcessEnv = process.env): CompactionRuntimeSettings {
     return {
+      strategyId: normalizeWorkingContextCompactionStrategyId(env[AUTOBYTEUS_COMPACTION_STRATEGY]),
       triggerRatioOverride: parseRatio(env[AUTOBYTEUS_COMPACTION_TRIGGER_RATIO]),
       activeContextTokensOverride: parsePositiveInteger(env[AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE]),
       detailedLogsEnabled: parseBoolean(env[AUTOBYTEUS_COMPACTION_DEBUG_LOGS])

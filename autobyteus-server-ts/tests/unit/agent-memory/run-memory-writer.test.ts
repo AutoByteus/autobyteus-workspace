@@ -6,7 +6,7 @@ import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writ
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
 import {
-  RAW_TRACES_MEMORY_FILE_NAME,
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
@@ -49,7 +49,7 @@ describe("RunMemoryWriter", () => {
       snapshotUpdate: { kind: "assistant", content: "hi", reasoning: "thinking" },
     });
 
-    await expect(fs.access(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME))).resolves.toBeUndefined();
+    await expect(fs.access(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).resolves.toBeUndefined();
     await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).resolves.toBeUndefined();
 
     const service = new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }));
@@ -78,7 +78,7 @@ describe("RunMemoryWriter", () => {
     const memoryDir = await mkTempDir();
     const store = new RunMemoryFileStore(memoryDir);
     await fs.writeFile(
-      path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME),
+      path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
       JSON.stringify({ id: "rt-1", ts: 1, turn_id: "turn-1", seq: 2, trace_type: "user", content: "old", source_event: "old" }) + "\n",
       "utf-8",
     );
@@ -109,5 +109,54 @@ describe("RunMemoryWriter", () => {
 
     expect(turn1.seq).toBe(3);
     expect(turn2.seq).toBe(6);
+  });
+
+  it("writes strict call/result rows and groups archived calls with active null results", async () => {
+    const memoryDir = await mkTempDir();
+    const writer = new RunMemoryWriter({ memoryDir });
+    const callTrace = writer.write({
+      trace: {
+        traceType: "tool_call",
+        turnId: "turn-1",
+        content: "",
+        sourceEvent: "TOOL_EXECUTION_SUCCEEDED",
+        toolName: "no_output_tool",
+        toolCallId: "call-1",
+        toolArgs: {},
+      },
+      snapshotUpdate: { kind: "tool_call", toolCallId: "call-1", toolName: "no_output_tool", toolArgs: {} },
+    });
+    const store = new RunMemoryFileStore(memoryDir);
+    store.pruneRawTracesById([callTrace.id]);
+    writer.write({
+      trace: {
+        traceType: "tool_result",
+        turnId: "turn-1",
+        content: "",
+        sourceEvent: "TOOL_EXECUTION_SUCCEEDED",
+        toolName: "no_output_tool",
+        toolCallId: "call-1",
+        toolResult: null,
+        toolError: null,
+      },
+      snapshotUpdate: {
+        kind: "tool_result", toolCallId: "call-1", toolName: "no_output_tool",
+        toolResult: null, toolError: null,
+      },
+    });
+    expect(store.listRawTraceDicts()[0]).toMatchObject({
+      trace_type: "tool_result", tool_call_id: "call-1", tool_name: "no_output_tool",
+      tool_result: null, tool_error: null,
+    });
+    expect(store.listRawTraceDicts()[0]).not.toHaveProperty("tool_args");
+
+    const groups = new RunMemoryWriter({ memoryDir }).readToolTraceLifecycleGroups();
+    expect([...groups.values()]).toEqual([
+      expect.objectContaining({
+        identity: { turnId: "turn-1", toolCallId: "call-1" },
+        call: expect.objectContaining({ id: callTrace.id, toolName: "no_output_tool", toolArgs: {} }),
+        result: expect.objectContaining({ toolResult: null, toolError: null }),
+      }),
+    ]);
   });
 });

@@ -14,7 +14,7 @@ const hasOwn = <T extends object>(value: T, key: PropertyKey): boolean =>
   Object.prototype.hasOwnProperty.call(value, key)
 
 const normalizeSkillAccessMode = (value: SkillAccessMode | null | undefined): SkillAccessMode => {
-  if (value === 'NONE' || value === 'PRELOADED_ONLY' || value === 'GLOBAL_DISCOVERY') {
+  if (value === 'NONE' || value === 'PRELOADED_ONLY') {
     return value
   }
   return 'PRELOADED_ONLY'
@@ -213,8 +213,7 @@ export const hasMeaningfulMemberOverride = (
     hasExplicitMemberRuntimeOverride(override) ||
     hasExplicitMemberLlmModelOverride(override) ||
     override.autoExecuteTools !== undefined ||
-    hasExplicitMemberLlmConfigOverride(override) ||
-    override.selfEvolution !== undefined
+    hasExplicitMemberLlmConfigOverride(override)
   )
 }
 

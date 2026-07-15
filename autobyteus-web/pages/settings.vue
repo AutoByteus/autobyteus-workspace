@@ -1,12 +1,23 @@
 <template>
-  <div class="flex h-full bg-white">
+  <div
+    class="flex h-full min-w-0 flex-col bg-white md:flex-row"
+    data-testid="settings-page-layout"
+    :style="navigationWidthStyle"
+  >
     <!-- Sidebar -->
-    <div class="w-64 border-r border-gray-200 bg-white">
-      <div class="px-4 py-5">
+    <div
+      ref="navigationRef"
+      class="settings-page-navigation-resizable max-h-[38dvh] w-full shrink-0 overflow-y-auto border-b border-gray-200 bg-white md:max-h-none md:border-b-0"
+      data-testid="settings-page-navigation"
+      :inert="isNavigationInteractionHidden || undefined"
+      :aria-hidden="isNavigationInteractionHidden ? 'true' : undefined"
+    >
+      <div class="px-2 py-3 sm:px-4 sm:py-4 md:py-5">
         <nav class="w-full">
           <ul class="w-full space-y-2">
             <li class="w-full border-b border-gray-100 pb-2">
               <button
+                ref="narrowFocusFallbackRef"
                 type="button"
                 :aria-label="$t('settings.page.backAriaLabel')"
                 data-testid="settings-nav-back"
@@ -18,7 +29,7 @@
               </button>
             </li>
             <li class="w-full">
-              <button 
+              <button
                 @click="activeSection = 'api-keys'"
                 class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'api-keys' }"
@@ -30,7 +41,7 @@
               </button>
             </li>
             <li class="w-full">
-              <button 
+              <button
                 @click="activeSection = 'token-usage'"
                 class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'token-usage' }"
@@ -130,7 +141,7 @@
               </button>
             </li>
             <li class="w-full">
-              <button 
+              <button
                 @click="selectServerSettings()"
                 data-testid="settings-nav-server-settings"
                 class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
@@ -202,8 +213,45 @@
       </div>
     </div>
 
+    <div
+      class="settings-navigation-separator-anchor relative z-20 hidden w-0 shrink-0 self-stretch overflow-visible md:block"
+      data-testid="settings-navigation-separator-anchor"
+    >
+      <div
+        class="settings-navigation-separator-edge pointer-events-none absolute inset-y-0 w-px"
+        :style="separatorLineStyle"
+        aria-hidden="true"
+        data-testid="settings-navigation-separator-line"
+      ></div>
+      <div
+        class="settings-navigation-separator-feedback pointer-events-none absolute inset-y-0 z-10 w-1 bg-transparent"
+        :class="{ 'is-resizing': isResizing }"
+        :style="separatorFeedbackStyle"
+        aria-hidden="true"
+        data-testid="settings-navigation-separator-feedback"
+      ></div>
+      <div
+        ref="separatorRef"
+        class="settings-navigation-resize-target absolute inset-y-0 z-20 w-2 cursor-col-resize touch-none bg-transparent"
+        :style="separatorTargetStyle"
+        role="separator"
+        aria-orientation="vertical"
+        :aria-label="$t('settings.page.resizeNavigationLabel')"
+        :aria-valuemin="SETTINGS_NAVIGATION_MIN_WIDTH"
+        :aria-valuemax="SETTINGS_NAVIGATION_MAX_WIDTH"
+        :aria-valuenow="navigationWidth"
+        tabindex="0"
+        data-testid="settings-navigation-resize-handle"
+        @pointerdown="startResize"
+        @keydown="handleSeparatorKeydown"
+      ></div>
+    </div>
+
     <!-- Content section -->
-    <div class="flex-1 overflow-auto bg-white pr-4 pt-4">
+    <div
+      class="min-h-0 min-w-0 flex-1 overflow-auto bg-white p-2 sm:p-3 md:py-4 md:pl-0 md:pr-4"
+      data-testid="settings-page-content"
+    >
       <div class="h-full w-full flex flex-col">
         <ProviderAPIKeyManager v-if="activeSection === 'api-keys'" />
         <TokenUsageStatistics v-if="activeSection === 'token-usage'" />
@@ -252,6 +300,11 @@ import ApplicationPackagesManager from '~/components/settings/ApplicationPackage
 import DisplaySettingsManager from '~/components/settings/DisplaySettingsManager.vue';
 import LanguageSettingsManager from '~/components/settings/LanguageSettingsManager.vue';
 import ToolsManagementWorkspace from '~/components/tools/ToolsManagementWorkspace.vue';
+import {
+  SETTINGS_NAVIGATION_MAX_WIDTH,
+  SETTINGS_NAVIGATION_MIN_WIDTH,
+  useSettingsNavigationResize,
+} from '~/composables/useSettingsNavigationResize';
 
 definePageMeta({
   layout: 'settings',
@@ -279,6 +332,20 @@ const windowNodeContextStore = useWindowNodeContextStore();
 const activeSection = ref<SettingsSection>('api-keys');
 const serverSettingsMode = ref<ServerSettingsMode>('quick');
 const isEmbeddedWindow = computed(() => windowNodeContextStore.isEmbeddedWindow);
+const {
+  navigationWidth,
+  isResizing,
+  isNavigationInteractionHidden,
+  navigationRef,
+  separatorRef,
+  narrowFocusFallbackRef,
+  navigationWidthStyle,
+  separatorLineStyle,
+  separatorFeedbackStyle,
+  separatorTargetStyle,
+  startResize,
+  handleSeparatorKeydown,
+} = useSettingsNavigationResize();
 const validSections = new Set<SettingsSection>([
   'api-keys',
   'token-usage',
@@ -340,3 +407,36 @@ onMounted(() => {
   }
 });
 </script>
+
+<style scoped>
+@media (min-width: 768px) {
+  .settings-page-navigation-resizable {
+    width: var(--settings-navigation-width);
+    overflow-x: hidden;
+  }
+}
+
+.settings-navigation-separator-edge {
+  background: #e5e7eb;
+  box-shadow: 1px 0 3px rgb(0 0 0 / 10%);
+}
+
+.settings-navigation-separator-feedback {
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.settings-navigation-separator-anchor:hover .settings-navigation-separator-feedback,
+.settings-navigation-separator-anchor:focus-within .settings-navigation-separator-feedback {
+  background-color: #9ca3af;
+}
+
+.settings-navigation-separator-anchor .settings-navigation-separator-feedback.is-resizing {
+  background-color: #6b7280;
+}
+
+.settings-navigation-resize-target:focus-visible {
+  outline: 2px solid #6b7280;
+  outline-offset: -2px;
+}
+</style>

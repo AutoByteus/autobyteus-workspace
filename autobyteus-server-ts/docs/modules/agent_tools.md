@@ -106,7 +106,7 @@ security, and adapter contract.
 
 The server owns the first-party bounded task-delegation surface for team runs:
 
-- `delegate_tasks`
+- `delegate_task`
 - `submit_task_result`
 - `review_task_result`
 
@@ -133,18 +133,36 @@ Runtime projection is explicit and uses the same manifest/service boundary:
   framework-driven auto-acceptance to compensate for model/prompt behavior.
 
 All task-delegation tool calls must be bound to an active team run and current
-member identity. `delegate_tasks` creates one or more internal delegation ledger
-records from exact `member_name`, ready-to-run rich `description`, and optional
-`reference_files` work-packet inputs, then starts runnable task-agent instances
-with direct work packets. Do not encode dependencies in a task item; dependent
-follow-up work is delegated by the coordinator later through another
-`delegate_tasks` call. Bound task-agents submit reviewable output with
-`submit_task_result`; the tool accepts only `message` and optional
-`reference_files` because the task is inferred from task-agent context. Original
-delegators review the latest pending submission with `review_task_result`, using
-`decision="accept"` to finalize or `decision="request_revision"` plus a message
-to send system revision instructions. `send_message_to` remains available for
-ordinary communication/handoffs only; it is not task result/review/acceptance.
+member identity. `delegate_task` creates one internal delegation ledger record
+from explicit `target: { kind: "member" | "team", name }`, ready-to-run
+task-centered `description` content (objective, context, constraints, done
+conditions, expected output, and reference guidance), and optional
+`reference_files` work-packet inputs. Member targets start one task-agent
+instance; team targets start one task-scoped child team run whose ingress
+coordinator receives the work packet while the logical team remains the
+accountable task owner. Multiple independent tasks and sequential follow-up work
+are delegated through additional `delegate_task` calls. Bound task-agents and
+task-team ingress contexts submit reviewable output with `submit_task_result`;
+the tool accepts only `message` and optional `reference_files` because the task
+is inferred from the caller's bound execution context.
+
+`reference_files` on `delegate_task`, `submit_task_result`, and
+`review_task_result` are explicit absolute local filesystem paths only. Callers
+should pass full paths returned by file-writing tools or resolve local files
+with `realpath` before invoking the tools. Relative paths, URLs/protocol-shaped
+values, and relative or route-template path segments are rejected before task
+record, submission, or review persistence; no workspace-relative compatibility
+resolver or historical migration runs for task references. Accepted task
+reference rows keep the normalized absolute path in `referenceFiles[].path`, and
+new `referenceId` values are route-safe opaque identities rather than embedded
+file paths.
+
+The task review owner reviews the latest pending submission with
+`review_task_result`, using `decision="accept"` to finalize or
+`decision="request_revision"` plus a task-result `comment` for revision
+instructions. `send_message_to` remains available for ordinary
+communication/handoffs only; it is not task result/review/acceptance, and
+communication recipients are not automatically delegation targets.
 
 ## Server-Owned Media Tools
 
@@ -153,10 +171,11 @@ The server owns the first-party media agent-tool boundary for:
 - `generate_image`
 - `edit_image`
 - `generate_speech`
+- `generate_video`
 
 Canonical contracts, schemas, parsing, model-default resolution, media-local
 path resolution, and execution orchestration live under `src/agent-tools/media`.
-Provider-specific image/audio clients still come from `autobyteus-ts`
+Provider-specific image/audio/video clients still come from `autobyteus-ts`
 multimedia infrastructure, but the old direct `autobyteus-ts` media `BaseTool`
 classes are no longer the active first-party registration path.
 
@@ -169,12 +188,18 @@ Runtime projection is explicit:
   media `dynamicTools` path and the old Claude `autobyteus_image_audio` MCP
   server path are not retained for these migrated tools.
 
-`generate_image` and `edit_image` use an array-shaped `input_images` public
-contract across all projections. Callers must pass image references as
-`string[]` values, including one-element arrays for a single reference. String
-or comma-separated `input_images` values are rejected rather than
-compatibility-parsed, which avoids corrupting data URIs that legitimately
+`generate_image`, `edit_image`, and `generate_video` use an array-shaped
+`input_images` public contract across all projections. Callers must pass image
+references as `string[]` values, including one-element arrays for a single
+reference. String or comma-separated `input_images` values are rejected rather
+than compatibility-parsed, which avoids corrupting data URIs that legitimately
 contain commas.
+
+`generate_video` is a creation-only boundary. It supports prompt-only video
+creation plus image/reference-image creation through `generation_config.task`
+values `text_to_video`, `image_to_video`, and `reference_to_video`; editing,
+uploaded/source-video editing, audio-reference upload, and stateful
+`previous_interaction_id` continuation are not part of this tool contract.
 
 Image references may be URLs, data URIs, local filesystem paths, or `file:`
 URLs. Local references and media output paths are resolved through the media
@@ -193,7 +218,8 @@ tools, but it is not the authority for server-owned media local paths.
 
 All media tools return the canonical result shape `{ file_path }`. Runtime event
 normalizers preserve that result shape from Agent Tools MCP provider wire names
-such as `mcp__autobyteus_agent_tools__generate_image`, so generated media files
+such as `mcp__autobyteus_agent_tools__generate_image` and
+`mcp__autobyteus_agent_tools__generate_video`, so generated media files
 continue to project as generated-output file changes while application surfaces
 see canonical names like `generate_image`.
 

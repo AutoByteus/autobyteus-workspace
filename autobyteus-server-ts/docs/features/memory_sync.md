@@ -200,7 +200,7 @@ Current v1 limits are intentional:
 - no `memory/local/` migration and no runtime memory-provider rewrite;
 - no append, range, or delta sync protocol;
 - no delete propagation from source to hub;
-- no analytics index, dataset curation, model training, or self-improvement
+- no analytics index, dataset curation, model training, or skill improvement
   pipeline;
 - no automated guarantee that Docker, Kubernetes, LAN, VPN, or tailnet routing is
   correct; use URL candidates plus Test Connection;

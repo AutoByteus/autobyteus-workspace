@@ -1,0 +1,16 @@
+# Finalization Cleanup
+
+timestamp_utc=2026-07-15T05:01:14Z
+ticket_worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-tool-name-restoration-analysis
+worktree_removed=yes
+worktree_registration_removed=yes
+worktree_prune=completed
+local_ticket_branch_removed=yes
+remote_ticket_branch_removed=yes
+unrelated_main_worktree_untracked_preserved=yes
+
+## preserved pre-existing untracked paths
+?? .article-work/
+?? .local-build-logs/
+?? docs/articles/
+?? tickets/in-progress/app-store-publishing-pipeline-investigation/

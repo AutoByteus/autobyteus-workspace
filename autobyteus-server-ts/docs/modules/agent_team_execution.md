@@ -59,20 +59,37 @@ names exist.
 | Codex or Claude member in a server team | `MixedAgentMemberHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | Uses runtime-neutral member bootstrap for teammate instructions, `send_message_to`, and configured task-delegation tools. |
 ## Nested Member Identity And Commands
 
-- `TeamMemberSelector` is the domain/backend command identity:
+- `TeamMemberSelector` is the domain/backend structural member identity for
+  launch config matching and route-key/path-scoped control commands:
   - `{ kind: "path", memberPath: [...] }`
   - `{ kind: "route_key", memberRouteKey: "subteam/leaf" }`
 - `memberPath` / `memberRouteKey` are canonical for nested members.
-  Transport/GraphQL command inputs must provide explicit path or route-key
-  selector fields. Scalar target aliases such as `target_member_name`,
-  `target_agent_name`, command-side `agent_name`, command-side `agent_id`, and
-  camelCase equivalents are rejected at the edge instead of normalized.
+  Transport/GraphQL command inputs that use `TeamMemberSelector` must provide
+  explicit path or route-key selector fields. Scalar target aliases such as
+  `target_member_name`, `target_agent_name`, command-side `agent_name`,
+  command-side `agent_id`, and camelCase equivalents are rejected at the edge
+  instead of normalized.
+- `ConversationTargetAddress` is the canonical user-chat target for team
+  WebSocket `SEND_MESSAGE`. It is a typed segment path rooted at the
+  WebSocket-bound parent team run:
+  - `member` selects a structural member by `memberRouteKey` or `memberPath`
+  - `task_team` selects one concrete delegated task-team execution by
+    `taskTeamRunId`
+  - `task_agent` selects one concrete delegated task-agent execution by
+    `taskAgentRunId`
+  Existing flat `target_member_path` / `target_member_route_key` send payloads
+  are parser-bound compatibility input only and normalize to a one-segment
+  `member` address. Runtime run ids must not be encoded into structural route
+  keys.
 - Top-level executable handles may be derived only from an already accepted
   `memberPath[0]` or first route-key segment. Bare names are never an
   authoritative public command selector.
-- Posting a message to a top-level subteam member creates/restores the child
-  `TeamRun` and posts to that child team's default/coordinator target. The
-  parent runtime does not choose an arbitrary flattened child leaf.
+- A terminal chat `member` segment that names a subteam creates/restores the
+  child `TeamRun` and posts to that child team's default/coordinator target.
+  `task_team` and `task_agent` segments route only to the exact runtime run id
+  supplied in the address. The parent runtime does not choose an arbitrary
+  flattened child leaf or fall back from a stale runtime id to a structural
+  template.
 - `TeamRun.postMessage(...)` defaults an omitted target to the configured
   coordinator route key or sole member route key when one exists. A remaining
   `null` target means a true team-level/no-target command and must not be
@@ -81,9 +98,13 @@ names exist.
   at a subteam member is rejected; approval clients must use the
   `source_path` / `source_route_key` or member path/route emitted with the
   approval request event. For delegated task-agent tool calls, approval
-  clients must preserve the emitted concrete task-agent run identity so the
+  clients must preserve the emitted concrete `task_agent_run_id` so the
   approval/denial command routes to the active task-agent runtime rather than
-  the logical member template.
+  the logical member template. For task-team scoped child tool calls, approval
+  clients must also round-trip `task_team_run_id` plus the emitted relative
+  child selector (`task_team_relative_member_path` or
+  `task_team_relative_member_route_key`) so the parent team routes the decision
+  into the active task-scoped child team run before resolving the child member.
 - Team events carry canonical `sourcePath`. Any display aliases are derived
   transport metadata only and are not accepted as command target inputs.
 
@@ -104,91 +125,247 @@ Team task delegation is owned by `TaskDelegationService`, not by runtime-specifi
 handlers, legacy model-facing task-plan tools, or future MCP transport code. The
 model-facing task-delegation protocol is:
 
-- `delegate_tasks`: a coordinator/delegator submits one or more bounded
-  ready-to-run tasks in a `tasks` array. Each item contains `member_name`, rich
-  `description`, and optional `reference_files`; dependency encoding is not part
-  of the task item shape.
-- `submit_task_result`: the bound task-agent submits one reviewable result for
-  its current task. The tool is selector-free; task identity comes from the
-  task-agent context.
-- `review_task_result`: the original delegator reviews the latest pending
-  submission using `decision="accept"` or `decision="request_revision"`.
-  Revision decisions require a non-empty message and are delivered by the system
-  to the same task-agent.
+- `delegate_task`: a coordinator/delegator submits one bounded ready-to-run task
+  with `target: { kind: "member" | "team", name }`, rich `description`, and
+  optional `reference_files` containing absolute local filesystem paths only.
+  Member targets are physical current-team agent members. Team targets are
+  visible current-team `agent_team` / subteam members that become the
+  accountable task owner. The old direct `member_name` selector is not part of
+  the current model-facing surface.
+- `submit_task_result`: the bound task-agent or task-team ingress context
+  submits one reviewable result for its current task. The tool is selector-free;
+  task identity comes from the caller's bound execution context, and optional
+  `reference_files` follow the same absolute-local rule as delegated work
+  packets.
+- `review_task_result`: the task review owner reviews the latest pending
+  submission by `task_id` using `decision="accept"` or
+  `decision="request_revision"`. Revision decisions require a non-empty
+  task-result `comment` and are delivered by the system to the same task-agent
+  or task-team execution instance. Optional review `reference_files` must also
+  be absolute local filesystem paths.
 
 `send_message_to` remains ordinary teammate communication only. It is not the
-task result, revision, acceptance, or finalization protocol.
+task result, revision, acceptance, or finalization protocol. Communication
+recipients and delegation targets are separate prompt rosters: a subteam
+representative/coordinator can be a communication recipient while the visible
+subteam itself is the team delegation target and accountable owner.
 
 Legacy task-plan tool names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, `get_task_plan_status`, and the old local task-plan
 `update_task_status`) must not be exposed as a parallel model workflow. Task
-state is held internally in a team-run-scoped delegation ledger for correlation,
-activation, result/review history, stream projection, and settlement safety.
+state is split between active-only delegation ledger entries for runtime
+correlation/settlement safety and root-team-run durable `TaskDelegationRecord`
+rows for user-visible task history.
 
 The happy path is push-based:
 
 1. The runtime projection builds a `TaskDelegationToolContext` from the current
-   server-owned `MemberTeamContext` and calls `TaskDelegationToolService`.
-2. The service resolves the active `TeamRun`, creates `not_started` ledger
-   records, validates exact `member_name` targets against the team roster, and
-   treats the submitted tasks as independent ready-to-run work.
-3. `TaskDelegationActivationCoordinator` registers the active task-agent run in
-   the team-run `TaskAgentDirectory`, binds the ledger record to the concrete
-   task-agent runtime identity, and starts one task-agent instance per task
-   through `TeamRun.startTaskAgentInstance(...)`. The work packet includes the
-   derived task label, rich `description`, optional reference files, the
-   task-agent `target_agent_run_id`, original delegator identity, and
-   instructions to use `submit_task_result` for reviewable output.
-4. Accepted activations mark records `active`, mark the exact run reachable, and
-   emit `TASK_DELEGATION_ACTIVATED`; rejected activations unregister the
-   starting run, roll records back to `not_started`, and are returned to the
-   tool caller in `activationResults`.
-5. The task-agent calls `submit_task_result`. The ledger records a distinct
-   submission id, moves the task to `awaiting_review`, sets `pendingSubmissionId`,
-   emits `TASK_DELEGATION_RESULT_SUBMITTED` and status projection, and the
-   notification dispatcher attempts a system notification to the original
-   delegator.
-6. The original delegator calls `review_task_result`. `request_revision` records
-   a review linked to the pending submission id, returns the task to `active`,
-   emits review/status events, and attempts a system revision notification to the
-   same task-agent. `accept` records a review linked to the pending submission,
-   marks the task `accepted`, emits review/status events, and requests safe
-   settlement.
-7. Notification delivery is non-transactional after valid lifecycle mutation:
+   server-owned `MemberTeamContext`; AutoByteus native tool execution receives
+   the same context serialized through `initialCustomData.teamContext` with
+   typed member rows (`memberKind: "agent"` or `"agent_team"`), team definition
+   ids, coordinator/ingress identity, and runtime run ids preserved. That
+   serialized shape is normalized back into the task-delegation context before
+   tool execution, so model-visible team targets such as `BuildSquad` remain
+   resolvable when an AutoByteus coordinator calls `delegate_task`.
+   `TaskDelegationToolRunRouter` binds the tool call either to the active parent
+   `TeamRun` or, for task-team ingress result submission, to the active
+   task-team child run registered for that parent.
+2. `TaskDelegationService` reserves the next task id through
+   `TaskDelegationRecordsService` using the root-team-run persistence scope,
+   creates an active-only `starting` ledger entry, validates the explicit target
+   object against the delegation target roster, and treats the submitted task as
+   independent ready-to-run work. Delegation targets are topology-derived and are
+   not inferred from communication recipients.
+3. For a member target, activation binds a concrete task-agent execution in the
+   `TaskAgentDirectory`, starts one task-agent instance through
+   `TeamRun.startTaskAgentInstance(...)`, and sends a task-centered work packet
+   that includes the task id, `description`, optional reference files, and
+   instructions to use `submit_task_result` for reviewable output. Runtime
+   identifiers and target labels remain in backend metadata/events for routing
+   and diagnostics, not in the task packet body by default.
+4. For a team target, activation materializes a `TaskTeamInstanceIdentity` and
+   child team-run config, starts one task-scoped child team run through
+   `TeamRun.startTaskTeamInstance(...)`, binds the active child run in
+   `TaskTeamActiveRunDirectory`, and sends the same task-centered work-packet
+   shape to the child team's ingress coordinator/representative. The packet
+   metadata includes `execution_kind: "task_team"`, `task_team_run_id`, and
+   `task_team_instance_id`; the accountable owner remains the logical team
+   target, but team/accountable labels stay in metadata/events rather than the
+   runtime packet body or visible activation copy.
+5. Successful activations replace the `starting` entry with an active
+   `record` entry, construct a normalized durable `TaskDelegationRecord` with
+   `status: "active"`, sender/receiver `ConversationTargetAddress` values,
+   `receiverTargetKind`, task content/reference files, compact `taskRun`
+   identity, and `createdAt`, then persist that record before emitting
+   `TASK_DELEGATION_ACTIVATED`. Failed activations delete the active-only
+   starting entry, unregister the starting execution, and return the
+   activation-failure reason to the tool caller. `not_started` is a public tool
+   result status only; it is never a durable task-record status.
+6. The bound task-agent or task-team ingress context calls `submit_task_result`.
+   The ledger records a distinct submission update, moves the task to
+   `awaiting_review`, persists the updated durable record, emits
+   `TASK_DELEGATION_RESULT_SUBMITTED` and status projection, and the notification
+   dispatcher attempts a system notification to the task review owner.
+7. The task review owner calls `review_task_result`. `request_revision` records
+   a review update linked to the pending submission id, returns the task to
+   `active`, persists the updated durable record, emits review/status events,
+   and attempts a system revision notification to the same task execution
+   instance. `accept` records the review update, marks the task `accepted`,
+   persists the terminal durable record, emits review/status events, and
+   requests safe settlement.
+8. Notification delivery is non-transactional after valid lifecycle mutation:
    committed state and events remain authoritative even if the system input is
-   rejected. Tool results expose `notification_delivered` and deterministic
-   `warnings[]` with `TASK_NOTIFICATION_DELIVERY_FAILED` when delivery fails.
-8. `TaskDelegationSettlementCoordinator` waits for an idle/offline event from
-   the bound task-agent run, verifies `TaskDelegationLedger` has no non-terminal
-   assigned work and no non-terminal child delegations where that task-agent run
-   is the original delegator, protects the coordinator by default, and calls
-   `TeamRun.settleTaskAgentInstance(routeKey, internal task-agent run id,
-   reason)`. The internal run identity is a stale-route guard so a later
-   replacement instance is not accidentally settled.
+   rejected. Public `submit_task_result` and revision-request
+   `review_task_result` calls still succeed for the recorded lifecycle change,
+   but return only a concise public `message` when notification delivery fails;
+   raw notification warning objects and route/run ids remain internal.
+9. Task-agent settlement waits for an idle/offline event from the bound
+   task-agent run, verifies there is no non-terminal assigned work or child
+   delegation owned by that run, protects the coordinator by default, and calls
+   `TeamRun.settleTaskAgentInstance(routeKey, taskAgentRunId, reason)` with a
+   stale-route guard.
+10. Task-team settlement watches the known child team run until the child has no
+    open task-delegation ledger work, no active task-agent instances, and an
+    idle/offline aggregate status. Review acceptance and child status events are
+    only settlement wakeups: one coordinator-owned lifecycle transition may be
+    `settling` for a given `taskTeamRunId` at a time, so duplicate wakeups must
+    not start duplicate destructive close sequences. Settlement then calls
+    `TeamRun.settleTaskTeamInstance(logicalTeamRouteKey, taskTeamRunId,
+    reason)`. Accepted settlement terminates the child run through the child
+    team's lifecycle owner; already-stopping/offline child state converges as the
+    desired inactive outcome, while real active termination failures remain
+    rejected and keep the active binding visible for retry/diagnostics. After
+    accepted termination, the task-team root publishes or bridges a scoped root
+    `TEAM_STATUS` with `status: "offline"` before disposal, the coordinator
+    detaches the task-team run from the delegation run registry, and
+    `TaskTeamActiveRunDirectory` is unbound so future status snapshots and
+    reconnect/reload paths do not rehydrate the completed transient row. Future
+    delegations to the same logical team remain topology-based and allocate fresh
+    task-team run identity.
+
+Task-delegation work packets and lifecycle follow-up notifications are still
+delivered as runtime/model input, but their visible live transcript projection is
+server-owned. Constructors stamp those `SenderType.SYSTEM` messages as
+task-delegation system task notifications and request generic AutoByteus system
+task-notification suppression. Each in-scope constructor also stamps
+task-centered display content so the transcript notification can omit internal
+runtime ids, tool protocol text, sender/delegator/reviewer framing, target kind,
+and target/accountable-team labels while the runtime input remains actionable.
+Activation display content uses one uniform template for member and team targets
+(`You have a new task.` plus task id, task description, and reference files), so
+team-target activation must not expose `New delegated team task`, `Accountable
+team`, logical member labels, or ingress/child-run details. After an accepted
+mixed leaf delivery, the member boundary forwards the input to the runtime and
+emits one local `SYSTEM_TASK_NOTIFICATION` event for the target conversation
+instead of also publishing a `MEMBER_INPUT` echo. Ordinary user messages and inter-agent deliveries continue to use `MEMBER_INPUT`; task-delegation notification
+messages must not use both live surfaces for the same payload.
+
+Agent-facing task-delegation tool results are intentionally smaller than the
+internal lifecycle events:
+
+- Successful `delegate_task` returns only `task_id` and `status: "active"`;
+  activation failure returns `task_id`, `status: "not_started"`, and a concise
+  `message`.
+- Successful `submit_task_result` returns only `task_id` and
+  `status: "awaiting_review"`; if reviewer/delegator notification delivery
+  fails after the submission is recorded, the result adds only a concise
+  `message`.
+- Successful `review_task_result` returns only `task_id` and the resulting
+  `status` (`"accepted"` for accept, `"active"` for revision). A non-fatal
+  revision-notification delivery failure adds a concise `message`.
+
+Internal execution identities, submission/review ids, review decisions,
+settlement state, and notification warning objects remain available through
+ledger, event, notification, and websocket payloads rather than through public
+tool results.
 
 `TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the
 domain stream and are flattened to WebSocket `TASK_DELEGATION_EVENT` messages.
 Current event types include `TASK_DELEGATION_ACTIVATED`,
 `TASK_DELEGATION_RESULT_SUBMITTED`, `TASK_DELEGATION_RESULT_REVIEWED`, and
 `TASK_DELEGATION_STATUS_UPDATED`. Result/review payloads include `submissionId`,
-`reviewId`, and `reviewedSubmissionId` so consumers do not infer relationships
-from history array order.
+`reviewId`, `reviewedSubmissionId`, review `comment`, and status
+`acceptanceComment` where applicable so consumers do not infer relationships or
+review text from history array order. Flattened payloads include
+`execution_kind` plus the concrete task-agent or task-team execution identity;
+task-team payloads carry
+`task_team_run_id`, `task_team_instance_id`, `team_route_key`, and `team_path`.
+Events emitted by members inside a task-team child run also carry
+`task_team_relative_member_path` and, when resolvable,
+`task_team_relative_member_route_key` so clients route scoped child events by
+`task_team_run_id` instead of guessing from the structural team route.
+
+Task-delegation events also carry UI-facing task metadata for live projection,
+including normalized `taskId`/label/description, target identity, status,
+execution kind/run id, `referenceFiles`, and original normalized
+`taskArguments`. The Team tab `Tasks` section uses those live events only as
+runtime enrichment and refresh triggers; its durable display source is
+`getTaskDelegationRecords(teamRunId)`. `referenceFiles` are task-owned rows from
+normalized task records, not Team Communication message references, and must not
+use message ids or message reference routes. For new records, `referenceId` is a
+route-safe opaque identity and `path` is the stored normalized absolute local
+path. `TaskDelegationService` remains the active-runtime reference authority
+while a service is registered; when the active service is gone,
+`TaskDelegationReferenceContentService` falls back to the persisted
+root-team-run records file.
+
+Durable task records are stored once per root team run at:
+
+```text
+<memoryDir>/agent_teams/<rootTeamRunId>/task_delegation_records.json
+```
+
+The file envelope is `{ teamRunId, records }`, where `teamRunId` is the root
+storage team run id. Each `TaskDelegationRecord` stores address-first
+sender/receiver identity, `receiverTargetKind`, content, normalized task-owned
+reference files, compact task-run address, submission/review updates, and
+`createdAt`. Task-team child-run delegations reserve ids from and write to this
+root file while preserving root-visible child address segments; no child-local
+`task_delegation_records.json` is written. Missing or corrupt records files
+degrade to an empty records list with a backend warning. The GraphQL read API is
+`getTaskDelegationRecords(teamRunId)`, and persisted `active` or
+`awaiting_review` rows are visible history only after restart; they do not
+restore active task-agent/task-team tool authority.
+
+The REST content route for a selected task reference is:
+
+```text
+GET /team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content
+```
+
+The route serves content through `TaskDelegationReferenceContentService` with
+`cache-control: no-store`. Missing/unavailable references map to `404`, invalid
+stored reference paths map to `400`, unreadable paths map to `403`, and callers
+must continue to treat `teamRunId + taskId + referenceId` as the explicit task
+subject identity. The route resolves the stored task reference by identity and
+then streams the stored absolute `path`; clients and servers must not derive a
+filesystem path from `referenceId`. Historical relative references and pre-fix
+path-derived ids are intentionally not migrated or served through
+workspace-relative, wildcard-route, or frontend fallback compatibility paths.
 
 ### Task Delegation Validation Notes
 
 Durable deterministic coverage lives in the task-delegation integration/unit
 suites under `tests/integration/agent-team-execution/` and
-`tests/unit/agent-team-execution/`. A gated live mixed-runtime E2E lives at
+`tests/unit/agent-team-execution/`. The integration suite covers member-target
+and team-target delegation, task-team ingress, child tool routing, revision,
+settlement gates, cleanup, sequential same-logical-team delegation,
+absolute-only task `reference_files`, route-safe task `referenceId` generation,
+successful readable content fetches for stored absolute paths, and invalid
+stored relative-path readback. A gated live mixed-runtime E2E lives at
 `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`; it creates a real
 GraphQL/websocket team with an AutoByteus/LMStudio Qwen coordinator and a Codex
-`gpt-5.5` worker. The live path is intentionally skipped unless explicit live
-flags are set, so local/default validation can run the file and expect a skipped
-test while live validation can opt in with:
+`gpt-5.5` worker for the concrete task-agent result/revision path. The live path
+is intentionally skipped unless explicit live flags are set, so local/default
+validation can run the file and expect a skipped test while live validation can
+opt in with an exact `LMSTUDIO_MODEL_ID` for a loaded provider-native
+tool-call-capable model. If `LMSTUDIO_MODEL_ID` is not set, the suite falls back
+to `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment discovery.
 
 ```bash
 RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   AUTOBYTEUS_STREAM_PARSER=api_tool_call \
-  LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-35b-a3b \
+  LMSTUDIO_MODEL_ID='<loaded-lmstudio-model-id>' \
   CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 \
   pnpm -C autobyteus-server-ts exec vitest run \
     tests/e2e/runtime/mixed-task-delegation.e2e.test.ts \
@@ -224,10 +401,11 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   `BuildSquad/review_lead -> program_manager` records the sender as the leaf
   representative and delivers recipient input to the parent member without
   exposing unrelated ancestors or sibling internals.
-- Communication projections preserve sender/receiver `memberKind`,
-  `memberPath`, `memberRouteKey`, and optional `representedSubTeam` metadata so
-  representative messages can display the responsible subteam while retaining
-  the actual leaf participant path.
+- Communication projections preserve sender/receiver `ConversationTargetAddress`
+  values so representative, task-team, task-agent, and static nested-member
+  messages retain their concrete participant identity through `member`,
+  `task_team`, and `task_agent` segments instead of a parallel flat
+  sender/receiver model.
 - Leaf member input is emitted as a separate member-input event with stable
   message/dedupe identity. For inter-agent delivery into a child team, this
   event is what lets the child coordinator transcript show the inbound
@@ -252,8 +430,14 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   run-history, team stream, or memory consumers see it; raw MCP provider/server
   names and bearer/header config details must not leak into application-facing
   events or create extra Activity rows.
-- AutoByteus members participating in mixed teams receive primitive server-managed `teamContext` fields through `initialCustomData`, while the bound server-owned `send_message_to` tool carries the delivery handler through `MemberTeamContext` and `TeamRun` / `MixedTeamManager`.
-- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `submit_task_result`, and `review_task_result`).
+- AutoByteus members participating in mixed teams receive server-managed
+  `teamContext` through `initialCustomData`. This context preserves the current
+  member identity plus typed member/team delegation roster entries so local
+  AutoByteus task-delegation wrappers can resolve the same visible team targets
+  advertised in the prompt. The bound server-owned `send_message_to` tool still
+  carries delivery through `MemberTeamContext` and `TeamRun` /
+  `MixedTeamManager`.
+- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_task`, `submit_task_result`, and `review_task_result`).
 - Task-delegation and communication tools are configured agent capabilities, not
   runtime-level provider policy. Codex App Server and Claude Agent SDK receive
   them through Agent Tools MCP only when the current member/tool configuration
@@ -309,7 +493,7 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
   must not derive a hidden fallback memory path.
 - Member memory recording is attached at the `AgentRunManager` layer for mixed team members; runtime-specific AgentRun backends keep their own provider-local runtime details below that boundary.
 - `TeamRunService.resolveTeamRun(teamRunId)` is the canonical restore-aware lookup boundary for callers that are allowed to resume a stopped persisted team run. It returns the active team runtime when present and otherwise attempts persisted restore before returning `null`.
-- Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested member route.
+- Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested `ConversationTargetAddress`.
 - Active-only team controls still use the active lookup path. `INTERRUPT_GENERATION` and tool approval/denial commands must not restore a stopped team run as a side effect.
 - Team generation interrupt is intentionally member-scoped. `TeamRun.interruptMember(targetMemberRouteKey, targetMemberRunId?)` is the domain boundary; backend managers resolve the route key as the authoritative target and use the optional run id only as a stale-target guard. A missing target or route-key/run-id mismatch rejects without retargeting or falling back to a team-wide interrupt.
 - Persisted member metadata still carries the member runtime kind and platform-native run/thread/session id needed for restore.

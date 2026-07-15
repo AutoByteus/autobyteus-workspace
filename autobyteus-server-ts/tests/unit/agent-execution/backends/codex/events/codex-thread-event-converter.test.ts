@@ -27,6 +27,100 @@ const expectNoAgentToolsSecrets = (
 };
 
 describe("CodexThreadEventConverter", () => {
+  it("projects authoritative command arguments for a result-first completed command", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-result-first",
+        item: {
+          id: "tool-result-first",
+          type: "commandExecution",
+          command: "echo inferred",
+          status: "completed",
+          aggregatedOutput: "inferred\n",
+        },
+      },
+    });
+
+    const terminal = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    );
+    expect(terminal).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "tool-result-first",
+        turn_id: "turn-result-first",
+        tool_name: "run_bash",
+        arguments: { command: "echo inferred" },
+        result: "inferred\n",
+      },
+    });
+  });
+
+  it("preserves explicit empty arguments for a result-first dynamic terminal", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-empty-dynamic",
+        item: {
+          id: "dynamic-empty",
+          type: "dynamicToolCall",
+          name: "no_arg_tool",
+          arguments: {},
+          status: "completed",
+          result: { ok: true },
+        },
+      },
+    });
+
+    const terminal = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    );
+    expect(terminal).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "dynamic-empty",
+        turn_id: "turn-empty-dynamic",
+        tool_name: "no_arg_tool",
+        arguments: {},
+        result: { ok: true },
+      },
+    });
+  });
+
+  it("omits arguments for a genuinely argument-absent dynamic terminal", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-absent-dynamic",
+        item: {
+          id: "dynamic-absent",
+          type: "dynamicToolCall",
+          name: "arguments_later_tool",
+          status: "completed",
+          result: { ok: true },
+        },
+      },
+    });
+
+    const terminal = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+    );
+    expect(terminal?.payload).toMatchObject({
+      invocation_id: "dynamic-absent",
+      turn_id: "turn-absent-dynamic",
+      tool_name: "arguments_later_tool",
+      result: { ok: true },
+    });
+    expect(terminal?.payload).not.toHaveProperty("arguments");
+  });
+
   it("ignores codex-prefixed internal events at the dispatcher boundary", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
@@ -782,6 +876,445 @@ describe("CodexThreadEventConverter", () => {
     expect(converted[0]?.payload.result).not.toHaveProperty("content");
   });
 
+  it("normalizes Agent Tools MCP delegate_task completion envelopes into direct task results", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+    const taskResult = {
+      task_id: "task_0001",
+      status: "active",
+    };
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_delegate_task",
+        turn_id: "turn-task-1",
+        tool_name: "mcp__autobyteus_agent_tools__delegate_task",
+        arguments: {
+          target: {
+            kind: "team",
+            name: "StudentStudyGroup",
+          },
+          task: "Summarize the lesson.",
+        },
+        result: {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(taskResult),
+            },
+          ],
+          structuredContent: null,
+          _meta: null,
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_delegate_task",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__delegate_task",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_delegate_task",
+        turn_id: "turn-task-1",
+        tool_name: "delegate_task",
+        arguments: {
+          target: {
+            kind: "team",
+            name: "StudentStudyGroup",
+          },
+          task: "Summarize the lesson.",
+        },
+        result: taskResult,
+      },
+    });
+    expect(converted[0]?.payload.result).not.toHaveProperty("content");
+    expect(converted[0]?.payload.result).not.toHaveProperty("structuredContent");
+    expect(converted[0]?.payload.result).not.toHaveProperty("_meta");
+  });
+
+  it("normalizes Agent Tools MCP review_task_result completion envelopes into direct task results", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+    const reviewResult = {
+      task_id: "task_0001",
+      status: "accepted",
+    };
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_review_task_result",
+        turn_id: "turn-task-2",
+        tool_name: "mcp__autobyteus_agent_tools__review_task_result",
+        arguments: {
+          task_id: "task_0001",
+          decision: "accept",
+          comment: "Looks good.",
+        },
+        result: {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(reviewResult),
+            },
+          ],
+          structuredContent: null,
+          _meta: null,
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_review_task_result",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__review_task_result",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_review_task_result",
+        turn_id: "turn-task-2",
+        tool_name: "review_task_result",
+        result: reviewResult,
+      },
+    });
+    expect(converted[0]?.payload.result).not.toHaveProperty("content");
+  });
+
+  it("projects generic Codex MCP JSON text envelopes into parsed results", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_generic_json",
+        turn_id: "turn-generic-json",
+        tool_name: "mcp__custom_server__custom_tool",
+        result: {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({ ok: true, count: 2 }),
+            },
+          ],
+          structuredContent: null,
+          _meta: { hidden: true },
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_generic_json",
+          tool: "mcp__custom_server__custom_tool",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "call_generic_json",
+        tool_name: "mcp__custom_server__custom_tool",
+        result: { ok: true, count: 2 },
+      },
+    });
+    expect(converted[0]?.payload.result).not.toHaveProperty("content");
+    expect(converted[0]?.payload.result).not.toHaveProperty("_meta");
+  });
+
+  it("projects generic Codex MCP plain text envelopes into text results", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_generic_text",
+        tool_name: "mcp__custom_server__plain_text_tool",
+        result: {
+          content: [{ type: "text", text: "completed" }],
+          structuredContent: null,
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_generic_text",
+          tool: "mcp__custom_server__plain_text_tool",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "call_generic_text",
+        result: "completed",
+      },
+    });
+  });
+
+  it("projects generic Codex MCP structuredContent before text fallback", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_generic_structured",
+        tool_name: "mcp__custom_server__structured_tool",
+        result: {
+          structuredContent: { answer: 42 },
+          content: [{ type: "text", text: "fallback" }],
+          _meta: { hidden: true },
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_generic_structured",
+          tool: "mcp__custom_server__structured_tool",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        result: { answer: 42 },
+      },
+    });
+    expect(converted[0]?.payload.result).not.toHaveProperty("_meta");
+  });
+
+  it("projects generic Codex MCP multi-text envelopes with deterministic separators", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_generic_multitext",
+        tool_name: "mcp__custom_server__multi_text_tool",
+        result: {
+          content: [
+            { type: "text", text: "one" },
+            { type: "text", text: "two" },
+          ],
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_generic_multitext",
+          tool: "mcp__custom_server__multi_text_tool",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        result: "one\n\ntwo",
+      },
+    });
+  });
+
+  it("projects generic Codex MCP rich content envelopes into sanitized items", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_generic_rich",
+        tool_name: "mcp__custom_server__rich_tool",
+        result: {
+          content: [
+            { type: "text", text: "see image", _meta: { hidden: true } },
+            {
+              type: "image",
+              data: "abc123",
+              mimeType: "image/png",
+              _meta: { hidden: true },
+            },
+          ],
+          _meta: { hidden: true },
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_generic_rich",
+          tool: "mcp__custom_server__rich_tool",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        result: {
+          items: [
+            { type: "text", text: "see image" },
+            { type: "image", data: "abc123", mimeType: "image/png" },
+          ],
+        },
+      },
+    });
+  });
+
+  it("maps Codex MCP isError result envelopes into failure events without result", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_generic_error",
+        tool_name: "mcp__custom_server__error_tool",
+        result: {
+          isError: true,
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({ error: { message: "bad input" } }),
+            },
+          ],
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_generic_error",
+          tool: "mcp__custom_server__error_tool",
+          status: "completed",
+          success: true,
+        },
+      },
+    });
+
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_FAILED,
+      payload: {
+        invocation_id: "call_generic_error",
+        error: "bad input",
+      },
+    });
+    expect(converted[0]?.payload).not.toHaveProperty("result");
+  });
+
+  it("does not project exact envelope-shaped non-MCP Codex dynamic tool results", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+    const rawEnvelopeLikeResult = {
+      content: [{ type: "text", text: JSON.stringify({ should: "stay wrapped" }) }],
+      structuredContent: null,
+      _meta: { domain: true },
+    };
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "dynamicToolCall",
+          id: "call_non_mcp_envelope",
+          name: "custom_dynamic_tool",
+          status: "completed",
+          result: rawEnvelopeLikeResult,
+        },
+      },
+    });
+
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "call_non_mcp_envelope",
+        tool_name: "custom_dynamic_tool",
+        result: rawEnvelopeLikeResult,
+      },
+    });
+  });
+
+  it("normalizes aliased Browser MCP completion results without circular placeholders", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+    const browserResultEnvelope = {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify({
+            url: "https://example.com/",
+            result: {
+              title: "Example Domain",
+              answer: 42,
+              href: "https://example.com/",
+            },
+            tab_id: "tab-run-1",
+          }),
+        },
+      ],
+      structuredContent: null,
+      _meta: null,
+    };
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_run_script",
+        turn_id: "turn-browser-2",
+        tool_name: "mcp__autobyteus_agent_tools__run_script",
+        arguments: {
+          tab_id: "tab-run-1",
+          script: "() => ({ title: document.title, answer: 42, href: location.href })",
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_run_script",
+          server: "autobyteus_agent_tools",
+          tool: "mcp__autobyteus_agent_tools__run_script",
+          status: "completed",
+          success: true,
+          result: browserResultEnvelope,
+        },
+        result: browserResultEnvelope,
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expectNoAgentToolsProviderMarkers(converted.map((event) => event.payload));
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_run_script",
+        turn_id: "turn-browser-2",
+        tool_name: "run_script",
+        arguments: {
+          tab_id: "tab-run-1",
+          script: "() => ({ title: document.title, answer: 42, href: location.href })",
+        },
+        result: {
+          url: "https://example.com/",
+          result: {
+            title: "Example Domain",
+            answer: 42,
+            href: "https://example.com/",
+          },
+          tab_id: "tab-run-1",
+        },
+      },
+    });
+    expect(converted[0]?.payload.result).not.toBe("[Circular]");
+    expect(converted[0]?.payload.result).not.toHaveProperty("content");
+  });
+
   it("maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
@@ -874,6 +1407,65 @@ describe("CodexThreadEventConverter", () => {
         },
       },
     });
+  });
+
+  it("omits arguments from the captured hosted webSearch placeholder start", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws-placeholder",
+          query: "",
+          action: { type: "other" },
+        },
+        turnId: "turn-placeholder",
+      },
+    });
+
+    expect(converted.map((entry) => entry.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_START,
+      AgentRunEventType.TOOL_EXECUTION_STARTED,
+    ]);
+    expect(converted[0]?.payload.metadata).toMatchObject({ tool_name: "search_web" });
+    expect(converted[0]?.payload.metadata).not.toHaveProperty("arguments");
+    expect(converted[1]?.payload).toMatchObject({
+      invocation_id: "ws-placeholder",
+      turn_id: "turn-placeholder",
+      tool_name: "search_web",
+    });
+    expect(converted[1]?.payload).not.toHaveProperty("arguments");
+  });
+
+  it("emits card-capable identity and name without inventing arguments for an unseen webSearch terminal", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws-terminal-placeholder",
+          status: "completed",
+          query: "",
+          action: { type: "other" },
+        },
+        turnId: "turn-terminal-placeholder",
+      },
+    });
+
+    expect(converted.map((entry) => entry.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      AgentRunEventType.SEGMENT_END,
+    ]);
+    expect(converted[0]?.payload).toMatchObject({
+      invocation_id: "ws-terminal-placeholder",
+      turn_id: "turn-terminal-placeholder",
+      tool_name: "search_web",
+    });
+    expect(converted[0]?.payload).not.toHaveProperty("arguments");
   });
 
   it("fans out successful webSearch completions into terminal success and segment end", () => {

@@ -1,0 +1,21 @@
+## diff hygiene
+## sizes
+autobyteus-web/components/settings/ServerSettingsManager.vue 316
+autobyteus-web/pages/settings.vue 339
+autobyteus-web/components/settings/CompactionConfigCard.vue 290
+autobyteus-web/stores/serverSettings.ts 366
+autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts 133
+autobyteus-ts/src/memory/memory-manager.ts 481
+## rejected compaction save-session symbols
+none
+## initial retry
+autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts:147:    const retry = errored.wrapper.get('[data-testid="server-settings-initial-retry"]')
+autobyteus-web/components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts:181:    const retry = wrapper.get('[data-testid="server-settings-initial-retry"]')
+autobyteus-web/localization/messages/en/settings.ts:201:  'settings.components.settings.ServerSettingsManager.retry': 'Retry',
+autobyteus-web/components/settings/ServerSettingsManager.vue:22:          :aria-label="$t('settings.components.settings.ServerSettingsManager.retry')"
+autobyteus-web/components/settings/ServerSettingsManager.vue:23:          data-testid="server-settings-initial-retry"
+autobyteus-web/components/settings/ServerSettingsManager.vue:24:          @click="loadInitialSettings"
+autobyteus-web/components/settings/ServerSettingsManager.vue:26:          {{ $t('settings.components.settings.ServerSettingsManager.retry') }}
+autobyteus-web/components/settings/ServerSettingsManager.vue:270:const loadInitialSettings = async (): Promise<void> => {
+autobyteus-web/components/settings/ServerSettingsManager.vue:286:  void loadInitialSettings()
+autobyteus-web/localization/messages/zh-CN/settings.ts:201:  'settings.components.settings.ServerSettingsManager.retry': '重试',

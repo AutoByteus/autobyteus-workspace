@@ -1,0 +1,23 @@
+[
+  {
+    "provider": "openai",
+    "attempted": true,
+    "ok": false,
+    "status": 429,
+    "durationMs": 1067,
+    "model": "gpt-5.4-mini",
+    "summary": {
+      "errorKeys": [
+        "error"
+      ],
+      "error": {
+        "error": {
+          "message": "You exceeded your current quota, please …(191 chars)",
+          "type": "insufficient_quota",
+          "param": null,
+          "code": "insufficient_quota"
+        }
+      }
+    }
+  }
+]

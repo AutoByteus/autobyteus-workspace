@@ -1,0 +1,6 @@
+# Delivery docs stale-string scan after all docs edits
+started_at=2026-06-26T13:13:40Z
+head=ab5ce30950f899240d1838ff5fbbe159fbffaa5a
+command=grep stale docs strings
+exit_status=0
+ended_at=2026-06-26T13:13:40Z

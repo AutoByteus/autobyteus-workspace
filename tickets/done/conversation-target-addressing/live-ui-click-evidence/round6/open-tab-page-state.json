@@ -1,0 +1,16 @@
+{
+  "source": "mcp__autobyteus_agent_tools.run_script against tab 789007 after child send",
+  "url": "http://127.0.0.1:13000/workspace",
+  "visibleAssertions": [
+    "ACTIVE TASK EXECUTIONS shows TASK TEAM / BuildSquad \u00b7 task_0001 / buildsquad_d4d716d6f06145fca3a1958b598229e4 / active.",
+    "Left member tree includes projected task-team BuildSquad \u00b7 task_0001 with child review_lead and qa_specialist.",
+    "Focus pane shows R review_lead Idle.",
+    "Conversation shows user token LIVE_UI_ROUND6_CHILD_CHAT_1782553528825 under review_lead and assistant reply \"LIVE_UI_ROUND6_CHILD_CHAT_1782553528825 received.\""
+  ],
+  "selectedChildDataTest": "workspace-team-member-parentdeliveryteam_live_ui_click_supported_17825_f57f585f9bbc42c8891d5b47683943a4-buildsquad_d4d716d6f06145fca3a1958b598229e4/review_lead",
+  "screenshots": {
+    "projectionVisible": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-task-team-projection.png",
+    "afterChildSend": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-child-send.png",
+    "finalState": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-target-addressing/tickets/in-progress/conversation-target-addressing/live-ui-click-evidence/round6/open-tab-final-state.png"
+  }
+}

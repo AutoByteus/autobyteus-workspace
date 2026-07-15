@@ -44,6 +44,7 @@ export function useProviderApiKeySectionRuntime() {
     providersWithModels,
     audioProvidersWithModels,
     imageProvidersWithModels,
+    videoProvidersWithModels,
     geminiSetup,
   } = storeToRefs(store)
 
@@ -110,6 +111,10 @@ export function useProviderApiKeySectionRuntime() {
       addModels(providerGroup.provider.id, providerGroup.models?.length || 0)
     }
 
+    for (const providerGroup of videoProvidersWithModels.value || []) {
+      addModels(providerGroup.provider.id, providerGroup.models?.length || 0)
+    }
+
     const providers = Array.from(providerMap.values()).sort((left, right) => left.label.localeCompare(right.label))
     providers.push({
       id: NEW_CUSTOM_PROVIDER_ID,
@@ -142,6 +147,10 @@ export function useProviderApiKeySectionRuntime() {
   const selectedProviderImageModels = computed(() => {
     if (!selectedProviderId.value || selectedProviderId.value === NEW_CUSTOM_PROVIDER_ID) return []
     return imageProvidersWithModels.value.find((provider) => provider.provider.id === selectedProviderId.value)?.models || []
+  })
+  const selectedProviderVideoModels = computed(() => {
+    if (!selectedProviderId.value || selectedProviderId.value === NEW_CUSTOM_PROVIDER_ID) return []
+    return videoProvidersWithModels.value.find((provider) => provider.provider.id === selectedProviderId.value)?.models || []
   })
   const customProviderDraftFingerprint = computed(() => buildCustomProviderFingerprint(customProviderDraft))
   const isCustomProviderProbeStale = computed(
@@ -456,11 +465,13 @@ export function useProviderApiKeySectionRuntime() {
     providersWithModels,
     audioProvidersWithModels,
     imageProvidersWithModels,
+    videoProvidersWithModels,
     geminiSetup,
     allProvidersWithModels,
     selectedProviderLlmModels,
     selectedProviderAudioModels,
     selectedProviderImageModels,
+    selectedProviderVideoModels,
     selectedProviderConfigured,
     canReloadSelectedProvider,
     isReloadingSelectedProvider,

@@ -36,11 +36,13 @@ Canonical active memory file names are imported from `autobyteus-ts/memory/store
 
 Common files/directories:
 
-- `raw_traces.jsonl` — active ordered raw trace records.
-- `working_context_snapshot.json` — generic working-context snapshot state.
+- `raw_traces_active.jsonl` — active ordered raw trace records.
+- `working_context_snapshot.json` — schema-v4 persisted `WorkingContext` messages. New writes contain only schema version, agent id, and messages; existing v4 supersets remain directly readable.
 - `raw_traces_manifest.json` — rotated raw-trace manifest owned internally by `RawTraceArchiveManager`.
 - `raw_traces_<zero-padded-index>.jsonl` — immutable rotated raw-trace segment files in the same run memory directory, one complete segment per native compaction or provider-boundary rotation.
 - `episodic.jsonl`, `semantic.jsonl`, `compacted_memory_manifest.json` — native AutoByteus compacted memory artifacts when native semantic/episodic compaction has run.
+
+Startup app-data migration `20260707_raw_trace_active_file_name` renames existing active `raw_traces.jsonl` files to `raw_traces_active.jsonl` for local and imported memory corpora. Runtime steady state reads and writes only `raw_traces_active.jsonl`; the old active filename is not a compatibility alias.
 
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
 
@@ -52,14 +54,98 @@ runtime memory provider.
 
 ## Runtime Ownership
 
-Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, and compacted memory are not duplicated. Native AutoByteus compaction still owns semantic/episodic/snapshot compaction, but it now rotates compacted raw traces through shared direct raw-trace segments with `boundary_type = "native_compaction"`.
+Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, and compacted memory are not duplicated. Native AutoByteus compaction is a pluggable context-to-context boundary: the executor resolves the process-global strategy for each pending operation, validates its returned detached `WorkingContext`, and only then asks `MemoryManager` to replace/persist it. The current `structured-json` strategy preserves semantic/episodic writes and rotates selected raw traces through shared direct segments with `boundary_type = "native_compaction"`.
+
+### Global Compaction Strategy Setting
+
+`AUTOBYTEUS_COMPACTION_STRATEGY` selects the strategy for subsequent native compaction operations. Blank values normalize to `structured-json`, the only production registration. `ServerSettingsService` validates updates against registry metadata and persists them through the normal `.env` plus current-process environment path, so already-created native agents resolve the new value on their next compaction. This is process-local convergence; no cross-process broadcast or provider-session reconciliation is added.
+
+GraphQL keeps option discovery and effective selection separate:
+
+- `getWorkingContextCompactionStrategies` projects only registry `{ id, name }` metadata;
+- `getEffectiveWorkingContextCompactionStrategyId` applies the same normalizer as runtime, so absent/blank selects `structured-json` while an explicit unknown ID stays explicit for truthful recovery UI.
+
+Settings -> Server Settings -> Basics uses these reads for a registry-backed Compaction strategy selector. The card keeps the trigger ratio, effective-context override, and detailed-log controls, persists only changed valid fields through the existing per-key mutation, and stops after the first failed write while retaining failed and unsent drafts for retry. Catalog/effective-read errors and unknown IDs are shown without guessing or silently writing a default.
+
+The `structured-json` strategy always invokes the built-in `autobyteus-memory-compactor`; blank launch fields inherit the parent run's runtime/model. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting or runtime selection path. A stale custom value is inert, and a missing/invalid built-in definition fails without arbitrary-agent fallback.
+
+Compaction status metadata includes stable `compaction_strategy_id` and `compaction_strategy_name` in addition to operation/turn and current runner diagnostics. A resolver, strategy, validation, or replacement failure preserves the pending request and does not emit a false completed state.
 
 Codex and Claude runs are recorded by the server as **storage-only** memory:
 
 1. `AgentRunManager` attaches `AgentRunMemoryRecorder` as an active-run sidecar when the run has a `memoryDir` and the runtime is not native AutoByteus.
 2. Accepted user messages are observed only after `AgentRun.postUserMessage(...)` returns `accepted: true`.
 3. Assistant text, reasoning, tool lifecycle outcomes, and normalized provider compaction-boundary payloads are captured from normalized `AgentRunEvent`s.
-4. `RunMemoryWriter` writes shared `RawTraceItem` records and updates `WorkingContextSnapshot` through `RunMemoryFileStore`.
+4. `RunMemoryWriter` writes shared `RawTraceItem` records and updates `WorkingContext` messages through `RunMemoryFileStore`.
+
+Tool execution uses a strict split physical contract shared with native memory:
+
+- a call row owns non-empty `turn_id`, `tool_call_id`, and `tool_name` plus an
+  explicit `tool_args` object;
+- a separate result row owns the same `turn_id` and `tool_call_id`, repeats the
+  matched call's non-empty canonical `tool_name`, and has physically present
+  `tool_result` and `tool_error` keys, including explicit `null` values;
+- new result rows never repeat `tool_args`, and a call is never rewritten into
+  a combined terminal row.
+
+`RuntimeMemoryEventAccumulator` remains the normalized event/segment facade:
+it owns turn context, reasoning/assistant segment buffering and flushing, and
+provider-compaction delegation. Its internal provider-agnostic
+`RuntimeToolTraceSequencer` owns the cohesive tool lifecycle state machine:
+compound identity, card observation, authoritative-argument readiness, strict
+call/result writes, physical hydration, interruption, cleanup, and duplicate
+suppression. The sequencer may request a reasoning boundary through one
+`flushReasoningBoundary(turnId, sourceEvent)` callback, but it cannot inspect
+segment maps; the facade cannot inspect or mutate sequencer tool state.
+
+The sequencer persists a call at the first approval/start/terminal event that
+has valid identity, name, and authoritative arguments. For a known lifecycle,
+the matched call/state name is authoritative for the result row. A supplied
+non-empty terminal name must match it; a conflict is skipped and logged without
+writing the result or marking the lifecycle complete, so a later valid terminal
+can still finish the call. A terminal that omits its name remains valid when the
+matched lifecycle supplies the canonical name.
+Provider converters own the difference between an absent argument field (“not
+yet available”) and an explicit `{}` (a valid no-argument call); memory must not
+parse provider-native payloads or branch on tool names. If a terminal event is
+the first event with authoritative arguments, the sequencer appends the call
+first and then the minimal result (canonical name plus outcome, but no
+arguments). Missing arguments defer physical writes;
+missing identity/name that cannot create a card and ambiguous reused call ids
+are skipped and logged instead of receiving fabricated state. Sequencer record
+methods accept the facade's current active turn and return
+only a resolved turn id when correlation establishes one; general turn/fallback
+ownership remains in the accumulator.
+
+The first normalized card-capable lifecycle observation establishes the ordered
+tool-card boundary and flushes preceding reasoning, even when the physical call
+must wait for authoritative arguments. This includes an unseen terminal with a
+resolvable compound identity and non-empty normalized tool name: generic UI
+consumers synthesize its card even if arguments are absent, so memory must mark
+it observed and flush before returning for insufficient readiness. A matching
+terminal may later persist the deferred call and result without flushing
+reasoning written after that card. An already-observed still-insufficient
+terminal preserves the boundary; a malformed terminal without usable
+identity/name creates no card and neither observes nor flushes. An unseen fully
+ready terminal flushes before its inferred call. This classification uses
+generic normalized call-observed and physical-lifecycle state; memory does not
+import or reconstruct Codex raw-event policy.
+
+Physical lifecycle state is keyed by `(turn_id, tool_call_id)`, hydrated from
+complete rotated segments plus active rows when a recorder is reconstructed,
+and records call-written and result-written independently. This permits an
+archived call and active result to remain one lifecycle while keeping native
+active-file compaction eligibility and pruning active-only.
+
+Call observation is process-local ordering state, not a third persisted tool
+record. If a deferred observation is abandoned, interrupted without
+authoritative arguments, or lost to hard process failure before the call is
+written, no raw tool row is fabricated and the transient observation cannot be
+hydrated. A crash after call append but before result append leaves an honest
+unmatched call; reconstruction hydrates that physical call as observed and a
+later matching terminal may append only the result, using the hydrated call's
+canonical name. Historical result-side name/argument overlays remain read-only
+and never reconstruct current writer state.
 
 The recorder does not instantiate a Codex/Claude memory manager, retrieve memory for those runtimes, inject recorded memory into prompts, or alter provider/runtime session state. Memory persistence is independent of websocket clients; the sidecar is attached by the run manager, not by live stream subscribers.
 
@@ -68,14 +154,18 @@ are recorded only after the runtime adapter normalizes them into canonical
 `AgentRunEvent` tool lifecycles. The MCP route, method dispatcher, executor,
 and family services/dispatchers must not write raw traces directly. Raw traces
 use canonical tool names such as `send_message_to`, `generate_image`,
-`delegate_tasks`, and `publish_artifacts`, preserve the provider invocation id
+`delegate_task`, and `publish_artifacts`, preserve the provider invocation id
 as the tool-call id, and store the normalized application-facing result payload
 without provider/server-qualified tool names, MCP session ids, or bearer/header
-descriptor details. For families with a canonical public result contract, the
-stored result follows that contract rather than the raw MCP content envelope;
-for example browser `open_tab` records the direct browser result with
-`tab_id`, and media generation records `{ file_path }`. Unknown non-AutoByteus
-MCP results may still retain their provider result shape.
+descriptor details. For source-confirmed MCP terminal results, the stored
+result/error follows the same application-facing effective-result projection
+used by live Activity: non-null `structuredContent`, parsed single JSON text,
+plain text, joined multi-text, sanitized rich `{ items: [...] }`, empty `null`,
+or failed tool error for MCP `isError: true`. Raw MCP protocol envelope fields
+such as `content`, `structuredContent`, `_meta`, and `isError` are not stored as
+normal successful tool results. Non-MCP or source-unknown envelope-shaped values
+remain unchanged because the projector is only invoked after converter-level MCP
+source evidence.
 
 ## Memory Explorer Read Model
 
@@ -145,28 +235,41 @@ Raw traces preserve provenance needed by future analyzers:
 - `source_event` / GraphQL `sourceEvent`
 - `content`, `media`, tool identity, tool args/result/error, correlation id, and timestamp fields when present
 
+The inspector exposes physical rows. For current writes, the canonical name
+appears on both `tool_call` and `tool_result`; arguments remain call-only, while
+result/error remain result-only. This makes result-only inspection descriptive
+without changing compound lifecycle correlation or argument ownership. Working
+Context also retains the canonical name on its provider-protocol result message.
+
 GraphQL memory-view queries:
 
 - `getAgentRunMemoryView(runId: String!, source: MemoryExplorerSourceInput)`
 - `getTeamMemberRunMemoryView(teamRunId: String!, memberRunId: String!, source: MemoryExplorerSourceInput)`
 
-Both view queries accept include flags for working context, episodic memory, semantic memory, raw traces, archive inclusion, and `rawTraceLimit`. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab or changes the trace limit.
+Both view queries accept include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. They also accept an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
 
-`MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete rotated raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. Readers ignore pending raw-trace manifest entries and merge complete rotated segments with active records when archive inclusion is requested, deduping by raw trace `id` with active records preferred.
+`MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete rotated raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. `RawTraceFileSummary` exposes safe file-selection metadata: `fileName`, `kind` (`active` or `segment`), `recordCount`, optional `segmentIndex`, and optional first/last timestamps. The selector identity is the backend-listed file name only, for example `raw_traces_active.jsonl` or `raw_traces_000003.jsonl`; callers must not send or expose absolute file paths.
+
+When `includeRawTraceFiles` is true or `rawTraceFileName` is supplied, `RawTraceFileSourceService` lists active `raw_traces_active.jsonl` plus complete rotated segment files, ignores pending raw-trace manifest entries, validates the requested file name against that list, and reads only the selected file. Inspector ordering is active first when present, then complete segments newest-to-oldest by segment index. If the requested file name is missing or invalid, the backend falls back to the default listed file and returns `selectedRawTraceFileName` so clients can realign local selected state.
+
+When archive inclusion is requested without file-selector mode, readers retain the complete-corpus behavior: complete rotated segments plus active records are merged, deduped by raw trace `id` with active records preferred, and returned in chronological order.
 
 ## Archive, Rotation, And Retention Boundaries
 
-`RunMemoryFileStore` is the facade for active raw traces plus complete rotated-segment reads. `RawTraceArchiveManager` is the only owner of raw-trace rotation manifest/segment filenames and rotation-internal policy.
+`RunMemoryFileStore` is the facade for active raw traces plus complete rotated-segment reads. `RawTraceArchiveManager` is the only owner of raw-trace rotation manifest/segment filenames and rotation-internal policy. `RawTraceFileSourceService` owns the agent-memory read boundary for UI-safe raw-trace file summaries, selected filename validation, and selected-file reads; it delegates physical path resolution and manifest policy to the store/archive owners rather than exposing paths to GraphQL clients.
 
 Current archive/rotation behavior:
 
 - Native AutoByteus compaction rotates compacted raw traces into `native_compaction` segments.
 - Codex/Claude provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
-- New rotated segment files live directly beside `raw_traces.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
+- New rotated segment files live directly beside `raw_traces_active.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
 - New writes use `raw_traces_manifest.json` and never create `raw_traces_archive_manifest.json` or `raw_traces_archive/`.
 - Readers prefer `raw_traces_manifest.json`; old `raw_traces_archive_manifest.json` plus `raw_traces_archive/` are data-read/migration fallback only when no new manifest exists.
 - Startup app-data migration `20260617_raw_trace_rotation_layout` converts old complete archive segments to direct rotated files, excludes pending entries from the new manifest, and decommissions old authoritative manifest/archive files after verification.
 - Complete-corpus reads include complete rotated segments plus active records, ordered by timestamp, turn id, sequence, then id.
+- Complete-corpus tool projection groups physical rows by compound
+  `(turn_id, tool_call_id)` identity, so a call and result may reside in
+  different files without producing duplicate interactions.
 - Pending manifest entries are retry state only and are not exposed to readers.
 - Sequence initialization for restored external runs reads active records plus complete rotated segments so per-turn `seq` values continue without reuse.
 
@@ -199,10 +302,22 @@ Run-history remains the owner of conversation/activity replay DTOs. Agent-memory
 
 When runtime-native Codex or Claude history cannot be read, the local-memory projection fallback can build a replay bundle from the complete raw-trace corpus using the explicit persisted `memoryDir` basename as the local run/member id. Provider-boundary markers are provenance and are not converted into user-visible conversation/activity items.
 
+Run-history and work-trace projection build one logical interaction from the
+physical call/result pair. New minimal results carry the verified canonical name
+locally and obtain arguments from their call. Full interaction reconstruction
+still correlates the call for arguments, anchoring, ordering, and lifecycle
+integrity. Existing historical name-less results and result rows containing
+duplicated or late/effective name/arguments remain readable through the normal
+logical read-only projection; that historical overlay is never fed back into
+recorder/writer decisions. Existing files are directly usable: this contract
+requires no raw-file rewrite, schema branch, Memory Sync change, or migration.
+
 ## Key Source Files
 
 - Explorer services: `src/agent-memory/services/agent-memory-explorer-service.ts`, `src/agent-memory/services/team-memory-explorer-service.ts`
 - Source resolver: `src/agent-memory/services/memory-explorer-source-service.ts`
+- Raw-trace file selector service: `src/agent-memory/services/raw-trace-file-source-service.ts`
+- Raw-trace record normalization: `src/agent-memory/services/raw-trace-record-normalizer.ts`
 - Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/team-memory-member-target-builder.ts`, `src/agent-memory/services/memory-explorer-page.ts`
 - Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`

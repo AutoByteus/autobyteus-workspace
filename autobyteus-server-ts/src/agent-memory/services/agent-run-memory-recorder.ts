@@ -98,7 +98,11 @@ export class AgentRunMemoryRecorder implements AgentRunCommandObserver {
     }
     const writer = new RunMemoryWriter({ memoryDir });
     const state: RecorderState = {
-      accumulator: new RuntimeMemoryEventAccumulator({ runId, writer }),
+      accumulator: new RuntimeMemoryEventAccumulator({
+        runId,
+        writer,
+        toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
+      }),
       queue: Promise.resolve(),
       unsubscribe: null,
       detached: false,

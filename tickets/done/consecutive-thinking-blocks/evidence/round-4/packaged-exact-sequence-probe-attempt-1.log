@@ -1,0 +1,12 @@
+[RuntimeToolTraceSequencer] deferred terminal tool event 'web-search-insufficient' in turn 'turn-insufficient' because authoritative call arguments were unavailable.
+[RuntimeToolTraceSequencer] deferred terminal tool event 'web-search-insufficient' in turn 'turn-insufficient' because authoritative call arguments were unavailable.
+[RuntimeToolTraceSequencer] deferred terminal tool event 'dynamic-absent' in turn 'turn-absent' because authoritative call arguments were unavailable.
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-4/packaged-exact-sequence-probe.mjs:226
+  throw new Error(`unexpected packaged projection reasoning: ${JSON.stringify(reasoningContents)}`);
+        ^
+
+Error: unexpected packaged projection reasoning: ["A\n\nB","C","before result-first","after result-first","before insufficient terminal","after insufficient terminal","before explicit empty","after next boundary","before truly absent","after explicit empty","after truly absent"]
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/tickets/in-progress/consecutive-thinking-blocks/evidence/round-4/packaged-exact-sequence-probe.mjs:226:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+Node.js v24.16.0

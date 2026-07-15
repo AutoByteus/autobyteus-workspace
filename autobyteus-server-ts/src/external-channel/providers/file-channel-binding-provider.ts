@@ -65,6 +65,12 @@ const parseTargetType = (value: string): "AGENT" | "TEAM" => {
   throw new Error(`Unsupported channel target type stored in file: ${value}`);
 };
 
+const normalizeStoredSkillAccessMode = (value: string | null): SkillAccessMode => {
+  if (value === null || value === SkillAccessMode.PRELOADED_ONLY) return SkillAccessMode.PRELOADED_ONLY;
+  if (value === SkillAccessMode.NONE) return SkillAccessMode.NONE;
+  throw new Error(`Unsupported stored skillAccessMode '${value}'.`);
+};
+
 const toDomainLaunchPreset = (
   value: ChannelBindingLaunchPresetRecord | null | undefined,
 ): ChannelBindingLaunchPreset | null => {
@@ -83,9 +89,7 @@ const toDomainLaunchPreset = (
     ),
     runtimeKind: runtimeKindFromString(value.runtimeKind, RuntimeKind.AUTOBYTEUS) ?? RuntimeKind.AUTOBYTEUS,
     autoExecuteTools: value.autoExecuteTools,
-    skillAccessMode:
-      (normalizeNullableString(value.skillAccessMode) as ChannelBindingLaunchPreset["skillAccessMode"] | null) ??
-      SkillAccessMode.PRELOADED_ONLY,
+    skillAccessMode: normalizeStoredSkillAccessMode(normalizeNullableString(value.skillAccessMode)),
     llmConfig: isJsonObject(value.llmConfig) ? value.llmConfig : null,
   };
 };
@@ -131,9 +135,7 @@ const toDomainTeamLaunchPreset = (
     ),
     runtimeKind: runtimeKindFromString(value.runtimeKind, RuntimeKind.AUTOBYTEUS) ?? RuntimeKind.AUTOBYTEUS,
     autoExecuteTools: value.autoExecuteTools,
-    skillAccessMode:
-      (normalizeNullableString(value.skillAccessMode) as ChannelBindingTeamLaunchPreset["skillAccessMode"] | null) ??
-      SkillAccessMode.PRELOADED_ONLY,
+    skillAccessMode: normalizeStoredSkillAccessMode(normalizeNullableString(value.skillAccessMode)),
     llmConfig: isJsonObject(value.llmConfig) ? value.llmConfig : null,
   };
 };

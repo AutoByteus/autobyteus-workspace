@@ -54,8 +54,10 @@ const APPLICATIONS_SETTING_KEY = 'ENABLE_APPLICATIONS'
 
 type ServerSettingsBindingAwareStore = {
   settings: ServerSetting[]
+  effectiveWorkingContextCompactionStrategyId: string | null
   searchConfig: SearchConfigState
   error: string | null
+  isLoading: boolean
   settingsBindingRevision: number | null
   searchConfigBindingRevision: number | null
   invalidateBoundNodeState: () => void
@@ -64,6 +66,32 @@ type ServerSettingsBindingAwareStore = {
 }
 
 const bindingWatcherStops = new WeakMap<object, () => void>()
+const activeSettingsReadTokens = new WeakMap<object, symbol>()
+
+const beginSettingsRead = (store: ServerSettingsBindingAwareStore): symbol => {
+  const token = Symbol('server-settings-read')
+  activeSettingsReadTokens.set(store, token)
+  store.isLoading = true
+  store.error = null
+  return token
+}
+
+const isCurrentSettingsRead = (
+  store: ServerSettingsBindingAwareStore,
+  token: symbol,
+  bindingRevision: number,
+): boolean =>
+  activeSettingsReadTokens.get(store) === token &&
+  useWindowNodeContextStore().bindingRevision === bindingRevision
+
+const finishSettingsRead = (
+  store: ServerSettingsBindingAwareStore,
+  token: symbol,
+): void => {
+  if (activeSettingsReadTokens.get(store) !== token) return
+  activeSettingsReadTokens.delete(store)
+  store.isLoading = false
+}
 
 const ensureBindingWatcher = (store: ServerSettingsBindingAwareStore): void => {
   if (bindingWatcherStops.has(store)) {
@@ -92,6 +120,7 @@ const ensureBindingWatcher = (store: ServerSettingsBindingAwareStore): void => {
       registeredStop()
       bindingWatcherStops.delete(store)
     }
+    activeSettingsReadTokens.delete(store)
     originalDispose()
   }
   store.__serverSettingsBindingDisposeWrapped = true
@@ -125,6 +154,7 @@ export const useServerSettingsStore = defineStore('serverSettings', {
   state: () => ({
     settings: [] as ServerSetting[],
     settingsBindingRevision: null as number | null,
+    effectiveWorkingContextCompactionStrategyId: null as string | null,
     searchConfig: defaultSearchConfig() as SearchConfigState,
     searchConfigBindingRevision: null as number | null,
     isLoading: false,
@@ -138,91 +168,105 @@ export const useServerSettingsStore = defineStore('serverSettings', {
   },
   actions: {
     invalidateBoundNodeState() {
+      activeSettingsReadTokens.delete(this)
       this.settings = []
       this.settingsBindingRevision = null
+      this.effectiveWorkingContextCompactionStrategyId = null
       this.searchConfig = defaultSearchConfig()
       this.searchConfigBindingRevision = null
       this.error = null
+      this.isLoading = false
     },
 
     async fetchServerSettings() {
-      ensureBindingWatcher(this as ServerSettingsBindingAwareStore)
+      const store = this as ServerSettingsBindingAwareStore
+      ensureBindingWatcher(store)
 
       const windowNodeContextStore = useWindowNodeContextStore()
-      invalidateStaleBindingCache(this, windowNodeContextStore.bindingRevision)
-      if (this.settingsBindingRevision === windowNodeContextStore.bindingRevision) {
+      const bindingRevision = windowNodeContextStore.bindingRevision
+      invalidateStaleBindingCache(store, bindingRevision)
+      if (this.settingsBindingRevision === bindingRevision) {
         return this.settings
       }
 
-      this.isLoading = true
-      this.error = null
-
-      const client = getApolloClient()
+      const requestToken = beginSettingsRead(store)
       try {
         const bindingRevisionAtStart = await ensureBoundBackendReady()
-        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
           return this.settings
         }
 
-        const { data } = await client.query({
-          query: GET_SERVER_SETTINGS
+        const { data } = await getApolloClient().query({
+          query: GET_SERVER_SETTINGS,
         })
-
-        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
           return this.settings
         }
 
+        const effectiveStrategyId = data?.getEffectiveWorkingContextCompactionStrategyId
+        if (typeof effectiveStrategyId !== 'string' || !effectiveStrategyId.trim()) {
+          throw new Error('Server did not return an effective compaction strategy id')
+        }
         this.settings = data?.getServerSettings ?? []
+        this.effectiveWorkingContextCompactionStrategyId = effectiveStrategyId.trim()
         this.settingsBindingRevision = bindingRevisionAtStart
         return this.settings
       } catch (error: any) {
-        this.error = error.message ?? 'Failed to fetch server settings'
-        console.error('Failed to fetch server settings:', error)
-        this.settings = []
-        this.settingsBindingRevision = null
+        if (isCurrentSettingsRead(store, requestToken, bindingRevision)) {
+          this.error = error.message ?? 'Failed to fetch server settings'
+          console.error('Failed to fetch server settings:', error)
+          this.settings = []
+          this.settingsBindingRevision = null
+          this.effectiveWorkingContextCompactionStrategyId = null
+        }
         throw error
       } finally {
-        this.isLoading = false
+        finishSettingsRead(store, requestToken)
       }
     },
 
     async reloadServerSettings() {
-      ensureBindingWatcher(this as ServerSettingsBindingAwareStore)
+      const store = this as ServerSettingsBindingAwareStore
+      ensureBindingWatcher(store)
 
       const windowNodeContextStore = useWindowNodeContextStore()
-      invalidateStaleBindingCache(this, windowNodeContextStore.bindingRevision)
+      const bindingRevision = windowNodeContextStore.bindingRevision
+      invalidateStaleBindingCache(store, bindingRevision)
 
-      this.isLoading = true;
-      this.error = null;
-
-      const client = getApolloClient()
-
+      const requestToken = beginSettingsRead(store)
       try {
         const bindingRevisionAtStart = await ensureBoundBackendReady()
-        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
           return this.settings
         }
 
-        const { data } = await client.query({
+        const { data } = await getApolloClient().query({
           query: GET_SERVER_SETTINGS,
-          fetchPolicy: 'network-only' // Force network fetch, bypassing cache
-        });
-
-        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+          fetchPolicy: 'network-only',
+        })
+        if (!isCurrentSettingsRead(store, requestToken, bindingRevisionAtStart)) {
           return this.settings
         }
 
-        this.settings = data?.getServerSettings ?? [];
+        const effectiveStrategyId = data?.getEffectiveWorkingContextCompactionStrategyId
+        if (typeof effectiveStrategyId !== 'string' || !effectiveStrategyId.trim()) {
+          throw new Error('Server did not return an effective compaction strategy id')
+        }
+        this.settings = data?.getServerSettings ?? []
+        this.effectiveWorkingContextCompactionStrategyId = effectiveStrategyId.trim()
         this.settingsBindingRevision = bindingRevisionAtStart
-        return this.settings;
+        return this.settings
       } catch (error: any) {
-        this.error = error.message ?? 'Failed to reload server settings';
-        console.error('Failed to reload server settings:', error);
-        this.settings = [];
-        this.settingsBindingRevision = null
-        throw error;
+        if (isCurrentSettingsRead(store, requestToken, bindingRevision)) {
+          this.error = error.message ?? 'Failed to reload server settings'
+          console.error('Failed to reload server settings:', error)
+          this.settings = []
+          this.settingsBindingRevision = null
+          this.effectiveWorkingContextCompactionStrategyId = null
+        }
+        throw error
       } finally {
-        this.isLoading = false;
+        finishSettingsRead(store, requestToken)
       }
     },
 

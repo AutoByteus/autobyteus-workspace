@@ -37,6 +37,11 @@ const createWsHarness = () => {
   return { callbacks, service, wsClient };
 };
 
+const flushTaskTeamCleanup = async (): Promise<void> => {
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  await Promise.resolve();
+};
+
 const createLogicalAgentContext = (memberName: string, runId: string): AgentContext => {
   const conversation = {
     id: runId,
@@ -93,13 +98,67 @@ const createTeamContextWithWorker = () => {
     focusedMemberRouteKey: 'worker',
     coordinatorMemberRouteKey: 'coordinator',
     memberTree: [coordinatorNode, workerNode],
-    memberNodesByRouteKey: new Map([
+    memberNodesByRouteKey: new Map<string, any>([
       ['coordinator', coordinatorNode],
       ['worker', workerNode],
     ]),
-    leafAgentContextsByRouteKey: new Map([
+    leafAgentContextsByRouteKey: new Map<string, any>([
       ['coordinator', coordinatorContext],
       ['worker', workerContext],
+    ]),
+  } as any;
+};
+
+const createTeamContextWithSoftwareTeam = () => {
+  const programManagerContext = createLogicalAgentContext('program_manager', 'program-manager-run');
+  const solutionContext = createLogicalAgentContext('solution_designer', 'solution-structural-run');
+  const programManagerNode = {
+    memberKind: 'agent',
+    memberName: 'program_manager',
+    displayName: 'Program Manager',
+    memberPath: ['program_manager'],
+    memberRouteKey: 'program_manager',
+    memberRunId: 'program-manager-run',
+    agentDefinitionId: 'program-manager-def',
+    currentStatus: AgentStatus.Running,
+  };
+  const solutionNode = {
+    memberKind: 'agent',
+    memberName: 'solution_designer',
+    displayName: 'Solution Designer',
+    memberPath: ['SoftwareEngineeringTeam', 'solution_designer'],
+    memberRouteKey: 'SoftwareEngineeringTeam/solution_designer',
+    memberRunId: 'solution-structural-run',
+    agentDefinitionId: 'solution-def',
+    currentStatus: AgentStatus.Offline,
+  };
+  const teamNode = {
+    memberKind: 'agent_team',
+    memberName: 'SoftwareEngineeringTeam',
+    displayName: 'Software Engineering Team',
+    memberPath: ['SoftwareEngineeringTeam'],
+    memberRouteKey: 'SoftwareEngineeringTeam',
+    memberRunId: 'software-team-template-run',
+    teamDefinitionId: 'software-team-def',
+    teamRunId: null,
+    coordinatorMemberRouteKey: 'SoftwareEngineeringTeam/solution_designer',
+    children: [solutionNode],
+    currentStatus: AgentStatus.Offline,
+  };
+  return {
+    teamRunId: 'parent-team-run',
+    currentStatus: AgentTeamStatus.Idle,
+    focusedMemberRouteKey: 'program_manager',
+    coordinatorMemberRouteKey: 'program_manager',
+    memberTree: [programManagerNode, teamNode],
+    memberNodesByRouteKey: new Map<string, any>([
+      ['program_manager', programManagerNode],
+      ['SoftwareEngineeringTeam', teamNode],
+      ['SoftwareEngineeringTeam/solution_designer', solutionNode],
+    ]),
+    leafAgentContextsByRouteKey: new Map<string, any>([
+      ['program_manager', programManagerContext],
+      ['SoftwareEngineeringTeam/solution_designer', solutionContext],
     ]),
   } as any;
 };
@@ -126,7 +185,7 @@ describe('TeamStreamingService', () => {
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const teamContext = {
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'worker-a',
           {
@@ -195,7 +254,7 @@ describe('TeamStreamingService', () => {
     const programManagerConversation = { messages: [], updatedAt: '' } as any;
     const teamContext = {
       focusedMemberRouteKey: 'program_manager',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'program_manager',
           {
@@ -272,6 +331,53 @@ describe('TeamStreamingService', () => {
     });
   });
 
+  it('serializes send messages with canonical conversation target addresses', () => {
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    service.sendMessage(
+      'hello task agent',
+      {
+        segments: [
+          { kind: 'member', memberRouteKey: 'BuildSquad' },
+          { kind: 'task_team', taskTeamRunId: 'task-team-run-1' },
+          { kind: 'member', memberRouteKey: 'review_lead' },
+          { kind: 'task_agent', taskAgentRunId: 'task-agent-run-2' },
+        ],
+      },
+      ['ctx-1'],
+      [],
+      { messageId: 'client-msg-1', dedupeKey: 'member_input:team:target:client-msg-1' },
+    );
+
+    expect(wsClient.send).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(wsClient.send.mock.calls[0][0])).toEqual({
+      type: 'SEND_MESSAGE',
+      payload: {
+        content: 'hello task agent',
+        context_file_paths: ['ctx-1'],
+        image_urls: [],
+        conversation_target_address: {
+          segments: [
+            { kind: 'member', member_route_key: 'BuildSquad' },
+            { kind: 'task_team', task_team_run_id: 'task-team-run-1' },
+            { kind: 'member', member_route_key: 'review_lead' },
+            { kind: 'task_agent', task_agent_run_id: 'task-agent-run-2' },
+          ],
+        },
+        message_id: 'client-msg-1',
+        dedupe_key: 'member_input:team:target:client-msg-1',
+      },
+    });
+  });
+
   it('requires a focused member route key for team interrupt serialization', () => {
     const wsClient = {
       state: 'disconnected',
@@ -309,7 +415,7 @@ describe('TeamStreamingService', () => {
     const teamContext = {
       isSubscribed: false,
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'worker-a',
           {
@@ -345,7 +451,7 @@ describe('TeamStreamingService', () => {
     const originalContext = {
       isSubscribed: false,
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'worker-a',
           {
@@ -358,7 +464,7 @@ describe('TeamStreamingService', () => {
     const replacementContext = {
       isSubscribed: false,
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'worker-a',
           {
@@ -398,7 +504,7 @@ describe('TeamStreamingService', () => {
     const teamContext = {
       isSubscribed: false,
       focusedMemberRouteKey: 'Student',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'Professor',
           {
@@ -466,7 +572,7 @@ describe('TeamStreamingService', () => {
       const studentConversation: { messages: any[]; updatedAt: string } = { messages: [], updatedAt: '' };
       const teamContext = {
         focusedMemberRouteKey: 'Student',
-        leafAgentContextsByRouteKey: new Map([
+        leafAgentContextsByRouteKey: new Map<string, any>([
           [
             'Professor',
             {
@@ -521,7 +627,7 @@ describe('TeamStreamingService', () => {
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const teamContext = {
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'worker-a',
           {
@@ -604,7 +710,7 @@ describe('TeamStreamingService', () => {
     const teamContext = {
       currentStatus: AgentTeamStatus.Error,
       focusedMemberRouteKey: 'Student',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         ['Professor', professorContext],
         ['Student', studentContext],
       ]),
@@ -663,7 +769,7 @@ describe('TeamStreamingService', () => {
     const teamContext = {
       currentStatus: AgentTeamStatus.Error,
       focusedMemberRouteKey: 'Focused',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         ['Focused', focusedContext],
       ]),
     } as any;
@@ -714,7 +820,7 @@ describe('TeamStreamingService', () => {
     const teamContext = {
       currentStatus: AgentTeamStatus.Idle,
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         ['worker-a', memberContext],
       ]),
     } as any;
@@ -768,7 +874,7 @@ describe('TeamStreamingService', () => {
       currentStatus: AgentTeamStatus.Idle,
       focusedMemberRouteKey: 'program_manager',
       leafAgentContextsByRouteKey: new Map(),
-      memberNodesByRouteKey: new Map([
+      memberNodesByRouteKey: new Map<string, any>([
         ['BuildSquad', buildSquadNode],
       ]),
     } as any;
@@ -819,7 +925,7 @@ describe('TeamStreamingService', () => {
       currentStatus: AgentTeamStatus.Idle,
       focusedMemberRouteKey: 'program_manager',
       leafAgentContextsByRouteKey: new Map(),
-      memberNodesByRouteKey: new Map([
+      memberNodesByRouteKey: new Map<string, any>([
         ['BuildSquad', buildSquadNode],
       ]),
     } as any;
@@ -858,7 +964,7 @@ describe('TeamStreamingService', () => {
       isSubscribed: false,
       currentStatus: AgentTeamStatus.Running,
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'worker-a',
           {
@@ -901,7 +1007,7 @@ describe('TeamStreamingService', () => {
     const conversation = { messages: [], updatedAt: '' } as any;
     const teamContext = {
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'worker-a',
           {
@@ -968,7 +1074,7 @@ describe('TeamStreamingService', () => {
     const reviewerConversation = { messages: [], updatedAt: '' } as any;
     const teamContext = {
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'worker-a',
           {
@@ -991,8 +1097,8 @@ describe('TeamStreamingService', () => {
       JSON.stringify({
         type: 'SYSTEM_TASK_NOTIFICATION',
         payload: {
-          sender_id: 'system.self_evolution',
-          content: 'Self improve finished for this run. Future runs will use any updated skill guidance.',
+          sender_id: 'system.skill_improvement',
+          content: 'Improve skills finished for this run. Future runs will use any updated skill guidance.',
           agent_name: 'worker-a',
           agent_id: 'worker-run-1',
           member_route_key: 'worker-a',
@@ -1004,10 +1110,11 @@ describe('TeamStreamingService', () => {
     );
 
     expect(workerConversation.messages).toHaveLength(1);
+    expect(workerConversation.messages[0].segments).toHaveLength(1);
     expect(workerConversation.messages[0].segments).toContainEqual({
       type: 'system_task_notification',
-      senderId: 'system.self_evolution',
-      content: 'Self improve finished for this run. Future runs will use any updated skill guidance.',
+      senderId: 'system.skill_improvement',
+      content: 'Improve skills finished for this run. Future runs will use any updated skill guidance.',
     });
     expect(reviewerConversation.messages).toHaveLength(0);
   });
@@ -1029,7 +1136,7 @@ describe('TeamStreamingService', () => {
     const conversation = { messages: [], updatedAt: '' } as any;
     const teamContext = {
       focusedMemberRouteKey: 'worker-a',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'worker-a',
           {
@@ -1043,14 +1150,11 @@ describe('TeamStreamingService', () => {
     const payload = {
       messageId: 'message-1',
       teamRunId: 'team-1',
-      senderRunId: 'sender-run-1',
-      senderMemberName: 'Reviewer',
-      receiverRunId: 'receiver-run-1',
-      receiverMemberName: 'Worker',
+      senderAddress: { segments: [{ kind: 'member', memberRouteKey: 'reviewer' }] },
+      receiverAddress: { segments: [{ kind: 'member', memberRouteKey: 'worker-a' }] },
       content: 'Please review the attached report.',
       messageType: 'handoff',
       createdAt: '2026-04-08T00:00:00.000Z',
-      updatedAt: '2026-04-08T00:00:00.000Z',
       referenceFiles: [{ referenceId: 'ref-1', path: '/tmp/report.md', type: 'file', createdAt: '2026-04-08T00:00:00.000Z', updatedAt: '2026-04-08T00:00:00.000Z' }],
     };
 
@@ -1084,7 +1188,7 @@ describe('TeamStreamingService', () => {
     const reviewLeadConversation = { messages: [], updatedAt: '' } as any;
     const teamContext = {
       focusedMemberRouteKey: 'program_manager',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'program_manager',
           {
@@ -1105,20 +1209,11 @@ describe('TeamStreamingService', () => {
     const payload = {
       messageId: 'message-parent-to-subteam',
       teamRunId: 'team-1',
-      senderRunId: 'program-manager-run',
-      senderMemberKind: 'agent',
-      senderMemberName: 'program_manager',
-      senderMemberPath: ['program_manager'],
-      senderMemberRouteKey: 'program_manager',
-      receiverRunId: 'build-squad-run',
-      receiverMemberKind: 'agent_team',
-      receiverMemberName: 'BuildSquad',
-      receiverMemberPath: ['BuildSquad'],
-      receiverMemberRouteKey: 'BuildSquad',
+      senderAddress: { segments: [{ kind: 'member', memberRouteKey: 'program_manager' }] },
+      receiverAddress: { segments: [{ kind: 'member', memberRouteKey: 'BuildSquad' }] },
       content: 'Reply with exactly token.',
       messageType: 'frontend_parent_to_subteam',
       createdAt: '2026-05-13T06:00:00.000Z',
-      updatedAt: '2026-05-13T06:00:00.000Z',
       referenceFiles: [],
       source_path: ['program_manager'],
       source_route_key: 'program_manager',
@@ -1155,7 +1250,7 @@ describe('TeamStreamingService', () => {
     const reviewLeadConversation = { messages: [], updatedAt: '' } as any;
     const teamContext = {
       focusedMemberRouteKey: 'program_manager',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         [
           'program_manager',
           {
@@ -1442,6 +1537,546 @@ describe('TeamStreamingService', () => {
     expect(workerContext.state.runId).toBe('worker-run-1');
   });
 
+  it('preserves task-team ancestry for scoped task-agent delegation events and refreshes existing nodes', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithSoftwareTeam();
+
+    service.connect('parent-team-run', teamContext);
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_ACTIVATED',
+        execution_kind: 'task_agent',
+        task_agent_instance_id: 'scoped-task-agent-instance',
+        task_agent_run_id: 'scoped-task-agent-run',
+        task_id: 'task_0001',
+        agent_id: 'scoped-task-agent-run',
+        agent_name: 'solution_designer',
+        member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+        source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        source_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+      },
+    } satisfies ServerMessage));
+
+    expect(teamContext.memberNodesByRouteKey.get('scoped-task-agent-run')).toMatchObject({
+      isTaskAgentInstance: true,
+      parentTaskTeamRunId: null,
+      conversationTargetSegments: [
+        { kind: 'member', memberRouteKey: 'SoftwareEngineeringTeam/solution_designer' },
+        { kind: 'task_agent', taskAgentRunId: 'scoped-task-agent-run' },
+      ],
+    });
+
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_ACTIVATED',
+        execution_kind: 'task_agent',
+        task_agent_instance_id: 'scoped-task-agent-instance',
+        task_agent_run_id: 'scoped-task-agent-run',
+        task_id: 'task_0001',
+        agent_id: 'scoped-task-agent-run',
+        agent_name: 'solution_designer',
+        member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+        source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        source_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+        task_team_run_id: 'task-team-run-1',
+        task_team_instance_id: 'task-team-instance-1',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        task_team_relative_member_route_key: 'solution_designer',
+        task_team_relative_member_path: ['solution_designer'],
+      },
+    } satisfies ServerMessage));
+
+    expect(teamContext.memberNodesByRouteKey.get('task-team-run-1')).toMatchObject({
+      isTaskTeamInstance: true,
+      logicalTeamRouteKey: 'SoftwareEngineeringTeam',
+    });
+    expect(teamContext.memberNodesByRouteKey.get('task-team-run-1/solution_designer')).toMatchObject({
+      isTaskTeamChildProjection: true,
+      parentTaskTeamRunId: 'task-team-run-1',
+      structuralSourceRouteKey: 'SoftwareEngineeringTeam/solution_designer',
+    });
+    expect(teamContext.memberNodesByRouteKey.get('scoped-task-agent-run')).toMatchObject({
+      isTaskAgentInstance: true,
+      logicalMemberRouteKey: 'task-team-run-1/solution_designer',
+      parentTaskTeamRunId: 'task-team-run-1',
+      taskTeamRelativeMemberRouteKey: 'solution_designer',
+      structuralSourceRouteKey: 'SoftwareEngineeringTeam/solution_designer',
+      logicalTeamRouteKey: 'SoftwareEngineeringTeam',
+      conversationTargetSegments: [
+        { kind: 'member', memberRouteKey: 'SoftwareEngineeringTeam' },
+        { kind: 'task_team', taskTeamRunId: 'task-team-run-1' },
+        { kind: 'member', memberRouteKey: 'solution_designer' },
+        { kind: 'task_agent', taskAgentRunId: 'scoped-task-agent-run' },
+      ],
+    });
+  });
+
+  it('creates a visible task-team projection from a task-team delegation event', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithSoftwareTeam();
+    const structuralTeam = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam');
+
+    service.connect('parent-team-run', teamContext);
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_ACTIVATED',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-1',
+        task_team_run_id: 'task-team-run-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+      },
+    }));
+
+    const taskTeamNode = teamContext.memberNodesByRouteKey.get('task-team-run-1');
+    expect(taskTeamNode).toMatchObject({
+      isTaskTeamInstance: true,
+      memberRouteKey: 'task-team-run-1',
+      taskTeamRunId: 'task-team-run-1',
+      logicalTeamRouteKey: 'SoftwareEngineeringTeam',
+      taskExecutionStatus: 'active',
+    });
+    expect(taskTeamNode?.displayName).toContain('task_0001');
+    expect(teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam')).toBe(structuralTeam);
+    expect(teamContext.memberNodesByRouteKey.get('task-team-run-1/solution_designer')).toMatchObject({
+      isTaskTeamChildProjection: true,
+      parentTaskTeamRunId: 'task-team-run-1',
+      structuralSourceRouteKey: 'SoftwareEngineeringTeam/solution_designer',
+    });
+  });
+
+  it('routes stamped task-team child status to the scoped child context and leaves structural context unchanged', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithSoftwareTeam();
+    const structuralSolutionContext = teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
+
+    service.connect('parent-team-run', teamContext);
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_ACTIVATED',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-1',
+        task_team_run_id: 'task-team-run-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+      },
+    }));
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'AGENT_STATUS',
+      payload: {
+        status: 'running',
+        can_interrupt: true,
+        agent_id: 'scoped-solution-run',
+        agent_name: 'solution_designer',
+        member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+        source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        source_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+        task_team_run_id: 'task-team-run-1',
+        task_team_instance_id: 'task-team-instance-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        task_team_relative_member_route_key: 'solution_designer',
+        task_team_relative_member_path: ['solution_designer'],
+      },
+    }));
+
+    const scopedContext = teamContext.leafAgentContextsByRouteKey.get('task-team-run-1/solution_designer');
+    expect(scopedContext).toBeTruthy();
+    expect(scopedContext.state.runId).toBe('scoped-solution-run');
+    expect(scopedContext.state.currentStatus).toBe(AgentStatus.Running);
+    expect(structuralSolutionContext.state.runId).toBe('solution-structural-run');
+    expect(structuralSolutionContext.state.currentStatus).toBe(AgentStatus.Offline);
+  });
+
+  it('drops malformed task-team scoped child events instead of updating structural members', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithSoftwareTeam();
+    const structuralSolutionContext = teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    try {
+      service.connect('parent-team-run', teamContext);
+      callbacks.get('onMessage')?.(JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'running',
+          can_interrupt: true,
+          agent_id: 'bad-scoped-run',
+          member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+          member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+          task_team_relative_member_route_key: 'solution_designer',
+          task_team_relative_member_path: ['solution_designer'],
+          team_route_key: 'SoftwareEngineeringTeam',
+          team_path: ['SoftwareEngineeringTeam'],
+        },
+      }));
+
+      expect(structuralSolutionContext.state.currentStatus).toBe(AgentStatus.Offline);
+      expect(teamContext.leafAgentContextsByRouteKey.has('bad-scoped-run')).toBe(false);
+      expect(warnSpy).toHaveBeenCalledWith('Task-team scoped event missing task_team_run_id.');
+    } finally {
+      warnSpy.mockRestore();
+    }
+  });
+
+  it('routes concurrent same-logical task-team child events by task_team_run_id only', () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithSoftwareTeam();
+    const structuralSolutionContext = teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    try {
+      service.connect('parent-team-run', teamContext);
+      for (const taskNumber of [1, 2]) {
+        callbacks.get('onMessage')?.(JSON.stringify({
+          type: 'TASK_DELEGATION_EVENT',
+          payload: {
+            event_type: 'TASK_DELEGATION_ACTIVATED',
+            execution_kind: 'task_team',
+            task_team_instance_id: `task-team-instance-${taskNumber}`,
+            task_team_run_id: `task-team-run-${taskNumber}`,
+            task_id: `task_000${taskNumber}`,
+            team_route_key: 'SoftwareEngineeringTeam',
+            team_path: ['SoftwareEngineeringTeam'],
+          },
+        }));
+      }
+
+      callbacks.get('onMessage')?.(JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'running',
+          can_interrupt: true,
+          agent_id: 'scoped-solution-run-2',
+          agent_name: 'solution_designer',
+          member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+          member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+          source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+          source_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+          task_team_run_id: 'task-team-run-2',
+          task_team_instance_id: 'task-team-instance-2',
+          task_id: 'task_0002',
+          team_route_key: 'SoftwareEngineeringTeam',
+          team_path: ['SoftwareEngineeringTeam'],
+          task_team_relative_member_route_key: 'solution_designer',
+          task_team_relative_member_path: ['solution_designer'],
+        },
+      }));
+
+      expect(teamContext.leafAgentContextsByRouteKey.get('task-team-run-2/solution_designer')?.state).toMatchObject({
+        runId: 'scoped-solution-run-2',
+        currentStatus: AgentStatus.Running,
+      });
+      expect(teamContext.leafAgentContextsByRouteKey.get('task-team-run-1/solution_designer')?.state.runId)
+        .toBe('task-team-run-1/solution_designer');
+      expect(teamContext.leafAgentContextsByRouteKey.get('task-team-run-1/solution_designer')?.state.currentStatus)
+        .not.toBe(AgentStatus.Running);
+      expect(structuralSolutionContext.state.runId).toBe('solution-structural-run');
+      expect(structuralSolutionContext.state.currentStatus).toBe(AgentStatus.Offline);
+
+      callbacks.get('onMessage')?.(JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'running',
+          can_interrupt: true,
+          agent_id: 'unstamped-scoped-solution-run',
+          agent_name: 'solution_designer',
+          member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+          member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+          source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+          source_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+          team_route_key: 'SoftwareEngineeringTeam',
+          team_path: ['SoftwareEngineeringTeam'],
+          task_team_relative_member_route_key: 'solution_designer',
+          task_team_relative_member_path: ['solution_designer'],
+        },
+      }));
+
+      expect(teamContext.leafAgentContextsByRouteKey.get('task-team-run-1/solution_designer')?.state.runId)
+        .toBe('task-team-run-1/solution_designer');
+      expect(teamContext.leafAgentContextsByRouteKey.get('task-team-run-2/solution_designer')?.state.runId)
+        .toBe('scoped-solution-run-2');
+      expect(structuralSolutionContext.state.currentStatus).toBe(AgentStatus.Offline);
+      expect(warnSpy).toHaveBeenCalledWith('Task-team scoped event missing task_team_run_id.');
+    } finally {
+      warnSpy.mockRestore();
+    }
+  });
+
+  it('settles and removes a task-team projection on root offline status without regressing accepted lifecycle on idle', async () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithSoftwareTeam();
+    const structuralTeam = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam');
+    const structuralSolutionContext = teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
+
+    service.connect('parent-team-run', teamContext);
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_ACTIVATED',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-1',
+        task_team_run_id: 'task-team-run-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+      },
+    }));
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_RESULT_REVIEWED',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-1',
+        task_team_run_id: 'task-team-run-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        decision: 'accepted',
+      },
+    }));
+
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TEAM_STATUS',
+      payload: {
+        status: 'idle',
+        task_team_run_id: 'task-team-run-1',
+        task_team_instance_id: 'task-team-instance-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+      },
+    }));
+
+    expect(teamContext.memberNodesByRouteKey.get('task-team-run-1')).toMatchObject({
+      taskExecutionStatus: 'accepted',
+      currentStatus: AgentStatus.Idle,
+    });
+
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TEAM_STATUS',
+      payload: {
+        status: 'offline',
+        task_team_run_id: 'task-team-run-1',
+        task_team_instance_id: 'task-team-instance-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+      },
+    }));
+
+    expect(teamContext.memberNodesByRouteKey.get('task-team-run-1')).toMatchObject({
+      taskExecutionStatus: 'settled',
+      currentStatus: AgentStatus.Offline,
+    });
+    await flushTaskTeamCleanup();
+
+    expect(teamContext.memberNodesByRouteKey.has('task-team-run-1')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.has('task-team-run-1/solution_designer')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam')).toBe(structuralTeam);
+    expect(teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer')).toBe(structuralSolutionContext);
+  });
+
+  it('cascades terminal task-team cleanup through scoped children and nested task-agent contexts only', async () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithSoftwareTeam();
+    const structuralTeam = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam');
+    const structuralSolutionNode = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
+    const structuralSolutionContext = teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
+
+    service.connect('parent-team-run', teamContext);
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_ACTIVATED',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-1',
+        task_team_run_id: 'task-team-run-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+      },
+    }));
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_RESULT_REVIEWED',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-1',
+        task_team_run_id: 'task-team-run-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        decision: 'accepted',
+      },
+    }));
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'AGENT_STATUS',
+      payload: {
+        status: 'running',
+        can_interrupt: true,
+        agent_id: 'scoped-solution-run',
+        agent_name: 'solution_designer',
+        member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+        source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        source_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+        task_agent_run_id: 'nested-task-agent-run',
+        task_agent_instance_id: 'nested-task-agent-instance',
+        task_team_run_id: 'task-team-run-1',
+        task_team_instance_id: 'task-team-instance-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        task_team_relative_member_route_key: 'solution_designer',
+        task_team_relative_member_path: ['solution_designer'],
+      },
+    }));
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'AGENT_STATUS',
+      payload: {
+        status: 'idle',
+        agent_id: 'scoped-solution-run',
+        agent_name: 'solution_designer',
+        member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+        task_team_run_id: 'task-team-run-1',
+        task_team_instance_id: 'task-team-instance-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        task_team_relative_member_route_key: 'solution_designer',
+        task_team_relative_member_path: ['solution_designer'],
+      },
+    }));
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'AGENT_STATUS',
+      payload: {
+        status: 'offline',
+        agent_id: 'scoped-solution-run',
+        agent_name: 'solution_designer',
+        member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+        task_team_run_id: 'task-team-run-1',
+        task_team_instance_id: 'task-team-instance-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        task_team_relative_member_route_key: 'solution_designer',
+        task_team_relative_member_path: ['solution_designer'],
+      },
+    }));
+
+    expect(teamContext.memberNodesByRouteKey.get('task-team-run-1')).toMatchObject({
+      taskExecutionStatus: 'accepted',
+    });
+    expect(teamContext.memberNodesByRouteKey.get('nested-task-agent-run')).toMatchObject({
+      isTaskAgentInstance: true,
+      parentTaskTeamRunId: 'task-team-run-1',
+    });
+    expect(teamContext.leafAgentContextsByRouteKey.has('nested-task-agent-run')).toBe(true);
+    expect(teamContext.leafAgentContextsByRouteKey.get('task-team-run-1/solution_designer')?.state.currentStatus).toBe(AgentStatus.Offline);
+
+    teamContext.focusedMemberRouteKey = 'task-team-run-1/solution_designer';
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_TERMINAL_STATUS',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-1',
+        task_team_run_id: 'task-team-run-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        status: 'settled',
+      },
+    }));
+
+    expect(teamContext.memberNodesByRouteKey.get('task-team-run-1')).toMatchObject({
+      taskExecutionStatus: 'settled',
+    });
+    await flushTaskTeamCleanup();
+
+    expect(teamContext.memberNodesByRouteKey.has('task-team-run-1')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.has('task-team-run-1/solution_designer')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.has('nested-task-agent-run')).toBe(false);
+    expect(teamContext.leafAgentContextsByRouteKey.has('task-team-run-1/solution_designer')).toBe(false);
+    expect(teamContext.leafAgentContextsByRouteKey.has('nested-task-agent-run')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam')).toBe(structuralTeam);
+    expect(teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam/solution_designer')).toBe(structuralSolutionNode);
+    expect(teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer')).toBe(structuralSolutionContext);
+    expect(teamContext.focusedMemberRouteKey.startsWith('task-team-run-1')).toBe(false);
+  });
+
+  it('allows sequential delegations to the same logical team after task-team terminal cleanup', async () => {
+    const { callbacks, service } = createWsHarness();
+    const teamContext = createTeamContextWithSoftwareTeam();
+
+    service.connect('parent-team-run', teamContext);
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_ACTIVATED',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-1',
+        task_team_run_id: 'task-team-run-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+      },
+    }));
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_TERMINAL_STATUS',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-1',
+        task_team_run_id: 'task-team-run-1',
+        task_id: 'task_0001',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        status: 'settled',
+      },
+    }));
+    await flushTaskTeamCleanup();
+
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_ACTIVATED',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-2',
+        task_team_run_id: 'task-team-run-2',
+        task_id: 'task_0002',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+      },
+    }));
+
+    const activeTaskTeamRoots = [...teamContext.memberNodesByRouteKey.values()]
+      .filter((node: any) => node.isTaskTeamInstance && node.logicalTeamRouteKey === 'SoftwareEngineeringTeam');
+    expect(teamContext.memberNodesByRouteKey.has('task-team-run-1')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.has('task-team-run-1/solution_designer')).toBe(false);
+    expect(teamContext.memberNodesByRouteKey.get('task-team-run-2')).toMatchObject({
+      isTaskTeamInstance: true,
+      taskExecutionStatus: 'active',
+      taskId: 'task_0002',
+    });
+    expect(teamContext.memberNodesByRouteKey.has('task-team-run-2/solution_designer')).toBe(true);
+    expect(activeTaskTeamRoots).toHaveLength(1);
+  });
+
   it('repairs a missing task-agent node when the task-agent context already exists', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithWorker();
@@ -1555,6 +2190,109 @@ describe('TeamStreamingService', () => {
     });
   });
 
+  it('serializes task-team scoped approval and denial commands with relative child selectors', () => {
+    const { callbacks, service, wsClient } = createWsHarness();
+    const teamContext = createTeamContextWithSoftwareTeam();
+
+    service.connect('parent-team-run', teamContext);
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TASK_DELEGATION_EVENT',
+      payload: {
+        event_type: 'TASK_DELEGATION_ACTIVATED',
+        execution_kind: 'task_team',
+        task_team_instance_id: 'task-team-instance-approval',
+        task_team_run_id: 'task-team-run-approval',
+        task_id: 'task_approval',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+      },
+    }));
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'TOOL_APPROVAL_REQUESTED',
+        payload: {
+          invocation_id: 'task-team-approve-1',
+          tool_name: 'run_bash',
+          turn_id: 'turn-task-team-approve',
+          arguments: { command: 'pnpm test' },
+          agent_id: 'scoped-solution-run-approval',
+          agent_name: 'solution_designer',
+          member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+          member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+          source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+          source_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+          task_team_run_id: 'task-team-run-approval',
+          task_team_instance_id: 'task-team-instance-approval',
+          task_id: 'task_approval',
+          team_route_key: 'SoftwareEngineeringTeam',
+          team_path: ['SoftwareEngineeringTeam'],
+          task_team_relative_member_route_key: 'solution_designer',
+          task_team_relative_member_path: ['solution_designer'],
+        },
+      } satisfies ServerMessage),
+    );
+
+    service.approveTool('task-team-approve-1');
+
+    expect(JSON.parse(wsClient.send.mock.calls[0][0])).toMatchObject({
+      type: 'APPROVE_TOOL',
+      payload: {
+        invocation_id: 'task-team-approve-1',
+        member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        task_team_run_id: 'task-team-run-approval',
+        team_route_key: 'SoftwareEngineeringTeam',
+        team_path: ['SoftwareEngineeringTeam'],
+        task_team_relative_member_route_key: 'solution_designer',
+        task_team_relative_member_path: ['solution_designer'],
+      },
+    });
+
+    wsClient.send.mockClear();
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'TOOL_APPROVAL_REQUESTED',
+        payload: {
+          invocation_id: 'task-team-deny-1',
+          tool_name: 'write_file',
+          turn_id: 'turn-task-team-deny',
+          arguments: { path: '/tmp/out.txt' },
+          agent_id: 'nested-task-agent-run',
+          agent_name: 'solution_designer',
+          member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+          member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+          source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+          source_path: ['SoftwareEngineeringTeam', 'solution_designer'],
+          task_agent_instance_id: 'nested-task-agent-instance',
+          task_agent_run_id: 'nested-task-agent-run',
+          task_team_run_id: 'task-team-run-approval',
+          task_team_instance_id: 'task-team-instance-approval',
+          task_id: 'task_approval',
+          team_route_key: 'SoftwareEngineeringTeam',
+          team_path: ['SoftwareEngineeringTeam'],
+          task_team_relative_member_route_key: 'solution_designer',
+          task_team_relative_member_path: ['solution_designer'],
+        },
+      } satisfies ServerMessage),
+    );
+
+    service.denyTool('task-team-deny-1', null, 'Not approved for this task-team run.');
+
+    expect(JSON.parse(wsClient.send.mock.calls[0][0])).toMatchObject({
+      type: 'DENY_TOOL',
+      payload: {
+        invocation_id: 'task-team-deny-1',
+        reason: 'Not approved for this task-team run.',
+        member_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        source_route_key: 'SoftwareEngineeringTeam/solution_designer',
+        task_agent_run_id: 'nested-task-agent-run',
+        task_team_run_id: 'task-team-run-approval',
+        team_route_key: 'SoftwareEngineeringTeam',
+        task_team_relative_member_route_key: 'solution_designer',
+      },
+    });
+  });
+
   it('keeps parallel same-member task-agent instances distinct until each settles', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithWorker();
@@ -1662,7 +2400,7 @@ describe('TeamStreamingService', () => {
     };
     const teamContext = {
       focusedMemberRouteKey: 'Student',
-      leafAgentContextsByRouteKey: new Map([
+      leafAgentContextsByRouteKey: new Map<string, any>([
         ['Professor', professorContext],
         ['Student', studentContext],
       ]),

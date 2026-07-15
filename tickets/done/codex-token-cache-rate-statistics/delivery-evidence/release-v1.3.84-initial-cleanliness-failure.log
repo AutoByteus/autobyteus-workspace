@@ -1,0 +1,9 @@
+# release v1.3.84
+# Started: 2026-06-28T09:14:30Z
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+> bash scripts/desktop-release.sh release 1.3.84 -- --release-notes tickets/done/codex-token-cache-rate-statistics/release-notes.md
+
+Error: working tree is not clean. Commit/stash changes first.
+ ELIFECYCLE  Command failed with exit code 1.
+# Finished: 2026-06-28T09:14:31Z

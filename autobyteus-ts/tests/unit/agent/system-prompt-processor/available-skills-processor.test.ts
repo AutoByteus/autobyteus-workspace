@@ -53,7 +53,7 @@ describe('AvailableSkillsProcessor', () => {
     expect(result).toBe(prompt);
   });
 
-  it('injects skill catalog without details when not preloaded', () => {
+  it('does not inject registry skills when no skills are configured', () => {
     const registry = new SkillRegistry();
     const skill = new Skill('test_skill', 'desc', 'body', '/path');
     (registry as any).skills.set('test_skill', skill);
@@ -61,18 +61,16 @@ describe('AvailableSkillsProcessor', () => {
     const processor = new AvailableSkillsProcessor();
     const result = processor.process('Original', {}, 'test_agent', makeContext());
 
-    expect(result).toContain('Original');
-    expect(result).toContain('## Agent Skills');
-    expect(result).toContain('Skill Catalog');
-    expect(result).toContain('- **test_skill**: desc');
-    expect(result).not.toContain(removedSkillToolName);
-    expect(result).not.toContain('body');
+    expect(result).toBe('Original');
   });
 
-  it('mentions load_skill in global discovery only when the tool is actually available', () => {
+  it('does not mention load_skill for configured skills even when the tool is available', () => {
     const registry = new SkillRegistry();
     const skill = new Skill('test_skill', 'desc', 'body', '/path');
     (registry as any).skills.set('test_skill', skill);
+
+    const context = makeContext();
+    context.config.skills = ['test_skill'];
 
     const processor = new AvailableSkillsProcessor();
     const toolInstances = {
@@ -80,9 +78,9 @@ describe('AvailableSkillsProcessor', () => {
         getName: () => removedSkillToolName
       } as BaseTool
     };
-    const result = processor.process('Original', toolInstances, 'test_agent', makeContext());
+    const result = processor.process('Original', toolInstances, 'test_agent', context);
 
-    expect(result).toContain(loadSkillGuidance);
+    expect(result).not.toContain(loadSkillGuidance);
   });
 
   it('uses preloaded-only catalog mode when configured', () => {

@@ -1,0 +1,366 @@
+{
+  "ok": true,
+  "probe": "codex_token_accounting_live_probe",
+  "model": "gpt-5.5",
+  "runId": "codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c",
+  "nonce": "87e18400_e41",
+  "completed_at": "2026-06-28T03:55:50.006Z",
+  "prompt_shape": {
+    "baseline": "direct no-tool response",
+    "tool_probe": "one user turn requesting exactly two separate shell/run_bash file reads before final answer"
+  },
+  "files": {
+    "fileAPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-token-accounting-probe-workspace-61CMDc/probe-a-87e18400_e41.txt",
+    "fileBPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-token-accounting-probe-workspace-61CMDc/probe-b-87e18400_e41.txt",
+    "markerA": "ACCOUNTING_PROBE_A_87e18400_e41",
+    "markerB": "ACCOUNTING_PROBE_B_87e18400_e41"
+  },
+  "rounds": [
+    {
+      "label": "baseline_direct",
+      "websocketTokenUsageMessages": [],
+      "recordCalls": [
+        {
+          "index": 0,
+          "runId": "codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c",
+          "turnId": "019f0c5e-4dcd-71b2-9e87-c548f5db3a60",
+          "statusBefore": "RUNNING",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "usageScope": "per_turn",
+          "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c:019f0c5e-4c70-7d80-92b9-0b3f17935509:019f0c5e-4dcd-71b2-9e87-c548f5db3a60:per_turn:10847:13:10860",
+          "last": {
+            "inputTokens": 10847,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10860
+          },
+          "total": {
+            "inputTokens": 10847,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 10860
+          },
+          "totalDeltaVsPreviousRecordCall": null,
+          "unaccountedTotalDeltaVsLast": null
+        }
+      ],
+      "messageTypes": [
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_STATUS",
+        "AGENT_COMMAND_ACK",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_CONTENT",
+        "SEGMENT_END",
+        "TURN_COMPLETED",
+        "AGENT_STATUS"
+      ]
+    },
+    {
+      "label": "tool_heavy_two_shell_commands",
+      "websocketTokenUsageMessages": [
+        {
+          "usage_event_id": "8f5dd81e-3b60-460c-bda7-7b78de76d48c",
+          "idempotency_key": "codex_token_usage:codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c:019f0c5e-4c70-7d80-92b9-0b3f17935509:019f0c5e-4dcd-71b2-9e87-c548f5db3a60:per_turn:10847:13:10860",
+          "observed_at": "2026-06-28T03:55:38.460Z",
+          "run_id": "codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c",
+          "turn_id": "019f0c5e-4dcd-71b2-9e87-c548f5db3a60",
+          "llm_call_id": null,
+          "call_sequence": null,
+          "root_team_run_id": null,
+          "team_run_path": null,
+          "member_agent_run_id": null,
+          "member_path": null,
+          "member_route_key": null,
+          "agent_definition_id": "codex-token-accounting-live-probe-87e18400-e41",
+          "workspace_id": "agent_ws_ebdc2b62c61d1b16627a7ac0ad149c2fdc43f9e25ddf94a1da89e767808eaee8",
+          "task_agent_instance_id": null,
+          "task_agent_run_id": null,
+          "task_id": null,
+          "runtime_kind": "codex_app_server",
+          "model_provider": "OPENAI",
+          "model_identifier": "gpt-5.5",
+          "model_value": "gpt-5.5",
+          "ingestion_kind": "codex_thread_token_usage",
+          "usage_scope": "per_turn",
+          "snapshot_series_key": null,
+          "previous_snapshot_event_id": null,
+          "input_token_semantic": "gross_includes_cache",
+          "reported_input_tokens": 10847,
+          "reported_output_tokens": 13,
+          "reported_total_tokens": 10860,
+          "accounting_input_tokens": 10847,
+          "accounting_output_tokens": 13,
+          "accounting_total_tokens": 10860,
+          "standard_input_tokens": 5855,
+          "cache_miss_input_tokens": 5855,
+          "cache_read_input_tokens": 4992,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "cache_state": "positive",
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 10847,
+          "billable_output_tokens": 13,
+          "cost_basis": "api_price_estimate",
+          "currency": "USD",
+          "input_price_per_million": 5,
+          "output_price_per_million": 30,
+          "cached_input_read_price_per_million": 0.5,
+          "cached_input_write_price_per_million": null,
+          "cached_input_write_5m_price_per_million": null,
+          "cached_input_write_1h_price_per_million": null,
+          "pricing_source": "autobyteus_model_catalog",
+          "pricing_status": "trusted",
+          "pricing_missing_reason": null,
+          "pricing_snapshot_json": {
+            "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.5",
+            "price_config_id": "autobyteus_model_catalog:OPENAI:gpt-5.5",
+            "model_provider": "OPENAI",
+            "model_identifier": "gpt-5.5",
+            "model_value": "gpt-5.5",
+            "canonical_name": "gpt-5.5",
+            "currency": "USD",
+            "input_price_per_million": 5,
+            "output_price_per_million": 30,
+            "cached_input_read_price_per_million": 0.5,
+            "cached_input_write_price_per_million": null,
+            "cached_input_write_5m_price_per_million": null,
+            "cached_input_write_1h_price_per_million": null,
+            "input_price_tiers": [],
+            "pricing_status": "trusted",
+            "trusted_dimensions": {
+              "input": true,
+              "output": true,
+              "cached_input_read": true,
+              "cached_input_write": false,
+              "cached_input_write_5m": false,
+              "cached_input_write_1h": false
+            },
+            "missing_reason": null,
+            "source": "autobyteus_model_catalog",
+            "effective_from": null,
+            "effective_to": null,
+            "version": null
+          },
+          "pricing_policy_key": "autobyteus_model_catalog:OPENAI:gpt-5.5",
+          "selected_pricing_tier_id": null,
+          "missing_price_dimensions": [],
+          "estimated_api_input_cost": 0.031771,
+          "estimated_api_standard_input_cost": 0.029275,
+          "estimated_api_cache_read_input_cost": 0.002496,
+          "estimated_api_cache_creation_input_cost": null,
+          "estimated_api_cache_creation_5m_input_cost": null,
+          "estimated_api_cache_creation_1h_input_cost": null,
+          "estimated_api_output_cost": 0.00039,
+          "estimated_api_reasoning_output_cost": null,
+          "estimated_api_total_cost": 0.032161,
+          "api_cost_status": "estimated",
+          "meter_delta_input_tokens": 10847,
+          "meter_delta_output_tokens": 13,
+          "meter_delta_total_tokens": 10860,
+          "run_summary_after_event": null,
+          "latest_prompt_tokens": 10847,
+          "effective_context_window_tokens": 258400,
+          "context_window_usage_percent": 4.197755417956657,
+          "raw_usage_json": {
+            "totalTokens": 10860,
+            "inputTokens": 10847,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0
+          },
+          "raw_event_json": {
+            "threadId": "019f0c5e-4c70-7d80-92b9-0b3f17935509",
+            "turnId": "019f0c5e-4dcd-71b2-9e87-c548f5db3a60",
+            "tokenUsage": {
+              "total": {
+                "totalTokens": 10860,
+                "inputTokens": 10847,
+                "cachedInputTokens": 4992,
+                "outputTokens": 13,
+                "reasoningOutputTokens": 0
+              },
+              "last": {
+                "totalTokens": 10860,
+                "inputTokens": 10847,
+                "cachedInputTokens": 4992,
+                "outputTokens": 13,
+                "reasoningOutputTokens": 0
+              },
+              "modelContextWindow": 258400
+            }
+          },
+          "quality_flags": []
+        }
+      ],
+      "recordCalls": [
+        {
+          "index": 1,
+          "runId": "codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c",
+          "turnId": "019f0c5e-7008-75b2-b6e6-9ad02ac6a2a1",
+          "statusBefore": "RUNNING",
+          "hadPendingBefore": false,
+          "readyBefore": false,
+          "usageScope": "per_turn",
+          "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c:019f0c5e-4c70-7d80-92b9-0b3f17935509:019f0c5e-7008-75b2-b6e6-9ad02ac6a2a1:per_turn:11038:86:11124",
+          "last": {
+            "inputTokens": 11038,
+            "cachedInputTokens": 10624,
+            "outputTokens": 86,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 11124
+          },
+          "total": {
+            "inputTokens": 21885,
+            "cachedInputTokens": 15616,
+            "outputTokens": 99,
+            "reasoningOutputTokens": 0,
+            "totalTokens": 21984
+          },
+          "totalDeltaVsPreviousRecordCall": null,
+          "unaccountedTotalDeltaVsLast": null
+        }
+      ],
+      "messageTypes": [
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "AGENT_STATUS",
+        "AGENT_COMMAND_ACK",
+        "AGENT_STATUS",
+        "TOKEN_USAGE_UPDATED",
+        "TOOL_EXECUTION_STARTED",
+        "AGENT_STATUS",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "TOOL_LOG"
+      ]
+    }
+  ],
+  "allRecordTurnTokenUsageCalls": [
+    {
+      "index": 0,
+      "runId": "codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c",
+      "turnId": "019f0c5e-4dcd-71b2-9e87-c548f5db3a60",
+      "statusBefore": "RUNNING",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "usageScope": "per_turn",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c:019f0c5e-4c70-7d80-92b9-0b3f17935509:019f0c5e-4dcd-71b2-9e87-c548f5db3a60:per_turn:10847:13:10860",
+      "last": {
+        "inputTokens": 10847,
+        "cachedInputTokens": 4992,
+        "outputTokens": 13,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10860
+      },
+      "total": {
+        "inputTokens": 10847,
+        "cachedInputTokens": 4992,
+        "outputTokens": 13,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 10860
+      },
+      "totalDeltaVsPreviousRecordCall": null,
+      "unaccountedTotalDeltaVsLast": null
+    },
+    {
+      "index": 1,
+      "runId": "codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c",
+      "turnId": "019f0c5e-7008-75b2-b6e6-9ad02ac6a2a1",
+      "statusBefore": "RUNNING",
+      "hadPendingBefore": false,
+      "readyBefore": false,
+      "usageScope": "per_turn",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c:019f0c5e-4c70-7d80-92b9-0b3f17935509:019f0c5e-7008-75b2-b6e6-9ad02ac6a2a1:per_turn:11038:86:11124",
+      "last": {
+        "inputTokens": 11038,
+        "cachedInputTokens": 10624,
+        "outputTokens": 86,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11124
+      },
+      "total": {
+        "inputTokens": 21885,
+        "cachedInputTokens": 15616,
+        "outputTokens": 99,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 21984
+      },
+      "totalDeltaVsPreviousRecordCall": {
+        "inputTokens": 11038,
+        "cachedInputTokens": 10624,
+        "outputTokens": 86,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 11124
+      },
+      "unaccountedTotalDeltaVsLast": {
+        "inputTokens": 0,
+        "cachedInputTokens": 0,
+        "outputTokens": 0,
+        "reasoningOutputTokens": 0,
+        "totalTokens": 0
+      }
+    }
+  ],
+  "overwrittenPendingCalls": [],
+  "unreconciledPositive": [],
+  "ledgerRows": [
+    {
+      "observedAt": "2026-06-28T03:55:38.460Z",
+      "usageEventId": "8f5dd81e-3b60-460c-bda7-7b78de76d48c",
+      "idempotencyKey": "codex_token_usage:codex_token_accounting_live_probe_87e18400_e41_cca2409473d645738eeaf381626f422c:019f0c5e-4c70-7d80-92b9-0b3f17935509:019f0c5e-4dcd-71b2-9e87-c548f5db3a60:per_turn:10847:13:10860",
+      "turnId": "019f0c5e-4dcd-71b2-9e87-c548f5db3a60",
+      "usageScope": "per_turn",
+      "accountingInputTokens": 10847,
+      "cacheReadInputTokens": 4992,
+      "standardInputTokens": 5855,
+      "accountingOutputTokens": 13,
+      "reasoningOutputTokens": 0,
+      "rawUsageJson": {
+        "totalTokens": 10860,
+        "inputTokens": 10847,
+        "cachedInputTokens": 4992,
+        "outputTokens": 13,
+        "reasoningOutputTokens": 0
+      },
+      "rawEventJson": {
+        "threadId": "019f0c5e-4c70-7d80-92b9-0b3f17935509",
+        "turnId": "019f0c5e-4dcd-71b2-9e87-c548f5db3a60",
+        "tokenUsage": {
+          "total": {
+            "totalTokens": 10860,
+            "inputTokens": 10847,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0
+          },
+          "last": {
+            "totalTokens": 10860,
+            "inputTokens": 10847,
+            "cachedInputTokens": 4992,
+            "outputTokens": 13,
+            "reasoningOutputTokens": 0
+          },
+          "modelContextWindow": 258400
+        }
+      }
+    }
+  ],
+  "websocketTokenUsageCount": 1,
+  "recordTurnTokenUsageCallCount": 2,
+  "ledgerRowCount": 1,
+  "conclusion": "No overwrite or cumulative-vs-last positive gap observed in this probe run."
+}

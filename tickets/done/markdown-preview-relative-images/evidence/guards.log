@@ -1,0 +1,16 @@
+## guard:web-boundary
+
+> autobyteus@1.4.9 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+exit=0
+## guard:localization-boundary
+
+> autobyteus@1.4.9 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-preview-relative-images/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+exit=0
+## git diff --check
+exit=0

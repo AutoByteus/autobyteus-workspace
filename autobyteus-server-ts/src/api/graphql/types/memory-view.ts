@@ -69,6 +69,27 @@ export class MemoryTraceEvent {
 }
 
 @ObjectType()
+export class RawTraceFileSummary {
+  @Field(() => String)
+  fileName!: string;
+
+  @Field(() => String)
+  kind!: string;
+
+  @Field(() => Int)
+  recordCount!: number;
+
+  @Field(() => Int, { nullable: true })
+  segmentIndex?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  firstTimestamp?: number | null;
+
+  @Field(() => Float, { nullable: true })
+  lastTimestamp?: number | null;
+}
+
+@ObjectType()
 export class AgentMemoryView {
   @Field(() => String)
   runId!: string;
@@ -84,6 +105,12 @@ export class AgentMemoryView {
 
   @Field(() => [MemoryTraceEvent], { nullable: true })
   rawTraces?: MemoryTraceEvent[] | null;
+
+  @Field(() => [RawTraceFileSummary], { nullable: true })
+  rawTraceFiles?: RawTraceFileSummary[] | null;
+
+  @Field(() => String, { nullable: true })
+  selectedRawTraceFileName?: string | null;
 }
 
 @Resolver()
@@ -97,8 +124,10 @@ export class MemoryViewResolver {
     @Arg("includeEpisodic", () => Boolean, { defaultValue: true }) includeEpisodic = true,
     @Arg("includeSemantic", () => Boolean, { defaultValue: true }) includeSemantic = true,
     @Arg("includeRawTraces", () => Boolean, { defaultValue: false }) includeRawTraces = false,
+    @Arg("includeRawTraceFiles", () => Boolean, { defaultValue: false }) includeRawTraceFiles = false,
     @Arg("includeArchive", () => Boolean, { defaultValue: false }) includeArchive = false,
     @Arg("rawTraceLimit", () => Int, { nullable: true }) rawTraceLimit?: number | null,
+    @Arg("rawTraceFileName", () => String, { nullable: true }) rawTraceFileName?: string | null,
   ): Promise<AgentMemoryView> {
     const resolvedSource = await getMemoryExplorerSourceService().resolveSource(source as never);
     const store = new MemoryFileStore(resolvedSource.rootDir, { warnOnMissingFiles: !resolvedSource.readOnly });
@@ -108,8 +137,10 @@ export class MemoryViewResolver {
       includeEpisodic,
       includeSemantic,
       includeRawTraces,
+      includeRawTraceFiles,
       includeArchive,
       rawTraceLimit: rawTraceLimit ?? null,
+      rawTraceFileName: rawTraceFileName ?? null,
     });
     return MemoryViewConverter.toGraphql(view);
   }
@@ -124,8 +155,10 @@ export class MemoryViewResolver {
     @Arg("includeEpisodic", () => Boolean, { defaultValue: true }) includeEpisodic = true,
     @Arg("includeSemantic", () => Boolean, { defaultValue: true }) includeSemantic = true,
     @Arg("includeRawTraces", () => Boolean, { defaultValue: false }) includeRawTraces = false,
+    @Arg("includeRawTraceFiles", () => Boolean, { defaultValue: false }) includeRawTraceFiles = false,
     @Arg("includeArchive", () => Boolean, { defaultValue: false }) includeArchive = false,
     @Arg("rawTraceLimit", () => Int, { nullable: true }) rawTraceLimit?: number | null,
+    @Arg("rawTraceFileName", () => String, { nullable: true }) rawTraceFileName?: string | null,
   ): Promise<AgentMemoryView> {
     const resolvedSource = await getMemoryExplorerSourceService().resolveSource(source as never);
     const location = await new AgentMemoryLocationService({ memoryDir: resolvedSource.rootDir })
@@ -141,8 +174,10 @@ export class MemoryViewResolver {
       includeEpisodic,
       includeSemantic,
       includeRawTraces,
+      includeRawTraceFiles,
       includeArchive,
       rawTraceLimit: rawTraceLimit ?? null,
+      rawTraceFileName: rawTraceFileName ?? null,
     });
     return MemoryViewConverter.toGraphql(view);
   }

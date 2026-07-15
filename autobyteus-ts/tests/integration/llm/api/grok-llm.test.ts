@@ -10,9 +10,9 @@ const runIntegration = apiKey ? describe : describe.skip;
 
 const buildModel = () =>
   new LLMModel({
-    name: 'grok-4-1-fast-reasoning',
-    value: 'grok-4-1-fast-reasoning',
-    canonicalName: 'grok-4-1-fast-reasoning',
+    name: 'grok-4.5',
+    value: 'grok-4.5',
+    canonicalName: 'grok-4.5',
     provider: LLMProvider.GROK
   });
 

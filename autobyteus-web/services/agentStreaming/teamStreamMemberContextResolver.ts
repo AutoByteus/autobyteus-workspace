@@ -6,6 +6,7 @@ import {
   extractTaskAgentIdentity,
   getTaskAgentContextByRunId,
 } from './teamTaskAgentContextProjection';
+import { hasTaskTeamScopedFields } from './teamTaskTeamChildProjection';
 
 export interface TeamStreamMemberContextResolution {
   context: AgentContext;
@@ -76,6 +77,10 @@ export const resolveTeamStreamMemberContext = (
   teamContext: AgentTeamContext,
   message: ServerMessage,
 ): TeamStreamMemberContextResolution | null => {
+  if (hasTaskTeamScopedFields(message)) {
+    return null;
+  }
+
   const taskAgentIdentity = extractTaskAgentIdentity(message);
   if (taskAgentIdentity) {
     return {

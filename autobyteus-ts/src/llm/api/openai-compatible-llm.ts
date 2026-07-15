@@ -3,11 +3,12 @@ import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
-import { TokenUsage } from '../utils/token-usage.js';
 import { Message } from '../utils/messages.js';
 import { convertOpenAIToolCalls } from '../converters/openai-tool-call-converter.js';
 import { OpenAIChatRenderer } from '../prompt-renderers/openai-chat-renderer.js';
 import { OpenAICompatibleRequestBuilder } from './openai-compatible-request-builder.js';
+import { createOpenAICompatibleTokenUsageObservation } from './openai-compatible-token-usage-normalizer.js';
+import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 
 // We need to inject the OpenAI client implementation or factory.
 // Python implementation constructs `OpenAI` client inside. 
@@ -53,13 +54,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
     this._renderer = new OpenAIChatRenderer();
   }
 
-  private createTokenUsage(usageData?: OpenAIClient.CompletionUsage): TokenUsage | null {
-    if (!usageData) return null;
-    return {
-      prompt_tokens: usageData.prompt_tokens,
-      completion_tokens: usageData.completion_tokens,
-      total_tokens: usageData.total_tokens
-    };
+  private createTokenUsage(usageData?: OpenAIClient.CompletionUsage): LlmTokenUsageObservation | null {
+    return createOpenAICompatibleTokenUsageObservation(usageData, this.model);
   }
 
   private extractReasoningText(value: unknown): string | null {

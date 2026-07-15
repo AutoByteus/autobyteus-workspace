@@ -3,16 +3,10 @@ import { getLlmProviderDisplayName } from "autobyteus-ts/llm/provider-display-na
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { asObject, asString, type JsonObject } from "./codex-app-server-json.js";
 
-const VALID_REASONING_EFFORTS = new Set(["none", "low", "medium", "high", "xhigh"]);
 const VALID_CODEX_SERVICE_TIERS = new Set(["fast"]);
 
-export const normalizeCodexReasoningEffort = (value: unknown): string | null => {
-  const normalized = asString(value)?.toLowerCase() ?? null;
-  if (!normalized || !VALID_REASONING_EFFORTS.has(normalized)) {
-    return null;
-  }
-  return normalized;
-};
+export const normalizeCodexReasoningEffort = (value: unknown): string | null =>
+  asString(value);
 
 export const normalizeCodexServiceTier = (value: unknown): string | null => {
   const normalized = asString(value)?.toLowerCase() ?? null;

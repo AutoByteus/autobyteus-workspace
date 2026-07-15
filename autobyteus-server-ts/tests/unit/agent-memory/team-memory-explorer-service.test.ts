@@ -64,7 +64,7 @@ describe("TeamMemoryExplorerService", () => {
     await writeTeamMetadata("team-alpha-1", "alpha-team", "Alpha Team", "alpha-member-1");
     await writeTeamMetadata("team-alpha-2", "alpha-team", "Alpha Team", "alpha-member-2");
     await writeTeamMetadata("team-empty", "empty-team", "Empty Team", "empty-member");
-    touch(path.join(tempDir, "agent_teams", "team-alpha-1", "alpha-member-1", "raw_traces.jsonl"), 1000);
+    touch(path.join(tempDir, "agent_teams", "team-alpha-1", "alpha-member-1", "raw_traces_active.jsonl"), 1000);
     touch(path.join(tempDir, "agent_teams", "team-alpha-2", "alpha-member-2", "semantic.jsonl"), 2000);
 
     const page = await new TeamMemoryExplorerService(tempDir).listAgentTeamsWithMemory();
@@ -81,8 +81,8 @@ describe("TeamMemoryExplorerService", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "team-memory-explorer-"));
     await writeTeamMetadata("team-alpha-1", "alpha-team", "Alpha Team", "alpha-member-1");
     await writeTeamMetadata("team-beta-1", "beta-team", "Beta Team", "beta-member-1");
-    touch(path.join(tempDir, "agent_teams", "team-alpha-1", "alpha-member-1", "raw_traces.jsonl"), 1000);
-    touch(path.join(tempDir, "agent_teams", "team-beta-1", "beta-member-1", "raw_traces.jsonl"), 2000);
+    touch(path.join(tempDir, "agent_teams", "team-alpha-1", "alpha-member-1", "raw_traces_active.jsonl"), 1000);
+    touch(path.join(tempDir, "agent_teams", "team-beta-1", "beta-member-1", "raw_traces_active.jsonl"), 2000);
 
     const page = await new TeamMemoryExplorerService(tempDir).listAgentTeamRunsWithMemory("alpha-team");
 
@@ -118,7 +118,7 @@ describe("TeamMemoryExplorerService", () => {
       ],
     });
     touch(
-      path.join(tempDir, "agent_teams", "root-team-run", "child-review-team-run", "nested-reviewer-run", "raw_traces.jsonl"),
+      path.join(tempDir, "agent_teams", "root-team-run", "child-review-team-run", "nested-reviewer-run", "raw_traces_active.jsonl"),
       3000,
     );
 

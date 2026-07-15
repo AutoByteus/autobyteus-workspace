@@ -39,11 +39,24 @@ describe("MemoryViewConverter", () => {
           ts: 1,
         },
       ],
+      rawTraceFiles: [
+        {
+          fileName: "raw_traces_active.jsonl",
+          kind: "active",
+          recordCount: 2,
+          segmentIndex: null,
+          firstTimestamp: null,
+          lastTimestamp: null,
+        },
+      ],
+      selectedRawTraceFileName: "raw_traces_active.jsonl",
     };
 
     const gql = MemoryViewConverter.toGraphql(domain);
     expect(gql.runId).toBe("agent-1");
     expect(gql.workingContext?.[0]?.role).toBe("user");
     expect(gql.rawTraces?.[0]?.turnId).toBe("t1");
+    expect(gql.rawTraceFiles?.[0]?.fileName).toBe("raw_traces_active.jsonl");
+    expect(gql.selectedRawTraceFileName).toBe("raw_traces_active.jsonl");
   });
 });

@@ -69,6 +69,43 @@ describe("raw trace to historical replay events", () => {
     });
   });
 
+  it("emits one successful event for a split explicit-null result", () => {
+    const events = buildHistoricalReplayEvents([
+      {
+        id: "rt-call", traceType: "tool_call", toolCallId: "call-null",
+        toolName: "no_output_tool", toolArgs: {}, turnId: "turn-null", seq: 1, ts: 3,
+      },
+      {
+        id: "rt-result", traceType: "tool_result", toolCallId: "call-null",
+        toolResult: null, toolError: null, turnId: "turn-null", seq: 2, ts: 4,
+      },
+    ]);
+
+    expect(events).toEqual([expect.objectContaining({
+      kind: "tool", invocationId: "call-null", toolName: "no_output_tool",
+      toolResult: null, toolError: null, status: "success",
+    })]);
+  });
+
+  it("preserves terminal-side arguments from historical late-data pairs", () => {
+    const events = buildHistoricalReplayEvents([
+      {
+        id: "rt-call", traceType: "tool_call", toolCallId: "call-web", toolName: "search_web",
+        toolArgs: {}, turnId: "turn-web", seq: 1, ts: 1,
+      },
+      {
+        id: "rt-result", traceType: "tool_result", toolCallId: "call-web", toolName: "search_web",
+        toolArgs: { query: "cats", action_type: "search" }, toolResult: "done",
+        turnId: "turn-web", seq: 2, ts: 2,
+      },
+    ]);
+
+    expect(events).toEqual([expect.objectContaining({
+      kind: "tool", invocationId: "call-web",
+      toolArgs: { query: "cats", action_type: "search" }, toolResult: "done",
+    })]);
+  });
+
   it("coalesces provider compacting and compacted boundaries by provider operation identity", () => {
     const events = buildHistoricalReplayEvents([
       {

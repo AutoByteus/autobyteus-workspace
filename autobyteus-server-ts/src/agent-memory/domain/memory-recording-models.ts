@@ -8,20 +8,62 @@ export type RuntimeMemoryTraceType =
   | "tool_result"
   | "provider_compaction_boundary";
 
-export type RuntimeMemoryTraceInput = {
-  traceType: RuntimeMemoryTraceType;
+type RuntimeMemoryTraceInputBase = {
   turnId: string;
   content?: string | null;
   sourceEvent: string;
   ts?: number | null;
+};
+
+type RuntimeMemoryNonToolTraceInput = RuntimeMemoryTraceInputBase & {
+  traceType: "user" | "assistant" | "reasoning";
   media?: RawTraceMedia | null;
-  toolName?: string | null;
-  toolCallId?: string | null;
-  toolArgs?: Record<string, unknown> | null;
-  toolResult?: unknown;
-  toolError?: string | null;
+  toolName?: never;
+  toolCallId?: never;
+  toolArgs?: never;
+  toolResult?: never;
+  toolError?: never;
   correlationId?: string | null;
 };
+
+export type RuntimeMemoryToolCallTraceInput = RuntimeMemoryTraceInputBase & {
+  traceType: "tool_call";
+  toolName: string;
+  toolCallId: string;
+  toolArgs: Record<string, unknown>;
+  toolResult?: never;
+  toolError?: never;
+  media?: never;
+  correlationId?: never;
+};
+
+export type RuntimeMemoryToolResultTraceInput = RuntimeMemoryTraceInputBase & {
+  traceType: "tool_result";
+  toolName: string;
+  toolCallId: string;
+  toolResult: unknown;
+  toolError: string | null;
+  toolArgs?: never;
+  media?: never;
+  correlationId?: never;
+};
+
+type RuntimeMemoryProviderBoundaryTraceInput = RuntimeMemoryTraceInputBase & {
+  traceType: "provider_compaction_boundary";
+  toolResult?: Record<string, unknown>;
+  correlationId?: string | null;
+  media?: never;
+  toolName?: never;
+  toolCallId?: never;
+  toolArgs?: never;
+  toolError?: never;
+};
+
+export type RuntimeMemoryTraceInput =
+  | RuntimeMemoryNonToolTraceInput
+  | RuntimeMemoryToolCallTraceInput
+  | RuntimeMemoryToolResultTraceInput
+  | RuntimeMemoryProviderBoundaryTraceInput;
 
 export type RuntimeMemorySnapshotUpdate =
   | {

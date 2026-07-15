@@ -93,6 +93,9 @@ uses these collaborators:
   - preserves current-turn context-file media payloads and appends a generated
     `Reference files:` block for context files that resolve to local absolute
     paths;
+  - keeps tool-continuation messages in `append_user_message` mode when they
+    carry context-file media, so the next provider request has a valid media
+    carrier;
   - preserves inter-agent metadata such as `sender_agent_id`,
     `original_message_type`, and `reference_files`;
   - adds exactly one generated `Reference files:` block to recipient-visible
@@ -134,12 +137,15 @@ uses these collaborators:
     `ToolPhase`; direct tool results are not posted back through the runtime
     event inbox.
 - `ToolResultContinuationBuilder`
+  - builds semantic completed-tool continuation text from the processed tool
+    results, for example `The read_media_file tool call completed successfully.`;
   - builds the same-turn `SenderType.TOOL` continuation input for legacy
     text-parser modes;
-  - marks native `api_tool_call` continuations as `tool_history_only`, causing
-    `AgentTurnRunner` to emit `ToolContinuationReadyEvent` and `LlmPhase` to
-    call `LLMRequestAssembler.prepareToolContinuationRequest(...)` without
-    appending a synthetic provider-visible user message.
+  - marks native `api_tool_call` continuations as `tool_history_only` when no
+    context-file media must be carried, causing `AgentTurnRunner` to emit
+    `ToolContinuationReadyEvent` and `LlmPhase` to call
+    `LLMRequestAssembler.prepareToolContinuationRequest(...)` without appending
+    a synthetic provider-visible user message.
 - `LLMResponsePipeline`
   - applies final response processors and publishes assistant output.
 - `AgentExternalEventNotifier`
@@ -325,6 +331,12 @@ payloads. Image, audio, and video context files still populate the corresponding
 malformed `file:` URLs, and unresolved `/rest/.../context-files/...` locators
 are intentionally omitted from `Reference files:` so the text never advertises a
 non-file value as a local server path.
+
+Context-file media classification and LLM media payload validation share the
+same extension-to-kind authority in `src/utils/media-file-kind.ts`. Do not add a
+second image/audio/video allowlist in `ContextFileType`, tool-result
+continuation code, or provider media formatting; those boundaries should agree
+on which context files populate `image_urls`, `audio_urls`, and `video_urls`.
 
 The generated paths are model-visible absolute server paths by design. This is
 intended for the trusted local/server workflow where downstream agents may need

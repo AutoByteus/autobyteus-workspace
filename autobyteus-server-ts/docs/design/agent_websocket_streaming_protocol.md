@@ -78,7 +78,13 @@ task-agent execution, the payload also carries explicit task-agent identity:
 `member_path` / `member_route_key`, and canonical `source_path` /
 `source_route_key`. Clients must key the transient task-agent execution by
 `task_agent_run_id` and must not infer task-agent identity from generated run id
-formats.
+formats. When the status belongs to a task-team execution, root events carry
+`execution_kind: "task_team"`, `task_team_instance_id`, `task_team_run_id`,
+`task_id`, `team_path`, and `team_route_key`; child-member events inside that
+task-team run additionally carry `task_team_relative_member_path` and, when
+available, `task_team_relative_member_route_key`. Clients must key task-team
+roots and scoped child projections by `task_team_run_id`, not by the structural
+team route alone.
 
 Startup lifecycle tokens such as `bootstrapping`, `starting`, `startup`,
 `initializing`, and active `uninitialized` normalize to `initializing`, not to
@@ -103,6 +109,15 @@ Clients must not apply aggregate `TEAM_STATUS` back onto every member. Member
 rows are driven by member `AGENT_STATUS` snapshots/events or member-scoped
 history; an active running or initializing team can legitimately contain one
 active member and other offline members.
+
+For delegated task-team execution cleanup, successful accepted settlement emits
+or bridges a task-team-scoped root `TEAM_STATUS` with `status: "offline"` before
+the task-team handle is disposed. The event carries the task-team identity
+fields described above and uses the task-team root source path. Clients should
+treat it as the authoritative live cleanup signal for the transient task-team
+root and its scoped children; reconnect/reload should rely on the corresponding
+absence of that settled task-team handle from backend status snapshots rather
+than reconstructing it from durable task history.
 
 Status payloads expose only normalized `status` plus documented metadata. Native runtime transition-field names are not part of the server WebSocket status contract.
 
@@ -149,14 +164,25 @@ Content route ownership stays split:
 - Team Communication reference rows use
   `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`
   after resolving persisted `teamRunId + messageId + referenceId` identity.
+- Task-delegation reference rows use
+  `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`
+  after resolving active task-owned `teamRunId + taskId + referenceId`
+  identity. New task `referenceId` values are route-safe opaque identities; the
+  stored `referenceFiles[].path` carries the normalized absolute local file path
+  used for streaming.
 
 The focused frontend member decides whether a message is shown in the sent or
-received Team Communication perspective; sender/receiver identity is metadata on
-the message, not a receiver-owned route or projection owner. For represented
-subteam communication, `represented_sub_team` / `representedSubTeam` metadata
-travels with the sender or receiver participant so parent-to-representative and
-upward-report rows can display the responsible subteam while preserving the
-actual leaf path.
+received Team Communication perspective by deriving that focused node's
+`ConversationTargetAddress` and comparing normalized address keys against each
+message's `senderAddress` and `receiverAddress`. Sender/receiver identity is
+message metadata, not a receiver-owned route or projection owner. Static nested
+members, task-team roots, members inside task-team executions, and delegated
+task-agent executions are represented by `member`, `task_team`, and
+`task_agent` address segments. Current runtime/API/stream payloads do not expose
+old flat Team Communication participant fields such as sender/receiver run ids,
+member paths/route keys, represented-subteam fields, or task-team-scope
+wrappers; old flat projection files are converted by app-data migration before
+normal runtime reads.
 
 Team events expose path-aware member identity:
 
@@ -167,6 +193,17 @@ Team events expose path-aware member identity:
 - delegated task-agent events and member-status overlays also carry
   `task_agent_instance_id`, `task_agent_run_id`, and `task_id` for the concrete
   task-scoped child execution under that logical member.
+- delegated task-team root events carry `execution_kind: "task_team"`,
+  `task_team_instance_id`, `task_team_run_id`, `task_id`, `team_path`, and
+  `team_route_key` for the concrete task-scoped child team execution.
+- task-team child events carry `task_team_run_id` plus
+  `task_team_relative_member_path` / `task_team_relative_member_route_key` so
+  clients can route nested status, transcript, and tool lifecycle messages to
+  the scoped child projection without mutating the structural subteam node.
+- `TASK_DELEGATION_EVENT` payloads carry task-owned UI metadata such as
+  task description/status/target, `referenceFiles`, and normalized
+  `taskArguments` so the Team tab Tasks projection does not scrape Team
+  Communication messages or raw tool-call text.
 - `sub_team_node_name` is a deprecated display alias only and must not be used
   as routing identity.
 
@@ -182,6 +219,21 @@ assistant reply instead of being reconstructed from Team Communication rows
 after the fact. Backend-supported external-channel ingress remains on
 `EXTERNAL_USER_MESSAGE`; normal team/member accepted-input echoes do not use the
 external-channel message boundary.
+
+Server-owned task-delegation `SenderType.SYSTEM` work packets and lifecycle
+notifications are not normal accepted-input echoes. They are stamped by the
+task-delegation subsystem, delivered to the target runtime/model, and projected
+once as a local `SYSTEM_TASK_NOTIFICATION` for the target conversation using the
+stamped task-centered display content. Activation display content uses the same
+`You have a new task.` template for member and team targets and does not expose
+target kind/name labels. The WebSocket stream must therefore expose the visible
+task-delegation notification through the system-notification surface and must
+not also emit a
+`MEMBER_INPUT_MESSAGE` with the same payload. AutoByteus runtime input receives
+generic system-task-notification suppression metadata for these stamped messages
+so runtime-originated notification conversion cannot create a second live
+notification, while unstamped system notifications remain eligible for the
+normal system-notification path.
 
 ## Connection And Command Recovery Contract
 
@@ -244,19 +296,57 @@ Team connection establishment remains restore-aware through the team service:
 3. If no active runtime exists, the service attempts to restore the persisted run.
 4. The handler creates a WebSocket session only after it has a runtime subject and can subscribe to that subject's event stream.
 
-For team runs, the command target is a `TeamMemberSelector` normalized at the
-WebSocket edge from explicit path/route fields only:
+For team runs, `SEND_MESSAGE` targets are normalized at the WebSocket edge to a
+`ConversationTargetAddress`, a typed segment path rooted at the WebSocket-bound
+parent team run. The canonical payload is `conversation_target_address` (camel
+alias `conversationTargetAddress` is accepted):
+
+```json
+{
+  "type": "SEND_MESSAGE",
+  "payload": {
+    "content": "Please inspect this result.",
+    "conversation_target_address": {
+      "parent_team_run_id": "optional-parent-team-run-id-guard",
+      "segments": [
+        { "kind": "member", "member_route_key": "research" },
+        { "kind": "task_team", "task_team_run_id": "task-team-run-id" },
+        { "kind": "member", "member_route_key": "writer" },
+        { "kind": "task_agent", "task_agent_run_id": "task-agent-run-id" }
+      ]
+    }
+  }
+}
+```
+
+Segment rules:
+
+- the first segment must be `member`;
+- `member` selects a structural member by `member_route_key` /
+  `memberRouteKey` or `member_path` / `memberPath`;
+- `task_team` selects one concrete delegated task-team execution by
+  `task_team_run_id` / `taskTeamRunId` and must follow a member segment;
+- `task_agent` selects one concrete delegated task-agent execution by
+  `task_agent_run_id` / `taskAgentRunId`, must follow a member segment, and must
+  be terminal.
+
+Existing structural payloads remain accepted only as parser-bound compatibility
+input and normalize to a one-segment `member` conversation address:
 
 - `target_member_path` / `targetMemberPath`: array of path segments, for
   example `["research", "writer"]`
 - `target_member_route_key` / `targetMemberRouteKey`: normalized route key, for
   example `research/writer`
 
-Scalar command target aliases are not accepted. Payloads containing
-`target_member_name`, `targetMemberName`, `target_agent_name`,
-`targetAgentName`, command-side `agent_name`, command-side `agentName`,
-command-side `agent_id`, command-side `agentId`, or `member_name`/`memberName`
-as a target must fail with an invalid-target response.
+Clients must not mix a nested `conversation_target_address` with flat
+`target_member_*` selectors. Scalar command target aliases are not accepted.
+Payloads containing `target_member_name`, `targetMemberName`,
+`target_agent_name`, `targetAgentName`, command-side `agent_name`,
+command-side `agentName`, command-side `agent_id`, command-side `agentId`, or
+`member_name`/`memberName` as a target must fail with an invalid-target
+response. A stale, inactive, malformed, or mismatched runtime segment also fails
+as an invalid target and must not fall back to a structural member or the
+coordinator.
 
 Control commands remain active-only:
 
@@ -275,12 +365,20 @@ event:
 - `source_route_key` / `sourceRouteKey`, `member_route_key` /
   `memberRouteKey`, or `target_member_route_key` / `targetMemberRouteKey`
 
+For a task-team scoped child approval, the payload must also include
+`task_team_run_id` / `taskTeamRunId` and must use the relative child selector
+emitted by the backend: `task_team_relative_member_path` /
+`taskTeamRelativeMemberPath` or `task_team_relative_member_route_key` /
+`taskTeamRelativeMemberRouteKey`. A nested task-agent approval may additionally
+round-trip `task_agent_run_id` / `taskAgentRunId` as the concrete run guard.
+
 Scalar name/id fields (`agent_name`, `agentName`, `member_name`,
 `memberName`, `target_member_name`, `targetMemberName`, `target_agent_name`,
 `targetAgentName`, `agent_id`, and `agentId`) are rejected as approval command
 targets. The client must round-trip the route/path identity emitted with the
 approval request event. An approval request aimed at a subteam member rather
-than a leaf agent is rejected by the runtime.
+than a leaf agent is rejected by the runtime unless it is accompanied by the
+required task-team scoped child identity.
 
 Team interrupt uses a stricter command shape than single-agent interrupt. A
 client sending `INTERRUPT_GENERATION` to `/ws/agent-team/:teamRunId` must include
@@ -298,8 +396,11 @@ For native AutoByteus single-agent runs, `APPROVE_TOOL` / `DENY_TOOL` delegate
 to the active run backend and then to the agent's public
 `postToolExecutionApproval(...)` boundary. For native team runs, the team
 backend resolves the target member and routes the decision through that member
-agent's public approval API via the async team event path. The backend may
-publish approval status/projection events after a valid decision, but
+agent's public approval API via the async team event path. If `task_team_run_id`
+is present, the parent team first resolves that active task-team child run and
+then resolves the relative child selector inside it before invoking the child
+member runtime. The backend may publish approval status/projection events after
+a valid decision, but
 `ToolExecutionApprovalEvent` is not a WebSocket command payload that can start a
 turn, restore a run, or bypass the active member runtime. Stale, inactive,
 no-pending, and interrupted approval attempts are non-restoring failures.

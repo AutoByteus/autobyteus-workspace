@@ -6,6 +6,57 @@ import { CodexAgentRunBackend } from "../../../../../src/agent-execution/backend
 import { CodexThread } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread.js";
 import { CodexThreadEventName } from "../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 
+vi.mock("../../../../../src/token-usage/pricing/token-price-config-provider.js", () => ({
+  TokenPriceConfigProvider: class TokenPriceConfigProvider {
+    async resolvePolicy(payload: { model_identifier?: string | null }) {
+      const isGpt56Sol = payload.model_identifier === "gpt-5.6-sol";
+      return {
+        pricing_policy_key: isGpt56Sol ? "autobyteus_model_catalog:OPENAI:gpt-5.6-sol" : null,
+        price_config_id: isGpt56Sol ? "autobyteus_model_catalog:OPENAI:gpt-5.6-sol" : null,
+        model_provider: isGpt56Sol ? "OPENAI" : null,
+        model_identifier: isGpt56Sol ? "gpt-5.6-sol" : null,
+        model_value: isGpt56Sol ? "gpt-5.6-sol" : null,
+        canonical_name: isGpt56Sol ? "gpt-5.6-sol" : null,
+        currency: isGpt56Sol ? "USD" : null,
+        input_price_per_million: isGpt56Sol ? 5 : null,
+        output_price_per_million: isGpt56Sol ? 30 : null,
+        cached_input_read_price_per_million: isGpt56Sol ? 0.5 : null,
+        cached_input_write_price_per_million: isGpt56Sol ? 6.25 : null,
+        cached_input_write_5m_price_per_million: null,
+        cached_input_write_1h_price_per_million: null,
+        input_price_tiers: [],
+        pricing_status: isGpt56Sol ? "trusted" : "missing",
+        trusted_dimensions: {
+          input: isGpt56Sol,
+          output: isGpt56Sol,
+          cached_input_read: isGpt56Sol,
+          cached_input_write: isGpt56Sol,
+          cached_input_write_5m: false,
+          cached_input_write_1h: false,
+        },
+        missing_reason: isGpt56Sol ? null : "test_unpriced",
+        source: isGpt56Sol ? "autobyteus_model_catalog" : null,
+        effective_from: null,
+        effective_to: null,
+        version: null,
+      };
+    }
+  },
+}));
+
+const waitForCondition = async (
+  predicate: () => boolean,
+  timeoutMs = 5_000,
+): Promise<void> => {
+  const startedAt = Date.now();
+  while (!predicate()) {
+    if (Date.now() - startedAt > timeoutMs) {
+      throw new Error("Timed out waiting for expected Codex backend event.");
+    }
+    await new Promise<void>((resolve) => setTimeout(resolve, 10));
+  }
+};
+
 const createBackend = (overrides: Record<string, unknown> = {}) => {
   const threadManager = {
     hasThread: vi.fn().mockReturnValue(true),
@@ -120,7 +171,7 @@ describe("CodexAgentRunBackend", () => {
   it("dispatches idle lifecycle events even when token usage updates were observed earlier", async () => {
     const { backend, codexThread, emitThreadEvent } = createBackend();
     codexThread.runContext.runtimeContext.activeTurnId = "turn-usage-1";
-    codexThread.runContext.runtimeContext.codexThreadConfig.model = "gpt-5.4-mini";
+    codexThread.runContext.runtimeContext.codexThreadConfig.model = "gpt-5.6-sol";
     codexThread.setCurrentStatus("RUNNING");
 
     const emittedEvents: Array<Record<string, unknown>> = [];
@@ -134,10 +185,20 @@ describe("CodexAgentRunBackend", () => {
         threadId: "thread-1",
         turnId: "turn-usage-1",
         tokenUsage: {
+          modelContextWindow: 128000,
+          total: {
+            totalTokens: 150,
+            inputTokens: 100,
+            cachedInputTokens: 40,
+            outputTokens: 50,
+            reasoningOutputTokens: 20,
+          },
           last: {
             totalTokens: 15,
             inputTokens: 10,
+            cachedInputTokens: 4,
             outputTokens: 5,
+            reasoningOutputTokens: 2,
           },
         },
       },
@@ -162,7 +223,9 @@ describe("CodexAgentRunBackend", () => {
         },
       },
     });
-    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    await waitForCondition(() =>
+      emittedEvents.some((event) => event.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED),
+    );
 
     expect(emittedEvents).toEqual(
       expect.arrayContaining([
@@ -174,6 +237,36 @@ describe("CodexAgentRunBackend", () => {
           }),
         }),
         expect.objectContaining({
+          eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+          runId: "run-codex-1",
+          payload: expect.objectContaining({
+            turn_id: "turn-usage-1",
+            runtime_kind: "codex_app_server",
+            ingestion_kind: "codex_thread_token_usage",
+            usage_scope: "cumulative_snapshot",
+            idempotency_key: "codex_token_usage:run-codex-1:thread-1:turn-usage-1:cumulative_snapshot:100:40:50:20:150",
+            reported_input_tokens: 10,
+            reported_output_tokens: 5,
+            reported_total_tokens: 15,
+            input_token_semantic: "gross_includes_cache",
+            cache_read_input_tokens: 4,
+            cache_state: "positive",
+            reasoning_output_tokens: 2,
+            latest_prompt_tokens: 10,
+            effective_context_window_tokens: 128000,
+            context_window_usage_percent: 0.0078125,
+            model_provider: "OPENAI",
+            model_identifier: "gpt-5.6-sol",
+            raw_usage_json: {
+              totalTokens: 150,
+              inputTokens: 100,
+              cachedInputTokens: 40,
+              outputTokens: 50,
+              reasoningOutputTokens: 20,
+            },
+          }),
+        }),
+        expect.objectContaining({
           eventType: AgentRunEventType.TURN_COMPLETED,
           payload: expect.objectContaining({
             turnId: "turn-usage-1",
@@ -181,9 +274,27 @@ describe("CodexAgentRunBackend", () => {
         }),
       ]),
     );
+
+    const tokenUsageEvent = emittedEvents.find(
+      (event) => event.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED,
+    );
+    const payload = tokenUsageEvent?.payload as Record<string, any>;
+    expect(payload).toMatchObject({
+      reported_input_tokens: 10,
+      cache_read_input_tokens: 4,
+      standard_input_tokens: 6,
+      cache_creation_input_tokens: null,
+      cached_input_write_price_per_million: 6.25,
+      estimated_api_cache_creation_input_cost: null,
+    });
+    expect(payload.raw_usage_json).not.toHaveProperty("cacheWriteTokens");
+    expect(payload.raw_usage_json).not.toHaveProperty("cache_write_tokens");
+    expect(payload.raw_event_json.tokenUsage.total).not.toHaveProperty("cacheWriteTokens");
+    expect(payload.raw_event_json.autobyteus_cumulative_snapshot_provider_delta_tokens)
+      .toMatchObject({ cache_creation_input_tokens: null });
   });
 
-  it("does not emit runtime events for late token usage updates after idle", () => {
+  it("emits normalized token usage events for late token usage updates after idle", async () => {
     const { backend, codexThread, emitThreadEvent } = createBackend();
     codexThread.runContext.runtimeContext.activeTurnId = "turn-late-usage-1";
     codexThread.runContext.runtimeContext.codexThreadConfig.model = "gpt-5.4-mini";
@@ -197,9 +308,14 @@ describe("CodexAgentRunBackend", () => {
     emitThreadEvent({
       method: CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED,
       params: {
-        threadId: "thread-1",
+        threadId: "thread-late-1",
         turnId: "turn-late-usage-1",
         tokenUsage: {
+          total: {
+            totalTokens: 180,
+            inputTokens: 110,
+            outputTokens: 70,
+          },
           last: {
             totalTokens: 18,
             inputTokens: 11,
@@ -209,6 +325,22 @@ describe("CodexAgentRunBackend", () => {
       },
     });
 
-    expect(emittedEvents).toHaveLength(0);
+    await waitForCondition(() => emittedEvents.length === 1);
+
+    expect(emittedEvents).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
+        runId: "run-codex-1",
+        payload: expect.objectContaining({
+          turn_id: "turn-late-usage-1",
+          usage_scope: "cumulative_snapshot",
+          idempotency_key: "codex_token_usage:run-codex-1:thread-late-1:turn-late-usage-1:cumulative_snapshot:110:x:70:x:180",
+          reported_input_tokens: 11,
+          reported_output_tokens: 7,
+          reported_total_tokens: 18,
+          latest_prompt_tokens: 11,
+        }),
+      }),
+    ]);
   });
 });

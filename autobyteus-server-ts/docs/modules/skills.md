@@ -55,20 +55,30 @@ root. Repository-backed history, tags, and rollbacks are external to AutoByteus.
 Server-owned skill tools are registered from `src/agent-tools/skills` under the
 `Skills` category:
 
-- `get_available_skills` lists available skill names and descriptions.
-- `get_skill_content` retrieves `SKILL.md` content plus a readable file tree for
-  inspection.
-- `load_skill` loads one server-managed skill for runtime use and returns the
-  skill base path, path-resolution guidance, and formatted `SKILL.md` content
-  with resolvable relative Markdown links rewritten to absolute filesystem
-  paths.
+- `get_available_skills` lists the configured skill names and descriptions
+  available to the current agent runtime context.
+- `get_skill_content` retrieves a configured skill's `SKILL.md` content plus a
+  readable file tree for inspection.
+- `load_skill` loads one configured server-managed skill for runtime use and
+  returns the skill base path, path-resolution guidance, and formatted
+  `SKILL.md` content with resolvable relative Markdown links rewritten to
+  absolute filesystem paths.
 
 `load_skill` is intentionally part of the server Skills tool group rather than
 the core `General` tool group. It resolves skills through normal
 server-managed skill sources and CRUD/file-workspace flows. It does not
-register arbitrary model-supplied filesystem paths as skills; unmanaged skill
-directories must be added through normal skill-source or skill-creation
-workflows first.
+register arbitrary model-supplied filesystem paths as skills, and runtime calls
+reject path-like skill inputs. Unmanaged skill directories must be added through
+normal skill-source or skill-creation workflows first and then explicitly
+configured on the agent before that agent can access them at runtime.
+
+The agent-runtime tool boundary is intentionally narrower than the catalog
+boundary. `SkillService.listSkills()` / `skill(name)` can still expose the
+catalog for administration, browsing, and authoring, but runtime tool calls use
+the agent's configured-skill allowlist. If skill access is disabled for the
+runtime (`NONE`) or the agent has zero configured skills, the skill tools expose
+no skills. AutoByteus does not have a user-facing or API-supported "all
+installed skills" / global discovery runtime mode.
 
 ### Catalog Reload
 
@@ -138,6 +148,14 @@ private skill scan.
   package skills as normal catalog entries when their package roots are
   available, so users can browse their `SKILL.md` content and files through the
   existing Skill Detail/File Explorer flow.
+
+Normal launches use configured-only behavior. `PRELOADED_ONLY` remains the
+internal/default runtime mode for "use the agent definition's configured
+skills"; `NONE` remains available for internal no-skill suppression. The removed
+legacy `GLOBAL_DISCOVERY` value is not accepted by public GraphQL inputs or SDK
+contracts. Existing persisted run/team/channel records that still contain that
+legacy value are rewritten to `PRELOADED_ONLY` by the required startup app-data
+migration `20260706_remove_global_skill_discovery_mode`.
 
 ## Supported Package Authoring Layouts
 

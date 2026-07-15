@@ -4,57 +4,61 @@ import {
   ParameterType,
 } from "autobyteus-ts/utils/parameter-schema.js";
 import {
-  DELEGATE_TASKS_TOOL_NAME,
+  DELEGATE_TASK_TOOL_NAME,
   REVIEW_TASK_RESULT_TOOL_NAME,
   SUBMIT_TASK_RESULT_TOOL_NAME,
   type TaskDelegationToolName,
 } from "./task-delegation-tool-contract.js";
 
-const buildTaskItemSchema = (): ParameterSchema => new ParameterSchema([
+export const buildDelegateTaskParameterSchema = (): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
-    name: "member_name",
-    type: ParameterType.STRING,
-    description: "Exact logical team member/template name from the current team roster to receive this delegated task.",
+    name: "target",
+    type: ParameterType.OBJECT,
+    description: "Explicit accountable task target. Use kind=member for a physical current-team agent, or kind=team for a visible current-team subteam/team target.",
     required: true,
+    objectSchema: new ParameterSchema([
+      new ParameterDefinition({
+        name: "kind",
+        type: ParameterType.ENUM,
+        enumValues: ["member", "team"],
+        description: "Target kind. Use member for a physical teammate; use team for a visible team/subteam accountable owner.",
+        required: true,
+      }),
+      new ParameterDefinition({
+        name: "name",
+        type: ParameterType.STRING,
+        description: "Exact target name from the delegate_task target roster for the selected target kind.",
+        required: true,
+      }),
+    ]),
   }),
   new ParameterDefinition({
     name: "description",
     type: ParameterType.STRING,
-    description: "Required rich ready-to-run work-packet body with objective, context, scope, constraints, done conditions, and expected output guidance. Put task instructions here, but do not encode dependencies or lifecycle result/review fields.",
+    description: "Complete task details: objective, context, scope, constraints, done conditions, expected output, and reference guidance for the task itself.",
     required: true,
   }),
   new ParameterDefinition({
     name: "reference_files",
     type: ParameterType.ARRAY,
-    description: "Optional file/artifact paths or references the task-agent should inspect.",
+    description: "Optional absolute local file paths the task execution target should inspect. Use full filesystem paths, for example paths returned by file-writing tools or `realpath`; relative paths and URLs are rejected.",
     required: false,
     arrayItemSchema: { type: "string" },
   }),
 ]);
-
-export const buildDelegateTasksParameterSchema = (): ParameterSchema =>
-  new ParameterSchema([
-    new ParameterDefinition({
-      name: "tasks",
-      type: ParameterType.ARRAY,
-      description: "One or more ready-to-run rich task envelopes to delegate. Each item must include member_name and non-empty description. Do not pass delegator, task_name, dependencies, completion_criteria, expected_deliverables, or status; the framework derives the delegator from tool context. Task-agent results are submitted later with submit_task_result.",
-      required: true,
-      arrayItemSchema: buildTaskItemSchema(),
-    }),
-  ]);
 
 export const buildSubmitTaskResultParameterSchema = (): ParameterSchema =>
   new ParameterSchema([
     new ParameterDefinition({
       name: "message",
       type: ParameterType.STRING,
-      description: "Required reviewable result message for the task bound to the current task-agent context. Do not pass task_id, task_name, member_name, status, or other selectors.",
+      description: "Required reviewable result message for the task bound to the current task-agent or task-team ingress context.",
       required: true,
     }),
     new ParameterDefinition({
       name: "reference_files",
       type: ParameterType.ARRAY,
-      description: "Optional file/artifact paths or references that support this submitted result.",
+      description: "Optional absolute local file paths that support this submitted result. Use full filesystem paths, for example paths returned by file-writing tools or `realpath`; relative paths and URLs are rejected.",
       required: false,
       arrayItemSchema: { type: "string" },
     }),
@@ -65,7 +69,7 @@ export const buildReviewTaskResultParameterSchema = (): ParameterSchema =>
     new ParameterDefinition({
       name: "task_id",
       type: ParameterType.STRING,
-      description: "Required generated Task ID whose latest pending submission is being reviewed. Only the original delegator may review.",
+      description: "Required generated Task ID whose latest pending submission is being reviewed. Only the task review owner may review.",
       required: true,
     }),
     new ParameterDefinition({
@@ -76,15 +80,15 @@ export const buildReviewTaskResultParameterSchema = (): ParameterSchema =>
       required: true,
     }),
     new ParameterDefinition({
-      name: "message",
+      name: "comment",
       type: ParameterType.STRING,
-      description: "Required when decision is request_revision; optional acceptance note when decision is accept.",
+      description: "Task-result review comment. Required when decision is request_revision; optional acceptance feedback when decision is accept.",
       required: false,
     }),
     new ParameterDefinition({
       name: "reference_files",
       type: ParameterType.ARRAY,
-      description: "Optional file/artifact paths or references for revision instructions or acceptance context.",
+      description: "Optional absolute local file paths for revision instructions or acceptance context. Use full filesystem paths, for example paths returned by file-writing tools or `realpath`; relative paths and URLs are rejected.",
       required: false,
       arrayItemSchema: { type: "string" },
     }),
@@ -93,14 +97,8 @@ export const buildReviewTaskResultParameterSchema = (): ParameterSchema =>
 export const buildTaskDelegationToolParameterSchema = (
   toolName: TaskDelegationToolName,
 ): ParameterSchema => {
-  if (toolName === DELEGATE_TASKS_TOOL_NAME) {
-    return buildDelegateTasksParameterSchema();
-  }
-  if (toolName === SUBMIT_TASK_RESULT_TOOL_NAME) {
-    return buildSubmitTaskResultParameterSchema();
-  }
-  if (toolName === REVIEW_TASK_RESULT_TOOL_NAME) {
-    return buildReviewTaskResultParameterSchema();
-  }
+  if (toolName === DELEGATE_TASK_TOOL_NAME) return buildDelegateTaskParameterSchema();
+  if (toolName === SUBMIT_TASK_RESULT_TOOL_NAME) return buildSubmitTaskResultParameterSchema();
+  if (toolName === REVIEW_TASK_RESULT_TOOL_NAME) return buildReviewTaskResultParameterSchema();
   throw new Error(`Unknown task delegation tool '${toolName}'.`);
 };

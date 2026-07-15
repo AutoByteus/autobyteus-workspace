@@ -10,6 +10,10 @@ import {
   ServerMessageType,
 } from "../../../../src/services/agent-streaming/models.js";
 
+const memberAddress = (memberRouteKey: string) => ({
+  segments: [{ kind: "member" as const, memberRouteKey }],
+});
+
 describe("AgentTeamStreamHandler", () => {
   const createTeamRun = (overrides: Record<string, unknown> = {}) => ({
     runId: "team-1",
@@ -23,6 +27,7 @@ describe("AgentTeamStreamHandler", () => {
     }]),
     subscribeToEvents: vi.fn().mockReturnValue(() => {}),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
     interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
     context: {
@@ -110,7 +115,7 @@ describe("AgentTeamStreamHandler", () => {
     expect(message.payload.agent_id).toBe("agent-xyz");
   });
 
-  it("projects canonical team communication events to the flattened websocket payload", () => {
+  it("projects canonical team communication events to the address-first websocket payload", () => {
     const handler = new AgentTeamStreamHandler(
       undefined,
       createTeamRunService(null) as any,
@@ -123,33 +128,8 @@ describe("AgentTeamStreamHandler", () => {
       data: {
         messageId: "message-1",
         teamRunId: "team-1",
-        sender: {
-          memberKind: "agent",
-          memberName: "program_manager",
-          memberPath: ["program_manager"],
-          memberRouteKey: "program_manager",
-          memberRunId: "program-manager-run",
-        },
-        receiver: {
-          memberKind: "agent",
-          memberName: "review_lead",
-          memberPath: ["BuildSquad", "review_lead"],
-          memberRouteKey: "BuildSquad/review_lead",
-          memberRunId: "review-lead-run",
-          representedSubTeam: {
-            memberKind: "agent_team",
-            memberName: "BuildSquad",
-            memberPath: ["BuildSquad"],
-            memberRouteKey: "BuildSquad",
-            memberRunId: "build-squad-run",
-            teamDefinitionId: "build-squad-definition",
-            address: {
-              teamRunId: "team-1",
-              memberPath: ["BuildSquad"],
-              memberRouteKey: "BuildSquad",
-            },
-          },
-        },
+        senderAddress: memberAddress("program_manager"),
+        receiverAddress: memberAddress("BuildSquad/review_lead"),
         content: "Reply with exactly token.",
         messageType: "frontend_parent_to_subteam",
         referenceFiles: [],
@@ -161,39 +141,19 @@ describe("AgentTeamStreamHandler", () => {
     expect(message.payload).toMatchObject({
       messageId: "message-1",
       teamRunId: "team-1",
-      senderRunId: "program-manager-run",
-      senderMemberKind: "agent",
-      senderMemberName: "program_manager",
-      senderMemberPath: ["program_manager"],
-      senderMemberRouteKey: "program_manager",
-      receiverRunId: "review-lead-run",
-      receiverMemberKind: "agent",
-      receiverMemberName: "review_lead",
-      receiverMemberPath: ["BuildSquad", "review_lead"],
-      receiverMemberRouteKey: "BuildSquad/review_lead",
-      receiverRepresentedSubTeam: {
-        memberKind: "agent_team",
-        memberName: "BuildSquad",
-        memberPath: ["BuildSquad"],
-        memberRouteKey: "BuildSquad",
-        memberRunId: "build-squad-run",
-        teamDefinitionId: "build-squad-definition",
-        address: {
-          teamRunId: "team-1",
-          memberPath: ["BuildSquad"],
-          memberRouteKey: "BuildSquad",
-        },
-      },
+      senderAddress: memberAddress("program_manager"),
+      receiverAddress: memberAddress("BuildSquad/review_lead"),
       content: "Reply with exactly token.",
       messageType: "frontend_parent_to_subteam",
       referenceFiles: [],
       createdAt: "2026-05-13T06:00:00.000Z",
-      updatedAt: "2026-05-13T06:00:00.000Z",
       source_path: ["program_manager"],
       source_route_key: "program_manager",
     });
     expect(message.payload.sender).toBeUndefined();
     expect(message.payload.receiver).toBeUndefined();
+    expect(message.payload.senderRunId).toBeUndefined();
+    expect(message.payload.receiverRunId).toBeUndefined();
   });
 
   it("maps member input events to member input messages with canonical nested source identity", () => {
@@ -393,10 +353,9 @@ describe("AgentTeamStreamHandler", () => {
       }),
     );
 
-    expect(teamRun.postMessage).toHaveBeenCalledTimes(1);
-    expect(teamRun.postMessage.mock.calls[0]?.[1]).toEqual({
-      kind: "route_key",
-      memberRouteKey: "worker-a",
+    expect(teamRun.postMessageToConversationTarget).toHaveBeenCalledTimes(1);
+    expect(teamRun.postMessageToConversationTarget.mock.calls[0]?.[1]).toEqual({
+      segments: [{ kind: "member", memberRouteKey: "worker-a" }],
     });
     expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
       teamRun,
@@ -441,20 +400,18 @@ describe("AgentTeamStreamHandler", () => {
       }),
     );
 
-    expect(teamRun.postMessage).toHaveBeenNthCalledWith(
+    expect(teamRun.postMessageToConversationTarget).toHaveBeenNthCalledWith(
       1,
       expect.anything(),
       {
-        kind: "route_key",
-        memberRouteKey: "BuildSquad/review_lead",
+        segments: [{ kind: "member", memberRouteKey: "BuildSquad/review_lead" }],
       },
     );
-    expect(teamRun.postMessage).toHaveBeenNthCalledWith(
+    expect(teamRun.postMessageToConversationTarget).toHaveBeenNthCalledWith(
       2,
       expect.anything(),
       {
-        kind: "path",
-        memberPath: ["BuildSquad", "qa_specialist"],
+        segments: [{ kind: "member", memberPath: ["BuildSquad", "qa_specialist"] }],
       },
     );
   });
@@ -502,7 +459,7 @@ describe("AgentTeamStreamHandler", () => {
       );
     }
 
-    expect(teamRun.postMessage).not.toHaveBeenCalled();
+    expect(teamRun.postMessageToConversationTarget).not.toHaveBeenCalled();
     expect(teamRunService.recordRunActivity).not.toHaveBeenCalled();
     const errorMessages = getSentErrors(connection);
     expect(errorMessages).toHaveLength(16);
@@ -518,7 +475,7 @@ describe("AgentTeamStreamHandler", () => {
       subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
     });
     const restoredRun = createTeamRun({
-      postMessage: vi.fn().mockResolvedValue({ accepted: true }),
+      postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
       subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
     });
     const teamRunService = createTeamRunService(null, {
@@ -550,8 +507,8 @@ describe("AgentTeamStreamHandler", () => {
     );
 
     expect(teamRunService.resolveTeamRun).toHaveBeenCalledTimes(2);
-    expect(restoredRun.postMessage).toHaveBeenCalledTimes(1);
-    expect(initialRun.postMessage).not.toHaveBeenCalled();
+    expect(restoredRun.postMessageToConversationTarget).toHaveBeenCalledTimes(1);
+    expect(initialRun.postMessageToConversationTarget).not.toHaveBeenCalled();
     expect(restoredRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
     expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
       restoredRun,
@@ -744,6 +701,7 @@ describe("AgentTeamStreamHandler", () => {
       true,
       null,
       null,
+      null,
     );
   });
 
@@ -793,6 +751,7 @@ describe("AgentTeamStreamHandler", () => {
       true,
       null,
       null,
+      null,
     );
     expect(teamRun.approveToolInvocation).toHaveBeenNthCalledWith(
       2,
@@ -803,6 +762,7 @@ describe("AgentTeamStreamHandler", () => {
       "inv-camel-route",
       false,
       "not allowed",
+      null,
       null,
     );
   });
@@ -843,7 +803,135 @@ describe("AgentTeamStreamHandler", () => {
       true,
       null,
       "task-agent-run-1",
+      null,
     );
+  });
+
+  it("routes task-team scoped approval commands with relative route selectors and run guards", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.APPROVE_TOOL,
+        payload: {
+          invocation_id: "inv-task-team-route",
+          task_team_run_id: "task-team-run-1",
+          task_team_relative_member_route_key: "solution_designer",
+          task_agent_run_id: "nested-task-agent-run",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+      {
+        kind: "route_key",
+        memberRouteKey: "solution_designer",
+      },
+      "inv-task-team-route",
+      true,
+      null,
+      "nested-task-agent-run",
+      "task-team-run-1",
+    );
+  });
+
+  it("routes task-team scoped denial commands with relative path selectors", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.DENY_TOOL,
+        payload: {
+          invocation_id: "inv-task-team-path",
+          taskTeamRunId: "task-team-run-2",
+          taskTeamRelativeMemberPath: ["review_lead"],
+          reason: "needs review",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+      {
+        kind: "path",
+        memberPath: ["review_lead"],
+      },
+      "inv-task-team-path",
+      false,
+      "needs review",
+      null,
+      "task-team-run-2",
+    );
+  });
+
+  it("rejects task-team scoped approvals without relative child selectors", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.APPROVE_TOOL,
+        payload: {
+          invocation_id: "inv-task-team-structural-only",
+          task_team_run_id: "task-team-run-1",
+          member_route_key: "SoftwareEngineeringTeam/solution_designer",
+        },
+      }),
+    );
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.DENY_TOOL,
+        payload: {
+          invocation_id: "inv-task-team-scalar",
+          task_team_run_id: "task-team-run-1",
+          target_member_name: "solution_designer",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
+    const errorMessages = getSentErrors(connection);
+    expect(errorMessages).toHaveLength(2);
+    expect(
+      errorMessages.every(
+        (message) => message.payload?.code === "INVALID_TARGET",
+      ),
+    ).toBe(true);
   });
 
   it("rejects every scalar tool approval target alias with invalid-target errors", async () => {

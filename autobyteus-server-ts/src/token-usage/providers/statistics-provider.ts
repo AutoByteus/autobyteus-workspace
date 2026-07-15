@@ -1,40 +1,72 @@
-import { TokenUsageStats } from "../domain/models.js";
-import { TokenUsageStore } from "./token-usage-store.js";
+import type {
+  TokenUsageRuntimeModelStatisticsRow,
+  TokenUsageTaskStatisticsResult,
+} from "../domain/statistics-models.js";
+import {
+  buildTokenUsageCostSummaryAggregate,
+  normalizeTokenUsageModelIdentifier,
+  normalizeTokenUsageRuntimeKind,
+} from "../projections/token-usage-cost-summary-aggregate.js";
+import { TokenUsageTaskStatisticsTreeBuilder } from "./task-statistics-tree-builder.js";
+import { TokenUsageLedgerStore } from "./token-usage-ledger-store.js";
+import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
+
+type EventGroups = Map<string, TokenUsageUpdatedPayload[]>;
+
+const pushGroupedEvent = (
+  groups: EventGroups,
+  key: string,
+  event: TokenUsageUpdatedPayload,
+): void => {
+  const events = groups.get(key) ?? [];
+  events.push(event);
+  groups.set(key, events);
+};
 
 export class TokenUsageStatisticsProvider {
-  private store: TokenUsageStore;
+  constructor(
+    private readonly store = new TokenUsageLedgerStore(),
+    private readonly taskTreeBuilder = new TokenUsageTaskStatisticsTreeBuilder(),
+  ) {}
 
-  constructor() {
-    this.store = new TokenUsageStore();
+  async getTotalCost(startDate: Date, endDate: Date): Promise<number | null> {
+    const records = await this.store.listEventsInPeriod(startDate, endDate);
+    return buildTokenUsageCostSummaryAggregate(records).estimated_api_total_cost;
   }
 
-  async getTotalCost(startDate: Date, endDate: Date): Promise<number> {
-    return this.store.getTotalCostInPeriod(startDate, endDate);
-  }
-
-  async getStatisticsPerModel(
+  async getTaskStatisticsInPeriod(
     startDate: Date,
     endDate: Date,
-  ): Promise<Record<string, TokenUsageStats>> {
-    const records = await this.store.getUsageRecordsInPeriod(startDate, endDate);
-    const statsByModel = new Map<string, TokenUsageStats>();
+  ): Promise<TokenUsageTaskStatisticsResult> {
+    const records = await this.store.listEventsInPeriod(startDate, endDate);
+    return { rows: this.taskTreeBuilder.buildRows(records) };
+  }
+
+  async getStatisticsPerRuntimeModel(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<TokenUsageRuntimeModelStatisticsRow[]> {
+    const records = await this.store.listEventsInPeriod(startDate, endDate);
+    const groups: EventGroups = new Map();
 
     for (const record of records) {
-      const modelKey = record.llmModel ?? "unknown";
-      const current = statsByModel.get(modelKey) ?? new TokenUsageStats();
-
-      if (record.role === "user") {
-        current.promptTokens += record.tokenCount;
-        current.promptTokenCost += record.cost;
-      } else if (record.role === "assistant") {
-        current.assistantTokens += record.tokenCount;
-        current.assistantTokenCost += record.cost;
-      }
-
-      current.totalCost += record.cost;
-      statsByModel.set(modelKey, current);
+      const runtimeKind = normalizeTokenUsageRuntimeKind(record.runtime_kind);
+      const modelIdentifier = normalizeTokenUsageModelIdentifier(record);
+      pushGroupedEvent(groups, `${runtimeKind}\u0000${modelIdentifier}`, record);
     }
 
-    return Object.fromEntries(statsByModel.entries());
+    return Array.from(groups.entries()).map(([key, events]) => {
+      const [runtimeKind = "Unknown", modelIdentifier = "Unknown"] = key.split("\u0000");
+      return {
+        rowId: `runtime-model:${runtimeKind}:${modelIdentifier}`,
+        runtimeKind,
+        modelIdentifier,
+        aggregate: buildTokenUsageCostSummaryAggregate(events),
+      };
+    }).sort((a, b) => (
+      (b.aggregate.estimated_api_total_cost ?? -1) - (a.aggregate.estimated_api_total_cost ?? -1) ||
+      a.runtimeKind.localeCompare(b.runtimeKind) ||
+      a.modelIdentifier.localeCompare(b.modelIdentifier)
+    ));
   }
 }

@@ -1,0 +1,48 @@
+# Incidental full-web-suite failure validity classification
+UTC 2026-07-14T12:22:46Z
+Incidental command evidence: validation-evidence/round4-web.log
+Observed: 358 files; 353 passed, 1 skipped, 4 failed; 1861 tests passed, 4 failed.
+## Failing source/test paths are unchanged from reviewed base
+UNCHANGED autobyteus-web/components/workspaces/history/__tests__/WorkspaceHistoryGroup.draft.spec.ts
+UNCHANGED autobyteus-web/components/workspaces/history/WorkspaceHistoryGroup.vue
+UNCHANGED autobyteus-web/components/memory/__tests__/MemoryHome.spec.ts
+UNCHANGED autobyteus-web/components/memory/MemoryHome.vue
+UNCHANGED autobyteus-web/components/settings/__tests__/CodexFullAccessCard.spec.ts
+UNCHANGED autobyteus-web/components/settings/CodexFullAccessCard.vue
+## Exact failing zh-CN noTaskUsage string exists in reviewed base
+450:  'settings.components.settings.TokenUsageStatistics.noTaskUsage': '该日期范围内没有找到代理或团队用量。',
+## Ticket localization diff is Compaction-scoped
+diff --git a/autobyteus-web/localization/messages/zh-CN/settings.ts b/autobyteus-web/localization/messages/zh-CN/settings.ts
+index 1a4f07fd7..79051336f 100644
+--- a/autobyteus-web/localization/messages/zh-CN/settings.ts
++++ b/autobyteus-web/localization/messages/zh-CN/settings.ts
+@@ -181,9 +181,17 @@ const settingsMessages = {
+   'settings.components.settings.CompactionConfigCard.title': '压缩配置',
+-  'settings.components.settings.CompactionConfigCard.description': '选择压缩代理，并调整触发阈值、生效上下文上限以及详细日志。压缩代理留空的运行时/模型字段会继承正在运行的代理。',
+-  'settings.components.settings.CompactionConfigCard.compactorAgent': '压缩代理',
+-  'settings.components.settings.CompactionConfigCard.selectCompactorAgent': '选择压缩代理',
+-  'settings.components.settings.CompactionConfigCard.noCompactorAgentWarning': '尚未配置压缩代理。需要压缩时会失败，直到选择代理为止。',
+-  'settings.components.settings.CompactionConfigCard.selectedLaunchConfig': '已选启动配置',
+-  'settings.components.settings.CompactionConfigCard.runtimeInheritsFromRunningAgent': '继承正在运行代理的运行时',
+-  'settings.components.settings.CompactionConfigCard.modelInheritsFromRunningAgent': '继承正在运行代理的模型',
++  'settings.components.settings.CompactionConfigCard.description': '选择全局压缩策略并调整其运行时机。策略内部配置由系统自动管理。',
++  'settings.components.settings.CompactionConfigCard.compactionStrategy': '压缩策略',
++  'settings.components.settings.CompactionConfigCard.strategyHelp': '用于此服务器后续的压缩操作。',
++  'settings.components.settings.CompactionConfigCard.loadingStrategies': '正在加载压缩策略…',
++  'settings.components.settings.CompactionConfigCard.catalogError': '无法加载压缩策略。',
++  'settings.components.settings.CompactionConfigCard.effectiveSelectionError': '无法加载当前压缩策略。',
++  'settings.components.settings.CompactionConfigCard.emptyCatalog': '此服务器没有可用的压缩策略。',
++  'settings.components.settings.CompactionConfigCard.retry': '重试',
++  'settings.components.settings.CompactionConfigCard.unavailableStrategy': '不可用：{{id}}',
++  'settings.components.settings.CompactionConfigCard.unknownStrategyWarning': '此服务器不支持当前配置的策略。请选择可用策略并保存。',
++  'settings.components.settings.CompactionConfigCard.saveAccessibleName': '保存压缩配置',
++  'settings.components.settings.CompactionConfigCard.saveErrorWithDetail': '未保存压缩配置。{{error}}',
++  'settings.components.settings.CompactionConfigCard.saveError': '无法保存压缩配置。',
++  'settings.components.settings.CompactionConfigCard.invalidRatio': '请输入 1 到 100 之间的百分比。',
++  'settings.components.settings.CompactionConfigCard.invalidOverride': '请输入正整数，或将此字段留空。',
+   'settings.components.settings.CompactionConfigCard.compactionTriggerRatio': '压缩触发比例 (%)',
+@@ -192,2 +200,3 @@ const settingsMessages = {
+   'settings.components.settings.CompactionConfigCard.enableDetailedCompactionLogs': '启用详细压缩日志',
++  'settings.components.settings.ServerSettingsManager.retry': '重试',
+   'settings.components.settings.CodexFullAccessCard.title': 'Codex 完全访问',
+CLASSIFICATION=PRE_EXISTING_OR_UNRELATED_BASELINE_TESTS_NON_GATING_FOR_TICKET_BOUNDARY

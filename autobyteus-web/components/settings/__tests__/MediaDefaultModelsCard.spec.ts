@@ -10,6 +10,8 @@ import {
   DEFAULT_IMAGE_MODEL_IDENTIFIER,
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_SPEECH_MODEL_IDENTIFIER,
+  DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_VIDEO_MODEL_IDENTIFIER,
 } from '../mediaDefaultModelSettings'
 import { useLLMProviderConfigStore, type ProviderWithModels } from '~/stores/llmProviderConfig'
 import { useServerSettingsStore, type ServerSetting } from '~/stores/serverSettings'
@@ -99,6 +101,16 @@ const audioProvidersWithModels: ProviderWithModels[] = [
   },
 ]
 
+const videoProvidersWithModels: ProviderWithModels[] = [
+  {
+    provider: provider('gemini-video', 'Gemini Video'),
+    models: [
+      model(DEFAULT_VIDEO_MODEL_IDENTIFIER, 'gemini-video', 'Gemini Video'),
+      model('gemini/new-video-model', 'gemini-video', 'Gemini Video'),
+    ],
+  },
+]
+
 const setting = (key: string, value: string): ServerSetting => ({
   key,
   value,
@@ -119,6 +131,7 @@ const mountComponent = async (settings: ServerSetting[] = []) => {
       llmProviderConfig: {
         imageProvidersWithModels,
         audioProvidersWithModels,
+        videoProvidersWithModels,
         providersWithModels: [],
         isLoadingModels: false,
         isReloadingModels: false,
@@ -176,6 +189,10 @@ describe('MediaDefaultModelsCard', () => {
     expect(selectorFor(wrapper, DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY).element).toHaveProperty(
       'value',
       DEFAULT_SPEECH_MODEL_IDENTIFIER,
+    )
+    expect(selectorFor(wrapper, DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY).element).toHaveProperty(
+      'value',
+      DEFAULT_VIDEO_MODEL_IDENTIFIER,
     )
   })
 

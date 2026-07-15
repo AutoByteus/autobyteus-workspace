@@ -132,6 +132,21 @@
             </div>
           </div>
 
+          <div v-if="videoModels.length > 0">
+            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+              {{ $t('settings.components.settings.ProviderAPIKeyManager.video_models') }}
+            </h4>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-2">
+              <div
+                v-for="model in videoModels"
+                :key="`panel-video-${model.modelIdentifier}`"
+                class="py-2.5 px-3 bg-white border border-gray-100 hover:border-indigo-200 hover:shadow-sm rounded-lg text-sm transition-all duration-200"
+              >
+                <span class="break-all font-medium text-gray-900">{{ getDisplayedModelLabel(model) }}</span>
+              </div>
+            </div>
+          </div>
+
           <div v-if="!hasModels" class="flex flex-col items-center justify-center py-12 text-center">
             <div class="bg-gray-50 p-4 rounded-full mb-3">
               <span class="i-heroicons-cube-transparent-20-solid w-8 h-8 text-gray-300"></span>
@@ -168,7 +183,7 @@ interface ModelInfo {
   providerType?: string | null
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   providers: ProviderSummary[]
   selectedProviderId: string
   selectedProviderLabel?: string
@@ -176,12 +191,15 @@ const props = defineProps<{
   llmModels: ModelInfo[]
   audioModels: ModelInfo[]
   imageModels: ModelInfo[]
+  videoModels?: ModelInfo[]
   isLoadingModels: boolean
   isReloadingModels: boolean
   isReloadingSelectedProvider: boolean
   canReloadSelectedProvider: boolean
   isProviderConfigured: (providerId: string) => boolean
-}>()
+}>(), {
+  videoModels: () => [],
+})
 
 const emit = defineEmits<{
   (event: 'select-provider', providerId: string): void
@@ -189,7 +207,7 @@ const emit = defineEmits<{
 }>()
 
 const hasModels = computed(
-  () => props.llmModels.length > 0 || props.audioModels.length > 0 || props.imageModels.length > 0,
+  () => props.llmModels.length > 0 || props.audioModels.length > 0 || props.imageModels.length > 0 || props.videoModels.length > 0,
 )
 const selectedProviderLabelText = computed(() => props.selectedProviderLabel || props.selectedProviderId)
 const getDisplayedModelLabel = (model: ModelInfo): string =>

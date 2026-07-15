@@ -97,8 +97,10 @@ surface contract. A raw `mcpToolCall` start emits a display
 `SEGMENT_START(tool_call)` and a durable `TOOL_EXECUTION_STARTED` event with the
 same invocation id, turn id, tool name, and arguments. Completion is enriched
 from the thread-local pending MCP call before the pending state is removed, so
-terminal lifecycle events and storage-only memory retain the same arguments
-that the live segment showed.
+terminal lifecycle events retain the same arguments that the live segment
+showed. Storage keeps those arguments on the already-persisted call only; its
+separate raw result contains identity plus result/error and does not duplicate
+name/arguments.
 
 Codex turn input mapping preserves context-file media continuity while making
 local file paths visible in text. `toCodexUserInput(...)` resolves finalized
@@ -108,7 +110,7 @@ for local absolute paths, and keeps eligible images as `localImage` items.
 HTTP(S), data URL, empty, malformed, and unresolved locator values are not
 listed as local reference files.
 
-## Model Catalog And Fast Mode Configuration
+## Model Catalog, Reasoning Effort, And Fast Mode Configuration
 
 Codex launch-time model configuration is driven by the Codex App Server
 `model/list` response and carried through the existing AutoByteus `llmConfig`
@@ -116,12 +118,23 @@ field. No Codex-specific GraphQL or database field is introduced for these
 model settings.
 
 - `supportedReasoningEfforts` / `supported_reasoning_efforts` is normalized to
-  the existing `reasoning_effort` enum parameter.
+  the existing model-scoped `reasoning_effort` enum parameter. AutoByteus
+  preserves each trimmed non-empty App Server value in first-seen order and
+  does not filter or lowercase it through a product-wide reasoning-effort
+  allowlist. The selected model's App Server row remains the capability
+  authority, so values such as `max`, `ultra`, or future values appear only for
+  models that advertise them.
 - `defaultReasoningEffort` / `default_reasoning_effort` is normalized as the
   schema default. The frontend displays that default as the effective reasoning
   value and **Thinking** state, opens **Advanced** for that ON default, and still
   leaves unset `llmConfig.reasoning_effort` as null so the Codex App Server can
   apply its own model default.
+- An explicit `llmConfig.reasoning_effort` is trimmed and carried without
+  lowercasing or capability filtering through `CodexThreadConfig` to App Server
+  `turn/start.effort`. Empty, whitespace-only, and non-string values remain
+  null. App Server decides whether a directly submitted non-empty value is
+  supported; thread bootstrap does not own a duplicate capability cache or a
+  second `model/list` lookup.
 - `additionalSpeedTiers` / `additional_speed_tiers` containing `fast` adds a
   `service_tier` enum parameter labeled **Fast mode**. Only `fast` is exposed;
   leaving the control at Default/off omits the setting and preserves Codex's
@@ -151,6 +164,28 @@ Codex runtime runs now receive server-owned durable memory in addition to Codex-
 - Codex team members write under their resolved team-member `memoryDir`: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`, nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...` with deeper child team ids appended, and task-agent runs use `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<taskAgentRunId>/...`.
 - `AgentRunManager` attaches the storage-only `AgentRunMemoryRecorder`; the recorder captures accepted `AgentRun.postUserMessage(...)` commands plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
 - The recorder writes shared `RawTraceItem` rows and `working_context_snapshot.json` through the `autobyteus-ts` `RunMemoryFileStore` primitives.
+
+New Codex tool traces use the shared split physical contract. A `tool_call`
+owns compound `(turn_id, tool_call_id)` identity, canonical name, and explicit
+arguments. Its separate `tool_result` owns the same identity plus physically
+present result/error keys, repeats the matched call's verified canonical name,
+and omits arguments. The accumulator reconstructs call-written/result-written
+state from active plus complete rotated segments, suppresses duplicate
+terminals, and never rewrites the call into a combined terminal row. When a
+terminal supplies a non-empty name, it must match the canonical lifecycle name;
+a conflict is logged and skipped without completion. A name-omitting terminal
+uses the matched lifecycle name.
+
+Call timing follows provider argument readiness. Ordinary Codex command, file,
+dynamic, and MCP starts with explicit argument objects are written early. A
+hosted `webSearch` placeholder start omits `arguments` and creates no raw tool
+row, but its normalized start still establishes the live ordered card and
+flushes reasoning that preceded it. The terminal action supplies authoritative
+query/open/find arguments, so storage appends the call first and then the
+minimal result without splitting reasoning written after the card. A genuinely
+result-first terminal still flushes before the inferred call. An explicit `{}`
+is a valid no-argument call. The shared accumulator does not parse raw Codex
+items or branch on `search_web`; presence semantics belong to the converter.
 
 This memory is the normal run-history display replay source and is also useful
 for inspection and future offline analyzers. It is **not** Codex runtime memory
@@ -312,6 +347,13 @@ run ends with open reasoning and no later visible write or `TURN_COMPLETED`
 boundary, the local replay can still be incomplete rather than recovered from
 Codex native history.
 
+Tool replay uses one complete-corpus logical interaction per compound identity.
+New minimal results carry the verified canonical name locally and obtain
+arguments from their call even when rotation places the pair in different
+files. Historical name-less results and result-side name/argument supersets
+remain readable; supersets can override historical call metadata only inside
+the read projection. That overlay is never used to decide a new write.
+
 `AgentRunViewProjectionService` owns the source-authority policy and always
 loads local replay projection through `LocalMemoryRunViewProjectionProvider`,
 regardless of `runtimeKind`. It has no normal UI branch that selects
@@ -352,8 +394,8 @@ conversation is being applied.
 
 - Raw Codex event interpretation stays inside `src/agent-execution/backends/codex/events/`.
 - `item/started` / `item/completed` with `item.type = dynamicToolCall` are the authoritative raw owners for non-migrated Codex dynamic-tool execution lifecycle. The converter emits display segments and execution lifecycle separately: start produces `SEGMENT_START(tool_call)` plus `TOOL_EXECUTION_STARTED`, and completion produces exactly one terminal `TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED` before `SEGMENT_END(tool_call)`.
-- `item/started` with `item.type = mcpToolCall` follows the split surface and is the canonical start authority for storage-only memory. `item/completed(mcpToolCall)` closes the display segment, while `codex/local/mcpToolExecutionCompleted` emits exactly one terminal lifecycle event enriched with the pending call's canonicalized tool name, turn id, and arguments.
-- `item/started` / `item/completed` with `item.type = webSearch` are the authoritative raw owners for Codex built-in `search_web` execution lifecycle. The converter emits the same separated transcript and lifecycle surfaces: start produces `SEGMENT_START(tool_call, tool_name=search_web)` plus `TOOL_EXECUTION_STARTED(search_web)`, and completion produces exactly one terminal lifecycle event before `SEGMENT_END(tool_call)`.
+- `item/started` with `item.type = mcpToolCall` follows the split surface and is the canonical start authority for storage-only memory. `item/completed(mcpToolCall)` closes the display segment, while `codex/local/mcpToolExecutionCompleted` emits exactly one terminal lifecycle event enriched with the pending call's canonicalized tool name, turn id, and arguments. Those terminal fields serve live lifecycle consumers and missing-call materialization; the recorder verifies any supplied terminal name against lifecycle state, persists that canonical name on the raw result, and continues to keep arguments call-only.
+- `item/started` / `item/completed` with `item.type = webSearch` are the authoritative raw owners for Codex built-in `search_web` execution lifecycle. The converter emits the same separated transcript and lifecycle surfaces: start produces `SEGMENT_START(tool_call, tool_name=search_web)` plus `TOOL_EXECUTION_STARTED(search_web)` but omits `arguments` for a provider placeholder; completion supplies the authoritative action arguments in exactly one terminal lifecycle event before `SEGMENT_END(tool_call)`. Storage therefore defers the call until terminal readiness instead of persisting placeholder `{}`.
 - Raw `function_call_output` remains diagnostic `TOOL_LOG` output for dynamic tools. It is not the terminal lifecycle authority and must not be used as a substitute for success/error Activity state.
 - Browser/media/task-delegation/communication/published-artifact tools from
   `autobyteus_agent_tools` use the MCP lifecycle path, not Codex
@@ -370,7 +412,7 @@ conversation is being applied.
 - In practice, Codex may emit visible final-answer text only after reasoning finishes, which can make text streaming appear as a late burst even though lifecycle/tool events are still live.
 - Large long-running Codex turns can also become bursty and include long silent gaps at the native `codex app-server` layer; when debugging attribution, compare native raw deltas with backend `SEGMENT_CONTENT` cadence before blaming the AutoByteus bridge.
 - Team member runtime identity is server-allocated and opaque; route keys/member paths remain the team routing identity, and Codex thread ids are stored separately as runtime-native references.
-- Storage-only Codex memory appends active raw traces and updates the working-context snapshot for normal user/assistant/tool records. Dynamic tools, MCP tool calls, and built-in tool-like items such as `search_web` are recorded from normalized lifecycle events as tool-call and terminal tool-result traces; display `SEGMENT_*` events alone are not treated as memory tool-result authority. Existing historical rows that were already persisted with empty tool arguments are not backfilled by this path. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or snapshot windowing policy in this path.
+- Storage-only Codex memory appends active raw traces and updates the working-context snapshot for normal user/assistant/tool records. Dynamic tools, MCP tool calls, and built-in tool-like items such as `search_web` are recorded from normalized lifecycle events as a strict call plus minimal terminal result; display `SEGMENT_*` events alone are not treated as memory tool-result authority. Existing historical split/superset rows are read directly and are not rewritten or backfilled; no migration, schema-version branch, or Memory Sync change is involved. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or snapshot windowing policy in this path.
 - Raw Codex debug capture is available through `CODEX_THREAD_RAW_EVENT_LOG_DIR`; see `docs/design/codex_raw_event_mapping.md` for the audit workflow and file format.
 
 ## Validation Notes
@@ -382,8 +424,13 @@ conversation is being applied.
   mixed-runtime task-delegation proof. The default command
   `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`
   should skip when live flags are absent. To exercise the live path, run with a
-  working LMStudio Qwen model and Codex `gpt-5.5`, for example:
-  `RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts -t "AutoByteus coordinator delegates work and reviews a concrete Codex task-agent result/revision cycle" --no-file-parallelism`.
+  working LMStudio Qwen model and Codex `gpt-5.5`; use exact `LMSTUDIO_MODEL_ID`
+  pinning for deterministic provider-native tool calls, or omit it to use the
+  `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment fallback. This proof also
+  protects task-centered `SYSTEM_TASK_NOTIFICATION` display content, uniform
+  member/team activation copy, no duplicate member-input echo, and the canonical
+  `review_task_result.comment` review field. Example:
+  `RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_CODEX_E2E=1 APP_ENV=test LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-27b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --reporter=dot`.
 - These live probes are intentionally opt-in and require the matching local
   runtime prerequisites; they must not become default CI prerequisites.
 

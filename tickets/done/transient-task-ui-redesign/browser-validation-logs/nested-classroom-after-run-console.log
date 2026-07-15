@@ -1,0 +1,15 @@
+CONSOLE debug [vite] connecting...
+CONSOLE debug [vite] connected.
+CONSOLE log serverStore: Initializing server config
+CONSOLE log serverStore: Not in Electron environment. Skipping server initialization.
+CONSOLE info <Suspense> is an experimental feature and its API will likely change.
+CONSOLE log ServerLoading: Component mounted with status: running
+CONSOLE log serverStore: Checking server health at /rest/health
+CONSOLE debug [vite] connecting...
+CONSOLE debug [vite] connected.
+CONSOLE log serverStore: Initializing server config
+CONSOLE log serverStore: Not in Electron environment. Skipping server initialization.
+CONSOLE info <Suspense> is an experimental feature and its API will likely change.
+CONSOLE log ServerLoading: Component mounted with status: running
+CONSOLE log serverStore: Checking server health at /rest/health
+CONSOLE log Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm

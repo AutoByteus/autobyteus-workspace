@@ -1,0 +1,135 @@
+{
+  "unique": "live_ui_click_1782549466541_e9d094c3",
+  "modelIdentifier": "gpt-5.5",
+  "workspaceRootPath": "/tmp/autobyteus-live-ui-click-conversation-target/workspace",
+  "createdAgentDefinitionIds": [
+    "program-manager-live-ui-click-1782549466541-e9d094c3",
+    "review-lead-live-ui-click-1782549466541-e9d094c3",
+    "qa-specialist-live-ui-click-1782549466541-e9d094c3"
+  ],
+  "createdTeamDefinitionIds": [
+    "buildsquad-live-ui-click-1782549466541-e9d094c3",
+    "parentdeliveryteam-live-ui-click-1782549466541-e9d094c3"
+  ],
+  "agents": {
+    "coordinator": {
+      "id": "program-manager-live-ui-click-1782549466541-e9d094c3",
+      "name": "program_manager_live_ui_click_1782549466541_e9d094c3"
+    },
+    "reviewLead": {
+      "id": "review-lead-live-ui-click-1782549466541-e9d094c3",
+      "name": "review_lead_live_ui_click_1782549466541_e9d094c3"
+    },
+    "qa": {
+      "id": "qa-specialist-live-ui-click-1782549466541-e9d094c3",
+      "name": "qa_specialist_live_ui_click_1782549466541_e9d094c3"
+    }
+  },
+  "childTeamDefinition": {
+    "id": "buildsquad-live-ui-click-1782549466541-e9d094c3",
+    "name": "BuildSquad_live_ui_click_1782549466541_e9d094c3"
+  },
+  "parentTeamDefinition": {
+    "id": "parentdeliveryteam-live-ui-click-1782549466541-e9d094c3",
+    "name": "ParentDeliveryTeam_live_ui_click_1782549466541_e9d094c3"
+  },
+  "teamRunId": "parentdeliveryteam_live_ui_click_1782549466541_e_db95a9dfe9b645429772a7dc8b68f81a",
+  "run": {
+    "success": true,
+    "message": "Agent team run created successfully.",
+    "teamRunId": "parentdeliveryteam_live_ui_click_1782549466541_e_db95a9dfe9b645429772a7dc8b68f81a"
+  },
+  "resume": {
+    "teamRunId": "parentdeliveryteam_live_ui_click_1782549466541_e_db95a9dfe9b645429772a7dc8b68f81a",
+    "isActive": true,
+    "metadata": {
+      "teamRunId": "parentdeliveryteam_live_ui_click_1782549466541_e_db95a9dfe9b645429772a7dc8b68f81a",
+      "teamDefinitionId": "parentdeliveryteam-live-ui-click-1782549466541-e9d094c3",
+      "teamDefinitionName": "ParentDeliveryTeam_live_ui_click_1782549466541_e9d094c3",
+      "coordinatorMemberRouteKey": "program_manager",
+      "createdAt": "2026-06-27T08:37:46.569Z",
+      "archivedAt": null,
+      "memberTree": [
+        {
+          "memberKind": "agent",
+          "memberRouteKey": "program_manager",
+          "memberPath": [
+            "program_manager"
+          ],
+          "memberName": "program_manager",
+          "memberRunId": "program_manager_live_ui_click_1782549466541_e9d0_596722f7e4eb46559e1ea16fcc875ea4",
+          "runtimeKind": "codex_app_server",
+          "platformAgentRunId": null,
+          "agentDefinitionId": "program-manager-live-ui-click-1782549466541-e9d094c3",
+          "llmModelIdentifier": "gpt-5.5",
+          "autoExecuteTools": true,
+          "skillAccessMode": "NONE",
+          "llmConfig": null,
+          "workspaceRootPath": "/tmp/autobyteus-live-ui-click-conversation-target/workspace",
+          "applicationExecutionContext": null,
+          "role": null,
+          "description": null
+        },
+        {
+          "memberKind": "agent_team",
+          "memberRouteKey": "BuildSquad",
+          "memberPath": [
+            "BuildSquad"
+          ],
+          "memberName": "BuildSquad",
+          "memberRunId": "buildsquad_live_ui_click_1782549466541_e9d094c3_c505c20fa3c94faa89a1b96a07f2c789",
+          "teamDefinitionId": "buildsquad-live-ui-click-1782549466541-e9d094c3",
+          "teamRunId": "buildsquad_live_ui_click_1782549466541_e9d094c3_c505c20fa3c94faa89a1b96a07f2c789",
+          "coordinatorMemberRouteKey": "BuildSquad/review_lead",
+          "memberTree": [
+            {
+              "memberKind": "agent",
+              "memberRouteKey": "BuildSquad/review_lead",
+              "memberPath": [
+                "BuildSquad",
+                "review_lead"
+              ],
+              "memberName": "review_lead",
+              "memberRunId": "review_lead_live_ui_click_1782549466541_e9d094c3_4acdc06e173c4ec3bccbeca0bbc14b5e",
+              "runtimeKind": "codex_app_server",
+              "platformAgentRunId": null,
+              "agentDefinitionId": "review-lead-live-ui-click-1782549466541-e9d094c3",
+              "llmModelIdentifier": "gpt-5.5",
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "llmConfig": null,
+              "workspaceRootPath": "/tmp/autobyteus-live-ui-click-conversation-target/workspace",
+              "applicationExecutionContext": null,
+              "role": null,
+              "description": null
+            },
+            {
+              "memberKind": "agent",
+              "memberRouteKey": "BuildSquad/qa_specialist",
+              "memberPath": [
+                "BuildSquad",
+                "qa_specialist"
+              ],
+              "memberName": "qa_specialist",
+              "memberRunId": "qa_specialist_live_ui_click_1782549466541_e9d094_c6f23c8624a8433b99d68f59840e8d12",
+              "runtimeKind": "codex_app_server",
+              "platformAgentRunId": null,
+              "agentDefinitionId": "qa-specialist-live-ui-click-1782549466541-e9d094c3",
+              "llmModelIdentifier": "gpt-5.5",
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "llmConfig": null,
+              "workspaceRootPath": "/tmp/autobyteus-live-ui-click-conversation-target/workspace",
+              "applicationExecutionContext": null,
+              "role": null,
+              "description": null
+            }
+          ],
+          "role": null,
+          "description": null
+        }
+      ]
+    }
+  },
+  "createdAt": "2026-06-27T08:37:46.597Z"
+}

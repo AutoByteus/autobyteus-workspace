@@ -23,10 +23,6 @@ export type CompactionAgentRunnerResult = {
 
 export interface CompactionAgentRunner {
   runCompactionTask(task: CompactionAgentTask): Promise<CompactionAgentRunnerResult>;
-  describeConfiguredCompactor?():
-    | CompactionAgentExecutionMetadata
-    | null
-    | Promise<CompactionAgentExecutionMetadata | null>;
 }
 
 export class CompactionAgentRunnerError extends Error {

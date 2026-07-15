@@ -1,4 +1,7 @@
-import { authorizedFetch, getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
+import {
+  fetchWithRemoteAccessCredential,
+  getActiveRemoteAccessCredential,
+} from '~/utils/remoteAccess/authorizedTransport';
 
 const PROTECTED_REST_PREFIXES = [
   '/rest/files/',
@@ -43,11 +46,29 @@ export function isProtectedRemoteAccessResourceUrl(url: string): boolean {
 }
 
 export function shouldLoadResourceThroughAuthorizedFetch(url: string): boolean {
-  return isProtectedRemoteAccessResourceUrl(url) && Boolean(getActiveRemoteAccessCredential());
+  return shouldLoadResourceThroughAuthorizedFetchWithCredential(
+    url,
+    getActiveRemoteAccessCredential(),
+  );
 }
 
-export async function fetchAuthorizedResourceBlob(url: string, init: RequestInit = {}): Promise<Blob> {
-  const response = await authorizedFetch(url, { ...init, cache: init.cache ?? 'no-store' });
+export function shouldLoadResourceThroughAuthorizedFetchWithCredential(
+  url: string,
+  credential: string | null,
+): boolean {
+  return isProtectedRemoteAccessResourceUrl(url) && Boolean(credential);
+}
+
+export async function fetchAuthorizedResourceBlob(
+  url: string,
+  init: RequestInit = {},
+  credentialSnapshot: string | null = getActiveRemoteAccessCredential(),
+): Promise<Blob> {
+  const response = await fetchWithRemoteAccessCredential(
+    url,
+    { ...init, cache: init.cache ?? 'no-store' },
+    credentialSnapshot,
+  );
   if (!response.ok) {
     throw new Error(`Failed to fetch protected resource (${response.status} ${response.statusText})`);
   }

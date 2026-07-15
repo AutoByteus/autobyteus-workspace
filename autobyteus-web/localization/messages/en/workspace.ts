@@ -17,44 +17,36 @@ const messages = {
     "Configuration",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
-  "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility":
-    "Self-evolution eligibility",
-  "workspace.components.workspace.config.AgentRunConfigForm.self_evolution_eligibility_help":
-    "Allow this run to offer “Self improve” after work completes. The setting is snapshotted at launch.",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
-  "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility":
-    "Self-evolution eligibility",
-  "workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility_help":
-    "Allow this team run’s members to offer “Self improve” after work completes. Member overrides can refine this before launch.",
+  "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
+    "Team Members Override",
+  "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
+    "{{count}} overridden",
   "workspace.components.workspace.config.MemberOverrideItem.coordinator":
     "Coordinator",
   "workspace.components.workspace.config.MemberOverrideItem.overridden":
     "Overridden",
   "workspace.components.workspace.config.MemberOverrideItem.runtime_override":
-    "Runtime Override",
+    "Runtime",
   "workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default":
-    "Use global runtime default",
+    "Global default",
+  "workspace.components.workspace.config.MemberOverrideItem.llm_model_override":
+    "LLM Model",
+  "workspace.components.workspace.config.MemberOverrideItem.use_global_model_default":
+    "Global default",
   "workspace.components.workspace.config.MemberOverrideItem.search_models":
     "Search models...",
   "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
     "Choose a compatible member model",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_approve":
+    "Auto approve",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
-    "Auto-execute: Use global",
+    "Global default",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
-    "Auto-execute: ON",
+    "On",
   "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
-    "Auto-execute: OFF",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_override":
-    "Self-evolution override",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_use_team_default":
-    "Use team default",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_enabled":
-    "Eligible",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_disabled":
-    "Not eligible",
-  "workspace.components.workspace.config.MemberOverrideItem.self_evolution_help":
-    "Optional launch-time override for this member’s self-evolution eligibility snapshot.",
+    "Off",
   "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
     "Agent",
   "workspace.components.workspace.running.RunningRunRow.newRunLabel":
@@ -105,12 +97,8 @@ const messages = {
     "Represents",
   "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
     "Focused subteam",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
-    "Subteam members",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.task_agent_badge":
-    "Task agent",
-  "workspace.components.workspace.team.TeamMemberMonitorTile.member_badge":
-    "Member",
+  "workspace.components.workspace.team.AgentTeamEventMonitor.no_activity_yet":
+    "No activity yet.",
   "workspace.components.workspace.team.TeamMembersPanel.team_members":
     "Team roster",
   "workspace.components.workspace.team.TeamMembersPanel.no_active_team_members":
@@ -123,6 +111,52 @@ const messages = {
     "Task agent",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "Approval required",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.tasks":
+    "Tasks",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_singular":
+    "task",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural":
+    "tasks",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_agent":
+    "Focus agent",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_team":
+    "Focus team",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus":
+    "Focus",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.technical_details":
+    "Technical details",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.select_task":
+    "Select a task to read it.",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice":
+    "Waiting for user action in Activity.",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.target_kind":
+    "Target kind",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_type":
+    "Task type",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.target":
+    "Target",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty":
+    "No delegated tasks yet",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail":
+    "Delegated work appears here from saved task records.",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_agent":
+    "Task Agent",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_team":
+    "Task Team",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
+    "Approval required",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_id":
+    "Task ID",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_run_id":
+    "Agent run ID",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.agent_team_run_id":
+    "Agent team run ID",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.description_unavailable":
+    "Task description unavailable",
+  "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
+    "Members",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
+    "Temporary task execution",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
@@ -159,13 +193,13 @@ const messages = {
     "Model",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "Select a model",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.self_improve": "Self improve",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.standalone_scope": "this run",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.team_member_scope": "this member's run",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.aria_label": "Self improve {{scope}}",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.tooltip": "Start a visible Skill Self-Evolver for {{scope}}. It may update configured skill packages or make no changes.",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.run_not_eligible": "This run is not eligible for self-improvement.",
-  "workspace.components.workspace.selfEvolution.SelfEvolutionComposerCta.started_toast": "Self improve started. Skills may be updated or no changes may be made.",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.improve_skills": "improve skills",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.standalone_scope": "this run",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.team_member_scope": "this member's run",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.aria_label": "improve skills {{scope}}",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.tooltip": "Start a visible Retrospective Skill Improver for {{scope}}. It may update configured skill packages or make no changes.",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.run_not_eligible": "This run is not eligible for Skill Improvement.",
+  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.started_toast": "Improve skills started. Skills may be updated or no changes may be made.",
 } satisfies TranslationCatalog;
 
 export default messages;

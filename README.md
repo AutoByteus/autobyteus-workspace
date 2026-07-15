@@ -200,16 +200,43 @@ noVNC:   printed by the launcher, usually http://localhost:6080
 VNC:     printed by the launcher, usually localhost:5908
 ```
 
-Upgrade every managed Docker node to the latest image while keeping named volumes:
+Upgrade every managed Docker node while keeping named volumes. A plain upgrade
+uses each node's saved image ref, so mixed fleets stay on their current image
+line (for example, `latest` nodes stay on `latest` and `latest-zh` nodes stay
+on `latest-zh`):
 
 ```bash
 autobyteus-docker upgrade --all
+```
+
+To intentionally retarget every managed node to a new tag or image, make that
+explicit:
+
+```bash
+autobyteus-docker upgrade --all --tag latest-zh
+autobyteus-docker upgrade --all --image autobyteus/custom-server:latest-zh
 ```
 
 Remove every managed Docker node while keeping named volumes:
 
 ```bash
 autobyteus-docker destroy --all
+```
+
+Remove one launcher-managed node, including stale launcher state left after a
+manual `docker rm`, without deleting its named volumes or host workspaces:
+
+```bash
+autobyteus-docker destroy --name autobyteus-server-5
+autobyteus-docker new-container  # reuses the lowest available indexed slot
+```
+
+The targeted form accepts only AutoByteus-managed server nodes and refuses
+ambiguous, conflicting, or unmanaged containers. It does not own Docker
+Buildx infrastructure. Remove the separate builder through its owner:
+
+```bash
+docker buildx rm multi-platform-builder
 ```
 
 Reset to one fresh managed Docker node:
@@ -326,16 +353,23 @@ headless runs.
     starts/resumes Codex with an effective `danger-full-access` sandbox even if
     the saved full-access setting is off. Leave auto-approve off when you want
     visible approval prompts.
-- Claude Agent SDK runtime: `CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions`
-  - Supported values: `default`, `plan`, `acceptEdits`, `bypassPermissions`
-  - Default: `default`
-  - The parser also accepts `bypass-permissions` and `bypass_permissions`
+- Claude Agent SDK runtime: standard standalone and team-member launches use
+  Claude Code provider `permissionMode: "default"`.
+  - AutoByteus run launch `autoExecuteTools=true` is a separate per-run approval
+    policy. For Claude Agent SDK runs, it auto-approves permission callbacks
+    through AutoByteus orchestration; it does not switch Claude Code into
+    `bypassPermissions`.
+  - Do not use `bypassPermissions` as the Docker/root steady-state launch mode.
+    Claude Code rejects its dangerous skip-permissions mode when the process runs
+    with root/sudo privileges.
+  - If a future feature needs explicit Claude provider permission modes such as
+    `plan`, `acceptEdits`, or `bypassPermissions`, treat that as a separate
+    provider-level setting with runtime validation, not as auto-approve behavior.
 
 Example:
 
 ```bash
 CODEX_APP_SERVER_SANDBOX=danger-full-access \
-CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions \
 pnpm -C autobyteus-server-ts dev
 ```
 

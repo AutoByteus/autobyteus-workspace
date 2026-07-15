@@ -380,6 +380,54 @@ describe("CodexThreadBootstrapper", () => {
     expect(runContext.runtimeContext.codexThreadConfig.serviceTier).toBe("fast");
   });
 
+  it.each([
+    ["max", "max"],
+    [" ultra ", "ultra"],
+    [" Future-Custom ", "Future-Custom"],
+  ])(
+    "preserves open reasoning effort %j in Codex thread config",
+    async (submittedEffort, expectedEffort) => {
+      const { bootstrapper } = createBootstrapper({
+        skills: [],
+        requestImplementation: async () => ({ data: [] }),
+      });
+
+      const runContext = await bootstrapper.bootstrapForCreate(
+        createRunContext({
+          llmConfig: {
+            reasoning_effort: submittedEffort,
+          },
+        }),
+      );
+
+      expect(runContext.runtimeContext.codexThreadConfig.reasoningEffort).toBe(
+        expectedEffort,
+      );
+    },
+  );
+
+  it.each([
+    ["unset", null],
+    ["whitespace-only", { reasoning_effort: "   " }],
+    ["non-string", { reasoning_effort: 42 }],
+  ])(
+    "keeps %s reasoning effort unset in Codex thread config",
+    async (_label, llmConfig) => {
+      const { bootstrapper } = createBootstrapper({
+        skills: [],
+        requestImplementation: async () => ({ data: [] }),
+      });
+
+      const runContext = await bootstrapper.bootstrapForCreate(
+        createRunContext({ llmConfig }),
+      );
+
+      expect(
+        runContext.runtimeContext.codexThreadConfig.reasoningEffort,
+      ).toBeNull();
+    },
+  );
+
   it("falls back to workspace materialization when the discoverable-skill probe fails", async () => {
     const skill = createSkill("missing_skill");
     const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({

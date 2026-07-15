@@ -19,7 +19,7 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
   The foundation for all LLM implementations. It manages:
   - **Message History:** `addUserMessage`, `addAssistantMessage`.
   - **System Prompts:** Configuration and dynamic updates.
-  - **Extensions:** Registry for plugins like token usage tracking.
+  - **Extensions:** Registry for optional lifecycle hooks; authoritative token accounting is emitted from provider usage observations, not from an auto-registered extension.
   - **Hooks:** `beforeInvoke` and `afterInvoke` lifecycle hooks.
   - **Abstract Methods:** Subclasses must implement `_sendUserMessageToLLM` (unary) and `_streamUserMessageToLLM` (streaming).
 
@@ -46,6 +46,7 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
     providers and custom-provider sync through
     `syncOpenAICompatibleEndpointModels(...)`.
   - **Creation:** `createLLM(identifier)` is the standard way to get a usable LLM object.
+  - **Pricing lookup:** `getModelPricingInfo(...)` exposes trusted/missing/placeholder API-price metadata for server-side cost estimates.
 
 ### 2.2 Provider Identity vs. Provider Type vs. Runtime
 
@@ -77,8 +78,10 @@ new built-in enum value for every saved endpoint.
     `LLMFactory.ensureInitialized()` is called. It:
     - Registers supported built-in API models from
       `src/llm/supported-model-definitions.ts` (for example `gpt-5.5`,
-      `claude-opus-4.7`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
-      `kimi-k2.6`).
+      current Anthropic rows such as `claude-fable-5`, `claude-opus-4.8`,
+      and `claude-sonnet-5`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
+      the Kimi `kimi-k2.6` / `kimi-k2.7-code` /
+      `kimi-k2.7-code-highspeed` rows).
     - Probes local runtimes (Ollama, LM Studio) to discover available models.
     - Leaves custom OpenAI-compatible provider sync to the caller that owns
       persisted provider records.
@@ -116,15 +119,30 @@ provider adapter under `src/llm/api/`.
 
 Current examples of provider-specific model rules:
 
-- `claude-opus-4.7` uses Anthropic adaptive thinking rather than fixed-budget
-  extended thinking, and the adapter does not inject a default `temperature`
-  for that model.
+- `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` remain exact,
+  entitlement-neutral built-in OpenAI rows on the existing Responses path.
+  They share a GPT-5.6-only reasoning schema with `medium` default and `max`
+  support, plus trusted cache-read/cache-write and >272K input-tier pricing.
+  Do not add the unsuffixed `gpt-5.6` alias as a fourth row or broaden older
+  OpenAI schemas with `max`.
+- Current Anthropic adaptive-thinking rows (`claude-opus-4.8`,
+  `claude-opus-4.7`, `claude-sonnet-5`, and `claude-fable-5`) use adaptive
+  thinking rather than fixed-budget extended thinking. The adapter strips
+  provider-invalid manual thinking budgets and unsupported sampling fields
+  (`temperature`, `top_p`, `top_k`) for these rows. Do not add a
+  `claude-sonnet-4.8` alias unless Anthropic publishes that exact API ID, and
+  do not make Fable 5 a default or fallback without a separate product
+  decision.
 - `deepseek-v4-flash` and `deepseek-v4-pro` use the existing DeepSeek
   OpenAI-compatible adapter with a flat user-facing V4 thinking schema; the
   adapter maps that schema to the provider request shape.
 - `gemini-3.5-flash` uses the existing Gemini adapter, the shared Gemini
   thinking schema, docs-backed curated token limits, and explicit API-key /
   Vertex identity mapping in `src/utils/gemini-model-mapping.ts`.
+- `grok-4.5` is the sole built-in Grok row, uses the existing xAI Chat
+  Completions path, and exposes always-on `low`/`medium`/`high` reasoning with
+  `high` as the default. Its adapter removes xAI-invalid stop and penalty
+  fields locally before the shared OpenAI-compatible request builder runs.
 - `glm-5.2` replaces `glm-5.1` as the active GLM model and exposes
   `thinking_type` plus `reasoning_effort` schema fields. `GlmLLM` maps the flat
   thinking key to provider-native `thinking.type` and omits
@@ -132,9 +150,13 @@ Current examples of provider-specific model rules:
 - `kimi-k2.6` remains the general-purpose Kimi model. It disables thinking
   automatically for tool workflows when the caller has not supplied an explicit
   thinking override and normalizes provider-safe K2.6 temperature defaults.
-- `kimi-k2.7-code` is the coding/agentic Kimi model. It keeps thinking on and
-  normalizes K2.7 Code fixed sampling/tool-choice constraints locally in
-  `KimiLLM` before the shared request builder runs.
+- `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` are distinct official Kimi
+  K2.7 Code serving routes. They share the Kimi K2.7 family policy in
+  `src/llm/api/kimi-k2-7-code-policy.ts`, keep thinking on, and normalize fixed
+  sampling/tool-choice constraints locally in `KimiLLM` before the shared
+  request builder runs.
+- `minimax-m3` is the active MiniMax LLM entry. MiniMax M2.7 is removed from the
+  built-in registry and curated metadata without a compatibility alias.
 
 See `docs/provider_model_catalogs.md` for the catalog ownership map across LLM,
 audio/TTS, and image models.
@@ -147,22 +169,58 @@ audio/TTS, and image models.
     `LLMFactory.initializeRegistry()` can build and register `LLMModel`
     entries.
 
-### 4.3 Extensions System
+### 4.3 Token Usage Observations And Extensions
 
-The `BaseLLM` supports extensions that hook into the request/response lifecycle.
+Provider adapters surface authoritative provider/runtime usage through
+`LlmTokenUsageObservation`, carried on `ChunkResponse.usage` and
+`CompleteResponse.usage`. The observation keeps input/output/total tokens,
+usage scope, model identity, provider input-token semantic
+(`gross_includes_cache`, `base_excludes_cache`, or `unknown`), cache reporting
+state, cache miss/read/write buckets, reasoning/billable output details where
+available, latest prompt/context-window hints, raw provider JSON, and quality
+flags. `LlmPhase` emits these observations as `TOKEN_USAGE_UPDATED` stream
+events; the server token-usage ledger owns canonical run/team identity,
+component-basis derivation, accounting deltas, cost calculation, GraphQL
+summaries, and persistence.
 
-- **`TokenUsageTrackingExtension`:** Automatically registered. Tracks input/output tokens and cost based on `LLMConfig`.
-- **Custom Extensions:** Can be registered via `registerExtension`. Useful for logging, rate limiting, or PII redaction.
+Provider adapters must normalize what the provider reported, not what it costs.
+OpenAI-compatible/gross providers should report gross prompt/input plus cache
+read, write, or miss buckets when available. In particular, documented OpenAI
+`input_tokens_details.cache_write_tokens` or
+`prompt_tokens_details.cache_write_tokens` maps to the existing generic
+cache-creation input component without changing gross-input semantics.
+Anthropic-style providers should mark `base_excludes_cache` so the server can
+derive gross input as base input plus cache read/write buckets. Local runtime
+estimates must never be used as persisted paid-provider accounting.
+
+Direct OpenAI API observations and Codex app-server token notifications are
+different source contracts. The direct Responses path can map a documented
+`cache_write_tokens` quantity, but the Codex protocol verified on 2026-07-10
+exposes cached reads and no write count. Codex cache creation must remain
+unknown/null; do not infer it from gross input minus cached reads, and do not
+produce a write cost merely because catalog pricing contains a trusted write
+rate. Any future Codex write field requires generated-protocol verification and
+an explicit runtime-adapter mapping review with its cumulative `total`/`last`
+semantics. Do not route Codex raw events through the direct OpenAI normalizer.
+
+`BaseLLM` still supports optional extensions that hook into the request/response
+lifecycle, but token accounting must not depend on an auto-registered extension
+or local token estimation. The old `TokenUsageTracker` utility is retained only
+for non-authoritative/debug compatibility paths and must not feed persisted
+business accounting.
+
+- **Provider token usage normalizers:** Live under `src/llm/api/*token-usage-normalizer.ts` and convert provider usage payloads into `LlmTokenUsageObservation`.
+- **Custom Extensions:** Can be registered via `registerExtension` for logging, rate limiting, or PII redaction when explicitly needed.
 
 ## 5. Directory Structure
 
 ```text
 src/llm/
 ├── api/                                # Concrete BaseLLM implementations
-├── extensions/                         # LLM extensions (token usage, etc.)
+├── extensions/                         # Optional explicit lifecycle extensions
 ├── metadata/                           # Model metadata resolvers
 ├── transport/                          # Shared transport helpers
-├── utils/                              # Config, message types, pricing models
+├── utils/                              # Config, message/usage observation types, pricing models
 ├── base.ts                             # Abstract base class
 ├── custom-llm-provider-config.ts       # Persisted custom-provider schema
 ├── llm-factory.ts                      # Singleton registry and factory
@@ -182,32 +240,68 @@ src/llm/
 - **`temperature`**: Sampling randomness.
 - **`maxTokens`**: Output limit.
 - **`systemMessage`**: Default system prompt.
-- **`pricingConfig`**: Cost per million tokens (input/output).
+- **`pricingConfig`**: Built-in catalog API-price metadata. It can carry
+  currency, trusted input/output/cache-read/cache-write prices, provider
+  source/effective-date identifiers, cache-write subtype prices, input-token
+  tiers, and local/no-bill or missing/placeholder status. Missing dimensions
+  remain untrusted; server-side accounting decides whether estimated costs can
+  be shown and must not treat constructor/default zero values as free pricing.
 - **`extraParams`**: Dictionary of model-specific parameters (validates against `configSchema`).
 
-This config can be set globally per model in `LLMFactory` or overridden per instance during `createLLM`.
+`LLMConfig` is the effective configuration object passed to provider
+instances. Factory-created runtime paths compose that effective config in this
+order:
+
+```text
+base `LLMConfig` defaults
+-> model registry `LLMModel.defaultConfig`
+-> explicit user/run raw `llmConfig` overrides only
+-> provider/model invariant enforcement
+-> request builder/provider SDK
+```
+
+`LLMFactory.createLLM(identifier, configInput?)` starts from a clone of the
+selected model's `defaultConfig` when present, otherwise from a fresh
+`LLMConfig`. Passing an `LLMConfig` means the caller already has an effective
+config, so the factory merges it over the model defaults. Passing a plain object
+means the caller is providing a sparse raw run/default-launch `llmConfig`;
+`llm-config-overrides.ts` applies only explicitly present fields. Missing
+standard fields do not override model defaults, standard keys such as
+`temperature`, `top_p`, `max_tokens`, penalties, and stop sequences become
+first-class `LLMConfig` fields, and unknown provider-specific keys are preserved
+in `extraParams`. Standard/reserved keys are filtered out of nested
+`extra_params` / `extraParams` containers to avoid first-class-field collisions.
+
+Server runtime boundaries should pass persisted raw `llmConfig` records to
+`LLMFactory` directly. They should not turn the entire raw record into
+`new LLMConfig({ extraParams: rawConfig })`, because that loses absence
+semantics and lets standard fields reach the provider as accidental extras.
 
 For OpenAI-compatible Chat Completions providers, `OpenAICompatibleRequestBuilder`
 is the single request-body construction boundary. It maps `LLMConfig`
 generation controls to provider fields (`temperature`, `top_p`,
 `frequency_penalty`, `presence_penalty`, `stop`, and
 `max_completion_tokens`), merges `extraParams` for provider-specific extensions,
-filters framework-internal kwargs such as `logicalConversationId` and
-`requestId`, attaches `tools`, and passes `tool_choice` only when a
-lower-level direct caller explicitly supplies `kwargs.tool_choice`. This keeps
-provider request payloads deterministic and prevents
-agent bookkeeping identifiers from leaking to OpenAI-compatible endpoints.
+uses the shared provider-request kwarg sanitizer for framework-internal kwargs
+such as `logicalConversationId` and `requestId`, attaches `tools`, and passes
+`tool_choice` only when a lower-level direct caller explicitly supplies
+`kwargs.tool_choice`. The same sanitizer is used by external provider adapters
+such as Anthropic and Mistral so agent bookkeeping identifiers do not leak to
+provider SDK request payloads. `logicalConversationId` remains valid for
+`AutobyteusLLM`; external adapters filter it at their request boundary instead
+of requiring upstream callers to remove it.
 Provider adapters can still normalize provider-specific request legality before
 delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.6` on
 Moonshot-safe temperature defaults unless a caller explicitly passes a
-per-request `temperature`, while `kimi-k2.7-code` overrides the generic default
-temperature and other fixed sampling/tool-choice fields to provider-valid
-values. `GlmLLM` owns GLM `thinking_type` to `thinking.type` conversion and
+per-request `temperature`, while the `kimi-k2.7-code` and
+`kimi-k2.7-code-highspeed` variants enforce fixed temperature, sampling, and
+tool-choice values to keep requests provider-valid. `GlmLLM` owns GLM
+`thinking_type` to `thinking.type` conversion and
 omits stale effort values when thinking is disabled. `DeepSeekLLM` similarly
-owns V4 thinking request normalization: user-facing `thinking_type` is converted to
-`extra_body.thinking.type`, stale raw top-level `thinking` is dropped, and
-disabled thinking omits `reasoning_effort` instead of sending an OpenAI-style
-`none` effort.
+owns V4 thinking request normalization: user-facing `thinking_type` is converted
+to top-level `thinking.type`, stale caller-supplied `thinking` and
+`extra_body.thinking` values are dropped, and disabled thinking omits
+`reasoning_effort` instead of sending an OpenAI-style `none` effort.
 
 Prompt renderers, not `OpenAICompatibleRequestBuilder`, own provider-visible
 message-history extensions. The default `OpenAIChatRenderer` is conservative and
@@ -268,12 +362,15 @@ Current native mappings are:
 Renderer selection is mode-aware. `api_tool_call` selects the native provider
 renderer; `xml`, `json`, and `sentinel` select explicit text-history renderers
 so non-native parser modes continue to emit their configured
-`[TOOL_CALL]` / `[TOOL_RESULT]`-style history. Native tool-result continuation
-does not append an additional aggregate user message such as
-`The following tool executions have completed...`, legacy
-`Tool: <name> (ID: ...)` lines, or aggregate `Status: Success` markers; the
-next LLM request is assembled from the existing working context and rendered
-through the provider's native channel.
+`[TOOL_CALL]` / `[TOOL_RESULT]`-style history. Native text-only tool-result
+continuation does not append an additional aggregate user message such as `The
+following tool executions have completed...`, legacy `Tool: <name> (ID: ...)`
+lines, or aggregate `Status: Success` markers; the next LLM request is assembled
+from the existing working context and rendered through the provider's native
+channel. If a continuation carries context-file media, the request may append a
+user/media carrier, but its text is limited to semantic completed-tool wording
+such as `The read_media_file tool call completed successfully.` and must not
+include internal continuation labels or generated tool-call formatting guidance.
 
 OpenAI Responses is stricter than Chat Completions-style history for reasoning
 models. When a streamed Responses turn records `responseOutputItems` on the
@@ -292,6 +389,21 @@ turn/block group. Streaming converters may preserve provider-native metadata in
 `nativeToolCallContext` for stateless replay, but the normalized stored
 `id`, `name`, and arguments remain authoritative in the rendered request.
 
+## 6.3 Provider Media Payload Rendering
+
+`Message.image_urls`, `Message.audio_urls`, and `Message.video_urls` represent
+declared current-turn media input. The image/audio/video extension policy lives
+in the shared `src/utils/media-file-kind.ts` classifier; `ContextFileType` and
+`src/llm/utils/media-payload-formatter.ts` must use that classifier rather than
+maintaining independent allowlists.
+
+Provider prompt renderers own only provider wire shape. For direct Gemini,
+declared local media is converted by the media payload formatter and sent as
+`inlineData` with the formatter-resolved MIME type, so a local `.m4a` audio file
+renders as `audio/mp4` inline data. If a declared media source cannot be
+converted, the renderer must fail with an actionable error before provider
+invocation instead of silently continuing with a text-only request.
+
 ## 7. Dynamic Model Reloading
 
 For reloadable built-in runtimes (`OLLAMA`, `LMSTUDIO`, `AUTOBYTEUS`),
@@ -305,6 +417,10 @@ For reloadable built-in runtimes (`OLLAMA`, `LMSTUDIO`, `AUTOBYTEUS`),
 
 Custom OpenAI-compatible providers use a different boundary:
 `LLMFactory.syncOpenAICompatibleEndpointModels(savedProviders)`.
+
+Anthropic provider-scoped reload is not dynamic discovery. It returns the
+current static Anthropic catalog count until
+`src/llm/supported-model-definitions.ts` is updated.
 
 - Each saved provider is probed independently through its `/models` endpoint.
 - Successful providers contribute fresh `OPENAI_COMPATIBLE` runtime models.
@@ -335,9 +451,9 @@ collapsed when effective **Thinking** is OFF or unavailable; toggling a supporte
 | ---------- | ------------------ | ------- | ---------- | ---------------------------- |
 | GPT-5.5          | `reasoning_effort` | ENUM    | Dropdown / schema-backed Thinking state | `{reasoning_effort: "high"}` |
 | Gemini 3 / 3.5 Flash | `thinking_level`   | ENUM    | Dropdown / schema-backed Thinking state | `{thinking_level: "high"}`   |
-| Claude Opus 4.7  | `thinking_enabled` | BOOLEAN | Basic Thinking toggle | `{thinking: {type: "adaptive"}}` |
-| Claude Opus 4.7  | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
-| DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{extra_body: {thinking: {type: "enabled"}}}` |
+| Current Claude adaptive rows | `thinking_enabled` | BOOLEAN | Basic Thinking toggle | `{thinking: {type: "adaptive"}}` |
+| Current Claude adaptive rows | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
+| DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}` |
 | DeepSeek V4      | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |
 | Zhipu GLM 5.2     | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}`   |
 | Zhipu GLM 5.2     | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |

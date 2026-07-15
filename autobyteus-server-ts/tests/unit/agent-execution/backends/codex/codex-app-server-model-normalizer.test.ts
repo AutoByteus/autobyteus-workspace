@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   mapCodexModelListRowToModelInfo,
+  normalizeCodexReasoningEffort,
   normalizeCodexServiceTier,
+  resolveCodexSessionReasoningEffort,
   resolveCodexSessionServiceTier,
 } from "../../../../../src/agent-execution/backends/codex/codex-app-server-model-normalizer.js";
 
@@ -16,6 +18,65 @@ const parameterByName = (
 };
 
 describe("codex app-server model normalizer", () => {
+  it("normalizes reasoning effort as a trimmed non-empty open string", () => {
+    expect(normalizeCodexReasoningEffort(" max ")).toBe("max");
+    expect(normalizeCodexReasoningEffort(" ultra ")).toBe("ultra");
+    expect(normalizeCodexReasoningEffort(" Future-Custom ")).toBe("Future-Custom");
+    expect(normalizeCodexReasoningEffort("")).toBeNull();
+    expect(normalizeCodexReasoningEffort("   ")).toBeNull();
+    expect(normalizeCodexReasoningEffort(42)).toBeNull();
+    expect(normalizeCodexReasoningEffort(null)).toBeNull();
+  });
+
+  it("preserves advertised reasoning efforts in first-seen order", () => {
+    const modelInfo = mapCodexModelListRowToModelInfo({
+      model: "gpt-reasoning",
+      displayName: "GPT Reasoning",
+      defaultReasoningEffort: "low",
+      supportedReasoningEfforts: [
+        "low",
+        { reasoningEffort: "medium" },
+        { reasoning_effort: "high" },
+        { effort: "xhigh" },
+        "max",
+        " ultra ",
+        "Future-Custom",
+        "max",
+        "   ",
+        42,
+      ],
+    });
+
+    expect(parameterByName(modelInfo?.config_schema, "reasoning_effort")).toMatchObject({
+      enum_values: ["low", "medium", "high", "xhigh", "max", "ultra", "Future-Custom"],
+      default_value: "low",
+    });
+  });
+
+  it("appends a valid default effort only when it was not advertised", () => {
+    const modelInfo = mapCodexModelListRowToModelInfo({
+      model: "gpt-default",
+      defaultReasoningEffort: " ultra ",
+      supportedReasoningEfforts: ["low", "max"],
+    });
+
+    expect(parameterByName(modelInfo?.config_schema, "reasoning_effort")).toMatchObject({
+      enum_values: ["low", "max", "ultra"],
+      default_value: "ultra",
+    });
+  });
+
+  it("preserves explicit reasoning effort values for Codex runtime configuration", () => {
+    expect(resolveCodexSessionReasoningEffort({ reasoning_effort: " max " })).toBe("max");
+    expect(resolveCodexSessionReasoningEffort({ reasoning_effort: "ultra" })).toBe("ultra");
+    expect(resolveCodexSessionReasoningEffort({ reasoning_effort: " Future-Custom " })).toBe(
+      "Future-Custom",
+    );
+    expect(resolveCodexSessionReasoningEffort({ reasoning_effort: "   " })).toBeNull();
+    expect(resolveCodexSessionReasoningEffort({ reasoningEffort: "max" })).toBeNull();
+    expect(resolveCodexSessionReasoningEffort(null)).toBeNull();
+  });
+
   it("adds Fast mode schema only when a Codex model advertises the fast speed tier", () => {
     const modelInfo = mapCodexModelListRowToModelInfo({
       model: "gpt-fast",

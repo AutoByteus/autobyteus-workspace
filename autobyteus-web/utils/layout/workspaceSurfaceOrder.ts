@@ -1,5 +1,5 @@
 export type WorkspacePrimarySurfaceName = 'work' | 'runs' | 'files' | 'tools'
-export type WorkspaceToolName = 'files' | 'teamMembers' | 'terminal' | 'progress' | 'artifacts' | 'browser' | 'vnc'
+export type WorkspaceToolName = 'files' | 'teamMembers' | 'terminal' | 'progress' | 'usage' | 'artifacts' | 'browser' | 'vnc'
 
 export interface WorkspaceSurfaceDefinition<TName extends string> {
   name: TName
@@ -18,6 +18,7 @@ export const WORKSPACE_TOOL_ORDER: readonly WorkspaceToolName[] = [
   'teamMembers',
   'terminal',
   'progress',
+  'usage',
   'artifacts',
   'browser',
   'vnc',

@@ -229,17 +229,23 @@ native results keep their provider `tool_call_id` identity so continuation
 rendering can match results to the original tool calls. The continuation shape
 then depends on the selected mode:
 
-- `api_tool_call`: `ToolResultContinuationBuilder` marks the continuation
+- `api_tool_call`: `ToolResultContinuationBuilder` builds a semantic
+  completed-tool display string, marks text-only continuations
   `tool_history_only`, `AgentTurnRunner` emits `ToolContinuationReadyEvent`, and
   `LlmPhase` renders the current working context without appending a synthetic
   user message. Provider-visible history carries provider-native structured
   tool-call and result items only: for OpenAI-compatible Chat this is
   `assistant.tool_calls` plus matching `role: "tool"` messages, while OpenAI
   Responses replays captured `response.output` items including required
-  `reasoning` entries before matching `function_call_output` items.
-- `xml`, `json`, `sentinel`: preserve the aggregate textual
-  `SenderType.TOOL` continuation message, because these parser modes do not
-  have a provider-native `role: "tool"` channel.
+  `reasoning` entries before matching `function_call_output` items. If the
+  continuation has context-file media, `AgentInputPipeline` appends a user/media
+  carrier containing only semantic completed-tool wording such as `The
+  read_media_file tool call completed successfully.` so the media can be sent.
+- `xml`, `json`, `sentinel`: preserve the textual `SenderType.TOOL`
+  continuation message, because these parser modes do not have a
+  provider-native `role: "tool"` channel. The continuation content is the same
+  semantic completed-tool wording; internal continuation labels and generated
+  XML/markdown tool-call guidance must not be used as model-visible text.
 
 Key files:
 

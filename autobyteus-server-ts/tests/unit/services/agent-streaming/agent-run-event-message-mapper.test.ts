@@ -134,6 +134,186 @@ describe("AgentRunEventMessageMapper", () => {
     }));
   });
 
+  it("flattens task-delegation websocket identity from current target and execution shapes", () => {
+    const mapper = new AgentRunEventMessageMapper();
+
+    const message = convertTeamRunEventToServerMessage({
+      eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
+      teamRunId: "team-1",
+      sourcePath: ["worker"],
+      data: {
+        eventType: "TASK_DELEGATION_ACTIVATED",
+        payload: {
+          taskId: "task_0001_top_level",
+          description: "Implement the websocket projection.",
+          tasks: [
+            {
+              taskId: "task_0001",
+              taskLabel: "Task 1",
+              description: "Implement the websocket projection.",
+            },
+          ],
+          target: {
+            kind: "member",
+            member: {
+              memberRouteKey: "worker",
+              memberPath: ["worker"],
+            },
+          },
+          execution: {
+            kind: "task_agent",
+            taskAgentInstance: {
+              taskAgentInstanceId: "task-agent-instance-1",
+              taskAgentRunId: "task-agent-run-1",
+              taskId: "task_0001",
+              logicalMember: {
+                memberRouteKey: "worker-logical",
+                memberPath: ["worker-logical"],
+              },
+            },
+          },
+        },
+      },
+    }, mapper);
+
+    expect(message.type).toBe(ServerMessageType.TASK_DELEGATION_EVENT);
+    expect(message.payload).toEqual(expect.objectContaining({
+      event_type: "TASK_DELEGATION_ACTIVATED",
+      description: "Implement the websocket projection.",
+      tasks: [
+        {
+          taskId: "task_0001",
+          taskLabel: "Task 1",
+          description: "Implement the websocket projection.",
+        },
+      ],
+      execution_kind: "task_agent",
+      task_agent_instance_id: "task-agent-instance-1",
+      task_agent_run_id: "task-agent-run-1",
+      agent_id: "task-agent-run-1",
+      task_id: "task_0001",
+      member_route_key: "worker",
+      member_path: ["worker"],
+      source_route_key: "worker",
+      source_path: ["worker"],
+    }));
+  });
+
+  it("does not flatten legacy top-level task-delegation identity fields", () => {
+    const mapper = new AgentRunEventMessageMapper();
+
+    const message = convertTeamRunEventToServerMessage({
+      eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
+      teamRunId: "team-1",
+      sourcePath: [],
+      data: {
+        eventType: "TASK_DELEGATION_STATUS_UPDATED",
+        payload: {
+          taskId: "task_legacy_top_level",
+          taskAgentInstance: {
+            taskAgentInstanceId: "legacy-task-agent-instance",
+            taskAgentRunId: "legacy-task-agent-run",
+            taskId: "legacy-task-id",
+            logicalMember: {
+              memberRouteKey: "legacy-worker",
+              memberPath: ["legacy-worker"],
+            },
+          },
+          taskTeamInstance: {
+            taskTeamInstanceId: "legacy-task-team-instance",
+            taskTeamRunId: "legacy-task-team-run",
+            taskId: "legacy-team-task-id",
+            logicalTeam: {
+              memberRouteKey: "legacy-team",
+              memberPath: ["legacy-team"],
+            },
+          },
+          member: {
+            memberRouteKey: "legacy-member",
+            memberPath: ["legacy-member"],
+          },
+        },
+      },
+    }, mapper);
+
+    expect(message.type).toBe(ServerMessageType.TASK_DELEGATION_EVENT);
+    expect(message.payload).toEqual(expect.objectContaining({
+      event_type: "TASK_DELEGATION_STATUS_UPDATED",
+      task_id: "task_legacy_top_level",
+    }));
+    for (const legacyFlattenedField of [
+      "execution_kind",
+      "task_agent_instance_id",
+      "task_agent_run_id",
+      "task_team_instance_id",
+      "task_team_run_id",
+      "member_route_key",
+      "member_path",
+    ]) {
+      expect(message.payload).not.toHaveProperty(legacyFlattenedField);
+    }
+  });
+
+  it("flattens task-team scoped event identity on child agent messages", () => {
+    const mapper = new AgentRunEventMessageMapper();
+
+    const message = convertTeamRunEventToServerMessage({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "parent-team-run",
+      sourcePath: ["SoftwareEngineeringTeam", "solution_designer"],
+      taskTeamInstance: {
+        taskTeamInstanceId: "task-team-instance-1",
+        taskTeamRunId: "task-team-run-1",
+        parentTeamRunId: "parent-team-run",
+        taskId: "task_0001",
+        logicalTeam: {
+          memberName: "SoftwareEngineeringTeam",
+          memberPath: ["SoftwareEngineeringTeam"],
+          memberRouteKey: "SoftwareEngineeringTeam",
+          templateMemberRunId: "software-team-template",
+          teamDefinitionId: "software-team-def",
+          coordinatorMemberRouteKey: "solution_designer",
+        },
+        ingress: {
+          memberName: "solution_designer",
+          memberPath: ["solution_designer"],
+          memberRouteKey: "solution_designer",
+          memberRunId: "solution-child-run",
+        },
+        createdAt: "2026-06-26T00:00:00.000Z",
+      },
+      data: {
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memberName: "solution_designer",
+        memberRunId: "solution-child-run",
+        memberPath: ["SoftwareEngineeringTeam", "solution_designer"],
+        memberRouteKey: "SoftwareEngineeringTeam/solution_designer",
+        agentEvent: {
+          eventType: AgentRunEventType.AGENT_STATUS,
+          runId: "solution-child-run",
+          payload: {
+            status: "running",
+            can_interrupt: true,
+          },
+          statusHint: "ACTIVE",
+        },
+      },
+    }, mapper);
+
+    expect(message.type).toBe(ServerMessageType.AGENT_STATUS);
+    expect(message.payload).toEqual(expect.objectContaining({
+      task_team_run_id: "task-team-run-1",
+      task_team_instance_id: "task-team-instance-1",
+      task_id: "task_0001",
+      team_route_key: "SoftwareEngineeringTeam",
+      team_path: ["SoftwareEngineeringTeam"],
+      task_team_relative_member_path: ["solution_designer"],
+      task_team_relative_member_route_key: "solution_designer",
+      source_route_key: "SoftwareEngineeringTeam/solution_designer",
+      source_path: ["SoftwareEngineeringTeam", "solution_designer"],
+    }));
+  });
+
   it("maps derived team communication messages without routing them through file changes", () => {
     const mapper = new AgentRunEventMessageMapper();
 
@@ -143,8 +323,9 @@ describe("AgentRunEventMessageMapper", () => {
       payload: {
         messageId: "message-1",
         teamRunId: "team-1",
-        senderRunId: "sender-run-1",
-        receiverRunId: "receiver-run-1",
+        senderAddress: { segments: [{ kind: "member", memberRouteKey: "sender" }] },
+        receiverAddress: { segments: [{ kind: "member", memberRouteKey: "receiver" }] },
+        createdAt: "2026-04-08T00:00:00.000Z",
         content: "Please review the attached report.",
         messageType: "handoff",
         referenceFiles: [{ referenceId: "ref-1", path: "/tmp/report.md" }],
@@ -157,8 +338,9 @@ describe("AgentRunEventMessageMapper", () => {
     expect(message.payload).toEqual({
       messageId: "message-1",
       teamRunId: "team-1",
-      senderRunId: "sender-run-1",
-      receiverRunId: "receiver-run-1",
+      senderAddress: { segments: [{ kind: "member", memberRouteKey: "sender" }] },
+      receiverAddress: { segments: [{ kind: "member", memberRouteKey: "receiver" }] },
+      createdAt: "2026-04-08T00:00:00.000Z",
       content: "Please review the attached report.",
       messageType: "handoff",
       referenceFiles: [{ referenceId: "ref-1", path: "/tmp/report.md" }],

@@ -12,6 +12,7 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message } from '../../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
+import { buildLlmTokenUsageObservation } from '../../../../src/llm/utils/llm-token-usage-observation.js';
 import { EventType } from '../../../../src/events/event-types.js';
 import type { CompactionAgentRunner, CompactionAgentTask } from '../../../../src/memory/compaction/compaction-agent-runner.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
@@ -26,6 +27,8 @@ type CompactionEventPayload = {
   compaction_operation_id?: string | null;
   requested_turn_id?: string | null;
   execution_turn_id?: string | null;
+  compaction_strategy_id?: string | null;
+  compaction_strategy_name?: string | null;
   compaction_agent_definition_id?: string | null;
   compaction_agent_name?: string | null;
   compaction_runtime_kind?: string | null;
@@ -74,11 +77,12 @@ class RecordingMainLLM extends BaseLLM {
     const promptTokens = this.promptTokensByCall[callIndex - 1] ?? 1;
     return {
       content: `assistant-turn-${callIndex}`,
-      usage: {
-        prompt_tokens: promptTokens,
-        completion_tokens: 1,
-        total_tokens: promptTokens + 1
-      }
+      usage: buildLlmTokenUsageObservation({
+        inputTokens: promptTokens,
+        outputTokens: 1,
+        totalTokens: promptTokens + 1,
+        rawUsage: null,
+      }),
     };
   }
 }
@@ -190,25 +194,25 @@ describe('Agent runtime compaction integration', () => {
         )).toBe(true);
       }
 
+      const memoryManager = agent.context.state.memoryManager;
+      const messagesBeforeCompaction = memoryManager?.getWorkingContextMessages().map((message) => message.toDict());
       await agent.postUserMessage(new AgentInputUserMessage('Please remember the first turn.'));
       expect(await waitForCondition(
-        () => mainLLM.requests.length === 4 && agent.context.state.memoryManager?.compactionRequired === true && agent.currentStatus === AgentStatus.IDLE,
+        () => mainLLM.requests.length === 4
+          && agent.context.state.memoryManager?.compactionRequired === false
+          && compactionEvents.some((event) => event.phase === 'completed')
+          && agent.currentStatus === AgentStatus.IDLE,
         10000
       )).toBe(true);
-      expect(compactionEvents.map((event) => event.phase)).toEqual(['requested']);
+      expect(compactionEvents.map((event) => event.phase)).toEqual(['requested', 'started', 'completed']);
 
-      const memoryManager = agent.context.state.memoryManager;
       const requestedOperationId = compactionEvents[0]?.compaction_operation_id;
       expect(typeof requestedOperationId).toBe('string');
-      expect(memoryManager?.getPendingCompactionRequest()).toMatchObject({
-        operationId: requestedOperationId,
-        requestedTurnId: compactionEvents[0]?.turn_id,
-      });
+      expect(memoryManager?.getPendingCompactionRequest()).toBeNull();
       expect(compactionEvents[0]).toMatchObject({
         requested_turn_id: compactionEvents[0]?.turn_id,
         execution_turn_id: null,
       });
-      const epochBeforeCompaction = memoryManager?.workingContextSnapshot.epochId ?? 0;
 
       await agent.postUserMessage(new AgentInputUserMessage('What should you do next?'));
       expect(await waitForCondition(
@@ -216,7 +220,6 @@ describe('Agent runtime compaction integration', () => {
         10000
       )).toBe(true);
 
-      expect(compactionEvents.map((event) => event.phase)).toEqual(['requested', 'started', 'completed']);
       expect(compactionEvents.map((event) => event.compaction_operation_id)).toEqual([
         requestedOperationId,
         requestedOperationId,
@@ -235,6 +238,8 @@ describe('Agent runtime compaction integration', () => {
         compaction_runtime_kind: 'codex_app_server',
         compaction_model_identifier: 'gpt-5.4-codex',
         compaction_run_id: 'compaction-run-1',
+        compaction_strategy_id: 'structured-json',
+        compaction_strategy_name: 'Structured JSON',
       });
       expect(compactionEvents[2]?.raw_trace_count).toBeGreaterThan(0);
       expect(compactionEvents[2]?.semantic_fact_count).toBe(1);
@@ -244,10 +249,11 @@ describe('Agent runtime compaction integration', () => {
       expect(compactionRunner.tasks[0]?.prompt).toContain('[CONVERSATION_HISTORY_TO_SUMMARIZE]');
       expect(compactionRunner.tasks[0]?.prompt).toContain('Seed turn 1');
       expect(compactionRunner.tasks[0]?.prompt).toContain('Seed turn 2');
-      expect(compactionRunner.tasks[0]?.prompt).toContain('Please remember the first turn.');
+      expect(compactionRunner.tasks[0]?.prompt).not.toContain('Please remember the first turn.');
       expect(compactionRunner.tasks[0]?.prompt).not.toContain('What should you do next?');
 
-      expect(memoryManager?.workingContextSnapshot.epochId).toBeGreaterThan(epochBeforeCompaction);
+      expect(memoryManager?.getWorkingContextMessages().map((message) => message.toDict()))
+        .not.toEqual(messagesBeforeCompaction);
       const store = memoryManager?.store as FileMemoryStore;
       expect(store.list(MemoryType.EPISODIC).length).toBe(1);
       expect(store.list(MemoryType.SEMANTIC).length).toBe(1);
@@ -259,7 +265,7 @@ describe('Agent runtime compaction integration', () => {
 
       const fifthRequest = mainLLM.requests[4] ?? [];
       const memorySummaryMessage = fifthRequest.find(
-        (message) => message.role === 'user' && typeof message.content === 'string' && message.content.includes('[MEMORY:EPISODIC]')
+        (message) => message.role === 'user' && typeof message.content === 'string' && message.content.includes('Earlier progress:')
       );
       expect(memorySummaryMessage?.content).toContain('First turn summary');
       expect(fifthRequest.at(-1)?.content).toBe('What should you do next?');
@@ -311,7 +317,10 @@ describe('Agent runtime compaction integration', () => {
 
       await agent.postUserMessage(new AgentInputUserMessage('Please remember this failing turn.'));
       expect(await waitForCondition(
-        () => mainLLM.requests.length === 4 && agent.context.state.memoryManager?.compactionRequired === true && agent.currentStatus === AgentStatus.IDLE,
+        () => mainLLM.requests.length === 4
+          && agent.context.state.memoryManager?.compactionRequired === true
+          && compactionEvents.some((event) => event.phase === 'failed')
+          && agent.currentStatus === AgentStatus.IDLE,
         10000
       )).toBe(true);
 
@@ -319,20 +328,21 @@ describe('Agent runtime compaction integration', () => {
       await agent.postUserMessage(new AgentInputUserMessage('Try to continue anyway.'));
 
       expect(await waitForCondition(
-        () => compactionEvents.some((event) => event.phase === 'failed') && mainLLM.requests.length === 4 && agent.currentStatus === AgentStatus.IDLE,
+        () => compactionEvents.filter((event) => event.phase === 'failed').length === 2
+          && compactionRunner.tasks.length === 2
+          && mainLLM.requests.length === 4
+          && agent.currentStatus === AgentStatus.IDLE,
         10000
       )).toBe(true);
 
       expect(mainLLM.requests).toHaveLength(4);
-      expect(compactionRunner.tasks).toHaveLength(1);
-      expect(compactionEvents.map((event) => event.phase)).toEqual(['requested', 'started', 'failed']);
+      expect(compactionRunner.tasks).toHaveLength(2);
+      expect(compactionEvents.map((event) => event.phase)).toEqual([
+        'requested', 'started', 'failed', 'started', 'failed',
+      ]);
       const failedOperationId = compactionEvents[0]?.compaction_operation_id;
       expect(typeof failedOperationId).toBe('string');
-      expect(compactionEvents.map((event) => event.compaction_operation_id)).toEqual([
-        failedOperationId,
-        failedOperationId,
-        failedOperationId,
-      ]);
+      expect(compactionEvents.every((event) => event.compaction_operation_id === failedOperationId)).toBe(true);
       expect(compactionEvents[1]).toMatchObject({
         requested_turn_id: compactionEvents[0]?.turn_id,
         execution_turn_id: compactionEvents[1]?.turn_id,

@@ -1,0 +1,146 @@
+[
+  {
+    "provider": "gemini-vertex-sdk",
+    "model": "gemini-3.5-flash",
+    "attempted": true,
+    "ok": true,
+    "summary": {
+      "usageMetadata": {
+        "promptTokenCount": 15,
+        "candidatesTokenCount": 3,
+        "totalTokenCount": 130,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 15
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 3
+          }
+        ],
+        "thoughtsTokenCount": 112
+      },
+      "usageKeys": [
+        "promptTokenCount",
+        "candidatesTokenCount",
+        "totalTokenCount",
+        "trafficType",
+        "promptTokensDetails",
+        "candidatesTokensDetails",
+        "thoughtsTokenCount"
+      ],
+      "partKeys": [
+        [
+          "text",
+          "thought"
+        ],
+        [
+          "text",
+          "thoughtSignature"
+        ]
+      ],
+      "hasThoughtPart": true,
+      "finishReason": "STOP"
+    }
+  },
+  {
+    "provider": "gemini-vertex-sdk",
+    "model": "gemini-3-flash-preview",
+    "attempted": true,
+    "ok": true,
+    "summary": {
+      "usageMetadata": {
+        "promptTokenCount": 15,
+        "candidatesTokenCount": 3,
+        "totalTokenCount": 219,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 15
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 3
+          }
+        ],
+        "thoughtsTokenCount": 201
+      },
+      "usageKeys": [
+        "promptTokenCount",
+        "candidatesTokenCount",
+        "totalTokenCount",
+        "trafficType",
+        "promptTokensDetails",
+        "candidatesTokensDetails",
+        "thoughtsTokenCount"
+      ],
+      "partKeys": [
+        [
+          "text",
+          "thought"
+        ],
+        [
+          "text",
+          "thoughtSignature"
+        ]
+      ],
+      "hasThoughtPart": true,
+      "finishReason": "STOP"
+    }
+  },
+  {
+    "provider": "gemini-vertex-sdk",
+    "model": "gemini-3.1-pro-preview",
+    "attempted": true,
+    "ok": true,
+    "summary": {
+      "usageMetadata": {
+        "promptTokenCount": 15,
+        "candidatesTokenCount": 3,
+        "totalTokenCount": 169,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 15
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 3
+          }
+        ],
+        "thoughtsTokenCount": 151
+      },
+      "usageKeys": [
+        "promptTokenCount",
+        "candidatesTokenCount",
+        "totalTokenCount",
+        "trafficType",
+        "promptTokensDetails",
+        "candidatesTokensDetails",
+        "thoughtsTokenCount"
+      ],
+      "partKeys": [
+        [
+          "text",
+          "thought"
+        ],
+        [
+          "text",
+          "thoughtSignature"
+        ]
+      ],
+      "hasThoughtPart": true,
+      "finishReason": "STOP"
+    }
+  }
+]

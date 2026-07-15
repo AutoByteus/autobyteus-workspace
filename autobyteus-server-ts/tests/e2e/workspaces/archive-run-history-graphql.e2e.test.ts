@@ -146,7 +146,7 @@ const buildTeamMetadata = (
 const seedRunFile = async (runDir: string, summary: string): Promise<void> => {
   await fs.mkdir(runDir, { recursive: true });
   await fs.writeFile(
-    path.join(runDir, "raw_traces.jsonl"),
+    path.join(runDir, "raw_traces_active.jsonl"),
     `${JSON.stringify({ trace_type: "user", content: summary, ts: Date.now() })}\n`,
     "utf-8",
   );
@@ -484,7 +484,7 @@ describe("Archive run history GraphQL e2e", () => {
       fs.stat(path.join(memoryDir, "agents", "run-agent-archive", "run_metadata.json")),
     ).resolves.toBeTruthy();
     await expect(
-      fs.stat(path.join(memoryDir, "agents", "run-agent-archive", "raw_traces.jsonl")),
+      fs.stat(path.join(memoryDir, "agents", "run-agent-archive", "raw_traces_active.jsonl")),
     ).resolves.toBeTruthy();
     await expect(
       fs.stat(path.join(memoryDir, "agent_teams", "team-archive", "team_run_metadata.json")),
@@ -496,7 +496,7 @@ describe("Archive run history GraphQL e2e", () => {
           "agent_teams",
           "team-archive",
           "team-archive-member",
-          "raw_traces.jsonl",
+          "raw_traces_active.jsonl",
         ),
       ),
     ).resolves.toBeTruthy();

@@ -33,10 +33,12 @@ Team Communication projection:
 
 - recipient input is delivered through the resolved member/team handle;
 - accepted `INTER_AGENT_MESSAGE` events carry the team context needed by the Team
-  Communication processor;
+  Communication processor to build address-first `senderAddress` and
+  `receiverAddress` values;
 - `reference_files` become Team Communication child references persisted under
   the team run; and
-- frontend Team tab sent/received perspectives hydrate from that projection.
+- frontend Team tab sent/received perspectives hydrate from that projection and
+  match the focused member by exact normalized `ConversationTargetAddress`.
 
 Team-owned internals may still use their own task-agent/recovery machinery for
 task-delegation workflows, but the public `recipient_name` selector is the only
@@ -86,8 +88,8 @@ Grants do not discover, resolve, restore, or revive targets. Target liveness is
 still decided only by `AgentRunManager.getActiveRun(...)`, and rejected grant
 checks return typed delivery failures before the target receives input.
 
-The Skill Self-Evolver uses this seam to let its visible helper run send at most
-one `skill_update` message to the active target run after meaningful durable
+The Retrospective Skill Improver uses this seam to send at most one
+`skill_update` message to the active target run after meaningful durable
 skill package file changes. That message should explain what changed, why it
 matters, and how the target should use or reload the updated guidance, while its
 dynamic `reference_files` are absolute paths limited to changed or directly

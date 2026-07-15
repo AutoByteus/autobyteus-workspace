@@ -29,7 +29,7 @@ import { flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
-import { resolveTeamUserMessageTargetResult } from '~/utils/teamUserMessageTarget';
+import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
 import {
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
@@ -54,11 +54,11 @@ const buildClientMessageId = (): string => {
   return `client_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 };
 
-const buildMemberInputDedupeKey = (
+const buildConversationTargetInputDedupeKey = (
   teamRunId: string,
-  memberRouteKey: string,
+  conversationTargetKey: string,
   messageId: string,
-): string => `member_input:${teamRunId}:${memberRouteKey}:${messageId}`;
+): string => `member_input:${teamRunId}:${conversationTargetKey}:${messageId}`;
 
 interface CreateAgentTeamRunMutationPayload {
   createAgentTeamRun?: {
@@ -272,7 +272,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         throw new Error('No active team context.');
       }
 
-      const targetResolution = resolveTeamUserMessageTargetResult(activeTeam, {
+      const targetResolution = resolveTeamConversationTargetAddressResult(activeTeam, {
         allowSubteam: true,
         allowActiveExecutionSafetyFallback: true,
       });
@@ -287,11 +287,12 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const focusedNode = messageTarget.node;
       const isTemporary = activeTeam.teamRunId.startsWith('temp-');
       let finalTeamRunId = activeTeam.teamRunId;
-      const targetMemberRouteKey = messageTarget.memberRouteKey;
+      const conversationTargetKey = messageTarget.localTargetKey;
+      const targetUploadKey = conversationTargetKey;
       const teamResumeConfig = !isTemporary
         ? runHistoryStore.teamResumeConfigByTeamRunId[finalTeamRunId] || null
         : null;
-      const draftOwner = buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, targetMemberRouteKey);
+      const draftOwner = buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, targetUploadKey);
       let localSubmission: LocalUserSubmissionHandle | null = null;
 
       try {
@@ -345,7 +346,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
             variables: {
               input: {
                 teamDefinitionId: activeTeam.config.teamDefinitionId,
-                selfEvolution: activeTeam.config.selfEvolution ?? null,
                 memberConfigs: memberConfigs ?? [],
               }
             }
@@ -411,17 +411,17 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         }
         const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
           draftOwner,
-          finalOwner: buildTeamMemberFinalContextFileOwner(finalTeamRunId, targetMemberRouteKey),
+          finalOwner: buildTeamMemberFinalContextFileOwner(finalTeamRunId, targetUploadKey),
           attachments: contextAttachments,
         });
 
-        const finalFocusedMember = finalTeamContext.leafAgentContextsByRouteKey.get(targetMemberRouteKey) || null;
+        const finalFocusedMember = finalTeamContext.leafAgentContextsByRouteKey.get(conversationTargetKey) || null;
         if (focusedNode.memberKind === 'agent' && !finalFocusedMember) {
-          throw new Error(`Focused member '${targetMemberRouteKey}' not found after team creation.`);
+          throw new Error(`Focused member '${conversationTargetKey}' not found after team creation.`);
         }
 
         const messageId = buildClientMessageId();
-        const dedupeKey = buildMemberInputDedupeKey(finalTeamRunId, targetMemberRouteKey, messageId);
+        const dedupeKey = buildConversationTargetInputDedupeKey(finalTeamRunId, conversationTargetKey, messageId);
         if (localSubmission) {
           localSubmission.message.messageId = messageId;
           localSubmission.message.dedupeKey = dedupeKey;
@@ -442,13 +442,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         const streamPayload = partitionContextAttachmentsForStreaming(finalizedAttachments);
         service.sendMessage(
           text,
-          targetMemberRouteKey,
+          messageTarget.address,
           streamPayload.contextFilePaths,
           streamPayload.imageUrls,
           { messageId, dedupeKey },
         );
       } catch (error: any) {
-        console.error(`Failed to send message to member ${targetMemberRouteKey}:`, error);
+        console.error(`Failed to send message to conversation target ${conversationTargetKey}:`, error);
         if (localSubmission) {
           failLocalSubmission(localSubmission, error);
           applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);

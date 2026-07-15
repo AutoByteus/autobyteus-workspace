@@ -1,0 +1,87 @@
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_work_traces.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-ts/docs/agent_memory_design.md
+ M autobyteus-ts/docs/agent_memory_design_nodejs.md
+!! applications/brief-studio/node_modules/
+!! applications/socratic-math-teacher/node_modules/
+!! autobyteus-application-backend-sdk/node_modules/
+!! autobyteus-application-devkit/node_modules/
+!! autobyteus-application-frontend-sdk/node_modules/
+!! autobyteus-application-sdk-contracts/node_modules/
+!! autobyteus-message-gateway/node_modules/
+!! autobyteus-server-ts/autobyteus-web/
+!! autobyteus-server-ts/dist/
+!! autobyteus-server-ts/node_modules/
+!! autobyteus-ts/dist/
+!! autobyteus-ts/mcp-config-12msRL/
+!! autobyteus-ts/mcp-config-EkBMC1/
+!! autobyteus-ts/mcp-config-I9UtvU/
+!! autobyteus-ts/mcp-config-NLaaTN/
+!! autobyteus-ts/mcp-config-RDSlKu/
+!! autobyteus-ts/mcp-config-UTyDww/
+!! autobyteus-ts/mcp-config-WkVmpW/
+!! autobyteus-ts/mcp-config-frnYND/
+!! autobyteus-ts/mcp-config-poG7t5/
+!! autobyteus-ts/node_modules/
+!! autobyteus-ts/tmp-edit-file-20lkCT/
+!! autobyteus-ts/tmp-edit-file-2JTPSy/
+!! autobyteus-ts/tmp-edit-file-3cIIDc/
+!! autobyteus-ts/tmp-edit-file-4whzL7/
+!! autobyteus-ts/tmp-edit-file-9YX0HW/
+!! autobyteus-ts/tmp-edit-file-AZ1uUL/
+!! autobyteus-ts/tmp-edit-file-EsPBia/
+!! autobyteus-ts/tmp-edit-file-J43J4r/
+!! autobyteus-ts/tmp-edit-file-SxvaiE/
+!! autobyteus-ts/tmp-edit-file-XMBc9N/
+!! autobyteus-ts/tmp-edit-file-f7AFeN/
+!! autobyteus-ts/tmp-edit-file-fO0u4S/
+!! autobyteus-ts/tmp-edit-file-nJrbF6/
+!! autobyteus-ts/tmp-edit-file-pd8agz/
+!! autobyteus-ts/tmp-edit-file-pzF0Ic/
+!! autobyteus-ts/tmp-edit-file-q6fQ6F/
+!! autobyteus-ts/tmp-edit-file-s1jRxz/
+!! autobyteus-ts/tmp-edit-file-zHRpiK/
+!! autobyteus-ts/tmp-insert-in-file-0Gfamy/
+!! autobyteus-ts/tmp-insert-in-file-BCFKaW/
+!! autobyteus-ts/tmp-insert-in-file-E0ceRr/
+!! autobyteus-ts/tmp-insert-in-file-GHHmgm/
+!! autobyteus-ts/tmp-insert-in-file-HIFKCR/
+!! autobyteus-ts/tmp-insert-in-file-RRM6Mw/
+!! autobyteus-ts/tmp-insert-in-file-VsmDUs/
+!! autobyteus-ts/tmp-insert-in-file-XLbj2y/
+!! autobyteus-ts/tmp-insert-in-file-fdjgoj/
+!! autobyteus-ts/tmp-insert-in-file-hVXrwp/
+!! autobyteus-ts/tmp-insert-in-file-oK7Ygg/
+!! autobyteus-ts/tmp-insert-in-file-xwS0by/
+!! autobyteus-ts/tmp-replace-in-file-1pAn2F/
+!! autobyteus-ts/tmp-replace-in-file-GDAPrH/
+!! autobyteus-ts/tmp-replace-in-file-Hm4N9J/
+!! autobyteus-ts/tmp-replace-in-file-I855RI/
+!! autobyteus-ts/tmp-replace-in-file-d6Xdu8/
+!! autobyteus-ts/tmp-replace-in-file-jNcJ50/
+!! autobyteus-ts/tmp-replace-in-file-rwaZIa/
+!! autobyteus-ts/tmp-replace-in-file-vsBseO/
+!! autobyteus-ts/tmp-replace-in-file-wfwoiO/
+!! autobyteus-web/.nuxt/
+!! autobyteus-web/build/dist/
+!! autobyteus-web/build/icons/1024x1024.png
+!! autobyteus-web/build/icons/128x128.png
+!! autobyteus-web/build/icons/256x256.png
+!! autobyteus-web/build/icons/512x512.png
+!! autobyteus-web/build/icons/64x64.png
+!! autobyteus-web/build/icons/icon.icns
+!! autobyteus-web/build/icons/icon.ico
+!! autobyteus-web/dist-mobile/
+!! autobyteus-web/dist/
+!! autobyteus-web/electron-dist/
+!! autobyteus-web/node_modules/
+!! autobyteus-web/resources/
+!! node_modules/
+?? tickets/in-progress/tool-result-trace-simplification/delivery-evidence/
+?? tickets/in-progress/tool-result-trace-simplification/docs-sync-report.md
+?? tickets/in-progress/tool-result-trace-simplification/handoff-summary.md
+?? tickets/in-progress/tool-result-trace-simplification/release-deployment-report.md
+?? tickets/in-progress/tool-result-trace-simplification/release-notes.md

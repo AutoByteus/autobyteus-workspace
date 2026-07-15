@@ -5,6 +5,7 @@ import {
   AUTOBYTEUS_COMPACTION_TRIGGER_RATIO,
   CompactionRuntimeSettingsResolver,
 } from '../../../src/memory/compaction/compaction-runtime-settings.js';
+import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../src/memory/compaction/working-context-compaction-strategy-setting.js';
 
 describe('CompactionRuntimeSettingsResolver', () => {
   it('parses ratio, token override, and debug toggle', () => {
@@ -13,9 +14,11 @@ describe('CompactionRuntimeSettingsResolver', () => {
       [AUTOBYTEUS_COMPACTION_TRIGGER_RATIO]: '1.4',
       [AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE]: '4096.9',
       [AUTOBYTEUS_COMPACTION_DEBUG_LOGS]: 'YES',
+      [AUTOBYTEUS_COMPACTION_STRATEGY]: ' custom ',
     });
 
     expect(settings).toEqual({
+      strategyId: 'custom',
       triggerRatioOverride: 1,
       activeContextTokensOverride: 4096,
       detailedLogsEnabled: true,
@@ -31,6 +34,7 @@ describe('CompactionRuntimeSettingsResolver', () => {
     });
 
     expect(settings).toEqual({
+      strategyId: 'structured-json',
       triggerRatioOverride: null,
       activeContextTokensOverride: null,
       detailedLogsEnabled: false,

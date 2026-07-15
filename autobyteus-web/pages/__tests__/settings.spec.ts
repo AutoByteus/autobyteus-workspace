@@ -1,15 +1,20 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import SettingsPage from '../settings.vue'
+
+const settingsPageSource = readFileSync(resolve(process.cwd(), 'pages/settings.vue'), 'utf8')
 
 const translationMap: Record<string, string> = {
   'settings.page.backAriaLabel': 'Back to workspace',
   'settings.page.backLabel': 'Back to Workspace',
+  'settings.page.resizeNavigationLabel': 'Resize Settings menu',
   'settings.page.empty.title': 'Settings',
   'settings.page.empty.description': 'Select a category to configure settings.',
   'settings.page.sections.apiKeys': 'API Keys',
-  'settings.page.sections.tokenUsage': 'Token Usage Statistics',
+  'settings.page.sections.tokenUsage': 'Token Statistics',
   'settings.page.sections.messaging': 'Messaging',
   'settings.page.sections.display': 'Display',
   'settings.page.sections.language': 'Language',
@@ -86,6 +91,13 @@ const mountSettings = () =>
 
 describe('settings page', () => {
   beforeEach(() => {
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      matches: true,
+      media: '(min-width: 768px)',
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })))
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1024 })
     routeMock.query = {}
     serverStoreMock.status = 'running'
     windowNodeContextStoreMock.isEmbeddedWindow = true
@@ -110,6 +122,163 @@ describe('settings page', () => {
     const sidebarText = wrapper.text()
     expect(sidebarText.indexOf('Server Settings')).toBeLessThan(sidebarText.indexOf('Updates'))
     expect(wrapper.get('[data-testid="settings-nav-back"]').attributes('aria-label')).toBe('Back to workspace')
+  })
+
+  it('gives navigation and content usable full-width regions at narrow viewports while preserving the desktop row', () => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
+    const wrapper = mountSettings()
+    const layout = wrapper.get('[data-testid="settings-page-layout"]')
+    const navigation = wrapper.get('[data-testid="settings-page-navigation"]')
+    const content = wrapper.get('[data-testid="settings-page-content"]')
+
+    expect(layout.classes()).toEqual(expect.arrayContaining(['flex-col', 'min-w-0', 'md:flex-row']))
+    expect(navigation.classes()).toEqual(expect.arrayContaining([
+      'settings-page-navigation-resizable',
+      'w-full',
+      'max-h-[38dvh]',
+      'overflow-y-auto',
+      'md:max-h-none',
+    ]))
+    expect(content.classes()).toEqual(expect.arrayContaining(['min-h-0', 'min-w-0', 'flex-1']))
+    expect(wrapper.get('[data-testid="settings-navigation-separator-anchor"]').classes()).toEqual(
+      expect.arrayContaining(['hidden', 'w-0', 'md:block']),
+    )
+  })
+
+  it('renders the original Settings layout with an overlaid semantic separator at 256px', async () => {
+    const wrapper = mountSettings()
+    await nextTick()
+    const layout = wrapper.get('[data-testid="settings-page-layout"]')
+    const navigation = wrapper.get('[data-testid="settings-page-navigation"]')
+    const anchor = wrapper.get('[data-testid="settings-navigation-separator-anchor"]')
+    const line = wrapper.get('[data-testid="settings-navigation-separator-line"]')
+    const feedback = wrapper.get('[data-testid="settings-navigation-separator-feedback"]')
+    const separator = wrapper.get('[data-testid="settings-navigation-resize-handle"]')
+
+    expect(layout.attributes('style')).toContain('--settings-navigation-width: 256px')
+    expect(navigation.classes()).not.toContain('md:border-r')
+    expect(navigation.attributes('inert')).toBeUndefined()
+    expect(navigation.attributes('aria-hidden')).toBeUndefined()
+    expect(anchor.classes()).toEqual(expect.arrayContaining(['relative', 'w-0', 'overflow-visible', 'z-20']))
+    expect(line.classes()).toEqual(expect.arrayContaining([
+      'settings-navigation-separator-edge',
+      'pointer-events-none',
+      'w-px',
+    ]))
+    expect(line.attributes('style')).toContain('left: -1px')
+    expect(feedback.classes()).toEqual(expect.arrayContaining([
+      'settings-navigation-separator-feedback',
+      'pointer-events-none',
+      'w-1',
+      'bg-transparent',
+    ]))
+    expect(feedback.attributes('style')).toContain('left: -2px')
+    expect(separator.attributes('style')).toContain('left: -4px')
+    expect(separator.attributes('role')).toBe('separator')
+    expect(separator.attributes('aria-orientation')).toBe('vertical')
+    expect(separator.attributes('aria-label')).toBe('Resize Settings menu')
+    expect(separator.attributes('aria-valuemin')).toBe('0')
+    expect(separator.attributes('aria-valuemax')).toBe('256')
+    expect(separator.attributes('aria-valuenow')).toBe('256')
+    expect(wrapper.find('[data-testid="settings-collapsed-header"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="left-panel-toggle-icon"]').exists()).toBe(false)
+    expect(wrapper.html()).not.toContain('blue-')
+  })
+
+  it('defines the exact workspace-gray separator feedback and focus state precedence', () => {
+    const hoverSelector = [
+      '.settings-navigation-separator-anchor:hover .settings-navigation-separator-feedback,',
+      '.settings-navigation-separator-anchor:focus-within .settings-navigation-separator-feedback {',
+      '  background-color: #9ca3af;',
+      '}',
+    ].join('\n')
+    const activeSelector = [
+      '.settings-navigation-separator-anchor .settings-navigation-separator-feedback.is-resizing {',
+      '  background-color: #6b7280;',
+      '}',
+    ].join('\n')
+
+    expect(settingsPageSource).toContain([
+      '.settings-navigation-separator-edge {',
+      '  background: #e5e7eb;',
+      '  box-shadow: 1px 0 3px rgb(0 0 0 / 10%);',
+      '}',
+    ].join('\n'))
+    expect(settingsPageSource).toContain([
+      '.settings-navigation-separator-feedback {',
+      '  background-color: transparent;',
+      '  transition: background-color 0.2s ease;',
+      '}',
+    ].join('\n'))
+    expect(settingsPageSource).toContain(hoverSelector)
+    expect(settingsPageSource).toContain(activeSelector)
+    expect(settingsPageSource.indexOf(activeSelector)).toBeGreaterThan(
+      settingsPageSource.indexOf(hoverSelector),
+    )
+    expect(settingsPageSource).toContain([
+      '.settings-navigation-resize-target:focus-visible {',
+      '  outline: 2px solid #6b7280;',
+      '  outline-offset: -2px;',
+      '}',
+    ].join('\n'))
+    expect(settingsPageSource).not.toContain('blue-')
+  })
+
+  it('keeps direct Token Statistics at the default manual width', async () => {
+    routeMock.query = { section: 'token-usage' }
+    const wrapper = mountSettings()
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="section-token-usage"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="settings-page-layout"]').attributes('style')).toContain(
+      '--settings-navigation-width: 256px',
+    )
+    expect(wrapper.get('[data-testid="settings-navigation-resize-handle"]').attributes('aria-valuenow')).toBe('256')
+  })
+
+  it('supports zero, partial, and restored widths without remounting the active manager', async () => {
+    const wrapper = mountSettings()
+    await nextTick()
+    const managerElement = wrapper.get('[data-testid="section-api-keys"]').element
+    const separator = wrapper.get('[data-testid="settings-navigation-resize-handle"]')
+    const navigation = wrapper.get('[data-testid="settings-page-navigation"]')
+
+    await separator.trigger('keydown', { key: 'Home' })
+    expect(separator.attributes('aria-valuenow')).toBe('0')
+    expect(separator.attributes('style')).toContain('left: 0px')
+    expect(wrapper.get('[data-testid="settings-navigation-separator-line"]').attributes('style')).toContain('left: 0px')
+    expect(wrapper.get('[data-testid="settings-navigation-separator-feedback"]').attributes('style')).toContain('left: 0px')
+    expect(navigation.attributes('inert')).toBe('')
+    expect(navigation.attributes('aria-hidden')).toBe('true')
+    expect(wrapper.get('[data-testid="section-api-keys"]').element).toBe(managerElement)
+
+    await separator.trigger('keydown', { key: 'ArrowRight' })
+    expect(separator.attributes('aria-valuenow')).toBe('16')
+    expect(separator.attributes('style')).toContain('left: -4px')
+    expect(wrapper.get('[data-testid="settings-navigation-separator-feedback"]').attributes('style')).toContain('left: -2px')
+    expect(navigation.attributes('inert')).toBeUndefined()
+    expect(navigation.attributes('aria-hidden')).toBeUndefined()
+    expect(wrapper.get('[data-testid="section-api-keys"]').element).toBe(managerElement)
+
+    await separator.trigger('keydown', { key: 'End' })
+    expect(separator.attributes('aria-valuenow')).toBe('256')
+    expect(wrapper.get('[data-testid="section-api-keys"]').element).toBe(managerElement)
+  })
+
+  it('retains the manual width across section selection and resets it on remount', async () => {
+    const wrapper = mountSettings()
+    const separator = wrapper.get('[data-testid="settings-navigation-resize-handle"]')
+    await separator.trigger('keydown', { key: 'Home' })
+    await separator.trigger('keydown', { key: 'ArrowRight' })
+    await wrapper.findAll('button').find((button) => button.text() === 'Token Statistics')!.trigger('click')
+
+    expect(wrapper.find('[data-testid="section-token-usage"]').exists()).toBe(true)
+    expect(separator.attributes('aria-valuenow')).toBe('16')
+    wrapper.unmount()
+
+    const remounted = mountSettings()
+    await nextTick()
+    expect(remounted.get('[data-testid="settings-navigation-resize-handle"]').attributes('aria-valuenow')).toBe('256')
   })
 
 

@@ -14,6 +14,7 @@ const dispatchMouseUp = (): void => {
 }
 
 describe('useRightPanel', () => {
+
   it('clamps actual width to the registered workspace while preserving preferred width for restoration', async () => {
     const { useRightPanel } = await loadSubject()
     const panel = useRightPanel()

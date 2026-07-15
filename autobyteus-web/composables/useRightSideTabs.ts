@@ -30,6 +30,7 @@ export function useRightSideTabs() {
       teamMembers: t('shell.rightTabs.team'),
       terminal: t('shell.rightTabs.terminal'),
       progress: t('shell.rightTabs.activity'),
+      usage: t('shell.rightTabs.usage'),
       artifacts: t('shell.rightTabs.artifacts'),
       browser: t('shell.rightTabs.browser'),
       vnc: t('shell.rightTabs.vncViewer'),

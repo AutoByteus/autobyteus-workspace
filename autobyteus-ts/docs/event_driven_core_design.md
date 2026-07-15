@@ -95,7 +95,8 @@ normal-flow handler chain in the active runtime.
 
 - `AgentInputPipeline` to convert user/inter-agent turn-start events into the
   LLM-facing input, preserve reference-file metadata, and mark native tool
-  continuations as `tool_history_only`.
+  continuations as `tool_history_only` when no context-file media carrier is
+  required.
 - `LlmPhase` to assemble memory-backed requests, pass cancellation signals to
   the LLM, stream segments, parse tool calls, terminalize failed/interrupted
   segments, and publish assistant-side effects only after interruption fences.
@@ -104,7 +105,8 @@ normal-flow handler chain in the active runtime.
 - `TurnToolInputPort` to receive same-turn approvals and external tool results
   for known invocation ids.
 - `ToolResultPipeline` and `ToolResultContinuationBuilder` to process accepted
-  tool results and build either legacy TOOL-origin continuation input or native
+  tool results, build semantic completed-tool continuation text, and build
+  either legacy TOOL-origin continuation input or native
   `ToolContinuationReadyEvent` / `tool_history_only` continuation.
 - `LLMResponsePipeline` and `AgentExternalEventNotifier` to publish final
   assistant output and other semantic external-observable events.

@@ -1,76 +1,55 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { TokenUsageTrackingExtension } from '../../../../src/llm/extensions/token-usage-tracking-extension.js';
-import { BaseLLM } from '../../../../src/llm/base.js';
-import { BaseTokenCounter } from '../../../../src/llm/token-counter/base-token-counter.js';
-import { TokenPricingConfig, LLMConfig } from '../../../../src/llm/utils/llm-config.js';
-import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
+import { describe, expect, it } from 'vitest';
+import {
+  buildLlmTokenUsageObservation,
+  isLlmTokenUsageObservation,
+} from '../../../../src/llm/utils/llm-token-usage-observation.js';
 
-import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
-import { LLMModel } from '../../../../src/llm/models.js';
-import { LLMProvider } from '../../../../src/llm/providers.js';
-
-// Mocks
-class MockLLM extends BaseLLM {
-  async _sendMessagesToLLM(_messages: Message[], _kwargs: Record<string, unknown>): Promise<CompleteResponse> {
-    return new CompleteResponse({ content: '' });
-  }
-  async *_streamMessagesToLLM(_messages: Message[], _kwargs: Record<string, unknown>): AsyncGenerator<ChunkResponse, void, unknown> {
-    yield new ChunkResponse({ content: '' });
-  }
-  // No custom constructor needed if we pass correct args to super, or we override it.
-  // BaseLLM constructor takes (model, config).
-  // We can create a valid dummy model.
-}
-
-class MockCounter extends BaseTokenCounter {
-  countInputTokens(msgs: Message[]) { return 10; }
-  countOutputTokens(msg: Message) { return 5; }
-}
-
-const mockFactory = {
-  getTokenCounter: () => new MockCounter('test')
-};
-
-describe('TokenUsageTrackingExtension', () => {
-  let llm: MockLLM;
-  let ext: TokenUsageTrackingExtension;
-
-  beforeEach(() => {
-    // Create valid minimal model
-    const model = new LLMModel({
-      name: 'test',
-      value: 'test',
-      canonicalName: 'test',
-      provider: LLMProvider.OPENAI,
-      defaultConfig: new LLMConfig({
-        pricingConfig: new TokenPricingConfig({
-          inputTokenPricing: 10.0,
-          outputTokenPricing: 20.0
-        })
-      })
+describe('native LLM token usage observation', () => {
+  it('preserves raw provider usage and provider-specific dimensions', () => {
+    const observation = buildLlmTokenUsageObservation({
+      inputTokens: 100,
+      outputTokens: 40,
+      totalTokens: 140,
+      rawUsage: {
+        prompt_tokens: 100,
+        completion_tokens: 40,
+        prompt_tokens_details: { cached_tokens: 25 },
+        completion_tokens_details: { reasoning_tokens: 8 },
+      },
+      model: {
+        modelProvider: 'OPENAI',
+        modelIdentifier: 'gpt-test',
+        modelValue: 'gpt-test-value',
+      },
+      cacheReadInputTokens: 25,
+      reasoningOutputTokens: 8,
     });
-    llm = new MockLLM(model, model.defaultConfig);
-    ext = new TokenUsageTrackingExtension(llm, mockFactory);
+
+    expect(isLlmTokenUsageObservation(observation)).toBe(true);
+    expect(observation.usage_scope).toBe('per_call');
+    expect(observation.input_tokens).toBe(100);
+    expect(observation.output_tokens).toBe(40);
+    expect(observation.cache_read_input_tokens).toBe(25);
+    expect(observation.reasoning_output_tokens).toBe(8);
+    expect(observation.raw_usage_json).toEqual({
+      prompt_tokens: 100,
+      completion_tokens: 40,
+      prompt_tokens_details: { cached_tokens: 25 },
+      completion_tokens_details: { reasoning_tokens: 8 },
+    });
   });
 
-  it('should enable checking', () => {
-    expect(ext.isEnabled).toBe(true);
-  });
+  it('marks missing reported dimensions without estimating local token counts', () => {
+    const observation = buildLlmTokenUsageObservation({
+      inputTokens: null,
+      outputTokens: 12,
+      rawUsage: { completion_tokens: 12 },
+    });
 
-  it('should track input messages', () => {
-    ext.beforeInvoke([new Message(MessageRole.USER, 'test')]);
-    expect(ext.getTotalCost()).toBeCloseTo(0.0001); // 10 tokens * $10/1M
-  });
-
-  it('should track output messages', () => {
-    const inputMessages = [new Message(MessageRole.USER, 'test')];
-    ext.beforeInvoke(inputMessages);
-
-    const response = new CompleteResponse({ content: 'resp' });
-    ext.afterInvoke(inputMessages, response);
-
-    // Input: 10 tokens * $10/1M = 0.0001
-    // Output: 5 tokens * $20/1M = 0.0001
-    expect(ext.getTotalCost()).toBeCloseTo(0.0002);
+    expect(observation.input_tokens).toBeNull();
+    expect(observation.output_tokens).toBe(12);
+    expect(observation.total_tokens).toBeNull();
+    expect(observation.quality_flags).toContain('input_tokens_missing');
+    expect(observation.quality_flags).toContain('total_tokens_missing');
   });
 });

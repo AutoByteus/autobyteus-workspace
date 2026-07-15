@@ -1,0 +1,27 @@
+== artifact listing ==
+-rw-r--r--@ 1 normy  staff   383M Jul 13 22:21 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.dmg
+-rw-r--r--@ 1 normy  staff   379M Jul 13 22:23 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.zip
+
+== dmg verification ==
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $75C8A89F
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $F899F28D
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $EC8DF7B0
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $E7E37F8B
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $EC8DF7B0
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $D0D420D9
+Die überprüfte CRC32-Prüfsumme ist $FCE684B7
+hdiutil: verify: checksum of "electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.dmg" is VALID
+
+== sha256 ==
+5748e0a66a730dbf4816e0f8b28feebcd18aeff4d3a22d57d44cd793253030e2  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.dmg
+a2f04cacec2a7ea0edb19d89001bf358d1d0be171bbaffde318b00c7029f3a53  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.12.zip

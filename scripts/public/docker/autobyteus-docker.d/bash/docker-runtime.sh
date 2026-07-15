@@ -23,18 +23,55 @@ container_config_hash() {
 
 container_running() { [[ "$(docker inspect --format '{{.State.Running}}' "$1" 2>/dev/null || true)" == "true" ]]; }
 
-managed_container() {
-  local container="$1" value
-  value="$(docker inspect --format "{{ index .Config.Labels \"${LAUNCHER_LABEL_KEY}\" }}" "$container" 2>/dev/null || true)"
-  [[ "$value" == "$LAUNCHER_LABEL_VALUE" ]]
+managed_container() { local container="$1" value; value="$(docker inspect --format "{{ index .Config.Labels \"${LAUNCHER_LABEL_KEY}\" }}" "$container" 2>/dev/null || true)"; [[ "$value" == "$LAUNCHER_LABEL_VALUE" ]]; }
+
+container_for_node() { local node_name="$1"; docker ps -a --filter "label=${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" --filter "label=${NODE_LABEL_KEY}=${node_name}" --format '{{.Names}}' 2>/dev/null | head -n 1; }
+
+exact_managed_container_names() {
+  local node_name="$1" names container launcher node
+  names="$(docker ps -a --filter "label=${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" --filter "label=${NODE_LABEL_KEY}=${node_name}" --format '{{.Names}}' 2>/dev/null)" || return 1
+  while IFS= read -r container; do
+    [[ -n "$container" ]] || continue
+    launcher="$(docker inspect --format "{{ index .Config.Labels \"${LAUNCHER_LABEL_KEY}\" }}" "$container" 2>/dev/null)" || return 1; node="$(docker inspect --format "{{ index .Config.Labels \"${NODE_LABEL_KEY}\" }}" "$container" 2>/dev/null)" || return 1
+    [[ "$launcher" == "$LAUNCHER_LABEL_VALUE" && "$node" == "$node_name" ]] && printf '%s\n' "$container"
+  done <<< "$names"
 }
 
-container_for_node() {
-  local node_name="$1"
-  docker ps -a \
-    --filter "label=${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" \
-    --filter "label=${NODE_LABEL_KEY}=${node_name}" \
-    --format '{{.Names}}' 2>/dev/null | head -n 1
+state_entry_exists() { [[ -e "$1" || -L "$1" ]]; }
+
+remove_state_file_checked() { local file="$1"; state_entry_exists "$file" || return 0; rm -f -- "$file" 2>/dev/null || return 1; ! state_entry_exists "$file"; }
+
+resolve_destroy_target() {
+  local node_name="$1" state_file state_container state_present=0 candidate_output candidate container
+  local candidates=()
+  state_file="$(state_dir)/${node_name}.env"
+  DESTROY_TARGET_CONTAINER=""
+  DESTROY_TARGET_STATE_PRESENT=0
+
+  if state_entry_exists "$state_file"; then
+    [[ -f "$state_file" ]] || fail "Cannot destroy ${node_name}: launcher state is malformed."; bash -n "$state_file" 2>/dev/null || fail "Cannot destroy ${node_name}: launcher state is malformed."; state_present=1
+    load_state "$state_file" || fail "Cannot destroy ${node_name}: launcher state is malformed."
+    [[ "${NODE_NAME:-}" == "$node_name" && -n "${CONTAINER_NAME:-}" ]] || fail "Cannot destroy ${node_name}: launcher state does not identify that node and its container."; state_container="$CONTAINER_NAME"
+  fi
+
+  candidate_output="$(exact_managed_container_names "$node_name")" || fail "Cannot resolve managed Docker containers for ${node_name}."
+  while IFS= read -r candidate; do
+    [[ -n "$candidate" ]] && candidates+=("$candidate")
+  done <<< "$candidate_output"
+  ((${#candidates[@]} <= 1)) || fail "Cannot destroy ${node_name}: multiple managed containers carry the exact launcher and node labels. Resolve the ambiguity manually; no changes were made."
+
+  if [[ "$state_present" == "1" ]]; then
+    DESTROY_TARGET_STATE_PRESENT=1
+    if ((${#candidates[@]} == 1)); then
+      container="${candidates[0]}"; container_exists "$state_container" || fail "Cannot destroy ${node_name}: launcher state and Docker labels disagree; no changes were made."
+      [[ "$container" == "$state_container" ]] || fail "Cannot destroy ${node_name}: launcher state and Docker labels disagree; no changes were made."; DESTROY_TARGET_CONTAINER="$container"
+    elif container_exists "$state_container"; then
+      fail "Cannot destroy ${node_name}: container ${state_container} exists but is not proven to be launcher-managed; no changes were made."
+    fi
+  else
+    ((${#candidates[@]} == 1)) || fail "No uniquely identified AutoByteus-managed Docker node was found for ${node_name}; only managed server nodes can be destroyed."
+    DESTROY_TARGET_CONTAINER="${candidates[0]}"
+  fi
 }
 
 managed_node_names() {
@@ -48,9 +85,7 @@ managed_node_names() {
     done
     shopt -u nullglob
 
-    docker ps -a \
-      --filter "label=${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" \
-      --format '{{.Names}}' 2>/dev/null | while IFS= read -r container; do
+    docker ps -a --filter "label=${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" --format '{{.Names}}' 2>/dev/null | while IFS= read -r container; do
         [[ -n "$container" ]] || continue
         value="$(docker inspect --format "{{ index .Config.Labels \"${NODE_LABEL_KEY}\" }}" "$container" 2>/dev/null || true)"
         [[ -z "$value" || "$value" == "<no value>" ]] && value="$container"
@@ -69,10 +104,7 @@ managed_container_names() {
       [[ -n "$name" ]] && printf '%s\n' "$name"
     done
     shopt -u nullglob
-
-    docker ps -a \
-      --filter "label=${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" \
-      --format '{{.Names}}' 2>/dev/null || true
+    docker ps -a --filter "label=${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" --format '{{.Names}}' 2>/dev/null || true
   } | awk 'NF && !seen[$0]++'
 }
 
@@ -405,12 +437,9 @@ start_node() {
 }
 
 image_id_in_use() {
-  local image_id="$1" container current
-  [[ -n "$image_id" ]] || return 1
+  local image_id="$1" container current; [[ -n "$image_id" ]] || return 1
   while IFS= read -r container; do
-    [[ -n "$container" ]] || continue
-    current="$(container_image_id "$container")"
-    [[ "$current" == "$image_id" ]] && return 0
+    [[ -n "$container" ]] || continue; current="$(container_image_id "$container")"; [[ "$current" == "$image_id" ]] && return 0
   done < <(docker ps -a --format '{{.Names}}' 2>/dev/null || true)
   return 1
 }
@@ -435,19 +464,13 @@ remove_unused_image_ids() {
 managed_container_image_ids() {
   local container image_id
   while IFS= read -r container; do
-    [[ -n "$container" ]] || continue
-    container_exists "$container" || continue
-    image_id="$(container_image_id "$container")"
-    [[ -n "$image_id" ]] && printf '%s\n' "$image_id"
+    [[ -n "$container" ]] || continue; container_exists "$container" || continue; image_id="$(container_image_id "$container")"; [[ -n "$image_id" ]] && printf '%s\n' "$image_id"
   done < <(managed_container_names)
 }
 
 remove_all_state_files() {
-  local file
-  shopt -s nullglob
-  for file in "$(state_dir)"/*.env; do
-    rm -f "$file"
-  done
+  local file; shopt -s nullglob
+  for file in "$(state_dir)"/*.env; do rm -f "$file"; done
   shopt -u nullglob
 }
 
@@ -459,11 +482,7 @@ destroy_all_nodes() {
 
   while IFS= read -r container; do
     [[ -n "$container" ]] || continue
-    if container_exists "$container"; then
-      docker rm -f "$container" >/dev/null
-      log "Removed managed container ${container}. Named volumes were kept."
-      any=1
-    fi
+    if container_exists "$container"; then docker rm -f "$container" >/dev/null; log "Removed managed container ${container}. Named volumes were kept."; any=1; fi
   done < <(managed_container_names)
 
   remove_all_state_files
@@ -474,15 +493,52 @@ destroy_all_nodes() {
   remove_unused_image_ids "${image_ids[@]}"
 }
 
+destroy_node() {
+  local node_name="$1" state_file target image_id=""
+  resolve_destroy_target "$node_name"; state_file="$(state_dir)/${node_name}.env"; target="$DESTROY_TARGET_CONTAINER"
+  if [[ -n "$target" ]]; then
+    image_id="$(container_image_id "$target")"; [[ -n "$image_id" ]] || fail "Cannot destroy ${node_name}: could not capture the managed container image before removal; no changes were made."
+    docker rm -f "$target" >/dev/null || fail "Could not remove managed container ${target}; launcher state was kept."; ! container_exists "$target" || fail "Partial cleanup for ${node_name}: Docker did not remove container ${target}; launcher state was kept."; log "Removed managed container ${target} for ${node_name}. Named volumes and host workspaces were kept."
+  else
+    log "Container for ${node_name} was already absent; forgetting its stale launcher state. Named volumes and host workspaces were kept."
+  fi
+
+  if ! remove_state_file_checked "$state_file"; then
+    [[ -n "$target" ]] && fail "Partial cleanup for ${node_name}: container ${target} was removed, but launcher state could not be deleted or verified. No rollback was attempted; recover the state file manually."
+    fail "Could not forget stale launcher state for ${node_name}; no Docker container was changed."
+  fi
+  [[ "$DESTROY_TARGET_STATE_PRESENT" == "1" ]] && log "Removed launcher state for ${node_name}."
+  [[ -n "$image_id" ]] && remove_unused_image_ids "$image_id"
+  return 0
+}
+
+upgrade_image_ref_for_node() {
+  local node_name="$1" override_image_ref="$2" override_explicit="$3" file
+  if [[ "$override_explicit" == "1" ]]; then
+    printf '%s\n' "$override_image_ref"
+    return
+  fi
+  file="$(state_path_for "$node_name")"
+  if [[ -f "$file" ]]; then
+    load_state "$file"
+    if [[ -n "${IMAGE_REF:-}" ]]; then
+      printf '%s\n' "$IMAGE_REF"
+      return
+    fi
+  fi
+  image_ref_for "$DEFAULT_IMAGE" "$DEFAULT_TAG"
+}
+
 upgrade_all_nodes() {
-  local image_ref="$1" node image_id image_ids=() any=0
+  local image_ref="$1" image_ref_override_explicit="$2" node target_image_ref image_id image_ids=() any=0
   while IFS= read -r image_id; do
     [[ -n "$image_id" ]] && image_ids+=("$image_id")
   done < <(managed_container_image_ids)
 
   while IFS= read -r node; do
     [[ -n "$node" ]] || continue
-    start_node "$node" "$image_ref"
+    target_image_ref="$(upgrade_image_ref_for_node "$node" "$image_ref" "$image_ref_override_explicit")"
+    start_node "$node" "$target_image_ref"
     any=1
   done < <(managed_node_names)
 

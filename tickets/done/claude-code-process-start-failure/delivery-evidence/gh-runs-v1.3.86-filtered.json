@@ -1,0 +1,57 @@
+[
+  {
+    "name": "Server Docker Release",
+    "id": 28350440869,
+    "head_branch": "v1.3.86",
+    "head_sha": "6d16e259cf778c9ed62614fdbff797a898ad3ca1",
+    "status": "in_progress",
+    "conclusion": null,
+    "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28350440869",
+    "created_at": "2026-06-29T05:21:01Z",
+    "updated_at": "2026-06-29T05:21:11Z"
+  },
+  {
+    "name": "Android APK Release",
+    "id": 28350440903,
+    "head_branch": "v1.3.86",
+    "head_sha": "6d16e259cf778c9ed62614fdbff797a898ad3ca1",
+    "status": "in_progress",
+    "conclusion": null,
+    "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28350440903",
+    "created_at": "2026-06-29T05:21:01Z",
+    "updated_at": "2026-06-29T05:21:22Z"
+  },
+  {
+    "name": "Desktop Release",
+    "id": 28350440892,
+    "head_branch": "v1.3.86",
+    "head_sha": "6d16e259cf778c9ed62614fdbff797a898ad3ca1",
+    "status": "in_progress",
+    "conclusion": null,
+    "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28350440892",
+    "created_at": "2026-06-29T05:21:01Z",
+    "updated_at": "2026-06-29T05:21:22Z"
+  },
+  {
+    "name": "Release Messaging Gateway",
+    "id": 28350440935,
+    "head_branch": "v1.3.86",
+    "head_sha": "6d16e259cf778c9ed62614fdbff797a898ad3ca1",
+    "status": "in_progress",
+    "conclusion": null,
+    "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28350440935",
+    "created_at": "2026-06-29T05:21:01Z",
+    "updated_at": "2026-06-29T05:21:18Z"
+  },
+  {
+    "name": "iOS App Store Connect Release",
+    "id": 28350440870,
+    "head_branch": "v1.3.86",
+    "head_sha": "6d16e259cf778c9ed62614fdbff797a898ad3ca1",
+    "status": "in_progress",
+    "conclusion": null,
+    "html_url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28350440870",
+    "created_at": "2026-06-29T05:21:01Z",
+    "updated_at": "2026-06-29T05:21:24Z"
+  }
+]

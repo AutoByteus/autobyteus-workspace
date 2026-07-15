@@ -86,35 +86,46 @@ Those values are used in two places:
 
 Definition editors can leave runtime blank to mean “choose when launching”, while workspace run-config forms resolve one effective team default immediately and let individual leaf members diverge when mixed-runtime launch is needed.
 
+Team launch forms do not expose a team-level skill-access selector. Each
+leaf member uses the skills configured on that member's agent definition; a leaf
+member with no configured skills receives no AutoByteus-managed skills by
+default. The old all-installed-skill option is not a normal launch-time policy
+and is absent from the frontend skill-access type union.
+
 ## Team Run Config Surface
 
 The workspace-side team launch buffer is owned by `teamRunConfigStore` and rendered through `TeamRunConfigForm.vue`.
 
 
-The team launch data model can also carry run-owned self-evolution overrides.
-`TeamRunConfig.selfEvolution` applies to the team run launch, while agent-member
-overrides may set `selfEvolution` for a specific leaf member. The backend
-snapshots the effective result into each agent member's run metadata. Team
-definitions, `team-config.json`, and persisted default launch preferences do not
-own self-evolution eligibility, and whole-team/subteam evolution is not part of
-the MVP manual action. The team run configuration form exposes this as a
-launch-time team default plus leaf-member override controls when the global
-self-evolution capability is enabled.
+The team launch data model does not carry Skill Improvement overrides for the
+manual-click model. Team definitions, `team-config.json`, persisted default
+launch preferences, `TeamRunConfig`, and agent-member launch records do not own
+Skill Improvement eligibility; the backend resolves manual eligibility from current
+global Skill Improvement settings and the current active target state at click time.
+Whole-team/subteam Skill Improvement is not part of the MVP manual action, and the team
+run configuration form does not expose launch-time Skill Improvement default or
+leaf-member override controls.
 
-For manual self-evolution, the composer-adjacent CTA targets the selected active
+For manual Skill Improvement, the composer-adjacent CTA targets the selected active
 leaf member, not the whole team row. The frontend sends the member-scoped target
-identity (`teamRunId` plus `memberRunId`) to `startTeamMemberSelfEvolution`, and
-the backend records source run ids for the selected member only. This preserves
+identity (`teamRunId` plus `memberRunId`) to `startTeamMemberSkillImprovement`, and
+the backend records source run ids for the selected member only. Before
+triggering the improver, the backend ensures that member's work trace files are
+current, then activates or reuses the target-scoped improver run. This preserves
 the same valid focused leaf-member boundary used by the shared composer target
-and prevents stale history rows or whole-team containers from becoming evolution
+and prevents stale history rows or whole-team containers from becoming improvement
 targets.
 
 That surface owns:
 
 - the team-level default runtime/model/config selection,
-- shared workspace / auto-execute / skill-access fields,
-- a recursive member override tree for nested team definitions, with subteam
-  group rows and leaf-member override controls keyed by backend
+- shared workspace and team-level **Auto approve tools** (`autoExecuteTools`)
+  field, rendered directly after workspace selection so the global approval
+  setting stays visible before member-specific controls,
+- a collapsed-by-default **Team Members Override** disclosure with the label
+  followed by a visible chevron, leaf-member count, optional active-override
+  count, and a recursive member override tree for nested team definitions, with
+  subteam group rows and leaf-member override controls keyed by backend
   `memberRouteKey`, and
 - runtime-scoped model catalog loading for the team default plus any explicit member runtime overrides.
 
@@ -130,15 +141,22 @@ overrides. Each leaf member can:
 
 Member `llmConfig` values use the same schema-driven shape as the team default.
 The team-global model config initializes **Advanced** from effective **Thinking**
-state: ON opens by default, while OFF or unavailable starts collapsed. Compact
-member override rows stay collapsed until the user expands or explicitly
-configures that member. Inherited member controls may display effective schema
-defaults such as a reasoning effort value, but display-only defaults do not
-create member overrides. Explicit member-local runtime/model selections that
-resolve to an effective-ON model may open only that member's **Advanced**
-controls. For Codex members, `service_tier: "fast"` is valid only while the
-selected or inherited Codex model schema exposes **Fast mode**; stale values are
-cleared when the owning runtime/model context changes.
+state: ON opens by default, while OFF or unavailable starts collapsed. The
+**Team Members Override** disclosure itself starts collapsed to keep large teams
+scannable; when expanded, leaf rows render in one connected list with stronger
+shared separators rather than separate bordered cards. Team, agent, workspace,
+member override, and **Advanced** model-parameter controls can opt into a quiet
+light-blue filled-field variant on this dense run-configuration surface while
+the shared select components keep their default bordered styling for other
+callers. That light-blue treatment is presentation-only and preserves hover and
+keyboard-focus affordance. Inherited member controls may display effective
+schema defaults such as reasoning effort values, but display-only defaults do
+not create member overrides.
+Explicit member-local runtime/model selections that resolve to an effective-ON
+model may open only that member's **Advanced** controls. For Codex members,
+`service_tier: "fast"` is valid only while the selected or inherited Codex model
+schema exposes **Fast mode**; stale values are cleared when the owning
+runtime/model context changes.
 
 When the runtime override changes, the row clears incompatible explicit model/config state instead of leaking stale member-only configuration into the next launch.
 
@@ -149,10 +167,11 @@ and unrelated member fields such as auto-execute are preserved.
 
 When `RunConfigPanel.vue` is showing a selected existing team run rather than a
 new team launch buffer, `TeamRunConfigForm.vue` receives read-only mode. In that
-mode the team-level runtime/model/workspace/auto-approve/skill controls and all
+mode the team-level runtime/model/workspace/auto-approve controls and all
 `MemberOverrideItem.vue` rows render as disabled, direct update handlers no-op,
-and the **Run Team** action is not shown. Member override rows remain
-inspectable, and advanced model/thinking sections are expanded or available so
+and the **Run Team** action is not shown. The **Team Members Override**
+disclosure remains operable for inspection even though inner controls are
+disabled, and advanced model/thinking sections are expanded or available so
 persisted backend values such as `reasoning_effort: "xhigh"` are visible for the
 global team config and per-member overrides.
 
@@ -207,21 +226,32 @@ parent-boundary recipients such as `program_manager`.
 
 Team member focus has three related, intentionally separate meanings. Roster or
 history visual focus is the route key currently selected for display in the
-history tree, Focus pane, Grid, and Spotlight surfaces; it is resolved from the
-recursive `memberTree` and can point at inactive or all-offline logical members
-so users can inspect their saved member history. User-message target focus is
-the route key selected by `resolveTeamUserMessageTarget(...)` for the shared
-composer and text send path. It first preserves the valid roster-focused leaf or
+history tree and focus pane; it is resolved from the recursive `memberTree` plus
+task-execution projections and can point at inactive or all-offline logical
+members so users can inspect their saved member history. User-message target
+focus is the typed `ConversationTargetAddress` selected by
+`resolveTeamConversationTargetAddressResult(...)` for the shared composer and
+text send path. It first preserves the valid roster-focused structural leaf or
 subteam target, so the first message in a new/all-offline team can go directly
-to a focused non-coordinator member instead of falling back to the coordinator.
-Draft context files, finalized attachment ownership, optimistic local user
-messages, and outbound `SEND_MESSAGE.target_member_route_key` all use that same
-target. Missing or stale focused members fail validation instead of silently
-retargeting; the active-execution safety fallback is only used for task-agent
-only logical-member conversations that should not receive ordinary user chat.
-Active-execution command focus remains the safe runtime-control route key; it is
-normalized through the active runtime/member context so stale task-agent or
-inactive logical rows are not accidentally used as stop/interrupt targets.
+to a focused non-coordinator member instead of falling back to the coordinator;
+it also addresses runtime task-agent executions, task-team roots, and members
+inside task-team executions with explicit `task_agent` / `task_team` segments
+instead of encoding runtime ids into route-key strings. Draft context files,
+finalized attachment ownership, and optimistic local user messages use the
+resolver's local target key, while outbound team chat sends
+`SEND_MESSAGE.conversation_target_address` as the backend routing contract.
+The Team Messages perspective uses the same focused
+`ConversationTargetAddress` and exact normalized address equality against
+address-first `senderAddress` / `receiverAddress` message fields, so focused
+task-team and task-agent rows do not rely on display-name or route-key fallback
+matching.
+Missing or stale focused members and incomplete runtime identity fail validation
+instead of silently retargeting; the active-execution safety fallback is only
+used for task-agent-only logical-member conversations that should not receive
+ordinary user chat. Active-execution command focus remains the safe
+runtime-control route key; it is normalized through the active runtime/member
+context so stale task-agent or inactive logical rows are not accidentally used
+as stop/interrupt targets.
 
 The active-execution routing contract also applies to the shared composer stop
 control. Team interrupt dispatch resolves the active-execution-focused member at
@@ -285,14 +315,33 @@ Route-key/path identity from metadata remains authoritative for reconnect,
 stream attribution, focus changes, and command targeting. Stream payloads for
 nested activity can include `member_path`, `member_route_key`, `source_path`,
 and `source_route_key`; one-name aliases are display compatibility only.
-Delegated task-agent stream payloads add concrete `task_agent_instance_id`,
-`task_agent_run_id`, and `task_id` fields. The web client projects those
-payloads as transient task-agent child nodes under the stable logical member,
-uses the explicit task-agent run id for child execution identity, and removes
-the child after accepted settlement/offline cleanup. Logical member parents
-remain part of the stable team topology. Active-execution focus, send,
-interrupt, and run-open hydration use this explicit parent/child projection
-instead of parsing generated run-id formats.
+Delegated task execution stream payloads add explicit execution identity.
+Task-agent payloads carry `execution_kind: "task_agent"`,
+`task_agent_instance_id`, `task_agent_run_id`, and `task_id`; the web client
+projects them as transient task-agent child nodes under the stable logical
+member. Task-team payloads carry `execution_kind: "task_team"`,
+`task_team_instance_id`, `task_team_run_id`, `task_id`, `team_path`, and
+`team_route_key`; the client projects them as transient task-team root nodes
+that are distinct from the structural `agent_team` member. Child-member events
+inside a task-team run must carry `task_team_run_id` plus relative child route
+or path fields, and the client scopes those child nodes/contexts under the
+concrete task-team run. Logical member/team parents remain part of the stable
+team topology. The Workspaces tree renders those live task projections inline as
+transient execution identity rows with explicit stable/transient display
+semantics: a ghost row background, exactly one leading explicit eight-dot SVG
+ring status marker, no extra dotted avatar/trailing marker, and no visible
+temporary label. Transient task-team children are revealed through the execution
+row's own identity-keyed disclosure state: row-body activation toggles child
+visibility while selecting/focusing that transient row, and the explicit
+disclosure control remains a stopped toggle-only target. Team → Tasks remains
+the clean persisted delegated-task body/reference/technical-detail surface:
+summary rows show task text without a leading status dot or visible status label, reference
+rows are selectable without a separate visible `References` heading, and
+actor/member hierarchy, focus controls, and approval controls stay out of the
+right pane.
+Active-execution focus, send/approval targeting, interrupt, and run-open
+hydration use explicit task execution identity instead of parsing generated
+run-id formats or guessing from structural team names.
 
 Subteam focus is a real UI state. Focusing a subteam such as `BuildSquad`
 shows the subteam Team Messages perspective, while focusing a leaf such as

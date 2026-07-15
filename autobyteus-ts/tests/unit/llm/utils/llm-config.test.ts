@@ -38,6 +38,41 @@ describe('TokenPricingConfig', () => {
     expect(outputOnly.outputTokenPricing).toBe(0.006);
   });
 
+
+
+  it('serializes expanded pricing dimensions and input-size tiers', () => {
+    const config = new TokenPricingConfig({
+      inputTokenPricing: 0.3,
+      outputTokenPricing: 1.2,
+      cachedInputReadTokenPricing: 0.06,
+      currency: 'USD',
+      pricingSource: 'official-docs',
+      pricingEffectiveDate: '2026-06-25',
+      inputTokenPricingTiers: [
+        { tierId: 'le_512k', maxInputTokens: 512000, inputTokenPricing: 0.3, outputTokenPricing: 1.2, cachedInputReadTokenPricing: 0.06 },
+        { tierId: 'gt_512k', maxInputTokens: null, inputTokenPricing: 0.6, outputTokenPricing: 2.4, cachedInputReadTokenPricing: 0.12 },
+      ],
+    });
+
+    expect(config.cachedInputReadTokenPricingTrusted).toBe(true);
+    expect(config.toDict()).toEqual({
+      input_token_pricing: 0.3,
+      output_token_pricing: 1.2,
+      cached_input_read_token_pricing: 0.06,
+      currency: 'USD',
+      pricing_source: 'official-docs',
+      pricing_effective_date: '2026-06-25',
+      input_token_pricing_tiers: [
+        { tier_id: 'le_512k', max_input_tokens: 512000, input_token_pricing: 0.3, output_token_pricing: 1.2, cached_input_read_token_pricing: 0.06 },
+        { tier_id: 'gt_512k', max_input_tokens: null, input_token_pricing: 0.6, output_token_pricing: 2.4, cached_input_read_token_pricing: 0.12 },
+      ],
+    });
+
+    const roundTrip = TokenPricingConfig.fromDict(config.toDict() as Record<string, unknown>);
+    expect(roundTrip.currency).toBe('USD');
+    expect(roundTrip.inputTokenPricingTiers[1]).toMatchObject({ tierId: 'gt_512k', maxInputTokens: null, outputTokenPricing: 2.4 });
+  });
+
   it('mergeWith none does not change', () => {
     const config = new TokenPricingConfig({ inputTokenPricing: 0.1, outputTokenPricing: 0.2 });
     const before = config.toDict();

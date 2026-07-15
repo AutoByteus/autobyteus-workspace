@@ -1,0 +1,22 @@
+Release verification for v1.3.88 at 2026-06-29T14:56:39Z
+--- GitHub release ---
+{"asset_count":21,"assets":["autobyteus-message-gateway-1.3.88-node-generic.tar.gz","autobyteus-message-gateway-1.3.88-node-generic.tar.gz.json","autobyteus-message-gateway-1.3.88-node-generic.tar.gz.sha256","AutoByteus_personal_android-1.3.88-release.apk","AutoByteus_personal_android-1.3.88-release.apk.sha256","AutoByteus_personal_linux-arm64-1.3.88.AppImage","AutoByteus_personal_linux-x64-1.3.88.AppImage","AutoByteus_personal_macos-arm64-1.3.88.dmg","AutoByteus_personal_macos-arm64-1.3.88.dmg.blockmap","AutoByteus_personal_macos-arm64-1.3.88.zip","AutoByteus_personal_macos-arm64-1.3.88.zip.blockmap","AutoByteus_personal_macos-x64-1.3.88.dmg","AutoByteus_personal_macos-x64-1.3.88.dmg.blockmap","AutoByteus_personal_macos-x64-1.3.88.zip","AutoByteus_personal_macos-x64-1.3.88.zip.blockmap","AutoByteus_personal_windows-1.3.88.exe","latest-linux-arm64.yml","latest-linux.yml","latest-mac.yml","latest.yml","release-manifest.json"],"draft":false,"html_url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.88","prerelease":false,"published_at":"2026-06-29T14:30:58Z","tag_name":"v1.3.88"}
+--- Workflow runs ---
+28379472816	Release Messaging Gateway	push	completed	success	2026-06-29T14:28:45Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472816
+28379472797	iOS App Store Connect Release	push	completed	success	2026-06-29T14:28:45Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472797
+28379472730	Desktop Release	push	completed	success	2026-06-29T14:28:45Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472730
+28379472721	Server Docker Release	push	completed	success	2026-06-29T14:28:45Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472721
+28379472710	Android APK Release	push	completed	success	2026-06-29T14:28:45Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28379472710
+--- Docker manifest ---
+Name:      docker.io/autobyteus/autobyteus-server:1.3.88
+MediaType: application/vnd.docker.distribution.manifest.list.v2+json
+Digest:    sha256:0ed029eae74fcc07e6503f68f321c6244a30729be714456a1b1989e18ff1fb4a
+           
+Manifests: 
+  Name:      docker.io/autobyteus/autobyteus-server:1.3.88@sha256:085ce282c04dc69be03c85314d4358057c343ce460da9277cdccca993699b262
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/amd64
+             
+  Name:      docker.io/autobyteus/autobyteus-server:1.3.88@sha256:171c37170beb40a95b2cce9eb6dbfff68df7c952edbc32779c3e42fc5988b1e5
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/arm64

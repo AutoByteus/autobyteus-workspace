@@ -5,7 +5,6 @@ import type { ApplicationExecutionContext } from "../../application-orchestratio
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { atomicWriteJsonFile } from "./atomic-json-file-writer.js";
-import { normalizeSelfEvolutionEffectiveConfig } from "../../self-evolution/domain/config.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -54,7 +53,6 @@ const normalizeMetadata = (
   applicationExecutionContext: normalizeApplicationExecutionContext(
     metadata.applicationExecutionContext,
   ),
-  selfEvolutionEffective: normalizeSelfEvolutionEffectiveConfig(metadata.selfEvolutionEffective),
 });
 
 export class AgentRunMetadataStore {

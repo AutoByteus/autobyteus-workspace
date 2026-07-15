@@ -1,6 +1,7 @@
 import { buildSchema } from 'type-graphql';
 import { HealthResolver } from './types/health.js';
 import { ServerSettingsResolver } from './types/server-settings.js';
+import { WorkingContextCompactionStrategyResolver } from './types/working-context-compaction-strategy.js';
 import { ApplicationResolver } from './types/application.js';
 import { ApplicationCapabilityResolver } from './types/application-capability.js';
 import { SkillResolver } from './types/skills.js';
@@ -22,13 +23,14 @@ import { ExternalChannelSetupResolver } from './types/external-channel-setup.js'
 import { RunHistoryResolver } from './types/run-history.js';
 import { RunFileChangesResolver } from './types/run-file-changes.js';
 import { TeamCommunicationResolver } from './types/team-communication.js';
+import { TaskDelegationResolver } from './types/task-delegation.js';
 import { TeamRunHistoryResolver } from './types/team-run-history.js';
 import { RuntimeAvailabilityResolver } from './types/runtime-availability.js';
 import { AgentPackageResolver } from './types/agent-packages.js';
 import { ApplicationPackageResolver } from './types/application-packages.js';
 import { ManagedMessagingGatewayResolver } from './types/managed-messaging-gateway.js';
 import { AppDataMigrationResolver } from './types/app-data-migrations.js';
-import { SelfEvolutionResolver } from './types/self-evolution.js';
+import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 
 export async function buildGraphqlSchema() {
@@ -36,6 +38,7 @@ export async function buildGraphqlSchema() {
     resolvers: [
       HealthResolver,
       ServerSettingsResolver,
+      WorkingContextCompactionStrategyResolver,
       ApplicationResolver,
       ApplicationCapabilityResolver,
       SkillResolver,
@@ -57,13 +60,14 @@ export async function buildGraphqlSchema() {
       RunHistoryResolver,
       RunFileChangesResolver,
       TeamCommunicationResolver,
+      TaskDelegationResolver,
       TeamRunHistoryResolver,
       RuntimeAvailabilityResolver,
       AgentPackageResolver,
       ApplicationPackageResolver,
       ManagedMessagingGatewayResolver,
       AppDataMigrationResolver,
-      SelfEvolutionResolver,
+      SkillImprovementResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

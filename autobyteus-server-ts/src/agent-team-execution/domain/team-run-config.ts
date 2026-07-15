@@ -1,7 +1,6 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
-import type { SelfEvolutionConfigOverride, SelfEvolutionEffectiveConfig } from "../../self-evolution/domain/models.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
 import {
   buildMemberPath,
@@ -34,8 +33,6 @@ export type TeamMemberRunConfig = TeamRunMemberConfigBase & {
   llmConfig?: Record<string, unknown> | null;
   runtimeKind: RuntimeKind;
   applicationExecutionContext?: ApplicationExecutionContext | null;
-  selfEvolution?: SelfEvolutionConfigOverride | null;
-  selfEvolutionEffective?: SelfEvolutionEffectiveConfig | null;
 };
 
 export type TeamSubTeamMemberRunConfig = TeamRunMemberConfigBase & {
@@ -144,8 +141,6 @@ const normalizeTeamRunMemberConfig = (
     llmConfig: input.llmConfig ?? null,
     runtimeKind: input.runtimeKind,
     applicationExecutionContext: input.applicationExecutionContext ?? null,
-    selfEvolution: input.selfEvolution ?? null,
-    selfEvolutionEffective: input.selfEvolutionEffective ?? null,
   };
 };
 
@@ -213,7 +208,6 @@ export class TeamRunConfig {
   readonly coordinatorMemberName: string | null;
   readonly coordinatorMemberRouteKey: string | null;
   readonly memberTree: TeamRunMemberConfig[];
-  readonly selfEvolution: SelfEvolutionConfigOverride | null;
   /** Derived flat leaf-agent projection. Do not use as authoritative nested topology. */
   readonly memberConfigs: TeamMemberRunConfig[];
 
@@ -224,14 +218,12 @@ export class TeamRunConfig {
     coordinatorMemberRouteKey?: string | null;
     memberConfigs?: TeamRunMemberConfigInput[];
     memberTree?: TeamRunMemberConfigInput[];
-    selfEvolution?: SelfEvolutionConfigOverride | null;
   }) {
     this.teamDefinitionId = normalizeRequiredString(input.teamDefinitionId, "teamDefinitionId");
     this.teamBackendKind = input.teamBackendKind;
     this.coordinatorMemberName = normalizeOptionalString(input.coordinatorMemberName);
     const treeInput = input.memberTree ?? input.memberConfigs ?? [];
     this.memberTree = normalizeTeamRunMemberConfigTree(treeInput);
-    this.selfEvolution = input.selfEvolution ?? null;
     this.memberConfigs = collectAgentMemberRunConfigs(this.memberTree);
     this.coordinatorMemberRouteKey = normalizeOptionalString(input.coordinatorMemberRouteKey)
       ?? (this.coordinatorMemberName

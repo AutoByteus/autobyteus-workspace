@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Team Run Config Connected List Verification</title>
+  <style>
+    body { margin: 0; background: #f8fafc; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #111827; }
+    .frame { width: 760px; margin: 24px auto; background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08); }
+    h1 { margin: 0 0 20px; font-size: 18px; }
+    .field { margin: 16px 0; }
+    .label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .select { border: 1px solid #d1d5db; border-radius: 8px; padding: 9px 12px; font-size: 14px; color: #374151; background: #fff; }
+    .help { margin-top: 6px; font-size: 12px; color: #6b7280; }
+    .auto-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0; margin-top: 18px; }
+    .switch { width: 44px; height: 24px; border-radius: 999px; background: #e5e7eb; position: relative; flex: none; }
+    .switch::after { content: ""; width: 20px; height: 20px; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); position: absolute; top: 2px; left: 2px; }
+    .disclosure { display: flex; align-items: center; justify-content: space-between; border-radius: 8px; padding: 10px 4px; margin-top: 16px; font-size: 14px; font-weight: 600; color: #374151; }
+    .disclosure-left { display: flex; align-items: center; gap: 8px; }
+    .chevron { width: 16px; height: 16px; color: #6b7280; }
+    .badge { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; border-radius: 999px; padding: 2px 8px; font-size: 12px; }
+    .list { border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
+    .row { padding: 14px; }
+    .row + .row { border-top: 1px solid #cbd5e1; }
+    .member-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .member-name { font-size: 14px; font-weight: 600; color: #374151; }
+    .pill { border: 1px solid #c7d2fe; background: #eef2ff; color: #4f46e5; border-radius: 999px; padding: 2px 7px; font-size: 11px; margin-left: 8px; }
+    .overridden { border-color: #fde68a; background: #fffbeb; color: #d97706; }
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr 140px; gap: 10px; align-items: end; }
+    .mini-label { display: block; font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+    .mini-control { border: 1px solid #d1d5db; border-radius: 7px; padding: 7px 9px; font-size: 13px; color: #4b5563; background: #fff; }
+    .team-row { background: #f8fafc; }
+    .team-title { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+    .team-pill { border: 1px solid #e2e8f0; background: #fff; color: #64748b; border-radius: 999px; font-size: 10px; padding: 2px 7px; font-weight: 700; letter-spacing: .04em; }
+    .nested { border-left: 1px solid #cbd5e1; padding-left: 12px; }
+    .nested .row { padding: 12px 0 12px 12px; }
+    .nested .row + .row { border-top: 1px solid #cbd5e1; }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <h1>Team Configuration</h1>
+    <div class="field"><span class="label">Workspace Directory</span><div class="select">autobyteus-workspace-superrepo</div></div>
+    <section class="auto-row" data-test="team-auto-approve-row">
+      <div><span class="label">Auto approve tools</span><div class="help">High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.</div></div>
+      <div class="switch" aria-hidden="true"></div>
+    </section>
+    <section class="disclosure" data-test="team-member-overrides-toggle" aria-expanded="true" aria-controls="team-member-overrides-panel">
+      <div class="disclosure-left"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9" /></svg><span>Team Members Override (6)</span></div>
+      <span class="badge">2 overridden</span>
+    </section>
+    <section class="list" id="team-member-overrides-panel" data-test="member-override-list">
+      <div class="row"><div class="member-head"><div><span class="member-name">solution_designer</span><span class="pill">Coordinator</span></div><span class="pill overridden">Overridden</span></div><div class="mini-grid"><div><span class="mini-label">Runtime</span><div class="mini-control">Codex App Server</div></div><div><span class="mini-label">LLM Model</span><div class="mini-control">GPT-5.5</div></div><div><span class="mini-label">Auto approve</span><div class="mini-control">On</div></div></div></div>
+      <div class="row"><div class="member-head"><span class="member-name">architecture_reviewer</span></div><div class="mini-grid"><div><span class="mini-label">Runtime</span><div class="mini-control">Global default</div></div><div><span class="mini-label">LLM Model</span><div class="mini-control">Global default</div></div><div><span class="mini-label">Auto approve</span><div class="mini-control">Global default</div></div></div></div>
+      <div class="row team-row"><div class="team-title"><span class="member-name">BuildSquad</span><span class="team-pill">TEAM</span><span class="help">BuildSquad</span></div><div class="nested"><div class="row"><div class="member-head"><span class="member-name">review_lead</span></div><div class="mini-grid"><div><span class="mini-label">Runtime</span><div class="mini-control">Global default</div></div><div><span class="mini-label">LLM Model</span><div class="mini-control">Global default</div></div><div><span class="mini-label">Auto approve</span><div class="mini-control">Global default</div></div></div></div><div class="row"><div class="member-head"><span class="member-name">qa_specialist</span></div><div class="mini-grid"><div><span class="mini-label">Runtime</span><div class="mini-control">Global default</div></div><div><span class="mini-label">LLM Model</span><div class="mini-control">Global default</div></div><div><span class="mini-label">Auto approve</span><div class="mini-control">Global default</div></div></div></div></div></div>
+      <div class="row"><div class="member-head"><div><span class="member-name">api_e2e_engineer</span></div><span class="pill overridden">Overridden</span></div><div class="mini-grid"><div><span class="mini-label">Runtime</span><div class="mini-control">Claude Agent SDK</div></div><div><span class="mini-label">LLM Model</span><div class="mini-control">Claude Sonnet</div></div><div><span class="mini-label">Auto approve</span><div class="mini-control">Global default</div></div></div></div>
+      <div class="row"><div class="member-head"><span class="member-name">delivery_engineer</span></div><div class="mini-grid"><div><span class="mini-label">Runtime</span><div class="mini-control">Global default</div></div><div><span class="mini-label">LLM Model</span><div class="mini-control">Global default</div></div><div><span class="mini-label">Auto approve</span><div class="mini-control">Global default</div></div></div></div>
+    </section>
+  </main>
+</body>
+</html>

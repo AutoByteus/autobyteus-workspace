@@ -15,7 +15,9 @@ import type { MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { MemberInputMessageContextFilePathPayload, MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { UserMessageContextFilePathPayload, UserMessageProjectionPayload } from './userMessagePayloadTypes';
 import type { TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
-export type { TaskAgentIdentityPayload, TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
+import type { TokenUsageUpdatedPayload as TokenUsageUpdatedPayloadBase } from '~/types/tokenUsageMeter';
+import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+export type { TaskAgentIdentityPayload, TaskTeamIdentityPayload, TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 
 // ============================================================================
 // Server → Client Message Types
@@ -34,6 +36,7 @@ export type ServerMessageType =
   | 'AGENT_STATUS'
   | 'AGENT_COMMAND_ACK'
   | 'COMPACTION_STATUS'
+  | 'TOKEN_USAGE_UPDATED'
   | 'TEAM_STATUS'
   | 'TOOL_APPROVAL_REQUESTED'
   | 'TOOL_APPROVED'
@@ -103,7 +106,7 @@ export interface AgentStatusPayload extends TeamStreamIdentityPayload {
   error_details?: string | null;
 }
 
-export interface TeamStatusPayload {
+export interface TeamStatusPayload extends TeamStreamIdentityPayload {
   status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
   error_message?: string | null;
   sub_team_node_name?: string | null;
@@ -206,6 +209,17 @@ export interface TodoListUpdatePayload extends TeamStreamIdentityPayload {
   todos: TodoItem[];
 }
 
+export interface TaskDelegationReferenceFilePayload {
+  referenceId?: string;
+  reference_id?: string;
+  path: string;
+  type?: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other' | string;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+}
+
 export interface TaskDelegationEventPayload extends TeamStreamIdentityPayload {
   event_type:
     | 'TASK_DELEGATION_ACTIVATED'
@@ -213,8 +227,26 @@ export interface TaskDelegationEventPayload extends TeamStreamIdentityPayload {
     | 'TASK_DELEGATION_TERMINAL_STATUS'
     | string;
   teamRunId?: string;
+  team_run_id?: string;
+  rootTeamRunId?: string;
+  root_team_run_id?: string;
   taskId?: string;
+  task_id?: string;
   taskIds?: string[];
+  taskLabel?: string;
+  task_label?: string;
+  description?: string;
+  taskDescription?: string;
+  task_description?: string;
+  referenceFiles?: TaskDelegationReferenceFilePayload[];
+  reference_files?: TaskDelegationReferenceFilePayload[] | string[];
+  taskReferenceFiles?: TaskDelegationReferenceFilePayload[];
+  task_reference_files?: TaskDelegationReferenceFilePayload[] | string[];
+  taskArguments?: Record<string, any>;
+  task_arguments?: Record<string, any>;
+  target_name?: string;
+  targetName?: string;
+  target?: Record<string, any>;
   status?: string;
   message?: string | null;
   [key: string]: any;
@@ -228,40 +260,14 @@ export interface TeamCommunicationReferenceFilePayload {
   updatedAt: string;
 }
 
-export interface TeamCommunicationRepresentedSubTeamPayload {
-  memberKind: 'agent_team';
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  teamDefinitionId: string;
-  childTeamRunId?: string | null;
-  address: {
-    teamRunId: string;
-    memberPath: string[];
-    memberRouteKey: string;
-  };
-}
-
 export interface TeamCommunicationMessagePayload {
   messageId: string;
   teamRunId: string;
-  senderRunId: string;
-  senderMemberName?: string | null;
-  senderMemberKind?: 'agent' | 'agent_team' | null;
-  senderMemberPath?: string[] | null;
-  senderMemberRouteKey?: string | null;
-  senderRepresentedSubTeam?: TeamCommunicationRepresentedSubTeamPayload | null;
-  receiverRunId: string;
-  receiverMemberName?: string | null;
-  receiverMemberKind?: 'agent' | 'agent_team' | null;
-  receiverMemberPath?: string[] | null;
-  receiverMemberRouteKey?: string | null;
-  receiverRepresentedSubTeam?: TeamCommunicationRepresentedSubTeamPayload | null;
+  senderAddress: ConversationTargetAddress;
+  receiverAddress: ConversationTargetAddress;
   content: string;
   messageType: string;
   createdAt: string;
-  updatedAt: string;
   referenceFiles: TeamCommunicationReferenceFilePayload[];
   source_path?: string[];
   source_route_key?: string;
@@ -319,6 +325,11 @@ export interface ErrorPayload extends TeamStreamIdentityPayload {
   message: string;
 }
 
+
+export type TokenUsageUpdatedPayload =
+  TokenUsageUpdatedPayloadBase
+  & Omit<TeamStreamIdentityPayload, 'member_path' | 'member_route_key'>;
+
 // --- Server Message Union ---
 
 export type ServerMessage =
@@ -334,6 +345,7 @@ export type ServerMessage =
   | { type: 'AGENT_STATUS'; payload: AgentStatusPayload }
   | { type: 'AGENT_COMMAND_ACK'; payload: AgentCommandAckPayload }
   | { type: 'COMPACTION_STATUS'; payload: CompactionStatusPayload }
+  | { type: 'TOKEN_USAGE_UPDATED'; payload: TokenUsageUpdatedPayload }
   | { type: 'TEAM_STATUS'; payload: TeamStatusPayload }
   | { type: 'TOOL_APPROVAL_REQUESTED'; payload: ToolApprovalRequestedPayload }
   | { type: 'TOOL_APPROVED'; payload: ToolApprovedPayload }
@@ -367,12 +379,23 @@ export interface SendMessagePayload {
   content: string;
   context_file_paths?: string[];
   image_urls?: string[];
+  conversation_target_address?: ConversationTargetAddressPayload;
+  conversationTargetAddress?: ConversationTargetAddress;
   target_member_route_key?: string;
   target_member_path?: string[];
   targetMemberRouteKey?: string;
   targetMemberPath?: string[];
   message_id?: string;
   dedupe_key?: string;
+}
+
+export interface ConversationTargetAddressPayload {
+  parent_team_run_id?: string | null;
+  segments: Array<
+    | { kind: 'member'; member_route_key?: string; member_path?: string[] }
+    | { kind: 'task_team'; task_team_run_id: string }
+    | { kind: 'task_agent'; task_agent_run_id: string }
+  >;
 }
 
 export interface ToolActionPayload {
@@ -393,6 +416,16 @@ export interface ToolActionPayload {
   taskAgentRunId?: string;
   target_member_run_id?: string;
   targetMemberRunId?: string;
+  task_team_run_id?: string;
+  taskTeamRunId?: string;
+  team_route_key?: string;
+  teamRouteKey?: string;
+  team_path?: string[];
+  teamPath?: string[];
+  task_team_relative_member_route_key?: string;
+  taskTeamRelativeMemberRouteKey?: string;
+  task_team_relative_member_path?: string[];
+  taskTeamRelativeMemberPath?: string[];
   reason?: string;
   approval_token?: ToolApprovalTokenPayload;
 }

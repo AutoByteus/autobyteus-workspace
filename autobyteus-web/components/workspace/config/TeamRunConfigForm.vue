@@ -2,7 +2,7 @@
   <div class="space-y-4">
     <div>
       <label class="mb-1 block text-sm font-medium text-gray-700">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.team_definition') }}</label>
-      <div class="block w-full cursor-not-allowed select-none rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 shadow-sm">
+      <div class="block w-full cursor-not-allowed select-none rounded-md border border-transparent bg-slate-50 px-3 py-2 text-sm text-gray-500">
         {{ teamDefinition.name }}
       </div>
     </div>
@@ -20,6 +20,7 @@
       :advanced-initially-expanded="readOnlyMode"
       :missing-historical-config="missingHistoricalGlobalConfig"
       id-prefix="team-run"
+      control-variant="quiet"
       @update:runtime-kind="updateRuntimeKind"
       @update:llm-model-identifier="updateLlmModelIdentifier"
       @update:llm-config="updateLlmConfig"
@@ -32,41 +33,13 @@
         :error="workspaceLoadingState.error"
         :initial-path="initialPath || workspaceLoadingState.loadedPath || ''"
         :disabled="isFormReadOnly"
+        control-variant="quiet"
         @select-existing="handleSelectExisting"
-        @load-new="handleLoadNew"
+        @workspace-input-change="handleWorkspaceInputChange"
       />
     </div>
 
-    <div v-if="leafMembers.length > 0" class="mt-4">
-      <button
-        type="button"
-        @click="overridesExpanded = !overridesExpanded"
-        class="w-full text-left text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
-      >
-        <span class="mr-1 inline-block transition-transform duration-200" :class="overridesExpanded ? 'rotate-90' : ''">
-          <span class="i-heroicons-chevron-right-20-solid h-4 w-4"></span>
-        </span>
-        Team Members Override ({{ leafMembers.length }})
-      </button>
-
-      <div v-show="overridesExpanded" class="mt-3">
-        <MemberOverrideTree
-          :member-nodes="memberTree"
-          :config="config"
-          :global-runtime-kind="config.runtimeKind"
-          :global-llm-model="config.llmModelIdentifier"
-          :global-llm-config="config.llmConfig"
-          :coordinator-member-route-key="coordinatorMemberRouteKey"
-          :disabled="isFormReadOnly"
-          :self-evolution-controls-enabled="showSelfEvolutionControl"
-          :advanced-initially-expanded="readOnlyMode"
-          :read-only-mode="readOnlyMode"
-          @update:override="handleOverrideUpdate"
-        />
-      </div>
-    </div>
-
-    <div class="mt-4 flex items-center justify-between gap-4 py-2">
+    <div class="mt-4 flex items-center justify-between gap-4 py-2" data-test="team-auto-approve-row">
       <div class="min-w-0">
         <label for="team-auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</label>
         <p class="mt-1 text-xs leading-relaxed text-gray-500">
@@ -78,8 +51,8 @@
         type="button"
         class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         :class="config.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
-        @click="updateAutoExecute(!config.autoExecuteTools)"
         :disabled="isFormReadOnly"
+        @click="updateAutoExecute(!config.autoExecuteTools)"
       >
         <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</span>
         <span
@@ -90,52 +63,67 @@
       </button>
     </div>
 
-    <div
-      v-if="showSelfEvolutionControl"
-      class="mt-2 flex items-center justify-between gap-4 rounded-md border border-emerald-100 bg-emerald-50/60 px-3 py-2"
-      data-testid="team-run-self-evolution-control"
-    >
-      <div class="min-w-0">
-        <label for="team-self-evolution-enabled" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility') }}</label>
-        <p class="mt-1 text-xs leading-relaxed text-gray-600">
-          {{ $t('workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility_help') }}
-        </p>
-      </div>
+    <div v-if="leafMembers.length > 0" class="mt-4">
       <button
-        id="team-self-evolution-enabled"
         type="button"
-        role="switch"
-        data-testid="team-run-self-evolution-toggle"
-        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        :class="selfEvolutionEnabled ? 'bg-emerald-600' : 'bg-gray-200'"
-        :aria-checked="selfEvolutionEnabled"
-        :disabled="isFormReadOnly || !selfEvolutionCapabilityStore.isEnabled"
-        @click="updateSelfEvolutionEnabled(!selfEvolutionEnabled)"
+        class="flex w-full items-center justify-between rounded-md px-1 py-2 text-left text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+        data-test="team-member-overrides-toggle"
+        :aria-expanded="overridesExpanded"
+        :aria-controls="memberOverridesPanelId"
+        @click="overridesExpanded = !overridesExpanded"
       >
-        <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.self_evolution_eligibility') }}</span>
+        <span class="flex min-w-0 items-center gap-1.5">
+          <span class="truncate">
+            {{ t('workspace.components.workspace.config.TeamRunConfigForm.team_members_override') }} ({{ leafMembers.length }})
+          </span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-4 w-4 flex-shrink-0 transform text-gray-600 transition-transform duration-300"
+            :class="overridesExpanded ? '' : '-rotate-90'"
+            data-test="team-member-overrides-chevron"
+            aria-hidden="true"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
         <span
-          aria-hidden="true"
-          class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-          :class="selfEvolutionEnabled ? 'translate-x-5' : 'translate-x-0'"
-        />
+          v-if="meaningfulOverrideCount > 0"
+          class="ml-3 flex-shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-100"
+          data-test="team-member-overrides-count"
+        >
+          {{ t('workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count', { count: meaningfulOverrideCount }) }}
+        </span>
       </button>
+
+      <div
+        v-show="overridesExpanded"
+        :id="memberOverridesPanelId"
+        class="mt-3"
+        data-test="team-member-overrides-panel"
+      >
+        <MemberOverrideTree
+          :member-nodes="memberTree"
+          :config="config"
+          :global-runtime-kind="config.runtimeKind"
+          :global-llm-model="config.llmModelIdentifier"
+          :global-llm-config="config.llmConfig"
+          :coordinator-member-route-key="coordinatorMemberRouteKey"
+          :disabled="isFormReadOnly"
+          :advanced-initially-expanded="readOnlyMode"
+          :read-only-mode="readOnlyMode"
+          @update:override="handleOverrideUpdate"
+        />
+      </div>
     </div>
 
-    <div>
-      <label for="team-skill-access-mode" class="mb-1 block text-sm font-medium text-gray-700">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.skill_access') }}</label>
-      <select
-        id="team-skill-access-mode"
-        :value="config.skillAccessMode"
-        :disabled="isFormReadOnly"
-        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
-        @change="updateSkillAccessMode(($event.target as HTMLSelectElement).value)"
-      >
-        <option value="PRELOADED_ONLY">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.configured_skills_only_recommended') }}</option>
-        <option value="GLOBAL_DISCOVERY">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.all_installed_skills') }}</option>
-        <option value="NONE">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.no_skills') }}</option>
-      </select>
-      <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.controls_which_skills_team_members_are') }}</p>
-    </div>
 
     <div v-if="readOnlyMode" class="flex items-center rounded bg-slate-50 p-2 text-xs text-slate-600">
       <span class="i-heroicons-eye-20-solid mr-1 h-4 w-4"></span>
@@ -150,14 +138,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRef } from 'vue'
+import { computed, ref, toRef } from 'vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
-import type { SkillAccessMode } from '~/types/agent/AgentRunConfig'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import MemberOverrideTree from './MemberOverrideTree.vue'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { useLocalization } from '~/composables/useLocalization'
 import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync'
 import {
   buildTeamMemberTreeFromDefinition,
@@ -169,7 +157,6 @@ import {
   hasExplicitMemberRuntimeOverride,
   hasMeaningfulMemberOverride,
 } from '~/utils/teamRunConfigUtils'
-import { useSelfEvolutionCapabilityStore } from '~/stores/selfEvolutionCapabilityStore'
 
 interface WorkspaceLoadingState {
   isLoading: boolean
@@ -187,17 +174,15 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'select-existing', workspaceId: string): void
-  (e: 'load-new', path: string): void
+  (e: 'workspace-input-change', input: { mode: 'existing' | 'new'; pendingPath: string }): void
 }>()
 
 const teamDefinitionStore = useAgentTeamDefinitionStore()
-const selfEvolutionCapabilityStore = useSelfEvolutionCapabilityStore()
-const overridesExpanded = ref(true)
+const { t } = useLocalization()
+const overridesExpanded = ref(false)
+const memberOverridesPanelId = 'team-member-overrides-panel'
 const readOnlyMode = computed(() => props.readOnly === true)
 const isFormReadOnly = computed(() => props.config.isLocked || readOnlyMode.value)
-const selfEvolutionEnabled = computed(() => props.config.selfEvolution?.enabled === true)
-const hasSelfEvolutionOverride = computed(() => props.config.selfEvolution !== null && props.config.selfEvolution !== undefined)
-const showSelfEvolutionControl = computed(() => selfEvolutionCapabilityStore.isEnabled || hasSelfEvolutionOverride.value)
 const missingHistoricalGlobalConfig = computed(() =>
   readOnlyMode.value &&
   props.config.llmConfig == null,
@@ -210,6 +195,11 @@ const memberTree = computed(() =>
   }),
 )
 const leafMembers = computed(() => flattenLeafAgentMemberNodes(memberTree.value))
+const meaningfulOverrideCount = computed(() =>
+  Object.values(props.config.memberOverrides || {}).filter((override) =>
+    hasMeaningfulMemberOverride(override),
+  ).length,
+)
 const coordinatorMemberRouteKey = computed(() => {
   const coordinatorMemberName = props.teamDefinition.coordinatorMemberName?.trim() || ''
   if (!coordinatorMemberName) return ''
@@ -217,10 +207,6 @@ const coordinatorMemberRouteKey = computed(() => {
 })
 
 useTeamRunRuntimeCatalogSync(toRef(props, 'config'))
-
-onMounted(() => {
-  void selfEvolutionCapabilityStore.ensureResolved().catch(() => undefined)
-})
 
 const handleOverrideUpdate = (memberRouteKey: string, override: MemberConfigOverride | null) => {
   if (isFormReadOnly.value) return
@@ -236,19 +222,6 @@ const handleOverrideUpdate = (memberRouteKey: string, override: MemberConfigOver
 const updateAutoExecute = (checked: boolean) => {
   if (isFormReadOnly.value) return
   props.config.autoExecuteTools = checked
-}
-
-const updateSelfEvolutionEnabled = (enabled: boolean) => {
-  if (isFormReadOnly.value || !selfEvolutionCapabilityStore.isEnabled) return
-  props.config.selfEvolution = {
-    ...(props.config.selfEvolution ?? {}),
-    enabled,
-  }
-}
-
-const updateSkillAccessMode = (value: string) => {
-  if (isFormReadOnly.value) return
-  props.config.skillAccessMode = value as SkillAccessMode
 }
 
 const pruneInheritedMemberLlmConfigs = (changedGlobal: { runtime: boolean; model: boolean }) => {
@@ -306,8 +279,8 @@ const handleSelectExisting = (workspaceId: string) => {
   emit('select-existing', workspaceId)
 }
 
-const handleLoadNew = (path: string) => {
+const handleWorkspaceInputChange = (input: { mode: 'existing' | 'new'; pendingPath: string }) => {
   if (isFormReadOnly.value) return
-  emit('load-new', path)
+  emit('workspace-input-change', input)
 }
 </script>

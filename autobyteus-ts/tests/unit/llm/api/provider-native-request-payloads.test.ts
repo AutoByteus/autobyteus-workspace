@@ -1,4 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
 import { GeminiLLM } from '../../../../src/llm/api/gemini-llm.js';
 import { MistralLLM } from '../../../../src/llm/api/mistral-llm.js';
@@ -344,6 +347,56 @@ describe('provider-native API request payloads', () => {
     expectNoLegacyProviderText(captured);
   });
 
+  it('captures Gemini generateContent payload with local .m4a audio as inlineData', async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'gemini-provider-m4a-'));
+    const audioPath = path.join(tempDir, 'meeting.m4a');
+    const audioBytes = Buffer.from('provider-bound m4a fixture');
+    await fs.writeFile(audioPath, audioBytes);
+
+    let captured: any;
+    const llm = new GeminiLLM(undefined, commonConfig());
+    (llm as any).client = {
+      models: {
+        generateContent: async (params: any) => {
+          captured = params;
+          return {
+            text: 'ok',
+            candidates: [{ content: { parts: [{ text: 'ok' }] } }],
+            usageMetadata: {
+              promptTokenCount: 1,
+              candidatesTokenCount: 1,
+              totalTokenCount: 2
+            }
+          };
+        }
+      }
+    };
+
+    try {
+      await llm.sendMessages([
+        new Message(MessageRole.USER, {
+          content: 'Transcribe this.',
+          audio_urls: [audioPath]
+        })
+      ]);
+
+      const userTurn = captured.contents.find((item: any) => item.role === 'user');
+      expect(userTurn).toBeDefined();
+      expect(userTurn.parts).toEqual([
+        { text: 'Transcribe this.' },
+        {
+          inlineData: {
+            data: audioBytes.toString('base64'),
+            mimeType: 'audio/mp4'
+          }
+        }
+      ]);
+    } finally {
+      await llm.cleanup();
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('captures Ollama chat payload with assistant tool_calls, ordered role=tool results, and no synthetic aggregate user text', async () => {
     let captured: any;
     const llm = new OllamaLLM(
@@ -429,7 +482,16 @@ describe('provider-native API request payloads', () => {
       }
     };
 
-    await llm.sendMessages(messagesFor('mistral'), null, { tools: commonTools });
+    await llm.sendMessages(messagesFor('mistral'), null, {
+      logicalConversationId: 'agent-1',
+      logical_conversation_id: 'agent-1',
+      conversationId: 'conversation-1',
+      agentId: 'agent-1',
+      turnId: 'turn-1',
+      requestId: 'request-1',
+      renderedPayload: { internal: true },
+      tools: commonTools
+    });
 
     const assistant = captured.messages.find((msg: any) => Array.isArray(msg.tool_calls));
     const toolMessages = captured.messages.filter((msg: any) => msg.role === 'tool');
@@ -439,6 +501,14 @@ describe('provider-native API request payloads', () => {
     expect(toolMessages.map((msg: any) => msg.tool_call_id)).toEqual(['call_a', 'call_b']);
     expect(toolMessages.map((msg: any) => msg.name)).toEqual(['get_weather', 'get_time']);
     expect(userMessages.map((msg: any) => msg.content)).toEqual(['Use both tools, then continue.']);
+    expect(captured.tools).toBe(commonTools);
+    expect(captured).not.toHaveProperty('logicalConversationId');
+    expect(captured).not.toHaveProperty('logical_conversation_id');
+    expect(captured).not.toHaveProperty('conversationId');
+    expect(captured).not.toHaveProperty('agentId');
+    expect(captured).not.toHaveProperty('turnId');
+    expect(captured).not.toHaveProperty('requestId');
+    expect(captured).not.toHaveProperty('renderedPayload');
     expectNoLegacyProviderText(captured);
   });
 
@@ -503,6 +573,39 @@ describe('provider-native API request payloads', () => {
     expect(captured.tools[0]).toMatchObject({ type: 'function', name: 'get_weather' });
     expect(captured.include).toEqual(['file_search_call.results', 'reasoning.encrypted_content']);
     expectNoLegacyProviderText(captured);
+  });
+
+  it('submits the canonical GPT-5.6 model and max reasoning effort through Responses', async () => {
+    let captured: any;
+    const openAIConfig = commonConfig();
+    openAIConfig.extraParams = { reasoning_effort: 'max', reasoning_summary: 'auto' };
+    const llm = new OpenAIResponsesLLM(
+      model(LLMProvider.OPENAI, 'gpt-5.6-sol'),
+      'OPENAI_API_KEY',
+      'https://api.openai.com/v1',
+      openAIConfig,
+      'test-openai-key'
+    );
+    (llm as any).client = {
+      responses: {
+        create: async (params: any) => {
+          captured = params;
+          return {
+            output: [{ type: 'message', content: [{ type: 'output_text', text: 'ok' }] }],
+            usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 }
+          };
+        }
+      }
+    };
+
+    await llm.sendMessages([new Message(MessageRole.USER, 'Hello')]);
+
+    expect(captured).toMatchObject({
+      model: 'gpt-5.6-sol',
+      reasoning: { effort: 'max', summary: 'auto' },
+    });
+    expect(captured).not.toHaveProperty('reasoning_effort');
+    expect(captured).not.toHaveProperty('reasoning_summary');
   });
 
   it('captures OpenAI Responses streaming payload with caller include preserved and encrypted reasoning requested', async () => {

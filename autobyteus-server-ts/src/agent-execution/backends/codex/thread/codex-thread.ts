@@ -1,5 +1,5 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { TokenUsage } from "autobyteus-ts";
+import type { CodexReadyTokenUsageUpdate } from "./codex-thread-token-usage.js";
 import { asString } from "../codex-app-server-json.js";
 import { resolveTurnId } from "./codex-thread-id-resolver.js";
 import type { CodexAppServerClient } from "../../../../runtime-management/codex/client/codex-app-server-client.js";
@@ -43,8 +43,7 @@ export class CodexThread {
   readonly startup: CodexThreadStartupGate;
   readonly approvalRecords: Map<string, CodexApprovalRecord>;
   readonly pendingMcpToolCalls: Map<string, CodexPendingMcpToolCall>;
-  readonly pendingTurnTokenUsage: Map<string, TokenUsage>;
-  readonly readyTurnTokenUsageTurnIds: Set<string>;
+  readonly pendingTokenUsageUpdates: Map<string, CodexReadyTokenUsageUpdate>;
   readonly listeners: Set<(message: CodexAppServerMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
   lastCompletedTurnId: string | null;
@@ -56,8 +55,7 @@ export class CodexThread {
     startup: CodexThreadStartupGate;
     approvalRecords?: Map<string, CodexApprovalRecord>;
     pendingMcpToolCalls?: Map<string, CodexPendingMcpToolCall>;
-    pendingTurnTokenUsage?: Map<string, TokenUsage>;
-    readyTurnTokenUsageTurnIds?: Set<string>;
+    pendingTokenUsageUpdates?: Map<string, CodexReadyTokenUsageUpdate>;
     listeners?: Set<(message: CodexAppServerMessage) => void>;
     unbindHandlers?: Array<() => void>;
     lastCompletedTurnId?: string | null;
@@ -68,8 +66,7 @@ export class CodexThread {
     this.startup = input.startup;
     this.approvalRecords = input.approvalRecords ?? new Map();
     this.pendingMcpToolCalls = input.pendingMcpToolCalls ?? new Map();
-    this.pendingTurnTokenUsage = input.pendingTurnTokenUsage ?? new Map();
-    this.readyTurnTokenUsageTurnIds = input.readyTurnTokenUsageTurnIds ?? new Set();
+    this.pendingTokenUsageUpdates = input.pendingTokenUsageUpdates ?? new Map();
     this.listeners = input.listeners ?? new Set();
     this.unbindHandlers = input.unbindHandlers ?? [];
     this.lastCompletedTurnId = input.lastCompletedTurnId ?? null;
@@ -145,14 +142,12 @@ export class CodexThread {
     this.lastCompletedTurnId = completedTurnId ?? null;
     this.runContext.runtimeContext.activeTurnId = null;
     this.pendingMcpToolCalls.clear();
-    this.markTurnTokenUsageReady(completedTurnId);
   }
 
   setCurrentStatus(status: string | null): void {
     this.currentStatus = status;
     const normalizedStatus = status?.trim().toUpperCase() ?? null;
     if (normalizedStatus === "IDLE") {
-      this.markTurnTokenUsageReady(this.activeTurnId ?? this.lastCompletedTurnId);
       this.runContext.runtimeContext.activeTurnId = null;
       this.pendingMcpToolCalls.clear();
     } else if (normalizedStatus === "ERROR") {
@@ -165,32 +160,22 @@ export class CodexThread {
     this.runContext.runtimeContext.threadId = threadId;
   }
 
-  recordTurnTokenUsage(turnId: string, usage: TokenUsage): void {
-    this.pendingTurnTokenUsage.set(turnId, usage);
-    this.markTurnTokenUsageReady(turnId);
-  }
-
-  getReadyTurnTokenUsages(): Array<{
-    turnId: string;
-    usage: TokenUsage;
-  }> {
-    const ready: Array<{ turnId: string; usage: TokenUsage }> = [];
-    for (const turnId of this.readyTurnTokenUsageTurnIds) {
-      const usage = this.pendingTurnTokenUsage.get(turnId);
-      if (!usage) {
-        continue;
-      }
-      ready.push({ turnId, usage });
-    }
-    return ready;
-  }
-
-  markTurnTokenUsagePersisted(turnId: string | null): void {
-    if (!turnId) {
+  recordTokenUsageUpdate(usage: CodexReadyTokenUsageUpdate): void {
+    if (this.pendingTokenUsageUpdates.has(usage.idempotency_key)) {
       return;
     }
-    this.pendingTurnTokenUsage.delete(turnId);
-    this.readyTurnTokenUsageTurnIds.delete(turnId);
+    this.pendingTokenUsageUpdates.set(usage.idempotency_key, usage);
+  }
+
+  getReadyTokenUsageUpdates(): CodexReadyTokenUsageUpdate[] {
+    return Array.from(this.pendingTokenUsageUpdates.values());
+  }
+
+  markTokenUsageUpdatePersisted(idempotencyKey: string | null): void {
+    if (!idempotencyKey) {
+      return;
+    }
+    this.pendingTokenUsageUpdates.delete(idempotencyKey);
   }
 
   async sendTurn(message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
@@ -404,17 +389,6 @@ export class CodexThread {
 
   clearPendingMcpToolCalls(): void {
     this.pendingMcpToolCalls.clear();
-  }
-
-  private markTurnTokenUsageReady(turnId: string | null): void {
-    if (!turnId || !this.pendingTurnTokenUsage.has(turnId)) {
-      return;
-    }
-
-    const normalizedStatus = this.currentStatus?.trim().toUpperCase() ?? null;
-    if (normalizedStatus === "IDLE" || this.lastCompletedTurnId === turnId) {
-      this.readyTurnTokenUsageTurnIds.add(turnId);
-    }
   }
 
   private async awaitStartupReady(): Promise<void> {

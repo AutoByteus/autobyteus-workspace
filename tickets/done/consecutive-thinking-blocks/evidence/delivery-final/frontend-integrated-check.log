@@ -1,0 +1,33 @@
+
+> autobyteus@1.4.8 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run services/runHydration/__tests__/runProjectionConversation.spec.ts services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/consecutive-thinking-blocks/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runProjectionConversation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runProjectionConversation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts (10 tests) 6ms
+ ✓ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (21 tests) 11ms
+
+ Test Files  2 passed (2)
+      Tests  31 passed (31)
+   Start at  21:25:39
+   Duration  4.98s (transform 2.60s, setup 8.69s, collect 40ms, tests 17ms, environment 440ms, prepare 316ms)
+
+
+FRONTEND_INTEGRATED_CHECK_EXIT=0

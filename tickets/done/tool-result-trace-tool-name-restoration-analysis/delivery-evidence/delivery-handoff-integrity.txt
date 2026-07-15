@@ -1,0 +1,58 @@
+# Delivery Documentation And Handoff Integrity Audit
+
+timestamp_utc=2026-07-15T04:49:18Z
+head=35e0044929d3e315f3c887b5996b9cf06bcf0237
+origin_personal=2f93caf4a8aea932c12a9c7c5942e4c69f9d88d6
+
+## git diff --check
+PASS
+
+## Expected long-lived docs changed
+autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+autobyteus-server-ts/docs/modules/agent_memory.md
+autobyteus-server-ts/docs/modules/agent_work_traces.md
+autobyteus-server-ts/docs/modules/codex_integration.md
+autobyteus-server-ts/docs/modules/run_history.md
+PASS: changed_count=5
+
+## Stale current-contract phrase scan
+PASS: no stale current-contract phrase found
+
+## Refined-contract presence
+autobyteus-server-ts/docs/modules/agent_work_traces.md:88:minimal result repeats the verified canonical name while owning terminal
+autobyteus-server-ts/docs/design/codex_raw_event_mapping.md:403:- Treat `mcpToolCall` start plus the enriched local MCP completion event as the authoritative owner for Codex MCP tool execution lifecycle. Preserve pending call arguments in live terminal events when required, but persist them only on the call; the raw result remains minimal by repeating the verified canonical name with the outcome but not the arguments.
+autobyteus-server-ts/docs/design/codex_raw_event_mapping.md:405:- For every newly persisted Codex tool lifecycle, use compound `(turn_id, tool_call_id)` identity. A call owns canonical name/arguments; a separate result repeats the matched canonical name, physically owns both result/error keys, and omits arguments. Reject and log a supplied non-empty terminal name that conflicts with lifecycle state without writing or completing the result; accept an omitted terminal name when the matched call supplies it. Existing historical name-less results and supersets remain a normal read-only projection concern, not a writer input.
+autobyteus-server-ts/docs/modules/run_history.md:360:  verified canonical name, owns terminal result/error, and omits arguments. The
+autobyteus-server-ts/docs/modules/codex_integration.md:171:present result/error keys, repeats the matched call's verified canonical name,
+autobyteus-server-ts/docs/modules/codex_integration.md:351:New minimal results carry the verified canonical name locally and obtain
+autobyteus-server-ts/docs/modules/agent_memory.md:86:  matched call's non-empty canonical `tool_name`, and has physically present
+autobyteus-server-ts/docs/modules/agent_memory.md:306:physical call/result pair. New minimal results carry the verified canonical name
+PASS
+
+## Required handoff artifacts
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/requirements.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/investigation-notes.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/design-spec.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/design-review-report.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/implementation-handoff.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/code-review-report.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/api-e2e-coverage-investigation.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/api-e2e-execution-coverage-report.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/api-e2e-test-review-report.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/docs-sync-report.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/handoff-summary.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/release-notes.md
+PASS tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/release-deployment-report.md
+
+## Working tree
+## codex/tool-result-trace-tool-name-restoration-analysis...origin/personal [ahead 2]
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/agent_memory.md
+ M autobyteus-server-ts/docs/modules/agent_work_traces.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+?? tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/delivery-evidence/
+?? tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/docs-sync-report.md
+?? tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/handoff-summary.md
+?? tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/release-deployment-report.md
+?? tickets/in-progress/tool-result-trace-tool-name-restoration-analysis/release-notes.md

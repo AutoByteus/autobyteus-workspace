@@ -26,6 +26,7 @@ vi.mock('~/utils/apolloClient', () => ({
 
 vi.mock('~/graphql/mutations/workspace_mutations', () => ({
   CreateWorkspace: 'mock-mutation',
+  RemoveWorkspace: 'mock-remove-workspace-mutation',
 }));
 vi.mock('~/graphql/queries/workspace_queries', () => ({
   GetAllWorkspaces: 'mock-query',
@@ -183,6 +184,103 @@ describe('workspaceStore', () => {
       expect(store.workspacesFetched).toBe(false);
       expect(Object.keys(store.workspaces)).toHaveLength(0);
       expect(store.fileSystemConnections.size).toBe(0);
+    });
+  });
+
+  describe('removeWorkspace', () => {
+    it('removes workspace metadata and clears file explorer live state after backend success', async () => {
+      const store = createStore();
+      const fileExplorerStore = useFileExplorerStore();
+      const disconnect = vi.fn();
+      store.workspaces['ws-remove'] = {
+        workspaceId: 'ws-remove',
+        name: 'Remove Me',
+        displayName: 'Remove Me',
+        workspaceConfig: { root_path: '/tmp/remove-me' },
+        absolutePath: '/tmp/remove-me',
+        workspaceRootPath: '/tmp/remove-me',
+        kind: 'filesystem',
+        isTemp: false,
+      };
+      store.registerWorkspaceInfoMetadata(store.workspaces['ws-remove']);
+      fileExplorerStore._getOrCreateWorkspaceState('ws-remove');
+      store.fileSystemConnections.set('ws-remove', {
+        connect: vi.fn(),
+        disconnect,
+      } as any);
+      store.fileExplorerLiveConsumers.set('ws-remove', new Set(['left-panel']));
+      store.fileExplorerSnapshotRefreshes.set('ws-remove', Promise.resolve());
+      mockMutate.mockResolvedValue({
+        data: {
+          removeWorkspace: {
+            success: true,
+            message: 'Workspace removed from Workspaces.',
+            workspaceId: 'ws-remove',
+            workspaceRootPath: '/tmp/remove-me',
+          },
+        },
+      });
+
+      const result = await store.removeWorkspace('ws-remove');
+
+      expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({
+        mutation: 'mock-remove-workspace-mutation',
+        variables: { input: { workspaceId: 'ws-remove' } },
+      }));
+      expect(result).toEqual({
+        workspaceRootPath: '/tmp/remove-me',
+        message: 'Workspace removed from Workspaces.',
+      });
+      expect(store.workspaces['ws-remove']).toBeUndefined();
+      expect(store.workspaceMetadataById['ws-remove']).toBeUndefined();
+      expect(store.workspaceMetadataIdsByRootPath['/tmp/remove-me']).toBeUndefined();
+      expect(fileExplorerStore.fileExplorerStateByWorkspace.has('ws-remove')).toBe(false);
+      expect(store.fileSystemConnections.has('ws-remove')).toBe(false);
+      expect(store.fileExplorerLiveConsumers.has('ws-remove')).toBe(false);
+      expect(store.fileExplorerSnapshotRefreshes.has('ws-remove')).toBe(false);
+      expect(disconnect).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps workspace and file explorer state when backend removal fails', async () => {
+      const store = createStore();
+      const fileExplorerStore = useFileExplorerStore();
+      const disconnect = vi.fn();
+      store.workspaces['ws-active'] = {
+        workspaceId: 'ws-active',
+        name: 'Active',
+        displayName: 'Active',
+        workspaceConfig: { root_path: '/tmp/active' },
+        absolutePath: '/tmp/active',
+        workspaceRootPath: '/tmp/active',
+        kind: 'filesystem',
+        isTemp: false,
+      };
+      store.registerWorkspaceInfoMetadata(store.workspaces['ws-active']);
+      fileExplorerStore._getOrCreateWorkspaceState('ws-active');
+      store.fileSystemConnections.set('ws-active', {
+        connect: vi.fn(),
+        disconnect,
+      } as any);
+      mockMutate.mockResolvedValue({
+        data: {
+          removeWorkspace: {
+            success: false,
+            message: 'Stop active runs before removing this workspace.',
+            workspaceId: 'ws-active',
+            workspaceRootPath: '/tmp/active',
+          },
+        },
+      });
+
+      await expect(store.removeWorkspace('ws-active')).rejects.toThrow(
+        'Stop active runs before removing this workspace.',
+      );
+
+      expect(store.workspaces['ws-active']).toBeDefined();
+      expect(store.workspaceMetadataById['ws-active']).toBeDefined();
+      expect(fileExplorerStore.fileExplorerStateByWorkspace.has('ws-active')).toBe(true);
+      expect(store.fileSystemConnections.has('ws-active')).toBe(true);
+      expect(disconnect).not.toHaveBeenCalled();
     });
   });
 

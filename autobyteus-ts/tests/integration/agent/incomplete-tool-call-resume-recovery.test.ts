@@ -27,7 +27,7 @@ import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { WorkingContextSnapshotBootstrapOptions, WorkingContextSnapshotBootstrapper } from '../../../src/memory/restore/working-context-snapshot-bootstrapper.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
-import { WorkingContextSnapshot } from '../../../src/memory/working-context-snapshot.js';
+import { WorkingContext } from '../../../src/memory/working-context.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 
 class CapturingOpenAICompatibleLLM extends BaseLLM {
@@ -88,7 +88,7 @@ describe('incomplete native tool-call persisted resume recovery (API/E2E)', () =
         }),
       ]);
 
-      const cached = new WorkingContextSnapshot();
+      const cached = new WorkingContext();
       cached.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System prompt' }));
       cached.appendMessage(new Message(MessageRole.ASSISTANT, {
         content: 'I will generate page two.',

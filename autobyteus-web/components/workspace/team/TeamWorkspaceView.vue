@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col h-full bg-white">
     <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 border-b border-gray-200 flex-shrink-0 sm:px-4">
-      <div class="flex min-w-0 flex-1 items-center space-x-3">
+      <div class="flex items-center space-x-3 min-w-0 flex-1">
         <div class="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-slate-100 flex items-center justify-center">
           <img
             v-if="showHeaderAvatarImage"
@@ -21,11 +21,6 @@
       </div>
 
       <div class="flex flex-shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
-        <TeamWorkspaceModeSwitch
-          v-if="activeTeamContext"
-          :mode="currentMode"
-          @update:mode="setCurrentMode"
-        />
         <WorkspaceHeaderActions
           @new-agent="createNewTeamRun"
           @edit-config="openSelectedTeamConfig"
@@ -34,35 +29,18 @@
     </div>
 
     <div v-if="activeTeamContext" class="flex-grow min-h-0 flex flex-col">
-      <TeamTaskAgentActivityBar
-        :team-context="activeTeamContext"
-        @select-member="setFocusedMember"
-      />
-
       <div class="flex-grow min-h-0">
-        <AgentTeamEventMonitor v-if="currentMode === 'focus'">
+        <AgentTeamEventMonitor>
           <template #composerContext>
-            <SelfEvolutionComposerCta :target="teamMemberSelfEvolutionTarget" />
+            <SkillImprovementComposerCta :target="teamMemberSkillImprovementTarget" />
           </template>
         </AgentTeamEventMonitor>
-        <TeamGridView
-          v-else-if="currentMode === 'grid'"
-          :team-context="activeTeamContext"
-          :focused-member-route-key="rosterFocusedMemberRouteKey"
-          @select-member="setFocusedMember"
-        />
-        <TeamSpotlightView
-          v-else
-          :team-context="activeTeamContext"
-          :focused-member-route-key="rosterFocusedMemberRouteKey"
-          @select-member="setFocusedMember"
-        />
       </div>
 
       <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
         <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ composerTargetTitle }}</span>
         </p>
-        <SelfEvolutionComposerCta :target="teamMemberSelfEvolutionTarget" />
+        <SkillImprovementComposerCta :target="teamMemberSkillImprovementTarget" />
         <AgentUserInputForm v-if="focusedMemberContext" />
         <form v-else class="space-y-2" @submit.prevent="sendSubteamMessage">
           <textarea
@@ -101,21 +79,16 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
-import { useTeamWorkspaceViewStore, type TeamWorkspaceViewMode } from '~/stores/teamWorkspaceViewStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
-import SelfEvolutionComposerCta from '~/components/workspace/self-evolution/SelfEvolutionComposerCta.vue';
-import type { SelfEvolutionComposerCtaTarget } from '~/components/workspace/self-evolution/selfEvolutionComposerCtaTarget';
-import TeamGridView from '~/components/workspace/team/TeamGridView.vue';
-import TeamSpotlightView from '~/components/workspace/team/TeamSpotlightView.vue';
-import TeamTaskAgentActivityBar from '~/components/workspace/team/TeamTaskAgentActivityBar.vue';
-import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
+import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue';
+import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
-import { resolveTeamUserMessageTarget } from '~/utils/teamUserMessageTarget';
+import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamRunStore = useAgentTeamRunStore();
@@ -124,12 +97,11 @@ const teamRunConfigStore = useTeamRunConfigStore();
 const agentRunConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
 const workspaceCenterViewStore = useWorkspaceCenterViewStore();
-const teamWorkspaceViewStore = useTeamWorkspaceViewStore();
 const headerAvatarLoadError = ref(false);
 const subteamDraft = ref('');
 const isSendingSubteamDraft = ref(false);
 const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
-const SKILL_EVOLVER_AGENT_DEFINITION_ID = 'autobyteus-skill-evolver';
+const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = 'autobyteus-retrospective-skill-improver';
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
@@ -139,7 +111,7 @@ const rosterFocusedMemberRouteKey = computed(() =>
 const userMessageTarget = computed(() => {
   const team = activeTeamContext.value;
   return team
-    ? resolveTeamUserMessageTarget(team, {
+    ? resolveTeamConversationTargetAddress(team, {
       allowSubteam: true,
       allowActiveExecutionSafetyFallback: true,
     })
@@ -158,21 +130,9 @@ const rosterFocusedMemberNode = computed(() => {
   return team && routeKey ? team.memberNodesByRouteKey.get(routeKey) || null : null;
 });
 
-const currentMode = computed<TeamWorkspaceViewMode>(() => {
-  return teamWorkspaceViewStore.getMode(activeTeamContext.value?.teamRunId);
-});
-
-const showSharedComposer = computed(() => {
-  if (!userMessageTarget.value) {
-    return false;
-  }
-  if (focusedMemberNode.value?.isTaskAgentInstance) {
-    return false;
-  }
-  return Boolean(activeTeamContext.value) && (
-    currentMode.value !== 'focus' || focusedMemberNode.value?.memberKind === 'agent_team'
-  );
-});
+const showSharedComposer = computed(() => (
+  Boolean(activeTeamContext.value) && userMessageTarget.value?.node.memberKind === 'agent_team'
+));
 
 const headerStatus = computed(() => {
   return rosterFocusedMemberContext.value?.state.currentStatus
@@ -205,13 +165,14 @@ const composerTargetTitle = computed(() => {
     return headerTitle.value;
   }
 
-  return target.node.displayName
-    || getMemberDisplayName(target.memberRouteKey, target.context)
+  return target.displayLabel
+    || target.node.displayName
+    || getMemberDisplayName(target.localTargetKey, target.context)
     || team.config.teamDefinitionName
     || 'Team';
 });
 
-const teamMemberSelfEvolutionTarget = computed<SelfEvolutionComposerCtaTarget | null>(() => {
+const teamMemberSkillImprovementTarget = computed<SkillImprovementComposerCtaTarget | null>(() => {
   const team = activeTeamContext.value;
   const member = focusedMemberContext.value;
   if (!team || !member) {
@@ -222,8 +183,8 @@ const teamMemberSelfEvolutionTarget = computed<SelfEvolutionComposerCtaTarget | 
     teamRunId: team.teamRunId,
     memberRunId: member.state.runId,
     isHelperRun:
-      member.config.agentDefinitionId === SKILL_EVOLVER_AGENT_DEFINITION_ID ||
-      member.config.agentDefinitionName === 'Skill Self-Evolver',
+      member.config.agentDefinitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ||
+      member.config.agentDefinitionName === 'Retrospective Skill Improver',
   };
 });
 
@@ -261,21 +222,6 @@ function resolveDisplayFocusedMemberRouteKey(candidate: string | null | undefine
   return activeExecutionFocusedMemberRouteKey.value;
 }
 
-const setCurrentMode = (mode: TeamWorkspaceViewMode) => {
-  if (!activeTeamContext.value) {
-    return;
-  }
-  teamWorkspaceViewStore.setMode(activeTeamContext.value.teamRunId, mode);
-};
-
-const setFocusedMember = async (memberRouteKey: string) => {
-  const teamRunId = activeTeamContext.value?.teamRunId;
-  if (!teamRunId) {
-    return;
-  }
-  await teamContextsStore.focusMemberAndEnsureHydrated?.(teamRunId, memberRouteKey);
-};
-
 const sendSubteamMessage = async () => {
   const text = subteamDraft.value.trim();
   if (!text) {
@@ -311,14 +257,4 @@ onMounted(async () => {
   }
 });
 
-watch(
-  () => [activeTeamContext.value?.teamRunId, currentMode.value] as const,
-  ([teamRunId, mode]) => {
-    if (!teamRunId || mode === 'focus') {
-      return;
-    }
-    void teamContextsStore.ensureHistoricalMembersHydratedForView?.(teamRunId, mode);
-  },
-  { immediate: true },
-);
 </script>

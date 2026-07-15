@@ -6,6 +6,7 @@ import {
   type ToolCallSpec,
 } from '../llm/utils/messages.js';
 import { getMessageProvenance, setMessageProvenance } from './message-provenance.js';
+import { createToolCallIdentity, toolCallIdentityKey } from './models/tool-call-identity.js';
 
 export const SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT = [
   'Tool execution was interrupted by runtime shutdown before a result was recorded.',
@@ -51,8 +52,8 @@ export type WorkingContextToolProtocolRepairResult = {
 };
 
 export type WorkingContextToolProtocolRepairOptions = {
-  completedToolResultsByCallId?: Map<string, CompletedToolResultFact>;
-  toolCallFactsByCallId?: Map<string, ToolCallFact>;
+  completedToolResultsByIdentity?: Map<string, CompletedToolResultFact>;
+  toolCallFactsByIdentity?: Map<string, ToolCallFact>;
   syntheticInterruptedToolResultContent?: string;
   fallbackTurnId?: string | null;
 };
@@ -149,9 +150,20 @@ function buildInsertedToolResultMessage(
   options: WorkingContextToolProtocolRepairOptions,
 ): { message: Message; repair: InterruptedToolResultRepair } {
   const callId = normalizeToolCallId(call.id)!;
-  const completed = options.completedToolResultsByCallId?.get(callId) ?? null;
-  const callFact = options.toolCallFactsByCallId?.get(callId) ?? null;
   const assistantProvenance = getMessageProvenance(assistantMessage);
+  const identity = createToolCallIdentity(
+    assistantProvenance?.turnId ?? options.fallbackTurnId,
+    callId,
+  );
+  const identityKey = identity
+    ? toolCallIdentityKey(identity)
+    : resolveUniqueIdentityKey(callId, options);
+  const completed = identityKey
+    ? options.completedToolResultsByIdentity?.get(identityKey) ?? null
+    : null;
+  const callFact = identityKey
+    ? options.toolCallFactsByIdentity?.get(identityKey) ?? null
+    : null;
   const toolName = completed?.toolName || call.name || callFact?.toolName || 'unknown_tool';
   const turnId = completed?.turnId ?? assistantProvenance?.turnId ?? callFact?.turnId ?? options.fallbackTurnId ?? null;
   const source = completed ? 'raw_completed_result' : 'synthetic_interrupted';
@@ -175,6 +187,20 @@ function buildInsertedToolResultMessage(
     message,
     repair: { toolCallId: callId, toolName, turnId, source, toolResult, toolError },
   };
+}
+
+function resolveUniqueIdentityKey(
+  toolCallId: string,
+  options: WorkingContextToolProtocolRepairOptions,
+): string | null {
+  const matchingKeys = new Set<string>();
+  for (const [key, fact] of options.completedToolResultsByIdentity ?? []) {
+    if (fact.toolCallId === toolCallId) matchingKeys.add(key);
+  }
+  for (const [key, fact] of options.toolCallFactsByIdentity ?? []) {
+    if (fact.toolCallId === toolCallId) matchingKeys.add(key);
+  }
+  return matchingKeys.size === 1 ? [...matchingKeys][0]! : null;
 }
 
 function normalizeToolCallId(value: unknown): string | null {

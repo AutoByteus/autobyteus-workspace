@@ -2,21 +2,17 @@ import type { AgentRunUserMessageAcceptedPayload } from "../../agent-execution/d
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import type { RunMemoryWriter } from "../store/run-memory-writer.js";
-import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
+import type { ToolTraceLifecycleGroup } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
 import { ProviderCompactionBoundaryRecorder } from "./provider-compaction-boundary-recorder.js";
 import {
   asString,
+  extractAcceptedMessageMedia,
   extractContentDelta,
-  extractError,
-  extractInvocationId,
-  extractReason,
   extractSegmentId,
   extractTimestamp,
-  extractToolArgs,
-  extractToolName,
-  extractToolResult,
   extractTurnId,
 } from "./runtime-memory-event-payload.js";
+import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
 
 type SegmentState = {
   id: string;
@@ -27,31 +23,28 @@ type SegmentState = {
   ts: number | null;
 };
 
-type ToolState = {
-  invocationId: string;
-  toolName: string;
-  toolArgs: Record<string, unknown>;
-  callWritten: boolean;
-  resultWritten: boolean;
-};
-
 export class RuntimeMemoryEventAccumulator {
   private activeTurnId: string | null = null;
   private fallbackTurnIndex = 0;
   private currentFallbackTurnId: string | null = null;
-  private anonymousToolIndex = 0;
   private readonly segments = new Map<string, SegmentState>();
-  private readonly tools = new Map<string, ToolState>();
-  private readonly anonymousToolQueue: string[] = [];
   private readonly pendingReasoningByTurn = new Map<string, string[]>();
   private readonly providerCompactionBoundaryRecorder: ProviderCompactionBoundaryRecorder;
+  private readonly toolTraceSequencer: RuntimeToolTraceSequencer;
 
   constructor(
     private readonly input: {
       runId: string;
       writer: RunMemoryWriter;
+      toolTraceLifecycleGroups: ReadonlyMap<string, ToolTraceLifecycleGroup>;
     },
   ) {
+    this.toolTraceSequencer = new RuntimeToolTraceSequencer({
+      writer: input.writer,
+      toolTraceLifecycleGroups: input.toolTraceLifecycleGroups,
+      flushReasoningBoundary: (turnId, sourceEvent) =>
+        this.flushOpenReasoningSegments(turnId, sourceEvent),
+    });
     this.providerCompactionBoundaryRecorder = new ProviderCompactionBoundaryRecorder({
       writer: input.writer,
       resolveTurnId: (candidate) => this.resolveTurnId(candidate),
@@ -60,7 +53,7 @@ export class RuntimeMemoryEventAccumulator {
 
   recordAcceptedUserMessage(payload: AgentRunUserMessageAcceptedPayload): void {
     const turnId = this.resolveTurnId(payload.result.turnId);
-    const media = this.mediaFromAcceptedMessage(payload.message);
+    const media = extractAcceptedMessageMedia(payload.message);
     this.input.writer.write({
       trace: {
         traceType: "user",
@@ -95,16 +88,21 @@ export class RuntimeMemoryEventAccumulator {
       case AgentRunEventType.TURN_COMPLETED:
         this.completeTurn(event);
         return;
+      case AgentRunEventType.TURN_INTERRUPTED:
+        this.interruptTurn(event);
+        return;
       case AgentRunEventType.ASSISTANT_COMPLETE:
         this.recordAssistantComplete(event);
         return;
       case AgentRunEventType.TOOL_APPROVAL_REQUESTED:
+      case AgentRunEventType.TOOL_APPROVED:
       case AgentRunEventType.TOOL_EXECUTION_STARTED:
         this.recordToolCall(event);
         return;
       case AgentRunEventType.TOOL_DENIED:
       case AgentRunEventType.TOOL_EXECUTION_SUCCEEDED:
       case AgentRunEventType.TOOL_EXECUTION_FAILED:
+      case AgentRunEventType.TOOL_EXECUTION_INTERRUPTED:
         this.recordToolResult(event);
         return;
       case AgentRunEventType.COMPACTION_STATUS:
@@ -118,9 +116,7 @@ export class RuntimeMemoryEventAccumulator {
   private startSegment(event: AgentRunEvent): void {
     const turnId = this.resolveTurnId(extractTurnId(event.payload));
     const type = this.resolveSegmentType(event.payload);
-    if (type !== "text" && type !== "reasoning") {
-      return;
-    }
+    if (type !== "text" && type !== "reasoning") return;
     const id = this.resolveSegmentId(event.payload, type, turnId);
     this.segments.set(id, {
       id,
@@ -134,9 +130,7 @@ export class RuntimeMemoryEventAccumulator {
 
   private appendSegmentContent(event: AgentRunEvent): void {
     const type = this.resolveSegmentType(event.payload);
-    if (type !== "text" && type !== "reasoning") {
-      return;
-    }
+    if (type !== "text" && type !== "reasoning") return;
     const turnId = this.resolveTurnId(extractTurnId(event.payload));
     const id = this.resolveSegmentId(event.payload, type, turnId);
     const segment = this.segments.get(id) ?? {
@@ -177,12 +171,19 @@ export class RuntimeMemoryEventAccumulator {
       }
     }
     this.flushPendingReasoning(turnId);
-    if (this.activeTurnId === turnId) {
-      this.activeTurnId = null;
+    this.toolTraceSequencer.completeTurn(turnId);
+    if (this.activeTurnId === turnId) this.activeTurnId = null;
+    if (this.currentFallbackTurnId === turnId) this.currentFallbackTurnId = null;
+  }
+
+  private interruptTurn(event: AgentRunEvent): void {
+    const turnId = extractTurnId(event.payload) ?? this.activeTurnId;
+    if (!turnId) {
+      console.warn("[RuntimeMemoryEventAccumulator] skipped TURN_INTERRUPTED without a turn identity.");
+      return;
     }
-    if (this.currentFallbackTurnId === turnId) {
-      this.currentFallbackTurnId = null;
-    }
+    this.toolTraceSequencer.interruptTurn(event, turnId);
+    this.completeTurn({ ...event, payload: { ...event.payload, turn_id: turnId } });
   }
 
   private recordAssistantComplete(event: AgentRunEvent): void {
@@ -211,12 +212,7 @@ export class RuntimeMemoryEventAccumulator {
     this.writeAssistantTrace(segment.turnId, content, sourceEvent, segment.ts);
   }
 
-  private writeAssistantTrace(
-    turnId: string,
-    content: string,
-    sourceEvent: string,
-    ts: number | null,
-  ): void {
+  private writeAssistantTrace(turnId: string, content: string, sourceEvent: string, ts: number | null): void {
     if (sourceEvent !== AgentRunEventType.TURN_COMPLETED) {
       this.flushOpenReasoningSegments(turnId, sourceEvent);
     }
@@ -237,12 +233,7 @@ export class RuntimeMemoryEventAccumulator {
     });
   }
 
-  private writeReasoningTrace(
-    turnId: string,
-    content: string,
-    sourceEvent: string,
-    ts: number | null,
-  ): void {
+  private writeReasoningTrace(turnId: string, content: string, sourceEvent: string, ts: number | null): void {
     this.input.writer.write({
       trace: {
         traceType: "reasoning",
@@ -287,86 +278,13 @@ export class RuntimeMemoryEventAccumulator {
   }
 
   private recordToolCall(event: AgentRunEvent): void {
-    const turnId = this.resolveTurnId(extractTurnId(event.payload));
-    const tool = this.resolveToolState(event.payload, turnId, "call");
-    if (tool.callWritten) {
-      return;
-    }
-    this.writeToolCall(tool, turnId, event.eventType, extractTimestamp(event.payload));
+    const outcome = this.toolTraceSequencer.recordCallObservation(event, this.activeTurnId);
+    if (outcome.resolvedTurnId) this.activeTurnId = outcome.resolvedTurnId;
   }
 
   private recordToolResult(event: AgentRunEvent): void {
-    const turnId = this.resolveTurnId(extractTurnId(event.payload));
-    const tool = this.resolveToolState(event.payload, turnId, "result");
-    if (!tool.callWritten) {
-      this.writeToolCall(tool, turnId, AgentRunEventType.TOOL_EXECUTION_STARTED, extractTimestamp(event.payload));
-    }
-    if (tool.resultWritten) {
-      return;
-    }
-    tool.resultWritten = true;
-    const denied = event.eventType === AgentRunEventType.TOOL_DENIED;
-    const failed = event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED;
-    const error = denied
-      ? extractError(event.payload) ?? extractReason(event.payload) ?? "Tool execution denied."
-      : failed
-        ? extractError(event.payload) ?? "Tool execution failed."
-        : null;
-    const result = denied
-      ? { status: "denied", reason: extractReason(event.payload) ?? error }
-      : failed
-        ? null
-        : extractToolResult(event.payload);
-    this.flushOpenReasoningSegments(turnId, event.eventType);
-    this.input.writer.write({
-      trace: {
-        traceType: "tool_result",
-        turnId,
-        content: denied ? "Tool execution denied." : "",
-        sourceEvent: event.eventType,
-        ts: extractTimestamp(event.payload),
-        toolName: tool.toolName,
-        toolCallId: tool.invocationId,
-        toolArgs: tool.toolArgs,
-        toolResult: result,
-        toolError: error,
-      },
-      snapshotUpdate: {
-        kind: "tool_result",
-        toolCallId: tool.invocationId,
-        toolName: tool.toolName,
-        toolResult: result,
-        toolError: error,
-      },
-    });
-  }
-
-  private writeToolCall(
-    tool: ToolState,
-    turnId: string,
-    sourceEvent: string,
-    ts: number | null,
-  ): void {
-    this.flushOpenReasoningSegments(turnId, sourceEvent);
-    tool.callWritten = true;
-    this.input.writer.write({
-      trace: {
-        traceType: "tool_call",
-        turnId,
-        content: "",
-        sourceEvent,
-        ts,
-        toolName: tool.toolName,
-        toolCallId: tool.invocationId,
-        toolArgs: tool.toolArgs,
-      },
-      snapshotUpdate: {
-        kind: "tool_call",
-        toolCallId: tool.invocationId,
-        toolName: tool.toolName,
-        toolArgs: tool.toolArgs,
-      },
-    });
+    const outcome = this.toolTraceSequencer.recordTerminal(event, this.activeTurnId);
+    if (outcome.resolvedTurnId) this.activeTurnId = outcome.resolvedTurnId;
   }
 
   private resolveSegmentId(
@@ -389,39 +307,6 @@ export class RuntimeMemoryEventAccumulator {
     return id ? this.segments.get(id)?.type ?? "text" : "text";
   }
 
-  private resolveToolState(
-    payload: Record<string, unknown>,
-    turnId: string,
-    mode: "call" | "result",
-  ): ToolState {
-    const explicitId = extractInvocationId(payload);
-    let invocationId = explicitId;
-    if (!invocationId && mode === "result") {
-      invocationId = this.anonymousToolQueue.shift() ?? null;
-    }
-    if (!invocationId) {
-      invocationId = `anonymous-tool-${++this.anonymousToolIndex}`;
-      if (mode === "call") {
-        this.anonymousToolQueue.push(invocationId);
-      }
-    }
-    const existing = this.tools.get(invocationId);
-    const toolName = extractToolName(payload) ?? existing?.toolName ?? "tool";
-    const toolArgs = extractToolArgs(payload) ?? existing?.toolArgs ?? {};
-    const next = existing ?? {
-      invocationId,
-      toolName,
-      toolArgs,
-      callWritten: false,
-      resultWritten: false,
-    };
-    next.toolName = toolName;
-    next.toolArgs = toolArgs;
-    this.tools.set(invocationId, next);
-    this.activeTurnId = turnId;
-    return next;
-  }
-
   private resolveTurnId(candidate: unknown): string {
     const explicit = asString(candidate);
     if (explicit) {
@@ -436,20 +321,6 @@ export class RuntimeMemoryEventAccumulator {
     }
     this.activeTurnId = this.currentFallbackTurnId;
     return this.currentFallbackTurnId;
-  }
-
-  private mediaFromAcceptedMessage(message: AgentRunUserMessageAcceptedPayload["message"]): RawTraceMedia | null {
-    const media: RawTraceMedia = { images: [], audio: [], video: [] };
-    for (const file of message.contextFiles ?? []) {
-      if (file.fileType === "image") {
-        media.images?.push(file.uri);
-      } else if (file.fileType === "audio") {
-        media.audio?.push(file.uri);
-      } else if (file.fileType === "video") {
-        media.video?.push(file.uri);
-      }
-    }
-    return media.images?.length || media.audio?.length || media.video?.length ? media : null;
   }
 
 }

@@ -175,10 +175,13 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="bootstrap-sync-on-add"]').exists()).toBe(false);
   });
 
-  it('focuses/open an existing node window', async () => {
+  it('opens or focuses each selected node in its own Electron window', async () => {
     const wrapper = mount(NodeManager);
     await wrapper.get('[data-testid="focus-node-embedded-local"]').trigger('click');
-    expect(window.electronAPI.openNodeWindow).toHaveBeenCalledWith('embedded-local');
+    await wrapper.get('[data-testid="focus-node-remote-1"]').trigger('click');
+
+    expect(window.electronAPI.openNodeWindow).toHaveBeenNthCalledWith(1, 'embedded-local');
+    expect(window.electronAPI.openNodeWindow).toHaveBeenNthCalledWith(2, 'remote-1');
   });
 
   it('does not render removed remote browser pairing surfaces', async () => {

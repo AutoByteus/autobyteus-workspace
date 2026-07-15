@@ -1,0 +1,59 @@
+artifact_verification_started_utc=2026-07-11T06:33:56Z
+--- artifact sizes ---
+-rw-r--r--@ 1 normy  staff   383M Jul 11 08:30 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg
+-rw-r--r--@ 1 normy  staff   409K Jul 11 08:30 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   379M Jul 11 08:32 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip
+-rw-r--r--@ 1 normy  staff   399K Jul 11 08:32 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip.blockmap
+-rw-r--r--@ 1 normy  staff   551B Jul 11 08:32 autobyteus-web/electron-dist/latest-mac.yml
+--- sha256 ---
+52c2863833015deda9bbe398f46debe4290ae51507bdf746607fb88ed861e8cb  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg
+68cd6a05dea0035c019c25162e6822a694f15c01a2a232c6f6a7a513f4514a62  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg.blockmap
+c73437e4464e09a99c6bdd7e534aff7f0be0af630109cdc3615f453dc91a7441  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip
+3626b4356a241c2f1d6ef4656938b69638ef2bea955af50a73a86453bfb7de1b  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip.blockmap
+c298c1505cf79baac006e08a2704a68c61298411171ce95d0d3e7d356f3fa482  autobyteus-web/electron-dist/latest-mac.yml
+--- application metadata ---
+CFBundleIdentifier=com.autobyteus.app
+CFBundleName=AutoByteus
+CFBundleShortVersionString=1.4.8
+CFBundleVersion=1.4.8
+--- architecture ---
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework: Mach-O 64-bit dynamically linked shared library arm64
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node: Mach-O 64-bit bundle arm64
+--- signing expectation ---
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/tool-result-trace-simplification/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+signing_status=signed
+--- packaged implementation markers ---
+strict_tool_trace_server_marker=PASS
+core_lifecycle_module=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/autobyteus-ts@file+autobyteus-ts_ws@8.19.0/node_modules/autobyteus-ts/dist/memory/tool-trace-lifecycle-index.js
+--- DMG integrity ---
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $D447CB04
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $147D0383
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $980DAC23
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $519DA4C6
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $980DAC23
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $CC71DB3E
+Die überprüfte CRC32-Prüfsumme ist $452EE32D
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.dmg" is VALID
+--- ZIP integrity ---
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.8.zip.
+artifact_verification_finished_utc=2026-07-11T06:34:14Z
+result=PASS

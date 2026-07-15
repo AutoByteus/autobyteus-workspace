@@ -31,7 +31,6 @@ export class LLMRequestAssembler {
     const didCompact = this.pendingCompactionExecutor
       ? await this.pendingCompactionExecutor.executeIfRequired({
           turnId,
-          systemPrompt: systemPrompt ?? '',
         })
       : false;
 
@@ -61,7 +60,6 @@ export class LLMRequestAssembler {
     const didCompact = this.pendingCompactionExecutor
       ? await this.pendingCompactionExecutor.executeIfRequired({
           turnId,
-          systemPrompt: systemPrompt ?? '',
         })
       : false;
 

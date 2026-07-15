@@ -16,6 +16,14 @@ export interface FetchFolderChildrenOptions {
 const isAbortError = (error: unknown): boolean =>
   error instanceof Error && error.name === 'AbortError'
 
+const describeGraphQLErrors = (errors: readonly any[]): string => errors
+  .map((error) => error?.message || String(error))
+  .filter(Boolean)
+  .join('; ')
+
+const createFolderChildrenError = (message: string): Error =>
+  new Error(message || 'Folder contents could not be loaded.')
+
 export const fileExplorerTreeActions = {
   beginFolderChildrenGeneration(this: any, workspaceId: string): number {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
@@ -114,24 +122,40 @@ export const fileExplorerTreeActions = {
       })
       if (isStale()) return
       if (errors?.length) {
-        console.error('Error fetching folder children:', errors)
-        return
+        throw createFolderChildrenError(describeGraphQLErrors(errors))
       }
-      if (!data?.folderChildren) return
+      if (typeof data?.folderChildren !== 'string' || !data.folderChildren) {
+        throw createFolderChildrenError('Folder children response was missing.')
+      }
 
-      const folderData = JSON.parse(data.folderChildren)
+      let folderData: any
+      try {
+        folderData = JSON.parse(data.folderChildren)
+      } catch {
+        throw createFolderChildrenError('Folder children response was invalid.')
+      }
       if (isStale()) return
+      if (!folderData || typeof folderData !== 'object') {
+        throw createFolderChildrenError('Folder children response was invalid.')
+      }
       if (folderData.error) {
-        console.error('Server error:', folderData.error)
-        return
+        throw createFolderChildrenError(String(folderData.error))
+      }
+      if (!folderData.id) {
+        throw createFolderChildrenError('Folder children response did not include a folder id.')
+      }
+      if (!Array.isArray(folderData.children)) {
+        throw createFolderChildrenError('Folder children response did not include a children list.')
       }
 
-      if ((folderPath === '' || folderPath === '/') && wsState.tree.id === 'root' && folderData.id !== 'root') {
+      if (folderPath === '' || folderPath === '/') {
         const oldId = wsState.tree.id
-        wsState.tree.id = folderData.id
-        wsState.tree.path = folderData.path || folderData.id
+        if (oldId !== folderData.id) {
+          wsState.tree.id = folderData.id
+          delete wsState.nodeIdToNode[oldId]
+        }
+        wsState.tree.path = folderData.path ?? wsState.tree.path
         if (folderData.name) wsState.tree.name = folderData.name
-        delete wsState.nodeIdToNode[oldId]
         wsState.nodeIdToNode[folderData.id] = wsState.tree
       }
 
@@ -140,8 +164,7 @@ export const fileExplorerTreeActions = {
         folderNode = wsState.tree
       }
       if (!folderNode) {
-        console.error(`Folder node not found for path: ${folderPath}`)
-        return
+        throw createFolderChildrenError(`Folder node not found for path: ${folderPath || '/'}`)
       }
       if (isStale()) return
       replaceFolderChildren(folderNode, folderData.children, wsState.nodeIdToNode)
@@ -150,6 +173,7 @@ export const fileExplorerTreeActions = {
         return
       }
       console.error('Error fetching folder children:', error)
+      throw error
     }
   },
 }

@@ -29,7 +29,8 @@
 
 Workspace + agent operations:
 
-- `listWorkspaceRunHistory`
+- `listWorkspaceRunHistory(limitPerAgent)` for global/default history grouping, such as recent-history style surfaces. It is not the authority for desktop top-level workspace rows.
+- `workspaceRunHistory(workspaceId, limitPerAgent)` for history under one visible workspace. The resolver resolves registered filesystem workspace ids through the workspace registry, resolves the fixed default temp workspace id through the temp workspace lifecycle, and rejects missing, unregistered, removed filesystem, or unrelated transient workspace ids.
 - `getRunProjection`
 - `getAgentRunResumeConfig`
 - `archiveStoredRun`
@@ -73,6 +74,23 @@ Permanent delete remains a separate destructive action. `deleteStoredRun` and
 history index entries instead of only hiding the row. The current product slice
 does not expose an archived-list or unarchive GraphQL/UI path; archived data
 remains retained on disk for future recovery tooling.
+
+## Workspace Registry Interaction
+
+Run history is retained independently of workspace-list visibility. Removing a workspace from Workspaces deletes the workspace registry entry only; it does not delete `memory/run_history_index.json`, `memory/team_run_history_index.json`, run/team metadata directories, raw traces, artifacts, or generated files.
+
+Top-level desktop workspace rows should come from the visible workspace list via
+the `workspaces()` query. Historical run/team records for an unregistered or
+removed root must not recreate a top-level workspace row. When a visible
+workspace row is expanded, the frontend calls
+`workspaceRunHistory(workspaceId, limitPerAgent)` so history is loaded for that
+resolved root. Registered filesystem rows resolve through the registry; the
+fixed default temp workspace row resolves through the temp workspace lifecycle
+and is intentionally non-removable. Re-adding the same filesystem root restores
+the deterministic workspace id and allows the preserved history for that root to
+be shown again.
+
+`listWorkspaceRunHistory(limitPerAgent)` still returns grouped history across roots for global/recent-history consumers that intentionally need that broader view. Those consumers should not be treated as workspace-list authorities.
 
 ## Standalone Status Projection And Prepared Identities
 
@@ -175,7 +193,7 @@ Standalone agent persisted files:
   `llmConfig`, `autoExecuteTools`, `skillAccessMode`, `platformAgentRunId`,
   `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
   `applicationExecutionContext`
-- runtime memory artifacts: `memory/agents/<runId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
+- runtime memory artifacts: `memory/agents/<runId>/{raw_traces_active.jsonl,working_context_snapshot.json,...}`
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
 Team persisted files:
@@ -188,11 +206,13 @@ Team persisted files:
   containing resume/config/topology and stable lifecycle facts:
   `teamRunId`, `teamDefinitionId`, `teamDefinitionName`,
   `coordinatorMemberRouteKey`, `createdAt`, optional `archivedAt`, and
-  recursive `memberTree`; agent-member entries may include optional
-  `selfEvolutionEffective` launch snapshots
-- member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`, with deeper child team run ids appended in `teamRunPath` order
+  recursive `memberTree`; agent-member entries must not carry
+  `skillImprovementEffective` launch snapshots after the Skill Improvement metadata
+  cleanup migration
+- member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/{raw_traces_active.jsonl,working_context_snapshot.json,...}`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/{raw_traces_active.jsonl,working_context_snapshot.json,...}`, with deeper child team run ids appended in `teamRunPath` order
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical team/member directory, for example `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
-- team communication projection: `memory/agent_teams/<teamRunId>/team_communication_messages.json`
+- team communication projection: `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
+- task delegation records projection: `memory/agent_teams/<rootTeamRunId>/task_delegation_records.json`
 
 Important identity/storage rules:
 
@@ -231,16 +251,26 @@ Important identity/storage rules:
   writes a plain V2 row-array index, creates a backup of the previous index,
   records success/warnings/failures/retry state in `app_data_migration_records`,
   and resets in-process catalog state after writing
+- required startup app-data migration
+  `20260706_remove_global_skill_discovery_mode` rewrites persisted
+  `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata,
+  recursive team metadata, and external-channel binding files to
+  `PRELOADED_ONLY`, creates per-file backups for changed files, and reports
+  migrated/skipped/failed item counts. Current metadata parsing accepts only
+  `PRELOADED_ONLY` and `NONE`; history restore must not resurrect all-installed
+  skill discovery from older metadata.
 - manual fallback repair belongs to
   `scripts/migrate-agent-run-history-index-v2.mjs`; see
   `scripts/run-history-index-migration.md` before running cleanup against old
   memory directories
-- Self-evolution run snapshots are metadata facts: standalone runs store
-  `selfEvolutionEffective` on `run_metadata.json`, and team agent members store
-  `selfEvolutionEffective` on their member metadata entry. Old runs with no
-  snapshot are intentionally ineligible for manual self-evolution. History
-  listing and manual start flows must read these snapshots instead of current
-  agent/team definition config.
+- Skill Improvement no longer stores launch-time eligibility snapshots in run
+  history metadata. Manual skill-improvement uses current global settings plus the
+  current active target state at click time. Required startup app-data migration
+  `20260623_remove_self_evolution_run_metadata` removes obsolete
+  `skillImprovementEffective` fields from standalone `run_metadata.json` files and
+  recursive team member metadata entries, creates per-file backups for changed
+  metadata, and reports migrated/skipped/failed item counts. History listing and
+  manual start flows must not rely on stale `skillImprovementEffective` metadata.
 - standalone runs persist an explicit `memoryDir` in agent metadata
 - new concrete agent runtime ids are allocated by `AgentRunIdentityAllocator` before backend creation and use `<agent_definition_name_slug>_<uuid-without-dashes>`; the slug is readability-only and the entire id is treated as opaque
 - standalone, team-member, and task-agent `AgentRun` ids use the same allocator-backed identity policy; new production paths do not derive ids from runtime kind, route key, team run id, or task id
@@ -324,14 +354,30 @@ team member metadata -> member memoryDir -> raw trace corpus -> historical repla
   confusing runtime-native ids with local storage ids. Provider-boundary marker traces are provenance and
   are ignored as conversation/activity content by the historical replay
   transformer.
+- Tool projection first builds physical lifecycle groups across that complete
+  corpus using compound `(turn_id, tool_call_id)` identity. A current call row
+  owns canonical name/arguments; its separate minimal result row repeats the
+  verified canonical name, owns terminal result/error, and omits arguments. The
+  transformer emits one conversation tool item and one Activity per lifecycle,
+  anchored to the call even when call and result are in different raw-trace
+  files. A result-local name supports partial evidence, but does not replace
+  call correlation for arguments, anchoring, ordering, or lifecycle integrity.
+- Existing historical results may omit a name or may contain duplicated or
+  late/effective name/arguments. `buildToolInteractions(...)` reads both shapes
+  normally and may use result-side fields as a read-only historical override,
+  but run-history projection never feeds that overlay back into recorder/writer
+  state or creates a compatibility write.
 - `RuntimeMemoryEventAccumulator` owns the live event-to-raw-trace write
-  boundary for runtime streams. When a same-turn reasoning segment is still
-  open and the next visible write arrives (tool call, terminal tool result,
-  assistant text, or assistant-complete output), the accumulator flushes that
-  reasoning first so reload projection preserves the live ordering before tool
-  cards or assistant text. `TURN_COMPLETED` still flushes pending reasoning, but
-  a run that ends with open reasoning and no later visible write or turn
-  completion can still have incomplete local replay by design.
+  boundary for runtime streams. A new ordered tool card flushes preceding
+  same-turn reasoning at its first normalized call observation, even when the
+  physical call waits for authoritative arguments. Matching lifecycle updates,
+  including a terminal that later materializes that call and its result,
+  preserve reasoning written after the card. A genuinely result-first terminal
+  flushes before inferring the missing call. Assistant text and
+  assistant-complete output also flush preceding open reasoning.
+  `TURN_COMPLETED` still flushes pending reasoning, but a run that ends with
+  open reasoning and no later visible write or turn completion can still have
+  incomplete local replay by design.
 - Runtime-native providers such as `CodexRunViewProjectionProvider` and
   `ClaudeRunViewProjectionProvider` are diagnostic utilities only. They are not
   reachable from normal `getRunProjection` / `getTeamMemberRunProjection` UI
@@ -361,12 +407,30 @@ team communication events are processor input; derived
 hydration reads that projection through `getTeamCommunicationMessages(teamRunId)`,
 and referenced content opens by persisted message-owned identity at
 `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
-The projection stores sender and receiver `memberKind`, `memberPath`,
-`memberRouteKey`, and optional `representedSubTeam` metadata. Messages to a
-subteam representative remain attributable to the actual leaf path while showing
-the represented subteam, and child-to-parent reports keep the sender's subteam
-representation in restored Team Messages. The member Artifacts tab must not
-hydrate those reference files as Sent/Received artifact rows.
+The projection stores `teamRunId` once at the projection level and each message
+stores `senderAddress` and `receiverAddress` as canonical
+`ConversationTargetAddress` values. Messages to static nested members,
+task-team roots, task-team child members, and delegated task-agent executions
+remain attributable to their concrete address segments without duplicating flat
+sender/receiver run ids, member paths, route keys, represented-subteam fields,
+or task-team-scope wrappers. Old flat Team Communication files are converted by
+the app-data migration path before current runtime/API/store hydration. The
+member Artifacts tab must not hydrate those reference files as Sent/Received
+artifact rows.
+
+Task Delegation records are also outside the member replay bundle. Accepted and
+active delegated task lifecycle transitions are normalized into
+`agent_teams/<rootTeamRunId>/task_delegation_records.json`, one file per root
+team run. Historical Team tab hydration reads that projection through
+`getTaskDelegationRecords(teamRunId)` and stores the result in the frontend Task
+Delegation store. The records use the same address-first
+`ConversationTargetAddress` convention as Team Communication for
+`senderAddress`, `receiverAddress`, task-run addresses, and update addresses,
+with `receiverTargetKind` preserving whether the accountable target was a member
+or a team. Task-team child-run delegations write to the root run file and keep
+root-visible child address segments; no child-local task records file is
+expected. Persisted task records are display/history state after restart, not
+runtime authority to resume task tools.
 
 The `agent-memory` subsystem no longer owns the canonical replay DTO. It supplies
 raw traces and memory-inspector views only; run-history is the only subsystem
@@ -408,6 +472,8 @@ Frontend restore uses that bundle in two sibling hydration paths:
 - team pane: Team Communication hydration from
   `getTeamCommunicationMessages(teamRunId)` for message-owned sent/received
   communication records and child reference files
+- team pane: Task Delegation hydration from `getTaskDelegationRecords(teamRunId)`
+  for persisted delegated task records and task-owned reference files
 
 Those sibling paths must stay synchronized. Reopen/hydration code should apply
 the projected `conversation` and `activities` from the same replay bundle, or
@@ -435,7 +501,13 @@ Runtime-native diagnostic utilities:
 This section describes raw-trace rotation segments and is separate from the
 history-row visibility archive flag documented above.
 
-Native AutoByteus compaction rotates compacted raw traces into complete `native_compaction` entries. Codex and Claude provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into complete `provider_compaction_boundary` entries. New rotated segments are direct run-directory files named `raw_traces_<zero-padded-index>.jsonl` and indexed by `raw_traces_manifest.json`. Run-history and memory-view readers include only complete rotated segments plus active records, dedupe by raw trace id, and ignore pending manifest entries.
+Native AutoByteus compaction rotates compacted raw traces into complete `native_compaction` entries. Codex and Claude provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into complete `provider_compaction_boundary` entries. New rotated segments are direct run-directory files named `raw_traces_<zero-padded-index>.jsonl` and indexed by `raw_traces_manifest.json`. Complete-corpus run-history and memory-view reads include only complete rotated segments plus active records, dedupe by raw trace id, and ignore pending manifest entries. Memory Inspector file-selector reads list only active plus complete segment files and return records from the selected file instead of an implicit merged corpus.
+
+Cross-file tool pairs are expected: a call can be rotated before its result is
+written. Complete-corpus logical projection correlates that pair without copying
+the call into the active file or exposing two activities. Native compaction
+eligibility/pruning remains active-only; archive-only raw ids must not leak into
+active removal decisions.
 
 The prior `raw_traces_archive_manifest.json` plus `raw_traces_archive/` layout is migration/fallback input only. Startup app-data migration `20260617_raw_trace_rotation_layout` converts old complete entries to the direct rotated layout and decommissions old authoritative files after verification. The old monolithic `raw_traces_archive.jsonl` path is intentionally not a current read/write target and historical monolithic archive files are not read under the approved no-compatibility policy.
 

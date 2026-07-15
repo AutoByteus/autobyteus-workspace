@@ -66,6 +66,25 @@ describe('SkillsList', () => {
     vi.clearAllMocks()
   })
 
+  it('renders toolbar controls without the redundant page header copy', async () => {
+    const { wrapper } = await mountComponent()
+
+    expect(wrapper.findAll('h2').map((heading) => heading.text())).not.toContain('Skills')
+    expect(wrapper.text()).not.toContain('Manage and create file-based capabilities for your agents.')
+
+    const toolbar = wrapper.find('.skills-toolbar')
+    expect(toolbar.exists()).toBe(true)
+    expect(toolbar.find('.toolbar-actions').exists()).toBe(true)
+    expect(wrapper.element.firstElementChild).toBe(toolbar.element)
+
+    const searchInput = toolbar.find('input.search-input')
+    expect(searchInput.exists()).toBe(true)
+    expect(searchInput.attributes('placeholder')).toContain('Search skills')
+
+    const buttonLabels = toolbar.findAll('button').map((button) => button.text().toLowerCase())
+    expect(buttonLabels).toEqual(['sources', 'reload', 'create skill'])
+  })
+
   it('triggers catalog reload and shows success feedback', async () => {
     const { wrapper, skillStore } = await mountComponent()
 

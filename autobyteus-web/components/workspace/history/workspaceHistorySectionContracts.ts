@@ -1,27 +1,38 @@
-import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
-import type { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
-import type { RunTreeRow } from '~/utils/runTreeProjection';
+import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export interface WorkspaceHistorySectionState {
   selectedRunId: string | null;
-  activeStatusClass: string;
   isRunTerminating: (runId: string) => boolean;
   isTeamTerminating: (teamRunId: string) => boolean;
   isRunDeleting: (runId: string) => boolean;
   isTeamDeleting: (teamRunId: string) => boolean;
   isRunArchiving: (runId: string) => boolean;
   isTeamArchiving: (teamRunId: string) => boolean;
+  isWorkspaceRemoving: (workspaceId: string) => boolean;
+  isWorkspaceHistoryLoading: (workspaceId: string) => boolean;
+  workspaceHistoryError: (workspaceId: string) => string | null;
   formatRelativeTime: (isoTime: string) => string;
-  isWorkspaceExpanded: (workspaceRootPath: string) => boolean;
-  toggleWorkspace: (workspaceRootPath: string) => void;
-  isAgentExpanded: (workspaceRootPath: string, agentDefinitionId: string) => boolean;
-  toggleAgent: (workspaceRootPath: string, agentDefinitionId: string) => void;
-  isTeamDefinitionExpanded: (workspaceRootPath: string, groupKey: string) => boolean;
-  toggleTeamDefinition: (workspaceRootPath: string, groupKey: string) => void;
+  isWorkspaceExpanded: (workspaceId: string) => boolean;
+  toggleWorkspace: (workspaceNode: RunTreeWorkspaceNode) => Promise<void> | void;
+  isAgentExpanded: (workspaceId: string, agentDefinitionId: string) => boolean;
+  toggleAgent: (workspaceId: string, agentDefinitionId: string) => void;
+  isTeamDefinitionExpanded: (workspaceId: string, groupKey: string) => boolean;
+  toggleTeamDefinition: (workspaceId: string, groupKey: string) => void;
   isTeamExpanded: (teamRunId: string) => boolean;
-  runStatusClass: (status: AgentStatus) => string;
-  teamStatusClass: (status: AgentTeamStatus) => string;
+  getLiveTeamContext: (teamRunId: string) => AgentTeamContext | null;
+  isTeamMemberExpanded: (
+    workspaceId: string,
+    teamRunId: string,
+    memberRouteKey: string,
+  ) => boolean;
+  toggleTeamMember: (
+    workspaceId: string,
+    teamRunId: string,
+    memberRouteKey: string,
+  ) => void;
   canTerminateTeam: (status: AgentTeamStatus) => boolean;
 }
 
@@ -49,14 +60,19 @@ export interface WorkspaceHistoryAvatarBindings {
 }
 
 export interface WorkspaceHistorySectionActions {
+  onRemoveWorkspace: (workspace: RunTreeWorkspaceNode) => Promise<void> | void;
   onCreateRun: (workspaceRootPath: string, agentDefinitionId: string) => Promise<void> | void;
   onSelectRun: (run: RunTreeRow) => Promise<void> | void;
   onTerminateRun: (runId: string) => Promise<void> | void;
   onArchiveRun: (run: RunTreeRow) => Promise<void> | void;
   onDeleteRun: (run: RunTreeRow) => void;
-  onSelectTeam: (team: TeamTreeNode) => Promise<void> | void;
   onTerminateTeam: (teamRunId: string) => Promise<void> | void;
   onArchiveTeam: (team: TeamTreeNode) => Promise<void> | void;
   onDeleteTeam: (team: TeamTreeNode) => void;
-  onSelectTeamMember: (member: TeamMemberTreeRow) => Promise<void> | void;
+  onSelectTeam: (team: TeamTreeNode, workspaceId?: string) => Promise<void> | void;
+  onSelectTeamMember: (
+    member: TeamMemberFocusTarget,
+    workspaceId?: string,
+    memberTree?: readonly TeamMemberTreeRow[],
+  ) => Promise<void> | void;
 }

@@ -162,14 +162,14 @@ export type ToolCallDelta = {
 **Concern**: Transport container for all chunk data from LLM stream.
 
 ```ts
-import { TokenUsage } from 'src/llm/utils/token-usage';
+import type { LlmTokenUsageObservation } from 'src/llm/utils/llm-token-usage-observation';
 import { ToolCallDelta } from 'src/llm/utils/tool-call-delta';
 
 export class ChunkResponse {
   content: string;
   reasoning: string | null;
   is_complete: boolean;
-  usage: TokenUsage | null;
+  usage: LlmTokenUsageObservation | null;
   image_urls: string[];
   audio_urls: string[];
   video_urls: string[];
@@ -179,7 +179,7 @@ export class ChunkResponse {
     content: string;
     reasoning?: string | null;
     is_complete?: boolean;
-    usage?: TokenUsage | null;
+    usage?: LlmTokenUsageObservation | null;
     image_urls?: string[];
     audio_urls?: string[];
     video_urls?: string[];
@@ -468,8 +468,9 @@ authoritative place for this path to:
 
 - map `LLMConfig` controls (`temperature`, `topP`, penalties, stop sequences,
   `maxTokens`, and `extraParams`) into the request body;
-- filter framework-internal kwargs such as `logicalConversationId` and
-  `requestId`;
+- apply the shared provider-request kwarg sanitizer so framework-internal kwargs
+  such as `logicalConversationId` and `requestId` do not leave AutoByteus for
+  external providers;
 - attach provider-native `tools`; pass `tool_choice` only when an explicit
   lower-level caller supplies `kwargs.tool_choice`, never as an agent/server
   default.
@@ -478,8 +479,9 @@ Provider adapters may normalize provider-specific request legality before
 calling the shared builder. Keep those rules in the provider adapter rather than
 adding provider-specific branches to `OpenAICompatibleRequestBuilder`; for
 example, `KimiLLM` normalizes `kimi-k2.6` temperature and thinking defaults for
-Moonshot-safe tool workflows, while `kimi-k2.7-code` keeps thinking on and
-normalizes fixed sampling/tool-choice fields before delegating to the shared
+Moonshot-safe tool workflows, while the K2.7 Code variants
+`kimi-k2.7-code` and `kimi-k2.7-code-highspeed` keep thinking on and normalize
+fixed sampling/tool-choice fields before delegating to the shared
 OpenAI-compatible request path.
 
 ```ts
@@ -572,17 +574,29 @@ rejected without raw `tool_result` traces, working-context `ToolResultPayload`s,
 `tool_continuation` traces, or continuation events. After an accepted tool
 invocation batch settles:
 
-- In `api_tool_call` mode `ToolResultContinuationBuilder` marks the same-turn
-  continuation as `tool_history_only`; `AgentTurnRunner` emits an internal
-  `ToolContinuationReadyEvent`. `LlmPhase` then calls
+- For every accepted batch, `ToolResultContinuationBuilder` builds semantic
+  completed-tool display text from the processed results. A single successful
+  result renders as `The <tool_name> tool call completed successfully.`; multiple
+  results use a concise completed-tool summary. This text is the only
+  model-visible synthetic continuation text and must not contain internal
+  continuation labels or generated tool-call formatting instructions.
+- In `api_tool_call` mode without continuation context files, the builder marks
+  the same-turn continuation as `tool_history_only`; `AgentTurnRunner` emits an
+  internal `ToolContinuationReadyEvent`. `LlmPhase` then calls
   `LLMRequestAssembler.prepareToolContinuationRequest(...)`, which renders the
   current working context as-is. The next OpenAI-compatible request contains the
   prior `assistant.tool_calls` message plus matching `role: "tool"` result
-  messages, and it does **not** append the aggregate text beginning
-  `The following tool executions have completed...` as `role: "user"`.
-- In legacy `xml`, `json`, and `sentinel` parser modes it keeps the aggregate
-  `SenderType.TOOL` user-input continuation path, because those modes lack a
-  provider-native tool-result channel.
+  messages, and it does **not** append the completed-tool text as `role:
+  "user"`.
+- If a tool result supplies context-file media that must be carried into the
+  next model request, `AgentInputPipeline` keeps `append_user_message` even in
+  native API mode so the media has a provider-valid user/media carrier. That
+  carrier uses the semantic completed-tool text; the structured provider-native
+  tool result remains in history where the provider supports it.
+- In legacy `xml`, `json`, and `sentinel` parser modes it keeps the
+  `SenderType.TOOL` user-input continuation path with the same semantic
+  completed-tool text, because those modes lack a provider-native tool-result
+  channel.
 
 The server-side input customization path remains intact for normal inputs and
 intentional legacy text-mode continuations. Native API mode avoids that path for
@@ -620,13 +634,15 @@ preserved assistant `Message.reasoning_content` as DeepSeek `reasoning_content`;
 generic OpenAI-compatible renderers omit that extension field.
 
 Native provider payloads must not contain the old synthetic aggregate result
-message text, including the
-`The following tool executions have completed...` prefix, legacy
-`Tool: <name> (ID: ...)` lines, `Status: Success` markers, or legacy
-`[TOOL_CALL]` / `[TOOL_RESULT]` tags. Provider-native user-role result carriers,
-such as Gemini `functionResponse` turns and Anthropic `tool_result` blocks,
-remain valid because they carry structured native result payloads rather than
-the aggregate text continuation.
+message text, including the `The following tool executions have completed...`
+prefix, legacy `Tool: <name> (ID: ...)` lines, `Status: Success` markers,
+legacy `[TOOL_CALL]` / `[TOOL_RESULT]` tags, or internal labels such as `Tool
+history continuation` / `Native API tool continuation` as user-facing text.
+Provider-native user-role result carriers, such as Gemini `functionResponse`
+turns and Anthropic `tool_result` blocks, remain valid because they carry
+structured native result payloads rather than the aggregate text continuation.
+Provider-required media carrier messages are also valid when they contain only
+the semantic completed-tool wording and the current media attachments.
 
 ---
 
@@ -800,9 +816,10 @@ async _streamUserMessageToLLM(
 | File                                                     | Change                            |
 | -------------------------------------------------------- | --------------------------------- |
 | `src/agent/handlers/llm-user-message-ready-event-handler.ts` | Format tool schemas, pass `tools` to LLM without default `tool_choice`, emit API text-leak diagnostics |
-| `src/llm/api/openai-compatible-request-builder.ts`           | Map config fields, filter internal kwargs, pass `tools`, and preserve explicit lower-level `tool_choice` kwargs |
+| `src/llm/api/provider-request-kwargs.ts`                     | Own the shared external-provider sanitizer for AutoByteus-internal invocation kwargs such as `logicalConversationId` |
+| `src/llm/api/openai-compatible-request-builder.ts`           | Map config fields, apply the shared sanitizer, pass `tools`, and preserve explicit lower-level `tool_choice` kwargs |
 | `src/llm/api/openai-compatible-llm.ts`                       | Use request builder for sync and streaming API calls |
-| (similar for other LLM providers)                        | Accept `tools` kwarg              |
+| (similar for other LLM providers)                        | Accept `tools` kwarg and filter internal invocation kwargs before external SDK calls |
 
 ---
 
