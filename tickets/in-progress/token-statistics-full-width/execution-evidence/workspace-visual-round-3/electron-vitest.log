@@ -1,0 +1,79 @@
+
+> autobyteus@1.4.13 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/electron
+
+ ✓ __tests__/preload.spec.ts (1 test) 25ms
+ ✓ __tests__/rendererConsoleDiagnostics.spec.ts (3 tests) 4ms
+stdout | __tests__/logger.spec.ts
+[2026-07-15T10:09:52.064Z] [INFO] [electron] Application started
+
+stdout | server/__tests__/serverOutputLogging.spec.ts
+[2026-07-15T10:09:52.064Z] [INFO] [electron] Application started
+
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 8ms
+ ✓ updater/__tests__/appUpdater.spec.ts (8 tests) 23ms
+stdout | extensions/__tests__/managedExtensionService.spec.ts
+[2026-07-15T10:09:52.104Z] [INFO] [electron] Application started
+
+stdout | browser/__tests__/browser-tab-manager.spec.ts
+[2026-07-15T10:09:52.113Z] [INFO] [electron] Application started
+
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 85ms
+ ✓ __tests__/logger.spec.ts (3 tests) 108ms
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > aborts popup adoption when Electron provides popup webContents from a foreign session
+[2026-07-15T10:09:52.201Z] [WARN] [electron] Aborted popup browser child creation from '0a177c' to 'https://accounts.google.com/o/oauth2/v2/auth': Popup webContents session does not match the Browser-owned session.
+
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > denies popup requests from sessions that are not attached to a shell
+[2026-07-15T10:09:52.201Z] [WARN] [electron] Blocked browser popup request from '76fa85' to 'https://accounts.google.com/o/oauth2/v2/auth': Popup requests require the opener session '76fa85' to be attached to a shell.
+
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > caps popup fan-out per opener session
+[2026-07-15T10:09:52.205Z] [WARN] [electron] Blocked browser popup request from '0a2470' to 'https://accounts.google.com/o/oauth2/v2/auth?attempt=overflow': Popup request limit reached for opener session '0a2470'.
+
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 85ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 158ms
+stdout | browser/__tests__/browser-shell-controller.spec.ts
+[2026-07-15T10:09:52.284Z] [INFO] [electron] Application started
+
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (1 test) 42ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (8 tests) 15ms
+ ✓ browser/__tests__/browser-session-profile.spec.ts (2 tests) 3ms
+stdout | __tests__/nodeRegistryStore.spec.ts
+[2026-07-15T10:09:52.462Z] [INFO] [electron] Application started
+
+ ✓ __tests__/nodeRegistryStore.spec.ts (4 tests) 4ms
+ ✓ browser/__tests__/browser-view-factory.spec.ts (3 tests) 7ms
+ ✓ browser/__tests__/browser-runtime.spec.ts (1 test) 3ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (1 test) 3ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (2 tests) 3ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (4 tests) 2ms
+ ✓ extensions/__tests__/extensionCatalog.spec.ts (2 tests) 2ms
+stdout | extensions/__tests__/voiceInputRuntimeService.spec.ts
+[2026-07-15T10:09:52.729Z] [INFO] [electron] Application started
+
+ ✓ extensions/__tests__/voiceInputRuntimeService.spec.ts (3 tests) 1ms
+ ✓ __tests__/appDataPaths.spec.ts (1 test) 1ms
+stdout | extensions/__tests__/managedExtensionService.realRelease.spec.ts
+[2026-07-15T10:09:52.796Z] [INFO] [electron] Application started
+
+ ↓ extensions/__tests__/managedExtensionService.realRelease.spec.ts (1 test | 1 skipped)
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+stdout | extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker
+[2026-07-15T10:09:53.181Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-07-15T10:09:53.181Z] [INFO] [electron] Login shell PATH: /Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.1/dist/node-gyp-bin:/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/node_modules/.bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.144.4-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0jhax6v:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+
+ ✓ extensions/__tests__/managedExtensionService.spec.ts (3 tests) 1913ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  1389ms
+   ✓ ManagedExtensionService > preserves enabled state and language mode across reinstall  350ms
+
+ Test Files  23 passed | 1 skipped (24)
+      Tests  97 passed | 1 skipped (98)
+   Start at  12:09:51
+   Duration  2.31s (transform 629ms, setup 0ms, collect 1.66s, tests 2.50s, environment 3ms, prepare 1.90s)
+
+ELECTRON_EXIT=0

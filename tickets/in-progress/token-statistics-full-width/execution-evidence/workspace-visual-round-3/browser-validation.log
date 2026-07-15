@@ -1,0 +1,1381 @@
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAllWorkspaces loaded
+GRAPHQL_REQUEST GetAgentDefinitions loaded
+GRAPHQL_REQUEST GetAgentTeamDefinitions loaded
+GRAPHQL_REQUEST GetApplicationsCapability loaded
+GRAPHQL_REQUEST GetServerSettings loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loading
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod loading
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod loading
+GRAPHQL_REQUEST GetGeminiSetupConfig loading
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels error
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod error
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod error
+GRAPHQL_REQUEST GetGeminiSetupConfig error
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels empty
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod empty
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod empty
+GRAPHQL_REQUEST GetGeminiSetupConfig empty
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetServerSettings loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetServerSettings loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetServerSettings loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetServerSettings loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+{
+  "result": "Pass",
+  "targetCommit": "c448824203a9fd4ffc97e7884a992a7c03863b6f",
+  "generatedAt": "2026-07-15T10:11:13.826Z",
+  "results": [
+    {
+      "id": "BROWSER-R3-000",
+      "result": "Pass",
+      "evidence": {
+        "geometry": {
+          "viewport": [
+            1440,
+            900
+          ],
+          "layout": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900,
+            "top": 0,
+            "right": 1440,
+            "bottom": 900,
+            "left": 0
+          },
+          "navigation": {
+            "x": 0,
+            "y": 0,
+            "width": 256,
+            "height": 900,
+            "top": 0,
+            "right": 256,
+            "bottom": 900,
+            "left": 0
+          },
+          "anchor": {
+            "x": 256,
+            "y": 0,
+            "width": 0,
+            "height": 900,
+            "top": 0,
+            "right": 256,
+            "bottom": 900,
+            "left": 256
+          },
+          "line": {
+            "x": 255,
+            "y": 0,
+            "width": 1,
+            "height": 900,
+            "top": 0,
+            "right": 256,
+            "bottom": 900,
+            "left": 255
+          },
+          "feedback": {
+            "x": 254,
+            "y": 0,
+            "width": 4,
+            "height": 900,
+            "top": 0,
+            "right": 258,
+            "bottom": 900,
+            "left": 254
+          },
+          "target": {
+            "x": 252,
+            "y": 0,
+            "width": 8,
+            "height": 900,
+            "top": 0,
+            "right": 260,
+            "bottom": 900,
+            "left": 252
+          },
+          "content": {
+            "x": 256,
+            "y": 0,
+            "width": 1184,
+            "height": 900,
+            "top": 0,
+            "right": 1440,
+            "bottom": 900,
+            "left": 256
+          },
+          "manager": {
+            "x": 256,
+            "y": 16,
+            "width": 1168,
+            "height": 868,
+            "top": 16,
+            "right": 1424,
+            "bottom": 884,
+            "left": 256
+          },
+          "navigationDisplay": "block",
+          "anchorDisplay": "block",
+          "inert": false,
+          "ariaHidden": null,
+          "ariaNow": "256",
+          "documentClientWidth": 1440,
+          "documentScrollWidth": 1440,
+          "wrapperClientWidth": 1102,
+          "wrapperScrollWidth": 1102,
+          "headers": [
+            "Task / Run",
+            "Runtime",
+            "Model(s)",
+            "Input",
+            "Output",
+            "Input Cost",
+            "Output Cost",
+            "Total Cost",
+            "Created Time"
+          ]
+        },
+        "restStyle": {
+          "edge": {
+            "backgroundColor": "rgb(229, 231, 235)",
+            "boxShadow": "rgba(0, 0, 0, 0.1) 1px 0px 3px 0px",
+            "pointerEvents": "none"
+          },
+          "feedback": {
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "transitionProperty": "background-color",
+            "transitionDuration": "0.2s",
+            "transitionTimingFunction": "ease",
+            "pointerEvents": "none"
+          },
+          "target": {
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "pointerEvents": "auto",
+            "outlineColor": "rgb(0, 0, 0)",
+            "outlineStyle": "none",
+            "outlineWidth": "3px",
+            "outlineOffset": "0px"
+          },
+          "blueClassCount": 0
+        },
+        "hoverStyle": {
+          "edge": {
+            "backgroundColor": "rgb(229, 231, 235)",
+            "boxShadow": "rgba(0, 0, 0, 0.1) 1px 0px 3px 0px",
+            "pointerEvents": "none"
+          },
+          "feedback": {
+            "backgroundColor": "rgb(156, 163, 175)",
+            "transitionProperty": "background-color",
+            "transitionDuration": "0.2s",
+            "transitionTimingFunction": "ease",
+            "pointerEvents": "none"
+          },
+          "target": {
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "pointerEvents": "auto",
+            "outlineColor": "rgb(0, 0, 0)",
+            "outlineStyle": "none",
+            "outlineWidth": "3px",
+            "outlineOffset": "0px"
+          },
+          "blueClassCount": 0
+        },
+        "focusStyle": {
+          "edge": {
+            "backgroundColor": "rgb(229, 231, 235)",
+            "boxShadow": "rgba(0, 0, 0, 0.1) 1px 0px 3px 0px",
+            "pointerEvents": "none"
+          },
+          "feedback": {
+            "backgroundColor": "rgb(156, 163, 175)",
+            "transitionProperty": "background-color",
+            "transitionDuration": "0.2s",
+            "transitionTimingFunction": "ease",
+            "pointerEvents": "none"
+          },
+          "target": {
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "pointerEvents": "auto",
+            "outlineColor": "rgb(107, 114, 128)",
+            "outlineStyle": "solid",
+            "outlineWidth": "2px",
+            "outlineOffset": "-2px"
+          },
+          "blueClassCount": 0
+        },
+        "activeStyle": {
+          "edge": {
+            "backgroundColor": "rgb(229, 231, 235)",
+            "boxShadow": "rgba(0, 0, 0, 0.1) 1px 0px 3px 0px",
+            "pointerEvents": "none"
+          },
+          "feedback": {
+            "backgroundColor": "rgb(107, 114, 128)",
+            "transitionProperty": "background-color",
+            "transitionDuration": "0.2s",
+            "transitionTimingFunction": "ease",
+            "pointerEvents": "none"
+          },
+          "target": {
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "pointerEvents": "auto",
+            "outlineColor": "rgb(107, 114, 128)",
+            "outlineStyle": "solid",
+            "outlineWidth": "2px",
+            "outlineOffset": "-2px"
+          },
+          "blueClassCount": 0
+        }
+      }
+    },
+    {
+      "id": "BROWSER-R3-001",
+      "result": "Pass",
+      "evidence": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "layout": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 900,
+          "top": 0,
+          "right": 1440,
+          "bottom": 900,
+          "left": 0
+        },
+        "navigation": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 900,
+          "top": 0,
+          "right": 256,
+          "bottom": 900,
+          "left": 0
+        },
+        "anchor": {
+          "x": 256,
+          "y": 0,
+          "width": 0,
+          "height": 900,
+          "top": 0,
+          "right": 256,
+          "bottom": 900,
+          "left": 256
+        },
+        "line": {
+          "x": 255,
+          "y": 0,
+          "width": 1,
+          "height": 900,
+          "top": 0,
+          "right": 256,
+          "bottom": 900,
+          "left": 255
+        },
+        "feedback": {
+          "x": 254,
+          "y": 0,
+          "width": 4,
+          "height": 900,
+          "top": 0,
+          "right": 258,
+          "bottom": 900,
+          "left": 254
+        },
+        "target": {
+          "x": 252,
+          "y": 0,
+          "width": 8,
+          "height": 900,
+          "top": 0,
+          "right": 260,
+          "bottom": 900,
+          "left": 252
+        },
+        "content": {
+          "x": 256,
+          "y": 0,
+          "width": 1184,
+          "height": 900,
+          "top": 0,
+          "right": 1440,
+          "bottom": 900,
+          "left": 256
+        },
+        "manager": {
+          "x": 256,
+          "y": 16,
+          "width": 1168,
+          "height": 868,
+          "top": 16,
+          "right": 1424,
+          "bottom": 884,
+          "left": 256
+        },
+        "navigationDisplay": "block",
+        "anchorDisplay": "block",
+        "inert": false,
+        "ariaHidden": null,
+        "ariaNow": "256",
+        "documentClientWidth": 1440,
+        "documentScrollWidth": 1440,
+        "wrapperClientWidth": 1102,
+        "wrapperScrollWidth": 1102,
+        "headers": [
+          "Task / Run",
+          "Runtime",
+          "Model(s)",
+          "Input",
+          "Output",
+          "Input Cost",
+          "Output Cost",
+          "Total Cost",
+          "Created Time"
+        ]
+      }
+    },
+    {
+      "id": "BROWSER-R3-002",
+      "result": "Pass",
+      "evidence": {
+        "partial": {
+          "viewport": [
+            1440,
+            900
+          ],
+          "layout": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900,
+            "top": 0,
+            "right": 1440,
+            "bottom": 900,
+            "left": 0
+          },
+          "navigation": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 900,
+            "top": 0,
+            "right": 128,
+            "bottom": 900,
+            "left": 0
+          },
+          "anchor": {
+            "x": 128,
+            "y": 0,
+            "width": 0,
+            "height": 900,
+            "top": 0,
+            "right": 128,
+            "bottom": 900,
+            "left": 128
+          },
+          "line": {
+            "x": 127,
+            "y": 0,
+            "width": 1,
+            "height": 900,
+            "top": 0,
+            "right": 128,
+            "bottom": 900,
+            "left": 127
+          },
+          "feedback": {
+            "x": 126,
+            "y": 0,
+            "width": 4,
+            "height": 900,
+            "top": 0,
+            "right": 130,
+            "bottom": 900,
+            "left": 126
+          },
+          "target": {
+            "x": 124,
+            "y": 0,
+            "width": 8,
+            "height": 900,
+            "top": 0,
+            "right": 132,
+            "bottom": 900,
+            "left": 124
+          },
+          "content": {
+            "x": 128,
+            "y": 0,
+            "width": 1312,
+            "height": 900,
+            "top": 0,
+            "right": 1440,
+            "bottom": 900,
+            "left": 128
+          },
+          "manager": {
+            "x": 128,
+            "y": 16,
+            "width": 1296,
+            "height": 868,
+            "top": 16,
+            "right": 1424,
+            "bottom": 884,
+            "left": 128
+          },
+          "navigationDisplay": "block",
+          "anchorDisplay": "block",
+          "inert": false,
+          "ariaHidden": null,
+          "ariaNow": "128",
+          "documentClientWidth": 1440,
+          "documentScrollWidth": 1440,
+          "wrapperClientWidth": 1230,
+          "wrapperScrollWidth": 1230,
+          "headers": [
+            "Task / Run",
+            "Runtime",
+            "Model(s)",
+            "Input",
+            "Output",
+            "Input Cost",
+            "Output Cost",
+            "Total Cost",
+            "Created Time"
+          ]
+        },
+        "zero": {
+          "viewport": [
+            1440,
+            900
+          ],
+          "layout": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900,
+            "top": 0,
+            "right": 1440,
+            "bottom": 900,
+            "left": 0
+          },
+          "navigation": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 900,
+            "top": 0,
+            "right": 0,
+            "bottom": 900,
+            "left": 0
+          },
+          "anchor": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 900,
+            "top": 0,
+            "right": 0,
+            "bottom": 900,
+            "left": 0
+          },
+          "line": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 900,
+            "top": 0,
+            "right": 1,
+            "bottom": 900,
+            "left": 0
+          },
+          "feedback": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 900,
+            "top": 0,
+            "right": 4,
+            "bottom": 900,
+            "left": 0
+          },
+          "target": {
+            "x": 0,
+            "y": 0,
+            "width": 8,
+            "height": 900,
+            "top": 0,
+            "right": 8,
+            "bottom": 900,
+            "left": 0
+          },
+          "content": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900,
+            "top": 0,
+            "right": 1440,
+            "bottom": 900,
+            "left": 0
+          },
+          "manager": {
+            "x": 0,
+            "y": 16,
+            "width": 1424,
+            "height": 868,
+            "top": 16,
+            "right": 1424,
+            "bottom": 884,
+            "left": 0
+          },
+          "navigationDisplay": "block",
+          "anchorDisplay": "block",
+          "inert": true,
+          "ariaHidden": "true",
+          "ariaNow": "0",
+          "documentClientWidth": 1440,
+          "documentScrollWidth": 1440,
+          "wrapperClientWidth": 1358,
+          "wrapperScrollWidth": 1358,
+          "headers": [
+            "Task / Run",
+            "Runtime",
+            "Model(s)",
+            "Input",
+            "Output",
+            "Input Cost",
+            "Output Cost",
+            "Total Cost",
+            "Created Time"
+          ]
+        },
+        "hit": {
+          "testId": "settings-navigation-resize-handle",
+          "className": "settings-navigation-resize-target absolute inset-y-0 z-20 w-2 cursor-col-resize touch-none bg-transparent"
+        },
+        "restored": {
+          "viewport": [
+            1440,
+            900
+          ],
+          "layout": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900,
+            "top": 0,
+            "right": 1440,
+            "bottom": 900,
+            "left": 0
+          },
+          "navigation": {
+            "x": 0,
+            "y": 0,
+            "width": 256,
+            "height": 900,
+            "top": 0,
+            "right": 256,
+            "bottom": 900,
+            "left": 0
+          },
+          "anchor": {
+            "x": 256,
+            "y": 0,
+            "width": 0,
+            "height": 900,
+            "top": 0,
+            "right": 256,
+            "bottom": 900,
+            "left": 256
+          },
+          "line": {
+            "x": 255,
+            "y": 0,
+            "width": 1,
+            "height": 900,
+            "top": 0,
+            "right": 256,
+            "bottom": 900,
+            "left": 255
+          },
+          "feedback": {
+            "x": 254,
+            "y": 0,
+            "width": 4,
+            "height": 900,
+            "top": 0,
+            "right": 258,
+            "bottom": 900,
+            "left": 254
+          },
+          "target": {
+            "x": 252,
+            "y": 0,
+            "width": 8,
+            "height": 900,
+            "top": 0,
+            "right": 260,
+            "bottom": 900,
+            "left": 252
+          },
+          "content": {
+            "x": 256,
+            "y": 0,
+            "width": 1184,
+            "height": 900,
+            "top": 0,
+            "right": 1440,
+            "bottom": 900,
+            "left": 256
+          },
+          "manager": {
+            "x": 256,
+            "y": 16,
+            "width": 1168,
+            "height": 868,
+            "top": 16,
+            "right": 1424,
+            "bottom": 884,
+            "left": 256
+          },
+          "navigationDisplay": "block",
+          "anchorDisplay": "block",
+          "inert": false,
+          "ariaHidden": null,
+          "ariaNow": "256",
+          "documentClientWidth": 1440,
+          "documentScrollWidth": 1440,
+          "wrapperClientWidth": 1102,
+          "wrapperScrollWidth": 1102,
+          "headers": [
+            "Task / Run",
+            "Runtime",
+            "Model(s)",
+            "Input",
+            "Output",
+            "Input Cost",
+            "Output Cost",
+            "Total Cost",
+            "Created Time"
+          ]
+        }
+      }
+    },
+    {
+      "id": "BROWSER-R3-003",
+      "result": "Pass",
+      "evidence": {
+        "pointerup": {
+          "during": {
+            "cursor": "col-resize",
+            "userSelect": "none"
+          },
+          "after": {
+            "cursor": "crosshair",
+            "userSelect": "text"
+          }
+        },
+        "pointercancel": {
+          "during": {
+            "cursor": "col-resize",
+            "userSelect": "none"
+          },
+          "after": {
+            "cursor": "crosshair",
+            "userSelect": "text"
+          }
+        },
+        "blur": {
+          "during": {
+            "cursor": "col-resize",
+            "userSelect": "none"
+          },
+          "after": {
+            "cursor": "crosshair",
+            "userSelect": "text"
+          }
+        },
+        "unmount": {
+          "cursor": "wait",
+          "userSelect": "all"
+        }
+      }
+    },
+    {
+      "id": "BROWSER-R3-004",
+      "result": "Pass",
+      "evidence": {
+        "focusedStyle": {
+          "outlineStyle": "solid",
+          "outlineWidth": "2px"
+        },
+        "axZeroRelevant": [
+          {
+            "role": "separator",
+            "name": "Resize Settings menu"
+          }
+        ],
+        "tabAtZero": {
+          "tag": "SELECT",
+          "testId": null,
+          "text": "TaskModel",
+          "inNavigation": false
+        },
+        "axNonzeroBack": [
+          {
+            "role": "button",
+            "name": "Back to workspace"
+          },
+          {
+            "role": "StaticText",
+            "name": "Back to Workspace"
+          }
+        ]
+      }
+    },
+    {
+      "id": "BROWSER-R3-007",
+      "result": "Pass",
+      "evidence": {
+        "before": {
+          "manager": "manager-r2",
+          "table": "table-r2",
+          "start": "2026-07-01",
+          "end": "2026-07-15",
+          "grouping": "task",
+          "scrollTop": 220,
+          "sort": "ascending",
+          "child": true,
+          "detail": true,
+          "localStorage": "{\"autobyteus.node_registry.v1\":\"{\\\"version\\\":1,\\\"nodes\\\":[{\\\"id\\\":\\\"embedded-local\\\",\\\"name\\\":\\\"Embedded Node\\\",\\\"baseUrl\\\":\\\"http://localhost:8000\\\",\\\"nodeType\\\":\\\"embedded\\\",\\\"capabilities\\\":{\\\"terminal\\\":true,\\\"fileExplorerStreaming\\\":true},\\\"capabilityProbeState\\\":\\\"ready\\\",\\\"isSystem\\\":true,\\\"createdAt\\\":\\\"2026-07-15T10:11:07.592Z\\\",\\\"updatedAt\\\":\\\"2026-07-15T10:11:07.592Z\\\"}]}\",\"autobyteus.app-left-panel.primary-nav-height\":\"240\",\"autobyteus.localization.preference-mode\":\"system\"}",
+          "sessionStorage": "{}",
+          "requests": 4
+        },
+        "after": {
+          "manager": "manager-r2",
+          "table": "table-r2",
+          "start": "2026-07-01",
+          "end": "2026-07-15",
+          "grouping": "task",
+          "scrollTop": 220,
+          "sort": "ascending",
+          "child": true,
+          "detail": true,
+          "localStorage": "{\"autobyteus.node_registry.v1\":\"{\\\"version\\\":1,\\\"nodes\\\":[{\\\"id\\\":\\\"embedded-local\\\",\\\"name\\\":\\\"Embedded Node\\\",\\\"baseUrl\\\":\\\"http://localhost:8000\\\",\\\"nodeType\\\":\\\"embedded\\\",\\\"capabilities\\\":{\\\"terminal\\\":true,\\\"fileExplorerStreaming\\\":true},\\\"capabilityProbeState\\\":\\\"ready\\\",\\\"isSystem\\\":true,\\\"createdAt\\\":\\\"2026-07-15T10:11:07.592Z\\\",\\\"updatedAt\\\":\\\"2026-07-15T10:11:07.592Z\\\"}]}\",\"autobyteus.app-left-panel.primary-nav-height\":\"240\",\"autobyteus.localization.preference-mode\":\"system\"}",
+          "sessionStorage": "{}",
+          "requests": 4
+        },
+        "requests": [
+          {
+            "operationName": "GetAvailableLLMProvidersWithModels",
+            "variables": {
+              "runtimeKind": "autobyteus"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetTokenUsageTaskStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetUsageStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetGeminiSetupConfig",
+            "variables": {},
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetAllWorkspaces",
+            "variables": {},
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetAgentDefinitions",
+            "variables": {},
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetAgentTeamDefinitions",
+            "variables": {},
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetApplicationsCapability",
+            "variables": {},
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetServerSettings",
+            "variables": {},
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetAvailableLLMProvidersWithModels",
+            "variables": {
+              "runtimeKind": "autobyteus"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetTokenUsageTaskStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetUsageStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetGeminiSetupConfig",
+            "variables": {},
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetTokenUsageTaskStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetUsageStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetAvailableLLMProvidersWithModels",
+            "variables": {
+              "runtimeKind": "autobyteus"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetTokenUsageTaskStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetUsageStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetGeminiSetupConfig",
+            "variables": {},
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          }
+        ]
+      }
+    },
+    {
+      "id": "BROWSER-R3-006",
+      "result": "Pass",
+      "evidence": {
+        "sessionWidth": "240",
+        "remountWidth": "256"
+      }
+    },
+    {
+      "id": "BROWSER-R3-005",
+      "result": "Pass",
+      "evidence": {
+        "narrowFromSeparator": {
+          "geometry": {
+            "viewport": [
+              390,
+              844
+            ],
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844,
+              "top": 0,
+              "right": 390,
+              "bottom": 844,
+              "left": 0
+            },
+            "navigation": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 320.71875,
+              "top": 0,
+              "right": 390,
+              "bottom": 320.71875,
+              "left": 0
+            },
+            "anchor": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0,
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0
+            },
+            "line": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0,
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0
+            },
+            "feedback": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0,
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0
+            },
+            "target": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0,
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0
+            },
+            "content": {
+              "x": 0,
+              "y": 320.71875,
+              "width": 390,
+              "height": 523.28125,
+              "top": 320.71875,
+              "right": 390,
+              "bottom": 844,
+              "left": 0
+            },
+            "manager": null,
+            "navigationDisplay": "block",
+            "anchorDisplay": "none",
+            "inert": false,
+            "ariaHidden": null,
+            "ariaNow": "0",
+            "documentClientWidth": 390,
+            "documentScrollWidth": 390,
+            "headers": []
+          },
+          "focus": {
+            "tag": "BUTTON",
+            "testId": "settings-nav-back",
+            "text": "Back to Workspace",
+            "inNavigation": true
+          }
+        },
+        "desktopFromNav": {
+          "geometry": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 1440,
+              "height": 900,
+              "top": 0,
+              "right": 1440,
+              "bottom": 900,
+              "left": 0
+            },
+            "navigation": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 900,
+              "top": 0,
+              "right": 0,
+              "bottom": 900,
+              "left": 0
+            },
+            "anchor": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 900,
+              "top": 0,
+              "right": 0,
+              "bottom": 900,
+              "left": 0
+            },
+            "line": {
+              "x": 0,
+              "y": 0,
+              "width": 1,
+              "height": 900,
+              "top": 0,
+              "right": 1,
+              "bottom": 900,
+              "left": 0
+            },
+            "feedback": {
+              "x": 0,
+              "y": 0,
+              "width": 4,
+              "height": 900,
+              "top": 0,
+              "right": 4,
+              "bottom": 900,
+              "left": 0
+            },
+            "target": {
+              "x": 0,
+              "y": 0,
+              "width": 8,
+              "height": 900,
+              "top": 0,
+              "right": 8,
+              "bottom": 900,
+              "left": 0
+            },
+            "content": {
+              "x": 0,
+              "y": 0,
+              "width": 1440,
+              "height": 900,
+              "top": 0,
+              "right": 1440,
+              "bottom": 900,
+              "left": 0
+            },
+            "manager": null,
+            "navigationDisplay": "block",
+            "anchorDisplay": "block",
+            "inert": true,
+            "ariaHidden": "true",
+            "ariaNow": "0",
+            "documentClientWidth": 1440,
+            "documentScrollWidth": 1440,
+            "headers": []
+          },
+          "focus": {
+            "tag": "DIV",
+            "testId": "settings-navigation-resize-handle",
+            "text": null,
+            "inNavigation": false
+          }
+        },
+        "unrelatedBefore": {
+          "tag": "BUTTON",
+          "testId": null,
+          "text": "unrelated",
+          "inNavigation": false
+        },
+        "unrelatedAfter": {
+          "tag": "BUTTON",
+          "testId": null,
+          "text": "unrelated",
+          "inNavigation": false
+        }
+      }
+    },
+    {
+      "id": "BROWSER-R3-008-loading",
+      "result": "Pass",
+      "evidence": {
+        "requestsBefore": 2,
+        "requestsAfter": 2
+      }
+    },
+    {
+      "id": "BROWSER-R3-008-error",
+      "result": "Pass",
+      "evidence": {
+        "requestsBefore": 2,
+        "requestsAfter": 2
+      }
+    },
+    {
+      "id": "BROWSER-R3-008-empty",
+      "result": "Pass",
+      "evidence": {
+        "requestsBefore": 2,
+        "requestsAfter": 2
+      }
+    },
+    {
+      "id": "BROWSER-R3-009",
+      "result": "Pass",
+      "evidence": {
+        "cases": [
+          {
+            "query": "?section=about",
+            "label": "Updates",
+            "class": "flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group bg-gray-100 text-gray-900",
+            "width": "256"
+          },
+          {
+            "query": "?section=server-status",
+            "label": "advanced",
+            "class": "w-full text-left px-3 py-1.5 text-base rounded-md transition-colors duration-200 bg-gray-100 text-gray-900 font-medium",
+            "width": "256"
+          },
+          {
+            "query": "?section=invalid-section",
+            "label": "API Keys",
+            "class": "flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group bg-gray-100 text-gray-900",
+            "width": "256"
+          },
+          {
+            "query": "?section=server-settings",
+            "label": "quick",
+            "class": "w-full text-left px-3 py-1.5 text-base rounded-md transition-colors duration-200 bg-gray-100 text-gray-900 font-medium",
+            "width": "256"
+          },
+          {
+            "query": "?section=server-settings&mode=advanced",
+            "label": "advanced",
+            "class": "w-full text-left px-3 py-1.5 text-base rounded-md transition-colors duration-200 bg-gray-100 text-gray-900 font-medium",
+            "width": "256"
+          },
+          {
+            "query": "?section=server-settings&mode=migrations",
+            "label": "migrations",
+            "class": "w-full text-left px-3 py-1.5 text-base rounded-md transition-colors duration-200 bg-gray-100 text-gray-900 font-medium",
+            "width": "256"
+          }
+        ],
+        "backUrl": "http://127.0.0.1:3317/workspace",
+        "embeddedFallback": "covered by pages/__tests__/settings.spec.ts without bypassing bootstrap ownership"
+      }
+    }
+  ],
+  "consoleEvents": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "url": "http://127.0.0.1:3317/settings?section=token-usage"
+    },
+    {
+      "type": "error",
+      "text": "WebSocket connection to 'ws://localhost:8000/ws/terminal/c4586537-c5f8-431e-a289-931705cb75bb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "[useTerminalSession] WebSocket error: Event",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22workspaces%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentDefinitions%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentTeamDefinitions%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getServerSettings%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "Workspace.vue: Failed to fetch server settings on mount: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)",
+      "url": "http://127.0.0.1:3317/workspace"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch token usage statistics: ApolloError: deterministic statistics error\n    at new t (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:60:153)\n    at http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:64:79762\n    at u (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:8520)\n    at http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:8402)\n    at Object.next (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:8530)\n    at P_ (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:1908)\n    at Jc (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:2318)\n    at t.next (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:2838)",
+      "url": "http://127.0.0.1:3317/settings?section=token-usage"
+    },
+    {
+      "type": "error",
+      "text": "Error fetching token usage statistics: ApolloError: deterministic statistics error\n    at new t (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:60:153)\n    at http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:64:79762\n    at u (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:8520)\n    at http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:8402)\n    at Object.next (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:8530)\n    at P_ (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:1908)\n    at Jc (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:2318)\n    at t.next (http://127.0.0.1:3317/_nuxt/C5O2aNF9.js:59:2838)",
+      "url": "http://127.0.0.1:3317/settings?section=token-usage"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getServerSettings%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings?section=server-status"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings?section=server-status"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async R (http://127.0.0.1:3317/_nuxt/CWrHiV60.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings?section=server-status"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async R (http://127.0.0.1:3317/_nuxt/CWrHiV60.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings?section=server-status"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getServerSettings%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async R (http://127.0.0.1:3317/_nuxt/CWrHiV60.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async R (http://127.0.0.1:3317/_nuxt/CWrHiV60.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getServerSettings%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings&mode=advanced"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings&mode=advanced"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async R (http://127.0.0.1:3317/_nuxt/CWrHiV60.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings&mode=advanced"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async R (http://127.0.0.1:3317/_nuxt/CWrHiV60.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings&mode=advanced"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getServerSettings%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings&mode=migrations"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings&mode=migrations"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async R (http://127.0.0.1:3317/_nuxt/CWrHiV60.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings&mode=migrations"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async R (http://127.0.0.1:3317/_nuxt/CWrHiV60.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings?section=server-settings&mode=migrations"
+    }
+  ]
+}
