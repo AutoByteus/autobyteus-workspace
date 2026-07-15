@@ -8,7 +8,7 @@
 - Current source candidate: `c448824203a9fd4ffc97e7884a992a7c03863b6f` (`style(settings): match workspace separator feedback`)
 - Delivery validation checkpoint: `440eada0ba098d05bc20deb149e829c72b7116d5`
 - Finalization target: `personal` / `origin/personal`
-- Current status: `User verified`; repository finalization and release `v1.4.14` are authorized and in progress.
+- Current status: `Released`; repository finalization and release `v1.4.14` completed successfully. Dedicated branch/worktree cleanup is in progress.
 
 ## Integrated-State Refresh
 
@@ -94,7 +94,7 @@
 ## Persisted Data / Release / Rollback
 
 - Persisted-data outcome: `Not Affected`; width and visual feedback are ephemeral. No migration, storage, schema, API, or compatibility action exists.
-- Release/version/tag/deployment: user requested a new release after successful testing. Planned version/tag: `1.4.14` / `v1.4.14`; curated notes are in `release-notes.md`.
+- Release/version/tag/deployment: `1.4.14` / `v1.4.14` published from release commit `20da4ff39fbed74949fddc7ef8e8848ce9b072cd`; all five tag-triggered release workflows completed successfully.
 - Before finalization, rollback is simply withholding approval. A bounded visual/interaction defect routes to `implementation_engineer`; a changed desired interaction routes as `Design Impact` to `solution_designer`.
 
 ## User Verification And Finalization Authorization
@@ -103,9 +103,13 @@
 - Verification reference: user message on 2026-07-15 — “now finalize and release a new version. its good i tested”.
 - Final target refresh after verification: `origin/personal` remained `9fda25eac8fc70df97599758760b47f25620cec8`; no re-integration or renewed verification was required.
 - Ticket moved to `tickets/done`: `Yes`
-- Planned release: `1.4.14` / `v1.4.14`
-- Ticket branch push, target fast-forward/push, release, workflow observation, and cleanup: `In progress`
-- Next action: complete repository finalization, run the documented release helper, push `v1.4.14`, observe release workflow startup, record evidence, and clean up the dedicated ticket worktree/branch.
+- Ticket archival commit: `25c471235`
+- Release: `1.4.14` / `v1.4.14`, release commit `20da4ff39fbed74949fddc7ef8e8848ce9b072cd`
+- Ticket branch push and target `personal` fast-forward/push: `Completed`
+- GitHub release and five release workflows: `Completed successfully`
+- iOS recovery: attempt 1 hit a transient simulator UI-smoke marker timeout; failed-job rerun attempt 2 passed, including App Store Connect/TestFlight upload.
+- Dedicated worktree and ticket-branch cleanup: `In progress`
+- Release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.14`
 
 ## Cumulative Artifact Package
 

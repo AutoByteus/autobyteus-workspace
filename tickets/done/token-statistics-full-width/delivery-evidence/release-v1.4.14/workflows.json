@@ -1,0 +1,62 @@
+[
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:00Z",
+    "databaseId": 29408513458,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T10:36:01Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513458",
+    "workflowName": "Android APK Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:00Z",
+    "databaseId": 29408513513,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T10:49:24Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513513",
+    "workflowName": "Desktop Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:00Z",
+    "databaseId": 29408513533,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T10:35:19Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513533",
+    "workflowName": "Release Messaging Gateway"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:00Z",
+    "databaseId": 29408513530,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T10:57:34Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513530",
+    "workflowName": "Server Docker Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:01Z",
+    "databaseId": 29408513920,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T11:02:50Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513920",
+    "workflowName": "iOS App Store Connect Release"
+  }
+]

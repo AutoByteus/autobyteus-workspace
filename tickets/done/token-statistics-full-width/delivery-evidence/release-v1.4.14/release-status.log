@@ -1,0 +1,77 @@
+Release evidence recorded: 2026-07-15T13:05:03+02:00
+Archive commit: 25c471235
+Release commit: 20da4ff39fbed74949fddc7ef8e8848ce9b072cd
+Tag object: 50dc5cff31d698661c5de38a8c4808d80350af9d
+Tag target: 20da4ff39fbed74949fddc7ef8e8848ce9b072cd
+origin/personal: 20da4ff39fbed74949fddc7ef8e8848ce9b072cd
+
+GitHub Release:
+{"assets":[{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477812058","contentType":"application/gzip","createdAt":"2026-07-15T10:35:14Z","digest":"sha256:09423804b216eaee513c8aa8dc973a56b4192a411f5ad06194e00943de03e206","downloadCount":0,"id":"RA_kwDORZKejM4cetVa","label":"","name":"autobyteus-message-gateway-1.4.14-node-generic.tar.gz","size":46187813,"state":"uploaded","updatedAt":"2026-07-15T10:35:16Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/autobyteus-message-gateway-1.4.14-node-generic.tar.gz"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477812055","contentType":"application/json","createdAt":"2026-07-15T10:35:14Z","digest":"sha256:53ea9a235ded99e505b3cc185a15cbe7f6e0105a2e8afe9776cbaf7aef8300fc","downloadCount":0,"id":"RA_kwDORZKejM4cetVX","label":"","name":"autobyteus-message-gateway-1.4.14-node-generic.tar.gz.json","size":429,"state":"uploaded","updatedAt":"2026-07-15T10:35:14Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/autobyteus-message-gateway-1.4.14-node-generic.tar.gz.json"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477812056","contentType":"application/octet-stream","createdAt":"2026-07-15T10:35:14Z","digest":"sha256:e8f44454fef9c700cfd4d4a94d1318562163e68d87b3b2eb3b8e884ec4674959","downloadCount":0,"id":"RA_kwDORZKejM4cetVY","label":"","name":"autobyteus-message-gateway-1.4.14-node-generic.tar.gz.sha256","size":120,"state":"uploaded","updatedAt":"2026-07-15T10:35:14Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/autobyteus-message-gateway-1.4.14-node-generic.tar.gz.sha256"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477812730","contentType":"application/vnd.android.package-archive","createdAt":"2026-07-15T10:35:58Z","digest":"sha256:b31a15f7aa0a10660d7f8809a7419abc6128419d2f4ec64984e3d79fff70779a","downloadCount":0,"id":"RA_kwDORZKejM4cetf6","label":"","name":"AutoByteus_personal_android-1.4.14-release.apk","size":1846691,"state":"uploaded","updatedAt":"2026-07-15T10:35:59Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_android-1.4.14-release.apk"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477812731","contentType":"application/octet-stream","createdAt":"2026-07-15T10:35:58Z","digest":"sha256:c9f9a344a7b975626c58ea6a6b5b4f5d554136611d63aca9425528b4df6d53fd","downloadCount":0,"id":"RA_kwDORZKejM4cetf7","label":"","name":"AutoByteus_personal_android-1.4.14-release.apk.sha256","size":113,"state":"uploaded","updatedAt":"2026-07-15T10:35:58Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_android-1.4.14-release.apk.sha256"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823386","contentType":"application/octet-stream","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:aeb9a6dfe57b642f23aadb02a64ff695644edc681fe26702660b02bbb174a2c5","downloadCount":0,"id":"RA_kwDORZKejM4cewGa","label":"","name":"AutoByteus_personal_linux-arm64-1.4.14.AppImage","size":356300802,"state":"uploaded","updatedAt":"2026-07-15T10:49:13Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_linux-arm64-1.4.14.AppImage"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823391","contentType":"application/octet-stream","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:de154f2aa3f0d4a122b244baf0fbf05e9f953307dafad558ad19185b06a54666","downloadCount":0,"id":"RA_kwDORZKejM4cewGf","label":"","name":"AutoByteus_personal_linux-x64-1.4.14.AppImage","size":367930445,"state":"uploaded","updatedAt":"2026-07-15T10:49:14Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_linux-x64-1.4.14.AppImage"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823377","contentType":"application/x-apple-diskimage","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:c4b106a730410ecd6f327ec9668f06ba8638d708ffc4de9caba09c4f31070e13","downloadCount":0,"id":"RA_kwDORZKejM4cewGR","label":"","name":"AutoByteus_personal_macos-arm64-1.4.14.dmg","size":433422121,"state":"uploaded","updatedAt":"2026-07-15T10:49:14Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_macos-arm64-1.4.14.dmg"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823385","contentType":"application/octet-stream","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:f32c284f957300ce22c7d2be7b8a3e9e4cb6ae70062009a46cadb3f0171cfb09","downloadCount":0,"id":"RA_kwDORZKejM4cewGZ","label":"","name":"AutoByteus_personal_macos-arm64-1.4.14.dmg.blockmap","size":452359,"state":"uploaded","updatedAt":"2026-07-15T10:48:57Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_macos-arm64-1.4.14.dmg.blockmap"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823390","contentType":"application/zip","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:5685dd343ddf67b63583f276bd704c7f9daaf2c85a8c860b964456929c7b8ec4","downloadCount":0,"id":"RA_kwDORZKejM4cewGe","label":"","name":"AutoByteus_personal_macos-arm64-1.4.14.zip","size":429111013,"state":"uploaded","updatedAt":"2026-07-15T10:49:15Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_macos-arm64-1.4.14.zip"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823393","contentType":"application/octet-stream","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:cd52883280fbd7a3de3c82108f8799713f43671b183d3097adf07c2b4c692102","downloadCount":0,"id":"RA_kwDORZKejM4cewGh","label":"","name":"AutoByteus_personal_macos-arm64-1.4.14.zip.blockmap","size":439758,"state":"uploaded","updatedAt":"2026-07-15T10:48:57Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_macos-arm64-1.4.14.zip.blockmap"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823378","contentType":"application/x-apple-diskimage","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:f6d8109f6d96b5bb57061fa9837f3fd55be372d36cba73c8811e15484676633d","downloadCount":0,"id":"RA_kwDORZKejM4cewGS","label":"","name":"AutoByteus_personal_macos-x64-1.4.14.dmg","size":455634628,"state":"uploaded","updatedAt":"2026-07-15T10:49:19Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_macos-x64-1.4.14.dmg"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823382","contentType":"application/octet-stream","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:043b78c3fecb7d92e986b46ce18050290cbf1eef1945def01823444103004199","downloadCount":0,"id":"RA_kwDORZKejM4cewGW","label":"","name":"AutoByteus_personal_macos-x64-1.4.14.dmg.blockmap","size":472612,"state":"uploaded","updatedAt":"2026-07-15T10:48:57Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_macos-x64-1.4.14.dmg.blockmap"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823388","contentType":"application/zip","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:2d7620d88cb66fbdeb200468fb599900fb304d47048c750d81ea03b926035ec5","downloadCount":0,"id":"RA_kwDORZKejM4cewGc","label":"","name":"AutoByteus_personal_macos-x64-1.4.14.zip","size":450750740,"state":"uploaded","updatedAt":"2026-07-15T10:49:15Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_macos-x64-1.4.14.zip"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823392","contentType":"application/octet-stream","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:f59c29b2fa62787c77060afa7ebd52c7f0948ab5a26026f8cacfe0783c2b4e32","downloadCount":0,"id":"RA_kwDORZKejM4cewGg","label":"","name":"AutoByteus_personal_macos-x64-1.4.14.zip.blockmap","size":460676,"state":"uploaded","updatedAt":"2026-07-15T10:48:57Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_macos-x64-1.4.14.zip.blockmap"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823387","contentType":"application/x-msdos-program","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:3c8741031a9c91185322c68c4ad1cf454504405c9e6fe96771075a6ffb25eb11","downloadCount":0,"id":"RA_kwDORZKejM4cewGb","label":"","name":"AutoByteus_personal_windows-1.4.14.exe","size":301602225,"state":"uploaded","updatedAt":"2026-07-15T10:49:11Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/AutoByteus_personal_windows-1.4.14.exe"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823389","contentType":"text/yaml","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:4abb26d2c3b7fe7a719eb236c65d4d8612e09af496f27173b0e1d6e26e263165","downloadCount":0,"id":"RA_kwDORZKejM4cewGd","label":"","name":"latest-linux-arm64.yml","size":417,"state":"uploaded","updatedAt":"2026-07-15T10:48:57Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/latest-linux-arm64.yml"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823380","contentType":"text/yaml","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:1b79bc92e3dbd89317fcb965041ef8039cb675ce6f2be7cde1fceae2226ec783","downloadCount":0,"id":"RA_kwDORZKejM4cewGU","label":"","name":"latest-linux.yml","size":413,"state":"uploaded","updatedAt":"2026-07-15T10:48:57Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/latest-linux.yml"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823383","contentType":"text/yaml","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:60aa9bc18f3e777cc1e2903fc770f562230c0a793821a71762949ba6e8ec8b1c","downloadCount":0,"id":"RA_kwDORZKejM4cewGX","label":"","name":"latest-mac.yml","size":897,"state":"uploaded","updatedAt":"2026-07-15T10:48:57Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/latest-mac.yml"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477823384","contentType":"text/yaml","createdAt":"2026-07-15T10:48:57Z","digest":"sha256:f569142a5e695cae14e5a541628343d041ac70db5f5dfe605354f911206a9a5e","downloadCount":0,"id":"RA_kwDORZKejM4cewGY","label":"","name":"latest.yml","size":354,"state":"uploaded","updatedAt":"2026-07-15T10:48:57Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/latest.yml"},{"apiUrl":"https://api.github.com/repos/AutoByteus/autobyteus-workspace/releases/assets/477812057","contentType":"application/json","createdAt":"2026-07-15T10:35:14Z","digest":"sha256:68b00b9c29996978cd705b2ba08b2324061652abf0baf1f6b7fa7d5ecff2da48","downloadCount":0,"id":"RA_kwDORZKejM4cetVZ","label":"","name":"release-manifest.json","size":904,"state":"uploaded","updatedAt":"2026-07-15T10:35:14Z","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.14/release-manifest.json"}],"isDraft":false,"isPrerelease":false,"name":"v1.4.14","publishedAt":"2026-07-15T10:35:16Z","tagName":"v1.4.14","targetCommitish":"20da4ff39fbed74949fddc7ef8e8848ce9b072cd","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.14"}
+
+Release workflows:
+[
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:00Z",
+    "databaseId": 29408513458,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T10:36:01Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513458",
+    "workflowName": "Android APK Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:00Z",
+    "databaseId": 29408513513,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T10:49:24Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513513",
+    "workflowName": "Desktop Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:00Z",
+    "databaseId": 29408513533,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T10:35:19Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513533",
+    "workflowName": "Release Messaging Gateway"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:00Z",
+    "databaseId": 29408513530,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T10:57:34Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513530",
+    "workflowName": "Server Docker Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-15T10:33:01Z",
+    "databaseId": 29408513920,
+    "event": "push",
+    "headBranch": "v1.4.14",
+    "headSha": "20da4ff39fbed74949fddc7ef8e8848ce9b072cd",
+    "status": "completed",
+    "updatedAt": "2026-07-15T11:02:50Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513920",
+    "workflowName": "iOS App Store Connect Release"
+  }
+]
+
+iOS recovery note:
+Attempt 1 failed in the simulator UI smoke test waiting for AUTOBYTEUS_FAKE_MOBILE_READY; failed-job rerun attempt 2 passed, including signed IPA upload to App Store Connect/TestFlight.
+{"attempt":2,"conclusion":"success","status":"completed","updatedAt":"2026-07-15T11:02:50Z","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29408513920"}
