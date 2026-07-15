@@ -1,0 +1,7 @@
+$ pnpm -C autobyteus-web guard:localization-boundary
+
+> autobyteus@1.3.73 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+guard-localization-boundary_exit=0

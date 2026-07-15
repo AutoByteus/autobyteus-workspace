@@ -1,0 +1,86 @@
+$ pwd
+/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit
+$ git status --short --branch
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 3, behind 413]
+ M tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+ M tickets/frontend-responsive-ux-audit/code-review-report.md
+ M tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ M tickets/frontend-responsive-ux-audit/design-review-report.md
+ M tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ M tickets/frontend-responsive-ux-audit/evidence/delivery-round2-checkpoint-commit.log
+ M tickets/frontend-responsive-ux-audit/handoff-summary.md
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1180x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-700x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-767x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/md-768x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/mobile-route-390x844.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-500x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-short-500x420.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-390x844.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-short-390x640.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-1024x768.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-short-1024x480.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-800x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-900x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-short-800x420.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-639x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-640x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/wide-1440x900.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+?? tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-audit-localization-literals.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-backend-final.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-backend-postbuild.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-frontend-final.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-frontend-postbuild.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-git-diff-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-guard-localization-boundary.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-guard-web-boundary.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-probe-node-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-runtime-pids.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe-final.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe-postbuild-retry.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe-postbuild.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round2-docs-review.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round2-fetch-and-merge.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round2-final-sanity-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round2-post-integration-checks.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round3-pre-refresh-state.log
+$ git branch --show-current
+codex/frontend-responsive-ux-audit
+$ git rev-parse HEAD
+f614a42cba6b9c88342388036339e7264e13629a
+$ git rev-parse --abbrev-ref --symbolic-full-name @{u}
+origin/personal
+$ git rev-parse @{u}
+fbd7b6764bd43751956d69ffe22b943d06188444
+$ git log --oneline --decorate --left-right HEAD...@{u} -20
+< f614a42cb (HEAD -> codex/frontend-responsive-ux-audit) docs(ticket): refresh responsive implementation handoff
+> fbd7b6764 (origin/personal, origin/HEAD, personal, codex/agent-idle-status-lifecycle) docs(delivery): complete token statistics cleanup
+> f0384dd26 docs(delivery): record token statistics release
+> 20da4ff39 (tag: v1.4.14) chore(release): bump workspace release version to 1.4.14
+> 25c471235 chore(ticket): archive token statistics full width
+> 440eada0b chore(delivery): checkpoint workspace separator validation
+> c44882420 style(settings): match workspace separator feedback
+> d22085f9c chore(delivery): checkpoint reviewed separator candidate
+> 173848dea feat(settings): replace collapse with resizable separator
+> 530587a70 feat(settings): add contextual navigation collapse
+> 9fda25eac (codex/autonomous-scheduled-agent-runs) docs(delivery): record tool result trace finalization
+> 0299797e9 merge: restore tool result trace names
+> 32b89ab10 chore(delivery): finalize tool result trace name restoration
+> 35e004492 chore: checkpoint validated tool-result trace delivery state
+> 0bfe1e41c Restore canonical tool names on result traces
+> 2f93caf4a docs(delivery): record pluggable compaction finalization
+> c41d4bb18 merge: pluggable memory compaction strategies
+> c2b160a86 docs(delivery): finalize pluggable memory compaction
+> 4514aa6ed Merge remote-tracking branch 'origin/personal' into codex/pluggable-memory-compaction-strategies
+> 49aad3366 chore(delivery): checkpoint revised compaction candidate

@@ -1,1 +1,159 @@
 $ git add -A
+$ git commit -m "chore(delivery): checkpoint responsive ux candidate before base refresh"
+[codex/frontend-responsive-ux-audit 03171740] chore(delivery): checkpoint responsive ux candidate before base refresh
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 161 files changed, 54285 insertions(+), 503 deletions(-)
+ create mode 100644 autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue
+ delete mode 100644 autobyteus-web/components/layout/WorkspaceDesktopLayout.vue
+ delete mode 100644 autobyteus-web/components/layout/WorkspaceMobileLayout.vue
+ create mode 100644 autobyteus-web/components/layout/WorkspacePrimarySurfaceControls.vue
+ create mode 100644 autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue
+ rename autobyteus-web/components/layout/__tests__/{WorkspaceDesktopLayout.spec.ts => WorkspaceAdaptiveLayout.spec.ts} (53%)
+ create mode 100644 autobyteus-web/composables/layout/useAppShellResponsiveLayout.ts
+ create mode 100644 autobyteus-web/composables/layout/useResponsiveElementRect.ts
+ create mode 100644 autobyteus-web/composables/layout/useWorkspaceResponsiveLayout.ts
+ delete mode 100644 autobyteus-web/composables/useMobilePanels.ts
+ create mode 100644 autobyteus-web/docs/workspace_layout.md
+ create mode 100755 autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+ create mode 100644 autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+ create mode 100644 autobyteus-web/utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+ create mode 100644 autobyteus-web/utils/layout/responsiveLayoutPolicy.ts
+ create mode 100644 autobyteus-web/utils/layout/workspaceSurfaceOrder.ts
+ create mode 100644 tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/code-review-report.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/design-review-report.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/design-spec.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-audit-localization-literals.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-build.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-focused-nuxt-tests.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-git-diff-check.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-guard-localization-boundary.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-guard-web-boundary.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-audit-localization-literals.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-build.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-cleanup-ports.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-focused-nuxt-tests.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-git-diff-check.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-guard-localization-boundary.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-guard-web-boundary.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-probe-node-check.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-workspace-responsive-probe.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/api-e2e-workspace-responsive-probe.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/delivery-docs-sanity-check.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/delivery-final-sanity-check.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/delivery-initial-fetch-and-base-check.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/delivery-round2-checkpoint-commit.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/evidence/delivery-round2-pre-refresh-state.log
+ create mode 100644 tickets/frontend-responsive-ux-audit/handoff-summary.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/implementation-handoff.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/investigation-notes.md
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1180x800.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-700x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-767x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/md-768x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/mobile-route-390x844.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-500x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-short-500x420.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-390x844.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-short-390x640.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-1024x768.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-short-1024x480.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-800x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-900x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-short-800x420.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-639x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-640x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/wide-1440x900.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/current-responsive-ui-results.json
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/desktop-1180x800-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/desktop-1280x800-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/gap-700x700-after-hamburger.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/gap-700x700-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/gap-767x700-after-hamburger.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/gap-767x700-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/md-768x700-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/mobile-route-390x844.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/narrow-500x700-after-hamburger.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/narrow-500x700-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/narrow-short-500x420-after-hamburger.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/narrow-short-500x420-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/phone-390x844-after-hamburger.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/phone-390x844-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/phone-short-390x640-after-hamburger.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/phone-short-390x640-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/probe-current-responsive-ui.mjs
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/probe-summary-latest.json
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/recheck-phone-390x844.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/small-desktop-1024x768-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/small-desktop-short-1024x480-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/tablet-800x700-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/tablet-900x700-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/tablet-short-800x420-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/threshold-639x700-after-hamburger.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/threshold-639x700-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/threshold-640x700-after-hamburger.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/threshold-640x700-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/comprehensive/wide-1440x900-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/desktop-1024x768.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/desktop-1440x900.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/gap-700x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/gap-760x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/desktop-1180x800.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/desktop-1280x800.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/gap-700x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/gap-767x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/phone-after-files.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/phone-after-runs.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/phone-after-tools.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/phone-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/small-desktop-after-runs.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/small-desktop-initial.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/md-768x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/mobile-route-390x844.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/narrow-500x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/narrow-short-500x420.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/phone-390x844.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/phone-short-390x640.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/small-desktop-1024x768.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/small-desktop-short-1024x480.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/tablet-800x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/tablet-900x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/tablet-short-800x420.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/threshold-639x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/threshold-640x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/wide-1440x900.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/workspace-responsive-probe-results.json
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/implementation-live/workspace-responsive-probe-summary.json
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/mobile-500x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/mobile-639x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/narrow-desktop-800x700.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/probe-responsive.mjs
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/responsive-probe-results.json
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/short-1024x480.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/probes/short-800x420.png
+ create mode 100644 tickets/frontend-responsive-ux-audit/requirements-doc.md
+$ git rev-parse HEAD
+03171740725c223c0c956dfcb0e3bdc6ba6c9b40
+$ git status --short --branch
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 1, behind 4]
+ M tickets/frontend-responsive-ux-audit/evidence/delivery-round2-checkpoint-commit.log

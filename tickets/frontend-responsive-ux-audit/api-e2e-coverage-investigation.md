@@ -9,10 +9,10 @@
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`
 - Implementation Live Visual Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`
-- Current Investigation Round: `2`
-- Trigger: Code-review Round 4 pass for branch `codex/frontend-responsive-ux-audit`; current implementation changed after the historical Round 1 API/E2E sign-off, so API/E2E must re-investigate and re-execute against the current Round 4 worktree state.
+- Current Investigation Round: `3`
+- Trigger: Code-review Round 5 pass for branch `codex/frontend-responsive-ux-audit`; the current implementation-source gate re-confirmed the reviewed responsive source at HEAD `f614a42cb`, so API/E2E must re-investigate and re-execute against this current worktree state.
 - Prior Investigation Reviewed: `Round 1` historical API/E2E investigation in this same file path. Round 1 added/updated durable coverage and was later reviewed, but it is superseded as sign-off by implementation-owned Round 4 visual/source/probe changes.
-- Latest Authoritative Investigation: `Round 2`
+- Latest Authoritative Investigation: `Round 3`
 
 ## Current Requirement And Design Basis
 
@@ -124,3 +124,16 @@ Code review Round 4 is the latest authority. It passed the current implementatio
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: `N/A`
 - Notes: Round 2 investigation supersedes historical Round 1 sign-off. The current durable probe and focused tests are valid for the Round 4 implementation state and will be executed unchanged. No durable coverage edits are planned; successful execution should proceed to delivery.
+
+## Round 3 Current-State Addendum
+
+- Investigation date: `2026-07-15`.
+- Current branch / HEAD: `codex/frontend-responsive-ux-audit` / `f614a42cba6b9c88342388036339e7264e13629a`.
+- Upstream gate: implementation-source code review Round 5 `Pass` at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`.
+- Scope recheck: the active responsive production source under `autobyteus-web` remains unchanged from the reviewed implementation checkpoint; no API/E2E-owned durable test file is modified in the current worktree.
+- Existing durable coverage decision remains `Still Valid` for the responsive browser probe, responsive policy/order tests, adaptive layout/right-tabs/tab-list/right-panel tests, mobile shell, default shell, and left-panel tests. No durable coverage is added, updated, or removed in this round.
+- Required broader validation decision: `Required`. The change is user-surface responsive behavior with route, viewport, drawer/strip, ordering, and browser-rendering risk; repository tests alone are indirect for these boundaries.
+- Planned real surface: isolated local Node backend plus Nuxt browser development server, headless Google Chrome, current durable probe across all 17 approved `/workspace` viewports plus `/mobile`, then focused repository checks, build, and cleanup.
+- Environment constraints recorded before execution: backend requires a data-dir `.env`; the final run explicitly set `AUTOBYTEUS_SERVER_HOST`, `DATABASE_URL`, `APP_ENV=test`, and SQLite paths to keep the server isolated from the user's running desktop backend.
+- No requirement gap, design impact, unclear validity decision, compatibility wrapper, persisted-data transition, or API/E2E local fix was discovered.
+- Authoritative execution evidence is recorded in `api-e2e-execution-coverage-report.md` and `probes/api-e2e/`. Earlier startup attempts with an incorrect health readiness predicate, a post-build run without the backend, and one command launched from the superrepo root are setup-control evidence only; they are not product failures and were followed by a clean final run.

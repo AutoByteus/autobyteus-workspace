@@ -2,234 +2,245 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`
-- Implementation Live Visual Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
-- Current Execution Round: `2`
-- Trigger: Code-review Round 4 pass for branch `codex/frontend-responsive-ux-audit`; current implementation changed after historical Round 1 API/E2E sign-off, so API/E2E re-executed the current Round 4 worktree state.
-- Prior Round Reviewed: `Round 1` historical API/E2E pass in this same file path. No unresolved API/E2E failures were open, but its sign-off was superseded by later implementation-owned visual/source/probe edits.
-- Latest Authoritative Round: `Round 2`
+- Current execution round: `3`
+- Execution date: `2026-07-15`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`
+- Branch / HEAD: `codex/frontend-responsive-ux-audit` / `f614a42cba6b9c88342388036339e7264e13629a`
+- Upstream code-review gate: Round 5 `Pass`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
+- Design review: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
+- Code review: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
+- Prior execution report: Round 2 historical evidence; superseded for current sign-off by this report.
 
 ## Round History
 
-| Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| `1` | Code-review Round 2 pass for the initial responsive refactor | `N/A` | No unresolved product/runtime failures. One stale source-text coverage assertion was updated, and durable browser coverage was added. | Pass | No | Historical pass. Later implementation-owned visual/source/probe updates superseded this sign-off. |
-| `2` | Code-review Round 4 pass after live visual/source/probe updates | No prior unresolved API/E2E failures; historical sign-off rechecked by full rerun. | None. | Pass | Yes | Current authoritative API/E2E result. No repository-resident durable coverage source/test files were changed by API/E2E in this round. |
+| Round | Trigger | Result | Notes |
+| --- | --- | --- | --- |
+| 1 | Initial responsive implementation | Historical `Pass` | Later implementation-owned visual/source/probe changes superseded its sign-off. |
+| 2 | Code-review Round 4 current-state pass | Historical `Pass` | Passed 18 states on the then-current state; current Round 5 re-execution was required. |
+| 3 | Code-review Round 5 current-worktree pass | `Pass` | Final run below passed the full matrix with console-error enforcement and no durable test changes. |
 
 ## Execution Basis
 
-Validation executed the Round 2 coverage plan recorded in the coverage investigation before final execution. The current durable browser probe and focused source/component coverage were treated as valid for the Round 4 implementation state and were executed unchanged. A real backend and Nuxt frontend were started locally with isolated SQLite data, then the comprehensive responsive browser matrix and `/mobile` isolation were exercised through headless Chrome.
+The approved behavior is one adaptive standard `/workspace` route. The validation must prove visible center content, the removed `640-767px` blank band, removal of the legacy narrow `Running / Agent` model, constrained center preservation, short-height recovery, canonical `Work -> Runs -> Files -> Tools` controls, canonical right-tool ordering, wide desktop preservation, and `/mobile` isolation to `MobileRemoteAccessShell`.
+
+The implementation handoff's `Legacy / Compatibility Removal Check` and `Persisted Data Transition Check` were re-read. Both remain clean: no compatibility wrapper or legacy runtime branch is retained, and the UI-only change has no persisted-data transition.
 
 ## Pre-Execution Coverage Investigation
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
-- Completed before final test execution, durable coverage edits, durable coverage removals, or failure rerouting: `Yes`
-- Existing durable coverage inventory reviewed: `Yes`
-- Existing tests treated as authority without current-requirement validity review: `No`
-- Stale or obsolete coverage found: `Yes` — old `WorkspaceDesktopLayout` coverage was already removed before current code review; pre-fix comprehensive probe output and historical Round 1 API/E2E output were classified as baseline/superseded evidence, not current sign-off.
-- New durable coverage needed: `No` for this current Round 2 API/E2E pass. The durable probe and focused tests were already present and code-reviewed in Round 4.
-- Reroute required from investigation: `No`
-- Notes: Investigation Round 2 supersedes the historical Round 1 sign-off and explicitly records that no API/E2E durable source/test edit was planned before this execution.
+The current investigation is Round 3. Existing responsive policy/component/mobile/default-shell/left-panel coverage and the durable browser probe were classified `Still Valid`. No repository-resident durable test file was added, updated, or removed by API/E2E. Broader validation was `Required` because viewport rendering, route isolation, drawer/strip reachability, and responsive user journeys are not proven by mocked component tests alone.
 
 ## Existing Durable Coverage Decision Summary
 
-| Path / Scenario | Validity Decision (`Still Valid`/`Needs Update`/`Stale / Remove`/`Replace`/`Out Of Scope`/`Unclear`) | Action Taken | Evidence |
-| --- | --- | --- | --- |
-| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | Still Valid | Executed unchanged | Browser probe passed against live current frontend/backend; 18 states, 0 failures, 42 interactions. |
-| `autobyteus-web/package.json` script `test:e2e:workspace-responsive` | Still Valid | Executed unchanged | Script invoked the durable probe and produced current canonical API/E2E results. |
-| `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; validates current responsive policy boundaries. |
-| `autobyteus-web/utils/layout/__tests__/workspaceSurfaceOrder.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; validates `Work/Runs/Files/Tools` and canonical right-tool order. |
-| `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; validates adaptive layout, center shell, constrained controls, and 1024 Runs reachability. |
-| `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; validates compact density, drawer mode, stacked file layout, hidden drawer toggle, and tab behavior. |
-| `autobyteus-web/components/tabs/__tests__/TabList.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; compact density forwarding remains valid for Round 4 tab-fit polish. |
-| `autobyteus-web/composables/__tests__/useRightPanel.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; CR-002 clamp behavior remains covered. |
-| `autobyteus-web/composables/__tests__/useRightSideTabs.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; supports right-tool availability ordering. |
-| `autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; browser probe also verified `/mobile` route isolation. |
-| `autobyteus-web/layouts/__tests__/default.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; current shell shrink/immersive gates remain covered. |
-| `autobyteus-web/components/__tests__/AppLeftPanel.spec.ts`, `autobyteus-web/components/__tests__/AppLeftPanel_v2.spec.ts` | Still Valid | Executed | Focused Nuxt suite passed; supports shell-left behavior. |
-| Historical pre-fix comprehensive probe output | Replace | Not used as final validation | Retained only as investigation baseline; current API/E2E evidence is under `tickets/frontend-responsive-ux-audit/probes/api-e2e/`. |
-| Historical Round 1 API/E2E output | Replace | Replaced by current Round 2 execution | Code-review Round 4 explicitly superseded earlier sign-off. |
+- Durable browser probe: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — `Still Valid`; executed unchanged.
+- Package script: `autobyteus-web/package.json` / `test:e2e:workspace-responsive` — `Still Valid`; executed.
+- Focused policy/order/adaptive-layout/right-tabs/tab-list/right-panel/mobile/default-shell/left-panel tests — `Still Valid`; executed unchanged.
+- Removed `WorkspaceDesktopLayout` test/source and historical comprehensive probe — stale by approved design; no API/E2E removal occurred this round.
+- No new requirement, validity ambiguity, or API/E2E-owned local fix was found.
 
 ## Compatibility / Legacy Scope Check
 
-- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
-- Compatibility-only or legacy-retention behavior observed in implementation: `No`
-- Durable coverage added or retained only for compatibility-only behavior: `No`
-- If compatibility-related invalid scope was observed, reroute classification used: `N/A`
-- Upstream recipient notified: `N/A`
-
-Evidence:
-
-- Static active-source search found no live standard `/workspace` imports of `WorkspaceMobileLayout`, `WorkspaceDesktopLayout`, or `useMobilePanels`; old names remain only in generated localization catalogs, historical ticket docs, explicit negative tests, and the browser probe's legacy-regression selectors.
-- Browser probe found no legacy `Running / Agent` standard-route mobile model across `<640px` and `640-767px` viewports.
-- `/mobile` rendered `MobileRemoteAccessShell` and did not render the standard adaptive workspace layout.
+- Standard-route old desktop/mobile split: not present in active source; browser probe found no legacy standard-route `Running / Agent` model.
+- `/mobile`: remained independently owned by `MobileRemoteAccessShell`; browser probe found adaptive workspace absent.
+- Persisted data: `Not Affected`; isolated SQLite startup migrations ran normally, with no feature data migration required.
 
 ## Execution Surfaces / Modes
 
-- Real local backend process: `autobyteus-server-ts/dist/app.js` on `127.0.0.1:13001`.
-- Real Nuxt dev frontend: `autobyteus-web` on `127.0.0.1:13002`, using explicit `BACKEND_*` env pointing to the local backend.
-- Browser E2E: headless Google Chrome through `playwright-core` and repository-resident probe script.
-- Focused Nuxt/Vitest source and component tests.
-- Static/project checks: `git diff --check`, `node --check` for the probe, web-boundary guard, localization guard/audit, and production Nuxt build.
+- Real built Node backend: `autobyteus-server-ts/dist/app.js` on `127.0.0.1:13001`.
+- Real Nuxt dev frontend from this worktree on `127.0.0.1:13002`.
+- Headless Google Chrome via repository `playwright-core` probe.
+- Focused Nuxt/Vitest component and policy tests.
+- Static checks, boundary guards, localization audit, and production Nuxt build.
 
 ## Platform / Runtime Targets
 
-- Local host: macOS arm64 worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`.
-- Browser target: `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` in headless mode.
-- Backend data dir: `/tmp/autobyteus-responsive-ux-audit-api-e2e-round2-server-data`.
-- Frontend base URL: `http://127.0.0.1:13002`.
-- Backend base URL: `http://127.0.0.1:13001`.
+- Host: macOS arm64.
+- Browser executable: `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`.
+- Isolated server data directory: `/tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data`.
+- Isolated SQLite database: `/tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/db/test.db`.
+- Frontend URL: `http://127.0.0.1:13002`.
+- Backend URL: `http://127.0.0.1:13001`.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
-No native installer, updater, restart, upgrade, or migration behavior is in scope for this web responsive shell change. Backend startup applied SQLite migrations against the isolated Round 2 data dir. Backend and frontend sessions were stopped after execution; ports `13001` and `13002` were verified not listening.
+- Backend startup successfully created and applied the 13 SQLite migrations in the isolated test database.
+- The browser journey created and closed temporary terminal sessions through the real backend boundary; no user data or shared desktop backend was used.
+- No installer, updater, packaged Electron lifecycle, or persisted-data migration behavior is in scope for this responsive web-shell change.
+- Final cleanup stopped the frontend/backend and verified ports `13001` and `13002` were closed.
 
 ## Coverage Matrix
 
-| Scenario ID | Requirement / AC | Surface | Result | Evidence |
+| Scenario ID | Requirements / AC | Surface | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `RESP-E2E-001` | AC-014/AC-015 comprehensive matrix | Browser `/workspace` matrix across 17 viewports plus `/mobile` | Pass | `workspace-responsive-probe-summary.json` reports `Pass`, 18 states, 0 failures; generated `2026-06-24T09:14:02.201Z`. |
-| `RESP-E2E-002` | AC-001 / AC-009 blank band | `640x700`, `700x700`, `767x700` | Pass | Center shell visible with widths `640`, `700`, `767`; screenshots `threshold-640x700.png`, `gap-700x700.png`, `gap-767x700.png`. |
-| `RESP-E2E-003` | AC-005 / AC-011 legacy narrow fallback removal | `390x844`, `390x640`, `500x700`, `500x420`, `639x700` | Pass | Primary controls observed as `Work`, `Runs`, `Files`, `Tools`; no legacy `Running / Agent` failure. |
-| `RESP-E2E-004` | AC-003 / AC-004 constrained center preservation | `768x700`, `800x700`, `900x700`, `1024x768` | Pass | Centers measured `718px`, `750px`, `800px`, and `522px`; no `200-247px` failure class. |
-| `RESP-E2E-005` | AC-006 short-height recovery | `500x420`, `800x420`, `1024x480` | Pass | Required primary controls remained visible; centers measured `500px`, `750px`, and `974px`; no full unrecoverable docks. |
-| `RESP-E2E-006` | AC-012 right-tool ordering and Round 4 tab-fit checks | Docked and strip/drawer presentations where visible | Pass | Right controls observed in canonical subsequence; probe reported no docked or drawer tab clipping. |
-| `RESP-E2E-007` | AC-002 wide desktop non-regression | `1280x800`, `1440x900` | Pass | Left panel docked at `320px`, right tools docked at `450px`, center `505px`/`665px`. |
-| `RESP-E2E-008` | AC-007 `/mobile` isolation | `/mobile` at `390x844` | Pass | `MobileRemoteAccessShell` visible; standard adaptive layout absent; screenshot `mobile-route-390x844.png`. |
-| `RESP-E2E-009` | Runs/Files/Tools reachability in narrow/constrained states | Probe interactions across 14 recoverable states | Pass | Probe executed `click Runs`, `click Files`, and `click Tools` 14 times each; no interaction failures. |
-| `RESP-E2E-SHELL-001` | Current app-shell/adaptive source coverage | Focused Nuxt suite | Pass | 11 files / 65 tests passed. |
+| `RESP-E2E-001` | AC-014 / AC-015 | Browser `/workspace` comprehensive family: 17 viewports | Pass | Final probe JSON/summary: `result=Pass`, `17` viewports, `0` failures, generated `2026-07-15T16:49:00.525Z`. |
+| `RESP-E2E-002` | AC-001 / AC-009 | `640x700`, `700x700`, `767x700` blank-band checks | Pass | Visible center widths `640`, `700`, `767`; screenshots retained in `probes/api-e2e/`. |
+| `RESP-E2E-003` | AC-005 / AC-011 | Narrow widths through `639x700`, including `390`, `500`, and short `500x420` | Pass | Visible primary controls were `Work`, `Runs`, `Files`, `Tools`; no legacy model failure. |
+| `RESP-E2E-004` | AC-003 / AC-004 | `768x700`, `800x700`, `900x700`, `1024x768` | Pass | Center widths were `718`, `750`, `800`, and `522` pixels; no historical cramped-center class. |
+| `RESP-E2E-005` | AC-006 | `500x420`, `800x420`, `1024x480` | Pass | Primary controls remained visible; center widths were `500`, `750`, and `974` pixels; no unrecoverable full dock. |
+| `RESP-E2E-006` | AC-012 | Right-tool ordering and docked/strip/drawer tab-fit assertions | Pass | Canonical visible sequences and tab-boundary checks passed; no clipping failures. |
+| `RESP-E2E-007` | AC-002 | `1280x800`, `1440x900` wide desktop | Pass | Left dock `320px`, right dock `450px`, center `505px` / `665px`. |
+| `RESP-E2E-008` | AC-007 | `/mobile` at `390x844` | Pass | `MobileRemoteAccessShell` visible; adaptive standard workspace absent. |
+| `RESP-E2E-009` | AC-011 / AC-012 | Real primary-control interactions across recoverable states | Pass | `42` interactions total: Runs, Files, and Tools controls across the matrix; no interaction failures. |
+| `RESP-E2E-SHELL-001` | AC-008 plus changed-boundary regressions | Focused Nuxt/Vitest suite | Pass | `11` files / `65` tests passed. |
 
 ## Test Scope
 
-In scope:
+In scope: standard `/workspace` shell-level responsive rendering, center sizing, side-surface presentation, primary/right-tool ordering, drawer and strip recovery, right-tab fit, `/mobile` route isolation, current durable responsive tests, guards, localization audit, and build sanity.
 
-- Standard `/workspace` shell-level responsive behavior across the full viewport family.
-- Visible adaptive layout/center shell, primary controls, left/right side-surface presentation, center width, right-tool order, docked/drawer tab fit, and `/mobile` isolation.
-- Focused durable source/component/policy coverage for the changed boundaries.
-- Build/guard/localization sanity checks after the current Round 4 source state.
-
-Out of scope / not exhaustively exercised:
-
-- Deep internal UX of every Terminal, Browser, VNC, Artifacts, and Files panel after opening. The browser probe validates shell reachability/order/drawer tab fit and opens reachable shell controls, but does not fully validate every tool's internal responsive behavior.
-- Packaged Electron/native desktop smoke.
-- Production deployment.
-- Real user run launch/conversation flows; the responsive shell acceptance criteria did not require launching an agent run.
+Not exhaustively exercised: deep internal responsive UX of every Terminal, Browser, VNC, Artifacts, and Files content state; packaged Electron/native rendering; production deployment; and real agent-run/conversation flows. These are bounded residual risks because the approved ticket scope is shell-level reachability and presentation.
 
 ## Execution Setup / Environment
 
-Commands and setup used:
+The final run used the documented repository path from `autobyteus-web/README.md` and `autobyteus-web/AGENTS.md`:
 
-- Backend: `node autobyteus-server-ts/dist/app.js --data-dir /tmp/autobyteus-responsive-ux-audit-api-e2e-round2-server-data --host 127.0.0.1 --port 13001` with explicit SQLite/backend env.
-- Frontend: `pnpm -C autobyteus-web dev --host 127.0.0.1 --port 13002` with `BACKEND_NODE_BASE_URL=http://127.0.0.1:13001` and matching REST/GraphQL/WebSocket endpoints.
-- Browser probe: `pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13002 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e`.
-- Focused tests: `pnpm -C autobyteus-web test:nuxt --run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts utils/layout/__tests__/workspaceSurfaceOrder.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/tabs/__tests__/TabList.spec.ts composables/__tests__/useRightSideTabs.spec.ts composables/__tests__/useRightPanel.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts layouts/__tests__/default.spec.ts components/__tests__/AppLeftPanel.spec.ts components/__tests__/AppLeftPanel_v2.spec.ts`.
+```bash
+# backend, from the worktree root
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:13001 \
+DATABASE_URL=file:/tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/db/test.db \
+APP_ENV=test DB_TYPE=sqlite \
+node autobyteus-server-ts/dist/app.js --data-dir /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data --host 127.0.0.1 --port 13001
+
+# frontend, with BACKEND_* endpoints set to 127.0.0.1:13001
+pnpm -C autobyteus-web dev --host 127.0.0.1 --port 13002
+
+# final browser matrix, with console-error enforcement
+pnpm -C autobyteus-web test:e2e:workspace-responsive -- \
+  --base-url http://127.0.0.1:13002 \
+  --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e \
+  --fail-on-console-error
+```
+
+The backend `.env` under the isolated data directory supplied the documented required values; process-level endpoint/database values were explicit to prevent accidental use of the user's running desktop backend. No special user/run fixtures were needed for shell-level assertions.
 
 ## Tests Implemented Or Updated
 
-No repository-resident durable coverage source/test files were added or updated by API/E2E in this Round 2 execution. The durable browser probe, package script, and focused tests were already present and were reviewed by code-review Round 4 before API/E2E execution.
-
-Historical note: Round 1 API/E2E previously added/updated durable coverage, and that coverage was subsequently re-reviewed before the current Round 4 implementation state. This Round 2 pass executed the current code-reviewed coverage unchanged.
+No repository-resident durable test source was added or updated by API/E2E in Round 3.
 
 ## Tests Removed As Stale Or Obsolete
 
-| Path / Scenario | Obsolete Assertion | Upstream Evidence | Replacement Coverage Or No-Replacement Rationale |
-| --- | --- | --- | --- |
-| `N/A` | API/E2E Round 2 removed no durable tests. | `N/A` | Old `WorkspaceDesktopLayout.spec.ts` was removed before current code review; Round 2 only records that it remains non-current legacy coverage. |
+None in Round 3. Historical stale source/test removals were already part of the reviewed implementation and are recorded in the coverage investigation and code-review report.
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `No`
-- Paths added or updated: `N/A`
-- Paths removed: `N/A`
-- If `Yes`, returned through `code_reviewer` before delivery: `N/A`
-- Post-API/E2E coverage code review artifact: `N/A for Round 2; code-review Round 4 already reviewed the current durable probe/package script before API/E2E execution.`
+- Added: `None`
+- Updated: `None`
+- Removed: `None`
+- Proportional test-code review required after this stage: `No`; no durable test source changed.
 
 ## Other Execution Artifacts
 
-- Browser probe results JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json`
-- Browser probe summary JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`
-- Browser probe command log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-workspace-responsive-probe.log`
-- Screenshot folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/`
-- Focused Nuxt test log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-focused-nuxt-tests.log`
-- `git diff --check` log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-git-diff-check.log`
-- Probe syntax check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-probe-node-check.log`
-- Web-boundary guard log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-guard-web-boundary.log`
-- Localization-boundary guard log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-guard-localization-boundary.log`
-- Localization literal audit log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-audit-localization-literals.log`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-build.log`
-- Cleanup ports log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round2-cleanup-ports.log`
+- Final browser results: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json`
+- Final browser summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`
+- Final browser command log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe-final.log`
+- Initial successful browser log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe.log`
+- Focused Nuxt log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-focused-nuxt-tests.log`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-build.log`
+- Git diff check: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-git-diff-check.log`
+- Probe syntax check: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-probe-node-check.log`
+- Web-boundary guard: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-guard-web-boundary.log`
+- Localization-boundary guard: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-guard-localization-boundary.log`
+- Localization literal audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-audit-localization-literals.log`
+- Cleanup ports: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-cleanup-ports.log`
+- Backend final log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-backend-final.log`
+- Frontend final log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round3-frontend-final.log`
+- Screenshots: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/`
 
 ## Temporary Execution Methods / Scaffolding
 
-- Temporary backend and frontend runtime processes were started and then stopped.
-- Isolated data directory remains at `/tmp/autobyteus-responsive-ux-audit-api-e2e-round2-server-data` for local reproducibility; it is not repository-resident scaffolding.
-- Browser screenshots/JSON are retained as task evidence under `tickets/frontend-responsive-ux-audit/probes/api-e2e/`.
+- Temporary backend/frontend processes and headless browser contexts were created for this run and cleaned up.
+- Isolated backend data remains at `/tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data` as reproducibility evidence; it is outside the repository and contains only test data.
+- No temporary executable probe was added because the repository already contains the durable responsive browser probe.
 
 ## Dependencies Mocked Or Emulated
 
-No application behavior was mocked for the browser probe. The probe used the real local backend and real Nuxt frontend. It did not seed special run state; the standard no-selection workspace state was sufficient for layout assertions. Existing Nuxt/component tests use their normal test doubles and Pinia fixtures.
+The browser probe used the real Nuxt frontend, real local backend, real SQLite startup/migration path, and real Chrome. No application behavior was mocked for the browser journey. The focused Vitest suite uses its normal component fixtures and test doubles; those tests are supporting evidence, not a substitute for the browser boundary.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
-| Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `1` | Historical API/E2E pass superseded by later implementation changes | `N/A` — no unresolved API/E2E failure | Re-executed current Round 4 state and passed | Current browser probe summary `Pass`, 18 states, 0 failures; focused suite 11 files / 65 tests passed. | Round 2 is latest authoritative. |
-| `1` | Historical stale source assertion fixed during Round 1 | Coverage update, already reviewed later | Current `layouts/__tests__/default.spec.ts` passed unchanged in Round 2 | `api-e2e-round2-focused-nuxt-tests.log` | No new coverage edit required. |
+| Prior item | Classification | Resolution |
+| --- | --- | --- |
+| Historical Round 1 / Round 2 sign-off superseded by later implementation/source state | Not an unresolved product failure | Re-investigated and re-executed the current Round 5-reviewed HEAD. |
+| Initial Round 3 setup attempt used a health predicate that treated backend 404s as not-ready | Execution setup control issue | Replaced with port-readiness checks and explicit environment setup. |
+| One post-build probe was started after backend cleanup; one retry used the wrong worktree cwd | Execution setup control issues | Preserved as evidence, not classified as product failures; the final foreground backend/frontend run passed with `--fail-on-console-error`. |
+| Final current-state matrix | No prior failure | Pass: 17 viewports plus `/mobile`, 0 failures, 0 console errors. |
 
 ## Scenarios Checked
 
-- `/workspace` at `390x844`, `390x640`, `500x700`, `500x420`, `639x700`, `640x700`, `700x700`, `767x700`, `768x700`, `800x700`, `800x420`, `900x700`, `1024x768`, `1024x480`, `1180x800`, `1280x800`, and `1440x900`.
-- `/mobile` at `390x844`.
-- Primary control interactions (`Runs`, `Files`, `Tools`) across narrow/constrained/short representative states.
-- Focused Nuxt tests for responsive policy, surface order, adaptive layout, tab density/right tabs, right panel clamp, mobile boundary, default shell, and left-panel tests.
-- Static/project checks and production build.
+- `/workspace`: `390x844`, `390x640`, `500x700`, `500x420`, `639x700`, `640x700`, `700x700`, `767x700`, `768x700`, `800x700`, `800x420`, `900x700`, `1024x768`, `1024x480`, `1180x800`, `1280x800`, `1440x900`.
+- `/mobile`: `390x844`.
+- Primary controls: Runs, Files, Tools interactions in all probe-selected recoverable states.
+- Focused responsive policy/order/adaptive-layout/right-tab/tab-list/right-panel/mobile/default-shell/left-panel tests.
+- Syntax, diff, boundary guards, localization audit, and production Nuxt build.
 
 ## Passed
 
-- `git diff --check` — Passed.
-- `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
-- `pnpm -C autobyteus-web test:nuxt --run ...` focused suite — Passed; 11 files / 65 tests.
-- `pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13002 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e` — Passed; 18 states, 0 failures, 42 interactions; generated at `2026-06-24T09:14:02.201Z`.
-- `pnpm -C autobyteus-web guard:web-boundary` — Passed.
-- `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
-- `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings and the existing `MODULE_TYPELESS_PACKAGE_JSON` warning.
-- `pnpm -C autobyteus-web build` — Passed with existing Rollup chunk-size warnings.
+- Final browser matrix with `--fail-on-console-error`: Pass; `17` `/workspace` viewports plus `/mobile`, `42` interactions, `0` failures, `0` console errors.
+- Focused Nuxt/Vitest: Pass; `11` files / `65` tests.
+- `git diff --check`: Pass.
+- `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`: Pass.
+- `pnpm -C autobyteus-web guard:web-boundary`: Pass.
+- `pnpm -C autobyteus-web guard:localization-boundary`: Pass.
+- `pnpm -C autobyteus-web audit:localization-literals`: Pass with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning only.
+- `pnpm -C autobyteus-web build`: Pass with existing Rollup chunk-size warnings.
+- Backend startup and isolated SQLite migrations: Pass.
+- Cleanup and port verification: Pass.
 
 ## Failed
 
-No unresolved product/runtime failures.
+No product or current-runtime acceptance failure. Setup-control attempts are documented under `Prior Failure Resolution Check` and did not form part of the authoritative final result.
 
 ## Not Tested / Out Of Scope
 
-- Full tool-internal responsive polish for every right-side tool panel.
-- Packaged Electron/native desktop runtime.
+- Deep internal responsive behavior of every tool after opening its content.
+- Packaged Electron/native desktop shell.
 - Production deployment.
-- Real user run launch/conversation flows.
+- Real agent execution/conversation flows.
 
 ## Blocked
 
-No blocked scenario.
+None.
 
 ## Cleanup Performed
 
-- Stopped Nuxt dev server on `127.0.0.1:13002`.
-- Stopped backend server on `127.0.0.1:13001`.
-- Verified no listeners remained on ports `13001` or `13002`.
+- Stopped the foreground Nuxt dev server and isolated Node backend.
+- Closed browser contexts through the probe.
+- Verified no listeners remain on `127.0.0.1:13001` or `127.0.0.1:13002`.
+- No shared desktop application backend or unrelated process was stopped.
+
+## Confidence Scorecard
+
+| Category | Score | Basis and residual uncertainty |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 98% | Every shell-level AC has direct matrix, interaction, component, or build evidence; AC-013 is supported by source/component checks rather than a dedicated semantic header-order browser assertion. |
+| Changed-boundary execution directness | 100% | Current production route/layout/policy is exercised through real Nuxt rendering at every approved viewport plus the real `/mobile` route. |
+| Cross-boundary integration realism and mock gap | 96% | Real frontend, backend, SQLite, proxy endpoint, WebSocket attempts, and browser were used; deep tool-internal workflows remain outside scope. |
+| Environment/configuration/identity/fixture fidelity | 96% | Explicit isolated test data dir, database URL, backend endpoints, real Chrome, and documented startup path; no authenticated or seeded user journey was required by this ticket. |
+| Failure/edge-case/lifecycle/recovery evidence | 93% | Narrow thresholds, short heights, drawer/strip interactions, startup migrations, and cleanup passed; packaged lifecycle and restart/recovery are not material to this web-only change. |
+| User-surface/browser/desktop-shell confidence | 98% | All 17 responsive browser states plus `/mobile` passed with console-error enforcement; packaged Electron shell is explicitly out of scope. |
+| Durable regression coverage quality and relevance | 98% | Current durable probe and 11-file/65-test focused suite passed unchanged; no API/E2E test-code delta requires proportional review. |
+
+Overall validation confidence: **96.1%** (simple average of the seven applicable categories). No applicable category is below 90%, every critical acceptance criterion has direct or requirement-appropriate evidence, and the default clean target is met.
+
+## Broader-Validation Decision
+
+- Decision: `Required` and completed.
+- Why required: this is a responsive user-surface and route-boundary change; browser rendering and interaction evidence materially closes risk that repository tests cannot.
+- Mode: real local backend + real Nuxt dev frontend + headless Chrome using the durable repository probe.
+- Evidence gain: direct proof of all approved viewports, center geometry, side presentation, control order/reachability, tab fit, route isolation, and browser console cleanliness.
+- Residual risk: internal tool-content responsiveness and packaged Electron/native behavior remain untested by approved scope.
 
 ## Classification
 
-- `Local Fix`: `N/A`
-- `Design Impact`: `N/A`
-- `Requirement Gap`: `N/A`
-- `Unclear`: `N/A`
-
-No reroute classification is required. Current API/E2E execution passed and no API/E2E durable coverage source/test files changed after code-review Round 4.
+- Result: `Pass`.
+- `Local Fix`: `N/A`.
+- `Design Impact`: `N/A`.
+- `Requirement Gap`: `N/A`.
+- `Unclear`: `N/A`.
+- Durable API/E2E coverage change: `No`; proportional test-code review is not required.
 
 ## Recommended Recipient
 
@@ -237,13 +248,14 @@ No reroute classification is required. Current API/E2E execution passed and no A
 
 ## Evidence / Notes
 
-- Current authoritative coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
-- Current authoritative execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md`
-- Current browser probe summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`
-- Worktree is still reported behind tracked remote by 4 commits; delivery owns final base-branch refresh/integration per team workflow.
+The current cumulative package is the three mandatory solution artifacts, relevant supplemental responsive evidence, design review, implementation handoff, code review Round 5, this Round 3 coverage investigation, this Round 3 execution report, and the final browser/build/test evidence listed above. Delivery should perform its required base-branch refresh and documentation/integrated-state checks; no API/E2E-owned test review is needed.
 
 ## Latest Authoritative Result
 
-- Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Round 2 is the latest authoritative API/E2E result for the current Round 4 implementation state. Route to `delivery_engineer` because API/E2E made no repository-resident durable coverage source/test changes after code-review Round 4.
+- Final confidence: `96.1%`
+- Browser matrix: `Pass`, 17 approved `/workspace` viewports plus `/mobile`, 42 interactions, 0 failures, 0 console errors.
+- Repository support: focused 11-file/65-test suite, guards, localization audit, diff check, syntax check, and Nuxt build all passed.
+- Broader validation: `Required` and completed.
+- Cleanup: complete; ports 13001/13002 closed.
+- Recommended next stage: `delivery_engineer`.

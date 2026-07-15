@@ -1,0 +1,34 @@
+$ rg workspace/doc anchors
+autobyteus-web/ARCHITECTURE.md:54:*   **[Workspace Layout and Responsive Shell](./docs/workspace_layout.md)**: Ownership and policy for the adaptive standard `/workspace` shell and its `/mobile` boundary.
+autobyteus-web/README.md:19:Create a `.env` file in the root directory with the following variables when the frontend should talk to a separately running backend. In local development, Nuxt's Vite proxy uses `BACKEND_NODE_BASE_URL` for `/graphql` and `/rest`, and the WebSocket endpoints default from the same backend base URL.
+autobyteus-web/README.md:23:BACKEND_NODE_BASE_URL=http://localhost:8000
+autobyteus-web/README.md:382:pnpm test:e2e:workspace-responsive -- --base-url http://127.0.0.1:3000 --output-dir ../tickets/<ticket-name>/probes/api-e2e
+autobyteus-web/README.md:400:- `pnpm test:e2e:workspace-responsive`: Run the standard workspace responsive browser probe against a running frontend/backend target
+autobyteus-web/docs/workspace_layout.md:1:# Workspace Layout and Responsive Shell
+autobyteus-web/docs/workspace_layout.md:63:pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:3000 --output-dir ../tickets/<ticket-name>/probes/api-e2e
+autobyteus-web/docs/agent_integration_minimal_bridge.md:189:BACKEND_NODE_BASE_URL=http://localhost:8000
+autobyteus-web/docs/agent_integration_minimal_bridge.md:194:In local development, Nuxt serves GraphQL and REST through the Vite proxy and derives those proxy targets from `BACKEND_NODE_BASE_URL`. Use explicit `BACKEND_*` endpoint overrides only when a specific deployed or test backend needs fixed URLs.
+$ git diff --stat origin/personal...HEAD -- autobyteus-web/README.md autobyteus-web/ARCHITECTURE.md autobyteus-web/docs autobyteus-web/package.json
+ autobyteus-web/ARCHITECTURE.md                     |  1 +
+ autobyteus-web/README.md                           | 32 ++++++++---
+ .../docs/agent_integration_minimal_bridge.md       | 11 ++--
+ autobyteus-web/docs/remote_access.md               |  2 +-
+ autobyteus-web/docs/terminal.md                    |  2 +-
+ autobyteus-web/docs/workspace_layout.md            | 66 ++++++++++++++++++++++
+ autobyteus-web/package.json                        |  3 +-
+ 7 files changed, 103 insertions(+), 14 deletions(-)
+$ git diff origin/personal...HEAD -- autobyteus-web/package.json | sed -n 1,80p
+diff --git a/autobyteus-web/package.json b/autobyteus-web/package.json
+index 3a62ff15..96bdf9ea 100644
+--- a/autobyteus-web/package.json
++++ b/autobyteus-web/package.json
+@@ -42,7 +42,8 @@
+     "build:electron:windows": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --windows",
+     "build:electron:mac": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac",
+     "build:electron:linux:x64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=x64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --x64",
+-    "build:electron:linux:arm64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64"
++    "build:electron:linux:arm64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64",
++    "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs"
+   },
+   "dependencies": {
+     "@fortawesome/fontawesome-svg-core": "^6.7.2",
