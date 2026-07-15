@@ -2,149 +2,120 @@
 
 ## Status
 
-`Design-ready` — approved through the user's explicit task kickoff after iterative UI review.
+`Refined` — revised and approved by the user on 2026-07-15 after rejection of the collapsed-header implementation.
 
 ## Goal / Problem Statement
 
-Add one consistent collapsible Settings-sidebar behavior without making Settings navigation hidden by default. Most Settings pages keep the current labeled sidebar open. Token Statistics automatically collapses it to gain the complete content width. When collapsed, no icon rail remains; the existing left-sidebar panel icon moves into a lightweight page header and can reopen the same sidebar.
+Preserve the original `personal`-branch Settings page appearance and behavior while making the existing vertical separator between Settings navigation and page content horizontally draggable at desktop widths. Users manually drag the separator left to give data-dense pages such as Token Statistics more width, or right to restore the menu. The change must add no category header, icon rail, automatic section-specific collapse, or visible control inside the content area.
 
-## Investigation Findings
+## User Decision And Superseded Direction
 
-- `autobyteus-web/pages/settings.vue` owns the current 16rem persistent sidebar, active section, Server Settings modes, and content layout.
-- The user clarified that the menu should normally remain open. The intended technique is not an always-hidden off-canvas drawer.
-- The existing panel icon beside `Agents` in `AppLeftPanel.vue` is the required visual/interaction reference.
-- When the Settings sidebar is open, the same icon can occupy the far-right side of the existing `Back to Workspace` top row and collapse the sidebar. It remains a separate button from the back action.
-- When collapsed, the sidebar should have zero reserved width and no compact icon strip. A shell-owned lightweight header exposes the same icon plus active section context.
-- Selecting Token Statistics is the primary contextual auto-collapse trigger. Other sections retain/recover the normally open sidebar.
-- This behavior belongs to the Settings shell; individual managers retain their current internal headers/content.
+- The user reviewed the implemented 1440×900 result and explicitly rejected the separate top row containing the panel icon and `Token Statistics` label because it consumed vertical space and pushed content downward.
+- The user then selected the simpler split-pane direction: keep the original Settings UI visually unchanged and make its existing separator draggable.
+- The earlier normally-open/contextually-auto-collapsed header design is no longer approved and must be removed rather than patched.
+- Token Statistics receives no special automatic layout rule. Resizing is manual and applies to the overall Settings shell.
 
 ## Supplemental Solution Artifacts
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Authoritative Relationship |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/ui-ux-spec.md` | UI/UX specification for normally-open/contextually-collapsible Settings navigation | `REQ-001`–`REQ-012` | `AC-001`–`AC-014` | `Refined`; approved on 2026-07-15 | Clarifies observable interaction; this requirements doc remains authoritative |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/proposed-settings-drawer-closed.png`, `proposed-settings-drawer-open.png`, and HTML source | Earlier off-canvas visual exploration | N/A after clarification | N/A after clarification | Superseded | Preserved as discussion evidence; not target behavior |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/ui-ux-spec.md` | UI/UX specification for the visually unchanged, manually resizable Settings split pane | `REQ-001`–`REQ-012` | `AC-001`–`AC-015` | `Refined`; revised direction approved on 2026-07-15 | Clarifies observable interaction; this requirements doc remains authoritative |
+| `proposed-settings-drawer-closed.png`, `proposed-settings-drawer-open.png`, `proposed-settings-drawer.html`, and the collapsed-header browser screenshots/evidence in this ticket | Superseded visual and implementation evidence | N/A for target behavior | N/A for target behavior | Rejected/superseded | Historical evidence only; must not drive implementation |
 
-## Design Health Assessment (Mandatory)
+## Design Health Assessment
 
 - Change posture: `Behavior Change`
-- Initial design issue signal: `No` broad issue; `Yes` local missing adaptive-layout behavior.
-- Root cause classification: `File Placement Or Responsibility Drift`
-- Refactor posture: `Likely Needed` within the Settings shell to centralize destinations and sidebar state.
-- Evidence basis: `settings.vue` already owns the correct governing policy boundary, but it also carries the complete navigation presentation and direct destination mutations. The prior always-open behavior is not an established defect against an earlier invariant; the design pressure comes from adding contextual layout policy without further overloading or duplicating that inline responsibility. Statistics/table/store/API owners remain correct.
-- Requirement or scope impact: Settings shell/navigation, shared collapsed header, localization, tests, and docs; section internals remain unchanged.
-
-## Recommendations
-
-Use a **normally-open, contextually collapsible sidebar**:
-
-- Non-statistics Settings pages: current 16rem labeled sidebar remains open.
-- Open sidebar: existing left-sidebar panel icon appears at the far right of the `Back to Workspace` row, matching the familiar right-aligned placement beside Agents; clicking collapses it.
-- Token Statistics entry: sidebar collapses automatically.
-- Collapsed state: zero-width sidebar, no rail, full-width content, and the same icon in a small shell header.
-- Clicking the header icon: restores the persistent sidebar; no overlay, backdrop, `×`, or chevrons.
-- Selecting a non-statistics destination leaves/restores the normally open sidebar.
-
-## Scope Classification
-
-`Medium`
-
-The change is frontend-shell-local but includes navigation state, contextual transitions, responsive behavior, focus, localization, and browser layout coverage.
+- Root cause classification: `No Design Issue Found`
+- Refactor posture: `Bounded local replacement required`; no navigation-model refactor is needed for the revised behavior.
+- Evidence: the original Settings page has the correct route, navigation, manager, and responsive ownership. Its fixed 256px desktop allocation was a valid prior product choice; the new request adds manual width allocation rather than repairing a violated invariant.
+- Current implementation impact: commit `530587a707a48567d9bcf0a04736c091453f51fb` implements the now-rejected header/auto-collapse direction and must be cleanly removed before the splitter behavior is added.
+- Residual design note: the original inline navigation is long, but the revised behavior neither duplicates nor changes its destination policy. Refactoring it is intentionally out of scope.
 
 ## In-Scope Use Cases
 
-- `UC-001` — Use ordinary Settings pages with the current labeled sidebar open.
-- `UC-002` — Manually collapse/reopen the sidebar using the existing panel icon.
-- `UC-003` — Enter Token Statistics and receive automatic full-width layout.
-- `UC-004` — Reopen the sidebar temporarily from Token Statistics and navigate elsewhere.
-- `UC-005` — Preserve active section/mode/data state during toggle.
-- `UC-006` — Use controls by keyboard/assistive technology.
-- `UC-007` — Preserve current narrow responsive behavior.
+- `UC-001` — Open Settings and see the original 256px desktop menu and original content position.
+- `UC-002` — Drag the existing separator left to continuously increase content width, including to zero menu width.
+- `UC-003` — Drag the separator right to restore any width up to the original 256px.
+- `UC-004` — Resize while viewing Token Statistics without resetting or refetching it.
+- `UC-005` — Navigate between Settings sections while retaining the current width for that mounted Settings-page session.
+- `UC-006` — Resize the separator with keyboard and assistive technology.
+- `UC-007` — Retain the original stacked narrow layout below `md`.
 
-## Out of Scope
+## Out Of Scope
 
-- Always-hidden or overlay/off-canvas menu.
-- Permanent compact icon rail.
-- Generic `×`, `[»]`, or `[«]` controls.
-- Persisting sidebar state across app restarts or sharing homepage `useLeftPanel` state.
-- Internal Settings-page or backend/API redesign.
+- Automatic collapse when selecting/direct-linking Token Statistics or any other section.
+- A top collapsed-state header, active-category label, panel icon, narrow icon menu rail, overlay, backdrop, `×`, or chevrons.
+- Widening the navigation beyond its original 256px.
+- Persisting width in local storage, user settings, route state, or backend data.
+- Changing navigation destinations, labels, icons, Back behavior, Server Settings modes, managers, table columns, APIs, or statistics queries.
+- Generalizing the splitter for other application panes in this task.
 
 ## Functional Requirements
 
-- `REQ-001` — The Settings navigation shall remain open by default for non-Token-Statistics sections, preserving the current labeled 16rem sidebar layout.
-- `REQ-002` — The open sidebar shall use the exact existing left-sidebar panel toggle icon/visual treatment from beside `Agents`, placed as a separate far-right button in the existing `Back to Workspace` row, to collapse it. No additional `Settings` title row is required.
-- `REQ-003` — Selecting or directly opening Token Statistics at the desktop breakpoint shall automatically collapse the sidebar.
-- `REQ-004` — The collapsed state shall reserve zero sidebar width and shall not render a compact icon rail.
-- `REQ-005` — When collapsed, the Settings shell shall render a lightweight header with the same panel icon and localized active-section label; managers shall not each implement their own toggle.
-- `REQ-006` — Activating the collapsed-header icon shall restore the normal persistent sidebar in layout flow; no overlay/backdrop or alternate close icon shall be used.
-- `REQ-007` — Selecting a non-statistics section shall render that section with the normally open sidebar; Server Settings mode behavior shall remain intact.
-- `REQ-008` — Toggling shall not reset/refetch/mutate active content solely because sidebar state changed and shall preserve relevant scroll/interaction state where the DOM remains mounted.
-- `REQ-009` — Open/close controls shall expose localized names, expanded/controlled state, visible focus, and deliberate focus transfer between the corresponding toggle locations.
-- `REQ-010` — Below the desktop breakpoint, retain the current stacked Settings navigation behavior unless implementation evidence requires a separate bounded responsive adjustment; do not introduce a narrow vertical rail.
-- `REQ-011` — One authoritative destination/selection model shall own labels, icons, active state, availability, Back to Workspace, and Server Settings submodes.
-- `REQ-012` — Existing route normalization, embedded-server defaults, section data/forms/statistics, localization semantics, and backend/API contracts shall remain unchanged.
+- `REQ-001` — On every new Settings-page mount at `md` and wider, the navigation shall have its original 256px width and all original navigation/content visual structure shall remain unchanged at rest.
+- `REQ-002` — The existing one-pixel vertical boundary between navigation and content shall become the visual track for a horizontal resize separator with a larger transparent interaction hit area and `col-resize` cursor. The line and hit target shall overlay a zero-width layout anchor so the original 256px navigation/content boundary remains at exactly 256px rather than shifting to 257px.
+- `REQ-003` — Pointer dragging shall resize navigation continuously from `0px` through `256px`; dragging left increases content width and dragging right restores navigation width.
+- `REQ-004` — At desktop `0px`, navigation content shall be clipped/hidden, marked `aria-hidden="true"`, and made `inert` so its Back/destination controls are absent from sequential focus and the accessibility tree. The mounted navigation state remains intact, and the one-pixel separator plus its interaction hit area remains operable at the far left. No icon rail or header shall appear.
+- `REQ-005` — Resizing shall be wholly manual. Section selection, route initialization, Server Settings fallback, and Token Statistics direct links shall not modify navigation width.
+- `REQ-006` — The current width shall remain stable when selecting other Settings sections during the same mounted page session and shall reset to `256px` only after the Settings page is remounted.
+- `REQ-007` — Resizing shall change only shell geometry; the active manager shall stay mounted and shall not reset, refetch, mutate data, or lose its relevant scroll/interaction state solely due to resizing.
+- `REQ-008` — No top row/header, page/category label, panel toggle icon, compact navigation rail, overlay, or extra vertical content offset shall be introduced.
+- `REQ-009` — The separator shall be keyboard-focusable with `role="separator"`, `aria-orientation="vertical"`, localized accessible name, and `aria-valuemin="0"`, `aria-valuemax="256"`, and current `aria-valuenow`. At every nonzero desktop width, the partially clipped original navigation remains interactive; only exactly `0px` invokes the unavailable/inert contract.
+- `REQ-010` — Keyboard behavior shall use Left/Right Arrow in 16px steps, Home for `0px`, and End for `256px`, with a visible focus indication.
+- `REQ-011` — Below `md`, the separator shall not be presented and the original full-width stacked navigation capped at `38dvh` shall remain fully visible, focusable, and exposed to assistive technology even when the retained in-session desktop width is `0px`; desktop-only `inert`/`aria-hidden` shall be removed. If the desktop separator owns focus while crossing narrow, focus moves to Back to Workspace rather than `BODY`. When returning to desktop at retained width `0px`, focus moves from any navigation descendant that is becoming inert to the separator; otherwise breakpoint changes do not steal focus.
+- `REQ-012` — Browser and Electron shall share the same renderer behavior; existing route normalization, embedded-server defaults, localization, Back action, Server Settings modes, managers, forms, statistics, and API contracts shall remain unchanged.
 
 ## Acceptance Criteria
 
-- `AC-001` — API Keys and every non-statistics section initially show the current labeled sidebar at desktop widths.
-- `AC-002` — The open sidebar shows the exact existing panel icon as a separate right-aligned control in the `Back to Workspace` row, renders no redundant `Settings` label, and adds no `×`/chevron control.
-- `AC-003` — Activating that icon removes the entire sidebar from layout, displays no compact rail, expands content to full width, and exposes the same icon in the collapsed page header.
-- `AC-004` — Activating the header icon restores the persistent 16rem sidebar and removes the collapsed-only header treatment as designed.
-- `AC-005` — Selecting/direct-linking Token Statistics automatically produces the collapsed/full-width state.
-- `AC-006` — At 1440×900/default font with representative task data, collapsed Token Statistics shows all columns through Created Time without horizontal table scrolling.
-- `AC-007` — Reopening the sidebar on Token Statistics does not refetch/reset grouping, dates, sorting, expanded rows, details, or loaded values solely because of the toggle.
-- `AC-008` — Selecting another destination from the reopened sidebar leaves that destination with the sidebar open.
-- `AC-009` — Back to Workspace and Server Settings Basics/Advanced/Migrations retain current behavior.
-- `AC-010` — Toggle buttons use `Open Settings menu`/`Close Settings menu`, `aria-expanded`, appropriate control relationship, visible focus, and correct focus movement.
-- `AC-011` — Loading/error/empty/form states remain usable during sidebar toggling.
-- `AC-012` — At 390×844, current stacked navigation/content containment remains usable and no vertical icon rail appears.
-- `AC-013` — Browser and Electron share the same behavior with no persisted state or platform fork.
-- `AC-014` — Durable tests/browser evidence verify default-open sections, contextual statistics collapse, manual toggle/focus, section navigation, narrow behavior, and unchanged data/API behavior.
+- `AC-001` — At 1440×900 on a fresh Settings mount, the menu measures 256px, the navigation right edge and content left edge both resolve to x=256 relative to the Settings shell, and the page is visually equivalent to the original `personal` branch: no one-pixel horizontal shift, new header, label, icon, rail, or vertical displacement.
+- `AC-002` — The resting separator is an overlaid one-pixel gray line occupying x=255..256 at the default width; its zero-width flex anchor does not consume layout space. The 8px hit target is centered over boundaries at least 4px from the viewport edge and clamps its left edge to x=0 for widths below 4px. Hover/focus/drag may reveal a subtle interaction highlight without adding a persistent visible control.
+- `AC-003` — Dragging left updates menu width continuously and correspondingly expands content without whole-page horizontal overflow.
+- `AC-004` — The menu can reach 0px; at desktop no menu content is visible or reachable by Tab/assistive technology, no replacement header/rail appears, content begins at x=0, and the separator target remains operable at x=0..8 without increasing document scroll width.
+- `AC-005` — Dragging right from 0px restores the menu, up to exactly 256px, with its original contents and active styling intact.
+- `AC-006` — Selecting/direct-linking Token Statistics initially leaves the menu at 256px; only a user resize changes it.
+- `AC-007` — After manually resizing while on Token Statistics, all columns through Created Time are visible without horizontal table scrolling at 1440×900 when sufficient width is reclaimed.
+- `AC-008` — Resizing does not add statistics requests or reset grouping, dates, sorting, expanded rows, detail state, loaded values, or relevant scroll state.
+- `AC-009` — The chosen width remains unchanged while navigating among API Keys, Token Statistics, and other sections in the same Settings mount.
+- `AC-010` — Pointer-up, pointer-cancel, unmount, and interrupted-drag paths remove listeners/capture and restore body cursor/user-selection styles.
+- `AC-011` — The keyboard and ARIA contract in `REQ-009`–`REQ-010` is observable, current width is announced through `aria-valuenow`, and Tab skips all navigation descendants at desktop 0px while retaining the separator as the recovery control.
+- `AC-012` — At 390×844 the original stacked navigation/content containment is unchanged, the separator is absent from the accessibility tree, any retained 0px desktop state does not leave navigation inert/hidden, and no vertical rail appears.
+- `AC-013` — Desktop-to-narrow with separator focus moves focus to Back, not `BODY`; narrow-to-desktop at retained 0px moves focus from a navigation descendant to the separator before/when that navigation becomes inert; other viewport changes do not steal focus.
+- `AC-014` — Back to Workspace, Server Settings Basics/Advanced/Migrations, legacy route normalization, embedded defaults, loading/error/empty/form states, Browser, and Electron retain current behavior.
+- `AC-015` — Durable tests and browser evidence cover default coordinate equivalence, overlay line/hit-target coordinates and z-order hitability, pointer bounds, zero-width Tab/AT removal and recovery, keyboard/ARIA, section-session continuity, data/request preservation, narrow restoration, breakpoint focus recovery, and unchanged document width.
 
 ## Constraints / Dependencies
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`
-- Branch: `codex/token-statistics-full-width` from refreshed `origin/personal` `9fda25eac8fc70df97599758760b47f25620cec8`.
-- Reuse/extract the exact Agents left-sidebar panel-toggle UI; do not invent a similar substitute.
-- Support English and Simplified Chinese.
+- Branch: `codex/token-statistics-full-width`; current rejected implementation commit `530587a707a48567d9bcf0a04736c091453f51fb`; base/final target `origin/personal`/`personal` at bootstrap commit `9fda25eac8fc70df97599758760b47f25620cec8`.
+- Desktop breakpoint remains Tailwind `md` (`768px`).
+- Desktop width range is exactly `0..256px`; no persistence.
+- English and Simplified Chinese accessible labels are required.
 
 ## Persisted Data Outcome
 
 - Required outcome: `Not Affected`
-- Sidebar state is ephemeral; no migration or persisted preference.
-- All Settings/statistics data must remain unchanged.
-
-## Assumptions
-
-- “Normally open” applies to ordinary desktop Settings pages.
-- Token Statistics is the current explicit automatic-collapse section.
-- The reopened menu participates in layout like the current sidebar rather than overlaying content.
-
-## Risks / Open Questions
-
-- Opening the sidebar temporarily narrows Token Statistics; this is intentional and reversible.
-- Implementation must preserve the approved desktop-only focus transfer and stable controlled-region contract; the design spec defines the exact child APIs and visibility behavior. No requirement question remains open.
+- Width is ephemeral component state and is not written to browser storage or application data.
+- All Settings/statistics data remains unchanged.
 
 ## Requirement-To-Use-Case Coverage
 
 | Requirements | Use Cases |
 | --- | --- |
-| `REQ-001`, `REQ-002` | `UC-001`, `UC-002` |
-| `REQ-003`–`REQ-007` | `UC-002`–`UC-004` |
-| `REQ-008`, `REQ-012` | `UC-005` |
-| `REQ-009` | `UC-006` |
-| `REQ-010` | `UC-007` |
-| `REQ-011` | `UC-001`–`UC-007` |
+| `REQ-001`–`REQ-006` | `UC-001`–`UC-005` |
+| `REQ-007`, `REQ-012` | `UC-004`, `UC-005` |
+| `REQ-008` | `UC-001`–`UC-005` |
+| `REQ-009`, `REQ-010` | `UC-006` |
+| `REQ-011` | `UC-007` |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
 | Acceptance Criteria | Scenario Intent |
 | --- | --- |
-| `AC-001`–`AC-004` | Normal open state and exact icon-driven manual toggle. |
-| `AC-005`–`AC-008` | Statistics contextual collapse and navigation away. |
-| `AC-009`–`AC-011` | Existing behavior/accessibility remains correct. |
-| `AC-012`–`AC-014` | Responsive/platform/durable evidence. |
+| `AC-001`–`AC-006` | Original appearance plus manual pointer resizing and recovery. |
+| `AC-007`–`AC-010` | Statistics width benefit, state continuity, and drag cleanup. |
+| `AC-011`–`AC-013` | Keyboard, ARIA, narrow layout, and breakpoint focus. |
+| `AC-014`, `AC-015` | Existing behavior and durable/live regression evidence. |
 
 ## Approval Status
 
-Approved on 2026-07-15. The user confirmed the final UI direction and explicitly requested task kickoff: sidebar normally open; Token Statistics auto-collapses it; no compact rail; the exact existing Agents left-sidebar panel icon toggles both states; the open-state icon is a separate right-aligned control in the `Back to Workspace` row; no redundant `Settings` label, `×`, or chevrons.
+Approved on 2026-07-15. The user explicitly directed that the original `personal`-branch Settings UI remain the same and only the separator become draggable so they can manually slide the menu left for more content space. This approval supersedes the earlier collapsed-header/automatic Token Statistics design.

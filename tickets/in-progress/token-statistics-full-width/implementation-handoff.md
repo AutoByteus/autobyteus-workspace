@@ -5,51 +5,54 @@
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/requirements.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/design-spec.md`
-- Supplemental solution artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/ui-ux-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/design-review-report.md`
+- Supplemental solution artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/ui-ux-spec.md`
+- Authoritative design review report (round 4): `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/design-review-report.md`
+- Historical rejected implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/implementation-handoff-rejected-collapsed-header.md`
+- Historical rejected implementation review/coverage reports: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/api-e2e-coverage-investigation.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/api-e2e-execution-coverage-report.md`
+- Historical rejected browser evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/execution-evidence/`
 
 ## What Changed
 
-- Replaced the inline Settings menu with a typed, presentational `SettingsNavigation` backed by one authoritative destination/mode/context resolver.
-- Added page-owned ephemeral collapse policy: ordinary sections are open, Token Statistics auto-collapses, manual toggles preserve the active manager instance, and non-statistics selections restore the open state.
-- Added the desktop-only collapsed Settings header, stable disclosure relationship, localized labels, visibility-aware typed focus handles, and deliberate focus transfer.
-- Preserved the existing below-`md` stacked navigation entirely through responsive CSS; no viewport JavaScript or global/persisted left-panel state was introduced.
-- Extracted the exact Agents left-panel SVG geometry into `LeftPanelToggleIcon.vue` and reused it in `AppLeftPanel` and both Settings toggle locations.
-- Added focused model, component, page-policy, focus, responsive-class, manager-mount, route-normalization, Server Settings, localization, and shared-icon regression coverage.
-- Added a narrow Nuxt source-scan exclusion for `components/settings/settingsNavigation.ts`; explicit imports continue to build while preventing its exact design-mandated filename from colliding with the `SettingsNavigation.vue` auto-component name.
+- Cleanly removed the rejected collapsed-header/automatic Token Statistics implementation and restored the original inline Settings navigation, AppLeftPanel SVG, localization surface, Nuxt configuration, and base tests.
+- Added one Settings-specific `useSettingsNavigationResize` composable as the sole ephemeral width/input/focus authority.
+- Added a zero-layout-width flex anchor with an overlaid one-pixel separator and exact eight-pixel transparent target geometry. Default geometry remains the original 256px boundary without a 257px shift.
+- Added manual pointer resizing from 0 through 256px, exact body cursor/user-selection preservation, pointer-up/cancel/blur/unmount cleanup, and clamping.
+- Added separator keyboard/ARIA behavior: Left/Right by 16px, Home/End bounds, reactive value, vertical-separator semantics, and localized accessible label.
+- Added desktop-zero navigation `inert` plus `aria-hidden=true` while keeping the original navigation mounted. Partial widths remain interactive; below `md`, CSS restores the original full-width stack and the attributes are removed.
+- Added exact bidirectional breakpoint focus recovery: separator-to-Back when crossing narrow and navigation-to-separator when returning desktop at retained zero.
+- Kept route selection, Server Settings behavior, manager mounting, Token Statistics behavior/data, tables, stores, APIs, persistence, and content vertical position unchanged.
 
 ## Key Files Or Areas
 
 - `autobyteus-web/pages/settings.vue`
-- `autobyteus-web/components/settings/settingsNavigation.ts`
-- `autobyteus-web/components/settings/SettingsNavigation.vue`
-- `autobyteus-web/components/settings/SettingsCollapsedHeader.vue`
-- `autobyteus-web/components/layout/LeftPanelToggleIcon.vue`
-- `autobyteus-web/components/AppLeftPanel.vue`
-- `autobyteus-web/localization/messages/{en,zh-CN}/settings.ts`
-- `autobyteus-web/nuxt.config.ts`
-- Focused tests under `autobyteus-web/pages/__tests__`, `autobyteus-web/components/__tests__`, and `autobyteus-web/components/settings/**/__tests__`
+- `autobyteus-web/composables/useSettingsNavigationResize.ts`
+- `autobyteus-web/composables/__tests__/useSettingsNavigationResize.spec.ts`
+- `autobyteus-web/pages/__tests__/settings.spec.ts`
+- `autobyteus-web/localization/messages/en/settings.ts`
+- `autobyteus-web/localization/messages/zh-CN/settings.ts`
+- Removed/restored rejected files under `components/settings`, `components/layout`, `components/AppLeftPanel.vue`, and `nuxt.config.ts`
 
 ## Important Assumptions
 
-- `md` remains the authoritative desktop breakpoint, matching the reviewed design and existing Settings layout.
-- Manual reopening on Token Statistics intentionally narrows the content until the user collapses the sidebar again.
-- The existing route is initialized on mount; route normalization behavior is preserved and route initialization does not transfer focus.
+- Tailwind `md` remains 768px, matching the media query used only for accessibility/focus synchronization.
+- The width is page-local session state. A Settings page remount intentionally resets it to 256px.
+- The user-approved partial-width behavior clips the original navigation horizontally without disabling it until width reaches exactly zero.
 
 ## Known Risks
 
-- Actual 1440×900 table fit through Created Time and 390×844 responsive containment still require downstream browser/live validation.
-- Browser rendering must confirm the Agents-style icon treatment, precise Back-row alignment, real CSS visibility behavior, and zero-width geometry.
-- Repository-wide `nuxi typecheck` is not currently green because of numerous unrelated baseline diagnostics across build scripts, legacy tests, components, stores, and missing generated/types dependencies. The run did not report diagnostics in the changed implementation files.
+- Real browser validation must prove exact default/partial/zero coordinates, target hitability/z-order, no document-width expansion, and original vertical placement.
+- Browser focus behavior during actual viewport transitions and native `inert`/accessibility-tree behavior require downstream live validation.
+- Pointer release outside the rendered surface and interrupted-drag cleanup require browser execution despite unit coverage of pointer-up, cancel, blur, and unmount.
+- Repository-wide `nuxi typecheck` remains red on unrelated baseline diagnostics. The latest run reported no diagnostics in changed implementation or test files.
 
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Behavior Change`
-- Reviewed root-cause classification: `File Placement Or Responsibility Drift`
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
+- Reviewed root-cause classification: `No Design Issue Found`
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` — clean removal of the rejected implementation plus a focused resize composable; inline-navigation extraction remains deferred.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: Settings mutable policy remains page-owned; immutable identities/context moved to one resolver; navigation/header are presentational; the shared icon owns geometry only; managers and statistics/data boundaries were unchanged.
+- Evidence / notes: The restored page remains the shell/route/manager owner. The composable owns only resize, media interaction state, refs, focus recovery, and lifecycle cleanup. No destination model or manager/data dependency remains.
 
 ## Legacy / Compatibility Removal Check
 
@@ -59,41 +62,45 @@
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: The inline Settings menu, direct template assignments, and inline AppLeftPanel SVG were removed. The large `settings.vue` change delta was the reviewed split/refactor signal; the resulting page is 162 effective non-empty lines and every new source file remains below 220 effective non-empty lines.
+- Notes: All collapsed-header components, navigation model/tests, shared panel icon, scan exception, rejected localization, auto-collapse policy, and rejected focus tests were removed. `settings.vue` is 397 effective non-empty lines; the new composable is 202. The large page diff is the explicit reviewed restore/reset, not new responsibility expansion.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Not Affected`
-- Design-spec decision reference: `design-spec.md` → `Persisted Data / State Transition Decision`
+- Design-spec decision reference: `design-spec.md` → `Persisted Data / Migration`
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence or discard/rebuild result, when applicable: Sidebar state is a page-local in-memory ref only; no storage, schema, store, API, GraphQL, or statistics-data code changed.
+- Direct-use evidence or discard/rebuild result, when applicable: Width is one composable-local ref initialized to 256px. No storage, store, route, schema, API, GraphQL, or statistics-data path is read or written.
 - Migration implementation and focused checks, only when `Migration Required`: N/A
 - Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
 
-- Installed the locked pnpm workspace dependencies with `pnpm install --frozen-lockfile`; the lockfile was unchanged.
-- Generated Nuxt types with `pnpm exec nuxt prepare` before local checks.
-- Implementation commit: recorded on `codex/token-statistics-full-width` (see branch HEAD).
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`
+- Branch: `codex/token-statistics-full-width`
+- Base: `9fda25eac8fc70df97599758760b47f25620cec8`
+- Rejected implementation starting commit: `530587a707a48567d9bcf0a04736c091453f51fb`
+- No dependency or lockfile changes were required.
 
 ## Local Implementation Checks Run
 
-- `pnpm test:nuxt pages/__tests__/settings.spec.ts components/settings/__tests__/settingsNavigation.spec.ts components/settings/__tests__/settingsNavigationModel.spec.ts components/settings/__tests__/SettingsCollapsedHeader.spec.ts components/__tests__/AppLeftPanel.spec.ts components/settings/__tests__/TokenUsageStatistics.spec.ts components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts --run` — passed, 8 files / 44 tests.
+- `pnpm test:nuxt composables/__tests__/useSettingsNavigationResize.spec.ts pages/__tests__/settings.spec.ts components/__tests__/AppLeftPanel.spec.ts components/settings/__tests__/TokenUsageStatistics.spec.ts components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts stores/__tests__/tokenUsageStatistics.spec.ts --run` — passed, 7 files / 40 tests.
 - `pnpm guard:localization-boundary` — passed.
 - `pnpm audit:localization-literals` — passed with zero unresolved findings.
 - `pnpm build` — passed; Nuxt client, server, and static prerender completed.
-- `pnpm exec nuxi typecheck` — repository-wide check failed on existing unrelated diagnostics; no changed implementation file was reported.
+- `pnpm exec nuxi typecheck` — repository-wide check failed on existing unrelated diagnostics; filtered output contained no changed implementation/test paths.
 - `git diff --check` — passed.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- At 1440×900, open API Keys by default, select Token Statistics, confirm the sidebar reserves zero width, and verify all task columns through Created Time are visible without horizontal table scrolling.
-- Reopen/collapse Token Statistics while grouping, dates, sorting, expanded rows, details, loading, empty, and error states are active; verify no toggle-only refetch or reset.
-- Verify desktop focus transfer for manual collapse, reopen, and Token Statistics selection; verify direct routes and viewport changes do not steal focus.
-- At 390×844, confirm the stacked navigation stays visible even for Token Statistics, the collapsed header remains hidden, focus stays on the selected navigation item, and no icon rail appears.
-- Verify `server-status`, `about`, invalid-section fallback, all Server Settings modes, embedded-server override, and Back to Workspace behavior.
-- Compare Settings and Agents toggle SVG geometry, size, hover, focus ring, and right-aligned placement in browser and Electron-equivalent rendering.
+- At 1440×900, compare the fresh page against base: navigation right, zero-width anchor, and content left all at x=256; line x=255..256; target x=252..260; no extra content top offset.
+- Pointer-drag to partial widths, zero, and back to 256; at zero assert nav/content/anchor x=0, line x=0..1, target x=0..8, target hit at x=4 restores width, and document width does not grow.
+- At desktop zero, verify Back/destination controls are excluded from Tab and the accessibility snapshot while the separator remains focusable; verify any nonzero width restores interaction.
+- Verify Arrow keys/Home/End, reactive ARIA value, visible focus, pointer-cancel/window-loss cleanup, and exact body-style restoration.
+- At 390×844 with retained desktop zero, verify original stacked navigation is full-width, focusable, and exposed; the separator is absent from layout/accessibility.
+- Re-run the prior viewport failure intent using the new identities: separator focus -> narrow Back; narrow navigation focus -> desktop separator at retained zero; unrelated focus stays unchanged.
+- Verify direct Token Statistics starts at 256, manual width survives section changes, remount resets to 256, and resize does not refetch/remount/reset statistics or change scroll/data state.
+- Reconfirm Back, `about`, `server-status`, invalid fallback, embedded server override, and Server Settings modes.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required. This implementation handoff contains implementation-scoped local checks only; API/E2E ownership, broader executable coverage investigation, realistic browser/live validation, and final confidence scoring remain downstream.
+Required. Prior API/E2E investigation and execution evidence describe the rejected collapsed-header implementation and remain historical only. The manual separator needs fresh coverage investigation, durable-test validity decisions, realistic browser execution, Electron-equivalent checks, cleanup, and new confidence scoring.

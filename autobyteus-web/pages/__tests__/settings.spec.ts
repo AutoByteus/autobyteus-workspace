@@ -6,9 +6,7 @@ import SettingsPage from '../settings.vue'
 const translationMap: Record<string, string> = {
   'settings.page.backAriaLabel': 'Back to workspace',
   'settings.page.backLabel': 'Back to Workspace',
-  'settings.page.navigationAriaLabel': 'Settings navigation',
-  'settings.page.openMenuLabel': 'Open Settings menu',
-  'settings.page.closeMenuLabel': 'Close Settings menu',
+  'settings.page.resizeNavigationLabel': 'Resize Settings menu',
   'settings.page.empty.title': 'Settings',
   'settings.page.empty.description': 'Select a category to configure settings.',
   'settings.page.sections.apiKeys': 'API Keys',
@@ -61,15 +59,8 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => windowNodeContextStoreMock,
 }))
 
-vi.mock('~/composables/useLocalization', () => ({
-  useLocalization: () => ({
-    t: (key: string) => translationMap[key] ?? key,
-  }),
-}))
-
-const mountSettings = (attachTo?: HTMLElement) =>
+const mountSettings = () =>
   mount(SettingsPage, {
-    ...(attachTo ? { attachTo } : {}),
     global: {
       stubs: {
         ProviderAPIKeyManager: { template: '<div data-testid="section-api-keys" />' },
@@ -96,6 +87,13 @@ const mountSettings = (attachTo?: HTMLElement) =>
 
 describe('settings page', () => {
   beforeEach(() => {
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      matches: true,
+      media: '(min-width: 768px)',
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })))
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1024 })
     routeMock.query = {}
     serverStoreMock.status = 'running'
     windowNodeContextStoreMock.isEmbeddedWindow = true
@@ -123,6 +121,7 @@ describe('settings page', () => {
   })
 
   it('gives navigation and content usable full-width regions at narrow viewports while preserving the desktop row', () => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
     const wrapper = mountSettings()
     const layout = wrapper.get('[data-testid="settings-page-layout"]')
     const navigation = wrapper.get('[data-testid="settings-page-navigation"]')
@@ -130,130 +129,97 @@ describe('settings page', () => {
 
     expect(layout.classes()).toEqual(expect.arrayContaining(['flex-col', 'min-w-0', 'md:flex-row']))
     expect(navigation.classes()).toEqual(expect.arrayContaining([
+      'settings-page-navigation-resizable',
       'w-full',
       'max-h-[38dvh]',
       'overflow-y-auto',
       'md:max-h-none',
-      'md:w-64',
     ]))
     expect(content.classes()).toEqual(expect.arrayContaining(['min-h-0', 'min-w-0', 'flex-1']))
-    expect(navigation.classes()).not.toContain('md:hidden')
-    expect(wrapper.get('[data-testid="settings-navigation-collapse"]').classes()).toContain('hidden')
-    expect(wrapper.get('[data-testid="settings-navigation-collapse"]').classes()).toContain('md:inline-flex')
-  })
-
-  it('collapses direct Token Statistics routes without stealing focus', async () => {
-    const outsideButton = document.createElement('button')
-    document.body.append(outsideButton)
-    outsideButton.focus()
-    routeMock.query = { section: 'token-usage' }
-
-    const wrapper = mountSettings()
-    await flushPromises()
-
-    expect(wrapper.get('[data-testid="section-token-usage"]').exists()).toBe(true)
-    expect(wrapper.get('[data-testid="settings-page-navigation"]').classes()).toContain('md:hidden')
-    expect(wrapper.get('[data-testid="settings-collapsed-header"]').classes()).toEqual(
-      expect.arrayContaining(['hidden', 'md:flex']),
+    expect(wrapper.get('[data-testid="settings-navigation-separator-anchor"]').classes()).toEqual(
+      expect.arrayContaining(['hidden', 'w-0', 'md:block']),
     )
-    expect(wrapper.get('[data-testid="settings-page-content"]').classes()).toContain('md:pl-4')
-    expect(document.activeElement).toBe(outsideButton)
-
-    outsideButton.remove()
   })
 
-  it('moves focus between visible desktop toggles and preserves the active manager instance', async () => {
-    routeMock.query = { section: 'token-usage' }
-    const host = document.createElement('div')
-    document.body.append(host)
-    const wrapper = mountSettings(host)
-    await flushPromises()
-    const managerElement = wrapper.get('[data-testid="section-token-usage"]').element
-    const expandButton = wrapper.get('[data-testid="settings-navigation-expand"]').element as HTMLButtonElement
-    const originalGetClientRects = HTMLElement.prototype.getClientRects
-    HTMLElement.prototype.getClientRects = () => [{ width: 18, height: 18 }] as unknown as DOMRectList
+  it('renders the original Settings layout with an overlaid semantic separator at 256px', async () => {
+    const wrapper = mountSettings()
+    await nextTick()
+    const layout = wrapper.get('[data-testid="settings-page-layout"]')
+    const navigation = wrapper.get('[data-testid="settings-page-navigation"]')
+    const anchor = wrapper.get('[data-testid="settings-navigation-separator-anchor"]')
+    const line = wrapper.get('[data-testid="settings-navigation-separator-line"]')
+    const separator = wrapper.get('[data-testid="settings-navigation-resize-handle"]')
 
-    try {
-      await wrapper.get('[data-testid="settings-navigation-expand"]').trigger('click')
-      await flushPromises()
-
-      const collapseButton = wrapper.get('[data-testid="settings-navigation-collapse"]').element as HTMLButtonElement
-      expect(document.activeElement).toBe(collapseButton)
-      expect(wrapper.get('[data-testid="section-token-usage"]').element).toBe(managerElement)
-
-      await wrapper.get('[data-testid="settings-navigation-collapse"]').trigger('click')
-      await flushPromises()
-      const nextExpandButton = wrapper.get('[data-testid="settings-navigation-expand"]').element as HTMLButtonElement
-
-      expect(document.activeElement).toBe(nextExpandButton)
-      expect(wrapper.get('[data-testid="section-token-usage"]').element).toBe(managerElement)
-    } finally {
-      HTMLElement.prototype.getClientRects = originalGetClientRects
-      wrapper.unmount()
-      host.remove()
-    }
+    expect(layout.attributes('style')).toContain('--settings-navigation-width: 256px')
+    expect(navigation.classes()).not.toContain('md:border-r')
+    expect(navigation.attributes('inert')).toBeUndefined()
+    expect(navigation.attributes('aria-hidden')).toBeUndefined()
+    expect(anchor.classes()).toEqual(expect.arrayContaining(['relative', 'w-0', 'overflow-visible', 'z-20']))
+    expect(line.attributes('style')).toContain('left: -1px')
+    expect(separator.attributes('style')).toContain('left: -4px')
+    expect(separator.attributes('role')).toBe('separator')
+    expect(separator.attributes('aria-orientation')).toBe('vertical')
+    expect(separator.attributes('aria-label')).toBe('Resize Settings menu')
+    expect(separator.attributes('aria-valuemin')).toBe('0')
+    expect(separator.attributes('aria-valuemax')).toBe('256')
+    expect(separator.attributes('aria-valuenow')).toBe('256')
+    expect(wrapper.find('[data-testid="settings-collapsed-header"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="left-panel-toggle-icon"]').exists()).toBe(false)
   })
 
-  it('keeps focus on Token Statistics navigation when the desktop header is CSS-hidden', async () => {
-    const host = document.createElement('div')
-    document.body.append(host)
-    const wrapper = mountSettings(host)
-    const tokenButton = wrapper.get('[data-testid="settings-nav-token-usage"]')
-    const buttonElement = tokenButton.element as HTMLButtonElement
-    buttonElement.focus()
-
-    const originalGetClientRects = HTMLElement.prototype.getClientRects
-    HTMLElement.prototype.getClientRects = function getClientRects() {
-      return this.closest('[data-testid="settings-collapsed-header"]')
-        ? [] as unknown as DOMRectList
-        : [{ width: 18, height: 18 }] as unknown as DOMRectList
-    }
-
-    try {
-      await tokenButton.trigger('click')
-      await flushPromises()
-      expect(document.activeElement).toBe(buttonElement)
-    } finally {
-      HTMLElement.prototype.getClientRects = originalGetClientRects
-      wrapper.unmount()
-      host.remove()
-    }
-  })
-
-  it('moves desktop selection focus to the Token Statistics collapsed-header toggle', async () => {
-    const host = document.createElement('div')
-    document.body.append(host)
-    const wrapper = mountSettings(host)
-    const originalGetClientRects = HTMLElement.prototype.getClientRects
-    HTMLElement.prototype.getClientRects = () => [{ width: 18, height: 18 }] as unknown as DOMRectList
-
-    try {
-      await wrapper.get('[data-testid="settings-nav-token-usage"]').trigger('click')
-      await flushPromises()
-
-      const expandButton = wrapper.get('[data-testid="settings-navigation-expand"]').element
-      expect(document.activeElement).toBe(expandButton)
-      expect(wrapper.get('[data-testid="section-token-usage"]').exists()).toBe(true)
-    } finally {
-      HTMLElement.prototype.getClientRects = originalGetClientRects
-      wrapper.unmount()
-      host.remove()
-    }
-  })
-
-  it('reopens the sidebar when navigating away from reopened Token Statistics', async () => {
+  it('keeps direct Token Statistics at the default manual width', async () => {
     routeMock.query = { section: 'token-usage' }
     const wrapper = mountSettings()
     await flushPromises()
 
-    await wrapper.get('[data-testid="settings-navigation-expand"]').trigger('click')
-    await flushPromises()
-    await wrapper.get('[data-testid="settings-nav-display"]').trigger('click')
-    await flushPromises()
+    expect(wrapper.find('[data-testid="section-token-usage"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="settings-page-layout"]').attributes('style')).toContain(
+      '--settings-navigation-width: 256px',
+    )
+    expect(wrapper.get('[data-testid="settings-navigation-resize-handle"]').attributes('aria-valuenow')).toBe('256')
+  })
 
-    expect(wrapper.get('[data-testid="section-display"]').exists()).toBe(true)
-    expect(wrapper.get('[data-testid="settings-page-navigation"]').classes()).not.toContain('md:hidden')
-    expect(wrapper.find('[data-testid="settings-collapsed-header"]').exists()).toBe(false)
+  it('supports zero, partial, and restored widths without remounting the active manager', async () => {
+    const wrapper = mountSettings()
+    await nextTick()
+    const managerElement = wrapper.get('[data-testid="section-api-keys"]').element
+    const separator = wrapper.get('[data-testid="settings-navigation-resize-handle"]')
+    const navigation = wrapper.get('[data-testid="settings-page-navigation"]')
+
+    await separator.trigger('keydown', { key: 'Home' })
+    expect(separator.attributes('aria-valuenow')).toBe('0')
+    expect(separator.attributes('style')).toContain('left: 0px')
+    expect(wrapper.get('[data-testid="settings-navigation-separator-line"]').attributes('style')).toContain('left: 0px')
+    expect(navigation.attributes('inert')).toBe('')
+    expect(navigation.attributes('aria-hidden')).toBe('true')
+    expect(wrapper.get('[data-testid="section-api-keys"]').element).toBe(managerElement)
+
+    await separator.trigger('keydown', { key: 'ArrowRight' })
+    expect(separator.attributes('aria-valuenow')).toBe('16')
+    expect(separator.attributes('style')).toContain('left: -4px')
+    expect(navigation.attributes('inert')).toBeUndefined()
+    expect(navigation.attributes('aria-hidden')).toBeUndefined()
+    expect(wrapper.get('[data-testid="section-api-keys"]').element).toBe(managerElement)
+
+    await separator.trigger('keydown', { key: 'End' })
+    expect(separator.attributes('aria-valuenow')).toBe('256')
+    expect(wrapper.get('[data-testid="section-api-keys"]').element).toBe(managerElement)
+  })
+
+  it('retains the manual width across section selection and resets it on remount', async () => {
+    const wrapper = mountSettings()
+    const separator = wrapper.get('[data-testid="settings-navigation-resize-handle"]')
+    await separator.trigger('keydown', { key: 'Home' })
+    await separator.trigger('keydown', { key: 'ArrowRight' })
+    await wrapper.findAll('button').find((button) => button.text() === 'Token Statistics')!.trigger('click')
+
+    expect(wrapper.find('[data-testid="section-token-usage"]').exists()).toBe(true)
+    expect(separator.attributes('aria-valuenow')).toBe('16')
+    wrapper.unmount()
+
+    const remounted = mountSettings()
+    await nextTick()
+    expect(remounted.get('[data-testid="settings-navigation-resize-handle"]').attributes('aria-valuenow')).toBe('256')
   })
 
 
@@ -275,8 +241,6 @@ describe('settings page', () => {
     const setupState = (wrapper.vm as any).$?.setupState
 
     expect(setupState.activeSection).toBe('server-settings')
-    expect(setupState.serverSettingsMode).toBe('advanced')
-    expect(setupState.isSettingsNavigationCollapsed).toBe(false)
   })
 
   it('defaults to server-settings when embedded server is not running', async () => {
@@ -314,7 +278,6 @@ describe('settings page', () => {
     await nextTick()
 
     expect(wrapper.get('[data-testid="section-server-settings"]').text()).toContain('mode=migrations')
-    expect(wrapper.get('[data-testid="settings-nav-server-settings-migrations"]').attributes('aria-current')).toBe('page')
   })
 
   it('supports messaging section query and activates messaging section', async () => {

@@ -1,130 +1,123 @@
-# Contextually Collapsible Settings Sidebar UI/UX Specification
+# Resizable Settings Separator UI/UX Specification
 
 ## Status
 
-`Refined` — approved through the user's explicit task kickoff after iterative text and visual UI review.
+`Refined` — revised direction approved by the user on 2026-07-15. The prior collapsed-header UI is rejected and superseded.
+
+## Scope And Relationship
+
+- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/in-progress/token-statistics-full-width/ui-ux-spec.md`
+- Requirements: `REQ-001`–`REQ-012`
+- Acceptance criteria: `AC-001`–`AC-015`
+- This supplement defines observable interaction. `requirements.md` remains authoritative.
 
 ## UX Goal
 
-Keep Settings navigation visible for normal use, but allow the sidebar to disappear completely when content width matters. Token Statistics automatically enters the collapsed state; the exact existing Agents left-sidebar icon provides reversible control.
+Make the Settings/content boundary adjustable without redesigning Settings. At rest, users should see the original page. When more horizontal space is needed, they drag the existing vertical separator left. Nothing appears above the content and content keeps its original vertical position.
 
-## Related Requirements And Acceptance Criteria
+## Approved Behavior
 
-- Requirements: `REQ-001`–`REQ-012`
-- Acceptance criteria: `AC-001`–`AC-014`
+1. Fresh desktop Settings page starts with the original 256px menu.
+2. The existing one-pixel separator is draggable horizontally; its larger hit area is transparent at rest.
+3. Drag left to shrink the menu continuously, including to 0px. Drag right to restore it, up to 256px.
+4. At desktop 0px, only the separator remains at the far left; the mounted navigation is visually clipped and unavailable to keyboard/assistive technology. There is no header, label, icon, menu rail, or overlay.
+5. Resizing is manual for every Settings page. Token Statistics does not auto-collapse.
+6. Width remains while switching sections in the same mounted Settings page, but is not persisted across remounts/restarts.
+7. Below `md`, retain the original stacked Settings UI and hide the desktop separator.
 
-## Recommended Behavior
+## Visual Structure
 
-1. **Normal Settings state:** existing 16rem labeled sidebar remains visible.
-2. **Open-state toggle:** exact panel icon from beside Agents appears as a separate button at the far right of the existing `Back to Workspace` row and collapses the sidebar. Do not add a redundant `Settings` title row.
-3. **Token Statistics:** selection/direct entry auto-collapses the sidebar.
-4. **Collapsed state:** no sidebar/rail width remains; lightweight shell header shows the same icon and active page label.
-5. **Reopen:** header icon restores the persistent sidebar in normal layout flow.
-6. **Navigate away:** selecting a non-statistics page leaves/restores the sidebar open.
-7. No overlay, dimming, backdrop, `×`, or chevrons.
-
-## User-Journey Inventory
-
-| Journey ID | Starting State | Action | Completion State | Related IDs |
-| --- | --- | --- | --- | --- |
-| `UXJ-001` | API Keys/ordinary page | View page | Sidebar open normally | `REQ-001`, `AC-001` |
-| `UXJ-002` | Sidebar open | Activate Agents-style icon | Sidebar gone; full-width header/content | `REQ-002`, `REQ-004`, `REQ-005`, `AC-002`–`AC-004` |
-| `UXJ-003` | Ordinary page | Select Token Statistics | Sidebar auto-collapses | `REQ-003`, `AC-005`, `AC-006` |
-| `UXJ-004` | Statistics collapsed | Activate header icon | Sidebar reopens; statistics state preserved | `REQ-006`, `REQ-008`, `AC-007` |
-| `UXJ-005` | Statistics sidebar open | Select another section | New section loads with sidebar open | `REQ-007`, `AC-008` |
-| `UXJ-006` | Either toggle state | Keyboard operation | Focus/state remain predictable | `REQ-009`, `AC-010` |
-
-## Markdown Wireframes / Visual Structure
-
-### Normal state — sidebar open
+### Fresh desktop state — visually unchanged
 
 ```text
 ┌──────────────────────────┬──────────────────────────────────────────────────┐
-│ ← Back to Workspace  [◫] │                                                  │
+│ ← Back to Workspace      │                                                  │
 │                          │                                                  │
-│ API Keys                 │ API Key Management                               │
-│ Token Statistics         │ ...                                              │
-│ Messaging                │                                                  │
-│ Display                  │                                                  │
-│ ...                      │                                                  │
-└──────────────────────────┴──────────────────────────────────────────────────┘
-```
-
-### Token Statistics — automatically collapsed
-
-```text
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ [◫]  Token Statistics                                                       │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ [Task ▾] [Start] to [End]                               [Fetch Statistics] │
-│ Task / Run | Runtime | Models | Input | Output | Costs | Created Time      │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Statistics after reopening the sidebar
-
-```text
-┌──────────────────────────┬──────────────────────────────────────────────────┐
-│ ← Back to Workspace  [◫] │                                                  │
-│                          │                                                  │
-│ API Keys                 │ [Task ▾] [Start] to [End] [Fetch Statistics]   │
-│ Token Statistics ●       │ Task / Run | Runtime | ...                       │
+│ API Keys                 │ Current manager/content at original top position │
+│ Token Statistics         │                                                  │
 │ Messaging                │                                                  │
 │ ...                      │                                                  │
 └──────────────────────────┴──────────────────────────────────────────────────┘
+                           ↑ existing one-pixel boundary; draggable hit area
 ```
 
-`[◫]` represents the exact existing panel icon beside Agents.
+### Partially resized
 
-## Interaction And State Transitions
+```text
+┌──────────────┬──────────────────────────────────────────────────────────────┐
+│ Settings nav │ More horizontal content space                               │
+│ clips with   │ Statistics/table stays at the same vertical position         │
+│ pane width   │                                                              │
+└──────────────┴──────────────────────────────────────────────────────────────┘
+               ↔ drag
+```
 
-| State | Trigger | Result | Content Side Effect |
+### Fully left / zero-width menu
+
+```text
+┌┬────────────────────────────────────────────────────────────────────────────┐
+││ Content begins immediately beside the surviving separator                  │
+││ No category header, title, icon, rail, backdrop, or vertical offset        │
+└┴─────────────────────────────────────────────────────────────────────────────┘
+ ↑ one-pixel separator with transparent draggable hit area
+```
+
+## Interaction States
+
+| State | Action | Result | Side Effect |
 | --- | --- | --- | --- |
-| Ordinary section, open | Collapse icon | Sidebar removed; collapsed header appears | None |
-| Open menu | Select Token Statistics | Statistics loads; sidebar removed | Existing statistics mount/fetch only |
-| Collapsed | Header icon | Persistent sidebar restored | No refetch solely from toggle |
-| Statistics, open | Select non-statistics section | Section loads; sidebar remains open | Existing section lifecycle |
-| Collapsed | Direct non-statistics section normalization | Sidebar open for target section | Existing route behavior |
+| Fresh desktop, 256px | Pointer-drag left | Width follows pointer, clamped at 0px | Content expands; manager stays mounted |
+| Partial/0px | Pointer-drag right | Width follows pointer, clamped at 256px | Original menu reappears progressively; above 0px its visible/clipped controls are interactive again |
+| Any width | Select another section | New section renders at same chosen width | No automatic width change |
+| Token Statistics | Direct route or selection | Menu remains at current/default width | No automatic collapse |
+| Separator focused | Left/Right Arrow | Width changes by 16px | Value stays within 0..256 |
+| Separator focused | Home/End | Width becomes 0/256px | Same as pointer resize |
+| Desktop 0px | Press Tab | Hidden navigation descendants are skipped; separator remains the operable recovery control | No invisible menu focus |
+| Desktop 0px -> narrow | Cross below `md` | Original stacked menu is fully restored to view, Tab order, and accessibility tree | Desktop width 0 remains in memory only |
+| Narrow at retained 0px -> desktop | Focus is inside navigation when crossing `md` | Navigation becomes desktop-inert and focus moves to separator | Never falls to `BODY` |
+| Page remount | Open Settings again | Width returns to 256px | No stored preference |
 
-## Responsive Behavior
+## Visual Treatment
 
-- Desktop `md+`: use open/collapsed behavior above.
-- Below `md`: preserve current stacked navigation; do not create a vertical icon rail.
-- Collapsed Token Statistics uses full width and contained table overflow.
-- Reopened sidebar participates in layout and may temporarily narrow the table; closing restores full width.
+- Resting line: the same one-pixel gray separator/border as the original page, overlaid inside the navigation's original rightmost pixel at nonzero widths.
+- Layout accounting: navigation and content still meet at x=256 initially. A zero-width relative flex anchor sits at that coordinate; its absolute line/target consume no flex width.
+- Hit target: exactly 8px wide. At widths of at least 4px it spans 4px on each side of the boundary. For widths below 4px its left edge clamps to viewport x=0 (including x=0..8 at zero) so it never extends negative. It must not reserve visible layout pixels.
+- Stacking: the zero-width anchor and hit target sit above adjacent navigation/content (`z-index` contract), while only the target receives pointer events; the decorative line does not intercept events.
+- Pointer cursor: `col-resize`.
+- Hover/drag/focus: subtle blue or darker-gray line highlight is allowed as transient feedback.
+- Focus: visible focus treatment on the separator without adding a toolbar, button, or category row.
+- Navigation content uses `overflow: hidden` horizontally while narrower than its original width; incomplete text is intentionally clipped as the user confirmed, and no responsive icon conversion occurs.
 
 ## Accessibility
 
-- Same exact SVG/button visual language as Agents.
-- Open-state button: localized `Close Settings menu`.
-- Collapsed-state button: localized `Open Settings menu`.
-- Both toggle locations control the same stable `settings-navigation-region`: the open-state button exposes `aria-expanded="true"`, and the collapsed-state button exposes `aria-expanded="false"`.
-- The open-state toggle is desktop-only; the collapsed header is likewise desktop-only. Both retain a visible focus ring.
-- On desktop manual collapse, focus moves to the corresponding header toggle; on reopen, focus moves to the sidebar toggle.
-- Selecting Token Statistics from the desktop menu moves focus to the newly visible header toggle so focus is not left in hidden navigation. Below `md`, the header is CSS-hidden, no focus transfer occurs, and focus stays on the still-visible stacked navigation item.
-- Direct routes, embedded-server redirects, and viewport changes do not steal focus.
-- Collapsed header context comes from the same typed navigation resolver as menu labels/icons. Server Settings renders both parent and active mode context (for example, `Server Settings — Advanced`); it is never supplied a separate free-form label.
-- Icon is never replaced by `×`, `[»]`, or `[«]`.
+- Desktop separator: `role="separator"`, `aria-orientation="vertical"`, localized `aria-label="Resize Settings menu"`, `aria-valuemin="0"`, `aria-valuemax="256"`, and reactive `aria-valuenow`.
+- Separator is keyboard-focusable only at desktop widths.
+- ArrowLeft/ArrowRight adjust by 16px; Home/End choose 0/256px.
+- At desktop 0px, navigation has `inert` and `aria-hidden="true"`; its still-mounted Back and destination buttons cannot receive Tab focus and are absent from the accessibility tree. At any width above 0 they remain interactive even when text is partially clipped.
+- Pointer capture/listeners and body cursor/selection changes are cleaned up on pointer-up, pointer-cancel, and unmount.
+- When crossing below `md` while the separator owns focus, move focus to the still-visible `Back to Workspace` button. This directly avoids the previously observed `BUTTON -> BODY` failure.
+- Below `md`, remove the desktop-only inert/hidden state regardless of retained width so the full stacked navigation is usable.
+- When crossing from narrow to desktop with retained 0px while focus is in navigation, move focus to the separator as navigation becomes unavailable. Other narrow-to-desktop transitions and resizing when another available control owns focus do not steal focus.
 
-## Non-Happy Paths
+## Responsive Behavior
 
-- Loading/error/empty/form states do not disable toggle.
-- Toggling alone does not reset or refetch section state.
-- Direct `?section=token-usage` resolves collapsed at desktop.
-- Embedded server-not-running redirect to Server Settings resolves with sidebar open.
+- `md+`: manual resizable split pane, range 0..256px.
+- Below `md`: original full-width stacked navigation capped at `38dvh`; no separator in layout or accessibility tree.
+- CSS controls stacked-versus-split presentation. Reactive media-query state may be used only to apply/remove the desktop-zero interaction/accessibility state and to recover focus, not to drive visual layout or width policy.
+- Desktop width state may remain in memory while temporarily narrow; returning to desktop restores that in-session width without moving focus.
 
-## Data And API Dependencies
+## Loading, Error, Empty, Forms, And Data
 
-None. Sidebar state is ephemeral Settings-shell UI state.
+All current manager states remain untouched. Resizing is shell geometry only and does not trigger manager remount, fetch, reset, submit, or data mutation.
 
-## Superseded Visual Exploration
+## Explicitly Rejected / Forbidden UI
 
-The previously rendered off-canvas mockups are preserved as discussion evidence but no longer represent the target behavior:
-
-- `proposed-settings-drawer-closed.png`
-- `proposed-settings-drawer-open.png`
-- `proposed-settings-drawer.html`
+- The generated top row with panel icon and `Token Statistics` or any active category name.
+- Automatic Token Statistics collapse.
+- Agents-style panel icon controls in Settings.
+- Compact icon rail, `×`, chevrons, overlay drawer, backdrop, or dimming.
+- Any extra top padding/margin/header that pushes content downward.
 
 ## Approval Status
 
-Approved on 2026-07-15. The earlier always-hidden/off-canvas visual exploration is explicitly superseded. The approved target is the normally-open, zero-width-when-collapsed sidebar behavior specified above.
+Approved on 2026-07-15 after the user reviewed and rejected the implemented collapsed-header screenshot. The final instruction is: keep the original `personal`-branch Settings UI the same and make only the separator draggable so the menu can be manually slid left.

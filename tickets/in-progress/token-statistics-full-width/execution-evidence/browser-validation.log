@@ -1,0 +1,455 @@
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loading
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod loading
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod loading
+GRAPHQL_REQUEST GetGeminiSetupConfig loading
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels error
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod error
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod error
+GRAPHQL_REQUEST GetGeminiSetupConfig error
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels empty
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod empty
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod empty
+GRAPHQL_REQUEST GetGeminiSetupConfig empty
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetTokenUsageTaskStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetUsageStatisticsInPeriod loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetServerSettings loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetServerSettings loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetServerSettings loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetServerSettings loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+GRAPHQL_REQUEST GetAvailableLLMProvidersWithModels loaded
+GRAPHQL_REQUEST GetGeminiSetupConfig loaded
+{
+  "result": "Fail",
+  "generatedAt": "2026-07-15T08:02:09.847Z",
+  "results": [
+    {
+      "id": "BROWSER-001",
+      "result": "Pass",
+      "evidence": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "navDisplay": "none",
+        "navRects": 0,
+        "content": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 900,
+          "top": 0,
+          "right": 1440,
+          "bottom": 900,
+          "left": 0
+        },
+        "layout": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 900,
+          "top": 0,
+          "right": 1440,
+          "bottom": 900,
+          "left": 0
+        },
+        "headerDisplay": "flex",
+        "wrapperClientWidth": 1342,
+        "wrapperScrollWidth": 1342,
+        "tableWidth": 1342,
+        "headers": [
+          "Task / Run",
+          "Runtime",
+          "Model(s)",
+          "Input",
+          "Output",
+          "Input Cost",
+          "Output Cost",
+          "Total Cost",
+          "Created Time"
+        ],
+        "documentScrollWidth": 1440,
+        "svg": {
+          "width": "18",
+          "height": "18",
+          "viewBox": "0 0 24 24",
+          "rect": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"></rect>",
+          "path": "M9 3v18",
+          "bbox": {
+            "x": 28,
+            "y": 24,
+            "width": 18,
+            "height": 18,
+            "top": 24,
+            "right": 46,
+            "bottom": 42,
+            "left": 28
+          }
+        },
+        "focusedTestId": null
+      }
+    },
+    {
+      "id": "BROWSER-002",
+      "result": "Pass",
+      "evidence": {
+        "openMetrics": {
+          "nav": {
+            "x": 0,
+            "y": 0,
+            "width": 256,
+            "height": 900,
+            "top": 0,
+            "right": 256,
+            "bottom": 900,
+            "left": 0
+          },
+          "close": {
+            "x": 205,
+            "y": 21,
+            "width": 34,
+            "height": 34,
+            "top": 21,
+            "right": 239,
+            "bottom": 55,
+            "left": 205
+          },
+          "display": "block",
+          "closeAria": "true",
+          "controls": "settings-navigation-region",
+          "headerExists": false
+        },
+        "focusAfterCollapse": "settings-navigation-expand"
+      }
+    },
+    {
+      "id": "BROWSER-003",
+      "result": "Pass",
+      "evidence": {
+        "before": {
+          "requests": 2,
+          "localStorage": "{\"autobyteus.node_registry.v1\":\"{\\\"version\\\":1,\\\"nodes\\\":[{\\\"id\\\":\\\"embedded-local\\\",\\\"name\\\":\\\"Embedded Node\\\",\\\"baseUrl\\\":\\\"http://localhost:8000\\\",\\\"nodeType\\\":\\\"embedded\\\",\\\"capabilities\\\":{\\\"terminal\\\":true,\\\"fileExplorerStreaming\\\":true},\\\"capabilityProbeState\\\":\\\"ready\\\",\\\"isSystem\\\":true,\\\"createdAt\\\":\\\"2026-07-15T08:02:03.761Z\\\",\\\"updatedAt\\\":\\\"2026-07-15T08:02:03.761Z\\\"}]}\",\"autobyteus.localization.preference-mode\":\"system\"}",
+          "sessionStorage": "{}",
+          "active": null,
+          "managerIdentity": "manager-1",
+          "tableIdentity": "table-1",
+          "start": "2026-07-01",
+          "end": "2026-07-15",
+          "grouping": "task",
+          "scrollTop": 220,
+          "taskSort": "ascending",
+          "expandedChild": true,
+          "detailOpen": true
+        },
+        "after": {
+          "localStorage": "{\"autobyteus.node_registry.v1\":\"{\\\"version\\\":1,\\\"nodes\\\":[{\\\"id\\\":\\\"embedded-local\\\",\\\"name\\\":\\\"Embedded Node\\\",\\\"baseUrl\\\":\\\"http://localhost:8000\\\",\\\"nodeType\\\":\\\"embedded\\\",\\\"capabilities\\\":{\\\"terminal\\\":true,\\\"fileExplorerStreaming\\\":true},\\\"capabilityProbeState\\\":\\\"ready\\\",\\\"isSystem\\\":true,\\\"createdAt\\\":\\\"2026-07-15T08:02:03.761Z\\\",\\\"updatedAt\\\":\\\"2026-07-15T08:02:03.761Z\\\"}]}\",\"autobyteus.localization.preference-mode\":\"system\"}",
+          "sessionStorage": "{}",
+          "managerIdentity": "manager-1",
+          "tableIdentity": "table-1",
+          "start": "2026-07-01",
+          "end": "2026-07-15",
+          "grouping": "task",
+          "scrollTop": 220,
+          "taskSort": "ascending",
+          "expandedChild": true,
+          "detailOpen": true,
+          "requests": 2
+        },
+        "requestOperations": [
+          {
+            "operationName": "GetAvailableLLMProvidersWithModels",
+            "variables": {
+              "runtimeKind": "autobyteus"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetTokenUsageTaskStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetUsageStatisticsInPeriod",
+            "variables": {
+              "startTime": "2026-07-08",
+              "endTime": "2026-07-15"
+            },
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          },
+          {
+            "operationName": "GetGeminiSetupConfig",
+            "variables": {},
+            "phase": "loaded",
+            "url": "http://localhost:8000/graphql"
+          }
+        ]
+      }
+    },
+    {
+      "id": "BROWSER-002-RESIZE",
+      "result": "Fail",
+      "evidence": {
+        "expected": {
+          "testId": "settings-navigation-expand",
+          "tag": "BUTTON"
+        },
+        "actual": {
+          "testId": null,
+          "tag": "BODY"
+        },
+        "note": "Chrome cleared focus when the desktop-only collapsed-header toggle became display:none at narrow width."
+      }
+    },
+    {
+      "id": "BROWSER-004-loading",
+      "result": "Pass",
+      "evidence": {
+        "requestCount": 2,
+        "requestsAfterToggle": 2
+      }
+    },
+    {
+      "id": "BROWSER-004-error",
+      "result": "Pass",
+      "evidence": {
+        "requestCount": 2,
+        "requestsAfterToggle": 2
+      }
+    },
+    {
+      "id": "BROWSER-004-empty",
+      "result": "Pass",
+      "evidence": {
+        "requestCount": 2,
+        "requestsAfterToggle": 2
+      }
+    },
+    {
+      "id": "BROWSER-005",
+      "result": "Pass",
+      "evidence": {
+        "viewport": [
+          390,
+          844
+        ],
+        "navDisplay": "block",
+        "navBox": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 320.71875,
+          "top": 0,
+          "right": 390,
+          "bottom": 320.71875,
+          "left": 0
+        },
+        "headerDisplay": "none",
+        "closeDisplay": null,
+        "activeTestId": "settings-nav-token-usage",
+        "contentBox": {
+          "x": 0,
+          "y": 320.71875,
+          "width": 390,
+          "height": 523.28125,
+          "top": 320.71875,
+          "right": 390,
+          "bottom": 844,
+          "left": 0
+        },
+        "documentScrollWidth": 390,
+        "wrapperClientWidth": 308,
+        "wrapperScrollWidth": 1030,
+        "visiblePanelIcons": 0
+      }
+    },
+    {
+      "id": "BROWSER-006",
+      "result": "Pass",
+      "evidence": [
+        {
+          "query": "?section=about",
+          "activeCurrent": "page",
+          "submodeCurrent": null,
+          "navDisplay": "block"
+        },
+        {
+          "query": "?section=server-status",
+          "activeCurrent": "page",
+          "submodeCurrent": "page",
+          "navDisplay": "block"
+        },
+        {
+          "query": "?section=invalid-section",
+          "activeCurrent": "page",
+          "submodeCurrent": null,
+          "navDisplay": "block"
+        },
+        {
+          "query": "?section=server-settings",
+          "activeCurrent": "page",
+          "submodeCurrent": "page",
+          "navDisplay": "block"
+        },
+        {
+          "query": "?section=server-settings&mode=advanced",
+          "activeCurrent": "page",
+          "submodeCurrent": "page",
+          "navDisplay": "block"
+        },
+        {
+          "query": "?section=server-settings&mode=migrations",
+          "activeCurrent": "page",
+          "submodeCurrent": "page",
+          "navDisplay": "block"
+        }
+      ]
+    },
+    {
+      "id": "BROWSER-007",
+      "result": "Pass",
+      "evidence": {
+        "url": "http://127.0.0.1:3317/workspace",
+        "settingsIcon": {
+          "outerHTML": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" data-testid=\"left-panel-toggle-icon\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"></rect><path d=\"M9 3v18\"></path></svg>",
+          "box": {
+            "x": 213,
+            "y": 29,
+            "width": 18,
+            "height": 18,
+            "top": 29,
+            "right": 231,
+            "bottom": 47,
+            "left": 213
+          },
+          "buttonBox": {
+            "x": 205,
+            "y": 21,
+            "width": 34,
+            "height": 34,
+            "top": 21,
+            "right": 239,
+            "bottom": 55,
+            "left": 205
+          }
+        },
+        "agentsIcon": null,
+        "sharedSourceLiveComparison": false
+      }
+    }
+  ],
+  "consoleEvents": [
+    {
+      "type": "error",
+      "text": "Failed to fetch token usage statistics: ApolloError: deterministic statistics error\n    at new t (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:60:153)\n    at http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:64:79762\n    at u (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:8520)\n    at http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:8402)\n    at Object.next (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:8530)\n    at P_ (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:1908)\n    at Jc (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:2318)\n    at t.next (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:2838)",
+      "url": "http://127.0.0.1:3317/settings/?section=token-usage"
+    },
+    {
+      "type": "error",
+      "text": "Error fetching token usage statistics: ApolloError: deterministic statistics error\n    at new t (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:60:153)\n    at http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:64:79762\n    at u (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:8520)\n    at http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:8402)\n    at Object.next (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:8530)\n    at P_ (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:1908)\n    at Jc (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:2318)\n    at t.next (http://127.0.0.1:3317/_nuxt/BBKZzEYh.js:59:2838)",
+      "url": "http://127.0.0.1:3317/settings/?section=token-usage"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getServerSettings%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings/?section=server-status"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings/?section=server-status"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async D (http://127.0.0.1:3317/_nuxt/CkszVN2o.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings/?section=server-status"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async D (http://127.0.0.1:3317/_nuxt/CkszVN2o.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings/?section=server-status"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getServerSettings%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async D (http://127.0.0.1:3317/_nuxt/CkszVN2o.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async D (http://127.0.0.1:3317/_nuxt/CkszVN2o.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getServerSettings%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings&mode=advanced"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings&mode=advanced"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async D (http://127.0.0.1:3317/_nuxt/CkszVN2o.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings&mode=advanced"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async D (http://127.0.0.1:3317/_nuxt/CkszVN2o.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings&mode=advanced"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getServerSettings%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings&mode=migrations"
+    },
+    {
+      "type": "error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getEffectiveWorkingContextCompactionStrategyId%22%2C%22%7B%7D%22%5D%7D",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings&mode=migrations"
+    },
+    {
+      "type": "error",
+      "text": "Failed to fetch server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async D (http://127.0.0.1:3317/_nuxt/CkszVN2o.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings&mode=migrations"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load server settings: Error: Server did not return an effective compaction strategy id\n    at Proxy.fetchServerSettings (http://127.0.0.1:3317/_nuxt/BBi7mgDb.js:53:2000)\n    at async D (http://127.0.0.1:3317/_nuxt/CkszVN2o.js:154:11472)",
+      "url": "http://127.0.0.1:3317/settings/?section=server-settings&mode=migrations"
+    }
+  ]
+}

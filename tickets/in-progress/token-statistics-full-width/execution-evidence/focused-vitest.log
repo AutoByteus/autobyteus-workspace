@@ -1,0 +1,93 @@
+
+> autobyteus@1.4.13 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web
+> cross-env NUXT_TEST=true vitest pages/__tests__/settings.spec.ts components/settings/__tests__/settingsNavigation.spec.ts components/settings/__tests__/settingsNavigationModel.spec.ts components/settings/__tests__/SettingsCollapsedHeader.spec.ts components/__tests__/AppLeftPanel.spec.ts components/settings/__tests__/TokenUsageStatistics.spec.ts components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts stores/__tests__/tokenUsageStatistics.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web
+
+stderr | components/settings/__tests__/SettingsCollapsedHeader.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/tokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/settingsNavigationModel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/TokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/__tests__/AppLeftPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/settings.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/settingsNavigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/__tests__/AppLeftPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/SettingsCollapsedHeader.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/settings.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/settingsNavigationModel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/settingsNavigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/tokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/__tests__/AppLeftPanel.spec.ts (4 tests) 4ms
+ ✓ components/settings/__tests__/settingsNavigationModel.spec.ts (6 tests) 3ms
+stderr | stores/__tests__/tokenUsageStatistics.spec.ts > tokenUsageStatistics store > stores GraphQL errors and leaves loading state clean
+Failed to fetch token usage statistics: Error: task query failed
+    at Proxy.fetchStatistics (/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/stores/tokenUsageStatistics.ts:208:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts:190:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ stores/__tests__/tokenUsageStatistics.spec.ts (2 tests) 9ms
+ ✓ components/settings/__tests__/SettingsCollapsedHeader.spec.ts (2 tests) 20ms
+ ✓ components/settings/__tests__/settingsNavigation.spec.ts (3 tests) 36ms
+ ✓ components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts (1 test) 34ms
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts (3 tests) 40ms
+ ✓ components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts (2 tests) 91ms
+ ✓ pages/__tests__/settings.spec.ts (23 tests) 115ms
+
+ Test Files  9 passed (9)
+      Tests  46 passed (46)
+   Start at  09:37:11
+   Duration  7.84s (transform 4.41s, setup 49.61s, collect 2.83s, tests 354ms, environment 3.24s, prepare 1.94s)
