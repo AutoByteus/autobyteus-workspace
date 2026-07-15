@@ -58,10 +58,7 @@
                   : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'"
                 @click.stop="toggleLeftPanel"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect width="18" height="18" x="3" y="3" rx="2"/>
-                  <path d="M9 3v18"/>
-                </svg>
+                <LeftPanelToggleIcon />
               </button>
             </li>
           </ul>
@@ -106,6 +103,7 @@ import { computed, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import WorkspaceAgentRunsTreePanel from '~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue';
+import LeftPanelToggleIcon from '~/components/layout/LeftPanelToggleIcon.vue';
 import { useAppLeftPanelSectionResize } from '~/composables/useAppLeftPanelSectionResize';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 import {

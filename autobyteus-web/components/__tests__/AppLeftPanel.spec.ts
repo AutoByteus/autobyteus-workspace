@@ -36,4 +36,13 @@ describe('AppLeftPanel', () => {
     expect(content).toContain('@run-selected="onRunningRunSelected"');
     expect(content).toContain('@run-created="onRunningRunCreated"');
   });
+
+  it('uses the canonical left-panel toggle icon instead of retaining inline geometry', () => {
+    const filePath = resolve(process.cwd(), 'components/AppLeftPanel.vue');
+    const content = readFileSync(filePath, 'utf-8');
+
+    expect(content).toContain("import LeftPanelToggleIcon from '~/components/layout/LeftPanelToggleIcon.vue'");
+    expect(content).toContain('<LeftPanelToggleIcon />');
+    expect(content).not.toContain('<path d="M9 3v18"');
+  });
 });

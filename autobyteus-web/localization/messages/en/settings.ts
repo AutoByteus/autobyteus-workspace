@@ -3,6 +3,9 @@ import type { TranslationCatalog } from '../../runtime/types';
 const settingsMessages = {
   'settings.page.backAriaLabel': 'Back to workspace',
   'settings.page.backLabel': 'Back to Workspace',
+  'settings.page.navigationAriaLabel': 'Settings navigation',
+  'settings.page.openMenuLabel': 'Open Settings menu',
+  'settings.page.closeMenuLabel': 'Close Settings menu',
   'settings.page.empty.title': 'Settings',
   'settings.page.empty.description': 'Select a category to configure settings.',
   'settings.page.sections.apiKeys': 'API Keys',

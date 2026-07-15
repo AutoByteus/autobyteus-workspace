@@ -255,7 +255,8 @@ const baseConfig = {
   // Keep Nuxt's source scanning focused on app source folders.
   ignore: [
     '**/electron-dist/**',
-    '**/resources/**'
+    '**/resources/**',
+    '**/components/settings/settingsNavigation.ts'
   ]
 }
 

@@ -3,6 +3,9 @@ import type { TranslationCatalog } from '../../runtime/types';
 const settingsMessages = {
   'settings.page.backAriaLabel': '返回工作区',
   'settings.page.backLabel': '返回工作区',
+  'settings.page.navigationAriaLabel': '设置导航',
+  'settings.page.openMenuLabel': '打开设置菜单',
+  'settings.page.closeMenuLabel': '关闭设置菜单',
   'settings.page.empty.title': '设置',
   'settings.page.empty.description': '选择一个分类以配置设置。',
   'settings.page.sections.apiKeys': 'API 密钥',

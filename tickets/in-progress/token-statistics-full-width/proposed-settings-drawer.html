@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Proposed Settings Drawer</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e5e7eb; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #111827; }
+  .window { width: 1600px; height: 900px; margin: 0; overflow: hidden; background: #fff; position: relative; border: 1px solid #cbd5e1; }
+  .titlebar { height: 40px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; padding: 0 16px; gap: 9px; background: #fbfbfc; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; }
+  .red { background: #ff5f57; } .yellow { background: #febc2e; } .green { background: #28c840; }
+  .brand { margin-left: 8px; font-size: 14px; font-weight: 650; color: #52525b; }
+  .settings-shell { height: 860px; display: flex; flex-direction: column; background: #fff; position: relative; }
+  .settings-header { height: 58px; flex: 0 0 58px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 11px; padding: 0 22px; background: #fff; }
+  .panel-button { width: 40px; height: 40px; border: 0; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; color: #6b7280; background: transparent; }
+  .panel-button:hover { background: #f3f4f6; color: #374151; }
+  .panel-button svg { width: 21px; height: 21px; }
+  .section-title { font-size: 18px; line-height: 1; font-weight: 650; color: #374151; }
+  .header-note { margin-left: auto; font-size: 12px; color: #9ca3af; }
+  .content { min-height: 0; flex: 1; padding: 22px 24px 28px; overflow: hidden; background: #fff; }
+  .filters { height: 80px; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px 18px; background: #f8fafc; display: flex; align-items: center; gap: 12px; }
+  .control { height: 42px; border: 1px solid #cbd5e1; background: #fff; border-radius: 7px; display: flex; align-items: center; padding: 0 14px; font-size: 14px; color: #1f2937; }
+  .select { min-width: 110px; justify-content: space-between; }
+  .date { min-width: 165px; justify-content: space-between; }
+  .chev { color: #6b7280; font-size: 12px; margin-left: 12px; }
+  .calendar { color: #4b5563; font-size: 16px; margin-left: 16px; }
+  .to { color: #9ca3af; font-weight: 600; }
+  .fetch { margin-left: auto; height: 42px; border: 0; border-radius: 7px; background: #2563eb; color: white; padding: 0 20px; font-weight: 650; font-size: 14px; }
+  .table-card { margin-top: 18px; height: 635px; overflow: hidden; border: 1px solid #d1d5db; border-radius: 10px; background: #fff; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+  col.task { width: 31%; } col.runtime { width: 9%; } col.models { width: 10%; } col.metric { width: 8%; } col.cost { width: 8%; } col.created { width: 12%; }
+  thead { background: #f3f4f6; color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: .035em; }
+  th { text-align: left; height: 55px; padding: 0 12px; border-bottom: 1px solid #d1d5db; vertical-align: middle; }
+  th.num { text-align: right; }
+  td { padding: 16px 12px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #111827; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .row-title { font-size: 14px; font-weight: 700; color: #111827; }
+  .summary { margin-top: 3px; color: #6b7280; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .meta, .sub { margin-top: 3px; color: #9ca3af; font-size: 12px; line-height: 1.25; }
+  .model { line-height: 1.4; }
+  .total { font-weight: 750; }
+  .sort { margin-left: 4px; color: #c4c7cc; font-size: 9px; vertical-align: 1px; }
+  .drawer-layer { display: none; position: absolute; inset: 40px 0 0 0; z-index: 20; }
+  body.open .drawer-layer { display: block; }
+  .backdrop { position: absolute; inset: 0; background: rgba(15,23,42,.28); }
+  .drawer { position: absolute; left: 0; top: 0; bottom: 0; width: 288px; background: #fff; border-right: 1px solid #d1d5db; box-shadow: 12px 0 30px rgba(15,23,42,.18); display: flex; flex-direction: column; }
+  .drawer-heading { height: 64px; display: flex; align-items: center; padding: 0 12px 0 24px; border-bottom: 1px solid #e5e7eb; }
+  .drawer-title { font-size: 19px; font-weight: 700; color: #374151; }
+  .drawer-heading .panel-button { margin-left: auto; }
+  .nav { padding: 12px; overflow-y: auto; }
+  .nav-item { height: 44px; border-radius: 7px; padding: 0 12px; display: flex; align-items: center; gap: 11px; color: #4b5563; font-size: 14px; font-weight: 550; margin-bottom: 3px; }
+  .nav-item.active { background: #e5e7eb; color: #111827; font-weight: 700; }
+  .nav-icon { width: 19px; height: 19px; display: inline-flex; align-items: center; justify-content: center; color: #6b7280; font-size: 17px; }
+  .back-item { height: 46px; margin: 0 12px 7px; padding: 0 12px; border-bottom: 1px solid #eef0f2; display: flex; align-items: center; gap: 9px; color: #4b5563; font-size: 14px; font-weight: 600; }
+  .drawer-footer { margin-top: auto; padding: 12px 22px 18px; color: #9ca3af; font-size: 11px; }
+  .annotation { position: absolute; z-index: 30; display: none; }
+  body.closed .closed-note { display: block; right: 24px; top: 53px; padding: 7px 10px; border-radius: 6px; background: #eff6ff; color: #1d4ed8; font-size: 12px; border: 1px solid #bfdbfe; }
+  body.open .open-note { display: block; right: 24px; top: 53px; padding: 7px 10px; border-radius: 6px; background: #eff6ff; color: #1d4ed8; font-size: 12px; border: 1px solid #bfdbfe; }
+</style>
+</head>
+<body class="closed">
+<div class="window">
+  <div class="titlebar"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="brand">autobyteus</span></div>
+  <div class="settings-shell">
+    <header class="settings-header">
+      <button class="panel-button" aria-label="Open Settings menu" title="Open Settings menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path>
+        </svg>
+      </button>
+      <div class="section-title">Token Statistics</div>
+      <div class="header-note">Shared Settings header</div>
+    </header>
+    <main class="content">
+      <div class="filters">
+        <div class="control select">Task <span class="chev">⌄</span></div>
+        <div class="control date">08.07.2026 <span class="calendar">▣</span></div>
+        <span class="to">to</span>
+        <div class="control date">15.07.2026 <span class="calendar">▣</span></div>
+        <button class="fetch">Fetch Statistics</button>
+      </div>
+      <div class="table-card">
+        <table>
+          <colgroup><col class="task"><col class="runtime"><col class="models"><col class="metric"><col class="metric"><col class="cost"><col class="cost"><col class="cost"><col class="created"></colgroup>
+          <thead><tr>
+            <th>Task / Run <span class="sort">◆</span></th><th>Runtime <span class="sort">◆</span></th><th>Model(s)</th><th class="num">Input <span class="sort">◆</span></th><th class="num">Output <span class="sort">◆</span></th><th class="num">Input Cost</th><th class="num">Output Cost</th><th class="num">Total Cost <span class="sort">◆</span></th><th>Created Time <span class="sort">◆</span></th>
+          </tr></thead>
+          <tbody>
+            <tr><td><div class="row-title">Daily Assistant</div><div class="summary">“hello”</div><div class="meta">run …8e9e448b</div></td><td>Autobyteus</td><td class="model">deepseek-v4-flash</td><td class="num">10,416<div class="sub">99.5% · 10,368 cached</div></td><td class="num">56<div class="sub">33 thinking included</div></td><td class="num">$0.0000</td><td class="num">$0.0000</td><td class="num total">$0.0001 ▸</td><td>Jul 15, 2026<div class="sub">08:42 AM</div></td></tr>
+            <tr><td><div class="row-title">▸ Software Engineering Team</div><div class="summary">“in autobyteus-ts, we support memory compaction…”</div><div class="meta">team …42f6ce32</div></td><td>Codex</td><td class="model">gpt-5.6-sol</td><td class="num">13.23M<div class="sub">94.8% · 12.54M cached</div></td><td class="num">112,101<div class="sub">29,396 thinking</div></td><td class="num">$9.70</td><td class="num">$3.36</td><td class="num total">$13.06 ▸</td><td>Jul 15, 2026<div class="sub">07:58 AM</div></td></tr>
+            <tr><td><div class="row-title">Memory Compactor</div><div class="summary">“Memory compaction task compaction_task…”</div><div class="meta">run …8cbeab30</div></td><td>Autobyteus</td><td class="model">deepseek-v4-flash</td><td class="num">1,067<div class="sub">48.0% · 512 cached</div></td><td class="num">839<div class="sub">372 thinking</div></td><td class="num">$0.0001</td><td class="num">$0.0002</td><td class="num total">$0.0003 ▸</td><td>Jul 15, 2026<div class="sub">07:21 AM</div></td></tr>
+            <tr><td><div class="row-title">Memory Compactor</div><div class="summary">“Memory compaction task compaction_task…”</div><div class="meta">run …de521e52</div></td><td>Autobyteus</td><td class="model">deepseek-v4-flash</td><td class="num">1,220<div class="sub">42.0% · 512 cached</div></td><td class="num">447<div class="sub">221 thinking</div></td><td class="num">$0.0001</td><td class="num">$0.0001</td><td class="num total">$0.0002 ▸</td><td>Jul 15, 2026<div class="sub">06:54 AM</div></td></tr>
+            <tr><td><div class="row-title">Memory Compactor</div><div class="summary">“Memory compaction task compaction_task…”</div><div class="meta">run …1860cc5b</div></td><td>Autobyteus</td><td class="model">deepseek-v4-flash</td><td class="num">1,316<div class="sub">38.9% · 512 cached</div></td><td class="num">994<div class="sub">640 thinking</div></td><td class="num">$0.0001</td><td class="num">$0.0003</td><td class="num total">$0.0004 ▸</td><td>Jul 15, 2026<div class="sub">06:17 AM</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+  <div class="drawer-layer">
+    <div class="backdrop"></div>
+    <aside class="drawer" aria-label="Settings menu">
+      <div class="drawer-heading"><div class="drawer-title">Settings</div>
+        <button class="panel-button" aria-label="Close Settings menu" title="Close Settings menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path></svg>
+        </button>
+      </div>
+      <div class="back-item"><span>←</span><span>Back to Workspace</span></div>
+      <nav class="nav">
+        <div class="nav-item"><span class="nav-icon">⌘</span><span>API Keys</span></div>
+        <div class="nav-item active"><span class="nav-icon">▥</span><span>Token Statistics</span></div>
+        <div class="nav-item"><span class="nav-icon">◌</span><span>Messaging</span></div>
+        <div class="nav-item"><span class="nav-icon">▣</span><span>Display</span></div>
+        <div class="nav-item"><span class="nav-icon">文</span><span>Language</span></div>
+        <div class="nav-item"><span class="nav-icon">⚒</span><span>Local Tools</span></div>
+        <div class="nav-item"><span class="nav-icon">◇</span><span>MCP Servers</span></div>
+        <div class="nav-item"><span class="nav-icon">⊞</span><span>Application Packages</span></div>
+        <div class="nav-item"><span class="nav-icon">▤</span><span>Agent Packages</span></div>
+        <div class="nav-item"><span class="nav-icon">▦</span><span>Server Settings</span></div>
+        <div class="nav-item"><span class="nav-icon">✣</span><span>Extensions</span></div>
+        <div class="nav-item"><span class="nav-icon">↻</span><span>Updates</span></div>
+      </nav>
+      <div class="drawer-footer">The same panel icon opens and closes this menu.</div>
+    </aside>
+  </div>
+  <div class="annotation closed-note">Drawer closed · complete content width</div>
+  <div class="annotation open-note">Drawer open · content width remains unchanged underneath</div>
+</div>
+<script>
+  const open = new URLSearchParams(location.search).get('open') === '1';
+  document.body.className = open ? 'open' : 'closed';
+</script>
+</body>
+</html>
