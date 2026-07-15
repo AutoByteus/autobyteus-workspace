@@ -242,7 +242,7 @@ export class AgentRunCommandCoordinator {
     const reconcileAcceptedResult = (turnId: string | null): AgentStatusPayload | null => {
       const current = this.currentRecord(originalRecord);
       if (!current) return null;
-      let acceptedStatus: AgentStatusPayload | null = null;
+      let shouldPublishRunning = false;
 
       if (turnId) {
         this.registry.associateIdentified({
@@ -250,7 +250,7 @@ export class AgentRunCommandCoordinator {
           messageId: current.messageId,
           turnId,
         });
-        acceptedStatus = this.reconcileCommandStatus(current, activeRun, "running", true);
+        shouldPublishRunning = true;
       } else {
         const identifiedStart = bufferedEvidence
           .filter((item): item is Extract<CommandEvidence, { kind: "START_IDENTIFIED" }> =>
@@ -265,14 +265,14 @@ export class AgentRunCommandCoordinator {
             messageId: current.messageId,
             turnId: identifiedStart.turnId,
           });
-          acceptedStatus = this.reconcileCommandStatus(current, activeRun, "running", true);
+          shouldPublishRunning = true;
         } else if (anonymousStart) {
           this.registry.armAnonymous({
             runId: current.runId,
             messageId: current.messageId,
             armedAtSequence: anonymousStart.sequence,
           });
-          acceptedStatus = this.reconcileCommandStatus(current, activeRun, "running", true);
+          shouldPublishRunning = true;
         } else {
           this.registry.awaitAnonymousStart({
             runId: current.runId,
@@ -287,7 +287,8 @@ export class AgentRunCommandCoordinator {
         if (!this.currentRecord(originalRecord)) break;
         applyEvidence(evidence, true);
       }
-      return acceptedStatus;
+      const remaining = this.currentRecord(originalRecord);
+      return shouldPublishRunning && remaining ? this.reconcileCommandStatus(remaining, activeRun, "running", true) : null;
     };
 
     return { unsubscribe: () => unsubscribe(), reconcileAcceptedResult };
@@ -352,7 +353,7 @@ export class AgentRunCommandCoordinator {
     if (overlay) this.overlayStore.clear(record.runId);
     if (!publishReplacement) return null;
     const snapshotStatus = normalizeAgentApiStatus(activeRun.getStatusSnapshot().status);
-    if (!overlay && !(status === "running" && (snapshotStatus === "initializing" || snapshotStatus === "idle"))) {
+    if (!overlay && !(status === "running" && snapshotStatus === "initializing")) {
       return null;
     }
     const replacement = this.buildReplacementStatusPayload(activeRun, record.runId, status);

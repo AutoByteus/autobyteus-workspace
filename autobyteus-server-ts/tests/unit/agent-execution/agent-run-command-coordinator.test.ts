@@ -54,12 +54,13 @@ const createFakeRun = (options: {
       can_interrupt: status === "running" && options.canInterrupt === true,
       agent_id: "run-1",
     }),
-    emitStatus(status: "initializing" | "running" | "idle" | "error") {
+    emitStatus(nextStatus: "initializing" | "running" | "idle" | "error") {
+      status = nextStatus;
       const event: AgentRunEvent = {
         eventType: AgentRunEventType.AGENT_STATUS,
         runId: "run-1",
-        payload: { status, can_interrupt: false, agent_id: "run-1" },
-        statusHint: status === "running" ? "ACTIVE" : status === "error" ? "ERROR" : "IDLE",
+        payload: { status: nextStatus, can_interrupt: false, agent_id: "run-1" },
+        statusHint: nextStatus === "running" ? "ACTIVE" : nextStatus === "error" ? "ERROR" : "IDLE",
       };
       listeners.forEach((listener) => listener(event));
     },
@@ -412,6 +413,48 @@ describe("AgentRunCommandCoordinator", () => {
     const result = await pending;
     expect(result.ack).toMatchObject({ state: "failed", accepted: false });
     expect(registry.getRecord("run-1", "msg-1")?.state).toBe("FAILED");
+  });
+
+  it("does not reopen running when canonical completion wins before the accepted result", async () => {
+    const fakeRun = createFakeRun({ status: "idle" });
+    let resolvePost!: (value: { accepted: true; turnId: string }) => void;
+    fakeRun.postUserMessage.mockImplementationOnce(() => new Promise((resolve) => {
+      resolvePost = resolve;
+    }));
+    const canonicalStatuses: string[] = [];
+    fakeRun.subscribeToEvents((input) => {
+      const event = input as AgentRunEvent;
+      if (event.eventType === AgentRunEventType.AGENT_STATUS) {
+        canonicalStatuses.push(`status:${event.payload.status}`);
+      }
+    });
+    const { coordinator, published, registry } = buildCoordinator({
+      restorePromise: Promise.resolve({ run: fakeRun }),
+      activeRun: fakeRun,
+    });
+
+    const pending = coordinator.postUserMessage({
+      runId: "run-1",
+      messageId: "msg-1",
+      dedupeKey: "dedupe-1",
+      message: new AgentInputUserMessage("hello"),
+    });
+    await flushAsync();
+    fakeRun.emitStatus("initializing");
+    fakeRun.emitTurnStarted("turn-1");
+    fakeRun.emitStatus("running");
+    fakeRun.emitTurnTerminal("turn-1");
+    fakeRun.emitStatus("idle");
+    resolvePost({ accepted: true, turnId: "turn-1" });
+
+    const result = await pending;
+    expect(publishedStatusPayloads(published)).toEqual([]);
+    expect([
+      ...canonicalStatuses,
+      ...publishedStatusPayloads(published).map((payload) => `synthetic:${payload.status}`),
+      `ack:${result.ack.status?.status}`,
+    ]).toEqual(["status:initializing", "status:running", "status:idle", "ack:idle"]);
+    expect(registry.getRecord("run-1", "msg-1")?.state).toBe("COMPLETED");
   });
 
   it("lets explicit runtime-global failure settle pending identity without result resurrection", async () => {
