@@ -672,7 +672,7 @@ describe("cross-runtime memory persistence integration", () => {
     expect(continued.seq).toBe(3);
   });
 
-  it("defers a captured Codex hosted-search placeholder and writes the terminal call before its minimal result", async () => {
+  it("defers a captured Codex hosted-search placeholder and writes the terminal call before its name-bearing result", async () => {
     const { memoryDir, recorder, run, converter, turnId } = await createCodexMemoryHarness(
       "codex-hosted-search-memory-run",
     );
@@ -729,6 +729,7 @@ describe("cross-runtime memory persistence integration", () => {
     expect(traces[0]).not.toHaveProperty("tool_error");
     expect(traces[1]).toMatchObject({
       tool_call_id: "ws-hosted-search-1",
+      tool_name: "search_web",
       tool_result: {
         status: "completed",
         query: "AutoByteus provider lifecycle",
@@ -737,11 +738,10 @@ describe("cross-runtime memory persistence integration", () => {
       },
       tool_error: null,
     });
-    expect(traces[1]).not.toHaveProperty("tool_name");
     expect(traces[1]).not.toHaveProperty("tool_args");
   });
 
-  it("persists a Claude observed tool input at start and a later minimal result", async () => {
+  it("persists a normalized Claude MCP tool name on both the observed call and later result", async () => {
     const memoryDir = await mkTempDir();
     const recorder = new AgentRunMemoryRecorder();
     const { factory } = createRuntimeBackendFactory(RuntimeKind.CLAUDE_AGENT_SDK);
@@ -768,8 +768,7 @@ describe("cross-runtime memory persistence integration", () => {
     const converter = new ClaudeSessionEventConverter(run.runId);
     const turnId = "turn-claude-tool-memory";
     const toolArgs = {
-      file_path: "/tmp/claude-observed.txt",
-      content: "observed before execution",
+      url: "https://example.com/claude",
     };
 
     run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
@@ -778,7 +777,7 @@ describe("cross-runtime memory persistence integration", () => {
       params: {
         invocation_id: "claude-write-1",
         turn_id: turnId,
-        tool_name: "Write",
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
         arguments: toolArgs,
       },
     }));
@@ -790,7 +789,7 @@ describe("cross-runtime memory persistence integration", () => {
     expect(traces[0]).toMatchObject({
       trace_type: "tool_call",
       tool_call_id: "claude-write-1",
-      tool_name: "Write",
+      tool_name: "open_tab",
       tool_args: toolArgs,
     });
 
@@ -799,12 +798,17 @@ describe("cross-runtime memory persistence integration", () => {
       params: {
         invocation_id: "claude-write-1",
         turn_id: turnId,
-        tool_name: "Write",
+        tool_name: "mcp__autobyteus_agent_tools__open_tab",
         arguments: toolArgs,
-        result: {
-          type: "create",
-          filePath: "/tmp/claude-observed.txt",
-        },
+        result: [{
+          type: "text",
+          text: JSON.stringify({
+            tab_id: "claude-browser-tab",
+            status: "opened",
+            url: "https://example.com/claude",
+            title: "Claude Browser",
+          }),
+        }],
       },
     }));
     await recorder.waitForIdle(run.runId);
@@ -813,13 +817,15 @@ describe("cross-runtime memory persistence integration", () => {
     expect(traces.map((trace) => trace.trace_type)).toEqual(["tool_call", "tool_result"]);
     expect(traces[1]).toMatchObject({
       tool_call_id: "claude-write-1",
+      tool_name: "open_tab",
       tool_result: {
-        type: "create",
-        filePath: "/tmp/claude-observed.txt",
+        tab_id: "claude-browser-tab",
+        status: "opened",
+        url: "https://example.com/claude",
+        title: "Claude Browser",
       },
       tool_error: null,
     });
-    expect(traces[1]).not.toHaveProperty("tool_name");
     expect(traces[1]).not.toHaveProperty("tool_args");
   });
 
@@ -1295,7 +1301,7 @@ describe("cross-runtime memory persistence integration", () => {
     expect(traces.filter((trace) => trace.traceType === "tool_result")).toHaveLength(1);
     expect(traces[2]).toMatchObject({
       toolCallId: "denied-tool-1",
-      toolName: null,
+      toolName: "run_bash",
       toolArgs: null,
       toolError: "policy denied",
       toolResult: { status: "denied", reason: "policy denied" },

@@ -87,6 +87,7 @@ export const normalizeNativeToolResultBatch = (
 
 export const buildNativeToolResultTrace = (
   registration: NativeToolResultRegistration,
+  canonicalToolName: string,
   sourceEvent: string,
   nextSeq: NextSeq,
 ): RawTraceItem => {
@@ -100,6 +101,7 @@ export const buildNativeToolResultTrace = (
     traceType: 'tool_result',
     content: event.isDenied ? 'Tool execution denied.' : '',
     sourceEvent,
+    toolName: canonicalToolName,
     toolCallId: identity.toolCallId,
     toolResult: event.result === undefined ? null : event.result,
     toolError,

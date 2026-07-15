@@ -39,10 +39,10 @@ export type RuntimeMemoryToolCallTraceInput = RuntimeMemoryTraceInputBase & {
 
 export type RuntimeMemoryToolResultTraceInput = RuntimeMemoryTraceInputBase & {
   traceType: "tool_result";
+  toolName: string;
   toolCallId: string;
   toolResult: unknown;
   toolError: string | null;
-  toolName?: never;
   toolArgs?: never;
   media?: never;
   correlationId?: never;

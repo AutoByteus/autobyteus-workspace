@@ -62,6 +62,7 @@ export class RunMemoryWriter {
       });
     } else if (input.traceType === "tool_result") {
       Object.assign(options, {
+        toolName: input.toolName,
         toolCallId: input.toolCallId,
         toolResult: input.toolResult === undefined ? null : input.toolResult,
         toolError: input.toolError ?? null,

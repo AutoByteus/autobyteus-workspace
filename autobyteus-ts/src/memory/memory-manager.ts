@@ -267,7 +267,7 @@ export class MemoryManager {
     const sourceEvent = options?.source ?? 'ToolResultEvent';
     const accepted: Array<{
       registration: (typeof registrations)[number];
-      call: NonNullable<ToolTraceLifecycleGroup['call']>;
+      canonicalToolName: string;
     }> = [];
     const batchIdentityKeys = new Set<string>();
     for (const registration of registrations) {
@@ -280,28 +280,35 @@ export class MemoryManager {
           `Native tool result '${identity.toolCallId}' in turn '${identity.turnId}' has no persisted tool call; the batch was rejected.`,
         );
       }
-      if (!group.call.toolName?.trim()) {
+      const canonicalToolName = group.call.toolName?.trim();
+      if (!canonicalToolName) {
         throw new Error(
           `Native tool call '${identity.toolCallId}' in turn '${identity.turnId}' has no usable tool name; the batch was rejected.`,
         );
       }
-      accepted.push({ registration, call: group.call });
+      const observedToolName = registration.event.toolName?.trim();
+      if (observedToolName && observedToolName !== canonicalToolName) {
+        throw new Error(
+          `Native tool result '${identity.toolCallId}' in turn '${identity.turnId}' names '${observedToolName}' but the persisted tool call names '${canonicalToolName}'; the batch was rejected.`,
+        );
+      }
+      accepted.push({ registration, canonicalToolName });
       batchIdentityKeys.add(identityKey);
     }
-    const prepared = accepted.map(({ registration, call }) => ({
-      trace: buildNativeToolResultTrace(registration, sourceEvent, (id) => this.nextSeq(id)),
-      call,
+    const prepared = accepted.map(({ registration, canonicalToolName }) => ({
+      trace: buildNativeToolResultTrace(registration, canonicalToolName, sourceEvent, (id) => this.nextSeq(id)),
+      canonicalToolName,
     }));
     if (prepared.length) this.store.add(prepared.map(({ trace }) => trace));
     prepared.forEach(({ trace }) => this.recordPhysicalToolTrace(trace));
     if (options?.appendToWorkingContext === false) return;
-    for (const { trace, call } of prepared) {
+    for (const { trace, canonicalToolName } of prepared) {
       this.appendWorkingContextMessage(
         new Message(MessageRole.TOOL, {
           content: null,
           tool_payload: new ToolResultPayload(
             trace.toolCallId!,
-            call.toolName!,
+            canonicalToolName,
             trace.toolResult,
             trace.toolError ?? null
           ),
