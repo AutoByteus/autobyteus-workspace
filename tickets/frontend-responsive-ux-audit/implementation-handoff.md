@@ -12,6 +12,8 @@
 
 Architecture review Round 3 is `Pass`. The production implementation was already present in the reviewed task branch at checkpoint commit `031717407` and was rechecked against the authoritative Round 3 package. No additional production-source delta was necessary during this implementation re-entry; this handoff records the implementation state and current implementation-scoped checks.
 
+After delivery integrated latest `origin/personal` at `456694fa8`, the base branch added the authoritative `usage` right-side tool after `progress`. The bounded local fix updates only `utils/layout/__tests__/workspaceSurfaceOrder.spec.ts` to assert that integrated catalog order. No production source change was made for this fix.
+
 ## What Changed
 
 - Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
@@ -23,6 +25,7 @@ Architecture review Round 3 is `Pass`. The production implementation was already
 - Added compact right-tab density, phone drawer header offset/close affordance, stacked file-explorer drawer presentation, and drawer-mode toggle removal for usable constrained surfaces.
 - Removed the obsolete standard-route `WorkspaceMobileLayout.vue`, `useMobilePanels.ts`, and desktop-layout implementation/test path. `/mobile` remains independent.
 - Updated center headers for constrained action wrapping and synchronized frontend startup documentation with current backend/dev-proxy configuration.
+- Reconciled the durable order test with the integrated `usage` tool without changing the canonical source catalog.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -62,6 +65,7 @@ Modified:
 - `autobyteus-web/components/fileExplorer/FileExplorerLayout.vue`
 - `autobyteus-web/components/tabs/Tab.vue`
 - `autobyteus-web/components/tabs/TabList.vue`
+- `autobyteus-web/utils/layout/__tests__/workspaceSurfaceOrder.spec.ts` (updated expectations only for the integrated `usage` catalog entry)
 - Agent/team center workspace headers, shell localization, frontend README, and workspace layout docs
 
 Removed:
@@ -126,7 +130,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off:
 
 - `git diff --check` — Passed.
 - `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
-- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, mobile shell, app-left-panel, and default layout — Passed (`10` files, `64` tests).
+- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, mobile shell, app-left-panel, and default layout — Passed after the latest-base fix (`11` files, `67` tests).
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.
