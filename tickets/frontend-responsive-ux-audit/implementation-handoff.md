@@ -5,157 +5,150 @@
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
-- Comprehensive responsive UI test report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
+- Supplemental comprehensive responsive evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
+- Supplemental raw probe result: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/current-responsive-ui-results.json`
+- Supplemental probe summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/probe-summary-latest.json`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`
-- Implementation live visual smoke report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`
 
-
-## Local Fix Response To Code Review Round 1
-
-- `CR-001` fixed: `WorkspaceAdaptiveLayout.vue` now consumes the public app-shell responsive state and keeps `WorkspacePrimarySurfaceControls` visible whenever the effective shell-left presentation is not docked. This preserves visible `Work -> Runs -> Files -> Tools` controls in the 1024-like left-strip plus right-docked band. The `Runs` control still opens the shell-owned left drawer/history via `appLayoutStore.openMobileMenu()`.
-- `CR-001` coverage added: policy coverage now explicitly models the 1024 left-strip/right-docked state, and adaptive-layout component coverage asserts right tools can remain docked while primary controls still expose `Work`, `Runs`, `Files`, and `Tools`.
-- `CR-002` fixed: `clampRightPanelWidth` now defaults only invalid/null preferred widths; finite zero/negative drag results clamp to the right-panel minimum instead of falling back to `450px`.
-- `CR-002` coverage updated: `composables/__tests__/useRightPanel.spec.ts` now reflects the `480px` center minimum and the corrected extreme-shrink clamp behavior.
-
-## Live Visual Implementation Pass
-
-- Per user direction, read the local frontend/server startup docs, started a backend on `127.0.0.1:18000`, started Nuxt on `127.0.0.1:3100`, and inspected `/workspace` in a real browser during implementation.
-- Live visual inspection found and fixed additional UI polish issues before rerouting:
-  - Docked right-tool tab labels clipped at `1024x768` / `1280x800`; right-side tabs now use compact density and the probe asserts docked tab fit.
-  - Phone right drawer close control was hidden under the standard app header; the drawer/backdrop now start below the header below `md`, with full-width phone drawer behavior.
-  - Phone file drawer was cramped as side-by-side panes; `FileExplorerLayout` now supports a stacked drawer layout while keeping the split/resizable desktop layout.
-  - Drawer mode hid the redundant docked-panel toggle so phone drawer tabs fit without clipping.
-- Focused live visual/browser probe passed after these changes: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/implementation-live/workspace-responsive-probe-summary.json`.
-- Representative inspected screenshots are listed in `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`. This is implementation-owned visual smoke, not downstream API/E2E sign-off.
+Architecture review Round 3 is `Pass`. The production implementation was already present in the reviewed task branch at checkpoint commit `031717407` and was rechecked against the authoritative Round 3 package. No additional production-source delta was necessary during this implementation re-entry; this handoff records the implementation state and current implementation-scoped checks.
 
 ## What Changed
 
-- Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive standard workspace layout.
-- Added a pure responsive policy boundary for app-shell left presentation and workspace center/right presentation.
-- Added a canonical workspace surface/tool ordering catalog:
-  - primary narrow surface order: `Work -> Runs -> Files -> Tools`
-  - right-tool order: `Files -> Team(if applicable) -> Terminal -> Activity -> Artifacts -> Browser -> VNC`
-- Added Vue measurement/policy adapters under `composables/layout/`.
-- Updated the app shell so constrained/short/narrow windows use drawer/strip behavior instead of forcing the full left panel at every `md+` viewport.
-- Replaced `WorkspaceDesktopLayout.vue` with `WorkspaceAdaptiveLayout.vue` plus small layout-owned subcomponents for primary surface controls and the right tool drawer.
-- Extended right-panel state to separate user visibility/width preference from effective responsive presentation.
-- Kept center workspace rendering primary and preserved right tools through docked, strip, and drawer presentations.
-- Tuned right-side tabs for compact docked/drawer presentation and added drawer-specific file explorer stacking so phone drawer states are visually usable.
-- Removed the obsolete standard-route `WorkspaceMobileLayout.vue` and `useMobilePanels.ts` fallback.
-- Updated agent/team center headers with smaller wrap-safe classes so identity/status remain first and action groups wrap more safely under constrained widths.
-- Updated `autobyteus-web/README.md` endpoint docs from stale `NUXT_PUBLIC_*` variables to current `BACKEND_*` / dev-proxy configuration.
+- Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
+- Centralized shell/workspace responsive policy and the canonical primary/right-tool ordering catalog.
+- Added SSR-safe viewport/container measurement adapters and separated effective responsive presentation from left/right panel user preferences.
+- Updated the app shell and workspace to use docked, strip, and drawer presentations while preserving a practical center width and recoverable controls in short windows.
+- Kept the center workspace as the primary surface and exposed narrow controls in `Work -> Runs -> Files -> Tools` order.
+- Preserved right-tool order as `Files -> Team (when applicable) -> Terminal -> Activity -> Artifacts -> Browser -> VNC` across tabs, strips, and drawers.
+- Added compact right-tab density, phone drawer header offset/close affordance, stacked file-explorer drawer presentation, and drawer-mode toggle removal for usable constrained surfaces.
+- Removed the obsolete standard-route `WorkspaceMobileLayout.vue`, `useMobilePanels.ts`, and desktop-layout implementation/test path. `/mobile` remains independent.
+- Updated center headers for constrained action wrapping and synchronized frontend startup documentation with current backend/dev-proxy configuration.
+
+## Reviewed Behavior Implementation Trace
+
+| Behavior IDs | Approved change / preserved outcome | Implemented production path / key files | Result / notes |
+| --- | --- | --- | --- |
+| FR-001, FR-002, AC-001, AC-009 | No blank `640-767px` band; one responsive policy owner | `pages/workspace.vue` -> `WorkspaceAdaptiveLayout.vue`; `utils/layout/responsiveLayoutPolicy.ts`; no route-level `matchMedia` or root `hidden md:flex` branch | Pass in policy/component coverage; browser validation remains downstream-owned. |
+| FR-003, FR-004, FR-009, AC-002, AC-003, AC-004 | Wide docked layout remains available; constrained widths preserve center before side tools | `useWorkspaceResponsiveLayout` -> `resolveWorkspaceResponsiveState`; `useRightPanel`; `WorkspaceAdaptiveLayout.vue`; `RightSidebarStrip.vue` | Pass in focused tests and implementation live smoke evidence. |
+| FR-005, FR-012, FR-013, AC-005, AC-011, AC-012 | Standard workspace capabilities remain discoverable with stable surface/tool ordering | `workspaceSurfaceOrder.ts`; `WorkspacePrimarySurfaceControls.vue`; `RightSideTabs.vue`; `WorkspaceRightToolDrawer.vue`; `RightSidebarStrip.vue` | Pass in order/component tests; deep tool-internal behavior remains downstream risk. |
+| FR-006, FR-007, AC-007 | Legacy standard mobile fallback is removed; `/mobile` stays the phone/PWA owner | Removed `WorkspaceMobileLayout.vue` and `useMobilePanels.ts`; `pages/mobile.vue`/`MobileRemoteAccessShell` untouched by standard route | Pass; mobile isolation tests remain green. |
+| FR-008, FR-010, AC-006 | Height-aware side-surface presentation and preference/effective-state separation | `resolveAppShellResponsiveState`; `resolveWorkspaceResponsiveState`; `useLeftPanel`; `useRightPanel`; `layouts/default.vue` | Pass in policy/component coverage; browser matrix remains downstream-owned. |
+| FR-011, FR-014, FR-015, AC-008, AC-010, AC-013, AC-014, AC-015 | Durable policy/component coverage, header priority, and current local docs | Policy/order/layout/tab/right-panel/mobile/default-shell tests; `tests/e2e/workspace-responsive-probe.mjs`; `autobyteus-web/README.md`; workspace layout docs | Source and implementation-scoped checks pass. API/E2E execution of the current state is still required. |
 
 ## Key Files Or Areas
 
-- Added:
-  - `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
-  - `autobyteus-web/utils/layout/workspaceSurfaceOrder.ts`
-  - `autobyteus-web/composables/layout/useResponsiveElementRect.ts`
-  - `autobyteus-web/composables/layout/useAppShellResponsiveLayout.ts`
-  - `autobyteus-web/composables/layout/useWorkspaceResponsiveLayout.ts`
-  - `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`
-  - `autobyteus-web/components/layout/WorkspacePrimarySurfaceControls.vue`
-  - `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
-  - `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`
-  - `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts`
-  - `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts`
-  - `autobyteus-web/utils/layout/__tests__/workspaceSurfaceOrder.spec.ts`
-- Modified:
-  - `autobyteus-web/pages/workspace.vue`
-  - `autobyteus-web/layouts/default.vue`
-  - `autobyteus-web/composables/useLeftPanel.ts`
-  - `autobyteus-web/composables/useRightPanel.ts`
-  - `autobyteus-web/composables/useRightSideTabs.ts`
-  - `autobyteus-web/components/layout/RightSidebarStrip.vue`
-  - `autobyteus-web/components/layout/RightSideTabs.vue`
-  - `autobyteus-web/components/fileExplorer/FileExplorerLayout.vue`
-  - `autobyteus-web/components/tabs/Tab.vue`
-  - `autobyteus-web/components/tabs/TabList.vue`
-  - `autobyteus-web/components/workspace/agent/AgentWorkspaceView.vue`
-  - `autobyteus-web/components/workspace/team/TeamWorkspaceView.vue`
-  - `autobyteus-web/localization/messages/en/shell.ts`
-  - `autobyteus-web/localization/messages/zh-CN/shell.ts`
-  - `autobyteus-web/README.md`
-- Removed/decommissioned:
-  - `autobyteus-web/components/layout/WorkspaceDesktopLayout.vue`
-  - `autobyteus-web/components/layout/WorkspaceMobileLayout.vue`
-  - `autobyteus-web/composables/useMobilePanels.ts`
-  - `autobyteus-web/components/layout/__tests__/WorkspaceDesktopLayout.spec.ts`
+Added:
+
+- `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
+- `autobyteus-web/utils/layout/workspaceSurfaceOrder.ts`
+- `autobyteus-web/composables/layout/useResponsiveElementRect.ts`
+- `autobyteus-web/composables/layout/useAppShellResponsiveLayout.ts`
+- `autobyteus-web/composables/layout/useWorkspaceResponsiveLayout.ts`
+- `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`
+- `autobyteus-web/components/layout/WorkspacePrimarySurfaceControls.vue`
+- `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
+- `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`
+- Focused policy/order/adaptive-layout tests under `utils/layout/__tests__` and `components/layout/__tests__`
+
+Modified:
+
+- `autobyteus-web/pages/workspace.vue`
+- `autobyteus-web/layouts/default.vue`
+- `autobyteus-web/composables/useLeftPanel.ts`
+- `autobyteus-web/composables/useRightPanel.ts`
+- `autobyteus-web/composables/useRightSideTabs.ts`
+- `autobyteus-web/components/layout/RightSidebarStrip.vue`
+- `autobyteus-web/components/layout/RightSideTabs.vue`
+- `autobyteus-web/components/fileExplorer/FileExplorerLayout.vue`
+- `autobyteus-web/components/tabs/Tab.vue`
+- `autobyteus-web/components/tabs/TabList.vue`
+- Agent/team center workspace headers, shell localization, frontend README, and workspace layout docs
+
+Removed:
+
+- `autobyteus-web/components/layout/WorkspaceDesktopLayout.vue`
+- `autobyteus-web/components/layout/WorkspaceMobileLayout.vue`
+- `autobyteus-web/composables/useMobilePanels.ts`
+- `autobyteus-web/components/layout/__tests__/WorkspaceDesktopLayout.spec.ts` (replaced by adaptive-layout coverage)
 
 ## Important Assumptions
 
-- `/mobile` remains the independent phone/PWA owner; no standard `/workspace` code imports mobile components as a fallback.
-- The app-shell left dock threshold is intentionally conservative (`1280px`) so constrained desktop/tablet widths prefer strip/drawer and preserve the workspace center.
-- The workspace center practical minimum is raised to `480px`; right tools move to strip/drawer rather than squeezing center to the prior `200-247px` failure range.
-- Downstream `api_e2e_engineer` still owns formal API/E2E coverage investigation/execution and any final browser matrix sign-off. Implementation did run a local live visual smoke/probe to tune the UI, and that evidence is recorded separately without treating it as downstream sign-off.
+- `/mobile` remains the independent phone/PWA owner; standard `/workspace` does not import mobile components as a fallback.
+- The app-shell dock threshold is `1280px`; below it, left navigation is represented as a strip or drawer so the center is protected.
+- The practical center minimum is `480px`; right tools move to strip/drawer before the center is squeezed into the historical `200-247px` range.
+- The right-panel preference is not overwritten when responsive presentation changes.
+- The browser probe requires a running frontend/backend target and Chromium; its execution and final matrix sign-off belong to `api_e2e_engineer`.
 
 ## Known Risks
 
-- Exact visual thresholds may need downstream live-browser tuning against the comprehensive viewport family.
-- Individual Terminal/Browser/VNC internals are reachable through the drawer/strip shell. File drawer stacking and tab fit were polished during implementation; deeper per-tool internals can still be refined later if downstream coverage finds blockers.
-- The right-panel user preference/effective presentation separation was rechecked during the local fix; downstream review should still inspect threshold behavior visually.
-- `pnpm exec vue-tsc --noEmit` could not be run because `vue-tsc` is not installed in `autobyteus-web`; `pnpm build` was run instead and passed.
+- Exact threshold/mode tuning and the comprehensive current-state browser matrix remain downstream validation responsibilities.
+- The shell-level adaptive layout verifies tool reachability and ordering but does not deeply validate every Terminal/Browser/VNC internal responsive state.
+- `workspace-responsive-probe.mjs` is cohesive and test-exempt from source-size limits but is near 500 effective lines; split it if future scenario families materially grow it.
+- `vue-tsc` is not installed in `autobyteus-web`; production Nuxt build is the available build/type confidence check.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Larger Requirement / Behavior Change / Responsive Layout Refactor
-- Reviewed root-cause classification: Duplicated Policy Or Coordination; Boundary Or Ownership Issue; File Placement Or Responsibility Drift
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now
-- Implementation matched the reviewed assessment (`Yes`/`No`): Yes
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A
-- Evidence / notes: Implementation introduced the approved policy/catalog boundaries, one adaptive standard workspace layout, separate app-shell/workspace adapters, and removed the obsolete standard mobile fallback instead of adding breakpoint compatibility patches.
+- Reviewed change posture: `Larger Requirement / Behavior Change / Responsive Layout Refactor`
+- Reviewed root-cause classification: `Duplicated Policy Or Coordination; Boundary Or Ownership Issue; File Placement Or Responsibility Drift`
+- Reviewed refactor decision: `Refactor Needed Now`
+- Implementation matched the reviewed assessment: `Yes`
+- If challenged, routed as `Design Impact`: `N/A`
+- Evidence / notes: The implementation centralizes policy/order ownership, uses one adaptive standard workspace layout, preserves shell/workspace boundaries, and removes the obsolete standard-route mobile fallback rather than adding breakpoint compatibility patches.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
 - Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
+- Shared structures remain tight: `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: `WorkspaceAdaptiveLayout.vue` was split into `WorkspacePrimarySurfaceControls.vue` and `WorkspaceRightToolDrawer.vue` to keep the main layout file under the changed-file size pressure threshold. The largest changed source implementation file remains below `500` effective non-empty lines.
+- Notes: The adaptive layout was split into layout-owned primary-controls and right-tool-drawer components. The largest changed source implementation file remains below the hard limit.
+
+## Persisted Data Transition Check
+
+- Approved decision: `Not Affected`
+- Design-spec decision reference: Responsive layout and presentation state only; no persisted schema or domain data shape changes.
+- Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
+- Direct-use evidence or discard/rebuild result: N/A; panel visibility/width are in-memory UI preferences in this scope.
+- Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
 
 - Branch: `codex/frontend-responsive-ux-audit`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`
-- `vue-tsc` is not installed, so direct Vue typecheck could not be run with `pnpm exec vue-tsc --noEmit`.
-- Production Nuxt build was used as the implementation-level type/build confidence check.
+- Dependencies were already installed; no package dependency changes were required during this implementation re-entry.
+- `vue-tsc` is unavailable; `pnpm -C autobyteus-web build` passed.
 
 ## Local Implementation Checks Run
 
-Record only implementation-scoped checks here, such as build, typecheck, unit tests, and narrow integration checks around the changed code.
-Do not stand up API/E2E execution environments or treat that work as part of this section.
-Do not report API, E2E, or broader executable checks as passed in this artifact.
+These are implementation-scoped checks only; they are not API/E2E sign-off:
 
 - `git diff --check` — Passed.
-- `pnpm -C autobyteus-web test:nuxt --run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts utils/layout/__tests__/workspaceSurfaceOrder.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/tabs/__tests__/TabList.spec.ts composables/__tests__/useRightPanel.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts` — Passed (`54` tests).
-- `pnpm -C autobyteus-web test:nuxt --run components/__tests__/AppLeftPanel.spec.ts components/__tests__/AppLeftPanel_v2.spec.ts composables/__tests__/useRightPanel.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/tabs/__tests__/TabList.spec.ts` — Passed (`35` tests).
+- `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
+- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, mobile shell, app-left-panel, and default layout — Passed (`10` files, `64` tests).
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
-- `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; emitted existing Node `MODULE_TYPELESS_PACKAGE_JSON` warning for localization audit script.
-- `pnpm -C autobyteus-web build` — Passed; emitted existing Rollup chunk-size warnings.
-- `pnpm -C autobyteus-web exec vue-tsc --noEmit` — Not run successfully: command failed because `vue-tsc` is not installed.
+- `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.
+- `pnpm -C autobyteus-web build` — Passed; existing Rollup chunk-size warnings emitted.
+- `pnpm -C autobyteus-web exec vue-tsc --noEmit` — Not available: `vue-tsc` is not installed.
 
-## Live Visual Smoke Run During Implementation
-
-This was run to inspect and tune the implementation in-browser; it is not a substitute for downstream API/E2E coverage ownership.
-
-- `pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:3100 --output-dir ../tickets/frontend-responsive-ux-audit/probes/implementation-live` — Passed; output summary at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/implementation-live/workspace-responsive-probe-summary.json`.
-- Manual/Playwright visual interaction screenshots captured under `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/`.
+An earlier implementation-owned live visual smoke pass is retained at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md` and its `probes/implementation-live/` evidence. It is corroborating implementation evidence, not downstream API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Validate standard `/workspace` at the comprehensive matrix from the design: `390x844`, `390x640`, `500x700`, `500x420`, `639x700`, `640x700`, `700x700`, `767x700`, `768x700`, `800x700`, `800x420`, `900x700`, `1024x768`, `1024x480`, `1180x800`, `1280x800`, `1440x900`.
-- Confirm the old blank band is gone at `640-767px`, especially `700x700` and `760/767x700`.
-- Confirm standard `/workspace` below `640px` shows `Work -> Runs -> Files -> Tools`, not legacy `Running / Agent` navigation.
-- Confirm `800x700` and `1024x768` do not keep `320px left + ~200-247px center + cramped right` docked panes.
-- Confirm short heights (`800x420`, `1024x480`) retain recoverable left/right controls via strip/drawer rather than unrecoverable full docks.
-- Confirm right-tool order remains `Files -> Team(if applicable) -> Terminal -> Activity -> Artifacts -> Browser -> VNC` in tabs/strip/drawer.
-- Confirm wide desktop (`1440x900`) remains materially docked with left panel, center, and right tools.
-- Confirm `/mobile` still renders `MobileRemoteAccessShell` and remains independent of standard workspace adaptive components.
+Validate the current source against the comprehensive family: `390x844`, `390x640`, `500x700`, `500x420`, `639x700`, `640x700`, `700x700`, `767x700`, `768x700`, `800x700`, `800x420`, `900x700`, `1024x768`, `1024x480`, `1180x800`, `1280x800`, `1440x900`, plus `/mobile` at `390x844`.
+
+Confirm:
+
+- No blank body at `640-767px`.
+- No legacy `Running / Agent` standard-route fallback below `640px`.
+- No `200-247px` center at `768-1024px`.
+- Short-height side controls remain recoverable.
+- Primary order is `Work -> Runs -> Files -> Tools`.
+- Right-tool order is `Files -> Team (if applicable) -> Terminal -> Activity -> Artifacts -> Browser -> VNC`.
+- Wide desktop remains materially docked and `/mobile` remains isolated.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. Downstream `api_e2e_engineer` still needs to perform the responsive browser/API-E2E coverage investigation and execution required by UC-009 / FR-015 / AC-014 / AC-015. If downstream adds, updates, or removes durable repo-resident browser/E2E coverage, route back through `code_reviewer` before delivery per team workflow.
+Yes. `api_e2e_engineer` owns current-state coverage investigation, realistic environment setup, comprehensive browser/API-E2E execution, failure classification, and any durable E2E edits. If durable tests change, the package must return through `code_reviewer` for proportional test-code review before delivery.
