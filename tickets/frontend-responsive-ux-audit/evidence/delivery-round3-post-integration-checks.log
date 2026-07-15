@@ -1,0 +1,169 @@
+$ git status --short --branch
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 5]
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round3-post-integration-checks.log
+$ git diff --check
+$ node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+$ pnpm -C autobyteus-web test:nuxt --run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts utils/layout/__tests__/workspaceSurfaceOrder.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/tabs/__tests__/TabList.spec.ts composables/__tests__/useRightSideTabs.spec.ts composables/__tests__/useRightPanel.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts layouts/__tests__/default.spec.ts components/__tests__/AppLeftPanel.spec.ts components/__tests__/AppLeftPanel_v2.spec.ts
+
+> autobyteus@1.4.14 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts utils/layout/__tests__/workspaceSurfaceOrder.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/tabs/__tests__/TabList.spec.ts composables/__tests__/useRightSideTabs.spec.ts composables/__tests__/useRightPanel.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts layouts/__tests__/default.spec.ts components/__tests__/AppLeftPanel.spec.ts components/__tests__/AppLeftPanel_v2.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+
+stderr | components/__tests__/AppLeftPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tabs/__tests__/TabList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useRightPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/__tests__/AppLeftPanel_v2.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/__tests__/AppLeftPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tabs/__tests__/TabList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/__tests__/AppLeftPanel_v2.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRightPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/__tests__/AppLeftPanel.spec.ts (3 tests) 3ms
+ ✓ layouts/__tests__/default.spec.ts (4 tests) 3ms
+ ✓ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts (7 tests) 4ms
+ ✓ composables/__tests__/useRightPanel.spec.ts (3 tests) 54ms
+ ✓ components/tabs/__tests__/TabList.spec.ts (4 tests) 31ms
+ ✓ components/__tests__/AppLeftPanel_v2.spec.ts (3 tests) 39ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (15 tests) 155ms
+ ✓ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts (11 tests) 173ms
+stderr | composables/__tests__/useRightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (12 tests) 76ms
+stdout | utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ utils/layout/__tests__/workspaceSurfaceOrder.spec.ts (3 tests | 2 failed) 7ms
+   ✓ workspaceSurfaceOrder > keeps the canonical primary narrow workspace order 1ms
+   × workspaceSurfaceOrder > keeps the canonical right tool order across presentations 4ms
+     → expected [ 'files', 'teamMembers', …(6) ] to deeply equal [ 'files', 'teamMembers', …(5) ]
+   × workspaceSurfaceOrder > filters contextual tools without reordering the remaining tools 1ms
+     → expected [ 'terminal', 'progress', …(3) ] to deeply equal [ 'terminal', 'progress', …(2) ]
+ ✓ composables/__tests__/useRightSideTabs.spec.ts (2 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  utils/layout/__tests__/workspaceSurfaceOrder.spec.ts > workspaceSurfaceOrder > keeps the canonical right tool order across presentations
+AssertionError: expected [ 'files', 'teamMembers', …(6) ] to deeply equal [ 'files', 'teamMembers', …(5) ]
+
+- Expected
++ Received
+
+  [
+    "files",
+    "teamMembers",
+    "terminal",
+    "progress",
++   "usage",
+    "artifacts",
+    "browser",
+    "vnc",
+  ]
+
+ ❯ utils/layout/__tests__/workspaceSurfaceOrder.spec.ts:18:37
+     16| 
+     17|   it('keeps the canonical right tool order across presentations', () =…
+     18|     expect(getWorkspaceToolOrder()).toEqual([
+       |                                     ^
+     19|       'files',
+     20|       'teamMembers',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  utils/layout/__tests__/workspaceSurfaceOrder.spec.ts > workspaceSurfaceOrder > filters contextual tools without reordering the remaining tools
+AssertionError: expected [ 'terminal', 'progress', …(3) ] to deeply equal [ 'terminal', 'progress', …(2) ]
+
+- Expected
++ Received
+
+  [
+    "terminal",
+    "progress",
++   "usage",
+    "artifacts",
+    "vnc",
+  ]
+
+ ❯ utils/layout/__tests__/workspaceSurfaceOrder.spec.ts:34:9
+     32|       includeTeam: false,
+     33|       includeBrowser: false,
+     34|     })).toEqual([
+       |         ^
+     35|       'terminal',
+     36|       'progress',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 10 passed (11)
+      Tests  2 failed | 65 passed (67)
+   Start at  18:58:23
+   Duration  10.24s (transform 5.51s, setup 64.18s, collect 5.24s, tests 547ms, environment 3.77s, prepare 2.52s)
+
+ ELIFECYCLE  Command failed with exit code 1.

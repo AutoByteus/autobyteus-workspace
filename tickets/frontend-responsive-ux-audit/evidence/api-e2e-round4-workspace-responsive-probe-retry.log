@@ -1,13 +1,50 @@
+
+> autobyteus@1.4.14 test:e2e:workspace-responsive /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> node tests/e2e/workspace-responsive-probe.mjs -- --base-url http://127.0.0.1:13004 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error
+
 {
-  "generatedAt": "2026-07-15T17:38:02.637Z",
-  "result": "Pass",
-  "failures": [],
+  "result": "Fail",
+  "jsonPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json",
+  "summaryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json",
+  "failures": [
+    "phone-390x844: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "phone-390x844: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "phone-short-390x640: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "phone-short-390x640: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "narrow-500x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "narrow-500x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "narrow-short-500x420: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "narrow-short-500x420: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "threshold-639x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "threshold-639x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "threshold-640x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "threshold-640x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "gap-700x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "gap-700x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "gap-767x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "gap-767x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "md-768x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "md-768x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-800x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-800x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-short-800x420: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-short-800x420: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-900x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-900x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "small-desktop-1024x768: right panel tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "desktop-1180x800: right panel tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "desktop-1280x800: right panel tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "wide-1440x900: right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+  ],
   "summary": [
     {
       "viewport": "phone-390x844",
       "route": "/workspace",
       "size": "390x844",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 0,
         "y": 107,
@@ -30,7 +67,10 @@
       "viewport": "phone-short-390x640",
       "route": "/workspace",
       "size": "390x640",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 0,
         "y": 107,
@@ -53,7 +93,10 @@
       "viewport": "narrow-500x700",
       "route": "/workspace",
       "size": "500x700",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 0,
         "y": 107,
@@ -76,7 +119,10 @@
       "viewport": "narrow-short-500x420",
       "route": "/workspace",
       "size": "500x420",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 0,
         "y": 107,
@@ -99,7 +145,10 @@
       "viewport": "threshold-639x700",
       "route": "/workspace",
       "size": "639x700",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 0,
         "y": 107,
@@ -122,7 +171,10 @@
       "viewport": "threshold-640x700",
       "route": "/workspace",
       "size": "640x700",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 0,
         "y": 107,
@@ -145,7 +197,10 @@
       "viewport": "gap-700x700",
       "route": "/workspace",
       "size": "700x700",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 0,
         "y": 107,
@@ -168,7 +223,10 @@
       "viewport": "gap-767x700",
       "route": "/workspace",
       "size": "767x700",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 0,
         "y": 107,
@@ -191,7 +249,10 @@
       "viewport": "md-768x700",
       "route": "/workspace",
       "size": "768x700",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 50,
         "y": 51,
@@ -214,7 +275,10 @@
       "viewport": "tablet-800x700",
       "route": "/workspace",
       "size": "800x700",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 50,
         "y": 51,
@@ -237,7 +301,10 @@
       "viewport": "tablet-short-800x420",
       "route": "/workspace",
       "size": "800x420",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 50,
         "y": 51,
@@ -260,7 +327,10 @@
       "viewport": "tablet-900x700",
       "route": "/workspace",
       "size": "900x700",
-      "failures": [],
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 50,
         "y": 51,
@@ -298,7 +368,9 @@
       "viewport": "small-desktop-1024x768",
       "route": "/workspace",
       "size": "1024x768",
-      "failures": [],
+      "failures": [
+        "right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 50,
         "y": 51,
@@ -359,7 +431,9 @@
       "viewport": "desktop-1180x800",
       "route": "/workspace",
       "size": "1180x800",
-      "failures": [],
+      "failures": [
+        "right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 50,
         "y": 51,
@@ -397,7 +471,9 @@
       "viewport": "desktop-1280x800",
       "route": "/workspace",
       "size": "1280x800",
-      "failures": [],
+      "failures": [
+        "right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 323,
         "y": 0,
@@ -438,7 +514,9 @@
       "viewport": "wide-1440x900",
       "route": "/workspace",
       "size": "1440x900",
-      "failures": [],
+      "failures": [
+        "right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
       "centerRect": {
         "x": 323,
         "y": 0,
@@ -488,3 +566,4 @@
     }
   ]
 }
+ ELIFECYCLE  Command failed with exit code 1.

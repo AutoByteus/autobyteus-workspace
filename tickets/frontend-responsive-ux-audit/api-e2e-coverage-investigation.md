@@ -9,10 +9,10 @@
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`
 - Implementation Live Visual Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`
-- Current Investigation Round: `3`
-- Trigger: Code-review Round 5 pass for branch `codex/frontend-responsive-ux-audit`; the current implementation-source gate re-confirmed the reviewed responsive source at HEAD `f614a42cb`, so API/E2E must re-investigate and re-execute against this current worktree state.
+- Current Investigation Round: `4`
+- Trigger: Code-review Round 6 pass for the integrated-state order-test fix; delivery refreshed the worktree through origin/personal at `456694fa8`, and local commit `9a9fa78d2` updated the durable order expectations for the existing production `usage` tab. API/E2E must re-investigate and re-execute against this current integrated state.
 - Prior Investigation Reviewed: `Round 1` historical API/E2E investigation in this same file path. Round 1 added/updated durable coverage and was later reviewed, but it is superseded as sign-off by implementation-owned Round 4 visual/source/probe changes.
-- Latest Authoritative Investigation: `Round 3`
+- Latest Authoritative Investigation: `Round 4`
 
 ## Current Requirement And Design Basis
 
@@ -137,3 +137,111 @@ Code review Round 4 is the latest authority. It passed the current implementatio
 - Environment constraints recorded before execution: backend requires a data-dir `.env`; the final run explicitly set `AUTOBYTEUS_SERVER_HOST`, `DATABASE_URL`, `APP_ENV=test`, and SQLite paths to keep the server isolated from the user's running desktop backend.
 - No requirement gap, design impact, unclear validity decision, compatibility wrapper, persisted-data transition, or API/E2E local fix was discovered.
 - Authoritative execution evidence is recorded in `api-e2e-execution-coverage-report.md` and `probes/api-e2e/`. Earlier startup attempts with an incorrect health readiness predicate, a post-build run without the backend, and one command launched from the superrepo root are setup-control evidence only; they are not product failures and were followed by a clean final run.
+
+## Round 4 Integrated-State Addendum
+
+- Investigation date: `2026-07-15`.
+- Current branch / HEAD: `codex/frontend-responsive-ux-audit` / `2c8345545` (delivery documentation commit), with integrated production base `456694fa8` and local durable-test fix commit `9a9fa78d2` in history.
+- Upstream gate: implementation-source code review Round 6 `Pass` for the bounded test-only fix. No responsive production source changed in that local fix.
+- Integrated behavior delta: the existing production right-tool catalog now includes `usage` immediately after `progress`; `workspaceSurfaceOrder.spec.ts` now expects `progress -> usage -> artifacts` in both full and filtered order assertions. This durable test is current and valid; it must be executed as part of the focused suite and remains in the cumulative package for proportional review after API/E2E.
+- Existing browser probe remains valid and must be rerun against the integrated state. Its shell-level canonical-order assertion intentionally checks the visible product-label subsequence; the current runtime catalog may expose the additional Usage tab without invalidating the approved order of the named core tools.
+- No API/E2E-owned durable coverage change is planned. API/E2E will not edit the order test; successful execution must still return through `code_reviewer` because the integrated package contains the upstream durable order-test fix and the requested workflow requires a proportional durable-test review before delivery.
+- Required broader validation decision: `Required`. The integrated test-only fix changes no runtime layout source, but current-state browser evidence is required because the previous API/E2E pass is explicitly superseded and the live catalog now contains one additional right-side tool.
+- No requirement gap, design impact, unclear validity decision, compatibility wrapper, persisted-data transition, or local API/E2E fix is identified before execution.
+
+## Round 4 Execution Outcome Addendum
+
+- Execution date: `2026-07-15`.
+- Current branch / HEAD: `codex/frontend-responsive-ux-audit` / `2c8345545`.
+- Current integrated baseline: `456694fa8`; bounded durable test fix: `9a9fa78d2`; the only runtime-related delta from that baseline is the two expected-array entries in `workspaceSurfaceOrder.spec.ts`.
+- Focused repository coverage passed at the integrated state: `11` Nuxt/Vitest files / `67` tests. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-focused-nuxt-tests.log`.
+- The documented backend build was rerun before the retry (`pnpm -C autobyteus-server-ts build`) and passed. This eliminated the initial stale-built-server `GraphQL 400` setup/integration symptom. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-server-build.log`.
+- Current authoritative browser retry used the fresh backend build, isolated SQLite data, Nuxt dev frontend, headless Chrome, and `--fail-on-console-error`. It produced `18` states (`17` `/workspace` viewports plus `/mobile`), `42` successful primary-control interactions, and `0` console errors. The probe result is `Fail` only because right-tool tab-fit assertions report `28` clipping failures. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-workspace-responsive-probe-retry.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`.
+- Failure distribution: drawer `VNC Viewer` clipping is reproducible in `12` narrow/constrained states (two interaction assertions per state, `24` entries); docked right-panel `VNC Viewer` clipping is reproducible at `1024x768`, `1180x800`, `1280x800`, and `1440x900` (`4` entries). `1024x480` and `/mobile` have no failure entries.
+- Live right-tool labels are `Files`, `Terminal`, `Activity`, `Token`, `Artifacts`, `VNC Viewer`; the `Token` label is the integrated production `usage` catalog entry after `progress`. The current `TabList` uses horizontal overflow and the six-label sequence does not fit its initial visible list bounds; `VNC Viewer` is therefore clipped/outside the visible tab list. This is a real current browser failure, not a test setup artifact.
+- The approved requirements/design canonical list names `Files -> Team -> Terminal -> Activity -> Artifacts -> Browser -> VNC` and does not explicitly mention `usage`. The integrated production base and durable order test now include `usage` after `progress`. This creates a focused review question: whether the intended fix is a responsive tab-fit implementation change, a requirements/design/catalog reconciliation, or both. API/E2E does not edit production source or the upstream durable order test.
+- Cleanup completed after the retry; ports `13003` and `13004` are closed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-cleanup-ports.log`.
+
+### Revised Coverage Decisions After Current Execution
+
+| Scenario / Path | Current Decision | Evidence / Consequence |
+| --- | --- | --- |
+| `workspace-responsive-probe.mjs` | `Still Valid`; no probe source change | It directly detected the integrated `usage`-induced tab-fit regression in the current runtime. Preserve the canonical JSON/summary as failure evidence and rerun after the owning fix. |
+| `workspaceSurfaceOrder.spec.ts` | `Still Valid`; upstream durable test fix remains valid and unchanged by API/E2E | The current focused suite passes `3/3` order assertions within the `11`-file/`67`-test run. The cumulative package must still receive proportional durable-test review after focused failure-origin analysis. |
+| Focused component/policy/mobile/shell tests | `Still Valid` and passed | The current integrated state passes the complete focused suite; this does not override the live tab-fit failure. |
+| Initial GraphQL 400 symptom | Resolved as execution setup/build state | Fresh documented server build removed the 400s; retry backend log has no `statusCode 400` or `Graphql validation error` entries. |
+
+### Current Confidence Scorecard
+
+| Confidence Category | Score | Basis | Remaining Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 60% | Most shell geometry, primary controls, route isolation, and nonblank states are directly observed. | Critical right-tool fit behavior fails; integrated `usage` is not explicit in the approved canonical list. |
+| Changed-boundary execution directness | 85% | Real Nuxt rendering and the current durable probe exercise the responsive shell directly across all approved viewports. | The direct evidence exposes an unresolved tab-fit defect. |
+| Cross-boundary integration realism and mock gap | 95% | Fresh built Node backend, isolated SQLite, Nuxt dev server, headless Chrome, and browser/backend logs were used. | Deep internal tool workflows remain out of scope. |
+| Environment, configuration, identity, and fixture fidelity | 95% | Explicit isolated data directory, fresh backend build, explicit endpoints, and deterministic shell-only journey. | No authenticated agent-run fixture was needed for this ticket. |
+| Failure, edge-case, lifecycle, and recovery evidence | 90% | Failure is deterministic across narrow/docked/short states; cleanup and isolated startup passed. | No packaged Electron lifecycle or restart/recovery matrix was needed. |
+| User-surface, browser, and desktop-shell confidence | 55% | Browser coverage directly exercises all states and `/mobile`; 42 interactions clicked successfully. | The tab-fit acceptance behavior fails in 16 of 17 `/workspace` states. |
+| Durable regression coverage quality and relevance | 96% | `11` files / `67` tests passed, including the integrated order test; no API/E2E-owned durable test changed. | The existing durable tab-fit assertion does not yet encode the integrated `usage` fit requirement beyond the live probe. |
+
+- Overall current validation confidence: `82.3%` (simple average of the seven categories).
+- Every critical acceptance criterion directly proven: `No`.
+- Applicable categories below `90%`: requirement proof, changed-boundary directness, user-surface/browser confidence.
+- Default clean-confidence target met: `No`.
+- Broader validation decision: `Required` and completed with `Fail`.
+
+### Reroute Required
+
+- Preliminary classification: `Design Impact / Local Fix pending focused owner analysis`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not delivery and not proportional successful-test review yet.
+- Required focus: determine whether the clipping is an implementation-owned responsive tab-fit fix, a requirements/design gap caused by the integrated `usage` catalog entry, or both; preserve the exact failure IDs and current browser evidence during routing.
+- API/E2E durable coverage changes this round: `None`.
+
+## Round 5 Current-State Reinvestigation Addendum
+
+- Investigation date: `2026-07-15`.
+- Current branch / HEAD: `codex/frontend-responsive-ux-audit` / `bb3b2fe499bf2310150884eb483db39982502f01`.
+- Trigger: code-review Round 8 `PASS` for CR-003. The reviewed production fix adds an explicit opt-in `wrap` prop to `TabList` and enables wrapping only for the full `RightSideTabs` header; default generic `TabList` horizontal overflow remains unchanged. The integrated `usage`/`Token` capability and catalog order remain intact.
+- Previous Round 4 browser failure is historical and must be rechecked rather than reused as current sign-off. The required current proof is that every current right-tab label, including `VNC Viewer` and `Token`, is readable/reachable within visible list bounds in docked and drawer modes, while canonical ordering and `/mobile` isolation remain correct.
+- Relevant durable coverage changed upstream in this implementation round: `autobyteus-web/components/tabs/__tests__/TabList.spec.ts` and `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts` now cover wrap opt-in and class forwarding. API/E2E will not edit these tests. A successful current run must return through `code_reviewer` for separate proportional durable-test review before delivery.
+- Existing responsive browser probe remains `Still Valid`; it is unchanged and already asserts tab fit, ordering, responsive shell geometry, primary controls, and `/mobile` isolation. Existing order, policy, adaptive-layout, right-panel, mobile, shell, and new wrap tests remain valid.
+- Required broader validation: `Required`. This is a browser-visible responsive layout fix and the prior failure was only observable at the live DOM/geometry boundary.
+
+### Round 5 Planned Runtime And Evidence
+
+- Build the current backend using the documented `pnpm -C autobyteus-server-ts build`, then run its fresh `dist/app.js` against isolated SQLite data at `/tmp/autobyteus-responsive-ux-audit-api-e2e-round5-server-data` on `127.0.0.1:13005`.
+- Run `autobyteus-web` Nuxt dev on `127.0.0.1:13006` with explicit `BACKEND_*` endpoints pointing to `13005`.
+- Execute the unchanged durable probe with `--fail-on-console-error` across all 17 `/workspace` viewports plus `/mobile`, writing canonical current results under `probes/api-e2e/` and Round 5 logs under `evidence/`.
+- Run the focused current suite covering the implementation handoff's `11` files / `68` tests, including the new `TabList`/`RightSideTabs` wrap assertions, plus probe syntax and `git diff --check`.
+- Correlate browser observations with backend/frontend logs, stop only run-owned processes, and verify ports `13005`/`13006` are closed.
+- No API/E2E-owned durable test edit is planned. Successful execution routes to `code_reviewer` for proportional durable-test review; failure routes to `code_reviewer` for focused failure-origin review; blocked setup preserves evidence and asks the user for the missing dependency.
+
+## Round 5 Execution Outcome Addendum
+
+- Execution date: `2026-07-15`.
+- Current HEAD remained `bb3b2fe499bf2310150884eb483db39982502f01` throughout validation.
+- Current focused Nuxt/Vitest coverage passed: `11` files / `68` tests, including the new `TabList` wrap and `RightSideTabs` opt-in coverage. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-focused-nuxt-tests.log`.
+- Fresh `autobyteus-server-ts` build passed, current Nuxt production build passed, probe syntax passed, web/localization guards passed, and localization literal audit passed with zero unresolved findings. Evidence is retained under `evidence/api-e2e-round5-*.log`.
+- Authoritative live run used fresh built backend on `127.0.0.1:13005`, Nuxt dev frontend on `127.0.0.1:13006`, isolated SQLite data at `/tmp/autobyteus-responsive-ux-audit-api-e2e-round5-server-data`, headless Chrome, and `--fail-on-console-error`.
+- Current browser result is `Pass`: `18` states (`17` `/workspace` viewports plus `/mobile`), `42/42` primary-control interactions clicked, `0` probe failures, and no browser console-error failure. Canonical output was refreshed at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `workspace-responsive-probe-summary.json`, generated `2026-07-15T17:38:02.637Z`.
+- The integrated right-tool labels were observed in order as `Files -> Terminal -> Activity -> Token -> Artifacts -> VNC Viewer`. The probe passed readable/reachable tab-boundary assertions in all docked and drawer states, including every `VNC Viewer` and `Token` tab. `/mobile` rendered `MobileRemoteAccessShell` without the adaptive workspace.
+- Backend logs contain no GraphQL validation/HTTP-400 entries. Nuxt dev emitted repeated existing `#app-manifest` pre-transform warnings during startup, but the live pages served, the browser collected no console errors under enforcement, and the production Nuxt build passed. This is retained as a non-blocking dev-tooling warning and not classified as a product failure.
+- Cleanup completed; ports `13005` and `13006` are closed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-cleanup-ports.log`.
+
+### Round 5 Final Confidence Scorecard
+
+| Confidence Category | Score | Basis | Residual Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 100% | Full approved browser matrix, live ordering/tab-fit checks, center geometry, controls, short-height states, and `/mobile` isolation passed; focused tests cover policy and wrap contract. | Deep internal tool content remains outside the ticket scope. |
+| Changed-boundary execution directness | 100% | Real Nuxt/browser rendering directly exercises the current `TabList`/`RightSideTabs` responsive source in docked and drawer modes. | None material for the reviewed boundary. |
+| Cross-boundary integration realism and mock gap | 96% | Fresh built backend, isolated SQLite, real Nuxt dev server, Chrome, backend logs, and browser interactions were used. | Deep terminal/browser/VNC internal workflows are not exhaustive. |
+| Environment, configuration, identity, and fixture fidelity | 92% | Explicit endpoints, isolated data, fresh backend build, real migrations, deterministic shell journey, and current production build passed. | Nuxt dev startup logged harmless `#app-manifest` pre-transform warnings; no browser console impact observed. |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | Prior clipping failure was rechecked and resolved across all narrow, threshold, constrained, short, docked, drawer, wide, and mobile states; cleanup passed. | Packaged Electron lifecycle and deep restart/recovery remain out of scope. |
+| User-surface, browser, and desktop-shell confidence | 98% | `18` browser states, `42` successful interactions, all six current right-tool labels readable/reachable, zero console-error failures, and `/mobile` isolation passed. | Packaged Electron/native shell not directly exercised. |
+| Durable regression coverage quality and relevance | 98% | `11` files / `68` tests passed; new wrap behavior has focused tests; unchanged durable probe validates the live fit boundary. | No full authenticated agent-run workflow is required by this ticket. |
+
+- Overall current validation confidence: `97.0%` (simple average of the seven applicable categories).
+- Every critical acceptance criterion directly proven: `Yes`.
+- Applicable categories below `90%`: `None`.
+- Default clean-confidence target met: `Yes`.
+- Broader validation decision: `Required` and completed with `Pass`.
+- Current durable-test changes are implementation-owned; API/E2E made no durable coverage edit.
