@@ -27,20 +27,24 @@ const metadata: AgentRunMetadata = {
 
 const createFakeRun = (options: {
   status?: "initializing" | "running" | "idle" | "error";
+  statusAfterPostBegins?: "initializing" | "running" | "idle" | "error";
   canInterrupt?: boolean;
   accepted?: boolean;
   rejectMessage?: string;
   resultTurnId?: string | null;
 } = {}) => {
   const listeners = new Set<(event: unknown) => void>();
-  const status = options.status ?? "idle";
+  let status = options.status ?? "idle";
   return {
     runId: "run-1",
-    postUserMessage: vi.fn(async () => ({
-      accepted: options.accepted ?? true,
-      turnId: options.accepted === false ? null : options.resultTurnId === undefined ? "turn-1" : options.resultTurnId,
-      message: options.rejectMessage,
-    })),
+    postUserMessage: vi.fn(async () => {
+      status = options.statusAfterPostBegins ?? status;
+      return {
+        accepted: options.accepted ?? true,
+        turnId: options.accepted === false ? null : options.resultTurnId === undefined ? "turn-1" : options.resultTurnId,
+        message: options.rejectMessage,
+      };
+    }),
     subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
       listeners.add(listener);
       return () => listeners.delete(listener);
@@ -143,8 +147,8 @@ const buildCoordinator = (options: {
 };
 
 describe("AgentRunCommandCoordinator", () => {
-  it("publishes initializing before offline restore resolves and forwards through restored runtime", async () => {
-    const fakeRun = createFakeRun();
+  it("keeps inactive-restore accepted-result running status aligned with the following ACK", async () => {
+    const fakeRun = createFakeRun({ status: "initializing" });
     let resolveRestore!: (value: { run: ReturnType<typeof createFakeRun> }) => void;
     const restorePromise = new Promise<{ run: ReturnType<typeof createFakeRun> }>((resolve) => {
       resolveRestore = resolve;
@@ -173,7 +177,12 @@ describe("AgentRunCommandCoordinator", () => {
       accepted: true,
       duplicate: false,
       message_id: "msg-1",
+      status: { status: "running", can_interrupt: false, agent_id: "run-1" },
     });
+    expect([
+      ...publishedStatusPayloads(published).map((payload) => payload.status),
+      result.ack.status?.status,
+    ]).toEqual(["initializing", "running", "running"]);
     expect(fakeRun.postUserMessage).toHaveBeenCalledOnce();
     expect(fakeRun.postUserMessage.mock.calls[0][0].metadata).toMatchObject({
       message_id: "msg-1",
@@ -205,6 +214,34 @@ describe("AgentRunCommandCoordinator", () => {
       state: "accepted",
       accepted: true,
       status: { status: "running", can_interrupt: true, agent_id: "run-1" },
+    });
+  });
+
+  it("keeps active-idle accepted-result running status aligned with the following ACK", async () => {
+    const fakeRun = createFakeRun({
+      status: "idle",
+      statusAfterPostBegins: "initializing",
+    });
+    const { coordinator, published } = buildCoordinator({
+      restorePromise: Promise.resolve({ run: fakeRun }),
+      activeRun: fakeRun,
+    });
+
+    const result = await coordinator.postUserMessage({
+      runId: "run-1",
+      messageId: "msg-1",
+      dedupeKey: "dedupe-1",
+      message: new AgentInputUserMessage("hello"),
+    });
+
+    expect([
+      ...publishedStatusPayloads(published).map((payload) => payload.status),
+      result.ack.status?.status,
+    ]).toEqual(["running", "running"]);
+    expect(result.ack.status).toEqual({
+      status: "running",
+      can_interrupt: false,
+      agent_id: "run-1",
     });
   });
 
