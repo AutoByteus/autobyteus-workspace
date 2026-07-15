@@ -21,8 +21,8 @@
 ## Environment / Bootstrap Context
 
 - Project Type: `Git`
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width`
 - Current Branch: `codex/token-statistics-full-width`
 - Current HEAD: `d22085f9c` delivery checkpoint; manual-separator source implementation commit `173848dea`; historical rejected collapsed-header commit `530587a70`.
 - Bootstrap Base: refreshed `origin/personal` at `9fda25eac8fc70df97599758760b47f25620cec8`

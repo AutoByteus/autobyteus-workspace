@@ -3,12 +3,12 @@
 ## Ticket
 
 - Ticket: `token-statistics-full-width`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/token-statistics-full-width`
 - Current source candidate: `c448824203a9fd4ffc97e7884a992a7c03863b6f` (`style(settings): match workspace separator feedback`)
 - Delivery validation checkpoint: `440eada0ba098d05bc20deb149e829c72b7116d5`
 - Finalization target: `personal` / `origin/personal`
-- Current status: `Released`; repository finalization and release `v1.4.14` completed successfully. Dedicated branch/worktree cleanup is in progress.
+- Current status: `Complete`; repository finalization, release `v1.4.14`, and dedicated branch/worktree cleanup completed successfully.
 
 ## Integrated-State Refresh
 
@@ -18,7 +18,7 @@
 - Integration method: `Already current`; no merge or rebase was needed.
 - Delivery-safety checkpoint: `440eada0b` preserves the current round-3 source review, API/E2E, proportional review, and execution evidence before delivery-owned report refreshes.
 - Base-driven executable rerun requirement: none because the tracked base is exactly the validated bootstrap base. Delivery nevertheless rebuilt the full current Electron package for user testing, and that passed.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/delivery-evidence/integration-refresh.txt`
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/delivery-evidence/integration-refresh.txt`
 
 ## Current Delivered Behavior
 
@@ -58,14 +58,14 @@
 - Production browser build and Electron renderer/main/preload generation: passed.
 - Localization and diff checks: passed.
 - Live production-browser coverage proved exact rest/hover/focus/active tokens, active precedence, coordinates, z-order hit testing, zero recovery, no blue, no overflow, accessibility/focus behavior, manager/state/request preservation, routes/modes/Back, loading/error/empty states, and unchanged Workspace layout.
-- Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/api-e2e-execution-coverage-report.md`
-- Structured browser evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/execution-evidence/workspace-visual-round-3/browser-validation-results.json`
-- Current desktop screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/execution-evidence/workspace-visual-round-3/desktop-fresh-1440x900.png`
-- Current narrow screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/execution-evidence/workspace-visual-round-3/narrow-stacked-390x844.png`
+- Authoritative report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/api-e2e-execution-coverage-report.md`
+- Structured browser evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/execution-evidence/workspace-visual-round-3/browser-validation-results.json`
+- Current desktop screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/execution-evidence/workspace-visual-round-3/desktop-fresh-1440x900.png`
+- Current narrow screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/execution-evidence/workspace-visual-round-3/narrow-stacked-390x844.png`
 
 ## Documentation Sync
 
-- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/docs-sync-report.md`
+- Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/docs-sync-report.md`
 - Result: `Pass — No impact`
 - Long-lived docs updated: None. The round-5 impact is visual feedback only and changes no workflow, API, persistence, operator, Token Statistics, route, or architectural contract.
 
@@ -74,12 +74,12 @@
 - Build represents current candidate `c44882420` and delivery validation checkpoint `440eada0b`; the prior pre-impact package is superseded.
 - Result: `Pass`
 - Version / flavor / architecture: `1.4.13` / `personal` / `macOS arm64`
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.13.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.13.zip`
+- Historical local app bundle: `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` in the now-removed ticket worktree.
+- Historical local DMG/ZIP: version `1.4.13` verification artifacts in the now-removed ticket worktree.
+- Availability: those unsigned local verification bytes were intentionally removed with the dedicated worktree after user approval and release completion; signed release artifacts are available from the `v1.4.14` GitHub release.
 - Integrity: DMG and ZIP checks passed; app executable is arm64; packaged terminal helper execute bits are correct.
 - Signing: local test build only; Developer ID signing, notarization, and timestamping were disabled. Gatekeeper may require right-click → **Open**.
-- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/electron-test-build-report.md`
+- Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/electron-test-build-report.md`
 
 ## User Verification Checklist
 
@@ -108,7 +108,7 @@
 - Ticket branch push and target `personal` fast-forward/push: `Completed`
 - GitHub release and five release workflows: `Completed successfully`
 - iOS recovery: attempt 1 hit a transient simulator UI-smoke marker timeout; failed-job rerun attempt 2 passed, including App Store Connect/TestFlight upload.
-- Dedicated worktree and ticket-branch cleanup: `In progress`
+- Dedicated worktree and ticket-branch cleanup: `Completed`; the worktree, local branch, and remote ticket branch were removed, then worktrees were pruned.
 - Release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.14`
 
 ## Cumulative Artifact Package
@@ -128,4 +128,4 @@
 
 All ticket artifacts above are under:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/`

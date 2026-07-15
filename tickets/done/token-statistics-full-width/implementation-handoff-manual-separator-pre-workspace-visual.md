@@ -2,14 +2,14 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/design-spec.md`
-- Supplemental solution artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/ui-ux-spec.md`
-- Authoritative design review report (round 4): `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/design-review-report.md`
-- Historical rejected implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/implementation-handoff-rejected-collapsed-header.md`
-- Historical rejected implementation review/coverage reports: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/api-e2e-coverage-investigation.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/api-e2e-execution-coverage-report.md`
-- Historical rejected browser evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/execution-evidence/`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/design-spec.md`
+- Supplemental solution artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/ui-ux-spec.md`
+- Authoritative design review report (round 4): `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/design-review-report.md`
+- Historical rejected implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/implementation-handoff-rejected-collapsed-header.md`
+- Historical rejected implementation review/coverage reports: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/api-e2e-coverage-investigation.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/api-e2e-execution-coverage-report.md`
+- Historical rejected browser evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/execution-evidence/`
 
 ## What Changed
 
@@ -75,7 +75,7 @@
 
 ## Environment Or Dependency Notes
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`
+- Historical implementation worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width` (removed after release completion)
 - Branch: `codex/token-statistics-full-width`
 - Base: `9fda25eac8fc70df97599758760b47f25620cec8`
 - Rejected implementation starting commit: `530587a707a48567d9bcf0a04736c091453f51fb`

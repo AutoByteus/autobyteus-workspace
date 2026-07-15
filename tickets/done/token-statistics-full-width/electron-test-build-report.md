@@ -5,7 +5,7 @@
 - Ticket: `token-statistics-full-width`
 - Purpose: Fresh user-verification build for the approved round-5 workspace-gray Settings separator candidate.
 - Build date: 2026-07-15
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`
+- Historical build worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width` (removed after release completion)
 - Branch: `codex/token-statistics-full-width`
 - Current candidate represented: `c448824203a9fd4ffc97e7884a992a7c03863b6f`
 - Delivery validation checkpoint represented: `440eada0ba098d05bc20deb149e829c72b7116d5`
@@ -13,7 +13,7 @@
 
 ## README Basis
 
-- Reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/README.md`, `Desktop Application Build` and `macOS Build With Logs (No Notarization)`.
+- Reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md`, `Desktop Application Build` and `macOS Build With Logs (No Notarization)`.
 - The README specifies `pnpm build:electron:mac` and recommends disabled notarization/timestamping plus electron-builder debug logging for a local macOS build.
 - `AUTOBYTEUS_BUILD_FLAVOR=personal` was explicit because the finalization target is `personal` and a ticket branch cannot infer that flavor.
 - Apple signing identity and automatic identity discovery were disabled so this local verification package cannot be mistaken for a distributable signed/notarized release.
@@ -22,7 +22,7 @@
 
 Working directory:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web` (historical; worktree removed after release)
 
 ```bash
 rm -rf electron-dist
@@ -48,13 +48,15 @@ pnpm build:electron:mac
 - Signing/notarization: local test build only. electron-builder intentionally skipped Developer ID signing because identity was null. No notarization or timestamping was performed.
 - Tracked-source impact: none. Generated `dist`, `dist-mobile`, `resources`, and `electron-dist` remain ignored.
 
-## Current Test Artifacts
+## Historical Local Test Artifacts
 
 | Artifact | Absolute Path | Size | SHA-256 |
 | --- | --- | ---: | --- |
 | App bundle | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` | unpacked local app | N/A |
 | DMG | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.13.dmg` | 383 MB | `6ce6bac4bfa8cbf1f4e26f8943e87863a84052ff47393bd568712e0d7c7967e9` |
 | ZIP | `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.13.zip` | 379 MB | `3becdcac35ca0a8a0facc827c778b574d733254742467888a0702c27c33837ac` |
+
+These paths are retained as historical execution evidence only; cleanup removed the dedicated worktree and its ignored build outputs after the user approved the build and `v1.4.14` released successfully.
 
 ## Artifact Verification
 
@@ -63,16 +65,17 @@ pnpm build:electron:mac
 - DMG: `hdiutil verify` passed; checksum valid.
 - ZIP: `unzip -tq` passed; no compressed-data errors.
 - Packaged `node-pty` spawn helpers: execute bits present for build, Darwin x64, and Darwin arm64 copies.
-- Full build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/delivery-evidence/workspace-visual-electron-build/electron-test-build.log`
-- Integrity evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/delivery-evidence/workspace-visual-electron-build/electron-test-artifact-integrity.log`
+- Full build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/delivery-evidence/workspace-visual-electron-build/electron-test-build.log`
+- Integrity evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/delivery-evidence/workspace-visual-electron-build/electron-test-artifact-integrity.log`
 
 ## User Test Notes
 
-- Preferred direct app path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Historical direct app path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 - Because this package is not Developer ID signed/notarized, macOS Gatekeeper may require right-clicking the app and selecting **Open**, or approving it in Privacy & Security.
 - This package is only for manual verification and must not be distributed as a release.
 - The user tested this exact current-candidate app bundle and explicitly confirmed it was good on 2026-07-15.
+- The unsigned local verification artifacts were removed with the dedicated worktree after repository finalization and successful release; use the signed `v1.4.14` GitHub release artifacts for distribution.
 
 ## Status
 
-`User verified — current workspace-gray candidate`. Repository finalization and release `v1.4.14` are authorized and in progress; this unsigned local package remains verification-only and is not the release artifact.
+`User verified and released as v1.4.14`. This report records the historical unsigned verification build; dedicated worktree cleanup removed its local bytes after release completion.

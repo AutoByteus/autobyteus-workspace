@@ -34,7 +34,7 @@ Round 3 must directly prove the new presentation layer: a soft `#e5e7eb` one-pix
 
 ## Project Execution Discovery And Fixtures
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`; web package: `autobyteus-web`.
+- Historical execution worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width` (removed after release completion); web package: `autobyteus-web`.
 - Commands remain `pnpm test:nuxt ... --run`, `pnpm test:nuxt --run`, `pnpm test:electron --run`, `pnpm build`, `pnpm generate:electron`, localization guard/audit, and `git diff --check`.
 - There is no repository browser-E2E framework. A retained ticket Playwright Core probe will serve the successful production build from a ticket-owned SPA server on port 3317 and use Chrome 150.
 - Deterministic GraphQL interception supplies 20 task rows, nested member, model aggregate, and loaded/loading/error/empty phases. No secret, account, persistent backend data, or migration is required.

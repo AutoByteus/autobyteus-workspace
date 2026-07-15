@@ -9,7 +9,7 @@
 - User verification: `Received` on 2026-07-15 for the current Electron app; the user stated, “now finalize and release a new version. its good i tested”.
 - User authorization: finalize the repository and create a new release.
 - Planned version/tag: `1.4.14` / `v1.4.14`
-- Current status: repository finalization and release completed successfully; dedicated branch/worktree cleanup is in progress.
+- Current status: repository finalization, release, and dedicated branch/worktree cleanup completed successfully.
 
 ## Integrated-State Refresh
 
@@ -20,7 +20,7 @@
 - Integration method: already current; no merge or rebase was required before finalization.
 - Containment: `origin/personal` is an ancestor of the verified ticket branch.
 - Renewed verification required: `No`; the target did not advance and the verified implementation did not change.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/delivery-evidence/integration-refresh.txt`
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/delivery-evidence/integration-refresh.txt`
 
 ## Review And Execution Gate
 
@@ -36,10 +36,10 @@
 ## Documentation And Ticket State
 
 - Docs sync: `Pass — No impact`; the change introduces no durable workflow, API, persistence, operator, route, or architecture contract requiring long-lived documentation updates.
-- Handoff summary: `Updated` at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/handoff-summary.md`.
+- Handoff summary: `Updated` at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/handoff-summary.md`.
 - Ticket moved to done: `Yes`.
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width`.
-- Release notes: `Created` at `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/release-notes.md`.
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width`.
+- Release notes: `Created` at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/release-notes.md`.
 
 ## Repository Finalization
 
@@ -70,7 +70,7 @@
 - Release Messaging Gateway run `29408513533`: `Success`
 - Server Docker Release run `29408513530`: `Success`
 - iOS App Store Connect Release run `29408513920`: `Success` on attempt 2, including signed IPA upload to App Store Connect/TestFlight. Attempt 1 failed only in the simulator UI smoke while waiting for `AUTOBYTEUS_FAKE_MOBILE_READY`; the failed-job rerun passed without source changes.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/delivery-evidence/release-v1.4.14/release-status.log`
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/delivery-evidence/release-v1.4.14/release-status.log`
 - Release status: `Completed successfully`
 
 ## Persisted Data / Rollback
@@ -83,12 +83,13 @@
 
 ## Post-Finalization Cleanup
 
-- Dedicated worktree cleanup: `Pending`
-- Worktree prune: `Pending`
-- Local ticket branch deletion: `Pending`
-- Remote ticket branch deletion: `Pending`
-- Cleanup will occur only after the target push and release tag publication are confirmed.
+- Dedicated worktree cleanup: `Completed`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width` was removed after the target and release evidence commits were pushed.
+- Worktree prune: `Completed`
+- Local ticket branch deletion: `Completed`; `codex/token-statistics-full-width` removed at `f0384dd26bc6082641bdaefb0b1da2c5ac7b1692` after its contents were fast-forwarded to `personal`.
+- Remote ticket branch deletion: `Completed`
+- Unrelated main-worktree files preserved: `.article-work/`, `.local-build-logs/`, `docs/articles/`, and `tickets/in-progress/app-store-publishing-pipeline-investigation/` remained untouched.
+- Cleanup evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/delivery-evidence/release-v1.4.14/cleanup-status.log`
 
 ## Final Status
 
-`Released successfully as v1.4.14; repository finalization is complete and dedicated branch/worktree cleanup is in progress.`
+`Complete — released successfully as v1.4.14; repository finalization and dedicated branch/worktree cleanup passed.`

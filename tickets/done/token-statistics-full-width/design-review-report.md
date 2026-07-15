@@ -2,10 +2,10 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/ui-ux-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/design-spec.md`
+- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/ui-ux-spec.md`
 - Historical Implementation / Review / Delivery Evidence Reviewed: `implementation-handoff.md`, `implementation-handoff-rejected-collapsed-header.md`, `code-review-report.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `docs-sync-report.md`, `electron-test-build-report.md`, `handoff-summary.md`, and `release-deployment-report.md`.
 - Visual / Source Reference Reviewed: supplied workspace screenshot, `autobyteus-web/components/layout/WorkspaceDesktopLayout.vue`, current `autobyteus-web/pages/settings.vue`, and `autobyteus-web/composables/useSettingsNavigationResize.ts`.
 - Current Review Round: `5`

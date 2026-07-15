@@ -20,7 +20,7 @@ Preserve the original `personal`-branch Settings page structure and behavior whi
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Authoritative Relationship |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width/tickets/done/token-statistics-full-width/ui-ux-spec.md` | UI/UX specification for the visually unchanged, manually resizable Settings split pane | `REQ-001`–`REQ-012` | `AC-001`–`AC-015` | `Refined`; revised direction approved on 2026-07-15 | Clarifies observable interaction; this requirements doc remains authoritative |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-full-width/ui-ux-spec.md` | UI/UX specification for the visually unchanged, manually resizable Settings split pane | `REQ-001`–`REQ-012` | `AC-001`–`AC-015` | `Refined`; revised direction approved on 2026-07-15 | Clarifies observable interaction; this requirements doc remains authoritative |
 | `proposed-settings-drawer-closed.png`, `proposed-settings-drawer-open.png`, `proposed-settings-drawer.html`, and the collapsed-header browser screenshots/evidence in this ticket | Superseded visual and implementation evidence | N/A for target behavior | N/A for target behavior | Rejected/superseded | Historical evidence only; must not drive implementation |
 
 ## Design Health Assessment
@@ -86,7 +86,7 @@ Preserve the original `personal`-branch Settings page structure and behavior whi
 
 ## Constraints / Dependencies
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width`
+- Historical task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-full-width` (removed after release completion)
 - Branch: `codex/token-statistics-full-width`; current delivery checkpoint `d22085f9c`; manual-separator source commit `173848dea`; historical rejected commit `530587a70`; base/final target `origin/personal`/`personal` at bootstrap commit `9fda25eac8fc70df97599758760b47f25620cec8`.
 - Desktop breakpoint remains Tailwind `md` (`768px`).
 - Desktop width range is exactly `0..256px`; no persistence.
