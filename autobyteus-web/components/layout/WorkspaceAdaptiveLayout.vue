@@ -11,7 +11,11 @@
       @open-tools="openToolsSurface"
     />
 
-    <div class="flex flex-1 min-h-0 min-w-0 overflow-hidden">
+    <div
+      ref="workspaceFlowRef"
+      class="flex flex-1 min-h-0 min-w-0 overflow-hidden"
+      data-test="workspace-center-right-flow"
+    >
       <!-- Content Area -->
       <div
         data-test="workspace-center-pane"
@@ -69,7 +73,7 @@
       <!-- Right Panel -->
       <div
         v-if="showDockedRightPanel"
-        :style="{ width: responsiveWorkspaceShellState.rightPanel.preferredWidth + 'px' }"
+        :style="{ width: rightPanelWidth + 'px' }"
         class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
         data-test="workspace-right-panel"
       >
@@ -94,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
 import { useRightPanel } from '~/composables/useRightPanel';
@@ -133,12 +137,44 @@ const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 
 const {
   isRightPanelVisible,
+  rightPanelWidth,
   initDragRightPanel,
   setRightPanelVisible,
+  setRightPanelWorkspaceWidth,
 } = useRightPanel();
 const { activeTab, visibleTabs, setActiveTab } = useRightSideTabs();
 const responsiveWorkspaceShellState = useResponsiveWorkspaceShellState();
 const isRightDrawerOpen = ref(false);
+const workspaceFlowRef = ref<HTMLElement | null>(null);
+let workspaceFlowResizeObserver: ResizeObserver | null = null;
+
+const registerWorkspaceFlowWidth = (width: number): void => {
+  if (width > 0) {
+    setRightPanelWorkspaceWidth(width);
+  }
+};
+
+onMounted(() => {
+  const workspaceFlow = workspaceFlowRef.value;
+  if (!workspaceFlow) {
+    return;
+  }
+
+  registerWorkspaceFlowWidth(workspaceFlow.getBoundingClientRect().width);
+
+  if (typeof ResizeObserver !== 'undefined') {
+    workspaceFlowResizeObserver = new ResizeObserver(([entry]) => {
+      registerWorkspaceFlowWidth(entry?.contentRect.width ?? workspaceFlow.getBoundingClientRect().width);
+    });
+    workspaceFlowResizeObserver.observe(workspaceFlow);
+  }
+});
+
+onBeforeUnmount(() => {
+  workspaceFlowResizeObserver?.disconnect();
+  workspaceFlowResizeObserver = null;
+  setRightPanelWorkspaceWidth(null);
+});
 
 const isAgentSelected = computed(() => selectionStore.selectedType === 'agent');
 const isTeamSelected = computed(() => selectionStore.selectedType === 'team');

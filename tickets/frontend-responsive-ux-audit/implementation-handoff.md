@@ -32,6 +32,8 @@ Code review Round 14 identified CR-010: the new left-panel content wrapper neede
 
 Architecture review Round 8 approved the bounded LID-001 fix for right-tool reopen ownership. The top semantic `Tools` trigger is now drawer-only; a user-owned right strip is the sole reopen affordance for strip presentation, while the existing strip event and selected-run state remain intact. Component/source assertions cover the docked, strip, and drawer truth table plus both drawer-opening paths, and the durable browser probe adds mutual-exclusion and strip-reopen assertions for downstream execution.
 
+The solution-design re-entry identified the bounded right-panel resize defect covered by FR-033/AC-034. This implementation restores a center-plus-right flow-width registration from `WorkspaceAdaptiveLayout` using a cleaned-up `ResizeObserver`, makes `useRightPanel.rightPanelWidth` the bounded actual width using the approved `480px` center minimum and `4px` right resize handle, and feeds that actual width into the single composed responsive adapter. The docked divider therefore stops at the center-preserving maximum instead of making the policy switch presentation because of an oversized drag input. The prior LID-001 drawer/strip trigger ownership fix remains unchanged.
+
 ## What Changed
 
 - Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
@@ -55,6 +57,7 @@ Architecture review Round 8 approved the bounded LID-001 fix for right-tool reop
 - Corrected short-height manual-left candidate priority so a user-hidden right preference remains a user-owned right strip, with a pure resolver regression.
 - Made the left shell a definite full-height flex column and verified the real `AppLeftPanel` sections/history scroll owner in the drawer regression.
 - Made top `Tools` trigger ownership drawer-only so a visible user-owned right strip is never duplicated by a semantic trigger; added component/source and browser assertions for strip/drawer reopen behavior.
+- Restored the center-preserving right-panel resize bound: `WorkspaceAdaptiveLayout` observes its center-plus-right flow width, `useRightPanel` clamps actual width to `flow - 480px - 4px`, and the composed policy/render path consumes that bounded width.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -83,6 +86,12 @@ Architecture review Round 8 approved the bounded LID-001 fix for right-tool reop
 | Finding | Implementation path | Verification |
 | --- | --- | --- |
 | LID-001 | `WorkspaceAdaptiveLayout.vue` derives `showToolsTrigger` only from `rightPanel.presentation === 'drawer'`; `RightSidebarStrip` remains the strip-only reopen owner and emits the existing `request-open` event into `openRightDrawer`. | `WorkspaceAdaptiveLayout.spec.ts` covers strip/top-trigger mutual exclusion, strip reopen, drawer-trigger reopen, selected-run continuity, and source ownership assertions. `workspace-responsive-probe.mjs` adds browser mutual-exclusion and strip-reopen assertions for API/E2E execution. |
+
+### Right-Panel Resize Local-Fix Trace
+
+| Finding | Implementation path | Verification |
+| --- | --- | --- |
+| FR-033 / AC-034 bounded docked resize | `useRightPanel.ts` registers the center-plus-right flow width, computes `max(0, flowWidth - WORKSPACE_CENTER_MIN_WIDTH_PX - RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX)`, clamps drag updates and exposes bounded `rightPanelWidth`; `useResponsiveWorkspaceShell.ts` passes that actual width to the one composed resolver; `WorkspaceAdaptiveLayout.vue` observes/cleans up the flow width and renders the bounded actual width. | `useRightPanel.spec.ts` covers maximum, normal minimum, below-minimum center-preserving clamp, and drag clamping. `WorkspaceAdaptiveLayout.spec.ts` proves the docked panel remains visible with no strip/top trigger and retains a `480px` center minimum. `workspace-responsive-probe.mjs` adds wide-viewport drag-beyond-bound browser coverage for downstream execution. |
 
 ## Key Files Or Areas
 
@@ -124,6 +133,8 @@ Modified:
 - `autobyteus-web/components/layout/__tests__/LeftSidebarStrip.spec.ts` (single-provider shell-state consumption)
 - `autobyteus-web/composables/__tests__/useAccessibleDrawer.spec.ts`, `autobyteus-web/layouts/__tests__/default-drawer.spec.ts`, and `autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts` (shared drawer lifecycle and left/right runtime focus regressions)
 - `autobyteus-web/layouts/__tests__/default.spec.ts` and `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts` (drawer source contract and short-height preference-sensitive boundary)
+- `autobyteus-web/composables/useRightPanel.ts`, `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts`, and `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` (center-preserving right resize bound, actual width composition, flow `ResizeObserver` registration/cleanup)
+- `autobyteus-web/composables/__tests__/useRightPanel.spec.ts` and `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` (bounded resize and docked render regressions)
 - Agent/team center workspace headers, shell localization, frontend README, and workspace layout docs
 
 Removed:
@@ -149,6 +160,7 @@ Removed:
 - Exact threshold/mode tuning and the comprehensive current-state browser matrix remain downstream validation responsibilities.
 - The current right-tool tab header remains one row with personal-branch typography/spacing and scrolls when needed; downstream API/E2E must validate the CR-004 pinned affordance layer plus native overflow, conditional fades/chevrons, active/focus auto-scroll, and reachability in docked and drawer modes at the full matrix.
 - The workspace shell must be browser-validated for no generic row at wide default/manual collapse, semantic constrained triggers, strip/top-trigger mutual exclusion, both right-tool reopen paths, actionable empty-state actions, measured left/right priority, repeated resize preference stability, and `/mobile` isolation.
+- The docked right divider must be browser-validated by dragging beyond its bound at wide sizes; the right panel must remain visible, the center must remain at least `480px`, and no strip/drawer/top Tools transition may occur. Genuine viewport/container transitions remain separately covered.
 - The shell-level adaptive layout verifies tool reachability and ordering but does not deeply validate every Terminal/Browser/VNC internal responsive state.
 - `workspace-responsive-probe.mjs` is cohesive and test-exempt from source-size limits but is near 500 effective lines; split it if future scenario families materially grow it.
 - `vue-tsc` is not installed in `autobyteus-web`; production Nuxt build is the available build/type confidence check.
@@ -193,7 +205,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off:
 
 - `git diff --check` — Passed.
 - `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
-- Focused Nuxt/Vitest suite covering policy, order, adaptive layout actions, right-tool tabs/drawer, right-panel state, left sidebar, mobile shell, app-left-panel, and default layout/drawer lifecycle — Passed (`16` files, `73` tests`). The adaptive action tests emit no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains.
+- Focused Nuxt/Vitest suite covering policy, order, adaptive layout actions, bounded right-panel resize, right-tool tabs/drawer, right-panel state, left sidebar, mobile shell, app-left-panel, and default layout/drawer lifecycle — Passed (`16` files, `76` tests`). The adaptive action tests emit no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains.
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.
@@ -218,6 +230,7 @@ Confirm:
 - Empty state exposes `Choose an agent or team` and `Open runs/history` actions.
 - Right-tool order is `Files -> Team (if applicable) -> Terminal -> Activity -> Usage/Token -> Artifacts -> Browser -> VNC`.
 - Wide desktop remains materially docked and `/mobile` remains isolated.
+- Dragging the docked right divider beyond the available bound must keep the docked panel visible and preserve the `480px` practical center; the browser probe now exercises this at `1280x800` and `1440x900`.
 - The policy boundary scenarios must also verify exact consumed-width fit, right-tools-first candidate order, narrow/manual/short-height precedence, and `presentationSource` (`user` versus `responsive`) without mutation of either preference.
 
 The durable `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` now contains the bounded browser assertions for right-strip/top-trigger mutual exclusion and strip-to-drawer reopen. It remains API/E2E-owned for current execution and failure classification; do not treat its syntax check as coverage sign-off. Its existing generic-surface selectors and expectations must remain reconciled with the approved semantic-trigger/no-generic-row behavior during current browser execution.

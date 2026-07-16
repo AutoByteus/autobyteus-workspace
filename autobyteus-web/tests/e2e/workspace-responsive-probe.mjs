@@ -630,6 +630,46 @@ async function validateRightStripReopenInteraction(page, viewport) {
   };
 }
 
+async function validateRightResizeBoundInteraction(page, viewport) {
+  if (viewport.name !== 'desktop-1280x800' && viewport.name !== 'wide-1440x900') {
+    return null;
+  }
+
+  const failures = [];
+  const handle = await page.locator('[data-test="workspace-right-resize-handle"]').boundingBox();
+  if (!handle) {
+    return {
+      action: 'drag right tools beyond center-preserving bound',
+      clicked: false,
+      state: await collect(page, 'right-resize-bound-missing-handle'),
+      failures: ['docked right-panel resize handle was not available for bound validation'],
+    };
+  }
+
+  const startX = handle.x + handle.width / 2;
+  const startY = handle.y + handle.height / 2;
+  await page.mouse.move(startX, startY);
+  await page.mouse.down();
+  await page.mouse.move(Math.max(0, startX - 1000), startY, { steps: 6 });
+  await page.mouse.up();
+  await page.waitForTimeout(350);
+
+  const state = await collect(page, 'right-resize-bound-after');
+  if (!state.visibleState.rightPanel) failures.push('right-panel resize bound removed the docked right panel');
+  if (state.rects.rightStrip?.visible) failures.push('right-panel resize bound rendered a right-tool strip');
+  if (state.visibleState.toolsTrigger) failures.push('right-panel resize bound rendered a semantic Tools trigger');
+  if (!state.rects.centerShell?.visible || state.rects.centerShell.rect.width < 480) {
+    failures.push(`right-panel resize bound left center below 480px: ${state.rects.centerShell?.rect?.width ?? 0}px`);
+  }
+
+  return {
+    action: 'drag right tools beyond center-preserving bound',
+    clicked: true,
+    state,
+    failures,
+  };
+}
+
 function validateLeftPanelLayout(state, context) {
   const failures = [];
   if (!state.leftPanelLayout) return failures;
@@ -838,6 +878,11 @@ const run = async () => {
 
         const shouldExerciseControls = initial.visibleState.semanticTriggers;
         const interactions = shouldExerciseControls ? await validateSemanticSurfaceInteractions(page, initial) : [];
+        const rightResizeBoundInteraction = await validateRightResizeBoundInteraction(page, viewport);
+        if (rightResizeBoundInteraction) {
+          interactions.push(rightResizeBoundInteraction);
+          pageFailures.push(...rightResizeBoundInteraction.failures);
+        }
         const rightStripInteraction = await validateRightStripReopenInteraction(page, viewport);
         if (rightStripInteraction) {
           interactions.push(rightStripInteraction);

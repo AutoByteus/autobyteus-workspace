@@ -52,6 +52,14 @@ const setViewport = (width: number, height: number): void => {
   Object.defineProperty(window, 'innerHeight', { configurable: true, value: height });
 };
 
+const dispatchMouseMove = (clientX: number): void => {
+  document.dispatchEvent(new MouseEvent('mousemove', { clientX }));
+};
+
+const dispatchMouseUp = (): void => {
+  document.dispatchEvent(new MouseEvent('mouseup'));
+};
+
 Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
   configurable: true,
   get() {
@@ -75,8 +83,10 @@ describe('WorkspaceAdaptiveLayout', () => {
     setViewport(1440, 900);
     const {
       setRightPanelVisible,
+      setRightPanelWorkspaceWidth,
     } = useRightPanel();
     setRightPanelVisible(true);
+    setRightPanelWorkspaceWidth(null);
     useLeftPanel().setLeftPanelVisible(true);
   });
 
@@ -214,6 +224,29 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(shell.classes()).not.toContain('overflow-auto');
   });
 
+  it('keeps the docked right panel visible when a drag reaches the center-preserving bound', async () => {
+    setViewport(1440, 900);
+    const rightPanel = useRightPanel();
+    rightPanel.setRightPanelWorkspaceWidth(1114);
+
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: 'resize-bound' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    rightPanel.initDragRightPanel(new MouseEvent('mousedown', { clientX: 1000 }));
+    dispatchMouseMove(0);
+    dispatchMouseUp();
+    await nextTick();
+
+    expect(rightPanel.rightPanelWidth.value).toBe(630);
+    expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-tools-trigger"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="workspace-right-panel"]').attributes('style')).toContain('width: 630px');
+    expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 480px');
+  });
+
   it('renders RunConfigPanel for selected run when config view mode is active', async () => {
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'agent', selectedRunId: '123' },
@@ -330,6 +363,10 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(source).not.toContain("rightPanel.presentation !== 'docked'");
     expect(source).toContain('v-else-if="responsiveWorkspaceShellState.showRightStrip"');
     expect(source).toContain('@request-open="openRightDrawer"');
+    expect(source).toContain('ref="workspaceFlowRef"');
+    expect(source).toContain('new ResizeObserver');
+    expect(source).toContain('setRightPanelWorkspaceWidth');
+    expect(source).toContain("width: rightPanelWidth + 'px'");
   });
 
   it('does not render semantic triggers after a wide manual left collapse', async () => {
