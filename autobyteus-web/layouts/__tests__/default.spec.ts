@@ -56,6 +56,8 @@ describe('default layout source', () => {
     const content = readFileSync(filePath, 'utf-8')
 
     expect(content).toContain('flex-1 min-w-0 overflow-hidden')
+    expect(content).toContain('class="isolate flex h-screen')
+    expect(content).toContain("'relative flex-1 min-w-0 overflow-hidden w-full'")
   })
 
   it('closes mobile menu on route changes via watcher', () => {

@@ -48,6 +48,7 @@ describe('RightSidebarStrip', () => {
 
     expect(mocks.setActiveTab).toHaveBeenCalledWith('files')
     expect(wrapper.emitted('request-open')).toHaveLength(1)
+    expect(strip.get('button[aria-label="Files"]').attributes('data-tab-name')).toBe('files')
   })
 
   it('redocks a fitting user strip and restores visibility', async () => {

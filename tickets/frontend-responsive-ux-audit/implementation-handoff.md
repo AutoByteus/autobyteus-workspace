@@ -251,6 +251,15 @@ Removed:
 
 Round 28 implementation-scoped checks: focused workspace/layout/policy/tab suite passed (`13` files, `92` tests); standalone policy TypeScript passed; probe `node --check` passed; web-boundary and localization guards passed; localization literal audit passed with zero findings; Nuxt production build passed; and `git diff --check` passed. Only the existing KaTeX quirks-mode, localization module-type, and build chunk-size warnings remain. API/E2E execution and current-environment coverage remain downstream-owned by `api_e2e_engineer`.
 
+### Round 29 Local-Fix Trace
+
+| Finding | Implementation path | Verification |
+| --- | --- | --- |
+| CR-020 simultaneous drawer layer and modal focus | The default shell is now an isolated shared stacking layer; the main content no longer creates a competing `z-0` context, so fixed strips and both transient drawers remain visible/hit-testable above either backdrop. The accessibility stack now returns focus into the remaining drawer when the topmost independent drawer closes, preserving containment before returning to a strip after the final dismissal. | Adaptive/composable coverage exercises both open orders, Tab ownership, and remaining-drawer focus. The browser probe uses real Playwright hit-testing rather than JavaScript `button.click()` for drawer/strip journeys and asserts remaining-drawer focus after topmost Escape dismissal. |
+| CR-021 opening-control identity | Left strip controls expose stable `data-nav-key` values and right strip controls expose stable `data-tab-name` values. The shared drawer lifecycle prefers a still-connected original opener and passes a disconnected origin identity to the side-specific resolver, which remounts the matching non-first strip control. | Default left drawer coverage now exercises a non-first Agent Teams control through backdrop/Escape dismissal; right drawer coverage and the durable probe retain control-specific focus assertions. |
+
+Round 29 implementation-scoped checks: focused suite, standalone policy TypeScript, probe syntax, `git diff --check`, guards, localization audit, and Nuxt build were rerun after the changes; API/E2E remains downstream-owned.
+
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Larger Requirement / Behavior Change / Responsive Layout Refactor`

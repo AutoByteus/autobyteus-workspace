@@ -150,7 +150,7 @@ describe('default layout drawer lifecycle', () => {
     await nextTick()
 
     const strip = wrapper.get('[data-test="workspace-left-navigation-strip"]')
-    const agentButton = strip.get('button[title="Agents"]')
+    const agentButton = strip.get('button[title="Agent Teams"]')
     agentButton.element.focus()
     await agentButton.trigger('click')
     await nextTick()
@@ -166,10 +166,10 @@ describe('default layout drawer lifecycle', () => {
     await nextTick()
 
     expect(wrapper.find('[data-test="app-left-navigation-drawer"]').exists()).toBe(false)
-    const remountedStripAgentButton = wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').element
+    const remountedStripAgentButton = wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agent Teams"]').element
     expect(document.activeElement).toBe(remountedStripAgentButton)
 
-    await wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').trigger('click')
+    await wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agent Teams"]').trigger('click')
     await nextTick()
     await nextTick()
     expect(wrapper.get('[data-test="app-left-navigation-drawer"]').element.contains(document.activeElement)).toBe(true)
@@ -178,7 +178,7 @@ describe('default layout drawer lifecycle', () => {
     await nextTick()
     await nextTick()
     expect(wrapper.find('[data-test="app-left-navigation-drawer"]').exists()).toBe(false)
-    expect(document.activeElement).toBe(wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').element)
+    expect(document.activeElement).toBe(wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agent Teams"]').element)
     expect(routeMock.fullPath).toBe('/workspace')
     wrapper.unmount()
   })

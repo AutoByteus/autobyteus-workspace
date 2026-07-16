@@ -215,9 +215,15 @@ const closeRightDrawer = (): void => {
   isRightDrawerOpen.value = false;
 };
 
-const getRightStripFocusTarget = (): HTMLElement | null => (
-  document.querySelector<HTMLElement>('[data-test="workspace-right-tool-strip"] button')
-);
+const getRightStripFocusTarget = (origin?: HTMLElement | null): HTMLElement | null => {
+  const tabName = origin?.dataset.tabName;
+  if (!tabName) {
+    return null;
+  }
+
+  const buttons = Array.from(document.querySelectorAll<HTMLElement>('[data-test="workspace-right-tool-strip"] button'));
+  return buttons.find((button) => button.dataset.tabName === tabName) ?? null;
+};
 
 const openRightDrawer = (): void => {
   if (isRightDrawerOpen.value) {

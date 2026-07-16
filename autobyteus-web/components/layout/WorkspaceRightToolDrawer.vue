@@ -29,7 +29,7 @@ import RightSideTabs from './RightSideTabs.vue';
 const props = defineProps<{
   title: string
   width: number
-  returnFocusTarget?: () => HTMLElement | null
+  returnFocusTarget?: (origin?: HTMLElement | null) => HTMLElement | null
 }>();
 
 const emit = defineEmits<{

@@ -69,6 +69,7 @@ describe('WorkspaceRightToolDrawer', () => {
           showOrigin.value && !isOpen.value
             ? h('button', {
                 'data-test': 'right-strip-origin',
+                'data-tab-name': 'terminal',
                 onClick: () => {
                   showOrigin.value = false
                   isOpen.value = true
@@ -76,13 +77,17 @@ describe('WorkspaceRightToolDrawer', () => {
               }, 'Open tools')
             : null,
           !showOrigin.value && !isOpen.value
-            ? h('button', { 'data-test': 'right-strip-remounted' }, 'Tools strip')
+            ? h('button', { 'data-test': 'right-strip-remounted', 'data-tab-name': 'terminal' }, 'Tools strip')
             : null,
           isOpen.value
             ? h(WorkspaceRightToolDrawer, {
                 title: 'Tools',
                 width: 450,
-                returnFocusTarget: () => document.querySelector<HTMLElement>('[data-test="right-strip-remounted"]'),
+                returnFocusTarget: (origin?: HTMLElement | null) => {
+                  const tabName = origin?.dataset.tabName
+                  return Array.from(document.querySelectorAll<HTMLElement>('[data-test="right-strip-remounted"]'))
+                    .find((button) => !tabName || button.dataset.tabName === tabName) ?? null
+                },
                 onClose: () => {
                   isOpen.value = false
                 },

@@ -367,33 +367,17 @@ async function collect(page, label) {
 }
 
 async function clickButtonByTest(page, dataTest, rootSelector = 'body') {
-  return await page.evaluate(({ test, selector }) => {
-    const root = document.querySelector(selector);
-    const button = root?.querySelector(`[data-test="${test}"]`);
-    if (!button) return false;
-    const style = getComputedStyle(button);
-    const buttonRect = button.getBoundingClientRect();
-    if (style.display === 'none' || style.visibility === 'hidden' || buttonRect.width <= 0 || buttonRect.height <= 0) return false;
-    button.click();
-    return true;
-  }, { test: dataTest, selector: rootSelector });
+  const target = page.locator(rootSelector).locator(`[data-test="${dataTest}"]`).first();
+  if (!(await target.isVisible().catch(() => false))) return false;
+  await target.click();
+  return true;
 }
 
 async function clickFirstButton(page, rootSelector) {
-  return await page.evaluate((selector) => {
-    const root = document.querySelector(selector);
-    const button = Array.from(root?.querySelectorAll('button') ?? []).find((candidate) => {
-      const style = getComputedStyle(candidate);
-      const buttonRect = candidate.getBoundingClientRect();
-      return style.display !== 'none' &&
-        style.visibility !== 'hidden' &&
-        buttonRect.width > 0 &&
-        buttonRect.height > 0;
-    });
-    if (!button) return false;
-    button.click();
-    return true;
-  }, rootSelector);
+  const target = page.locator(rootSelector).locator('button').first();
+  if (!(await target.isVisible().catch(() => false))) return false;
+  await target.click();
+  return true;
 }
 
 async function clickTabAffordance(page, rootSelector, dataTest) {
@@ -746,7 +730,7 @@ async function validateIndependentDrawerInteractions(page, viewport) {
   const rightDismissed = await collect(page, 'independent-drawers-right-escape');
   if (rightDismissed.rects.rightDrawer?.visible) failures.push('topmost right drawer Escape dismissal did not close the right drawer');
   if (!rightDismissed.rects.leftNavigationDrawer?.visible) failures.push('right drawer Escape dismissal closed the independent left drawer');
-  if (!rightDismissed.activeElement?.insideRightStrip) failures.push('right drawer Escape dismissal did not restore focus to the right strip');
+  if (!rightDismissed.activeElement?.insideLeftDrawer) failures.push('right drawer Escape dismissal did not return focus to the remaining left drawer');
 
   await page.keyboard.press('Escape');
   await page.waitForTimeout(250);
@@ -771,7 +755,7 @@ async function validateIndependentDrawerInteractions(page, viewport) {
   const reverseLeftDismissed = await collect(page, 'independent-drawers-reverse-left-escape');
   if (reverseLeftDismissed.rects.leftNavigationDrawer?.visible) failures.push('reverse topmost left drawer Escape dismissal did not close the left drawer');
   if (!reverseLeftDismissed.rects.rightDrawer?.visible) failures.push('reverse left drawer Escape dismissal closed the independent right drawer');
-  if (!reverseLeftDismissed.activeElement?.insideLeftStrip) failures.push('reverse left drawer Escape dismissal did not restore focus to the left strip');
+  if (!reverseLeftDismissed.activeElement?.insideRightDrawer) failures.push('reverse left drawer Escape dismissal did not return focus to the remaining right drawer');
 
   await page.keyboard.press('Escape');
   await page.waitForTimeout(250);

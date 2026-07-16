@@ -10,7 +10,8 @@
         v-for="tab in visibleTabs"
         :key="tab.name"
         type="button"
-        @click="selectTab(tab.name)"
+        :data-tab-name="tab.name"
+        @click="selectTab(tab.name, $event)"
         class="p-2 rounded-md hover:bg-gray-100 transition-colors relative group"
         :class="{ 'text-blue-600 bg-blue-50': activeTab === tab.name }"
         :title="tab.label"
@@ -30,6 +31,7 @@
 import { useRightSideTabs, type TabName } from '~/composables/useRightSideTabs';
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
+import { rememberDrawerTrigger } from '~/composables/useAccessibleDrawer';
 import type { RightStripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
 
 const props = withDefaults(defineProps<{
@@ -50,7 +52,7 @@ const stripClasses = computed(() => props.stripBehavior === 'overlay'
   ? 'fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg'
   : 'relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4');
 
-const selectTab = (tabName: TabName) => {
+const selectTab = (tabName: TabName, event: MouseEvent) => {
   setActiveTab(tabName);
 
   if (props.stripActivation === 'redock-panel') {
@@ -59,6 +61,10 @@ const selectTab = (tabName: TabName) => {
   }
 
   if (props.stripActivation === 'open-drawer') {
+    const trigger = event.currentTarget instanceof HTMLElement
+      ? event.currentTarget
+      : document.activeElement;
+    rememberDrawerTrigger(trigger);
     emit('request-open');
     return;
   }

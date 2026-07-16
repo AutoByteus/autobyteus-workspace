@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen h-[100dvh] flex-col">
+  <div class="isolate flex h-screen h-[100dvh] flex-col">
     <header
       v-if="!isApplicationImmersive && showResponsiveHeader"
       class="z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4"
@@ -134,9 +134,15 @@ const showLeftPanelDragHandle = computed(
   ),
 )
 
-const getLeftStripFocusTarget = (): HTMLElement | null => (
-  document.querySelector<HTMLElement>('[data-test="workspace-left-navigation-strip"] button')
-)
+const getLeftStripFocusTarget = (origin?: HTMLElement | null): HTMLElement | null => {
+  const navKey = origin?.dataset.navKey
+  if (!navKey) {
+    return null
+  }
+
+  const buttons = Array.from(document.querySelectorAll<HTMLElement>('[data-test="workspace-left-navigation-strip"] button'))
+  return buttons.find((button) => button.dataset.navKey === navKey) ?? null
+}
 
 useAccessibleDrawer({
   isOpen: computed(() => showLeftDrawer.value && !isApplicationImmersive.value),
@@ -170,7 +176,9 @@ const leftPanelClasses = computed(() => [
 ])
 
 const mainContentClasses = computed(() => [
-  'relative z-0 flex-1 min-w-0 overflow-hidden w-full',
+  // Keep the main content out of a nested stacking context so the fixed
+  // strips/drawers and both shell backdrops share the root overlay layer.
+  'relative flex-1 min-w-0 overflow-hidden w-full',
   isApplicationImmersive.value ? 'bg-slate-950' : 'bg-blue-50',
 ])
 

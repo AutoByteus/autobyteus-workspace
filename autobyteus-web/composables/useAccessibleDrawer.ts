@@ -13,30 +13,46 @@ interface AccessibleDrawerOptions {
   drawerRef: Ref<HTMLElement | null>
   onRequestClose: () => void
   isOpen?: Readonly<Ref<boolean>>
-  returnFocusTarget?: () => HTMLElement | null
+  returnFocusTarget?: (origin?: HTMLElement | null) => HTMLElement | null
 }
 
 // Drawers are independent side surfaces. A small shared stack makes keyboard
 // ownership deterministic when both are open without coupling their stores.
-const openDrawerIds: symbol[] = []
-
-const registerDrawer = (drawerId: symbol): void => {
-  const previousIndex = openDrawerIds.indexOf(drawerId)
-  if (previousIndex !== -1) {
-    openDrawerIds.splice(previousIndex, 1)
-  }
-  openDrawerIds.push(drawerId)
+interface OpenDrawer {
+  id: symbol
+  focusInitialElement: () => Promise<void>
 }
 
-const unregisterDrawer = (drawerId: symbol): void => {
-  const index = openDrawerIds.indexOf(drawerId)
-  if (index !== -1) {
-    openDrawerIds.splice(index, 1)
+const openDrawers: OpenDrawer[] = []
+
+let lastFocusedElement: HTMLElement | null = null
+
+export const rememberDrawerTrigger = (element: EventTarget | null): void => {
+  if (element instanceof HTMLElement && (
+    element.hasAttribute('data-nav-key') || element.hasAttribute('data-tab-name')
+  )) {
+    lastFocusedElement = element
   }
+}
+
+const registerDrawer = (drawer: OpenDrawer): void => {
+  const previousIndex = openDrawers.findIndex((entry) => entry.id === drawer.id)
+  if (previousIndex !== -1) {
+    openDrawers.splice(previousIndex, 1)
+  }
+  openDrawers.push(drawer)
+}
+
+const unregisterDrawer = (drawerId: symbol): OpenDrawer | null => {
+  const index = openDrawers.findIndex((entry) => entry.id === drawerId)
+  if (index !== -1) {
+    openDrawers.splice(index, 1)
+  }
+  return openDrawers[openDrawers.length - 1] ?? null
 }
 
 const ownsKeyboardInteraction = (drawerId: symbol): boolean => (
-  openDrawerIds[openDrawerIds.length - 1] === drawerId
+  openDrawers[openDrawers.length - 1]?.id === drawerId
 )
 
 const getFocusableElements = (drawer: HTMLElement): HTMLElement[] => Array.from(
@@ -76,12 +92,19 @@ export const useAccessibleDrawer = ({
     drawer.focus()
   }
 
-  const restoreFocus = async (): Promise<void> => {
+  const restoreFocus = async (remainingDrawer: OpenDrawer | null = null): Promise<void> => {
     await nextTick()
 
+    if (remainingDrawer) {
+      await remainingDrawer.focusInitialElement()
+      return
+    }
+
+    const origin = returnFocusTarget.value
     const resolveTarget = (): HTMLElement | null => (
-      returnFocusTargetResolver?.()
-      ?? (returnFocusTarget.value?.isConnected ? returnFocusTarget.value : null)
+      origin?.isConnected && document.contains(origin)
+        ? origin
+        : returnFocusTargetResolver?.(origin) ?? null
     )
     let target = resolveTarget()
 
@@ -148,29 +171,33 @@ export const useAccessibleDrawer = ({
 
   const onOpenStateChange = (open: boolean, wasOpen: boolean | undefined): void => {
     if (open && !wasOpen) {
-      returnFocusTarget.value = document.activeElement instanceof HTMLElement
+      const activeElement = document.activeElement instanceof HTMLElement
+        && document.activeElement !== document.body
+        && document.contains(document.activeElement)
         ? document.activeElement
         : null
-      registerDrawer(drawerId)
+      returnFocusTarget.value = activeElement
+        ?? lastFocusedElement
+      registerDrawer({ id: drawerId, focusInitialElement })
       document.addEventListener('keydown', handleKeydown)
       void focusInitialElement()
       return
     }
 
     if (!open && wasOpen) {
-      unregisterDrawer(drawerId)
+      const remainingDrawer = unregisterDrawer(drawerId)
       document.removeEventListener('keydown', handleKeydown)
-      void restoreFocus()
+      void restoreFocus(remainingDrawer)
     }
   }
 
   watch(() => isOpen.value, onOpenStateChange, { immediate: true, flush: 'post' })
 
   onBeforeUnmount(() => {
-    unregisterDrawer(drawerId)
+    const remainingDrawer = unregisterDrawer(drawerId)
     document.removeEventListener('keydown', handleKeydown)
     if (isOpen.value) {
-      void restoreFocus()
+      void restoreFocus(remainingDrawer)
     }
   })
 }
