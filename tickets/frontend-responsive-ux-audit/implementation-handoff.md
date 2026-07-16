@@ -260,6 +260,14 @@ Round 28 implementation-scoped checks: focused workspace/layout/policy/tab suite
 
 Round 29 implementation-scoped checks: focused suite, standalone policy TypeScript, probe syntax, `git diff --check`, guards, localization audit, and Nuxt build were rerun after the changes; API/E2E remains downstream-owned.
 
+### Round 30 Local-Fix Trace
+
+CR-020 visual/modal ordering: the shared `useAccessibleDrawer` registry is now reactive and is the sole ordered layer owner for both independent shell drawers. Its registration order drives keyboard ownership, backdrop z-index, and drawer z-index. The topmost drawer/backdrop pair therefore matches the same side in right-then-left and left-then-right journeys; both drawers remain visible above either backdrop, while the topmost backdrop receives real pointer dismissal.
+
+The default left drawer and `WorkspaceRightToolDrawer` consume the shared backdrop/drawer z-index outputs. Focus behavior remains stack-aware: topmost Escape/Tab ownership is unchanged, and dismissing the topmost drawer returns focus to the remaining drawer before the final dismissal returns to the originating strip. The durable probe adds reverse-order visual z-index assertions and real hit-tested backdrop clicks for both dismissal steps.
+
+Round 30 checks: affected focused suite (4 files, 32 tests) and full responsive focused suite (13 files, 92 tests) passed with only the known KaTeX quirks-mode warning; standalone responsive-policy TypeScript check passed; probe syntax, `git diff --check`, web-boundary guard, localization-boundary guard, localization literal audit, and Nuxt build passed. API/E2E remains downstream-owned; no API/E2E sign-off is claimed.
+
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Larger Requirement / Behavior Change / Responsive Layout Refactor`

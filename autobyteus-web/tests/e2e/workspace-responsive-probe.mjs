@@ -380,6 +380,29 @@ async function clickFirstButton(page, rootSelector) {
   return true;
 }
 
+async function clickTopmostDrawerBackdrop(page) {
+  const point = await page.evaluate(() => {
+    for (let y = 8; y < innerHeight - 8; y += 8) {
+      for (let x = 8; x < innerWidth - 8; x += 8) {
+        const element = document.elementFromPoint(x, y);
+        const backdrop = element?.closest('[data-test$="-drawer-backdrop"]');
+        if (backdrop) {
+          return {
+            x,
+            y,
+            dataTest: backdrop.getAttribute('data-test') || '',
+          };
+        }
+      }
+    }
+    return null;
+  });
+
+  if (!point) return null;
+  await page.mouse.click(point.x, point.y);
+  return point.dataTest;
+}
+
 async function clickTabAffordance(page, rootSelector, dataTest) {
   return await page.evaluate(({ selector, test }) => {
     const root = document.querySelector(selector);
@@ -749,19 +772,28 @@ async function validateIndependentDrawerInteractions(page, viewport) {
     failures.push('opening the left drawer unexpectedly closed or suppressed the independent right drawer');
   }
   if (!reverseBothOpen.activeElement?.insideLeftDrawer) failures.push('left drawer did not own focus when opened after the right drawer');
+  const reverseLeftDrawerZ = Number(reverseBothOpen.rects.leftNavigationDrawer?.zIndex || 0);
+  const reverseRightDrawerZ = Number(reverseBothOpen.rects.rightDrawer?.zIndex || 0);
+  const reverseLeftBackdropZ = Number(reverseBothOpen.rects.leftDrawerBackdrop?.zIndex || 0);
+  const reverseRightBackdropZ = Number(reverseBothOpen.rects.rightDrawerBackdrop?.zIndex || 0);
+  if (!(reverseLeftDrawerZ > reverseRightDrawerZ && reverseLeftBackdropZ > reverseRightBackdropZ)) {
+    failures.push(`reverse drawer visual layer does not match keyboard ownership: left drawer/backdrop ${reverseLeftDrawerZ}/${reverseLeftBackdropZ}, right ${reverseRightDrawerZ}/${reverseRightBackdropZ}`);
+  }
 
-  await page.keyboard.press('Escape');
+  const reverseBackdropTarget = await clickTopmostDrawerBackdrop(page);
   await page.waitForTimeout(250);
-  const reverseLeftDismissed = await collect(page, 'independent-drawers-reverse-left-escape');
-  if (reverseLeftDismissed.rects.leftNavigationDrawer?.visible) failures.push('reverse topmost left drawer Escape dismissal did not close the left drawer');
-  if (!reverseLeftDismissed.rects.rightDrawer?.visible) failures.push('reverse left drawer Escape dismissal closed the independent right drawer');
-  if (!reverseLeftDismissed.activeElement?.insideRightDrawer) failures.push('reverse left drawer Escape dismissal did not return focus to the remaining right drawer');
+  const reverseLeftDismissed = await collect(page, 'independent-drawers-reverse-left-backdrop');
+  if (reverseBackdropTarget !== 'app-left-drawer-backdrop') failures.push(`reverse topmost backdrop hit ${reverseBackdropTarget || 'nothing'} instead of the left drawer backdrop`);
+  if (reverseLeftDismissed.rects.leftNavigationDrawer?.visible) failures.push('reverse topmost left drawer backdrop dismissal did not close the left drawer');
+  if (!reverseLeftDismissed.rects.rightDrawer?.visible) failures.push('reverse left drawer backdrop dismissal closed the independent right drawer');
+  if (!reverseLeftDismissed.activeElement?.insideRightDrawer) failures.push('reverse left drawer backdrop dismissal did not return focus to the remaining right drawer');
 
-  await page.keyboard.press('Escape');
+  const remainingBackdropTarget = await clickTopmostDrawerBackdrop(page);
   await page.waitForTimeout(250);
-  const reverseRightDismissed = await collect(page, 'independent-drawers-reverse-right-escape');
-  if (reverseRightDismissed.rects.rightDrawer?.visible) failures.push('reverse right drawer Escape dismissal did not close the remaining drawer');
-  if (!reverseRightDismissed.activeElement?.insideRightStrip) failures.push('reverse right drawer Escape dismissal did not restore focus to the right strip');
+  const reverseRightDismissed = await collect(page, 'independent-drawers-reverse-right-backdrop');
+  if (remainingBackdropTarget !== 'workspace-right-tool-drawer-backdrop') failures.push(`remaining right backdrop hit ${remainingBackdropTarget || 'nothing'} instead of the right drawer backdrop`);
+  if (reverseRightDismissed.rects.rightDrawer?.visible) failures.push('reverse right drawer backdrop dismissal did not close the remaining drawer');
+  if (!reverseRightDismissed.activeElement?.insideRightStrip) failures.push('reverse right drawer backdrop dismissal did not restore focus to the right strip');
 
   return {
     action: 'open independent left and right drawers in both directions',

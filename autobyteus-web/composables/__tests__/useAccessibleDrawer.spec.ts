@@ -136,12 +136,12 @@ describe('useAccessibleDrawer', () => {
       setup() {
         const leftDrawerRef = ref<HTMLElement | null>(null)
         const rightDrawerRef = ref<HTMLElement | null>(null)
-        useAccessibleDrawer({
+        const leftLayer = useAccessibleDrawer({
           isOpen: leftOpen,
           drawerRef: leftDrawerRef,
           onRequestClose: () => { leftOpen.value = false },
         })
-        useAccessibleDrawer({
+        const rightLayer = useAccessibleDrawer({
           isOpen: rightOpen,
           drawerRef: rightDrawerRef,
           onRequestClose: () => { rightOpen.value = false },
@@ -151,15 +151,21 @@ describe('useAccessibleDrawer', () => {
           h('button', { 'data-test': 'open-left', onClick: () => { leftOpen.value = true } }, 'Left'),
           h('button', { 'data-test': 'open-right', onClick: () => { rightOpen.value = true } }, 'Right'),
           leftOpen.value
-            ? h('aside', { ref: leftDrawerRef, role: 'dialog', tabindex: -1 }, [
-                h('button', { 'data-drawer-initial-focus': true }, 'Left action'),
-              ])
+            ? h('div', { 'data-test': 'left-layer', style: { zIndex: leftLayer.drawerLayer.drawerZIndex.value } }, [
+              h('div', { 'data-test': 'left-backdrop', style: { zIndex: leftLayer.drawerLayer.backdropZIndex.value } }),
+              h('aside', { ref: leftDrawerRef, role: 'dialog', tabindex: -1 }, [
+              h('button', { 'data-drawer-initial-focus': true }, 'Left action'),
+              ]),
+            ])
             : null,
           rightOpen.value
-            ? h('aside', { ref: rightDrawerRef, role: 'dialog', tabindex: -1 }, [
-                h('button', { 'data-drawer-initial-focus': true }, 'Right action'),
-                h('button', { 'data-test': 'right-second' }, 'Right second'),
-              ])
+            ? h('div', { 'data-test': 'right-layer', style: { zIndex: rightLayer.drawerLayer.drawerZIndex.value } }, [
+              h('div', { 'data-test': 'right-backdrop', style: { zIndex: rightLayer.drawerLayer.backdropZIndex.value } }),
+              h('aside', { ref: rightDrawerRef, role: 'dialog', tabindex: -1 }, [
+                  h('button', { 'data-drawer-initial-focus': true }, 'Right action'),
+                  h('button', { 'data-test': 'right-second' }, 'Right second'),
+                ]),
+            ])
             : null,
         ])
       },
@@ -170,6 +176,11 @@ describe('useAccessibleDrawer', () => {
     await nextTick()
     await wrapper.get('[data-test="open-right"]').trigger('click')
     await nextTick()
+
+    expect(Number(wrapper.get('[data-test="right-layer"]').attributes('style').match(/z-index:\s*(\d+)/)?.[1]))
+      .toBeGreaterThan(Number(wrapper.get('[data-test="left-layer"]').attributes('style').match(/z-index:\s*(\d+)/)?.[1]))
+    expect(Number(wrapper.get('[data-test="right-backdrop"]').attributes('style').match(/z-index:\s*(\d+)/)?.[1]))
+      .toBeGreaterThan(Number(wrapper.get('[data-test="left-backdrop"]').attributes('style').match(/z-index:\s*(\d+)/)?.[1]))
 
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', cancelable: true }))
     expect(document.activeElement).toBe(wrapper.get('[data-test="right-second"]').element)
@@ -187,6 +198,22 @@ describe('useAccessibleDrawer', () => {
     await nextTick()
     await nextTick()
     expect(leftOpen.value).toBe(false)
+
+    await wrapper.get('[data-test="open-right"]').trigger('click')
+    await nextTick()
+    await wrapper.get('[data-test="open-left"]').trigger('click')
+    await nextTick()
+    expect(Number(wrapper.get('[data-test="left-layer"]').attributes('style').match(/z-index:\s*(\d+)/)?.[1]))
+      .toBeGreaterThan(Number(wrapper.get('[data-test="right-layer"]').attributes('style').match(/z-index:\s*(\d+)/)?.[1]))
+    expect(Number(wrapper.get('[data-test="left-backdrop"]').attributes('style').match(/z-index:\s*(\d+)/)?.[1]))
+      .toBeGreaterThan(Number(wrapper.get('[data-test="right-backdrop"]').attributes('style').match(/z-index:\s*(\d+)/)?.[1]))
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }))
+    await nextTick()
+    await nextTick()
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }))
+    await nextTick()
+    await nextTick()
     wrapper.unmount()
   })
 })

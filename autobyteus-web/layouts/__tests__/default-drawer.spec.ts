@@ -67,6 +67,8 @@ describe('default layout drawer lifecycle', () => {
     expect(drawer.attributes('aria-modal')).toBe('true')
     expect(drawer.attributes('aria-label')).toBe('shell.workspaceSurfaces.navigationDrawerTitle')
     expect(drawer.attributes('aria-labelledby')).toBeUndefined()
+    expect((drawer.element as HTMLElement).style.zIndex).toBe('50')
+    expect((wrapper.get('[data-test="app-left-drawer-backdrop"]').element as HTMLElement).style.zIndex).toBe('40')
     expect(wrapper.find('[data-test="app-left-drawer-close"]').exists()).toBe(false)
     expect(wrapper.find('#left-navigation-drawer-title').exists()).toBe(false)
     expect(drawer.classes()).toEqual(expect.arrayContaining(['flex', 'flex-col', 'h-full']))

@@ -24,6 +24,7 @@
         v-if="showLeftDrawerBackdrop"
         data-test="app-left-drawer-backdrop"
         class="fixed inset-0 z-40 bg-gray-900 bg-opacity-75"
+        :style="{ zIndex: leftDrawerBackdropZIndex }"
         aria-hidden="true"
         @click="appLayoutStore.closeMobileMenu()"
       ></div>
@@ -144,15 +145,18 @@ const getLeftStripFocusTarget = (origin?: HTMLElement | null): HTMLElement | nul
   return buttons.find((button) => button.dataset.navKey === navKey) ?? null
 }
 
-useAccessibleDrawer({
+const { drawerLayer: leftDrawerLayer } = useAccessibleDrawer({
   isOpen: computed(() => showLeftDrawer.value && !isApplicationImmersive.value),
   drawerRef: leftDrawerRef,
   onRequestClose: () => appLayoutStore.closeMobileMenu(),
   returnFocusTarget: getLeftStripFocusTarget,
 })
+const leftDrawerBackdropZIndex = leftDrawerLayer.backdropZIndex
+const leftDrawerZIndex = leftDrawerLayer.drawerZIndex
 
 const leftPanelStyle = computed(() => ({
   width: `${responsiveWorkspaceShellState.value.leftPanel.preferredWidth}px`,
+  ...(showLeftDrawer.value ? { zIndex: leftDrawerZIndex.value } : {}),
 }))
 
 const redockLeftPanel = (): void => {

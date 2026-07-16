@@ -2,6 +2,7 @@
   <div
     data-test="workspace-right-tool-drawer-backdrop"
     class="fixed inset-0 z-40 bg-gray-900/50"
+    :style="{ zIndex: drawerBackdropZIndex }"
     aria-hidden="true"
     @click="emit('close')"
   ></div>
@@ -13,7 +14,7 @@
     :aria-label="title"
     tabindex="-1"
     class="fixed inset-y-0 right-0 z-50 flex max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:max-w-[92vw]"
-    :style="{ width: `${width}px` }"
+    :style="{ width: `${width}px`, zIndex: drawerZIndex }"
   >
     <div class="min-h-0 flex-1 overflow-hidden">
       <RightSideTabs mode="drawer" />
@@ -38,9 +39,11 @@ const emit = defineEmits<{
 
 const drawerRef = ref<HTMLElement | null>(null);
 
-useAccessibleDrawer({
+const { drawerLayer } = useAccessibleDrawer({
   drawerRef,
   onRequestClose: () => emit('close'),
   returnFocusTarget: props.returnFocusTarget,
 });
+const drawerBackdropZIndex = drawerLayer.backdropZIndex;
+const drawerZIndex = drawerLayer.drawerZIndex;
 </script>

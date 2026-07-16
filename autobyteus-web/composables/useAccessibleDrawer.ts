@@ -1,4 +1,4 @@
-import { nextTick, onBeforeUnmount, ref, watch, type Ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch, type Ref } from 'vue'
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -23,7 +23,13 @@ interface OpenDrawer {
   focusInitialElement: () => Promise<void>
 }
 
-const openDrawers: OpenDrawer[] = []
+const DRAWER_BACKDROP_Z_INDEX = 40
+const DRAWER_BASE_Z_INDEX = 50
+
+// This ordered registry is the shared layer owner for the independent shell
+// drawers. The same order drives keyboard ownership and the z-indexes for
+// both the backdrop and drawer, so visual and modal topmost state cannot drift.
+const openDrawers = ref<OpenDrawer[]>([])
 
 let lastFocusedElement: HTMLElement | null = null
 
@@ -36,23 +42,23 @@ export const rememberDrawerTrigger = (element: EventTarget | null): void => {
 }
 
 const registerDrawer = (drawer: OpenDrawer): void => {
-  const previousIndex = openDrawers.findIndex((entry) => entry.id === drawer.id)
+  const previousIndex = openDrawers.value.findIndex((entry) => entry.id === drawer.id)
   if (previousIndex !== -1) {
-    openDrawers.splice(previousIndex, 1)
+    openDrawers.value.splice(previousIndex, 1)
   }
-  openDrawers.push(drawer)
+  openDrawers.value.push(drawer)
 }
 
 const unregisterDrawer = (drawerId: symbol): OpenDrawer | null => {
-  const index = openDrawers.findIndex((entry) => entry.id === drawerId)
+  const index = openDrawers.value.findIndex((entry) => entry.id === drawerId)
   if (index !== -1) {
-    openDrawers.splice(index, 1)
+    openDrawers.value.splice(index, 1)
   }
-  return openDrawers[openDrawers.length - 1] ?? null
+  return openDrawers.value[openDrawers.value.length - 1] ?? null
 }
 
 const ownsKeyboardInteraction = (drawerId: symbol): boolean => (
-  openDrawers[openDrawers.length - 1]?.id === drawerId
+  openDrawers.value[openDrawers.value.length - 1]?.id === drawerId
 )
 
 const getFocusableElements = (drawer: HTMLElement): HTMLElement[] => Array.from(
@@ -68,10 +74,19 @@ export const useAccessibleDrawer = ({
   onRequestClose,
   isOpen: providedIsOpen,
   returnFocusTarget: returnFocusTargetResolver,
-}: AccessibleDrawerOptions): void => {
+}: AccessibleDrawerOptions): {
+  drawerLayer: {
+    backdropZIndex: Readonly<Ref<number>>
+    drawerZIndex: Readonly<Ref<number>>
+  }
+} => {
   const isOpen = providedIsOpen ?? ref(true)
   const returnFocusTarget = ref<HTMLElement | null>(null)
   const drawerId = Symbol('accessible-drawer')
+  const layerIndex = computed(() => openDrawers.value.findIndex((drawer) => drawer.id === drawerId))
+  const normalizedLayerIndex = computed(() => Math.max(layerIndex.value, 0))
+  const backdropZIndex = computed(() => DRAWER_BACKDROP_Z_INDEX + normalizedLayerIndex.value)
+  const drawerZIndex = computed(() => DRAWER_BASE_Z_INDEX + normalizedLayerIndex.value)
 
   const focusInitialElement = async (): Promise<void> => {
     await nextTick()
@@ -200,4 +215,11 @@ export const useAccessibleDrawer = ({
       void restoreFocus(remainingDrawer)
     }
   })
+
+  return {
+    drawerLayer: {
+      backdropZIndex,
+      drawerZIndex,
+    },
+  }
 }

@@ -46,6 +46,8 @@ describe('WorkspaceRightToolDrawer', () => {
     expect(drawer.attributes('aria-label')).toBe('Tools')
     expect(drawer.classes()).toEqual(expect.arrayContaining(['fixed', 'inset-y-0', 'right-0']))
     expect(drawer.classes()).not.toContain('inset-0')
+    expect(drawer.element.style.zIndex).toBe('50')
+    expect(wrapper.get('[data-test="workspace-right-tool-drawer-backdrop"]').element.style.zIndex).toBe('40')
     expect(drawer.attributes('aria-labelledby')).toBeUndefined()
     expect(wrapper.find('#workspace-right-tool-drawer-title').exists()).toBe(false)
     expect(wrapper.find('[data-drawer-initial-focus]').exists()).toBe(false)
