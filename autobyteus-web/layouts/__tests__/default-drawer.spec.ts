@@ -5,11 +5,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import DefaultLayout from '../default.vue'
 
 const routeMock = {
+  path: '/workspace',
   fullPath: '/workspace',
+}
+const routerMock = {
+  push: vi.fn(),
 }
 
 vi.mock('vue-router', () => ({
   useRoute: () => routeMock,
+  useRouter: () => routerMock,
 }))
 
 describe('default layout drawer lifecycle', () => {
@@ -30,8 +35,9 @@ describe('default layout drawer lifecycle', () => {
           }),
         ],
         stubs: {
-          AppLeftPanel: { template: '<div data-test="left-panel-stub"></div>' },
+          Icon: true,
           LeftSidebarStrip: { template: '<div data-test="left-strip-stub"></div>' },
+          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
         },
         mocks: {
           $t: (key: string) => key,
@@ -54,9 +60,16 @@ describe('default layout drawer lifecycle', () => {
 
     const drawer = wrapper.get('[data-test="app-left-navigation-drawer"]')
     const closeButton = wrapper.get('[data-test="app-left-drawer-close"]').element as HTMLElement
+    const contentWrapper = drawer.get('div.min-h-0.flex-1.overflow-hidden')
     expect(drawer.attributes('role')).toBe('dialog')
     expect(drawer.attributes('aria-modal')).toBe('true')
     expect(drawer.attributes('aria-labelledby')).toBe('left-navigation-drawer-title')
+    expect(drawer.classes()).toEqual(expect.arrayContaining(['flex', 'flex-col', 'h-full']))
+    expect(contentWrapper.classes()).toEqual(expect.arrayContaining(['min-h-0', 'flex-1', 'overflow-hidden']))
+    expect(drawer.get('[data-test="app-left-panel-sections"]').classes()).toEqual(
+      expect.arrayContaining(['min-h-0', 'flex', 'flex-1', 'flex-col']),
+    )
+    expect(drawer.get('[data-test="app-left-panel-run-history"] > div').classes()).toContain('h-full')
     expect(document.activeElement).toBe(closeButton)
 
     await wrapper.get('[data-test="app-left-drawer-close"]').trigger('click')

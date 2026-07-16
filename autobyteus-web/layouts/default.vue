@@ -134,7 +134,7 @@ const leftPanelStyle = computed(() => ({
 }))
 
 const leftPanelClasses = computed(() => [
-  'inset-y-0 left-0 z-50 h-full flex-shrink-0 transform bg-white transition-transform duration-300 ease-in-out',
+  'inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out',
   isLeftDocked.value
     ? 'static translate-x-0 shadow'
     : 'fixed shadow-2xl',

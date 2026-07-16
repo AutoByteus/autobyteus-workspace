@@ -55,4 +55,15 @@ describe('default layout source', () => {
     expect(content).toContain('data-drawer-initial-focus')
     expect(content).toContain('useAccessibleDrawer')
   })
+
+  it('gives the left shell and real panel a definite full-height flex scroll owner', () => {
+    const layoutContent = readFileSync(resolve(process.cwd(), 'layouts/default.vue'), 'utf-8')
+    const panelContent = readFileSync(resolve(process.cwd(), 'components/AppLeftPanel.vue'), 'utf-8')
+
+    expect(layoutContent).toContain('flex h-full flex-shrink-0 flex-col')
+    expect(layoutContent).toContain('class="min-h-0 flex-1 overflow-hidden"')
+    expect(panelContent).toContain('class="flex h-full w-full flex-col')
+    expect(panelContent).toContain('data-test="app-left-panel-run-history"')
+    expect(panelContent).toContain('class="h-full overflow-y-auto"')
+  })
 })

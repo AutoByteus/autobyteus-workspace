@@ -28,6 +28,8 @@ Architecture review Round 7 approved the composed responsive-policy boundary aft
 
 Code review Round 13 returned bounded implementation fixes for CR-007, CR-008, and CR-009. This rework adds router/route-mocked action coverage for the adaptive workspace, a shared `useAccessibleDrawer` lifecycle for left and right transient surfaces, labelled dialog semantics with initial focus, focus containment, Escape/backdrop/close handling, focus return, and a visible narrow left-drawer close control. The short-height manual-left candidate phase now preserves a user-hidden right strip before considering a responsive right drawer. Current implementation checks below are local source/interaction checks only; API/E2E remains the next owned stage after source review passes.
 
+Code review Round 14 identified CR-010: the new left-panel content wrapper needed a definite flex-column parent to make its `flex-1` sizing and the real `AppLeftPanel` `h-full`/history scroll owner effective. The bounded fix adds `flex flex-col` to the shared left shell classes and upgrades the drawer regression to mount the real `AppLeftPanel` with only its deep run-tree/icon dependencies stubbed. Structural assertions now verify the shell, content wrapper, real panel sections, and history scroll owner together.
+
 ## What Changed
 
 - Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
@@ -49,6 +51,7 @@ Code review Round 13 returned bounded implementation fixes for CR-007, CR-008, a
 - Added warning-free adaptive action coverage with explicit router mocks, route outcomes, drawer/store outcomes, and selected-run continuity assertions for wide empty-state selection, runs/history, and constrained Agents & teams/Tools triggers.
 - Added the shared `useAccessibleDrawer` lifecycle owner and runtime regression coverage for both default-shell left navigation and right-tool drawer open/focus/keyboard/close/return behavior.
 - Corrected short-height manual-left candidate priority so a user-hidden right preference remains a user-owned right strip, with a pure resolver regression.
+- Made the left shell a definite full-height flex column and verified the real `AppLeftPanel` sections/history scroll owner in the drawer regression.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -70,6 +73,7 @@ Code review Round 13 returned bounded implementation fixes for CR-007, CR-008, a
 | CR-007 | `WorkspaceAdaptiveLayout.spec.ts` supplies `vue-router` route/router mocks and exercises wide route navigation, constrained drawer opening, runs/history focus, semantic triggers, and selected-run continuity. | Adaptive tests are warning-free for missing router/route injection; the focused source suite passed. |
 | CR-008 | `useAccessibleDrawer.ts` owns shared initial focus, Escape, Tab containment, and return-focus lifecycle; `layouts/default.vue` and `WorkspaceRightToolDrawer.vue` consume it with labelled dialog semantics and close affordances. | `default-drawer.spec.ts`, `WorkspaceRightToolDrawer.spec.ts`, and `useAccessibleDrawer.spec.ts` cover runtime open/focus/keyboard/close/return behavior. |
 | CR-009 | `responsiveLayoutPolicy.ts` makes short-height manual candidates preference-sensitive, choosing the user right strip before a responsive drawer when the right preference is hidden. | `responsiveLayoutPolicy.spec.ts` covers manual-left + hidden-right at short height and asserts user presentation sources. |
+| CR-010 | `layouts/default.vue` gives the docked/drawer left shell `flex flex-col`; the content wrapper and real `AppLeftPanel` retain definite full-height/flex/overflow ownership. | `default-drawer.spec.ts` mounts the real panel and asserts shell/content/sections/history classes; `default.spec.ts` retains the source structural contract. |
 
 ## Key Files Or Areas
 
@@ -180,7 +184,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off:
 
 - `git diff --check` — Passed.
 - `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
-- Focused Nuxt/Vitest suite covering policy, order, adaptive layout actions, right-tool tabs/drawer, right-panel state, left sidebar, mobile shell, app-left-panel, and default layout/drawer lifecycle — Passed (`16` files, `69` tests`). The adaptive action tests emit no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains.
+- Focused Nuxt/Vitest suite covering policy, order, adaptive layout actions, right-tool tabs/drawer, right-panel state, left sidebar, mobile shell, app-left-panel, and default layout/drawer lifecycle — Passed (`16` files, `70` tests`). The adaptive action tests emit no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains.
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.
