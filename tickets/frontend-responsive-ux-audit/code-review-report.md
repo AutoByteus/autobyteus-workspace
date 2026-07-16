@@ -2461,3 +2461,1019 @@ Route the cumulative package to fresh current-state API/E2E. If API/E2E updates 
 - Failure Origin (when applicable): `N/A` — this is a pre-API/E2E full implementation-source review.
 - Recommended Recipient: `api_e2e_engineer`
 - Notes: CR-016 and CR-017 are resolved in current source. Route the cumulative package to fresh API/E2E; do not route directly to delivery. A successful run must return for the separate proportional durable-test review if durable test code changes.
+
+## Round 28 — Full From-Scratch Implementation Source Review — LID-003 Re-entry
+
+### Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
+- Current Review Round: `28`
+- Trigger: LID-003 implementation re-entry at `2f478f8eeeb1909287ab78c91e6f2b53b5a78df9` after the bounded drawer/strip mutual-exclusion change.
+- Prior Review Round Reviewed: Full Round 27 source review at `7eceffbd5935d95bc102f3deedebf70231addc4c5`, plus the complete cumulative review history and Architecture Round 19 / DI-012 basis.
+- Latest Authoritative Round: `28`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`, latest architecture Round 22 `Pass` for the LID-003 basis.
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
+- API/E2E execution: Not performed on current HEAD in this source-review stage; this is the implementation gate only.
+- Failing Scenario IDs: `N/A` — not an API/E2E failure-origin review.
+- Exact Failing Commands / Execution Mode: `N/A`.
+- Failure Evidence Paths: `N/A`.
+
+This is a complete current-state source review, not a delta-only approval. I retraced the standard `/workspace` route from the approved requirements and renderer contract through the composed resolver/adapter, panel preference owners, default shell, adaptive renderer, strip activation, both transient drawer lifecycles, right-tool tabs, route boundary, and `/mobile` isolation. The LID-003 visibility gates are correct, but the full lifecycle exposes two new implementation blockers that the focused tests do not cover.
+
+### Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 26 | Architecture Round 19 visual/control continuity re-entry | `DI-010`, `CR-015` | `CR-016`, `CR-017` | Fail | No | Found right-drawer left anchoring and left strip route/lifecycle conflict. |
+| 27 | Bounded CR-016/CR-017 implementation fixes | `CR-016`, `CR-017` plus all prior resolved findings | None | Pass | No | Source was ready for fresh API/E2E. |
+| 28 | Bounded LID-003 drawer/strip mutual-exclusion implementation | `CR-016`, `CR-017`, `LID-003` plus all prior resolved findings | `CR-018`, `CR-019` | Fail | Yes | Strip visibility is mutually exclusive, but focus restoration and cross-side drawer ownership are not complete. |
+
+### Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 26 | `CR-016` | High / implementation blocking | Resolved | `WorkspaceRightToolDrawer.vue` retains `fixed inset-y-0 right-0`; focused drawer coverage asserts right anchoring and full-height geometry. | No regression found in the current LID-003 change. |
+| 26 | `CR-017` | High / implementation blocking | Resolved | `LeftSidebarStrip.vue` still returns after `open-drawer` activation; current default-drawer coverage asserts no route push and drawer visibility. | No regression found in the current LID-003 change. |
+| 27 / Architecture 22 | `LID-003` | High / implementation blocking | Partially resolved | `WorkspaceAdaptiveLayout.vue:76` and `default.vue:125–130` suppress the corresponding strip while its drawer is open. | The visibility half is correct; the related drawer lifecycle obligations remain blocked by `CR-018` and `CR-019`. |
+| 24 / Architecture 18 | `DI-010` | High / design impact | Resolved | Nested per-side `stripActivation` remains the only action authority. | No stale output aliases or drawer policy presentation were reintroduced. |
+| 24 | `CR-015` | Low / cleanup | Resolved | `LeftSidebarStrip.vue` exposes only `request-redock`; no unused `request-open` declaration is present. | No regression found. |
+
+### Review Scope
+
+- Changed implementation and behavior reviewed: the full standard-workspace responsive implementation at current HEAD, with focused attention on LID-003's strip/drawer mutual-exclusion gates and the complete open, focus, dismiss, restore, resize, route, and cross-side lifecycle.
+- Files / areas reviewed: `responsiveLayoutPolicy.ts`, `responsiveStripActivation.ts`, `useResponsiveWorkspaceShell.ts`, `useResponsiveElementRect.ts`, `useLeftPanel.ts`, `useRightPanel.ts`, `useAccessibleDrawer.ts`, `layouts/default.vue`, `WorkspaceAdaptiveLayout.vue`, `LeftSidebarStrip.vue`, `RightSidebarStrip.vue`, `WorkspaceRightToolDrawer.vue`, `RightSideTabs.vue`, `TabList.vue`, `Tab.vue`, `AppLeftPanel.vue`, `useShellPrimaryNavigation.ts`, `workspaceSurfaceOrder.ts`, relevant focused tests, and the durable browser probe.
+- Explicit exclusions: pre-existing unstaged delivery/release/documentation/evidence artifacts; API/E2E runtime execution and confidence scoring; separate durable-test review; and deep internal Terminal/Browser/VNC behavior, which remain downstream scope.
+- Review checks run: affected source/component Vitest suite, standalone responsive-policy TypeScript check, durable-probe `node --check`, and `git diff --check`.
+
+### Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: `Confirmed`. The target remains a personal-branch left navigation/history -> center Work -> right Files/tools hierarchy, exact `docked | strip` policy output, explicit `redock-panel`/`open-drawer` actions, transient drawer state outside policy, no duplicate controls/chrome, preference and selection preservation, per-side drawer/strip mutual exclusion, independent left/right side state, and `/mobile` isolation.
+- Design-spec behavior map verified against the implementation: `Partially contradicted`. The corresponding strip gates now implement the drawer-only visibility state, but the focus-return and side-independence lifecycle does not fully implement the approved renderer contract.
+- Design review report and round confirmed: `Confirmed`. Architecture Round 22 explicitly keeps LID-003 local and requires drawer-only visibility plus dismissal restoration; it does not authorize dropping focus restoration or cross-side independence.
+- Behavior-basis status: `Contradicted` for the two lifecycle subcontracts below; other reviewed behavior remains confirmed.
+- Changed or newly discovered behavior: `CR-018` focus return is broken when the opener strip is intentionally unmounted; `CR-019` cross-side drawer callbacks mutate the opposite side asymmetrically.
+- Remaining material ambiguity: None for these findings. The approved supplement explicitly says each drawer returns focus to its own restored strip and that opening one side hides only that side's strip while left/right state remains independent.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| --- | --- | --- | --- |
+| `FR-041` / `AC-042` / `DS-010` — drawer/strip mutual exclusion and dismissal restoration | `Contradicted` | `WorkspaceAdaptiveLayout.vue:76` and `default.vue:125–130` correctly make the corresponding strip disappear while its drawer is open. `useAccessibleDrawer.ts:32,53–61,109–122` stores the opener as a DOM node and restores it only when `isConnected`. | The supported strip-click path unmounts that opener as soon as the drawer opens; after backdrop/Escape dismissal the stored node is disconnected, so focus cannot return to the restored strip. |
+| `FR-039` / `AC-039` / `DS-010` — independent left/right drawer state | `Contradicted` | `WorkspaceAdaptiveLayout.vue:217–225` closes the global left drawer before opening the right drawer; `openLeftNavigation`/`openRunHistory` at `233–250` close the right drawer. `LeftSidebarStrip.vue:87–97` opens the global left drawer directly and does not close a right drawer. | A user can open one side's strip drawer and then activate the still-visible opposite strip. The two directions have different results: one closes the opposite drawer; the other can leave both drawers open. This contradicts the explicit independent-side contract and lacks a single symmetric owner. |
+| `FR-016`–`FR-040`, `AC-016`–`AC-041` | `Confirmed` | The pure resolver, nested activation output, panel preference owners, right-tab surface, route gate, bounded resize lifecycle, and `/mobile` boundary remain structurally intact in the current source. | None found in this source review; real browser validation remains downstream. |
+
+### Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The approved design has an explicit per-side drawer/strip state machine, focus restoration rule, and independent-side rule; the current implementation preserves the state gate but not both lifecycle invariants. | Fix CR-018 and CR-019 before downstream execution. |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | LID-003 gates match, but the hidden opener cannot receive restored focus and cross-side handlers mutate the opposite drawer state. | Correct both lifecycle paths and add focused regressions. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | The side spine reaches strip -> drawer -> dismissal, but the return-focus node is destroyed and cross-side transitions branch asymmetrically. | Establish a stable post-dismissal focus target and one symmetric side-drawer ownership rule. |
+| Ownership boundary preservation and clarity | Fail | `useAccessibleDrawer` owns focus lifecycle, but it assumes the opener remains mounted; `WorkspaceAdaptiveLayout` and `default.vue` separately mutate the opposite drawer state. | Strengthen the drawer lifecycle boundary and remove cross-side state bypass/mutation. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Policy, measurement, tabs, focus lifecycle, and route compatibility remain attached to clear owners. | None beyond the findings. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing app store, local drawer state, shared `useAccessibleDrawer`, strips, and `AppLeftPanel` are reused. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `StripActivation`, the single resolver, and shared drawer lifecycle remain reusable owned structures. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Nested right lifecycle and explicit per-side activation remain tight; no aliases or drawer policy output were reintroduced. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Fail | Cross-side drawer coordination is split: right open/close calls mutate the left store while left strip activation does not coordinate with right local state. | Give side-drawer interaction one symmetric owner or preserve both local states without cross-side mutation, per the approved contract. |
+| Empty indirection check (no pass-through-only boundary) | Pass | The activation helper and accessible drawer composable each own meaningful behavior. | Fix the opener-restoration contract rather than adding a second focus helper. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Fail | `WorkspaceAdaptiveLayout` currently owns right drawer state and also reaches into the left drawer store for cross-side coordination; the default shell and adaptive renderer have asymmetric cross-side behavior. | Clarify and enforce a single side-drawer coordination boundary. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Fail | `WorkspaceAdaptiveLayout` directly calls `appLayoutStore.closeMobileMenu()` in right-side actions, bypassing an independent side-state contract. | Remove the cross-side shortcut or introduce an explicit approved coordinator. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Fail | Side renderers use their own local/open store while sibling callbacks directly mutate the opposite side's drawer state. No one boundary owns both side lifecycles consistently. | Make the side-drawer owner authoritative for both actions or keep side state independent and local. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Layout policy, composables, route layout, strips, and drawers remain in their appropriate locations. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The activation helper and shared focus composable are justified; no artificial split is present. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Fail | `openRightDrawer`, `openLeftNavigation`, `openRunHistory`, and strip callbacks combine side-local actions with opposite-side mutations without an explicit coordination contract. | Define one symmetric side-drawer command boundary and test it. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, parameters, variables) | Pass | `stripActivation`, `openRightDrawer`, and `showLeftDrawer` names match their local concerns. | Names should not imply independent operation while callbacks silently close the opposite side. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicate policy or drawer component was introduced. | None. |
+| Patch-on-patch complexity control | Fail | The visibility fix is small, but it exposes an unhandled focus target lifecycle and leaves pre-existing asymmetric cross-side close calls in the same user journey. | Complete the lifecycle rather than treating the visibility gate as the whole fix. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No dead or legacy path was introduced; prior obsolete controls remain removed. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Tests assert strip disappearance, but constrained left/right backdrop dismissal does not assert restored-strip focus, and no test exercises cross-side drawer activation. | Add both focused lifecycle regressions before API/E2E. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing component/default fixtures and the durable probe helpers are reused. | Extend existing fixtures for focus and cross-side journeys. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Historical generic-row, initial-fit, wrapping, and duplicate-trigger assertions remain absent. | None. |
+| API/E2E readiness for the next workflow stage | Fail | Source suite and static checks pass, but two approved lifecycle invariants are contradicted in source and not covered by the current durable probe. | Return to `implementation_engineer`; require a fresh source review and API/E2E after fixes. |
+
+### Source File Size And Structure Audit
+
+Current implementation-source files were reviewed from scratch. Test files, the durable probe, generated outputs, and documentation are exempt from implementation-size thresholds. The LID-003 source delta is bounded, but the full current source path is blocked by the lifecycle findings.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | 479 | Pass | Pass | Pass; one phase-ordered policy owner | Pass | Clean | None. |
+| `autobyteus-web/utils/layout/responsiveStripActivation.ts` | 41 | Pass | Pass | Pass; explicit side action boundary | Pass | Clean | None. |
+| `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | 257 | Pass | Pass; bounded current delta | **Fail; cross-side drawer mutation and right focus-owner lifecycle participate here** | Pass | Local Fix | Fix CR-018/CR-019 and add lifecycle coverage. |
+| `autobyteus-web/layouts/default.vue` | 198 | Pass | Pass; bounded current delta | **Fail; left strip unmounts the opener and left drawer state is not symmetrically coordinated** | Pass | Local Fix | Fix CR-018/CR-019 and add lifecycle coverage. |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | 105 | Pass | Pass | **Fail; open-drawer path has no stable restoration target after unmount** | Pass | Local Fix | Preserve/identify the opener for post-dismissal focus. |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | 70 | Pass | Pass | Pass locally; its parent lifecycle must restore focus after removal | Pass | Local Fix | Add right-side focus-return coverage. |
+| `autobyteus-web/composables/useAccessibleDrawer.ts` | 108 | Pass | Pass | **Fail; restoration stores only a potentially disconnected DOM node** | Pass | Local Fix | Support a stable resolver/callback for remounted strip controls. |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | 39 | Pass | Pass | Pass locally; shared lifecycle contract needs the opener fix | Pass | Clean with dependent fix | None independent of CR-018. |
+
+### Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrapper, dual policy, or schema alias was added. |
+| No legacy old-behavior retention in changed scope | Pass | Generic/top controls, added drawer chrome, and old drawer-only policy output remain removed. |
+| Dead/obsolete code cleanup completeness | Pass | CR-015 and prior visual/control cleanup remain intact. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Only in-memory panel and transient drawer state are involved. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None found. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Fail | The current transition suppresses the strip correctly but does not restore focus to the remounted opener and does not preserve independent cross-side drawer semantics. |
+
+### Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| None | N/A | No new dead/obsolete item was introduced. | No current removal is required. | None. |
+
+### Docs-Impact Verdict
+
+- Docs impact: `Yes`, non-blocking at this source gate.
+- Why: delivery-owned workspace layout documentation and pre-existing release/docs artifacts remain outside the implementation commits and still require final synchronization; no requirements/design correction is required for CR-018/CR-019.
+- Files or areas likely affected: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/docs/workspace_layout.md` and delivery-owned ticket records during final docs sync.
+
+### Material Premise Validation
+
+#### `CR-018-PREM-001` — A strip opener is unmounted while its transient drawer is open
+
+- Origin: `New`
+- Related approved requirement or established contract: `FR-041`, `AC-042`, and the approved drawer accessibility contract requiring focus return to each drawer's restored strip.
+- Relevant behavior IDs: `FR-041` / `AC-042` / `DS-010`.
+- Product-supported initiating trigger or governing contract, with evidence: A user activates an existing left or right strip button in a constrained/narrow `/workspace`; the current LID-003 renderer explicitly hides that side's strip while the drawer is open (`default.vue:125–130`, `WorkspaceAdaptiveLayout.vue:75–82`).
+- Actual production caller/event path from that trigger to the claimed state: strip button -> `openMobileMenu()` or `request-open` -> local drawer opens -> corresponding strip branch is removed -> backdrop/Escape closes drawer -> `useAccessibleDrawer.restoreFocus()` runs.
+- Lifecycle preconditions and material consequence at the claimed point: `useAccessibleDrawer` captures the active strip button as a DOM node before the drawer opens; the strip is then unmounted, so `target.isConnected` is false after dismissal and focus is not restored to the returned strip.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: Implementation blocker. Add a stable post-dismissal opener resolver or equivalent and test both sides through backdrop and Escape dismissal.
+
+#### `CR-019-PREM-001` — Opposite-side drawer actions are reachable while the other side's strip remains visible
+
+- Origin: `New`
+- Related approved requirement or established contract: `FR-039`, `AC-039`, and the design rule that left/right side state remains independent and opening one side affects only its own strip.
+- Relevant behavior IDs: `FR-039` / `AC-039` / `DS-010`.
+- Product-supported initiating trigger or governing contract, with evidence: In narrow/constrained `/workspace`, both side strips are rendered while drawers are closed; opening one side hides only that side's strip, leaving the opposite strip available by the approved contract.
+- Actual production caller/event path from that trigger to the claimed state: left strip button -> `appLayoutStore.openMobileMenu()`; opposite right strip button remains available -> `openRightDrawer()` calls `appLayoutStore.closeMobileMenu()` before opening right, while the reverse path through `LeftSidebarStrip` does not close `isRightDrawerOpen`.
+- Lifecycle preconditions and material consequence at the claimed point: A user can activate the opposite visible strip while one drawer is open. Right-after-left closes the left drawer; left-after-right can leave both drawers open. The two supported directions therefore do not preserve independent side state or one consistent coordination rule.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: Implementation blocker. Make cross-side behavior symmetric under the approved independent-side contract and add a regression that exercises both directions, including focus/keyboard behavior if both transient drawers may coexist.
+
+### Findings (Round 28)
+
+#### `CR-018` — Drawer dismissal cannot restore focus to a strip that LID-003 unmounts
+
+- Severity: `High` / implementation blocking.
+- Affected behavior: `FR-041`, `AC-042`, `DS-010`, and the accessibility requirement that each drawer returns focus to its own restored strip.
+- Evidence: `default.vue:125–130` and `WorkspaceAdaptiveLayout.vue:75–82` intentionally remove the corresponding strip while its drawer is open. `useAccessibleDrawer.ts:32` stores only the original DOM element, and `:53–61` restores focus only if that element remains connected. Both current constrained strip paths therefore lose the opener during the drawer lifecycle. Existing tests cover focus return only for the default non-workspace header opener (`useAccessibleDrawer.spec.ts` and `default-drawer.spec.ts`), not for the hidden/remounted strip path.
+- Required action: Preserve a stable side-specific restoration target across the strip unmount/remount (for example, resolve the restored visible strip trigger after dismissal rather than retaining only the disconnected node). Add focused left and right constrained/narrow tests for initial focus, backdrop dismissal, Escape dismissal, and focus return to the corresponding remounted strip control. Keep the strip hidden while open and do not add forbidden visible chrome.
+- Classification / Owner: `Local Fix` — `implementation_engineer`.
+
+#### `CR-019` — Cross-side transient drawer ownership is asymmetric
+
+- Severity: `High` / implementation blocking.
+- Affected behavior: `FR-039`, `AC-039`, `DS-010`, and the approved independent left/right drawer lifecycle.
+- Evidence: `WorkspaceAdaptiveLayout.vue:217–225` closes the global left drawer before opening the right drawer; `openLeftNavigation` and `openRunHistory` at `233–250` close the right drawer; `LeftSidebarStrip.vue:87–97` opens/closes only the global left drawer. A supported opposite-strip activation therefore has different results in each direction and bypasses a single symmetric owner. No focused test or durable probe covers cross-side activation.
+- Required action: Implement one symmetric policy for cross-side drawer actions that matches the approved independent-side contract, without silently closing or relabelling the opposite side. If both drawers can be open, ensure focus/Tab/Escape handling remains deterministic; if a single-drawer constraint is intended instead, return the behavior basis for explicit design reconciliation before coding. Add both-direction component/browser coverage and preserve per-side strip visibility/preference semantics.
+- Classification / Owner: `Local Fix` — `implementation_engineer` (return to `solution_designer` only if the intended independent/single-drawer interpretation is changed).
+
+### Classification (Round 28)
+
+`Local Fix` — CR-018 is a bounded accessible-drawer restoration defect, and CR-019 is a bounded side-drawer lifecycle/coordination defect in implementation-owned renderers. The approved requirements and architecture contract are explicit; no API/E2E or requirements change is needed before implementation rework.
+
+### Recommended Recipient (Round 28)
+
+`implementation_engineer`
+
+Fix CR-018 and CR-019, add focused regression coverage, then return for a fresh full source review. Do not route to `api_e2e_engineer` until the source review passes; after a passing API/E2E run, return for the separate proportional durable-test review if the durable probe changes.
+
+### Residual Risks (Round 28)
+
+- Current LID-003 strip visibility gates are correct, but source review is blocked by focus return after remount and asymmetric cross-side transient drawer ownership.
+- The focused current suite and static checks pass but do not prove the two missing lifecycle invariants; the existing durable probe likewise does not exercise hidden-strip focus restoration or cross-side drawer activation.
+- `vue-tsc` remains unavailable; the focused source tests, standalone policy TypeScript check, probe syntax, and diff checks are the current local evidence.
+- Existing KaTeX quirks-mode, module-type, and Rollup chunk-size warnings remain non-blocking.
+- Delivery-owned documentation/release artifacts remain outside this source review and require later synchronization.
+
+### Review Scorecard (Round 28)
+
+- Overall score (`/10`): `8.55`
+- Overall score (`/100`): `85.5`
+- Score calculation note: simple average of the ten category scores below. The review fails because two mandatory lifecycle contracts are contradicted; the average does not override that decision.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.4 | The main side spine is traceable through policy, strip, drawer, and dismissal. | The return-focus node is destroyed and cross-side transitions branch asymmetrically. | Make the drawer return/coordination spine explicit and executable for both sides. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.2 | Policy and local drawer boundaries are otherwise clear. | Sibling renderers directly mutate the opposite side's drawer state, and the focus owner assumes a persistent opener. | Strengthen one authoritative drawer lifecycle boundary and remove cross-side bypasses. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.4 | `stripActivation` is explicit and side-local commands are named. | Open/redock callbacks do not state or enforce the cross-side policy consistently. | Define symmetric side-drawer commands and stable focus-target semantics. |
+| `4` | `Separation of Concerns and File Placement` | 8.6 | Files remain sensibly placed and bounded. | `WorkspaceAdaptiveLayout` mixes right-side action with left-store mutation; default shell and strip split coordination. | Keep side interaction ownership coherent. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Nested policy and activation shapes remain tight with no aliases. | No structural weakness in shared types; only lifecycle integration is incomplete. | Preserve the current tight output shape while fixing lifecycle ownership. |
+| `6` | `Naming Quality and Local Readability` | 9.2 | Names communicate strip activation and drawer roles. | “Independent” behavior is not visible in the command side effects. | Align side-effect implementation with the names/contracts. |
+| `7` | `API/E2E Readiness` | 8.0 | Focused suite (8 files / 60 tests), policy typecheck, probe syntax, and diff checks pass. | Source blockers remain and current durable coverage omits the failing lifecycle paths. | Fix source and add focused/browser coverage before API/E2E. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 7.6 | LID-003 visibility and prior geometry/route fixes are correct in source. | Accessibility focus return and cross-side drawer behavior contradict approved runtime behavior. | Prove both sides through open, dismiss, focus restoration, and cross-side journeys. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No legacy generic controls, drawer chrome, duplicate policy, or compatibility wrapper was reintroduced. | No material weakness here. | Preserve the clean-cut removal. |
+| `10` | `Cleanup Completeness` | 8.4 | The bounded visibility change has focused tests and no dead code. | Missing lifecycle regressions allowed two reachable defects to remain. | Add the required tests and remove any obsolete coordination path after the fix. |
+
+### Latest Authoritative Result (Round 28)
+
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — both findings rely on reachable supported strip/drawer actions and explicit approved contracts.
+- Score Summary: `8.55/10` (`85.5/100`); categories below the clean-pass threshold reflect the two blocking lifecycle defects.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation review.
+- Recommended Recipient: `implementation_engineer`
+- Unresolved finding IDs: `CR-018`, `CR-019`.
+- Notes: LID-003's per-side strip suppression is correct, but the full source review cannot pass until drawer dismissal restores focus to the remounted corresponding strip and cross-side drawer ownership is made symmetric under the approved independent-side contract. Do not route to API/E2E or delivery from this round.
+
+## Round 29 — Full From-Scratch Implementation Source Review — CR-018/CR-019 Re-entry
+
+### Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
+- Current Review Round: `29`
+- Trigger: CR-018/CR-019 implementation re-entry at `604be7b734cbb3f0fc8b0f5405118dabd0d1c4c2` after the resolver/stack and cross-side state changes.
+- Prior Review Round Reviewed: Full Round 28 source review at `2f478f8eeb104e3afd2fdbf5dbdfa3d1bf874db0`, plus the complete cumulative review history and Architecture Round 22 / DI-012 basis.
+- Latest Authoritative Round: `29`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`, latest architecture Round 22 `Pass` for the LID-003 basis.
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
+- API/E2E execution: Not performed on current HEAD in this source-review stage; this is the implementation gate only.
+- Failing Scenario IDs: `N/A` — not an API/E2E failure-origin review.
+- Exact Failing Commands / Execution Mode: `N/A`.
+- Failure Evidence Paths: `N/A`.
+
+This is a complete current-state source review, not a delta-only approval. I retraced the full standard `/workspace` route from the approved policy and side-surface contract through both strip renderers, both drawer owners, the shared focus lifecycle, dismissal, independent cross-side activation, right tabs, route boundary, and `/mobile` isolation. CR-018 and CR-019 are resolved for the single-drawer lifecycle and opposite-side state mutation, but the new simultaneous-drawer implementation has a real overlay-layering/focus-containment defect and the resolver does not preserve the actual opening control.
+
+### Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 27 | Bounded CR-016/CR-017 implementation fixes | Prior source findings | None | Pass | No | Source was ready for fresh API/E2E. |
+| 28 | LID-003 drawer/strip mutual-exclusion implementation | `CR-016`, `CR-017`, `LID-003` and all prior resolved findings | `CR-018`, `CR-019` | Fail | No | Strip suppression exposed missing focus restoration and asymmetric cross-side coordination. |
+| 29 | CR-018/CR-019 implementation re-entry | `CR-018`, `CR-019`, LID-003 and all prior resolved findings | `CR-020`, `CR-021` | Fail | Yes | Single-drawer lifecycle is corrected; simultaneous drawer layering/modality and exact opener restoration remain incomplete. |
+
+### Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 28 | `CR-018` | High / implementation blocking | Resolved for a single open drawer | `useAccessibleDrawer.ts:79–101` resolves after a conditional remount; `default.vue:137–146` and `WorkspaceAdaptiveLayout.vue:218–220` provide side-specific resolvers; current left/right tests cover remounted-strip return. | The resolver now reaches a restored strip, but it returns the first strip button rather than the actual opener; that narrower issue is tracked as `CR-021`. |
+| 28 | `CR-019` | High / implementation blocking | Resolved for state mutation/ownership | `WorkspaceAdaptiveLayout.vue:222–259` no longer closes the opposite side; `useAccessibleDrawer.ts:19–40` provides an explicit most-recently-opened keyboard stack; focused tests cover both open directions. | The newly supported simultaneous state is not physically layered or modal-safe; that is tracked separately as `CR-020`. |
+| 27 / Architecture 22 | `LID-003` | High / implementation blocking | Resolved | `WorkspaceAdaptiveLayout.vue:75–82` and `default.vue:125–130` hide only the corresponding strip while its drawer is open. | No regression found in the current visibility gates. |
+| 24 / Architecture 18 | `DI-010` | High / design impact | Resolved | Nested `stripActivation` remains the sole policy action output; drawer state remains local. | No aliases or drawer policy presentation were reintroduced. |
+
+### Review Scope
+
+- Changed implementation and behavior reviewed: the full current standard-workspace responsive implementation, with attention to the corrected remount-focus path, independent drawer stack, actual overlay ownership, close/escape sequencing, and exact opening-control restoration.
+- Files / areas reviewed: `responsiveLayoutPolicy.ts`, `responsiveStripActivation.ts`, `useResponsiveWorkspaceShell.ts`, `useResponsiveElementRect.ts`, `useLeftPanel.ts`, `useRightPanel.ts`, `useAccessibleDrawer.ts`, `layouts/default.vue`, `WorkspaceAdaptiveLayout.vue`, `LeftSidebarStrip.vue`, `RightSidebarStrip.vue`, `WorkspaceRightToolDrawer.vue`, `RightSideTabs.vue`, `TabList.vue`, `Tab.vue`, `AppLeftPanel.vue`, `useShellPrimaryNavigation.ts`, `workspaceSurfaceOrder.ts`, focused tests, and `workspace-responsive-probe.mjs`.
+- Explicit exclusions: pre-existing unstaged delivery/release/documentation/evidence artifacts; API/E2E runtime execution and confidence scoring; separate durable-test review; and deep internal Terminal/Browser/VNC behavior.
+- Review checks run: current focused Nuxt/Vitest suite (`13` files / `88` tests passed), standalone responsive-policy TypeScript check, durable-probe `node --check`, and `git diff --check` / cached diff check. Only the known KaTeX warning appeared in the focused suite.
+
+### Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: `Confirmed`. The target remains symmetric left/right panel-strip-drawer behavior, fitting wide user-origin redock, constrained/narrow open-drawer, per-side strip suppression while its drawer is open, independent side state, focus containment/return, no duplicate controls/chrome, and `/mobile` isolation.
+- Design-spec behavior map verified against the implementation: `Partially contradicted`. CR-018/CR-019's single-side mechanics now match, but the approved focus and visible-surface contracts are not preserved when the implementation allows both drawers to remain open.
+- Design review report and round confirmed: `Confirmed`. Architecture Round 22 requires independent side state and drawer focus semantics but does not authorize a lower drawer to be hidden beneath the other side's backdrop or focus to leave a remaining open drawer.
+- Behavior-basis status: `Contradicted` for `CR-020` and `CR-021`; other reviewed behavior remains confirmed.
+- Changed or newly discovered behavior: simultaneous drawers are now deliberately retained, but the default shell's stacking contexts make the right drawer/right strip inaccessible while the left drawer is open; remount focus resolves to the first strip control rather than the opening control.
+- Remaining material ambiguity: None for these findings. The requirements explicitly require drawer-only side visibility, focus within an opened drawer, return to the opening trigger, and independent side behavior.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| --- | --- | --- | --- |
+| `FR-039` / `AC-039` — independent side surfaces | `Contradicted` | `WorkspaceAdaptiveLayout.vue:222–229` retains left and right transient state; `useAccessibleDrawer.ts:19–40` gives the most recent drawer keyboard ownership. | `layouts/default.vue:22–45,157–175` puts the left backdrop/drawer in the outer shell while `main` is a `relative z-0` stacking context; the right strip/drawer are descendants of that context. A left-open `z-40` backdrop therefore paints above the right `z-[60]` strip and right `z-50` drawer. The newly supported both-open state is not independently visible or operable. |
+| `FR-041` / `AC-042` / `DS-010` — drawer-only visibility and focus lifecycle | `Contradicted` | Corresponding strips are correctly gated; the shared stack and remount resolver return focus for a single open drawer. | With both drawers open, closing the topmost drawer calls its resolver and focuses its restored strip while the other drawer remains open. That leaves focus outside the remaining open drawer; the shared Tab handler repairs this only after a later Tab event, contrary to the requirement to keep focus within an opened drawer. |
+| `FR-041` accessibility — return focus to the opening trigger | `Contradicted` | `getLeftStripFocusTarget()` and `getRightStripFocusTarget()` query the first button in the remounted strip (`default.vue:137–139`, `WorkspaceAdaptiveLayout.vue:218–220`). | If a user opens Settings, Terminal, or another non-first strip control, dismissal focuses the first button (Agents/Files), not the actual opening control. The approved accessibility contract says to return focus to the opening trigger. |
+| `FR-016`–`FR-040`, `AC-016`–`AC-041` | `Confirmed` | Policy, activation output, preference ownership, bounded resize, right-tab surface, route-scoped shell, and `/mobile` boundary remain structurally intact. | None found in this source review apart from the lifecycle rows above. |
+
+### Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The approved package explicitly defines independent side state, drawer-only visibility, focus containment, and opening-trigger restoration. | Fix CR-020/CR-021 without changing the approved behavior. |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | Strip gating and single-side remount focus are aligned, but simultaneous drawers are hidden by an outer backdrop and focus can leave a remaining drawer; exact opener identity is lost. | Correct overlay ownership/modality and preserve opener identity. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | The side spine now reaches both local drawers and a shared stack, but the visible overlay/focus return spine stops at nested stacking contexts instead of a common overlay owner. | Give simultaneous side surfaces an explicit top-level overlay/layering owner. |
+| Ownership boundary preservation and clarity | Fail | `useAccessibleDrawer` owns keyboard state but cannot control the shell stacking boundary; default shell and adaptive workspace place sibling overlays in different stacking contexts. | Make the drawer layer authoritative for both visibility and stacking, or use an explicit one-drawer policy that is reconciled upstream. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Policy, tabs, focus lifecycle, route compatibility, and panel preferences remain attached to clear owners. | None beyond CR-020/CR-021. |
+| Existing capability/subsystem reuse check | Pass | Existing stores, strips, drawers, and shared accessible-drawer composable are reused. | None. |
+| Reusable owned structures check | Pass | Nested policy output, activation helper, and shared drawer lifecycle remain reusable rather than duplicated. | None. |
+| Shared-structure/data-model tightness check | Pass | No output aliases or drawer policy presentation were reintroduced; stack state is narrowly scoped. | Preserve the current nested output shape. |
+| Repeated coordination ownership check | Pass | Opposite-side state mutations were removed and local drawer state is retained per side. | Move only the shared visual/keyboard layer responsibility if needed. |
+| Empty indirection check | Pass | The resolver and stack each own real lifecycle behavior. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Fail | The shared drawer composable coordinates keyboard ownership, while shell markup determines cross-context visual stacking without a shared overlay boundary. | Align visual and keyboard modal ownership. |
+| Ownership-driven dependency check | Pass | No cross-side store shortcut remains in the open paths. | None. |
+| Authoritative Boundary Rule check | Pass | Renderers consume the composed policy and local side state; no inner policy manager is bypassed. | None. |
+| File placement check | Pass | Policy, composables, shell layout, strips, drawers, and tests remain appropriately placed. | None. |
+| Flat-vs-over-split layout judgment | Pass | The shared stack is justified by the simultaneous-drawer contract; no artificial helper layer was added. | None. |
+| Interface/API/command boundary clarity | Fail | `returnFocusTarget` has no opener identity input and the independent stack exposes no explicit visible-layer/topmost-surface contract. | Carry the opening trigger identity and define the overlay ownership boundary. |
+| Naming quality and naming-to-responsibility alignment | Pass | Names communicate side-local drawer, stack, and strip roles. | Make the focus target API's exact-trigger semantics explicit. |
+| No unjustified duplication | Pass | No duplicate resolver, policy, or drawer component was introduced. | None. |
+| Patch-on-patch complexity control | Fail | The fix adds a global stack and remount retry but leaves the actual shell stacking context unresolved. | Complete the simultaneous lifecycle or remove the unsupported simultaneous path through an approved design decision. |
+| Dead/obsolete code cleanup completeness | Pass | CR-015 and prior obsolete control/chrome cleanup remain intact. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Component tests assert both DOM drawers exist, but the durable probe uses `element.click()` and does not prove hit-tested visibility above the opposite backdrop; tests also assert strip containment rather than exact opener return. | Add actual layer/hit-test assertions and per-control focus-return coverage. |
+| Test fixtures/helpers are reasonably reusable | Pass | Shared drawer and layout fixtures are extended coherently. | Reuse a stable opener identity fixture for left/right controls. |
+| No stale, duplicated, or compatibility-only tests are retained | Pass | Historical generic-row/wrapping/top-trigger assertions remain removed or superseded. | None. |
+| API/E2E readiness for the next workflow stage | Fail | Source has two reachable lifecycle contradictions; the current durable probe can programmatically click obscured controls and therefore cannot clear them. | Return to implementation, then repeat source review before API/E2E. |
+
+### Source File Size And Structure Audit
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | 479 | Pass | Pass | Pass; single policy owner | Pass | Clean | None. |
+| `autobyteus-web/utils/layout/responsiveStripActivation.ts` | 41 | Pass | Pass | Pass; explicit side action type | Pass | Clean | None. |
+| `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | 257 | Pass | Pass | **Fail**; local drawer stack is not paired with a usable top-level layer and exact opener identity | Pass | Local Fix | Fix CR-020/CR-021 and tests. |
+| `autobyteus-web/layouts/default.vue` | 203 | Pass | Pass | **Fail**; outer backdrop/`main z-0` context prevents independent right surface access while left drawer is open | Pass | Local Fix | Establish shared overlay layering and side focus targets. |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | 111 | Pass | Pass | Pass locally; parent resolver loses the initiating control | Pass | Local Fix | Preserve opener identity through remount. |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | 70 | Pass | Pass | Pass locally; parent resolver returns first button only | Pass | Local Fix | Preserve opener identity through remount. |
+| `autobyteus-web/composables/useAccessibleDrawer.ts` | 145 | Pass | Pass | **Fail**; keyboard stack does not keep focus inside a remaining drawer after topmost close, and resolver API loses exact opener | Pass | Local Fix | Coordinate post-close focus and target identity. |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | 41 | Pass | Pass | Pass locally; nested placement participates in CR-020 | Pass | Clean with dependent fix | None independent of CR-020. |
+
+### Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrapper, dual policy, or schema alias was introduced. |
+| No legacy old-behavior retention in changed scope | Pass | Generic/top controls, added drawer chrome, and old drawer-only policy output remain removed. |
+| Dead/obsolete code cleanup completeness | Pass | Prior visual/control cleanup remains intact. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Only in-memory UI preferences and transient drawer state are involved. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None found. |
+| Approved transition mechanics match the reviewed design | Fail | The single-side transition is corrected, but the new simultaneous transition does not preserve visible independent surfaces or focus containment. |
+
+### Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| None newly identified | N/A | No dead or compatibility-only implementation path found in this round. | N/A | None. |
+
+### Docs-Impact Verdict
+
+- Docs impact: `Yes`, non-blocking at this source gate.
+- Why: delivery-owned workspace layout documentation and pre-existing release/docs artifacts still require final synchronization; CR-020/CR-021 do not require requirements/design changes.
+- Files or areas likely affected: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/docs/workspace_layout.md` and final delivery records.
+
+### Material Premise Validation
+
+#### `CR-020-PREM-001` — Both side drawers are reachable through the approved independent-strip journey
+
+- Origin: `New`.
+- Related approved requirement or established contract: `FR-039`, `AC-039`, `FR-041`, `AC-042`, and the implementation's explicit independent open-drawer stack.
+- Relevant behavior IDs: `FR-039` / `AC-039` / `FR-041` / `AC-042`.
+- Product-supported initiating trigger and actual path: On a constrained/narrow `/workspace`, activate the left strip control to open the left drawer; the opposite right strip remains the other side's compact affordance; activate it to open the right drawer without closing the left. The reverse path is also implemented and covered by component/probe journeys.
+- Lifecycle preconditions and consequence: The outer default shell renders the left backdrop/drawer as root-level fixed siblings, while `main` is `relative z-0` and contains the right strip/drawer. CSS stacking contexts confine the right `z-[60]`/`z-50` descendants beneath the left root `z-40` backdrop. A user cannot see or hit-test the right surface while the left drawer is open; focus may nonetheless be moved programmatically into the hidden right drawer.
+- Reachability: `Reachable` by the implementation's supported two-direction journey; source layering is enough to establish the defect without API/E2E execution.
+- Review consequence / proportionate response: Implementation blocker. Give both transient surfaces a common top-level layer, or explicitly constrain to one drawer only through design reconciliation. If both remain allowed, test hit-testing and visible stacking, not only DOM presence.
+
+#### `CR-021-PREM-001` — Users may activate a non-first strip control before opening its drawer
+
+- Origin: `New`.
+- Related approved requirement or established contract: Accessibility rule in `workspace-responsive-ui-ux-spec.md` requiring focus return to the opening trigger.
+- Relevant behavior IDs: `FR-041` / `AC-042`.
+- Product-supported initiating trigger and actual path: The left strip exposes Agents, Agent Teams/workspaces/history/settings controls and the right strip exposes multiple named tool buttons. A user can activate any of those controls in an `open-drawer` state; the drawer opens and the originating strip is conditionally unmounted.
+- Lifecycle preconditions and consequence: `default.vue:137–139` and `WorkspaceAdaptiveLayout.vue:218–220` resolve the first button in the remounted strip, regardless of which control opened the drawer. Dismissal therefore moves focus to Agents/Files rather than the actual opening control.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: Implementation blocker at the accessibility contract level. Persist a stable control identity (or equivalent resolver context) and resolve that specific remounted trigger, with left and right non-first-control tests.
+
+### Findings (Round 29)
+
+#### `CR-020` — Independent simultaneous drawers are not independently visible or modal-safe
+
+- Severity: `High` / implementation blocking.
+- Affected behavior: `FR-039`, `AC-039`, `FR-041`, `AC-042`, and the explicit independent drawer stack introduced for CR-019.
+- Evidence: `layouts/default.vue:22–45` renders the left fixed backdrop/drawer as outer-shell siblings; `layouts/default.vue:173` gives `main` a `relative z-0` stacking context; `WorkspaceRightToolDrawer.vue:4,15` and `RightSidebarStrip.vue:50` place the right backdrop/drawer/strip inside that context. The right `z-50`/`z-[60]` values cannot escape the ancestor `z-0`, so the left root `z-40` backdrop covers them. The focused tests assert DOM existence, and the durable probe uses `button.click()` from page JavaScript, which bypasses hit-testing; neither proves the actual user-visible journey.
+- Required action: Give left and right transient surfaces a shared top-level overlay/layering owner so the opposite strip/drawer remains visible and operable when independent drawers are both allowed. Ensure the keyboard topmost/remaining-drawer focus transition keeps focus inside the still-open drawer rather than restoring to a hidden/covered strip. Alternatively, if simultaneous drawers are not intended, explicitly reconcile the single-drawer rule upstream before changing behavior.
+- Classification / Owner: `Local Fix` — `implementation_engineer`; route to `solution_designer` only if the intended simultaneous/single-drawer behavior changes.
+
+#### `CR-021` — Remount focus resolver loses the actual opening control
+
+- Severity: `Medium` / implementation blocking for accessibility acceptance.
+- Affected behavior: `FR-041`, `AC-042`, and the approved focus-return rule.
+- Evidence: `default.vue:137–139` and `WorkspaceAdaptiveLayout.vue:218–220` return the first button found under each restored strip. The original active DOM node is retained only as a fallback in `useAccessibleDrawer.ts:57,82–85`, but it is disconnected by the strip gate. Opening Settings or a non-first right tool therefore dismisses to Agents/Files, not the control the user invoked. Current tests and probe assert only containment in the strip.
+- Required action: Carry a stable semantic control key/identity into the side-specific resolver and focus that remounted control after backdrop/Escape dismissal. Add left Settings/secondary-navigation and right non-first-tab backdrop/Escape tests plus browser assertions for exact focus identity.
+- Classification / Owner: `Local Fix` — `implementation_engineer`.
+
+### Classification (Round 29)
+
+`Local Fix` — CR-020 is a bounded implementation-owned overlay/focus-layer defect in the newly supported independent-drawer path; CR-021 is a bounded focus-target identity defect. The approved requirements/design are explicit, so no API/E2E or requirements change is needed before implementation rework.
+
+### Recommended Recipient (Round 29)
+
+`implementation_engineer`
+
+Fix CR-020 and CR-021, add real hit-tested and exact-focus regression coverage, then return for another complete from-scratch source review. Do not route to `api_e2e_engineer` until the source review passes; after a passing API/E2E run, return for the separate proportional durable-test review if the durable probe changes.
+
+### Residual Risks (Round 29)
+
+- CR-018 and CR-019's original defects are resolved in their single-side/state-mutation dimensions.
+- The current implementation can make both drawers logically open, but the outer-shell stacking contexts make the right side inaccessible while the left drawer is open, and focus can be outside a remaining open drawer after topmost dismissal.
+- Remounted focus returns to the strip but not necessarily to the originating control.
+- Focused current tests and static checks pass; `vue-tsc` remains unavailable, and current durable browser assertions use DOM `.click()` for the new cross-side journey.
+- Existing KaTeX quirks-mode, module-type, and Rollup chunk-size warnings remain non-blocking.
+- Delivery-owned documentation/release artifacts remain outside this source review and require later synchronization.
+
+### Review Scorecard (Round 29)
+
+- Overall score (`/10`): `8.45`
+- Overall score (`/100`): `84.5`
+- Score calculation note: simple average of the ten category scores below. The review fails because two lifecycle/accessibility contracts are contradicted; the average does not override that decision.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.0 | The side state and shared drawer lifecycle are traceable. | The independent side spine ends in separate stacking contexts rather than one usable overlay layer. | Make the visible/focus overlay boundary explicit. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.2 | Policy, side state, and keyboard ownership have named owners. | No owner spans both shell-level stacking and the shared drawer stack; the remaining drawer can lose modality. | Give transient surfaces one authoritative layer/focus owner. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.6 | `stripActivation` and drawer stack commands are explicit. | `returnFocusTarget` does not carry the initiating control identity and no visible-layer contract is expressed. | Add exact opener identity and explicit topmost-layer semantics. |
+| `4` | `Separation of Concerns and File Placement` | 8.5 | Files remain sensibly placed and bounded. | Shared keyboard behavior and shell-level visual stacking are split across incompatible boundaries. | Align markup/layer ownership with drawer lifecycle ownership. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Nested policy and activation shapes remain tight; stack is small and reusable. | No data shape preserves exact opener identity. | Add only the minimal identity context needed. |
+| `6` | `Naming Quality and Local Readability` | 8.8 | Names describe drawers, stacks, and strip targets. | The generic first-button resolver does not match the semantic meaning of opening-trigger restoration. | Name and implement exact-target semantics. |
+| `7` | `API/E2E Readiness` | 8.0 | Current focused suite (13/88), policy check, probe syntax, and diff checks pass. | DOM-only `.click()` can bypass the actual overlay defect; source still contradicts lifecycle contracts. | Fix source and add hit-tested/exact-focus coverage before execution. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 7.5 | Single-side remount focus, independent state mutation, and prior geometry/tab behavior are improved. | Both-open layering and focus containment fail; non-first opener focus is wrong. | Prove actual visible/modal behavior in both directions. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No generic controls, duplicate chrome, aliases, or compatibility paths returned. | No material legacy weakness. | Preserve the clean removal. |
+| `10` | `Cleanup Completeness` | 8.2 | Focused regressions were added and prior cleanup remains. | The new browser journey asserts programmatic DOM clicks and strip containment rather than real hit-testing/exact trigger identity. | Replace with durable assertions that prove user-operable layers and exact focus. |
+
+### Latest Authoritative Result (Round 29)
+
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — both findings rely on supported independent strip/drawer actions and explicit accessibility/layering contracts.
+- Score Summary: `8.45/10` (`84.5/100`); categories below the clean-pass threshold reflect the two blocking lifecycle defects.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation review.
+- Recommended Recipient: `implementation_engineer`
+- Unresolved finding IDs: `CR-020`, `CR-021`.
+- Notes: CR-018 and CR-019 are resolved in their original dimensions, but the current both-open implementation is not actually independently visible/operable and the remount resolver does not preserve the opening control. Do not route to API/E2E or delivery from this round.
+
+## Round 30 — Full From-Scratch Implementation Source Review — CR-020/CR-021 Re-entry
+
+### Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
+- Current Review Round: `30`
+- Trigger: CR-020/CR-021 implementation re-entry at `d2cb355634fb5e4e6c3de43d7d6ad7e093d7a76e` after the isolated-shell/real-click/exact-trigger changes.
+- Prior Review Round Reviewed: Full Round 29 source review at `604be7b734cbb3f0fc8b0f5405118dabd0d1c4c2`, plus the complete cumulative review history and Architecture Round 22 / DI-012 basis.
+- Latest Authoritative Round: `30`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`, latest architecture Round 22 `Pass` for the LID-003 basis.
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
+- API/E2E execution: Not performed on current HEAD in this source-review stage; this is the implementation gate only.
+- Failing Scenario IDs: `N/A` — not an API/E2E failure-origin review.
+- Exact Failing Commands / Execution Mode: `N/A`.
+- Failure Evidence Paths: `N/A`.
+
+This is a complete current-state source review, not a delta-only approval. I retraced the full `/workspace` behavior from policy and strip activation through the default shell, both drawer renderers, shared keyboard/focus ownership, simultaneous open ordering, dismissal, exact focus return, right tabs, route scope, and `/mobile` isolation. CR-021 is resolved. CR-020 remains unresolved because the shared stacking context makes both surfaces visible but does not make visual topmost order match the keyboard topmost order or backdrop ownership when the left drawer is opened after the right drawer.
+
+### Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 28 | LID-003 drawer/strip mutual-exclusion implementation | `CR-016`, `CR-017`, `LID-003` | `CR-018`, `CR-019` | Fail | No | Missing remount focus and asymmetric cross-side mutation. |
+| 29 | CR-018/CR-019 implementation re-entry | `CR-018`, `CR-019`, LID-003 | `CR-020`, `CR-021` | Fail | No | Simultaneous layer ordering and exact opener identity remained incomplete. |
+| 30 | CR-020/CR-021 implementation re-entry | `CR-020`, `CR-021` and all prior resolved findings | None | Fail | Yes | Exact focus and hit-tested access are improved; reverse open-order visual/backdrop ownership is still inconsistent with keyboard ownership. |
+
+### Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 29 | `CR-020` | High / implementation blocking | **Unresolved** | `default.vue:2,22–63,178–183` removes the nested `z-0` context and adds root isolation; `WorkspaceRightToolDrawer.vue:4,15` and left shell still use fixed z40/z50; both drawers have the same z50 and source-order determines the visual top. | The shared layer fixes left-open right-surface occlusion, but opening left after right makes left keyboard-topmost while the later right drawer/backdrop remains visually above it. Backdrop click and visible drawer ownership are still wrong in that order. |
+| 29 | `CR-021` | Medium / implementation blocking | Resolved | `data-nav-key`/`data-tab-name` identity, `rememberDrawerTrigger`, and origin-aware resolvers now preserve non-first Agent Teams/Terminal focus in source/component coverage. | No remaining exact-opener defect found in this review. |
+| 28 | `CR-018` | High / implementation blocking | Resolved | Side-specific remount resolver and the shared remaining-drawer focus transition are present and tested. | No regression found apart from the CR-020 reverse-order visual mismatch. |
+| 28 | `CR-019` | High / implementation blocking | Resolved | Opposite-side close calls remain removed; both local drawer states and stack ownership are explicit. | The remaining issue is ordering/layer semantics, not state mutation asymmetry. |
+| 27 / Architecture 22 | `LID-003` | High / implementation blocking | Resolved | Per-side strip gates remain local to each drawer-open state. | No regression found. |
+
+### Review Scope
+
+- Changed implementation and behavior reviewed: the full current responsive workspace, with focused attention to root stacking isolation, drawer/backdrop z-order, reverse open order, keyboard stack order, remount focus, exact trigger identity, and the durable real-click journey.
+- Files / areas reviewed: `responsiveLayoutPolicy.ts`, `responsiveStripActivation.ts`, `useResponsiveWorkspaceShell.ts`, `useResponsiveElementRect.ts`, `useLeftPanel.ts`, `useRightPanel.ts`, `useAccessibleDrawer.ts`, `layouts/default.vue`, `WorkspaceAdaptiveLayout.vue`, `LeftSidebarStrip.vue`, `RightSidebarStrip.vue`, `WorkspaceRightToolDrawer.vue`, `RightSideTabs.vue`, `TabList.vue`, `Tab.vue`, `AppLeftPanel.vue`, `useShellPrimaryNavigation.ts`, `workspaceSurfaceOrder.ts`, focused tests, and `workspace-responsive-probe.mjs`.
+- Explicit exclusions: pre-existing unstaged delivery/release/documentation/evidence artifacts; API/E2E runtime execution and confidence scoring; separate durable-test review; and deep internal Terminal/Browser/VNC behavior.
+- Review checks run: current focused Nuxt/Vitest suite (`13` files / `88` tests passed), standalone responsive-policy TypeScript check, durable-probe `node --check`, and `git diff --check` / cached diff check. Only the known KaTeX warning appeared in the focused suite.
+
+### Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: `Confirmed`. The target requires independent left/right side state, each open drawer to be the usable modal surface, deterministic focus/Tab/Escape, exact opening-trigger restoration, and symmetric behavior in either open order without duplicate controls or `/mobile` changes.
+- Design-spec behavior map verified against the implementation: `Partially contradicted`. The shared root layer and exact opener identity now align, but visual stacking/backdrop ownership remains source-order-based while keyboard ownership is open-order-based.
+- Design review report and round confirmed: `Confirmed`. Architecture Round 22 requires independent side state and drawer focus semantics; it does not permit a drawer opened first to remain visually above the drawer that the keyboard stack identifies as topmost.
+- Behavior-basis status: `Contradicted` only for the reverse simultaneous-open visual/keyboard ordering subcase; other reviewed behavior remains confirmed.
+- Changed or newly discovered behavior: the root isolation makes both drawers/strips reachable, but equal z-index and DOM order make the right drawer and right backdrop visually topmost even when the left drawer is opened last.
+- Remaining material ambiguity: None. The approved contract and the implementation's own open-drawer stack define the required topmost behavior sufficiently.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| --- | --- | --- | --- |
+| `FR-039` / `AC-039` — independent side surfaces and both open orders | `Contradicted` | `default.vue:2` isolates the shell and `mainContentClasses` no longer adds a nested z context; both fixed surfaces now participate in the shell layer. `useAccessibleDrawer.ts:26,38–56,187–201` orders keyboard ownership by open time. | Both drawer and backdrop pairs retain equal z40/z50 classes. In the supported right-then-left path, the right nodes occur later in the DOM and remain visually/backdrop-topmost even though the left drawer was opened last and owns Escape/Tab. |
+| `FR-041` / `AC-042` / `DS-010` — drawer-only visibility and focus lifecycle | `Confirmed` for visibility/focus | The corresponding strip is hidden, real Playwright clicks are used, and closing a topmost drawer focuses the remaining drawer before final strip restoration. | The remaining defect is visual/backdrop ownership in the reverse open order, captured under `FR-039`; no new focus-target defect found. |
+| `FR-041` accessibility — exact opening-trigger return | `Confirmed` | `rememberDrawerTrigger`, `data-nav-key`, `data-tab-name`, and origin-aware resolvers restore non-first Agent Teams/Terminal controls. | None found in current source. |
+| `FR-016`–`FR-040`, `AC-016`–`AC-041` | `Confirmed` | Policy, activation output, preferences, bounded resize, tabs, route boundary, and `/mobile` remain structurally intact. | None found in this source review outside the reverse-order layer issue. |
+
+### Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Approved artifacts define independent state, usable drawer layers, and deterministic focus ownership. | Correct reverse visual order without changing the basis. |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | Root isolation and exact trigger identity align, but equal z-order leaves visual/backdrop topmost ownership different from keyboard topmost ownership. | Make z-order/backdrop ownership follow the same opening order. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | State and keyboard spines are explicit, but their final visible-layer consequence diverges in one supported order. | Join visual layer order to the shared drawer stack. |
+| Ownership boundary preservation and clarity | Fail | `useAccessibleDrawer` owns keyboard order while shell markup independently fixes visual order by DOM position. | Give one owner authoritative topmost ordering for drawer, backdrop, and focus. |
+| Off-spine concern clarity | Pass | Policy, tabs, route compatibility, and preferences remain clear off-spine owners. | None beyond CR-020. |
+| Existing capability/subsystem reuse check | Pass | Existing shell, drawer, strip, and accessibility mechanisms are reused. | None. |
+| Reusable owned structures check | Pass | Shared drawer stack and origin-aware resolver are meaningful reusable structures. | Preserve the bounded shape. |
+| Shared-structure/data-model tightness check | Pass | No policy aliases or broad base model were added; trigger identity is minimal. | None. |
+| Repeated coordination ownership check | Fail | Keyboard stack has one order, while two equal-z DOM paths establish another order. | Centralize side-layer ordering. |
+| Empty indirection check | Pass | `rememberDrawerTrigger` and the stack each own real behavior. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Fail | Visual topmost semantics are implicit in template order rather than expressed by the shared drawer owner. | Expose/order the active layer explicitly. |
+| Ownership-driven dependency check | Pass | No opposite-side store shortcut or policy bypass remains. | None. |
+| Authoritative Boundary Rule check | Pass | Renderers consume policy and local state through intended boundaries. | None. |
+| File placement check | Pass | Shell, composables, strips, drawers, and tests remain appropriately placed. | None. |
+| Flat-vs-over-split layout judgment | Pass | The shared stack is justified and not artificially split. | None. |
+| Interface/API/command boundary clarity | Fail | The stack exposes keyboard ownership but not the corresponding visual/backdrop layer identity. | Make topmost layer state explicit or derive all three effects from one ordered owner. |
+| Naming quality and naming-to-responsibility alignment | Pass | `openDrawers`, `remainingDrawer`, and `rememberDrawerTrigger` match current responsibilities. | None. |
+| No unjustified duplication | Pass | No duplicate policy/drawer structure was introduced. | None. |
+| Patch-on-patch complexity control | Fail | The second layering fix removed occlusion but stopped short of synchronizing reverse visual order. | Complete the ordering fix before execution. |
+| Dead/obsolete code cleanup completeness | Pass | Prior generic controls, drawer chrome, and compatibility paths remain removed. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Real locator clicks and remaining-focus checks are improved, but no reverse-order backdrop/hit-test assertion proves the visually topmost drawer is the keyboard owner. | Add reverse-order backdrop click and top-layer identity assertions. |
+| Test fixtures/helpers are reasonably reusable | Pass | Existing probe and component fixtures are reused coherently. | Extend them with layer-order assertions. |
+| No stale, duplicated, or compatibility-only tests are retained | Pass | Historical stale assertions remain removed. | None. |
+| API/E2E readiness for the next workflow stage | Fail | One approved supported open order still has mismatched visual/backdrop and keyboard ownership. | Return to implementation, then repeat source review before API/E2E. |
+
+### Source File Size And Structure Audit
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | 479 | Pass | Pass | Pass; single policy owner | Pass | Clean | None. |
+| `autobyteus-web/utils/layout/responsiveStripActivation.ts` | 41 | Pass | Pass | Pass; explicit side action type | Pass | Clean | None. |
+| `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | 262 | Pass | Pass | **Fail**; visual layer order is not linked to shared drawer order | Pass | Local Fix | Fix CR-020 ordering and add regression. |
+| `autobyteus-web/layouts/default.vue` | 210 | Pass | Pass | **Fail**; equal-z outer/inner drawers rely on DOM order rather than open order | Pass | Local Fix | Coordinate shell z-order/backdrops with stack. |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | 118 | Pass | Pass | Pass; exact trigger identity is explicit | Pass | Clean | None. |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | 76 | Pass | Pass | Pass; exact trigger identity is explicit | Pass | Clean | None. |
+| `autobyteus-web/composables/useAccessibleDrawer.ts` | 168 | Pass | Pass | **Fail**; keyboard order is authoritative only for focus/events, not visual/backdrop order | Pass | Local Fix | Share ordered topmost state with rendering/layering. |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | 41 | Pass | Pass | Pass locally; equal-z placement participates in CR-020 | Pass | Clean with dependent fix | None independent of CR-020. |
+
+### Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrapper, dual policy, or schema alias was introduced. |
+| No legacy old-behavior retention in changed scope | Pass | Generic/top controls, added drawer chrome, and old drawer-only policy output remain removed. |
+| Dead/obsolete code cleanup completeness | Pass | Prior visual/control cleanup remains intact. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Only in-memory UI preferences/transient state are involved. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None found. |
+| Approved transition mechanics match the reviewed design | Fail | Both-open transition is reachable and focus-safe, but reverse-order visual/backdrop ownership does not follow the same topmost drawer. |
+
+### Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| None newly identified | N/A | No dead or compatibility-only implementation path found in this round. | N/A | None. |
+
+### Docs-Impact Verdict
+
+- Docs impact: `Yes`, non-blocking at this source gate.
+- Why: delivery-owned workspace layout documentation and pre-existing release/docs artifacts still require final synchronization; no requirements/design correction is required for the remaining CR-020 ordering issue.
+- Files or areas likely affected: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/docs/workspace_layout.md` and final delivery records.
+
+### Material Premise Validation
+
+#### `CR-020-PREM-002` — The reverse independent-drawer open order is supported and must preserve one topmost surface
+
+- Origin: `Reclassified from CR-020-PREM-001`.
+- Related approved requirement or established contract: `FR-039`, `AC-039`, `FR-041`, `AC-042`, and the implementation's explicit most-recently-opened drawer stack.
+- Relevant behavior IDs: `FR-039` / `AC-039` / `FR-041` / `AC-042`.
+- Product-supported initiating trigger and actual path: On `gap-700x700`, activate the right strip to open the right drawer, then activate the still-visible left strip to open the left drawer. The implementation intentionally preserves both and the durable probe exercises this reverse order.
+- Lifecycle preconditions and consequence: `useAccessibleDrawer` registers left last, so left owns Escape/Tab and its close restores focus to the remaining right drawer. However, both fixed drawers/backdrops keep equal z-index values and the right nodes occur later in the DOM under `main`, so right remains visually/backdrop-topmost. A click on the visible overlap/backdrop therefore closes or targets right while keyboard focus/ownership is in left.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: Implementation blocker. Drive drawer, backdrop, and keyboard topmost order from the same ordered state, then add reverse-order backdrop and visual-layer assertions.
+
+### Findings (Round 30)
+
+#### `CR-020` — Reverse independent-drawer order still has divergent visual and keyboard topmost ownership
+
+- Severity: `High` / implementation blocking.
+- Affected behavior: `FR-039`, `AC-039`, `FR-041`, `AC-042`, and the explicit independent-drawer stack.
+- Evidence: `useAccessibleDrawer.ts:26,38–56,187–201` makes the most recently opened drawer the keyboard owner. `default.vue:2,22–63,165–183` and `WorkspaceRightToolDrawer.vue:4,15` now share a root stacking layer, but both backdrops remain z40 and both drawers z50. In the right-then-left path, the right drawer/backdrop are later in DOM order and therefore paint above the left pair even though left is the keyboard topmost drawer. Backdrop click and visual overlap do not follow the same owner. Current tests/probe verify focus and Escape, not reverse-order backdrop/layer identity.
+- Required action: Expose a shared ordered topmost layer or assign side-specific z-index/backdrop ownership from the same stack used by `useAccessibleDrawer`. Ensure the drawer opened last is visually and hit-test topmost, its backdrop handles dismissal, and closing it reveals/focuses the remaining drawer. Add both open orders with actual backdrop clicks and `elementFromPoint`/layer assertions where appropriate.
+- Classification / Owner: `Local Fix` — `implementation_engineer`; route to `solution_designer` only if simultaneous drawers are no longer intended.
+
+### Classification (Round 30)
+
+`Local Fix` — CR-020 remains a bounded implementation-owned ordering defect. CR-021 and the original CR-018/CR-019 findings are resolved. The approved requirements/design remain explicit, so no upstream requirements change is needed.
+
+### Recommended Recipient (Round 30)
+
+`implementation_engineer`
+
+Fix CR-020, add reverse-order hit-tested/backdrop/layer regression coverage, then return for another complete from-scratch source review. Do not route to `api_e2e_engineer` until the source review passes; after a passing API/E2E run, return for the separate proportional durable-test review if the durable probe changes.
+
+### Residual Risks (Round 30)
+
+- CR-018, CR-019, and CR-021 are resolved in current source; the reverse open-order visual/backdrop mismatch is the remaining blocker.
+- The root isolation correctly prevents cross-context occlusion, but equal z-index/source-order still causes keyboard and visual topmost state to disagree.
+- Focused current tests and static checks pass; `vue-tsc` remains unavailable. API/E2E execution is still intentionally gated.
+- Existing KaTeX quirks-mode, module-type, and Rollup chunk-size warnings remain non-blocking.
+- Delivery-owned documentation/release artifacts remain outside this source review and require later synchronization.
+
+### Review Scorecard (Round 30)
+
+- Overall score (`/10`): `8.70`
+- Overall score (`/100`): `87.0`
+- Score calculation note: simple average of the ten category scores below. The review fails because one mandatory supported lifecycle ordering contract remains contradicted; the average does not override that decision.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.6 | State, focus, and real-click spines are now explicit. | Visible layer order is still implicit in DOM position. | Join visible and keyboard topmost state. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.6 | Shared drawer lifecycle and shell layer are clearer. | The stack does not own the z/backdrop order it claims to coordinate. | Make ordered layer ownership authoritative. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.8 | Exact opener identity and open-drawer commands are clear. | No visual-topmost identity is exposed. | Add a minimal ordered layer contract. |
+| `4` | `Separation of Concerns and File Placement` | 8.8 | Source responsibilities remain well placed. | Template source order silently controls a behavior owned by the composable. | Remove implicit DOM-order behavior. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Trigger identity and drawer entries are tight; no aliases returned. | Ordered visual metadata is absent. | Add only the necessary topmost layer state. |
+| `6` | `Naming Quality and Local Readability` | 9.0 | Names accurately describe the current lifecycle. | No direct name-to-code issue; visual ownership is implicit. | Express topmost layer explicitly. |
+| `7` | `API/E2E Readiness` | 8.6 | Current source tests (13/88), real locator clicks, policy check, probe syntax, and diff checks pass. | Reverse-order backdrop/layer mismatch remains and is not asserted. | Fix and execute current matrix before sign-off. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.3 | Root occlusion and exact opener defects are fixed; focus handoff is improved. | Reverse open order still targets the wrong visual/backdrop owner. | Align all topmost effects. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No generic controls, duplicate chrome, aliases, or compatibility paths returned. | No material legacy weakness. | Preserve the clean removal. |
+| `10` | `Cleanup Completeness` | 9.0 | Real click and exact-focus regressions were added; prior cleanup remains. | Add reverse-order backdrop/layer assertions. | Complete the final lifecycle coverage. |
+
+### Latest Authoritative Result (Round 30)
+
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — the reverse open order is explicitly implemented and covered as a supported journey.
+- Score Summary: `8.70/10` (`87.0/100`); one category remains below the clean-pass threshold because the reverse-order visual/backdrop owner is wrong.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation review.
+- Recommended Recipient: `implementation_engineer`
+- Unresolved finding IDs: `CR-020`.
+- Notes: CR-021, CR-018, and CR-019 are resolved. Do not route to API/E2E or delivery until visual, backdrop, and keyboard topmost ownership are synchronized in both open orders.
+
+## Round 31 — Full From-Scratch Implementation Source Review — CR-020 Re-entry
+
+### Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
+- Current Review Round: `31`
+- Trigger: `f8bbbaa55fa02421045afbc41e143c50b3f4b8a1` rework for CR-020, after the prior Round 30 full source review.
+- Prior Review Round Reviewed: `Round 30` at `d2cb355634fb5e4e6c3de43d7d6ad7e093d7a76e`
+- Latest Authoritative Round: `31`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md` (Architecture Round 22 / DI-012 Pass basis)
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
+- Coverage Investigation Reviewed (failure-origin entry point): `N/A`
+- Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
+- Failing Scenario IDs: `N/A` — API/E2E has not run for this rework.
+- Exact Failing Commands / Execution Mode: `N/A`
+- Failure Evidence Paths: `N/A`
+
+This is a fresh full source review, not a delta-only approval. I retraced the complete current behavior from the single responsive policy and nested activation contract through the route-scoped default shell, left/right strips, both local drawer states, the shared keyboard/focus/layer registry, simultaneous open ordering and dismissal, right-tool tabs, bounded resize, route compatibility, and `/mobile` isolation. The CR-020 visual/backdrop ordering defect is resolved. The current source still gives both simultaneously open drawers `aria-modal="true"`, even though the shared registry establishes only one topmost keyboard/layer owner. That is a new implementation-owned accessibility defect in the supported independent-drawer state.
+
+### Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 31 | `f8bbbaa55` CR-020 reactive shared visual-layer rework | `CR-020`, `CR-021`, `CR-018`, `CR-019` | `CR-022` | Fail | Yes | CR-020/021 are resolved; two simultaneous modal semantics remain inconsistent with the single topmost owner. |
+
+### Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 30 | `CR-020` | High | Resolved | `useAccessibleDrawer.ts:32–59,86–89` now uses a reactive ordered registry; `default.vue:2,28,159–162` and `WorkspaceRightToolDrawer.vue:4,15,47–48` consume registry-derived backdrop/drawer z-indexes. The current probe adds reverse-order z-index and hit-tested backdrop assertions. | Both open orders now make the most recently registered drawer and backdrop visually/hit-test topmost, matching keyboard ownership. |
+| 30 | `CR-021` | Medium | Resolved | `rememberDrawerTrigger`, stable `data-nav-key`/`data-tab-name` identities, and side-specific remount resolvers remain present in the strips, default layout, adaptive layout, and shared close lifecycle. | No regression found. |
+| 29 | `CR-018` | High | Resolved | Shared remaining-drawer focus handoff and post-remount side resolvers remain in `useAccessibleDrawer.ts:91–124`. | No regression found. |
+| 29 | `CR-019` | High | Resolved | `WorkspaceAdaptiveLayout.vue:221–239` keeps left/right transient state independent; no opposite-side close is reintroduced. | No regression found. |
+
+### Review Scope
+
+- Changed implementation and behavior reviewed: the complete current responsive workspace implementation, with fresh attention to CR-020's shared reactive layer ordering, both drawer/backdrop renderers, ARIA semantics, keyboard ownership, focus handoff, route-scoped shell rendering, strip activation, preference preservation, right tabs, bounded resize, and `/mobile` isolation.
+- Files / areas reviewed: `responsiveLayoutPolicy.ts`, `responsiveStripActivation.ts`, `useResponsiveWorkspaceShell.ts`, `useResponsiveElementRect.ts`, `useLeftPanel.ts`, `useRightPanel.ts`, `useAccessibleDrawer.ts`, `layouts/default.vue`, `WorkspaceAdaptiveLayout.vue`, `LeftSidebarStrip.vue`, `RightSidebarStrip.vue`, `WorkspaceRightToolDrawer.vue`, `RightSideTabs.vue`, `TabList.vue`, `Tab.vue`, `AppLeftPanel.vue`, `useShellPrimaryNavigation.ts`, `workspaceSurfaceOrder.ts`, `pages/workspace.vue`, the affected focused tests, and `workspace-responsive-probe.mjs`.
+- Explicit exclusions: pre-existing unstaged delivery/release/documentation/evidence artifacts; API/E2E runtime execution and confidence scoring; separate durable-test review; and deep internal Terminal/Browser/VNC behavior.
+
+### Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: `Confirmed`. The target preserves the personal left/center/right hierarchy, uses capacity-aware redock versus transient-drawer activation, keeps drawer-open side surfaces mutually exclusive, preserves independent left/right state, and requires drawer focus containment/return without duplicate chrome or `/mobile` changes.
+- Design-spec behavior map verified against the implementation: `Partially contradicted`. Policy, activation, visibility, visual layer ordering, focus, route scope, tabs, and resize map correctly; simultaneous open drawers still expose two modal ARIA owners while the registry defines one topmost keyboard/layer owner.
+- Design review report and round confirmed: `Confirmed`. Architecture Round 22 / DI-012 remains the applicable approved basis; no requirements or design change is needed for this bounded semantic correction.
+- Behavior-basis status: `Contradicted` only for the current simultaneous-drawer ARIA semantics; all other reviewed behavior is confirmed.
+- Changed or newly discovered behavior: CR-020 now synchronizes visual/backdrop order with keyboard order. The fresh review identifies `CR-022`: both drawers remain `aria-modal="true"` when simultaneously open, rather than exposing one authoritative modal owner.
+- Remaining material ambiguity: None. The current implementation and durable probe explicitly support both open orders; the shared registry already defines the topmost owner, so the required ARIA mapping is an implementation concern.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| --- | --- | --- | --- |
+| `FR-039` / `AC-039` — independent side surfaces and both open orders | Confirmed | `default.vue:2` isolates the shell; the reactive `openDrawers` registry drives `drawerLayer` z-indexes; the adaptive and default renderers retain independent local state. | None after CR-020 rework. |
+| `FR-041` / `AC-042` / `DS-010` — drawer-only visibility, personal strips, and accessible drawer semantics | Contradicted for simultaneous ARIA semantics | `default.vue:35–36` and `WorkspaceRightToolDrawer.vue:12–13` both mark their open dialog `aria-modal="true"`; `useAccessibleDrawer.ts:32–59` has one ordered topmost owner for keyboard and layers but exposes no topmost/modal semantic state. | In the reachable right-then-left and left-then-right paths, two simultaneous dialogs are exposed as modal to assistive technology while only the most recently opened drawer owns keyboard containment. |
+| `FR-023`–`FR-040` / related policy and activation contracts | Confirmed | The pure resolver remains the single policy owner; nested `stripActivation`, measured fit, resize intent, right-tools-first yielding, preference preservation, redock/open actions, and route boundary remain intact. | None found. |
+| `FR-016`–`FR-020` / right-tab contract | Confirmed | `RightSideTabs` and `TabList` retain one-row native overflow, catalog order, active/focus auto-scroll, affordances, and fixed-toggle ownership in the current renderer. | None found in this source review. |
+| `/mobile` isolation | Confirmed | `pages/mobile.vue` remains the independent `MobileRemoteAccessShell` route; standard shell changes are not imported there. | None found. |
+
+### Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The approved package has an explicit single policy owner, side activation contract, drawer visibility/focus contract, and independent side lifecycle. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | Visual/backdrop ordering now matches the approved stack, but two open drawers still both claim modal semantics. | Bind modal semantics to the shared topmost drawer and add both-order assertions. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | Responsive/panel state, visual z-order, keyboard ownership, and focus return are explicit; modal ARIA ownership is not derived from the same ordered registry. | Expose a topmost/modal flag from the shared drawer owner. |
+| Ownership boundary preservation and clarity | Fail | `useAccessibleDrawer` owns the ordered keyboard/layer stack, while each template independently hardcodes `aria-modal="true"`. | Make the shared lifecycle authoritative for topmost modal semantics. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Tabs, route compatibility, preference/width state, ResizeObserver cleanup, and `/mobile` remain attached to their intended owners. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The existing drawer lifecycle, strips, panel stores, tab catalog, and tool content are reused. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | The shared drawer registry is the correct reusable structure; side renderers consume it. | Extend that structure with the missing topmost semantic output. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Nested policy state and the small `OpenDrawer` registry remain tight; no duplicate policy aliases returned. | Add only a minimal `isTopmost`/modal semantic ref, not a parallel modal state. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Fail | Z-index and keyboard order use the registry, but `aria-modal` is repeated as an unconditional literal in both callers. | Centralize the topmost modal decision. |
+| Empty indirection check (no pass-through-only boundary) | Pass | `useAccessibleDrawer` performs registration, keyboard, focus, and layer calculations; the new output would carry real semantics. | None beyond CR-022. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Fail | The drawer components own presentation, but they bypass the shared lifecycle for a stateful modal semantic. | Consume the lifecycle's topmost output. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | No opposite-side store shortcut, second policy, or lower-level bypass was introduced. | None. |
+| Authoritative Boundary Rule check | Fail | The renderers depend on the shared drawer lifecycle for keyboard/layer ownership while also independently deciding that every open instance is modal. | Expose one authoritative topmost semantic from the lifecycle. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Drawer lifecycle remains in `composables/useAccessibleDrawer.ts`; shell/drawer markup remains in layout components. | None. |
+| Flat-vs-over-split layout judgment | Pass | The shared stack is not over-split; side components remain small and readable. | None. |
+| Interface/API/query/command/service-method boundary clarity | Fail | `drawerLayer` exposes z-indexes but not whether the instance is topmost/modal, leaving callers to hardcode a conflicting semantic. | Add a minimal read-only `isTopmost` or equivalent modal-state output. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `openDrawers`, `drawerLayer`, `remainingDrawer`, and `rememberDrawerTrigger` accurately describe their current behavior. | Name the added semantic explicitly if implemented. |
+| No unjustified duplication of code / repeated structures in changed scope | Fail | `aria-modal="true"` is duplicated in both shell drawer templates despite one shared owner. | Remove duplicated unconditional semantics and bind to shared state. |
+| Patch-on-patch complexity control | Pass | CR-020 is a bounded reactive-layer completion; no new policy branch or compatibility wrapper was added. | Preserve bounded shape while adding CR-022 coverage. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No new dead path or compatibility-only code is present; generic controls and obsolete drawers remain removed. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Current tests prove z-index ordering and focus/Escape behavior, but no test asserts exactly one modal owner or modal-state transition after the top drawer closes. | Add both open-order component/composable assertions. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing two-order shared-drawer fixture and browser helper are reusable and coherent. | Extend the existing fixture rather than adding a second harness. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The CR-020 probe uses real locator/hit-tested clicks and retains relevant two-order journeys; no stale test path was found. | None. |
+| API/E2E readiness for the next workflow stage | Fail | Static/source checks pass, but the supported two-drawer state has contradictory modal semantics and should not proceed to browser sign-off. | Fix CR-022, repeat full source review, then route to API/E2E. |
+
+### Source File Size And Structure Audit
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | 479 | Pass | Pass; no new size-pressure concern in this round | Pass; sole pure policy owner | Pass | Clean | None. |
+| `autobyteus-web/utils/layout/responsiveStripActivation.ts` | 41 | Pass | Pass | Pass; explicit side action boundary | Pass | Clean | None. |
+| `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts` | 43 | Pass | Pass | Pass; single adapter/provider | Pass | Clean | None. |
+| `autobyteus-web/composables/useAccessibleDrawer.ts` | 188 | Pass | Pass; bounded current lifecycle | **Fail for CR-022**; shared stack owns z/keyboard/focus but not modal semantics | Pass | Local Fix | Expose topmost modal state and consume it in both renderers. |
+| `autobyteus-web/layouts/default.vue` | 214 | Pass | Pass | **Fail for CR-022**; unconditional open-dialog modal semantic is local | Pass | Local Fix | Bind left `aria-modal` to the shared topmost state. |
+| `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | 262 | Pass | Pass; assessed as a cohesive adaptive owner | **Fail by dependency for CR-022**; child drawer needs shared modal state | Pass | Clean with dependent fix | Consume the corrected drawer semantic output through `WorkspaceRightToolDrawer`. |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | 44 | Pass | Pass | **Fail for CR-022**; hardcodes `aria-modal="true"` | Pass | Local Fix | Bind right `aria-modal` to topmost state. |
+| `autobyteus-web/layouts/default.vue`, strips, tabs, and panel owners | 27–214 each | Pass | Pass | Pass outside CR-022; route, strips, tabs, and preferences retain clear owners | Pass | Clean | None. |
+
+### Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrapper, dual policy, schema alias, or version-specific path was introduced. |
+| No legacy old-behavior retention in changed scope | Pass | Generic/top controls, visible drawer chrome, and old workspace mobile fallback remain removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No new obsolete file/helper/test was found. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Only in-memory UI preference/transient drawer state is involved. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None found. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Fail | The simultaneous-drawer transition is visual/focus-safe after CR-020, but the ARIA modal owner does not transition with the shared topmost drawer. |
+
+### Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| None newly identified | N/A | No dead or compatibility-only implementation path was found in this full review. | N/A | None. |
+
+### Docs-Impact Verdict
+
+- Docs impact: `Yes`, non-blocking at this source gate.
+- Why: delivery-owned workspace layout documentation and pre-existing release/docs/evidence artifacts still require final synchronization; CR-022 is a source-level accessibility correction and does not require a requirements/design change.
+- Files or areas likely affected: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/docs/workspace_layout.md` and final delivery records.
+
+### Material Premise Validation
+
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `CR-020-PREM-002` | Confirmed | The reverse independent-drawer journey remains reachable through the visible opposite strip. The current `f8bbbaa55` implementation now gives the most recently registered drawer/backdrop higher z-index, and the durable probe explicitly asserts both open orders. The premise is unchanged; only its CR-020 visual consequence is resolved. |
+
+No new material production or lifecycle premise is required for CR-022. The finding is directly observable in the already-established supported simultaneous-drawer state: `default.vue` and `WorkspaceRightToolDrawer.vue` each render `aria-modal="true"`, while `useAccessibleDrawer.ts` establishes one most-recently-opened keyboard/layer owner.
+
+### Findings (Round 31)
+
+#### `CR-022` — Simultaneously open drawers expose two modal ARIA owners while the shared stack has one topmost owner
+
+- Severity: `Medium` / implementation blocking.
+- Affected behavior: `FR-041`, `AC-042`, `DS-010`, and the supported independent-drawer lifecycle under `FR-039` / `AC-039`.
+- Evidence: `autobyteus-web/layouts/default.vue:35–36` unconditionally sets `aria-modal="true"` whenever the left drawer is open, and `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue:12–13` does the same for the right drawer. In contrast, `autobyteus-web/composables/useAccessibleDrawer.ts:32–59,86–89` maintains one ordered registry and derives one most-recently-opened keyboard/layer owner. In either independent open order, both dialogs therefore announce modal semantics while only one receives Tab/Escape containment and topmost visual/backdrop ownership. This is not a hypothetical path: the current adaptive layout and durable probe deliberately open both sides in both orders.
+- Material consequence: assistive technologies receive contradictory modal state, and the lower open drawer is advertised as modal despite being outside the active keyboard owner. This can expose two modal roots or cause AT to hide/ignore the wrong surrounding content, contrary to one deterministic drawer owner.
+- Required action: extend the existing shared drawer lifecycle with a read-only topmost/modal semantic (for example `isTopmost`) and bind both drawer `aria-modal` attributes to that value so exactly one open drawer is modal; the lower drawer must not claim modal ownership. Add focused assertions for both open orders, topmost transition after dismissal, and final strip restoration. Do not introduce a second per-side modal registry or change independent state.
+- Classification / Owner: `Local Fix` — `implementation_engineer`. No solution-designer reroute is needed because the shared topmost owner and simultaneous supported path are already established.
+
+### Classification (Round 31)
+
+`Local Fix` — bounded accessibility semantics in the implementation-owned shared drawer lifecycle and its two renderers. No API/E2E execution should run until this source finding is corrected and re-reviewed.
+
+### Recommended Recipient (Round 31)
+
+`implementation_engineer`
+
+Fix `CR-022`, add focused both-order modal-semantics coverage, then return for another complete from-scratch source review. Do not route to `api_e2e_engineer` until that source review passes; after a passing API/E2E run, return for the separate proportional durable-test review if the durable probe changes.
+
+### Residual Risks (Round 31)
+
+- `CR-020`, `CR-021`, `CR-018`, and `CR-019` are resolved in current source; `CR-022` is the remaining source blocker.
+- The reactive drawer registry now aligns visual z-order, backdrop hit-testing, keyboard ownership, and focus handoff in both open orders. Its modal ARIA output is incomplete.
+- Focused current source tests and static checks pass; `vue-tsc` remains unavailable. API/E2E execution remains intentionally gated.
+- Existing KaTeX quirks-mode, module-type, and Rollup chunk-size warnings remain non-blocking.
+- Delivery-owned documentation/release artifacts remain outside this source review and require later synchronization.
+
+### Review Scorecard (Round 31)
+
+- Overall score (`/10`): `8.81`
+- Overall score (`/100`): `88.1`
+- Score calculation note: simple average of the ten category scores below. The review fails because a supported accessibility invariant is contradicted; the average does not override that decision.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.8 | Policy, preferences, visual layers, keyboard ownership, and focus return are traceable. | Modal ARIA state is not on the same shared lifecycle spine. | Derive modal ownership from the ordered drawer registry. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.7 | `useAccessibleDrawer` is now the visual and keyboard layer owner. | Both renderers still independently hardcode a modal-owner semantic. | Make one shared topmost output authoritative for ARIA too. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.8 | `drawerLayer` is a compact, useful shared output. | It omits the topmost/modal state that callers need. | Add a minimal read-only `isTopmost`/modal output. |
+| `4` | `Separation of Concerns and File Placement` | 8.9 | Drawer lifecycle and renderer placement are appropriate. | Presentation templates contain duplicated stateful modal semantics. | Keep markup local but consume shared modal ownership. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.1 | The ordered registry is tight and reused; no broad model was added. | The current return shape is one semantic field short. | Add only the missing topmost flag. |
+| `6` | `Naming Quality and Local Readability` | 9.1 | Names and comments accurately describe the reactive registry and layer behavior. | No naming defect; the missing semantic is the weakness. | Name the added state explicitly. |
+| `7` | `API/E2E Readiness` | 8.6 | Focused source suite (13 files / 88 tests), policy type check, probe syntax, and diff checks passed. | The simultaneous drawer ARIA contract is not source-verified and is currently wrong. | Correct and test modal ownership before execution. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.6 | CR-020 visual and focus behavior now follows open order. | Screen-reader modal ownership diverges from keyboard/visual topmost state. | Synchronize all topmost effects. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No generic controls, duplicate chrome, aliases, or legacy fallback returned. | No material legacy weakness. | Preserve the clean removal. |
+| `10` | `Cleanup Completeness` | 8.9 | Reverse-order layer and real hit-tested coverage were added. | No modal-state assertions exist in the shared two-order fixture. | Add modal ownership and transition assertions. |
+
+### Latest Authoritative Result (Round 31)
+
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — the supported simultaneous independent-drawer state and both open orders are established and reachable; no new unsupported scenario is being used.
+- Score Summary: `8.81/10` (`88.1/100`); the review fails because `CR-022` contradicts the shared topmost modal/accessibility invariant.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation review.
+- Recommended Recipient: `implementation_engineer`
+- Unresolved finding IDs: `CR-022`.
+- Notes: `CR-020`, `CR-021`, `CR-018`, and `CR-019` are resolved. Do not route to API/E2E or delivery until exactly one simultaneously open drawer owns modal semantics and the source review passes again.
+
+## Round 32 — Full From-Scratch Implementation Source Review — CR-022 Re-entry
+
+### Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
+- Current Review Round: `32`
+- Trigger: `63f487580` rework for CR-022, after the prior Round 31 full source review.
+- Prior Review Round Reviewed: `Round 31` at `f8bbbaa55fa02421045afbc41e143c50b3f4b8a1`
+- Latest Authoritative Round: `32`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md` (Architecture Round 22 / DI-012 Pass basis)
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
+- Coverage Investigation Reviewed (failure-origin entry point): `N/A`
+- Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
+- Failing Scenario IDs: `N/A` — API/E2E has not run for this rework.
+- Exact Failing Commands / Execution Mode: `N/A`
+- Failure Evidence Paths: `N/A`
+
+This is another complete current-state source review, not a delta-only approval. I retraced the full responsive path from the single composed policy and nested strip activation output through route-scoped shell rendering, both strips, both local drawer states, the ordered shared drawer lifecycle, visual/backdrop layering, ARIA modal ownership, keyboard/focus return, right-tool tabs, bounded resize, route compatibility, and `/mobile` isolation. The CR-022 semantic defect is resolved: the shared registry now exposes `drawerLayer.isTopmost`, both renderers bind `aria-modal` to it, and the focused fixture plus durable probe cover both open orders and topmost transition after dismissal.
+
+### Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 32 | `63f487580` CR-022 shared modal-owner rework | `CR-022`, `CR-020`, `CR-021`, `CR-018`, `CR-019` | None | Pass | Yes | The shared registry now owns keyboard, visual, backdrop, and modal topmost state. |
+
+### Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 31 | `CR-022` | Medium | Resolved | `useAccessibleDrawer.ts:78–91,224–228` exposes reactive `drawerLayer.isTopmost`; `default.vue:35–36,156` and `WorkspaceRightToolDrawer.vue:13,48` bind `aria-modal` only for the registered topmost drawer. The shared fixture asserts both orders and post-dismissal promotion; the probe records/validates `ariaModal`. | Exactly one simultaneously open drawer owns modal semantics. |
+| 30 | `CR-020` | High | Resolved | Reactive registry-derived z-indexes and reverse-order real hit-tested backdrop assertions remain present. | Visual/backdrop and keyboard ownership remain aligned. |
+| 30 | `CR-021` | Medium | Resolved | Stable trigger identities and side-specific remount resolvers remain intact. | No regression found. |
+| 29 | `CR-018` | High | Resolved | Shared remaining-drawer focus handoff and remount retry remain in `useAccessibleDrawer.ts`. | No regression found. |
+| 29 | `CR-019` | High | Resolved | Left/right transient drawer state remains independent in `WorkspaceAdaptiveLayout.vue`; no opposite-side close was reintroduced. | No regression found. |
+
+### Review Scope
+
+- Changed implementation and behavior reviewed: the complete current responsive workspace implementation, with focused review of the CR-022 modal-owner output and all dependent drawer, strip, shell, focus, layering, route, tabs, resize, preference, and `/mobile` paths.
+- Files / areas reviewed: `responsiveLayoutPolicy.ts`, `responsiveStripActivation.ts`, `useResponsiveWorkspaceShell.ts`, `useResponsiveElementRect.ts`, `useLeftPanel.ts`, `useRightPanel.ts`, `useAccessibleDrawer.ts`, `layouts/default.vue`, `WorkspaceAdaptiveLayout.vue`, `LeftSidebarStrip.vue`, `RightSidebarStrip.vue`, `WorkspaceRightToolDrawer.vue`, `RightSideTabs.vue`, `TabList.vue`, `Tab.vue`, `AppLeftPanel.vue`, `useShellPrimaryNavigation.ts`, `workspaceSurfaceOrder.ts`, `pages/workspace.vue`, the focused tests, and `workspace-responsive-probe.mjs`.
+- Explicit exclusions: pre-existing unstaged delivery/release/documentation/evidence artifacts; API/E2E runtime execution and confidence scoring; separate durable-test review; and deep internal Terminal/Browser/VNC behavior.
+
+### Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: `Confirmed`. The target preserves the personal left/center/right hierarchy, capacity-aware redock versus temporary drawer behavior, independent side state, drawer-only visibility for each open side, deterministic focus/keyboard behavior, no duplicate chrome, and `/mobile` isolation.
+- Design-spec behavior map verified against the implementation: `Confirmed`. The current source maps the shared ordered registry to all four topmost effects: keyboard, focus transition, z-index/backdrop order, and modal ARIA ownership.
+- Design review report and round confirmed: `Confirmed`. Architecture Round 22 / DI-012 remains the applicable approved basis; no requirements/design correction is needed.
+- Behavior-basis status: `Confirmed`.
+- Changed or newly discovered behavior: CR-022 is resolved. `drawerLayer.isTopmost` is read-only and computed from the same reactive registration order that owns keyboard and visual layers.
+- Remaining material ambiguity: None.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| --- | --- | --- | --- |
+| `FR-039` / `AC-039` — independent side surfaces and both open orders | Confirmed | `default.vue:2` isolates the shell; `openDrawers` registration order drives keyboard ownership, z-indexes, and `isTopmost`; both renderers retain independent local state. | None found. |
+| `FR-041` / `AC-042` / `DS-010` — drawer-only visibility, personal strips, and accessible drawer semantics | Confirmed | `default.vue:35–36` and `WorkspaceRightToolDrawer.vue:13` render `aria-modal="true"` only when the drawer's shared `isTopmost` ref is true; lower drawers omit the attribute and are promoted after topmost dismissal. | None found. |
+| `FR-023`–`FR-040` / policy and activation contracts | Confirmed | The pure resolver remains sole policy owner; nested activation, measured fit, resize intent, right-tools-first yielding, preference preservation, redock/open actions, and route scope remain intact. | None found. |
+| `FR-016`–`FR-020` / right-tab contract | Confirmed | `RightSideTabs` and `TabList` retain one-row native overflow, catalog order, active/focus auto-scroll, affordances, and fixed-toggle ownership. | None found. |
+| `/mobile` isolation | Confirmed | `pages/mobile.vue` remains the independent `MobileRemoteAccessShell` route; standard shell changes are not imported there. | None found. |
+
+### Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The approved package defines one policy owner, side activation, drawer visibility/focus, independent side state, and modal semantics. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Current output matches the symmetric strip/drawer, sole-visible-side, exact-focus, one-row tab, and `/mobile` contracts. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | State, visual layer, keyboard, focus, and modal semantic outputs all derive from the appropriate shared owners; modal state derives from `openDrawers`. | None. |
+| Ownership boundary preservation and clarity | Pass | `useAccessibleDrawer` owns ordered keyboard/layer/modal state; renderers consume read-only outputs; panel stores remain preference owners. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Tabs, route compatibility, preference/width state, ResizeObserver cleanup, and `/mobile` remain attached to intended owners. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing drawer lifecycle, strips, panel stores, tab catalog, and tool content are reused. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | The shared ordered registry and `drawerLayer` output are reused by both shell drawers. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | `isTopmost` is a minimal field on the existing layer object; no parallel modal registry or policy alias was added. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Keyboard, z-index, backdrop, and ARIA modal topmost decisions all use one registry. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | `useAccessibleDrawer` performs registration, focus, keyboard, z-order, and modal semantics; the returned layer object carries real behavior. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Lifecycle semantics stay in the composable; drawer templates retain only rendering and bindings. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | No opposite-side store shortcut, second policy, or lower-level bypass was introduced. | None. |
+| Authoritative Boundary Rule check | Pass | The renderers depend on the shared drawer lifecycle for all topmost effects rather than combining it with an internal modal manager. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Drawer lifecycle remains in `composables/useAccessibleDrawer.ts`; shell/drawer markup remains in layout components. | None. |
+| Flat-vs-over-split layout judgment | Pass | The shared stack is appropriately centralized without splitting the drawer behavior into redundant helpers. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | `drawerLayer` exposes explicit read-only z-index and topmost semantic state; identity remains internal to the composable. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `openDrawers`, `drawerLayer`, `isTopmost`, `remainingDrawer`, and `rememberDrawerTrigger` accurately describe responsibility. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Modal ownership is no longer duplicated as unconditional caller logic; both renderers bind the same shared output. | None. |
+| Patch-on-patch complexity control | Pass | CR-022 is a bounded field addition to the existing shared lifecycle with focused coverage; no policy branch or compatibility wrapper was added. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No new dead path or compatibility-only code is present; obsolete generic controls and workspace mobile fallback remain removed. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The shared fixture asserts both open orders, exactly one modal owner, promotion after dismissal, z-order, keyboard ownership, and focus. The browser probe records/validates the same modal state alongside hit-tested layer behavior. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing two-order shared-drawer fixture and browser collection helper are reused; no duplicate harness was created. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The stale default-layout source expectation was updated; current tests assert the new authoritative contract rather than old behavior. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Current source tests and guards pass, the full source path is aligned, and no implementation blocker remains. | Route the cumulative package to `api_e2e_engineer` for fresh execution. |
+
+### Source File Size And Structure Audit
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | 479 | Pass | Pass; no new size-pressure concern | Pass; sole pure policy owner | Pass | Clean | None. |
+| `autobyteus-web/utils/layout/responsiveStripActivation.ts` | 41 | Pass | Pass | Pass; explicit side action boundary | Pass | Clean | None. |
+| `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts` | 43 | Pass | Pass | Pass; single adapter/provider | Pass | Clean | None. |
+| `autobyteus-web/composables/useAccessibleDrawer.ts` | 193 | Pass | Pass; bounded shared lifecycle | Pass; keyboard/visual/modal ownership is centralized | Pass | Clean | None. |
+| `autobyteus-web/layouts/default.vue` | 215 | Pass | Pass | Pass; route-scoped shell consumes shared topmost state | Pass | Clean | None. |
+| `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | 262 | Pass | Pass; cohesive adaptive owner | Pass; local drawer state delegates lifecycle semantics | Pass | Clean | None. |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | 45 | Pass | Pass | Pass; rendering-only consumer of shared drawer layer | Pass | Clean | None. |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | 118 | Pass | Pass | Pass; explicit strip inventory/activation owner | Pass | Clean | None. |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | 76 | Pass | Pass | Pass; explicit right activation owner | Pass | Clean | None. |
+| `autobyteus-web/components/layout/RightSideTabs.vue` / `TabList.vue` / `Tab.vue` | 40–208 | Pass | Pass | Pass; tab/header/overflow responsibilities remain separated | Pass | Clean | None. |
+| `autobyteus-web/components/AppLeftPanel.vue` / `pages/workspace.vue` / panel composables | 27–187 | Pass | Pass | Pass; content, route facade, and preference owners remain clear | Pass | Clean | None. |
+
+### Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrapper, dual policy, schema alias, or version-specific path was introduced. |
+| No legacy old-behavior retention in changed scope | Pass | Generic/top controls, visible drawer chrome, and old workspace mobile fallback remain removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No new obsolete file/helper/test was found. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Only in-memory UI preference/transient drawer state is involved. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None found. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | The topmost modal semantic promotes with the same registry transition as visual/keyboard ownership; no persisted transition is involved. |
+
+### Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| None newly identified | N/A | No dead or compatibility-only implementation path was found in this full review. | N/A | None. |
+
+### Docs-Impact Verdict
+
+- Docs impact: `Yes`, non-blocking at this source gate.
+- Why: delivery-owned workspace layout documentation and pre-existing release/docs/evidence artifacts still require final synchronization; CR-022 is now resolved and requires no requirements/design change.
+- Files or areas likely affected: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/docs/workspace_layout.md` and final delivery records.
+
+### Material Premise Validation
+
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `CR-020-PREM-002` | Confirmed | The reverse independent-drawer journey remains reachable through the visible opposite strip. The current registry still promotes the most recently registered drawer for visual, backdrop, keyboard, focus, and `aria-modal` ownership; the shared fixture and durable probe assert both orders. |
+
+No new material production or lifecycle premise is required. The CR-022 correction is directly implemented and tested in the already-established supported simultaneous-drawer state.
+
+### Findings (Round 32)
+
+None. CR-022 is resolved, and the complete current source review found no new implementation, structural, accessibility, compatibility, cleanup, or API/E2E-readiness blocker.
+
+### Classification (Round 32)
+
+N/A — Pass.
+
+### Recommended Recipient (Round 32)
+
+`api_e2e_engineer`
+
+Source review passes. Run a fresh current API/E2E validation against exact HEAD `63f487580`; if the durable probe remains changed, return for the separate proportional durable-test review before delivery.
+
+### Residual Risks (Round 32)
+
+- API/E2E must freshly validate both independent drawer open orders, hit-tested backdrop ownership, z-index ordering, `aria-modal` promotion, focus/Tab/Escape behavior, all responsive matrix states, right-tab reachability, bounded resize, route scope, and `/mobile` isolation.
+- The durable probe remains API/E2E-owned for execution and result classification; its syntax check is not runtime sign-off.
+- Focused source tests and static checks pass; `vue-tsc` remains unavailable.
+- Existing KaTeX quirks-mode, localization module-type, and Rollup chunk-size warnings remain non-blocking.
+- Delivery-owned documentation/release artifacts remain outside this source review and require later synchronization.
+
+### Review Scorecard (Round 32)
+
+- Overall score (`/10`): `9.34`
+- Overall score (`/100`): `93.4`
+- Score calculation note: simple average of the ten category scores below. All categories meet the clean-pass threshold; API/E2E remains the next independent gate.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Responsive state, preference, visual layer, keyboard, focus, and modal semantics are traceable to explicit owners. | Runtime cross-browser behavior remains downstream to validate. | Confirm the same spine in the fresh browser matrix. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | One drawer registry now owns every topmost effect; shell/workspace renderers consume it. | No source weakness found. | Preserve the single owner through future changes. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | `drawerLayer` exposes minimal read-only z-index and `isTopmost` state; panel/activation APIs remain explicit. | Browser execution remains pending. | Validate the public behavior at runtime. |
+| `4` | `Separation of Concerns and File Placement` | 9.3 | Policy, adapters, preference owners, renderers, strips, drawer lifecycle, and tabs remain separated. | Adaptive layout remains a sizable but cohesive owner. | Keep future drawer changes in the shared lifecycle boundary. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | The ordered registry and nested policy output are tight; no parallel modal state or aliases were introduced. | No material weakness found. | Preserve the minimal shared shape. |
+| `6` | `Naming Quality and Local Readability` | 9.3 | `isTopmost`, `drawerLayer`, `openDrawers`, and activation names match their responsibilities. | No material naming weakness found. | None beyond ordinary maintenance. |
+| `7` | `API/E2E Readiness` | 9.2 | 13 focused files / 88 tests, policy TypeScript, guards, build, probe syntax, and diff checks passed; browser assertions are aligned. | Current browser run is not yet executed for this HEAD. | Complete the downstream matrix and cleanup evidence. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 | Visual/backdrop, keyboard, focus, and modal owners now transition together in both independent orders. | Browser/AT runtime confirmation remains pending. | Validate hit-testing and accessibility in fresh execution. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No generic controls, duplicate chrome, schema aliases, legacy workspace mobile fallback, or compatibility branches returned. | No material legacy weakness. | Preserve the clean removals. |
+| `10` | `Cleanup Completeness` | 9.3 | CR-022 adds focused modal-owner coverage and durable assertions without stale paths; prior CR-020 real-click coverage remains. | No material cleanup gap found. | Keep test coverage with future lifecycle changes. |
+
+### Latest Authoritative Result (Round 32)
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — the supported independent-drawer state and both open orders are established and fully aligned across visual, keyboard, focus, and ARIA ownership.
+- Score Summary: `9.34/10` (`93.4/100`); all mandatory scorecard categories meet the clean-pass threshold.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation review.
+- Recommended Recipient: `api_e2e_engineer`
+- Unresolved finding IDs: `None`.
+- Notes: CR-022, CR-020, CR-021, CR-018, and CR-019 are resolved. Route the cumulative package to API/E2E for fresh current-state validation; after a pass, return for proportional durable-test review before delivery.

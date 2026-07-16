@@ -10,14 +10,15 @@ right-tool-tabs-ux-spec.md is the authoritative task-specific UI/UX supplement f
 
 The previous `docked -> strip -> drawer` right-tools fallback with a
 drawer-only top `Tools` trigger is superseded by the user's confirmed design:
-standard `/workspace` always has a visible right-edge tools strip whenever
-the right tabs are not docked. The strip consumes `50px` when the horizontal
-flow can spare it and becomes a fixed edge overlay (`consumedWidth = 0`) when
-that width cannot fit. A wide user-origin strip re-docks the right panel when
-it fits; a constrained, narrow, or responsive-yield strip opens the existing
-right-tools drawer. The drawer is transient interaction state, not a
-responsive right presentation and never requires a separate top `Tools`
-button. `/mobile` and its Android/iOS wrapper remain unchanged.
+standard `/workspace`, while the transient right drawer is closed, has a
+visible right-edge tools strip whenever the right tabs are not docked. The strip
+consumes `50px` when the horizontal flow can spare it and becomes a fixed edge
+overlay (`consumedWidth = 0`) when that width cannot fit. A wide user-origin
+strip re-docks the right panel when it fits; a constrained, narrow, or
+responsive-yield strip opens the existing right-tools drawer, which becomes
+the sole visible right surface while open. The drawer is transient interaction
+state, not a responsive right presentation and never requires a separate top
+`Tools` button. `/mobile` and its Android/iOS wrapper remain unchanged.
 
 ## Symmetric side-surface contract
 
@@ -30,8 +31,10 @@ right panel -> right strip -> right drawer
 
 The left surface owns Agents, Agent Teams, workspaces, and run history. The
 right surface owns Files and the tool catalog. A docked panel is the expanded
-surface and replaces its strip. Whenever a panel is not docked, its visible
-strip is the sole compact affordance for that side. Activation is
+surface and replaces its strip. Whenever a panel is not docked and its
+transient drawer is closed, its visible strip is the sole compact affordance
+for that side. While open, the transient drawer is the sole visible surface
+for that side. Activation is
 capacity-aware: a wide strip created by explicit user collapse re-docks its
 full panel when that panel fits; a constrained, narrow, or responsive-yield
 strip opens that side's temporary drawer. A strip may consume flow width when
@@ -63,24 +66,23 @@ The renderer must not prepend a new left hamburger/menu or breadcrumb-style
 button when the personal strip does not have one. It must not add visible
 `Agents & teams` or `Tools` drawer titles, a separate close `X`, or a second
 panel-toggle control. The drawer begins directly with the existing left
-navigation content or right tab row. The same visible strip/edge control is
-the multifunctional re-dock, open, and close affordance; Escape, backdrop
-click, focus return, and an accessible non-visual drawer label remain available
-as secondary accessibility behavior.
-
-While a transient drawer is open, its originating strip/edge control remains
-visible and hit-testable above the backdrop. Activating that same existing
-control closes the drawer and returns to the strip; it is not replaced by a
-new drawer-header close control. The drawer may cover the center and panel
-content, but must not cover or disable the compact side affordance that
-opened it.
+navigation content or right tab row. While the drawer is closed, the existing
+strip/edge control is the sole compact affordance: it re-docks a fitting wide
+user-origin panel or opens the transient drawer in constrained/responsive
+states. When the drawer opens, that side's strip is hidden for the duration of
+the overlay so the drawer is the sole visible side surface. Backdrop click,
+Escape, and focus return close the drawer and restore the same strip without
+mutating panel preference; an accessible non-visual drawer label remains
+required.
 
 This rule resolves the implementation/design ambiguity: the earlier package
 specified strip activation but did not explicitly freeze the personal-branch
 strip visual inventory or forbid generic drawer chrome. The implementation
 introduced a new `workspace-left-strip-open` hamburger and visible drawer
 headers/close buttons while filling that gap. Those additions are now
-explicitly outside the approved standard `/workspace` design.
+explicitly outside the approved standard `/workspace` design. The immediately
+previous revision also incorrectly kept the strip above the opened drawer;
+the current contract makes drawer and strip mutually exclusive.
 
 ## Route-scoped shell boundary
 
@@ -341,11 +343,16 @@ The symmetric side-surface renderer contract is:
 | `rightPanel = docked` | N/A | N/A | No right strip | Existing fixed right-panel toggle | None |
 | `rightPanel = strip` | `consuming` or `overlay` | `redock-panel` when user-origin and fitting; otherwise `open-drawer` | Yes | Re-dock fitting user-collapsed panel, otherwise open temporary tools drawer | No top `Tools` |
 
-`WorkspaceAdaptiveLayout` and `layouts/default.vue` must render these side
-states from the composed output. They must not render
+The table describes the closed transient-drawer state. While a local
+transient drawer is open, the corresponding `Visible strip` value is
+temporarily `No` and the drawer is the sole visible surface for that side;
+closing the drawer restores the table-derived state without changing
+preference. `WorkspaceAdaptiveLayout` and `layouts/default.vue` must render
+these side states from the composed output. They must not render
 `WorkspacePrimarySurfaceControls` or recreate a generic navigation row. The
-two strips are independent: opening one does not hide or relabel the other,
-and each drawer returns focus to its own strip.
+left and right sides remain independent: opening one side's drawer hides only
+that side's strip and does not hide or relabel the other side. Each drawer
+returns focus to its own restored strip.
 
 For the global default layout, this rule is route-scoped. On `/workspace`,
 `default.vue` ignores `showHeader` and suppresses the responsive hamburger and
@@ -365,9 +372,10 @@ The right-tools affordance contract is:
 `WorkspaceAdaptiveLayout` must not render `WorkspacePrimarySurfaceControls`
 for right-tools access and must not define a `showToolsTrigger` branch. The
 corresponding browser/component invariants are “every non-docked standard
-workspace state has a visible right strip,” “`redock-panel` is emitted only
-for a fitting user-origin strip,” and “no right strip is paired with a top
-Tools trigger.”
+workspace state has a visible right strip while its drawer is closed,”
+“`redock-panel` is emitted only for a fitting user-origin strip,” “an opened
+right drawer renders without its strip,” and “no right strip is paired with a
+top Tools trigger.”
 
 `rightPanelResizeIntent` is persistent user intent: it is `automatic` initially and becomes `user-sized` after an explicit right-divider drag. The resolver separately returns `rightPanel.centerProtectionMode`, which describes the effective protection for the current viewport:
 

@@ -825,10 +825,10 @@ opens a transient drawer. The strip itself must not gain a new control.
 
 | Source | `origin/personal` evidence | Current worktree evidence | Consequence |
 | --- | --- | --- | --- |
-| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | The strip begins with the existing navigation/workspace/history items and settings; there is no leading hamburger/menu item | The current worktree adds `data-test="workspace-left-strip-open"`, a `bars-3` icon, and an `openNavigation` label before those items | The added button is not part of the target and must be removed; preserve the personal-branch inventory while consuming `stripActivation` |
-| `autobyteus-web/components/layout/RightSidebarStrip.vue` | The strip is the existing canonical tool-icon rail and side affordance | The current worktree retains the icons but routes through explicit `request-open`/`request-redock` events | Keep the visual/control inventory unchanged and align event side effects with the hybrid activation output |
-| `autobyteus-web/layouts/default.vue` | The personal desktop interaction does not add a visible `Agents & teams` drawer heading and separate close control | The current worktree renders a visible `Agents & teams` heading and `app-left-drawer-close` button | Drawer labeling/focus semantics may remain non-visual; remove duplicate visible chrome |
-| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | The right tool surface is the existing tabs/content | The current worktree adds a visible `Tools` heading and close `X` around `RightSideTabs` | Drawer starts directly with existing tabs/content; no visible title or second close/panel toggle |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | The strip begins with the existing navigation/workspace/history items and settings; there is no leading hamburger/menu item | Earlier `fbc33091a` added `workspace-left-strip-open`; current `HEAD` removed it in `56ee3c3b0` and matches the personal-branch inventory | Preserve the current inventory while correcting drawer visibility and keeping `stripActivation` authoritative |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | The strip is the existing canonical tool-icon rail and side affordance | Current `HEAD` retains the icons and routes through explicit `request-open`/`request-redock` events | Keep the visual/control inventory unchanged and make the strip mutually exclusive with the opened drawer |
+| `autobyteus-web/layouts/default.vue` | The personal desktop interaction does not add a visible `Agents & teams` drawer heading and separate close control | Earlier `f37df2187` added the visible heading/close; current `56ee3c3b0` removed that chrome and keeps only semantic dialog labeling | Preserve non-visual labeling; suppress the strip while the drawer is open |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | The right tool surface is the existing tabs/content | Earlier `f37df2187` added visible `Tools`/close chrome; current `56ee3c3b0` starts directly with `RightSideTabs` | Preserve the content-only drawer and make it exclusive with the right strip |
 
 #### Cause classification
 
@@ -836,13 +836,14 @@ This is both a design-package gap and implementation drift, not solely one
 role's error. The earlier design explicitly defined the hybrid activation
 lifecycle and symmetric side ownership, but it did not explicitly freeze the
 personal-branch strip visual/control inventory or prohibit generic drawer
-chrome. The implementation engineer then added a left hamburger and generic
-drawer title/close controls to make the transient drawer explicit and
-accessible. Those additions are understandable from the underspecified
-design, but they contradict the user's now-explicit personal-branch contract.
-The revised requirements and UX supplements close that gap with FR-041/AC-042
-and make the absence of those controls an executable source/component/browser
-assertion. `/mobile` and `components/mobile/*` remain unchanged and out of
+chrome. The implementation engineer did add a left hamburger and generic
+drawer title/close controls in earlier commits to make the transient drawer
+explicit and accessible. Those additions were then removed by `56ee3c3b0`
+after the design clarification. The remaining defect is a separate
+renderer-state mistake: the current implementation keeps the strip rendered
+while the local drawer is open. The revised requirements and UX supplements
+now cover both the absence of duplicate chrome and drawer/strip mutual
+exclusion. `/mobile` and `components/mobile/*` remain unchanged and out of
 scope.
 
 #### Re-review consequence
@@ -850,7 +851,65 @@ scope.
 Implementation remains paused. Architecture must review the revised
 visual/control-inventory contract together with the already-approved hybrid
 activation contract. After approval, implementation source review must handle
-the added `workspace-left-strip-open` control, visible drawer headers/close
-buttons, and CR-015's dead `request-open` declaration as implementation-owned
-work. API/E2E must then validate both wide re-docking and constrained/narrow
-drawer opening without accepting duplicate visible chrome.
+drawer/strip mutual exclusion and any remaining CR-015 cleanup. API/E2E must
+then validate both wide re-docking and constrained/narrow drawer opening
+without accepting duplicate visible chrome or simultaneous strip-plus-drawer
+rendering.
+
+### Drawer/strip mutual-exclusion reconciliation (2026-07-16)
+
+#### User observation
+
+The user tested the post-implementation Electron build and confirmed that the
+extra hamburger/title/close controls are gone. A new visual defect remains:
+when a constrained/narrow left or right strip opens its transient drawer, the
+same strip remains visible beside the overlay. The supplied evidence is:
+
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_71a17f2aca5f__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_85009d47f34c__image.png`
+
+The desired state machine is mutually exclusive:
+
+```text
+docked panel -> no strip, no drawer
+closed strip -> strip only
+open drawer -> drawer only
+dismissed drawer -> the same strip returns
+```
+
+The strip remains the original personal-branch control whenever it is visible.
+Its activation still means wide fitting user-origin `redock-panel` or
+constrained/narrow/responsive `open-drawer`. Opening the drawer temporarily
+hides the strip; it does not change the stored panel preference or convert the
+drawer into a new responsive policy presentation. Backdrop and Escape dismiss
+the drawer, after which the policy output is rendered again. No visible close
+button or extra drawer header is introduced.
+
+#### Exact current source cause
+
+The behavior is caused by independent renderer conditions, not by the pure
+capacity resolver:
+
+| Side | Current condition | Result |
+| --- | --- | --- |
+| Right | `WorkspaceAdaptiveLayout.vue` renders `RightSidebarStrip` whenever `responsiveWorkspaceShellState.showRightStrip` is true, while rendering `WorkspaceRightToolDrawer` separately when local `isRightDrawerOpen` is true | Right strip and right drawer render together |
+| Left | `layouts/default.vue` computes `showLeftStrip` from the policy without excluding `showLeftDrawer`; the drawer and strip are sibling surfaces | Left strip and left drawer render together |
+
+Commit `56ee3c3b0` (`fix(workspace): preserve personal strip controls`)
+also raised the strip layer to `z-[60]` so the strip remains above the drawer
+backdrop. That was consistent with the immediately preceding design revision,
+which incorrectly required the strip to remain hit-testable while the drawer
+was open. The user's new evidence rejects that visual state. The corrected
+contract now makes drawer and strip mutually exclusive while preserving the
+same strip controls whenever the drawer is closed.
+
+#### Design and routing consequence
+
+This is a renderer-state design impact, not a request to change `/mobile` or
+the responsive policy owner. Requirements FR-041/AC-042 and the two UX
+supplements now specify drawer-only visibility for the opened side,
+backdrop/Escape dismissal, and strip restoration without preference mutation.
+The package must return through architecture review before implementation
+changes; after approval, source/component/browser coverage must assert mutual
+exclusion for both sides, restoration after dismissal, and no cross-side
+regression.

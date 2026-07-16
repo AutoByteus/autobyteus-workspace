@@ -197,6 +197,7 @@ async function collect(page, label) {
     const header = document.querySelector('header');
     const rightPanelTabList = document.querySelector('[data-test="workspace-right-panel"] [data-test="right-side-tab-list"]');
     const rightDrawerTabList = document.querySelector('[data-test="workspace-right-tool-drawer"] [data-test="right-side-tab-list"]');
+    const rightDrawer = document.querySelector('[data-test="workspace-right-tool-drawer"]');
     const tabButtonDetails = (button) => ({
       label: buttonLabel(button),
       name: button.dataset.tabName || '',
@@ -692,13 +693,14 @@ async function validateLeftStripReopenInteraction(page, viewport) {
   }
 
   const failures = [];
+  const stripState = await collect(page, 'left-strip-reopen-before');
   const clicked = await clickFirstButton(page, '[data-test="workspace-left-navigation-strip"]');
   await page.waitForTimeout(300);
   const drawerState = await collect(page, 'left-strip-reopen-after');
   if (!clicked) failures.push('left navigation strip did not expose a clickable drawer affordance');
   if (!drawerState.rects.leftNavigationDrawer?.visible) failures.push('left navigation strip did not open the navigation drawer');
   if (drawerState.rects.leftStrip?.visible) failures.push('left navigation drawer open state kept the left strip visible');
-  if (drawerState.rects.leftStrip?.stripActivation !== 'open-drawer') failures.push('responsive left strip did not expose open-drawer activation');
+  if (stripState.rects.leftStrip?.stripActivation !== 'open-drawer') failures.push('responsive left strip did not expose open-drawer activation');
   if (!drawerState.activeElement?.insideLeftDrawer) failures.push('left navigation strip did not move focus into the opened drawer');
   failures.push(...validateLeftPanelLayout(drawerState, 'left navigation drawer'));
 
@@ -729,7 +731,7 @@ async function validateLeftStripReopenInteraction(page, viewport) {
 }
 
 async function validateIndependentDrawerInteractions(page, viewport) {
-  if (viewport.name !== 'gap-700x700') {
+  if (viewport.name !== 'tablet-800x700') {
     return null;
   }
 

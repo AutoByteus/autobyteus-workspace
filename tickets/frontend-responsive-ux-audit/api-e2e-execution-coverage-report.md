@@ -8,15 +8,15 @@
 - Supplemental Task Artifacts: `comprehensive-responsive-ui-test-report.md`, `implementation-live-visual-report.md`, and retained probe JSON/summaries under `probes/`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md` (Round 27 `PASS`, Architecture Round 18 / DI-010, CR-016/CR-017)
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md` (Round 32 `PASS`, Architecture Round 22 / DI-012, CR-022 with CR-020/CR-021/CR-018/CR-019 resolved)
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
-- Current execution round: `15`
+- Current execution round: `16`
 - Execution date: `2026-07-16`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`
-- Branch / HEAD: `codex/frontend-responsive-ux-audit` / `7eceffbd5935d95bc102f3deedebf70231addc4c5`
-- Trigger: Implementation source review Round 27 `PASS` for CR-016/CR-017 at current HEAD `7eceffbd5935d95bc102f3deedebf70231addc4c5`, parent `56ee3c3b0`. Architecture Round 18 / DI-010 approves effective `docked|strip` presentations, nested side `stripActivation` ownership, transient drawers, route-scoped workspace header suppression, symmetric strips, and `/mobile` isolation. The current durable probe executes the full viewport, right-resize, strip activation, right-tab, drawer, and mobile contracts.
+- Branch / HEAD: `codex/frontend-responsive-ux-audit` / `63f487580e3c82e33e00b231436e30fce3b51cbe`
+- Trigger: Implementation source review Round 32 `PASS` for CR-022 at current HEAD `63f487580e3c82e33e00b231436e30fce3b51cbe`, parent `f8bbbaa55fa02421045afbc41e143c50b3f4b8a1`. Architecture Round 22 / DI-012 approves the shared ordered drawer registry as the sole owner of keyboard, focus, visual/backdrop, and modal ARIA topmost state, alongside effective `docked|strip` presentations, nested side `stripActivation` ownership, transient drawers, route-scoped workspace header suppression, and `/mobile` isolation. The current durable probe executes the full viewport, right-resize, strip activation, independent drawer, right-tab, route-scope, and mobile contracts.
 - Prior round reviewed: Round 4 integrated-state failure at `2c8345545`; current browser evidence supersedes it.
-- Latest authoritative round: `Round 15`, current result `PASS`.
+- Latest authoritative round: `Round 16`, current result `PASS`.
 
 ## Round History
 
@@ -37,6 +37,7 @@
 | 13 | Code-review Round 20 Architecture Round 12 / DI-006 source `PASS` | Re-ran focused suite/build, current lifecycle probe, full matrix, and console-error enforcement; reconciled one stale 1024 user-sized sequence to a genuine 900 responsive-yield transition | None after bounded probe reconciliation | `Pass` | Yes | 18 states, 33/33 interactions, 8 tab-validation records / 56 checks, 0 failures, 0 browser console-error states; user-sized bounds, responsive-yield strip/drawer ownership, right tabs, semantic contracts, and `/mobile` passed. |
 | 14 | Code-review Round 25 CR-015 cleanup / Architecture Round 18 DI-010 | Fresh focused suite/build, current changed durable probe, full matrix, and console-error enforcement; reconciled one stale sequence-dependent wide redock expectation by resetting in-memory route/module state before the independent manual-collapse journey | None after bounded probe reconciliation | `Pass` | Yes | 18 states, 5/5 resize/strip interactions, 2 tab journeys / 14 snapshots, 0 failures, 0 browser console-error states; symmetric strips, route-scoped header suppression, wide redock, constrained drawer reopen, right tabs, and `/mobile` passed. |
 | 15 | Code-review Round 27 CR-016/CR-017 source PASS | Fresh focused suite/build, current upstream-changed durable probe, full matrix, and console-error enforcement | None | `Pass` | Yes | 18 states, 5/5 direct interactions, 2 tab journeys / 14 snapshots, 0 failures, 0 browser console-error states; fixed right drawer geometry, left local open/close without route navigation, strip/backdrop layering, right resize, right tabs, and `/mobile` passed. |
+| 16 | Code-review Round 32 CR-022 source PASS | Fresh focused suite/build, current upstream-changed probe, bounded collector/geometry reconciliation, full matrix, and console-error enforcement | None after bounded probe reconciliation | `Pass` | Yes | 18 states, 6/6 interaction records, 2 tab journeys / 14 snapshots, 0 failures, 0 browser console-error states; both independent drawer open orders, topmost aria-modal promotion, focus/Tab/Escape, hit-tested backdrop dismissal, right tabs, resize, route scope, and `/mobile` passed. |
 
 ## Investigation And Execution Basis
 
@@ -1063,6 +1064,71 @@ pnpm -C autobyteus-web test:e2e:workspace-responsive -- \
 - Result: `Pass`.
 - API/E2E made a bounded durable-probe-only change; no production source, requirements, or design behavior changed.
 - Required next recipient: `code_reviewer` for the separate proportional durable-test review of `workspace-responsive-probe.mjs`. Do not route directly to delivery.
+
+## Round 16 Current-State Execution Addendum (Latest Authoritative)
+
+### Execution Basis
+
+- Trigger: implementation-source review Round 32 `PASS` for CR-022 at exact HEAD `63f487580e3c82e33e00b231436e30fce3b51cbe`, parent `f8bbbaa55fa02421045afbc41e143c50b3f4b8a1`. The reviewed source exposes read-only `drawerLayer.isTopmost`; one ordered registry owns keyboard Tab/Escape, focus handoff, drawer/backdrop z-index, and `aria-modal` promotion in both independent open orders.
+- The current durable probe was already cumulatively changed upstream for CR-020/021/018/019/022. Round 16 made only bounded API/E2E fixes: declare the `rightDrawer` collector element used by active-element inspection; validate left-strip activation from the pre-open state because the opened drawer intentionally unmounts the strip; and move hit-tested independent-order coverage from impossible `700px` full-width coverage to `800x700`, where the two drawers leave an `80px` backdrop gap. No production source, requirements, or design changed.
+
+### Repository Checks
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Focused Nuxt/Vitest responsive/drawer suite | `Pass`, `13` files / `92` tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round16-focused-nuxt-tests.log` |
+| `pnpm -C autobyteus-server-ts build` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round16-server-build.log` |
+| Probe syntax and `git diff --check` | `Pass` before and after probe reconciliation | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round16-probe-checks.log` |
+
+The first browser attempt and subsequent bounded probe fixes are retained in the browser/probe-check logs; the initial `rightDrawer` ReferenceError was classified as a test collector defect, not a product failure.
+
+### Runtime And Browser Matrix
+
+- Authoritative runtime used a fresh built backend at `127.0.0.1:13031`, Nuxt frontend at `127.0.0.1:13032`, headless Chrome, explicit `BACKEND_*` endpoints, and isolated SQLite `/tmp/autobyteus-responsive-ux-audit-api-e2e-round16/db/test.db`. The initial backend setup inherited the host production environment and was stopped before execution; the retry explicitly overrode `APP_ENV`, `AUTOBYTEUS_SERVER_HOST`, and `DATABASE_URL`, and migration output confirms the isolated test database. Exact evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round16-runtime-setup.log`, `api-e2e-round16-backend.log`, and `api-e2e-round16-frontend.log`.
+- Authoritative command:
+
+```bash
+pnpm -C autobyteus-web test:e2e:workspace-responsive -- \
+  --base-url http://127.0.0.1:13032 \
+  --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e \
+  --fail-on-console-error
+```
+
+- Final result: `Pass`. All `18` states (`17` `/workspace` viewports plus `/mobile`) passed with `6/6` interaction records clicked, `2` tab-validation records / `14` snapshots, `0` failures, and `0` browser console-error states. Canonical JSON/summary were generated at `2026-07-16T21:29:01.487Z`: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `workspace-responsive-probe-summary.json`; exact first/final output is `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round16-workspace-responsive-probe.log`.
+- CR-022 direct browser proof passed at `800x700`: left-then-right and right-then-left independent drawers remained simultaneously visible; the most recently opened drawer owned focus and `aria-modal="true"`, while the lower drawer omitted `aria-modal`; Escape dismissed only the topmost drawer, promoted the remaining drawer, and final dismissal restored focus to the corresponding strip. Reverse visual z-index and backdrop order matched registration order, and real Playwright hit-testing dismissed the left then right backdrops through the remaining `80px` gap. The separate `700x700` left-strip open/close path remained green.
+- Retained contracts passed: full fixed right drawer geometry, left/right strip visibility/layering, standard `/workspace` header/generic-control suppression, threshold/nonblank bands, short-height recovery, one-row right tabs/order/ARIA/overflow/focus behavior, wide resize bounds (`750px` right / `205px` center at `1280x800`; `910px` / `205px` at `1440x900`), route scope, and `/mobile` isolation.
+- Browser console collection recorded `18` benign messages and no `error`, `pageerror`, or `exception` entries under console-error enforcement. The frontend runtime log retains dev-server `#app-manifest` pre-transform diagnostics during shutdown; these did not surface in browser console collection and did not affect the completed probe.
+
+### Cleanup
+
+- Backend session `72195` and frontend session `47914` were stopped with SIGINT. Run-owned ports `13031` and `13032` were verified clear; no unrelated process or database was stopped or modified. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round16-cleanup-ports.log`.
+
+### Round 16 Confidence Scorecard
+
+| Confidence Category | Score | Basis | Remaining Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 100% | Current browser execution directly proves CR-022 modal ownership and all retained responsive/right-tab/resize/route/mobile contracts. | No material uncertainty for the web-equivalent ticket scope. |
+| Changed-boundary execution directness | 100% | Actual registration-order, keyboard, focus, ARIA, stacking, hit-testing, drawer, strip, resize, and renderer behavior ran in Chrome. | Packaged Electron shell is not directly exercised. |
+| Cross-boundary integration realism and mock gap | 96% | Fresh built backend, isolated SQLite, Nuxt runtime, Chrome, explicit endpoints, and console-error enforcement passed. | Deep authenticated Terminal/Browser/VNC workflows remain outside this shell matrix. |
+| Environment, configuration, identity, and fixture fidelity | 95% | Retry explicitly isolated environment/database, readiness passed, deterministic no-selection fixture used, and cleanup passed. | External model/VNC services were not required for this shell contract. |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | Both drawer orders, Escape/Tab/focus promotion, hit-tested backdrop dismissal, narrow/short/wide transitions, setup diagnosis, and cleanup passed. | Packaged Electron restart/recovery remains out of scope. |
+| User-surface, browser, and desktop-shell confidence | 98% | `18` states, `6/6` interaction records, `14` tab snapshots, direct modal/layer checks, and zero browser console errors passed. | Native packaged shell is not directly exercised. |
+| Durable regression coverage quality and relevance | 96% | The reconciled current probe directly enforces modal ownership, focus/layer promotion, and real backdrop hit-testing; final execution passed. | Separate proportional review of the changed probe remains pending. |
+
+- Overall Round 16 confidence: `97.1%` (simple average); no applicable category below `90%`; all critical web-equivalent acceptance criteria directly proven.
+- Broader validation decision: `Required`, executed with `Pass` after bounded API/E2E probe reconciliation.
+
+### Round 16 Durable Coverage And Routing
+
+| Path | Round 16 status | Next route |
+| --- | --- | --- |
+| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | Updated only by bounded collector/geometry/activation coverage reconciliation; final current matrix passed. | `code_reviewer` proportional durable-test review. |
+| `tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `workspace-responsive-probe-summary.json` | Re-generated from exact HEAD and authoritative runtime. | Retain as canonical current evidence. |
+
+### Round 16 Routing
+
+- Result: `Pass`.
+- Return the complete cumulative package to `code_reviewer` for separate proportional durable-test review. Do not route directly to delivery.
 
 ## Round 15 Current-State Execution Addendum (Latest Authoritative)
 

@@ -294,31 +294,59 @@ strip. The source comparison is unambiguous:
 
 | Source | Origin/personal behavior | Current implementation finding | Required outcome |
 | --- | --- | --- | --- |
-| `components/layout/LeftSidebarStrip.vue` | Starts with the existing navigation/workspace/history icons and settings; no leading hamburger/menu button | Adds `data-test="workspace-left-strip-open"` with a `bars-3` icon before the personal-branch items | Remove the added control; retain the personal-branch inventory and let `stripActivation` choose re-dock versus drawer |
+| `components/layout/LeftSidebarStrip.vue` | Starts with the existing navigation/workspace/history icons and settings; no leading hamburger/menu button | Earlier implementation added `data-test="workspace-left-strip-open"`; current `HEAD` has removed it and matches the personal-branch items | Preserve the personal-branch inventory and make drawer visibility exclusive with the strip |
 | `components/layout/RightSidebarStrip.vue` | Existing tool icons and side affordance are the compact right surface | Current icons are close, but activation/event wiring must follow the same explicit hybrid contract | Preserve the original icons/order/spacing and change only the activation result |
-| `layouts/default.vue` left drawer | Existing panel content is the surface; no new responsive title/close chrome in the personal-branch interaction | Adds visible `Agents & teams` heading and a separate close `X` | Start with existing navigation content; retain only semantic dialog labeling and the strip/backdrop/Escape close path |
-| `components/layout/WorkspaceRightToolDrawer.vue` | Existing right tool surface begins with the tabs/content | Adds visible `Tools` heading and a separate close `X` | Start with `RightSideTabs`; no visible title, close `X`, top trigger, or duplicate panel toggle |
+| `layouts/default.vue` left drawer | Existing panel content is the surface; no new responsive title/close chrome in the personal-branch interaction | Earlier implementation added visible `Agents & teams`/close chrome; current `HEAD` has removed it and retains semantic labeling | Start with existing navigation content; hide the strip while open and retain only backdrop/Escape dismissal |
+| `components/layout/WorkspaceRightToolDrawer.vue` | Existing right tool surface begins with the tabs/content | Earlier implementation added visible `Tools`/close chrome; current `HEAD` starts directly with `RightSideTabs` | Preserve the content-only drawer and hide the right strip while it is open |
 
-This is a design-package gap plus implementation drift, not an instruction to
-blame one role. The earlier design defined the hybrid activation lifecycle but
-did not explicitly freeze the personal-branch strip visual/control inventory
-or prohibit generic drawer chrome. The implementation then added explicit
-hamburger/title/close controls to make drawer access and accessibility
-obvious, but those additions violate the clarified personal-branch contract.
-The durable target is now: wide fitting user-origin strip re-docks; a
-constrained/narrow/responsive strip opens a transient drawer; the strip and
-its existing control inventory remain unchanged in both cases. `/mobile` and
-`components/mobile/*` are excluded.
+This is a renderer-state design impact following the earlier visual-contract
+reconciliation. The extra chrome was removed, but the implementation still
+renders a strip and its transient drawer simultaneously. The durable target
+is now: wide fitting user-origin strip re-docks; a constrained/narrow/
+responsive strip opens a transient drawer and disappears while that drawer is
+open; dismissal restores the same strip without changing preference. `/mobile`
+and `components/mobile/*` are excluded.
 
 Coverage must compare the standard workspace strip DOM against the
 `origin/personal` inventory and assert the absence of
 `workspace-left-strip-open`, visible `Agents & teams`/`Tools` drawer headings,
 separate drawer close buttons, and duplicate panel toggles. It must still
 assert keyboard/focus semantics, Escape/backdrop dismissal, and restoration
-of focus to the strip trigger; those semantic requirements do not authorize
-additional visible controls. The earlier hybrid activation matrix remains the
-behavioral oracle, while this section is the visual/control-inventory oracle.
-When either transient drawer is open, browser coverage must also prove that
-the originating strip remains above the backdrop and that activating its
-existing control closes the drawer; no new drawer-header close control may be
-used as the only dismissal path.
+of focus to the strip trigger after dismissal; those semantic requirements do
+not authorize additional visible controls. The earlier hybrid activation
+matrix remains the behavioral oracle, while this section is the
+visual/control-inventory oracle.
+
+### Drawer/strip mutual-exclusion validation (2026-07-16)
+
+The user has now identified a second visual inconsistency in the otherwise
+corrected build: after a constrained strip opens its drawer, the same side's
+strip remains visible beside the overlay. The two screenshots show this on
+both sides. The desired state machine is mutually exclusive:
+
+```text
+docked panel       -> no strip, no drawer
+closed strip       -> strip only
+open transient drawer -> drawer only for that side
+drawer dismissed   -> the same strip reappears
+```
+
+The source cause is direct and deterministic:
+
+- `WorkspaceAdaptiveLayout.vue` renders `RightSidebarStrip` from
+  `rightPanel.showRightStrip` independently of local `isRightDrawerOpen`; the
+  drawer is rendered as a sibling below the flow.
+- `layouts/default.vue` computes `showLeftStrip` from the responsive policy
+  independently of `showLeftDrawer`; the left drawer and left strip can
+  therefore render together.
+- The recent `preserve personal strip controls` implementation intentionally
+  raised strips to `z-[60]`, making the duplicate visible above the backdrop.
+
+This is not a policy-resolution error and does not change the strip inventory
+or hybrid activation contract. The renderer must make the drawer an exclusive
+side state: suppress the corresponding strip and docked surface while that
+side's transient drawer is open; on backdrop/Escape dismissal, re-evaluate the
+same policy output and restore the strip or docked panel without changing the
+stored preference. No visible close button or extra drawer control is needed.
+Coverage must assert left and right mutual exclusion in constrained and narrow
+browser states, plus restoration after dismissal and no cross-side impact.
