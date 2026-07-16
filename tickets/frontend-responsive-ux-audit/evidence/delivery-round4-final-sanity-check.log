@@ -1,0 +1,32 @@
+$ git status --short --branch
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 9]
+ M autobyteus-web/docs/workspace_layout.md
+ M tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ M tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ M tickets/frontend-responsive-ux-audit/handoff-summary.md
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round4-fetch-and-merge.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round4-final-sanity-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round4-post-refresh-check.log
+$ git diff --check
+$ rg stale endpoint examples in normal frontend docs
+No stale normal NUXT_PUBLIC_* endpoint examples found.
+$ canonical right-tool order in workspace docs
+37:Right-tool order is also centralized there and should remain:
+38-
+39-1. Files
+40-2. Team members, when applicable
+41-3. Terminal
+42-4. Activity
+43-5. Token, when applicable
+44-6. Artifacts
+45-7. Browser, when applicable
+46-8. VNC, when applicable
+47-
+$ delivery artifacts contain no stale API/E2E Round 2 or old finalization claims
+No stale delivery-stage claims found; valid proportional-test Round 2 references remain.
+$ git diff --stat
+ autobyteus-web/docs/workspace_layout.md            |  14 +-
+ .../delivery-release-deployment-report.md          | 215 +++++++++------------
+ .../docs-sync-report.md                            |  72 +++----
+ .../handoff-summary.md                             |  86 +++++----
+ 4 files changed, 190 insertions(+), 197 deletions(-)

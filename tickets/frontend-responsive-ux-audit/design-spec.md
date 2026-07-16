@@ -1,5 +1,9 @@
 # Design Spec
 
+## Supplemental Design Artifact
+
+right-tool-tabs-ux-spec.md is the authoritative task-specific UI/UX supplement for the right-tool tab header. It defines the approved single-row visual contract, horizontal scrolling, conditional edge fade/chevron discoverability, active-tab auto-scroll, keyboard/touch behavior, optional More-menu boundary, and validation obligations. It is intended behavior and requires architecture-review approval together with this design spec.
+
 ## Current-State Read
 
 The standard `/workspace` route currently has no single responsive-layout owner.
@@ -173,6 +177,32 @@ High-level target:
 
 ## Responsive Control Hierarchy / Button Ordering
 
+### Right-Tool Tab Header Design Impact
+
+The current CR-003 Local Fix is not the target design. It enables a wrapped right-tool header, which produces a multi-row presentation. The user-confirmed design preserves the original single-row header and solves the expanded catalog through horizontal scrolling.
+
+Required target behavior:
+
+- RightSideTabs renders one horizontal tab row in both docked and drawer modes.
+- The row preserves the existing spacing, typography, compact density, active underline, and fixed panel-toggle affordance.
+- TabList provides a real horizontal overflow container and does not use a right-tool-specific wrapping mode.
+- Horizontal scrolling works through native mouse, touchpad, touch, and keyboard interactions.
+- A conditional edge fade and small directional chevron reveal undisclosed tabs without visually crowding the header. The affordance changes direction as the user scrolls and disappears at the relevant boundary.
+- Selecting or focusing an offscreen tab automatically scrolls it into view.
+- An optional More menu can offer secondary direct selection but cannot replace the visible scrollable row.
+- The right-tool catalog remains the sole authority for order; scrolling must not reorder a tab or remove its reachable path.
+
+The initial visible bounds are not a correctness boundary. Validation must prove scrollability, discoverability, active/focused-tab reachability, panel-toggle stability, and canonical order. It must not require every available tab to fit before the user scrolls.
+
+The current integrated catalog order remains Files -> Team when applicable -> Terminal -> Activity -> Usage/Token when available -> Artifacts -> Browser when available -> VNC Viewer. Scrolling changes only the visible window into this sequence, never the sequence itself.
+
+Ownership for this behavior is intentionally narrow:
+
+- RightSideTabs owns presentation configuration, active-tab context, fixed panel-toggle placement, and tool content.
+- TabList owns the single-row scroll container, scroll metrics, overflow affordances, and active/focused-tab auto-scroll.
+- Tab owns visual tab styling and focus treatment, but not container overflow or catalog order.
+- The workspace surface-order catalog remains the only source of tool order.
+
 Control order is part of the design contract. The adaptive workspace must not simply reuse the legacy mobile tab order (`Running`, optional `Files`, optional `Content`, `Agent`) because that order is ambiguous and does not map to the standard workspace capability set.
 
 Canonical standard `/workspace` surface order:
@@ -258,6 +288,16 @@ Mode invariants:
 | `pages/workspace.vue` | Route entry | Thin route facade | Mount adaptive layout and route setup effects only. | Removes breakpoint ownership from route. | N/A |
 | `composables/useRightPanel.ts` | Standard workspace layout | Right panel preference owner | Store user visible/preferred width and combine with responsive effective presentation. | Existing global state owner for right panel. | Uses policy types. |
 | `composables/useLeftPanel.ts` | App shell layout | Left panel preference owner | Store user visible/preferred width and combine with shell effective presentation. | Existing global state owner for left panel. | Uses policy types. |
+
+## Right-Tool Tab Presentation File Responsibilities
+
+| File / Boundary | Responsibility | Must Not Do |
+| --- | --- | --- |
+| RightSideTabs.vue | Configure the single-row right-tool header, preserve the fixed panel-toggle affordance, pass active context, and render tool content. | Wrap rows, duplicate catalog order, or require initial tab fit. |
+| TabList.vue | Own the horizontal scroll container, scroll metrics, edge fades/chevrons, keyboard/touch reachability, and active/focused-tab auto-scroll. | Decide right-tool order, panel visibility, or tool content. |
+| Tab.vue | Preserve spacing, typography, active underline, hover, and focus styling. | Calculate overflow or own scroll affordance state. |
+| workspaceSurfaceOrder.ts / useRightSideTabs | Provide canonical tool order and availability. | Change order by presentation mode or scroll position. |
+| workspace-responsive-probe.mjs | Assert one-row rendering, scrollability, affordance transitions, active-tab reachability, and order. | Require every tab to fit in initial visible bounds. |
 
 ## Reusable Owned Structures Check
 
@@ -429,6 +469,13 @@ Forbidden:
 Layering follows ownership: route does not bypass the adaptive layout/policy and components do not bypass the policy with independent breakpoints.
 
 ## Migration / Refactor Sequence
+
+Right-tool tab design-impact sequence:
+
+1. Reconcile the current CR-003 wrapped implementation back to the approved single-row behavior before any new browser sign-off.
+2. Add a scrollable tab-row owner with conditional edge fade/chevron state and active/focused-tab auto-scroll while preserving existing tab visuals and the fixed panel toggle.
+3. Replace the initial-fit browser assertion with scrollability, discoverability, active-tab reachability, and canonical-order assertions in docked and drawer states.
+4. Re-run component/source review and then current API/E2E before delivery resumes.
 
 1. Add pure responsive policy file and tests with thresholds that cover the known failure band and constrained widths.
 2. Add a canonical workspace surface/tool order catalog and tests for `Work`, `Runs`, `Files`, `Tools` plus right-tool order.

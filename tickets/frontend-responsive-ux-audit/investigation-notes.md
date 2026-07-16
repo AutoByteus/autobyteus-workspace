@@ -198,6 +198,40 @@ No external/public web sources were needed. Investigation used repository docs, 
 - Individual tool panes may reveal additional internal responsive defects after they become reachable in drawer/sheet presentations.
 - Persisted user panel preferences need careful handling so responsive auto-collapse does not permanently overwrite user intent.
 
+## Design-Impact Reconciliation — Right-Tool Tab Header
+
+Date: 2026-07-16
+
+The code reviewer returned the package to solution design after the CR-003 implementation fix enabled multi-row wrapping in the right-tool header. The user confirmed that the original design is preferred: one horizontal row, preserved visual styling, horizontal scrolling as the primary interaction, lightweight overflow discoverability, and active-tab reachability.
+
+### New source and evidence consulted
+
+| Source | Finding | Consequence |
+| --- | --- | --- |
+| autobyteus-web/components/layout/RightSideTabs.vue at current HEAD | The CR-003 fix passes wrap=true to TabList and therefore changes the header into a multi-row presentation. | This is a design-impact implementation state, not the revised target. |
+| autobyteus-web/components/tabs/TabList.vue at current HEAD | The current opt-in wrap prop switches from horizontal overflow to flex-wrap overflow-x-hidden. | The revised design must remove or reject this right-tool wrapping path and define a scrollable single-row owner. |
+| autobyteus-web/components/tabs/Tab.vue at current HEAD | Tab visual treatment contains compact spacing, typography, whitespace preservation, and active underline behavior that should be preserved. | Tab visual styling remains stable; overflow behavior belongs to the tab-list/header owner. |
+| autobyteus-web/tests/e2e/workspace-responsive-probe.mjs at current HEAD | The current browser assertion fails when any tab is outside the initial tab-list bounds. | Replace the initial-fit invariant with scrollability, discoverability, active-tab reachability, and canonical-order assertions. |
+| tickets/frontend-responsive-ux-audit/code-review-report.md, Round 8 and incoming Design Impact message | Source review passed the wrapping Local Fix, but the user later rejected wrapping as a visual/design change. | Previous CR-003 source pass is superseded for this behavior; architecture re-review is required before implementation resumes. |
+| User-provided original UI reference path from code review: /Users/normy/.codex/server-data/memory/agent_teams/software_engineering_team_835fd076ad177b4677a0993e12fb0fae39/context_files/ctx_1247f857a89b__image.png | The requested reference establishes the preferred single-row right-tool header design. The path was not available for local visual loading in this run, so the design clarification message is the authoritative readable evidence. | Preserve the original header contract rather than infer a new multi-row visual solution. |
+
+### Revised evidence-backed conclusion
+
+The underlying failure remains real: the integrated tool catalog can exceed the initial visible header width in docked and drawer presentations. The failure is not proof that every tab must fit initially. A multi-row wrap repairs initial visibility by changing the established header design, while a scrollable single row preserves the original visual hierarchy and scales to future catalog growth. The target invariant is therefore: every available tab is reachable, active/focused tabs are brought into view, overflow is discoverable, and canonical order is preserved while the header remains one row.
+
+### Supplemental artifact inventory
+
+| Artifact | Purpose and scope | Status | Approval applicability | Related core artifacts |
+| --- | --- | --- | --- | --- |
+| right-tool-tabs-ux-spec.md | Defines single-row visual, scrolling, overflow-affordance, active-tab, accessibility, ownership, and validation behavior for right-tool tabs. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
+| comprehensive-responsive-ui-test-report.md | Historical responsive failure evidence and broad browser-matrix scope. | Evidence supplement | N/A | Requirements doc, design spec |
+
+### Open implementation questions for downstream design/implementation review
+
+- Whether the scroll chevron should scroll by one visible page or a fixed number of tabs can be tuned within the supplement interaction contract; it must remain secondary to native scrolling.
+- The exact fade gradient width and chevron opacity are visual tuning details, not permission to wrap the row.
+- If a More menu is not needed after the scroll affordances are implemented, it may be omitted without weakening the primary scroll contract.
+
 ## Notes For Architect Reviewer
 
 The core architecture decision is whether to approve a single adaptive standard-workspace policy owner and decommission the legacy `/workspace` `WorkspaceMobileLayout` branch. A minimal `640 -> 768` breakpoint fix would not satisfy the user's complaint because it would merely show the poor legacy mobile layout in the failing band and keep constrained desktop cramped.

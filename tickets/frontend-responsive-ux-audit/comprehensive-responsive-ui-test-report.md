@@ -125,4 +125,10 @@ Implementation should not be accepted with only manual visual inspection. It sho
 
 ## Design Impact
 
+### Right-Tool Tab Design-Impact Clarification
+
+The historical probe correctly identified that the expanded right-tool catalog can leave later tabs outside the initial visible header bounds. That observation remains valid, but the prior initial-fit assertion is not the final product contract. The user-confirmed target preserves the original single horizontal row and uses horizontal scrolling, conditional edge fade/chevron affordances, and active-tab auto-scroll to make every tab reachable.
+
+The current CR-003 wrapped-header implementation is therefore a design-impact follow-up, not a completed responsive fix. Future browser coverage must assert one-row rendering, scrollability, overflow discoverability, active/focused-tab reachability, canonical order, and fixed panel-toggle stability in docked and drawer states. It must not require every tab to fit before the user scrolls. See right-tool-tabs-ux-spec.md for the intended behavior.
+
 The expanded test results reinforce the existing design direction and make the responsive probe matrix a first-class requirement. They do not change the core design owner: the solution must still be one adaptive standard `/workspace` shell with centralized policy and explicit control order. They add stronger evidence that a breakpoint-only patch is inadequate because the UX remains poor from `768px` through `1024px` and in short-height windows.

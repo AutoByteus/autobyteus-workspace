@@ -215,6 +215,18 @@ Code review Round 4 is the latest authority. It passed the current implementatio
 - Correlate browser observations with backend/frontend logs, stop only run-owned processes, and verify ports `13005`/`13006` are closed.
 - No API/E2E-owned durable test edit is planned. Successful execution routes to `code_reviewer` for proportional durable-test review; failure routes to `code_reviewer` for focused failure-origin review; blocked setup preserves evidence and asks the user for the missing dependency.
 
+## Round 6 Coverage Rework Addendum
+
+- Investigation date: `2026-07-16`.
+- Current implementation HEAD: `53a5a99fb2222c32a8037f4e008d2778578cef8f`; implementation production rework is `07048b52d`.
+- Approved UX supplement: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, Architecture Review Round 4 approved. It supersedes the historical requirement that every tab fit the initial visible bounds.
+- Durable probe decision changed from `Still Valid / unchanged` to `Needs Update`: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` is being reworked before execution to validate the approved single-row horizontal-scroll contract rather than initial-fit clipping.
+- The reworked probe will verify: one rendered row (`flex-nowrap`, `overflow-x-auto`, no vertical overflow, `white-space: nowrap`); tab semantics (`role=tablist`, `role=tab`, `aria-selected`); active underline; fixed docked panel-toggle placement; canonical order including `Token`; conditional fades/chevrons and accessible directional labels at left/middle/right scroll boundaries; chevron-driven native scroll movement; focus and selection auto-scroll for offscreen `Files` and `VNC Viewer`; and docked/drawer reachability across the approved responsive matrix.
+- Reduced-motion coverage: the `small-desktop-short-1024x480` browser state is executed with `prefers-reduced-motion: reduce`, and the same tab reachability/scroll assertions remain active.
+- The historical `right panel/drawer tab clipped or outside visible list` assertions are removed as obsolete; no assertion requires every tab to fit initially. The new probe is an API/E2E-owned durable coverage change and must return to `code_reviewer` for proportional test-code review after a successful run.
+- Focused source tests remain valid and already passed independently per Round 9 (`2` files / `17` tests); the full current focused suite and new browser probe execution remain required.
+- Planned runtime remains an isolated fresh backend/frontend browser setup, using new run-owned ports `13007`/`13008` and data directory `/tmp/autobyteus-responsive-ux-audit-api-e2e-round6-server-data` to avoid collisions with historical evidence.
+
 ## Round 5 Execution Outcome Addendum
 
 - Execution date: `2026-07-15`.
@@ -245,3 +257,95 @@ Code review Round 4 is the latest authority. It passed the current implementatio
 - Default clean-confidence target met: `Yes`.
 - Broader validation decision: `Required` and completed with `Pass`.
 - Current durable-test changes are implementation-owned; API/E2E made no durable coverage edit.
+
+## Round 6 Execution Outcome Addendum
+
+- Execution date: `2026-07-16`.
+- Current branch / HEAD: `codex/frontend-responsive-ux-audit` / `53a5a99fb2222c32a8037f4e008d2778578cef8f`; production rework under validation is `07048b52d`.
+- Durable probe rework completed before execution at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`. It removes the superseded initial-fit requirement and now exercises one-row native scrolling, boundary affordance direction/visibility, ARIA/tab semantics, canonical order including `Token`, active/focus auto-scroll, fixed-toggle stability, drawer/docked reachability, reduced-motion setup, and `/mobile` isolation. The probe intentionally focuses (but does not select) `VNC Viewer` because selecting it starts external VNC WebSocket sessions not provided by this deterministic fixture; selection auto-scroll is exercised with the network-safe `Files` tab, and console-error enforcement remained enabled.
+- Repository evidence passed: the current focused Nuxt suite passed `11` files / `68` tests; `pnpm -C autobyteus-server-ts build` passed before runtime setup; `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` and `git diff --check` passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-focused-nuxt-tests.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-server-build.log`, and the current worktree checks.
+- Fresh broader validation used the newly built backend on `127.0.0.1:13007`, Nuxt dev on `127.0.0.1:13008` with `BACKEND_NODE_BASE_URL=http://127.0.0.1:13007`, isolated SQLite data at `/tmp/autobyteus-responsive-ux-audit-api-e2e-round6-server-data`, headless Google Chrome, the full `17` `/workspace` viewport matrix plus `/mobile`, and `--fail-on-console-error`. The authoritative command log is `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-final2.log`.
+- Browser result: `Fail`. The run completed `18` states, `42/42` primary-control interactions, and `0` browser console-error states. `16` of `17` `/workspace` states fail only the new right-affordance interaction contract; `/mobile` and `1024x480` pass. Canonical result and summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json` (`generatedAt=2026-07-16T05:29:09.443Z`).
+- Failure evidence is deterministic and current: after scrolling to `scrollLeft=maxScrollLeft`, the source-rendered left fade/chevron is positioned in the scrolled-away content (`phone-390x844`: left chevron rect `x=-53..-29` while the tab-list rect is `x=0..386`; representative `narrow-500x700`: `x=57..81` while the tab-list starts at `x=100`). The probe therefore reports that the left affordance is hidden at the right boundary, is not user-clickable, and cannot reverse the native scroll. This occurs in both drawer and docked presentations; it is not a stale initial-fit assertion.
+- Active/focused auto-scroll and current order/semantics checks pass after the probe's deterministic focus reset and smooth-scroll settling. Current visible labels remain `Files -> Terminal -> Activity -> Token -> Artifacts -> VNC Viewer`; no console errors were introduced because VNC was not selected.
+- Cleanup completed: backend/frontend sessions stopped, headless browser contexts closed by the probe, and ports `13007`/`13008` verified closed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-cleanup-ports-final.log`.
+
+### Revised Coverage Decisions After Round 6 Execution
+
+| Scenario / Path | Current Decision | Evidence / Consequence |
+| --- | --- | --- |
+| `workspace-responsive-probe.mjs` | `Needs Update` completed; durable probe changed by API/E2E | The historical initial-fit assertion is removed and replaced with the approved scroll/affordance/focus/order contract. The changed probe must receive proportional durable-test review after focused failure-origin handling. |
+| Right-tool boundary affordances | `Fail`; implementation-owner analysis required | The real browser DOM places the left fade/chevron inside the horizontally scrolling content, so it leaves the visible tab-list bounds at the right boundary. |
+| Active/focused offscreen tabs | `Pass` for tested paths | Files selection auto-scrolls from the right position after a forced focus transition; VNC focus auto-scroll/reachability is observed without selecting the external VNC content. |
+| Canonical order and ARIA/one-row semantics | `Pass` in exercised states | Visible order includes `Token` after `Activity`; role/aria-selected/one-row/overflow style assertions pass before the affordance failures. |
+| `/mobile` isolation and short-height recovery | `Pass` | `/mobile` and the short desktop `1024x480` state complete without failures. |
+
+### Round 6 Confidence Scorecard
+
+| Confidence Category | Score | Basis | Remaining Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 60% | Most shell, order, semantics, focus, route, and recovery behaviors are directly observed. | Critical boundary affordance visibility/reachability fails in both docked and drawer states. |
+| Changed-boundary execution directness | 85% | Real Nuxt rendering and the reworked probe exercise the current TabList/RightSideTabs DOM across all approved viewports. | Direct evidence demonstrates an unresolved production behavior defect. |
+| Cross-boundary integration realism and mock gap | 95% | Fresh built backend, isolated SQLite, Nuxt, Chrome, and explicit endpoint configuration were used; browser console enforcement passed. | Deep internal tool workflows remain out of scope. |
+| Environment/configuration/identity/fixture fidelity | 95% | Run-owned data, ports, builds, deterministic shell fixture, and cleanup all passed. | No external VNC service was available for selecting VNC content; VNC focus/reachability was still exercised. |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | Failure reproduces at narrow, constrained, docked, drawer, and wide states; `/mobile`, short desktop, startup, and cleanup evidence pass. | Packaged Electron lifecycle/restart is out of scope. |
+| User-surface, browser, and desktop-shell confidence | 55% | Browser directly covers `18` states and `42/42` primary-control interactions with zero console-error states. | User-visible left affordance cannot be reached at the right boundary in `16` workspace states. |
+| Durable regression coverage quality and relevance | 95% | Focused suite passes `11` files / `68` tests; the reworked probe directly encodes the approved UX contract. | The changed durable probe awaits proportional test-code review and production remediation. |
+
+- Overall Round 6 validation confidence: `82.9%` (simple average of the seven categories).
+- Every critical acceptance criterion directly proven: `No`.
+- Applicable categories below 90%: requirement proof, changed-boundary directness, and user-surface/browser confidence.
+- Default clean-confidence target met: `No`.
+- Broader validation decision: `Required`, executed with `Fail`.
+
+### Round 6 Reroute
+
+- Preliminary classification: `Implementation-owned production behavior failure` pending focused failure-origin confirmation. The implementation places the conditional fades/chevrons inside the scroll container, and current browser geometry shows the left affordance scrolling out of the visible list at the right boundary. Requirements/design impact is not currently indicated because the observed failure is against the already-approved affordance contract.
+- Recommended recipient: `code_reviewer` for focused failure-origin review, not proportional successful-test review and not delivery.
+- Failure scenario IDs: `RESP-E2E-006` right-tool boundary affordance direction/visibility/reachability; `RESP-E2E-009` docked/drawer interaction reachability; supporting `RESP-E2E-001` full responsive matrix and `RESP-E2E-004` constrained presentation.
+- API/E2E durable coverage changed: `Yes`, only `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`; attach it for the later proportional review after the production failure is resolved.
+
+## Round 7 Coverage Revalidation Addendum
+
+- Investigation date: `2026-07-16`.
+- Current HEAD: `codex/frontend-responsive-ux-audit` / `5883ea8c3f316e05885f900a2178b92a5dedd346`.
+- Upstream gate: implementation source review Round 11 `PASS`; CR-004 bounded `TabList` presentation fix moves the fade/chevron controls into a width-neutral sticky overlay flex item pinned to the scrollport while preserving the approved single-row native overflow contract.
+- Prior Round 6 failure was implementation-owned boundary-affordance placement: at the right boundary the left fade/chevron scrolled out of the visible tab-list. The current source fix is expected to make both boundary affordances visible/clickable in drawer, narrow, docked, and wide states without weakening the reworked durable probe.
+- Existing API/E2E durable coverage remains changed and valid: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`. It must be run unchanged against the current HEAD and, on Pass, returned to `code_reviewer` for proportional durable-test review before delivery.
+- Required broader validation: `Required`, using the full approved `17` `/workspace` viewport matrix plus `/mobile`, headless Chrome, `--fail-on-console-error`, active/focus auto-scroll, one-row/ARIA/order, both boundary controls, fixed-toggle stability, reduced motion, docked/drawer reachability, and `/mobile` isolation.
+- Planned run-owned environment: backend `127.0.0.1:13009`, frontend `127.0.0.1:13010`, isolated data `/tmp/autobyteus-responsive-ux-audit-api-e2e-round7-server-data`. No external VNC selection is planned; the probe focuses VNC reachability and uses network-safe Files selection while console enforcement remains enabled.
+
+## Round 7 Execution Outcome Addendum
+
+- Execution date: `2026-07-16`.
+- Current HEAD: `codex/frontend-responsive-ux-audit` / `5883ea8c3f316e05885f900a2178b92a5dedd346`.
+- Focused repository suite passed `11` files / `69` tests after CR-004. Fresh `pnpm -C autobyteus-server-ts build` passed, probe syntax and `git diff --check` passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-focused-nuxt-tests.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-server-build.log`.
+- Fresh browser validation used backend `127.0.0.1:13009`, Nuxt frontend `127.0.0.1:13010` with `BACKEND_NODE_BASE_URL=http://127.0.0.1:13009`, isolated SQLite data `/tmp/autobyteus-responsive-ux-audit-api-e2e-round7-server-data`, headless Chrome, the full `17` `/workspace` viewport matrix plus `/mobile`, and `--fail-on-console-error`.
+- Browser result: `Pass`. The run completed `18` states, `42/42` primary-control interactions, `28` tab-list validation checks, `0` tab-validation failures, `0` total failures, and `0` browser console-error states. Canonical result/summary were generated at `2026-07-16T05:48:42.324Z`: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`. Exact output: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-workspace-responsive-probe.log`.
+- The previously failing right-boundary behavior is resolved in the live browser: after reaching `scrollLeft=maxScrollLeft`, left affordances remain visible and clickable; clicking left returns to `scrollLeft=0`. Representative `phone-390x844` left chevron rect is `x=4..28` at the right boundary; `narrow-500x700` left chevron rect is `x=104..128` inside its tab-list starting at `x=100`.
+- Active/focused offscreen auto-scroll, one-row/ARIA/order semantics, reduced-motion setup, fixed-toggle stability, docked/drawer reachability, current catalog order `Files -> Terminal -> Activity -> Token -> Artifacts -> VNC Viewer`, and `/mobile` isolation all pass. VNC is focused/reachable but not selected because no external VNC service is part of the deterministic fixture; console-error enforcement remained enabled and passed.
+- Cleanup completed: backend/frontend sessions stopped, browser contexts closed by the probe, and ports `13009`/`13010` verified closed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-cleanup-ports.log`.
+
+### Round 7 Confidence Scorecard
+
+| Confidence Category | Score | Basis | Remaining Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 100% | Full approved browser matrix directly proves the current one-row, affordance, order, reachability, mobile, and responsive behaviors. | No material uncertainty for the ticket's web-equivalent scope. |
+| Changed-boundary execution directness | 100% | Real current `TabList`/`RightSideTabs` source exercised in Chrome across docked, drawer, narrow, short, wide, and mobile states. | Packaged Electron shell remains outside this web-equivalent probe. |
+| Cross-boundary integration realism and mock gap | 96% | Fresh backend build, isolated SQLite, Nuxt, Chrome, explicit endpoints, and console enforcement passed. | Deep internal tool workflows remain out of scope. |
+| Environment/configuration/identity/fixture fidelity | 95% | Run-owned ports/data, current migrations/builds, deterministic shell fixture, and cleanup passed. | No external VNC service was provided for selecting VNC content. |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | Previous failure was rechecked and resolved across narrow/docked/drawer/wide states; short-height, reduced-motion, mobile, startup, and cleanup passed. | Packaged Electron restart/recovery remains out of scope. |
+| User-surface, browser, and desktop-shell confidence | 98% | `18` states, `42/42` interactions, all current tabs reachable, both boundary directions verified, zero console-error states, and `/mobile` isolated. | Native packaged shell not directly exercised. |
+| Durable regression coverage quality and relevance | 95% | Focused suite passed `11` files / `69` tests and the durable probe directly encodes the approved contract. | The probe remains changed from Round 6 and requires proportional test-code review. |
+
+- Overall Round 7 validation confidence: `97.0%` (simple average of the seven categories).
+- Every critical acceptance criterion directly proven: `Yes` for the web-equivalent browser scope.
+- Applicable categories below 90%: `None`.
+- Default clean-confidence target met: `Yes`.
+- Broader validation decision: `Required`, executed with `Pass`.
+
+### Round 7 Routing
+
+- Result: `Pass`.
+- API/E2E made no new durable source change in Round 7; the durable probe remains changed from Round 6.
+- Required next recipient: `code_reviewer` for the separate proportional durable-test review of `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`. Do not route directly to delivery.

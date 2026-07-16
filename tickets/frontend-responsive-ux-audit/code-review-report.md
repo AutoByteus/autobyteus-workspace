@@ -4,20 +4,18 @@
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/current-responsive-ui-results.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/probe-summary-latest.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`
-- Current Review Round: `8`
-- Trigger: Implementation-owned Local Fix `bb3b2fe49` for API/E2E failure-origin finding `CR-003`; fresh source review is required before current API/E2E rerun.
-- Prior Review Round Reviewed: `7` API/E2E failure-origin review, including unresolved `CR-003`.
-- Latest Authoritative Round: `8`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/current-responsive-ui-results.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/probe-summary-latest.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`
+- Current Review Round: `11`
+- Trigger: Implementation-owned Local Fix `5883ea8c3` for API/E2E failure-origin finding `CR-004`; focused source review is required before current API/E2E rerun.
+- Prior Review Round Reviewed: `10` API/E2E failure-origin review, including unresolved `CR-004`.
+- Latest Authoritative Round: `11`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
-- Coverage Investigation Reviewed As Prior Failure Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed As Prior Failure Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md`
-- Prior Failing Scenario IDs: `RESP-E2E-001`, `RESP-E2E-004`, `RESP-E2E-006`, `RESP-E2E-007`, `RESP-E2E-009`
-- Prior Exact Failing Command / Execution Mode: `pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13004 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error`; fresh built backend on `13003`, Nuxt frontend on `13004`, isolated SQLite, headless Chrome.
-- Prior Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-workspace-responsive-probe-retry.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-server-build.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-cleanup-ports.log`
+- Prior Failure Coverage Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md`
+- Prior Failing Scenario IDs: `RESP-E2E-006`, `RESP-E2E-009`, with matrix support from `RESP-E2E-001` and `RESP-E2E-004`
+- Prior Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-final2.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-cleanup-ports-final.log`
 
 ## Round History
 
@@ -30,7 +28,10 @@
 | 5 | Current implementation handoff and source recheck | `CR-001`, `CR-002`; Round 4 pass state | None | Pass | Yes | Current responsive source matches the reviewed implementation checkpoint; no new production-source issue found. |
 | 6 | Delivery latest-base integration exposed stale order expectations; bounded local test fix | `CR-001`, `CR-002`; Round 5 pass state | None | Pass | Yes | The only local delta is two expected-array entries for the already-integrated `usage` catalog item; current API/E2E must rerun. |
 | 7 | API/E2E Round 4 failure-origin review | Round 6 pass state | `CR-003` | Fail | Yes | Fresh live execution reproduces VNC tab clipping in docked and drawer presentations; route to implementation for bounded source repair. |
-| 8 | Implementation Local Fix for `CR-003` | `CR-003`; Round 7 failure-origin state | None | Pass | Yes | `TabList` now has opt-in wrapping; `RightSideTabs` enables it for the full catalog; focused tests cover the boundary. Route to current API/E2E. |
+| 8 | Implementation Local Fix for `CR-003` | `CR-003`; Round 7 failure-origin state | None | Pass | No | Historical wrapping path passed source review but was superseded by the Round 4 Design Impact decision before current sign-off. |
+| 9 | Approved single-row scrolling/discoverability rework | Round 8 historical wrapping review; Round 4 architecture `Pass` | None | Pass | Yes | Native horizontal overflow, conditional fades/chevrons, active/focused auto-scroll, semantics, and fixed toggle ownership match the approved UX supplement. Route to current API/E2E. |
+| 10 | API/E2E Round 6 failure-origin review | Round 9 implementation pass | `CR-004` | Fail | Yes | Current browser execution reproduces boundary affordances outside the visible scroll viewport at the right boundary; route to implementation for bounded source repair. |
+| 11 | Implementation Local Fix for `CR-004` | `CR-004`; Round 10 failure-origin state | None | Pass | Yes | The affordance layer is now pinned to the scrollport via a width-neutral sticky overlay; focused regression coverage passes. Route to current API/E2E. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -41,13 +42,16 @@
 | 4 | None | N/A | No unresolved Round 4 findings | Current source and handoff were re-read; no prior finding remains open. | Round 5 is authoritative for this implementation review. |
 | 5 | None | N/A | No unresolved Round 5 findings | The Round 5 report passed the current responsive production source and found no implementation-source issue. | Round 6 is a bounded test-only re-entry after latest-base integration. |
 | 7 | `CR-003` | High | Resolved in current source review | `RightSideTabs.vue` opts into `TabList` wrapping; `TabList.vue` makes wrapping explicit and hides horizontal overflow only in that mode; focused tests cover both the parent prop and rendered classes. | Current API/E2E must verify actual geometry across docked and drawer states. |
+| 8 | `CR-003` | High | Superseded by approved design rework | Architecture Round 4 rejected wrapping as the intended right-tool behavior; the current source removes `wrap=true` and implements the approved single-row scrolling contract instead. | Round 9 is the authoritative implementation review for this behavior. |
+| 10 | None | N/A | No prior Round 10 finding existed | Round 10 adds focused `CR-004` failure-origin analysis below; this is a runtime-reproduced source defect, not a reopening of the historical wrapping review. | Route the bounded source repair through implementation review and fresh API/E2E. |
+| 10 | `CR-004` | High | Resolved in current source review | `TabList.vue` now places fades/chevrons in a width-neutral `position: sticky` overlay flex item with `pointer-events` restored on buttons; focused regression coverage verifies the pinned layer and labels. | Current API/E2E must verify actual boundary geometry in docked/drawer states. |
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the complete reviewed responsive implementation plus the `CR-003` Local Fix in `bb3b2fe49`: an opt-in wrapped `TabList` presentation enabled by `RightSideTabs`, preserving the integrated `usage` catalog/order and adding focused component coverage.
-- Files / areas reviewed: current production source under `autobyteus-web/pages/workspace.vue`, `layouts/default.vue`, `components/layout/`, `components/fileExplorer/FileExplorerLayout.vue`, `components/tabs/`, `components/workspace/agent/AgentWorkspaceView.vue`, `components/workspace/team/TeamWorkspaceView.vue`, `composables/layout/`, `composables/useLeftPanel.ts`, `composables/useRightPanel.ts`, `composables/useRightSideTabs.ts`, `utils/layout/`, localization additions, `README.md`, `ARCHITECTURE.md`, `docs/workspace_layout.md`, and the durable responsive probe; focused recheck of `RightSideTabs.vue`, `TabList.vue`, `Tab.vue`, `RightSideTabs.spec.ts`, and `TabList.spec.ts`.
-- Repository evidence: current `HEAD` is `bb3b2fe49`; `git show bb3b2fe49^..bb3b2fe49` contains the bounded wrapping source/test delta and implementation-handoff update. Earlier delivery-document and API/E2E artifacts remain worktree-local evidence and were not treated as production-source changes.
-- Explicit exclusions: uncommitted delivery-document and generated API/E2E evidence modifications, current API/E2E execution sign-off, deep internal responsive redesign of Terminal/Browser/VNC, and packaged Electron/native runtime behavior.
+- Changed implementation and behavior reviewed: the complete reviewed responsive implementation plus the `CR-004` Local Fix in `5883ea8c3`: a width-neutral sticky affordance overlay that remains pinned to the horizontal scrollport while tabs scroll beneath it.
+- Files / areas reviewed: current production source under `autobyteus-web/pages/workspace.vue`, `layouts/default.vue`, `components/layout/`, `components/fileExplorer/FileExplorerLayout.vue`, `components/tabs/`, `components/workspace/agent/AgentWorkspaceView.vue`, `components/workspace/team/TeamWorkspaceView.vue`, `composables/layout/`, `composables/useLeftPanel.ts`, `composables/useRightPanel.ts`, `composables/useRightSideTabs.ts`, `utils/layout/`, localization additions, `README.md`, `ARCHITECTURE.md`, `docs/workspace_layout.md`, and the durable responsive probe; focused recheck of `RightSideTabs.vue`, `TabList.vue`, `Tab.vue`, `RightSideTabs.spec.ts`, and `TabList.spec.ts` against `right-tool-tabs-ux-spec.md`.
+- Repository evidence: current `HEAD` is `5883ea8c3f316e05885f900a2178b92a5dedd346`; the source fix is committed and no source/handoff changes are uncommitted. Delivery-owned documentation/evidence and API/E2E-owned probe/report changes remain excluded from source review.
+- Explicit exclusions: current API/E2E execution sign-off, proportional test-code review for the prior failed run, uncommitted delivery documentation/evidence, deep internal responsive redesign of Terminal/Browser/VNC, packaged Electron/native runtime behavior, and stale historical wrapping language in `autobyteus-web/docs/workspace_layout.md` (delivery-owned docs sync).
 
 ### Round 7 Failure-Origin Scope (Historical)
 
@@ -62,12 +66,73 @@
 - Current focused evidence: the updated test passed independently (`3` tests); delivery evidence records the complete focused suite at `11` files / `67` tests and `git diff --check` passing.
 - Structural conclusion: no production-source change, boundary change, API change, persisted-data change, legacy path, or new runtime mechanism was introduced by this local fix. The prior Round 5 scorecard and structural results remain applicable and pass.
 
-### Round 8 Implementation Recheck
+### Round 8 Wrapping Implementation Recheck (Superseded)
 
-- `CR-003` resolution: the previous production path and catalog ownership remain unchanged. `RightSideTabs` explicitly opts into wrapped tabs; `TabList` keeps the prior horizontal-overflow behavior by default and switches to `flex-wrap overflow-x-hidden` only when `wrap` is true.
-- Boundary and ownership: the presentation choice stays with the right-tool renderer, while reusable wrapping behavior stays with the generic tab-list component. No caller reaches into tab internals, no catalog order is duplicated, and no requirement/design change or compatibility path was introduced.
-- Current source/test evidence: focused `TabList.spec.ts` and `RightSideTabs.spec.ts` pass (`2` files / `17` tests); implementation handoff reports the complete focused suite at `11` files / `68` tests, `git diff --check`, probe syntax, guards, localization audit, and Nuxt build passing. The current review independently re-ran the two focused files and `git diff --check`.
-- Required downstream check: current API/E2E must verify that every current tab, including `VNC Viewer`, is within the visible tab-list bounds in all docked and drawer matrix states. This source review is not API/E2E sign-off.
+- `CR-003` was source-resolved by wrapping at this historical point, but Architecture Round 4 subsequently rejected wrapping as the intended behavior. This section is retained only as superseded history.
+
+### Round 9 Approved UX Rework Recheck
+
+- Behavior basis: `right-tool-tabs-ux-spec.md` is an approved intended-behavior supplement. It requires a single horizontal row, native scrolling, conditional fades/chevrons, active/focused auto-scroll, accessible chevron labels, reduced-motion handling, fixed toggle stability, and no initial-fit assertion.
+- Production path: `/workspace -> WorkspaceAdaptiveLayout -> Tools/right-tool drawer or docked RightSideTabs -> TabList -> Tab`; `workspaceSurfaceOrder.ts` remains the sole order authority and `RightSideTabs` only configures presentation.
+- Source alignment: `TabList` renders `flex-nowrap overflow-x-auto overflow-y-hidden`, makes each `Tab` non-shrinking, tracks overflow with scroll metrics and `ResizeObserver`, exposes conditional edge fades/chevrons, pages native scroll, honors reduced motion, and brings selected/focused tabs into view. `RightSideTabs` passes localized labels and keeps the panel toggle outside the scroll viewport. `Tab` preserves compact styling and adds `role="tab"`/`aria-selected` semantics.
+- Boundary/ownership: scroll state and affordances stay in `TabList`; right-tool configuration stays in `RightSideTabs`; visual styling stays in `Tab`; catalog order remains in `workspaceSurfaceOrder.ts`. No generic wrapped mode, duplicate order, compatibility path, or design bypass remains.
+- Current source/test evidence: focused `TabList.spec.ts` and `RightSideTabs.spec.ts` pass (`2` files / `17` tests); implementation handoff reports the full focused suite at `11` files / `68` tests, diff check, probe syntax, guards, localization audit, and frontend build passing. The current review independently reran the two changed component test files and `git diff --check`.
+- Required downstream check: `api_e2e_engineer` must rework the historical initial-fit probe assertion and validate scrollability, affordance transitions, active/focused reachability, order, and fixed-toggle stability in docked and drawer states. This source review is not API/E2E sign-off.
+
+### Round 10 Failure-Origin Scope (Historical)
+
+- Reviewed only the current API/E2E failure, the approved overflow-affordance contract, the changed durable probe assertion, and the smallest relevant `TabList`/`RightSideTabs` rendering path needed to classify the origin.
+- Current evidence: `18` states (`17` `/workspace` plus `/mobile`), `42/42` primary-control interactions, `0` browser console-error states, `16` failed `/workspace` states, and `68` failure entries. `/mobile` and `1024x480` passed.
+- The failure is reproducible with fresh builds/runtime and clean teardown; it is not a setup, fixture, console, or stale initial-fit assertion issue.
+
+## Round 10 Failure-Origin Review (Historical)
+
+### Approved Behavior And Reachability Confirmation
+
+- The failing behavior is a supported `/workspace -> Tools -> right-tool tabs` journey in both docked and drawer presentations. The updated durable probe reaches the tab row through real primary-control interactions and exercises the native scroll boundary.
+- The approved `right-tool-tabs-ux-spec.md` explicitly requires boundary fades and directional chevrons to remain visible/clickable at the corresponding scroll boundary, with a left affordance available after scrolling right. This is the current target behavior, not the superseded initial-fit invariant.
+- The changed probe is valid: it directly observes browser geometry, scroll state, DOM visibility, and click reachability; it did not produce the failure through synthetic hidden-state mutation.
+
+### Failure Evidence And Smallest Relevant Path
+
+| Evidence | Observation | Consequence |
+| --- | --- | --- |
+| Fresh Round 6 browser result | `68` failure entries across `16` `/workspace` states; `0` browser console-error states; `/mobile` and `1024x480` pass. | The defect is a deterministic right-tool affordance failure, not a broad runtime/setup failure. |
+| Right-boundary geometry | At `scrollLeft=maxScrollLeft`, phone `390x844` has tab-list `x=0..386` but left chevron `x=-53..-29`; narrow `500x700` has tab-list `x=100..496` but left chevron `x=57..81`. | The reverse affordance is outside the visible scroll viewport and cannot be clicked to return left. |
+| `TabList.vue` structure | Fades and chevron buttons are descendants of the element that itself has `overflow-x-auto`; their absolute positioning is attached to the scrolling element rather than a non-scrolling wrapper/overlay. | The affordance layer scrolls with content and fails the boundary visibility/reachability contract. |
+| Current focused checks and runtime | `11` files / `68` tests, build, syntax, diff check, fresh backend, and cleanup pass. | The failure remains in the live presentation path, not repository setup or stale test execution. |
+
+### Failure Classification
+
+- Failure origin: `Implementation defect` in the `TabList` affordance placement. The current source places conditional fades and chevron buttons inside the horizontal scroll container, so the left affordance leaves the visible tab-list after scrolling to the right boundary.
+- Test validity: `Valid`. The probe was deliberately reworked from the superseded initial-fit assertion to the approved scrollability/discoverability contract and reproduces the same boundary geometry across supported narrow and docked/drawer states.
+- Design/requirements impact: `No blocking Design Impact or Requirement Gap`. The approved UX supplement already defines the required boundary behavior and ownership; the implementation must keep the affordance layer visible independently of scroll content.
+- Required owner action: `Local Fix -> implementation_engineer`. Keep the native scroll container and catalog/order unchanged, but move fades/chevrons to a non-scrolling wrapper or equivalent fixed overlay, preserve conditional boundary state and accessible labels, then return through source review and current API/E2E.
+
+## Material Premise Validation (Failure-Origin Round 10)
+
+### `FOP-002` — Boundary affordance must remain in the visible scroll viewport
+
+- Origin: `Approved UX contract / current observed failure`
+- Related approved requirements or established contract: `FR-017`, `FR-018`, `FR-019`; `AC-017`, `AC-018`, `AC-019`; `right-tool-tabs-ux-spec.md`.
+- Product-supported initiating trigger and path: user opens standard `/workspace`, activates `Tools`, and scrolls the right-tool tab row to its right boundary in a docked or drawer presentation.
+- Claimed state and consequence: the row has undisclosed tabs to the left, so a left fade/chevron must remain visible and clickable to reverse native scrolling; current geometry places it outside the visible tab-list.
+- Reachability: `Reachable` and directly observed.
+- Review consequence: require a bounded presentation-layer fix; do not weaken the updated probe or remove the affordance contract.
+
+## Focused Finding
+
+| Finding ID | Severity | Affected Scenario IDs | Source Evidence | Required Action | Classification / Recipient |
+| --- | --- | --- | --- | --- | --- |
+| `CR-004` | High | `RESP-E2E-006`, `RESP-E2E-009`, with support from `RESP-E2E-001`, `RESP-E2E-004` | `TabList.vue` renders fades and chevrons as descendants of the `overflow-x-auto` root; current browser geometry shows the left reverse affordance outside the visible tab-list at `scrollLeft=maxScrollLeft` in narrow and docked/drawer states. | Move the affordance layer to a non-scrolling wrapper/fixed overlay while preserving single-row native scrolling, conditional direction/visibility, accessible labels, active/focus auto-scroll, order, and fixed panel-toggle stability. Re-run source review and current API/E2E. | `Local Fix` / `implementation_engineer` |
+
+### Round 11 Implementation Recheck
+
+- `CR-004` resolution: `TabList.vue` now renders the fade/chevron controls inside a `tab-list-affordance-layer` with `position: sticky`, `left: 0`, `flex: 0 0 100%`, `width: 100%`, and negative right margin so the overlay remains width-neutral and pinned while native tab content scrolls.
+- Behavior/ownership: the native `overflow-x-auto` container, scroll metrics, boundary state, reduced-motion behavior, active/focus auto-scroll, labels, tab semantics, catalog order, and fixed panel toggle remain unchanged. The fix changes only the affordance layer's positioning owner.
+- Current focused evidence: `TabList.spec.ts` and `RightSideTabs.spec.ts` pass (`2` files / `18` tests); implementation handoff reports the complete suite at `11` files / `69` tests, diff check, probe syntax, guards, localization audit, and Nuxt build passing. The current review independently reran the two changed component files and `git diff --check`.
+- Structural conclusion: the sticky overlay is a bounded presentation fix within `TabList` and does not introduce a second scroll owner, catalog duplication, compatibility path, or design change.
+- Required downstream check: current API/E2E must verify both boundary directions and click reachability in docked/drawer states. This source review is not API/E2E sign-off.
 
 ## Round 7 Failure-Origin Review (Historical)
 
@@ -120,7 +185,7 @@
 - Design review report and round confirmed: `Confirmed`. Architecture Review Round 3 is `Pass`; the reviewed package's removal plan, ownership boundaries, ordering contract, and persisted-data decision are reflected in source.
 - Behavior-basis status: `Confirmed`
 - Changed or newly discovered behavior, if any: The latest integrated base exposes an existing `usage` right-side tool after `progress`. This is delivery/base context rather than a new behavior introduced by the responsive ticket fix; the local test now records the current catalog contract without changing runtime behavior.
-- Remaining material ambiguity, if any: None blocking failure-origin classification. Exact thresholds are explicit in the implementation and covered by policy/component checks; current browser execution is authoritative for the newly observed tab-fit failure and must be rerun after the bounded repair.
+- Remaining material ambiguity, if any: None blocking implementation review. The approved UX supplement makes the intended scroll/affordance contract explicit; current API/E2E must replace the historical initial-fit assertion and validate the live interaction behavior.
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
@@ -129,7 +194,8 @@
 | `FR-005`, `FR-012`, `FR-013`, `AC-005`, `AC-011`, `AC-012` | Confirmed | `workspaceSurfaceOrder.ts` owns `Work -> Runs -> Files -> Tools` and the integrated canonical right-tool order `Files -> Team -> Terminal -> Activity -> Usage -> Artifacts -> Browser -> VNC`; the updated test asserts full and contextual-filtered sequences, while `useRightSideTabs` filters without reordering. | None; `usage` is an existing latest-base tool inserted after `progress`, not a runtime behavior introduced by this local fix. |
 | `FR-006`, `FR-007`, `AC-007` | Confirmed | Legacy standard-route layout/composable files are removed; `/mobile` remains `pages/mobile.vue -> MobileRemoteAccessShell` and is not imported by the adaptive standard route. Focused mobile-shell tests pass. | None. |
 | `FR-008`, `FR-010`, `AC-006` | Confirmed | `resolveAppShellResponsiveState` and `resolveWorkspaceResponsiveState` account for short height; panel composables preserve user visibility/width preference while effective presentation changes to strip/drawer. | None. |
-| `FR-011`, `FR-014`, `FR-015`, `AC-008`, `AC-010`, `AC-013`, `AC-014`, `AC-015` | Confirmed | Center headers use wrap-safe flex structure; localization/docs and `test:e2e:workspace-responsive` wiring are present; policy/order/component coverage and the implementation-owned matrix pass. The Round 8 source recheck confirms the explicit wrapped right-tool presentation and focused coverage; current API/E2E execution remains downstream. | None. |
+| `FR-011`, `FR-014`, `FR-015`, `AC-008`, `AC-010`, `AC-013`, `AC-014`, `AC-015` | Confirmed | Center headers use wrap-safe flex structure; localization/docs and `test:e2e:workspace-responsive` wiring are present; policy/order/component coverage and the implementation-owned matrix pass. Current source checks pass; API/E2E must validate the revised right-tool scroll contract downstream. | None. |
+| `FR-016`–`FR-020`, `AC-016`–`AC-021` | Confirmed | The approved UX supplement maps the right-tool header to `RightSideTabs` configuration, `TabList` scroll/affordance ownership, `Tab` styling/semantics, and the unchanged catalog. Current source removes `wrap=true` and implements one-row overflow, conditional indicators, auto-scroll, labels, and reduced-motion behavior. | Current browser/probe validation remains downstream; the old initial-fit assertion is explicitly superseded. |
 
 ## Structural / Design Checks
 
@@ -158,7 +224,7 @@
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Policy tests cover `639/640/767/768/800/1024` and short height; component tests cover center rendering, controls, constrained presentation, right tabs, and `/mobile`. | None; API/E2E must execute the browser matrix. |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Focused tests use shared mount/setup helpers; the durable probe is parameterized by viewport and interaction surface and remains one coherent matrix concern. | None. |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Old desktop-layout coverage was replaced by adaptive coverage; legacy selectors in the probe are negative regression assertions, not compatibility tests. | None. |
-| API/E2E readiness for the next workflow stage | Pass | `git diff --check`, focused current `TabList`/`RightSideTabs` tests (`17` tests), the complete `11`-file/`68`-test suite, probe syntax, guards, localization audit, and Nuxt build are reported/passed after the `CR-003` source fix. | Route to `api_e2e_engineer` for current coverage investigation and execution; this is not API/E2E sign-off. |
+| API/E2E readiness for the next workflow stage | Pass | `git diff --check`, focused current `TabList`/`RightSideTabs` tests (`18` tests), the complete `11`-file/`69`-test suite, probe syntax, guards, localization audit, and frontend build are reported/passed after the `CR-004` fix. | Route to `api_e2e_engineer` for current boundary-geometry validation; this is not API/E2E sign-off. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
@@ -175,10 +241,10 @@ Changed implementation-source files only; tests and generated probe output are e
 | `autobyteus-web/components/layout/WorkspacePrimarySurfaceControls.vue` | 43 | Pass | Pass | Pass; primary surface controls only. | Pass | Pass | None. |
 | `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | 40 | Pass | Pass | Pass; right-tool drawer shell only. | Pass | Pass | None. |
 | `autobyteus-web/components/layout/RightSidebarStrip.vue` | 56 | Pass | Pass | Pass; compact right-tool affordance and open event. | Pass | Pass | None. |
-| `autobyteus-web/components/layout/RightSideTabs.vue` | 145 | Pass | Pass | Pass; tab content, order, density, explicit wrapped-header presentation, and presentation-specific file/toggle behavior. | Pass | Pass | None. |
+| `autobyteus-web/components/layout/RightSideTabs.vue` | 165 | Pass | Pass | Pass; tab content, order, density, right-tool scroll configuration, localized affordance labels, and presentation-specific file/toggle behavior. | Pass | Pass | None. |
 | `autobyteus-web/components/fileExplorer/FileExplorerLayout.vue` | 78 | Pass | Pass | Pass; split versus stacked file presentation. | Pass | Pass | None. |
-| `autobyteus-web/components/tabs/Tab.vue` | 49 | Pass | Pass | Pass; compact/comfortable tab rendering. | Pass | Pass | None. |
-| `autobyteus-web/components/tabs/TabList.vue` | 48 | Pass | Pass | Pass; density forwarding, selection, and opt-in wrapped versus horizontal-overflow presentation. | Pass | Pass | None. |
+| `autobyteus-web/components/tabs/Tab.vue` | 51 | Pass | Pass | Pass; compact/comfortable tab rendering, tab semantics, and active styling. | Pass | Pass | None. |
+| `autobyteus-web/components/tabs/TabList.vue` | 211 | Pass | Pass | Pass; single-row scroll container, overflow metrics, pinned lightweight affordances, reduced-motion behavior, and active/focused-tab auto-scroll. | Pass | Pass | None. |
 | `autobyteus-web/composables/useLeftPanel.ts` | 42 | Pass | Pass | Pass; left user preference and drag state. | Pass | Pass | None. |
 | `autobyteus-web/composables/useRightPanel.ts` | 128 | Pass | Pass | Pass; right user preference, effective presentation, and width clamp. | Pass | Pass | None. |
 | `autobyteus-web/composables/useRightSideTabs.ts` | 55 | Pass | Pass | Pass; contextual tab availability/order adapter. | Pass | Pass | None. |
@@ -187,7 +253,7 @@ Changed implementation-source files only; tests and generated probe output are e
 | `autobyteus-web/components/workspace/agent/AgentWorkspaceView.vue` | 162 | Pass | Pass | Pass; bounded constrained-header adjustment. | Pass | Pass | None. |
 | `autobyteus-web/components/workspace/team/TeamWorkspaceView.vue` | 293 | Pass | Pass | Pass; pre-existing file with a three-line responsive class delta. | Pass | Pass | None. |
 
-The durable browser probe is 493 effective non-empty lines and is test code under `autobyteus-web/tests/e2e`; the implementation-source thresholds do not apply. It remains cohesive and should be split only if more scenario families are added. The Round 6 order-test delta is test code and is intentionally reviewed for contract alignment rather than source-size pressure.
+The durable browser probe is 493 effective non-empty lines and is test code under `autobyteus-web/tests/e2e`; the implementation-source thresholds do not apply. It remains cohesive and should be split only if more scenario families are added. The Round 6 order-test delta and current tab tests are test code and are intentionally reviewed for contract alignment rather than source-size pressure. `TabList.vue` is 211 effective non-empty lines, below the proactive 220-line pressure threshold; the pinned overlay remains part of its single scroll/affordance concern.
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -216,9 +282,9 @@ The durable browser probe is 493 effective non-empty lines and is test code unde
 
 ### Upstream Design-Review Material-Premise Decisions
 
-Upstream architecture premises remain unchanged. Round 7's focused `FOP-001` record remains the basis for the integrated `usage`-tab condition; it is not a design reclassification. Round 8 confirms that the Local Fix addresses the reachable tab-fit defect within the existing right-tool/tab ownership boundaries. The upstream Round 3 design basis and its threshold/route/tool reachability evidence remain applicable; current browser validation remains downstream.
+Upstream architecture premises remain unchanged. Round 7's focused `FOP-001` record remains historical context for the reachable integrated `usage`-tab condition. Architecture Round 4 approved the `right-tool-tabs-ux-spec.md` supplement and resolved the wrapping Design Impact. Round 10 browser evidence found a bounded affordance-placement defect; Round 11 confirms the source repair within the approved design and ownership boundaries.
 
-## Review Scorecard (Round 8)
+## Review Scorecard (Round 11)
 
 - Overall score (`/10`): `9.3`
 - Overall score (`/100`): `93`
@@ -229,21 +295,21 @@ Upstream architecture premises remain unchanged. Round 7's focused `FOP-001` rec
 | `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | The full viewport/container-to-policy-to-surface path and independent `/mobile` route are explicit in source and handoff. | Current worktree review does not itself execute the browser matrix. | API/E2E should run the comprehensive matrix against the current state. |
 | `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Shell-left, workspace center/right, policy, catalog, panel state, and tool-content owners are clear. | Cross-surface Runs access necessarily consumes the public app-layout store. | Keep that coordination through public state/store APIs only. |
 | `3` | `API / Interface / Query / Command Clarity` | 9.4 | Pure resolvers and explicit catalog/composable contracts have clear inputs and outputs. | `RightSideTabs` carries a small presentation-mode union for desktop/drawer/mobile-tools contexts. | Keep future contexts typed rather than adding ad hoc mode branches. |
-| `4` | `Separation of Concerns and File Placement` | 9.1 | Runtime files are split by policy, lifecycle, shell/workspace rendering, tabs, and file presentation. | `WorkspaceAdaptiveLayout.vue` is near the proactive size-pressure threshold; a pre-existing team file remains larger. | Avoid adding unrelated orchestration to either file; split only if scope grows. |
+| `4` | `Separation of Concerns and File Placement` | 9.1 | Runtime files are split by policy, lifecycle, shell/workspace rendering, tabs, and file presentation; the added `TabList` logic remains one coherent scroll/affordance owner under its existing boundary. | `WorkspaceAdaptiveLayout.vue` is near the proactive size-pressure threshold; `TabList.vue` is 211 effective non-empty lines and should not absorb unrelated coordination. | Keep future tab behavior inside the tab-list concern and avoid adding unrelated orchestration to layout owners. |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | Responsive state and order catalogs are narrow and reused by policy consumers. | Probe expectations necessarily repeat user-visible labels independently of runtime catalog. | Change labels/order only through intentional product updates and matching assertions. |
 | `6` | `Naming Quality and Local Readability` | 9.3 | Names match adaptive workspace, policy, surface order, drawer, and measurement responsibilities. | The durable probe has several dense validation branches. | Extract probe helpers if future scenario growth reduces triage readability. |
-| `7` | `API/E2E Readiness` | 9.3 | Focused tests, syntax, guards, localization audit, build, and implementation-live smoke evidence plus the `CR-003` wrapping regression coverage are positive at the Round 8 implementation gate. | Current-state API/E2E execution has not yet rerun after the source fix. | `api_e2e_engineer` must execute the current browser matrix; this review is not API/E2E sign-off. |
+| `7` | `API/E2E Readiness` | 9.3 | Focused tests, syntax, guards, localization audit, build, implementation-live evidence, and the current pinned-affordance regression coverage are positive at the Round 11 implementation gate. | Current API/E2E has not rerun after the source fix. | `api_e2e_engineer` must execute current boundary geometry and reachability validation; this review is not API/E2E sign-off. |
 | `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | Policy/component behavior, representative live states, center preservation, order, drawers, and `/mobile` isolation align with requirements. | Deep tool-internal behavior and packaged Electron rendering remain out of scope. | Downstream classify any tool-internal responsive issue as blocker or follow-up using reachability evidence. |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Old standard-route branches and state helper are cleanly removed; `/mobile` remains independent. | Historical ticket evidence necessarily retains old selectors as baseline/negative assertions. | Keep historical evidence ticket-local and out of runtime paths. |
 | `10` | `Cleanup Completeness` | 9.4 | Obsolete source/test paths are removed and docs/package wiring are updated. | Final branch refresh and delivery-document synchronization remain downstream work. | Delivery should refresh against the recorded base and recheck docs before finalization. |
 
 ## Findings
 
-`CR-001`, `CR-002`, and `CR-003` are resolved in the current source review. The `CR-003` fix is bounded to an explicit opt-in `TabList` wrapping mode enabled by `RightSideTabs`, with focused tests covering the boundary and its wrapped/hidden-overflow classes. No new implementation-source, structural, legacy, packaging, or test-readiness finding was identified.
+`CR-001`, `CR-002`, the historical `CR-003` failure origin, and `CR-004` are resolved in the current source review. The `CR-004` fix pins the affordance layer to the scrollport without changing native scrolling, catalog/order, or the approved UX contract. No new implementation-source, structural, legacy, packaging, or test-readiness finding was identified.
 
 ## Classification
 
-- `Pass` — the implementation-owned `CR-003` Local Fix is resolved; current API/E2E remains the next gate.
+- `Pass` — the implementation-owned `CR-004` Local Fix is resolved; current API/E2E remains the next gate.
 
 ## Recommended Recipient
 
@@ -251,13 +317,13 @@ Upstream architecture premises remain unchanged. Round 7's focused `FOP-001` rec
 
 ## Residual Risks
 
-- Round 7 API/E2E is historical `Fail`; its `CR-003` source origin is resolved and the current source is ready for a fresh browser matrix. Delivery must not proceed until current API/E2E passes.
-- The source repair preserves the integrated `usage`/`Token` capability and canonical relative order, keeps generic `TabList` horizontal overflow as the default, and opts into wrapping only for the full right-tool header. The durable probe assertion remains unchanged.
-- Current API/E2E must verify actual geometry in all docked and drawer states. If it passes without durable test changes, the next step is the separate proportional test-code review; if it fails, return for focused failure-origin review.
+- Round 6 API/E2E is historical `Fail`; `CR-004` is resolved and the current source is ready for a fresh browser matrix. Delivery must not proceed until current API/E2E passes.
+- The current single-row scroll contract, catalog/order, and fixed panel-toggle ownership remain unchanged; the affordance layer is now pinned independently of scrolling content.
+- The updated durable probe remains valid and must not be weakened. After the current API/E2E rerun, return for proportional test-code review if durable coverage remains changed and execution passes; otherwise route failures through focused origin review.
 - The durable probe checks shell-level reachability, center sizing, ordering, tab fit, and `/mobile` isolation; it does not deeply validate every Terminal/Browser/VNC internal responsive state.
 - `vue-tsc` remains unavailable because it is not installed; the reported production Nuxt build is the available build/type confidence check.
 - The durable probe is cohesive at 493 effective non-empty lines and should be split only if future scenario families materially increase its scope.
-- The integrated base includes the `usage` right-side tool after `progress`; the order test tracks that runtime catalog contract, and the `CR-003` presentation repair does not alter it.
+- The integrated base includes the `usage` right-side tool after `progress`; the order test tracks that runtime catalog contract, and the `CR-004` fix does not alter it.
 - `layouts/default.vue` retains `hidden md:*` styling guards on policy-controlled strip/drag-handle branches. They are currently subordinate to policy-controlled `v-if` decisions and do not create a competing route layout; future changes must not turn them into an independent responsive owner.
 - The ticket worktree contains unrelated pre-existing delivery-document modifications; delivery owns their integration and final documentation refresh.
 
@@ -266,7 +332,7 @@ Upstream architecture premises remain unchanged. Round 7's focused `FOP-001` rec
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Score Summary: `9.3/10` (`93/100`); prior mandatory categories remain passing and the `CR-003` source recheck adds no deduction.
-- Failure Origin (when applicable): `CR-003` resolved — explicit opt-in wrapping now keeps the full right-tool presentation eligible for visible multi-row layout; current browser geometry remains unverified.
+- Score Summary: `9.3/10` (`93/100`); the `CR-004` source recheck adds no deduction.
+- Failure Origin (when applicable): `CR-004` resolved — the fade/chevron layer is now pinned to the scrollport while tabs retain native horizontal scrolling.
 - Recommended Recipient (when applicable): `api_e2e_engineer`
-- Notes: Current source review passes. Route the cumulative package to current API/E2E; do not treat this as browser sign-off. If API/E2E passes, return for the separate proportional durable-test review.
+- Notes: Current source review passes. Route the cumulative package to current API/E2E; do not treat this as browser sign-off. If the updated durable probe and current execution pass, return for the separate proportional test-code review.

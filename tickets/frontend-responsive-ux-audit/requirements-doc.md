@@ -2,7 +2,18 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-Design-ready
+Refined
+
+## Supplemental Artifacts
+
+- right-tool-tabs-ux-spec.md — intended right-tool tab-row interaction and visual contract for single-row horizontal scrolling, overflow discoverability, active-tab reachability, and accessibility. Status: Refined for architecture re-review. Approval applicability: Required because it defines user-visible behavior.
+- comprehensive-responsive-ui-test-report.md — historical/live evidence for the responsive failure matrix and the durable browser-validation scope. Status: Evidence supplement. Approval applicability: N/A.
+
+## Right-Tool Tab Design-Impact Follow-Up
+
+The current CR-003 implementation wraps the right-tool tabs to keep the expanded catalog visible. The user-confirmed target is instead the original single-row header with horizontal scrolling and lightweight overflow discoverability. The wrapping implementation and initial-fit browser assertion are not authoritative target behavior and must be revised only after this requirements/design update.
+
+The tab-row contract is defined in right-tool-tabs-ux-spec.md and is part of the intended-behavior requirements basis for architecture re-review.
 
 ## Goal / Problem Statement
 
@@ -82,6 +93,12 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 
 ## Functional Requirements
 
+- FR-016: Right-tool tabs in docked and drawer presentations must remain a single horizontal row with the original spacing, typography, active underline, and fixed panel-toggle affordance; the row must not wrap.
+- FR-017: When the right-tool tab catalog exceeds the available header width, the tab row must remain horizontally scrollable through native mouse, touchpad, touch, and keyboard interactions.
+- FR-018: Overflow discoverability must be conditional and lightweight: show a subtle edge fade and directional chevron only when undisclosed tabs exist, and update the direction/visibility after scrolling.
+- FR-019: Selecting or keyboard-focusing an offscreen right-tool tab must automatically scroll that tab into view without changing canonical tab order or panel preference state.
+- FR-020: An optional More menu may provide secondary direct tab selection, but it must not replace the visible scrollable tab row or become the only path to any tool.
+
 - FR-001: `/workspace` must not have any viewport-width band where the route mounts one workspace layout while CSS hides that same mounted layout and no alternative layout is visible.
 - FR-002: `/workspace` must use one authoritative responsive policy for shell/workspace surface presentation instead of independent breakpoint decisions in `pages/workspace.vue`, `WorkspaceDesktopLayout`, `WorkspaceMobileLayout`, and `layouts/default.vue`.
 - FR-003: Wide desktop behavior must preserve the current primary layout: left navigation/history panel, center workspace surface, and right-side tools panel are docked when enough space exists.
@@ -99,6 +116,13 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - FR-015: The implementation must provide durable responsive validation for the known failure classes: blank `640-767px` band, legacy `<640px` `/workspace` fallback, cramped `768-1024px` docked panes, short-height recovery, canonical control/tool ordering, wide desktop non-regression, and `/mobile` route isolation.
 
 ## Acceptance Criteria
+
+- AC-016: In docked and drawer right-tool presentations, the tabs render in one horizontal row with no multi-row wrapping; the original spacing, typography, active underline, and fixed panel-toggle affordance remain present.
+- AC-017: When the tab row overflows, a browser/component test can scroll it horizontally through mouse/touchpad-equivalent, touch, and keyboard paths; the test does not require all tabs to fit initially.
+- AC-018: Edge fades and directional chevrons appear only when additional tabs exist, point toward undisclosed content, and update or disappear at the relevant scroll boundaries.
+- AC-019: Activating or focusing an offscreen tab automatically brings it into the visible tab-list bounds in both docked and drawer presentations.
+- AC-020: The current expanded catalog, including Usage/Token and VNC Viewer when available, remains reachable and in canonical order through scrolling without changing the active underline or panel-toggle placement.
+- AC-021: If a More menu is implemented, it is a secondary shortcut and the visible scrollable tab row remains available as the primary interaction.
 
 - AC-001: At `700x700` and `760x700`, `/workspace` shows visible workspace controls/content; it does not show only the black app header plus blank gray body.
 - AC-002: At `1440x900`, the current wide desktop layout remains materially unchanged: left panel docked, center workspace visible, and right tools docked by default.
@@ -178,4 +202,23 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 
 ## Approval Status
 
-Design-ready based on the user's explicit request to investigate and improve the responsive frontend. No unresolved product clarification blocks architecture review; threshold exactness can be tuned during implementation while preserving the acceptance criteria.
+Refined based on the user's explicit confirmation of the original single-row right-tool tab design. The right-tool tab overflow behavior is now an intended-behavior requirement and must pass architecture re-review before implementation resumes. The existing wrapping Local Fix and initial-fit browser assertion are superseded for this behavior.
+
+## Revised Requirement Coverage
+
+| Requirement | Use Cases |
+| --- | --- |
+| FR-016 | UC-008, UC-009 |
+| FR-017 | UC-008, UC-009 |
+| FR-018 | UC-008, UC-009 |
+| FR-019 | UC-008, UC-009 |
+| FR-020 | UC-008, UC-009 |
+
+| Acceptance Criteria | Scenario Intent |
+| --- | --- |
+| AC-016 | Single-row right-tool tab-header visual contract. |
+| AC-017 | Horizontal overflow interaction across pointer, touch, and keyboard input. |
+| AC-018 | Conditional overflow discoverability affordances. |
+| AC-019 | Active/focused tab auto-scroll reachability. |
+| AC-020 | Expanded catalog reachability and order preservation. |
+| AC-021 | Optional More-menu non-replacement rule. |

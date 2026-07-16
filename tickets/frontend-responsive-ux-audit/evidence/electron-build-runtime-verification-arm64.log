@@ -1,0 +1,15 @@
+$ node scripts/verify-packaged-terminal-runtime.mjs --server-root resources/server --platform darwin --arch arm64
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+$ node scripts/verify-packaged-terminal-runtime.mjs --server-root electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server --platform darwin --arch arm64 --spawn-probe
+APP_SERVER_ROOT=electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+$ ls -lh electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.*
+-rw-r--r--@ 1 normy  staff   383M Jul 16 05:31 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.dmg
+-rw-r--r--@ 1 normy  staff   409K Jul 16 05:31 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   379M Jul 16 05:31 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.zip
+-rw-r--r--@ 1 normy  staff   398K Jul 16 05:31 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.zip.blockmap

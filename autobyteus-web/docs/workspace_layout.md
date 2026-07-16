@@ -40,9 +40,15 @@ Right-tool order is also centralized there and should remain:
 2. Team members, when applicable
 3. Terminal
 4. Activity
-5. Artifacts
-6. Browser, when applicable
-7. VNC, when applicable
+5. Token, when applicable
+6. Artifacts
+7. Browser, when applicable
+8. VNC, when applicable
+
+`RightSideTabs` opts into the wrapped `TabList` presentation for the right-tool
+catalog. Constrained docked, strip, and drawer presentations may use multiple
+tab rows instead of horizontal clipping; the catalog order and each tool's
+reachability must remain intact.
 
 ## `/mobile` Boundary
 
@@ -55,6 +61,8 @@ Durable unit/component coverage for this policy lives near the relevant sources:
 - `utils/layout/__tests__/responsiveLayoutPolicy.spec.ts`
 - `utils/layout/__tests__/workspaceSurfaceOrder.spec.ts`
 - `components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts`
+- `components/layout/__tests__/RightSideTabs.spec.ts`
+- `components/tabs/__tests__/TabList.spec.ts`
 - `layouts/__tests__/default.spec.ts`
 
 Browser-level responsive validation is available through:
