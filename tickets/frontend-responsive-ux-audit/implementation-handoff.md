@@ -127,6 +127,12 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 | Symmetric explicit strip activation | `responsiveLayoutPolicy.ts` plus `responsiveStripActivation.ts` emit nested `leftPanel.stripActivation` and `rightPanel.stripActivation`. A fitting wide user-origin strip emits `redock-panel`; constrained, narrow, short-height, responsive-yield, or non-fitting user strips emit `open-drawer`. Redock actions restore the visible preference and close transient drawer state; open-drawer actions preserve stored visibility/hidden intent. | Policy tests cover symmetric wide redock, constrained shrink/open-drawer, narrow/open-drawer, and recovery/redock states. Left/right strip component tests cover both explicit actions; adaptive/default tests cover parent ownership and route-scoped rendering. |
 | Renderer authority boundary | `LeftSidebarStrip.vue`, `RightSidebarStrip.vue`, `layouts/default.vue`, and `WorkspaceAdaptiveLayout.vue` consume `stripActivation` directly; no renderer infers drawer behavior from presentation or viewport. | Source assertions cover activation consumption and no legacy `canOpen*Drawer`/top Tools path; the durable responsive probe records strip activation and validates wide redock plus constrained/narrow drawer paths. |
 
+### Round 24 Local-Fix Trace
+
+| Finding | Implementation path | Verification |
+| --- | --- | --- |
+| CR-015 dead left-strip event declaration | `LeftSidebarStrip.vue` now exposes only the authoritative `request-redock` event; its `open-drawer` activation directly invokes `appLayoutStore.openMobileMenu()` and no unused `request-open` event remains. | Focused left-strip component tests, standalone policy TypeScript, probe syntax, and diff checks pass. |
+
 ### Right-Panel Resize Local-Fix Trace
 
 | Finding | Implementation path | Verification |

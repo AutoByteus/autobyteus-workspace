@@ -93,7 +93,6 @@ const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
 
 const emit = defineEmits<{
-  (event: 'request-open'): void
   (event: 'request-redock'): void
 }>();
 
