@@ -19,6 +19,8 @@ API/E2E Round 4 then identified a production tab-capacity defect (`CR-003`): the
 
 Architecture review Round 4 returned the wrapping fix as `Design Impact` and approved the single-row horizontal-scroll UX supplement. The wrapping path is superseded and has been removed. The current rework keeps the original compact tab visuals and fixed panel toggle, uses native horizontal overflow, conditionally renders edge fades and directional chevrons, and auto-scrolls active/focused tabs into view. The optional More menu is omitted because native scrolling remains sufficient as the primary interaction.
 
+API/E2E Round 6 identified `CR-004`: the first scrolling implementation rendered its fade/chevron layer as ordinary descendants of the horizontal scroller, so the reverse affordance moved outside the visible tab-list at the right boundary. The bounded implementation fix keeps the real native scroll container but places the affordance layer in a sticky, width-neutral overlay flex item pinned to the scrollport. The left/right controls therefore remain visible and clickable while tabs scroll underneath them; no probe weakening or catalog change was made.
+
 ## What Changed
 
 - Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
@@ -33,6 +35,7 @@ Architecture review Round 4 returned the wrapping fix as `Design Impact` and app
 - Reconciled the durable order test with the integrated `usage` tool without changing the canonical source catalog.
 - Reworked the superseded wrapping path into a single-row, natively horizontally scrollable right-tool tab header.
 - Added conditional left/right edge fades and chevrons, accessible directional labels, reduced-motion-aware scrolling, and active/focused-tab auto-scroll while keeping the panel toggle outside the scroll viewport.
+- Pinned the fade/chevron layer to the scrollport with a width-neutral sticky overlay so reverse scrolling remains reachable at the right boundary.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -44,7 +47,7 @@ Architecture review Round 4 returned the wrapping fix as `Design Impact` and app
 | FR-006, FR-007, AC-007 | Legacy standard mobile fallback is removed; `/mobile` stays the phone/PWA owner | Removed `WorkspaceMobileLayout.vue` and `useMobilePanels.ts`; `pages/mobile.vue`/`MobileRemoteAccessShell` untouched by standard route | Pass; mobile isolation tests remain green. |
 | FR-008, FR-010, AC-006 | Height-aware side-surface presentation and preference/effective-state separation | `resolveAppShellResponsiveState`; `resolveWorkspaceResponsiveState`; `useLeftPanel`; `useRightPanel`; `layouts/default.vue` | Pass in policy/component coverage; browser matrix remains downstream-owned. |
 | FR-011, FR-014, FR-015, AC-008, AC-010, AC-013, AC-014, AC-015 | Durable policy/component coverage, header priority, and current local docs | Policy/order/layout/tab/right-panel/mobile/default-shell tests; `tests/e2e/workspace-responsive-probe.mjs`; `autobyteus-web/README.md`; workspace layout docs | Source and implementation-scoped checks pass. API/E2E execution of the current state is still required. |
-| FR-016, FR-017, FR-018, FR-019, FR-020, AC-016 through AC-021 | Single-row right-tool header preserves compact visuals, supports native horizontal scrolling, exposes conditional discoverability, auto-reaches active/focused tabs, and keeps any More menu optional | `RightSideTabs.vue` configures `TabList`; `TabList.vue` owns scroll metrics, `overflow-x-auto`, edge fades/chevrons, reduced-motion behavior, and active/focus auto-scroll; `Tab.vue` owns role, spacing, typography, hover/focus, and active underline; `workspaceSurfaceOrder.ts` remains order authority | Component/source implementation complete; current browser validation must replace historical initial-fit assertions. |
+| FR-016, FR-017, FR-018, FR-019, FR-020, AC-016 through AC-021 | Single-row right-tool header preserves compact visuals, supports native horizontal scrolling, exposes conditional discoverability, auto-reaches active/focused tabs, and keeps any More menu optional | `RightSideTabs.vue` configures `TabList`; `TabList.vue` owns scroll metrics, `overflow-x-auto`, sticky width-neutral edge-affordance overlay, reduced-motion behavior, and active/focus auto-scroll; `Tab.vue` owns role, spacing, typography, hover/focus, and active underline; `workspaceSurfaceOrder.ts` remains order authority | Component/source implementation complete; CR-004 bounded overlay fix covered by focused unit regression; current browser validation must replace historical initial-fit assertions. |
 
 ## Key Files Or Areas
 
@@ -75,7 +78,7 @@ Modified:
 - `autobyteus-web/utils/layout/__tests__/workspaceSurfaceOrder.spec.ts` (updated expectations only for the integrated `usage` catalog entry)
 - `autobyteus-web/components/tabs/TabList.vue` (single-row scroll owner, metrics, affordances, and active/focus auto-scroll)
 - `autobyteus-web/components/layout/RightSideTabs.vue` (configures right-tool overflow affordances/labels while retaining fixed toggle)
-- `autobyteus-web/components/tabs/__tests__/TabList.spec.ts` and `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts` (focused single-row/overflow configuration coverage)
+- `autobyteus-web/components/tabs/__tests__/TabList.spec.ts` and `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts` (focused single-row/overflow configuration coverage, including the CR-004 pinned affordance-layer regression)
 - Agent/team center workspace headers, shell localization, frontend README, and workspace layout docs
 
 Removed:
@@ -96,7 +99,7 @@ Removed:
 ## Known Risks
 
 - Exact threshold/mode tuning and the comprehensive current-state browser matrix remain downstream validation responsibilities.
-- The current right-tool tab header remains one row and scrolls when needed; downstream API/E2E must validate native overflow, conditional fades/chevrons, active/focus auto-scroll, and reachability in docked and drawer modes at the full matrix.
+- The current right-tool tab header remains one row and scrolls when needed; downstream API/E2E must validate the CR-004 pinned affordance layer plus native overflow, conditional fades/chevrons, active/focus auto-scroll, and reachability in docked and drawer modes at the full matrix.
 - The shell-level adaptive layout verifies tool reachability and ordering but does not deeply validate every Terminal/Browser/VNC internal responsive state.
 - `workspace-responsive-probe.mjs` is cohesive and test-exempt from source-size limits but is near 500 effective lines; split it if future scenario families materially grow it.
 - `vue-tsc` is not installed in `autobyteus-web`; production Nuxt build is the available build/type confidence check.
@@ -141,7 +144,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off:
 
 - `git diff --check` — Passed.
 - `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
-- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, mobile shell, app-left-panel, and default layout — Passed after the `CR-003` fix (`11` files, `68` tests).
+- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, mobile shell, app-left-panel, and default layout — Passed after the `CR-004` fix (`11` files, `69` tests).
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.

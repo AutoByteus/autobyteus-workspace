@@ -6,6 +6,47 @@
     class="relative flex min-w-0 flex-nowrap items-end overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 bg-white px-1 no-scrollbar"
     @scroll="updateOverflowState"
   >
+    <div
+      v-if="showLeftOverflow || showRightOverflow"
+      data-test="tab-list-affordance-layer"
+      class="tab-list-affordance-layer"
+    >
+      <span
+        v-if="showLeftOverflow"
+        data-test="tab-list-left-fade"
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-white via-white/80 to-transparent"
+      />
+      <span
+        v-if="showRightOverflow"
+        data-test="tab-list-right-fade"
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-white via-white/80 to-transparent"
+      />
+      <button
+        v-if="showLeftOverflow"
+        type="button"
+        data-test="tab-list-scroll-left"
+        class="pointer-events-auto absolute left-0 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm transition-colors hover:bg-white hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+        :aria-label="previousLabel"
+        :title="previousLabel"
+        @click="scrollByPage(-1)"
+      >
+        <span aria-hidden="true" class="text-base leading-none">‹</span>
+      </button>
+      <button
+        v-if="showRightOverflow"
+        type="button"
+        data-test="tab-list-scroll-right"
+        class="pointer-events-auto absolute right-0 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm transition-colors hover:bg-white hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+        :aria-label="nextLabel"
+        :title="nextLabel"
+        @click="scrollByPage(1)"
+      >
+        <span aria-hidden="true" class="text-base leading-none">›</span>
+      </button>
+    </div>
+
     <Tab
       v-for="tab in tabs"
       :key="tab.name"
@@ -18,41 +59,6 @@
     >
       {{ tab.label || tab.name }}
     </Tab>
-
-    <span
-      v-if="showLeftOverflow"
-      data-test="tab-list-left-fade"
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-white via-white/80 to-transparent"
-    />
-    <span
-      v-if="showRightOverflow"
-      data-test="tab-list-right-fade"
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-white via-white/80 to-transparent"
-    />
-    <button
-      v-if="showLeftOverflow"
-      type="button"
-      data-test="tab-list-scroll-left"
-      class="absolute left-0 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm transition-colors hover:bg-white hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-      :aria-label="previousLabel"
-      :title="previousLabel"
-      @click="scrollByPage(-1)"
-    >
-      <span aria-hidden="true" class="text-base leading-none">‹</span>
-    </button>
-    <button
-      v-if="showRightOverflow"
-      type="button"
-      data-test="tab-list-scroll-right"
-      class="absolute right-0 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm transition-colors hover:bg-white hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-      :aria-label="nextLabel"
-      :title="nextLabel"
-      @click="scrollByPage(1)"
-    >
-      <span aria-hidden="true" class="text-base leading-none">›</span>
-    </button>
   </div>
 </template>
 
@@ -217,6 +223,18 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+/* Keep the affordance layer pinned to the scrollport while tabs move natively. */
+.tab-list-affordance-layer {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  align-self: stretch;
+  flex: 0 0 100%;
+  width: 100%;
+  margin-right: -100%;
+  pointer-events: none;
+}
+
 /* Hide the native scrollbar without removing native horizontal scrolling. */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
