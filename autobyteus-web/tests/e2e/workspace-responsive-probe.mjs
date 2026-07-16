@@ -119,6 +119,7 @@ async function collect(page, label) {
         visibility: cs.visibility,
         position: cs.position,
         zIndex: cs.zIndex,
+        ariaModal: el.getAttribute('aria-modal'),
         overflow: `${cs.overflowX}/${cs.overflowY}`,
         rect: rect(el),
         text: (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 800),
@@ -747,6 +748,9 @@ async function validateIndependentDrawerInteractions(page, viewport) {
     failures.push('opening the right drawer unexpectedly closed or suppressed the independent left drawer');
   }
   if (!bothOpen.activeElement?.insideRightDrawer) failures.push('right drawer did not own focus when opened after the left drawer');
+  if (bothOpen.rects.leftNavigationDrawer?.ariaModal !== null || bothOpen.rects.rightDrawer?.ariaModal !== 'true') {
+    failures.push(`right-topmost aria-modal ownership mismatch: left ${bothOpen.rects.leftNavigationDrawer?.ariaModal}, right ${bothOpen.rects.rightDrawer?.ariaModal}`);
+  }
 
   await page.keyboard.press('Escape');
   await page.waitForTimeout(250);
@@ -778,6 +782,9 @@ async function validateIndependentDrawerInteractions(page, viewport) {
   const reverseRightBackdropZ = Number(reverseBothOpen.rects.rightDrawerBackdrop?.zIndex || 0);
   if (!(reverseLeftDrawerZ > reverseRightDrawerZ && reverseLeftBackdropZ > reverseRightBackdropZ)) {
     failures.push(`reverse drawer visual layer does not match keyboard ownership: left drawer/backdrop ${reverseLeftDrawerZ}/${reverseLeftBackdropZ}, right ${reverseRightDrawerZ}/${reverseRightBackdropZ}`);
+  }
+  if (reverseBothOpen.rects.leftNavigationDrawer?.ariaModal !== 'true' || reverseBothOpen.rects.rightDrawer?.ariaModal !== null) {
+    failures.push(`left-topmost aria-modal ownership mismatch: left ${reverseBothOpen.rects.leftNavigationDrawer?.ariaModal}, right ${reverseBothOpen.rects.rightDrawer?.ariaModal}`);
   }
 
   const reverseBackdropTarget = await clickTopmostDrawerBackdrop(page);

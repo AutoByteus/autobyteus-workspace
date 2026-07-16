@@ -10,7 +10,7 @@
     ref="drawerRef"
     data-test="workspace-right-tool-drawer"
     role="dialog"
-    aria-modal="true"
+    :aria-modal="drawerIsTopmost ? 'true' : undefined"
     :aria-label="title"
     tabindex="-1"
     class="fixed inset-y-0 right-0 z-50 flex max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:max-w-[92vw]"
@@ -46,4 +46,5 @@ const { drawerLayer } = useAccessibleDrawer({
 });
 const drawerBackdropZIndex = drawerLayer.backdropZIndex;
 const drawerZIndex = drawerLayer.drawerZIndex;
+const drawerIsTopmost = drawerLayer.isTopmost;
 </script>

@@ -33,7 +33,7 @@
         v-if="showLeftPanelSurface"
         ref="leftDrawerRef"
         :role="showLeftDrawer ? 'dialog' : 'navigation'"
-        :aria-modal="showLeftDrawer ? 'true' : undefined"
+        :aria-modal="showLeftDrawer && leftDrawerIsTopmost ? 'true' : undefined"
         :aria-label="$t('shell.workspaceSurfaces.navigationDrawerTitle')"
         :tabindex="showLeftDrawer ? -1 : undefined"
         :data-test="showLeftDrawer ? 'app-left-navigation-drawer' : 'app-left-panel-shell'"
@@ -153,6 +153,7 @@ const { drawerLayer: leftDrawerLayer } = useAccessibleDrawer({
 })
 const leftDrawerBackdropZIndex = leftDrawerLayer.backdropZIndex
 const leftDrawerZIndex = leftDrawerLayer.drawerZIndex
+const leftDrawerIsTopmost = leftDrawerLayer.isTopmost
 
 const leftPanelStyle = computed(() => ({
   width: `${responsiveWorkspaceShellState.value.leftPanel.preferredWidth}px`,

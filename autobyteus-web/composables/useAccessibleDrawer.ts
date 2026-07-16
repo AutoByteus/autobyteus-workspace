@@ -78,6 +78,7 @@ export const useAccessibleDrawer = ({
   drawerLayer: {
     backdropZIndex: Readonly<Ref<number>>
     drawerZIndex: Readonly<Ref<number>>
+    isTopmost: Readonly<Ref<boolean>>
   }
 } => {
   const isOpen = providedIsOpen ?? ref(true)
@@ -87,6 +88,9 @@ export const useAccessibleDrawer = ({
   const normalizedLayerIndex = computed(() => Math.max(layerIndex.value, 0))
   const backdropZIndex = computed(() => DRAWER_BACKDROP_Z_INDEX + normalizedLayerIndex.value)
   const drawerZIndex = computed(() => DRAWER_BASE_Z_INDEX + normalizedLayerIndex.value)
+  const isTopmost = computed(() => (
+    layerIndex.value !== -1 && layerIndex.value === openDrawers.value.length - 1
+  ))
 
   const focusInitialElement = async (): Promise<void> => {
     await nextTick()
@@ -220,6 +224,7 @@ export const useAccessibleDrawer = ({
     drawerLayer: {
       backdropZIndex,
       drawerZIndex,
+      isTopmost,
     },
   }
 }

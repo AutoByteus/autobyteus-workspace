@@ -268,6 +268,14 @@ The default left drawer and `WorkspaceRightToolDrawer` consume the shared backdr
 
 Round 30 checks: affected focused suite (4 files, 32 tests) and full responsive focused suite (13 files, 92 tests) passed with only the known KaTeX quirks-mode warning; standalone responsive-policy TypeScript check passed; probe syntax, `git diff --check`, web-boundary guard, localization-boundary guard, localization literal audit, and Nuxt build passed. API/E2E remains downstream-owned; no API/E2E sign-off is claimed.
 
+### Round 31 Local-Fix Trace
+
+CR-022 accessibility modality: the shared ordered drawer lifecycle now exposes read-only `drawerLayer.isTopmost`. The left and right drawer renderers bind `aria-modal="true"` only when their drawer owns the same topmost layer used for z-index and keyboard interaction; non-topmost open drawers omit `aria-modal`. The lifecycle therefore exposes exactly one modal owner while preserving independent drawer state and the existing remaining-drawer focus transition.
+
+Focused lifecycle assertions cover left-then-right and right-then-left modal ownership plus the topmost transition after dismissal. The durable browser probe records and validates the same `aria-modal` ownership in both orders alongside its existing z-index and hit-tested backdrop assertions.
+
+Round 31 checks: full responsive focused suite (13 files, 92 tests), standalone responsive-policy TypeScript, probe syntax, and `git diff --check` passed; only the known KaTeX quirks-mode warning remains in focused tests. API/E2E remains downstream-owned; no API/E2E sign-off is claimed.
+
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Larger Requirement / Behavior Change / Responsive Layout Refactor`

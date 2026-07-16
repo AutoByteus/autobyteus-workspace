@@ -74,7 +74,7 @@ describe('default layout source', () => {
     const content = readFileSync(filePath, 'utf-8')
 
     expect(content).toContain(":role=\"showLeftDrawer ? 'dialog' : 'navigation'\"")
-    expect(content).toContain(':aria-modal="showLeftDrawer ? \'true\' : undefined"')
+    expect(content).toContain(':aria-modal="showLeftDrawer && leftDrawerIsTopmost ? \'true\' : undefined"')
     expect(content).toContain(':aria-label="$t(\'shell.workspaceSurfaces.navigationDrawerTitle\')"')
     expect(content).toContain('data-test="app-left-drawer-backdrop"')
     expect(content).not.toContain('data-test="app-left-drawer-close"')
