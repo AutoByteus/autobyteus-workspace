@@ -106,11 +106,21 @@ const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
 
 const handlePrimaryClick = async (key: ShellPrimaryNavKey): Promise<void> => {
   activateStrip();
+
+  if (props.stripActivation === 'open-drawer') {
+    return;
+  }
+
   await pushRoute(resolvePrimaryRoute(key));
 };
 
 const handleSettingsClick = async (): Promise<void> => {
   activateStrip();
+
+  if (props.stripActivation === 'open-drawer') {
+    return;
+  }
+
   await pushRoute('/settings');
 };
 

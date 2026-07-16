@@ -23,6 +23,7 @@ describe('default layout drawer lifecycle', () => {
     routeMock.fullPath = '/agents'
     Object.defineProperty(window, 'innerWidth', { configurable: true, value: 700 })
     Object.defineProperty(window, 'innerHeight', { configurable: true, value: 700 })
+    routerMock.push.mockClear()
     document.body.innerHTML = ''
   })
 
@@ -115,6 +116,55 @@ describe('default layout drawer lifecycle', () => {
     expect(wrapper.get('[data-test="app-left-drawer-open"]').exists()).toBe(true)
     expect(wrapper.get('[data-test="app-left-panel-shell"]').exists()).toBe(true)
     expect(wrapper.find('[data-test="workspace-left-navigation-strip"]').exists()).toBe(false)
+    wrapper.unmount()
+  })
+
+  it('keeps the standard workspace drawer open when an existing strip control activates open-drawer', async () => {
+    routeMock.path = '/workspace'
+    routeMock.fullPath = '/workspace'
+
+    const wrapper = mount(DefaultLayout, {
+      attachTo: document.body,
+      global: {
+        plugins: [
+          createTestingPinia({
+            createSpy: vi.fn,
+            stubActions: false,
+          }),
+        ],
+        stubs: {
+          Icon: true,
+          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
+        },
+        mocks: {
+          $t: (key: string) => key,
+        },
+      },
+      slots: {
+        default: '<div data-test="workspace-slot"></div>',
+      },
+    })
+
+    await nextTick()
+    await nextTick()
+    await nextTick()
+
+    const strip = wrapper.get('[data-test="workspace-left-navigation-strip"]')
+    const agentButton = strip.get('button[title="Agents"]')
+    await agentButton.trigger('click')
+    await nextTick()
+    await nextTick()
+
+    expect(routerMock.push).not.toHaveBeenCalled()
+    expect(wrapper.get('[data-test="app-left-navigation-drawer"]').attributes('role')).toBe('dialog')
+    expect(wrapper.get('[data-test="workspace-left-navigation-strip"]').exists()).toBe(true)
+
+    await strip.get('button[title="Agents"]').trigger('click')
+    await nextTick()
+    await nextTick()
+
+    expect(wrapper.find('[data-test="app-left-navigation-drawer"]').exists()).toBe(false)
+    expect(routeMock.fullPath).toBe('/workspace')
     wrapper.unmount()
   })
 })

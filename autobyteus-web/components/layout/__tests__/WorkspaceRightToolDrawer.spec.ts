@@ -44,6 +44,8 @@ describe('WorkspaceRightToolDrawer', () => {
     expect(drawer.attributes('role')).toBe('dialog')
     expect(drawer.attributes('aria-modal')).toBe('true')
     expect(drawer.attributes('aria-label')).toBe('Tools')
+    expect(drawer.classes()).toEqual(expect.arrayContaining(['fixed', 'inset-y-0', 'right-0']))
+    expect(drawer.classes()).not.toContain('inset-0')
     expect(drawer.attributes('aria-labelledby')).toBeUndefined()
     expect(wrapper.find('#workspace-right-tool-drawer-title').exists()).toBe(false)
     expect(wrapper.find('[data-drawer-initial-focus]').exists()).toBe(false)

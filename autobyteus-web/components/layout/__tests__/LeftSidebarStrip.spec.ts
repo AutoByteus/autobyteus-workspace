@@ -85,7 +85,7 @@ describe('LeftSidebarStrip Component', () => {
 
   it('navigates to the top-level nodes page from the promoted Nodes item', async () => {
     const wrapper = mount(LeftSidebarStrip, {
-      props: { stripActivation: 'open-drawer' },
+      props: { stripActivation: 'redock-panel' },
       global: {
         stubs: {
           Icon: true,
@@ -111,7 +111,7 @@ describe('LeftSidebarStrip Component', () => {
     await wrapper.get('button[title="Agents"]').trigger('click')
 
     expect(appLayoutStoreMock.openMobileMenu).toHaveBeenCalledOnce()
-    expect(routerMock.push).toHaveBeenCalledWith({ path: '/agents', query: { view: 'list' } })
+    expect(routerMock.push).not.toHaveBeenCalled()
   })
 
   it('closes the transient navigation drawer from the existing strip inventory', async () => {

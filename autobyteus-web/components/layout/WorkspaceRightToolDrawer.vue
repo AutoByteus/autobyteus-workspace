@@ -12,7 +12,7 @@
     aria-modal="true"
     :aria-label="title"
     tabindex="-1"
-    class="fixed inset-0 z-50 flex max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:max-w-[92vw] md:inset-y-0"
+    class="fixed inset-y-0 right-0 z-50 flex max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:max-w-[92vw]"
     :style="{ width: `${width}px` }"
   >
     <div class="min-h-0 flex-1 overflow-hidden">

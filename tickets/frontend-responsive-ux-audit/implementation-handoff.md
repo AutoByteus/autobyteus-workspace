@@ -142,6 +142,13 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 
 Round 25 local checks: focused workspace strip/drawer/default suite passed (`6` files, `43` tests), standalone policy TypeScript passed, Nuxt build passed, web/localization guards passed, localization literal audit passed with zero findings, probe syntax passed, and `git diff --check` passed. Only the existing KaTeX quirks-mode and build chunk-size/module-type warnings remain.
 
+### Round 26 Local-Fix Trace
+
+| Finding | Implementation path | Verification |
+| --- | --- | --- |
+| CR-016 right-tool drawer geometry | `WorkspaceRightToolDrawer.vue` restores explicit `inset-y-0 right-0` positioning for the finite-width transient drawer while retaining the no-visible-title/no-close-X contract. | Focused drawer coverage asserts the right-edge/full-height classes and labelled dialog semantics. |
+| CR-017 left open-drawer lifecycle | `LeftSidebarStrip.vue` treats `stripActivation = open-drawer` as authoritative: it toggles the local drawer and defers route navigation, so the standard `/workspace` route watcher cannot immediately close the opened drawer. Redock activation preserves the existing route navigation behavior. | Left-strip and default-layout lifecycle coverage verifies no navigation on open-drawer, drawer persistence, visible strip retention, and existing-strip close; focused suite passed (`7` files, `59` tests), probe syntax, policy TypeScript, build, guards, localization audit, and diff checks pass. |
+
 ### Right-Panel Resize Local-Fix Trace
 
 | Finding | Implementation path | Verification |
