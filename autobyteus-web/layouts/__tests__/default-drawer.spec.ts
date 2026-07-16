@@ -82,4 +82,37 @@ describe('default layout drawer lifecycle', () => {
     expect(document.activeElement).toBe(opener)
     wrapper.unmount()
   })
+
+  it('keeps workspace-only strips out of the retained default renderer on narrow agent routes', async () => {
+    const wrapper = mount(DefaultLayout, {
+      attachTo: document.body,
+      global: {
+        plugins: [
+          createTestingPinia({
+            createSpy: vi.fn,
+            stubActions: false,
+          }),
+        ],
+        stubs: {
+          Icon: true,
+          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
+        },
+        mocks: {
+          $t: (key: string) => key,
+        },
+      },
+      slots: {
+        default: '<div data-test="workspace-slot"></div>',
+      },
+    })
+
+    await nextTick()
+    await nextTick()
+    await nextTick()
+
+    expect(wrapper.get('[data-test="app-left-drawer-open"]').exists()).toBe(true)
+    expect(wrapper.get('[data-test="app-left-panel-shell"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="workspace-left-navigation-strip"]').exists()).toBe(false)
+    wrapper.unmount()
+  })
 })

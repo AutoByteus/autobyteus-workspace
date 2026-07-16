@@ -45,7 +45,7 @@ const emit = defineEmits<{
 }>();
 
 const { visibleTabs, activeTab, setActiveTab } = useRightSideTabs();
-const { toggleRightPanel, setRightPanelVisible } = useRightPanel();
+const { toggleRightPanel } = useRightPanel();
 
 const stripClasses = computed(() => props.stripBehavior === 'overlay'
   ? 'fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg'
@@ -55,7 +55,6 @@ const selectTab = (tabName: TabName) => {
   setActiveTab(tabName);
 
   if (props.openAsDrawer) {
-    setRightPanelVisible(true);
     emit('request-open');
     return;
   }

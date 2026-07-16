@@ -7,7 +7,6 @@ const mocks = vi.hoisted(() => ({
   activeTab: null as any,
   visibleTabs: null as any,
   setActiveTab: vi.fn(),
-  setRightPanelVisible: vi.fn(),
   toggleRightPanel: vi.fn(),
 }))
 
@@ -17,7 +16,6 @@ vi.mock('~/composables/useRightSideTabs', () => ({
 
 vi.mock('~/composables/useRightPanel', () => ({
   useRightPanel: () => ({
-    setRightPanelVisible: mocks.setRightPanelVisible,
     toggleRightPanel: mocks.toggleRightPanel,
   }),
 }))
@@ -56,7 +54,7 @@ describe('RightSidebarStrip', () => {
     await strip.get('button[aria-label="Files"]').trigger('click')
 
     expect(mocks.setActiveTab).toHaveBeenCalledWith('files')
-    expect(mocks.setRightPanelVisible).toHaveBeenCalledWith(true)
+    expect(mocks.toggleRightPanel).not.toHaveBeenCalled()
     expect(wrapper.emitted('request-open')).toHaveLength(1)
   })
 })

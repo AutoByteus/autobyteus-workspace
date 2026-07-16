@@ -112,6 +112,13 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 | --- | --- | --- |
 | CR-012 stale effective presentation type and impossible candidate branch | `responsiveLayoutPolicy.ts` narrows `ResponsivePresentation` (and therefore the shared effective surface state) to `docked|strip`, matching the resolver's effective output contract. The impossible `candidate.left === 'drawer'` check is removed; `canOpenLeftDrawer` remains true only for visible left strips that open the transient drawer. | Standalone policy `tsc` check passed; focused policy/strip/adaptive/default suite passed (`6` files, `50` tests); probe syntax and diff checks passed. |
 
+### Round 22 Local-Fix Trace
+
+| Finding | Implementation path | Verification |
+| --- | --- | --- |
+| CR-013 route-scoped default-layout compatibility | `layouts/default.vue` now gates workspace-only left dock/strip/drag surfaces on `isStandardWorkspaceRoute`. Non-workspace default-layout routes retain the existing header-driven left navigation renderer and CSS mobile drawer behavior while continuing to consume the single provided responsive state. | The real `/agents` narrow layout regression mounts the default layout at `700x700`, asserts the retained header and left panel, and rejects the workspace navigation strip; focused default layout/drawer tests pass. |
+| CR-014 transient right-strip preference preservation | `RightSidebarStrip.vue` emits its drawer request without changing right-panel visibility; `WorkspaceAdaptiveLayout.vue` likewise opens only the transient drawer and closes it only when the effective presentation re-docks. A hidden right preference therefore remains hidden while its consuming/overlay strip drawer is open. | Right-strip coverage asserts no visibility mutation; the wide `1440x900` hidden-strip adaptive regression asserts the drawer opens and `isRightPanelVisible` remains false. |
+
 ### Right-Panel Resize Local-Fix Trace
 
 | Finding | Implementation path | Verification |
@@ -241,7 +248,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off:
 - `git diff --check` — Passed.
 - `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
 - `pnpm --dir autobyteus-web exec tsc --noEmit --skipLibCheck --target ES2020 --module ESNext --moduleResolution Bundler utils/layout/responsiveLayoutPolicy.ts` — Passed; the CR-012 impossible-union comparison is gone and effective presentation types are narrowed to `docked|strip`.
-- Focused Nuxt/Vitest suite covering policy, order, adaptive layout actions, bounded right-panel resize, right-tool tabs/drawer, right-panel state, left/right sidebar strips, app-left-panel, and default layout/drawer lifecycle — Passed (`14` files, `82` tests`). The adaptive action tests emit no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains.
+- Prior full focused Nuxt/Vitest suite covering policy, order, adaptive layout actions, bounded right-panel resize, right-tool tabs/drawer, right-panel state, left/right sidebar strips, app-left-panel, and default layout/drawer lifecycle — Passed (`14` files, `82` tests`). This re-entry's affected focused suite — policy, left/right strips, adaptive layout, and default layout/drawer lifecycle — also passed (6 files, 52 tests), including the new wide hidden-strip and narrow `/agents` route regressions. The adaptive action tests emit no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains.
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.

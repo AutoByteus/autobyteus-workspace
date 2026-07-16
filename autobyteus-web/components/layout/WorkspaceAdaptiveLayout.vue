@@ -129,7 +129,6 @@ const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const {
   isRightPanelVisible,
   initDragRightPanel,
-  setRightPanelVisible,
   setRightPanelWorkspaceWidth,
 } = useRightPanel();
 const { activeTab } = useRightSideTabs();
@@ -212,7 +211,6 @@ const closeRightDrawer = (): void => {
 };
 
 const openRightDrawer = (): void => {
-  setRightPanelVisible(true);
   appLayoutStore.closeMobileMenu();
   isRightDrawerOpen.value = true;
 };
@@ -242,9 +240,9 @@ const openRunHistory = (): void => {
 };
 
 watch(
-  () => [responsiveWorkspaceShellState.value.rightPanel.presentation, isRightPanelVisible.value] as const,
-  ([presentation, visible]) => {
-    if ((presentation === 'docked' && visible) || !visible) {
+  () => responsiveWorkspaceShellState.value.rightPanel.presentation,
+  (presentation) => {
+    if (presentation === 'docked') {
       closeRightDrawer();
     }
   },

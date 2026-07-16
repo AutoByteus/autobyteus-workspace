@@ -349,6 +349,27 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-strip');
   });
 
+  it('opens a wide hidden-panel strip as a transient drawer without changing the preference', async () => {
+    setViewport(1440, 900);
+    const rightPanel = useRightPanel();
+    rightPanel.setRightPanelVisible(false);
+
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: 'wide-hidden-strip' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
+    expect(rightPanel.isRightPanelVisible.value).toBe(false);
+
+    await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
+    await nextTick();
+
+    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+    expect(rightPanel.isRightPanelVisible.value).toBe(false);
+  });
+
   it('uses the overlay right strip as the sole narrow reopen affordance', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({

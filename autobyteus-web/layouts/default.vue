@@ -97,7 +97,7 @@ import {
 
 const appLayoutStore = useAppLayoutStore()
 const route = useRoute()
-const { initDragLeftPanel } = useLeftPanel()
+const { initDragLeftPanel, isLeftPanelVisible } = useLeftPanel()
 const leftDrawerRef = ref<HTMLElement | null>(null)
 const { responsiveWorkspaceShellState } = useResponsiveWorkspaceShell()
 provide(RESPONSIVE_WORKSPACE_SHELL_KEY, responsiveWorkspaceShellState)
@@ -119,19 +119,35 @@ const isApplicationImmersive = computed(
 
 const isLeftDocked = computed(() => responsiveWorkspaceShellState.value.leftPanel.presentation === 'docked')
 const showLeftDrawer = computed(
-  () => responsiveWorkspaceShellState.value.canOpenLeftDrawer && appLayoutStore.isMobileMenuOpen,
+  () => appLayoutStore.isMobileMenuOpen && (
+    isStandardWorkspaceRoute.value
+      ? responsiveWorkspaceShellState.value.canOpenLeftDrawer
+      : true
+  ),
 )
 const showLeftPanelSurface = computed(
-  () => !isApplicationImmersive.value && (isLeftDocked.value || showLeftDrawer.value),
+  () => {
+    if (isApplicationImmersive.value) {
+      return false
+    }
+
+    return isStandardWorkspaceRoute.value
+      ? isLeftDocked.value || showLeftDrawer.value
+      : isLeftPanelVisible.value || showLeftDrawer.value
+  },
 )
 const showLeftDrawerBackdrop = computed(
   () => !isApplicationImmersive.value && showLeftDrawer.value,
 )
 const showLeftStrip = computed(
-  () => !isApplicationImmersive.value && responsiveWorkspaceShellState.value.showLeftStrip,
+  () => isStandardWorkspaceRoute.value
+    && !isApplicationImmersive.value
+    && responsiveWorkspaceShellState.value.showLeftStrip,
 )
 const showLeftPanelDragHandle = computed(
-  () => !isApplicationImmersive.value && isLeftDocked.value,
+  () => !isApplicationImmersive.value && (
+    isStandardWorkspaceRoute.value ? isLeftDocked.value : isLeftPanelVisible.value
+  ),
 )
 
 useAccessibleDrawer({
@@ -145,11 +161,18 @@ const leftPanelStyle = computed(() => ({
 }))
 
 const leftPanelClasses = computed(() => [
-  'inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out',
-  isLeftDocked.value
-    ? 'static translate-x-0 shadow'
-    : 'fixed shadow-2xl',
-  showLeftDrawer.value || isLeftDocked.value ? 'translate-x-0' : '-translate-x-full',
+  isStandardWorkspaceRoute.value
+    ? 'inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out'
+    : 'absolute inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow',
+  isStandardWorkspaceRoute.value
+    ? isLeftDocked.value
+      ? 'static translate-x-0 shadow'
+      : 'fixed shadow-2xl'
+    : '',
+  isStandardWorkspaceRoute.value
+    ? showLeftDrawer.value || isLeftDocked.value ? 'translate-x-0' : '-translate-x-full'
+    : appLayoutStore.isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full',
+  !isStandardWorkspaceRoute.value && !isLeftPanelVisible.value ? 'md:hidden' : '',
 ])
 
 const mainContentClasses = computed(() => [
