@@ -33,9 +33,20 @@ The docked right panel uses the measured center-plus-right flow width as its
 capacity boundary. `useRightPanel()` keeps the user's preferred width while
 clamping the effective width so the center pane and right resize handle retain
 their practical minimum; the responsive shell then transitions to strip or
-drawer presentation when docked capacity is no longer viable. The flow width
-is observed by `WorkspaceAdaptiveLayout.vue`, including the logical resize
-handle geometry, so resize stops remain stable as the left surface changes.
+drawer presentation when docked capacity is no longer viable. A user drag
+records a `user-sized` resize intent and lowers the protected center minimum
+to the approved user-sized threshold rather than silently discarding that
+intent. If even that capacity no longer fits, the right surface yields
+responsively while the preferred width remains available for a later docked
+state. The flow width is observed by `WorkspaceAdaptiveLayout.vue`, including
+the logical resize handle geometry, so resize stops remain stable as the left
+surface changes.
+
+The responsive contract also covers the post-user-sized fallback: when a
+200px-protected user-sized dock no longer fits at a constrained viewport such
+as 900x700, the right surface remains reachable through its drawer while the
+left strip ownership is retained and no duplicate top `Tools` trigger is
+introduced.
 
 When constrained presentation hides a side surface, the workspace exposes semantic triggers rather than a generic top-level surface bar. The navigation trigger is labelled `Agents & teams`, the tools trigger is labelled `Tools` only when the effective right presentation is a drawer, and the structured empty state provides `Choose an agent or team` plus `Open runs/history` actions. These actions open the existing left navigation/history or right-tool surfaces and preserve the selected-run state. When the right presentation is a strip, the strip itself is the sole tools reopen affordance; do not duplicate it with a top `Tools` trigger.
 

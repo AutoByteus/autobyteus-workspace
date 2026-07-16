@@ -617,6 +617,15 @@ async function validateRightStripReopenInteraction(page, viewport) {
   }
 
   const failures = [];
+  // The preceding wide resize-bound journey intentionally records a
+  // user-sized right-panel width. Reset the route/module state before proving
+  // the independent wide manual-collapse redock contract; otherwise the
+  // widened user-sized panel may correctly fail the automatic 480px redock
+  // capacity check and make this scenario sequence-dependent.
+  await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForSelector('[data-test="workspace-adaptive-layout"]', { state: 'visible', timeout: 20000 });
+  await page.waitForTimeout(300);
+
   const hidden = await clickButtonByTest(page, 'right-side-panel-toggle');
   await page.waitForTimeout(250);
 

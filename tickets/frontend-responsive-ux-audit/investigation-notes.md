@@ -224,8 +224,8 @@ The underlying failure remains real: the integrated tool catalog can exceed the 
 | Artifact | Purpose and scope | Status | Approval applicability | Related core artifacts |
 | --- | --- | --- | --- | --- |
 | right-tool-tabs-ux-spec.md | Defines single-row visual, scrolling, overflow-affordance, active-tab, accessibility, ownership, and validation behavior for right-tool tabs. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
-| workspace-responsive-ui-ux-spec.md | Defines scenario-level workspace shell behavior: wide personal-branch hierarchy, explicit left collapse, constrained/narrow navigation/tool drawers, empty-state actions, accessibility, and `/mobile` isolation. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
-| comprehensive-responsive-ui-test-report.md | Historical responsive failure evidence and broad browser-matrix scope. | Evidence supplement | N/A | Requirements doc, design spec |
+| workspace-responsive-ui-ux-spec.md | Defines scenario-level workspace shell behavior: wide personal-branch hierarchy, symmetric left/right panel-strip-drawer ownership, route-scoped header suppression, non-workspace default-layout preservation, empty-state actions, accessibility, and `/mobile` isolation. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
+| comprehensive-responsive-ui-test-report.md | Historical responsive failure evidence and broad browser-matrix scope, including validation for symmetric strips and absence of header/top duplicate controls. | Evidence supplement, coherence-reconciled | N/A | Requirements doc, design spec |
 
 ### Open implementation questions for downstream design/implementation review
 
@@ -424,15 +424,26 @@ requiredWidth = left consumed width + right consumed width + center minimum
 fits = viewport width >= requiredWidth
 ```
 
-Phase order is authoritative: narrow drawer precedence; preserve user-hidden left strip on desktop; short-height right-tools yield; try both docked; try left docked/right drawer; try left docked/right strip; only then adapt the left surface and choose the right presentation. A visible left panel is therefore not automatically stripped merely because the viewport is below `1280px`.
+Phase order is authoritative: narrow edge-overlay strip precedence; preserve
+user-hidden left strip on desktop; short-height right-tools yield; try both
+docked; try left docked/right consuming strip; try left docked/right overlay
+strip; only then adapt the left surface and choose the right strip behavior. A
+drawer is opened only as transient local interaction from an `open-drawer`
+strip action. A visible left panel is therefore not automatically stripped
+merely because the viewport is below `1280px`.
 
-The output distinguishes `preference: hidden-by-user` from effective `presentation: strip/drawer` and `presentationSource: user/responsive`. This prevents a responsive transition from rewriting user preference and lets tests prove manual collapse versus automatic adaptation.
+The output distinguishes `preference: hidden-by-user` from effective
+`presentation: docked|strip` and `presentationSource: user/responsive`, with
+the nested `stripActivation` selecting re-dock versus transient drawer
+interaction. Drawers are not effective policy presentations. This prevents a
+responsive transition from rewriting user preference and lets tests prove
+manual collapse versus automatic adaptation.
 
 ### Required policy scenarios
 
 The design spec now includes executable boundary scenarios for wide default, large-but-constrained (left docked/right tools yield), constrained (left adapts only after right yield), manual left collapse, narrow, short-height, and repeated resize. The updated architecture package is ready for another review round; implementation remains blocked until that gate passes.
 
-## Right-strip duplicate Tools trigger investigation (2026-07-16)
+## Right-strip duplicate Tools trigger investigation (2026-07-16; source evidence, target superseded by guaranteed-strip decision)
 
 ### User-observed behavior
 
@@ -483,7 +494,7 @@ This explains why the screenshot shows exactly one top `Tools` button and the ri
 
 This is a **Local Implementation Defect** against the already intended one-owned-right-surface behavior, made explicit as FR-032/AC-033 and in `workspace-responsive-ui-ux-spec.md`. It is not a requirement to remove `/mobile` or `components/mobile/*`, and it does not justify restoring a generic `Work / Runs / Files / Tools` row.
 
-The required executable invariant is:
+The earlier intermediate package proposed this executable invariant:
 
 | Right presentation | Reopen affordance | Top semantic `Tools` trigger |
 |---|---|---:|
@@ -491,7 +502,13 @@ The required executable invariant is:
 | `strip` | Right vertical strip; selecting a tool opens the drawer | No |
 | `drawer` | One visible semantic `Tools`/`Open tools` action | Yes |
 
-The implementation should expose `showRightToolsTrigger` from the composed policy or use the exact equivalent `rightPanel.presentation === 'drawer'`. It must not use `rightPanel.presentation !== 'docked'`. Component/browser coverage must assert that strip and top trigger are mutually exclusive and that both valid paths reach the same right-tool drawer without changing selected-run state.
+That intermediate correction is superseded. The implementation must remove
+`showRightToolsTrigger` and the top trigger branch entirely. The current
+executable invariant is: docked = fixed panel toggle only; consuming strip =
+strip only; overlay strip = edge strip only. Both strip variants open the same
+transient drawer without changing selected-run state. Component/browser
+coverage must assert that every non-docked standard-workspace state has a
+visible strip and no top Tools trigger.
 
 ### Supplemental artifact inventory update
 
@@ -586,7 +603,7 @@ responsive-yield (`480px` while retaining `user-sized`) states. This is a
 design-boundary clarification; it does not authorize implementation changes
 until architecture review passes.
 
-## Right-strip-first fallback clarification (2026-07-16)
+## Right-strip-first fallback clarification (2026-07-16; superseded by guaranteed-strip decision below)
 
 ### User-observed behavior
 
@@ -606,12 +623,192 @@ When docked tools no longer fit, the policy therefore selects `drawer` whenever 
 
 ### Revised intended behavior
 
-For non-narrow desktop widths the right presentation priority is now explicitly:
+The earlier intermediate package defined the non-narrow priority as:
 
 ```text
 docked -> strip -> drawer
 ```
 
-If left navigation, the practical automatic center target (`480px`), and the `50px` right strip fit, the right strip must be rendered and it is the sole right-tools reopen affordance. The drawer/top Tools trigger is allowed only when that strip candidate cannot fit, or in narrow layouts that intentionally use drawers. This preserves the user's original desktop mental model while still protecting the center and retaining a fallback when even the strip cannot fit.
+If left navigation, the practical automatic center target (`480px`), and the `50px` right strip fit, the right strip must be rendered and it is the sole right-tools reopen affordance. The earlier allowance for a drawer/top `Tools` trigger when the strip candidate could not fit is now superseded: the strip switches to an edge overlay instead. The current approved priority is `docked -> consuming strip -> overlay strip` for standard `/workspace`.
 
 This is added as FR-035/AC-036 and requires architecture re-review together with the manual resize-mode clarification. It does not change `/mobile`, the right-tab catalog, or the rule that a visible strip and top Tools trigger must never appear together.
+
+## Right-tools top-trigger removal and guaranteed strip (2026-07-16)
+
+### User decision
+
+The user confirmed that a separate top `Tools` button is not useful for the
+standard workspace. Normal desktop and laptop windows should not enter a
+special drawer-only state merely because the right panel became narrow. The
+right vertical strip is clearer, closer to the personal branch, and sufficient
+as the direct tool-selection affordance.
+
+### Revised target behavior
+
+- Right tools remain docked while the measured center and side surfaces fit.
+- When the docked right panel no longer fits, the policy returns a visible
+  right strip. The strip consumes `50px` when that flow candidate fits.
+- When the 50px strip cannot fit, the same strip becomes a fixed right-edge
+  overlay with `consumedWidth = 0`; it does not disappear and does not create
+  a top `Tools` button.
+- Clicking any strip item opens the existing transient right-tools drawer.
+  Drawer open/closed state is local interaction state, not a responsive right
+  presentation.
+- No standard `/workspace` state renders a separate top `Tools` trigger.
+  `/mobile` and `components/mobile/*` remain unchanged.
+
+### Why this simplifies the architecture
+
+The previous contract had three effective right presentations and two possible
+reopen affordances. The revised contract has two policy presentations
+(`docked`, `strip`) and one interaction overlay (the drawer). It removes
+`showRightToolsTrigger`, removes drawer-only right fallback ordering, and
+eliminates the possibility of a strip/button duplicate. The composed policy
+still owns whether the strip consumes flow width or overlays it, while
+`WorkspaceAdaptiveLayout` owns only transient drawer open/close state.
+
+### Capacity evidence
+
+With the approved automatic center target, left docked + center + right strip
+requires approximately `320 + 480 + 50 + 6 = 856px`. If that does not fit,
+the right strip can become an overlay; if left navigation also cannot remain
+docked, the policy adapts the left surface before ever removing the right
+tools affordance. This keeps the center mounted across ordinary desktop,
+embedded, and narrow standard-workspace widths without relying on an absolute
+"truly narrow" breakpoint.
+
+This is an intended-behavior design change covered by FR-024, FR-032,
+FR-035, FR-037 and AC-025, AC-033, AC-036, AC-038. It requires architecture
+re-review before implementation changes resume.
+
+### Route-scoped header reconciliation (2026-07-16)
+
+Architecture Review Round 15 identified that `layouts/default.vue` is a
+global default-layout boundary, not a workspace-only renderer. The previous
+package correctly prohibited the responsive header/hamburger for standard
+`/workspace` but incorrectly removed `showHeader` from the shared shell
+contract without defining what happens on other default-layout routes.
+
+The revised route contract is:
+
+| Route | Required behavior |
+| --- | --- |
+| `/workspace` (and supported workspace child routes) | Ignore the shared `showHeader` compatibility signal; render the symmetric left/right panel-strip-transient-drawer model with no responsive hamburger, breadcrumb, top `Agents & teams`, top `Tools`, or generic surface row. |
+| `/agents`, `/agent-teams`, `/applications`, `/media`, `/memory`, `/nodes`, `/skills`, `/tools` | Preserve the existing default-layout responsive header/navigation behavior driven by `showHeader`. |
+| `/mobile` | Remains `layout:false` and renders `MobileRemoteAccessShell`; it does not pass through the default layout. |
+
+`default.vue` may gate the shared header on route identity, but it must not
+measure the viewport, introduce a new breakpoint, or resolve another workspace
+policy. The workspace resolver remains the sole capacity/priority owner. The
+requirements now add FR-039/AC-040 and the core/supplement design specs add
+route-scoped source/component/browser assertions for `/workspace`, a
+representative `/agents` or `/tools` route, and `/mobile` isolation.
+
+The reviewer also recorded LID-002: the current `LeftSidebarStrip` still
+toggles left-panel preference rather than following the now-required
+capacity-aware activation output. This remains a local implementation defect
+for later source review: a fitting wide user-origin strip must re-dock, while
+a constrained/responsive strip must open the transient left drawer.
+
+### Symmetric side-strip simplification (2026-07-16)
+
+The user confirmed a further simplification for standard `/workspace`: the
+left and right compact surfaces should use the same interaction model rather
+than introducing header-specific controls. The target is:
+
+```text
+left panel -> left strip -> left navigation drawer
+right panel -> right strip -> right tools drawer
+```
+
+The left strip owns compact access to Agents, Agent Teams, workspaces, and run
+history. The right strip owns compact access to Files and the tool catalog.
+When a side is docked, its panel replaces its strip. When a side is not
+docked, its strip remains visible, consumes flow width when possible, or uses
+an edge overlay when necessary. Activating the strip opens that side's
+transient drawer; the drawer is not a separate responsive policy state.
+
+### Source evidence consulted
+
+| Source | Current behavior/evidence | Design consequence |
+| --- | --- | --- |
+| `autobyteus-web/layouts/default.vue` | Standard shell still renders a black responsive header and `data-test="app-left-drawer-open"` hamburger when `responsiveWorkspaceShellState.showHeader` is true. | The reviewed implementation must remove the workspace header/hamburger navigation path; the left strip becomes the compact owner. |
+| `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | Standard workspace still renders `WorkspacePrimarySurfaceControls` for constrained/left-non-docked states. | Decommission that generic row from standard `/workspace`; side strips and empty-state actions own compact access. |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | Existing left strip already exposes primary shell destinations and panel toggle behavior. | Reuse and make it the sole left compact affordance, with explicit drawer semantics and no companion top button. |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | Existing right strip already renders canonical tool icons and opens the right drawer. | Reuse as the sole right compact affordance in consuming and overlay variants. |
+| `/mobile` and `components/mobile/*` | Dedicated Android/iOS/PWA shell remains separate. | No changes to the phone wrapper or its components. |
+
+### Revised UI/UX decision and review consequence
+
+The user-facing contract now forbids the responsive hamburger, breadcrumb
+navigation trigger, top `Agents & teams` button, top `Tools` button, and
+generic `Work / Runs / Files / Tools` row in standard `/workspace`. This is a
+design-impact change because it alters shell composition and the policy output:
+the composed state must expose left/right `docked` or `strip` presentations
+with consuming/overlay behavior, while both drawers remain transient
+interaction state. FR-038 and AC-039, plus the scenario supplement, record the
+contract and its cross-side assertions. Implementation remains paused pending
+architecture review of this revised package.
+
+### Hybrid strip activation reconciliation (2026-07-16)
+
+The user clarified the final desktop interaction semantics after the prior
+all-strips-transient-drawer design was prepared. That earlier sentence is
+superseded for activation behavior; the symmetric side ownership and visible
+strip guarantee remain valid.
+
+| Context | Required strip action | Preference lifecycle |
+| --- | --- | --- |
+| Wide desktop, explicit user collapse, docked panel fits | `redock-panel`: clicking a strip item restores the full panel | Restore the corresponding visible preference; close any temporary drawer |
+| Constrained/narrow desktop or automatic responsive yield | `open-drawer`: clicking the strip opens a temporary overlay drawer | Do not rewrite the stored panel preference |
+| User-collapsed panel after viewport shrink | `open-drawer` while the retained panel no longer fits | Retain `hidden-by-user` intent so recovery can return to re-dock behavior |
+| User-collapsed panel after viewport recovery | `redock-panel` once the docked candidate fits | Restore the visible preference only when the user activates the strip |
+
+This rule is symmetric for left navigation and right tools and preserves the
+origin/personal desktop mental model: a manually hidden wide panel is reopened
+by its own strip, while a policy-yield strip is a temporary drawer affordance.
+`StripActivation = 'redock-panel' | 'open-drawer'` is now part of both nested
+responsive side outputs. The renderer must consume that output rather than
+infer behavior from `presentation !== 'docked'`.
+
+Current source evidence explains why implementation review must be rerun after
+the design change:
+
+- `LeftSidebarStrip.vue` currently opens the overlay drawer for the strip path;
+  it does not yet restore the full panel for a wide manual collapse. This is a
+  later implementation/source-review finding, not a reason to alter the
+  clarified contract.
+- `RightSidebarStrip.vue` currently calls the right visibility action and is
+  therefore closer to wide re-docking, while it opens the drawer when the
+  effective panel still cannot fit. Its preference/event semantics must be
+  aligned with the same explicit activation output.
+- The prior code-review findings CR-013/CR-014 were evaluated against the
+  stale all-strips-transient-drawer interpretation. They must be re-evaluated
+  after architecture approves FR-040/AC-041; implementation and API/E2E sign-
+  off remain paused.
+
+The supplemental artifact inventory remains unchanged: the workspace UX
+specification and right-tool tabs supplement still define intended behavior and
+require approval; this section records the user clarification and source
+evidence that support the revised requirements/design.
+
+### Core output schema reconciliation (DI-010, 2026-07-16)
+
+Code review identified a stale core pseudocode shape even though the executable
+policy and both UX supplements already use the approved model. The design
+output is now coherent with source:
+
+- `ResponsivePresentation` is exactly `docked | strip`.
+- `ResponsiveLeftPanelState` and `ResponsiveRightPanelState` carry nested
+  `stripActivation`, which is the sole action authority for each side.
+- `ResponsiveWorkspaceShellState` does not emit top-level
+  `canOpenLeftDrawer`/`canOpenRightDrawer` fields.
+- Drawer open/closed state belongs to local drawer composables/renderers and is
+  not an effective responsive presentation. `open-drawer` permits that local
+  interaction; `redock-panel` restores the panel preference and docked render.
+
+This resolves DI-010 without changing `/mobile`, the responsive policy
+priority, or the user-visible hybrid strip behavior. CR-015 (the dead
+`request-open` declaration in `LeftSidebarStrip.vue`) remains a low local
+implementation cleanup and is not addressed in the design package. It should
+be handled by implementation after architecture approves this reconciliation.

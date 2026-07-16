@@ -4,8 +4,8 @@
 
 - Status: Refined for architecture re-review
 - Approval applicability: Intended user-visible behavior; approval required
-- Related requirements: FR-013, FR-016, FR-017, FR-018, FR-019, FR-020
-- Related acceptance criteria: AC-012, AC-016, AC-017, AC-018, AC-019, AC-020, AC-021
+- Related requirements: FR-013, FR-016, FR-017, FR-018, FR-019, FR-020, FR-040
+- Related acceptance criteria: AC-012, AC-016, AC-017, AC-018, AC-019, AC-020, AC-021, AC-041
 - Related design spine: DS-002
 - Related shell UX supplement: workspace-responsive-ui-ux-spec.md
 
@@ -64,6 +64,26 @@ A More menu may be added as a secondary shortcut for direct tab selection when t
 - preserve the canonical tab order;
 - not replace horizontal scrolling or the visible tab row;
 - not become the only way to reach a tab.
+
+### Side-strip activation context
+
+This supplement governs the tab row after the right tools are docked or after
+the transient right-tools drawer is open. The surrounding workspace policy
+owns whether the visible compact affordance re-docks the panel or opens that
+drawer. The contract is symmetric with the left side:
+
+| Effective state | Strip activation | Result | Preference effect |
+| --- | --- | --- | --- |
+| Wide, explicit user collapse, right dock fits | `redock-panel` | Re-dock the full right panel and preserve the active tab | Restore visible right-panel preference; close any temporary drawer |
+| Constrained/narrow or responsive-yield right strip | `open-drawer` | Open the temporary right-tools drawer from the strip | Leave the stored visibility/resize preference unchanged |
+| User-collapsed strip after viewport shrink | `open-drawer` while the dock does not fit | Open the temporary drawer; keep the strip visible on close | Retain the hidden-by-user intent for recovery |
+| User-collapsed strip after viewport recovery | `redock-panel` once the dock fits | Re-dock on strip activation | Restore visible preference only through the explicit activation |
+
+The right strip is always visible for a non-docked standard `/workspace` right
+surface. There is no top `Tools` trigger and no drawer-only responsive policy
+state. A strip action must not change the selected run or the tab catalog;
+once the drawer is open, the single-row scrolling and active-tab reachability
+rules in this supplement apply unchanged.
 
 ## Ownership and Component Boundaries
 

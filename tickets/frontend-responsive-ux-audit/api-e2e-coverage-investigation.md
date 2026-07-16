@@ -9,10 +9,10 @@
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`
 - Implementation Live Visual Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`
-- Current Investigation Round: `13`
-- Trigger: Implementation source review Round 20 `PASS` for Architecture Round 12 / DI-006 at HEAD `4ca4d01530e9e0e72bd63f7ab2cd8846d17d4087`. The current right-panel lifecycle distinguishes automatic/default 480px protection, explicit user-sized 200px override, and responsive-yield recovery. API/E2E must execute the updated durable probe and full browser matrix against this integrated state.
+- Current Investigation Round: `14`
+- Trigger: Implementation source review Round 25 `PASS` for CR-015 cleanup at current HEAD `efcc49e2aa5040d39a1842c61d01ac0db3938d30` (parent `cc2d053fcaf27586f09a6fba3ac7c32b3d2a82a4`). Architecture Round 18 is the latest design authority: effective presentations are exactly `docked|strip`; nested `leftPanel.stripActivation` and `rightPanel.stripActivation` own side actions; drawers are local transient state. API/E2E must execute the current durable probe and full browser matrix against a fresh backend/frontend/Chrome runtime.
 - Prior Investigation Reviewed: `Round 1` historical API/E2E investigation in this same file path. Round 1 added/updated durable coverage and was later reviewed, but it is superseded as sign-off by implementation-owned Round 4 visual/source/probe changes.
-- Latest Authoritative Investigation: `Round 13`
+- Latest Authoritative Investigation: `Round 14`
 
 ## Current Requirement And Design Basis
 
@@ -531,3 +531,42 @@ Code review Round 4 is the latest authority. It passed the current implementatio
 - Authoritative rerun passed all `18` states, `33/33` interactions, `8` tab-validation records / `56` checks, `0` failures, and `0` browser console-error states. Canonical outputs and final evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-workspace-responsive-probe-final.log`.
 - DI-006 lifecycle evidence passed: user-sized bounds `750px`/`910px` at `1280x800`/`1440x900` with `205px` centers; genuine `900x700` responsive-yield strip and drawer reopen with no duplicate top Tools; current tab/semantic/mobile contracts and cleanup all passed. Final confidence is `97.0%`, with no applicable category below `90%`; result `Pass`.
 - Routing: return the complete cumulative package to `code_reviewer` for separate proportional durable-test review. Do not route directly to delivery.
+
+
+## Round 14 Current-State Coverage Investigation Addendum
+
+### Current-State Trigger And Scope
+
+- Current HEAD: `codex/frontend-responsive-ux-audit` / `efcc49e2aa5040d39a1842c61d01ac0db3938d30`; parent implementation state: `cc2d053fcaf27586f09a6fba3ac7c32b3d2a82a4`.
+- Upstream gate: implementation-source review Round 25 `PASS`. CR-015 removes the dead `request-open` event declaration from `LeftSidebarStrip.vue`; direct left-strip open-drawer activation calls `appLayoutStore.openMobileMenu()` as the sole left open-drawer side effect. No requirements, design, production boundary, or persisted-data change was identified.
+- Latest approved design: Architecture Round 18 / DI-010. `ResponsivePresentation` is exactly `docked|strip`; `leftPanel.stripActivation` and `rightPanel.stripActivation` are the side-action authority; drawers are transient local interaction state. Wide user-origin strips redock when fitting; constrained/narrow/responsive strips open transient drawers; no duplicate generic or top navigation controls; `/mobile` remains isolated.
+- Changed runtime boundaries: responsive policy and strip activation, default-layout route scoping, left/right strip and drawer actions, adaptive workspace/right resize lifecycle, right-tab single-row scroll/ARIA contract, and standard `/workspace` versus `/mobile` route boundary.
+
+### Coverage Validity And Durable-Test Decision
+
+- `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`: `Still Valid`, and current durable coverage includes the post-Round 13 route-scoped symmetric-strip/strip-activation assertions from implementation commits `fbc33091a` and `cc2d053fc`. It must be executed unchanged unless live evidence demonstrates a stale expectation.
+- Policy, strip, drawer, adaptive-layout, default-layout, right-tab, mobile-shell, and left-panel tests: `Still Valid`; run the current relevant focused suite.
+- No stale assertion is authorized for removal before execution. If execution exposes a probe expectation that contradicts Architecture Round 18 / DI-010, classify it against the approved contract before changing the probe.
+- Durable coverage change status before execution: the probe is cumulatively changed upstream since the last authoritative API/E2E execution and therefore any successful current run must return to `code_reviewer` for proportional durable-test review before delivery.
+
+### Round 14 Planned Executable Validation
+
+- Run `node --check` for the durable probe, `git diff --check`, current focused Nuxt/Vitest responsive suite, and fresh backend build.
+- Start a run-owned built Node backend with isolated SQLite data and a run-owned Nuxt dev server using explicit `BACKEND_NODE_BASE_URL` on unused ports.
+- Execute the package's `test:e2e:workspace-responsive` probe with all 17 approved `/workspace` viewports plus `/mobile` and `--fail-on-console-error`.
+- Validate adaptive center/nonblank bands, header suppression on standard `/workspace`, no generic surface row, symmetric left/right strips, route-scoped strip activation, left strip open/close, wide right redock, constrained right drawer reopen, right resize capacity/user intent, right-tab order/one-row/overflow/ARIA/focus reachability, short-height recovery, and `/mobile` isolation.
+- Correlate frontend/backend readiness and console output, retain exact commands/logs/screenshots/JSON, stop only run-owned processes, and verify cleanup ports.
+- Broader validation decision: `Required` because the changed boundary is rendered responsive UI, route-scoped shell interaction, viewport transition, and browser geometry not fully proven by mocked component tests.
+
+### Round 14 Pre-Execution Reroute Criteria
+
+- Probe/fixture stale against approved behavior: bounded API/E2E-owned probe reconciliation only, document first result, rerun, and return to `code_reviewer` if durable coverage changes.
+- Genuine source/runtime failure: preserve scenario IDs, expected versus observed behavior, exact execution context, and route to `code_reviewer` for focused failure-origin review.
+- Setup dependency failure after safe retry/diagnosis: preserve evidence and classify `Blocked`; do not claim sign-off.
+
+## Round 14 First-Run Coverage Reconciliation
+
+- First authoritative browser attempt on HEAD `efcc49e2aa5040d39a1842c61d01ac0db3938d30` completed all `18` states but failed only the `desktop-1280x800` wide manual-collapse/redock sequence: after the preceding FR-033 extreme drag, the right panel was correctly user-sized at `750px` with a `205px` center. Hiding it therefore correctly produced a user-origin strip whose `750px` panel could not satisfy the automatic `480px` redock capacity at `1280px`; the probe nevertheless expected `redock-panel`. The dependent second toggle then also could not be reached.
+- Coverage validity finding: this is a stale sequence dependency in the durable probe, not a production failure. The approved contract is capacity-aware: a fitting wide user-origin strip redocks, while a widened user-sized panel that does not fit the automatic center floor must remain an open-drawer strip. The independent wide redock contract must start from the default fitting panel state.
+- Bounded API/E2E-owned durable-test fix: `validateRightStripReopenInteraction` now reloads `/workspace` before the wide manual-collapse journey, resetting in-memory module state to the default `450px` automatic panel while preserving the exact current route and selectors. The resize-bound journey remains unchanged and still executes before this helper in the original page. The later `900x700` constrained strip/drawer path and all activation assertions remain unchanged.
+- First-run evidence is retained at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round14-retry-workspace-responsive-probe.log` and canonical JSON at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json`; the initial runtime setup issue and exact logs remain in the Round 14 evidence set. The updated probe must be syntax-checked and rerun through the full matrix before routing.

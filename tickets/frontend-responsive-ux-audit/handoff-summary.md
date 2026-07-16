@@ -5,14 +5,14 @@
 - Delivery status: `Awaiting explicit user verification`.
 - Branch: `codex/frontend-responsive-ux-audit`.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`.
-- Validated production HEAD: `648dad8a3e6312fd6352fd7dc7600fd4c27fbb1d`.
-- Delivery checkpoint: `12779fe97859bf5083495b04d31b0a2422665786`.
+- Validated production HEAD: `4ca4d01530e9e0e72bd63f7ab2cd8846d17d4087`.
+- Delivery checkpoint: `46206103baecec0f021459098cf7f08feb7a6cd4`.
 - Latest tracked base: `origin/personal @ fbd7b6764bd43751956d69ffe22b943d06188444`.
 - Base refresh: `git fetch origin --prune` passed; `git merge --no-ff origin/personal` was already up to date. The base is already integrated; no new base commit was introduced.
 - Integrated-state evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round12-pre-refresh-state.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round12-fetch-and-merge.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round12-post-refresh-check.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round13-pre-refresh-state.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round13-fetch-and-merge.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round13-post-refresh-check.log`
 
 ## User-Facing Change Summary
 
@@ -23,6 +23,7 @@ Key behavior:
 - A single `resolveResponsiveWorkspaceShellState()` policy composes viewport capacity, both panel preferences, effective presentations, sources, and affordances.
 - Left navigation remains docked while left navigation plus a practical center fit; right tools yield first when needed.
 - Docked right-panel resizing uses measured center-plus-right flow capacity and stops before violating the practical center minimum or resize-handle geometry.
+- A user drag records a user-sized resize intent. If that dock no longer fits at a constrained viewport, the right surface yields to a reachable drawer while the left strip remains the owner of left navigation and the preferred width is retained.
 - Constrained states expose semantic `Agents & teams` actions and a drawer-only top `Tools` action instead of a generic `Work / Runs / Files / Tools` row.
 - In a strip presentation, the strip itself is the sole tools reopen affordance; no duplicate top `Tools` trigger is rendered.
 - The no-selection center state provides `Choose an agent or team` and `Open runs/history` actions.
@@ -32,11 +33,11 @@ Key behavior:
 
 ## Validation Summary
 
-- Implementation source review: `Pass` at HEAD `648dad8a3`; CR-011 resolved.
-- API/E2E Round 12: `Pass`, `97.4%` confidence.
-- Browser matrix: `18` states, `40/40` semantic/strip/drawer interaction records, `15` tab-validation records / `105` checks, `0` failures, and `0` browser console-error states.
-- Expanded focused suite and build/guard checks passed; API/E2E cleanup closed ports `13019` and `13020`.
-- Proportional durable-test review Round 7: `Pass`, no findings. TR-001 was resolved with measurable panel-growth and capacity-derived width-stop assertions in `workspace-responsive-probe.mjs`.
+- Implementation source review: `Pass` at HEAD `4ca4d0153`.
+- API/E2E Round 13: `Pass`, `97.0%` confidence.
+- Browser matrix: `18` states, `33/33` interaction records, `8` tab-validation journeys / `56` checks, `0` failures, and `0` browser console-error states.
+- Fresh backend/frontend, isolated data, focused build/guard checks, and cleanup passed as recorded by API/E2E; the API/E2E runtime ports were cleaned up.
+- Proportional durable-test review Round 8: `Pass`, no findings. The durable probe now uses the approved 900x700 post-user-sized fallback instead of the stale 1024x768 strip expectation, asserting drawer reachability, retained strip ownership, and no duplicate top `Tools` trigger. TR-001 remains resolved.
 - VNC selection remains bounded because no external VNC service is available in the deterministic fixture; VNC focus/reachability and network-safe Files selection auto-scroll are covered.
 
 Authoritative validation artifacts:
@@ -45,9 +46,9 @@ Authoritative validation artifacts:
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round12-workspace-responsive-probe.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round12-focused-nuxt-tests.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round12-cleanup-ports.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-workspace-responsive-probe-final.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-focused-nuxt-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-retry-cleanup-ports.log`
 
 ## Current Electron Test Build
 
@@ -57,22 +58,22 @@ The current production HEAD was rebuilt for Apple Silicon macOS. Per the user's 
 - Result: `Pass`.
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.dmg`.
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.zip`.
-- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round12-electron-build.log`.
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round13-electron-build.log`.
 - Packaging is unsigned/not notarized; electron-builder reported `identity explicitly is set to null`.
 
 ## Documentation Sync
 
 - Updated: `autobyteus-web/docs/workspace_layout.md`.
-- Updated guidance covers the composed policy boundary, capacity-derived right-panel resize limits, semantic triggers/no-generic-row behavior, drawer-only top `Tools` trigger, strip sole reopen affordance, left history scroll ownership, current right-tool contract, `/mobile` boundary, and current coverage paths.
+- Updated guidance covers the composed policy boundary, capacity-derived right-panel resize limits, preserved user-sized resize intent, 900x700 constrained fallback, drawer reachability, strip ownership, semantic triggers/no-generic-row behavior, drawer-only top `Tools` trigger, strip sole reopen affordance, left history scroll ownership, current right-tool contract, `/mobile` boundary, and current coverage paths.
 - No-impact decisions recorded for README, architecture, runtime, remote access, Terminal, agent integration, Electron packaging, and release docs.
 - Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/docs-sync-report.md`.
 
 ## Integrated-State Check
 
-- No new base commits were introduced by the Round 12 refresh.
-- Additional base-triggered executable rerun: `Not required`; API/E2E Round 12 already passed against implementation HEAD `648dad8a3`, and the refresh did not change effective source behavior.
+- No new base commits were introduced by the Round 13 refresh.
+- Additional base-triggered executable rerun: `Not required`; API/E2E Round 13 already passed against implementation HEAD `4ca4d0153`, and the refresh did not change effective source behavior.
 - Delivery docs and current package artifacts were checked with `git diff --check`.
-- Final static sanity evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round12-final-sanity-check.log` (`Pass`).
+- Final static sanity evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round13-final-sanity-check.log` (`Pass`).
 
 ## Finalization Hold
 
@@ -101,6 +102,7 @@ No final delivery push or target-branch merge has been performed.
 - `design-spec.md`
 - `right-tool-tabs-ux-spec.md`
 - `workspace-responsive-ui-ux-spec.md`
+- `comprehensive-responsive-ux-audit-test-report.md`
 - `comprehensive-responsive-ui-test-report.md`
 - `design-review-report.md`
 - `implementation-handoff.md`
@@ -112,4 +114,4 @@ No final delivery push or target-branch merge has been performed.
 - `docs-sync-report.md`
 - `delivery-release-deployment-report.md`
 - `handoff-summary.md`
-- Round 12 browser results, screenshots, runtime/build logs, cleanup logs, and delivery refresh evidence under `tickets/frontend-responsive-ux-audit/evidence/` and `tickets/frontend-responsive-ux-audit/probes/api-e2e/`.
+- Round 13 browser results, screenshots, runtime/build logs, cleanup logs, and delivery refresh evidence under `tickets/frontend-responsive-ux-audit/evidence/` and `tickets/frontend-responsive-ux-audit/probes/api-e2e/`.
