@@ -76,8 +76,9 @@
         v-else-if="responsiveWorkspaceShellState.showRightStrip"
         data-test="workspace-right-tool-strip"
         :strip-behavior="responsiveWorkspaceShellState.rightPanel.stripBehavior ?? 'overlay'"
-        open-as-drawer
+        :strip-activation="responsiveWorkspaceShellState.rightPanel.stripActivation!"
         @request-open="openRightDrawer"
+        @request-redock="redockRightPanel"
       />
     </div>
 
@@ -94,6 +95,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
+import { useLeftPanel } from '~/composables/useLeftPanel';
 import { useRightPanel } from '~/composables/useRightPanel';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useResponsiveWorkspaceShellState } from '~/composables/layout/useResponsiveWorkspaceShell';
@@ -129,8 +131,10 @@ const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const {
   isRightPanelVisible,
   initDragRightPanel,
+  setRightPanelVisible,
   setRightPanelWorkspaceWidth,
 } = useRightPanel();
+const { setLeftPanelVisible } = useLeftPanel();
 const { activeTab } = useRightSideTabs();
 const responsiveWorkspaceShellState = useResponsiveWorkspaceShellState();
 const isRightDrawerOpen = ref(false);
@@ -215,12 +219,22 @@ const openRightDrawer = (): void => {
   isRightDrawerOpen.value = true;
 };
 
+const redockRightPanel = (): void => {
+  setRightPanelVisible(true);
+  appLayoutStore.closeMobileMenu();
+  closeRightDrawer();
+};
+
 const openLeftNavigation = (): void => {
   closeRightDrawer();
 
-  if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
+  if (responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'open-drawer') {
     appLayoutStore.openMobileMenu();
     return;
+  }
+
+  if (responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'redock-panel') {
+    setLeftPanelVisible(true);
   }
 
   void router.push(resolvePrimaryRoute('agents'));
@@ -229,8 +243,10 @@ const openLeftNavigation = (): void => {
 const openRunHistory = (): void => {
   closeRightDrawer();
 
-  if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
+  if (responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'open-drawer') {
     appLayoutStore.openMobileMenu();
+  } else if (responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'redock-panel') {
+    setLeftPanelVisible(true);
   }
 
   void nextTick(() => {

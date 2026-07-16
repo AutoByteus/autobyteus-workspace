@@ -44,6 +44,7 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 
 - Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
 - Centralized shell/workspace responsive policy and the canonical right-tool ordering catalog.
+- Added the explicit symmetric `StripActivation` boundary: fitting wide user strips re-dock on activation, while constrained/narrow/responsive strips open transient drawers without preference mutation.
 - Added one SSR-safe viewport measurement adapter and separated effective responsive presentation from left/right panel user preferences.
 - Updated the app shell and workspace to use docked, strip, and drawer presentations while preserving a practical center width and recoverable controls in short windows.
 - Kept the center workspace as the primary Work surface and preserved left navigation/history plus right Files/tools ownership without a duplicate generic surface row.
@@ -103,14 +104,14 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 | Finding / contract | Implementation path | Verification |
 | --- | --- | --- |
 | DI-009 route-scoped header boundary | `layouts/default.vue` computes `isStandardWorkspaceRoute` from `route.path` only and gates `showResponsiveHeader`; it does not measure viewport or resolve another policy. `/agents` keeps the shared `showHeader` path and `/mobile` remains `layout:false`. | `default.spec.ts` asserts route-only source gating, no second breakpoint, and mobile isolation; `default-drawer.spec.ts` exercises representative non-workspace responsive header/drawer behavior. |
-| LID-002 left strip drawer ownership | `responsiveLayoutPolicy.ts` emits left `docked|strip` plus `stripBehavior`, with every strip exposing `canOpenLeftDrawer`; `LeftSidebarStrip.vue` renders consuming/overlay behavior, a labelled direct drawer opener, and opens `appLayoutStore` without toggling the hidden preference. | `responsiveLayoutPolicy.spec.ts` covers narrow/manual strip output and drawer availability; `LeftSidebarStrip.spec.ts` covers labelled strip rendering, direct drawer opening, and navigation-item drawer opening; `workspace-responsive-probe.mjs` adds narrow/constrained left-strip open/close validation. |
+| LID-002 left strip drawer ownership | `responsiveLayoutPolicy.ts` emits left `docked|strip`, `stripBehavior`, and explicit `leftPanel.stripActivation`; `LeftSidebarStrip.vue` renders consuming/overlay behavior, a labelled activation control, re-docks fitting wide user strips, and opens the transient drawer without mutating responsive preferences. | `responsiveLayoutPolicy.spec.ts` covers narrow/manual strip output and activation; `LeftSidebarStrip.spec.ts` covers labelled strip rendering, direct drawer opening, redock activation, and navigation-item behavior; `workspace-responsive-probe.mjs` adds narrow/constrained left-strip activation/open-close validation. |
 | Symmetric standard-workspace renderer | `WorkspaceAdaptiveLayout.vue` renders only center/right surfaces and transient right drawer; `layouts/default.vue` renders left dock/strip/drawer; `WorkspacePrimarySurfaceControls.vue` and its obsolete test are removed. | Adaptive source/component assertions require no generic/top trigger component; the browser probe rejects header/navigation/generic controls in standard workspace and requires both visible side strips in narrow states. |
 
 ### Round 21 Local-Fix Trace
 
 | Finding | Implementation path | Verification |
 | --- | --- | --- |
-| CR-012 stale effective presentation type and impossible candidate branch | `responsiveLayoutPolicy.ts` narrows `ResponsivePresentation` (and therefore the shared effective surface state) to `docked|strip`, matching the resolver's effective output contract. The impossible `candidate.left === 'drawer'` check is removed; `canOpenLeftDrawer` remains true only for visible left strips that open the transient drawer. | Standalone policy `tsc` check passed; focused policy/strip/adaptive/default suite passed (`6` files, `50` tests); probe syntax and diff checks passed. |
+| CR-012 stale effective presentation type and impossible candidate branch | `responsiveLayoutPolicy.ts` narrows `ResponsivePresentation` (and therefore the shared effective surface state) to `docked|strip`, matching the resolver's effective output contract. The impossible `candidate.left === 'drawer'` check is removed; subsequent `StripActivation` output is now the sole side-action authority. | Standalone policy `tsc` check passed; focused policy/strip/adaptive/default suite passed (`6` files, `50` tests); probe syntax and diff checks passed. |
 
 ### Round 22 Local-Fix Trace
 
@@ -118,6 +119,13 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 | --- | --- | --- |
 | CR-013 route-scoped default-layout compatibility | `layouts/default.vue` now gates workspace-only left dock/strip/drag surfaces on `isStandardWorkspaceRoute`. Non-workspace default-layout routes retain the existing header-driven left navigation renderer and CSS mobile drawer behavior while continuing to consume the single provided responsive state. | The real `/agents` narrow layout regression mounts the default layout at `700x700`, asserts the retained header and left panel, and rejects the workspace navigation strip; focused default layout/drawer tests pass. |
 | CR-014 transient right-strip preference preservation | `RightSidebarStrip.vue` emits its drawer request without changing right-panel visibility; `WorkspaceAdaptiveLayout.vue` likewise opens only the transient drawer and closes it only when the effective presentation re-docks. A hidden right preference therefore remains hidden while its consuming/overlay strip drawer is open. | Right-strip coverage asserts no visibility mutation; the wide `1440x900` hidden-strip adaptive regression asserts the drawer opens and `isRightPanelVisible` remains false. |
+
+### Round 23 Architecture-Rework Trace
+
+| Approved contract | Implementation path | Verification |
+| --- | --- | --- |
+| Symmetric explicit strip activation | `responsiveLayoutPolicy.ts` plus `responsiveStripActivation.ts` emit nested `leftPanel.stripActivation` and `rightPanel.stripActivation`. A fitting wide user-origin strip emits `redock-panel`; constrained, narrow, short-height, responsive-yield, or non-fitting user strips emit `open-drawer`. Redock actions restore the visible preference and close transient drawer state; open-drawer actions preserve stored visibility/hidden intent. | Policy tests cover symmetric wide redock, constrained shrink/open-drawer, narrow/open-drawer, and recovery/redock states. Left/right strip component tests cover both explicit actions; adaptive/default tests cover parent ownership and route-scoped rendering. |
+| Renderer authority boundary | `LeftSidebarStrip.vue`, `RightSidebarStrip.vue`, `layouts/default.vue`, and `WorkspaceAdaptiveLayout.vue` consume `stripActivation` directly; no renderer infers drawer behavior from presentation or viewport. | Source assertions cover activation consumption and no legacy `canOpen*Drawer`/top Tools path; the durable responsive probe records strip activation and validates wide redock plus constrained/narrow drawer paths. |
 
 ### Right-Panel Resize Local-Fix Trace
 
@@ -138,6 +146,7 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 Added:
 
 - `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
+- `autobyteus-web/utils/layout/responsiveStripActivation.ts`
 - `autobyteus-web/utils/layout/workspaceSurfaceOrder.ts`
 - `autobyteus-web/composables/layout/useResponsiveElementRect.ts`
 - `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts`
@@ -248,7 +257,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off:
 - `git diff --check` — Passed.
 - `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
 - `pnpm --dir autobyteus-web exec tsc --noEmit --skipLibCheck --target ES2020 --module ESNext --moduleResolution Bundler utils/layout/responsiveLayoutPolicy.ts` — Passed; the CR-012 impossible-union comparison is gone and effective presentation types are narrowed to `docked|strip`.
-- Prior full focused Nuxt/Vitest suite covering policy, order, adaptive layout actions, bounded right-panel resize, right-tool tabs/drawer, right-panel state, left/right sidebar strips, app-left-panel, and default layout/drawer lifecycle — Passed (`14` files, `82` tests`). This re-entry's affected focused suite — policy, left/right strips, adaptive layout, and default layout/drawer lifecycle — also passed (6 files, 52 tests), including the new wide hidden-strip and narrow `/agents` route regressions. The adaptive action tests emit no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains.
+- Prior full focused Nuxt/Vitest suite covering policy, order, adaptive layout actions, bounded right-panel resize, right-tool tabs/drawer, right-panel state, left/right sidebar strips, app-left-panel, and default layout/drawer lifecycle — Passed (`14` files, `82` tests`). This re-entry's affected focused suite — policy, left/right strips, adaptive layout, and default layout/drawer lifecycle — passed (6 files, 56 tests), including explicit wide redock, constrained/narrow open-drawer, recovery, and `/agents` route regressions. The adaptive action tests emit no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains.
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.

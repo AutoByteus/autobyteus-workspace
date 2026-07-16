@@ -23,6 +23,8 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.rightPanel.presentation).toBe('docked')
     expect(state.rightPanel.presentationSource).toBe('user')
     expect(state.rightPanel.stripBehavior).toBeNull()
+    expect(state.leftPanel.stripActivation).toBeNull()
+    expect(state.rightPanel.stripActivation).toBeNull()
     expect(state.rightPanel.resizeIntent).toBe('automatic')
     expect(state.rightPanel.centerProtectionMode).toBe('automatic')
     expect(state.rightPanel.effectiveCenterMinWidth).toBe(480)
@@ -49,7 +51,7 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.rightPanel.presentation).toBe('strip')
     expect(state.rightPanel.stripBehavior).toBe('overlay')
     expect(state.rightPanel.consumedWidth).toBe(0)
-    expect(state.canOpenRightDrawer).toBe(true)
+    expect(state.rightPanel.stripActivation).toBe('open-drawer')
   })
 
   it('adapts the left surface only after consuming and overlay right alternatives fail', () => {
@@ -62,8 +64,8 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.rightPanel.presentation).toBe('strip')
     expect(state.rightPanel.stripBehavior).toBe('consuming')
     expect(state.rightPanel.effectiveCenterMinWidth).toBe(480)
-    expect(state.canOpenLeftDrawer).toBe(true)
-    expect(state.canOpenRightDrawer).toBe(true)
+    expect(state.leftPanel.stripActivation).toBe('open-drawer')
+    expect(state.rightPanel.stripActivation).toBe('open-drawer')
   })
 
   it('preserves manual left collapse as a user-owned strip', () => {
@@ -75,8 +77,34 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.leftPanel.preference).toBe('hidden-by-user')
     expect(state.leftPanel.stripBehavior).toBe('consuming')
     expect(state.rightPanel.presentation).toBe('docked')
-    expect(state.canOpenLeftDrawer).toBe(true)
+    expect(state.leftPanel.stripActivation).toBe('redock-panel')
     expect(state.showGenericSurfaceControls).toBe(false)
+  })
+
+  it('emits symmetric redock activation for fitting wide user strips', () => {
+    const leftCollapsed = resolve({ leftPanelPreference: 'hidden-by-user' })
+    const rightCollapsed = resolve({ rightPanelPreference: 'hidden-by-user' })
+
+    expect(leftCollapsed.leftPanel.stripActivation).toBe('redock-panel')
+    expect(rightCollapsed.rightPanel.stripActivation).toBe('redock-panel')
+  })
+
+  it('changes user strip activation to open-drawer while constrained and restores redock on recovery', () => {
+    const leftShrunk = resolve({
+      viewportWidth: 800,
+      leftPanelPreference: 'hidden-by-user',
+    })
+    const rightShrunk = resolve({
+      viewportWidth: 800,
+      rightPanelPreference: 'hidden-by-user',
+    })
+    const leftRecovered = resolve({ leftPanelPreference: 'hidden-by-user' })
+    const rightRecovered = resolve({ rightPanelPreference: 'hidden-by-user' })
+
+    expect(leftShrunk.leftPanel.stripActivation).toBe('open-drawer')
+    expect(rightShrunk.rightPanel.stripActivation).toBe('open-drawer')
+    expect(leftRecovered.leftPanel.stripActivation).toBe('redock-panel')
+    expect(rightRecovered.rightPanel.stripActivation).toBe('redock-panel')
   })
 
   it('uses a left drawer and overlay right strip at the narrow standard-workspace boundary', () => {
@@ -91,6 +119,8 @@ describe('responsiveLayoutPolicy', () => {
       expect(state.rightPanel.presentation).toBe('strip')
       expect(state.rightPanel.stripBehavior).toBe('overlay')
       expect(state.rightPanel.consumedWidth).toBe(0)
+      expect(state.leftPanel.stripActivation).toBe('open-drawer')
+      expect(state.rightPanel.stripActivation).toBe('open-drawer')
       expect(state.showLeftStrip).toBe(true)
       expect(state.showRightStrip).toBe(true)
     }
@@ -105,6 +135,7 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.rightPanel.presentation).toBe('strip')
     expect(state.rightPanel.stripBehavior).toBe('consuming')
     expect(state.rightPanel.presentationSource).toBe('responsive')
+    expect(state.rightPanel.stripActivation).toBe('open-drawer')
   })
 
   it('preserves the user right strip during short-height manual left collapse', () => {

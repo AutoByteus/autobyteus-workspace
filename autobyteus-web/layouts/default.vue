@@ -72,7 +72,11 @@
       ></div>
 
       <div v-else-if="showLeftStrip">
-        <LeftSidebarStrip :strip-behavior="responsiveWorkspaceShellState.leftPanel.stripBehavior ?? 'overlay'" />
+        <LeftSidebarStrip
+          :strip-behavior="responsiveWorkspaceShellState.leftPanel.stripBehavior ?? 'overlay'"
+          :strip-activation="responsiveWorkspaceShellState.leftPanel.stripActivation!"
+          @request-redock="redockLeftPanel"
+        />
       </div>
 
       <main :class="mainContentClasses">
@@ -97,7 +101,7 @@ import {
 
 const appLayoutStore = useAppLayoutStore()
 const route = useRoute()
-const { initDragLeftPanel, isLeftPanelVisible } = useLeftPanel()
+const { initDragLeftPanel, isLeftPanelVisible, setLeftPanelVisible } = useLeftPanel()
 const leftDrawerRef = ref<HTMLElement | null>(null)
 const { responsiveWorkspaceShellState } = useResponsiveWorkspaceShell()
 provide(RESPONSIVE_WORKSPACE_SHELL_KEY, responsiveWorkspaceShellState)
@@ -121,7 +125,7 @@ const isLeftDocked = computed(() => responsiveWorkspaceShellState.value.leftPane
 const showLeftDrawer = computed(
   () => appLayoutStore.isMobileMenuOpen && (
     isStandardWorkspaceRoute.value
-      ? responsiveWorkspaceShellState.value.canOpenLeftDrawer
+      ? responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'open-drawer'
       : true
   ),
 )
@@ -159,6 +163,11 @@ useAccessibleDrawer({
 const leftPanelStyle = computed(() => ({
   width: `${responsiveWorkspaceShellState.value.leftPanel.preferredWidth}px`,
 }))
+
+const redockLeftPanel = (): void => {
+  setLeftPanelVisible(true)
+  appLayoutStore.closeMobileMenu()
+}
 
 const leftPanelClasses = computed(() => [
   isStandardWorkspaceRoute.value
@@ -198,9 +207,9 @@ watch(
 )
 
 watch(
-  () => responsiveWorkspaceShellState.value.canOpenLeftDrawer,
-  (canOpenDrawer) => {
-    if (!canOpenDrawer) {
+  () => [isStandardWorkspaceRoute.value, responsiveWorkspaceShellState.value.leftPanel.stripActivation] as const,
+  ([isWorkspaceRoute, stripActivation]) => {
+    if (isWorkspaceRoute && stripActivation !== 'open-drawer') {
       appLayoutStore.closeMobileMenu()
     }
   },

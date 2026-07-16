@@ -36,14 +36,6 @@ vi.mock('~/stores/appLayoutStore', () => ({
   useAppLayoutStore: () => appLayoutStoreMock,
 }))
 
-vi.mock('~/composables/layout/useResponsiveWorkspaceShell', () => ({
-  useResponsiveWorkspaceShellState: () => ({
-    value: {
-      canOpenLeftDrawer: true,
-    },
-  }),
-}))
-
 describe('LeftSidebarStrip Component', () => {
   beforeEach(() => {
     applicationsCapabilityStoreMock.isEnabled = false
@@ -54,6 +46,7 @@ describe('LeftSidebarStrip Component', () => {
 
   it('hides Applications link when the capability is disabled', () => {
     const wrapper = mount(LeftSidebarStrip, {
+      props: { stripActivation: 'open-drawer' },
       global: {
         stubs: {
           Icon: true,
@@ -74,6 +67,7 @@ describe('LeftSidebarStrip Component', () => {
 
   it('navigates to the top-level nodes page from the promoted Nodes item', async () => {
     const wrapper = mount(LeftSidebarStrip, {
+      props: { stripActivation: 'open-drawer' },
       global: {
         stubs: {
           Icon: true,
@@ -88,6 +82,7 @@ describe('LeftSidebarStrip Component', () => {
 
   it('opens the transient navigation drawer instead of toggling the hidden preference', async () => {
     const wrapper = mount(LeftSidebarStrip, {
+      props: { stripActivation: 'open-drawer' },
       global: {
         stubs: {
           Icon: true,
@@ -103,6 +98,7 @@ describe('LeftSidebarStrip Component', () => {
 
   it('exposes a direct strip affordance for the transient navigation drawer', async () => {
     const wrapper = mount(LeftSidebarStrip, {
+      props: { stripActivation: 'open-drawer' },
       global: {
         stubs: {
           Icon: true,
@@ -121,6 +117,7 @@ describe('LeftSidebarStrip Component', () => {
     applicationsCapabilityStoreMock.isEnabled = true
 
     const wrapper = mount(LeftSidebarStrip, {
+      props: { stripActivation: 'open-drawer' },
       global: {
         stubs: {
           Icon: true,
@@ -132,5 +129,22 @@ describe('LeftSidebarStrip Component', () => {
     const labels = items.map((item) => item.attributes('title'))
 
     expect(labels).toContain('Applications')
+  })
+
+  it('emits redock instead of opening a drawer for a fitting user strip', async () => {
+    const wrapper = mount(LeftSidebarStrip, {
+      props: { stripActivation: 'redock-panel' },
+      global: {
+        stubs: {
+          Icon: true,
+        },
+      },
+    })
+
+    await wrapper.get('[data-test="workspace-left-strip-open"]').trigger('click')
+
+    expect(wrapper.get('[data-test="workspace-left-navigation-strip"]').attributes('data-strip-activation')).toBe('redock-panel')
+    expect(wrapper.emitted('request-redock')).toHaveLength(1)
+    expect(appLayoutStoreMock.openMobileMenu).not.toHaveBeenCalled()
   })
 })

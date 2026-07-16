@@ -123,6 +123,7 @@ async function collect(page, label) {
         text: (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 800),
         classes: el.getAttribute('class') || '',
         stripBehavior: el.getAttribute('data-strip-behavior') || null,
+        stripActivation: el.getAttribute('data-strip-activation') || null,
       };
     };
 
@@ -557,14 +558,18 @@ function validateWorkspaceInitial(state, viewport) {
     if (state.visibleState.semanticTriggers || state.visibleState.navigationTrigger) failures.push('narrow workspace renders duplicate top navigation controls');
     if (!state.rects.leftStrip?.visible) failures.push('narrow workspace lacks the left-edge navigation strip');
     if (state.rects.leftStrip?.stripBehavior !== 'overlay') failures.push('narrow workspace left strip is not an edge overlay');
+    if (state.rects.leftStrip?.stripActivation !== 'open-drawer') failures.push('narrow workspace left strip does not expose open-drawer activation');
     if (!state.rects.rightStrip?.visible) failures.push('narrow workspace lacks the right-edge tools strip');
     if (state.rects.rightStrip?.stripBehavior !== 'overlay') failures.push('narrow workspace right strip is not an edge overlay');
+    if (state.rects.rightStrip?.stripActivation !== 'open-drawer') failures.push('narrow workspace right strip does not expose open-drawer activation');
   }
 
   if (width >= 768 && width <= 900) {
     if (state.visibleState.rightPanel) failures.push('768-900px constrained workspace keeps right panel docked');
     if (!state.rects.rightStrip?.visible) {
       failures.push('768-900px constrained workspace lacks the right-tool strip');
+    } else if (state.rects.rightStrip.stripActivation !== 'open-drawer') {
+      failures.push('768-900px constrained right strip does not expose open-drawer activation');
     }
     if (!state.visibleState.leftAside && !state.rects.leftStrip?.visible) {
       failures.push('768-900px constrained workspace lacks a left navigation surface');
@@ -614,12 +619,28 @@ async function validateRightStripReopenInteraction(page, viewport) {
   const failures = [];
   const hidden = await clickButtonByTest(page, 'right-side-panel-toggle');
   await page.waitForTimeout(250);
+
+  const wideStripState = await collect(page, 'right-strip-redock-before');
+  if (!hidden) failures.push('docked right panel toggle was not clickable for strip reopen validation');
+  if (!wideStripState.rects.rightStrip?.visible) failures.push('user-hidden right panel did not render a right-tool strip');
+  if (wideStripState.rects.rightStrip?.stripActivation !== 'redock-panel') failures.push('fitting wide hidden right strip did not expose redock-panel activation');
+
+  const redocked = await clickFirstButton(page, '[data-test="workspace-right-tool-strip"]');
+  await page.waitForTimeout(300);
+  const redockedState = await collect(page, 'right-strip-redock-after');
+  if (!redocked) failures.push('fitting wide hidden right strip did not expose a redock control');
+  if (!redockedState.visibleState.rightPanel) failures.push('redock-panel activation did not restore the docked right panel');
+  if (redockedState.rects.rightStrip?.visible) failures.push('redock-panel activation left the right strip visible');
+
+  const hiddenAgain = await clickButtonByTest(page, 'right-side-panel-toggle');
+  await page.waitForTimeout(250);
   await page.setViewportSize({ width: 900, height: 700 });
   await page.waitForTimeout(300);
 
   const stripState = await collect(page, 'right-strip-reopen-before');
-  if (!hidden) failures.push('docked right panel toggle was not clickable for strip reopen validation');
-  if (!stripState.rects.rightStrip?.visible) failures.push('user-hidden right panel did not render a right-tool strip');
+  if (!hiddenAgain) failures.push('re-docked right panel toggle was not clickable for constrained strip validation');
+  if (!stripState.rects.rightStrip?.visible) failures.push('re-hidden right panel did not render a right-tool strip');
+  if (stripState.rects.rightStrip?.stripActivation !== 'open-drawer') failures.push('constrained hidden right strip did not expose open-drawer activation');
 
   const clicked = await clickFirstButton(page, '[data-test="workspace-right-tool-strip"]');
   await page.waitForTimeout(350);
@@ -648,6 +669,7 @@ async function validateLeftStripReopenInteraction(page, viewport) {
   if (!clicked) failures.push('left navigation strip did not expose a clickable drawer affordance');
   if (!drawerState.rects.leftNavigationDrawer?.visible) failures.push('left navigation strip did not open the navigation drawer');
   if (!drawerState.rects.leftStrip?.visible) failures.push('left navigation drawer reopen state lost the left strip affordance');
+  if (drawerState.rects.leftStrip?.stripActivation !== 'open-drawer') failures.push('responsive left strip did not expose open-drawer activation');
   failures.push(...validateLeftPanelLayout(drawerState, 'left navigation drawer'));
 
   const closed = await clickButtonByTest(page, 'app-left-drawer-close', '[data-test="app-left-navigation-drawer"]');

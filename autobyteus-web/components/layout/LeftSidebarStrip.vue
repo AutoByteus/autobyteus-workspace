@@ -4,6 +4,7 @@
     role="navigation"
     :aria-label="$t('shell.workspaceSurfaces.navigationDrawerTitle')"
     :data-strip-behavior="props.stripBehavior"
+    :data-strip-activation="props.stripActivation"
     :class="stripClasses"
   >
     <button
@@ -12,7 +13,7 @@
       class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
       :title="$t('shell.workspaceSurfaces.openNavigation')"
       :aria-label="$t('shell.workspaceSurfaces.openNavigation')"
-      @click="openNavigationDrawer"
+      @click="activateStrip"
     >
       <Icon icon="heroicons:bars-3" class="h-5 w-5" />
       <span class="sr-only">{{ $t('shell.workspaceSurfaces.openNavigation') }}</span>
@@ -61,10 +62,9 @@ import { Icon } from '@iconify/vue';
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
-import { useResponsiveWorkspaceShellState } from '~/composables/layout/useResponsiveWorkspaceShell';
 import { useShellPrimaryNavigation, type ShellPrimaryNavKey } from '~/composables/useShellPrimaryNavigation';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
-import type { RightStripBehavior } from '~/utils/layout/responsiveLayoutPolicy';
+import type { RightStripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
 
 const { t } = useLocalization();
 const {
@@ -77,10 +77,10 @@ const {
 const route = useRoute();
 const router = useRouter();
 const appLayoutStore = useAppLayoutStore();
-const responsiveWorkspaceShellState = useResponsiveWorkspaceShellState();
 
 const props = withDefaults(defineProps<{
   stripBehavior?: RightStripBehavior
+  stripActivation: StripActivation
 }>(), {
   stripBehavior: 'consuming',
 });
@@ -92,15 +92,18 @@ const stripClasses = computed(() => props.stripBehavior === 'overlay'
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
 
-const openLeftPanelIfCollapsed = (): void => {
-  if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
-    appLayoutStore.openMobileMenu();
+const emit = defineEmits<{
+  (event: 'request-open'): void
+  (event: 'request-redock'): void
+}>();
+
+const activateStrip = (): void => {
+  if (props.stripActivation === 'redock-panel') {
+    emit('request-redock');
+    return;
   }
-};
-const openNavigationDrawer = (): void => {
-  if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
-    appLayoutStore.openMobileMenu();
-  }
+
+  appLayoutStore.openMobileMenu();
 };
 const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
   try {
@@ -111,12 +114,12 @@ const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
 };
 
 const handlePrimaryClick = async (key: ShellPrimaryNavKey): Promise<void> => {
-  openLeftPanelIfCollapsed();
+  activateStrip();
   await pushRoute(resolvePrimaryRoute(key));
 };
 
 const handleSettingsClick = async (): Promise<void> => {
-  openLeftPanelIfCollapsed();
+  activateStrip();
   await pushRoute('/settings');
 };
 

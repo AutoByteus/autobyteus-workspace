@@ -7,17 +7,10 @@ const mocks = vi.hoisted(() => ({
   activeTab: null as any,
   visibleTabs: null as any,
   setActiveTab: vi.fn(),
-  toggleRightPanel: vi.fn(),
 }))
 
 vi.mock('~/composables/useRightSideTabs', () => ({
   useRightSideTabs: () => mocks,
-}))
-
-vi.mock('~/composables/useRightPanel', () => ({
-  useRightPanel: () => ({
-    toggleRightPanel: mocks.toggleRightPanel,
-  }),
 }))
 
 describe('RightSidebarStrip', () => {
@@ -33,7 +26,7 @@ describe('RightSidebarStrip', () => {
 
     const wrapper = mount(RightSidebarStrip, {
       props: {
-        openAsDrawer: true,
+        stripActivation: 'open-drawer',
         stripBehavior,
       },
       global: {
@@ -54,7 +47,29 @@ describe('RightSidebarStrip', () => {
     await strip.get('button[aria-label="Files"]').trigger('click')
 
     expect(mocks.setActiveTab).toHaveBeenCalledWith('files')
-    expect(mocks.toggleRightPanel).not.toHaveBeenCalled()
     expect(wrapper.emitted('request-open')).toHaveLength(1)
+  })
+
+  it('redocks a fitting user strip and restores visibility', async () => {
+    mocks.activeTab = ref('terminal')
+    mocks.visibleTabs = ref([{ name: 'terminal', label: 'Terminal' }])
+
+    const wrapper = mount(RightSidebarStrip, {
+      props: {
+        stripActivation: 'redock-panel',
+        stripBehavior: 'consuming',
+      },
+      global: {
+        stubs: {
+          Icon: true,
+        },
+      },
+      slots: {},
+    })
+
+    await wrapper.get('button[aria-label="Terminal"]').trigger('click')
+
+    expect(wrapper.emitted('request-redock')).toHaveLength(1)
+    expect(wrapper.emitted('request-open')).toBeUndefined()
   })
 })

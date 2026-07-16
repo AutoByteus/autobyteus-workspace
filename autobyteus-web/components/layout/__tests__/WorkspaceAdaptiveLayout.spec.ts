@@ -124,8 +124,8 @@ describe('WorkspaceAdaptiveLayout', () => {
         stubs: {
           RightSideTabs: { template: '<div class="right-tabs-stub"></div>' },
           RightSidebarStrip: {
-            props: ['stripBehavior'],
-            template: '<button data-test="workspace-right-tool-strip" :data-strip-behavior="stripBehavior" @click="$emit(\'request-open\')">Tools strip</button>',
+            props: ['stripBehavior', 'stripActivation'],
+            template: '<button data-test="workspace-right-tool-strip" :data-strip-behavior="stripBehavior" :data-strip-activation="stripActivation" @click="$emit(stripActivation === \'redock-panel\' ? \'request-redock\' : \'request-open\')">Tools strip</button>',
           },
           WorkspaceRightToolDrawer: { template: '<div data-test="workspace-right-tool-drawer"></div>' },
           AgentWorkspaceView: AgentWorkspaceViewValue,
@@ -349,7 +349,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-strip');
   });
 
-  it('opens a wide hidden-panel strip as a transient drawer without changing the preference', async () => {
+  it('re-docks a fitting wide hidden-panel strip and restores the preference', async () => {
     setViewport(1440, 900);
     const rightPanel = useRightPanel();
     rightPanel.setRightPanelVisible(false);
@@ -361,13 +361,14 @@ describe('WorkspaceAdaptiveLayout', () => {
 
     expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="workspace-right-tool-strip"]').attributes('data-strip-activation')).toBe('redock-panel');
     expect(rightPanel.isRightPanelVisible.value).toBe(false);
 
     await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
     await nextTick();
 
-    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
-    expect(rightPanel.isRightPanelVisible.value).toBe(false);
+    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(false);
+    expect(rightPanel.isRightPanelVisible.value).toBe(true);
   });
 
   it('uses the overlay right strip as the sole narrow reopen affordance', async () => {
@@ -398,6 +399,9 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(source).not.toContain('WorkspacePrimarySurfaceControls');
     expect(source).not.toContain('showNavigationTrigger');
     expect(source).not.toContain("rightPanel.presentation === 'drawer'");
+    expect(source).toContain('rightPanel.stripActivation');
+    expect(source).toContain('@request-redock="redockRightPanel"');
+    expect(source).toContain("leftPanel.stripActivation === 'open-drawer'");
     expect(source).not.toContain('openToolsSurface');
     expect(source).toContain('v-else-if="responsiveWorkspaceShellState.showRightStrip"');
     expect(source).toContain('@request-open="openRightDrawer"');

@@ -22,6 +22,8 @@ describe('default layout source', () => {
     expect(content).toContain(': isLeftPanelVisible.value || showLeftDrawer.value')
     expect(content).toContain('() => !isApplicationImmersive.value && showLeftDrawer.value')
     expect(content).toContain('isStandardWorkspaceRoute.value\n    && !isApplicationImmersive.value\n    && responsiveWorkspaceShellState.value.showLeftStrip')
+    expect(content).toContain(':strip-activation="responsiveWorkspaceShellState.leftPanel.stripActivation!"')
+    expect(content).toContain('@request-redock="redockLeftPanel"')
     expect(content).toContain('isStandardWorkspaceRoute.value ? isLeftDocked.value : isLeftPanelVisible.value')
     expect(content).toContain("isApplicationImmersive.value ? 'bg-slate-950' : 'bg-blue-50'")
     expect(content).toContain('useResponsiveWorkspaceShell()')

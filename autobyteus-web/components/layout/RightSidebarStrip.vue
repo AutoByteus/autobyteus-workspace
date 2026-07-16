@@ -2,6 +2,7 @@
   <div
     data-test="workspace-right-tool-strip-surface"
     :data-strip-behavior="stripBehavior"
+    :data-strip-activation="stripActivation"
     :class="stripClasses"
   >
     <div class="flex flex-col space-y-4">
@@ -27,25 +28,23 @@
 
 <script setup lang="ts">
 import { useRightSideTabs, type TabName } from '~/composables/useRightSideTabs';
-import { useRightPanel } from '~/composables/useRightPanel';
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
-import type { RightStripBehavior } from '~/utils/layout/responsiveLayoutPolicy';
+import type { RightStripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
 
 const props = withDefaults(defineProps<{
-  openAsDrawer?: boolean
   stripBehavior?: RightStripBehavior
+  stripActivation: StripActivation
 }>(), {
-  openAsDrawer: false,
   stripBehavior: 'consuming',
 });
 
 const emit = defineEmits<{
   (event: 'request-open'): void
+  (event: 'request-redock'): void
 }>();
 
 const { visibleTabs, activeTab, setActiveTab } = useRightSideTabs();
-const { toggleRightPanel } = useRightPanel();
 
 const stripClasses = computed(() => props.stripBehavior === 'overlay'
   ? 'fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg'
@@ -54,12 +53,15 @@ const stripClasses = computed(() => props.stripBehavior === 'overlay'
 const selectTab = (tabName: TabName) => {
   setActiveTab(tabName);
 
-  if (props.openAsDrawer) {
-    emit('request-open');
+  if (props.stripActivation === 'redock-panel') {
+    emit('request-redock');
     return;
   }
 
-  toggleRightPanel();
+  if (props.stripActivation === 'open-drawer') {
+    emit('request-open');
+    return;
+  }
 };
 
 const getIcon = (name: TabName): string => {
