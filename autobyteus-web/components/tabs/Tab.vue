@@ -1,6 +1,8 @@
 <template>
   <button
-    class="tab-button relative font-medium transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowrap"
+    role="tab"
+    :aria-selected="isActive"
+    class="tab-button relative shrink-0 whitespace-nowrap font-medium transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20"
     :class="[
       densityClasses,
       {

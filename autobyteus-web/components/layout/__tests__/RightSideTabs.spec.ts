@@ -89,7 +89,7 @@ describe('RightSideTabs', () => {
       stubs: {
         TabList: {
           name: 'TabList',
-          props: ['tabs', 'selectedTab', 'density', 'wrap'],
+          props: ['tabs', 'selectedTab', 'density', 'showOverflowAffordances', 'previousLabel', 'nextLabel'],
           template: '<div class="tab-list-stub" />',
         },
         TeamOverviewPanel: { template: '<div class="team-overview-stub" />' },
@@ -119,12 +119,14 @@ describe('RightSideTabs', () => {
     expect(shell.classes()).not.toContain('overflow-auto');
   });
 
-  it('uses compact tabs so docked tool labels fit the right panel header', () => {
+  it('preserves compact density and enables horizontal overflow affordances', () => {
     const wrapper = mountSubject();
 
     const tabList = wrapper.getComponent({ name: 'TabList' });
     expect(tabList.props('density')).toBe('compact');
-    expect(tabList.props('wrap')).toBe(true);
+    expect(tabList.props('showOverflowAffordances')).toBe(true);
+    expect(tabList.props('previousLabel')).toBe('shell.rightTabs.scrollPrevious');
+    expect(tabList.props('nextLabel')).toBe('shell.rightTabs.scrollNext');
   });
 
   it('does not switch to Artifacts when a touched file becomes newly visible', async () => {
