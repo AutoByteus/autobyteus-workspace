@@ -224,6 +224,7 @@ The underlying failure remains real: the integrated tool catalog can exceed the 
 | Artifact | Purpose and scope | Status | Approval applicability | Related core artifacts |
 | --- | --- | --- | --- | --- |
 | right-tool-tabs-ux-spec.md | Defines single-row visual, scrolling, overflow-affordance, active-tab, accessibility, ownership, and validation behavior for right-tool tabs. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
+| workspace-responsive-ui-ux-spec.md | Defines scenario-level workspace shell behavior: wide personal-branch hierarchy, explicit left collapse, constrained/narrow navigation/tool drawers, empty-state actions, accessibility, and `/mobile` isolation. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
 | comprehensive-responsive-ui-test-report.md | Historical responsive failure evidence and broad browser-matrix scope. | Evidence supplement | N/A | Requirements doc, design spec |
 
 ### Open implementation questions for downstream design/implementation review
@@ -232,8 +233,201 @@ The underlying failure remains real: the integrated tool catalog can exceed the 
 - The exact fade gradient width and chevron opacity are visual tuning details, not permission to wrap the row.
 - If a More menu is not needed after the scroll affordances are implemented, it may be omitted without weakening the primary scroll contract.
 
+## Live Visual Recheck — Font Fidelity and Tab Affordances
+
+Date: 2026-07-16
+
+The user reported that the built responsive workspace has smaller right-tool tab typography than the original personal branch and that the overflow chevron/fade is hard to discover. A fresh frontend/backend run and browser inspection were performed against the current task branch.
+
+### Exact sources and setup
+
+- Compared current task branch with personal using:
+  - git diff personal..HEAD -- autobyteus-web/components/tabs/Tab.vue autobyteus-web/components/tabs/TabList.vue autobyteus-web/components/layout/RightSideTabs.vue
+  - git show personal:autobyteus-web/components/tabs/Tab.vue
+  - git show personal:autobyteus-web/components/tabs/TabList.vue
+- Started an isolated backend on port 13005 with a temporary data directory and the current built server.
+- Started Nuxt dev frontend on port 13006 with BACKEND_NODE_BASE_URL pointing to port 13005.
+- Opened http://127.0.0.1:13006/workspace with the browser tool, opened the Tools surface, captured before/after screenshots, inspected computed styles and scroll metrics, and clicked the right-scroll affordance.
+- Durable evidence:
+  - evidence/solution-designer-right-tabs-live-check.md
+  - evidence/solution-designer-right-tabs-current-705x752-before-scroll.png
+  - evidence/solution-designer-right-tabs-current-705x752-after-scroll.png
+
+### Findings
+
+- The personal branch Tab component uses the original text-base typography and px-5 py-3 spacing.
+- The current RightSideTabs explicitly passes density=compact.
+- The current compact density resolves to text-sm with px-2.5 py-2 spacing.
+- This source difference directly explains the user's smaller-font/smaller-spacing observation and violates the revised original-visual-fidelity requirement.
+- The current scroll implementation is functionally present: at a 705px browser viewport the right-tool tab list measured clientWidth 396px and scrollWidth 439px; clicking the right chevron moved scrollLeft to 37px and brought VNC Viewer fully into view.
+- The current right fade is present as a 32px white-to-transparent gradient, but it is weak against the white header.
+- The current right chevron is present as a 24px white 90%-opacity button with a gray glyph. The live screenshot confirms it is technically present but visually easy to miss, matching the user's concern.
+
+### Classification and routing implication
+
+This is not a requirements gap. The revised right-tool-tabs-ux-spec.md already requires original spacing/typography, single-row scrollability, and discoverable conditional affordances. It is an implementation-owned visual regression/quality defect:
+
+1. Restore the personal-branch tab typography and spacing for the right-tool header while retaining the single-row overflow mechanics.
+2. Retune the fade and chevron so the overflow direction is visible without becoming visually heavy; preserve the fixed panel toggle and native scrolling.
+3. Return through source review and current browser/API-E2E validation after the bounded fix.
+
 ## Notes For Architect Reviewer
 
 The core architecture decision is whether to approve a single adaptive standard-workspace policy owner and decommission the legacy `/workspace` `WorkspaceMobileLayout` branch. A minimal `640 -> 768` breakpoint fix would not satisfy the user's complaint because it would merely show the poor legacy mobile layout in the failing band and keep constrained desktop cramped.
 
 After the expanded comprehensive probe, the design direction remains the same but the evidence is stronger: the issue extends through `1024px` and short-height windows, and the test matrix should be treated as a downstream coverage requirement. The new report path is `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`.
+
+## Workspace Shell Design-Impact Investigation (2026-07-16)
+
+### User-provided evidence
+
+- The user supplied a full-screen screenshot at `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_46df39f35489__image.png` showing `Work / Runs / Files / Tools` above a workspace with the original right-side tabs still present.
+- The user explicitly prefers the original personal-branch layout: the left panel is collapsed only by the user's collapse action; it must not be replaced by a confusing mid-page surface selector on a full-screen window.
+- The user also requested a detailed scenario/user-journey UI/UX specification because the current implementation is confusing even where it is technically responsive.
+
+### Exact current source path
+
+The duplicate top row is not accidental styling; it is a direct condition in `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`:
+
+```ts
+const shouldShowPrimarySurfaceControls = computed(() =>
+  workspaceResponsiveState.value.showPrimarySurfaceControls ||
+  shellResponsiveState.value.leftPanelPresentation !== 'docked',
+)
+```
+
+`resolveAppShellResponsiveState` in `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` returns `leftPanelPresentation: 'strip'` whenever the user has collapsed the left panel, the viewport is below `1280px`, or the window is short. Consequently, even a full-screen user-collapsed workspace satisfies `leftPanelPresentation !== 'docked'` and renders `WorkspacePrimarySurfaceControls`.
+
+The control handlers in `WorkspaceAdaptiveLayout.vue` expose the mental-model mismatch:
+
+- `work` only closes the left menu/right drawer and leaves the center unchanged;
+- `runs` opens the left `AppLeftPanel` drawer;
+- `files` and `tools` open the right tools drawer;
+- the actual Agents/Agent Teams navigation remains inside `AppLeftPanel` and routes through `useShellPrimaryNavigation`.
+
+Thus `Work` is a redundant label for the center, `Runs` is an ambiguous proxy for a left selection/history surface, and `Files`/`Tools` duplicate the right-side tool ownership. This explains the user's report that the Work surface can be empty while the selection path is not visible.
+
+### Personal-branch comparison
+
+Commands run:
+
+```bash
+git show personal:autobyteus-web/layouts/default.vue
+git show personal:autobyteus-web/components/layout/WorkspaceDesktopLayout.vue
+git diff personal..HEAD -- autobyteus-web/layouts/default.vue autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue autobyteus-web/components/layout/WorkspacePrimarySurfaceControls.vue autobyteus-web/utils/layout/responsiveLayoutPolicy.ts
+```
+
+The personal branch has no `WorkspacePrimarySurfaceControls` in the desktop workspace. Its wide layout is left panel + center + right panel; manual left collapse switches only to `LeftSidebarStrip`. The current branch adds the generic control row whenever the left effective presentation is not docked, including the manual-collapse case. This is a product/layout regression, not a breakpoint-only defect.
+
+### Live reproduction
+
+The existing isolated frontend/backend session was used for a browser check at approximately `705x752` CSS pixels:
+
+- Screenshot: `evidence/solution-designer-workspace-current-narrow-empty-state.png`.
+- The current page renders a black mobile header, a four-button `Work / Runs / Files / Tools` row, and the empty center message `Select or run an agent/team to begin.`.
+- No left selection/navigation surface is visible until the hamburger or the `Runs` control is activated.
+- The screenshot is a visual confirmation of the source path above; it is not a new blank-band failure.
+
+### Root-cause classification
+
+This finding is a **design-impact / missing UX invariant** layered on top of the prior implementation defects:
+
+1. **Ownership drift:** a workspace-level control row duplicates left and right surface ownership.
+2. **Responsive policy overreach:** `leftPanelPresentation !== 'docked'` is treated as permission to replace the wide layout, even when the user intentionally collapsed the panel.
+3. **Empty-state discoverability gap:** the center placeholder does not provide direct selection/run actions.
+4. **Validation gap:** prior acceptance intent treated `Work / Runs / Files / Tools` ordering as sufficient, rather than validating the original wide hierarchy and user journeys.
+
+This requires revised requirements/design and architecture review before implementation resumes. It should not be routed as an isolated local CSS fix.
+
+### Revised design basis
+
+The intended behavior is recorded in `workspace-responsive-ui-ux-spec.md`:
+
+- no generic surface row in wide default or wide manual-collapse states;
+- explicit left navigation/selection affordance when the left panel becomes a strip/drawer;
+- explicit right-tools affordance when tools become a strip/drawer;
+- structured empty state with agent/team and run/history actions;
+- preserved center/right hierarchy and personal-branch typography/spacing;
+- `/mobile` remains a separate Android/iOS wrapper owner.
+
+### Supplemental artifact inventory update
+
+| Artifact | Purpose | Status | Approval |
+|---|---|---|---|
+| `workspace-responsive-ui-ux-spec.md` | Scenario-level behavior and visual/interaction contract for the standard workspace shell | Refined for architecture re-review | Required |
+| `evidence/solution-designer-workspace-current-narrow-empty-state.png` | Live screenshot showing the current duplicate surface bar and ambiguous empty state | Evidence | N/A |
+
+## Desktop Journey / Auto-Collapse Design Impact (2026-07-16)
+
+### New user clarification
+
+The user clarified that the original desktop journey must remain unchanged through ordinary small-to-moderate resizing. A window that is still visibly large must not immediately replace the left navigation/workspace-selection panel with a vertical icon strip. This is especially harmful because the left panel is where the user selects an agent, agent team, workspace, or run.
+
+### Current source cause
+
+`autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` currently defines:
+
+```ts
+export const APP_SHELL_DOCKED_MIN_WIDTH_PX = 1280
+...
+if (!input.userLeftPanelVisible || isShortHeight || (viewportWidth > 0 && viewportWidth < APP_SHELL_DOCKED_MIN_WIDTH_PX)) {
+  leftPanelPresentation: 'strip'
+}
+```
+
+This makes the app shell collapse the left panel for every default-visible window below `1280px`, regardless of whether the left panel plus a practical center would still fit. It also conflates two different situations:
+
+1. the user intentionally clicked the collapse button; and
+2. the responsive policy decided to strip the panel because of a broad viewport threshold.
+
+The current policy evaluates the shell independently from the workspace's actual right-tool capacity. That allows the less-critical right tool panel to remain docked while the more important agent/team selection surface is removed too early.
+
+### Required priority correction
+
+The revised design does not pick an arbitrary replacement breakpoint. It defines a measured priority order:
+
+1. Preserve the original left navigation/workspace-selection panel while it and a practical center width fit.
+2. If the full split does not fit, move the right tool panel to a strip/drawer first.
+3. Only if the left panel plus center still cannot fit should the left panel move to a strip/drawer.
+4. Keep manual user collapse separate from automatic responsive presentation.
+5. Do not show the generic `Work / Runs / Files / Tools` row in any of these states.
+
+This means `APP_SHELL_DOCKED_MIN_WIDTH_PX = 1280` must not remain a blanket “left panel becomes strip” rule. The policy should derive the effective presentation from measured available capacity and the surface-priority contract in `workspace-responsive-ui-ux-spec.md`.
+
+### Design classification
+
+This is a **design impact / missing responsive invariant**, not a local pixel tweak. The user-visible desktop journey is being changed by policy ownership and surface-priority decisions. Requirements FR-029/FR-030 and acceptance criteria AC-030/AC-031 now govern this clarification. The solution package must return through architecture review before implementation resumes.
+
+## Architecture Review Round 6 Reconciliation (2026-07-16)
+
+Architecture review identified DI-003: the previous package stated “measured capacity” and “right-tools-first” but left two independent executable policy paths (`useAppShellResponsiveLayout` and `useWorkspaceResponsiveLayout`) and did not define the fit inputs or phase order.
+
+### Chosen authoritative boundary
+
+The revised package chooses one composed boundary rather than a loose two-phase convention:
+
+- Pure resolver: `resolveResponsiveWorkspaceShellState(input)` in `utils/layout/responsiveLayoutPolicy.ts`.
+- Vue adapter: `useResponsiveWorkspaceShell()` in `composables/layout/useResponsiveWorkspaceShell.ts`.
+- Owner/invocation: `layouts/default.vue` observes the viewport once, composes `useLeftPanel` and `useRightPanel` preferences, invokes the resolver, and provides the state to `WorkspaceAdaptiveLayout`.
+- Consumer rule: `WorkspaceAdaptiveLayout` consumes the provided state; it must not independently resolve right-panel presentation from a separate container measurement.
+- `useAppShellResponsiveLayout.ts` and `useWorkspaceResponsiveLayout.ts` are removed or reduced to non-resolving consumers; they are no longer policy owners.
+
+### Exact composition rules
+
+The resolver input contains viewport width/height, left/right preference values (`visible` or `hidden-by-user`), and preferred left/right widths. The policy owns the constants for left/right dock widths, 50px strips, resize handles, 480px practical center minimum, 768px narrow width, and 480px short height.
+
+For each candidate presentation:
+
+```text
+requiredWidth = left consumed width + right consumed width + center minimum
+              + docked resize handles
+fits = viewport width >= requiredWidth
+```
+
+Phase order is authoritative: narrow drawer precedence; preserve user-hidden left strip on desktop; short-height right-tools yield; try both docked; try left docked/right drawer; try left docked/right strip; only then adapt the left surface and choose the right presentation. A visible left panel is therefore not automatically stripped merely because the viewport is below `1280px`.
+
+The output distinguishes `preference: hidden-by-user` from effective `presentation: strip/drawer` and `presentationSource: user/responsive`. This prevents a responsive transition from rewriting user preference and lets tests prove manual collapse versus automatic adaptation.
+
+### Required policy scenarios
+
+The design spec now includes executable boundary scenarios for wide default, large-but-constrained (left docked/right tools yield), constrained (left adapts only after right yield), manual left collapse, narrow, short-height, and repeated resize. The updated architecture package is ready for another review round; implementation remains blocked until that gate passes.

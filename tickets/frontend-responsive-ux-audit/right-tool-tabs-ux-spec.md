@@ -7,6 +7,7 @@
 - Related requirements: FR-013, FR-016, FR-017, FR-018, FR-019, FR-020
 - Related acceptance criteria: AC-012, AC-016, AC-017, AC-018, AC-019, AC-020, AC-021
 - Related design spine: DS-002
+- Related shell UX supplement: workspace-responsive-ui-ux-spec.md
 
 ## Purpose and Scope
 
@@ -18,7 +19,7 @@ The original product design is a single horizontal tab row. When the available w
 
 - Keep the right-tool tabs in one horizontal row in every standard workspace presentation.
 - Do not wrap tabs into a second row.
-- Preserve the original tab spacing, typography, compact density, active blue underline, hover treatment, and fixed panel-toggle affordance.
+- Preserve the original personal-branch tab spacing and typography (including its normal `text-base`/`px-5 py-3` visual scale), active blue underline, hover treatment, and fixed panel-toggle affordance. Do not apply a new compact density merely because the header is rendered in an adaptive layout; only a documented narrow drawer state may use a separate density treatment.
 - The tab row may use clipped or visually hidden native scrollbars, but it must remain a real horizontally scrollable container.
 - Scroll affordances are visually lightweight and must not compete with the tab labels or panel-toggle control.
 

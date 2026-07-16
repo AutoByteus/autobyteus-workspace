@@ -1,0 +1,132 @@
+Delivery Round 8 pre-refresh state
+HEAD: 3a41ebe5b0d90939e55a6ce483919c5d78cef411
+Tracked base: fbd7b6764bd43751956d69ffe22b943d06188444
+
+Status before checkpoint:
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 17]
+ M autobyteus-web/docs/workspace_layout.md
+ M autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+ M tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+ M tickets/frontend-responsive-ux-audit/code-review-report.md
+ M tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+ M tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ M tickets/frontend-responsive-ux-audit/design-review-report.md
+ M tickets/frontend-responsive-ux-audit/design-spec.md
+ M tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ M tickets/frontend-responsive-ux-audit/handoff-summary.md
+ M tickets/frontend-responsive-ux-audit/investigation-notes.md
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1180x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-700x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-767x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/md-768x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-500x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-short-500x420.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-390x844.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-short-390x640.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-1024x768.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-short-1024x480.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-800x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-900x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-short-800x420.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-639x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-640x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/wide-1440x900.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+ M tickets/frontend-responsive-ux-audit/requirements-doc.md
+ M tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-runtime-setup.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-server-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-workspace-responsive-probe-final.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round5-electron-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round5-electron-runtime-verification.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round5-fetch-and-merge.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round5-final-sanity-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round5-post-refresh-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-pre-refresh-state.log
+?? tickets/frontend-responsive-ux-audit/evidence/solution-designer-right-tabs-current-705x752-after-scroll.png
+?? tickets/frontend-responsive-ux-audit/evidence/solution-designer-right-tabs-current-705x752-before-scroll.png
+?? tickets/frontend-responsive-ux-audit/evidence/solution-designer-right-tabs-live-check.md
+?? tickets/frontend-responsive-ux-audit/evidence/solution-designer-workspace-current-narrow-empty-state.png
+?? tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md
+
+Changed paths:
+autobyteus-web/docs/workspace_layout.md
+autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+tickets/frontend-responsive-ux-audit/code-review-report.md
+tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+tickets/frontend-responsive-ux-audit/design-review-report.md
+tickets/frontend-responsive-ux-audit/design-spec.md
+tickets/frontend-responsive-ux-audit/docs-sync-report.md
+tickets/frontend-responsive-ux-audit/handoff-summary.md
+tickets/frontend-responsive-ux-audit/investigation-notes.md
+tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1180x800.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-700x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-767x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/md-768x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-500x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-short-500x420.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-390x844.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-short-390x640.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-1024x768.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-short-1024x480.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-800x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-900x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-short-800x420.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-639x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-640x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/wide-1440x900.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+tickets/frontend-responsive-ux-audit/requirements-doc.md
+tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md
+
+Diff stat:
+ autobyteus-web/docs/workspace_layout.md            |    16 +-
+ .../tests/e2e/workspace-responsive-probe.mjs       |   241 +-
+ .../api-e2e-coverage-investigation.md              |    48 +
+ .../api-e2e-execution-coverage-report.md           |    82 +-
+ .../api-e2e-test-review-report.md                  |    96 +-
+ .../code-review-report.md                          |   372 +-
+ .../comprehensive-responsive-ui-test-report.md     |    22 +-
+ .../delivery-release-deployment-report.md          |    67 +-
+ .../design-review-report.md                        |   141 +-
+ .../frontend-responsive-ux-audit/design-spec.md    |   246 +-
+ .../docs-sync-report.md                            |    36 +-
+ .../handoff-summary.md                             |    80 +-
+ .../investigation-notes.md                         |   194 +
+ .../probes/api-e2e/desktop-1180x800.png            |   Bin 33456 -> 32761 bytes
+ .../probes/api-e2e/desktop-1280x800.png            |   Bin 40871 -> 52246 bytes
+ .../probes/api-e2e/gap-700x700.png                 |   Bin 11907 -> 21547 bytes
+ .../probes/api-e2e/gap-767x700.png                 |   Bin 12005 -> 21813 bytes
+ .../probes/api-e2e/md-768x700.png                  |   Bin 11920 -> 21659 bytes
+ .../probes/api-e2e/narrow-500x700.png              |   Bin 11258 -> 20395 bytes
+ .../probes/api-e2e/narrow-short-500x420.png        |   Bin 9998 -> 18947 bytes
+ .../probes/api-e2e/phone-390x844.png               |   Bin 11441 -> 20527 bytes
+ .../probes/api-e2e/phone-short-390x640.png         |   Bin 10627 -> 19630 bytes
+ .../probes/api-e2e/small-desktop-1024x768.png      |   Bin 36615 -> 32157 bytes
+ .../api-e2e/small-desktop-short-1024x480.png       |   Bin 11321 -> 29718 bytes
+ .../probes/api-e2e/tablet-800x700.png              |   Bin 11869 -> 21773 bytes
+ .../probes/api-e2e/tablet-900x700.png              |   Bin 13532 -> 30802 bytes
+ .../probes/api-e2e/tablet-short-800x420.png        |   Bin 10605 -> 20077 bytes
+ .../probes/api-e2e/threshold-639x700.png           |   Bin 11552 -> 21140 bytes
+ .../probes/api-e2e/threshold-640x700.png           |   Bin 11631 -> 21089 bytes
+ .../probes/api-e2e/wide-1440x900.png               |   Bin 43627 -> 55281 bytes
+ .../workspace-responsive-probe-results.json        | 56325 +++++++------------
+ .../workspace-responsive-probe-summary.json        |   193 +-
+ .../requirements-doc.md                            |    77 +-
+ .../right-tool-tabs-ux-spec.md                     |     3 +-
+ 34 files changed, 22517 insertions(+), 35722 deletions(-)

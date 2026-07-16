@@ -1,7 +1,17 @@
+
+> autobyteus@1.4.14 test:e2e:workspace-responsive /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> node tests/e2e/workspace-responsive-probe.mjs -- --base-url http://127.0.0.1:13012 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error
+
 {
-  "generatedAt": "2026-07-16T08:45:40.978Z",
-  "result": "Pass",
-  "failures": [],
+  "result": "Fail",
+  "jsonPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json",
+  "summaryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json",
+  "failures": [
+    "tablet-900x700: left panel remains full docked at constrained width (320px at 900px)",
+    "small-desktop-1024x768: left panel remains full docked at constrained width (320px at 1024px)",
+    "small-desktop-short-1024x480: left panel remains full docked at constrained width (320px at 1024px)",
+    "small-desktop-short-1024x480: short-height viewport keeps a full docked left panel"
+  ],
   "summary": [
     {
       "viewport": "phone-390x844",
@@ -238,7 +248,9 @@
       "viewport": "tablet-900x700",
       "route": "/workspace",
       "size": "900x700",
-      "failures": [],
+      "failures": [
+        "left panel remains full docked at constrained width (320px at 900px)"
+      ],
       "centerRect": {
         "x": 323,
         "y": 51,
@@ -266,7 +278,9 @@
       "viewport": "small-desktop-1024x768",
       "route": "/workspace",
       "size": "1024x768",
-      "failures": [],
+      "failures": [
+        "left panel remains full docked at constrained width (320px at 1024px)"
+      ],
       "centerRect": {
         "x": 323,
         "y": 51,
@@ -294,7 +308,10 @@
       "viewport": "small-desktop-short-1024x480",
       "route": "/workspace",
       "size": "1024x480",
-      "failures": [],
+      "failures": [
+        "left panel remains full docked at constrained width (320px at 1024px)",
+        "short-height viewport keeps a full docked left panel"
+      ],
       "centerRect": {
         "x": 323,
         "y": 51,
@@ -439,3 +456,7 @@
     }
   ]
 }
+ ELIFECYCLE  Command failed with exit code 1.
+
+--- Round 8 probe rerun after removing stale full-docked-left expectation ---
+2026-07-16T08:43:18Z

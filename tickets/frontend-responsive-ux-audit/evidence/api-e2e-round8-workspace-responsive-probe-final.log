@@ -1,6 +1,11 @@
+
+> autobyteus@1.4.14 test:e2e:workspace-responsive /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> node tests/e2e/workspace-responsive-probe.mjs -- --base-url http://127.0.0.1:13012 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error
+
 {
-  "generatedAt": "2026-07-16T08:45:40.978Z",
   "result": "Pass",
+  "jsonPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json",
+  "summaryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json",
   "failures": [],
   "summary": [
     {

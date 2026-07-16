@@ -45,10 +45,17 @@ Right-tool order is also centralized there and should remain:
 7. Browser, when applicable
 8. VNC, when applicable
 
-`RightSideTabs` opts into the wrapped `TabList` presentation for the right-tool
-catalog. Constrained docked, strip, and drawer presentations may use multiple
-tab rows instead of horizontal clipping; the catalog order and each tool's
-reachability must remain intact.
+`RightSideTabs` uses the approved single-row native horizontal-scroll
+presentation for the right-tool catalog. In constrained docked, strip, and
+drawer presentations, the tab row may overflow horizontally but must not wrap
+into a second row. Directional edge fades/chevrons expose undisclosed tabs,
+active and focused tabs auto-scroll into view, and the fixed panel toggle stays
+outside the scrolling region.
+
+Historical delivery note: an earlier delivery iteration described an opt-in
+wrapped multi-row `TabList` presentation. That language is superseded by the
+approved `right-tool-tabs-ux-spec.md` contract and the current implementation;
+do not reintroduce wrapping into this right-tool header.
 
 ## `/mobile` Boundary
 
@@ -63,6 +70,7 @@ Durable unit/component coverage for this policy lives near the relevant sources:
 - `components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts`
 - `components/layout/__tests__/RightSideTabs.spec.ts`
 - `components/tabs/__tests__/TabList.spec.ts`
+- `tests/e2e/workspace-responsive-probe.mjs`
 - `layouts/__tests__/default.spec.ts`
 
 Browser-level responsive validation is available through:

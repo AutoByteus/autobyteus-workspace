@@ -7,6 +7,7 @@ Refined
 ## Supplemental Artifacts
 
 - right-tool-tabs-ux-spec.md — intended right-tool tab-row interaction and visual contract for single-row horizontal scrolling, overflow discoverability, active-tab reachability, and accessibility. Status: Refined for architecture re-review. Approval applicability: Required because it defines user-visible behavior.
+- workspace-responsive-ui-ux-spec.md — scenario-level responsive workspace UX contract covering the wide personal-branch layout, explicit left collapse, constrained/narrow drawer states, empty-state selection, tool access, accessibility, and `/mobile` separation. Status: Refined for architecture re-review. Approval applicability: Required because it defines user-visible behavior.
 - comprehensive-responsive-ui-test-report.md — historical/live evidence for the responsive failure matrix and the durable browser-validation scope. Status: Evidence supplement. Approval applicability: N/A.
 
 ## Right-Tool Tab Design-Impact Follow-Up
@@ -15,9 +16,19 @@ The current CR-003 implementation wraps the right-tool tabs to keep the expanded
 
 The tab-row contract is defined in right-tool-tabs-ux-spec.md and is part of the intended-behavior requirements basis for architecture re-review.
 
+## Workspace Shell Design-Impact Follow-Up
+
+The user identified a broader regression than tab density or overflow: the current adaptive implementation shows a generic `Work / Runs / Files / Tools` row even on a full-screen workspace after the left panel is collapsed, while the original personal-branch layout keeps the center work surface and right-side tabs in place. The `Work` control can be empty, and `Runs` is an ambiguous proxy for the actual Agents/Agent Teams/run-history selection surface. This creates duplicate navigation and makes the primary user journey unclear.
+
+The target is therefore not merely “make the four buttons fit.” The target is to preserve the personal-branch workspace mental model: left navigation/history owns selection and run creation, the center is the Work surface, and right-side tabs own Files and tools. Responsive states may use strips and drawers to protect the center, but they must not introduce a duplicate generic top navigation bar. The scenario-level contract is defined in `workspace-responsive-ui-ux-spec.md` and requires architecture re-review before implementation resumes.
+
+The user further clarified that the original desktop journey must remain intact through ordinary small-to-moderate window resizing. A broad fixed threshold must not immediately turn the important left selection/workspace panel into a vertical icon strip while the window still has ample desktop space. Responsive adaptation must be measured and prioritized: preserve the left selection surface, let the less-critical right tool panel yield first, and only move the left surface to a strip/drawer when the center plus left navigation can no longer remain usable.
+
 ## Goal / Problem Statement
 
 Improve the standard AutoByteus `/workspace` frontend responsive experience. The normal wide desktop workspace is acceptable, but shrinking the browser width or height currently produces severe usability failures: a blank gray workspace at intermediate widths, a legacy mobile-tab workspace at smaller widths, and cramped desktop split panes at tablet/narrow desktop widths.
+
+The current responsive refactor also introduced a product-level layout regression: it can replace the original wide workspace hierarchy with a top `Work / Runs / Files / Tools` row while the left selection surface is collapsed and the right tool tabs remain visible. This is confusing even in full-screen mode and obscures where users select or start an agent/team. The target must preserve the original wide layout and define narrow/constrained journeys explicitly rather than treating a generic surface bar as the universal fallback.
 
 The target behavior is not a phone/PWA redesign. The existing `/mobile` route already owns true phone remote access. The standard `/workspace` route must remain a desktop-capability workspace that adapts gracefully in constrained browser, embedded-browser, and narrow-window contexts without losing access to the main conversation/team surface, run history, files, terminal, activity, artifacts, browser, or VNC tools.
 
@@ -63,6 +74,9 @@ The target behavior is not a phone/PWA redesign. The existing `/mobile` route al
 5. Keep `/mobile` route and `components/mobile/*` as the phone/PWA remote-access owner; do not mix it into the standard `/workspace` route.
 6. Update developer startup docs to reflect actual `BACKEND_*` frontend endpoint configuration.
 7. Treat button/control order as a product-level responsive requirement: the narrow layout must not inherit arbitrary legacy `Running / Agent` ordering, and tool buttons must keep a stable canonical order across docked tabs, strips, and drawers.
+8. Preserve the original wide workspace mental model: no generic top-level `Work / Runs / Files / Tools` bar when the left panel is docked or manually collapsed; keep selection/run access in the left navigation/history surface and Files/tools in the right surface.
+9. Define and validate scenario-level UX states for wide default, wide manual collapse, constrained strip/drawer, narrow empty workspace, selected run, tool drawer, short-height recovery, and `/mobile` isolation. The detailed contract is in `workspace-responsive-ui-ux-spec.md`.
+10. Treat the comprehensive responsive viewport matrix as a durable validation requirement, not a one-off manual audit; implementation should include policy/component coverage and a browser probe/E2E equivalent for the tested failure bands and layout-preservation journeys.
 8. Treat the comprehensive responsive viewport matrix as a durable validation requirement, not a one-off manual audit; implementation should include policy/component coverage and a browser probe/E2E equivalent for the tested failure bands.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
@@ -82,6 +96,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - UC-007: Local developer startup documentation accurately starts frontend against backend for manual responsive testing.
 - UC-008: Responsive control/button ordering remains intentional, stable, and task-priority driven across wide, constrained, and narrow workspace modes.
 - UC-009: Responsive fixes are validated against a comprehensive viewport/interaction matrix rather than a single screenshot or breakpoint.
+- UC-010: The standard workspace preserves the original wide layout and gives users an explicit, understandable path to select/start an agent or team when side surfaces move into strips or drawers.
 
 ## Out of Scope
 
@@ -99,6 +114,18 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - FR-019: Selecting or keyboard-focusing an offscreen right-tool tab must automatically scroll that tab into view without changing canonical tab order or panel preference state.
 - FR-020: An optional More menu may provide secondary direct tab selection, but it must not replace the visible scrollable tab row or become the only path to any tool.
 
+- FR-021: At wide desktop sizes, the standard workspace must preserve the personal-branch hierarchy—left navigation/history, center Work surface, and right tool tabs—and must not show a generic top-level `Work / Runs / Files / Tools` bar.
+- FR-022: At wide sizes, the left panel must remain docked by default and may become the existing strip only after the user activates its collapse affordance. A manual collapse must not cause a new top navigation bar to appear.
+- FR-023: When constrained responsive policy moves the left surface to a strip or drawer, it must provide an explicit semantic navigation/selection affordance for Agents, Agent Teams, workspaces, and run history; an unlabeled or ambiguous `Runs` surface is insufficient.
+- FR-024: When constrained responsive policy moves the right tools out of a docked panel, it must provide an explicit visible `Tools`/equivalent trigger. Files and tools must remain owned by the right tool surface and must not be duplicated as generic top-level controls.
+- FR-025: When no agent/team run is selected, the center empty state must provide a clear action to choose an agent/team and a clear action to open/select run history; the user must not need to infer the path from the word `Work`.
+- FR-026: Responsive mode changes must preserve the selected run and must not permanently overwrite the user's wide-layout panel preference merely because a strip/drawer threshold was crossed.
+- FR-027: The standard workspace must not use a generic surface-control row as the universal responsive fallback. If a narrow state needs compact controls, they must be semantic drawer/tool triggers and must not duplicate visible left/right navigation.
+- FR-028: Wide-layout typography, spacing, panel positions, and right-tab presentation must remain materially consistent with the personal branch unless a documented center-protection state is active; narrow typography must not be used as an unrequested global density reduction.
+- FR-029: The responsive policy must not blanket-collapse the left navigation panel at a broad desktop breakpoint (for example, every viewport below `1280px`). It must use measured layout capacity and surface priority so the original left selection/workspace panel remains docked while the left panel plus a usable center can fit.
+- FR-030: When all surfaces cannot remain docked, the policy must yield the right tool panel before collapsing the left selection/workspace panel, unless the user has explicitly collapsed the left panel or a short-height/narrow state requires a different presentation.
+- FR-031: A single composed responsive-policy boundary must resolve viewport capacity, left/right preferences, effective presentations, presentation sources, mode, and drawer/strip affordances for both the app shell and workspace; shell and workspace components must not independently resolve competing responsive states.
+
 - FR-001: `/workspace` must not have any viewport-width band where the route mounts one workspace layout while CSS hides that same mounted layout and no alternative layout is visible.
 - FR-002: `/workspace` must use one authoritative responsive policy for shell/workspace surface presentation instead of independent breakpoint decisions in `pages/workspace.vue`, `WorkspaceDesktopLayout`, `WorkspaceMobileLayout`, and `layouts/default.vue`.
 - FR-003: Wide desktop behavior must preserve the current primary layout: left navigation/history panel, center workspace surface, and right-side tools panel are docked when enough space exists.
@@ -110,7 +137,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - FR-009: The right-panel width policy must preserve a practical center width and switch presentation mode rather than merely clamping the right panel while leaving a `200px` center.
 - FR-010: The left-panel policy must distinguish user preference from responsive effective presentation so constrained widths can auto-collapse without permanently overwriting the user's wide-desktop preference.
 - FR-011: Developer documentation for local frontend/backend startup must match the actual Nuxt configuration variables used by `nuxt.config.ts`.
-- FR-012: Standard `/workspace` controls must use a canonical responsive ordering model rather than per-layout ad hoc button order. The primary order must prioritize: current work surface, run/history/config access, files, then tools.
+- FR-012: Standard `/workspace` must use a canonical surface-ownership model rather than per-layout ad hoc navigation: the center owns the current Work surface, the left surface owns agent/team selection plus run/history/config access, and the right surface owns Files and tools. A generic top-level surface row must not duplicate those owners.
 - FR-013: Right-tool controls must keep a stable order across docked desktop tabs, constrained strips, and narrow drawers/sheets: Files first where present, contextual Team overview when relevant, then Terminal, Activity, Artifacts, Browser, and VNC.
 - FR-014: Header/action buttons inside the center work surface must keep stable priority under constrained width: identity/status first, primary run/work actions next, secondary actions in overflow; controls must not wrap into unusable or misleading order.
 - FR-015: The implementation must provide durable responsive validation for the known failure classes: blank `640-767px` band, legacy `<640px` `/workspace` fallback, cramped `768-1024px` docked panes, short-height recovery, canonical control/tool ordering, wide desktop non-regression, and `/mobile` route isolation.
@@ -124,6 +151,18 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - AC-020: The current expanded catalog, including Usage/Token and VNC Viewer when available, remains reachable and in canonical order through scrolling without changing the active underline or panel-toggle placement.
 - AC-021: If a More menu is implemented, it is a secondary shortcut and the visible scrollable tab row remains available as the primary interaction.
 
+- AC-022: At wide desktop size with the left panel docked, no generic `Work / Runs / Files / Tools` row is rendered; the personal-branch left/center/right hierarchy is visible.
+- AC-023: After manually collapsing the left panel at a wide/full-screen size, the left strip, center work surface, and right-side tabs remain in the original hierarchy and no generic surface row appears.
+- AC-024: In every constrained/narrow state where the left panel is not docked, a clearly named navigation/selection affordance opens or reaches Agents, Agent Teams, workspaces, and run history without clearing the selected run.
+- AC-025: In every state where right tools are not docked, a visible and accessible Tools/equivalent affordance opens the right tool drawer; Files and the full available tool catalog remain reachable through that drawer.
+- AC-026: With no selected run, the center empty state renders a primary agent/team selection action and a secondary run/history action; clicking each action reaches the existing selection/run path.
+- AC-027: Repeated resizing across wide, constrained, narrow, and short-height states does not introduce a duplicate surface bar, blank center, lost selection, or permanent preference mutation.
+- AC-028: The standard `/workspace` layout does not show a top-level `Work / Runs / Files / Tools` bar merely because the left panel is collapsed or presented as a strip; any compact narrow controls are semantic drawer/tool actions only.
+- AC-029: At wide sizes, text sizing and spacing for the workspace shell and right tabs remain materially aligned with the personal branch; a compact responsive state cannot silently apply `text-sm`/reduced padding to the wide layout.
+- AC-030: At a large-but-constrained desktop viewport where the left panel plus the practical center width can still fit, the default left panel remains docked and usable; the right tools adapt first to a strip/drawer when necessary. A small reduction from a wide viewport must not immediately replace the left panel with only a vertical icon strip.
+- AC-031: The responsive policy tests and browser matrix demonstrate that left-panel collapse is driven by measured center/left feasibility and surface priority, not a blanket `<1280px` rule; the original desktop selection journey remains available until the layout genuinely requires a drawer/strip.
+- AC-032: Pure policy boundary tests cover the exact fit formula and phase order for wide, large-but-constrained, constrained, narrow, short-height, manual-left-hidden, and repeated-resize inputs, including preference preservation and `presentationSource` distinction.
+
 - AC-001: At `700x700` and `760x700`, `/workspace` shows visible workspace controls/content; it does not show only the black app header plus blank gray body.
 - AC-002: At `1440x900`, the current wide desktop layout remains materially unchanged: left panel docked, center workspace visible, and right tools docked by default.
 - AC-003: At `1024x768`, the center workspace surface is not squeezed to approximately `247px`; side surfaces collapse or change presentation so the center is meaningfully usable.
@@ -134,7 +173,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - AC-008: Unit/component coverage verifies the responsive-policy boundary at least around `639`, `640`, `767`, `768`, `800`, `1024`, and a wide desktop size.
 - AC-009: A live browser responsive probe or equivalent E2E coverage confirms no blank workspace body at `640-767px` and validates constrained-width behavior.
 - AC-010: `autobyteus-web/README.md` or equivalent local-development docs no longer instruct developers to use endpoint environment variables ignored by the current Nuxt config.
-- AC-011: At narrow standard `/workspace` widths, the visible primary surface controls appear in the intended order: Work, Runs, Files, Tools; they do not show the legacy ambiguous `Running / Agent` pair as the main navigation model.
+- AC-011: At narrow standard `/workspace` widths, the center work surface remains primary, the left navigation/selection drawer and right tools drawer have explicit semantic triggers, and the legacy ambiguous `Running / Agent` pair is not the only navigation model. A generic `Work / Runs / Files / Tools` row is not required and must not appear in wide/manual-collapse states.
 - AC-012: In every right-tool presentation mode, the tool order is stable and matches the canonical sequence: Files, Team when applicable, Terminal, Activity, Artifacts, Browser, VNC.
 - AC-013: Agent/team center header controls remain discoverable and ordered by priority under constrained width; secondary actions collapse into overflow instead of displacing the title/status or primary work action.
 - AC-014: A browser-level responsive probe or equivalent E2E coverage runs the comprehensive viewport family used in investigation (`390x844`, `390x640`, `500x700`, `500x420`, `639x700`, `640x700`, `700x700`, `767x700`, `768x700`, `800x700`, `800x420`, `900x700`, `1024x768`, `1024x480`, `1180x800`, `1280x800`, `1440x900`) and records screenshots/traces for failures.
@@ -153,10 +192,12 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - The referenced screenshot represents the `640-767px` blank-band failure caused by the `640px` JS breakpoint versus `768px` CSS breakpoint mismatch.
 - Standard `/workspace` should remain useful in embedded browser panes and resizable desktop windows even when the surface is narrower than a typical desktop monitor.
 - True phone usage should prefer `/mobile`, not the legacy `WorkspaceMobileLayout` embedded in `/workspace`.
+- The user-confirmed wide-layout preference is the personal-branch hierarchy without a generic top surface bar; the scenario-level behavior is recorded in `workspace-responsive-ui-ux-spec.md`.
 
 ## Risks / Open Questions
 
 - Exact visual thresholds for automatic left/right collapse need implementation tuning, but the minimum outcome must satisfy the acceptance criteria above.
+- The exact narrow trigger treatment (text label versus icon-plus-label) can be tuned during implementation, but it must remain semantically explicit and must not recreate the generic four-surface bar.
 - Some right-side tools may need additional internal responsive polish after being moved into drawer/sheet presentations; this task requires reachability and shell-level usability, not complete tool-internal redesign.
 - Existing user preference persistence for panel visibility/width is minimal; adding responsive effective modes must not create surprising permanent state changes.
 
@@ -202,7 +243,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 
 ## Approval Status
 
-Refined based on the user's explicit confirmation of the original single-row right-tool tab design. The right-tool tab overflow behavior is now an intended-behavior requirement and must pass architecture re-review before implementation resumes. The existing wrapping Local Fix and initial-fit browser assertion are superseded for this behavior.
+Refined from the user's explicit confirmation of the original single-row right-tool tab design and subsequent explicit feedback that the full-screen `Work / Runs / Files / Tools` row and early left-panel auto-collapse are confusing regressions. Both `right-tool-tabs-ux-spec.md` and `workspace-responsive-ui-ux-spec.md` are intended-behavior supplements and require architecture re-review before implementation resumes. Architecture Review Round 6 approved FR-029/FR-030 and AC-030/AC-031 but returned DI-003 because the composed executable policy boundary was underspecified. FR-031/AC-032 and the exact resolver contract are now added. The existing wrapping Local Fix, initial-fit browser assertion, generic four-surface-row behavior, and blanket `<1280px` left collapse are superseded for their respective scopes.
 
 ## Revised Requirement Coverage
 
@@ -222,3 +263,33 @@ Refined based on the user's explicit confirmation of the original single-row rig
 | AC-019 | Active/focused tab auto-scroll reachability. |
 | AC-020 | Expanded catalog reachability and order preservation. |
 | AC-021 | Optional More-menu non-replacement rule. |
+
+## Shell Reconciliation Coverage
+
+| Requirement | Use Cases |
+| --- | --- |
+| FR-021 | UC-001, UC-010 |
+| FR-022 | UC-001, UC-010 |
+| FR-023 | UC-003, UC-004, UC-006, UC-010 |
+| FR-024 | UC-003, UC-004, UC-005, UC-010 |
+| FR-025 | UC-001, UC-004, UC-010 |
+| FR-026 | UC-002, UC-003, UC-007, UC-010 |
+| FR-027 | UC-003, UC-004, UC-010 |
+| FR-028 | UC-001, UC-002, UC-010 |
+| FR-029 | UC-001, UC-003, UC-007, UC-010 |
+| FR-030 | UC-003, UC-004, UC-007, UC-010 |
+| FR-031 | UC-001, UC-003, UC-004, UC-005, UC-007, UC-010 |
+
+| Acceptance Criteria | Scenario Intent |
+| --- | --- |
+| AC-022 | Wide personal-branch hierarchy and no duplicate top surface bar. |
+| AC-023 | Manual left collapse preserves wide hierarchy. |
+| AC-024 | Explicit selection/navigation reachability in strip/drawer states. |
+| AC-025 | Explicit right-tools reachability in non-docked states. |
+| AC-026 | Empty-state selection and run-history discoverability. |
+| AC-027 | Cross-mode resize stability and preference preservation. |
+| AC-028 | Generic four-surface row is not a universal fallback. |
+| AC-029 | Wide typography/spacing non-regression. |
+| AC-030 | Large-but-constrained desktop preserves left selection panel and yields right tools first. |
+| AC-031 | Measured threshold and resize-priority validation. |
+| AC-032 | Composed policy formula, phase-order, and preference/source boundary coverage. |

@@ -27,7 +27,6 @@ const DEFAULT_VIEWPORTS = [
   { name: 'wide-1440x900', width: 1440, height: 900 },
 ];
 
-const PRIMARY_SURFACE_ORDER = ['Work', 'Runs', 'Files', 'Tools'];
 const CANONICAL_TOOL_ORDER = ['Files', 'Team', 'Terminal', 'Activity', 'Token', 'Artifacts', 'Browser', 'VNC Viewer'];
 const CENTER_MIN_WIDTH = 480;
 const ACCEPTABLE_NARROW_CENTER_MIN_WIDTH = 320;
@@ -162,7 +161,7 @@ async function collect(page, label) {
     const rightStripLabels = labelsIn('[data-test="workspace-right-tool-strip"]')
       .filter((labelText) => !/toggle sidebar/i.test(labelText) && !['‹', '›'].includes(labelText));
     const rightDrawerLabels = tabLabelsIn('[data-test="workspace-right-tool-drawer"]');
-    const primaryControlLabels = labelsIn('[data-test="workspace-primary-surface-controls"]');
+    const semanticTriggerLabels = labelsIn('[data-test="workspace-semantic-surface-triggers"]');
     const topVisibleLabels = allButtons
       .filter((button) => button.visible && button.rect && button.rect.y < 130)
       .sort((left, right) => left.rect.y - right.rect.y || left.rect.x - right.rect.x)
@@ -176,7 +175,17 @@ async function collect(page, label) {
     const adaptive = document.querySelector('[data-test="workspace-adaptive-layout"]');
     const center = document.querySelector('[data-test="workspace-center-content-shell"]');
     const rightPanel = document.querySelector('[data-test="workspace-right-panel"]');
-    const primaryControls = document.querySelector('[data-test="workspace-primary-surface-controls"]');
+    const semanticTriggers = document.querySelector('[data-test="workspace-semantic-surface-triggers"]');
+    const legacyGenericSurfaceBar = document.querySelector('[data-test="workspace-primary-surface-controls"]');
+    const workspaceEmptyState = document.querySelector('[data-test="workspace-empty-state"]');
+    const emptyStateChoose = document.querySelector('[data-test="workspace-empty-state-choose"]');
+    const emptyStateRuns = document.querySelector('[data-test="workspace-empty-state-runs"]');
+    const navigationTrigger = document.querySelector('[data-test="workspace-navigation-trigger"]');
+    const toolsTrigger = document.querySelector('[data-test="workspace-tools-trigger"]');
+    const leftNavigationDrawer = document.querySelector('[data-test="app-left-navigation-drawer"]');
+    const leftPanelShell = document.querySelector('[data-test="app-left-navigation-drawer"], [data-test="app-left-panel-shell"]');
+    const leftPanelRunHistory = document.querySelector('[data-test="app-left-panel-run-history"]');
+    const leftHistoryScrollOwner = leftPanelRunHistory?.querySelector('div.h-full.overflow-y-auto');
     const leftAside = document.querySelector('aside');
     const header = document.querySelector('header');
     const rightPanelTabList = document.querySelector('[data-test="workspace-right-panel"] [data-test="right-side-tab-list"]');
@@ -254,7 +263,16 @@ async function collect(page, label) {
         oldDesktop: elementInfo('[data-test="workspace-desktop-layout"]'),
         centerPane: elementInfo('[data-test="workspace-center-pane"]'),
         centerShell: elementInfo('[data-test="workspace-center-content-shell"]'),
-        primaryControls: elementInfo('[data-test="workspace-primary-surface-controls"]'),
+        semanticTriggers: elementInfo('[data-test="workspace-semantic-surface-triggers"]'),
+        legacyGenericSurfaceBar: elementInfo('[data-test="workspace-primary-surface-controls"]'),
+        emptyState: elementInfo('[data-test="workspace-empty-state"]'),
+        emptyStateChoose: elementInfo('[data-test="workspace-empty-state-choose"]'),
+        emptyStateRuns: elementInfo('[data-test="workspace-empty-state-runs"]'),
+        navigationTrigger: elementInfo('[data-test="workspace-navigation-trigger"]'),
+        toolsTrigger: elementInfo('[data-test="workspace-tools-trigger"]'),
+        leftNavigationDrawer: elementInfo('[data-test="app-left-navigation-drawer"]'),
+        leftPanelShell: elementInfo('[data-test="app-left-navigation-drawer"], [data-test="app-left-panel-shell"]'),
+        leftPanelRunHistory: elementInfo('[data-test="app-left-panel-run-history"]'),
         rightPanel: elementInfo('[data-test="workspace-right-panel"]'),
         rightPanelTabList: elementInfo('[data-test="workspace-right-panel"] [data-test="right-side-tab-list"]'),
         rightStrip: elementInfo('[data-test="workspace-right-tool-strip"]'),
@@ -269,12 +287,17 @@ async function collect(page, label) {
         adaptive: visible(adaptive),
         center: visible(center),
         rightPanel: visible(rightPanel),
-        primaryControls: visible(primaryControls),
+        semanticTriggers: visible(semanticTriggers),
+        legacyGenericSurfaceBar: visible(legacyGenericSurfaceBar),
+        emptyState: visible(workspaceEmptyState),
+        navigationTrigger: visible(navigationTrigger),
+        toolsTrigger: visible(toolsTrigger),
+        leftNavigationDrawer: visible(leftNavigationDrawer),
         leftAside: visible(leftAside),
         oldDesktop: visible(oldDesktop),
       },
       labels: {
-        primaryControls: primaryControlLabels,
+        semanticTriggers: semanticTriggerLabels,
         rightPanel: rightPanelLabels,
         rightStrip: rightStripLabels,
         rightDrawer: rightDrawerLabels,
@@ -290,6 +313,31 @@ async function collect(page, label) {
         ariaLabel: panelToggle.getAttribute('aria-label') || '',
         title: panelToggle.getAttribute('title') || '',
       } : null,
+      leftPanelLayout: leftPanelShell ? (() => {
+        const shellStyle = getComputedStyle(leftPanelShell);
+        const historyStyle = leftPanelRunHistory ? getComputedStyle(leftPanelRunHistory) : null;
+        const ownerStyle = leftHistoryScrollOwner ? getComputedStyle(leftHistoryScrollOwner) : null;
+        return {
+          shell: {
+            display: shellStyle.display,
+            flexDirection: shellStyle.flexDirection,
+            minHeight: shellStyle.minHeight,
+            height: Math.round(leftPanelShell.getBoundingClientRect().height),
+          },
+          history: leftPanelRunHistory ? {
+            display: historyStyle.display,
+            minHeight: historyStyle.minHeight,
+            flex: historyStyle.flex,
+            height: Math.round(leftPanelRunHistory.getBoundingClientRect().height),
+          } : null,
+          scrollOwner: leftHistoryScrollOwner ? {
+            overflowY: ownerStyle.overflowY,
+            clientHeight: leftHistoryScrollOwner.clientHeight,
+            scrollHeight: leftHistoryScrollOwner.scrollHeight,
+            scrollTop: Math.round(leftHistoryScrollOwner.scrollTop),
+          } : null,
+        };
+      })() : null,
       reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
       media: {
         min640: matchMedia('(min-width: 640px)').matches,
@@ -300,25 +348,17 @@ async function collect(page, label) {
   }, label);
 }
 
-async function clickButtonByLabel(page, rootSelector, label) {
-  return await page.evaluate(({ rootSelector: selector, label: targetLabel }) => {
+async function clickButtonByTest(page, dataTest, rootSelector = 'body') {
+  return await page.evaluate(({ test, selector }) => {
     const root = document.querySelector(selector);
-    if (!root) return false;
-    const buttons = Array.from(root.querySelectorAll('button'));
-    const target = buttons.find((button) => (
-      (button.innerText || button.textContent || button.getAttribute('title') || button.getAttribute('aria-label') || '')
-        .replace(/\s+/g, ' ')
-        .trim() === targetLabel
-    ));
-    if (!target) return false;
-    target.click();
+    const button = root?.querySelector(`[data-test="${test}"]`);
+    if (!button) return false;
+    const style = getComputedStyle(button);
+    const buttonRect = button.getBoundingClientRect();
+    if (style.display === 'none' || style.visibility === 'hidden' || buttonRect.width <= 0 || buttonRect.height <= 0) return false;
+    button.click();
     return true;
-  }, { rootSelector, label });
-}
-
-async function clickBackdropOutsideLeftDrawer(page) {
-  await page.mouse.click(Math.max(360, Math.floor(page.viewportSize().width * 0.75)), Math.max(80, Math.floor(page.viewportSize().height / 2))).catch(() => undefined);
-  await page.waitForTimeout(150);
+  }, { test: dataTest, selector: rootSelector });
 }
 
 async function clickTabAffordance(page, rootSelector, dataTest) {
@@ -466,7 +506,14 @@ function validateWorkspaceInitial(state, viewport) {
   if (!state.visibleState.adaptive) failures.push('workspace adaptive layout is not visible');
   if (!state.visibleState.center) failures.push('workspace center content shell is not visible');
   if (state.rects.oldDesktop) failures.push('legacy workspace desktop layout marker still exists');
+  if (state.visibleState.legacyGenericSurfaceBar || state.rects.legacyGenericSurfaceBar) {
+    failures.push('legacy generic Work/Runs/Files/Tools surface row is present');
+  }
+  if (!state.visibleState.emptyState) failures.push('workspace empty state is not visible for the no-selection fixture');
+  if (!state.rects.emptyStateChoose?.visible) failures.push('empty state lacks the semantic agent/team selection action');
+  if (!state.rects.emptyStateRuns?.visible) failures.push('empty state lacks the semantic run-history action');
   if (state.visibleState.main && !mainTextWithoutChrome && !state.visibleState.adaptive) failures.push('main workspace region appears blank');
+  failures.push(...validateLeftPanelLayout(state, 'initial left panel'));
   if (/Running List/.test(state.bodyText) && state.labels.topVisible.includes('Running') && state.labels.topVisible.includes('Agent')) {
     failures.push('legacy Running / Agent mobile button model is visible');
   }
@@ -483,37 +530,29 @@ function validateWorkspaceInitial(state, viewport) {
   }
 
   if (width < 768) {
-    if (!labelsEqualPrefix(state.labels.primaryControls, PRIMARY_SURFACE_ORDER)) {
-      failures.push(`narrow primary controls are not ${PRIMARY_SURFACE_ORDER.join(' -> ')}: ${state.labels.primaryControls.join(' -> ')}`);
-    }
     if (!state.visibleState.header) failures.push('narrow standard workspace header/menu is not visible');
     if (state.visibleState.rightPanel) failures.push('narrow standard workspace unexpectedly keeps right panel docked');
+    if (!state.visibleState.semanticTriggers) failures.push('narrow workspace lacks semantic surface triggers');
+    if (!state.visibleState.navigationTrigger) failures.push('narrow workspace lacks an Agents & teams navigation trigger');
+    if (!state.visibleState.toolsTrigger) failures.push('narrow workspace lacks a Tools trigger');
   }
 
   if (width >= 768 && width <= 900) {
-    if (!state.visibleState.primaryControls && !state.rects.rightStrip?.visible) {
-      failures.push('768-900px constrained workspace lacks right-tool recovery controls');
-    }
     if (state.visibleState.rightPanel) failures.push('768-900px constrained workspace keeps right panel docked');
-  }
-
-  if (width <= 1024 && leftRect?.width >= 300) {
-    failures.push(`left panel remains full docked at constrained width (${leftRect.width}px at ${width}px)`);
+    if (!state.visibleState.toolsTrigger && !state.rects.rightStrip?.visible) {
+      failures.push('768-900px constrained workspace lacks a semantic Tools trigger or right-tool strip');
+    }
   }
 
   if (height <= 480) {
-    if (leftRect?.width >= 300 && leftRect.height >= height) {
-      failures.push('short-height viewport keeps a full docked left panel');
-    }
     if (state.visibleState.rightPanel) {
       failures.push('short-height viewport keeps right panel docked instead of drawer/strip recovery');
     }
-    if (!state.visibleState.primaryControls) failures.push('short-height viewport lacks recoverable primary controls');
+    if (!state.visibleState.semanticTriggers && !state.rects.rightStrip?.visible) failures.push('short-height viewport lacks recoverable semantic surface controls');
   }
 
   if (name === 'small-desktop-1024x768') {
     if (centerRect?.width < CENTER_MIN_WIDTH) failures.push(`1024 center width ${centerRect?.width}px is below practical minimum`);
-    if (!state.visibleState.primaryControls) failures.push('1024 left-strip/right-docked band lacks primary controls for Runs access');
   }
 
   if (name === 'desktop-1280x800' || name === 'wide-1440x900') {
@@ -531,11 +570,31 @@ function validateWorkspaceInitial(state, viewport) {
     failures.push(...validateTabListContract(state.rightPanelTabList, 'right panel'));
     if (!state.panelToggle?.visible) {
       failures.push('right panel toggle affordance is not visible');
-    } else if (state.panelToggle.rect && state.rightPanelTabList?.rect && state.panelToggle.rect.left < state.rightPanelTabList.rect.right - 1) {
+    } else if (state.panelToggle.rect && state.rightPanelTabList?.rect && state.panelToggle.rect.x < state.rightPanelTabList.rect.right - 1) {
       failures.push('right panel toggle overlaps or scrolls with the tab-list header');
     }
   }
 
+  return failures;
+}
+
+function validateLeftPanelLayout(state, context) {
+  const failures = [];
+  if (!state.leftPanelLayout) return failures;
+
+  const { shell, history, scrollOwner } = state.leftPanelLayout;
+  if (shell?.display !== 'flex' || shell?.flexDirection !== 'column' || shell?.height <= 0) {
+    failures.push(`${context} does not expose a definite full-height flex-column shell`);
+  }
+  if (history && (history.minHeight !== '0px' || history.height <= 0)) {
+    failures.push(`${context} history section is not a flexible visible region`);
+  }
+  if (scrollOwner && !['auto', 'scroll'].includes(scrollOwner.overflowY)) {
+    failures.push(`${context} history scroll owner is not vertically scrollable`);
+  }
+  if (scrollOwner && scrollOwner.clientHeight <= 0) {
+    failures.push(`${context} history scroll owner has no usable height`);
+  }
   return failures;
 }
 
@@ -602,47 +661,50 @@ function validateTabListContract(tabList, context) {
   return failures;
 }
 
-async function validatePrimaryControlInteractions(page, initialState) {
+async function validateSemanticSurfaceInteractions(page, initialState) {
   const interactionResults = [];
-  const hasControls = labelsEqualPrefix(initialState.labels.primaryControls, PRIMARY_SURFACE_ORDER);
-  if (!hasControls) return interactionResults;
+  const semanticRoot = '[data-test="workspace-semantic-surface-triggers"]';
+  if (!initialState.visibleState.semanticTriggers) return interactionResults;
 
-  const clickRuns = await clickButtonByLabel(page, '[data-test="workspace-primary-surface-controls"]', 'Runs');
-  await page.waitForTimeout(250);
-  const afterRuns = await collect(page, 'after-runs');
-  interactionResults.push({ action: 'click Runs', clicked: clickRuns, state: afterRuns });
+  if (initialState.visibleState.navigationTrigger) {
+    const clicked = await clickButtonByTest(page, 'workspace-navigation-trigger', semanticRoot);
+    await page.waitForTimeout(300);
+    const afterNavigation = await collect(page, 'after-navigation-trigger');
+    interactionResults.push({ action: 'open Agents & teams navigation', clicked, state: afterNavigation });
 
-  await clickBackdropOutsideLeftDrawer(page);
-  await clickButtonByLabel(page, '[data-test="workspace-primary-surface-controls"]', 'Work');
-  await page.waitForTimeout(150);
+    const drawerOpened = Boolean(afterNavigation.visibleState.leftNavigationDrawer);
+    if (drawerOpened) {
+      const closed = await clickButtonByTest(page, 'app-left-drawer-close', '[data-test="app-left-navigation-drawer"]');
+      await page.waitForTimeout(200);
+      const afterNavigationClose = await collect(page, 'after-navigation-close');
+      interactionResults.push({ action: 'close Agents & teams navigation', clicked: closed, state: afterNavigationClose });
+    }
+  }
 
-  const clickFiles = await clickButtonByLabel(page, '[data-test="workspace-primary-surface-controls"]', 'Files');
-  await page.waitForTimeout(250);
-  const afterFiles = await collect(page, 'after-files');
-  const afterFilesTabValidation = await exerciseTabList(
-    page,
-    '[data-test="workspace-right-tool-drawer"] [data-test="right-side-tab-list"]',
-    afterFiles,
-    'drawer',
-  );
-  interactionResults.push({ action: 'click Files', clicked: clickFiles, state: afterFiles, tabValidation: afterFilesTabValidation });
+  if (initialState.visibleState.toolsTrigger) {
+    const clicked = await clickButtonByTest(page, 'workspace-tools-trigger', semanticRoot);
+    await page.waitForTimeout(300);
+    const afterTools = await collect(page, 'after-tools-trigger');
+    const afterToolsTabValidation = await exerciseTabList(
+      page,
+      '[data-test="workspace-right-tool-drawer"] [data-test="right-side-tab-list"]',
+      afterTools,
+      'drawer',
+    );
+    interactionResults.push({ action: 'open Tools drawer', clicked, state: afterTools, tabValidation: afterToolsTabValidation });
 
-  await clickButtonByLabel(page, '[data-test="workspace-primary-surface-controls"]', 'Work');
-  await page.waitForTimeout(150);
-
-  const clickTools = await clickButtonByLabel(page, '[data-test="workspace-primary-surface-controls"]', 'Tools');
-  await page.waitForTimeout(250);
-  const afterTools = await collect(page, 'after-tools');
-  const afterToolsTabValidation = await exerciseTabList(
-    page,
-    '[data-test="workspace-right-tool-drawer"] [data-test="right-side-tab-list"]',
-    afterTools,
-    'drawer',
-  );
-  interactionResults.push({ action: 'click Tools', clicked: clickTools, state: afterTools, tabValidation: afterToolsTabValidation });
-
-  await clickButtonByLabel(page, '[data-test="workspace-primary-surface-controls"]', 'Work');
-  await page.waitForTimeout(150);
+    const closed = await clickButtonByTest(page, 'workspace-right-tool-drawer-close', '[data-test="workspace-right-tool-drawer"]');
+    if (!closed) {
+      const closeByTitle = await page.evaluate(() => {
+        const drawer = document.querySelector('[data-test="workspace-right-tool-drawer"]');
+        const button = drawer?.querySelector('[data-drawer-initial-focus]');
+        if (!button) return false;
+        button.click();
+        return true;
+      });
+      if (closeByTitle) await page.waitForTimeout(200);
+    }
+  }
 
   return interactionResults;
 }
@@ -651,14 +713,17 @@ function validateInteractions(interactions) {
   const failures = [];
   for (const interaction of interactions) {
     if (!interaction.clicked) failures.push(`${interaction.action} target was not found`);
-    if (interaction.action === 'click Runs' && !interaction.state.rects.leftAside?.visible) {
-      failures.push('Runs control did not open a visible left drawer/history surface');
+    if (interaction.action === 'open Agents & teams navigation' && !interaction.state.visibleState.leftNavigationDrawer && !interaction.state.visibleState.leftAside) {
+      failures.push('Agents & teams trigger did not open the left navigation surface');
     }
-    if (interaction.action === 'click Files' && !interaction.state.rects.rightDrawer?.visible) {
-      failures.push('Files control did not open the right tool drawer');
+    if (interaction.action === 'open Agents & teams navigation') {
+      failures.push(...validateLeftPanelLayout(interaction.state, 'navigation drawer'));
     }
-    if (interaction.action === 'click Tools') {
-      if (!interaction.state.rects.rightDrawer?.visible) failures.push('Tools control did not open the right tool drawer');
+    if (interaction.action === 'close Agents & teams navigation' && interaction.state.visibleState.leftNavigationDrawer) {
+      failures.push('left navigation drawer close action did not close the drawer');
+    }
+    if (interaction.action === 'open Tools drawer') {
+      if (!interaction.state.rects.rightDrawer?.visible) failures.push('Tools trigger did not open the right tool drawer');
       if (interaction.state.labels.rightDrawer.length > 1 && !orderedSubsequence(interaction.state.labels.rightDrawer, CANONICAL_TOOL_ORDER)) {
         failures.push(`drawer right-tool order is not canonical: ${interaction.state.labels.rightDrawer.join(' -> ')}`);
       }
@@ -719,8 +784,8 @@ const run = async () => {
           pageFailures.push(...initialTabValidation.failures);
         }
 
-        const shouldExerciseControls = viewport.width <= 900 || viewport.height <= 480 || ['small-desktop-1024x768'].includes(viewport.name);
-        const interactions = shouldExerciseControls ? await validatePrimaryControlInteractions(page, initial) : [];
+        const shouldExerciseControls = initial.visibleState.semanticTriggers;
+        const interactions = shouldExerciseControls ? await validateSemanticSurfaceInteractions(page, initial) : [];
         pageFailures.push(...validateInteractions(interactions));
 
         if (screenshotMode === 'all' || (screenshotMode === 'failures' && pageFailures.length > 0)) {
@@ -776,7 +841,7 @@ const run = async () => {
       leftRect: result.initial?.rects?.leftAside?.rect,
       rightRect: result.initial?.rects?.rightPanel?.rect,
       rightStripRect: result.initial?.rects?.rightStrip?.rect,
-      primaryControls: result.initial?.labels?.primaryControls,
+      semanticTriggers: result.initial?.labels?.semanticTriggers,
       rightPanelControls: result.initial?.labels?.rightPanel,
       rightStripControls: result.initial?.labels?.rightStrip,
       mobileShellVisible: result.initial?.rects?.mobileShell?.visible,

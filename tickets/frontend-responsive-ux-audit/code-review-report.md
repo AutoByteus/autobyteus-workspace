@@ -4,11 +4,11 @@
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/current-responsive-ui-results.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/probe-summary-latest.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`
-- Current Review Round: `11`
-- Trigger: Implementation-owned Local Fix `5883ea8c3` for API/E2E failure-origin finding `CR-004`; focused source review is required before current API/E2E rerun.
-- Prior Review Round Reviewed: `10` API/E2E failure-origin review, including unresolved `CR-004`.
-- Latest Authoritative Round: `11`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/current-responsive-ui-results.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/comprehensive/probe-summary-latest.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`
+- Current Review Round: `15`
+- Trigger: Code-review Round 14 implementation rework commit `3a41ebe5b`; a fresh implementation-source recheck is required before current API/E2E execution.
+- Prior Review Round Reviewed: `14` implementation recheck of the accessible drawer and left-shell sizing rework.
+- Latest Authoritative Round: `15`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`
@@ -32,6 +32,10 @@
 | 9 | Approved single-row scrolling/discoverability rework | Round 8 historical wrapping review; Round 4 architecture `Pass` | None | Pass | Yes | Native horizontal overflow, conditional fades/chevrons, active/focused auto-scroll, semantics, and fixed toggle ownership match the approved UX supplement. Route to current API/E2E. |
 | 10 | API/E2E Round 6 failure-origin review | Round 9 implementation pass | `CR-004` | Fail | Yes | Current browser execution reproduces boundary affordances outside the visible scroll viewport at the right boundary; route to implementation for bounded source repair. |
 | 11 | Implementation Local Fix for `CR-004` | `CR-004`; Round 10 failure-origin state | None | Pass | Yes | The affordance layer is now pinned to the scrollport via a width-neutral sticky overlay; focused regression coverage passes. Route to current API/E2E. |
+| 12 | Architecture Round 5 workspace-shell implementation rework | `CR-004` remains resolved; Architecture Round 5 package rechecked | `CR-005`, `CR-006`, `CR-007`, `CR-008` | Fail | No | The no-generic-row and semantic-trigger behavior is partially present, but the approved composed policy boundary, short-height priority, hidden-preference trigger path, drawer accessibility contract, and corresponding focused action coverage are not complete. |
+| 13 | Architecture Round 7 composed-policy implementation rework | `CR-005`, `CR-006` | `CR-009` | Fail | No | The composed resolver/adapter boundary is now present and the prior first-activation source gap is corrected. Focused action tests still emit missing router/route injections, drawer accessibility remains incomplete, and the manual-left/hidden-right short-height phase violates the approved right-strip preference. |
+| 14 | Code-review Round 13 implementation rework | `CR-007`, `CR-008`, `CR-009` | `CR-010` | Fail | No | Action coverage, drawer lifecycle, and short-height preference ordering now pass source recheck. The new left-drawer wrapper does not establish a flex-column layout, so its `flex-1` content wrapper is not a flex item and the supported navigation/history drawer may not fill/scroll its fixed surface correctly. |
+| 15 | Code-review Round 14 CR-010 implementation rework | `CR-010` | None | Pass | Yes | The left docked/drawer shell now establishes a full-height flex column, and the real AppLeftPanel/history scroll owner is covered by the updated drawer regression. Route the cumulative package to current API/E2E; this remains source-review approval only. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -284,7 +288,103 @@ The durable browser probe is 493 effective non-empty lines and is test code unde
 
 Upstream architecture premises remain unchanged. Round 7's focused `FOP-001` record remains historical context for the reachable integrated `usage`-tab condition. Architecture Round 4 approved the `right-tool-tabs-ux-spec.md` supplement and resolved the wrapping Design Impact. Round 10 browser evidence found a bounded affordance-placement defect; Round 11 confirms the source repair within the approved design and ownership boundaries.
 
-## Review Scorecard (Round 11)
+## Round 12 Implementation Review
+
+### Review Scope And Behavior Basis
+
+- Current implementation commit: `fb18a65c7` (`fix(workspace): restore adaptive shell ownership`) on `codex/frontend-responsive-ux-audit`.
+- Reviewed production path: `/workspace -> layouts/default.vue + WorkspaceAdaptiveLayout.vue -> measured shell/workspace presentation -> left/center/right surfaces`, with `/mobile` remaining a separate route.
+- Approved basis: `requirements-doc.md`, `design-spec.md`, `right-tool-tabs-ux-spec.md`, and the required `workspace-responsive-ui-ux-spec.md` supplement. Architecture Round 5 explicitly requires one composed `resolveResponsiveWorkspaceShellState` policy boundary plus one `useResponsiveWorkspaceShell` adapter; shell and workspace must consume the same effective state.
+- Current implementation-owned checks independently rechecked: focused policy/adaptive/semantic-control/tab tests passed (`4` files / `23` tests); `git diff --check` passed; probe syntax passed. The focused run emitted existing Vue test warnings for missing router/route injection in `WorkspaceAdaptiveLayout.spec.ts`; no current API/E2E execution has been performed.
+
+### Approved Behavior And Production-Path Confirmation
+
+| Contract | Current source result | Evidence / consequence |
+| --- | --- | --- |
+| No generic `Work / Runs / Files / Tools` row in wide/manual-collapse states | `Pass` | `WorkspaceAdaptiveLayout.vue` now renders semantic `Agents & teams`/`Tools` triggers instead of the old four-surface catalog, and the wide manual-collapse test rejects the old marker. |
+| Actionable no-selection center state | `Partial` | The choose-agent/team and runs/history buttons are present and wired, but the new actions are not exercised by the focused test and the hidden-preference drawer path is incomplete. |
+| One-row right-tool tabs and personal-branch density | `Pass` | `RightSideTabs.vue` leaves density at the personal default; `Tab.vue` owns `text-base px-5 py-3`, and the prior `CR-004` pinned affordance source remains intact. |
+| Measured left-capacity/right-tools-first policy | `Fail` | The source retains independent shell/workspace resolvers with different inputs rather than the approved composed resolver/adapter. Short height unconditionally strips the left panel before checking horizontal fit. |
+| Preference/source semantics and resize ownership | `Fail` | Current state types expose neither `presentationSource` nor the combined left/right effective state; `useAppShellResponsiveLayout` and `useWorkspaceResponsiveLayout` remain independent policy owners. |
+| Drawer/strip accessibility and action reachability | `Fail` | The semantic action returns early after toggling a hidden left preference in a drawer-capable narrow state, and the left/right drawers have no focus containment/return implementation required by the approved supplement. |
+
+### Material Premise Validation
+
+#### `FOP-003` — One composed policy boundary is an approved implementation contract
+
+- Origin: Architecture Round 5 approved design and `FR-031`/`AC-032`.
+- Supported path: the user resizes the supported `/workspace` window across wide, large-constrained, constrained, narrow, and short-height states while left/right preferences remain active.
+- Claimed state/consequence: one policy must select both effective side presentations in priority order, preserve preference/source identity, and keep the center usable; independent decisions can produce contradictory shell/workspace states.
+- Reachability: `Reachable` and directly established by the approved architecture contract and resize journeys.
+- Review consequence: the implementation must be corrected before API/E2E; this is not a discretionary refactor.
+
+#### `FOP-004` — A hidden left preference followed by narrow resize must retain navigation reachability
+
+- Origin: Approved user journey `UJ-002 -> UJ-004` and `AC-024`/`AC-026`.
+- Supported path: a user collapses the left panel on a wide window, then resizes standard `/workspace` below the narrow threshold and activates the visible navigation or empty-state action.
+- Claimed state/consequence: the left capability is presented as a drawer and the first activation must open that drawer without requiring a second click or silently losing the selection/history path.
+- Reachability: `Reachable`; manual collapse and resize are supported product actions.
+- Review consequence: repair the action transition and add a focused regression before API/E2E.
+
+### Focused Findings
+
+| Finding ID | Severity | Affected Behavior IDs | Source Evidence | Required Action | Classification / Recipient |
+| --- | --- | --- | --- | --- | --- |
+| `CR-005` | High | `FR-029`, `FR-030`, `FR-031`; `AC-030`, `AC-031`, `AC-032`; `UJ-003`, `UJ-009` | `responsiveLayoutPolicy.ts:90-151` and `:153-216` still expose `resolveAppShellResponsiveState` and `resolveWorkspaceResponsiveState`; `useAppShellResponsiveLayout.ts` and `useWorkspaceResponsiveLayout.ts` call them independently. The output omits combined left/right state, `presentationSource`, consumed widths, and the required composed mode. At `1024x480`, `resolveAppShellResponsiveState` takes the `isShortHeight` branch at lines `128-138` and strips the left panel even though the approved phase order keeps left docked when left plus center fit and yields right tools first. | Replace the split resolver/adapter path with the approved composed `resolveResponsiveWorkspaceShellState` and `useResponsiveWorkspaceShell` boundary. Pass both preferences, measured viewport/capacity, preferred widths, and handles into one pure phase-ordered resolver; expose effective left/right presentations, source, affordances, and fit evidence to both renderers. Remove/reduce the independent policy calls and add the required pure boundary tests for wide, large-constrained, constrained, narrow, short-height, manual-hidden, and repeated-resize cases. | `Local Fix` / `implementation_engineer` |
+| `CR-006` | High | `FR-023`, `FR-025`, `FR-026`; `AC-024`, `AC-026`, `AC-027`; `UJ-004`, `UJ-006` | `WorkspaceAdaptiveLayout.vue:204-218` returns immediately after `toggleLeftPanel()` when the preference is hidden. After a supported wide manual collapse followed by a narrow resize, shell policy reports a drawer-capable state, but the first `Agents & teams`/choose action only flips the preference and never calls `appLayoutStore.openMobileMenu()`. `openRunHistory()` has the same hidden-preference branch without opening the drawer. | Make navigation/history actions resolve the effective presentation, not only the preference: when the current shell can open a drawer, open it in the same activation after restoring/retaining the preference; preserve the wide strip/docked behavior. Add a regression for wide collapse -> narrow resize -> first navigation/empty-state action and verify selected-run continuity. | `Local Fix` / `implementation_engineer` |
+| `CR-007` | Medium | `FR-023`, `FR-025`, `AC-024`, `AC-026` | `WorkspaceAdaptiveLayout.spec.ts:66-96` mounts the component without router/route injection even though the implementation now calls `useRouter()` and `useShellPrimaryNavigation()`. The independent focused run passed with repeated `injection "Symbol(router)"/"Symbol(route location)" not found` warnings, and no test clicks either new empty-state action or semantic navigation trigger. | Add router/route mocks or a test router, exercise choose-agent/team, runs/history, and constrained navigation actions, and make the focused suite run without missing-injection warnings. Keep assertions on the owning app-navigation/store outcome rather than only button presence. | `Local Fix` / `implementation_engineer` |
+| `CR-008` | Medium | Accessibility/interaction contract in `workspace-responsive-ui-ux-spec.md`; `FR-023`, `FR-024`, `AC-024`, `AC-025`, `AC-026` | `WorkspaceRightToolDrawer.vue:7-29` and `layouts/default.vue:28-34` render transient side surfaces as plain `aside` elements with no dialog/drawer labeling, focus containment, or focus return to the opening trigger. The approved supplement requires keyboard access, focus retained within an opened drawer, and return focus on close; the new semantic triggers now make these drawer paths part of the target journey. | Add or reuse one accessible drawer/focus-management owner for both left and right transient surfaces: labelled dialog semantics, initial focus, close/backdrop handling, containment while open, and return focus to the trigger. Add focused component coverage for open, close, keyboard focus, and return behavior. | `Local Fix` / `implementation_engineer` |
+
+## Review Scorecard (Round 12 Historical)
+
+- Overall score (`/10`): `7.1`
+- Overall score (`/100`): `71`
+- Score calculation note: simple average across the ten categories is used for trend visibility only; the `Fail` decision follows the unresolved High findings and the mandatory architecture-boundary mismatch.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 7.0 | The user journey from viewport to shell/workspace surfaces is traceable. | The implementation splits the approved composed spine into independent shell and workspace policy calls. | Restore one composed policy/adapter spine and expose its full effective result. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 5.5 | Left/right renderers and stores remain recognizable owners. | Two policy owners now decide coupled side presentations, directly contradicting the approved authoritative boundary. | Make one resolver authoritative; renderers consume it without independent responsive decisions. |
+| `3` | `API / Interface / Query / Command Clarity` | 6.5 | Existing pure functions and semantic events are locally clear. | The public state shape cannot express source, both surfaces, consumed widths, or phase result required by the reviewed contract. | Implement the reviewed composed input/output contract. |
+| `4` | `Separation of Concerns and File Placement` | 7.5 | Generic surface ownership was removed and tab/panel concerns remain separated. | `WorkspaceAdaptiveLayout` coordinates preference toggling, routing, drawer opening, and focus without a shared drawer/action boundary. | Keep orchestration bounded and centralize drawer focus behavior. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 7.0 | Tool order and tab rendering remain tight. | Parallel shell/workspace responsive state models duplicate the same presentation subject. | Replace them with one effective shell state and separate preference records. |
+| `6` | `Naming Quality and Local Readability` | 8.0 | New semantic trigger and empty-state names are understandable. | The resolver names still imply authoritative scope they no longer satisfy independently. | Align names and files with the single composed boundary. |
+| `7` | `API/E2E Readiness` | 5.5 | Local focused tests, syntax, diff check, guards, and build are reported/passed. | The durable probe still has generic-surface expectations requiring downstream reconciliation, and source policy/action gaps remain unresolved. | Fix source and focused coverage, then route the current probe through API/E2E. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 6.0 | No-generic-row, tab density, and actionable markup are present. | Short-height priority and hidden-preference first activation can violate supported journeys; browser validation is not yet current. | Prove the composed matrix and action journeys in fresh browser execution. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.2 | The obsolete standard mobile/desktop paths and generic catalog are removed. | Historical generated/ticket references remain outside active runtime source. | Preserve clean active-source removal during rework. |
+| `10` | `Cleanup Completeness` | 8.5 | The new semantic component/tests and localization are present. | Policy adapters and warning-producing action tests remain incomplete; downstream docs/probe synchronization is pending. | Complete removal/replacement sequence and clean focused test evidence. |
+
+## Findings (Round 12 Historical)
+
+`CR-005`, `CR-006`, `CR-007`, and `CR-008` are unresolved. `CR-004` remains resolved in the current source and is not reopened. The implementation is not ready for API/E2E or delivery until the implementation-owned fixes are completed and re-reviewed.
+
+## Classification (Round 12 Historical)
+
+- `Fail` — the current implementation does not yet satisfy the Architecture Round 5 composed policy boundary and has reachable action/accessibility gaps.
+- Findings `CR-005` through `CR-008` are bounded implementation/test/accessibility fixes owned by `implementation_engineer`.
+
+## Recommended Recipient (Round 12 Historical)
+
+`implementation_engineer`
+
+## Residual Risks (Round 12 Historical)
+
+- API/E2E is not current sign-off. The durable probe still requires the documented generic-surface selector/expectation reconciliation after source review and before execution.
+- The prior right-tool `CR-004` fix remains approved and should not be changed while the workspace-shell fixes are made.
+- The current package retains independent responsive adapters and no current evidence proves the approved full resize/action matrix.
+- `vue-tsc` remains unavailable; the frontend build is the available build/type confidence check.
+
+## Latest Authoritative Result (Round 12 Historical)
+
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `7.1/10` (`71/100`); unresolved `CR-005` and `CR-006` are High, with `CR-007`/`CR-008` Medium.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation-source review.
+- Recommended Recipient: `implementation_engineer`
+- Notes: The no-generic-row and semantic-trigger direction is present, but the current source diverges from the approved composed policy architecture and leaves reachable responsive-action and drawer-accessibility gaps. Complete the bounded fixes, update the implementation handoff, and return through source review before API/E2E.
+
+## Review Scorecard (Round 11 Historical)
 
 - Overall score (`/10`): `9.3`
 - Overall score (`/100`): `93`
@@ -303,19 +403,19 @@ Upstream architecture premises remain unchanged. Round 7's focused `FOP-001` rec
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Old standard-route branches and state helper are cleanly removed; `/mobile` remains independent. | Historical ticket evidence necessarily retains old selectors as baseline/negative assertions. | Keep historical evidence ticket-local and out of runtime paths. |
 | `10` | `Cleanup Completeness` | 9.4 | Obsolete source/test paths are removed and docs/package wiring are updated. | Final branch refresh and delivery-document synchronization remain downstream work. | Delivery should refresh against the recorded base and recheck docs before finalization. |
 
-## Findings
+## Findings (Round 11 Historical)
 
 `CR-001`, `CR-002`, the historical `CR-003` failure origin, and `CR-004` are resolved in the current source review. The `CR-004` fix pins the affordance layer to the scrollport without changing native scrolling, catalog/order, or the approved UX contract. No new implementation-source, structural, legacy, packaging, or test-readiness finding was identified.
 
-## Classification
+## Classification (Round 11 Historical)
 
 - `Pass` — the implementation-owned `CR-004` Local Fix is resolved; current API/E2E remains the next gate.
 
-## Recommended Recipient
+## Recommended Recipient (Round 11 Historical)
 
 `api_e2e_engineer`
 
-## Residual Risks
+## Residual Risks (Round 11 Historical)
 
 - Round 6 API/E2E is historical `Fail`; `CR-004` is resolved and the current source is ready for a fresh browser matrix. Delivery must not proceed until current API/E2E passes.
 - The current single-row scroll contract, catalog/order, and fixed panel-toggle ownership remain unchanged; the affordance layer is now pinned independently of scrolling content.
@@ -327,7 +427,7 @@ Upstream architecture premises remain unchanged. Round 7's focused `FOP-001` rec
 - `layouts/default.vue` retains `hidden md:*` styling guards on policy-controlled strip/drag-handle branches. They are currently subordinate to policy-controlled `v-if` decisions and do not create a competing route layout; future changes must not turn them into an independent responsive owner.
 - The ticket worktree contains unrelated pre-existing delivery-document modifications; delivery owns their integration and final documentation refresh.
 
-## Latest Authoritative Result
+## Latest Authoritative Result (Round 11 Historical)
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
@@ -336,3 +436,253 @@ Upstream architecture premises remain unchanged. Round 7's focused `FOP-001` rec
 - Failure Origin (when applicable): `CR-004` resolved — the fade/chevron layer is now pinned to the scrollport while tabs retain native horizontal scrolling.
 - Recommended Recipient (when applicable): `api_e2e_engineer`
 - Notes: Current source review passes. Route the cumulative package to current API/E2E; do not treat this as browser sign-off. If the updated durable probe and current execution pass, return for the separate proportional test-code review.
+
+## Round 13 Implementation Review
+
+### Review Scope And Basis
+
+- Reviewed current `HEAD` `024237c71a008d51bc4782fe66f480a6f65a415d` and the implementation handoff for the Architecture Round 7 rework.
+- Reviewed the approved requirements, investigation notes, design spec, `workspace-responsive-ui-ux-spec.md`, design review Round 7 decision, current responsive policy/composable/layout sources, changed focused tests, and the unchanged API/E2E probe as downstream context.
+- Rechecked the prior `CR-005` composed-boundary finding and `CR-006` first-activation finding before assessing new behavior.
+- Independent implementation-scoped evidence: focused review subset passed (`5` files / `30` tests); `git diff --check` passed; the durable probe passed `node --check`. The focused component run still emits missing Vue Router injection warnings in `WorkspaceAdaptiveLayout.spec.ts`. No API/E2E execution was performed or treated as sign-off.
+
+### Behavior Confirmation
+
+| Contract / behavior | Result | Evidence |
+| --- | --- | --- |
+| Single composed responsive policy boundary | `Pass` | `resolveResponsiveWorkspaceShellState` is the only active resolver; `useResponsiveWorkspaceShell` composes the viewport and both preferences; `layouts/default.vue` provides one state and shell/workspace consumers inject it. The historical adapters and right-panel responsive mutation path are removed. |
+| Right-tools-first and short-height policy | `Partial` | Normal wide/constrained and visible-preference short-height paths follow the phase order. The manual-left branch at `responsiveLayoutPolicy.ts:281-287` always tries `right=drawer` first for short height, even when `rightPanelPreference` is `hidden-by-user`; the approved contract requires the user's right strip in that case. |
+| Semantic triggers and first activation | `Pass` source / `Partial` test readiness | `WorkspaceAdaptiveLayout.vue:205-228` now continues after restoring a hidden left preference and can open the drawer in the same activation. No focused test exercises choose/history activation or selected-run continuity. |
+| Drawer/strip accessibility | `Fail` | The transient left and right surfaces remain plain `aside` elements without dialog/drawer labelling, focus containment, initial focus, or return-focus behavior. The approved workspace UX supplement makes these requirements part of the supported constrained/narrow journeys. |
+| One-row right-tool tabs and prior CR-004 behavior | `Pass` | The Round 7 implementation does not alter the approved pinned-affordance implementation, canonical catalog, or single-row scroll contract. |
+
+### Material Premise Validation
+
+#### `FOP-005` — Manual-left and hidden-right short-height precedence is reachable
+
+- Origin: approved resolver phase order and user journeys `UJ-002`/`UJ-007`; `FR-026`, `FR-030`, `FR-031`; `AC-027`, `AC-031`, `AC-032`.
+- Supported path: a user collapses the left panel and separately hides the right panel at a desktop size, then resizes the supported `/workspace` window to a non-narrow short-height state.
+- Claimed state/consequence: the effective state must preserve the user-owned left strip and the user's right strip before introducing a responsive right drawer.
+- Reachability: `Reachable`; both panel visibility actions and supported resize are normal product operations.
+- Review consequence: the current manual short-height candidate order is a real implementation defect, not a synthetic hidden-state premise.
+
+### Focused Findings
+
+| Finding ID | Severity | Affected Behavior IDs | Source Evidence | Required Action | Classification / Recipient |
+| --- | --- | --- | --- | --- | --- |
+| `CR-007` | Medium | `FR-023`, `FR-025`; `AC-024`, `AC-026` | `components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts:66-110` mounts a component that calls `useRouter()`/`useShellPrimaryNavigation()` without router/route injection. The independent focused run passed `5` files / `30` tests but emitted repeated `injection "Symbol(router)" not found` and `injection "Symbol(route location)" not found` warnings. The suite asserts only button/markup presence and does not activate the new navigation, empty-state, or history actions. | Add a test router or explicit router/route mocks, exercise choose-agent/team, open-runs/history, and constrained navigation actions, and assert the owning route/store outcome and selected-run continuity. Make the focused suite warning-free. | `Local Fix` / `implementation_engineer` |
+| `CR-008` | Medium | Accessibility/interaction contract in `workspace-responsive-ui-ux-spec.md`; `FR-023`, `FR-024`; `AC-024`, `AC-025`, `AC-026` | `layouts/default.vue:28-34,96-102` and `components/layout/WorkspaceRightToolDrawer.vue:7-29` render transient surfaces as plain `aside` nodes. There is no labelled dialog/drawer relationship, initial focus, focus containment while open, or return focus to the opening trigger; the left drawer also has no visible in-drawer close/back control at narrow widths. | Add or reuse one accessible drawer owner for both side surfaces with labelled semantics, close/backdrop handling, keyboard focus containment, initial focus, and return focus. Add focused open/close/focus regression coverage. | `Local Fix` / `implementation_engineer` |
+| `CR-009` | Medium | `FR-030`, `FR-031`; `AC-027`, `AC-031`, `AC-032`; `UJ-002`, `UJ-007` | `utils/layout/responsiveLayoutPolicy.ts:281-287` selects `{ left: 'strip', right: 'drawer' }` before `{ left: 'strip', right: 'strip' }` for every short-height manual-left state. With `leftPanelPreference='hidden-by-user'` and `rightPanelPreference='hidden-by-user'`, the resolver therefore turns the right surface into a responsive drawer instead of preserving the user's right strip, contrary to the approved short-height rule (“right drawer or the user's right strip if the right preference is hidden”). | Make the manual short-height candidate order honor `rightPanelPreference`: prefer the user-owned right strip when hidden, otherwise use the responsive drawer; preserve both preference/source values and add a pure regression for manual-left + hidden-right at short height. | `Local Fix` / `implementation_engineer` |
+
+### Prior Finding Resolution
+
+- `CR-004` remains resolved and is not reopened.
+- `CR-005` is resolved: one composed resolver and one provider adapter now own responsive state; no active split resolver path remains.
+- `CR-006` is resolved in source: `openLeftNavigation` and `openRunHistory` no longer return before opening a drawer after restoring a hidden preference. The required action journey is still under-tested and remains covered by `CR-007`.
+- `CR-008` remains unresolved; `CR-009` is new in this recheck.
+
+## Review Scorecard (Round 13)
+
+- Overall score (`/10`): `8.1`
+- Overall score (`/100`): `81`
+- Score calculation note: simple average across the ten categories is used for trend visibility only; the `Fail` decision follows the unresolved implementation/accessibility findings and the mandatory policy-phase mismatch.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.7 | The viewport -> composed adapter -> provided state -> shell/workspace surfaces spine is now clear. | Drawer open/close and focus return are still implicit component-local behavior rather than a complete interaction spine. | Complete the transient-surface lifecycle and durable action path. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 7.8 | The central responsive policy boundary is restored and panel composables own preference/width only. | Accessibility/focus ownership for both drawers remains undefined. | Give one drawer/focus owner responsibility for transient surface lifecycle. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.5 | The reviewed input/output contract and injection boundary are implemented. | Action tests do not yet prove router/store outcomes; `WorkspaceAdaptiveLayout` still coordinates several drawer actions directly. | Add explicit action test seams while keeping the policy API stable. |
+| `4` | `Separation of Concerns and File Placement` | 7.5 | Policy, adapter, shell, workspace, panel stores, and tab owners are separated. | Accessibility and focus behavior are absent from both drawer owners; workspace orchestration remains near the proactive size-pressure threshold. | Centralize reusable drawer lifecycle behavior without creating another responsive policy owner. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 8.8 | Effective state carries both surfaces, preference/source identity, consumed widths, and affordances without parallel policy models. | The short-height manual candidate matrix has a preference-sensitive gap. | Encode candidate construction so preference/source combinations cannot silently diverge. |
+| `6` | `Naming Quality and Local Readability` | 8.4 | Resolver, adapter, presentation/source, semantic trigger, and empty-state names match the approved model. | The manual candidate arrays do not make the right-preference exception self-evident. | Extract named phase candidates or comments/tests for preference-sensitive branches. |
+| `7` | `API/E2E Readiness` | 6.5 | The implementation reports focused tests, syntax, guards, localization audit, and build passing. | Current focused action tests are warning-producing and do not exercise the new route/drawer actions; API/E2E has not run on this commit. | Fix focused coverage and then route the reconciled durable probe to API/E2E. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 7.5 | The composed boundary, right-tools-first normal path, semantic controls, and prior right-tab fix align with the contract. | Manual-left + hidden-right short-height behavior violates the explicit preference-sensitive phase, and drawer focus behavior is incomplete. | Correct the candidate order and validate the full resize/action matrix. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Historical split adapters and obsolete standard-route paths are removed from active source. | Stale delivery documentation still names removed adapters, but it is explicitly delivery-owned. | Synchronize docs during delivery without reintroducing compatibility paths. |
+| `10` | `Cleanup Completeness` | 7.8 | The composed adapter and focused policy tests are added and old policy paths removed. | Required action/accessibility regressions are absent; documentation/probe reconciliation remains downstream. | Add the focused lifecycle/action tests and update the implementation handoff. |
+
+## Findings (Round 13)
+
+`CR-007` and `CR-008` remain unresolved from the prior review. `CR-009` is a new bounded implementation defect. `CR-004`, `CR-005`, and `CR-006` are resolved. The implementation is not ready for API/E2E or delivery until the three implementation-owned findings are fixed and re-reviewed.
+
+## Classification (Round 13)
+
+- `Fail` — the composed policy boundary rework is structurally aligned, but the current source still has a reachable preference-sensitive short-height mismatch, incomplete drawer accessibility, and warning-producing action-test coverage.
+- All current findings are `Local Fix` items owned by `implementation_engineer`.
+
+## Recommended Recipient (Round 13)
+
+`implementation_engineer`
+
+## Residual Risks (Round 13)
+
+- API/E2E is not current sign-off. The durable probe still requires the documented generic-surface selector/expectation reconciliation after this source gate.
+- The prior right-tool `CR-004` pinned-affordance fix and canonical single-row scroll contract remain approved and should not be changed while workspace-shell fixes are made.
+- `vue-tsc` remains unavailable; the frontend build is the available build/type confidence check.
+- Delivery-owned `autobyteus-web/docs/workspace_layout.md` still contains historical adapter language and requires documentation synchronization downstream; it is not treated as a production-source blocker in this review.
+
+## Latest Authoritative Result (Round 13)
+
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `8.1/10` (`81/100`); `CR-007`, `CR-008`, and `CR-009` remain unresolved Medium Local Fix findings. `CR-005` and `CR-006` are resolved.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation-source review.
+- Recommended Recipient: `implementation_engineer`
+- Notes: The composed resolver/adapter boundary is now implemented, but complete warning-free action coverage, drawer accessibility/focus lifecycle, and preference-sensitive short-height precedence before routing to API/E2E.
+
+## Round 14 Implementation Recheck
+
+### Review Scope And Basis
+
+- Reviewed current `HEAD` `f37df21872ae8d431077908ec20b5461d53c2f5d` and the updated implementation handoff after the Round 13 bounded fixes.
+- Rechecked `CR-007`, `CR-008`, and `CR-009` against the current source and focused tests. Reviewed the shared `useAccessibleDrawer` implementation, both drawer consumers, the updated adaptive action tests, drawer tests, and the short-height policy regression.
+- Independent focused evidence: `8` relevant files / `39` tests passed with no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains. `git diff --check` and durable probe `node --check` passed. API/E2E has not run and is not treated as sign-off.
+
+### Prior Finding Resolution
+
+| Finding | Result | Evidence |
+| --- | --- | --- |
+| `CR-007` | Resolved | `WorkspaceAdaptiveLayout.spec.ts` now supplies router/route mocks and covers wide route navigation, constrained navigation/tools, runs/history, and selected-run preservation without the prior injection warnings. |
+| `CR-008` | Resolved | `useAccessibleDrawer.ts` provides initial focus, Escape, Tab containment, close/return focus; `default.vue` and `WorkspaceRightToolDrawer.vue` provide labelled dialog semantics and close affordances. Focused runtime tests pass. |
+| `CR-009` | Resolved | The short-height manual-left candidate order now honors a hidden right preference and has pure policy coverage. |
+| `CR-004`, `CR-005`, `CR-006` | Remain resolved | The pinned right-tab affordance, composed policy boundary, and same-activation navigation fix are unchanged by this rework. |
+
+### Material Premise Validation
+
+#### `FOP-006` — The left navigation drawer must provide a full-height content owner
+
+- Origin: supported narrow/constrained `/workspace` navigation/history drawer journey (`UJ-004`, `UJ-006`) and the changed drawer wrapper in `layouts/default.vue`.
+- Supported path: the user opens the left navigation drawer and needs the existing `AppLeftPanel` navigation and run-history surface to fill the fixed drawer and retain its internal scroll behavior.
+- Claimed state/consequence: the drawer shell must establish a flex-column or equivalent definite-height layout before relying on its `flex-1` content wrapper and `AppLeftPanel`'s `h-full`/flex sizing.
+- Reachability: `Reachable`; this is the primary supported left-surface path in narrow and constrained states, not a synthetic DOM state.
+- Review consequence: the current wrapper structure leaves the fixed-height `aside` without a flex layout while its child relies on `flex-1`; add the missing layout contract and regression coverage before API/E2E.
+
+### Focused Finding
+
+| Finding ID | Severity | Affected Behavior IDs | Source Evidence | Required Action | Classification / Recipient |
+| --- | --- | --- | --- | --- | --- |
+| `CR-010` | Medium | `FR-023`, `FR-025`; `AC-024`, `AC-026`; `UJ-004`, `UJ-006` | `layouts/default.vue:30-66` adds a nested `div.min-h-0.flex-1.overflow-hidden` around `AppLeftPanel`, but the parent `aside` at lines `30-40` has no `flex flex-col` layout. Because `flex-1` only participates when its parent is a flex container, the existing `AppLeftPanel` `h-full`/internal flex sizing has no definite content-column owner in the fixed drawer (and the same wrapper is used for the docked panel). The new `default-drawer.spec.ts` stubs `AppLeftPanel` and therefore cannot detect this layout contract. | Make the left panel shell a definite flex column (or give the content wrapper an equivalent explicit height/layout contract) for both docked and drawer presentations. Add a structural/component regression that verifies the shell/content sizing classes and, where practical, the real `AppLeftPanel` scroll owner rather than only a stub. | `Local Fix` / `implementation_engineer` |
+
+## Review Scorecard (Round 14)
+
+- Overall score (`/10`): `8.9`
+- Overall score (`/100`): `89`
+- Score calculation note: the score reflects that all prior findings are resolved and the new defect is bounded, but the left navigation/history surface is a core supported journey and remains unready for API/E2E until its layout contract is corrected.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.2 | Viewport -> composed policy -> shell/workspace surfaces and drawer lifecycle are now traceable. | The left drawer's content sizing contract is not explicit in the final layout spine. | Complete the shell-to-content sizing boundary. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.0 | Responsive state and accessible drawer lifecycle have clear owners. | The left drawer shell does not yet clearly own the layout context required by its child surface. | Make the shell's flex/height responsibility explicit. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Policy inputs/outputs, drawer close events, and action-test seams are clear. | No interface defect remains; the issue is presentation structure. | Preserve the current interfaces while correcting layout context. |
+| `4` | `Separation of Concerns and File Placement` | 8.8 | Policy, adapter, drawer lifecycle, shell, and workspace responsibilities are well separated. | The shell wrapper added for accessibility also owns sizing but does not establish the required flex parent. | Keep sizing responsibility in the shell wrapper and test it. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Effective state and shared drawer lifecycle remain tight; no parallel policy model was added. | The left shell/content structure is under-specified rather than duplicated. | Use one definite shell/content structure for docked and drawer modes. |
+| `6` | `Naming Quality and Local Readability` | 9.1 | The new lifecycle and drawer names are descriptive. | `flex-1` on a non-flex parent is a local structural smell. | Align class structure with the intended flex-column ownership. |
+| `7` | `API/E2E Readiness` | 8.0 | Focused action/accessibility/policy coverage is now warning-free and passing. | API/E2E is not run, and the left drawer wrapper test is stub-only for the exact layout risk. | Correct the wrapper and route to current browser validation. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.4 | Composed policy, actions, right-tool behavior, and drawer keyboard lifecycle now align. | The core left navigation/history drawer may not fill or expose its scrollable content correctly. | Establish and verify the fixed drawer's full-height content layout. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Obsolete adapters and standard-route legacy paths remain removed. | No new legacy pressure. | Preserve clean removal. |
+| `10` | `Cleanup Completeness` | 9.0 | Rework adds shared lifecycle and durable regressions with no stale implementation path. | One structural drawer regression remains before downstream execution. | Add the sizing regression and update the handoff. |
+
+## Findings (Round 14)
+
+`CR-007`, `CR-008`, and `CR-009` are resolved. `CR-010` is an unresolved bounded implementation finding. The implementation is not ready for API/E2E or delivery until the left drawer sizing/layout contract is corrected and re-reviewed.
+
+## Classification (Round 14)
+
+- `Fail` — the responsive policy, action coverage, and accessible drawer lifecycle now pass source recheck, but the newly introduced left drawer wrapper does not establish the flex-column context required by its `flex-1` content owner.
+- `CR-010` is `Local Fix` owned by `implementation_engineer`.
+
+## Recommended Recipient (Round 14)
+
+`implementation_engineer`
+
+## Residual Risks (Round 14)
+
+- API/E2E is not current sign-off. Do not run or treat the current durable probe as approval until this source finding is resolved.
+- The prior right-tab, composed-policy, action, and accessible-drawer fixes remain approved and should not be regressed while correcting the left shell layout.
+- `vue-tsc` remains unavailable; the frontend build is the available build/type confidence check. Generated-project `tsc --noEmit` exhausted Node heap per the implementation handoff.
+- Delivery-owned historical adapter language in `autobyteus-web/docs/workspace_layout.md` remains downstream documentation work.
+
+## Latest Authoritative Result (Round 14)
+
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `8.9/10` (`89/100`); `CR-010` remains an unresolved Medium Local Fix finding. `CR-007`, `CR-008`, and `CR-009` are resolved.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation-source review.
+- Recommended Recipient: `implementation_engineer`
+- Notes: Correct the left navigation drawer's flex/height content context and return through source review before API/E2E.
+
+## Round 15 Implementation Recheck
+
+### Review Scope And Basis
+
+- Reviewed current `HEAD` `3a41ebe5b0d90939e55a6ce483919c5d78cef411` and the updated implementation handoff for the CR-010 rework.
+- Rechecked the full cumulative responsive implementation against the approved requirements, workspace UX supplement, right-tool supplement, and Architecture Round 7 composed-policy contract.
+- Reviewed the CR-010 source delta in `layouts/default.vue`, the real-panel drawer regression in `default-drawer.spec.ts`, and the structural contract in `default.spec.ts`.
+- Independent focused evidence: `8` relevant files / `40` tests passed; only the existing KaTeX quirks-mode warning remains. `git diff --check` and durable probe `node --check` passed. API/E2E has not run and is not treated as sign-off.
+
+### Prior Finding Resolution
+
+| Finding | Result | Evidence |
+| --- | --- | --- |
+| `CR-010` | Resolved | `layouts/default.vue` now gives the shared left shell `flex h-full flex-shrink-0 flex-col`; the nested `min-h-0 flex-1 overflow-hidden` wrapper therefore has a definite flex-column parent. `default-drawer.spec.ts` mounts the real `AppLeftPanel` and asserts shell, wrapper, section, and history scroll-owner classes. |
+| `CR-007`, `CR-008`, `CR-009` | Remain resolved | Prior source recheck and current focused suite retain router-clean action coverage, shared accessible-drawer lifecycle, and preference-sensitive short-height policy coverage. |
+| `CR-004`, `CR-005`, `CR-006` | Remain resolved | The pinned right-tab affordance, composed responsive policy, and same-activation drawer action behavior are unchanged by this bounded sizing fix. |
+
+### Behavior Confirmation
+
+| Contract / behavior | Result | Evidence |
+| --- | --- | --- |
+| Left navigation/history drawer sizing and scroll ownership | `Pass` | The fixed left shell is now a full-height flex column in both docked and drawer modes; the real `AppLeftPanel` and run-history scroll owner are exercised by the updated regression. |
+| Composed responsive policy and preference/source semantics | `Pass` | The current resolver/adapter boundary and Round 13 policy regressions remain intact. |
+| Accessible transient surfaces and adaptive actions | `Pass` | Shared keyboard/focus lifecycle, labelled drawer semantics, action outcomes, and selected-run continuity remain covered by focused tests. |
+| Right-tool single-row scroll contract | `Pass` source review | The CR-010 fix does not change right-tool catalog, tab density, native scrolling, pinned affordances, or fixed-toggle ownership. |
+
+## Review Scorecard (Round 15)
+
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95`
+- Score calculation note: simple average across the ten categories is used for trend visibility only; the source-review decision is Pass because prior findings are resolved and no new implementation-source issue remains. API/E2E remains a separate required gate.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.6 | The viewport -> composed policy -> shell/workspace -> accessible surface lifecycle is traceable. | Browser matrix has not yet validated the integrated runtime. | Run the current comprehensive browser matrix. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Policy, panel preferences, drawer lifecycle, shell sizing, and content owners are explicit. | Final runtime geometry remains downstream evidence. | Preserve the single policy and drawer owners. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.5 | Resolver state, injection boundary, drawer close events, and navigation actions are clear. | No source-level issue remains. | Keep future responsive behavior behind the composed contract. |
+| `4` | `Separation of Concerns and File Placement` | 9.3 | Shared accessibility is reusable and the shell sizing fix stays local to the layout owner. | `WorkspaceAdaptiveLayout.vue` remains a coordination-heavy but bounded owner. | Avoid adding unrelated shell policy or tool logic there. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | One effective responsive state and one accessible drawer lifecycle avoid parallel models. | No source-level issue remains. | Keep preference and effective presentation separate. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Current names describe policy, source, drawers, actions, and scroll ownership. | No source-level issue remains. | Preserve explicit lifecycle names. |
+| `7` | `API/E2E Readiness` | 9.0 | Focused source/action/accessibility tests, diff check, syntax, guards, and build pass. | The durable probe still needs reconciliation/execution against the no-generic-row target; API/E2E has not run on this commit. | Route the cumulative package to `api_e2e_engineer`. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.4 | The reviewed policy, drawer actions, focus lifecycle, left shell sizing, and right-tab contract align. | Deep tool-internal responsiveness and browser geometry remain downstream risks. | Validate the full viewport and `/mobile` matrix. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Obsolete split adapters and standard-route legacy paths remain removed. | No source-level issue remains. | Preserve clean active-source removal. |
+| `10` | `Cleanup Completeness` | 9.2 | CR-010 is resolved with real-panel regression coverage and the handoff is updated. | Delivery-owned docs and current API/E2E evidence remain outstanding. | Continue with API/E2E, proportional test review, and delivery docs sync. |
+
+## Findings (Round 15)
+
+No unresolved implementation-source findings remain. `CR-004` through `CR-010` are resolved in the current source review.
+
+## Classification (Round 15)
+
+- `Pass` — current implementation source aligns with the approved composed responsive-shell and right-tool contracts, and the CR-010 left-shell sizing gap is corrected.
+
+## Recommended Recipient (Round 15)
+
+`api_e2e_engineer`
+
+## Residual Risks (Round 15)
+
+- This is source-review approval only; API/E2E must execute the current state before delivery.
+- The API/E2E-owned durable probe still requires reconciliation of historical generic-surface selectors/expectations with the approved semantic-trigger/no-generic-row behavior before execution.
+- `vue-tsc` remains unavailable; the frontend build is the available build/type confidence check. Generated-project `tsc --noEmit` exhausted Node heap per the implementation handoff.
+- Deep internal Terminal/Browser/VNC responsiveness and packaged Electron/native rendering remain downstream scope boundaries.
+- Delivery-owned historical adapter language in `autobyteus-web/docs/workspace_layout.md` remains documentation-sync work and is not a source-review blocker.
+
+## Latest Authoritative Result (Round 15)
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `9.5/10` (`95/100`); no unresolved implementation-source findings remain.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation-source review.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: Route the cumulative package to current API/E2E. This approval does not constitute browser/API/E2E sign-off; if durable tests change during that stage and execution passes, return for proportional test-code review.

@@ -119,7 +119,7 @@ Implementation should not be accepted with only manual visual inspection. It sho
 
 - Pure policy boundaries around `639`, `640`, `767`, `768`, `800`, `900`, `1024`, `1180+`, and short-height cases.
 - Component/layout tests confirming one visible adaptive layout and no blank root.
-- Button/order tests for `Work -> Runs -> Files -> Tools` and the right-tool order.
+- Surface-ownership tests confirming the wide left/center/right hierarchy, no duplicate generic surface row after manual collapse, explicit narrow navigation/Tools triggers, empty-state selection actions, and canonical right-tool order.
 - Live browser/E2E responsive probe using the matrix in this report, with screenshots or traces for failures.
 - `/mobile` route remains separate and still renders `MobileRemoteAccessShell`.
 
@@ -132,3 +132,23 @@ The historical probe correctly identified that the expanded right-tool catalog c
 The current CR-003 wrapped-header implementation is therefore a design-impact follow-up, not a completed responsive fix. Future browser coverage must assert one-row rendering, scrollability, overflow discoverability, active/focused-tab reachability, canonical order, and fixed panel-toggle stability in docked and drawer states. It must not require every tab to fit before the user scrolls. See right-tool-tabs-ux-spec.md for the intended behavior.
 
 The expanded test results reinforce the existing design direction and make the responsive probe matrix a first-class requirement. They do not change the core design owner: the solution must still be one adaptive standard `/workspace` shell with centralized policy and explicit control order. They add stronger evidence that a breakpoint-only patch is inadequate because the UX remains poor from `768px` through `1024px` and in short-height windows.
+
+### Workspace shell design-impact clarification
+
+The current implementation also fails a wide-layout mental-model check that is distinct from the prior viewport failure matrix. `WorkspaceAdaptiveLayout.vue` renders `WorkspacePrimarySurfaceControls` whenever the left effective presentation is not `docked`, so a user-collapsed left panel on a full-screen window can produce a `Work / Runs / Files / Tools` row while the original right-side tabs remain visible. The live screenshot `evidence/solution-designer-workspace-current-narrow-empty-state.png` shows the related narrow empty state: the center only says `Select or run an agent/team to begin`, while the actual Agents/Agent Teams selection path is hidden behind the shell drawer.
+
+The revised validation boundary must therefore include:
+
+- wide default: no generic top surface row;
+- wide manual left collapse: left strip + center + right tabs remain in the personal-branch hierarchy, with no generic top row;
+- constrained/narrow: explicit semantic navigation/selection and Tools triggers, not duplicated `Work / Runs / Files / Tools` controls;
+- no-selection center: direct agent/team selection and run-history actions;
+- resize transitions: selected run and user panel preference are preserved.
+- modest resize while still desktop-usable: left panel remains docked when left navigation plus a practical center fit, and right tools yield first rather than triggering a blanket left-strip state;
+- policy validation proves left-panel collapse is capacity/priority-driven, not simply `viewportWidth < 1280`.
+
+These are design-impact follow-ups recorded in `workspace-responsive-ui-ux-spec.md`; they require architecture review before implementation sign-off.
+
+### DI-003 composed policy resolution
+
+Architecture Review Round 6 found that the prior package described measured capacity and right-tools-first priority without defining one executable owner. The revised design now makes `resolveResponsiveWorkspaceShellState` plus `useResponsiveWorkspaceShell` authoritative. The resolver receives viewport dimensions, left/right preferences, and preferred widths; it applies the explicit fit formula and phase order; `layouts/default.vue` provides the result to `WorkspaceAdaptiveLayout`; no second workspace resolver is allowed. Policy coverage must assert the resulting state and `presentationSource` for wide, large-constrained, constrained, narrow, short-height, manual-left-hidden, and repeated-resize cases.
