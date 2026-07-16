@@ -125,6 +125,7 @@ const showLeftDrawerBackdrop = computed(
 const showLeftStrip = computed(
   () => isStandardWorkspaceRoute.value
     && !isApplicationImmersive.value
+    && !showLeftDrawer.value
     && responsiveWorkspaceShellState.value.showLeftStrip,
 )
 const showLeftPanelDragHandle = computed(

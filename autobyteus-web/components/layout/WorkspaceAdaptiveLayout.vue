@@ -73,7 +73,7 @@
       </div>
 
       <RightSidebarStrip
-        v-else-if="responsiveWorkspaceShellState.showRightStrip"
+        v-else-if="!isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip"
         data-test="workspace-right-tool-strip"
         :strip-behavior="responsiveWorkspaceShellState.rightPanel.stripBehavior ?? 'overlay'"
         :strip-activation="responsiveWorkspaceShellState.rightPanel.stripActivation!"

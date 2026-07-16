@@ -149,6 +149,10 @@ Round 25 local checks: focused workspace strip/drawer/default suite passed (`6` 
 | CR-016 right-tool drawer geometry | `WorkspaceRightToolDrawer.vue` restores explicit `inset-y-0 right-0` positioning for the finite-width transient drawer while retaining the no-visible-title/no-close-X contract. | Focused drawer coverage asserts the right-edge/full-height classes and labelled dialog semantics. |
 | CR-017 left open-drawer lifecycle | `LeftSidebarStrip.vue` treats `stripActivation = open-drawer` as authoritative: it toggles the local drawer and defers route navigation, so the standard `/workspace` route watcher cannot immediately close the opened drawer. Redock activation preserves the existing route navigation behavior. | Left-strip and default-layout lifecycle coverage verifies no navigation on open-drawer, drawer persistence, visible strip retention, and existing-strip close; focused suite passed (`7` files, `59` tests), probe syntax, policy TypeScript, build, guards, localization audit, and diff checks pass. |
 
+### Round 27 Architecture-Rework Trace
+
+| LID-003 drawer visibility ownership | `WorkspaceAdaptiveLayout.vue` gates the right strip on `!isRightDrawerOpen`; `layouts/default.vue` gates the left strip on `!showLeftDrawer`. Each open transient drawer is therefore the sole visible surface for its side, while dismissal restores the policy-selected strip without changing preferences. | Adaptive/default component tests and the durable probe assert strip-only when closed and drawer-only when open; left/right drawer backdrop, Escape, and focus lifecycle remain owned by the existing accessible-drawer paths. |
+
 ### Right-Panel Resize Local-Fix Trace
 
 | Finding | Implementation path | Verification |

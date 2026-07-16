@@ -157,9 +157,9 @@ describe('default layout drawer lifecycle', () => {
 
     expect(routerMock.push).not.toHaveBeenCalled()
     expect(wrapper.get('[data-test="app-left-navigation-drawer"]').attributes('role')).toBe('dialog')
-    expect(wrapper.get('[data-test="workspace-left-navigation-strip"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="workspace-left-navigation-strip"]').exists()).toBe(false)
 
-    await strip.get('button[title="Agents"]').trigger('click')
+    await wrapper.get('[data-test="app-left-drawer-backdrop"]').trigger('click')
     await nextTick()
     await nextTick()
 

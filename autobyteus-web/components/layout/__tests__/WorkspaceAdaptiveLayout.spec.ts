@@ -346,6 +346,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
 
     expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-strip');
   });
 
@@ -385,6 +386,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
 
     expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-drawer');
   });
 
@@ -400,10 +402,11 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(source).not.toContain('showNavigationTrigger');
     expect(source).not.toContain("rightPanel.presentation === 'drawer'");
     expect(source).toContain('rightPanel.stripActivation');
+    expect(source).toContain('!isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip');
     expect(source).toContain('@request-redock="redockRightPanel"');
     expect(source).toContain("leftPanel.stripActivation === 'open-drawer'");
     expect(source).not.toContain('openToolsSurface');
-    expect(source).toContain('v-else-if="responsiveWorkspaceShellState.showRightStrip"');
+    expect(source).toContain('v-else-if="!isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip"');
     expect(source).toContain('@request-open="openRightDrawer"');
     expect(source).toContain('ref="workspaceFlowRef"');
     expect(source).toContain('new ResizeObserver');
@@ -494,6 +497,7 @@ describe('WorkspaceAdaptiveLayout', () => {
 
     await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
     expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
     expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(false);
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-2');
   });
