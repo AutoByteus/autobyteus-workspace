@@ -1,0 +1,112 @@
+{
+  "result": "Pass",
+  "url": "http://127.0.0.1:18124/__validation-lifecycle",
+  "observations": [
+    {
+      "label": "initial agent status",
+      "actual": "offline"
+    },
+    {
+      "label": "initial agent dot is offline gray",
+      "actual": true
+    },
+    {
+      "label": "turn A canonical running status",
+      "actual": "running"
+    },
+    {
+      "label": "turn A agent dot is running blue",
+      "actual": true
+    },
+    {
+      "label": "turn A team dot converges to running blue",
+      "actual": true
+    },
+    {
+      "label": "turn A canonical idle status",
+      "actual": "idle"
+    },
+    {
+      "label": "turn A agent dot is idle green",
+      "actual": true
+    },
+    {
+      "label": "late retired-turn activity preserves canonical idle",
+      "actual": "idle"
+    },
+    {
+      "label": "late activity does not reopen running dot",
+      "actual": true
+    },
+    {
+      "label": "late activity remains visible as one message",
+      "actual": "1"
+    },
+    {
+      "label": "new turn B opens running",
+      "actual": "running"
+    },
+    {
+      "label": "turn B returns to idle",
+      "actual": "idle"
+    },
+    {
+      "label": "team dot converges to final idle green",
+      "actual": true
+    }
+  ],
+  "browserMessages": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ]
+}

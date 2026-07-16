@@ -1,0 +1,5 @@
+
+> autobyteus-server-ts@0.1.1 cleanup:codex-e2e-history /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+> node ./scripts/cleanup-codex-e2e-run-history.mjs
+
+No run history index found at '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/memory/run_history_index.json'. Nothing to clean.

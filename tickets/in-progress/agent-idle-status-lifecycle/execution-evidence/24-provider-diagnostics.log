@@ -1,0 +1,74 @@
+--- LM Studio model catalog readiness ---
+{
+  "data": [
+    {
+      "id": "google/gemma-4-26b-a4b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.6-27b-mtplx-optimized-speed",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.6-27b-ud-mlx",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.6-27b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "qwen3.5-27b",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "gemma-4-31b-it",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "text-embedding-nomic-embed-text-v1.5",
+      "object": "model",
+      "owned_by": "organization_owner"
+    },
+    {
+      "id": "deepseek-ocr",
+      "object": "model",
+      "owned_by": "organization_owner"
+    }
+  ],
+  "object": "list"
+}
+HTTP 200
+
+--- LM Studio selected model completion ---
+{
+    "error": {
+        "message": "Failed to load model \"qwen3.6-27b-mtplx-optimized-speed\". Error: Failed to load model.",
+        "type": "invalid_request_error",
+        "param": "model",
+        "code": null
+    }
+}
+HTTP 400
+--- Ollama selected model direct completion ---
+{"model":"qwen3.5:35b-a3b-coding-nvfp4","created_at":"2026-07-16T04:34:44.770728Z","message":{"role":"assistant","content":"","thinking":"Thinking Process:\n\n1.  **"},"done":true,"done_reason":"length","total_duration":7222409875,"load_duration":5267694459,"prompt_eval_count":14,"prompt_eval_duration":1517482833,"eval_count":8,"eval_duration":206763333}
+HTTP 200
+--- Ollama selected model direct completion without thinking ---
+{"model":"qwen3.5:35b-a3b-coding-nvfp4","created_at":"2026-07-16T04:35:11.99228Z","message":{"role":"assistant","content":"PING"},"done":true,"done_reason":"stop","total_duration":586993084,"load_duration":54389709,"prompt_eval_count":16,"prompt_eval_duration":398388333,"eval_count":1,"eval_duration":85060500}
+HTTP 200

@@ -760,13 +760,44 @@ const defineRuntimeSuite = (input: {
           (message) => assistantTextMatches(message, firstToken),
           `assistant text containing ${firstToken}`,
         );
-        await waitForMessageAfter(
+        const firstIdle = await waitForMessageAfter(
           messages,
           firstStartIndex,
           (message) =>
             message.type === "AGENT_STATUS" && message.payload.status === "idle",
           "first AGENT_STATUS IDLE",
         );
+        const firstIdleIndex = messages.indexOf(firstIdle);
+        expect(
+          messages
+            .slice(firstStartIndex, firstIdleIndex + 1)
+            .some(
+              (message) =>
+                message.type === "AGENT_STATUS" && message.payload.status === "running",
+            ),
+        ).toBe(true);
+
+        await wait(750);
+        expect(
+          messages
+            .slice(firstIdleIndex + 1)
+            .filter((message) => message.type === "AGENT_STATUS")
+            .map((message) => message.payload.status),
+        ).not.toContain("running");
+
+        const reconnect = await openAgentSocket(runId);
+        try {
+          await waitForMessage(
+            reconnect.messages,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
+            "reconnected AGENT_STATUS IDLE before restore",
+            15_000,
+          );
+        } finally {
+          reconnect.socket.close();
+          await reconnect.app.close();
+        }
 
         await terminateAgentRun(runId);
         await restoreAgentRun(runId);

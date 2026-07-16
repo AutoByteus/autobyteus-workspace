@@ -1,0 +1,491 @@
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+> vitest -- --run
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:60650) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-DXbcn3
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-DXbcn3/.env
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Agent Definition created successfully with ID: codex-app-server-api-e2e-105aff1f-66c4-4e5a-9f20-33e1153121eb
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-restore-workspace-QtXgaH
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-restore-workspace-QtXgaH.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Created and registered workspace ID: agent_ws_ed90c7fa31df5a51d1ab8035a16db584db226e968ec113c6607d1b3323ea8a45
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=36
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=24
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-restore-workspace-QtXgaH
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-restore-workspace-QtXgaH.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Reusing registered workspace ID: agent_ws_ed90c7fa31df5a51d1ab8035a16db584db226e968ec113c6607d1b3323ea8a45
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=135
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=146
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Finished Autobyteus audio model discovery. Total models registered: 8
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Successfully created codex_app_server agent run 'codex_app_server_api_e2e_105aff1f_66c4_4e5a_9f20_ed65d48e93af4708a1bc496615fc68f1'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Agent websocket attached for run codex_app_server_api_e2e_105aff1f_66c4_4e5a_9f20_ed65d48e93af4708a1bc496615fc68f1
+Created agent session 90823249-31d8-4cfe-b5f3-865252352c82 for run codex_app_server_api_e2e_105aff1f_66c4_4e5a_9f20_ed65d48e93af4708a1bc496615fc68f1
+Agent WebSocket connected: session=90823249-31d8-4cfe-b5f3-865252352c82, run=codex_app_server_api_e2e_105aff1f_66c4_4e5a_9f20_ed65d48e93af4708a1bc496615fc68f1
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Finished Ollama discovery. Total models registered: 4
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Finished LM Studio discovery. Total models registered: 10
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Finished Autobyteus discovery. Total models registered: 74
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Agent websocket attached for run codex_app_server_api_e2e_105aff1f_66c4_4e5a_9f20_ed65d48e93af4708a1bc496615fc68f1
+Created agent session a84afd29-9dd9-4eeb-a1b0-aaf20e0821d2 for run codex_app_server_api_e2e_105aff1f_66c4_4e5a_9f20_ed65d48e93af4708a1bc496615fc68f1
+Agent WebSocket connected: session=a84afd29-9dd9-4eeb-a1b0-aaf20e0821d2, run=codex_app_server_api_e2e_105aff1f_66c4_4e5a_9f20_ed65d48e93af4708a1bc496615fc68f1
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Closed agent session a84afd29-9dd9-4eeb-a1b0-aaf20e0821d2
+Agent WebSocket disconnected: a84afd29-9dd9-4eeb-a1b0-aaf20e0821d2
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-restore-workspace-QtXgaH
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-restore-workspace-QtXgaH.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Reusing registered workspace ID: agent_ws_ed90c7fa31df5a51d1ab8035a16db584db226e968ec113c6607d1b3323ea8a45
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Successfully restored codex_app_server agent run 'codex_app_server_api_e2e_105aff1f_66c4_4e5a_9f20_ed65d48e93af4708a1bc496615fc68f1'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Closed agent session 90823249-31d8-4cfe-b5f3-865252352c82
+Agent WebSocket disconnected: 90823249-31d8-4cfe-b5f3-865252352c82
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+In-memory cache: Added new agent definition with ID codex-app-server-api-e2e-4cee8fda-2af8-497c-8f25-df9378623760.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Agent Definition created successfully with ID: codex-app-server-api-e2e-4cee8fda-2af8-497c-8f25-df9378623760
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-projection-workspace-VQYMCX
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-projection-workspace-VQYMCX.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Created and registered workspace ID: agent_ws_a83d37a0bba90a456f1eee92571d6262de6ffecfd33155992a0ef95a5ffa409c
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-projection-workspace-VQYMCX
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-projection-workspace-VQYMCX.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Reusing registered workspace ID: agent_ws_a83d37a0bba90a456f1eee92571d6262de6ffecfd33155992a0ef95a5ffa409c
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Successfully created codex_app_server agent run 'codex_app_server_api_e2e_4cee8fda_2af8_497c_8f25_306f6436d555411ab68e956aa3f61454'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Agent websocket attached for run codex_app_server_api_e2e_4cee8fda_2af8_497c_8f25_306f6436d555411ab68e956aa3f61454
+Created agent session 2e203c4b-51f1-4bbd-aae6-adc184352c86 for run codex_app_server_api_e2e_4cee8fda_2af8_497c_8f25_306f6436d555411ab68e956aa3f61454
+Agent WebSocket connected: session=2e203c4b-51f1-4bbd-aae6-adc184352c86, run=codex_app_server_api_e2e_4cee8fda_2af8_497c_8f25_306f6436d555411ab68e956aa3f61454
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-projection-workspace-VQYMCX
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-projection-workspace-VQYMCX.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Reusing registered workspace ID: agent_ws_a83d37a0bba90a456f1eee92571d6262de6ffecfd33155992a0ef95a5ffa409c
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Successfully restored codex_app_server agent run 'codex_app_server_api_e2e_4cee8fda_2af8_497c_8f25_306f6436d555411ab68e956aa3f61454'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+Closed agent session 2e203c4b-51f1-4bbd-aae6-adc184352c86
+Agent WebSocket disconnected: 2e203c4b-51f1-4bbd-aae6-adc184352c86
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+In-memory cache: Added new agent definition with ID codex-app-server-api-e2e-5c71b714-860a-4574-896a-2562a41503cd.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Agent Definition created successfully with ID: codex-app-server-api-e2e-5c71b714-860a-4574-896a-2562a41503cd
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-gBeIxt
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-gBeIxt.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Created and registered workspace ID: agent_ws_9f523c95b562432018af807d3de0bb02e126112bfdc4b9213b8c5ab88abda09c
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-gBeIxt
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-gBeIxt.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Reusing registered workspace ID: agent_ws_9f523c95b562432018af807d3de0bb02e126112bfdc4b9213b8c5ab88abda09c
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Successfully created codex_app_server agent run 'codex_app_server_api_e2e_5c71b714_860a_4574_896a_579bd179a73e4f34ae51113ce484116e'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Agent websocket attached for run codex_app_server_api_e2e_5c71b714_860a_4574_896a_579bd179a73e4f34ae51113ce484116e
+Created agent session 6bd65d32-017e-44da-aef1-b948b765292a for run codex_app_server_api_e2e_5c71b714_860a_4574_896a_579bd179a73e4f34ae51113ce484116e
+Agent WebSocket connected: session=6bd65d32-017e-44da-aef1-b948b765292a, run=codex_app_server_api_e2e_5c71b714_860a_4574_896a_579bd179a73e4f34ae51113ce484116e
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Closed agent session 6bd65d32-017e-44da-aef1-b948b765292a
+Agent WebSocket disconnected: 6bd65d32-017e-44da-aef1-b948b765292a
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+In-memory cache: Added new agent definition with ID codex-app-server-api-e2e-6b227349-86c9-423a-b7bc-59340e8ff6aa.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Agent Definition created successfully with ID: codex-app-server-api-e2e-6b227349-86c9-423a-b7bc-59340e8ff6aa
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-active-terminate-workspace-BNSzlr
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-active-terminate-workspace-BNSzlr.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Created and registered workspace ID: agent_ws_237b303488220d8ddab31ab39d35cf459302c8a264f6d6027511d8077a2643c6
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-active-terminate-workspace-BNSzlr
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-active-terminate-workspace-BNSzlr.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Reusing registered workspace ID: agent_ws_237b303488220d8ddab31ab39d35cf459302c8a264f6d6027511d8077a2643c6
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Successfully created codex_app_server agent run 'codex_app_server_api_e2e_6b227349_86c9_423a_b7bc_926681878a5f4bcd8153dbade6b6551c'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Agent websocket attached for run codex_app_server_api_e2e_6b227349_86c9_423a_b7bc_926681878a5f4bcd8153dbade6b6551c
+Created agent session a33aed50-7c64-4f4f-a0ee-9e5f1ae2e0fd for run codex_app_server_api_e2e_6b227349_86c9_423a_b7bc_926681878a5f4bcd8153dbade6b6551c
+Agent WebSocket connected: session=a33aed50-7c64-4f4f-a0ee-9e5f1ae2e0fd, run=codex_app_server_api_e2e_6b227349_86c9_423a_b7bc_926681878a5f4bcd8153dbade6b6551c
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Closed agent session a33aed50-7c64-4f4f-a0ee-9e5f1ae2e0fd
+Agent WebSocket disconnected: a33aed50-7c64-4f4f-a0ee-9e5f1ae2e0fd
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-active-terminate-workspace-BNSzlr
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-active-terminate-workspace-BNSzlr.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Reusing registered workspace ID: agent_ws_237b303488220d8ddab31ab39d35cf459302c8a264f6d6027511d8077a2643c6
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Successfully restored codex_app_server agent run 'codex_app_server_api_e2e_6b227349_86c9_423a_b7bc_926681878a5f4bcd8153dbade6b6551c'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Agent websocket attached for run codex_app_server_api_e2e_6b227349_86c9_423a_b7bc_926681878a5f4bcd8153dbade6b6551c
+Created agent session 6bc62846-c34a-4423-8f41-8015613228a2 for run codex_app_server_api_e2e_6b227349_86c9_423a_b7bc_926681878a5f4bcd8153dbade6b6551c
+Agent WebSocket connected: session=6bc62846-c34a-4423-8f41-8015613228a2, run=codex_app_server_api_e2e_6b227349_86c9_423a_b7bc_926681878a5f4bcd8153dbade6b6551c
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+Closed agent session 6bc62846-c34a-4423-8f41-8015613228a2
+Agent WebSocket disconnected: 6bc62846-c34a-4423-8f41-8015613228a2
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+In-memory cache: Added new agent definition with ID codex-app-server-api-e2e-b967f58c-9a32-4d74-b530-aca15f9f14cc.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+Agent Definition created successfully with ID: codex-app-server-api-e2e-b967f58c-9a32-4d74-b530-aca15f9f14cc
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-autoexec-workspace-kQ1Qoq
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-autoexec-workspace-kQ1Qoq.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+Created and registered workspace ID: agent_ws_cbc5e5875792ed2f97a3892141be49c42dad7900e57f997613911a41b36e8cdd
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-autoexec-workspace-kQ1Qoq
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-autoexec-workspace-kQ1Qoq.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+Reusing registered workspace ID: agent_ws_cbc5e5875792ed2f97a3892141be49c42dad7900e57f997613911a41b36e8cdd
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+Successfully created codex_app_server agent run 'codex_app_server_api_e2e_b967f58c_9a32_4d74_b530_e34ebe06c95142008ae2751b22dab388'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+Agent websocket attached for run codex_app_server_api_e2e_b967f58c_9a32_4d74_b530_e34ebe06c95142008ae2751b22dab388
+Created agent session 4d46932a-8eac-4a61-8576-3d50b341f18f for run codex_app_server_api_e2e_b967f58c_9a32_4d74_b530_e34ebe06c95142008ae2751b22dab388
+Agent WebSocket connected: session=4d46932a-8eac-4a61-8576-3d50b341f18f, run=codex_app_server_api_e2e_b967f58c_9a32_4d74_b530_e34ebe06c95142008ae2751b22dab388
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+Closed agent session 4d46932a-8eac-4a61-8576-3d50b341f18f
+Agent WebSocket disconnected: 4d46932a-8eac-4a61-8576-3d50b341f18f
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+In-memory cache: Added new agent definition with ID codex-app-server-api-e2e-2d4ccfa0-b0f7-4bc8-8c73-a3eaa0dda012.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+Agent Definition created successfully with ID: codex-app-server-api-e2e-2d4ccfa0-b0f7-4bc8-8c73-a3eaa0dda012
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-approval-workspace-V5eHD2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-approval-workspace-V5eHD2.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+Created and registered workspace ID: agent_ws_e0aef5adad6712264d19ad7f0b5d78a9bfd2d2f1428b21c2c6d22264db4b83c4
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-approval-workspace-V5eHD2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-approval-workspace-V5eHD2.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+Reusing registered workspace ID: agent_ws_e0aef5adad6712264d19ad7f0b5d78a9bfd2d2f1428b21c2c6d22264db4b83c4
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+Successfully created codex_app_server agent run 'codex_app_server_api_e2e_2d4ccfa0_b0f7_4bc8_8c73_075d176f3776474db357a6c4327ec800'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+Agent websocket attached for run codex_app_server_api_e2e_2d4ccfa0_b0f7_4bc8_8c73_075d176f3776474db357a6c4327ec800
+Created agent session 33cff21f-0696-470e-9598-5df3841b6175 for run codex_app_server_api_e2e_2d4ccfa0_b0f7_4bc8_8c73_075d176f3776474db357a6c4327ec800
+Agent WebSocket connected: session=33cff21f-0696-470e-9598-5df3841b6175, run=codex_app_server_api_e2e_2d4ccfa0_b0f7_4bc8_8c73_075d176f3776474db357a6c4327ec800
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+Closed agent session 33cff21f-0696-470e-9598-5df3841b6175
+Agent WebSocket disconnected: 33cff21f-0696-470e-9598-5df3841b6175
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+In-memory cache: Added new agent definition with ID codex-app-server-api-e2e-8b6a96bf-a5db-4969-aa8e-2fb45b89a929.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent Definition created successfully with ID: codex-app-server-api-e2e-8b6a96bf-a5db-4969-aa8e-2fb45b89a929
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-Sln2Ol
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-Sln2Ol.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Created and registered workspace ID: agent_ws_1062ec3f4c0f4bcea0e6d0e335a1879a72ac74c0a69eebb3a81a6f52806ed003
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-Sln2Ol
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-Sln2Ol.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Reusing registered workspace ID: agent_ws_1062ec3f4c0f4bcea0e6d0e335a1879a72ac74c0a69eebb3a81a6f52806ed003
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Successfully created codex_app_server agent run 'codex_app_server_api_e2e_8b6a96bf_a5db_4969_aa8e_9ee750b63a114be7b6ff058a1cb1c5eb'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent websocket attached for run codex_app_server_api_e2e_8b6a96bf_a5db_4969_aa8e_9ee750b63a114be7b6ff058a1cb1c5eb
+Created agent session 8210de47-85ea-40f1-b915-a8835a5f6d5b for run codex_app_server_api_e2e_8b6a96bf_a5db_4969_aa8e_9ee750b63a114be7b6ff058a1cb1c5eb
+Agent WebSocket connected: session=8210de47-85ea-40f1-b915-a8835a5f6d5b, run=codex_app_server_api_e2e_8b6a96bf_a5db_4969_aa8e_9ee750b63a114be7b6ff058a1cb1c5eb
+

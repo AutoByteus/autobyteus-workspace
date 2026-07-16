@@ -2,11 +2,17 @@ import fastify from "fastify";
 import websocket from "@fastify/websocket";
 import { describe, expect, it } from "vitest";
 import WebSocket from "ws";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
+import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentApiStatus } from "../../../src/agent-execution/domain/agent-status-payload.js";
+import { dispatchProcessedAgentRunEvents } from "../../../src/agent-execution/events/dispatch-processed-agent-run-events.js";
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
@@ -168,6 +174,74 @@ class FakeAgentRun {
   }
 }
 
+class PipelineBackedAgentRunBackend implements AgentRunBackend {
+  readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
+  readonly context: AgentRunContext<null>;
+  private readonly listeners = new Set<(event: unknown) => void>();
+
+  constructor(readonly runId: string) {
+    this.context = new AgentRunContext({
+      runId,
+      config: new AgentRunConfig({
+        runtimeKind: this.runtimeKind,
+        agentDefinitionId: "pipeline-backed-agent",
+        llmModelIdentifier: "pipeline-backed-model",
+        autoExecuteTools: true,
+        workspaceId: null,
+        memoryDir: null,
+        llmConfig: null,
+        skillAccessMode: SkillAccessMode.NONE,
+      }),
+      runtimeContext: null,
+    });
+  }
+
+  getContext(): AgentRunContext<null> {
+    return this.context;
+  }
+
+  isActive(): boolean {
+    return true;
+  }
+
+  getPlatformAgentRunId(): string | null {
+    return "pipeline-backed-thread";
+  }
+
+  getStatusSnapshot(): StatusPayload {
+    return { status: "idle", can_interrupt: false };
+  }
+
+  subscribeToEvents(listener: (event: unknown) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  async postUserMessage(): Promise<{ accepted: true }> {
+    return { accepted: true };
+  }
+
+  async approveToolInvocation(): Promise<{ accepted: true }> {
+    return { accepted: true };
+  }
+
+  async interrupt(): Promise<{ accepted: true }> {
+    return { accepted: true };
+  }
+
+  async terminate(): Promise<{ accepted: true }> {
+    return { accepted: true };
+  }
+
+  async emitProcessed(events: AgentRunEvent[]): Promise<void> {
+    await dispatchProcessedAgentRunEvents({
+      runContext: this.context,
+      listeners: this.listeners,
+      events,
+    });
+  }
+}
+
 class FakeTeamRun {
   readonly runId = "team-status-1";
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
@@ -308,7 +382,7 @@ const expectCanonicalStatusPayloadFields = (payload: Record<string, unknown>) =>
   }
 };
 
-const openAgentApp = async (run: FakeAgentRun) => {
+const openAgentApp = async (run: FakeAgentRun | AgentRun) => {
   const commandRegistry = new AgentRunCommandRegistry();
   const overlayStore = new AgentRunCommandStatusOverlayStore();
   const statusProjectionService = new AgentRunStatusProjectionService({
@@ -389,6 +463,121 @@ describe("Agent status websocket contract integration", () => {
       }
     },
   );
+
+  it("keeps a completed run idle through late same-turn tool content and an actual websocket reconnect", async () => {
+    const runId = "pipeline-late-tool-run";
+    const backend = new PipelineBackedAgentRunBackend(runId);
+    const run = new AgentRun({ context: backend.context, backend });
+    const primary = await openAgentApp(run);
+    const socket = new WebSocket(`${primary.baseUrl}/ws/agent/${runId}`);
+    const messages = captureMessages(socket);
+    let reconnect:
+      | Awaited<ReturnType<typeof openAgentApp>> & { socket: WebSocket }
+      | null = null;
+
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, 0); // CONNECTED
+      expect(await waitForBufferedMessage(messages, 1)).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "idle", can_interrupt: false },
+      });
+
+      await backend.emitProcessed([
+        {
+          runId,
+          eventType: AgentRunEventType.TURN_STARTED,
+          payload: { turn_id: "turn-a" },
+          statusHint: "ACTIVE",
+        },
+        {
+          runId,
+          eventType: AgentRunEventType.AGENT_STATUS,
+          payload: { status: "running", can_interrupt: true },
+          statusHint: "ACTIVE",
+        },
+      ]);
+      expect(await waitForBufferedMessage(messages, 2)).toMatchObject({
+        type: "TURN_STARTED",
+        payload: { turn_id: "turn-a" },
+      });
+      expect(await waitForBufferedMessage(messages, 3)).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "running", can_interrupt: true },
+      });
+
+      await backend.emitProcessed([
+        {
+          runId,
+          eventType: AgentRunEventType.TURN_COMPLETED,
+          payload: { turn_id: "turn-a" },
+          statusHint: "IDLE",
+        },
+        {
+          runId,
+          eventType: AgentRunEventType.AGENT_STATUS,
+          payload: { status: "idle", can_interrupt: false },
+          statusHint: "IDLE",
+        },
+      ]);
+      expect(await waitForBufferedMessage(messages, 4)).toMatchObject({
+        type: "TURN_COMPLETED",
+        payload: { turn_id: "turn-a" },
+      });
+      expect(await waitForBufferedMessage(messages, 5)).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "idle", can_interrupt: false },
+      });
+
+      await backend.emitProcessed([
+        {
+          runId,
+          eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+          payload: {
+            turn_id: "turn-a",
+            invocation_id: "late-call-a",
+            tool_name: "run_bash",
+            result: "late-result-content",
+          },
+          statusHint: "ACTIVE",
+        },
+      ]);
+      expect(await waitForBufferedMessage(messages, 6)).toMatchObject({
+        type: "TOOL_EXECUTION_SUCCEEDED",
+        payload: {
+          turn_id: "turn-a",
+          invocation_id: "late-call-a",
+          result: "late-result-content",
+        },
+      });
+      expect(messages.slice(6)).not.toContainEqual(expect.objectContaining({
+        type: "AGENT_STATUS",
+        payload: expect.objectContaining({ status: "running" }),
+      }));
+      expect(run.getStatusSnapshot()).toMatchObject({
+        status: "idle",
+        can_interrupt: false,
+      });
+
+      const reconnectApp = await openAgentApp(run);
+      const reconnectSocket = new WebSocket(`${reconnectApp.baseUrl}/ws/agent/${runId}`);
+      reconnect = { ...reconnectApp, socket: reconnectSocket };
+      const reconnectMessages = captureMessages(reconnectSocket);
+      await waitForOpen(reconnectSocket);
+      await waitForBufferedMessage(reconnectMessages, 0); // CONNECTED
+      expect(await waitForBufferedMessage(reconnectMessages, 1)).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "idle", can_interrupt: false, agent_id: runId },
+      });
+    } finally {
+      if (reconnect) {
+        reconnect.socket.close();
+        await reconnect.app.close();
+      }
+      socket.close();
+      await primary.app.close();
+    }
+  });
 
   it.each(runtimeCases)(
     "normalizes live %s AGENT_STATUS payloads over the real websocket",

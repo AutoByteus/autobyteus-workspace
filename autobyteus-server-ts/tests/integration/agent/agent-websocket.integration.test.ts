@@ -342,7 +342,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         state: "accepted",
         accepted: true,
         duplicate: false,
-        status: { status: "initializing", can_interrupt: false, agent_id: runId },
+        status: { status: "running", can_interrupt: false, agent_id: runId },
       });
       expect(restoredRun.messages).toHaveLength(1);
       expect(restoredRun.messages[0].content).toBe("hello after restore");
@@ -355,6 +355,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         expect.objectContaining({ uri: "https://example.com/cat.png", file_type: "image" }),
       ]);
 
+      const canonicalRunningStart = messages.length;
       restoredRun.emit({
         runId,
         eventType: AgentRunEventType.AGENT_STATUS,
@@ -364,7 +365,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       const running = await waitForMessageMatching(
         messages,
         (message) => message.type === "AGENT_STATUS" && message.payload.status === "running",
-        2,
+        canonicalRunningStart,
       );
       expect(running.payload).toMatchObject({ status: "running", can_interrupt: true, agent_id: runId });
       expect(harness.overlayStore.getOverlay(runId)).toBeNull();
