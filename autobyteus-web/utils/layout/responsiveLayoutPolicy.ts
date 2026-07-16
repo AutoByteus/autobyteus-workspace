@@ -280,11 +280,17 @@ export const resolveResponsiveWorkspaceShellState = (
   // remains a user-owned strip and never enables the generic surface row.
   if (leftIsUserHidden) {
     const manualCandidates = isShortHeight
-      ? [
-          { left: leftStrip, right: 'drawer' as const },
-          { left: leftStrip, right: 'strip' as const },
-          { left: leftStrip, right: 'docked' as const },
-        ]
+      ? rightPreference === 'hidden-by-user'
+        ? [
+            { left: leftStrip, right: 'strip' as const },
+            { left: leftStrip, right: 'drawer' as const },
+            { left: leftStrip, right: 'docked' as const },
+          ]
+        : [
+            { left: leftStrip, right: 'drawer' as const },
+            { left: leftStrip, right: 'strip' as const },
+            { left: leftStrip, right: 'docked' as const },
+          ]
       : [
           { left: leftStrip, right: rightPreference === 'hidden-by-user' ? 'strip' as const : 'docked' as const },
           { left: leftStrip, right: 'drawer' as const },

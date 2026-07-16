@@ -98,6 +98,8 @@ const shellMessages = {
   'shell.workspaceSurfaces.files': '文件',
   'shell.workspaceSurfaces.tools': '工具',
   'shell.workspaceSurfaces.closeTools': '关闭工具',
+  'shell.workspaceSurfaces.navigationDrawerTitle': '智能体和团队',
+  'shell.workspaceSurfaces.closeNavigation': '关闭导航',
   'shell.workspaceSurfaces.semanticTriggersAriaLabel': '工作区导航',
   'shell.workspaceSurfaces.openNavigation': '智能体和团队',
   'shell.workspaceSurfaces.openTools': '工具',

@@ -26,6 +26,8 @@ Architecture review Round 5 approved the workspace-shell rework after resolving 
 
 Architecture review Round 7 approved the composed responsive-policy boundary after resolving `DI-003`. The pure `resolveResponsiveWorkspaceShellState` resolver now owns the exact consumed-width fit formula, narrow/manual/short-height precedence, right-tools-first candidate phases, effective presentation/source state, and FR-031/AC-032 boundary behavior. `useResponsiveWorkspaceShell` observes the viewport once, composes left/right preferences, provides the single state from `layouts/default.vue`, and is consumed by the shell and workspace renderers. The historical app-shell/workspace policy adapters and right-panel responsive presentation mutation path were removed.
 
+Code review Round 13 returned bounded implementation fixes for CR-007, CR-008, and CR-009. This rework adds router/route-mocked action coverage for the adaptive workspace, a shared `useAccessibleDrawer` lifecycle for left and right transient surfaces, labelled dialog semantics with initial focus, focus containment, Escape/backdrop/close handling, focus return, and a visible narrow left-drawer close control. The short-height manual-left candidate phase now preserves a user-hidden right strip before considering a responsive right drawer. Current implementation checks below are local source/interaction checks only; API/E2E remains the next owned stage after source review passes.
+
 ## What Changed
 
 - Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
@@ -44,6 +46,9 @@ Architecture review Round 7 approved the composed responsive-policy boundary aft
 - Replaced the actionless center placeholder with an actionable empty state for choosing an agent/team and opening runs/history, retaining selected-run and panel-preference state through responsive presentation changes.
 - Changed shell capacity priority so the left panel remains docked while left navigation plus the practical center fit; right tools yield to a strip/drawer first, and manual left collapse is represented separately from responsive collapse.
 - Replaced the split app-shell/workspace policy paths with `resolveResponsiveWorkspaceShellState` plus the `useResponsiveWorkspaceShell` provider; the shell and workspace now consume one composed state without a blanket `<1280px` left-strip rule.
+- Added warning-free adaptive action coverage with explicit router mocks, route outcomes, drawer/store outcomes, and selected-run continuity assertions for wide empty-state selection, runs/history, and constrained Agents & teams/Tools triggers.
+- Added the shared `useAccessibleDrawer` lifecycle owner and runtime regression coverage for both default-shell left navigation and right-tool drawer open/focus/keyboard/close/return behavior.
+- Corrected short-height manual-left candidate priority so a user-hidden right preference remains a user-owned right strip, with a pure resolver regression.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -58,6 +63,14 @@ Architecture review Round 7 approved the composed responsive-policy boundary aft
 | FR-016, FR-017, FR-018, FR-019, FR-020, AC-016 through AC-021, AC-029 | Single-row right-tool header preserves personal-branch typography/spacing, supports native horizontal scrolling, exposes conditional discoverability, auto-reaches active/focused tabs, and keeps any More menu optional | `RightSideTabs.vue` configures `TabList`; `TabList.vue` owns scroll metrics, `overflow-x-auto`, sticky width-neutral edge-affordance overlay, reduced-motion behavior, and active/focus auto-scroll; `Tab.vue` owns role, personal-branch spacing/typography, hover/focus, and active underline; `workspaceSurfaceOrder.ts` remains order authority | Component/source implementation complete; CR-004 overlay and visual-density fixes are covered by focused regressions; current browser validation remains required. |
 | FR-021 through FR-031, AC-022 through AC-032 | Wide/manual-collapse hierarchy, composed measured left/right priority, semantic constrained triggers, actionable empty state, preference/source stability, and `/mobile` boundary | `resolveResponsiveWorkspaceShellState`; `useResponsiveWorkspaceShell`; `layouts/default.vue`; `WorkspaceAdaptiveLayout.vue`; semantic `WorkspacePrimarySurfaceControls.vue`; `AppLeftPanel.vue`; `LeftSidebarStrip.vue`; `RightSidebarStrip.vue`; shell localization | Implemented with pure-policy/adaptive-layout/component coverage; current browser validation must verify repeated resize, trigger actions, and wide visual non-regression. |
 
+### Round 13 Local-Fix Trace
+
+| Finding | Implementation path | Verification |
+| --- | --- | --- |
+| CR-007 | `WorkspaceAdaptiveLayout.spec.ts` supplies `vue-router` route/router mocks and exercises wide route navigation, constrained drawer opening, runs/history focus, semantic triggers, and selected-run continuity. | Adaptive tests are warning-free for missing router/route injection; the focused source suite passed. |
+| CR-008 | `useAccessibleDrawer.ts` owns shared initial focus, Escape, Tab containment, and return-focus lifecycle; `layouts/default.vue` and `WorkspaceRightToolDrawer.vue` consume it with labelled dialog semantics and close affordances. | `default-drawer.spec.ts`, `WorkspaceRightToolDrawer.spec.ts`, and `useAccessibleDrawer.spec.ts` cover runtime open/focus/keyboard/close/return behavior. |
+| CR-009 | `responsiveLayoutPolicy.ts` makes short-height manual candidates preference-sensitive, choosing the user right strip before a responsive drawer when the right preference is hidden. | `responsiveLayoutPolicy.spec.ts` covers manual-left + hidden-right at short height and asserts user presentation sources. |
+
 ## Key Files Or Areas
 
 Added:
@@ -66,6 +79,7 @@ Added:
 - `autobyteus-web/utils/layout/workspaceSurfaceOrder.ts`
 - `autobyteus-web/composables/layout/useResponsiveElementRect.ts`
 - `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts`
+- `autobyteus-web/composables/useAccessibleDrawer.ts`
 - `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`
 - `autobyteus-web/components/layout/WorkspacePrimarySurfaceControls.vue`
 - `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
@@ -95,6 +109,8 @@ Modified:
 - `autobyteus-web/components/tabs/__tests__/Tab.spec.ts` (personal-branch typography/spacing regression)
 - `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` (semantic triggers, actionable empty state, wide manual-collapse non-regression)
 - `autobyteus-web/components/layout/__tests__/LeftSidebarStrip.spec.ts` (single-provider shell-state consumption)
+- `autobyteus-web/composables/__tests__/useAccessibleDrawer.spec.ts`, `autobyteus-web/layouts/__tests__/default-drawer.spec.ts`, and `autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts` (shared drawer lifecycle and left/right runtime focus regressions)
+- `autobyteus-web/layouts/__tests__/default.spec.ts` and `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts` (drawer source contract and short-height preference-sensitive boundary)
 - Agent/team center workspace headers, shell localization, frontend README, and workspace layout docs
 
 Removed:
@@ -164,12 +180,13 @@ These are implementation-scoped checks only; they are not API/E2E sign-off:
 
 - `git diff --check` — Passed.
 - `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
-- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, left sidebar, mobile shell, app-left-panel, and default layout — Passed for the Round 7 rework suite (`14` files, `75` tests).
+- Focused Nuxt/Vitest suite covering policy, order, adaptive layout actions, right-tool tabs/drawer, right-panel state, left sidebar, mobile shell, app-left-panel, and default layout/drawer lifecycle — Passed (`16` files, `69` tests`). The adaptive action tests emit no missing router/route injection warnings; the existing KaTeX quirks-mode warning remains.
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.
 - `pnpm -C autobyteus-web build` — Passed; existing Rollup chunk-size warnings emitted.
 - `pnpm -C autobyteus-web exec vue-tsc --noEmit` — Not available: `vue-tsc` is not installed.
+- `pnpm -C autobyteus-web exec tsc --noEmit` — Not completed: the generated Nuxt project exhausted the Node heap and aborted after approximately 68 seconds; the production Nuxt build passed.
 
 An earlier implementation-owned live visual smoke pass is retained at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md` and its `probes/implementation-live/` evidence. It is corroborating implementation evidence, not downstream API/E2E sign-off.
 

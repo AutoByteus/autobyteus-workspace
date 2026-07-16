@@ -10,6 +10,19 @@ import {
 } from '~/composables/layout/useResponsiveWorkspaceShell';
 import { resolveResponsiveWorkspaceShellState } from '~/utils/layout/responsiveLayoutPolicy';
 
+const routerMock = vi.hoisted(() => ({
+  push: vi.fn().mockResolvedValue(undefined),
+}));
+const routeMock = vi.hoisted(() => ({
+  path: '/workspace',
+  fullPath: '/workspace',
+}));
+
+vi.mock('vue-router', () => ({
+  useRouter: () => routerMock,
+  useRoute: () => routeMock,
+}));
+
 vi.mock('../RightSideTabs.vue', () => ({
   default: { template: '<div class="right-tabs-stub"></div>' },
 }));
@@ -53,6 +66,8 @@ Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
 
 describe('WorkspaceAdaptiveLayout', () => {
   beforeEach(() => {
+    routerMock.push.mockReset();
+    routerMock.push.mockResolvedValue(undefined);
     mockClientWidth = 1200;
     mockClientHeight = 700;
     setViewport(1440, 900);
@@ -81,6 +96,7 @@ describe('WorkspaceAdaptiveLayout', () => {
         plugins: [
           createTestingPinia({
             createSpy: vi.fn,
+            stubActions: false,
             initialState,
           }),
         ],
@@ -90,8 +106,8 @@ describe('WorkspaceAdaptiveLayout', () => {
           WorkspacePrimarySurfaceControls: {
             props: ['showNavigationTrigger', 'showToolsTrigger'],
             template: `<nav data-test="workspace-semantic-surface-triggers">
-              <button v-if="showNavigationTrigger" data-test="workspace-navigation-trigger">Agents &amp; teams</button>
-              <button v-if="showToolsTrigger" data-test="workspace-tools-trigger">Tools</button>
+              <button v-if="showNavigationTrigger" data-test="workspace-navigation-trigger" @click="$emit('open-navigation')">Agents &amp; teams</button>
+              <button v-if="showToolsTrigger" data-test="workspace-tools-trigger" @click="$emit('open-tools')">Tools</button>
             </nav>`,
           },
           WorkspaceRightToolDrawer: { template: '<div data-test="workspace-right-tool-drawer"></div>' },
@@ -272,5 +288,77 @@ describe('WorkspaceAdaptiveLayout', () => {
 
     expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="workspace-primary-surface-controls"]').exists()).toBe(false);
+  });
+
+  it('opens the existing primary navigation route from the wide empty state', async () => {
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: null, selectedRunId: null },
+      workspaceCenterView: { mode: 'chat' },
+      agentRunConfig: { config: null },
+      teamRunConfig: { config: null },
+    });
+
+    await wrapper.get('[data-test="workspace-empty-state-choose"]').trigger('click');
+
+    expect(routerMock.push).toHaveBeenCalledWith({ path: '/agents', query: { view: 'list' } });
+    expect((wrapper.vm as any).selectionStore.selectedRunId).toBeNull();
+  });
+
+  it('opens the left drawer for empty-state selection at constrained widths', async () => {
+    setViewport(700, 700);
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: null, selectedRunId: null },
+      workspaceCenterView: { mode: 'chat' },
+      agentRunConfig: { config: null },
+      teamRunConfig: { config: null },
+    });
+
+    await wrapper.get('[data-test="workspace-empty-state-choose"]').trigger('click');
+
+    expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(true);
+    expect(routerMock.push).not.toHaveBeenCalled();
+  });
+
+  it('opens run history without replacing the empty-state selection context', async () => {
+    setViewport(700, 700);
+    const historySurface = document.createElement('section');
+    historySurface.dataset.test = 'app-left-panel-run-history';
+    historySurface.tabIndex = -1;
+    document.body.append(historySurface);
+
+    try {
+      const wrapper = await mountComponent({
+        agentSelection: { selectedType: null, selectedRunId: null },
+        workspaceCenterView: { mode: 'chat' },
+        agentRunConfig: { config: null },
+        teamRunConfig: { config: null },
+      });
+
+      await wrapper.get('[data-test="workspace-empty-state-runs"]').trigger('click');
+      await nextTick();
+
+      expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(true);
+      expect(document.activeElement).toBe(historySurface);
+      expect((wrapper.vm as any).selectionStore.selectedRunId).toBeNull();
+    } finally {
+      historySurface.remove();
+    }
+  });
+
+  it('opens constrained navigation and tools while preserving selection', async () => {
+    setViewport(800, 700);
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: 'run-2' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    await wrapper.get('[data-test="workspace-navigation-trigger"]').trigger('click');
+    expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(true);
+    expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-2');
+
+    await wrapper.get('[data-test="workspace-tools-trigger"]').trigger('click');
+    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+    expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(false);
+    expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-2');
   });
 });

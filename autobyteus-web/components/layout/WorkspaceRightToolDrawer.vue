@@ -2,17 +2,24 @@
   <div
     data-test="workspace-right-tool-drawer-backdrop"
     class="fixed bottom-0 left-0 right-0 top-14 z-40 bg-gray-900/50 md:inset-0"
+    aria-hidden="true"
     @click="emit('close')"
   ></div>
   <aside
+    ref="drawerRef"
     data-test="workspace-right-tool-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="workspace-right-tool-drawer-title"
+    tabindex="-1"
     class="fixed bottom-0 right-0 top-14 z-50 flex max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:max-w-[92vw] md:inset-y-0"
     :style="{ width: `${width}px` }"
   >
     <div class="flex items-center justify-between border-b border-gray-200 px-3 py-2">
-      <h2 class="text-sm font-semibold text-gray-800">{{ title }}</h2>
+      <h2 id="workspace-right-tool-drawer-title" class="text-sm font-semibold text-gray-800">{{ title }}</h2>
       <button
         type="button"
+        data-drawer-initial-focus
         class="rounded-md p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
         :title="$t('shell.workspaceSurfaces.closeTools')"
         @click="emit('close')"
@@ -30,6 +37,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import { useAccessibleDrawer } from '~/composables/useAccessibleDrawer';
 import RightSideTabs from './RightSideTabs.vue';
 
 defineProps<{
@@ -40,4 +49,11 @@ defineProps<{
 const emit = defineEmits<{
   (event: 'close'): void
 }>();
+
+const drawerRef = ref<HTMLElement | null>(null);
+
+useAccessibleDrawer({
+  drawerRef,
+  onRequestClose: () => emit('close'),
+});
 </script>

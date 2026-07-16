@@ -83,6 +83,20 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.rightPanel.presentationSource).toBe('responsive')
   })
 
+  it('preserves the user right strip during short-height manual left collapse', () => {
+    const state = resolve({
+      viewportWidth: 1440,
+      viewportHeight: 480,
+      leftPanelPreference: 'hidden-by-user',
+      rightPanelPreference: 'hidden-by-user',
+    })
+
+    expect(state.leftPanel.presentation).toBe('strip')
+    expect(state.leftPanel.presentationSource).toBe('user')
+    expect(state.rightPanel.presentation).toBe('strip')
+    expect(state.rightPanel.presentationSource).toBe('user')
+  })
+
   it('keeps user preferences unchanged across pure responsive transitions', () => {
     const preferences = {
       leftPanelPreference: 'visible' as const,

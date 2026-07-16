@@ -114,6 +114,8 @@ const shellMessages = {
   'shell.workspaceSurfaces.files': 'Files',
   'shell.workspaceSurfaces.tools': 'Tools',
   'shell.workspaceSurfaces.closeTools': 'Close tools',
+  'shell.workspaceSurfaces.navigationDrawerTitle': 'Agents & teams',
+  'shell.workspaceSurfaces.closeNavigation': 'Close navigation',
   'shell.workspaceSurfaces.semanticTriggersAriaLabel': 'Workspace navigation',
   'shell.workspaceSurfaces.openNavigation': 'Agents & teams',
   'shell.workspaceSurfaces.openTools': 'Tools',
