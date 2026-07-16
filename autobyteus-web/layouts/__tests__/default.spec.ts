@@ -66,14 +66,16 @@ describe('default layout source', () => {
     expect(content).toContain('appLayoutStore.closeMobileMenu()')
   })
 
-  it('gives the narrow left navigation drawer an accessible lifecycle and close affordance', () => {
+  it('gives the narrow left navigation drawer an accessible lifecycle without duplicate chrome', () => {
     const filePath = resolve(process.cwd(), 'layouts/default.vue')
     const content = readFileSync(filePath, 'utf-8')
 
     expect(content).toContain(":role=\"showLeftDrawer ? 'dialog' : 'navigation'\"")
     expect(content).toContain(':aria-modal="showLeftDrawer ? \'true\' : undefined"')
-    expect(content).toContain('data-test="app-left-drawer-close"')
-    expect(content).toContain('data-drawer-initial-focus')
+    expect(content).toContain(':aria-label="$t(\'shell.workspaceSurfaces.navigationDrawerTitle\')"')
+    expect(content).toContain('data-test="app-left-drawer-backdrop"')
+    expect(content).not.toContain('data-test="app-left-drawer-close"')
+    expect(content).not.toContain('left-navigation-drawer-title')
     expect(content).toContain('useAccessibleDrawer')
   })
 

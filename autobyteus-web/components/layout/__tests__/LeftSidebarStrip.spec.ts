@@ -13,7 +13,9 @@ const {
     ensureResolved: vi.fn().mockResolvedValue(null),
   },
   appLayoutStoreMock: {
+    isMobileMenuOpen: false,
     openMobileMenu: vi.fn(),
+    closeMobileMenu: vi.fn(),
   },
   routeMock: {
     path: '/agents',
@@ -40,8 +42,24 @@ describe('LeftSidebarStrip Component', () => {
   beforeEach(() => {
     applicationsCapabilityStoreMock.isEnabled = false
     applicationsCapabilityStoreMock.ensureResolved.mockResolvedValue(null)
+    appLayoutStoreMock.isMobileMenuOpen = false
     appLayoutStoreMock.openMobileMenu.mockClear()
+    appLayoutStoreMock.closeMobileMenu.mockClear()
     vi.clearAllMocks()
+  })
+
+  it('preserves the personal strip inventory without a leading menu control', () => {
+    const wrapper = mount(LeftSidebarStrip, {
+      props: { stripActivation: 'open-drawer' },
+      global: {
+        stubs: {
+          Icon: true,
+        },
+      },
+    })
+
+    expect(wrapper.find('[data-test="workspace-left-strip-open"]').exists()).toBe(false)
+    expect(wrapper.find('button[title="Agents"]').exists()).toBe(true)
   })
 
   it('hides Applications link when the capability is disabled', () => {
@@ -96,7 +114,8 @@ describe('LeftSidebarStrip Component', () => {
     expect(routerMock.push).toHaveBeenCalledWith({ path: '/agents', query: { view: 'list' } })
   })
 
-  it('exposes a direct strip affordance for the transient navigation drawer', async () => {
+  it('closes the transient navigation drawer from the existing strip inventory', async () => {
+    appLayoutStoreMock.isMobileMenuOpen = true
     const wrapper = mount(LeftSidebarStrip, {
       props: { stripActivation: 'open-drawer' },
       global: {
@@ -106,11 +125,11 @@ describe('LeftSidebarStrip Component', () => {
       },
     })
 
-    await wrapper.get('[data-test="workspace-left-strip-open"]').trigger('click')
+    await wrapper.get('button[title="Agents"]').trigger('click')
 
     expect(wrapper.get('[data-test="workspace-left-navigation-strip"]').attributes('role')).toBe('navigation')
-    expect(appLayoutStoreMock.openMobileMenu).toHaveBeenCalledOnce()
-    expect(routerMock.push).not.toHaveBeenCalled()
+    expect(appLayoutStoreMock.closeMobileMenu).toHaveBeenCalledOnce()
+    expect(appLayoutStoreMock.openMobileMenu).not.toHaveBeenCalled()
   })
 
   it('shows Applications link when the capability is enabled', () => {
@@ -141,7 +160,7 @@ describe('LeftSidebarStrip Component', () => {
       },
     })
 
-    await wrapper.get('[data-test="workspace-left-strip-open"]').trigger('click')
+    await wrapper.get('button[title="Agents"]').trigger('click')
 
     expect(wrapper.get('[data-test="workspace-left-navigation-strip"]').attributes('data-strip-activation')).toBe('redock-panel')
     expect(wrapper.emitted('request-redock')).toHaveLength(1)

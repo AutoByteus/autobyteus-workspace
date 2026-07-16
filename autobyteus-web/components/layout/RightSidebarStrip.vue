@@ -47,8 +47,8 @@ const emit = defineEmits<{
 const { visibleTabs, activeTab, setActiveTab } = useRightSideTabs();
 
 const stripClasses = computed(() => props.stripBehavior === 'overlay'
-  ? 'fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg'
-  : 'flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20');
+  ? 'fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg'
+  : 'relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4');
 
 const selectTab = (tabName: TabName) => {
   setActiveTab(tabName);

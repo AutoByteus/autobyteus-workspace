@@ -118,6 +118,7 @@ async function collect(page, label) {
         display: cs.display,
         visibility: cs.visibility,
         position: cs.position,
+        zIndex: cs.zIndex,
         overflow: `${cs.overflowX}/${cs.overflowY}`,
         rect: rect(el),
         text: (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 800),
@@ -275,6 +276,7 @@ async function collect(page, label) {
         emptyStateChoose: elementInfo('[data-test="workspace-empty-state-choose"]'),
         emptyStateRuns: elementInfo('[data-test="workspace-empty-state-runs"]'),
         navigationTrigger: elementInfo('[data-test="workspace-navigation-trigger"]'),
+        leftDrawerBackdrop: elementInfo('[data-test="app-left-drawer-backdrop"]'),
         leftNavigationDrawer: elementInfo('[data-test="app-left-navigation-drawer"]'),
         leftStrip: elementInfo('[data-test="workspace-left-navigation-strip"]'),
         leftPanelShell: elementInfo('[data-test="app-left-navigation-drawer"], [data-test="app-left-panel-shell"]'),
@@ -282,6 +284,7 @@ async function collect(page, label) {
         rightPanel: elementInfo('[data-test="workspace-right-panel"]'),
         rightPanelTabList: elementInfo('[data-test="workspace-right-panel"] [data-test="right-side-tab-list"]'),
         rightStrip: elementInfo('[data-test="workspace-right-tool-strip"]'),
+        rightDrawerBackdrop: elementInfo('[data-test="workspace-right-tool-drawer-backdrop"]'),
         rightDrawer: elementInfo('[data-test="workspace-right-tool-drawer"]'),
         rightDrawerTabList: elementInfo('[data-test="workspace-right-tool-drawer"] [data-test="right-side-tab-list"]'),
         panelToggle: elementInfo('[data-test="right-side-panel-toggle"]'),
@@ -657,6 +660,9 @@ async function validateRightStripReopenInteraction(page, viewport) {
   if (!clicked) failures.push('right-tool strip did not expose a clickable reopen control');
   if (!drawerState.rects.rightDrawer?.visible) failures.push('right-tool strip reopen did not open the right tool drawer');
   if (!drawerState.rects.rightStrip?.visible) failures.push('right drawer reopen state lost the strip sole reopen affordance');
+  if (drawerState.rects.rightStrip?.zIndex !== '60' || drawerState.rects.rightDrawerBackdrop?.zIndex !== '40') {
+    failures.push('right-tool strip is not layered above the drawer backdrop');
+  }
 
   return {
     action: 'reopen right tools from user-hidden strip',
@@ -672,20 +678,23 @@ async function validateLeftStripReopenInteraction(page, viewport) {
   }
 
   const failures = [];
-  const clicked = await clickButtonByTest(page, 'workspace-left-strip-open', '[data-test="workspace-left-navigation-strip"]');
+  const clicked = await clickFirstButton(page, '[data-test="workspace-left-navigation-strip"]');
   await page.waitForTimeout(300);
   const drawerState = await collect(page, 'left-strip-reopen-after');
   if (!clicked) failures.push('left navigation strip did not expose a clickable drawer affordance');
   if (!drawerState.rects.leftNavigationDrawer?.visible) failures.push('left navigation strip did not open the navigation drawer');
   if (!drawerState.rects.leftStrip?.visible) failures.push('left navigation drawer reopen state lost the left strip affordance');
   if (drawerState.rects.leftStrip?.stripActivation !== 'open-drawer') failures.push('responsive left strip did not expose open-drawer activation');
+  if (drawerState.rects.leftStrip?.zIndex !== '60' || drawerState.rects.leftDrawerBackdrop?.zIndex !== '40') {
+    failures.push('left navigation strip is not layered above the drawer backdrop');
+  }
   failures.push(...validateLeftPanelLayout(drawerState, 'left navigation drawer'));
 
-  const closed = await clickButtonByTest(page, 'app-left-drawer-close', '[data-test="app-left-navigation-drawer"]');
+  const closed = await clickFirstButton(page, '[data-test="workspace-left-navigation-strip"]');
   await page.waitForTimeout(200);
   const closedState = await collect(page, 'left-strip-reopen-close');
-  if (!closed) failures.push('left navigation drawer did not expose its close control');
-  if (closedState.rects.leftNavigationDrawer?.visible) failures.push('left navigation drawer close control did not close the drawer');
+  if (!closed) failures.push('left navigation strip did not expose an existing multifunctional control');
+  if (closedState.rects.leftNavigationDrawer?.visible) failures.push('left navigation strip did not close the drawer');
 
   return {
     action: 'reopen navigation from left strip',
@@ -844,7 +853,7 @@ async function validateSemanticSurfaceInteractions(page, initialState) {
 
     const drawerOpened = Boolean(afterNavigation.visibleState.leftNavigationDrawer);
     if (drawerOpened) {
-      const closed = await clickButtonByTest(page, 'app-left-drawer-close', '[data-test="app-left-navigation-drawer"]');
+      const closed = await clickButtonByTest(page, 'app-left-drawer-backdrop');
       await page.waitForTimeout(200);
       const afterNavigationClose = await collect(page, 'after-navigation-close');
       interactionResults.push({ action: 'close Agents & teams navigation', clicked: closed, state: afterNavigationClose });

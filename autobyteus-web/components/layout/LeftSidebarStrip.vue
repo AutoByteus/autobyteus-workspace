@@ -7,18 +7,6 @@
     :data-strip-activation="props.stripActivation"
     :class="stripClasses"
   >
-    <button
-      type="button"
-      data-test="workspace-left-strip-open"
-      class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
-      :title="$t('shell.workspaceSurfaces.openNavigation')"
-      :aria-label="$t('shell.workspaceSurfaces.openNavigation')"
-      @click="activateStrip"
-    >
-      <Icon icon="heroicons:bars-3" class="h-5 w-5" />
-      <span class="sr-only">{{ $t('shell.workspaceSurfaces.openNavigation') }}</span>
-    </button>
-
     <div class="flex flex-col space-y-2">
       <button
         v-for="item in primaryNavItems"
@@ -86,8 +74,8 @@ const props = withDefaults(defineProps<{
 });
 
 const stripClasses = computed(() => props.stripBehavior === 'overlay'
-  ? 'fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg'
-  : 'flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500');
+  ? 'fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg'
+  : 'relative z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500');
 
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
@@ -102,7 +90,11 @@ const activateStrip = (): void => {
     return;
   }
 
-  appLayoutStore.openMobileMenu();
+  if (appLayoutStore.isMobileMenuOpen) {
+    appLayoutStore.closeMobileMenu();
+  } else {
+    appLayoutStore.openMobileMenu();
+  }
 };
 const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
   try {

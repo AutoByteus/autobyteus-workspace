@@ -26,7 +26,7 @@ describe('default layout drawer lifecycle', () => {
     document.body.innerHTML = ''
   })
 
-  it('opens the labelled left drawer, focuses close, and returns focus to the menu button', async () => {
+  it('opens the labelled left drawer, contains focus, and returns focus to the menu button', async () => {
     const wrapper = mount(DefaultLayout, {
       attachTo: document.body,
       global: {
@@ -61,20 +61,22 @@ describe('default layout drawer lifecycle', () => {
     await nextTick()
 
     const drawer = wrapper.get('[data-test="app-left-navigation-drawer"]')
-    const closeButton = wrapper.get('[data-test="app-left-drawer-close"]').element as HTMLElement
     const contentWrapper = drawer.get('div.min-h-0.flex-1.overflow-hidden')
     expect(drawer.attributes('role')).toBe('dialog')
     expect(drawer.attributes('aria-modal')).toBe('true')
-    expect(drawer.attributes('aria-labelledby')).toBe('left-navigation-drawer-title')
+    expect(drawer.attributes('aria-label')).toBe('shell.workspaceSurfaces.navigationDrawerTitle')
+    expect(drawer.attributes('aria-labelledby')).toBeUndefined()
+    expect(wrapper.find('[data-test="app-left-drawer-close"]').exists()).toBe(false)
+    expect(wrapper.find('#left-navigation-drawer-title').exists()).toBe(false)
     expect(drawer.classes()).toEqual(expect.arrayContaining(['flex', 'flex-col', 'h-full']))
     expect(contentWrapper.classes()).toEqual(expect.arrayContaining(['min-h-0', 'flex-1', 'overflow-hidden']))
     expect(drawer.get('[data-test="app-left-panel-sections"]').classes()).toEqual(
       expect.arrayContaining(['min-h-0', 'flex', 'flex-1', 'flex-col']),
     )
     expect(drawer.get('[data-test="app-left-panel-run-history"] > div').classes()).toContain('h-full')
-    expect(document.activeElement).toBe(closeButton)
+    expect(drawer.element.contains(document.activeElement)).toBe(true)
 
-    await wrapper.get('[data-test="app-left-drawer-close"]').trigger('click')
+    await wrapper.get('[data-test="app-left-drawer-backdrop"]').trigger('click')
     await nextTick()
     await nextTick()
 

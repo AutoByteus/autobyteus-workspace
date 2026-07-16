@@ -215,6 +215,11 @@ const closeRightDrawer = (): void => {
 };
 
 const openRightDrawer = (): void => {
+  if (isRightDrawerOpen.value) {
+    closeRightDrawer();
+    return;
+  }
+
   appLayoutStore.closeMobileMenu();
   isRightDrawerOpen.value = true;
 };

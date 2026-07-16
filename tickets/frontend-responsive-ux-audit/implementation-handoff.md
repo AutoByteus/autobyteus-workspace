@@ -133,6 +133,15 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 | --- | --- | --- |
 | CR-015 dead left-strip event declaration | `LeftSidebarStrip.vue` now exposes only the authoritative `request-redock` event; its `open-drawer` activation directly invokes `appLayoutStore.openMobileMenu()` and no unused `request-open` event remains. | Focused left-strip component tests, standalone policy TypeScript, probe syntax, and diff checks pass. |
 
+### Round 25 Architecture-Rework Trace
+
+| Approved visual/control inventory | Implementation path | Verification |
+| --- | --- | --- |
+| Personal strip continuity and multifunctional close path | Removed the added `workspace-left-strip-open`/hamburger control. Left and right strips retain their existing icon inventories, use explicit activation, toggle their local transient drawer when `open-drawer`, and are layered above the drawer backdrop. | Left/right strip and drawer component coverage plus the durable probe assert no duplicate controls, visible strip persistence, and strip-above-backdrop close behavior. |
+| No duplicate drawer chrome | Removed visible left `Agents & teams` and right `Tools` headers and separate X buttons. Dialogs retain non-visual `aria-label` semantics, Escape/backdrop dismissal, focus containment, and focus restoration. | Default/right-drawer tests assert labelled dialogs without visible title/close chrome; probe no longer relies on header close controls. |
+
+Round 25 local checks: focused workspace strip/drawer/default suite passed (`6` files, `43` tests), standalone policy TypeScript passed, Nuxt build passed, web/localization guards passed, localization literal audit passed with zero findings, probe syntax passed, and `git diff --check` passed. Only the existing KaTeX quirks-mode and build chunk-size/module-type warnings remain.
+
 ### Right-Panel Resize Local-Fix Trace
 
 | Finding | Implementation path | Verification |

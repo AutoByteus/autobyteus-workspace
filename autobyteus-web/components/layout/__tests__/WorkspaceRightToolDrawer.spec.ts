@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import WorkspaceRightToolDrawer from '../WorkspaceRightToolDrawer.vue'
 
 vi.mock('../RightSideTabs.vue', () => ({
-  default: { template: '<div data-test="right-tabs-stub"></div>' },
+  default: { template: '<button data-test="right-tab-stub">Files</button>' },
 }))
 
 describe('WorkspaceRightToolDrawer', () => {
@@ -43,11 +43,13 @@ describe('WorkspaceRightToolDrawer', () => {
     const drawer = wrapper.get('[data-test="workspace-right-tool-drawer"]')
     expect(drawer.attributes('role')).toBe('dialog')
     expect(drawer.attributes('aria-modal')).toBe('true')
-    expect(drawer.attributes('aria-labelledby')).toBe('workspace-right-tool-drawer-title')
-    expect(wrapper.get('#workspace-right-tool-drawer-title').text()).toBe('Tools')
-    expect(document.activeElement).toBe(wrapper.get('[data-drawer-initial-focus]').element)
+    expect(drawer.attributes('aria-label')).toBe('Tools')
+    expect(drawer.attributes('aria-labelledby')).toBeUndefined()
+    expect(wrapper.find('#workspace-right-tool-drawer-title').exists()).toBe(false)
+    expect(wrapper.find('[data-drawer-initial-focus]').exists()).toBe(false)
+    expect(document.activeElement).toBe(wrapper.get('[data-test="right-tab-stub"]').element)
 
-    await wrapper.get('[data-drawer-initial-focus]').trigger('click')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
     await nextTick()
     await nextTick()
 
