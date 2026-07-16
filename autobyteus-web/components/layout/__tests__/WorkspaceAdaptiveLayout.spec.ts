@@ -1,4 +1,6 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 import { nextTick, ref } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
@@ -102,7 +104,9 @@ describe('WorkspaceAdaptiveLayout', () => {
         ],
         stubs: {
           RightSideTabs: { template: '<div class="right-tabs-stub"></div>' },
-          RightSidebarStrip: { template: '<div class="right-strip-stub"></div>' },
+          RightSidebarStrip: {
+            template: '<button data-test="workspace-right-tool-strip" @click="$emit(\'request-open\')">Tools strip</button>',
+          },
           WorkspacePrimarySurfaceControls: {
             props: ['showNavigationTrigger', 'showToolsTrigger'],
             template: `<nav data-test="workspace-semantic-surface-triggers">
@@ -260,6 +264,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     });
 
     expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
     const controls = wrapper.get('[data-test="workspace-semantic-surface-triggers"]');
     expect(controls.text()).toContain('Tools');
     expect(controls.text()).not.toContain('Work');
@@ -275,7 +280,56 @@ describe('WorkspaceAdaptiveLayout', () => {
 
     expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="workspace-tools-trigger"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="workspace-center-content-shell"]').exists()).toBe(true);
+  });
+
+  it('uses the right strip as the sole reopen affordance for a user-hidden right panel', async () => {
+    setViewport(1024, 768);
+    useRightPanel().setRightPanelVisible(false);
+
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: 'run-strip' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-tools-trigger"]').exists()).toBe(false);
+
+    await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
+
+    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+    expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-strip');
+  });
+
+  it('uses exactly one semantic Tools trigger for a right drawer presentation', async () => {
+    setViewport(800, 700);
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: 'run-drawer' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-tools-trigger"]').exists()).toBe(true);
+
+    await wrapper.get('[data-test="workspace-tools-trigger"]').trigger('click');
+
+    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+    expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-drawer');
+  });
+
+  it('keeps drawer-only Tools trigger ownership separate from the right-strip reopen path', () => {
+    const source = readFileSync(
+      resolve(process.cwd(), 'components/layout/WorkspaceAdaptiveLayout.vue'),
+      'utf8',
+    );
+
+    expect(source).toContain("rightPanel.presentation === 'drawer'");
+    expect(source).not.toContain("rightPanel.presentation !== 'docked'");
+    expect(source).toContain('v-else-if="responsiveWorkspaceShellState.showRightStrip"');
+    expect(source).toContain('@request-open="openRightDrawer"');
   });
 
   it('does not render semantic triggers after a wide manual left collapse', async () => {

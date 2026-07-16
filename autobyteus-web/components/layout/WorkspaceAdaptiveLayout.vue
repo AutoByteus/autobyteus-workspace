@@ -163,7 +163,7 @@ const showNavigationTrigger = computed(() =>
   responsiveWorkspaceShellState.value.leftPanel.presentationSource === 'responsive',
 );
 const showToolsTrigger = computed(() =>
-  responsiveWorkspaceShellState.value.rightPanel.presentation !== 'docked',
+  responsiveWorkspaceShellState.value.rightPanel.presentation === 'drawer',
 );
 const shouldShowSemanticSurfaceTriggers = computed(() =>
   showNavigationTrigger.value || showToolsTrigger.value,

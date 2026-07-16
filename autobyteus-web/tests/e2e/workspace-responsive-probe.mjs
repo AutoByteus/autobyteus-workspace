@@ -361,6 +361,23 @@ async function clickButtonByTest(page, dataTest, rootSelector = 'body') {
   }, { test: dataTest, selector: rootSelector });
 }
 
+async function clickFirstButton(page, rootSelector) {
+  return await page.evaluate((selector) => {
+    const root = document.querySelector(selector);
+    const button = Array.from(root?.querySelectorAll('button') ?? []).find((candidate) => {
+      const style = getComputedStyle(candidate);
+      const buttonRect = candidate.getBoundingClientRect();
+      return style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        buttonRect.width > 0 &&
+        buttonRect.height > 0;
+    });
+    if (!button) return false;
+    button.click();
+    return true;
+  }, rootSelector);
+}
+
 async function clickTabAffordance(page, rootSelector, dataTest) {
   return await page.evaluate(({ selector, test }) => {
     const root = document.querySelector(selector);
@@ -566,6 +583,10 @@ function validateWorkspaceInitial(state, viewport) {
     failures.push(`visible right-tool order is not canonical: ${visibleTools.join(' -> ')}`);
   }
 
+  if (state.rects.rightStrip?.visible && state.visibleState.toolsTrigger) {
+    failures.push('right-tool strip and top Tools trigger are both visible');
+  }
+
   if (state.visibleState.rightPanel) {
     failures.push(...validateTabListContract(state.rightPanelTabList, 'right panel'));
     if (!state.panelToggle?.visible) {
@@ -576,6 +597,37 @@ function validateWorkspaceInitial(state, viewport) {
   }
 
   return failures;
+}
+
+async function validateRightStripReopenInteraction(page, viewport) {
+  if (viewport.name !== 'desktop-1280x800') {
+    return null;
+  }
+
+  const failures = [];
+  const hidden = await clickButtonByTest(page, 'right-side-panel-toggle');
+  await page.waitForTimeout(250);
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.waitForTimeout(300);
+
+  const stripState = await collect(page, 'right-strip-reopen-before');
+  if (!hidden) failures.push('docked right panel toggle was not clickable for strip reopen validation');
+  if (!stripState.rects.rightStrip?.visible) failures.push('user-hidden right panel did not render a right-tool strip');
+  if (stripState.visibleState.toolsTrigger) failures.push('right-tool strip state also rendered a top Tools trigger');
+
+  const clicked = await clickFirstButton(page, '[data-test="workspace-right-tool-strip"]');
+  await page.waitForTimeout(350);
+  const drawerState = await collect(page, 'right-strip-reopen-after');
+  if (!clicked) failures.push('right-tool strip did not expose a clickable reopen control');
+  if (!drawerState.rects.rightDrawer?.visible) failures.push('right-tool strip reopen did not open the right tool drawer');
+  if (!drawerState.visibleState.toolsTrigger) failures.push('right drawer reopen state lacks its semantic Tools trigger');
+
+  return {
+    action: 'reopen right tools from user-hidden strip',
+    clicked,
+    state: drawerState,
+    failures,
+  };
 }
 
 function validateLeftPanelLayout(state, context) {
@@ -786,6 +838,11 @@ const run = async () => {
 
         const shouldExerciseControls = initial.visibleState.semanticTriggers;
         const interactions = shouldExerciseControls ? await validateSemanticSurfaceInteractions(page, initial) : [];
+        const rightStripInteraction = await validateRightStripReopenInteraction(page, viewport);
+        if (rightStripInteraction) {
+          interactions.push(rightStripInteraction);
+          pageFailures.push(...rightStripInteraction.failures);
+        }
         pageFailures.push(...validateInteractions(interactions));
 
         if (screenshotMode === 'all' || (screenshotMode === 'failures' && pageFailures.length > 0)) {
