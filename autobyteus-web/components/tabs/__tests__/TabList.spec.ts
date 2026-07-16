@@ -6,7 +6,7 @@ const { TabStub } = vi.hoisted(() => ({
   TabStub: {
     name: 'Tab',
     template: '<button class="tab-stub" @click="$emit(\'select\', name)">{{ name }}</button>',
-    props: ['name', 'selected', 'density'],
+    props: ['name', 'selected'],
   },
 }));
 
@@ -55,24 +55,7 @@ describe('TabList.vue', () => {
     for (let i = 0; i < sampleTabs.length; i++) {
       expect(tabs[i].props().name).toBe(sampleTabs[i].name);
       expect(tabs[i].props().selected).toBe(sampleTabs[i].name === 'Tab1');
-      expect(tabs[i].props().density).toBe('comfortable');
     }
-  });
-
-  it('forwards compact density to tabs', () => {
-    const wrapper = mount(TabList, {
-      props: {
-        tabs: sampleTabs,
-        selectedTab: 'Tab1',
-        density: 'compact',
-      },
-      global: {
-        stubs: { Tab: TabStub },
-      },
-    });
-
-    const tabs = wrapper.findAllComponents(TabStub);
-    expect(tabs.every((tab) => tab.props().density === 'compact')).toBe(true);
   });
 
   it('keeps the tab row single-line and natively horizontally scrollable', () => {
@@ -119,6 +102,12 @@ describe('TabList.vue', () => {
     expect(affordanceLayer.classes()).toContain('tab-list-affordance-layer');
     expect(affordanceLayer.element.parentElement).toBe(scrollContainer);
     expect(wrapper.find('[data-test="tab-list-scroll-left"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="tab-list-right-fade"]').classes()).toEqual(
+      expect.arrayContaining(['w-10', 'from-slate-500/30']),
+    );
+    expect(wrapper.get('[data-test="tab-list-scroll-right"]').classes()).toEqual(
+      expect.arrayContaining(['h-7', 'w-7', 'bg-slate-700/85', 'text-white']),
+    );
     expect(wrapper.get('[data-test="tab-list-scroll-right"]').attributes('aria-label')).toBe('Next tabs');
   });
 

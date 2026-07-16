@@ -5,9 +5,11 @@
     class="flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100"
   >
     <WorkspacePrimarySurfaceControls
-      v-if="shouldShowPrimarySurfaceControls"
-      :active-surface="activePrimarySurface"
-      @select="handlePrimarySurfaceClick"
+      v-if="shouldShowSemanticSurfaceTriggers"
+      :show-navigation-trigger="showNavigationTrigger"
+      :show-tools-trigger="showToolsTrigger"
+      @open-navigation="openLeftNavigation"
+      @open-tools="openToolsSurface"
     />
 
     <div class="flex flex-1 min-h-0 min-w-0 overflow-hidden">
@@ -22,8 +24,37 @@
           <AgentWorkspaceView v-else-if="isAgentSelected" />
           <TeamWorkspaceView v-else-if="isTeamSelected" />
           <RunConfigPanel v-else-if="hasPendingRunConfig" />
-          <div v-else class="flex items-center justify-center h-full px-4 text-center text-gray-500">
-            <p>{{ $t('shell.components.layout.WorkspaceAdaptiveLayout.select_or_run_an_agent_team') }}</p>
+          <div
+            v-else
+            data-test="workspace-empty-state"
+            class="flex h-full items-center justify-center px-4 text-center text-gray-500"
+          >
+            <div class="max-w-md space-y-4">
+              <div class="space-y-1">
+                <h2 class="text-lg font-semibold text-gray-700">
+                  {{ $t('shell.workspaceSurfaces.emptyStateTitle') }}
+                </h2>
+                <p>{{ $t('shell.workspaceSurfaces.emptyStateDescription') }}</p>
+              </div>
+              <div class="flex flex-wrap justify-center gap-2">
+                <button
+                  type="button"
+                  data-test="workspace-empty-state-choose"
+                  class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                  @click="openLeftNavigation"
+                >
+                  {{ $t('shell.workspaceSurfaces.chooseAgentOrTeam') }}
+                </button>
+                <button
+                  type="button"
+                  data-test="workspace-empty-state-runs"
+                  class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                  @click="openRunHistory"
+                >
+                  {{ $t('shell.workspaceSurfaces.openRunsHistory') }}
+                </button>
+              </div>
+            </div>
           </div>
           <WorkspaceCenterLoadingOverlay v-if="isCenterLoading" />
         </div>
@@ -64,13 +95,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
 import { useRightPanel } from '~/composables/useRightPanel';
 import { useRightSideTabs, type TabName } from '~/composables/useRightSideTabs';
 import { useWorkspaceResponsiveLayout } from '~/composables/layout/useWorkspaceResponsiveLayout';
 import { useAppShellResponsiveLayout } from '~/composables/layout/useAppShellResponsiveLayout';
-import type { WorkspacePrimarySurfaceName } from '~/utils/layout/workspaceSurfaceOrder';
 import AgentWorkspaceView from '~/components/workspace/agent/AgentWorkspaceView.vue';
 import TeamWorkspaceView from '~/components/workspace/team/TeamWorkspaceView.vue';
 import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue';
@@ -84,6 +115,8 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
+import { useLeftPanel } from '~/composables/useLeftPanel';
+import { useShellPrimaryNavigation } from '~/composables/useShellPrimaryNavigation';
 
 defineProps<{
   showFileContent: boolean
@@ -91,6 +124,9 @@ defineProps<{
 
 const { t } = useLocalization();
 const appLayoutStore = useAppLayoutStore();
+const router = useRouter();
+const { resolvePrimaryRoute } = useShellPrimaryNavigation();
+const { isLeftPanelVisible, toggleLeftPanel } = useLeftPanel();
 const selectionStore = useAgentSelectionStore();
 const runConfigStore = useAgentRunConfigStore();
 const teamRunConfigStore = useTeamRunConfigStore();
@@ -125,15 +161,20 @@ const hasPendingRunConfig = computed(() => {
   return Boolean(runConfigStore.config?.agentDefinitionId || teamRunConfigStore.config?.teamDefinitionId);
 });
 
-const shouldShowPrimarySurfaceControls = computed(() =>
-  workspaceResponsiveState.value.showPrimarySurfaceControls ||
-  shellResponsiveState.value.leftPanelPresentation !== 'docked',
+const showNavigationTrigger = computed(() =>
+  shellResponsiveState.value.leftPanelPresentation === 'strip' ||
+  shellResponsiveState.value.leftPanelPresentation === 'drawer',
+);
+const showToolsTrigger = computed(() =>
+  workspaceResponsiveState.value.mode !== 'wide' &&
+  workspaceResponsiveState.value.rightPanelPresentation !== 'docked',
+);
+const shouldShowSemanticSurfaceTriggers = computed(() =>
+  showNavigationTrigger.value || showToolsTrigger.value,
 );
 
 const centerPaneStyle = computed(() => ({
-  minWidth: shouldShowPrimarySurfaceControls.value
-    ? 'min(100%, 320px)'
-    : `${workspaceResponsiveState.value.centerMinWidth}px`,
+  minWidth: `${workspaceResponsiveState.value.centerMinWidth}px`,
 }));
 
 const rightDrawerWidth = computed(() => Math.min(Math.max(workspaceResponsiveState.value.rightPanelWidth, 400), 520));
@@ -150,18 +191,6 @@ const rightDrawerTitle = computed(() => {
   return t('shell.workspaceSurfaces.tools');
 });
 
-const activePrimarySurface = computed<WorkspacePrimarySurfaceName>(() => {
-  if (appLayoutStore.isMobileMenuOpen) {
-    return 'runs';
-  }
-
-  if (isRightDrawerOpen.value) {
-    return activeTab.value === 'files' ? 'files' : 'tools';
-  }
-
-  return 'work';
-});
-
 const closeRightDrawer = (): void => {
   isRightDrawerOpen.value = false;
 };
@@ -172,9 +201,35 @@ const openRightDrawer = (): void => {
   isRightDrawerOpen.value = true;
 };
 
-const openFilesSurface = (): void => {
-  setActiveTab('files');
-  openRightDrawer();
+const openLeftNavigation = (): void => {
+  closeRightDrawer();
+
+  if (!isLeftPanelVisible.value) {
+    toggleLeftPanel();
+    return;
+  }
+
+  if (shellResponsiveState.value.canOpenLeftDrawer) {
+    appLayoutStore.openMobileMenu();
+    return;
+  }
+
+  void router.push(resolvePrimaryRoute('agents'));
+};
+
+const openRunHistory = (): void => {
+  closeRightDrawer();
+
+  if (!isLeftPanelVisible.value) {
+    toggleLeftPanel();
+  } else if (shellResponsiveState.value.canOpenLeftDrawer) {
+    appLayoutStore.openMobileMenu();
+  }
+
+  void nextTick(() => {
+    const historySurface = document.querySelector<HTMLElement>('[data-test="app-left-panel-run-history"]');
+    historySurface?.focus({ preventScroll: true });
+  });
 };
 
 const openToolsSurface = (): void => {
@@ -182,25 +237,6 @@ const openToolsSurface = (): void => {
     setActiveTab(firstNonFileTool.value);
   }
   openRightDrawer();
-};
-
-const handlePrimarySurfaceClick = (surface: WorkspacePrimarySurfaceName): void => {
-  switch (surface) {
-    case 'work':
-      appLayoutStore.closeMobileMenu();
-      closeRightDrawer();
-      break;
-    case 'runs':
-      closeRightDrawer();
-      appLayoutStore.openMobileMenu();
-      break;
-    case 'files':
-      openFilesSurface();
-      break;
-    case 'tools':
-      openToolsSurface();
-      break;
-  }
 };
 
 watch(
@@ -213,9 +249,9 @@ watch(
 );
 
 watch(
-  () => shouldShowPrimarySurfaceControls.value,
-  (showControls) => {
-    if (!showControls) {
+  shouldShowSemanticSurfaceTriggers,
+  (showTriggers) => {
+    if (!showTriggers) {
       closeRightDrawer();
     }
   },

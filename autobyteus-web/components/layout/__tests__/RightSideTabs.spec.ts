@@ -89,7 +89,7 @@ describe('RightSideTabs', () => {
       stubs: {
         TabList: {
           name: 'TabList',
-          props: ['tabs', 'selectedTab', 'density', 'showOverflowAffordances', 'previousLabel', 'nextLabel'],
+          props: ['tabs', 'selectedTab', 'showOverflowAffordances', 'previousLabel', 'nextLabel'],
           template: '<div class="tab-list-stub" />',
         },
         TeamOverviewPanel: { template: '<div class="team-overview-stub" />' },
@@ -119,11 +119,11 @@ describe('RightSideTabs', () => {
     expect(shell.classes()).not.toContain('overflow-auto');
   });
 
-  it('preserves compact density and enables horizontal overflow affordances', () => {
+  it('preserves personal tab styling defaults and enables horizontal overflow affordances', () => {
     const wrapper = mountSubject();
 
     const tabList = wrapper.getComponent({ name: 'TabList' });
-    expect(tabList.props('density')).toBe('compact');
+    expect(tabList.props('density')).toBeUndefined();
     expect(tabList.props('showOverflowAffordances')).toBe(true);
     expect(tabList.props('previousLabel')).toBe('shell.rightTabs.scrollPrevious');
     expect(tabList.props('nextLabel')).toBe('shell.rightTabs.scrollNext');

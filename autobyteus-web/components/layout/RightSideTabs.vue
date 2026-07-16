@@ -8,7 +8,6 @@
         :tabs="visibleTabs"
         :selected-tab="effectiveActiveTab"
         :aria-label="$t('shell.rightTabs.ariaLabel')"
-        density="compact"
         :show-overflow-affordances="true"
         :previous-label="$t('shell.rightTabs.scrollPrevious')"
         :next-label="$t('shell.rightTabs.scrollNext')"

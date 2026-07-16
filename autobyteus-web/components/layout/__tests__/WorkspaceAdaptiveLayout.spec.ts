@@ -4,6 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import WorkspaceAdaptiveLayout from '../WorkspaceAdaptiveLayout.vue';
 import { useRightPanel } from '~/composables/useRightPanel';
+import { useLeftPanel } from '~/composables/useLeftPanel';
 
 vi.mock('../RightSideTabs.vue', () => ({
   default: { template: '<div class="right-tabs-stub"></div>' },
@@ -59,6 +60,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     setRightPanelVisible(true);
     setRightPanelWorkspaceWidth(mockClientWidth);
     setRightPanelResponsivePresentation('docked');
+    useLeftPanel().setLeftPanelVisible(true);
   });
 
   const mountComponent = async (initialState = {}) => {
@@ -75,8 +77,11 @@ describe('WorkspaceAdaptiveLayout', () => {
           RightSideTabs: { template: '<div class="right-tabs-stub"></div>' },
           RightSidebarStrip: { template: '<div class="right-strip-stub"></div>' },
           WorkspacePrimarySurfaceControls: {
-            props: ['activeSurface'],
-            template: '<div data-test="workspace-primary-surface-controls">Work Runs Files Tools</div>',
+            props: ['showNavigationTrigger', 'showToolsTrigger'],
+            template: `<nav data-test="workspace-semantic-surface-triggers">
+              <button v-if="showNavigationTrigger" data-test="workspace-navigation-trigger">Agents &amp; teams</button>
+              <button v-if="showToolsTrigger" data-test="workspace-tools-trigger">Tools</button>
+            </nav>`,
           },
           WorkspaceRightToolDrawer: { template: '<div data-test="workspace-right-tool-drawer"></div>' },
           AgentWorkspaceView: AgentWorkspaceViewValue,
@@ -140,7 +145,9 @@ describe('WorkspaceAdaptiveLayout', () => {
       teamRunConfig: { config: null },
     });
 
-    expect(wrapper.text()).toContain('Select or run an agent');
+    expect(wrapper.find('[data-test="workspace-empty-state"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-empty-state-choose"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-empty-state-runs"]').exists()).toBe(true);
   });
 
   it('keeps the adaptive root and center/right split shrink-safe', async () => {
@@ -195,28 +202,26 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(wrapper.find('workspace-center-loading-overlay-stub').exists()).toBe(true);
   });
 
-  it('uses the canonical narrow primary surface controls instead of legacy mobile tabs', async () => {
+  it('uses semantic narrow triggers instead of a generic surface row', async () => {
     mockClientWidth = 700;
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'agent', selectedRunId: '123' },
       workspaceCenterView: { mode: 'chat' },
     });
 
-    const controls = wrapper.get('[data-test="workspace-primary-surface-controls"]');
-    expect(controls.text()).toContain('Work');
-    expect(controls.text()).toContain('Runs');
-    expect(controls.text()).toContain('Files');
+    const controls = wrapper.get('[data-test="workspace-semantic-surface-triggers"]');
     expect(controls.text()).toContain('Tools');
+    expect(controls.text()).not.toContain('Work');
+    expect(controls.text()).not.toContain('Runs');
+    expect(controls.text()).not.toContain('Files');
     expect(controls.text()).not.toContain('Running');
     expect(controls.text()).not.toContain('Agent');
     expect(wrapper.find('[data-test="workspace-center-content-shell"]').exists()).toBe(true);
   });
 
-
-
-  it('keeps Runs access visible in the 1024 left-strip plus docked-right band', async () => {
+  it('keeps the left navigation docked at 1024 while right tools yield', async () => {
     setViewport(1024, 768);
-    mockClientWidth = 974;
+    mockClientWidth = 704;
     mockClientHeight = 768;
 
     const wrapper = await mountComponent({
@@ -224,12 +229,11 @@ describe('WorkspaceAdaptiveLayout', () => {
       workspaceCenterView: { mode: 'chat' },
     });
 
-    expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(true);
-    const controls = wrapper.get('[data-test="workspace-primary-surface-controls"]');
-    expect(controls.text()).toContain('Work');
-    expect(controls.text()).toContain('Runs');
-    expect(controls.text()).toContain('Files');
+    expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
+    const controls = wrapper.get('[data-test="workspace-semantic-surface-triggers"]');
     expect(controls.text()).toContain('Tools');
+    expect(controls.text()).not.toContain('Work');
+    expect(controls.text()).not.toContain('Runs');
   });
 
   it('switches right tools out of the cramped docked pane at constrained widths', async () => {
@@ -240,7 +244,19 @@ describe('WorkspaceAdaptiveLayout', () => {
     });
 
     expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="workspace-primary-surface-controls"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="workspace-center-content-shell"]').exists()).toBe(true);
+  });
+
+  it('does not render semantic triggers after a wide manual left collapse', async () => {
+    useLeftPanel().setLeftPanelVisible(false);
+
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-primary-surface-controls"]').exists()).toBe(false);
   });
 });

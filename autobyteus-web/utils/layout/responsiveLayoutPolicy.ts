@@ -2,13 +2,13 @@ export type PanelPresentation = 'docked' | 'strip' | 'drawer' | 'hidden-by-user'
 export type WorkspaceResponsiveMode = 'wide' | 'constrained' | 'narrow' | 'short-height'
 
 export const WORKSPACE_MD_BREAKPOINT_PX = 768
-export const APP_SHELL_DOCKED_MIN_WIDTH_PX = 1280
 export const WORKSPACE_WIDE_DOCKED_MIN_WIDTH_PX = 1100
 export const WORKSPACE_SHORT_HEIGHT_MAX_PX = 480
 export const LEFT_PANEL_DEFAULT_WIDTH_PX = 320
 export const LEFT_PANEL_STRIP_WIDTH_PX = 50
 export const RIGHT_PANEL_DEFAULT_WIDTH_PX = 450
 export const RIGHT_PANEL_MIN_WIDTH_PX = 400
+export const RIGHT_PANEL_STRIP_WIDTH_PX = 50
 export const RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX = 4
 export const WORKSPACE_CENTER_MIN_WIDTH_PX = 480
 
@@ -44,7 +44,6 @@ export interface WorkspaceResponsiveState {
   rightPanelPresentation: PanelPresentation
   rightPanelWidth: number
   showRightStrip: boolean
-  showPrimarySurfaceControls: boolean
   centerMinWidth: number
   isShortHeight: boolean
 }
@@ -110,7 +109,23 @@ export const resolveAppShellResponsiveState = (
     }
   }
 
-  if (!input.userLeftPanelVisible || isShortHeight || (viewportWidth > 0 && viewportWidth < APP_SHELL_DOCKED_MIN_WIDTH_PX)) {
+  if (!input.userLeftPanelVisible) {
+    return {
+      viewportWidth,
+      viewportHeight,
+      leftPanelPresentation: 'hidden-by-user',
+      leftPanelWidth,
+      showHeader: false,
+      showLeftStrip: true,
+      canOpenLeftDrawer: false,
+      isShortHeight,
+    }
+  }
+
+  const canKeepLeftNavigationAndCenterDocked =
+    viewportWidth <= 0 || viewportWidth >= leftPanelWidth + WORKSPACE_CENTER_MIN_WIDTH_PX
+
+  if (isShortHeight || !canKeepLeftNavigationAndCenterDocked) {
     return {
       viewportWidth,
       viewportHeight,
@@ -143,6 +158,14 @@ export const resolveWorkspaceResponsiveState = (
   const isNarrow = containerWidth > 0 && containerWidth < WORKSPACE_MD_BREAKPOINT_PX
   const isShortHeight = containerHeight > 0 && containerHeight <= WORKSPACE_SHORT_HEIGHT_MAX_PX
   const rightPanelWidth = clampRightPanelWidth(input.preferredRightPanelWidth, containerWidth)
+  const isWide = containerWidth >= WORKSPACE_WIDE_DOCKED_MIN_WIDTH_PX && !isNarrow && !isShortHeight
+  const mode: WorkspaceResponsiveMode = isNarrow
+    ? 'narrow'
+    : isShortHeight
+      ? 'short-height'
+      : isWide
+        ? 'wide'
+        : 'constrained'
   const canDockRightPanel =
     input.rightPanelPreferenceVisible &&
     !isNarrow &&
@@ -153,11 +176,10 @@ export const resolveWorkspaceResponsiveState = (
     return {
       containerWidth,
       containerHeight,
-      mode: containerWidth >= WORKSPACE_WIDE_DOCKED_MIN_WIDTH_PX ? 'wide' : 'constrained',
+      mode,
       rightPanelPresentation: 'docked',
       rightPanelWidth,
       showRightStrip: false,
-      showPrimarySurfaceControls: false,
       centerMinWidth: WORKSPACE_CENTER_MIN_WIDTH_PX,
       isShortHeight,
     }
@@ -167,26 +189,27 @@ export const resolveWorkspaceResponsiveState = (
     return {
       containerWidth,
       containerHeight,
-      mode: isNarrow ? 'narrow' : isShortHeight ? 'short-height' : 'constrained',
+      mode,
       rightPanelPresentation: 'strip',
       rightPanelWidth,
       showRightStrip: !isNarrow,
-      showPrimarySurfaceControls: true,
       centerMinWidth: WORKSPACE_CENTER_MIN_WIDTH_PX,
       isShortHeight,
     }
   }
 
-  const useStrip = !isNarrow && !isShortHeight
+  const useStrip =
+    !isNarrow &&
+    !isShortHeight &&
+    containerWidth >= WORKSPACE_CENTER_MIN_WIDTH_PX + RIGHT_PANEL_STRIP_WIDTH_PX
 
   return {
     containerWidth,
     containerHeight,
-    mode: isNarrow ? 'narrow' : isShortHeight ? 'short-height' : 'constrained',
+    mode,
     rightPanelPresentation: useStrip ? 'strip' : 'drawer',
     rightPanelWidth,
     showRightStrip: useStrip,
-    showPrimarySurfaceControls: true,
     centerMinWidth: WORKSPACE_CENTER_MIN_WIDTH_PX,
     isShortHeight,
   }

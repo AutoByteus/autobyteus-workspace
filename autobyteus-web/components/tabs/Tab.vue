@@ -2,14 +2,11 @@
   <button
     role="tab"
     :aria-selected="isActive"
-    class="tab-button relative shrink-0 whitespace-nowrap font-medium transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-    :class="[
-      densityClasses,
-      {
-        'text-blue-600': isActive,
-        'text-gray-600 hover:text-gray-900 hover:bg-gray-50': !isActive
-      },
-    ]"
+    class="tab-button relative shrink-0 whitespace-nowrap px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+    :class="{
+      'text-blue-600': isActive,
+      'text-gray-600 hover:text-gray-900 hover:bg-gray-50': !isActive
+    }"
     @click="selectTab"
   >
     <slot />
@@ -24,20 +21,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   name?: string
   selected?: boolean
-  density?: 'comfortable' | 'compact'
-}>(), {
-  density: 'comfortable',
-});
+}>();
 
 const isActive = computed(() => props.selected);
-const densityClasses = computed(() => (
-  props.density === 'compact'
-    ? 'px-2.5 py-2 text-sm'
-    : 'px-5 py-3 text-base'
-));
 
 const emit = defineEmits(["select"]);
 

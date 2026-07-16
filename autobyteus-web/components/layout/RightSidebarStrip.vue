@@ -9,6 +9,7 @@
         class="p-2 rounded-md hover:bg-gray-100 transition-colors relative group"
         :class="{ 'text-blue-600 bg-blue-50': activeTab === tab.name }"
         :title="tab.label"
+        :aria-label="tab.label"
       >
         <Icon :icon="getIcon(tab.name)" class="w-5 h-5" :class="activeTab === tab.name ? 'text-gray-900' : 'text-gray-500'" />
 
@@ -57,6 +58,7 @@ const getIcon = (name: TabName): string => {
     case 'terminal': return 'heroicons:command-line';
     case 'vnc': return 'heroicons:computer-desktop';
     case 'progress': return 'heroicons:clock';
+    case 'usage': return 'heroicons:chart-bar';
     case 'artifacts': return 'heroicons:cube';
     case 'browser': return 'heroicons:globe-alt';
     default: return 'heroicons:document-text';

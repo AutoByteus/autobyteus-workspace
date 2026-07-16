@@ -15,35 +15,35 @@
         v-if="showLeftOverflow"
         data-test="tab-list-left-fade"
         aria-hidden="true"
-        class="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-white via-white/80 to-transparent"
+        class="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-slate-500/30 via-white/95 to-transparent"
       />
       <span
         v-if="showRightOverflow"
         data-test="tab-list-right-fade"
         aria-hidden="true"
-        class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-white via-white/80 to-transparent"
+        class="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-slate-500/30 via-white/95 to-transparent"
       />
       <button
         v-if="showLeftOverflow"
         type="button"
         data-test="tab-list-scroll-left"
-        class="pointer-events-auto absolute left-0 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm transition-colors hover:bg-white hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+        class="pointer-events-auto absolute left-0 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-slate-700/85 text-lg font-semibold leading-none text-white shadow-md transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
         :aria-label="previousLabel"
         :title="previousLabel"
         @click="scrollByPage(-1)"
       >
-        <span aria-hidden="true" class="text-base leading-none">‹</span>
+        <span aria-hidden="true" class="text-lg leading-none">‹</span>
       </button>
       <button
         v-if="showRightOverflow"
         type="button"
         data-test="tab-list-scroll-right"
-        class="pointer-events-auto absolute right-0 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm transition-colors hover:bg-white hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+        class="pointer-events-auto absolute right-0 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-slate-700/85 text-lg font-semibold leading-none text-white shadow-md transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
         :aria-label="nextLabel"
         :title="nextLabel"
         @click="scrollByPage(1)"
       >
-        <span aria-hidden="true" class="text-base leading-none">›</span>
+        <span aria-hidden="true" class="text-lg leading-none">›</span>
       </button>
     </div>
 
@@ -53,7 +53,6 @@
       :name="tab.name"
       :data-tab-name="tab.name"
       :selected="selectedTab === tab.name"
-      :density="density"
       @focus="handleTabFocus(tab.name)"
       @select="selectTab"
     >
@@ -76,12 +75,10 @@ interface TabInfo {
 const props = withDefaults(defineProps<{
   tabs: TabInfo[];
   selectedTab: string;
-  density?: 'comfortable' | 'compact';
   showOverflowAffordances?: boolean;
   previousLabel?: string;
   nextLabel?: string;
 }>(), {
-  density: 'comfortable',
   showOverflowAffordances: false,
   previousLabel: '',
   nextLabel: '',

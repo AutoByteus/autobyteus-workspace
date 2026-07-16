@@ -5,18 +5,46 @@ import {
 } from '../responsiveLayoutPolicy'
 
 describe('responsiveLayoutPolicy', () => {
-  it('keeps the app shell docked only when wide desktop space is available', () => {
+  it('keeps left navigation docked while it and the center can fit', () => {
     expect(resolveAppShellResponsiveState({
       viewportWidth: 1440,
       viewportHeight: 900,
       userLeftPanelVisible: true,
+      userLeftPanelWidth: 320,
     }).leftPanelPresentation).toBe('docked')
 
     expect(resolveAppShellResponsiveState({
       viewportWidth: 1024,
       viewportHeight: 768,
       userLeftPanelVisible: true,
+      userLeftPanelWidth: 320,
+    }).leftPanelPresentation).toBe('docked')
+
+    expect(resolveAppShellResponsiveState({
+      viewportWidth: 768,
+      viewportHeight: 700,
+      userLeftPanelVisible: true,
+      userLeftPanelWidth: 320,
     }).leftPanelPresentation).toBe('strip')
+
+    expect(resolveAppShellResponsiveState({
+      viewportWidth: 800,
+      viewportHeight: 700,
+      userLeftPanelVisible: true,
+      userLeftPanelWidth: 320,
+    }).leftPanelPresentation).toBe('docked')
+  })
+
+  it('represents explicit wide collapse as a user-hidden strip, not responsive collapse', () => {
+    const state = resolveAppShellResponsiveState({
+      viewportWidth: 1440,
+      viewportHeight: 900,
+      userLeftPanelVisible: false,
+    })
+
+    expect(state.leftPanelPresentation).toBe('hidden-by-user')
+    expect(state.showLeftStrip).toBe(true)
+    expect(state.canOpenLeftDrawer).toBe(false)
   })
 
   it('uses a drawer-capable shell below md without conflicting 640/768 breakpoints', () => {
@@ -44,27 +72,26 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.rightPanelPresentation).toBe('docked')
     expect(state.rightPanelWidth).toBe(450)
     expect(state.centerMinWidth).toBe(480)
-    expect(state.showPrimarySurfaceControls).toBe(false)
   })
 
 
 
-  it('models the 1024 left-strip plus right-docked band explicitly', () => {
+  it('models the 1024 left-docked plus right-yielding priority explicitly', () => {
     const shell = resolveAppShellResponsiveState({
       viewportWidth: 1024,
       viewportHeight: 768,
       userLeftPanelVisible: true,
     })
     const workspace = resolveWorkspaceResponsiveState({
-      containerWidth: 974,
+      containerWidth: 704,
       containerHeight: 768,
       rightPanelPreferenceVisible: true,
       preferredRightPanelWidth: 450,
     })
 
-    expect(shell.leftPanelPresentation).toBe('strip')
-    expect(shell.canOpenLeftDrawer).toBe(true)
-    expect(workspace.rightPanelPresentation).toBe('docked')
+    expect(shell.leftPanelPresentation).toBe('docked')
+    expect(shell.canOpenLeftDrawer).toBe(false)
+    expect(workspace.rightPanelPresentation).toBe('drawer')
   })
 
   it('uses constrained presentation instead of squeezing center at 768-800 widths', () => {
@@ -78,7 +105,7 @@ describe('responsiveLayoutPolicy', () => {
 
       expect(state.rightPanelPresentation).toBe('strip')
       expect(state.showRightStrip).toBe(true)
-      expect(state.showPrimarySurfaceControls).toBe(true)
+      expect(state.mode).toBe('constrained')
     }
   })
 
@@ -93,7 +120,6 @@ describe('responsiveLayoutPolicy', () => {
 
       expect(state.mode).toBe('narrow')
       expect(state.rightPanelPresentation).toBe('drawer')
-      expect(state.showPrimarySurfaceControls).toBe(true)
     }
   })
 
@@ -107,6 +133,5 @@ describe('responsiveLayoutPolicy', () => {
 
     expect(state.mode).toBe('short-height')
     expect(state.rightPanelPresentation).toBe('drawer')
-    expect(state.showPrimarySurfaceControls).toBe(true)
   })
 })
