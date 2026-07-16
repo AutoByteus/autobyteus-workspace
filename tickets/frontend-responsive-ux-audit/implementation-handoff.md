@@ -242,6 +242,15 @@ Removed:
 - `workspace-responsive-probe.mjs` is cohesive and test-exempt from source-size limits but is near 500 effective lines; split it if future scenario families materially grow it.
 - `vue-tsc` is not installed in `autobyteus-web`; production Nuxt build is the available build/type confidence check.
 
+### Round 28 Local-Fix Trace
+
+| Finding | Implementation path | Verification |
+| --- | --- | --- |
+| CR-018 remounted-strip focus return | `useAccessibleDrawer.ts` now accepts a stable post-dismissal focus-target resolver, retries it after the conditional strip remount, and keeps the original connected-opener fallback. `default.vue` and `WorkspaceAdaptiveLayout.vue` provide side-specific left/right strip resolvers while preserving per-side drawer visibility gates. | Shared drawer tests cover initial focus, focus containment, backdrop/Escape dismissal, remounted left/right target restoration, and both independent drawer keyboard ownership. Default/adaptive/right-drawer tests cover the real left lifecycle and right geometry/lifecycle. |
+| CR-019 independent transient drawer ownership | `WorkspaceAdaptiveLayout.vue` no longer closes the opposite left drawer when opening/redocking right tools or opening left navigation/history. Each side mutates only its own local drawer/panel state; the shared accessibility lifecycle gives the most recently opened drawer deterministic Tab/Escape ownership without coupling preferences. | Adaptive component coverage exercises left-then-right and right-then-left open paths with both drawers retained. The durable workspace probe adds both-direction browser journeys, focus-in, Tab, Escape, backdrop, and focus-return assertions. |
+
+Round 28 implementation-scoped checks: focused workspace/layout/policy/tab suite passed (`13` files, `92` tests); standalone policy TypeScript passed; probe `node --check` passed; web-boundary and localization guards passed; localization literal audit passed with zero findings; Nuxt production build passed; and `git diff --check` passed. Only the existing KaTeX quirks-mode, localization module-type, and build chunk-size warnings remain. API/E2E execution and current-environment coverage remain downstream-owned by `api_e2e_engineer`.
+
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Larger Requirement / Behavior Change / Responsive Layout Refactor`

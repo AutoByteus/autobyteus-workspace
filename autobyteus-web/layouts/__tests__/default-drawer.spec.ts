@@ -151,6 +151,7 @@ describe('default layout drawer lifecycle', () => {
 
     const strip = wrapper.get('[data-test="workspace-left-navigation-strip"]')
     const agentButton = strip.get('button[title="Agents"]')
+    agentButton.element.focus()
     await agentButton.trigger('click')
     await nextTick()
     await nextTick()
@@ -158,12 +159,26 @@ describe('default layout drawer lifecycle', () => {
     expect(routerMock.push).not.toHaveBeenCalled()
     expect(wrapper.get('[data-test="app-left-navigation-drawer"]').attributes('role')).toBe('dialog')
     expect(wrapper.find('[data-test="workspace-left-navigation-strip"]').exists()).toBe(false)
+    expect(wrapper.get('[data-test="app-left-navigation-drawer"]').element.contains(document.activeElement)).toBe(true)
 
     await wrapper.get('[data-test="app-left-drawer-backdrop"]').trigger('click')
     await nextTick()
     await nextTick()
 
     expect(wrapper.find('[data-test="app-left-navigation-drawer"]').exists()).toBe(false)
+    const remountedStripAgentButton = wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').element
+    expect(document.activeElement).toBe(remountedStripAgentButton)
+
+    await wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').trigger('click')
+    await nextTick()
+    await nextTick()
+    expect(wrapper.get('[data-test="app-left-navigation-drawer"]').element.contains(document.activeElement)).toBe(true)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }))
+    await nextTick()
+    await nextTick()
+    expect(wrapper.find('[data-test="app-left-navigation-drawer"]').exists()).toBe(false)
+    expect(document.activeElement).toBe(wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').element)
     expect(routeMock.fullPath).toBe('/workspace')
     wrapper.unmount()
   })

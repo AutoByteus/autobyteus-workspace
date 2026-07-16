@@ -74,4 +74,119 @@ describe('useAccessibleDrawer', () => {
     expect(document.activeElement).toBe(opener)
     wrapper.unmount()
   })
+
+  it('restores focus to a remounted strip target after dismissal', async () => {
+    const isOpen = ref(false)
+    const showOrigin = ref(true)
+    const Host = defineComponent({
+      setup() {
+        const drawerRef = ref<HTMLElement | null>(null)
+        useAccessibleDrawer({
+          isOpen,
+          drawerRef,
+          onRequestClose: () => {
+            isOpen.value = false
+          },
+          returnFocusTarget: () => document.querySelector<HTMLElement>('[data-test="remounted-strip"]'),
+        })
+
+        return () => h('div', [
+          showOrigin.value && !isOpen.value
+            ? h('button', {
+                'data-test': 'origin-strip',
+                onClick: () => {
+                  showOrigin.value = false
+                  isOpen.value = true
+                },
+              }, 'Open')
+            : null,
+          !showOrigin.value && !isOpen.value
+            ? h('button', { 'data-test': 'remounted-strip' }, 'Remounted strip')
+            : null,
+          isOpen.value
+            ? h('aside', { ref: drawerRef, role: 'dialog', tabindex: -1 }, [
+                h('button', { 'data-drawer-initial-focus': true }, 'Drawer action'),
+              ])
+            : null,
+        ])
+      },
+    })
+    const wrapper = mount(Host, { attachTo: document.body })
+
+    const origin = wrapper.get('[data-test="origin-strip"]')
+    origin.element.focus()
+    await origin.trigger('click')
+    await nextTick()
+    await nextTick()
+
+    expect(wrapper.get('[role="dialog"]').element.contains(document.activeElement)).toBe(true)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }))
+    await nextTick()
+    await nextTick()
+
+    expect(document.activeElement).toBe(wrapper.get('[data-test="remounted-strip"]').element)
+    wrapper.unmount()
+  })
+
+  it('gives Escape ownership to the most recently opened independent drawer', async () => {
+    const leftOpen = ref(false)
+    const rightOpen = ref(false)
+    const Host = defineComponent({
+      setup() {
+        const leftDrawerRef = ref<HTMLElement | null>(null)
+        const rightDrawerRef = ref<HTMLElement | null>(null)
+        useAccessibleDrawer({
+          isOpen: leftOpen,
+          drawerRef: leftDrawerRef,
+          onRequestClose: () => { leftOpen.value = false },
+        })
+        useAccessibleDrawer({
+          isOpen: rightOpen,
+          drawerRef: rightDrawerRef,
+          onRequestClose: () => { rightOpen.value = false },
+        })
+
+        return () => h('div', [
+          h('button', { 'data-test': 'open-left', onClick: () => { leftOpen.value = true } }, 'Left'),
+          h('button', { 'data-test': 'open-right', onClick: () => { rightOpen.value = true } }, 'Right'),
+          leftOpen.value
+            ? h('aside', { ref: leftDrawerRef, role: 'dialog', tabindex: -1 }, [
+                h('button', { 'data-drawer-initial-focus': true }, 'Left action'),
+              ])
+            : null,
+          rightOpen.value
+            ? h('aside', { ref: rightDrawerRef, role: 'dialog', tabindex: -1 }, [
+                h('button', { 'data-drawer-initial-focus': true }, 'Right action'),
+                h('button', { 'data-test': 'right-second' }, 'Right second'),
+              ])
+            : null,
+        ])
+      },
+    })
+    const wrapper = mount(Host, { attachTo: document.body })
+
+    await wrapper.get('[data-test="open-left"]').trigger('click')
+    await nextTick()
+    await wrapper.get('[data-test="open-right"]').trigger('click')
+    await nextTick()
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', cancelable: true }))
+    expect(document.activeElement).toBe(wrapper.get('[data-test="right-second"]').element)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }))
+    await nextTick()
+    await nextTick()
+    expect(rightOpen.value).toBe(false)
+    expect(leftOpen.value).toBe(true)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', cancelable: true }))
+    expect(document.activeElement?.textContent).toBe('Left action')
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }))
+    await nextTick()
+    await nextTick()
+    expect(leftOpen.value).toBe(false)
+    wrapper.unmount()
+  })
 })

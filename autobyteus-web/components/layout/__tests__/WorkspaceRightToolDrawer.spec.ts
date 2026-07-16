@@ -59,4 +59,55 @@ describe('WorkspaceRightToolDrawer', () => {
     expect(document.activeElement).toBe(opener)
     wrapper.unmount()
   })
+
+  it('returns focus to a remounted right strip after backdrop dismissal', async () => {
+    const isOpen = ref(false)
+    const showOrigin = ref(true)
+    const Host = defineComponent({
+      setup() {
+        return () => h('div', [
+          showOrigin.value && !isOpen.value
+            ? h('button', {
+                'data-test': 'right-strip-origin',
+                onClick: () => {
+                  showOrigin.value = false
+                  isOpen.value = true
+                },
+              }, 'Open tools')
+            : null,
+          !showOrigin.value && !isOpen.value
+            ? h('button', { 'data-test': 'right-strip-remounted' }, 'Tools strip')
+            : null,
+          isOpen.value
+            ? h(WorkspaceRightToolDrawer, {
+                title: 'Tools',
+                width: 450,
+                returnFocusTarget: () => document.querySelector<HTMLElement>('[data-test="right-strip-remounted"]'),
+                onClose: () => {
+                  isOpen.value = false
+                },
+              })
+            : null,
+        ])
+      },
+    })
+    const wrapper = mount(Host, {
+      attachTo: document.body,
+      global: { mocks: { $t: (key: string) => key } },
+    })
+
+    const origin = wrapper.get('[data-test="right-strip-origin"]')
+    origin.element.focus()
+    await origin.trigger('click')
+    await nextTick()
+    await nextTick()
+    expect(wrapper.get('[data-test="workspace-right-tool-drawer"]').element.contains(document.activeElement)).toBe(true)
+
+    await wrapper.get('[data-test="workspace-right-tool-drawer-backdrop"]').trigger('click')
+    await nextTick()
+    await nextTick()
+
+    expect(document.activeElement).toBe(wrapper.get('[data-test="right-strip-remounted"]').element)
+    wrapper.unmount()
+  })
 })

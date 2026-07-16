@@ -26,9 +26,10 @@ import { ref } from 'vue';
 import { useAccessibleDrawer } from '~/composables/useAccessibleDrawer';
 import RightSideTabs from './RightSideTabs.vue';
 
-defineProps<{
+const props = defineProps<{
   title: string
   width: number
+  returnFocusTarget?: () => HTMLElement | null
 }>();
 
 const emit = defineEmits<{
@@ -40,5 +41,6 @@ const drawerRef = ref<HTMLElement | null>(null);
 useAccessibleDrawer({
   drawerRef,
   onRequestClose: () => emit('close'),
+  returnFocusTarget: props.returnFocusTarget,
 });
 </script>

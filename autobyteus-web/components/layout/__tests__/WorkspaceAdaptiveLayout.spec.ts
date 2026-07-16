@@ -501,4 +501,42 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(false);
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-2');
   });
+
+  it('keeps left and right transient drawers independently open', async () => {
+    setViewport(800, 700);
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: null, selectedRunId: null },
+      workspaceCenterView: { mode: 'chat' },
+      agentRunConfig: { config: null },
+      teamRunConfig: { config: null },
+    });
+
+    await wrapper.get('[data-test="workspace-empty-state-choose"]').trigger('click');
+    expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
+
+    await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
+
+    expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+  });
+
+  it('keeps the left drawer independent when opened after right tools', async () => {
+    setViewport(800, 700);
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: null, selectedRunId: null },
+      workspaceCenterView: { mode: 'chat' },
+      agentRunConfig: { config: null },
+      teamRunConfig: { config: null },
+    });
+
+    await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
+    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+    expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(false);
+
+    await wrapper.get('[data-test="workspace-empty-state-choose"]').trigger('click');
+
+    expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
+  });
 });

@@ -252,6 +252,7 @@ async function collect(page, label) {
     const rightPanelTabs = rightPanelTabListDetails?.tabs ?? [];
     const rightDrawerTabs = rightDrawerTabListDetails?.tabs ?? [];
     const panelToggle = document.querySelector('[data-test="right-side-panel-toggle"]');
+    const activeElement = document.activeElement;
 
     return {
       label: evaluationLabel,
@@ -316,6 +317,14 @@ async function collect(page, label) {
       rightDrawerTabs,
       rightPanelTabList: rightPanelTabListDetails,
       rightDrawerTabList: rightDrawerTabListDetails,
+      activeElement: {
+        dataTest: activeElement?.getAttribute?.('data-test') || '',
+        ariaLabel: activeElement?.getAttribute?.('aria-label') || '',
+        insideLeftDrawer: Boolean(leftNavigationDrawer?.contains(activeElement)),
+        insideRightDrawer: Boolean(rightDrawer?.contains(activeElement)),
+        insideLeftStrip: Boolean(leftStrip?.contains(activeElement)),
+        insideRightStrip: Boolean(document.querySelector('[data-test="workspace-right-tool-strip"]')?.contains(activeElement)),
+      },
       panelToggle: panelToggle ? {
         visible: visible(panelToggle),
         rect: rect(panelToggle),
@@ -682,6 +691,7 @@ async function validateLeftStripReopenInteraction(page, viewport) {
   if (!drawerState.rects.leftNavigationDrawer?.visible) failures.push('left navigation strip did not open the navigation drawer');
   if (drawerState.rects.leftStrip?.visible) failures.push('left navigation drawer open state kept the left strip visible');
   if (drawerState.rects.leftStrip?.stripActivation !== 'open-drawer') failures.push('responsive left strip did not expose open-drawer activation');
+  if (!drawerState.activeElement?.insideLeftDrawer) failures.push('left navigation strip did not move focus into the opened drawer');
   failures.push(...validateLeftPanelLayout(drawerState, 'left navigation drawer'));
 
   const closed = await clickButtonByTest(page, 'app-left-drawer-backdrop');
@@ -689,11 +699,90 @@ async function validateLeftStripReopenInteraction(page, viewport) {
   const closedState = await collect(page, 'left-strip-reopen-close');
   if (!closed) failures.push('left navigation drawer did not expose its backdrop dismissal');
   if (closedState.rects.leftNavigationDrawer?.visible) failures.push('left navigation drawer backdrop did not close the drawer');
+  if (!closedState.activeElement?.insideLeftStrip) failures.push('left drawer backdrop dismissal did not restore focus to the remounted strip');
+
+  const reopened = await clickFirstButton(page, '[data-test="workspace-left-navigation-strip"]');
+  await page.waitForTimeout(250);
+  const escapedStateBefore = await collect(page, 'left-strip-reopen-escape-before');
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(250);
+  const escapedState = await collect(page, 'left-strip-reopen-escape-after');
+  if (!reopened) failures.push('left navigation strip did not reopen after backdrop dismissal');
+  if (!escapedStateBefore.activeElement?.insideLeftDrawer) failures.push('left navigation strip reopen did not move focus into the drawer');
+  if (escapedState.rects.leftNavigationDrawer?.visible) failures.push('left navigation drawer Escape dismissal did not close the drawer');
+  if (!escapedState.activeElement?.insideLeftStrip) failures.push('left drawer Escape dismissal did not restore focus to the remounted strip');
 
   return {
     action: 'reopen navigation from left strip',
     clicked,
     state: drawerState,
+    failures,
+  };
+}
+
+async function validateIndependentDrawerInteractions(page, viewport) {
+  if (viewport.name !== 'gap-700x700') {
+    return null;
+  }
+
+  const failures = [];
+  const leftClicked = await clickFirstButton(page, '[data-test="workspace-left-navigation-strip"]');
+  await page.waitForTimeout(250);
+  const leftOpen = await collect(page, 'independent-drawers-left-open');
+
+  const rightClicked = await clickFirstButton(page, '[data-test="workspace-right-tool-strip"]');
+  await page.waitForTimeout(250);
+  const bothOpen = await collect(page, 'independent-drawers-both-open');
+  if (!leftClicked) failures.push('independent drawer test could not open the left drawer');
+  if (!rightClicked) failures.push('independent drawer test could not open the right drawer while left was open');
+  if (!leftOpen.rects.leftNavigationDrawer?.visible) failures.push('left drawer was not open before opening the right drawer');
+  if (!bothOpen.rects.leftNavigationDrawer?.visible || !bothOpen.rects.rightDrawer?.visible) {
+    failures.push('opening the right drawer unexpectedly closed or suppressed the independent left drawer');
+  }
+  if (!bothOpen.activeElement?.insideRightDrawer) failures.push('right drawer did not own focus when opened after the left drawer');
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(250);
+  const rightDismissed = await collect(page, 'independent-drawers-right-escape');
+  if (rightDismissed.rects.rightDrawer?.visible) failures.push('topmost right drawer Escape dismissal did not close the right drawer');
+  if (!rightDismissed.rects.leftNavigationDrawer?.visible) failures.push('right drawer Escape dismissal closed the independent left drawer');
+  if (!rightDismissed.activeElement?.insideRightStrip) failures.push('right drawer Escape dismissal did not restore focus to the right strip');
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(250);
+  const leftDismissed = await collect(page, 'independent-drawers-left-escape');
+  if (leftDismissed.rects.leftNavigationDrawer?.visible) failures.push('left drawer Escape dismissal did not close the remaining drawer');
+  if (!leftDismissed.activeElement?.insideLeftStrip) failures.push('left drawer Escape dismissal did not restore focus to the left strip');
+
+  const reverseRightClicked = await clickFirstButton(page, '[data-test="workspace-right-tool-strip"]');
+  await page.waitForTimeout(250);
+  const reverseRightOpen = await collect(page, 'independent-drawers-reverse-right-open');
+  const reverseLeftClicked = await clickFirstButton(page, '[data-test="workspace-left-navigation-strip"]');
+  await page.waitForTimeout(250);
+  const reverseBothOpen = await collect(page, 'independent-drawers-reverse-both-open');
+  if (!reverseRightClicked || !reverseLeftClicked) failures.push('reverse independent drawer journey could not open both sides');
+  if (!reverseRightOpen.rects.rightDrawer?.visible || !reverseBothOpen.rects.rightDrawer?.visible || !reverseBothOpen.rects.leftNavigationDrawer?.visible) {
+    failures.push('opening the left drawer unexpectedly closed or suppressed the independent right drawer');
+  }
+  if (!reverseBothOpen.activeElement?.insideLeftDrawer) failures.push('left drawer did not own focus when opened after the right drawer');
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(250);
+  const reverseLeftDismissed = await collect(page, 'independent-drawers-reverse-left-escape');
+  if (reverseLeftDismissed.rects.leftNavigationDrawer?.visible) failures.push('reverse topmost left drawer Escape dismissal did not close the left drawer');
+  if (!reverseLeftDismissed.rects.rightDrawer?.visible) failures.push('reverse left drawer Escape dismissal closed the independent right drawer');
+  if (!reverseLeftDismissed.activeElement?.insideLeftStrip) failures.push('reverse left drawer Escape dismissal did not restore focus to the left strip');
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(250);
+  const reverseRightDismissed = await collect(page, 'independent-drawers-reverse-right-escape');
+  if (reverseRightDismissed.rects.rightDrawer?.visible) failures.push('reverse right drawer Escape dismissal did not close the remaining drawer');
+  if (!reverseRightDismissed.activeElement?.insideRightStrip) failures.push('reverse right drawer Escape dismissal did not restore focus to the right strip');
+
+  return {
+    action: 'open independent left and right drawers in both directions',
+    clicked: leftClicked && rightClicked,
+    state: bothOpen,
     failures,
   };
 }
@@ -945,6 +1034,11 @@ const run = async () => {
         if (leftStripInteraction) {
           interactions.push(leftStripInteraction);
           pageFailures.push(...leftStripInteraction.failures);
+        }
+        const independentDrawerInteraction = await validateIndependentDrawerInteractions(page, viewport);
+        if (independentDrawerInteraction) {
+          interactions.push(independentDrawerInteraction);
+          pageFailures.push(...independentDrawerInteraction.failures);
         }
         pageFailures.push(...validateInteractions(interactions));
 

@@ -86,6 +86,7 @@
       v-if="isRightDrawerOpen"
       :title="rightDrawerTitle"
       :width="rightDrawerWidth"
+      :return-focus-target="getRightStripFocusTarget"
       @close="closeRightDrawer"
     />
   </div>
@@ -214,25 +215,25 @@ const closeRightDrawer = (): void => {
   isRightDrawerOpen.value = false;
 };
 
+const getRightStripFocusTarget = (): HTMLElement | null => (
+  document.querySelector<HTMLElement>('[data-test="workspace-right-tool-strip"] button')
+);
+
 const openRightDrawer = (): void => {
   if (isRightDrawerOpen.value) {
     closeRightDrawer();
     return;
   }
 
-  appLayoutStore.closeMobileMenu();
   isRightDrawerOpen.value = true;
 };
 
 const redockRightPanel = (): void => {
   setRightPanelVisible(true);
-  appLayoutStore.closeMobileMenu();
   closeRightDrawer();
 };
 
 const openLeftNavigation = (): void => {
-  closeRightDrawer();
-
   if (responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'open-drawer') {
     appLayoutStore.openMobileMenu();
     return;
@@ -246,8 +247,6 @@ const openLeftNavigation = (): void => {
 };
 
 const openRunHistory = (): void => {
-  closeRightDrawer();
-
   if (responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'open-drawer') {
     appLayoutStore.openMobileMenu();
   } else if (responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'redock-panel') {

@@ -134,10 +134,15 @@ const showLeftPanelDragHandle = computed(
   ),
 )
 
+const getLeftStripFocusTarget = (): HTMLElement | null => (
+  document.querySelector<HTMLElement>('[data-test="workspace-left-navigation-strip"] button')
+)
+
 useAccessibleDrawer({
   isOpen: computed(() => showLeftDrawer.value && !isApplicationImmersive.value),
   drawerRef: leftDrawerRef,
   onRequestClose: () => appLayoutStore.closeMobileMenu(),
+  returnFocusTarget: getLeftStripFocusTarget,
 })
 
 const leftPanelStyle = computed(() => ({
