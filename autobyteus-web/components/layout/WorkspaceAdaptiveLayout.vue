@@ -73,7 +73,7 @@
       <!-- Right Panel -->
       <div
         v-if="showDockedRightPanel"
-        :style="{ width: rightPanelWidth + 'px' }"
+        :style="{ width: responsiveWorkspaceShellState.rightPanel.preferredWidth + 'px' }"
         class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
         data-test="workspace-right-panel"
       >
@@ -138,7 +138,6 @@ const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 
 const {
   isRightPanelVisible,
-  rightPanelWidth,
   initDragRightPanel,
   setRightPanelVisible,
   setRightPanelWorkspaceWidth,
@@ -212,8 +211,8 @@ const shouldShowSemanticSurfaceTriggers = computed(() =>
 
 const centerPaneStyle = computed(() => ({
   minWidth: responsiveWorkspaceShellState.value.isNarrow
-    ? `min(100%, ${responsiveWorkspaceShellState.value.centerMinWidth}px)`
-    : `${responsiveWorkspaceShellState.value.centerMinWidth}px`,
+    ? `min(100%, ${responsiveWorkspaceShellState.value.rightPanel.effectiveCenterMinWidth}px)`
+    : `${responsiveWorkspaceShellState.value.rightPanel.effectiveCenterMinWidth}px`,
 }));
 
 const rightDrawerWidth = computed(() => Math.min(

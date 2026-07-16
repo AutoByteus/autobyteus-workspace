@@ -29,6 +29,7 @@ const DEFAULT_VIEWPORTS = [
 
 const CANONICAL_TOOL_ORDER = ['Files', 'Team', 'Terminal', 'Activity', 'Token', 'Artifacts', 'Browser', 'VNC Viewer'];
 const CENTER_MIN_WIDTH = 480;
+const USER_RESIZE_CENTER_MIN_WIDTH = 200;
 const LEFT_PANEL_RESIZE_HANDLE_WIDTH = 6;
 const RIGHT_PANEL_RESIZE_HANDLE_WIDTH = 4;
 const ACCEPTABLE_NARROW_CENTER_MIN_WIDTH = 320;
@@ -663,7 +664,7 @@ async function validateRightResizeBoundInteraction(page, viewport) {
   const flowWidth = beforeState.rects.centerRightFlow?.rect?.width ?? 0;
   const expectedBoundWidth = Math.max(
     0,
-    flowWidth - LEFT_PANEL_RESIZE_HANDLE_WIDTH / 2 - CENTER_MIN_WIDTH - RIGHT_PANEL_RESIZE_HANDLE_WIDTH,
+    flowWidth - LEFT_PANEL_RESIZE_HANDLE_WIDTH / 2 - USER_RESIZE_CENTER_MIN_WIDTH - RIGHT_PANEL_RESIZE_HANDLE_WIDTH,
   );
   const observedWidth = state.rects.rightPanel?.rect?.width ?? 0;
   if (!state.visibleState.rightPanel) failures.push('right-panel resize bound removed the docked right panel');
@@ -675,8 +676,8 @@ async function validateRightResizeBoundInteraction(page, viewport) {
   if (Math.abs(observedWidth - expectedBoundWidth) > 1) {
     failures.push(`right-panel resize bound stopped at ${observedWidth}px instead of capacity-derived ${expectedBoundWidth}px`);
   }
-  if (!state.rects.centerShell?.visible || state.rects.centerShell.rect.width < 480) {
-    failures.push(`right-panel resize bound left center below 480px: ${state.rects.centerShell?.rect?.width ?? 0}px`);
+  if (!state.rects.centerShell?.visible || state.rects.centerShell.rect.width < USER_RESIZE_CENTER_MIN_WIDTH) {
+    failures.push(`right-panel resize bound left center below ${USER_RESIZE_CENTER_MIN_WIDTH}px: ${state.rects.centerShell?.rect?.width ?? 0}px`);
   }
 
   return {

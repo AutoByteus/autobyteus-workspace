@@ -3,7 +3,9 @@ import {
   RIGHT_PANEL_DEFAULT_WIDTH_PX,
   RIGHT_PANEL_MIN_WIDTH_PX,
   RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX,
+  USER_RESIZE_CENTER_MIN_WIDTH_PX,
   WORKSPACE_CENTER_MIN_WIDTH_PX,
+  type RightPanelResizeIntent,
 } from '~/utils/layout/responsiveLayoutPolicy'
 
 // Global user preference for right panel visibility and width shared across workspace surfaces.
@@ -13,6 +15,7 @@ export const DEFAULT_RIGHT_PANEL_WIDTH = RIGHT_PANEL_DEFAULT_WIDTH_PX
 export const MIN_RIGHT_PANEL_WIDTH = RIGHT_PANEL_MIN_WIDTH_PX
 
 const preferredRightPanelWidth = ref(DEFAULT_RIGHT_PANEL_WIDTH)
+const rightPanelResizeIntent = ref<RightPanelResizeIntent>('automatic')
 const workspacePanelContainerWidth = ref<number | null>(null)
 
 const sanitizeContainerWidth = (width: number | null | undefined): number | null => {
@@ -28,9 +31,13 @@ const maxRightPanelWidth = computed(() => {
     return Number.POSITIVE_INFINITY
   }
 
+  const centerMinWidth = rightPanelResizeIntent.value === 'user-sized'
+    ? USER_RESIZE_CENTER_MIN_WIDTH_PX
+    : WORKSPACE_CENTER_MIN_WIDTH_PX
+
   return Math.max(
     0,
-    workspacePanelContainerWidth.value - WORKSPACE_CENTER_MIN_WIDTH_PX - RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX,
+    workspacePanelContainerWidth.value - centerMinWidth - RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX,
   )
 })
 
@@ -86,6 +93,7 @@ export function useRightPanel() {
 
     const startX = event.clientX
     const startWidth = rightPanelWidth.value
+    rightPanelResizeIntent.value = 'user-sized'
 
     /**
      * Handles the mousemove event during dragging.
@@ -119,6 +127,7 @@ export function useRightPanel() {
     isRightPanelVisible,
     preferredRightPanelWidth,
     rightPanelWidth,
+    rightPanelResizeIntent,
     toggleRightPanel,
     setRightPanelVisible,
     setRightPanelWorkspaceWidth,

@@ -23,7 +23,7 @@ export function useResponsiveWorkspaceShell(): {
 } {
   const { rect: viewportRect } = useResponsiveElementRect()
   const { isLeftPanelVisible, leftPanelWidth } = useLeftPanel()
-  const { isRightPanelVisible, rightPanelWidth } = useRightPanel()
+  const { isRightPanelVisible, rightPanelWidth, rightPanelResizeIntent } = useRightPanel()
 
   const responsiveWorkspaceShellState = computed(() => resolveResponsiveWorkspaceShellState({
     viewportWidth: viewportRect.value.width,
@@ -32,6 +32,7 @@ export function useResponsiveWorkspaceShell(): {
     leftPanelPreferredWidth: leftPanelWidth.value,
     rightPanelPreference: isRightPanelVisible.value ? 'visible' : 'hidden-by-user',
     rightPanelPreferredWidth: rightPanelWidth.value,
+    rightPanelResizeIntent: rightPanelResizeIntent.value,
   }))
 
   return {

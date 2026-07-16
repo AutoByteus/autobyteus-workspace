@@ -84,13 +84,20 @@ describe('WorkspaceAdaptiveLayout', () => {
     const {
       setRightPanelVisible,
       setRightPanelWorkspaceWidth,
+      preferredRightPanelWidth,
+      rightPanelResizeIntent,
     } = useRightPanel();
     setRightPanelVisible(true);
     setRightPanelWorkspaceWidth(null);
+    preferredRightPanelWidth.value = 450;
+    rightPanelResizeIntent.value = 'automatic';
     useLeftPanel().setLeftPanelVisible(true);
   });
 
-  const mountComponent = async (initialState = {}) => {
+  const mountComponent = async (
+    initialState = {},
+    responsiveOverrides: Partial<Parameters<typeof resolveResponsiveWorkspaceShellState>[0]> = {},
+  ) => {
     const leftPanel = useLeftPanel();
     const rightPanel = useRightPanel();
     const responsiveWorkspaceShellState = ref(resolveResponsiveWorkspaceShellState({
@@ -100,6 +107,8 @@ describe('WorkspaceAdaptiveLayout', () => {
       leftPanelPreferredWidth: leftPanel.leftPanelWidth.value,
       rightPanelPreference: rightPanel.isRightPanelVisible.value ? 'visible' : 'hidden-by-user',
       rightPanelPreferredWidth: rightPanel.preferredRightPanelWidth.value,
+      rightPanelResizeIntent: rightPanel.rightPanelResizeIntent.value,
+      ...responsiveOverrides,
     }));
 
     const wrapper = shallowMount(WorkspaceAdaptiveLayout, {
@@ -222,6 +231,21 @@ describe('WorkspaceAdaptiveLayout', () => {
     const shell = wrapper.get('[data-test="workspace-center-content-shell"]');
     expect(shell.classes()).toContain('overflow-hidden');
     expect(shell.classes()).not.toContain('overflow-auto');
+    expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 480px');
+  });
+
+  it('renders the responsive-yield center floor while retaining a user-sized intent', async () => {
+    setViewport(800, 700);
+    const wrapper = await mountComponent(
+      {
+        agentSelection: { selectedType: 'team', selectedRunId: 'responsive-yield' },
+        workspaceCenterView: { mode: 'chat' },
+      },
+      { rightPanelResizeIntent: 'user-sized' },
+    );
+
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
+    expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 480px');
   });
 
   it('keeps the docked right panel visible when a drag reaches the center-preserving bound', async () => {
@@ -229,22 +253,24 @@ describe('WorkspaceAdaptiveLayout', () => {
     const rightPanel = useRightPanel();
     rightPanel.setRightPanelWorkspaceWidth(1114);
 
+    rightPanel.initDragRightPanel(new MouseEvent('mousedown', { clientX: 1000 }));
+    dispatchMouseMove(0);
+    dispatchMouseUp();
+
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: 'resize-bound' },
       workspaceCenterView: { mode: 'chat' },
     });
 
-    rightPanel.initDragRightPanel(new MouseEvent('mousedown', { clientX: 1000 }));
-    dispatchMouseMove(0);
-    dispatchMouseUp();
     await nextTick();
 
-    expect(rightPanel.rightPanelWidth.value).toBe(630);
+    expect(rightPanel.rightPanelResizeIntent.value).toBe('user-sized');
+    expect(rightPanel.rightPanelWidth.value).toBe(910);
     expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="workspace-tools-trigger"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="workspace-right-panel"]').attributes('style')).toContain('width: 630px');
-    expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 480px');
+    expect(wrapper.get('[data-test="workspace-right-panel"]').attributes('style')).toContain('width: 910px');
+    expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 200px');
   });
 
   it('renders RunConfigPanel for selected run when config view mode is active', async () => {
@@ -297,14 +323,11 @@ describe('WorkspaceAdaptiveLayout', () => {
     });
 
     expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
-    const controls = wrapper.get('[data-test="workspace-semantic-surface-triggers"]');
-    expect(controls.text()).toContain('Tools');
-    expect(controls.text()).not.toContain('Work');
-    expect(controls.text()).not.toContain('Runs');
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(false);
   });
 
-  it('switches right tools out of the cramped docked pane at constrained widths', async () => {
+  it('switches right tools to the visible strip before using a drawer at constrained widths', async () => {
     setViewport(800, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: '456' },
@@ -312,9 +335,10 @@ describe('WorkspaceAdaptiveLayout', () => {
     });
 
     expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(true);
-    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="workspace-tools-trigger"]').exists()).toBe(true);
+    const controls = wrapper.get('[data-test="workspace-semantic-surface-triggers"]');
+    expect(controls.text()).toContain('Agents & teams');
+    expect(wrapper.find('[data-test="workspace-tools-trigger"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
     expect(wrapper.find('[data-test="workspace-center-content-shell"]').exists()).toBe(true);
   });
 
@@ -338,7 +362,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('uses exactly one semantic Tools trigger for a right drawer presentation', async () => {
-    setViewport(800, 700);
+    setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: 'run-drawer' },
       workspaceCenterView: { mode: 'chat' },
@@ -367,7 +391,9 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(source).toContain('new ResizeObserver');
     expect(source).toContain('setRightPanelWorkspaceWidth');
     expect(source).toContain('LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX / 2');
-    expect(source).toContain("width: rightPanelWidth + 'px'");
+    expect(source).toContain("responsiveWorkspaceShellState.rightPanel.preferredWidth + 'px'");
+    expect(source).toContain('rightPanel.effectiveCenterMinWidth');
+    expect(source).not.toContain('responsiveWorkspaceShellState.value.centerMinWidth');
   });
 
   it('does not render semantic triggers after a wide manual left collapse', async () => {
@@ -438,7 +464,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('opens constrained navigation and tools while preserving selection', async () => {
-    setViewport(800, 700);
+    setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: 'run-2' },
       workspaceCenterView: { mode: 'chat' },
