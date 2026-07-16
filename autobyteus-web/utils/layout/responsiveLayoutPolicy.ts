@@ -1,5 +1,8 @@
 export type PanelPreference = 'visible' | 'hidden-by-user'
-export type ResponsivePresentation = 'docked' | 'strip' | 'drawer'
+// Effective shell presentations expose only docked surfaces or their visible
+// strip affordance. Drawers are transient interaction surfaces owned by the
+// layout, never an effective resolver output.
+export type ResponsivePresentation = 'docked' | 'strip'
 export type RightPanelPresentation = 'docked' | 'strip'
 export type RightStripBehavior = 'consuming' | 'overlay'
 export type PresentationSource = 'user' | 'responsive'
@@ -278,7 +281,7 @@ const createState = (
   // Every visible left strip opens the same transient navigation drawer. A
   // user-collapsed strip is still a compact presentation, not a preference
   // toggle-only affordance.
-  canOpenLeftDrawer: candidate.left === 'drawer' || candidate.left === 'strip',
+  canOpenLeftDrawer: candidate.left === 'strip',
   canOpenRightDrawer: candidate.right === 'strip',
   showLeftStrip: candidate.left === 'strip',
   showRightStrip: candidate.right === 'strip',
