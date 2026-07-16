@@ -24,11 +24,13 @@ API/E2E Round 6 identified `CR-004`: the first scrolling implementation rendered
 
 Architecture review Round 5 approved the workspace-shell rework after resolving `DI-002`. The generic `Work / Runs / Files / Tools` row is removed from wide default, wide manual-left-collapse, and responsive fallback paths. The shell now preserves left navigation/history + center Work + right Files/tools ownership, uses measured left-capacity/right-yield policy, exposes semantic `Agents & teams` and `Tools` triggers only when constrained surfaces require them, and renders an actionable no-selection empty state with agent/team and runs/history actions.
 
+Architecture review Round 7 approved the composed responsive-policy boundary after resolving `DI-003`. The pure `resolveResponsiveWorkspaceShellState` resolver now owns the exact consumed-width fit formula, narrow/manual/short-height precedence, right-tools-first candidate phases, effective presentation/source state, and FR-031/AC-032 boundary behavior. `useResponsiveWorkspaceShell` observes the viewport once, composes left/right preferences, provides the single state from `layouts/default.vue`, and is consumed by the shell and workspace renderers. The historical app-shell/workspace policy adapters and right-panel responsive presentation mutation path were removed.
+
 ## What Changed
 
 - Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
 - Centralized shell/workspace responsive policy and the canonical right-tool ordering catalog.
-- Added SSR-safe viewport/container measurement adapters and separated effective responsive presentation from left/right panel user preferences.
+- Added one SSR-safe viewport measurement adapter and separated effective responsive presentation from left/right panel user preferences.
 - Updated the app shell and workspace to use docked, strip, and drawer presentations while preserving a practical center width and recoverable controls in short windows.
 - Kept the center workspace as the primary Work surface and preserved left navigation/history plus right Files/tools ownership without a duplicate generic surface row.
 - Preserved right-tool order as `Files -> Team (when applicable) -> Terminal -> Activity -> Usage/Token -> Artifacts -> Browser -> VNC` across tabs, strips, and drawers.
@@ -41,19 +43,20 @@ Architecture review Round 5 approved the workspace-shell rework after resolving 
 - Pinned the fade/chevron layer to the scrollport with a width-neutral sticky overlay so reverse scrolling remains reachable at the right boundary.
 - Replaced the actionless center placeholder with an actionable empty state for choosing an agent/team and opening runs/history, retaining selected-run and panel-preference state through responsive presentation changes.
 - Changed shell capacity priority so the left panel remains docked while left navigation plus the practical center fit; right tools yield to a strip/drawer first, and manual left collapse is represented separately from responsive collapse.
+- Replaced the split app-shell/workspace policy paths with `resolveResponsiveWorkspaceShellState` plus the `useResponsiveWorkspaceShell` provider; the shell and workspace now consume one composed state without a blanket `<1280px` left-strip rule.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior IDs | Approved change / preserved outcome | Implemented production path / key files | Result / notes |
 | --- | --- | --- | --- |
 | FR-001, FR-002, AC-001, AC-009 | No blank `640-767px` band; one responsive policy owner | `pages/workspace.vue` -> `WorkspaceAdaptiveLayout.vue`; `utils/layout/responsiveLayoutPolicy.ts`; no route-level `matchMedia` or root `hidden md:flex` branch | Pass in policy/component coverage; browser validation remains downstream-owned. |
-| FR-003, FR-004, FR-009, AC-002, AC-003, AC-004 | Wide docked layout remains available; constrained widths preserve center before side tools | `useWorkspaceResponsiveLayout` -> `resolveWorkspaceResponsiveState`; `useRightPanel`; `WorkspaceAdaptiveLayout.vue`; `RightSidebarStrip.vue` | Pass in focused tests and implementation live smoke evidence. |
+| FR-003, FR-004, FR-009, AC-002, AC-003, AC-004, FR-029, FR-030, AC-030, AC-031 | Wide docked layout remains available; measured constrained widths preserve the left selection surface and yield right tools before adapting the left | `resolveResponsiveWorkspaceShellState`; `useResponsiveWorkspaceShell`; `layouts/default.vue`; `WorkspaceAdaptiveLayout.vue`; `RightSidebarStrip.vue` | Pass in pure policy/adaptive-layout coverage; browser matrix remains downstream-owned. |
 | FR-005, FR-012, FR-013, AC-005, AC-011, AC-012 | Standard workspace capabilities remain discoverable with left/center/right ownership and stable tool ordering | `workspaceSurfaceOrder.ts`; `WorkspaceAdaptiveLayout.vue`; `WorkspacePrimarySurfaceControls.vue` (semantic narrow triggers only); `RightSideTabs.vue`; `WorkspaceRightToolDrawer.vue`; `RightSidebarStrip.vue` | Pass in order/component tests; deep tool-internal behavior remains downstream risk. The generic primary-surface catalog/row is removed. |
 | FR-006, FR-007, AC-007 | Legacy standard mobile fallback is removed; `/mobile` stays the phone/PWA owner | Removed `WorkspaceMobileLayout.vue` and `useMobilePanels.ts`; `pages/mobile.vue`/`MobileRemoteAccessShell` untouched by standard route | Pass; mobile isolation tests remain green. |
-| FR-008, FR-010, AC-006 | Height-aware side-surface presentation and preference/effective-state separation | `resolveAppShellResponsiveState`; `resolveWorkspaceResponsiveState`; `useLeftPanel`; `useRightPanel`; `layouts/default.vue` | Pass in policy/component coverage; browser matrix remains downstream-owned. |
+| FR-008, FR-010, AC-006, FR-031, AC-032 | Height-aware side-surface presentation, composed policy ownership, and preference/effective-state/source separation | `resolveResponsiveWorkspaceShellState`; `useResponsiveWorkspaceShell`; `useLeftPanel`; `useRightPanel`; `layouts/default.vue` | Pass in policy/component coverage; browser matrix remains downstream-owned. |
 | FR-011, FR-014, FR-015, AC-008, AC-010, AC-013, AC-014, AC-015 | Durable policy/component coverage, header priority, and current local docs | Policy/order/layout/tab/right-panel/mobile/default-shell tests; `tests/e2e/workspace-responsive-probe.mjs`; `autobyteus-web/README.md`; workspace layout docs | Source and implementation-scoped checks pass. API/E2E execution of the current state is still required. |
 | FR-016, FR-017, FR-018, FR-019, FR-020, AC-016 through AC-021, AC-029 | Single-row right-tool header preserves personal-branch typography/spacing, supports native horizontal scrolling, exposes conditional discoverability, auto-reaches active/focused tabs, and keeps any More menu optional | `RightSideTabs.vue` configures `TabList`; `TabList.vue` owns scroll metrics, `overflow-x-auto`, sticky width-neutral edge-affordance overlay, reduced-motion behavior, and active/focus auto-scroll; `Tab.vue` owns role, personal-branch spacing/typography, hover/focus, and active underline; `workspaceSurfaceOrder.ts` remains order authority | Component/source implementation complete; CR-004 overlay and visual-density fixes are covered by focused regressions; current browser validation remains required. |
-| FR-021 through FR-030, AC-022 through AC-031 | Wide/manual-collapse hierarchy, measured left/right priority, semantic constrained triggers, actionable empty state, preference stability, and `/mobile` boundary | `resolveAppShellResponsiveState`; `resolveWorkspaceResponsiveState`; `WorkspaceAdaptiveLayout.vue`; semantic `WorkspacePrimarySurfaceControls.vue`; `AppLeftPanel.vue`; `LeftSidebarStrip.vue`; `RightSidebarStrip.vue`; shell localization | Implemented with policy/adaptive-layout/component coverage; current browser validation must verify repeated resize, trigger actions, and wide visual non-regression. |
+| FR-021 through FR-031, AC-022 through AC-032 | Wide/manual-collapse hierarchy, composed measured left/right priority, semantic constrained triggers, actionable empty state, preference/source stability, and `/mobile` boundary | `resolveResponsiveWorkspaceShellState`; `useResponsiveWorkspaceShell`; `layouts/default.vue`; `WorkspaceAdaptiveLayout.vue`; semantic `WorkspacePrimarySurfaceControls.vue`; `AppLeftPanel.vue`; `LeftSidebarStrip.vue`; `RightSidebarStrip.vue`; shell localization | Implemented with pure-policy/adaptive-layout/component coverage; current browser validation must verify repeated resize, trigger actions, and wide visual non-regression. |
 
 ## Key Files Or Areas
 
@@ -62,8 +65,7 @@ Added:
 - `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
 - `autobyteus-web/utils/layout/workspaceSurfaceOrder.ts`
 - `autobyteus-web/composables/layout/useResponsiveElementRect.ts`
-- `autobyteus-web/composables/layout/useAppShellResponsiveLayout.ts`
-- `autobyteus-web/composables/layout/useWorkspaceResponsiveLayout.ts`
+- `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts`
 - `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`
 - `autobyteus-web/components/layout/WorkspacePrimarySurfaceControls.vue`
 - `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
@@ -86,17 +88,21 @@ Modified:
 - `autobyteus-web/components/tabs/Tab.vue`
 - `autobyteus-web/utils/layout/__tests__/workspaceSurfaceOrder.spec.ts` (updated expectations only for the integrated `usage` catalog entry)
 - `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts` (left-capacity, manual-collapse, and right-yield boundaries)
+- `autobyteus-web/composables/__tests__/useRightPanel.spec.ts` (preference/width ownership without responsive mutation)
 - `autobyteus-web/components/tabs/TabList.vue` (single-row scroll owner, metrics, affordances, and active/focus auto-scroll)
 - `autobyteus-web/components/layout/RightSideTabs.vue` (configures right-tool overflow affordances/labels while retaining fixed toggle)
 - `autobyteus-web/components/tabs/__tests__/TabList.spec.ts` and `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts` (focused single-row/overflow configuration coverage, including the CR-004 pinned affordance-layer regression)
 - `autobyteus-web/components/tabs/__tests__/Tab.spec.ts` (personal-branch typography/spacing regression)
 - `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` (semantic triggers, actionable empty state, wide manual-collapse non-regression)
+- `autobyteus-web/components/layout/__tests__/LeftSidebarStrip.spec.ts` (single-provider shell-state consumption)
 - Agent/team center workspace headers, shell localization, frontend README, and workspace layout docs
 
 Removed:
 
 - `autobyteus-web/components/layout/WorkspaceDesktopLayout.vue`
 - `autobyteus-web/components/layout/WorkspaceMobileLayout.vue`
+- `autobyteus-web/composables/layout/useAppShellResponsiveLayout.ts`
+- `autobyteus-web/composables/layout/useWorkspaceResponsiveLayout.ts`
 - `autobyteus-web/composables/useMobilePanels.ts`
 - `autobyteus-web/components/layout/__tests__/WorkspaceDesktopLayout.spec.ts` (replaced by adaptive-layout coverage)
 
@@ -105,6 +111,7 @@ Removed:
 - `/mobile` remains the independent phone/PWA owner; standard `/workspace` does not import mobile components as a fallback.
 - Left navigation remains docked while its measured width plus the practical `480px` center can fit; below that capacity or in short-height/narrow states it becomes a responsive strip/drawer. Manual collapse is represented separately as `hidden-by-user`.
 - The practical center minimum is `480px`; right tools move to strip/drawer before the center is squeezed into the historical `200-247px` range.
+- `resolveResponsiveWorkspaceShellState` is the only executable responsive policy owner. `useResponsiveWorkspaceShell` observes the viewport once and provides the composed state; `useLeftPanel` and `useRightPanel` retain user preference/width ownership only.
 - The right-panel preference is not overwritten when responsive presentation changes.
 - The browser probe requires a running frontend/backend target and Chromium; its execution and final matrix sign-off belong to `api_e2e_engineer`.
 
@@ -157,7 +164,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off:
 
 - `git diff --check` — Passed.
 - `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — Passed.
-- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, mobile shell, app-left-panel, and default layout — Passed for the Round 5 rework suite (`13` files, `72` tests).
+- Focused Nuxt/Vitest suite covering policy, order, adaptive layout, tabs, right-panel state, left sidebar, mobile shell, app-left-panel, and default layout — Passed for the Round 7 rework suite (`14` files, `75` tests).
 - `pnpm -C autobyteus-web guard:web-boundary` — Passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings; existing `MODULE_TYPELESS_PACKAGE_JSON` warning emitted.
@@ -181,6 +188,7 @@ Confirm:
 - Empty state exposes `Choose an agent or team` and `Open runs/history` actions.
 - Right-tool order is `Files -> Team (if applicable) -> Terminal -> Activity -> Usage/Token -> Artifacts -> Browser -> VNC`.
 - Wide desktop remains materially docked and `/mobile` remains isolated.
+- The policy boundary scenarios must also verify exact consumed-width fit, right-tools-first candidate order, narrow/manual/short-height precedence, and `presentationSource` (`user` versus `responsive`) without mutation of either preference.
 
 The currently modified `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` is API/E2E-owned and was not changed in this implementation handoff. Its existing generic-surface selectors and expectations must be reconciled with the approved semantic-trigger/no-generic-row behavior before current browser execution; do not treat its syntax check as coverage sign-off.
 

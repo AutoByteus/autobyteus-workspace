@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen h-[100dvh] flex-col">
     <header
-      v-if="!isApplicationImmersive && shellResponsiveState.showHeader"
+      v-if="!isApplicationImmersive && responsiveWorkspaceShellState.showHeader"
       class="z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4"
     >
       <div class="flex items-center">
@@ -53,24 +53,28 @@
 <script setup lang="ts">
 import AppLeftPanel from '@/components/AppLeftPanel.vue'
 import LeftSidebarStrip from '~/components/layout/LeftSidebarStrip.vue'
-import { computed, watch } from 'vue'
+import { computed, provide, watch } from 'vue'
 import { useAppLayoutStore } from '~/stores/appLayoutStore'
 import { useRoute } from 'vue-router'
 import { useLeftPanel } from '~/composables/useLeftPanel'
-import { useAppShellResponsiveLayout } from '~/composables/layout/useAppShellResponsiveLayout'
+import {
+  RESPONSIVE_WORKSPACE_SHELL_KEY,
+  useResponsiveWorkspaceShell,
+} from '~/composables/layout/useResponsiveWorkspaceShell'
 
 const appLayoutStore = useAppLayoutStore()
 const route = useRoute()
 const { initDragLeftPanel } = useLeftPanel()
-const { shellResponsiveState } = useAppShellResponsiveLayout()
+const { responsiveWorkspaceShellState } = useResponsiveWorkspaceShell()
+provide(RESPONSIVE_WORKSPACE_SHELL_KEY, responsiveWorkspaceShellState)
 
 const isApplicationImmersive = computed(
   () => appLayoutStore.hostShellPresentation === 'application_immersive',
 )
 
-const isLeftDocked = computed(() => shellResponsiveState.value.leftPanelPresentation === 'docked')
+const isLeftDocked = computed(() => responsiveWorkspaceShellState.value.leftPanel.presentation === 'docked')
 const showLeftDrawer = computed(
-  () => shellResponsiveState.value.canOpenLeftDrawer && appLayoutStore.isMobileMenuOpen,
+  () => responsiveWorkspaceShellState.value.canOpenLeftDrawer && appLayoutStore.isMobileMenuOpen,
 )
 const showLeftPanelSurface = computed(
   () => !isApplicationImmersive.value && (isLeftDocked.value || showLeftDrawer.value),
@@ -79,14 +83,14 @@ const showLeftDrawerBackdrop = computed(
   () => !isApplicationImmersive.value && showLeftDrawer.value,
 )
 const showLeftStrip = computed(
-  () => !isApplicationImmersive.value && shellResponsiveState.value.showLeftStrip,
+  () => !isApplicationImmersive.value && responsiveWorkspaceShellState.value.showLeftStrip,
 )
 const showLeftPanelDragHandle = computed(
   () => !isApplicationImmersive.value && isLeftDocked.value,
 )
 
 const leftPanelStyle = computed(() => ({
-  width: `${shellResponsiveState.value.leftPanelWidth}px`,
+  width: `${responsiveWorkspaceShellState.value.leftPanel.preferredWidth}px`,
 }))
 
 const leftPanelClasses = computed(() => [
@@ -120,7 +124,7 @@ watch(
 )
 
 watch(
-  () => shellResponsiveState.value.canOpenLeftDrawer,
+  () => responsiveWorkspaceShellState.value.canOpenLeftDrawer,
   (canOpenDrawer) => {
     if (!canOpenDrawer) {
       appLayoutStore.closeMobileMenu()

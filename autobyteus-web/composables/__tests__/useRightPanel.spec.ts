@@ -14,8 +14,7 @@ const dispatchMouseUp = (): void => {
 }
 
 describe('useRightPanel', () => {
-
-  it('clamps actual width to the registered workspace while preserving preferred width for restoration', async () => {
+  it('owns the preferred width independently from responsive presentation', async () => {
     const { useRightPanel } = await loadSubject()
     const panel = useRightPanel()
 
@@ -24,19 +23,13 @@ describe('useRightPanel', () => {
     dispatchMouseUp()
 
     expect(panel.rightPanelWidth.value).toBe(1450)
-
-    panel.setRightPanelWorkspaceWidth(1300)
-    expect(panel.rightPanelWidth.value).toBe(816)
-
-    panel.setRightPanelWorkspaceWidth(2000)
-    expect(panel.rightPanelWidth.value).toBe(1450)
+    expect(panel.preferredRightPanelWidth.value).toBe(1450)
   })
 
-  it('keeps the normal right panel minimum when enough workspace width is available', async () => {
+  it('keeps the normal right-panel minimum while resizing', async () => {
     const { useRightPanel } = await loadSubject()
     const panel = useRightPanel()
 
-    panel.setRightPanelWorkspaceWidth(1200)
     panel.initDragRightPanel(new MouseEvent('mousedown', { clientX: 500 }))
     dispatchMouseMove(1000)
     dispatchMouseUp()
@@ -44,12 +37,13 @@ describe('useRightPanel', () => {
     expect(panel.rightPanelWidth.value).toBe(400)
   })
 
-  it('allows temporary width below the normal minimum when that is required to keep the splitter visible', async () => {
+  it('keeps visibility as a user preference separate from width', async () => {
     const { useRightPanel } = await loadSubject()
     const panel = useRightPanel()
 
-    panel.setRightPanelWorkspaceWidth(550)
+    panel.setRightPanelVisible(false)
 
-    expect(panel.rightPanelWidth.value).toBe(66)
+    expect(panel.isRightPanelVisible.value).toBe(false)
+    expect(panel.rightPanelWidth.value).toBe(450)
   })
 })

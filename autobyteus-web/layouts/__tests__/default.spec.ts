@@ -20,9 +20,12 @@ describe('default layout source', () => {
     expect(content).toContain('v-if="showLeftDrawerBackdrop"')
     expect(content).toContain('() => !isApplicationImmersive.value && (isLeftDocked.value || showLeftDrawer.value)')
     expect(content).toContain('() => !isApplicationImmersive.value && showLeftDrawer.value')
-    expect(content).toContain('() => !isApplicationImmersive.value && shellResponsiveState.value.showLeftStrip')
+    expect(content).toContain('() => !isApplicationImmersive.value && responsiveWorkspaceShellState.value.showLeftStrip')
     expect(content).toContain('() => !isApplicationImmersive.value && isLeftDocked.value')
     expect(content).toContain("isApplicationImmersive.value ? 'bg-slate-950' : 'bg-blue-50'")
+    expect(content).toContain('useResponsiveWorkspaceShell()')
+    expect(content).toContain('provide(RESPONSIVE_WORKSPACE_SHELL_KEY, responsiveWorkspaceShellState)')
+    expect(content).not.toContain('useAppShellResponsiveLayout')
   })
 
 

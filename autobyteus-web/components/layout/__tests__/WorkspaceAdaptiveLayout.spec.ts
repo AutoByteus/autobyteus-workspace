@@ -1,10 +1,14 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import WorkspaceAdaptiveLayout from '../WorkspaceAdaptiveLayout.vue';
 import { useRightPanel } from '~/composables/useRightPanel';
 import { useLeftPanel } from '~/composables/useLeftPanel';
+import {
+  RESPONSIVE_WORKSPACE_SHELL_KEY,
+} from '~/composables/layout/useResponsiveWorkspaceShell';
+import { resolveResponsiveWorkspaceShellState } from '~/utils/layout/responsiveLayoutPolicy';
 
 vi.mock('../RightSideTabs.vue', () => ({
   default: { template: '<div class="right-tabs-stub"></div>' },
@@ -54,16 +58,23 @@ describe('WorkspaceAdaptiveLayout', () => {
     setViewport(1440, 900);
     const {
       setRightPanelVisible,
-      setRightPanelResponsivePresentation,
-      setRightPanelWorkspaceWidth,
     } = useRightPanel();
     setRightPanelVisible(true);
-    setRightPanelWorkspaceWidth(mockClientWidth);
-    setRightPanelResponsivePresentation('docked');
     useLeftPanel().setLeftPanelVisible(true);
   });
 
   const mountComponent = async (initialState = {}) => {
+    const leftPanel = useLeftPanel();
+    const rightPanel = useRightPanel();
+    const responsiveWorkspaceShellState = ref(resolveResponsiveWorkspaceShellState({
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      leftPanelPreference: leftPanel.isLeftPanelVisible.value ? 'visible' : 'hidden-by-user',
+      leftPanelPreferredWidth: leftPanel.leftPanelWidth.value,
+      rightPanelPreference: rightPanel.isRightPanelVisible.value ? 'visible' : 'hidden-by-user',
+      rightPanelPreferredWidth: rightPanel.preferredRightPanelWidth.value,
+    }));
+
     const wrapper = shallowMount(WorkspaceAdaptiveLayout, {
       props: { showFileContent: false },
       global: {
@@ -87,6 +98,9 @@ describe('WorkspaceAdaptiveLayout', () => {
           AgentWorkspaceView: AgentWorkspaceViewValue,
           TeamWorkspaceView: TeamWorkspaceViewValue,
           RunConfigPanel: RunConfigPanelValue,
+        },
+        provide: {
+          [RESPONSIVE_WORKSPACE_SHELL_KEY]: responsiveWorkspaceShellState,
         },
       },
     });
@@ -203,7 +217,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('uses semantic narrow triggers instead of a generic surface row', async () => {
-    mockClientWidth = 700;
+    setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'agent', selectedRunId: '123' },
       workspaceCenterView: { mode: 'chat' },
@@ -215,7 +229,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(controls.text()).not.toContain('Runs');
     expect(controls.text()).not.toContain('Files');
     expect(controls.text()).not.toContain('Running');
-    expect(controls.text()).not.toContain('Agent');
+    expect(controls.text()).toContain('Agents & teams');
     expect(wrapper.find('[data-test="workspace-center-content-shell"]').exists()).toBe(true);
   });
 
@@ -237,7 +251,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('switches right tools out of the cramped docked pane at constrained widths', async () => {
-    mockClientWidth = 750;
+    setViewport(800, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: '456' },
       workspaceCenterView: { mode: 'chat' },

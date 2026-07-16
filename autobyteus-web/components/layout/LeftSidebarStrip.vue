@@ -44,7 +44,7 @@ import { computed, onMounted } from 'vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
-import { useAppShellResponsiveLayout } from '~/composables/layout/useAppShellResponsiveLayout';
+import { useResponsiveWorkspaceShellState } from '~/composables/layout/useResponsiveWorkspaceShell';
 import { useShellPrimaryNavigation, type ShellPrimaryNavKey } from '~/composables/useShellPrimaryNavigation';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 
@@ -60,7 +60,7 @@ const route = useRoute();
 const router = useRouter();
 const appLayoutStore = useAppLayoutStore();
 const { isLeftPanelVisible, toggleLeftPanel } = useLeftPanel();
-const { shellResponsiveState } = useAppShellResponsiveLayout();
+const responsiveWorkspaceShellState = useResponsiveWorkspaceShellState();
 
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
@@ -68,7 +68,7 @@ const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('deskt
 const openLeftPanelIfCollapsed = (): void => {
   if (!isLeftPanelVisible.value) {
     toggleLeftPanel();
-  } else if (shellResponsiveState.value.canOpenLeftDrawer) {
+  } else if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
     appLayoutStore.openMobileMenu();
   }
 };

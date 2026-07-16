@@ -35,6 +35,14 @@ vi.mock('~/composables/useLeftPanel', () => ({
   }),
 }))
 
+vi.mock('~/composables/layout/useResponsiveWorkspaceShell', () => ({
+  useResponsiveWorkspaceShellState: () => ({
+    value: {
+      canOpenLeftDrawer: false,
+    },
+  }),
+}))
+
 describe('LeftSidebarStrip Component', () => {
   beforeEach(() => {
     applicationsCapabilityStoreMock.isEnabled = false

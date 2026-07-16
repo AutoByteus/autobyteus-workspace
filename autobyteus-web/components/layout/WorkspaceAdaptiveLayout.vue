@@ -1,6 +1,5 @@
 <template>
   <div
-    ref="workspaceLayoutRef"
     data-test="workspace-adaptive-layout"
     class="flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100"
   >
@@ -70,7 +69,7 @@
       <!-- Right Panel -->
       <div
         v-if="showDockedRightPanel"
-        :style="{ width: workspaceResponsiveState.rightPanelWidth + 'px' }"
+        :style="{ width: responsiveWorkspaceShellState.rightPanel.preferredWidth + 'px' }"
         class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
         data-test="workspace-right-panel"
       >
@@ -78,7 +77,7 @@
       </div>
 
       <RightSidebarStrip
-        v-else-if="workspaceResponsiveState.showRightStrip"
+        v-else-if="responsiveWorkspaceShellState.showRightStrip"
         data-test="workspace-right-tool-strip"
         open-as-drawer
         @request-open="openRightDrawer"
@@ -100,8 +99,7 @@ import { useRouter } from 'vue-router';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
 import { useRightPanel } from '~/composables/useRightPanel';
 import { useRightSideTabs, type TabName } from '~/composables/useRightSideTabs';
-import { useWorkspaceResponsiveLayout } from '~/composables/layout/useWorkspaceResponsiveLayout';
-import { useAppShellResponsiveLayout } from '~/composables/layout/useAppShellResponsiveLayout';
+import { useResponsiveWorkspaceShellState } from '~/composables/layout/useResponsiveWorkspaceShell';
 import AgentWorkspaceView from '~/components/workspace/agent/AgentWorkspaceView.vue';
 import TeamWorkspaceView from '~/components/workspace/team/TeamWorkspaceView.vue';
 import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue';
@@ -135,14 +133,11 @@ const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 
 const {
   isRightPanelVisible,
-  isRightPanelDocked,
   initDragRightPanel,
   setRightPanelVisible,
 } = useRightPanel();
 const { activeTab, visibleTabs, setActiveTab } = useRightSideTabs();
-const workspaceLayoutRef = ref<HTMLElement | null>(null);
-const { workspaceResponsiveState } = useWorkspaceResponsiveLayout(workspaceLayoutRef);
-const { shellResponsiveState } = useAppShellResponsiveLayout();
+const responsiveWorkspaceShellState = useResponsiveWorkspaceShellState();
 const isRightDrawerOpen = ref(false);
 
 const isAgentSelected = computed(() => selectionStore.selectedType === 'agent');
@@ -151,7 +146,9 @@ const showSelectedRunConfig = computed(() =>
   Boolean(selectionStore.selectedRunId) && workspaceCenterViewStore.isConfigMode,
 );
 const isCenterLoading = computed(() => runHistoryStore.openingRun);
-const showDockedRightPanel = computed(() => isRightPanelDocked.value);
+const showDockedRightPanel = computed(() =>
+  isRightPanelVisible.value && responsiveWorkspaceShellState.value.rightPanel.presentation === 'docked',
+);
 
 const hasPendingRunConfig = computed(() => {
   if (isAgentSelected.value || isTeamSelected.value) {
@@ -162,22 +159,26 @@ const hasPendingRunConfig = computed(() => {
 });
 
 const showNavigationTrigger = computed(() =>
-  shellResponsiveState.value.leftPanelPresentation === 'strip' ||
-  shellResponsiveState.value.leftPanelPresentation === 'drawer',
+  responsiveWorkspaceShellState.value.leftPanel.presentation !== 'docked' &&
+  responsiveWorkspaceShellState.value.leftPanel.presentationSource === 'responsive',
 );
 const showToolsTrigger = computed(() =>
-  workspaceResponsiveState.value.mode !== 'wide' &&
-  workspaceResponsiveState.value.rightPanelPresentation !== 'docked',
+  responsiveWorkspaceShellState.value.rightPanel.presentation !== 'docked',
 );
 const shouldShowSemanticSurfaceTriggers = computed(() =>
   showNavigationTrigger.value || showToolsTrigger.value,
 );
 
 const centerPaneStyle = computed(() => ({
-  minWidth: `${workspaceResponsiveState.value.centerMinWidth}px`,
+  minWidth: responsiveWorkspaceShellState.value.isNarrow
+    ? `min(100%, ${responsiveWorkspaceShellState.value.centerMinWidth}px)`
+    : `${responsiveWorkspaceShellState.value.centerMinWidth}px`,
 }));
 
-const rightDrawerWidth = computed(() => Math.min(Math.max(workspaceResponsiveState.value.rightPanelWidth, 400), 520));
+const rightDrawerWidth = computed(() => Math.min(
+  Math.max(responsiveWorkspaceShellState.value.rightPanel.preferredWidth, 400),
+  520,
+));
 
 const firstNonFileTool = computed<TabName>(() =>
   visibleTabs.value.find((tab) => tab.name !== 'files')?.name ?? 'terminal',
@@ -206,10 +207,9 @@ const openLeftNavigation = (): void => {
 
   if (!isLeftPanelVisible.value) {
     toggleLeftPanel();
-    return;
   }
 
-  if (shellResponsiveState.value.canOpenLeftDrawer) {
+  if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
     appLayoutStore.openMobileMenu();
     return;
   }
@@ -222,7 +222,8 @@ const openRunHistory = (): void => {
 
   if (!isLeftPanelVisible.value) {
     toggleLeftPanel();
-  } else if (shellResponsiveState.value.canOpenLeftDrawer) {
+  }
+  if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
     appLayoutStore.openMobileMenu();
   }
 
@@ -240,7 +241,7 @@ const openToolsSurface = (): void => {
 };
 
 watch(
-  () => [workspaceResponsiveState.value.rightPanelPresentation, isRightPanelVisible.value] as const,
+  () => [responsiveWorkspaceShellState.value.rightPanel.presentation, isRightPanelVisible.value] as const,
   ([presentation, visible]) => {
     if ((presentation === 'docked' && visible) || !visible) {
       closeRightDrawer();
