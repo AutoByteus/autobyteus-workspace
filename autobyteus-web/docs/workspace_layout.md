@@ -13,8 +13,8 @@ The standard `/workspace` route is a desktop-capability workspace that adapts to
 `layouts/default.vue` owns the outer app shell. It provides the shared `useResponsiveWorkspaceShell()` state, which composes viewport capacity, left/right panel preferences, preferred widths, effective presentations, and presentation sources through the single `resolveResponsiveWorkspaceShellState()` policy boundary:
 
 - **Docked**: wide desktop space keeps the full left panel visible and resizable.
-- **Strip**: constrained desktop or short-height windows keep the center workspace usable while preserving drawer access to the left panel.
-- **Drawer**: narrow windows use the header menu and drawer surface instead of squeezing the workspace center.
+- **Strip**: constrained desktop or narrow windows keep the center workspace usable with a visible edge affordance; the strip may consume flow width or become a fixed overlay.
+- **Drawer**: left/right drawers are transient interaction surfaces opened from their visible strip or shell navigation; they are not competing responsive policy presentations.
 
 The left surface is a full-height flex column in both docked and drawer presentations. Its bounded content wrapper owns the `AppLeftPanel` scroll region, including the vertically scrollable run-history surface; do not replace that owner with a second shell-level history scroller.
 
@@ -25,8 +25,8 @@ Application-immersive routes still bypass the normal left navigation surfaces.
 `WorkspaceAdaptiveLayout.vue` consumes the shared composed shell state and presents the right tools according to measured space, user visibility preference, and the center-width preservation policy.
 
 - Wide/enough space: right tools remain docked and resizable.
-- Constrained desktop/tablet space: right tools collapse to a strip or drawer before the center pane falls below its practical minimum.
-- Narrow or short-height space: right tools open as a drawer; the center workspace remains the primary visible surface.
+- Constrained desktop/tablet space: right tools collapse to a consuming strip or fixed edge-overlay strip before the center pane falls below its practical minimum.
+- Narrow or short-height space: right tools remain discoverable as an edge-overlay strip; clicking it opens the transient right-tool drawer while the center workspace remains mounted.
 - The center pane minimum target is defined by `WORKSPACE_CENTER_MIN_WIDTH_PX` in `utils/layout/responsiveLayoutPolicy.ts`.
 
 The docked right panel uses the measured center-plus-right flow width as its
@@ -44,11 +44,11 @@ surface changes.
 
 The responsive contract also covers the post-user-sized fallback: when a
 200px-protected user-sized dock no longer fits at a constrained viewport such
-as 900x700, the right surface remains reachable through its drawer while the
-left strip ownership is retained and no duplicate top `Tools` trigger is
+as 900x700, the right strip remains visible and opens the transient drawer,
+the left strip ownership is retained, and no duplicate top `Tools` trigger is
 introduced.
 
-When constrained presentation hides a side surface, the workspace exposes semantic triggers rather than a generic top-level surface bar. The navigation trigger is labelled `Agents & teams`, the tools trigger is labelled `Tools` only when the effective right presentation is a drawer, and the structured empty state provides `Choose an agent or team` plus `Open runs/history` actions. These actions open the existing left navigation/history or right-tool surfaces and preserve the selected-run state. When the right presentation is a strip, the strip itself is the sole tools reopen affordance; do not duplicate it with a top `Tools` trigger.
+When constrained presentation hides a side surface, the workspace exposes semantic navigation actions rather than a generic top-level surface bar. The navigation trigger is labelled `Agents & teams`, and the structured empty state provides `Choose an agent or team` plus `Open runs/history` actions. These actions open the existing left navigation/history surface and preserve the selected-run state. The visible right strip is always the sole right-tools reopen affordance; clicking it opens the existing transient drawer, and standard `/workspace` must not add a top `Tools` trigger.
 
 Do not reintroduce a positive `Work -> Runs -> Files -> Tools` row. The old generic row is retained only as a negative regression guard in the durable browser probe; Files remains part of the right-tool catalog.
 
@@ -64,8 +64,9 @@ Right-tool order is also centralized there and should remain:
 8. VNC, when applicable
 
 `RightSideTabs` uses the approved single-row native horizontal-scroll
-presentation for the right-tool catalog. In constrained docked, strip, and
-drawer presentations, the tab row may overflow horizontally but must not wrap
+presentation for the right-tool catalog in the docked panel and transient
+drawer. The right strip exposes the same catalog as an accessible icon affordance
+and opens that drawer. The tab row may overflow horizontally but must not wrap
 into a second row. Directional edge fades/chevrons expose undisclosed tabs,
 active and focused tabs auto-scroll into view, and the fixed panel toggle stays
 outside the scrolling region.
@@ -89,10 +90,13 @@ Durable unit/component coverage for this policy lives near the relevant sources:
 - `components/layout/__tests__/WorkspacePrimarySurfaceControls.spec.ts`
 - `components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
 - `components/layout/__tests__/RightSideTabs.spec.ts`
+- `utils/layout/__tests__/responsiveStripActivation.spec.ts`
 - `components/tabs/__tests__/TabList.spec.ts`
 - `layouts/__tests__/default-drawer.spec.ts`
 - `composables/__tests__/useAccessibleDrawer.spec.ts`
 - `tests/e2e/workspace-responsive-probe.mjs`
+- `components/layout/LeftSidebarStrip.vue`
+- `components/layout/RightSidebarStrip.vue`
 - `layouts/__tests__/default.spec.ts`
 
 Browser-level responsive validation is available through:

@@ -44,6 +44,44 @@ shell contexts, but it is not a compact navigation control for `/workspace`.
 This is a deliberate desktop-capability model, not a request to alter
 `/mobile` or `components/mobile/*`.
 
+## Strip visual continuity and drawer-chrome contract
+
+The strip is a preserved personal-branch surface, not a new responsive
+navigation component. The left and right strip control inventory, order,
+spacing, icon treatment, tooltips, and panel-toggle behavior must remain the
+same as `origin/personal` in all standard `/workspace` strip states. The
+responsive policy changes only the action performed by an existing strip item:
+
+| Side/state | Existing strip visual | Activation result | Additional visible controls |
+| --- | --- | --- | --- |
+| Left, wide user collapse and dock fits | Personal-branch left navigation icons and settings | `redock-panel` re-docks the full left panel | None |
+| Left, constrained/narrow/responsive strip | The same personal-branch left navigation icons and settings | `open-drawer` opens the temporary left drawer | None |
+| Right, wide user collapse and dock fits | Personal-branch right tool icons | `redock-panel` re-docks the full right panel | None |
+| Right, constrained/narrow/responsive strip | The same personal-branch right tool icons | `open-drawer` opens the temporary right drawer | None |
+
+The renderer must not prepend a new left hamburger/menu or breadcrumb-style
+button when the personal strip does not have one. It must not add visible
+`Agents & teams` or `Tools` drawer titles, a separate close `X`, or a second
+panel-toggle control. The drawer begins directly with the existing left
+navigation content or right tab row. The same visible strip/edge control is
+the multifunctional re-dock, open, and close affordance; Escape, backdrop
+click, focus return, and an accessible non-visual drawer label remain available
+as secondary accessibility behavior.
+
+While a transient drawer is open, its originating strip/edge control remains
+visible and hit-testable above the backdrop. Activating that same existing
+control closes the drawer and returns to the strip; it is not replaced by a
+new drawer-header close control. The drawer may cover the center and panel
+content, but must not cover or disable the compact side affordance that
+opened it.
+
+This rule resolves the implementation/design ambiguity: the earlier package
+specified strip activation but did not explicitly freeze the personal-branch
+strip visual inventory or forbid generic drawer chrome. The implementation
+introduced a new `workspace-left-strip-open` hamburger and visible drawer
+headers/close buttons while filling that gap. Those additions are now
+explicitly outside the approved standard `/workspace` design.
+
 ## Route-scoped shell boundary
 
 `layouts/default.vue` is global and must not be treated as a

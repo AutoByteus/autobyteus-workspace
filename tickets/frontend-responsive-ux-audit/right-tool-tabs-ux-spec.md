@@ -4,8 +4,8 @@
 
 - Status: Refined for architecture re-review
 - Approval applicability: Intended user-visible behavior; approval required
-- Related requirements: FR-013, FR-016, FR-017, FR-018, FR-019, FR-020, FR-040
-- Related acceptance criteria: AC-012, AC-016, AC-017, AC-018, AC-019, AC-020, AC-021, AC-041
+- Related requirements: FR-013, FR-016, FR-017, FR-018, FR-019, FR-020, FR-040, FR-041
+- Related acceptance criteria: AC-012, AC-016, AC-017, AC-018, AC-019, AC-020, AC-021, AC-041, AC-042
 - Related design spine: DS-002
 - Related shell UX supplement: workspace-responsive-ui-ux-spec.md
 
@@ -85,6 +85,21 @@ state. A strip action must not change the selected run or the tab catalog;
 once the drawer is open, the single-row scrolling and active-tab reachability
 rules in this supplement apply unchanged.
 
+### Personal-branch strip visual continuity
+
+The right strip itself remains the original personal-branch strip: the same
+tool icons, order, spacing, visual weight, and side affordance are used in
+docked-adjacent, consuming, overlay, constrained, and narrow states. Only the
+activation result changes with capacity (`redock-panel` when a wide
+user-origin dock fits; `open-drawer` otherwise). Do not prepend a `Tools`
+button, add a visible drawer title, add a separate close `X`, or render a
+second panel-toggle control. The transient drawer begins with `RightSideTabs`
+content; its title/close semantics may exist in accessible naming and focus
+management without visible duplicate chrome. `/mobile` is out of scope.
+When the drawer is open, the originating right strip remains above the
+backdrop and its existing tab-icon control closes the drawer when activated;
+the drawer must not add a second visual close control.
+
 ## Ownership and Component Boundaries
 
 - RightSideTabs owns the right-tool presentation configuration, fixed panel-toggle placement, active-tab context, and whether overflow affordances are enabled for this header.
@@ -100,6 +115,9 @@ rules in this supplement apply unchanged.
 - Edge fades are decorative and must not be the only overflow signal.
 - Reduced-motion preferences must disable or shorten animated chevron/scroll transitions without disabling reachability.
 - The panel-toggle control remains independently reachable and must not scroll out of the fixed header action area.
+- Strip continuity is validated against `origin/personal`: the right strip
+  has no extra top trigger or drawer chrome, and the same strip affordance is
+  the only visible route to re-dock/open/close the right surface.
 
 ## Validation Contract
 
@@ -113,3 +131,6 @@ Durable component and browser coverage must verify:
 6. canonical order remains stable while scrolling and across presentation changes;
 7. wide desktop spacing and typography remain materially unchanged;
 8. no assertion requires every tab to fit inside the initial visible bounds.
+9. the consuming and overlay right strips retain the personal-branch icon
+   inventory and do not render a top `Tools` trigger, visible drawer title,
+   separate close `X`, or duplicate panel toggle.

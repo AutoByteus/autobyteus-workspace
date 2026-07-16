@@ -1,6 +1,14 @@
+Round 15 browser probe 2026-07-16T20:56:14+02:00
+HEAD=7eceffbd5935d95bc102f3deedebf70231addc4c
+Command: pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13030 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error
+
+> autobyteus@1.4.14 test:e2e:workspace-responsive /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> node tests/e2e/workspace-responsive-probe.mjs -- --base-url http://127.0.0.1:13030 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error
+
 {
-  "generatedAt": "2026-07-16T18:57:09.593Z",
   "result": "Pass",
+  "jsonPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json",
+  "summaryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json",
   "failures": [],
   "summary": [
     {

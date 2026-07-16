@@ -286,3 +286,39 @@ opens the drawer even for a wide manual collapse, while the right strip is
 closer to re-docking by setting visibility and opens a drawer when the panel
 still cannot fit. These are implementation findings for re-review after the
 revised design passes architecture; they do not change the test oracle.
+
+### Personal-branch strip visual continuity (2026-07-16)
+
+The user further clarified that responsive behavior must not redesign either
+strip. The source comparison is unambiguous:
+
+| Source | Origin/personal behavior | Current implementation finding | Required outcome |
+| --- | --- | --- | --- |
+| `components/layout/LeftSidebarStrip.vue` | Starts with the existing navigation/workspace/history icons and settings; no leading hamburger/menu button | Adds `data-test="workspace-left-strip-open"` with a `bars-3` icon before the personal-branch items | Remove the added control; retain the personal-branch inventory and let `stripActivation` choose re-dock versus drawer |
+| `components/layout/RightSidebarStrip.vue` | Existing tool icons and side affordance are the compact right surface | Current icons are close, but activation/event wiring must follow the same explicit hybrid contract | Preserve the original icons/order/spacing and change only the activation result |
+| `layouts/default.vue` left drawer | Existing panel content is the surface; no new responsive title/close chrome in the personal-branch interaction | Adds visible `Agents & teams` heading and a separate close `X` | Start with existing navigation content; retain only semantic dialog labeling and the strip/backdrop/Escape close path |
+| `components/layout/WorkspaceRightToolDrawer.vue` | Existing right tool surface begins with the tabs/content | Adds visible `Tools` heading and a separate close `X` | Start with `RightSideTabs`; no visible title, close `X`, top trigger, or duplicate panel toggle |
+
+This is a design-package gap plus implementation drift, not an instruction to
+blame one role. The earlier design defined the hybrid activation lifecycle but
+did not explicitly freeze the personal-branch strip visual/control inventory
+or prohibit generic drawer chrome. The implementation then added explicit
+hamburger/title/close controls to make drawer access and accessibility
+obvious, but those additions violate the clarified personal-branch contract.
+The durable target is now: wide fitting user-origin strip re-docks; a
+constrained/narrow/responsive strip opens a transient drawer; the strip and
+its existing control inventory remain unchanged in both cases. `/mobile` and
+`components/mobile/*` are excluded.
+
+Coverage must compare the standard workspace strip DOM against the
+`origin/personal` inventory and assert the absence of
+`workspace-left-strip-open`, visible `Agents & teams`/`Tools` drawer headings,
+separate drawer close buttons, and duplicate panel toggles. It must still
+assert keyboard/focus semantics, Escape/backdrop dismissal, and restoration
+of focus to the strip trigger; those semantic requirements do not authorize
+additional visible controls. The earlier hybrid activation matrix remains the
+behavioral oracle, while this section is the visual/control-inventory oracle.
+When either transient drawer is open, browser coverage must also prove that
+the originating strip remains above the backdrop and that activating its
+existing control closes the drawer; no new drawer-header close control may be
+used as the only dismissal path.

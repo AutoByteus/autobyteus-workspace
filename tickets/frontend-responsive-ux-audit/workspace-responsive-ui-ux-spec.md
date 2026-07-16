@@ -44,6 +44,46 @@ trigger, top `Agents & teams` button, top `Tools` button, or generic
 `Work / Runs / Files / Tools` row. This desktop-capability shell is separate
 from `/mobile` and `components/mobile/*`, which remain unchanged.
 
+### Personal-branch strip visual continuity
+
+The strip is the compact form of the original personal-branch panel; it is
+not a new navigation surface. In every standard `/workspace` strip state
+(wide manual collapse, consuming strip, overlay strip, constrained, and
+narrow), preserve the personal-branch control inventory, order, iconography,
+spacing, and visual weight on both sides. Responsive policy may change only
+the action produced by activating that existing control:
+
+| Side | Personal-branch strip content | Fitting wide user-origin state | Constrained/narrow or responsive state |
+| --- | --- | --- | --- |
+| Left | Existing navigation/workspace/history icons and settings affordance | `redock-panel` | `open-drawer` |
+| Right | Existing tool icons and the existing side-panel affordance | `redock-panel` | `open-drawer` |
+
+The renderer must not prepend a new left hamburger/menu button or breadcrumb
+control when it is absent from the personal branch. It must not add a visible
+`Agents & teams` or `Tools` drawer title, a separate close `X`, or a duplicate
+panel-toggle control. The opened drawer starts with the existing navigation or
+right-tab content. The same strip/edge control remains the multifunctional
+side affordance: it re-docks in the fitting wide user-origin case, opens the
+temporary drawer in constrained/responsive cases, and remains the route back
+to the compact state. Escape, backdrop, focus restoration, and an accessible
+non-visual dialog label remain required; accessibility does not justify extra
+visible chrome.
+
+When a transient drawer is open, the originating strip/edge control stays
+visible and hit-testable above the backdrop. Activating that same existing
+control closes the drawer and returns to the strip; the drawer must not cover
+or disable its opener. This is the multifunctional replacement for a separate
+drawer-header close button.
+
+This closes a design-package gap: the earlier package defined the hybrid
+activation result but did not explicitly freeze the personal-branch strip
+visual/control inventory or forbid generic drawer chrome. Current source
+evidence shows the implementation added `workspace-left-strip-open` and
+visible drawer headers/close buttons that are absent from `origin/personal`.
+Those additions are outside this approved visual contract and must be removed
+or made non-visual during implementation rework. `/mobile` and
+`components/mobile/*` are excluded.
+
 ### Global default-layout route boundary
 
 The no-header-control rule applies only to standard `/workspace`. The global
@@ -119,10 +159,10 @@ The exact pixel thresholds remain owned by the responsive policy. The following 
 | State | Entry condition | Left surface | Center | Right surface | Top controls | Required user affordances |
 |---|---|---|---|---|---|---|
 | Wide default | Enough width and height for the canonical split | AppLeftPanel docked | Full work surface | RightSideTabs docked | No generic surface bar or hamburger/Agents/Tools buttons | Left panel navigation; right panel tabs and fixed toggle |
-| Wide with user collapse | User clicked the left-panel collapse affordance | LeftSidebarStrip is a re-dock affordance; activation restores the full panel while it fits | Same center position and content | RightSideTabs remains docked when it fits | No generic surface bar or header navigation | Left strip has the navigation/expand affordance; right tabs remain directly usable |
+| Wide with user collapse | User clicked the left-panel collapse affordance | LeftSidebarStrip is the unchanged personal-branch strip; activation restores the full panel while it fits | Same center position and content | RightSideTabs remains docked when it fits | No generic surface bar or header navigation | Left strip has the original navigation controls; right tabs remain directly usable |
 | Large-but-constrained desktop | Full three-pane split no longer fits, but left panel + practical center still fit | AppLeftPanel remains docked | Center remains usable | Right tools yield first to a consuming right strip when left + center + strip fit; otherwise the strip becomes an edge overlay | No `Work / Runs / Files / Tools` bar and no top `Tools` button | Existing left selection/workspace journey remains directly visible |
-| Constrained desktop | Left panel plus practical center no longer fit, or a short/narrow state requires overlay | Left strip (consuming or overlay) opens the transient left navigation drawer | Center is prioritized and remains usable | Right tools use a consuming strip where possible and an overlay strip otherwise; the strip opens the transient drawer | No `Work / Runs / Files / Tools` bar, hamburger, breadcrumb, top `Agents & teams`, or top `Tools` button | Both visible strips have accessible names; empty state includes selection/run actions |
-| Narrow standard workspace | Desktop browser window is below the shell docking threshold | Left strip remains visible as an edge overlay and opens AppLeftPanel as a drawer | Center work surface remains mounted and reachable | Right-tools strip remains visible as an edge overlay and opens the full right tab drawer | No generic four-item surface bar or header navigation controls | Both strips have accessible names; empty state includes selection/run actions |
+| Constrained desktop | Left panel plus practical center no longer fit, or a short/narrow state requires overlay | Unchanged personal-branch left strip (consuming or overlay) opens the transient left navigation drawer | Center is prioritized and remains usable | Unchanged personal-branch right strip uses a consuming strip where possible and an overlay strip otherwise; it opens the transient drawer | No `Work / Runs / Files / Tools` bar, hamburger, breadcrumb, top `Agents & teams`, or top `Tools` button | Existing strip controls remain the only visible compact affordances; empty state includes selection/run actions |
+| Narrow standard workspace | Desktop browser window is below the shell docking threshold | Unchanged personal-branch left strip remains visible as an edge overlay and opens AppLeftPanel as a drawer | Center work surface remains mounted and reachable | Unchanged personal-branch right-tools strip remains visible as an edge overlay and opens the full right tab drawer | No generic four-item surface bar or header navigation controls | No added drawer title/close chrome; existing strips have accessible names; empty state includes selection/run actions |
 | Short-height window | Height is too small for stable stacked/docked panels | Left strip/drawer as needed | Center remains the priority surface | Right strip/drawer as needed | No controls that consume a disproportionate vertical band | Both hidden surfaces have a visible recovery path; no clipped-only state |
 | `/mobile` route | Phone/PWA route | MobileRemoteAccessShell | Mobile route content | Mobile route content | Owned by mobile product design | No dependency on standard workspace policy |
 
@@ -319,14 +359,14 @@ compact drag behavior cannot be lost at the state-to-renderer boundary.
 ### Left navigation drawer state
 
 - The drawer contains the existing `AppLeftPanel` content and navigation rather than a second reduced list.
-- The drawer has a visible close/back affordance and an accessible dialog/drawer label.
+- The drawer has no added visible `Agents & teams` title or separate close `X`. The existing side strip/control, backdrop, and Escape provide the close/collapse path; the dialog/drawer label is semantic and non-visual.
 - Opening it must not clear the active run or replace the center with an empty `Runs` surface.
 
 ### Right tools drawer state
 
-- The drawer title identifies the current tool group (`Files` or `Tools`).
+- The drawer starts directly with the existing right-tool tab content; it has no added visible `Tools` title or separate close `X`.
 - The tab row remains one horizontal scrolling row and retains its active underline and fixed toggle only where the toggle is meaningful.
-- The drawer close action returns to the previous center state.
+- The strip/edge control, backdrop, and Escape close the transient drawer and return to the previous center state without a second visible panel-toggle control.
 - A responsive right strip is the sole reopen trigger for the temporary
   drawer; a wide user-origin strip is the re-dock trigger when the panel fits.
   No standard `/workspace` state renders a separate top `Tools` trigger or a
@@ -340,6 +380,7 @@ compact drag behavior cannot be lost at the state-to-renderer boundary.
 - Preserve keyboard access to selection, run history, tool tabs, drawer close, and empty-state actions.
 - Do not use hover-only labels as the sole way to discover a strip action.
 - Keep focus within an opened drawer until the user closes it or activates a destination; return focus to the opening trigger.
+- Drawer semantics and focus management must remain available without adding a visible title or close button that duplicates the strip control.
 - Responsive changes must not reorder controls in a way that changes keyboard meaning without a corresponding visual and accessible label.
 
 ## Visual contract
@@ -349,6 +390,7 @@ compact drag behavior cannot be lost at the state-to-renderer boundary.
 - The left collapse affordance remains in the left panel and is not replaced by an automatic mid-page collapse.
 - Right tool tabs retain the separate `right-tool-tabs-ux-spec.md` contract: one row, original typography/spacing, native horizontal scrolling, active-tab auto-scroll, conditional edge fades, directional chevron, and stable panel toggle.
 - Drawer/strip controls must be visually lightweight and semantically explicit; they must not look like a second application navigation hierarchy.
+- Left and right strips must remain visually/control-compatible with `origin/personal`; no leading menu button, breadcrumb, visible drawer title, separate close `X`, or duplicate panel toggle may appear in standard `/workspace`.
 
 ## Validation requirements
 
@@ -373,6 +415,11 @@ The implementation and browser validation must cover at least:
 - route-scoped header assertions: `/workspace` has no responsive header
   controls, while `/agents` or `/tools` retains the existing default-layout
   narrow navigation, and `/mobile` remains isolated.
+- personal-branch strip continuity: both strip renderers retain the original
+  control inventory in wide, consuming, overlay, constrained, and narrow
+  states; source/component/browser assertions reject the added
+  `workspace-left-strip-open` control, visible `Agents & teams`/`Tools`
+  drawer headers, and separate drawer close buttons.
 
 The correctness boundary is not “all controls fit in the first row.” It is “the user can understand and reach the primary work, selection/run, and tools surfaces without duplicate or misleading navigation.”
 
@@ -393,3 +440,7 @@ These are design consequences for the reviewed package, not permission to patch 
    `/mobile` outside the default layout.
 10. Replace the empty center sentence with a structured empty state and actions.
 11. Preserve the existing right-tab work from `right-tool-tabs-ux-spec.md` and restore personal-branch typography/spacing before visual sign-off.
+12. Reuse the personal-branch left/right strip markup and control inventory;
+    make only the activation result responsive. Keep drawer titles and close
+    labels semantic for accessibility, but do not render duplicate visible
+    menu, breadcrumb, title, close, or panel-toggle controls.

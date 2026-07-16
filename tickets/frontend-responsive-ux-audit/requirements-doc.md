@@ -7,7 +7,7 @@ Refined
 ## Supplemental Artifacts
 
 - right-tool-tabs-ux-spec.md — intended right-tool tab-row interaction and visual contract for single-row horizontal scrolling, overflow discoverability, active-tab reachability, and accessibility. Status: Refined for architecture re-review. Approval applicability: Required because it defines user-visible behavior.
-- workspace-responsive-ui-ux-spec.md — scenario-level responsive workspace UX contract covering the wide personal-branch layout, symmetric left/right panel-strip-drawer states, wide manual re-docking versus constrained/narrow transient drawers, no header navigation controls, empty-state selection, tool access, accessibility, and `/mobile` separation. Status: Refined for architecture re-review. Approval applicability: Required because it defines user-visible behavior.
+- workspace-responsive-ui-ux-spec.md — scenario-level responsive workspace UX contract covering the wide personal-branch layout, symmetric left/right panel-strip-drawer states, wide manual re-docking versus constrained/narrow transient drawers, strip visual continuity, no duplicate drawer chrome/header navigation controls, empty-state selection, tool access, accessibility, and `/mobile` separation. Status: Refined for architecture re-review. Approval applicability: Required because it defines user-visible behavior.
 - comprehensive-responsive-ui-test-report.md — historical/live evidence for the responsive failure matrix and the durable browser-validation scope. Early generic-row, blanket-collapse, and drawer-only/top-Tools recommendations are explicitly superseded in the report; the refined guaranteed-strip requirements/design remain authoritative. Status: Evidence supplement, coherence-reconciled for architecture re-review. Approval applicability: N/A.
 
 ## Right-Tool Tab Design-Impact Follow-Up
@@ -134,6 +134,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - FR-038: Standard `/workspace` must use a symmetric side-surface model: left panel/left strip/left drawer for navigation and history, and right panel/right strip/right drawer for tools. When a panel is docked it replaces its strip; when it is not docked, its strip is the sole visible compact affordance. A wide user-collapsed strip re-docks its panel when activated and the panel fits; a constrained/narrow strip opens a temporary drawer. Standard `/workspace` must not render a hamburger, breadcrumb navigation trigger, or duplicate `Agents & teams` button; `/mobile` is the only phone-specific navigation surface.
 - FR-039: The no-header-control rule is route-scoped. `/workspace` consumes the symmetric side-surface shell and suppresses its responsive hamburger, breadcrumb, top `Agents & teams`, top `Tools`, and generic surface row; other routes using the global default layout (including `/agents`, `/agent-teams`, `/applications`, `/media`, `/memory`, `/nodes`, `/skills`, and `/tools`) retain their existing responsive header/navigation behavior. `/mobile` remains layout-independent.
 - FR-040: Strip activation semantics must be symmetric and capacity-aware: `presentationSource = 'user'` plus a currently fitting dock yields `redock-panel`, while any constrained/narrow or responsive strip yields `open-drawer`; the redock action restores the corresponding visible preference and closes any temporary drawer, while `open-drawer` does not mutate the user's panel preference.
+- FR-041: Standard `/workspace` left and right strips must preserve the original personal-branch strip visual/control inventory in every strip state (wide manual, consuming, overlay, constrained, and narrow). Responsive behavior may change only the activation result (`redock-panel` versus `open-drawer`); it must not add a leading menu/breadcrumb button, visible `Agents & teams`/`Tools` drawer title, separate close X, or duplicate panel-toggle control. The same strip/edge control must remain visible and hit-testable above an opened drawer and be the multifunctional reopen/close affordance, with Escape/backdrop and non-visual dialog labelling retained for accessibility.
 
 - FR-001: `/workspace` must not have any viewport-width band where the route mounts one workspace layout while CSS hides that same mounted layout and no alternative layout is visible.
 - FR-002: `/workspace` must use one authoritative responsive policy for shell/workspace surface presentation instead of independent breakpoint decisions in `pages/workspace.vue`, `WorkspaceDesktopLayout`, `WorkspaceMobileLayout`, and `layouts/default.vue`.
@@ -179,6 +180,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - AC-037: Policy and component tests prove the output/renderer authority contract: no top-level center-floor or resize-intent duplicates are emitted; automatic output uses nested `rightPanel.effectiveCenterMinWidth = 480`, user-override uses `200`, and responsive-yield uses `480` while retaining `rightPanel.resizeIntent = 'user-sized'`. `WorkspaceAdaptiveLayout` center styling and dependent dock feasibility read that nested field in all three cases.
 - AC-039: Policy, component, and browser coverage prove the symmetric side-surface contract: docked left/right panels replace their strips; every non-docked side exposes its own visible strip (consuming when it fits or edge-overlay otherwise); wide user-origin strips re-dock fitting panels on activation, while constrained/responsive strips open only their corresponding temporary drawer; standard `/workspace` has no hamburger, breadcrumb navigation trigger, duplicate `Agents & teams` button, top `Tools` button, or generic surface row; `/mobile` remains unchanged.
 - AC-041: Policy, component, and browser tests assert the symmetric activation matrix: left/right wide manual collapse -> strip with `redock-panel` and visible preference restoration; left/right constrained or narrow responsive yield -> strip with `open-drawer` and unchanged preference; shrinking a user-collapsed panel changes activation to `open-drawer` without erasing intent, and recovery restores `redock-panel` when the panel fits again.
+- AC-042: Source, component, and browser coverage prove strip visual continuity against `origin/personal`: no additional left hamburger/menu or breadcrumb control is inserted, no visible drawer title (`Agents & teams`/`Tools`) or separate close X is rendered, and the original strip control(s) remain visible and usable above an opened drawer to re-dock, open, or close the corresponding surface according to `stripActivation` without duplicate side effects. `/mobile` remains outside this assertion.
 - AC-040: Route-scoped shell coverage proves `/workspace` suppresses only its responsive header/navigation controls, a representative default-layout route such as `/agents` or `/tools` retains the existing narrow header/navigation affordance, and `/mobile` remains `layout:false`/`MobileRemoteAccessShell` without importing the standard shell.
 
 - AC-001: At `700x700` and `760x700`, `/workspace` shows visible workspace controls/content; it does not show only the black app header plus blank gray body.
@@ -285,6 +287,16 @@ the design pseudocode; `open-drawer` is the explicit action that permits the
 corresponding renderer to open its local drawer. Architecture re-review is
 required before implementation resumes.
 
+### Strip visual continuity reconciliation
+
+The user clarified that the strip itself must remain the original
+`origin/personal` compact surface in every desktop `/workspace` strip state.
+The constrained/narrow distinction changes only what strip activation does:
+it either re-docks the panel or opens the temporary drawer. It must not change
+the strip's controls or add a separate drawer header, breadcrumb/menu button,
+close X, or duplicate panel toggle. FR-041 and AC-042 are the authoritative
+visual/control continuity additions; `/mobile` is excluded.
+
 ## Revised Requirement Coverage
 
 | Requirement | Use Cases |
@@ -328,6 +340,7 @@ required before implementation resumes.
 | FR-038 | UC-001, UC-002, UC-003, UC-004, UC-005, UC-006, UC-010 |
 | FR-039 | UC-001, UC-002, UC-003, UC-004, UC-005, UC-006, UC-010 |
 | FR-040 | UC-001, UC-002, UC-003, UC-004, UC-005, UC-007, UC-010 |
+| FR-041 | UC-001, UC-002, UC-003, UC-004, UC-005, UC-006, UC-007, UC-010 |
 
 | Acceptance Criteria | Scenario Intent |
 | --- | --- |
@@ -351,3 +364,4 @@ required before implementation resumes.
 | AC-039 | Symmetric left/right panel-strip-drawer ownership with wide re-docking, constrained temporary drawers, and no header or duplicate top navigation controls. |
 | AC-040 | Route-scoped header suppression, non-workspace default-layout preservation, and `/mobile` isolation. |
 | AC-041 | Symmetric capacity-aware strip activation and preference lifecycle. |
+| AC-042 | Personal-branch strip visual continuity, single multifunctional side control, and absence of duplicate drawer chrome. |

@@ -812,3 +812,45 @@ priority, or the user-visible hybrid strip behavior. CR-015 (the dead
 `request-open` declaration in `LeftSidebarStrip.vue`) remains a low local
 implementation cleanup and is not addressed in the design package. It should
 be handled by implementation after architecture approves this reconciliation.
+
+### Personal-branch strip visual continuity reconciliation (2026-07-16)
+
+The user clarified that both compact strips must remain visually and
+interactionally the same strips as `origin/personal`. Only the result of an
+activation may vary with measured capacity: a fitting wide user-origin strip
+re-docks its panel, while a constrained, narrow, or responsive-yield strip
+opens a transient drawer. The strip itself must not gain a new control.
+
+#### Source comparison
+
+| Source | `origin/personal` evidence | Current worktree evidence | Consequence |
+| --- | --- | --- | --- |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | The strip begins with the existing navigation/workspace/history items and settings; there is no leading hamburger/menu item | The current worktree adds `data-test="workspace-left-strip-open"`, a `bars-3` icon, and an `openNavigation` label before those items | The added button is not part of the target and must be removed; preserve the personal-branch inventory while consuming `stripActivation` |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | The strip is the existing canonical tool-icon rail and side affordance | The current worktree retains the icons but routes through explicit `request-open`/`request-redock` events | Keep the visual/control inventory unchanged and align event side effects with the hybrid activation output |
+| `autobyteus-web/layouts/default.vue` | The personal desktop interaction does not add a visible `Agents & teams` drawer heading and separate close control | The current worktree renders a visible `Agents & teams` heading and `app-left-drawer-close` button | Drawer labeling/focus semantics may remain non-visual; remove duplicate visible chrome |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | The right tool surface is the existing tabs/content | The current worktree adds a visible `Tools` heading and close `X` around `RightSideTabs` | Drawer starts directly with existing tabs/content; no visible title or second close/panel toggle |
+
+#### Cause classification
+
+This is both a design-package gap and implementation drift, not solely one
+role's error. The earlier design explicitly defined the hybrid activation
+lifecycle and symmetric side ownership, but it did not explicitly freeze the
+personal-branch strip visual/control inventory or prohibit generic drawer
+chrome. The implementation engineer then added a left hamburger and generic
+drawer title/close controls to make the transient drawer explicit and
+accessible. Those additions are understandable from the underspecified
+design, but they contradict the user's now-explicit personal-branch contract.
+The revised requirements and UX supplements close that gap with FR-041/AC-042
+and make the absence of those controls an executable source/component/browser
+assertion. `/mobile` and `components/mobile/*` remain unchanged and out of
+scope.
+
+#### Re-review consequence
+
+Implementation remains paused. Architecture must review the revised
+visual/control-inventory contract together with the already-approved hybrid
+activation contract. After approval, implementation source review must handle
+the added `workspace-left-strip-open` control, visible drawer headers/close
+buttons, and CR-015's dead `request-open` declaration as implementation-owned
+work. API/E2E must then validate both wide re-docking and constrained/narrow
+drawer opening without accepting duplicate visible chrome.

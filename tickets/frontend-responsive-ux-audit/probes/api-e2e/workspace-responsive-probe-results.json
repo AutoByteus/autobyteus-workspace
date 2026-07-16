@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-16T17:25:50.580Z",
-  "baseUrl": "http://127.0.0.1:13028",
+  "generatedAt": "2026-07-16T18:57:09.593Z",
+  "baseUrl": "http://127.0.0.1:13030",
   "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "viewportCount": 17,
   "result": "Pass",
@@ -21,11 +21,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 390,
         "innerHeight": 844,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -35,6 +35,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -56,6 +57,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -76,6 +78,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -97,6 +100,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -117,6 +121,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -139,6 +144,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -159,6 +165,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 16,
@@ -179,6 +186,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 221,
@@ -194,6 +202,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
@@ -201,6 +210,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -210,8 +220,8 @@
               "right": 50,
               "bottom": 844
             },
-            "text": "Agents & teams",
-            "classes": "fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
@@ -225,6 +235,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 340,
@@ -235,10 +246,11 @@
               "bottom": 844
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
+            "classes": "fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -272,11 +284,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -312,11 +324,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 390,
         "innerHeight": 640,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -326,6 +338,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -347,6 +360,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -367,6 +381,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -388,6 +403,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -408,6 +424,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -430,6 +447,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -450,6 +468,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 16,
@@ -470,6 +489,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 221,
@@ -485,6 +505,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
@@ -492,6 +513,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -501,8 +523,8 @@
               "right": 50,
               "bottom": 640
             },
-            "text": "Agents & teams",
-            "classes": "fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
@@ -516,6 +538,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 340,
@@ -526,10 +549,11 @@
               "bottom": 640
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
+            "classes": "fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -563,11 +587,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -603,11 +627,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 500,
         "innerHeight": 700,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -617,6 +641,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -638,6 +663,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -658,6 +684,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -679,6 +706,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -699,6 +727,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -721,6 +750,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -741,6 +771,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 71,
@@ -761,6 +792,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 276,
@@ -776,6 +808,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
@@ -783,6 +816,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -792,8 +826,8 @@
               "right": 50,
               "bottom": 700
             },
-            "text": "Agents & teams",
-            "classes": "fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
@@ -807,6 +841,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 450,
@@ -817,10 +852,11 @@
               "bottom": 700
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
+            "classes": "fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -854,11 +890,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -894,11 +930,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 500,
         "innerHeight": 420,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -908,6 +944,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -929,6 +966,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -949,6 +987,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -970,6 +1009,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -990,6 +1030,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1012,6 +1053,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1032,6 +1074,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 71,
@@ -1052,6 +1095,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 276,
@@ -1067,6 +1111,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
@@ -1074,6 +1119,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1083,8 +1129,8 @@
               "right": 50,
               "bottom": 420
             },
-            "text": "Agents & teams",
-            "classes": "fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
@@ -1098,6 +1144,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 450,
@@ -1108,10 +1155,11 @@
               "bottom": 420
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
+            "classes": "fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -1145,11 +1193,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -1185,11 +1233,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 639,
         "innerHeight": 700,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -1199,6 +1247,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1220,6 +1269,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1240,6 +1290,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1261,6 +1312,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1281,6 +1333,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1303,6 +1356,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1323,6 +1377,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 141,
@@ -1343,6 +1398,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 346,
@@ -1358,6 +1414,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
@@ -1365,6 +1422,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1374,8 +1432,8 @@
               "right": 50,
               "bottom": 700
             },
-            "text": "Agents & teams",
-            "classes": "fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
@@ -1389,6 +1447,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 589,
@@ -1399,10 +1458,11 @@
               "bottom": 700
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
+            "classes": "fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -1436,11 +1496,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -1476,11 +1536,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 640,
         "innerHeight": 700,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -1490,6 +1550,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1511,6 +1572,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1531,6 +1593,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1552,6 +1615,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1572,6 +1636,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1594,6 +1659,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1614,6 +1680,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 141,
@@ -1634,6 +1701,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 346,
@@ -1649,6 +1717,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
@@ -1656,6 +1725,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1665,8 +1735,8 @@
               "right": 50,
               "bottom": 700
             },
-            "text": "Agents & teams",
-            "classes": "fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
@@ -1680,6 +1750,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 590,
@@ -1690,10 +1761,11 @@
               "bottom": 700
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
+            "classes": "fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -1727,11 +1799,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -1767,11 +1839,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 700,
         "innerHeight": 700,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -1781,6 +1853,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1802,6 +1875,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1822,6 +1896,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1843,6 +1918,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1863,6 +1939,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -1885,6 +1962,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1905,6 +1983,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 171,
@@ -1925,6 +2004,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 376,
@@ -1940,6 +2020,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
@@ -1947,6 +2028,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -1956,8 +2038,8 @@
               "right": 50,
               "bottom": 700
             },
-            "text": "Agents & teams",
-            "classes": "fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
@@ -1971,6 +2053,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 650,
@@ -1981,10 +2064,11 @@
               "bottom": 700
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
+            "classes": "fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -2018,11 +2102,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -2046,11 +2130,11 @@
           "clicked": true,
           "state": {
             "label": "left-strip-reopen-after",
-            "href": "http://127.0.0.1:13028/workspace",
+            "href": "http://127.0.0.1:13030/workspace",
             "title": "",
             "innerWidth": 700,
             "innerHeight": 700,
-            "bodyText": "Agents & teams Close navigation Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+            "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
             "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
             "rects": {
               "header": null,
@@ -2060,6 +2144,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "0",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 0,
@@ -2080,6 +2165,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "fixed",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -2089,7 +2175,7 @@
                   "right": 320,
                   "bottom": 700
                 },
-                "text": "Agents & teams Close navigation Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+                "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
                 "classes": "inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0",
                 "stripBehavior": null,
                 "stripActivation": null
@@ -2100,6 +2186,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 0,
@@ -2120,6 +2207,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 0,
@@ -2141,6 +2229,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -2161,6 +2250,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 0,
@@ -2183,6 +2273,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -2203,6 +2294,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 171,
@@ -2223,6 +2315,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 376,
@@ -2238,12 +2331,34 @@
                 "stripActivation": null
               },
               "navigationTrigger": null,
+              "leftDrawerBackdrop": {
+                "selector": "[data-test=\"app-left-drawer-backdrop\"]",
+                "visible": true,
+                "display": "block",
+                "visibility": "visible",
+                "position": "fixed",
+                "zIndex": "40",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 700,
+                  "height": 700,
+                  "right": 700,
+                  "bottom": 700
+                },
+                "text": "",
+                "classes": "fixed inset-0 z-40 bg-gray-900 bg-opacity-75",
+                "stripBehavior": null,
+                "stripActivation": null
+              },
               "leftNavigationDrawer": {
                 "selector": "[data-test=\"app-left-navigation-drawer\"]",
                 "visible": true,
                 "display": "flex",
                 "visibility": "visible",
                 "position": "fixed",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -2253,7 +2368,7 @@
                   "right": 320,
                   "bottom": 700
                 },
-                "text": "Agents & teams Close navigation Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+                "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
                 "classes": "inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0",
                 "stripBehavior": null,
                 "stripActivation": null
@@ -2264,6 +2379,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "fixed",
+                "zIndex": "60",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -2273,8 +2389,8 @@
                   "right": 50,
                   "bottom": 700
                 },
-                "text": "Agents & teams",
-                "classes": "fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
+                "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+                "classes": "fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
                 "stripBehavior": "overlay",
                 "stripActivation": "open-drawer"
               },
@@ -2284,6 +2400,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "fixed",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -2293,7 +2410,7 @@
                   "right": 320,
                   "bottom": 700
                 },
-                "text": "Agents & teams Close navigation Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+                "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
                 "classes": "inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0",
                 "stripBehavior": null,
                 "stripActivation": null
@@ -2304,12 +2421,13 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
-                  "y": 289,
+                  "y": 240,
                   "width": 320,
-                  "height": 359,
+                  "height": 408,
                   "right": 320,
                   "bottom": 648
                 },
@@ -2326,6 +2444,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "fixed",
+                "zIndex": "60",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 650,
@@ -2336,10 +2455,11 @@
                   "bottom": 700
                 },
                 "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-                "classes": "fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
+                "classes": "fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
                 "stripBehavior": "overlay",
                 "stripActivation": "open-drawer"
               },
+              "rightDrawerBackdrop": null,
               "rightDrawer": null,
               "rightDrawerTabList": null,
               "panelToggle": null,
@@ -2373,14 +2493,14 @@
               ],
               "rightDrawer": [],
               "topVisible": [
-                "Close navigation",
-                "Agents & teams",
+                "Agents",
+                "Agents",
                 "Files",
-                "Agents",
-                "Agents",
+                "Agent Teams",
+                "Agent Teams",
                 "Terminal",
-                "Agent Teams",
-                "Agent Teams",
+                "Skills",
+                "Skills",
                 "Activity"
               ]
             },
@@ -2400,12 +2520,12 @@
                 "display": "block",
                 "minHeight": "0px",
                 "flex": "1 1 0%",
-                "height": 359
+                "height": 408
               },
               "scrollOwner": {
                 "overflowY": "auto",
-                "clientHeight": 358,
-                "scrollHeight": 358,
+                "clientHeight": 407,
+                "scrollHeight": 407,
                 "scrollTop": 0
               }
             },
@@ -2436,11 +2556,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 767,
         "innerHeight": 700,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -2450,6 +2570,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -2471,6 +2592,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -2491,6 +2613,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -2512,6 +2635,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -2532,6 +2656,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 0,
@@ -2554,6 +2679,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -2574,6 +2700,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 205,
@@ -2594,6 +2721,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 410,
@@ -2609,6 +2737,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
@@ -2616,6 +2745,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -2625,8 +2755,8 @@
               "right": 50,
               "bottom": 700
             },
-            "text": "Agents & teams",
-            "classes": "fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
@@ -2640,6 +2770,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "fixed",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 717,
@@ -2650,10 +2781,11 @@
               "bottom": 700
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "fixed inset-y-0 right-0 z-40 flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
+            "classes": "fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg",
             "stripBehavior": "overlay",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -2687,11 +2819,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -2727,11 +2859,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 768,
         "innerHeight": 700,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -2741,6 +2873,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -2762,6 +2895,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -2782,6 +2916,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -2803,6 +2938,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 50,
@@ -2823,6 +2959,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -2845,6 +2982,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 50,
@@ -2865,6 +3003,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 205,
@@ -2885,6 +3024,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 410,
@@ -2900,13 +3040,15 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -2916,8 +3058,8 @@
               "right": 50,
               "bottom": 700
             },
-            "text": "Agents & teams",
-            "classes": "flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
@@ -2930,7 +3072,8 @@
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 718,
@@ -2941,10 +3084,11 @@
               "bottom": 700
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -2978,11 +3122,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -3018,11 +3162,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 800,
         "innerHeight": 700,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -3032,6 +3176,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -3053,6 +3198,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -3073,6 +3219,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -3094,6 +3241,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 50,
@@ -3114,6 +3262,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -3136,6 +3285,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 50,
@@ -3156,6 +3306,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 221,
@@ -3176,6 +3327,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 426,
@@ -3191,13 +3343,15 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -3207,8 +3361,8 @@
               "right": 50,
               "bottom": 700
             },
-            "text": "Agents & teams",
-            "classes": "flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
@@ -3221,7 +3375,8 @@
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 750,
@@ -3232,10 +3387,11 @@
               "bottom": 700
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -3269,11 +3425,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -3297,11 +3453,11 @@
           "clicked": true,
           "state": {
             "label": "left-strip-reopen-after",
-            "href": "http://127.0.0.1:13028/workspace",
+            "href": "http://127.0.0.1:13030/workspace",
             "title": "",
             "innerWidth": 800,
             "innerHeight": 700,
-            "bodyText": "Agents & teams Close navigation Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+            "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
             "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
             "rects": {
               "header": null,
@@ -3311,6 +3467,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "0",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 50,
@@ -3331,6 +3488,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "fixed",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -3340,7 +3498,7 @@
                   "right": 320,
                   "bottom": 700
                 },
-                "text": "Agents & teams Close navigation Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+                "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
                 "classes": "inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0",
                 "stripBehavior": null,
                 "stripActivation": null
@@ -3351,6 +3509,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 50,
@@ -3371,6 +3530,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 50,
@@ -3392,6 +3552,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 50,
@@ -3412,6 +3573,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 50,
@@ -3434,6 +3596,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 50,
@@ -3454,6 +3617,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 221,
@@ -3474,6 +3638,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 426,
@@ -3489,12 +3654,34 @@
                 "stripActivation": null
               },
               "navigationTrigger": null,
+              "leftDrawerBackdrop": {
+                "selector": "[data-test=\"app-left-drawer-backdrop\"]",
+                "visible": true,
+                "display": "block",
+                "visibility": "visible",
+                "position": "fixed",
+                "zIndex": "40",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 800,
+                  "height": 700,
+                  "right": 800,
+                  "bottom": 700
+                },
+                "text": "",
+                "classes": "fixed inset-0 z-40 bg-gray-900 bg-opacity-75",
+                "stripBehavior": null,
+                "stripActivation": null
+              },
               "leftNavigationDrawer": {
                 "selector": "[data-test=\"app-left-navigation-drawer\"]",
                 "visible": true,
                 "display": "flex",
                 "visibility": "visible",
                 "position": "fixed",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -3504,7 +3691,7 @@
                   "right": 320,
                   "bottom": 700
                 },
-                "text": "Agents & teams Close navigation Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+                "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
                 "classes": "inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0",
                 "stripBehavior": null,
                 "stripActivation": null
@@ -3514,7 +3701,8 @@
                 "visible": true,
                 "display": "flex",
                 "visibility": "visible",
-                "position": "static",
+                "position": "relative",
+                "zIndex": "60",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -3524,8 +3712,8 @@
                   "right": 50,
                   "bottom": 700
                 },
-                "text": "Agents & teams",
-                "classes": "flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500",
+                "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+                "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500",
                 "stripBehavior": "consuming",
                 "stripActivation": "open-drawer"
               },
@@ -3535,6 +3723,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "fixed",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -3544,7 +3733,7 @@
                   "right": 320,
                   "bottom": 700
                 },
-                "text": "Agents & teams Close navigation Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+                "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
                 "classes": "inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out fixed shadow-2xl translate-x-0",
                 "stripBehavior": null,
                 "stripActivation": null
@@ -3555,12 +3744,13 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
-                  "y": 289,
+                  "y": 240,
                   "width": 320,
-                  "height": 359,
+                  "height": 408,
                   "right": 320,
                   "bottom": 648
                 },
@@ -3576,7 +3766,8 @@
                 "visible": true,
                 "display": "flex",
                 "visibility": "visible",
-                "position": "static",
+                "position": "relative",
+                "zIndex": "60",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 750,
@@ -3587,10 +3778,11 @@
                   "bottom": 700
                 },
                 "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-                "classes": "flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20",
+                "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4",
                 "stripBehavior": "consuming",
                 "stripActivation": "open-drawer"
               },
+              "rightDrawerBackdrop": null,
               "rightDrawer": null,
               "rightDrawerTabList": null,
               "panelToggle": null,
@@ -3624,15 +3816,15 @@
               ],
               "rightDrawer": [],
               "topVisible": [
-                "Close navigation",
-                "Agents & teams",
-                "Files",
-                "Agents",
                 "Agents",
                 "Collapse left panel",
+                "Agents",
+                "Files",
+                "Agent Teams",
+                "Agent Teams",
                 "Terminal",
-                "Agent Teams",
-                "Agent Teams",
+                "Skills",
+                "Skills",
                 "Activity"
               ]
             },
@@ -3652,12 +3844,12 @@
                 "display": "block",
                 "minHeight": "0px",
                 "flex": "1 1 0%",
-                "height": 359
+                "height": 408
               },
               "scrollOwner": {
                 "overflowY": "auto",
-                "clientHeight": 358,
-                "scrollHeight": 358,
+                "clientHeight": 407,
+                "scrollHeight": 407,
                 "scrollTop": 0
               }
             },
@@ -3688,11 +3880,11 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 800,
         "innerHeight": 420,
-        "bodyText": "Agents & teams No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+        "bodyText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
         "rects": {
           "header": null,
@@ -3702,6 +3894,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -3723,6 +3916,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -3743,6 +3937,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -3764,6 +3959,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 50,
@@ -3784,6 +3980,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 50,
@@ -3806,6 +4003,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 50,
@@ -3826,6 +4024,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 221,
@@ -3846,6 +4045,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 426,
@@ -3861,13 +4061,15 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": {
             "selector": "[data-test=\"workspace-left-navigation-strip\"]",
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -3877,8 +4079,8 @@
               "right": 50,
               "bottom": 420
             },
-            "text": "Agents & teams",
-            "classes": "flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500",
+            "text": "AgentsAgent TeamsSkillsMemoryNodesSettings",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
@@ -3891,7 +4093,8 @@
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 750,
@@ -3902,10 +4105,11 @@
               "bottom": 420
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -3939,11 +4143,11 @@
           ],
           "rightDrawer": [],
           "topVisible": [
-            "Agents & teams",
-            "Files",
             "Agents",
-            "Terminal",
+            "Files",
             "Agent Teams",
+            "Terminal",
+            "Skills",
             "Activity"
           ]
         },
@@ -3979,7 +4183,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 900,
         "innerHeight": 700,
@@ -3993,6 +4197,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4013,6 +4218,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -4033,6 +4239,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4053,6 +4260,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4074,6 +4282,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -4094,6 +4303,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4116,6 +4326,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -4136,6 +4347,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 408,
@@ -4156,6 +4368,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 613,
@@ -4171,6 +4384,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": null,
           "leftPanelShell": {
@@ -4179,6 +4393,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -4199,6 +4414,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -4220,7 +4436,8 @@
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 850,
@@ -4231,10 +4448,11 @@
               "bottom": 700
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -4328,7 +4546,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 1024,
         "innerHeight": 768,
@@ -4342,6 +4560,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4362,6 +4581,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -4382,6 +4602,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4402,6 +4623,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4423,6 +4645,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -4443,6 +4666,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4465,6 +4689,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -4485,6 +4710,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 470,
@@ -4505,6 +4731,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 675,
@@ -4520,6 +4747,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": null,
           "leftPanelShell": {
@@ -4528,6 +4756,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -4548,6 +4777,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -4569,7 +4799,8 @@
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 974,
@@ -4580,10 +4811,11 @@
               "bottom": 768
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -4677,7 +4909,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 1024,
         "innerHeight": 480,
@@ -4691,6 +4923,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4711,6 +4944,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -4731,6 +4965,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4751,6 +4986,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4772,6 +5008,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -4792,6 +5029,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -4814,6 +5052,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -4834,6 +5073,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 470,
@@ -4854,6 +5094,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 675,
@@ -4869,6 +5110,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": null,
           "leftPanelShell": {
@@ -4877,6 +5119,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -4897,6 +5140,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -4918,7 +5162,8 @@
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 974,
@@ -4929,10 +5174,11 @@
               "bottom": 480
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -5026,7 +5272,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 1180,
         "innerHeight": 800,
@@ -5040,6 +5286,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -5060,6 +5307,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -5080,6 +5328,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -5100,6 +5349,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -5121,6 +5371,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -5141,6 +5392,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -5163,6 +5415,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -5183,6 +5436,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 548,
@@ -5203,6 +5457,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 753,
@@ -5218,6 +5473,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": null,
           "leftPanelShell": {
@@ -5226,6 +5482,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -5246,6 +5503,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -5267,7 +5525,8 @@
             "visible": true,
             "display": "flex",
             "visibility": "visible",
-            "position": "static",
+            "position": "relative",
+            "zIndex": "60",
             "overflow": "visible/visible",
             "rect": {
               "x": 1130,
@@ -5278,10 +5537,11 @@
               "bottom": 800
             },
             "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-            "classes": "flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20",
+            "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4",
             "stripBehavior": "consuming",
             "stripActivation": "open-drawer"
           },
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -5379,7 +5639,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 1280,
         "innerHeight": 800,
@@ -5393,6 +5653,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -5413,6 +5674,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -5433,6 +5695,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -5453,6 +5716,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -5474,6 +5738,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -5494,6 +5759,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -5516,6 +5782,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -5536,6 +5803,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 397,
@@ -5556,6 +5824,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 602,
@@ -5571,6 +5840,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": null,
           "leftPanelShell": {
@@ -5579,6 +5849,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -5599,6 +5870,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -5619,6 +5891,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 830,
@@ -5639,6 +5912,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "auto/hidden",
             "rect": {
               "x": 830,
@@ -5654,6 +5928,7 @@
             "stripActivation": null
           },
           "rightStrip": null,
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": {
@@ -5662,6 +5937,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 1238,
@@ -7209,7 +7485,7 @@
           "clicked": true,
           "state": {
             "label": "right-resize-bound-after",
-            "href": "http://127.0.0.1:13028/workspace",
+            "href": "http://127.0.0.1:13030/workspace",
             "title": "",
             "innerWidth": 1280,
             "innerHeight": 800,
@@ -7223,6 +7499,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "0",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -7243,6 +7520,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -7263,6 +7541,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -7283,6 +7562,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -7304,6 +7584,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 323,
@@ -7324,6 +7605,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -7346,6 +7628,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 323,
@@ -7366,6 +7649,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 339,
@@ -7386,6 +7670,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 349,
@@ -7401,6 +7686,7 @@
                 "stripActivation": null
               },
               "navigationTrigger": null,
+              "leftDrawerBackdrop": null,
               "leftNavigationDrawer": null,
               "leftStrip": null,
               "leftPanelShell": {
@@ -7409,6 +7695,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -7429,6 +7716,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -7449,6 +7737,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 530,
@@ -7469,6 +7758,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "auto/hidden",
                 "rect": {
                   "x": 530,
@@ -7484,6 +7774,7 @@
                 "stripActivation": null
               },
               "rightStrip": null,
+              "rightDrawerBackdrop": null,
               "rightDrawer": null,
               "rightDrawerTabList": null,
               "panelToggle": {
@@ -7492,6 +7783,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 1238,
@@ -7851,12 +8143,12 @@
           "clicked": true,
           "state": {
             "label": "right-strip-reopen-after",
-            "href": "http://127.0.0.1:13028/workspace",
+            "href": "http://127.0.0.1:13030/workspace",
             "title": "",
             "innerWidth": 900,
             "innerHeight": 700,
-            "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
-            "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+            "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+            "mainText": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
             "rects": {
               "header": null,
               "main": {
@@ -7865,6 +8157,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "0",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -7874,7 +8167,7 @@
                   "right": 900,
                   "bottom": 700
                 },
-                "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+                "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
                 "classes": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
                 "stripBehavior": null,
                 "stripActivation": null
@@ -7885,6 +8178,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -7905,6 +8199,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -7914,7 +8209,7 @@
                   "right": 900,
                   "bottom": 700
                 },
-                "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+                "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
                 "classes": "flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100",
                 "stripBehavior": null,
                 "stripActivation": null
@@ -7925,6 +8220,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -7946,6 +8242,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 323,
@@ -7966,6 +8263,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -7988,6 +8286,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 323,
@@ -8008,6 +8307,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 408,
@@ -8028,6 +8328,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 613,
@@ -8043,6 +8344,7 @@
                 "stripActivation": null
               },
               "navigationTrigger": null,
+              "leftDrawerBackdrop": null,
               "leftNavigationDrawer": null,
               "leftStrip": null,
               "leftPanelShell": {
@@ -8051,6 +8353,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -8071,6 +8374,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -8092,7 +8396,8 @@
                 "visible": true,
                 "display": "flex",
                 "visibility": "visible",
-                "position": "static",
+                "position": "relative",
+                "zIndex": "60",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 850,
@@ -8103,9 +8408,30 @@
                   "bottom": 700
                 },
                 "text": "FilesTerminalActivityTokenArtifactsVNC Viewer",
-                "classes": "flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 z-20",
+                "classes": "relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4",
                 "stripBehavior": "consuming",
                 "stripActivation": "open-drawer"
+              },
+              "rightDrawerBackdrop": {
+                "selector": "[data-test=\"workspace-right-tool-drawer-backdrop\"]",
+                "visible": true,
+                "display": "block",
+                "visibility": "visible",
+                "position": "fixed",
+                "zIndex": "40",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 900,
+                  "height": 700,
+                  "right": 900,
+                  "bottom": 700
+                },
+                "text": "",
+                "classes": "fixed inset-0 z-40 bg-gray-900/50",
+                "stripBehavior": null,
+                "stripActivation": null
               },
               "rightDrawer": {
                 "selector": "[data-test=\"workspace-right-tool-drawer\"]",
@@ -8113,6 +8439,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "fixed",
+                "zIndex": "50",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 500,
@@ -8122,8 +8449,8 @@
                   "right": 900,
                   "bottom": 700
                 },
-                "text": "Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
-                "classes": "fixed bottom-0 right-0 top-14 z-50 flex max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:max-w-[92vw] md:inset-y-0",
+                "text": "› Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+                "classes": "fixed inset-y-0 right-0 z-50 flex max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:max-w-[92vw]",
                 "stripBehavior": null,
                 "stripActivation": null
               },
@@ -8133,14 +8460,15 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "auto/hidden",
                 "rect": {
                   "x": 500,
-                  "y": 57,
+                  "y": 8,
                   "width": 396,
                   "height": 49,
                   "right": 896,
-                  "bottom": 106
+                  "bottom": 57
                 },
                 "text": "› Files Terminal Activity Token Artifacts VNC Viewer",
                 "classes": "flex-1 min-w-0 relative flex min-w-0 flex-nowrap items-end overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 bg-white px-1 no-scrollbar",
@@ -8184,17 +8512,16 @@
                 "Artifacts"
               ],
               "topVisible": [
-                "Close tools",
-                "Agents",
-                "Collapse left panel",
-                "Files",
-                "Agent Teams",
                 "Files",
                 "Terminal",
                 "Activity",
                 "Token",
                 "Artifacts",
+                "Agents",
+                "Collapse left panel",
+                "Files",
                 "›",
+                "Agent Teams",
                 "Terminal",
                 "Skills",
                 "Activity"
@@ -8209,11 +8536,11 @@
                 "rendered": true,
                 "rect": {
                   "x": 504,
-                  "y": 57,
+                  "y": 8,
                   "width": 74,
                   "height": 48,
                   "right": 578,
-                  "bottom": 105
+                  "bottom": 56
                 },
                 "ariaSelected": "true",
                 "tabIndex": 0,
@@ -8227,11 +8554,11 @@
                 "rendered": true,
                 "rect": {
                   "x": 578,
-                  "y": 57,
+                  "y": 8,
                   "width": 103,
                   "height": 48,
                   "right": 681,
-                  "bottom": 105
+                  "bottom": 56
                 },
                 "ariaSelected": "false",
                 "tabIndex": 0,
@@ -8245,11 +8572,11 @@
                 "rendered": true,
                 "rect": {
                   "x": 681,
-                  "y": 57,
+                  "y": 8,
                   "width": 96,
                   "height": 48,
                   "right": 777,
-                  "bottom": 105
+                  "bottom": 56
                 },
                 "ariaSelected": "false",
                 "tabIndex": 0,
@@ -8263,11 +8590,11 @@
                 "rendered": true,
                 "rect": {
                   "x": 777,
-                  "y": 57,
+                  "y": 8,
                   "width": 84,
                   "height": 48,
                   "right": 861,
-                  "bottom": 105
+                  "bottom": 56
                 },
                 "ariaSelected": "false",
                 "tabIndex": 0,
@@ -8281,11 +8608,11 @@
                 "rendered": true,
                 "rect": {
                   "x": 861,
-                  "y": 57,
+                  "y": 8,
                   "width": 104,
                   "height": 48,
                   "right": 965,
-                  "bottom": 105
+                  "bottom": 56
                 },
                 "ariaSelected": "false",
                 "tabIndex": 0,
@@ -8299,11 +8626,11 @@
                 "rendered": true,
                 "rect": {
                   "x": 965,
-                  "y": 57,
+                  "y": 8,
                   "width": 128,
                   "height": 48,
                   "right": 1094,
-                  "bottom": 105
+                  "bottom": 56
                 },
                 "ariaSelected": "false",
                 "tabIndex": 0,
@@ -8315,11 +8642,11 @@
             "rightDrawerTabList": {
               "rect": {
                 "x": 500,
-                "y": 57,
+                "y": 8,
                 "width": 396,
                 "height": 49,
                 "right": 896,
-                "bottom": 106
+                "bottom": 57
               },
               "role": "tablist",
               "ariaLabel": "Workspace tools",
@@ -8337,7 +8664,7 @@
               "maxScrollLeft": 202,
               "hasHorizontalOverflow": true,
               "rowTops": [
-                57
+                8
               ],
               "tabs": [
                 {
@@ -8347,11 +8674,11 @@
                   "rendered": true,
                   "rect": {
                     "x": 504,
-                    "y": 57,
+                    "y": 8,
                     "width": 74,
                     "height": 48,
                     "right": 578,
-                    "bottom": 105
+                    "bottom": 56
                   },
                   "ariaSelected": "true",
                   "tabIndex": 0,
@@ -8365,11 +8692,11 @@
                   "rendered": true,
                   "rect": {
                     "x": 578,
-                    "y": 57,
+                    "y": 8,
                     "width": 103,
                     "height": 48,
                     "right": 681,
-                    "bottom": 105
+                    "bottom": 56
                   },
                   "ariaSelected": "false",
                   "tabIndex": 0,
@@ -8383,11 +8710,11 @@
                   "rendered": true,
                   "rect": {
                     "x": 681,
-                    "y": 57,
+                    "y": 8,
                     "width": 96,
                     "height": 48,
                     "right": 777,
-                    "bottom": 105
+                    "bottom": 56
                   },
                   "ariaSelected": "false",
                   "tabIndex": 0,
@@ -8401,11 +8728,11 @@
                   "rendered": true,
                   "rect": {
                     "x": 777,
-                    "y": 57,
+                    "y": 8,
                     "width": 84,
                     "height": 48,
                     "right": 861,
-                    "bottom": 105
+                    "bottom": 56
                   },
                   "ariaSelected": "false",
                   "tabIndex": 0,
@@ -8419,11 +8746,11 @@
                   "rendered": true,
                   "rect": {
                     "x": 861,
-                    "y": 57,
+                    "y": 8,
                     "width": 104,
                     "height": 48,
                     "right": 965,
-                    "bottom": 105
+                    "bottom": 56
                   },
                   "ariaSelected": "false",
                   "tabIndex": 0,
@@ -8437,11 +8764,11 @@
                   "rendered": true,
                   "rect": {
                     "x": 965,
-                    "y": 57,
+                    "y": 8,
                     "width": 128,
                     "height": 48,
                     "right": 1094,
-                    "bottom": 105
+                    "bottom": 56
                   },
                   "ariaSelected": "false",
                   "tabIndex": 0,
@@ -8454,11 +8781,11 @@
                 "visible": true,
                 "rect": {
                   "x": 852,
-                  "y": 57,
+                  "y": 8,
                   "width": 40,
                   "height": 48,
                   "right": 892,
-                  "bottom": 105
+                  "bottom": 56
                 },
                 "ariaLabel": "",
                 "title": ""
@@ -8468,11 +8795,11 @@
                 "visible": true,
                 "rect": {
                   "x": 864,
-                  "y": 67,
+                  "y": 18,
                   "width": 28,
                   "height": 28,
                   "right": 892,
-                  "bottom": 95
+                  "bottom": 46
                 },
                 "ariaLabel": "Show more tabs",
                 "title": "Show more tabs"
@@ -8526,7 +8853,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13028/workspace",
+        "href": "http://127.0.0.1:13030/workspace",
         "title": "",
         "innerWidth": 1440,
         "innerHeight": 900,
@@ -8540,6 +8867,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "0",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -8560,6 +8888,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -8580,6 +8909,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -8600,6 +8930,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -8621,6 +8952,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -8641,6 +8973,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 323,
@@ -8663,6 +8996,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 323,
@@ -8683,6 +9017,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 477,
@@ -8703,6 +9038,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 682,
@@ -8718,6 +9054,7 @@
             "stripActivation": null
           },
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": null,
           "leftPanelShell": {
@@ -8726,6 +9063,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "50",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -8746,6 +9084,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -8766,6 +9105,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "hidden/hidden",
             "rect": {
               "x": 990,
@@ -8786,6 +9126,7 @@
             "display": "flex",
             "visibility": "visible",
             "position": "relative",
+            "zIndex": "auto",
             "overflow": "auto/hidden",
             "rect": {
               "x": 990,
@@ -8801,6 +9142,7 @@
             "stripActivation": null
           },
           "rightStrip": null,
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": {
@@ -8809,6 +9151,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 1398,
@@ -10356,7 +10699,7 @@
           "clicked": true,
           "state": {
             "label": "right-resize-bound-after",
-            "href": "http://127.0.0.1:13028/workspace",
+            "href": "http://127.0.0.1:13030/workspace",
             "title": "",
             "innerWidth": 1440,
             "innerHeight": 900,
@@ -10370,6 +10713,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "0",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -10390,6 +10734,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -10410,6 +10755,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -10430,6 +10776,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -10451,6 +10798,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 323,
@@ -10471,6 +10819,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 323,
@@ -10493,6 +10842,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 323,
@@ -10513,6 +10863,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 339,
@@ -10533,6 +10884,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 349,
@@ -10548,6 +10900,7 @@
                 "stripActivation": null
               },
               "navigationTrigger": null,
+              "leftDrawerBackdrop": null,
               "leftNavigationDrawer": null,
               "leftStrip": null,
               "leftPanelShell": {
@@ -10556,6 +10909,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "50",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -10576,6 +10930,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 0,
@@ -10596,6 +10951,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "hidden/hidden",
                 "rect": {
                   "x": 530,
@@ -10616,6 +10972,7 @@
                 "display": "flex",
                 "visibility": "visible",
                 "position": "relative",
+                "zIndex": "auto",
                 "overflow": "auto/hidden",
                 "rect": {
                   "x": 530,
@@ -10631,6 +10988,7 @@
                 "stripActivation": null
               },
               "rightStrip": null,
+              "rightDrawerBackdrop": null,
               "rightDrawer": null,
               "rightDrawerTabList": null,
               "panelToggle": {
@@ -10639,6 +10997,7 @@
                 "display": "block",
                 "visibility": "visible",
                 "position": "static",
+                "zIndex": "auto",
                 "overflow": "visible/visible",
                 "rect": {
                   "x": 1398,
@@ -11006,7 +11365,7 @@
       "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/mobile-route-390x844.png",
       "initial": {
         "label": "mobile-route",
-        "href": "http://127.0.0.1:13028/mobile",
+        "href": "http://127.0.0.1:13030/mobile",
         "title": "AutoByteus Mobile",
         "innerWidth": 390,
         "innerHeight": 844,
@@ -11020,6 +11379,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
@@ -11046,6 +11406,7 @@
           "emptyStateChoose": null,
           "emptyStateRuns": null,
           "navigationTrigger": null,
+          "leftDrawerBackdrop": null,
           "leftNavigationDrawer": null,
           "leftStrip": null,
           "leftPanelShell": null,
@@ -11053,6 +11414,7 @@
           "rightPanel": null,
           "rightPanelTabList": null,
           "rightStrip": null,
+          "rightDrawerBackdrop": null,
           "rightDrawer": null,
           "rightDrawerTabList": null,
           "panelToggle": null,
@@ -11062,6 +11424,7 @@
             "display": "block",
             "visibility": "visible",
             "position": "static",
+            "zIndex": "auto",
             "overflow": "visible/visible",
             "rect": {
               "x": 0,
