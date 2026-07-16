@@ -431,3 +431,68 @@ The output distinguishes `preference: hidden-by-user` from effective `presentati
 ### Required policy scenarios
 
 The design spec now includes executable boundary scenarios for wide default, large-but-constrained (left docked/right tools yield), constrained (left adapts only after right yield), manual left collapse, narrow, short-height, and repeated resize. The updated architecture package is ready for another review round; implementation remains blocked until that gate passes.
+
+## Right-strip duplicate Tools trigger investigation (2026-07-16)
+
+### User-observed behavior
+
+On a full-screen desktop workspace, the user collapses the right tool panel using its existing panel-toggle affordance. The current build leaves the expected right vertical tool strip visible, but also adds a top `Tools` button above the center. The personal branch shows only the right strip in this state. Evidence supplied for the comparison:
+
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_acd1f7642431__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_5e5a41af08d3__image.png`
+
+### Source trace and exact cause
+
+The current implementation was inspected in the dedicated worktree:
+
+- `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`
+- `autobyteus-web/components/layout/WorkspacePrimarySurfaceControls.vue`
+- `autobyteus-web/components/layout/RightSidebarStrip.vue`
+- `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
+- `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts`
+
+The relevant render paths are:
+
+```vue
+<WorkspacePrimarySurfaceControls
+  v-if="shouldShowSemanticSurfaceTriggers"
+  :show-tools-trigger="showToolsTrigger"
+  ...
+/>
+...
+<RightSidebarStrip
+  v-else-if="responsiveWorkspaceShellState.showRightStrip"
+  open-as-drawer
+  @request-open="openRightDrawer"
+/>
+```
+
+and:
+
+```ts
+const showToolsTrigger = computed(() =>
+  responsiveWorkspaceShellState.value.rightPanel.presentation !== 'docked',
+)
+```
+
+After a user collapse, the composed state is `rightPanel.presentation === 'strip'`. The `v-else-if` therefore renders the right strip, while `presentation !== 'docked'` independently evaluates to `true` and renders the top `Tools` trigger. The implementation is treating “not docked” as equivalent to “needs a top drawer trigger,” although strip and drawer are distinct effective presentations. `RightSidebarStrip` already calls `setRightPanelVisible(true)` and emits `request-open` when a tab is selected, so the top button is a duplicate reopen path.
+
+This explains why the screenshot shows exactly one top `Tools` button and the right icon strip after the right drawer is collapsed; the left navigation trigger is false because the left panel remains docked. The unwanted control is not caused by the right-tab overflow work, browser width, font density, or the dedicated `/mobile` route. It is a local presentation/affordance condition in the new adaptive workspace renderer.
+
+### Design classification and required correction
+
+This is a **Local Implementation Defect** against the already intended one-owned-right-surface behavior, made explicit as FR-032/AC-033 and in `workspace-responsive-ui-ux-spec.md`. It is not a requirement to remove `/mobile` or `components/mobile/*`, and it does not justify restoring a generic `Work / Runs / Files / Tools` row.
+
+The required executable invariant is:
+
+| Right presentation | Reopen affordance | Top semantic `Tools` trigger |
+|---|---|---:|
+| `docked` | Existing fixed panel toggle | No |
+| `strip` | Right vertical strip; selecting a tool opens the drawer | No |
+| `drawer` | One visible semantic `Tools`/`Open tools` action | Yes |
+
+The implementation should expose `showRightToolsTrigger` from the composed policy or use the exact equivalent `rightPanel.presentation === 'drawer'`. It must not use `rightPanel.presentation !== 'docked'`. Component/browser coverage must assert that strip and top trigger are mutually exclusive and that both valid paths reach the same right-tool drawer without changing selected-run state.
+
+### Supplemental artifact inventory update
+
+`workspace-responsive-ui-ux-spec.md` remains the intended-behavior authority for this clarification; its status is **Refined — architecture re-review required**, and approval applicability is **Required**. This investigation entry and the supplied screenshots are evidence; they do not replace the requirements or UI/UX supplement.

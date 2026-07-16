@@ -2,124 +2,112 @@
 
 ## Status
 
-- Delivery status: `Awaiting explicit user verification`
-- Branch: `codex/frontend-responsive-ux-audit`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`
-- Current ticket-branch HEAD: `84486c48ec41c21e1e517310c3672b6af0cb1f20` (delivery checkpoint containing the current Round 7 package)
-- Implementation source review HEAD: `5883ea8c3f316e05885f900a2178b92a5dedd346`
-- Base/finalization target recorded by bootstrap: `personal` / `origin/personal`
-- Latest tracked base checked for delivery: `origin/personal @ fbd7b6764bd43751956d69ffe22b943d06188444`
-- Latest-base refresh result: `git fetch origin --prune` passed; `git merge --no-ff origin/personal` was already up to date. The latest tracked base is already integrated through prior merge `456694fa8`; no new base commit was introduced by this refresh.
-- Delivery checkpoint before refresh: `84486c48ec41c21e1e517310c3672b6af0cb1f20`
-- Refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round5-fetch-and-merge.log` and `delivery-round5-post-refresh-check.log`
+- Delivery status: `Awaiting explicit user verification`.
+- Branch: `codex/frontend-responsive-ux-audit`.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`.
+- Validated implementation HEAD: `3a41ebe5b0d90939e55a6ce483919c5d78cef411`.
+- Delivery checkpoint: `31abc363e7b77eb6d04025c262a77b17ecb8d3bf`.
+- Latest tracked base: `origin/personal @ fbd7b6764bd43751956d69ffe22b943d06188444`.
+- Base refresh: `git fetch origin --prune` passed; `git merge --no-ff origin/personal` was already up to date. The base is already integrated; no new base commit was introduced.
+- Integrated-state evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round8-fetch-and-merge.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round8-post-refresh-check.log`
 
 ## User-Facing Change Summary
 
-The standard `/workspace` route uses one adaptive workspace shell instead of separate desktop/mobile route branches. It preserves the central workspace surface across narrow, constrained, and short-height browser windows by re-presenting left navigation and right tools as docked, strip, or drawer surfaces as space allows.
+The standard `/workspace` route uses one composed responsive shell rather than separate desktop/mobile route branches. It preserves the center work surface while left navigation and right tools adapt between docked, strip, and drawer presentations.
 
 Key behavior:
 
-- `/workspace` no longer has a blank `640-767px` band from mismatched route/CSS breakpoints.
-- `/workspace` keeps agent/team work content, run history, files, terminal, activity, Token usage, artifacts, browser, and VNC reachable through adaptive standard-workspace controls.
-- Narrow primary controls keep the order `Work -> Runs -> Files -> Tools`.
-- The integrated right-tool catalog keeps the order `Files -> Team -> Terminal -> Activity -> Token -> Artifacts -> Browser -> VNC` when those tools are applicable.
-- Right-tool tabs remain one horizontal row with native scrolling; conditional edge fades/chevrons disclose hidden tabs, and active/focused tabs auto-scroll into view.
-- The fixed docked panel toggle remains outside the scrolling region, and reduced-motion preferences are respected.
-- The previous delivery description of wrapped multi-row tabs is historical and superseded; wrapping must not be reintroduced.
-- `/mobile` remains the separate phone/PWA `MobileRemoteAccessShell` route and is not reused as the standard workspace fallback.
-- Frontend backend endpoint docs use the current `BACKEND_*` configuration model.
+- A single `resolveResponsiveWorkspaceShellState()` policy composes viewport capacity, both panel preferences, effective presentations, sources, and affordances.
+- Left navigation remains docked while left navigation plus a practical center fit; right tools yield first when needed.
+- Constrained states expose semantic `Agents & teams` and `Tools` actions instead of a generic `Work / Runs / Files / Tools` row.
+- The no-selection center state provides `Choose an agent or team` and `Open runs/history` actions.
+- The left docked/drawer shell is a full-height flex column; `AppLeftPanel` and its run-history scroll owner retain bounded scrolling.
+- Right tools remain in canonical order with one-row native horizontal scrolling, conditional edge affordances, ARIA semantics, active/focus/selection auto-scroll, reduced-motion behavior, and a fixed toggle outside the scrollport.
+- `/mobile` remains the dedicated phone/PWA route and is not used as the standard workspace fallback.
 
 ## Validation Summary
 
-- API/E2E Round 7: `Pass`, `97.0%` confidence.
-- Browser matrix: `18` states (`17` `/workspace` plus `/mobile`), `42/42` primary-control interactions, `28` tab-list checks, `0` failures, `0` browser console-error states.
-- Right-tool contract: both boundary directions pass; single-row/flex-nowrap, horizontal overflow, conditional affordances, active/focus auto-scroll, fixed-toggle stability, reduced-motion setup, docked/drawer reachability, canonical order, and `/mobile` isolation pass.
-- VNC Viewer is focused/reached but not selected because no external VNC service is in the deterministic fixture; selection auto-scroll is covered through network-safe Files.
-- Focused Nuxt suite: `11` files / `69` tests passed.
-- Supporting checks: server build, probe syntax, `git diff --check`, boundary guards, localization audit, and cleanup passed.
-- Runtime cleanup: ports `13009` and `13010` closed.
-- Proportional durable-test review Round 3: `Pass`, no findings. The updated durable probe is focused, deterministic for its declared web-equivalent boundary, and aligned with the approved right-tool-tabs UX contract.
+- API/E2E Round 8: `Pass`, `97.0%` confidence.
+- Browser matrix: `18` states (`17` `/workspace` plus `/mobile`), `37/37` semantic navigation/tools interaction records, `17` tab journeys / `119` contract snapshots, `0` failures, and `0` browser console-error states.
+- Expanded focused suite: `16` files / `83` tests passed.
+- Backend build, probe syntax, `git diff --check`, startup, isolated SQLite, and cleanup passed; ports `13011` and `13012` are closed.
+- Proportional durable-test review Round 4: `Pass`, no findings. The only current API/E2E durable change is the reconciled `workspace-responsive-probe.mjs`.
+- VNC selection remains bounded because no external VNC service is available in the deterministic fixture; VNC focus/reachability and network-safe Files selection auto-scroll are covered.
 
 Authoritative validation artifacts:
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-workspace-responsive-probe.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-focused-nuxt-tests.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-cleanup-ports.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-workspace-responsive-probe-final.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-focused-nuxt-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round8-cleanup-ports.log`
 
-## User-Requested Electron Test Build
+## Current Electron Test Build
 
-- Command: `NO_TIMESTAMP=1 pnpm -C autobyteus-web build:electron:mac -- --arm64`
-- Result: `Pass` on the local Apple Silicon macOS host.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.zip`
-- Packaging: unsigned and not notarized; packaged Terminal runtime static verification and ARM64 spawn probe passed.
-- Latest build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round5-electron-build.log`.
-- Latest runtime verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round5-electron-runtime-verification.log`.
-- Earlier runtime verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/electron-build-runtime-verification-arm64.log`.
-- Final sanity evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round5-final-sanity-check.log`.
+The README instructions were reviewed and the current validated implementation was rebuilt for Apple Silicon macOS:
 
-## Delivery Docs Sync
+- Command: `NO_TIMESTAMP=1 pnpm -C autobyteus-web build:electron:mac -- --arm64`.
+- Result: `Pass`.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.dmg`.
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.zip`.
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round8-electron-build.log`.
+- Packaged Terminal runtime evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round8-electron-runtime-verification.log`.
+- Packaging is unsigned/not notarized; electron-builder reported `identity explicitly is set to null`.
 
-Docs sync artifact:
+## Documentation Sync
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/docs-sync-report.md`
-
-Long-lived docs updated or re-reviewed against the current integrated source:
-
-- `autobyteus-web/docs/workspace_layout.md` — replaced stale wrapped multi-row language with the approved single-row horizontal-scroll/discoverability contract and recorded the historical supersession.
-- `autobyteus-web/ARCHITECTURE.md` — existing workspace-layout index link remains accurate; no change required.
-- `autobyteus-web/README.md` — current `BACKEND_*` setup and responsive E2E command remain accurate; no change required.
-- `autobyteus-web/docs/remote_access.md` — `/mobile` versus adaptive `/workspace` boundary remains accurate; no change required.
-- `autobyteus-web/docs/terminal.md` — constrained Tools/right-drawer access remains accurate; no change required.
-- `autobyteus-web/docs/agent_integration_minimal_bridge.md` — endpoint guidance remains accurate; no change required.
-- `autobyteus-web/docs/agent_execution_architecture.md` — existing Token-tab ownership remains accurate; no change required.
-- `autobyteus-web/docs/electron_packaging.md` and repository release docs — explicitly reviewed with no impact.
+- Updated: `autobyteus-web/docs/workspace_layout.md`.
+- Updated guidance covers the composed policy boundary, semantic triggers/no-generic-row behavior, left history scroll ownership, current right-tool contract, `/mobile` boundary, and current coverage paths.
+- No-impact decisions recorded for README, architecture, runtime, remote access, Terminal, agent integration, Electron packaging, and release docs.
+- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/docs-sync-report.md`.
 
 ## Integrated-State Check
 
-- New base commits after the prior integration: `None`.
-- Additional base-triggered executable rerun: `Not required`; API/E2E Round 7 passed against the current implementation/probe state before the delivery checkpoint, and no base source changed during this refresh. The checkpoint captured the validated probe plus ticket artifacts/evidence.
-- Authoritative checks: `11` files / `69` tests, `18` browser states, `42/42` interactions, `28` tab-list checks, zero failures, zero browser console-error states.
-- No merge conflicts, behavior-changing base commits, or unresolved acceptance failures remain.
-- Delivery final sanity check: `Pass`; docs, stale-status, current-base, diff, and Electron artifact checks are recorded in `delivery-round5-final-sanity-check.log`.
+- No new base commits were introduced by the Round 8 refresh.
+- Additional base-triggered executable rerun: `Not required`; Round 8 already passed against the current implementation HEAD and the refresh did not change effective source behavior.
+- Final delivery docs and current package artifacts were checked with `git diff --check`.
+- Final sanity evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round8-final-sanity-check.log` (`Pass`).
 
 ## Finalization Hold
 
-Per delivery workflow, repository finalization has **not** started. The following remain intentionally blocked until the user explicitly verifies/completes this handoff state:
+Per delivery workflow, repository finalization has **not** started. The following remain blocked until explicit user verification/completion:
 
-- moving the ticket folder to `tickets/done/frontend-responsive-ux-audit/`
-- committing the delivery-owned report/handoff/docs-sync updates
-- pushing the ticket branch
-- merging into the finalization target branch `personal`
-- pushing the target branch
-- release, publication, deployment, or cleanup work
+- moving the ticket to `tickets/done/frontend-responsive-ux-audit/`;
+- committing delivery-owned docs/report updates;
+- pushing the ticket branch;
+- refreshing and merging into finalization target branch `personal`;
+- pushing the target branch;
+- release/publication/deployment and cleanup.
 
-No final delivery commit or push has been performed.
+No final delivery push or target-branch merge has been performed.
 
 ## Residual Risks / Out-of-Scope Notes
 
-- The durable browser probe validates the shell-level one-row tab contract, native overflow, discoverability controls, center sizing, ordering, active/focus reachability, drawer/strip recovery, and `/mobile` isolation; it does not deeply validate internals of every Terminal/Browser/VNC/Files panel.
-- VNC selection is not exercised because no external VNC service is part of the deterministic fixture; VNC focus/reachability is covered.
-- Packaged Electron/native lifecycle/restart remains outside the browser validation scope, although a local unsigned ARM64 build and packaged Terminal runtime probe passed.
-- Production deployment and real agent execution/conversation flows were not in scope.
+- Browser validation covers the shell-level responsive contract, not deep internal responsiveness of every Terminal/Browser/VNC/Files panel.
+- Packaged Electron/native lifecycle and restart/recovery are not covered by the browser matrix, though the current unsigned ARM64 package and packaged Terminal spawn probes passed.
+- No external VNC service was available for deterministic VNC selection.
+- Production deployment and real agent execution/conversation flows were out of scope.
 
 ## Cumulative Artifact Package
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/docs-sync-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/handoff-summary.md`
+- `requirements-doc.md`
+- `investigation-notes.md`
+- `design-spec.md`
+- `right-tool-tabs-ux-spec.md`
+- `workspace-responsive-ui-ux-spec.md`
+- `comprehensive-responsive-ui-test-report.md`
+- `design-review-report.md`
+- `implementation-handoff.md`
+- `implementation-live-visual-report.md`
+- `code-review-report.md`
+- `api-e2e-coverage-investigation.md`
+- `api-e2e-execution-coverage-report.md`
+- `api-e2e-test-review-report.md`
+- `docs-sync-report.md`
+- `delivery-release-deployment-report.md`
+- `handoff-summary.md`
+- Round 8 browser results, screenshots, runtime/build logs, cleanup logs, and delivery refresh evidence under `tickets/frontend-responsive-ux-audit/evidence/` and `tickets/frontend-responsive-ux-audit/probes/api-e2e/`.

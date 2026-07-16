@@ -3,65 +3,63 @@
 ## Scope
 
 - Ticket: `frontend-responsive-ux-audit`
-- Trigger: Delivery-stage refresh after implementation source review Round 11 `Pass`, API/E2E Round 7 `Pass`, and proportional durable-test review Round 3 `Pass`.
-- Ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`
-- Reviewed implementation source HEAD: `5883ea8c3f316e05885f900a2178b92a5dedd346`.
-- Delivery checkpoint containing the current Round 7 package: `84486c48ec41c21e1e517310c3672b6af0cb1f20`.
-- Bootstrap base reference: `origin/personal @ ff17d2bb051724375e7ee6b227ea71dfafe2ccd0`.
-- Latest tracked base refresh: `origin/personal @ fbd7b6764bd43751956d69ffe22b943d06188444` after `git fetch origin --prune`.
-- Latest-base integration result: `Already up to date`; the latest tracked base is already an ancestor through prior merge `456694fa8`. No new base commit was introduced by this refresh.
-- Refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round5-fetch-and-merge.log` and `delivery-round5-post-refresh-check.log`.
+- Trigger: Delivery refresh after implementation source review Round 15 `Pass`, API/E2E Round 8 `Pass`, and proportional durable-test review Round 4 `Pass`.
+- Validated implementation HEAD: `3a41ebe5b0d90939e55a6ce483919c5d78cef411`.
+- Delivery checkpoint: `31abc363e7b77eb6d04025c262a77b17ecb8d3bf`.
+- Latest tracked base after `git fetch origin --prune`: `origin/personal @ fbd7b6764bd43751956d69ffe22b943d06188444`.
+- Integration result: `Already up to date`; the latest tracked base is already an ancestor. No new base commit was introduced.
+- Refresh evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round8-fetch-and-merge.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round8-post-refresh-check.log`
 
 ## Why Docs Were Updated
 
-The approved right-tool-tabs UX contract supersedes the earlier delivery description of multi-row wrapping. The current implementation keeps one horizontal tab row, uses native horizontal scrolling, exposes directional edge fades/chevrons when content is undisclosed, auto-scrolls active/focused tabs into view, and keeps the fixed panel toggle outside the scrollport. The canonical workspace-layout document was updated to remove the stale wrapping prescription and preserve the historical decision context without allowing the old behavior to return.
+The final implementation and Round 8 browser matrix use one composed responsive-shell policy and semantic constrained-surface actions. The prior canonical doc still described independent shell/workspace responsive owners and a positive `Work -> Runs -> Files -> Tools` control order. That language no longer described the approved behavior and could reintroduce the retired generic navigation row.
 
-The integrated Token catalog position and the adaptive `/workspace` versus `/mobile` boundary remain documented. Runtime/configuration, architecture-index, Terminal, remote-access, Electron, and release documentation remains accurate and required no additional changes.
+`autobyteus-web/docs/workspace_layout.md` was updated to document:
+
+- the shared `useResponsiveWorkspaceShell()` / `resolveResponsiveWorkspaceShellState()` ownership boundary;
+- docked, strip, and drawer behavior with left-navigation preference versus effective responsive presentation;
+- the full-height flex-column left shell and the `AppLeftPanel`/run-history scroll owner;
+- semantic `Agents & teams` and `Tools` triggers plus empty-state `Choose an agent or team` and `Open runs/history` actions;
+- the explicit prohibition on a positive generic `Work -> Runs -> Files -> Tools` row;
+- the existing right-tool single-row native horizontal-scroll, affordance, ARIA, order, focus/selection auto-scroll, and fixed-toggle contract;
+- current focused and browser-level coverage paths.
 
 ## Long-Lived Docs Reviewed
 
 | Doc Path | Result | Notes |
 | --- | --- | --- |
-| `autobyteus-web/docs/workspace_layout.md` | Updated | Replaced stale multi-row wrapping language with the approved single-row horizontal-scroll/discoverability contract and recorded the historical supersession. |
-| `autobyteus-web/ARCHITECTURE.md` | No change | Existing link to the canonical workspace-layout doc remains correct. |
-| `autobyteus-web/README.md` | No change | `BACKEND_*` setup and responsive browser-probe command remain accurate. |
-| `autobyteus-web/docs/remote_access.md` | No change | `/mobile` remains isolated from adaptive `/workspace`. |
-| `autobyteus-web/docs/terminal.md` | No change | Terminal remains reachable through Tools and adaptive right-tool presentations. |
-| `autobyteus-web/docs/agent_integration_minimal_bridge.md` | No change | Current `BACKEND_*` endpoint examples remain accurate. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | No change | Token-tab ownership and usage-meter guidance remain accurate. |
-| `autobyteus-web/docs/electron_packaging.md` | No change | Local build was validated, but packaged Electron lifecycle remains outside this ticket's browser validation scope. |
-| `README.md` and base release docs | No change | Unrelated repository/release guidance remains accurate and untouched. |
+| `autobyteus-web/docs/workspace_layout.md` | Updated | Reconciled responsive ownership, semantic actions, left history scroll ownership, no-generic-row behavior, right-tool contract, and current coverage. |
+| `autobyteus-web/ARCHITECTURE.md` | No change | Existing architecture index/link remains accurate. |
+| `autobyteus-web/README.md` | No change | Current `BACKEND_*` setup, Electron commands, and responsive probe command remain accurate; README was read during delivery. |
+| `autobyteus-web/docs/remote_access.md` | No change | `/mobile` remains isolated from standard `/workspace`. |
+| `autobyteus-web/docs/terminal.md` | No change | Terminal remains reachable through the right-tool surface. |
+| `autobyteus-web/docs/agent_integration_minimal_bridge.md` | No change | Endpoint guidance remains accurate. |
+| `autobyteus-web/docs/agent_execution_architecture.md` | No change | Token usage guidance remains accurate. |
+| `autobyteus-web/docs/electron_packaging.md` and release docs | No change | Packaging guidance remains accurate; current unsigned ARM64 package was rebuilt and runtime-verified without changing release policy. |
 
-## Docs Updated
-
-| Doc Path | Type Of Update | What Changed | Why |
-| --- | --- | --- | --- |
-| `autobyteus-web/docs/workspace_layout.md` | Canonical architecture/operations doc | Documented single-row native horizontal scrolling, conditional edge discoverability controls, active/focus auto-scroll, fixed-toggle separation, Token order, and the historical supersession of wrapping language. | Promotes the final approved right-tool presentation contract into long-lived project guidance and prevents regression to the superseded wrapped layout. |
-
-## Durable Design / Runtime Knowledge Promoted
+## Durable Knowledge Promoted
 
 | Topic | Durable Truth | Source Artifact(s) | Target Doc |
 | --- | --- | --- | --- |
-| Standard workspace route ownership | `/workspace` always uses `WorkspaceAdaptiveLayout`; `/mobile` remains the phone/PWA owner. | `design-spec.md`, `implementation-handoff.md`, `api-e2e-execution-coverage-report.md` | `autobyteus-web/docs/workspace_layout.md` |
-| Adaptive side-surface policy | Left and right surfaces switch between docked, strip, and drawer presentations to preserve center usability. | `design-spec.md`, `implementation-handoff.md`, `api-e2e-execution-coverage-report.md` | `autobyteus-web/docs/workspace_layout.md` |
-| Integrated right-tool catalog | `Files -> Team -> Terminal -> Activity -> Token -> Artifacts -> Browser -> VNC`, filtering unavailable/contextual items without reordering. | `workspaceSurfaceOrder.ts`, `workspaceSurfaceOrder.spec.ts`, `right-tool-tabs-ux-spec.md` | `autobyteus-web/docs/workspace_layout.md` |
-| Right-tool tab presentation | One horizontal row with native overflow; conditional edge fades/chevrons, active/focus auto-scroll, ARIA semantics, reduced-motion behavior, and a fixed toggle outside the scrollport. Wrapping is explicitly superseded. | `right-tool-tabs-ux-spec.md`, `TabList.vue`, `RightSideTabs.vue`, `workspace-responsive-probe.mjs`, API/E2E Round 7 evidence | `autobyteus-web/docs/workspace_layout.md` |
-| Responsive browser probe | `test:e2e:workspace-responsive` validates viewport presentation, tab discoverability/reachability, interaction reachability, order, and `/mobile` isolation. | `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-test-review-report.md` | `autobyteus-web/README.md`, `autobyteus-web/docs/workspace_layout.md` |
-
-## Removed / Replaced Components Recorded
-
-| Old Component / Concept | Replacement | Durable Truth |
-| --- | --- | --- |
-| Route-level split standard workspace desktop/mobile ownership | Single `WorkspaceAdaptiveLayout` owner for standard `/workspace` | `autobyteus-web/docs/workspace_layout.md` |
-| `useMobilePanels` as standard `/workspace` fallback | Measured adaptive layout policy and explicit shell/workspace presentation adapters | `autobyteus-web/docs/workspace_layout.md` |
-| Earlier wrapped multi-row right-tool header description | Single-row native horizontal-scroll header with conditional discoverability controls | `autobyteus-web/docs/workspace_layout.md` and `right-tool-tabs-ux-spec.md` |
+| Standard route ownership | `/workspace` uses the adaptive shell; `/mobile` remains the phone/PWA owner. | `workspace-responsive-ui-ux-spec.md`, `design-spec.md`, Round 8 execution report | `autobyteus-web/docs/workspace_layout.md` |
+| Composed responsive policy | One resolver composes viewport capacity, both panel preferences, preferred widths, effective presentations, sources, and affordances. | `responsiveLayoutPolicy.ts`, `useResponsiveWorkspaceShell.ts`, Round 15 source review | `autobyteus-web/docs/workspace_layout.md` |
+| Semantic constrained actions | `Agents & teams` and `Tools` triggers replace the retired positive generic surface row; empty state provides agent/team and runs/history actions. | `WorkspacePrimarySurfaceControls.vue`, `WorkspaceAdaptiveLayout.vue`, Round 8 probe/test review | `autobyteus-web/docs/workspace_layout.md` |
+| Left shell/history sizing | Left docked/drawer shell is a full-height flex column; bounded content preserves the real AppLeftPanel/history scroll owner. | `layouts/default.vue`, `default-drawer.spec.ts`, Round 15 source review, Round 8 probe | `autobyteus-web/docs/workspace_layout.md` |
+| Right-tool contract | One horizontal row, native overflow, conditional edge affordances, ARIA, order, focus/selection auto-scroll, reduced motion, and fixed-toggle separation; VNC selection remains fixture-bounded. | `right-tool-tabs-ux-spec.md`, `RightSideTabs.vue`, `TabList.vue`, Round 8 evidence | `autobyteus-web/docs/workspace_layout.md` |
+| Responsive browser coverage | The durable probe validates semantic navigation, empty-state actions, left history owner, right tabs, 17 `/workspace` states, `/mobile` isolation, and 37/37 interactions. | `workspace-responsive-probe.mjs`, Round 8 execution/test review reports | `autobyteus-web/docs/workspace_layout.md` |
 
 ## No-Impact Decision
 
-No additional changes were required in the architecture index, runtime setup, remote-access, Terminal, agent-integration, Electron packaging, or repository release docs. Their existing guidance remains accurate against the integrated source and current Round 7 validation; this is an explicit no-impact decision, not an omitted review.
+No additional changes were required in the architecture index, README, runtime setup, remote-access, Terminal, agent-integration, Electron packaging, or release documentation. Their existing guidance remains accurate against validated HEAD `3a41ebe5b` and the Round 8 result; this is an explicit no-impact decision, not an omitted review.
 
 ## Delivery Continuation
 
-- Result: `Pass`
-- Next owner: `delivery_engineer`
-- Notes: Latest tracked base was refreshed and already current. Docs sync is complete against the current single-row scrollable tab implementation. API/E2E Round 7 passed with `97.0%` confidence; proportional durable-test review Round 3 passed with no findings. Delivery should update the handoff summary and delivery report, then hold for explicit user verification before archival, final commit/push/merge, release, deployment, or cleanup.
+- Result: `Pass`.
+- Integrated-state result: latest tracked base was refreshed and already current; no additional base-triggered rerun was required.
+- API/E2E Round 8: `Pass`, `97.0%` confidence, 18 states, 37/37 semantic interactions, 17 tab journeys / 119 snapshots, zero failures, zero browser console-error states.
+- Proportional durable-test review Round 4: `Pass`, no findings.
+- Next owner: `delivery_engineer` for handoff hold.
+- Explicit user verification: `Not received`; finalization remains gated on the user-verification signal.
+- Finalization remains gated on explicit user verification before archival, final commit/push/merge, release/deployment, or cleanup.

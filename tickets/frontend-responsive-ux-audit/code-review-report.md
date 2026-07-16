@@ -686,3 +686,86 @@ No unresolved implementation-source findings remain. `CR-004` through `CR-010` a
 - Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation-source review.
 - Recommended Recipient: `api_e2e_engineer`
 - Notes: Route the cumulative package to current API/E2E. This approval does not constitute browser/API/E2E sign-off; if durable tests change during that stage and execution passes, return for proportional test-code review.
+
+## Round 16 Implementation Review — Architecture Round 8 LID-001
+
+### Review Scope And Basis
+
+- Reviewed current `HEAD` `e5b78e9d623bba13d8956dde8b7dee6909b24314` and the updated implementation handoff for LID-001.
+- Rechecked the complete relevant behavior against the requirements, `workspace-responsive-ui-ux-spec.md`, the right-tool UX supplement, Architecture Round 8 approval, and the prior Round 15 source-review result.
+- Reviewed the production delta in `WorkspaceAdaptiveLayout.vue`, the focused adaptive-layout regression additions, and the API/E2E-owned probe additions for downstream readiness. The probe remains outside this source-review decision and has not received API/E2E sign-off.
+- Implementation evidence: focused Nuxt/Vitest `16` files / `73` tests passed; build, `git diff --check`, and probe syntax passed. The existing KaTeX quirks-mode warning remains; no missing router/route warnings were reported.
+
+### Prior Finding Resolution
+
+| Finding | Result | Evidence |
+| --- | --- | --- |
+| `CR-004` through `CR-010` | Remain resolved | The pinned right-tab affordance, composed policy boundary, same-activation actions, drawer lifecycle, short-height preference ordering, and left-shell sizing are not regressed by LID-001. |
+
+### LID-001 Behavior Confirmation
+
+| Contract / behavior | Result | Evidence |
+| --- | --- | --- |
+| Right-tool reopen ownership follows the effective presentation | `Pass` | `showToolsTrigger` is now true only for `rightPanel.presentation === 'drawer'`; docked and strip states do not render the top semantic Tools trigger. |
+| Strip presentation has one direct reopen affordance | `Pass` | The existing `RightSidebarStrip` remains under the `v-else-if` strip branch and emits `request-open` to the owning `openRightDrawer` action. The top trigger is excluded in this state. |
+| Drawer presentation has one semantic Tools affordance | `Pass` | Drawer-only effective presentation renders `WorkspacePrimarySurfaceControls` with the Tools trigger and no right strip; the trigger opens the existing `WorkspaceRightToolDrawer`. |
+| Preference and selected-run ownership remain stable | `Pass` | The change only narrows trigger derivation; it does not alter the composed resolver, panel preference composables, `openRightDrawer`, or selection stores. Focused tests cover strip/drawer reopen and selected-run continuity. |
+| Responsive right-tool and mobile contracts remain intact | `Pass` | No right-tab, catalog, scrolling, panel-toggle, policy, or `/mobile` implementation path changed. Existing focused coverage remains green; the new browser assertions are routed for current API/E2E execution. |
+
+### Material Premise Validation
+
+- The duplicate-affordance state is reachable through supported responsive presentation changes: the resolver can produce `strip` or `drawer`, and the shell renders those effective states. The approved FR-024/FR-032 contract explicitly makes the strip the sole strip-state trigger and permits a top Tools trigger only for drawer-only presentation.
+- The LID-001 source change addresses that reachable contract directly. No speculative lifecycle, fallback, persisted-data, or compatibility mechanism was added.
+
+### Focused Findings
+
+No unresolved implementation-source findings. The source condition is aligned with the approved effective-presentation boundary, and the component regressions cover docked, strip, and drawer exclusivity plus both reopen paths. The durable browser probe additions remain subject to API/E2E execution and later proportional test-code review if retained/changed as durable coverage.
+
+## Review Scorecard (Round 16)
+
+- Overall score (`/10`): `9.6`
+- Overall score (`/100`): `96`
+- Score calculation note: the source-review decision is `Pass`; the small remaining deduction reflects required downstream browser/API/E2E validation, not an implementation-source defect.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.7 | Effective resolver state -> adaptive layout -> strip/drawer or semantic trigger -> right-tool drawer is direct and traceable. | Browser execution is downstream. | Validate the current resize/reopen path in the full matrix. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.7 | Presentation truth belongs to the composed responsive state; strip and drawer retain distinct owners. | No source-level issue remains. | Preserve the single trigger-ownership rule. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.6 | Existing `request-open` and `openRightDrawer` event path is reused without changing interfaces. | Runtime event timing remains downstream evidence. | Verify both paths in browser execution. |
+| `4` | `Separation of Concerns and File Placement` | 9.5 | The fix is a two-line local presentation derivation; no policy or strip logic is duplicated. | `WorkspaceAdaptiveLayout.vue` remains a bounded coordinator. | Keep future affordance decisions at the presentation boundary. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | The resolver state remains the sole effective presentation model. | No source-level issue remains. | Preserve preference/effective-state separation. |
+| `6` | `Naming Quality and Local Readability` | 9.6 | `showToolsTrigger`, `showRightStrip`, and `openRightDrawer` communicate the distinction clearly. | No source-level issue remains. | None beyond normal maintenance. |
+| `7` | `API/E2E Readiness` | 9.1 | Focused component/source regressions, syntax, diff, and build checks pass; probe scenarios are documented. | Current browser/API/E2E validation has not run on this commit. | Route to `api_e2e_engineer`. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.5 | The implementation matches FR-024/FR-032 and preserves the existing drawer/strip event path and selection state. | Live resize/reopen geometry remains unproven. | Run the full current browser matrix. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.7 | No old `!== 'docked'` trigger condition or duplicate compatibility path remains. | No source-level issue remains. | Keep the explicit truth table. |
+| `10` | `Cleanup Completeness` | 9.4 | LID-001 is bounded and handoff traceability is updated. | API/E2E evidence and delivery docs remain outstanding. | Complete downstream validation and handoff. |
+
+## Findings (Round 16)
+
+No unresolved implementation-source findings. LID-001 is resolved in the current source review.
+
+## Classification (Round 16)
+
+- `Pass` — the current implementation makes right-tool reopen ownership mutually exclusive by effective presentation and preserves the approved strip/drawer event and selection paths.
+
+## Recommended Recipient (Round 16)
+
+`api_e2e_engineer`
+
+## Residual Risks (Round 16)
+
+- This is source-review approval only; API/E2E must execute the current state before delivery.
+- The API/E2E-owned durable probe changed in this implementation round and must be reviewed proportionately after a successful execution.
+- Browser validation must confirm the realistic `1280px` docked -> user-hide -> `1024px` strip -> strip reopen -> right drawer path, no strip/top-trigger duplication, current right-tab contract, and `/mobile` isolation.
+- `vue-tsc` remains unavailable; the frontend build is the available build/type confidence check.
+- Deep internal tool responsiveness and packaged Electron/native rendering remain downstream scope boundaries.
+
+## Latest Authoritative Result (Round 16)
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `9.6/10` (`96/100`); no unresolved implementation-source findings remain.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation-source review.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: Route the cumulative package to current API/E2E. This approval does not constitute browser/API/E2E sign-off; if durable tests change during that stage and execution passes, return for proportional test-code review.

@@ -40,6 +40,8 @@ The current branch adds a second navigation hierarchy. `WorkspaceAdaptiveLayout.
 
 The `Work` handler only closes overlays, `Runs` opens `AppLeftPanel`, and `Files`/`Tools` open `WorkspaceRightToolDrawer`. Those handlers expose implementation wiring rather than a coherent user mental model. The target therefore removes the generic row from wide/manual-collapse states, keeps left navigation/history as the selection/run owner, gives narrow states explicit semantic drawer triggers, and replaces the center-only placeholder with actionable empty-state controls. See `workspace-responsive-ui-ux-spec.md` and the live evidence in investigation notes.
 
+The current implementation has a parallel right-surface defect. `WorkspaceAdaptiveLayout.vue` renders `RightSidebarStrip` when the effective right presentation is `strip`, but independently computes `showToolsTrigger` as `rightPanel.presentation !== 'docked'`. A user-collapsed right panel therefore renders both the visible right strip and a top `Tools` button. The strip already is the direct reopen affordance in the personal-branch layout, so this is a local implementation violation of the one-owned-right-surface invariant, not a reason to add another navigation model. The authoritative state must expose or deterministically derive `showRightToolsTrigger = (rightPanel.presentation === 'drawer')`; the strip state must produce `false`.
+
 The app-shell policy has a second design defect: `APP_SHELL_DOCKED_MIN_WIDTH_PX = 1280` currently turns the left panel into a strip for every default-visible viewport below that number. This is too broad for the primary selection surface. The target policy must be capacity- and priority-driven: keep the left panel docked while left navigation plus a practical center fit, move right tools to strip/drawer first, and only then move left navigation to strip/drawer. Manual collapse and automatic responsive presentation remain separate state concepts.
 
 ## Authoritative Composed Responsive-Policy Contract
@@ -134,6 +136,7 @@ interface ResponsiveWorkspaceShellState {
   centerMinWidth: number
   showHeader: boolean
   showGenericSurfaceControls: false
+  showRightToolsTrigger: boolean
   leftPanel: ResponsiveSurfaceState
   rightPanel: ResponsiveSurfaceState
   canOpenLeftDrawer: boolean
@@ -142,6 +145,16 @@ interface ResponsiveWorkspaceShellState {
   showRightStrip: boolean
 }
 ```
+
+`showRightToolsTrigger` is an affordance decision, not a synonym for “right panel is not docked.” Its required truth table is:
+
+| Effective right presentation | Visible right strip | `showRightToolsTrigger` | Reopen owner |
+|---|---:|---:|---|
+| `docked` | No | `false` | Existing fixed panel toggle |
+| `strip` | Yes | `false` | Right strip; clicking a tool opens the right drawer |
+| `drawer` | No | `true` | One semantic `Tools`/`Open tools` trigger |
+
+The implementation may keep this as a pure policy output or use the exact equivalent derived expression in the consuming layout, but it must not use `presentation !== 'docked'`, because that conflates strip and drawer states. The corresponding browser/component invariant is “never render a right strip and a top Tools trigger together.”
 
 `hidden-by-user` is a preference value, not an automatic presentation. A user-collapsed desktop left panel therefore has `leftPanel.preference = 'hidden-by-user'`, `leftPanel.presentation = 'strip'`, and `presentationSource = 'user'`. An automatically adapted left panel has `preference = 'visible'`, `presentation = 'strip'` or `drawer`, and `presentationSource = 'responsive'`. This distinction must remain observable in tests and must not be lost in `layouts/default.vue`.
 
@@ -171,6 +184,8 @@ Pure policy tests must cover at least:
 | Short-height | Height <=480, width >=768 | Right tools yield to drawer/strip before left; left remains docked if horizontal fit permits |
 | Repeated resize | Same preferences across wide -> constrained -> wide | Effective modes change, preferences remain unchanged, wide returns to prior preference |
 
+Right-tool presentation coverage must additionally assert the affordance truth table: docked has no semantic top trigger, strip has a visible strip and no top trigger, and drawer-only has one semantic top trigger and no strip.
+
 ## Intended Change
 
 Replace binary desktop/mobile switching on standard `/workspace` with an adaptive desktop-capability workspace shell governed by one responsive policy owner.
@@ -185,6 +200,7 @@ High-level target:
 - The wide workspace hierarchy is preserved: the left surface owns selection/history, the center is the Work surface, and the right surface owns Files/tools. A generic `Work / Runs / Files / Tools` row is not rendered as a universal replacement or alongside those surfaces.
 - The empty center state exposes direct selection and run/history actions; it does not make the user infer that `Work` or an ambiguous `Runs` button opens the left selection surface.
 - Responsive rules and control ordering are testable through pure policy/catalog functions and component/browser probes.
+- Right-tool reopen ownership is singular: the strip opens the drawer in strip state, while a semantic `Tools` trigger exists only in drawer-only state; no top trigger is added merely because the right panel is not docked.
 - The comprehensive responsive probe matrix becomes an implementation validation target, not only an investigation artifact.
 
 ## Task Design Health Assessment (Mandatory)

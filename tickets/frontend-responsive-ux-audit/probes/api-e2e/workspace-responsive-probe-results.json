@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-16T08:45:40.978Z",
-  "baseUrl": "http://127.0.0.1:13012",
+  "generatedAt": "2026-07-16T10:10:44.912Z",
+  "baseUrl": "http://127.0.0.1:13014",
   "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "viewportCount": 17,
   "result": "Pass",
@@ -21,7 +21,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 390,
         "innerHeight": 844,
@@ -289,7 +289,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 390,
             "innerHeight": 844,
@@ -646,7 +646,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 390,
             "innerHeight": 844,
@@ -913,7 +913,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 390,
             "innerHeight": 844,
@@ -2698,7 +2698,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 390,
         "innerHeight": 640,
@@ -2966,7 +2966,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 390,
             "innerHeight": 640,
@@ -3323,7 +3323,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 390,
             "innerHeight": 640,
@@ -3590,7 +3590,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 390,
             "innerHeight": 640,
@@ -5375,7 +5375,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 500,
         "innerHeight": 700,
@@ -5643,7 +5643,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 500,
             "innerHeight": 700,
@@ -6000,7 +6000,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 500,
             "innerHeight": 700,
@@ -6267,7 +6267,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 500,
             "innerHeight": 700,
@@ -8052,7 +8052,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 500,
         "innerHeight": 420,
@@ -8320,7 +8320,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 500,
             "innerHeight": 420,
@@ -8677,7 +8677,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 500,
             "innerHeight": 420,
@@ -8944,7 +8944,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 500,
             "innerHeight": 420,
@@ -10729,7 +10729,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 639,
         "innerHeight": 700,
@@ -10997,7 +10997,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 639,
             "innerHeight": 700,
@@ -11354,7 +11354,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 639,
             "innerHeight": 700,
@@ -11621,7 +11621,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 639,
             "innerHeight": 700,
@@ -13406,7 +13406,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 640,
         "innerHeight": 700,
@@ -13674,7 +13674,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 640,
             "innerHeight": 700,
@@ -14031,7 +14031,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 640,
             "innerHeight": 700,
@@ -14298,7 +14298,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 640,
             "innerHeight": 700,
@@ -16083,7 +16083,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 700,
         "innerHeight": 700,
@@ -16351,7 +16351,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 700,
             "innerHeight": 700,
@@ -16708,7 +16708,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 700,
             "innerHeight": 700,
@@ -16975,7 +16975,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 700,
             "innerHeight": 700,
@@ -18760,7 +18760,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 767,
         "innerHeight": 700,
@@ -19028,7 +19028,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 767,
             "innerHeight": 700,
@@ -19385,7 +19385,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 767,
             "innerHeight": 700,
@@ -19652,7 +19652,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 767,
             "innerHeight": 700,
@@ -21437,7 +21437,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 768,
         "innerHeight": 700,
@@ -21690,7 +21690,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 768,
             "innerHeight": 700,
@@ -22033,7 +22033,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 768,
             "innerHeight": 700,
@@ -22285,7 +22285,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 768,
             "innerHeight": 700,
@@ -24055,7 +24055,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 800,
         "innerHeight": 700,
@@ -24308,7 +24308,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 800,
             "innerHeight": 700,
@@ -24651,7 +24651,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 800,
             "innerHeight": 700,
@@ -24903,7 +24903,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 800,
             "innerHeight": 700,
@@ -26673,7 +26673,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 800,
         "innerHeight": 420,
@@ -26926,7 +26926,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 800,
             "innerHeight": 420,
@@ -27269,7 +27269,7 @@
           "clicked": true,
           "state": {
             "label": "after-navigation-close",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 800,
             "innerHeight": 420,
@@ -27521,7 +27521,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 800,
             "innerHeight": 420,
@@ -29291,7 +29291,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 900,
         "innerHeight": 700,
@@ -29596,7 +29596,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 900,
             "innerHeight": 700,
@@ -31401,7 +31401,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 1024,
         "innerHeight": 768,
@@ -31706,7 +31706,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 1024,
             "innerHeight": 768,
@@ -33511,7 +33511,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 1024,
         "innerHeight": 480,
@@ -33816,7 +33816,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 1024,
             "innerHeight": 480,
@@ -35621,7 +35621,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 1180,
         "innerHeight": 800,
@@ -35926,7 +35926,7 @@
           "clicked": true,
           "state": {
             "label": "after-tools-trigger",
-            "href": "http://127.0.0.1:13012/workspace",
+            "href": "http://127.0.0.1:13014/workspace",
             "title": "",
             "innerWidth": 1180,
             "innerHeight": 800,
@@ -37731,7 +37731,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 1280,
         "innerHeight": 800,
@@ -39509,7 +39509,634 @@
           }
         }
       },
-      "interactions": [],
+      "interactions": [
+        {
+          "action": "reopen right tools from user-hidden strip",
+          "clicked": true,
+          "state": {
+            "label": "right-strip-reopen-after",
+            "href": "http://127.0.0.1:13014/workspace",
+            "title": "",
+            "innerWidth": 1024,
+            "innerHeight": 768,
+            "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Tools No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+            "mainText": "Tools No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+            "rects": {
+              "header": null,
+              "main": {
+                "selector": "main",
+                "visible": true,
+                "display": "block",
+                "visibility": "visible",
+                "position": "relative",
+                "overflow": "hidden/hidden",
+                "rect": {
+                  "x": 323,
+                  "y": 0,
+                  "width": 701,
+                  "height": 768,
+                  "right": 1024,
+                  "bottom": 768
+                },
+                "text": "Tools No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+                "classes": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+              },
+              "leftAside": {
+                "selector": "aside",
+                "visible": true,
+                "display": "flex",
+                "visibility": "visible",
+                "position": "static",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 768,
+                  "right": 320,
+                  "bottom": 768
+                },
+                "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+                "classes": "inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out static translate-x-0 shadow translate-x-0"
+              },
+              "adaptive": {
+                "selector": "[data-test=\"workspace-adaptive-layout\"]",
+                "visible": true,
+                "display": "flex",
+                "visibility": "visible",
+                "position": "relative",
+                "overflow": "hidden/hidden",
+                "rect": {
+                  "x": 323,
+                  "y": 0,
+                  "width": 701,
+                  "height": 768,
+                  "right": 1024,
+                  "bottom": 768
+                },
+                "text": "Tools No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+                "classes": "flex flex-1 flex-col relative min-h-0 min-w-0 overflow-hidden bg-gray-100"
+              },
+              "oldDesktop": null,
+              "centerPane": {
+                "selector": "[data-test=\"workspace-center-pane\"]",
+                "visible": true,
+                "display": "flex",
+                "visibility": "visible",
+                "position": "static",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 323,
+                  "y": 51,
+                  "width": 701,
+                  "height": 717,
+                  "right": 1024,
+                  "bottom": 768
+                },
+                "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+                "classes": "bg-white p-0 flex flex-col min-h-0 flex-1 min-w-0"
+              },
+              "centerShell": {
+                "selector": "[data-test=\"workspace-center-content-shell\"]",
+                "visible": true,
+                "display": "block",
+                "visibility": "visible",
+                "position": "relative",
+                "overflow": "hidden/hidden",
+                "rect": {
+                  "x": 323,
+                  "y": 51,
+                  "width": 701,
+                  "height": 717,
+                  "right": 1024,
+                  "bottom": 768
+                },
+                "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+                "classes": "relative flex-1 min-h-0 overflow-hidden"
+              },
+              "semanticTriggers": {
+                "selector": "[data-test=\"workspace-semantic-surface-triggers\"]",
+                "visible": true,
+                "display": "flex",
+                "visibility": "visible",
+                "position": "static",
+                "overflow": "auto/auto",
+                "rect": {
+                  "x": 323,
+                  "y": 0,
+                  "width": 701,
+                  "height": 51,
+                  "right": 1024,
+                  "bottom": 51
+                },
+                "text": "Tools",
+                "classes": "flex flex-shrink-0 items-center gap-2 overflow-x-auto border-b border-gray-200 bg-white px-2 py-2"
+              },
+              "legacyGenericSurfaceBar": null,
+              "emptyState": {
+                "selector": "[data-test=\"workspace-empty-state\"]",
+                "visible": true,
+                "display": "flex",
+                "visibility": "visible",
+                "position": "static",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 323,
+                  "y": 51,
+                  "width": 701,
+                  "height": 717,
+                  "right": 1024,
+                  "bottom": 768
+                },
+                "text": "No agent or team run selected Choose an agent or team, or open run history to continue. Choose an agent or team Open runs/history",
+                "classes": "flex h-full items-center justify-center px-4 text-center text-gray-500"
+              },
+              "emptyStateChoose": {
+                "selector": "[data-test=\"workspace-empty-state-choose\"]",
+                "visible": true,
+                "display": "block",
+                "visibility": "visible",
+                "position": "static",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 495,
+                  "y": 427,
+                  "width": 197,
+                  "height": 38,
+                  "right": 692,
+                  "bottom": 465
+                },
+                "text": "Choose an agent or team",
+                "classes": "rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              },
+              "emptyStateRuns": {
+                "selector": "[data-test=\"workspace-empty-state-runs\"]",
+                "visible": true,
+                "display": "block",
+                "visibility": "visible",
+                "position": "static",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 700,
+                  "y": 427,
+                  "width": 152,
+                  "height": 38,
+                  "right": 852,
+                  "bottom": 465
+                },
+                "text": "Open runs/history",
+                "classes": "rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              },
+              "navigationTrigger": null,
+              "toolsTrigger": {
+                "selector": "[data-test=\"workspace-tools-trigger\"]",
+                "visible": true,
+                "display": "block",
+                "visibility": "visible",
+                "position": "static",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 331,
+                  "y": 8,
+                  "width": 61,
+                  "height": 34,
+                  "right": 392,
+                  "bottom": 42
+                },
+                "text": "Tools",
+                "classes": "whitespace-nowrap rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              },
+              "leftNavigationDrawer": null,
+              "leftPanelShell": {
+                "selector": "[data-test=\"app-left-navigation-drawer\"], [data-test=\"app-left-panel-shell\"]",
+                "visible": true,
+                "display": "flex",
+                "visibility": "visible",
+                "position": "static",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 768,
+                  "right": 320,
+                  "bottom": 768
+                },
+                "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+                "classes": "inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out static translate-x-0 shadow translate-x-0"
+              },
+              "leftPanelRunHistory": {
+                "selector": "[data-test=\"app-left-panel-run-history\"]",
+                "visible": true,
+                "display": "block",
+                "visibility": "visible",
+                "position": "static",
+                "overflow": "visible/visible",
+                "rect": {
+                  "x": 0,
+                  "y": 240,
+                  "width": 320,
+                  "height": 476,
+                  "right": 320,
+                  "bottom": 716
+                },
+                "text": "Workspaces Temp Workspace",
+                "classes": "min-h-0 flex-1 border-b border-gray-200 bg-white outline-none"
+              },
+              "rightPanel": null,
+              "rightPanelTabList": null,
+              "rightStrip": null,
+              "rightDrawer": {
+                "selector": "[data-test=\"workspace-right-tool-drawer\"]",
+                "visible": true,
+                "display": "flex",
+                "visibility": "visible",
+                "position": "fixed",
+                "overflow": "hidden/hidden",
+                "rect": {
+                  "x": 574,
+                  "y": 0,
+                  "width": 450,
+                  "height": 768,
+                  "right": 1024,
+                  "bottom": 768
+                },
+                "text": "Files Close tools › Files Terminal Activity Token Artifacts VNC Viewer No workspaces available. Add a workspace to see files. No file selected Select a file from the explorer to view or edit its content.",
+                "classes": "fixed bottom-0 right-0 top-14 z-50 flex max-w-full flex-col overflow-hidden bg-white shadow-2xl sm:max-w-[92vw] md:inset-y-0"
+              },
+              "rightDrawerTabList": {
+                "selector": "[data-test=\"workspace-right-tool-drawer\"] [data-test=\"right-side-tab-list\"]",
+                "visible": true,
+                "display": "flex",
+                "visibility": "visible",
+                "position": "relative",
+                "overflow": "auto/hidden",
+                "rect": {
+                  "x": 574,
+                  "y": 57,
+                  "width": 446,
+                  "height": 49,
+                  "right": 1020,
+                  "bottom": 106
+                },
+                "text": "› Files Terminal Activity Token Artifacts VNC Viewer",
+                "classes": "flex-1 min-w-0 relative flex min-w-0 flex-nowrap items-end overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 bg-white px-1 no-scrollbar"
+              },
+              "panelToggle": null,
+              "mobileShell": null
+            },
+            "visibleState": {
+              "header": false,
+              "main": true,
+              "adaptive": true,
+              "center": true,
+              "rightPanel": false,
+              "semanticTriggers": true,
+              "legacyGenericSurfaceBar": false,
+              "emptyState": true,
+              "navigationTrigger": false,
+              "toolsTrigger": true,
+              "leftNavigationDrawer": false,
+              "leftAside": true,
+              "oldDesktop": false
+            },
+            "labels": {
+              "semanticTriggers": [
+                "Tools"
+              ],
+              "rightPanel": [],
+              "rightStrip": [],
+              "rightDrawer": [
+                "Files",
+                "Terminal",
+                "Activity",
+                "Token",
+                "Artifacts"
+              ],
+              "topVisible": [
+                "Tools",
+                "Close tools",
+                "Agents",
+                "Collapse left panel",
+                "Agent Teams",
+                "Files",
+                "Terminal",
+                "Activity",
+                "Token",
+                "Artifacts",
+                "›",
+                "Skills"
+              ]
+            },
+            "rightPanelTabs": [],
+            "rightDrawerTabs": [
+              {
+                "label": "Files",
+                "name": "files",
+                "visible": true,
+                "rendered": true,
+                "rect": {
+                  "x": 578,
+                  "y": 57,
+                  "width": 74,
+                  "height": 48,
+                  "right": 652,
+                  "bottom": 105
+                },
+                "ariaSelected": "true",
+                "tabIndex": 0,
+                "focused": false,
+                "activeUnderline": true
+              },
+              {
+                "label": "Terminal",
+                "name": "terminal",
+                "visible": true,
+                "rendered": true,
+                "rect": {
+                  "x": 652,
+                  "y": 57,
+                  "width": 103,
+                  "height": 48,
+                  "right": 755,
+                  "bottom": 105
+                },
+                "ariaSelected": "false",
+                "tabIndex": 0,
+                "focused": false,
+                "activeUnderline": false
+              },
+              {
+                "label": "Activity",
+                "name": "progress",
+                "visible": true,
+                "rendered": true,
+                "rect": {
+                  "x": 755,
+                  "y": 57,
+                  "width": 96,
+                  "height": 48,
+                  "right": 851,
+                  "bottom": 105
+                },
+                "ariaSelected": "false",
+                "tabIndex": 0,
+                "focused": false,
+                "activeUnderline": false
+              },
+              {
+                "label": "Token",
+                "name": "usage",
+                "visible": true,
+                "rendered": true,
+                "rect": {
+                  "x": 851,
+                  "y": 57,
+                  "width": 84,
+                  "height": 48,
+                  "right": 935,
+                  "bottom": 105
+                },
+                "ariaSelected": "false",
+                "tabIndex": 0,
+                "focused": false,
+                "activeUnderline": false
+              },
+              {
+                "label": "Artifacts",
+                "name": "artifacts",
+                "visible": true,
+                "rendered": true,
+                "rect": {
+                  "x": 935,
+                  "y": 57,
+                  "width": 104,
+                  "height": 48,
+                  "right": 1039,
+                  "bottom": 105
+                },
+                "ariaSelected": "false",
+                "tabIndex": 0,
+                "focused": false,
+                "activeUnderline": false
+              },
+              {
+                "label": "VNC Viewer",
+                "name": "vnc",
+                "visible": false,
+                "rendered": true,
+                "rect": {
+                  "x": 1039,
+                  "y": 57,
+                  "width": 128,
+                  "height": 48,
+                  "right": 1168,
+                  "bottom": 105
+                },
+                "ariaSelected": "false",
+                "tabIndex": 0,
+                "focused": false,
+                "activeUnderline": false
+              }
+            ],
+            "rightPanelTabList": null,
+            "rightDrawerTabList": {
+              "rect": {
+                "x": 574,
+                "y": 57,
+                "width": 446,
+                "height": 49,
+                "right": 1020,
+                "bottom": 106
+              },
+              "role": "tablist",
+              "ariaLabel": "Workspace tools",
+              "styles": {
+                "flexWrap": "nowrap",
+                "overflowX": "auto",
+                "overflowY": "hidden",
+                "whiteSpace": "nowrap"
+              },
+              "clientWidth": 446,
+              "scrollWidth": 598,
+              "clientHeight": 48,
+              "scrollHeight": 48,
+              "scrollLeft": 0,
+              "maxScrollLeft": 152,
+              "hasHorizontalOverflow": true,
+              "rowTops": [
+                57
+              ],
+              "tabs": [
+                {
+                  "label": "Files",
+                  "name": "files",
+                  "visible": true,
+                  "rendered": true,
+                  "rect": {
+                    "x": 578,
+                    "y": 57,
+                    "width": 74,
+                    "height": 48,
+                    "right": 652,
+                    "bottom": 105
+                  },
+                  "ariaSelected": "true",
+                  "tabIndex": 0,
+                  "focused": false,
+                  "activeUnderline": true
+                },
+                {
+                  "label": "Terminal",
+                  "name": "terminal",
+                  "visible": true,
+                  "rendered": true,
+                  "rect": {
+                    "x": 652,
+                    "y": 57,
+                    "width": 103,
+                    "height": 48,
+                    "right": 755,
+                    "bottom": 105
+                  },
+                  "ariaSelected": "false",
+                  "tabIndex": 0,
+                  "focused": false,
+                  "activeUnderline": false
+                },
+                {
+                  "label": "Activity",
+                  "name": "progress",
+                  "visible": true,
+                  "rendered": true,
+                  "rect": {
+                    "x": 755,
+                    "y": 57,
+                    "width": 96,
+                    "height": 48,
+                    "right": 851,
+                    "bottom": 105
+                  },
+                  "ariaSelected": "false",
+                  "tabIndex": 0,
+                  "focused": false,
+                  "activeUnderline": false
+                },
+                {
+                  "label": "Token",
+                  "name": "usage",
+                  "visible": true,
+                  "rendered": true,
+                  "rect": {
+                    "x": 851,
+                    "y": 57,
+                    "width": 84,
+                    "height": 48,
+                    "right": 935,
+                    "bottom": 105
+                  },
+                  "ariaSelected": "false",
+                  "tabIndex": 0,
+                  "focused": false,
+                  "activeUnderline": false
+                },
+                {
+                  "label": "Artifacts",
+                  "name": "artifacts",
+                  "visible": true,
+                  "rendered": true,
+                  "rect": {
+                    "x": 935,
+                    "y": 57,
+                    "width": 104,
+                    "height": 48,
+                    "right": 1039,
+                    "bottom": 105
+                  },
+                  "ariaSelected": "false",
+                  "tabIndex": 0,
+                  "focused": false,
+                  "activeUnderline": false
+                },
+                {
+                  "label": "VNC Viewer",
+                  "name": "vnc",
+                  "visible": false,
+                  "rendered": true,
+                  "rect": {
+                    "x": 1039,
+                    "y": 57,
+                    "width": 128,
+                    "height": 48,
+                    "right": 1168,
+                    "bottom": 105
+                  },
+                  "ariaSelected": "false",
+                  "tabIndex": 0,
+                  "focused": false,
+                  "activeUnderline": false
+                }
+              ],
+              "leftFade": null,
+              "rightFade": {
+                "visible": true,
+                "rect": {
+                  "x": 976,
+                  "y": 57,
+                  "width": 40,
+                  "height": 48,
+                  "right": 1016,
+                  "bottom": 105
+                },
+                "ariaLabel": "",
+                "title": ""
+              },
+              "leftChevron": null,
+              "rightChevron": {
+                "visible": true,
+                "rect": {
+                  "x": 988,
+                  "y": 67,
+                  "width": 28,
+                  "height": 28,
+                  "right": 1016,
+                  "bottom": 95
+                },
+                "ariaLabel": "Show more tabs",
+                "title": "Show more tabs"
+              }
+            },
+            "panelToggle": null,
+            "leftPanelLayout": {
+              "shell": {
+                "display": "flex",
+                "flexDirection": "column",
+                "minHeight": "auto",
+                "height": 768
+              },
+              "history": {
+                "display": "block",
+                "minHeight": "0px",
+                "flex": "1 1 0%",
+                "height": 476
+              },
+              "scrollOwner": {
+                "overflowY": "auto",
+                "clientHeight": 475,
+                "scrollHeight": 475,
+                "scrollTop": 0
+              }
+            },
+            "reducedMotion": false,
+            "media": {
+              "min640": true,
+              "min768": true,
+              "min1024": true
+            }
+          },
+          "failures": []
+        }
+      ],
       "failures": []
     },
     {
@@ -39527,7 +40154,7 @@
       ],
       "initial": {
         "label": "initial",
-        "href": "http://127.0.0.1:13012/workspace",
+        "href": "http://127.0.0.1:13014/workspace",
         "title": "",
         "innerWidth": 1440,
         "innerHeight": 900,
@@ -41318,7 +41945,7 @@
       "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/mobile-route-390x844.png",
       "initial": {
         "label": "mobile-route",
-        "href": "http://127.0.0.1:13012/mobile",
+        "href": "http://127.0.0.1:13014/mobile",
         "title": "AutoByteus Mobile",
         "innerWidth": 390,
         "innerHeight": 844,

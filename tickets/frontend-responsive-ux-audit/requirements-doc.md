@@ -117,7 +117,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - FR-021: At wide desktop sizes, the standard workspace must preserve the personal-branch hierarchy—left navigation/history, center Work surface, and right tool tabs—and must not show a generic top-level `Work / Runs / Files / Tools` bar.
 - FR-022: At wide sizes, the left panel must remain docked by default and may become the existing strip only after the user activates its collapse affordance. A manual collapse must not cause a new top navigation bar to appear.
 - FR-023: When constrained responsive policy moves the left surface to a strip or drawer, it must provide an explicit semantic navigation/selection affordance for Agents, Agent Teams, workspaces, and run history; an unlabeled or ambiguous `Runs` surface is insufficient.
-- FR-024: When constrained responsive policy moves the right tools out of a docked panel, it must provide an explicit visible `Tools`/equivalent trigger. Files and tools must remain owned by the right tool surface and must not be duplicated as generic top-level controls.
+- FR-024: When constrained responsive policy moves the right tools out of a docked panel, it must provide exactly one visible, accessible reopen affordance. A rendered right-side tool strip is itself that affordance; it must not be accompanied by a duplicate top `Tools` button. A top semantic `Tools`/equivalent trigger is allowed only for a drawer presentation that has no visible right strip. Files and tools must remain owned by the right tool surface and must not be duplicated as generic top-level controls.
 - FR-025: When no agent/team run is selected, the center empty state must provide a clear action to choose an agent/team and a clear action to open/select run history; the user must not need to infer the path from the word `Work`.
 - FR-026: Responsive mode changes must preserve the selected run and must not permanently overwrite the user's wide-layout panel preference merely because a strip/drawer threshold was crossed.
 - FR-027: The standard workspace must not use a generic surface-control row as the universal responsive fallback. If a narrow state needs compact controls, they must be semantic drawer/tool triggers and must not duplicate visible left/right navigation.
@@ -125,6 +125,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - FR-029: The responsive policy must not blanket-collapse the left navigation panel at a broad desktop breakpoint (for example, every viewport below `1280px`). It must use measured layout capacity and surface priority so the original left selection/workspace panel remains docked while the left panel plus a usable center can fit.
 - FR-030: When all surfaces cannot remain docked, the policy must yield the right tool panel before collapsing the left selection/workspace panel, unless the user has explicitly collapsed the left panel or a short-height/narrow state requires a different presentation.
 - FR-031: A single composed responsive-policy boundary must resolve viewport capacity, left/right preferences, effective presentations, presentation sources, mode, and drawer/strip affordances for both the app shell and workspace; shell and workspace components must not independently resolve competing responsive states.
+- FR-032: The effective right presentation must determine its reopen affordance without ambiguity: docked means no external reopen trigger, strip means the strip is the sole direct trigger, and drawer means one semantic `Tools` trigger is rendered when no strip is visible. The standard workspace must never render both a right strip and a top `Tools` trigger for the same state.
 
 - FR-001: `/workspace` must not have any viewport-width band where the route mounts one workspace layout while CSS hides that same mounted layout and no alternative layout is visible.
 - FR-002: `/workspace` must use one authoritative responsive policy for shell/workspace surface presentation instead of independent breakpoint decisions in `pages/workspace.vue`, `WorkspaceDesktopLayout`, `WorkspaceMobileLayout`, and `layouts/default.vue`.
@@ -154,7 +155,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - AC-022: At wide desktop size with the left panel docked, no generic `Work / Runs / Files / Tools` row is rendered; the personal-branch left/center/right hierarchy is visible.
 - AC-023: After manually collapsing the left panel at a wide/full-screen size, the left strip, center work surface, and right-side tabs remain in the original hierarchy and no generic surface row appears.
 - AC-024: In every constrained/narrow state where the left panel is not docked, a clearly named navigation/selection affordance opens or reaches Agents, Agent Teams, workspaces, and run history without clearing the selected run.
-- AC-025: In every state where right tools are not docked, a visible and accessible Tools/equivalent affordance opens the right tool drawer; Files and the full available tool catalog remain reachable through that drawer.
+- AC-025: In every state where right tools are not docked, the user has one visible and accessible reopen path: activating the right strip opens the right tool drawer in strip state, while a semantic `Tools`/equivalent trigger opens it in drawer-only state. Files and the full available tool catalog remain reachable, and no state renders both reopen affordances together.
 - AC-026: With no selected run, the center empty state renders a primary agent/team selection action and a secondary run/history action; clicking each action reaches the existing selection/run path.
 - AC-027: Repeated resizing across wide, constrained, narrow, and short-height states does not introduce a duplicate surface bar, blank center, lost selection, or permanent preference mutation.
 - AC-028: The standard `/workspace` layout does not show a top-level `Work / Runs / Files / Tools` bar merely because the left panel is collapsed or presented as a strip; any compact narrow controls are semantic drawer/tool actions only.
@@ -162,6 +163,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - AC-030: At a large-but-constrained desktop viewport where the left panel plus the practical center width can still fit, the default left panel remains docked and usable; the right tools adapt first to a strip/drawer when necessary. A small reduction from a wide viewport must not immediately replace the left panel with only a vertical icon strip.
 - AC-031: The responsive policy tests and browser matrix demonstrate that left-panel collapse is driven by measured center/left feasibility and surface priority, not a blanket `<1280px` rule; the original desktop selection journey remains available until the layout genuinely requires a drawer/strip.
 - AC-032: Pure policy boundary tests cover the exact fit formula and phase order for wide, large-but-constrained, constrained, narrow, short-height, manual-left-hidden, and repeated-resize inputs, including preference preservation and `presentationSource` distinction.
+- AC-033: Browser/component coverage proves right-tool affordance exclusivity: wide/right-docked has no top `Tools` trigger; full-screen/manual right collapse renders the original right vertical strip with no top `Tools` row; drawer-only states render one semantic `Tools` trigger and no strip; activating either path opens the same right-tool drawer without changing the selected run.
 
 - AC-001: At `700x700` and `760x700`, `/workspace` shows visible workspace controls/content; it does not show only the black app header plus blank gray body.
 - AC-002: At `1440x900`, the current wide desktop layout remains materially unchanged: left panel docked, center workspace visible, and right tools docked by default.
@@ -243,7 +245,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 
 ## Approval Status
 
-Refined from the user's explicit confirmation of the original single-row right-tool tab design and subsequent explicit feedback that the full-screen `Work / Runs / Files / Tools` row and early left-panel auto-collapse are confusing regressions. Both `right-tool-tabs-ux-spec.md` and `workspace-responsive-ui-ux-spec.md` are intended-behavior supplements and require architecture re-review before implementation resumes. Architecture Review Round 6 approved FR-029/FR-030 and AC-030/AC-031 but returned DI-003 because the composed executable policy boundary was underspecified. FR-031/AC-032 and the exact resolver contract are now added. The existing wrapping Local Fix, initial-fit browser assertion, generic four-surface-row behavior, and blanket `<1280px` left collapse are superseded for their respective scopes.
+Refined from the user's explicit confirmation of the original single-row right-tool tab design and subsequent explicit feedback that the full-screen `Work / Runs / Files / Tools` row, duplicate top `Tools` trigger, and early left-panel auto-collapse are confusing regressions. Both `right-tool-tabs-ux-spec.md` and `workspace-responsive-ui-ux-spec.md` are intended-behavior supplements and require architecture re-review before implementation resumes. Architecture Review Round 6 approved FR-029/FR-030 and AC-030/AC-031 but returned DI-003 because the composed executable policy boundary was underspecified. FR-031/AC-032 and the exact resolver contract are now added. This revision adds FR-032/AC-033 to make strip-versus-drawer reopen ownership executable. The existing wrapping Local Fix, initial-fit browser assertion, generic four-surface-row behavior, blanket `<1280px` left collapse, and duplicate right-strip-plus-top-Tools behavior are superseded for their respective scopes.
 
 ## Revised Requirement Coverage
 
@@ -279,6 +281,7 @@ Refined from the user's explicit confirmation of the original single-row right-t
 | FR-029 | UC-001, UC-003, UC-007, UC-010 |
 | FR-030 | UC-003, UC-004, UC-007, UC-010 |
 | FR-031 | UC-001, UC-003, UC-004, UC-005, UC-007, UC-010 |
+| FR-032 | UC-001, UC-002, UC-003, UC-004, UC-005, UC-010 |
 
 | Acceptance Criteria | Scenario Intent |
 | --- | --- |
@@ -293,3 +296,4 @@ Refined from the user's explicit confirmation of the original single-row right-t
 | AC-030 | Large-but-constrained desktop preserves left selection panel and yields right tools first. |
 | AC-031 | Measured threshold and resize-priority validation. |
 | AC-032 | Composed policy formula, phase-order, and preference/source boundary coverage. |
+| AC-033 | Exactly-one right-tool reopen affordance across docked, strip, and drawer presentations. |

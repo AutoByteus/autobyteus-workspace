@@ -397,3 +397,47 @@ Code review Round 4 is the latest authority. It passed the current implementatio
 - Result: `Pass`.
 - API/E2E changed the durable probe at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` to remove stale generic-surface positives and stale constrained-left collapse expectations while retaining the approved right-tool single-row scroll contract.
 - Required next recipient: `code_reviewer` for the separate proportional durable-test review. Do not route directly to delivery.
+
+## Round 9 Coverage Revalidation Addendum
+
+- Investigation date: `2026-07-16`.
+- Current HEAD: `codex/frontend-responsive-ux-audit` / `e5b78e9d623bba13d8956dde8b7dee6909b24314`.
+- Upstream gate: implementation-source review Round 16 `PASS` for Architecture Round 8 LID-001. The top semantic Tools trigger is now drawer-only; docked presentation has no top trigger, and strip presentation leaves the `RightSidebarStrip` as the sole reopen affordance. The implementation preserves the existing strip `request-open` path and selected-run/panel-preference ownership.
+- Coverage validity finding: the current durable probe additions are valid against the approved FR-024/FR-032 truth table. No reconciliation or weakening was required. The probe retains the right-tool single-row/scroll contract and adds a negative mutual-exclusion assertion plus a realistic `1280x800` docked -> user-hide -> `1024x768` strip -> strip click -> drawer reopen journey. Selected-run continuity remains directly covered by the focused `WorkspaceAdaptiveLayout` regression; the live browser fixture remains the deterministic no-selection shell fixture.
+- Required broader validation: `Required`, using the full `17` `/workspace` viewports plus `/mobile`, current headless Chrome, `--fail-on-console-error`, current right-tab contract, semantic trigger behavior, strip/top-trigger mutual exclusion, the realistic strip/drawer reopen path, and `/mobile` isolation.
+- Planned run-owned environment: backend `127.0.0.1:13013`, frontend `127.0.0.1:13014`, isolated data `/tmp/autobyteus-responsive-ux-audit-api-e2e-round9-*`.
+
+## Round 9 Execution Outcome Addendum
+
+- Execution date: `2026-07-16`.
+- Current HEAD: `codex/frontend-responsive-ux-audit` / `e5b78e9d623bba13d8956dde8b7dee6909b24314`.
+- Repository checks passed: the expanded focused Nuxt suite passed `16` files / `86` tests; `pnpm -C autobyteus-server-ts build` passed; probe syntax and `git diff --check` passed. The focused suite emitted only the existing KaTeX quirks-mode warning. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-focused-nuxt-tests.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-server-build.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-probe-checks.log`.
+- Fresh broader validation used the newly built backend on `127.0.0.1:13013`, Nuxt dev on `127.0.0.1:13014` with `BACKEND_NODE_BASE_URL=http://127.0.0.1:13013`, run-owned SQLite data `/tmp/autobyteus-responsive-ux-audit-api-e2e-round9-gkOdwi`, headless Google Chrome, the full `17` `/workspace` viewport matrix plus `/mobile`, and `--fail-on-console-error`. Setup and cleanup evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-runtime-setup.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-backend.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-frontend.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-cleanup-ports.log`.
+- Browser result: `Pass`. The final run completed `18` states (`17` `/workspace` plus `/mobile`), `38/38` semantic/strip/drawer interaction records clicked successfully, `17` right-tab journeys with `119` contract snapshots, `0` failures, and `0` browser console-error states. Current canonical outputs were generated at `2026-07-16T10:10:44.912Z`: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`. Exact output: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-workspace-responsive-probe.log`.
+- LID-001 path passed directly: at `1280x800` the right docked panel toggle was clicked to user-hide it; after resizing to `1024x768`, the right strip was visible with no top Tools trigger; clicking the strip reopened the right drawer, where the single semantic Tools trigger was visible. The interaction completed with no failures and the center remained visible.
+- All current right-tool checks passed: catalog/order `Files -> Terminal -> Activity -> Token -> Artifacts -> VNC Viewer`, one-row/flex-nowrap, native horizontal overflow, boundary fades/chevrons and clickability, active/focused offscreen auto-scroll, ARIA/aria-selected/active underline, fixed-toggle stability, reduced-motion setup, and docked/drawer reachability. VNC was focused/reached but not selected because the deterministic fixture has no external VNC service; Files covered network-safe selection. Focused component coverage directly verifies selected-run continuity across strip and drawer reopen paths.
+- `/mobile` remained isolated and no generic surface row appeared in collected states. The Nuxt log contains the known repeated `#app-manifest` pre-transform warning from the dev environment and backend model-discovery errors for unavailable optional localhost audio/image services; these did not produce browser console errors, GraphQL failures, or probe failures. Created services were stopped and ports `13013`/`13014` verified closed.
+
+### Round 9 Confidence Scorecard
+
+| Confidence Category | Score | Basis | Remaining Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 100% | Current strip/drawer/docked ownership, right-tab, semantic, responsive, and `/mobile` behaviors passed in the approved browser matrix; selected-run continuity is directly covered by focused adaptive-layout tests. | No material uncertainty for the web-equivalent scope; no live selected-run backend fixture was required for the bounded LID-001 path. |
+| Changed-boundary execution directness | 100% | Real current shell and `TabList` rendering were exercised in Chrome across narrow, constrained, short, docked, strip, drawer, wide, and mobile states. | Packaged Electron shell is not directly exercised. |
+| Cross-boundary integration realism and mock gap | 96% | Fresh backend build, isolated SQLite startup, Nuxt dev proxy, Chrome, current resize/reopen path, and console-error enforcement passed. | Deep internal tool workflows remain outside this shell-focused matrix. |
+| Environment, configuration, identity, and fixture fidelity | 95% | Run-owned ports/data, explicit endpoint configuration, deterministic fixture, and cleanup passed. | Optional external model services and VNC service were unavailable; neither is needed for this shell contract. |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | Full viewport matrix, docked->strip->drawer recovery, semantic drawer path, right-tab edge behavior, reduced motion, mobile isolation, startup, and cleanup passed. | Packaged Electron restart/recovery remains out of scope. |
+| User-surface, browser, and desktop-shell confidence | 98% | `18` states, `38/38` interactions, `119` tab contract snapshots, no duplicate strip/top trigger, current order, both boundary directions, and zero browser console-error states passed. | Native packaged shell is not directly exercised. |
+| Durable regression coverage quality and relevance | 95% | The changed probe additions directly encode LID-001 mutual exclusion and strip reopen; focused suite passed `16` files / `86` tests. | Durable probe changes require separate proportional test-code review. |
+
+- Overall Round 9 validation confidence: `97.0%` (simple average of the seven categories).
+- Every critical acceptance criterion directly proven: `Yes` for the web-equivalent browser scope, with selected-run continuity directly covered by focused component execution.
+- Applicable categories below 90%: `None`.
+- Default 95% confidence target met: `Yes`.
+- Broader validation decision: `Required`, executed with `Pass`.
+
+### Round 9 Routing
+
+- Result: `Pass`.
+- The durable probe remains changed in the current implementation round at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`; API/E2E made no additional durable-test source change during this execution.
+- Required next recipient: `code_reviewer` for the separate proportional durable-test review of the current probe. Do not route directly to delivery.

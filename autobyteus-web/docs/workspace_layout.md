@@ -10,29 +10,28 @@ The standard `/workspace` route is a desktop-capability workspace that adapts to
 
 ## App Shell Left Navigation
 
-`layouts/default.vue` owns the outer app shell. It measures the viewport through `useAppShellResponsiveLayout()` and resolves the left navigation presentation in `utils/layout/responsiveLayoutPolicy.ts`:
+`layouts/default.vue` owns the outer app shell. It provides the shared `useResponsiveWorkspaceShell()` state, which composes viewport capacity, left/right panel preferences, preferred widths, effective presentations, and presentation sources through the single `resolveResponsiveWorkspaceShellState()` policy boundary:
 
 - **Docked**: wide desktop space keeps the full left panel visible and resizable.
 - **Strip**: constrained desktop or short-height windows keep the center workspace usable while preserving drawer access to the left panel.
 - **Drawer**: narrow windows use the header menu and drawer surface instead of squeezing the workspace center.
 
+The left surface is a full-height flex column in both docked and drawer presentations. Its bounded content wrapper owns the `AppLeftPanel` scroll region, including the vertically scrollable run-history surface; do not replace that owner with a second shell-level history scroller.
+
 Application-immersive routes still bypass the normal left navigation surfaces.
 
 ## Workspace Center and Right Tools
 
-`WorkspaceAdaptiveLayout.vue` measures its own container through `useWorkspaceResponsiveLayout()` and presents the right tools according to measured space, user visibility preference, and the center-width preservation policy.
+`WorkspaceAdaptiveLayout.vue` consumes the shared composed shell state and presents the right tools according to measured space, user visibility preference, and the center-width preservation policy.
 
 - Wide/enough space: right tools remain docked and resizable.
 - Constrained desktop/tablet space: right tools collapse to a strip or drawer before the center pane falls below its practical minimum.
 - Narrow or short-height space: right tools open as a drawer; the center workspace remains the primary visible surface.
 - The center pane minimum target is defined by `WORKSPACE_CENTER_MIN_WIDTH_PX` in `utils/layout/responsiveLayoutPolicy.ts`.
 
-Primary narrow-surface controls are centralized in `utils/layout/workspaceSurfaceOrder.ts`. Keep the user-facing order stable:
+When constrained presentation hides a side surface, the workspace exposes semantic triggers rather than a generic top-level surface bar. The navigation trigger is labelled `Agents & teams`, the tools trigger is labelled `Tools`, and the structured empty state provides `Choose an agent or team` plus `Open runs/history` actions. These actions open the existing left navigation/history or right-tool surfaces and preserve the selected-run state.
 
-1. Work
-2. Runs
-3. Files
-4. Tools
+Do not reintroduce a positive `Work -> Runs -> Files -> Tools` row. The old generic row is retained only as a negative regression guard in the durable browser probe; Files remains part of the right-tool catalog.
 
 Right-tool order is also centralized there and should remain:
 
@@ -68,8 +67,12 @@ Durable unit/component coverage for this policy lives near the relevant sources:
 - `utils/layout/__tests__/responsiveLayoutPolicy.spec.ts`
 - `utils/layout/__tests__/workspaceSurfaceOrder.spec.ts`
 - `components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts`
+- `components/layout/__tests__/WorkspacePrimarySurfaceControls.spec.ts`
+- `components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
 - `components/layout/__tests__/RightSideTabs.spec.ts`
 - `components/tabs/__tests__/TabList.spec.ts`
+- `layouts/__tests__/default-drawer.spec.ts`
+- `composables/__tests__/useAccessibleDrawer.spec.ts`
 - `tests/e2e/workspace-responsive-probe.mjs`
 - `layouts/__tests__/default.spec.ts`
 

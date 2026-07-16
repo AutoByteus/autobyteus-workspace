@@ -152,3 +152,17 @@ These are design-impact follow-ups recorded in `workspace-responsive-ui-ux-spec.
 ### DI-003 composed policy resolution
 
 Architecture Review Round 6 found that the prior package described measured capacity and right-tools-first priority without defining one executable owner. The revised design now makes `resolveResponsiveWorkspaceShellState` plus `useResponsiveWorkspaceShell` authoritative. The resolver receives viewport dimensions, left/right preferences, and preferred widths; it applies the explicit fit formula and phase order; `layouts/default.vue` provides the result to `WorkspaceAdaptiveLayout`; no second workspace resolver is allowed. Policy coverage must assert the resulting state and `presentationSource` for wide, large-constrained, constrained, narrow, short-height, manual-left-hidden, and repeated-resize cases.
+
+### Right-strip duplicate Tools trigger (2026-07-16)
+
+The user supplied a full-screen comparison showing a second regression after collapsing the right panel: the current build renders the expected right vertical tool strip and an additional top `Tools` button, while the personal branch renders only the strip. Source inspection identifies the exact condition in `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`:
+
+```ts
+const showToolsTrigger = computed(() =>
+  responsiveWorkspaceShellState.value.rightPanel.presentation !== 'docked',
+)
+```
+
+The same template renders `RightSidebarStrip` when `showRightStrip` is true. A user-collapsed right panel has effective presentation `strip`, so both branches are active. The strip already opens the right tool drawer through `RightSidebarStrip.vue`; treating every non-docked state as requiring a top trigger creates two affordances for one surface. The intended correction is `presentation === 'drawer'` (or the equivalent composed-policy output), with tests proving: docked = no top trigger; strip = strip only; drawer-only = one semantic Tools trigger.
+
+This is a local implementation defect, not a reason to change the `/mobile` wrapper or reintroduce the generic `Work / Runs / Files / Tools` row. The requirements/design basis now records this as FR-032/AC-033 and requires architecture re-review before the bounded implementation fix.

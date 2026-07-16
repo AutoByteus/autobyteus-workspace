@@ -43,7 +43,7 @@ When no run is selected, the center must not present only a vague sentence. It m
 
 ### UXI-005 — Right tools remain one owned surface
 
-Files and tools use the existing right tabs in docked mode and the same tab catalog in strip/drawer mode. A second top `Files` or `Tools` navigation is not rendered when the right surface already has a visible tab/header affordance.
+Files and tools use the existing right tabs in docked mode and the same tab catalog in strip/drawer mode. A second top `Files` or `Tools` navigation is not rendered when the right surface already has a visible tab/header affordance. In particular, a visible right strip is the reopen affordance for the right tools; it must not be paired with a second top `Tools` button. A top semantic `Tools` trigger is reserved for a drawer-only state in which no right strip is visible.
 
 ### UXI-006 — Responsive mode changes do not erase user intent
 
@@ -61,9 +61,9 @@ The exact pixel thresholds remain owned by the responsive policy. The following 
 |---|---|---|---|---|---|---|
 | Wide default | Enough width and height for the canonical split | AppLeftPanel docked | Full work surface | RightSideTabs docked | No generic surface bar; normal application header remains hidden as in the personal branch | Left panel navigation; right panel tabs and fixed toggle |
 | Wide with user collapse | User clicked the left-panel collapse affordance | LeftSidebarStrip | Same center position and content | RightSideTabs remains docked when it fits | No generic surface bar | Strip has a clear navigation/expand affordance; right tabs remain directly usable |
-| Large-but-constrained desktop | Full three-pane split no longer fits, but left panel + practical center still fit | AppLeftPanel remains docked | Center remains usable | Right tools yield first to strip/drawer | No `Work / Runs / Files / Tools` bar | Existing left selection/workspace journey remains directly visible |
-| Constrained desktop | Left panel plus practical center no longer fit, or a short/narrow state requires overlay | Left strip or explicit left navigation drawer, depending on available shell space | Center is prioritized and remains usable | Right tabs docked only if they fit; otherwise right strip/drawer | No `Work / Runs / Files / Tools` bar | Clear `Agents & teams`/navigation affordance and clear `Tools` affordance; no duplicate Files/Tools control |
-| Narrow standard workspace | Desktop browser window is below the shell docking threshold | Header hamburger opens AppLeftPanel as a drawer | Center work surface remains mounted | Tools drawer opened by a visible, labeled workspace action; drawer contains the full right tab catalog | No generic four-item surface bar | Hamburger has an accessible navigation name; empty state includes selection/run actions; Tools trigger is visible |
+| Large-but-constrained desktop | Full three-pane split no longer fits, but left panel + practical center still fit | AppLeftPanel remains docked | Center remains usable | Right tools yield first to strip/drawer; strip is the sole reopen affordance when used | No `Work / Runs / Files / Tools` bar and no duplicate top `Tools` button beside a strip | Existing left selection/workspace journey remains directly visible |
+| Constrained desktop | Left panel plus practical center no longer fit, or a short/narrow state requires overlay | Left strip or explicit left navigation drawer, depending on available shell space | Center is prioritized and remains usable | Right tabs docked only if they fit; otherwise right strip/drawer | No `Work / Runs / Files / Tools` bar | Clear `Agents & teams`/navigation affordance; right strip itself is the Tools affordance, while drawer-only state gets one semantic `Tools` trigger |
+| Narrow standard workspace | Desktop browser window is below the shell docking threshold | Header hamburger opens AppLeftPanel as a drawer | Center work surface remains mounted | Tools drawer opened by one visible, labeled workspace action; drawer contains the full right tab catalog | No generic four-item surface bar | Hamburger has an accessible navigation name; empty state includes selection/run actions; exactly one Tools trigger is visible |
 | Short-height window | Height is too small for stable stacked/docked panels | Strip/drawer as needed | Center remains the priority surface | Strip/drawer as needed | No controls that consume a disproportionate vertical band | All hidden surfaces have a visible recovery path; no clipped-only state |
 | `/mobile` route | Phone/PWA route | MobileRemoteAccessShell | Mobile route content | Mobile route content | Owned by mobile product design | No dependency on standard workspace policy |
 
@@ -125,11 +125,11 @@ It creates two competing navigation systems, makes `Work` look selectable while 
 
 ### UJ-005 — Use files and tools in a narrow workspace
 
-1. User sees a visible `Tools`/`Open tools` affordance associated with the center workspace, not a hidden right-edge control.
-2. Activating it opens the existing right tool drawer.
+1. In a drawer-only state, the user sees one visible `Tools`/`Open tools` affordance associated with the center workspace; in a strip state, the right strip is the visible reopen affordance and no top `Tools` button is added.
+2. Activating the available affordance opens the existing right tool drawer.
 3. The drawer uses the same canonical tab catalog and single-row scrolling contract as docked mode.
 4. Files, Team, Terminal, Activity, Token, Artifacts, Browser, and VNC remain reachable when available.
-5. Closing the drawer returns the user to the same center work state.
+5. Closing the drawer returns the user to the same center work state without changing the right preference unexpectedly.
 
 ### UJ-006 — Select an existing run from history
 
@@ -194,6 +194,7 @@ The state must expose both the panel preference (`visible` or `hidden-by-user`) 
 - The drawer title identifies the current tool group (`Files` or `Tools`).
 - The tab row remains one horizontal scrolling row and retains its active underline and fixed toggle only where the toggle is meaningful.
 - The drawer close action returns to the previous center state.
+- A right strip state does not render a second top `Tools` trigger; the strip opens this drawer. A drawer-only state renders exactly one semantic `Tools` trigger.
 
 ## Accessibility and interaction
 
@@ -223,6 +224,7 @@ The implementation and browser validation must cover at least:
 - narrow standard workspace with no selection and with a selected run;
 - empty-state selection and run-history actions;
 - right tools drawer access and tab reachability;
+- right-strip state with no top `Tools` trigger and drawer-only state with exactly one semantic `Tools` trigger;
 - short-height recovery;
 - repeated resize across all states;
 - modest resize from large desktop where the left panel remains docked and right tools yield first;
@@ -238,6 +240,6 @@ These are design consequences for the reviewed package, not permission to patch 
 2. Do not render `WorkspacePrimarySurfaceControls` in wide or manual-left-collapse states. It may be replaced by explicit semantic drawer triggers for narrow states, or decommissioned if the shell/empty-state triggers cover all paths.
 3. Keep the left panel docked by default through large-but-constrained states where left navigation plus a practical center still fit; let right tools yield first. Only the user collapse action changes it in wide/manual-collapse states, and automatic left strip/drawer behavior is limited to genuine center-protection states.
 4. Provide an explicit navigation/selection path when the left panel is in a strip/drawer state; do not rely on the ambiguous `Runs` label.
-5. Provide an explicit right-tools trigger whenever the right tools are not docked; do not depend on an invisible right edge.
+5. Provide exactly one explicit right-tools reopen affordance: the visible right strip opens the drawer in strip state; render a semantic `Tools` trigger only for drawer-only state with no strip. Never render both for one effective state and never depend on an invisible right edge.
 6. Replace the empty center sentence with a structured empty state and actions.
 7. Preserve the existing right-tab work from `right-tool-tabs-ux-spec.md` and restore personal-branch typography/spacing before visual sign-off.
