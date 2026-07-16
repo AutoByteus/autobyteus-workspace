@@ -124,14 +124,8 @@ describe('WorkspaceAdaptiveLayout', () => {
         stubs: {
           RightSideTabs: { template: '<div class="right-tabs-stub"></div>' },
           RightSidebarStrip: {
-            template: '<button data-test="workspace-right-tool-strip" @click="$emit(\'request-open\')">Tools strip</button>',
-          },
-          WorkspacePrimarySurfaceControls: {
-            props: ['showNavigationTrigger', 'showToolsTrigger'],
-            template: `<nav data-test="workspace-semantic-surface-triggers">
-              <button v-if="showNavigationTrigger" data-test="workspace-navigation-trigger" @click="$emit('open-navigation')">Agents &amp; teams</button>
-              <button v-if="showToolsTrigger" data-test="workspace-tools-trigger" @click="$emit('open-tools')">Tools</button>
-            </nav>`,
+            props: ['stripBehavior'],
+            template: '<button data-test="workspace-right-tool-strip" :data-strip-behavior="stripBehavior" @click="$emit(\'request-open\')">Tools strip</button>',
           },
           WorkspaceRightToolDrawer: { template: '<div data-test="workspace-right-tool-drawer"></div>' },
           AgentWorkspaceView: AgentWorkspaceViewValue,
@@ -295,20 +289,15 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(wrapper.find('workspace-center-loading-overlay-stub').exists()).toBe(true);
   });
 
-  it('uses semantic narrow triggers instead of a generic surface row', async () => {
+  it('uses a visible right strip without header or top navigation controls', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'agent', selectedRunId: '123' },
       workspaceCenterView: { mode: 'chat' },
     });
 
-    const controls = wrapper.get('[data-test="workspace-semantic-surface-triggers"]');
-    expect(controls.text()).toContain('Tools');
-    expect(controls.text()).not.toContain('Work');
-    expect(controls.text()).not.toContain('Runs');
-    expect(controls.text()).not.toContain('Files');
-    expect(controls.text()).not.toContain('Running');
-    expect(controls.text()).toContain('Agents & teams');
+    expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="workspace-right-tool-strip"]').attributes('data-strip-behavior')).toBe('overlay');
     expect(wrapper.find('[data-test="workspace-center-content-shell"]').exists()).toBe(true);
   });
 
@@ -327,7 +316,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(false);
   });
 
-  it('switches right tools to the visible strip before using a drawer at constrained widths', async () => {
+  it('switches right tools to a consuming strip before adapting the left panel at constrained widths', async () => {
     setViewport(800, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: '456' },
@@ -335,10 +324,9 @@ describe('WorkspaceAdaptiveLayout', () => {
     });
 
     expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
-    const controls = wrapper.get('[data-test="workspace-semantic-surface-triggers"]');
-    expect(controls.text()).toContain('Agents & teams');
-    expect(wrapper.find('[data-test="workspace-tools-trigger"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
+    expect(wrapper.get('[data-test="workspace-right-tool-strip"]').attributes('data-strip-behavior')).toBe('consuming');
     expect(wrapper.find('[data-test="workspace-center-content-shell"]').exists()).toBe(true);
   });
 
@@ -361,36 +349,42 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-strip');
   });
 
-  it('uses exactly one semantic Tools trigger for a right drawer presentation', async () => {
+  it('uses the overlay right strip as the sole narrow reopen affordance', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: 'run-drawer' },
       workspaceCenterView: { mode: 'chat' },
     });
 
-    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="workspace-tools-trigger"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
+    expect(wrapper.get('[data-test="workspace-right-tool-strip"]').attributes('data-strip-behavior')).toBe('overlay');
+    expect(wrapper.find('[data-test="workspace-tools-trigger"]').exists()).toBe(false);
 
-    await wrapper.get('[data-test="workspace-tools-trigger"]').trigger('click');
+    await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
 
     expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-drawer');
   });
 
-  it('keeps drawer-only Tools trigger ownership separate from the right-strip reopen path', () => {
+  it('keeps right-strip ownership separate from generic surface controls', () => {
     const source = readFileSync(
       resolve(process.cwd(), 'components/layout/WorkspaceAdaptiveLayout.vue'),
       'utf8',
     );
 
-    expect(source).toContain("rightPanel.presentation === 'drawer'");
-    expect(source).not.toContain("rightPanel.presentation !== 'docked'");
+    expect(source).not.toContain('showToolsTrigger');
+    expect(source).not.toContain('showRightToolsTrigger');
+    expect(source).not.toContain('WorkspacePrimarySurfaceControls');
+    expect(source).not.toContain('showNavigationTrigger');
+    expect(source).not.toContain("rightPanel.presentation === 'drawer'");
+    expect(source).not.toContain('openToolsSurface');
     expect(source).toContain('v-else-if="responsiveWorkspaceShellState.showRightStrip"');
     expect(source).toContain('@request-open="openRightDrawer"');
     expect(source).toContain('ref="workspaceFlowRef"');
     expect(source).toContain('new ResizeObserver');
     expect(source).toContain('setRightPanelWorkspaceWidth');
     expect(source).toContain('LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX / 2');
+    expect(source).toContain('stripBehavior');
     expect(source).toContain("responsiveWorkspaceShellState.rightPanel.preferredWidth + 'px'");
     expect(source).toContain('rightPanel.effectiveCenterMinWidth');
     expect(source).not.toContain('responsiveWorkspaceShellState.value.centerMinWidth');
@@ -463,18 +457,17 @@ describe('WorkspaceAdaptiveLayout', () => {
     }
   });
 
-  it('opens constrained navigation and tools while preserving selection', async () => {
-    setViewport(700, 700);
+  it('opens right tools from the strip while preserving selection', async () => {
+    setViewport(800, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: 'run-2' },
       workspaceCenterView: { mode: 'chat' },
     });
 
-    await wrapper.get('[data-test="workspace-navigation-trigger"]').trigger('click');
-    expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(true);
+    expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(false);
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-2');
 
-    await wrapper.get('[data-test="workspace-tools-trigger"]').trigger('click');
+    await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
     expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(true);
     expect((wrapper.vm as any).appLayoutStore.isMobileMenuOpen).toBe(false);
     expect((wrapper.vm as any).selectionStore.selectedRunId).toBe('run-2');

@@ -122,6 +122,7 @@ async function collect(page, label) {
         rect: rect(el),
         text: (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 800),
         classes: el.getAttribute('class') || '',
+        stripBehavior: el.getAttribute('data-strip-behavior') || null,
       };
     };
 
@@ -184,8 +185,8 @@ async function collect(page, label) {
     const emptyStateChoose = document.querySelector('[data-test="workspace-empty-state-choose"]');
     const emptyStateRuns = document.querySelector('[data-test="workspace-empty-state-runs"]');
     const navigationTrigger = document.querySelector('[data-test="workspace-navigation-trigger"]');
-    const toolsTrigger = document.querySelector('[data-test="workspace-tools-trigger"]');
     const leftNavigationDrawer = document.querySelector('[data-test="app-left-navigation-drawer"]');
+    const leftStrip = document.querySelector('[data-test="workspace-left-navigation-strip"]');
     const leftPanelShell = document.querySelector('[data-test="app-left-navigation-drawer"], [data-test="app-left-panel-shell"]');
     const leftPanelRunHistory = document.querySelector('[data-test="app-left-panel-run-history"]');
     const leftHistoryScrollOwner = leftPanelRunHistory?.querySelector('div.h-full.overflow-y-auto');
@@ -273,8 +274,8 @@ async function collect(page, label) {
         emptyStateChoose: elementInfo('[data-test="workspace-empty-state-choose"]'),
         emptyStateRuns: elementInfo('[data-test="workspace-empty-state-runs"]'),
         navigationTrigger: elementInfo('[data-test="workspace-navigation-trigger"]'),
-        toolsTrigger: elementInfo('[data-test="workspace-tools-trigger"]'),
         leftNavigationDrawer: elementInfo('[data-test="app-left-navigation-drawer"]'),
+        leftStrip: elementInfo('[data-test="workspace-left-navigation-strip"]'),
         leftPanelShell: elementInfo('[data-test="app-left-navigation-drawer"], [data-test="app-left-panel-shell"]'),
         leftPanelRunHistory: elementInfo('[data-test="app-left-panel-run-history"]'),
         rightPanel: elementInfo('[data-test="workspace-right-panel"]'),
@@ -295,8 +296,8 @@ async function collect(page, label) {
         legacyGenericSurfaceBar: visible(legacyGenericSurfaceBar),
         emptyState: visible(workspaceEmptyState),
         navigationTrigger: visible(navigationTrigger),
-        toolsTrigger: visible(toolsTrigger),
         leftNavigationDrawer: visible(leftNavigationDrawer),
+        leftStrip: visible(leftStrip),
         leftAside: visible(leftAside),
         oldDesktop: visible(oldDesktop),
       },
@@ -551,17 +552,22 @@ function validateWorkspaceInitial(state, viewport) {
   }
 
   if (width < 768) {
-    if (!state.visibleState.header) failures.push('narrow standard workspace header/menu is not visible');
+    if (state.visibleState.header) failures.push('narrow standard workspace unexpectedly renders a responsive header/menu');
     if (state.visibleState.rightPanel) failures.push('narrow standard workspace unexpectedly keeps right panel docked');
-    if (!state.visibleState.semanticTriggers) failures.push('narrow workspace lacks semantic surface triggers');
-    if (!state.visibleState.navigationTrigger) failures.push('narrow workspace lacks an Agents & teams navigation trigger');
-    if (!state.visibleState.toolsTrigger) failures.push('narrow workspace lacks a Tools trigger');
+    if (state.visibleState.semanticTriggers || state.visibleState.navigationTrigger) failures.push('narrow workspace renders duplicate top navigation controls');
+    if (!state.rects.leftStrip?.visible) failures.push('narrow workspace lacks the left-edge navigation strip');
+    if (state.rects.leftStrip?.stripBehavior !== 'overlay') failures.push('narrow workspace left strip is not an edge overlay');
+    if (!state.rects.rightStrip?.visible) failures.push('narrow workspace lacks the right-edge tools strip');
+    if (state.rects.rightStrip?.stripBehavior !== 'overlay') failures.push('narrow workspace right strip is not an edge overlay');
   }
 
   if (width >= 768 && width <= 900) {
     if (state.visibleState.rightPanel) failures.push('768-900px constrained workspace keeps right panel docked');
-    if (!state.visibleState.toolsTrigger && !state.rects.rightStrip?.visible) {
-      failures.push('768-900px constrained workspace lacks a semantic Tools trigger or right-tool strip');
+    if (!state.rects.rightStrip?.visible) {
+      failures.push('768-900px constrained workspace lacks the right-tool strip');
+    }
+    if (!state.visibleState.leftAside && !state.rects.leftStrip?.visible) {
+      failures.push('768-900px constrained workspace lacks a left navigation surface');
     }
   }
 
@@ -569,7 +575,8 @@ function validateWorkspaceInitial(state, viewport) {
     if (state.visibleState.rightPanel) {
       failures.push('short-height viewport keeps right panel docked instead of drawer/strip recovery');
     }
-    if (!state.visibleState.semanticTriggers && !state.rects.rightStrip?.visible) failures.push('short-height viewport lacks recoverable semantic surface controls');
+    if (!state.rects.leftStrip?.visible && !state.visibleState.leftAside) failures.push('short-height viewport lacks recoverable left navigation access');
+    if (!state.rects.rightStrip?.visible) failures.push('short-height viewport lacks recoverable right tools access');
   }
 
   if (name === 'small-desktop-1024x768') {
@@ -585,10 +592,6 @@ function validateWorkspaceInitial(state, viewport) {
   const visibleTools = [...state.labels.rightPanel, ...state.labels.rightStrip].filter(Boolean);
   if (visibleTools.length > 1 && !orderedSubsequence(visibleTools, CANONICAL_TOOL_ORDER)) {
     failures.push(`visible right-tool order is not canonical: ${visibleTools.join(' -> ')}`);
-  }
-
-  if (state.rects.rightStrip?.visible && state.visibleState.toolsTrigger) {
-    failures.push('right-tool strip and top Tools trigger are both visible');
   }
 
   if (state.visibleState.rightPanel) {
@@ -617,7 +620,6 @@ async function validateRightStripReopenInteraction(page, viewport) {
   const stripState = await collect(page, 'right-strip-reopen-before');
   if (!hidden) failures.push('docked right panel toggle was not clickable for strip reopen validation');
   if (!stripState.rects.rightStrip?.visible) failures.push('user-hidden right panel did not render a right-tool strip');
-  if (stripState.visibleState.toolsTrigger) failures.push('right-tool strip state also rendered a top Tools trigger');
 
   const clicked = await clickFirstButton(page, '[data-test="workspace-right-tool-strip"]');
   await page.waitForTimeout(350);
@@ -625,10 +627,37 @@ async function validateRightStripReopenInteraction(page, viewport) {
   if (!clicked) failures.push('right-tool strip did not expose a clickable reopen control');
   if (!drawerState.rects.rightDrawer?.visible) failures.push('right-tool strip reopen did not open the right tool drawer');
   if (!drawerState.rects.rightStrip?.visible) failures.push('right drawer reopen state lost the strip sole reopen affordance');
-  if (drawerState.visibleState.toolsTrigger) failures.push('right drawer reopen state duplicated the strip with a top Tools trigger');
 
   return {
     action: 'reopen right tools from user-hidden strip',
+    clicked,
+    state: drawerState,
+    failures,
+  };
+}
+
+async function validateLeftStripReopenInteraction(page, viewport) {
+  if (viewport.name !== 'gap-700x700' && viewport.name !== 'tablet-800x700') {
+    return null;
+  }
+
+  const failures = [];
+  const clicked = await clickButtonByTest(page, 'workspace-left-strip-open', '[data-test="workspace-left-navigation-strip"]');
+  await page.waitForTimeout(300);
+  const drawerState = await collect(page, 'left-strip-reopen-after');
+  if (!clicked) failures.push('left navigation strip did not expose a clickable drawer affordance');
+  if (!drawerState.rects.leftNavigationDrawer?.visible) failures.push('left navigation strip did not open the navigation drawer');
+  if (!drawerState.rects.leftStrip?.visible) failures.push('left navigation drawer reopen state lost the left strip affordance');
+  failures.push(...validateLeftPanelLayout(drawerState, 'left navigation drawer'));
+
+  const closed = await clickButtonByTest(page, 'app-left-drawer-close', '[data-test="app-left-navigation-drawer"]');
+  await page.waitForTimeout(200);
+  const closedState = await collect(page, 'left-strip-reopen-close');
+  if (!closed) failures.push('left navigation drawer did not expose its close control');
+  if (closedState.rects.leftNavigationDrawer?.visible) failures.push('left navigation drawer close control did not close the drawer');
+
+  return {
+    action: 'reopen navigation from left strip',
     clicked,
     state: drawerState,
     failures,
@@ -670,7 +699,6 @@ async function validateRightResizeBoundInteraction(page, viewport) {
   const observedWidth = state.rects.rightPanel?.rect?.width ?? 0;
   if (!state.visibleState.rightPanel) failures.push('right-panel resize bound removed the docked right panel');
   if (state.rects.rightStrip?.visible) failures.push('right-panel resize bound rendered a right-tool strip');
-  if (state.visibleState.toolsTrigger) failures.push('right-panel resize bound rendered a semantic Tools trigger');
   if (observedWidth <= beforeWidth) {
     failures.push(`right-panel resize bound did not increase panel width: before ${beforeWidth}px, after ${observedWidth}px`);
   }
@@ -792,31 +820,6 @@ async function validateSemanticSurfaceInteractions(page, initialState) {
     }
   }
 
-  if (initialState.visibleState.toolsTrigger) {
-    const clicked = await clickButtonByTest(page, 'workspace-tools-trigger', semanticRoot);
-    await page.waitForTimeout(300);
-    const afterTools = await collect(page, 'after-tools-trigger');
-    const afterToolsTabValidation = await exerciseTabList(
-      page,
-      '[data-test="workspace-right-tool-drawer"] [data-test="right-side-tab-list"]',
-      afterTools,
-      'drawer',
-    );
-    interactionResults.push({ action: 'open Tools drawer', clicked, state: afterTools, tabValidation: afterToolsTabValidation });
-
-    const closed = await clickButtonByTest(page, 'workspace-right-tool-drawer-close', '[data-test="workspace-right-tool-drawer"]');
-    if (!closed) {
-      const closeByTitle = await page.evaluate(() => {
-        const drawer = document.querySelector('[data-test="workspace-right-tool-drawer"]');
-        const button = drawer?.querySelector('[data-drawer-initial-focus]');
-        if (!button) return false;
-        button.click();
-        return true;
-      });
-      if (closeByTitle) await page.waitForTimeout(200);
-    }
-  }
-
   return interactionResults;
 }
 
@@ -833,11 +836,8 @@ function validateInteractions(interactions) {
     if (interaction.action === 'close Agents & teams navigation' && interaction.state.visibleState.leftNavigationDrawer) {
       failures.push('left navigation drawer close action did not close the drawer');
     }
-    if (interaction.action === 'open Tools drawer') {
-      if (!interaction.state.rects.rightDrawer?.visible) failures.push('Tools trigger did not open the right tool drawer');
-      if (interaction.state.labels.rightDrawer.length > 1 && !orderedSubsequence(interaction.state.labels.rightDrawer, CANONICAL_TOOL_ORDER)) {
-        failures.push(`drawer right-tool order is not canonical: ${interaction.state.labels.rightDrawer.join(' -> ')}`);
-      }
+    if (interaction.action === 'reopen navigation from left strip' && !interaction.state.visibleState.leftNavigationDrawer) {
+      failures.push('left navigation strip did not open the left navigation drawer');
     }
     failures.push(...(interaction.tabValidation?.failures ?? []));
   }
@@ -906,6 +906,11 @@ const run = async () => {
         if (rightStripInteraction) {
           interactions.push(rightStripInteraction);
           pageFailures.push(...rightStripInteraction.failures);
+        }
+        const leftStripInteraction = await validateLeftStripReopenInteraction(page, viewport);
+        if (leftStripInteraction) {
+          interactions.push(leftStripInteraction);
+          pageFailures.push(...leftStripInteraction.failures);
         }
         pageFailures.push(...validateInteractions(interactions));
 

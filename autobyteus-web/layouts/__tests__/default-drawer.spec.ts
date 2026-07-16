@@ -5,8 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import DefaultLayout from '../default.vue'
 
 const routeMock = {
-  path: '/workspace',
-  fullPath: '/workspace',
+  path: '/agents',
+  fullPath: '/agents',
 }
 const routerMock = {
   push: vi.fn(),
@@ -19,6 +19,8 @@ vi.mock('vue-router', () => ({
 
 describe('default layout drawer lifecycle', () => {
   beforeEach(() => {
+    routeMock.path = '/agents'
+    routeMock.fullPath = '/agents'
     Object.defineProperty(window, 'innerWidth', { configurable: true, value: 700 })
     Object.defineProperty(window, 'innerHeight', { configurable: true, value: 700 })
     document.body.innerHTML = ''

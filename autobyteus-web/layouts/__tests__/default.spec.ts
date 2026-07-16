@@ -28,6 +28,24 @@ describe('default layout source', () => {
     expect(content).not.toContain('useAppShellResponsiveLayout')
   })
 
+  it('route-scopes the responsive header suppression to workspace routes', () => {
+    const filePath = resolve(process.cwd(), 'layouts/default.vue')
+    const content = readFileSync(filePath, 'utf-8')
+
+    expect(content).toContain("route.path === '/workspace' || route.path.startsWith('/workspace/')")
+    expect(content).toContain('showResponsiveHeader')
+    expect(content).toContain('responsiveWorkspaceShellState.value.showHeader')
+    expect(content).not.toContain('window.innerWidth')
+    expect(content).not.toContain('WORKSPACE_MD_BREAKPOINT_PX')
+  })
+
+  it('keeps the dedicated mobile route outside the default layout boundary', () => {
+    const mobileContent = readFileSync(resolve(process.cwd(), 'pages/mobile.vue'), 'utf-8')
+
+    expect(mobileContent).toContain('layout: false')
+    expect(mobileContent).toContain('MobileRemoteAccessShell')
+  })
+
 
   it('allows the main workspace shell to shrink next to the left sidebar', () => {
     const filePath = resolve(process.cwd(), 'layouts/default.vue')

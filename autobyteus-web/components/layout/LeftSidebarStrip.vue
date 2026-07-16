@@ -1,5 +1,23 @@
 <template>
-  <div class="flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500">
+  <div
+    data-test="workspace-left-navigation-strip"
+    role="navigation"
+    :aria-label="$t('shell.workspaceSurfaces.navigationDrawerTitle')"
+    :data-strip-behavior="props.stripBehavior"
+    :class="stripClasses"
+  >
+    <button
+      type="button"
+      data-test="workspace-left-strip-open"
+      class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
+      :title="$t('shell.workspaceSurfaces.openNavigation')"
+      :aria-label="$t('shell.workspaceSurfaces.openNavigation')"
+      @click="openNavigationDrawer"
+    >
+      <Icon icon="heroicons:bars-3" class="h-5 w-5" />
+      <span class="sr-only">{{ $t('shell.workspaceSurfaces.openNavigation') }}</span>
+    </button>
+
     <div class="flex flex-col space-y-2">
       <button
         v-for="item in primaryNavItems"
@@ -42,11 +60,11 @@
 import { Icon } from '@iconify/vue';
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
-import { useLeftPanel } from '~/composables/useLeftPanel';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
 import { useResponsiveWorkspaceShellState } from '~/composables/layout/useResponsiveWorkspaceShell';
 import { useShellPrimaryNavigation, type ShellPrimaryNavKey } from '~/composables/useShellPrimaryNavigation';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
+import type { RightStripBehavior } from '~/utils/layout/responsiveLayoutPolicy';
 
 const { t } = useLocalization();
 const {
@@ -59,16 +77,28 @@ const {
 const route = useRoute();
 const router = useRouter();
 const appLayoutStore = useAppLayoutStore();
-const { isLeftPanelVisible, toggleLeftPanel } = useLeftPanel();
 const responsiveWorkspaceShellState = useResponsiveWorkspaceShellState();
+
+const props = withDefaults(defineProps<{
+  stripBehavior?: RightStripBehavior
+}>(), {
+  stripBehavior: 'consuming',
+});
+
+const stripClasses = computed(() => props.stripBehavior === 'overlay'
+  ? 'fixed inset-y-0 left-0 z-40 flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg'
+  : 'flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500');
 
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
 
 const openLeftPanelIfCollapsed = (): void => {
-  if (!isLeftPanelVisible.value) {
-    toggleLeftPanel();
-  } else if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
+  if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
+    appLayoutStore.openMobileMenu();
+  }
+};
+const openNavigationDrawer = (): void => {
+  if (responsiveWorkspaceShellState.value.canOpenLeftDrawer) {
     appLayoutStore.openMobileMenu();
   }
 };

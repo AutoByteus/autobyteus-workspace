@@ -4,12 +4,16 @@ import LeftSidebarStrip from '../LeftSidebarStrip.vue'
 
 const {
   applicationsCapabilityStoreMock,
+  appLayoutStoreMock,
   routeMock,
   routerMock,
 } = vi.hoisted(() => ({
   applicationsCapabilityStoreMock: {
     isEnabled: false,
     ensureResolved: vi.fn().mockResolvedValue(null),
+  },
+  appLayoutStoreMock: {
+    openMobileMenu: vi.fn(),
   },
   routeMock: {
     path: '/agents',
@@ -28,17 +32,14 @@ vi.mock('~/stores/applicationsCapabilityStore', () => ({
   useApplicationsCapabilityStore: () => applicationsCapabilityStoreMock,
 }))
 
-vi.mock('~/composables/useLeftPanel', () => ({
-  useLeftPanel: () => ({
-    isLeftPanelVisible: { value: true },
-    toggleLeftPanel: vi.fn(),
-  }),
+vi.mock('~/stores/appLayoutStore', () => ({
+  useAppLayoutStore: () => appLayoutStoreMock,
 }))
 
 vi.mock('~/composables/layout/useResponsiveWorkspaceShell', () => ({
   useResponsiveWorkspaceShellState: () => ({
     value: {
-      canOpenLeftDrawer: false,
+      canOpenLeftDrawer: true,
     },
   }),
 }))
@@ -47,6 +48,7 @@ describe('LeftSidebarStrip Component', () => {
   beforeEach(() => {
     applicationsCapabilityStoreMock.isEnabled = false
     applicationsCapabilityStoreMock.ensureResolved.mockResolvedValue(null)
+    appLayoutStoreMock.openMobileMenu.mockClear()
     vi.clearAllMocks()
   })
 
@@ -82,6 +84,37 @@ describe('LeftSidebarStrip Component', () => {
     await wrapper.get('button[title="Nodes"]').trigger('click')
 
     expect(routerMock.push).toHaveBeenCalledWith('/nodes')
+  })
+
+  it('opens the transient navigation drawer instead of toggling the hidden preference', async () => {
+    const wrapper = mount(LeftSidebarStrip, {
+      global: {
+        stubs: {
+          Icon: true,
+        },
+      },
+    })
+
+    await wrapper.get('button[title="Agents"]').trigger('click')
+
+    expect(appLayoutStoreMock.openMobileMenu).toHaveBeenCalledOnce()
+    expect(routerMock.push).toHaveBeenCalledWith({ path: '/agents', query: { view: 'list' } })
+  })
+
+  it('exposes a direct strip affordance for the transient navigation drawer', async () => {
+    const wrapper = mount(LeftSidebarStrip, {
+      global: {
+        stubs: {
+          Icon: true,
+        },
+      },
+    })
+
+    await wrapper.get('[data-test="workspace-left-strip-open"]').trigger('click')
+
+    expect(wrapper.get('[data-test="workspace-left-navigation-strip"]').attributes('role')).toBe('navigation')
+    expect(appLayoutStoreMock.openMobileMenu).toHaveBeenCalledOnce()
+    expect(routerMock.push).not.toHaveBeenCalled()
   })
 
   it('shows Applications link when the capability is enabled', () => {

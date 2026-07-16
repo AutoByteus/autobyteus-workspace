@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen h-[100dvh] flex-col">
     <header
-      v-if="!isApplicationImmersive && responsiveWorkspaceShellState.showHeader"
+      v-if="!isApplicationImmersive && showResponsiveHeader"
       class="z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4"
     >
       <div class="flex items-center">
@@ -71,8 +71,8 @@
         @mousedown="initDragLeftPanel"
       ></div>
 
-      <div v-else-if="showLeftStrip" class="hidden md:flex">
-        <LeftSidebarStrip />
+      <div v-else-if="showLeftStrip">
+        <LeftSidebarStrip :strip-behavior="responsiveWorkspaceShellState.leftPanel.stripBehavior ?? 'overlay'" />
       </div>
 
       <main :class="mainContentClasses">
@@ -101,6 +101,17 @@ const { initDragLeftPanel } = useLeftPanel()
 const leftDrawerRef = ref<HTMLElement | null>(null)
 const { responsiveWorkspaceShellState } = useResponsiveWorkspaceShell()
 provide(RESPONSIVE_WORKSPACE_SHELL_KEY, responsiveWorkspaceShellState)
+
+// The standard workspace owns its navigation through the side panel/strip
+// surfaces. Other routes retain the default layout's existing responsive
+// header/navigation behavior. This is intentionally route-only; viewport
+// policy remains exclusively owned by useResponsiveWorkspaceShell().
+const isStandardWorkspaceRoute = computed(
+  () => route.path === '/workspace' || route.path.startsWith('/workspace/'),
+)
+const showResponsiveHeader = computed(
+  () => !isStandardWorkspaceRoute.value && responsiveWorkspaceShellState.value.showHeader,
+)
 
 const isApplicationImmersive = computed(
   () => appLayoutStore.hostShellPresentation === 'application_immersive',
