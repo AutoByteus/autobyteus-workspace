@@ -2,6 +2,18 @@
 
 ## Purpose
 
+### Reading and authority note
+
+This report retains the original live-probe evidence, including early
+candidate recommendations recorded before the workspace UX was reconciled
+with the user's personal-branch desktop journey. Any recommendation in the
+early catalogue or improvement-plan rows that proposes a universal
+`Work / Runs / Files / Tools` row or blanket left-panel collapse is historical
+and superseded. The authoritative target is the refined requirements,
+`design-spec.md`, and `workspace-responsive-ui-ux-spec.md`: preserve the
+left/center/right desktop hierarchy, use measured capacity, yield right tools
+first, and use semantic strips/drawers rather than a generic surface row.
+
 This report records the expanded live investigation requested by the user for the current AutoByteus frontend responsive experience. The goal was not only to confirm the original blank-screen screenshot, but to test the whole `/workspace` responsive surface across phone-width, narrow, breakpoint, tablet, short-height, small-desktop, and wide-desktop sizes; capture the problems; and turn them into a UI improvement plan.
 
 ## Environment / Setup
@@ -66,12 +78,12 @@ Issue flags were derived from visible DOM facts, not from source-code assumption
 | Severity | Problem | Evidence viewports | Current cause / symptom | Design response |
 | --- | --- | --- | --- | --- |
 | P0 | Blank standard `/workspace` at `640-767px` | `threshold-640x700`, `gap-700x700`, `gap-767x700` | Desktop component is mounted but `hidden md:flex` hides it below `768px`; route no longer mounts mobile below `640px` once `min-width:640px` matches. | One adaptive `/workspace` layout; route no longer owns desktop/mobile branching; no root CSS branch can hide the only mounted layout. |
-| P1 | Legacy mobile-tab model below `640px` | `phone-390x844`, `narrow-500x700`, `threshold-639x700` | Visible controls are `Running`, `Agent`, `Running List`, `Configuration`; standard tools are absent. | Narrow standard `/workspace` keeps desktop-capability surfaces with canonical `Work -> Runs -> Files -> Tools` controls. |
+| P1 | Legacy mobile-tab model below `640px` | `phone-390x844`, `narrow-500x700`, `threshold-639x700` | Visible controls are `Running`, `Agent`, `Running List`, `Configuration`; standard tools are absent. | **Superseded early recommendation:** this was initially described as a `Work -> Runs -> Files -> Tools` control target. The approved response is one adaptive standard workspace with semantic navigation and Tools drawer/strip triggers; no generic surface row. |
 | P1 | Center workspace crushed at `768-1024px` | `md-768x700`, `tablet-800x700`, `tablet-900x700`, `small-desktop-1024x768` | Left panel remains `320px` docked and right panel remains docked/clamped, leaving center `200-247px`. | Policy collapses/re-presents side surfaces before center falls below practical target; use strip/drawer/sheet modes. |
 | P1 | Right tool tabs are truncated or unavailable in constrained docked panel | `md-768x700`, `tablet-800x700`, `tablet-900x700` | Only first tabs are readable/reachable in the cramped header; some tools are cut or icon-only. | Right tools share canonical order across docked tabs, rail/strip, and drawer/sheet; all available tools remain reachable. |
 | P1 | Left panel consumes too much width at tablet/small desktop widths | `768-1024px` family | `layouts/default.vue` keeps full `320px` left panel docked at `md+`. | Shell policy has effective left presentation separate from user preference: docked only when space supports it; otherwise strip/drawer. |
 | P2 | Short-height windows keep full docked panes | `800x420`, `1024x480` | Full-height left and right panes remain docked with little vertical recovery; important nav/history/tool controls can be clipped. | Height-aware policy chooses compact/overlay presentations and keeps required controls recoverable. |
-| P2 | Responsive button/control order is accidental | All non-wide modes | Below `640px`, order comes from `WorkspaceMobileLayout`; at `md+`, order comes from right-tab implementation and physical clipping. | Dedicated surface/order catalog with tests: primary surfaces `Work, Runs, Files, Tools`; tools `Files, Team, Terminal, Activity, Artifacts, Browser, VNC`. |
+| P2 | Responsive button/control order is accidental | All non-wide modes | Below `640px`, order comes from `WorkspaceMobileLayout`; at `md+`, order comes from right-tab implementation and physical clipping. | **Superseded early recommendation:** the report previously proposed a primary `Work, Runs, Files, Tools` row. The approved contract preserves desktop ownership (left navigation/history, center Work, right tools) and defines semantic compact triggers; only the right-tool tab order remains canonical: `Files, Team, Terminal, Activity, Artifacts, Browser, VNC`. |
 | P2 | Developer startup docs are stale | Manual setup | `autobyteus-web/README.md` documents `NUXT_PUBLIC_*`, while current Nuxt config uses `BACKEND_*`/dev proxy. | Delivery docs update after implementation or as part of final docs sync. |
 
 ## Key Conclusions
@@ -90,8 +102,8 @@ Issue flags were derived from visible DOM facts, not from source-code assumption
 The target should not be a simple `mobile` vs `desktop` branch. It should be a measured adaptive standard workspace:
 
 - `Wide / full docked`: preserve current good desktop layout when there is enough measured space for left panel, usable center, and right tools. The observed current desktop starts becoming acceptable around `1180px+`, but implementation should derive this from center-width preservation rather than a single viewport constant.
-- `Constrained desktop / tablet`: for roughly `768-1179px` or any measured container where docked side surfaces would crush the center, auto-collapse the left panel to strip/drawer and move right tools to strip/drawer. Center remains the primary surface.
-- `Narrow standard workspace`: below `768px`, still render standard `/workspace` capabilities, not `WorkspaceMobileLayout`. Use primary controls in this order: `Work -> Runs -> Files -> Tools`.
+- `Constrained desktop / tablet`: **Superseded early threshold recommendation:** the earlier draft said to auto-collapse the left panel across roughly `768-1179px`. The approved policy uses measured capacity and right-tools-first yielding: keep left navigation docked while left plus a practical center fit; choose right docked, then right strip, then drawer; adapt the left surface only when necessary.
+- `Narrow standard workspace`: below `768px`, still render standard `/workspace` capabilities, not `WorkspaceMobileLayout`. Do not create a generic `Work -> Runs -> Files -> Tools` row; use clearly named Agents/Agent Teams/navigation and Tools drawer actions, plus direct empty-state selection/history actions.
 - `Short height`: at roughly `<=480px` height, prefer compact/overlay side surfaces and preserve recoverable controls rather than full-height docked side panels.
 - `Phone/PWA`: keep `/mobile` separate and untouched.
 
@@ -99,7 +111,8 @@ The target should not be a simple `mobile` vs `desktop` branch. It should be a m
 
 The canonical order must be explicit and testable:
 
-- Primary surface order: `Work`, `Runs`, `Files`, `Tools`.
+- Desktop surface ownership: left navigation/history selects the agent/team and run; the center owns the Work surface; the right-side tabs own Files and tools. This is not a top-level row and must remain unchanged in wide/manual-collapse states.
+- Compact semantic access: use `Agents & teams`/`Open navigation` and `Tools` triggers only when the measured state requires a strip/drawer; never duplicate visible left/right surfaces with a generic row.
 - Tool order: `Files`, `Team` when applicable, `Terminal`, `Activity`, `Artifacts`, `Browser` when available, `VNC Viewer`.
 - Center header/action priority: identity/status first, primary run/work action next, secondary actions in overflow instead of wrapping into misleading order.
 
@@ -172,3 +185,33 @@ This is a local implementation defect, not a reason to change the `/mobile` wrap
 The user reproduced a second supported-path failure by dragging the docked right-panel divider leftward. The current `useRightPanel.ts` drag handler has only a minimum clamp; it allows `preferredRightPanelWidth` to grow without an available-space maximum. Once that width makes the left-docked/right-docked candidate infeasible, the composed policy selects a right drawer. `WorkspaceAdaptiveLayout.vue` consequently removes the docked right panel and lets the center expand, which appears as the entire right side suddenly disappearing; the top `Tools` trigger can remain as the drawer-only affordance.
 
 The personal branch bounded the actual right width using a measured workspace container. The target must restore an equivalent bound with the approved `480px` center minimum: dragging stops at the maximum center-preserving docked width and does not itself change the effective presentation. Genuine viewport/container resize and explicit panel toggles remain the only presentation-transition paths. This is covered by FR-033/AC-034 and is classified as a local implementation defect against the existing bounded-resize design spine.
+
+### Manual resize range compatibility clarification (2026-07-16)
+
+The first bounded-resize implementation used the automatic `480px` center target as the drag floor. The user confirmed that this is still different from `origin/personal`, where an explicit right-divider drag could reduce the center to approximately `200px` while keeping the right panel docked. The target therefore separates automatic and explicit sizing: automatic responsive adaptation protects `480px`, while a user-sized right panel may use the personal-branch `200px` compact floor. The right panel must remain docked until that applicable floor cannot fit; a divider drag must never itself create the drawer/strip transition. This clarification is covered by FR-034/AC-035 and requires architecture re-review before implementation rework.
+
+### Right-strip-first desktop fallback clarification (2026-07-16)
+
+The current policy can still produce a top `Tools` button when the center becomes narrower because its non-narrow right-first candidates try `right=drawer` before `right=strip`. The user prefers the original desktop right-edge strip: if left navigation, the automatic `480px` center target, and the `50px` right strip fit, the right strip must be selected first. Drawer-only/top Tools is reserved for the case where the strip cannot fit or for narrow layouts. This is covered by FR-035/AC-036 and requires policy-boundary and browser assertions for `docked -> strip -> drawer` ordering.
+
+### DI-006 output/renderer authority clarification (2026-07-16)
+
+Architecture Round 10 found that the lifecycle was specified twice at the
+state boundary: top-level `centerMinWidth`/`rightPanelResizeIntent` fields
+coexisted with nested `rightPanel.effectiveCenterMinWidth`/`resizeIntent`,
+while `WorkspaceAdaptiveLayout.vue` read the top-level center floor. The
+revised design removes the duplicate output fields. The nested `rightPanel`
+fields are authoritative, and the renderer must use
+`rightPanel.effectiveCenterMinWidth` for center styling and dependent dock
+feasibility.
+
+Durable coverage must assert all three policy/render paths:
+
+- automatic: nested effective floor `480px` and intent `automatic`;
+- user override: nested effective floor `200px` and intent `user-sized`;
+- responsive yield: nested effective floor `480px`, mode `responsive-yield`,
+  and retained intent `user-sized`.
+
+Tests must also assert that no duplicate top-level fields are emitted or
+consumed. This closes the state-to-renderer ambiguity without adding another
+responsive policy owner and remains independent of `/mobile`.

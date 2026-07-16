@@ -537,3 +537,81 @@ This is why the user sees the complete right side vanish instead of merely reach
 Restore a container-aware docked resize bound using the approved `480px` practical center minimum and the right resize handle width. `WorkspaceAdaptiveLayout` should register its center-plus-right flow width with `useRightPanel`; the panel owner should expose a bounded actual width; and the composed adapter should pass that bounded width to the policy rather than an unbounded raw drag preference. Dragging beyond the maximum must stop at the bound, keep the right panel docked, keep the center at least `480px`, and not create a strip/drawer/top `Tools` transition. Genuine viewport/container resizing and explicit panel toggles may still change the effective presentation through the composed policy.
 
 This is classified as a **Local Implementation Defect** (`FR-033`/`AC-034`), not a new `/mobile` question or a reason to weaken the measured right-tools-first policy. The user should never need to discover the responsive drawer by accidentally dragging a divider past the center-preserving limit.
+
+## Personal-branch manual resize compatibility clarification (2026-07-16)
+
+### User feedback after the first bounded-resize fix
+
+The first local fix correctly stopped the right panel from disappearing, but the user then reported that the divider no longer moves as far left as it did on `origin/personal`. The current fix clamps the right panel using `WORKSPACE_CENTER_MIN_WIDTH_PX = 480`. The personal branch allowed a deliberate divider drag to leave a much smaller center, down to its historical `MIN_WORKSPACE_CENTER_WIDTH = 200` floor.
+
+This is a meaningful behavior difference, not a mistaken user interaction. The original desktop journey includes an explicit manual sizing capability that must be preserved. The responsive refactor should not silently remove it merely because automatic responsive adaptation needs a larger center target.
+
+### Revised design distinction
+
+The requirements/design basis now distinguishes two modes:
+
+| Mode | How it starts | Center floor | Presentation behavior |
+|---|---|---:|---|
+| `automatic` | Default state and ordinary viewport/container adaptation | `480px` practical target | Policy yields right tools before the center becomes cramped |
+| `user-sized` | User explicitly drags the docked right divider | `200px` personal-branch compact floor | Right panel stays docked while the explicit geometry fits; drag does not create a drawer/strip |
+
+The composed state must carry retained `rightPanelResizeIntent` and separately derived `centerProtectionMode` (`automatic`, `user-override`, or `responsive-yield`). `useRightPanel` owns the raw width preference and bounded actual width; `WorkspaceAdaptiveLayout` supplies the center-plus-right flow measurement; the single composed resolver remains the only owner of effective presentation. A viewport shrink retains `user-sized` intent but reports `responsive-yield` and uses the automatic `480px` target; recovery re-evaluates the retained intent and may return to `user-override` at the `200px` floor. If even the explicit `200px` floor cannot fit, normal strip/drawer adaptation is allowed. This preserves the original manual capability without weakening automatic center protection.
+
+This clarification supersedes the previous interpretation of FR-033/AC-034 that applied the `480px` floor to explicit manual resizing. It is a design-impact follow-up requiring architecture review before the implementation changes the bound again. The `/mobile` route and `components/mobile/*` remain unchanged.
+
+## Output/renderer authority clarification (2026-07-16)
+
+Architecture Round 10 identified a remaining state-shape ambiguity: the
+revised design described both top-level and nested representations for the
+right resize lifecycle, while `WorkspaceAdaptiveLayout.vue` still read the
+top-level `centerMinWidth`. That would allow policy state to report the
+approved `200px` user override while the rendered center continued to enforce
+`480px`.
+
+The revised package removes the duplicate representation rather than
+maintaining aliases. The composed output exposes the lifecycle only under
+`rightPanel`:
+
+- `rightPanel.resizeIntent` is the retained `automatic`/`user-sized` intent;
+- `rightPanel.centerProtectionMode` is the effective
+  `automatic`/`user-override`/`responsive-yield` mode; and
+- `rightPanel.effectiveCenterMinWidth` is the sole current center floor.
+
+`WorkspaceAdaptiveLayout` must consume the nested effective floor for
+`centerPaneStyle`, docked-right feasibility, and dependent width calculations.
+There is no top-level `centerMinWidth` or `rightPanelResizeIntent` output
+field, and no renderer-side mode-to-floor fallback. Policy and component
+assertions must cover automatic (`480px`), user-override (`200px`), and
+responsive-yield (`480px` while retaining `user-sized`) states. This is a
+design-boundary clarification; it does not authorize implementation changes
+until architecture review passes.
+
+## Right-strip-first fallback clarification (2026-07-16)
+
+### User-observed behavior
+
+After the first bounded-resize fix, the user reported a different but related mismatch: when the middle area becomes narrower, the current build sometimes shows a top `Tools` button and removes the right vertical strip. The user explicitly prefers the personal-branch interaction in which the right tools collapse into the stable vertical strip at the right edge, allowing the user to click a tool icon directly. A top Tools action is not the desired desktop fallback.
+
+### Current source cause
+
+The current composed policy's non-narrow right-first candidate order is:
+
+```text
+left=docked, right=docked
+left=docked, right=drawer
+left=docked, right=strip
+```
+
+When docked tools no longer fit, the policy therefore selects `drawer` whenever `left=docked + centerMin + drawer` fits, even if the right strip would be the more discoverable desktop fallback. `WorkspaceAdaptiveLayout.vue` correctly shows a semantic top Tools trigger for drawer-only state, so the visible result is the top Tools button in the supplied screenshot. This is not the earlier `presentation !== 'docked'` duplicate-trigger defect; the current condition is already `presentation === 'drawer'`. The new issue is the policy's fallback priority.
+
+### Revised intended behavior
+
+For non-narrow desktop widths the right presentation priority is now explicitly:
+
+```text
+docked -> strip -> drawer
+```
+
+If left navigation, the practical automatic center target (`480px`), and the `50px` right strip fit, the right strip must be rendered and it is the sole right-tools reopen affordance. The drawer/top Tools trigger is allowed only when that strip candidate cannot fit, or in narrow layouts that intentionally use drawers. This preserves the user's original desktop mental model while still protecting the center and retaining a fallback when even the strip cannot fit.
+
+This is added as FR-035/AC-036 and requires architecture re-review together with the manual resize-mode clarification. It does not change `/mobile`, the right-tab catalog, or the rule that a visible strip and top Tools trigger must never appear together.

@@ -1,7 +1,15 @@
+
+> autobyteus@1.4.14 test:e2e:workspace-responsive /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> node tests/e2e/workspace-responsive-probe.mjs -- --base-url http://127.0.0.1:13022 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error
+
 {
-  "generatedAt": "2026-07-16T13:15:04.788Z",
-  "result": "Pass",
-  "failures": [],
+  "result": "Fail",
+  "jsonPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json",
+  "summaryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json",
+  "failures": [
+    "desktop-1280x800: right-tool strip reopen did not open the right tool drawer",
+    "desktop-1280x800: right drawer reopen state lacks its semantic Tools trigger"
+  ],
   "summary": [
     {
       "viewport": "phone-390x844",
@@ -444,7 +452,10 @@
       "viewport": "desktop-1280x800",
       "route": "/workspace",
       "size": "1280x800",
-      "failures": [],
+      "failures": [
+        "right-tool strip reopen did not open the right tool drawer",
+        "right drawer reopen state lacks its semantic Tools trigger"
+      ],
       "centerRect": {
         "x": 323,
         "y": 0,
@@ -533,3 +544,4 @@
     }
   ]
 }
+ ELIFECYCLE  Command failed with exit code 1.

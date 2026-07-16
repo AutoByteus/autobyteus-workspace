@@ -990,3 +990,91 @@ No unresolved implementation-source findings. LID-001 is resolved in the current
 - Score Summary: `9.6/10` (`96/100`); `CR-011` is resolved and no unresolved implementation-source findings remain.
 - Recommended Recipient: `api_e2e_engineer`
 - Notes: Fresh API/E2E is required on `648dad8a3e6312fd6352fd7dc7600fd4c27fbb1d`. This is not API/E2E or delivery sign-off; if execution passes, return for the separate proportional durable-probe review.
+
+## Round 20 Implementation Review — Architecture Round 12 / DI-006
+
+### Review Scope And Basis
+
+- Reviewed current `HEAD` `4ca4d01530e9e0e72bd63f7ab2cd8846d17d4087` and the current implementation handoff for Architecture Round 12 / DI-006.
+- Rechecked the complete resize/presentation path against `requirements-doc.md`, `investigation-notes.md`, `design-spec.md`, `workspace-responsive-ui-ux-spec.md`, `right-tool-tabs-ux-spec.md`, the Architecture Round 12 design review, and the prior CR-011 source approval.
+- Reviewed the production delta in `responsiveLayoutPolicy.ts`, `useRightPanel.ts`, `useResponsiveWorkspaceShell.ts`, and `WorkspaceAdaptiveLayout.vue`; the corresponding policy, composable, and adaptive-layout regressions; and the durable probe changes for downstream readiness. The probe remains API/E2E-owned and is not covered by this source-review sign-off.
+- Implementation handoff evidence reports `13` focused Nuxt/Vitest files / `75` tests, guards, localization audit, build, diff check, and probe syntax passing. I independently reran the three most affected source suites (`3` files / `40` tests), `git diff --check`, and probe `node --check`; all passed with only the known KaTeX quirks-mode warning.
+- Unrelated pre-existing delivery/documentation modifications and evidence remain excluded from this source review.
+
+### Prior Finding Resolution
+
+| Finding | Result | Evidence |
+| --- | --- | --- |
+| `CR-004` through `CR-010` | Remain resolved | The pinned right-tool affordance layer, single-row scroll contract, composed shell policy, semantic trigger ownership, accessible drawers, short-height preference ordering, and left-shell sizing paths are unchanged by DI-006. |
+| `CR-011` | Remains resolved | The 3px effective left-handle overlap compensation remains in `WorkspaceAdaptiveLayout.vue`; the pure resolver retains the logical 6px left handle and the right resize owner retains the 4px right handle. |
+| `DI-006` / `DI-007` design basis | Applied | The duplicate top-level output aliases are removed, nested right-panel lifecycle fields are emitted, and the renderer consumes the nested effective center floor and resolved width. |
+
+### DI-006 Behavior Confirmation
+
+| Contract / behavior | Result | Evidence |
+| --- | --- | --- |
+| No-alias output shape | `Pass` | `ResponsiveWorkspaceShellState` has no top-level `centerMinWidth` or `rightPanelResizeIntent`; `rightPanel.resizeIntent`, `centerProtectionMode`, and `effectiveCenterMinWidth` are the lifecycle authority. Policy tests assert both nested values and absence of the aliases. |
+| Automatic protection | `Pass` | Automatic/default resolution uses `centerProtectionMode = automatic` and `rightPanel.effectiveCenterMinWidth = 480`; the right-panel owner uses the same 480px floor before an explicit drag. |
+| Explicit user-sized override | `Pass` | After the supported divider interaction, `useRightPanel` retains `user-sized`, bounds actual width against the 200px center floor plus the 4px right handle, and the resolver returns `user-override` / 200px only when the left-docked/right-docked candidate fits. |
+| Responsive yield and recovery | `Pass` | The resolver retains `user-sized` while responsive phases use `responsive-yield` / 480px, then re-evaluates the retained intent and can return to `user-override` / 200px after recovery. Policy, composable, and adaptive-layout tests cover these states. |
+| Single composed policy and renderer authority | `Pass` | `useResponsiveWorkspaceShell` is the only adapter invoking the resolver and supplies bounded `rightPanelWidth` plus intent. `WorkspaceAdaptiveLayout` renders `rightPanel.preferredWidth` and maps center styling directly to `rightPanel.effectiveCenterMinWidth`; it does not calculate a competing floor. |
+| Right-tools-first presentation order | `Pass` | User-sized dock is attempted before responsive phases; when it cannot fit, responsive candidates use the approved docked -> strip -> drawer right-tool order and preserve left-selection priority. The nested state reports drawer-only `showRightToolsTrigger`; the component's exact equivalent `presentation === 'drawer'` derivation preserves the approved truth table. |
+| Preference, lifecycle, and mobile boundaries | `Pass` | Panel preferences are not rewritten by the resolver, measured width is registered/cleared by the local resize adapter, selected-run/right-tool paths remain unchanged, and `/mobile` is untouched. |
+
+### Material Premise Validation
+
+- The explicit divider drag, viewport/container shrink, and recovery paths are supported user journeys already established by FR-033 through FR-036 and the approved design supplement. The implementation's retained-intent and two-floor behavior is therefore reviewed against a reachable contract, not a hypothetical fallback.
+- No persisted schema or migration behavior is introduced. The change preserves existing panel preference and selected-run ownership while changing only effective presentation and sizing state.
+
+### Focused Findings
+
+No unresolved implementation-source findings. The current source applies DI-006 without restoring duplicate aliases, weakening the practical responsive floor, forcing a presentation, or adding a second responsive policy owner. The current durable probe must still receive a fresh API/E2E run on this commit, followed by the separate proportional durable-test review if that run passes.
+
+## Review Scorecard (Round 20)
+
+- Overall score (`/10`): `9.6`
+- Overall score (`/100`): `96`
+- Score calculation note: the source-review decision is `Pass`; the remaining deduction reflects required current browser/API/E2E validation, not an implementation-source defect.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.7 | Retained intent -> bounded actual width -> one resolver -> nested state -> renderer is direct and traceable. | Current live shrink/recovery evidence is downstream. | Execute the current browser lifecycle matrix. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.7 | Policy owns effective presentation; the panel owns preference/bounded gesture state; the layout owns measurement. | No source-level issue remains. | Preserve this single-owner split. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.6 | The input and nested output types make automatic, user-sized, and responsive-yield semantics explicit. | Runtime observer timing remains downstream evidence. | Validate the composed state through browser execution. |
+| `4` | `Separation of Concerns and File Placement` | 9.5 | DI-006 is localized to the policy, panel owner, adapter, and renderer consumer. | `WorkspaceAdaptiveLayout` remains a bounded coordinator. | Keep floor/presentation decisions out of render-local calculations. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.7 | Duplicate aliases are removed and the nested right-panel state has one meaning per field. | No source-level issue remains. | Preserve the no-alias invariant. |
+| `6` | `Naming Quality and Local Readability` | 9.6 | `resizeIntent`, `centerProtectionMode`, `effectiveCenterMinWidth`, and `preferredWidth` distinguish lifecycle roles clearly. | No source-level issue remains. | None beyond normal maintenance. |
+| `7` | `API/E2E Readiness` | 9.1 | Focused source tests, diff check, build/guards, and probe syntax are passing; the durable assertions are aligned for execution. | Fresh browser execution has not run on `4ca4d0153`. | Route to `api_e2e_engineer`. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.5 | The source matches the approved automatic 480px, user override 200px, and responsive-yield 480px lifecycle. | Actual viewport/container transitions remain unproven on this commit. | Run the full matrix and explicit drag/recovery scenarios. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.7 | No alias fallback, second resolver, presentation-forcing workaround, or `/mobile` compatibility path was introduced. | No source-level issue remains. | Keep the clean lifecycle boundary. |
+| `10` | `Cleanup Completeness` | 9.4 | Resize observer cleanup, state handoff traceability, and focused regressions are explicit. | API/E2E and delivery records remain outstanding. | Complete downstream validation and handoff. |
+
+## Findings (Round 20)
+
+No unresolved implementation-source findings. DI-006 is resolved in the current source review.
+
+## Classification (Round 20)
+
+- `Pass` — the implementation applies the reviewed nested right-panel lifecycle and preserves the approved responsive and manual-resize behavior.
+
+## Recommended Recipient (Round 20)
+
+`api_e2e_engineer`
+
+## Residual Risks (Round 20)
+
+- This is implementation-source approval only; it is not API/E2E or delivery sign-off.
+- The updated durable probe must execute against current `HEAD`; if the run passes, it must return for separate proportional durable-test review before delivery.
+- Browser validation must directly prove the automatic/user-sized/responsive-yield transition, wide drag bound, right strip/drawer ownership, right-tab scroll contract, `/mobile` isolation, and cleanup.
+- `vue-tsc` remains unavailable; the frontend build is the available build/type confidence check.
+- Deep internal Terminal/Browser/VNC responsiveness and packaged Electron/native rendering remain downstream scope boundaries.
+
+## Latest Authoritative Result (Round 20 — Canonical End Marker)
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `9.6/10` (`96/100`); no unresolved implementation-source findings remain.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation-source review.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: Route the cumulative package to current API/E2E at `4ca4d01530e9e0e72bd63f7ab2cd8846d17d4087`. If execution passes, return for the separate proportional review of the updated durable probe.

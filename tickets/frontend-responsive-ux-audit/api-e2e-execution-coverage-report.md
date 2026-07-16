@@ -8,15 +8,15 @@
 - Supplemental Task Artifacts: `comprehensive-responsive-ui-test-report.md`, `implementation-live-visual-report.md`, and retained probe JSON/summaries under `probes/`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md` (current source re-review `PASS`, CR-011 resolved; TR-001 test-only local-fix review)
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md` (Round 20 `PASS`, Architecture Round 12 / DI-006)
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
-- Current execution round: `12`
+- Current execution round: `13`
 - Execution date: `2026-07-16`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`
-- Branch / HEAD: `codex/frontend-responsive-ux-audit` / `648dad8a3e6312fd6352fd7dc7600fd4c27fbb1d`
-- Trigger: Proportional durable-test review finding TR-001 required the FR-033 helper to assert measurable drag effect and capacity-derived width stop. The test-only local fix updates the durable probe only; implementation source and approved behavior remain unchanged. The helper now records center-plus-right flow geometry, derives `flow - 3px left-handle overlap - 480px center minimum - 4px right handle`, and compares the post-drag panel width within `1px`, while preserving presentation and center assertions.
+- Branch / HEAD: `codex/frontend-responsive-ux-audit` / `4ca4d01530e9e0e72bd63f7ab2cd8846d17d4087`
+- Trigger: Implementation source review Round 20 `PASS` for Architecture Round 12 / DI-006. The current right-panel lifecycle distinguishes automatic/default 480px protection, user-sized 200px override, and responsive-yield recovery. The updated durable probe executes the wide user-sized bound, genuine shrink/yield, strip reopen, right-tab, semantic, and `/mobile` contracts.
 - Prior round reviewed: Round 4 integrated-state failure at `2c8345545`; current browser evidence supersedes it.
-- Latest authoritative round: `Round 12`, current result `PASS`.
+- Latest authoritative round: `Round 13`, current result `PASS`.
 
 ## Round History
 
@@ -34,6 +34,7 @@
 | 10 | Code-review Round 17 FR-033/AC-034 bounded right-resize implementation | Re-ran focused suite/build, current FR-033 probe, and full matrix with console-error enforcement | Right drag-beyond-bound at 1280x800 and 1440x900 removed docked right presentation and exposed drawer Tools trigger; 1280 strip-reopen assertions then cascaded | `Fail` | Yes | 18 states, 40 interaction records (39 clicked), 2 wide resize failures plus 8 dependent 1280 strip-path failures, 0 browser console-error states; narrow/constrained/mobile states passed. |
 | 11 | Current source re-review `PASS` for CR-011 | Re-ran focused suite/build, current FR-033 probe, and full matrix with console-error enforcement | None | `Pass` | Yes | 18 states, 40/40 interactions, 15 tab-validation records / 105 tab checks, 0 failures, 0 browser console-error states; both wide drag bounds, docked persistence, strip/drawer path, right tabs, semantic contracts, genuine viewport matrix, and `/mobile` passed. |
 | 12 | Proportional durable-test review TR-001 Local Fix | Re-ran focused suite/build, updated probe, and full matrix with console-error enforcement | None | `Pass` | Yes | 18 states, 40/40 interactions, 15 tab-validation records / 105 tab checks, 0 failures, 0 browser console-error states; capacity-derived width stop and measurable drag effect passed at both wide bounds. |
+| 13 | Code-review Round 20 Architecture Round 12 / DI-006 source `PASS` | Re-ran focused suite/build, current lifecycle probe, full matrix, and console-error enforcement; reconciled one stale 1024 user-sized sequence to a genuine 900 responsive-yield transition | None after bounded probe reconciliation | `Pass` | Yes | 18 states, 33/33 interactions, 8 tab-validation records / 56 checks, 0 failures, 0 browser console-error states; user-sized bounds, responsive-yield strip/drawer ownership, right tabs, semantic contracts, and `/mobile` passed. |
 
 ## Investigation And Execution Basis
 
@@ -908,3 +909,78 @@ pnpm -C autobyteus-web test:e2e:workspace-responsive -- \
 - Result: `Pass`.
 - API/E2E made a bounded durable-test-only fix to resolve `TR-001`; no production source changed.
 - Required next recipient: `code_reviewer` for proportional durable-test review of the updated probe. Do not route directly to delivery.
+
+## Round 13 Current-State Execution Addendum (Latest Authoritative)
+
+### Execution Basis
+
+- Upstream source review: Round 20 `PASS` for Architecture Round 12 / DI-006 at current HEAD `4ca4d01530e9e0e72bd63f7ab2cd8846d17d4087`. The approved lifecycle is nested under `rightPanel`: automatic/default uses `480px`, a fitting explicit user-sized dock uses `200px`/`user-override`, and a genuine shrink uses `480px`/`responsive-yield` without erasing retained intent.
+- Current durable probe: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`. It executes the capacity-derived user-sized bound at both wide widths and the current strip/drawer/mobile/right-tab contracts.
+- The first run on this HEAD exposed a stale sequential probe expectation, not a production failure: after an explicit user-sized drag, `1024x768` still fits the `200px` compact floor and correctly remains docked. API/E2E reconciled that bounded journey to `900x700`, where the user-sized dock no longer fits and responsive-yield strip behavior is valid. The updated probe now expects the strip to remain the sole reopen affordance while its click opens the right drawer without duplicating a top Tools trigger. No implementation source, requirements, or design behavior changed.
+
+### Repository Checks
+
+| Command / Check | Result | Evidence |
+| --- | --- | --- |
+| Expanded focused Nuxt/Vitest responsive suite | `Pass`, `16` files / `95` tests | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-focused-nuxt-tests.log` |
+| `pnpm -C autobyteus-server-ts build` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-server-build.log` |
+| `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-probe-checks.log` |
+| `git diff --check` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-probe-checks.log` |
+
+Focused tests emitted only the known KaTeX/module warnings.
+
+### Browser Matrix And Runtime
+
+- First attempt: backend `127.0.0.1:13021`, frontend `127.0.0.1:13022`, exact output `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-workspace-responsive-probe.log`; it failed only the stale `1024x768` strip expectation. First-attempt cleanup: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-first-attempt-cleanup.log`.
+- Authoritative rerun: fresh built backend `127.0.0.1:13023`, Nuxt frontend `127.0.0.1:13024`, `BACKEND_NODE_BASE_URL=http://127.0.0.1:13023`, run-owned SQLite `/tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff`, headless Chrome, all `17` `/workspace` viewports plus `/mobile`, and `--fail-on-console-error`.
+- Command:
+
+```bash
+pnpm -C autobyteus-web test:e2e:workspace-responsive -- \
+  --base-url http://127.0.0.1:13024 \
+  --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e \
+  --fail-on-console-error
+```
+
+- Retry setup and logs: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-retry-runtime-setup.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-retry-backend.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-retry-frontend.log`.
+- Authoritative probe output: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-workspace-responsive-probe-final.log`.
+- Canonical outputs were generated at `2026-07-16T13:15:04.788Z`: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`.
+
+### Browser Result
+
+- Overall result: `Pass`.
+- The authoritative rerun completed all `18` states (`17` `/workspace` plus `/mobile`), `33/33` successful interaction records, `0` failures, and `0` browser console-error states.
+- Wide user-sized bound passed: after the extreme drag, `1280x800` retained a docked right panel at `750px` with center `205px`; `1440x900` retained a docked right panel at `910px` with center `205px`. These match the measured capacity-derived bounds `flow - 3px overlap - 200px user floor - 4px handle` (`750px` and `910px`) and preserve no-strip/no-top-Tools behavior.
+- Genuine responsive-yield path passed: after the user-sized drag and explicit user-hide, transition to `900x700` yielded a right strip with center `527px`; clicking the strip opened the right drawer while preserving the strip as the sole direct reopen affordance and keeping the top Tools trigger absent. The stale `1024x768` expectation was removed because that width still fits the user-sized dock and is correctly docked.
+- Current right-tab and semantic contracts passed: one-row/overflow, directional affordances, active/focus auto-scroll, ARIA semantics, canonical order, fixed-toggle stability, semantic ownership, strip/drawer mutual exclusion, reduced motion, and reachability remained green. The authoritative run recorded `8` tab-validation records / `56` contract checks with no tab-validation failures.
+- `/mobile` remained isolated: `MobileRemoteAccessShell` rendered and standard adaptive workspace did not.
+
+### Cleanup
+
+- Backend session `48786` and frontend session `16210` were stopped with SIGINT.
+- Retry ports `13023` and `13024` were verified closed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round13-retry-cleanup-ports.log`.
+- First-attempt ports `13021` and `13022` were also verified closed. No unrelated service or port was stopped or modified.
+
+### Round 13 Confidence Scorecard
+
+| Confidence Category | Score | Basis | Remaining Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 100% | Current browser execution directly proves automatic wide behavior, user-sized 200px bound, genuine responsive-yield strip/drawer transition, right-tab/semantic/mobile contracts, and cleanup. | No material uncertainty for the ticket's web-equivalent scope. |
+| Changed-boundary execution directness | 100% | Real current policy/composable/adapter/renderer behavior was exercised in Chrome with pointer drag and actual viewport transitions. | Packaged Electron shell is not directly exercised. |
+| Cross-boundary integration realism and mock gap | 96% | Fresh backend build, isolated SQLite, Nuxt dev proxy, explicit endpoints, Chrome, and console-error enforcement passed. | Deep internal tool workflows remain outside this shell-focused matrix. |
+| Environment/configuration/identity/fixture fidelity | 95% | Run-owned ports/data, current build artifact, deterministic fixture, explicit endpoint, and cleanup passed. | No external VNC service or authenticated selected-run fixture was needed for this shell contract. |
+| Failure/edge-case/lifecycle/recovery evidence | 95% | First-run stale test sequence was diagnosed; corrected genuine shrink/yield path passed, along with wide drag, strip/drawer recovery, short heights, mobile isolation, startup, and cleanup. | Packaged Electron restart/recovery remains out of scope. |
+| User-surface/browser/desktop-shell confidence | 98% | `18` states, `33/33` interactions, `8` tab-validation records / `56` checks, current catalog/order, lifecycle transitions, and zero browser console-error states passed. | Native packaged shell is not directly exercised. |
+| Durable regression coverage quality and relevance | 95% | Updated durable probe encodes capacity-derived user-sized bounds and responsive-yield strip/drawer ownership without weakening prior contracts. | The probe changed in this round and requires proportional durable-test review. |
+
+- Overall Round 13 validation confidence: `97.0%` (simple average of the seven categories).
+- Every critical acceptance criterion directly proven: `Yes` for the web-equivalent browser scope.
+- Applicable categories below `90%`: `None`.
+- Default clean-confidence target met: `Yes`.
+- Broader validation decision: `Required`, executed with `Pass` after bounded probe reconciliation.
+
+### Round 13 Routing
+
+- Result: `Pass`.
+- API/E2E made a bounded durable-probe reconciliation only; no production source, requirements, or design behavior changed.
+- Required next recipient: `code_reviewer` for the separate proportional durable-test review of the updated probe. Do not route directly to delivery.

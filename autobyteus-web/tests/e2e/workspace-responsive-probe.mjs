@@ -611,7 +611,7 @@ async function validateRightStripReopenInteraction(page, viewport) {
   const failures = [];
   const hidden = await clickButtonByTest(page, 'right-side-panel-toggle');
   await page.waitForTimeout(250);
-  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.setViewportSize({ width: 900, height: 700 });
   await page.waitForTimeout(300);
 
   const stripState = await collect(page, 'right-strip-reopen-before');
@@ -624,7 +624,8 @@ async function validateRightStripReopenInteraction(page, viewport) {
   const drawerState = await collect(page, 'right-strip-reopen-after');
   if (!clicked) failures.push('right-tool strip did not expose a clickable reopen control');
   if (!drawerState.rects.rightDrawer?.visible) failures.push('right-tool strip reopen did not open the right tool drawer');
-  if (!drawerState.visibleState.toolsTrigger) failures.push('right drawer reopen state lacks its semantic Tools trigger');
+  if (!drawerState.rects.rightStrip?.visible) failures.push('right drawer reopen state lost the strip sole reopen affordance');
+  if (drawerState.visibleState.toolsTrigger) failures.push('right drawer reopen state duplicated the strip with a top Tools trigger');
 
   return {
     action: 'reopen right tools from user-hidden strip',

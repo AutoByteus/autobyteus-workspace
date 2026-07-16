@@ -42,7 +42,7 @@ The `Work` handler only closes overlays, `Runs` opens `AppLeftPanel`, and `Files
 
 The current implementation has a parallel right-surface defect. `WorkspaceAdaptiveLayout.vue` renders `RightSidebarStrip` when the effective right presentation is `strip`, but independently computes `showToolsTrigger` as `rightPanel.presentation !== 'docked'`. A user-collapsed right panel therefore renders both the visible right strip and a top `Tools` button. The strip already is the direct reopen affordance in the personal-branch layout, so this is a local implementation violation of the one-owned-right-surface invariant, not a reason to add another navigation model. The authoritative state must expose or deterministically derive `showRightToolsTrigger = (rightPanel.presentation === 'drawer')`; the strip state must produce `false`.
 
-The current implementation also regressed the original bounded-resize behavior. `useRightPanel.ts` now updates `preferredRightPanelWidth` with only a lower bound, so dragging the right divider left can grow the preferred width beyond the available workspace indefinitely. The current `responsiveLayoutPolicy` then receives that oversized width; once the left-docked/right-docked candidate no longer fits, it chooses a right drawer because the drawer consumes no horizontal width. `WorkspaceAdaptiveLayout.vue` consequently removes the docked right panel and expands the center, which the user experiences as the complete right side suddenly disappearing and a top `Tools` action appearing. The personal branch had a `workspacePanelContainerWidth` measurement and max-width clamp. The adaptive implementation must restore that bounded interaction using the approved `480px` practical center minimum, and it must feed the bounded actual dock width into the composed policy so a drag cannot itself trigger the docked-to-drawer transition.
+The current implementation also regressed the original bounded-resize behavior. `useRightPanel.ts` initially updated `preferredRightPanelWidth` with only a lower bound, so dragging the right divider left could grow the preferred width beyond the available workspace indefinitely. The current implementation now clamps against the approved `480px` center target, which fixes the disappearance but is stricter than the personal branch: the personal branch allowed an explicit user drag to reduce the center to roughly `200px`. The revised design therefore distinguishes automatic responsive protection (`480px`) from a deliberate user-sized right-panel override (`200px`). The adaptive implementation must keep the bounded actual dock width and resize mode in the composed state: an explicit drag can preserve the docked right panel down to the personal-branch compact floor, while automatic viewport adaptation still uses the practical center target and may yield right tools. Neither mode may let the right panel disappear merely because the divider reached its bound.
 
 The app-shell policy has a second design defect: `APP_SHELL_DOCKED_MIN_WIDTH_PX = 1280` currently turns the left panel into a strip for every default-visible viewport below that number. This is too broad for the primary selection surface. The target policy must be capacity- and priority-driven: keep the left panel docked while left navigation plus a practical center fit, move right tools to strip/drawer first, and only then move left navigation to strip/drawer. Manual collapse and automatic responsive presentation remain separate state concepts.
 
@@ -62,7 +62,11 @@ interface ResponsiveWorkspaceShellInput {
   leftPanelPreferredWidth: number | null | undefined
   rightPanelPreference: PanelPreference
   rightPanelPreferredWidth: number | null | undefined
+  rightPanelResizeIntent: RightPanelResizeIntent
 }
+
+type RightPanelResizeIntent = 'automatic' | 'user-sized'
+type CenterProtectionMode = 'automatic' | 'user-override' | 'responsive-yield'
 ```
 
 The adapter obtains `viewportWidth`/`viewportHeight` from the existing SSR-safe `useResponsiveElementRect()` window measurement and obtains the two preferences/widths from `useLeftPanel()` and `useRightPanel()`. No component passes a separately measured “workspace width” to a second resolver. `WorkspaceAdaptiveLayout` may measure its own center-plus-right flow only to provide the bounded dock-resize limit to `useRightPanel`; that measurement is not a competing responsive-policy owner. The policy still receives one composed input and computes center capacity after applying effective side presentations.
@@ -82,6 +86,7 @@ RIGHT_STRIP_WIDTH = 50
 LEFT_RESIZE_HANDLE_WIDTH = 6
 RIGHT_RESIZE_HANDLE_WIDTH = 4
 CENTER_MIN_WIDTH = 480
+USER_RESIZE_CENTER_MIN_WIDTH = 200
 NARROW_WIDTH = 768
 SHORT_HEIGHT = 480
 ```
@@ -108,11 +113,13 @@ The resolver applies these phases in this exact order:
 1. **Normalize preferences and dimensions.** `hidden-by-user` is preserved as preference data; it is never rewritten by the policy.
 2. **Narrow precedence.** If `viewportWidth < NARROW_WIDTH`, use header + left drawer + right tools drawer. No panel is auto-docked, and no generic surface-control row is rendered. The user preference still determines whether the drawer is initially open/closed, not whether the capability exists.
 3. **Manual-left precedence for desktop widths.** If the left preference is `hidden-by-user`, expose the left strip with `presentationSource: 'user'`. Do not reinterpret it as an automatic responsive collapse and do not show a generic surface bar.
-4. **Short-height right-tools yield.** For non-narrow `viewportHeight <= SHORT_HEIGHT`, prefer a right drawer (or the user's right strip if the right preference is hidden) before changing the left presentation. Keep the left panel docked if `fits(leftDocked, rightDrawer)`; otherwise continue to the horizontal fit phases.
-5. **Try the canonical wide split.** With a visible left preference and right visible preference, use `left=docked, right=docked` when `fits(leftDocked, rightDocked)`.
-6. **Yield right tools first.** If the canonical split does not fit, try `left=docked, right=drawer`, then `left=docked, right=strip`. If either fits, keep the left panel docked and classify the result as `large-constrained`.
-7. **Only then adapt the left surface.** If left docked plus the right alternatives do not fit, use `left=strip` or `left=drawer` with `presentationSource: 'responsive'`, then choose right docked only if it fits; otherwise choose right drawer/strip according to available width and height. This is the first phase that may automatically remove the full left selection panel.
-8. **Return explicit effective state.** Include mode, effective left/right presentations, preference values, presentation sources (`user` or `responsive`), consumed widths, center minimum, header/strip/drawer affordance flags, and `showGenericSurfaceControls: false`.
+4. **Honor an explicit user-sized dock before responsive yielding.** For a non-narrow, non-short-height state with `rightPanelResizeIntent = 'user-sized'` and a visible right preference, first test `left=docked, right=docked` with `centerFloor = USER_RESIZE_CENTER_MIN_WIDTH = 200`. If it fits, return `centerProtectionMode = 'user-override'`; this is the preserved personal-branch manual geometry.
+5. **Apply responsive protection without erasing intent.** If the user-sized dock does not fit, or the state is short-height, retain the input intent but use `centerFloor = CENTER_MIN_WIDTH = 480` for responsive phases and return `centerProtectionMode = 'responsive-yield'` whenever a side surface adapts.
+6. **Short-height right-tools yield.** For non-narrow `viewportHeight <= SHORT_HEIGHT`, prefer a right strip where it fits, then a right drawer, before changing the left presentation. Keep the left panel docked if the applicable responsive candidate fits; otherwise continue to the horizontal fit phases.
+7. **Try the canonical wide split.** With a visible left preference and right visible preference, use `left=docked, right=docked` when `fits(leftDocked, rightDocked, centerFloor = 480)`.
+8. **Yield right tools first, preferring the desktop strip.** If the canonical split does not fit, try `left=docked, right=strip`, then `left=docked, right=drawer` with the responsive `480px` floor. If the strip fits, keep the right edge visibly recoverable and classify the result as `large-constrained`; use the drawer only when the strip candidate cannot fit. This ordering prevents a top `Tools` trigger from replacing the stronger desktop strip affordance.
+9. **Only then adapt the left surface.** If left docked plus the right strip/drawer alternatives do not fit, use `left=strip` or `left=drawer` with `presentationSource: 'responsive'`, then choose right docked only if it fits; otherwise prefer right strip before right drawer on non-narrow widths. This is the first phase that may automatically remove the full left selection panel.
+10. **Return explicit effective state.** Include mode, effective left/right presentations, retained resize intent, effective center-protection mode/floor, preference values, presentation sources (`user` or `responsive`), consumed widths, header/strip/drawer affordance flags, and `showGenericSurfaceControls: false`.
 
 ### Output state
 
@@ -129,24 +136,70 @@ interface ResponsiveSurfaceState {
   preferredWidth: number
 }
 
+interface ResponsiveRightPanelState extends ResponsiveSurfaceState {
+  resizeIntent: RightPanelResizeIntent
+  centerProtectionMode: CenterProtectionMode
+  effectiveCenterMinWidth: number
+}
+
 interface ResponsiveWorkspaceShellState {
   viewportWidth: number
   viewportHeight: number
   mode: WorkspaceResponsiveMode
   isNarrow: boolean
   isShortHeight: boolean
-  centerMinWidth: number
   showHeader: boolean
   showGenericSurfaceControls: false
   showRightToolsTrigger: boolean
   leftPanel: ResponsiveSurfaceState
-  rightPanel: ResponsiveSurfaceState
+  rightPanel: ResponsiveRightPanelState
   canOpenLeftDrawer: boolean
   canOpenRightDrawer: boolean
   showLeftStrip: boolean
   showRightStrip: boolean
 }
 ```
+
+#### Output authority and renderer contract
+
+The nested `rightPanel` fields are the sole authoritative output for the
+right-panel resize lifecycle and the effective center floor. The resolved
+shell state deliberately has **no** top-level `centerMinWidth` or
+`rightPanelResizeIntent` aliases. This prevents the shell and workspace
+renderers from reading different values during a user-sized override.
+
+- `rightPanel.resizeIntent` is the retained intent (`automatic` or
+  `user-sized`) carried through viewport/container transitions.
+- `rightPanel.centerProtectionMode` is the effective current policy mode
+  (`automatic`, `user-override`, or `responsive-yield`).
+- `rightPanel.effectiveCenterMinWidth` is the one canonical floor used by
+  renderers and width calculations for the current resolved state: `480px`
+  for `automatic`/`responsive-yield`, `200px` for `user-override`.
+- `rightPanel.preferredWidth` is the normalized right-dock width preference;
+  it is not a second center-floor or resize-intent representation.
+
+`WorkspaceAdaptiveLayout.vue` must map its center sizing directly to
+`responsiveWorkspaceShellState.rightPanel.effectiveCenterMinWidth` for
+`centerPaneStyle`. Its docked-right width and resize-bound calculations must
+use the same canonical effective floor (and the resolved right-panel width),
+never a hard-coded `480px`/`200px` fallback or a top-level alias. The
+`useRightPanel` drag adapter may use the retained intent to constrain the
+in-progress gesture, but after policy resolution the renderer consumes only
+the nested resolved fields. No component may infer the effective floor from
+`presentation`, viewport width, or a second mode calculation.
+
+Required authority assertions are:
+
+| Policy/component state | Canonical output | Renderer assertion |
+| --- | --- | --- |
+| Automatic initial state | `rightPanel.resizeIntent = 'automatic'`, `centerProtectionMode = 'automatic'`, `effectiveCenterMinWidth = 480` | `centerPaneStyle.minWidth` uses `rightPanel.effectiveCenterMinWidth`; no top-level duplicate is read or emitted |
+| Explicit user-sized dock fits | `rightPanel.resizeIntent = 'user-sized'`, `centerProtectionMode = 'user-override'`, `effectiveCenterMinWidth = 200` | Center and docked-right sizing honor `200px`; the right panel remains docked and no strip/top Tools transition is caused by the bound |
+| Responsive yield after shrink | `rightPanel.resizeIntent = 'user-sized'`, `centerProtectionMode = 'responsive-yield'`, `effectiveCenterMinWidth = 480` | Center sizing and dependent dock feasibility honor `480px`; right strip/drawer presentation is rendered without erasing retained intent |
+
+These are output-shape invariants, not optional aliases. Policy tests must
+assert the nested values and absence of duplicate top-level fields; component
+tests must assert that all three effective floors reach the rendered center
+style.
 
 `showRightToolsTrigger` is an affordance decision, not a synonym for “right panel is not docked.” Its required truth table is:
 
@@ -158,6 +211,17 @@ interface ResponsiveWorkspaceShellState {
 
 The implementation may keep this as a pure policy output or use the exact equivalent derived expression in the consuming layout, but it must not use `presentation !== 'docked'`, because that conflates strip and drawer states. The corresponding browser/component invariant is “never render a right strip and a top Tools trigger together.”
 
+`rightPanelResizeIntent` is persistent user intent: it is `automatic` initially and becomes `user-sized` after an explicit right-divider drag. The resolver separately returns `rightPanel.centerProtectionMode`, which describes the effective protection for the current viewport:
+
+| Lifecycle state | Retained `rightPanel.resizeIntent` | Effective `centerProtectionMode` | Effective center floor |
+|---|---|---|---:|
+| Initial/default | `automatic` | `automatic` | `480px` |
+| Post-drag while the requested dock still fits | `user-sized` | `user-override` | `200px` |
+| Viewport shrunk below the user-sized dock capacity | `user-sized` | `responsive-yield` | `480px` for strip/drawer feasibility |
+| Viewport recovered and the user-sized dock fits again | `user-sized` | `user-override` | `200px` |
+
+The resolver never mutates the retained intent when it applies responsive protection. This explicit separation prevents one two-value mode from being mistaken for both user intent and the current effective layout protection.
+
 `hidden-by-user` is a preference value, not an automatic presentation. A user-collapsed desktop left panel therefore has `leftPanel.preference = 'hidden-by-user'`, `leftPanel.presentation = 'strip'`, and `presentationSource = 'user'`. An automatically adapted left panel has `preference = 'visible'`, `presentation = 'strip'` or `drawer`, and `presentationSource = 'responsive'`. This distinction must remain observable in tests and must not be lost in `layouts/default.vue`.
 
 ### Bounded docked-right resize owner
@@ -165,14 +229,25 @@ The implementation may keep this as a pure policy output or use the exact equiva
 `WorkspaceAdaptiveLayout` owns the center-plus-right flow element and registers its current width with `useRightPanel` through a small `ResizeObserver`/cleanup adapter. `useRightPanel` computes:
 
 ```text
+centerFloor = resizeIntent === 'user-sized'
+  ? USER_RESIZE_CENTER_MIN_WIDTH
+  : CENTER_MIN_WIDTH
 maxDockedRightWidth = max(
   0,
-  centerRightFlowWidth - centerMinWidth - rightResizeHandleWidth,
+  centerRightFlowWidth - centerFloor - rightResizeHandleWidth,
 )
 actualRightPanelWidth = clamp(rawPreferredRightWidth, rightPanelMinWidth, maxDockedRightWidth)
 ```
 
-The adapter passes `actualRightPanelWidth`—not an unbounded raw drag preference—as the right-width capacity input to `resolveResponsiveWorkspaceShellState`, and the renderer uses the same bounded value from the resolved state. This preserves one policy owner while ensuring a drag cannot make the policy believe that the docked panel is wider than the current flow can support. The raw preference may be retained for restoration after a genuine viewport/container expansion, but it must never make the current drag transition to drawer/strip. If the flow is too narrow even for a docked right panel, the composed viewport policy may still choose a responsive drawer/strip; that transition is caused by available layout capacity, not by an unbounded divider event.
+The adapter passes `actualRightPanelWidth`—not an unbounded raw drag preference—and `rightPanelResizeIntent` into `resolveResponsiveWorkspaceShellState`. The resolver is parameterized by two floors: `CENTER_MIN_WIDTH = 480` for automatic protection and `USER_RESIZE_CENTER_MIN_WIDTH = 200` for an explicit user-sized dock. Its candidate helper is conceptually `fits(candidate, centerFloor)`, so the lifecycle is deterministic. After resolution, the only renderer-facing floor is `rightPanel.effectiveCenterMinWidth`; the renderer and any dependent dock-width calculation must consume that field rather than re-deriving a floor:
+
+1. On initial/default input, use `centerFloor = 480` and `centerProtectionMode = automatic`.
+2. When a divider drag commits, `useRightPanel` retains `rightPanelResizeIntent = user-sized` and bounds the width against `centerFloor = 200`. If the left-docked/right-docked candidate fits at that floor, return docked with `centerProtectionMode = user-override` and an effective center minimum of `200`.
+3. On viewport/container shrink, keep the input intent and raw width unchanged. First test the user-sized dock at `200`; if it no longer fits, do not erase the intent. Re-run the responsive phases with `centerFloor = 480`, prefer right strip before drawer, and return `centerProtectionMode = responsive-yield` with `presentationSource = responsive`.
+4. On viewport/container recovery, use the retained user-sized input again. If the docked candidate fits at `200`, return to docked/user-override; otherwise remain in the responsive strip/drawer state. No explicit reset of user intent is implied by a temporary responsive transition.
+5. The resolver emits `rightPanel.resizeIntent`, `rightPanel.centerProtectionMode`, and `rightPanel.effectiveCenterMinWidth` together. `WorkspaceAdaptiveLayout` maps `centerPaneStyle.minWidth` and every post-resolution dock-feasibility calculation to `rightPanel.effectiveCenterMinWidth`. There is no top-level `centerMinWidth` or `rightPanelResizeIntent` output field, alias, or fallback calculation.
+
+This preserves one policy owner while distinguishing retained user intent from effective transition protection. A drag cannot make the policy believe that the docked panel is wider than the current flow can support, and a viewport shrink cannot permanently erase the personal-branch sizing choice. If the flow is too narrow even for the applicable floor, the composed policy may still choose a responsive strip/drawer; that transition is caused by available layout capacity, not by an unbounded divider event.
 
 ### Composable and dependency map
 
@@ -194,11 +269,13 @@ Pure policy tests must cover at least:
 | Scenario | Input shape | Required result |
 |---|---|---|
 | Wide default | Large width/height, both preferences visible | Left docked, right docked, no generic controls |
-| Large-but-constrained | Enough for left + center, not left + center + right dock | Left docked, right drawer/strip, source responsive |
-| Constrained | Not enough for left + center even after right yield | Left strip/drawer, right strip/drawer, center minimum preserved |
+| Large-but-constrained | Enough for left + center + right strip, not left + center + right dock | Left docked, right strip, source responsive; no top Tools trigger |
+| Constrained | Not enough for left + center + right strip, but a drawer can preserve center | Left strip/drawer as required, right drawer only when strip cannot fit, center minimum preserved |
 | Manual left collapse | Wide width, left preference hidden-by-user | Left strip, source user; right/center hierarchy unchanged |
 | Narrow | Width below 768, any panel preferences | Header + left drawer + right drawer; no generic controls |
 | Short-height | Height <=480, width >=768 | Right tools yield to drawer/strip before left; left remains docked if horizontal fit permits |
+| User-sized right resize | Wide/constrained width with `rightPanelResizeIntent = 'user-sized'` | Right remains docked while the center is at least 200px; effective center floor records the explicit override; no top Tools trigger or strip appears merely from the drag |
+| User-sized below compact floor | User-sized input cannot preserve 200px center | Right tools re-present through the normal strip/drawer policy; selected run and resize mode remain coherent |
 | Repeated resize | Same preferences across wide -> constrained -> wide | Effective modes change, preferences remain unchanged, wide returns to prior preference |
 
 Right-tool presentation coverage must additionally assert the affordance truth table: docked has no semantic top trigger, strip has a visible strip and no top trigger, and drawer-only has one semantic top trigger and no strip.
@@ -331,8 +408,8 @@ High-level target:
 ## Bounded Local / Internal Spines (If Applicable)
 
 - Parent owner: `useRightPanel`
-  - `drag start -> preferred width update -> clamp against policy maximum -> effective presentation stays docked only if center remains usable`
-  - Matters because width drag should not create unusable center or fight auto-collapse.
+  - `drag start -> user-sized mode -> preferred width update -> clamp against the 200px explicit floor (or 480px automatic floor) -> effective presentation stays docked until the applicable floor cannot fit`
+  - Matters because width drag should preserve the personal-branch compact geometry without creating an accidental drawer transition, while automatic adaptation still protects the larger practical center.
 - Parent owner: `useLeftPanel`
   - `toggle/collapse action -> user preference -> responsive effective mode -> docked/strip/overlay presentation`
   - Matters because constrained auto-collapse must not permanently erase the user's wide desktop choice.
@@ -467,7 +544,7 @@ Mode invariants:
 | `utils/layout/workspaceSurfaceOrder.ts` or equivalent catalog | Workspace surface navigation | Surface ownership/order owner | Defines canonical right-tool order and semantic trigger availability; does not require a generic top-level surface row. | Makes tool ownership/order testable without duplicating left/right navigation. | Uses policy/surface types. |
 | `components/layout/WorkspaceAdaptiveLayout.vue` | Standard workspace layout | Adaptive workspace layout owner | Renders center, right tools, right strip/drawer/sheet, loading overlay, explicit narrow tool triggers, and empty-state actions using policy. | Current `WorkspaceDesktopLayout` responsibility expands beyond desktop without adding duplicate navigation. | Uses existing center/tool components. |
 | `pages/workspace.vue` | Route entry | Thin route facade | Mount adaptive layout and route setup effects only. | Removes breakpoint ownership from route. | N/A |
-| `composables/useRightPanel.ts` | Standard workspace layout | Right panel preference owner | Store user visible/preferred width and combine with responsive effective presentation. | Existing global state owner for right panel. | Uses policy types. |
+| `composables/useRightPanel.ts` | Standard workspace layout | Right panel preference and bounded-resize owner | Store visibility/width preference, expose automatic versus user-sized mode, and clamp actual dock width against measured center/right capacity. | Existing global state owner for right panel; restores personal-branch divider behavior without becoming a responsive policy owner. | Must not independently choose strip/drawer presentation. |
 | `composables/useLeftPanel.ts` | App shell layout | Left panel preference owner | Store user visible/preferred width and combine with shell effective presentation. | Existing global state owner for left panel. | Uses policy types. |
 
 ## Right-Tool Tab Presentation File Responsibilities
@@ -492,7 +569,7 @@ Mode invariants:
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Yes`/`No`) | Redundant Attributes Removed? (`Yes`/`No`) | Parallel / Overlapping Representation Risk (`Low`/`Medium`/`High`) | Corrective Action |
 | --- | --- | --- | --- | --- |
-| `ResponsiveWorkspaceShellState` | Yes | Yes | Low | One composed state includes mode, left/right effective presentations, presentation source, center minimum, and drawer/strip affordances; do not duplicate shell/workspace states. |
+| `ResponsiveWorkspaceShellState` | Yes | Yes | Low | One composed state includes mode, left/right effective presentations, presentation source, and the canonical center floor nested at `rightPanel.effectiveCenterMinWidth`; do not duplicate shell/workspace states or emit top-level aliases. |
 | `PanelPreference` plus `ResponsiveSurfaceState` | Yes | Yes | Low | Preserve `hidden-by-user` preference separately from automatic `strip`/`drawer` presentation and source. |
 | `PanelPresentation` union | Yes | Yes | Low | Use explicit variants such as `docked`, `strip`, `drawer`, `hidden-by-user`; avoid ambiguous `mobile`. |
 
@@ -530,7 +607,7 @@ Mode invariants:
 | --- | --- | --- | --- | --- |
 | `responsiveLayoutPolicy.ts` | Threshold constants, fit formula, phase-ordered composed mode calculation | `useResponsiveWorkspaceShell`, policy tests | Components hard-code `640`, `768`, `1280`, or independent `md:hidden`/`hidden md:flex` branch visibility; shell/workspace resolve separate states | Add explicit composed state output or capacity input to this policy boundary. |
 | `WorkspaceAdaptiveLayout.vue` | Center/right presentation, tool drawer/strip rendering | `pages/workspace.vue` | Route mounts separate desktop/mobile standard workspace components | Add props/state to adaptive layout. |
-| `useRightPanel.ts` | Right panel preference and effective presentation | Right tool renderers | Components compute separate right-panel collapse from raw width | Expose effective presentation and actions. |
+| `useRightPanel.ts` | Right panel preference and bounded resize | Right tool renderers and composed adapter | Components compute separate right-panel collapse from raw width or pass unbounded drag width | Expose bounded actual width and resize mode; effective strip/drawer presentation remains composed-policy-owned. |
 | `useLeftPanel.ts` / shell adapter | Left panel preference and effective presentation | `layouts/default.vue`, `LeftSidebarStrip`, `AppLeftPanel` | Shell CSS alone forces full docked left panel at all `md+` widths | Add explicit shell presentation state. |
 | `/mobile` route | Phone/PWA shell and mobile feature gates | Mobile clients | `/workspace` uses `/mobile` components as fallback | Improve adaptive standard workspace instead. |
 
@@ -619,7 +696,7 @@ Forbidden:
 | Standard route layout | `/workspace.vue -> <WorkspaceAdaptiveLayout />` | `/workspace.vue -> v-if isDesktop ? Desktop : Mobile` | Prevents route/component breakpoint drift. |
 | Narrow surface access | `Agents & teams` / `Open navigation` plus `Tools` semantic drawer triggers and empty-state actions | `Work -> Runs -> Files -> Tools` alongside left/right surfaces, or `Running -> Agent` where `Agent` redirects to `Running` | Keeps ownership understandable and avoids duplicate/ambiguous navigation. |
 | Tool order | `Files -> Team(if team) -> Terminal -> Activity -> Artifacts -> Browser -> VNC` | Different tab/drawer orders per breakpoint | Keeps muscle memory across responsive modes. |
-| Breakpoint/capacity policy | `resolveResponsiveWorkspaceShellState({ viewportWidth: 1024, viewportHeight: 768, leftPanelPreference: 'visible', rightPanelPreference: 'visible', ... }) -> { mode: 'large-constrained', leftPanel: { presentation: 'docked' }, rightPanel: { presentation: 'drawer' } }` | Component A uses `640`, component B uses `md`, component C uses `window.innerWidth < 768`, or shell/workspace resolve independently | Explains one composed owner and right-tools-first phase order. |
+| Breakpoint/capacity policy | `resolveResponsiveWorkspaceShellState({ viewportWidth: 1024, viewportHeight: 768, leftPanelPreference: 'visible', rightPanelPreference: 'visible', rightPanelResizeIntent: 'automatic', ... }) -> { mode: 'large-constrained', leftPanel: { presentation: 'docked' }, rightPanel: { presentation: 'strip', resizeIntent: 'automatic', centerProtectionMode: 'automatic', effectiveCenterMinWidth: 480 }, showRightToolsTrigger: false }` because `320 + 480 + 50 + 6 = 856 <= 1024`; the output has no top-level center-floor or resize-intent aliases | Component A uses `640`, component B uses `md`, component C uses `window.innerWidth < 768`, or shell/workspace resolve independently; or drawer is chosen before a fitting strip; or the renderer reads a top-level duplicate | Explains one composed owner, canonical nested effective-floor authority, and right-tools-first strip priority. |
 | Constrained width | `Left strip + center + right tools drawer/strip` | `320px left + 200px center + 273px right` | Protects center usability. |
 | Mobile boundary | `/mobile -> MobileRemoteAccessShell` | `/workspace -> WorkspaceMobileLayout -> subset tabs` | Keeps phone/PWA product separate. |
 | Responsive validation | Probe `390`, `640`, `700`, `768`, `800`, `900`, `1024`, `1180+`, short-height, and `/mobile` boundary | Validate only `700x700` or only a wide desktop screenshot | Prevents fixing one breakpoint while missing adjacent UX failures. |
