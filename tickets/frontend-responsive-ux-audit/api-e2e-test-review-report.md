@@ -71,3 +71,131 @@ Implementation-source size thresholds, architecture score categories, and forced
 - Final validation confidence: `97.0%`.
 - Recommended recipient: `delivery_engineer`.
 - Notes: The proportional durable-test review passes independently of the implementation scorecard. Route the complete cumulative package, including this report, the current probe, Round 9 coverage/execution reports and evidence, source review report, implementation handoff, and all still-relevant requirements/design artifacts to delivery. Do not reopen the implementation scorecard.
+
+## Review Round 6 — Round 11 API/E2E Pass / CR-011 Coverage Recheck
+
+### Review Meta
+
+- Review Round: `6`
+- Trigger: Successful API/E2E Round 11 after implementation-source re-review Round 19 `Pass` for the CR-011 geometry fix.
+- Current implementation HEAD: `648dad8a3e6312fd6352fd7dc7600fd4c27fbb1d`.
+- Requirements context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`.
+- Supplemental design context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`.
+- Original code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md` (Round 19 implementation re-review `Pass`; CR-011 resolved).
+- Upstream implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`.
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`.
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md`.
+- API/E2E result reviewed: `Pass` at `97.0%` confidence; `18` states, `40/40` interactions, `15` tab-validation records / `105` tab checks, `0` failures, and `0` browser console-error states.
+- Prior proportional test-review findings rechecked: `None` unresolved. This round reviews the new FR-033/AC-034 durable browser helper added after the prior probe review.
+
+### Changed Durable Test Scope
+
+Temporary probes, logs, screenshots, generated JSON, and execution-only artifacts remain evidence, not durable test code under review. API/E2E made no additional durable-source edit in Round 11; the implementation rework added the following durable browser coverage, which is now reviewed proportionately after its passing execution.
+
+| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | `Updated` (`45` lines added relative to the prior proportional-review HEAD) | `FR-033` / `AC-034`; `RESP-E2E-010` wide right-resize bound | One responsive browser matrix for `/workspace` and `/mobile`, with a focused wide-viewport drag-bound journey | Adds `validateRightResizeBoundInteraction` for `1280x800` and `1440x900`, invokes it in the existing viewport loop, and retains the existing current probe contracts. |
+
+- No durable test file changed during API/E2E execution itself: `Yes`.
+- Durable test path requiring proportional review from the implementation change: `workspace-responsive-probe.mjs`.
+
+### Validation Evidence Reviewed
+
+- Browser command used the current unchanged probe with fresh built backend `127.0.0.1:13017`, Nuxt frontend `127.0.0.1:13018`, run-owned SQLite data, headless Google Chrome, all `17` `/workspace` viewports plus `/mobile`, and `--fail-on-console-error`.
+- Browser evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round11-workspace-responsive-probe.log`.
+- Canonical results: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`.
+- Focused suite: `16` files / `89` tests, with known KaTeX warning only; evidence `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round11-focused-nuxt-tests.log`.
+- Supporting evidence: server build `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round11-server-build.log`, probe checks `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round11-probe-checks.log`, runtime setup `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round11-runtime-setup.log`, backend/frontend logs under the same evidence directory, and cleanup `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round11-cleanup-ports.log`.
+- The live run observed the corrected bound geometries: at `1280x800`, right `x=810,width=470`, center `x=323,width=485`; at `1440x900`, right `x=810,width=630`, center `x=323,width=485`. Both remained docked with no strip or semantic Tools transition.
+
+### Proportional Test-Code Checks
+
+Implementation-source limits, architecture score categories, and forced test-file splitting are not applied here.
+
+| Check | Result | Evidence / assessment |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | `Pass` | `validateRightResizeBoundInteraction` is a clearly named, bounded helper invoked only for the two approved wide viewports and records a dedicated interaction action. |
+| Assertions prove approved requirements instead of incidental implementation details | `Fail` | The new helper asserts docked right-panel visibility, no strip/top Tools transition, and center width `>=480px`, but it does not assert that the drag actually changed the width or that the right panel stopped at the available bound. A no-op drag or an arbitrary still-docked width could satisfy these assertions. The current run's observed `470px`/`630px` widths are evidence from execution, but the durable assertion does not enforce those bounds. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | `Pass` | The helper reuses the existing page, viewport loop, `collect`, failure aggregation, and real Playwright mouse drag; no second server/browser fixture was added. |
+| Test isolation and determinism are appropriate for the exercised boundary | `Pass` | The two cases use named fixed viewports and a real pointer sequence. Round 11 used isolated services/data, console-error enforcement, and verified cleanup of ports `13017`/`13018`. |
+| Large files remain coherent and navigable | `Pass` | The 45-line addition belongs to the same responsive workspace matrix and is separated from tab, semantic-surface, and mobile helpers. No file split is warranted by the proportional rules. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain in this delta | `Pass` | The new helper targets the current FR-033 contract and does not restore superseded initial-fit, generic-row, or wrapping assertions. Prior reviewed probe coverage remains active. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | `Pass` | The Round 11 investigation identifies the probe as unchanged during execution and the implementation handoff identifies the 45-line FR-033 additions. The current execution exercised both wide cases and passed the matrix. |
+
+### Finding
+
+| Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
+| --- | --- | --- | --- | --- |
+| `TR-001` | `workspace-responsive-probe.mjs` / `validateRightResizeBoundInteraction` / `RESP-E2E-010` | `workspace-responsive-probe.mjs:633-673` only checks presentation persistence and `center >= 480px`; it does not compare post-drag width with the initial width or a capacity-derived bound. | Add a deterministic assertion that proves the extreme drag reaches/stops at the available right-panel bound (for example, capture the initial and post-drag flow/panel geometry, assert the drag has a measurable width effect, and assert the post-drag width matches the derived capacity within a justified tolerance). Preserve the existing no-transition and center-minimum assertions, then rerun current API/E2E and return for proportional review. | `Local Fix` → `api_e2e_engineer` |
+
+This is a durable test-proof gap, not a production failure. The current browser execution is a valid `Pass` for the assertions it contains and directly observed the expected widths, but the missing width-bound assertion means the durable regression does not fully encode AC-034. No implementation source re-review or design re-entry is required for this test-only correction.
+
+### Latest Authoritative Result
+
+- Result: `Fail` — proportional durable-test review found `TR-001`.
+- Changed durable test path reviewed: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`.
+- Unresolved finding IDs: `TR-001`.
+- Recommended Recipient: `api_e2e_engineer`.
+- Notes: Do not route to delivery. Add the missing width-stop assertion, rerun current API/E2E, and return for proportional test review. The implementation source remains approved and the Round 11 browser result remains a valid execution `Pass` for its current assertions.
+
+## Review Round 7 — Round 12 API/E2E Pass / TR-001 Resolution
+
+### Review Meta
+
+- Review Round: `7`
+- Trigger: Successful API/E2E Round 12 after proportional review finding `TR-001`.
+- Current implementation HEAD: `648dad8a3e6312fd6352fd7dc7600fd4c27fbb1d`.
+- Requirements context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`.
+- Supplemental design context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`.
+- Original code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md` (Round 19 implementation re-review `Pass`).
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`.
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md`.
+- API/E2E result reviewed: `Pass` at `97.4%` confidence; `18` states, `40/40` interactions, `15` tab-validation records / `105` checks, `0` failures, and `0` browser console-error states.
+- Prior proportional test-review findings rechecked: `TR-001` resolved; no other unresolved findings.
+
+### Changed Durable Test Scope
+
+The implementation/API-E2E local fix updated the existing durable path only; no production source changed. Temporary logs, screenshots, generated results, and runtime artifacts are excluded from this test-code review.
+
+| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | `Updated` (`17` lines added for `TR-001` resolution) | `FR-033` / `AC-034`; `RESP-E2E-010` | Existing responsive browser matrix with a focused wide-viewport right-resize bound journey | Captures pre-drag center-plus-right flow and panel geometry, asserts measurable panel growth, and compares post-drag width to the capacity-derived bound within `1px`; existing presentation and center-minimum assertions remain. |
+
+- No durable test file changed during API/E2E execution itself: `Yes`.
+- Durable test path reviewed: `workspace-responsive-probe.mjs`.
+
+### Validation Evidence Reviewed
+
+- Current browser command used the updated probe with fresh backend `127.0.0.1:13019`, Nuxt frontend `127.0.0.1:13020`, isolated data, headless Google Chrome, all `17` `/workspace` viewports plus `/mobile`, and `--fail-on-console-error`.
+- Browser evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round12-workspace-responsive-probe.log`.
+- Canonical results: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`.
+- Focused suite: `16` files / `89` tests; server build, probe syntax, and diff checks passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round12-focused-nuxt-tests.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round12-server-build.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round12-probe-checks.log`.
+- Cleanup evidence verifies ports `13019`/`13020` closed: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round12-cleanup-ports.log`.
+- Bound proof passed directly: `1280x800` flow `957px` -> derived bound `470px`, panel `450px` -> `470px`, center `485px`; `1440x900` flow `1117px` -> derived bound `630px`, panel `450px` -> `630px`, center `485px`.
+
+### Proportional Test-Code Checks
+
+| Check | Result | Evidence / assessment |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | `Pass` | The existing `validateRightResizeBoundInteraction` remains a focused helper limited to the two approved wide viewports; the new geometry variables and failure messages make the bound proof explicit. |
+| Assertions prove approved requirements instead of incidental implementation details | `Pass` | The helper now asserts a measurable width increase, computes the approved capacity-derived bound from collected flow geometry and the documented handle/center constants, verifies post-drag width within `1px`, and preserves docked/no-strip/no-Tools/center-minimum assertions. This closes `TR-001` and directly encodes AC-034. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | `Pass` | The fix reuses `collect`, existing rect snapshots, the current viewport loop, and real Playwright mouse drag; it adds no duplicate server/browser fixture. |
+| Test isolation and determinism are appropriate for the exercised boundary | `Pass` | The geometry is captured before and after the same deterministic extreme drag at named fixed viewports. Round 12 used isolated services/data, console-error enforcement, and verified cleanup. |
+| Large files remain coherent and navigable | `Pass` | The 17-line correction remains within the single responsive workspace probe and does not mix unrelated test responsibilities. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain in this delta | `Pass` | `TR-001` is resolved without restoring superseded generic-row, initial-fit, or wrapping assertions; all existing current contracts remain active. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | `Pass` | Round 12 records this as a bounded durable-test-only update, and the fresh run passed both derived bound cases plus the full matrix, tabs, semantic flows, and `/mobile`. |
+
+### Findings
+
+| Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
+| --- | --- | --- | --- | --- |
+| None | N/A | `TR-001` is resolved. The updated assertions are focused, deterministic, and directly prove the missing width-stop behavior. | None. | N/A |
+
+### Latest Authoritative Result
+
+- Result: `Pass`.
+- Changed durable test path reviewed: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`.
+- Unresolved finding IDs: `None` (`TR-001` resolved).
+- Final validation confidence: `97.4%`.
+- Recommended Recipient: `delivery_engineer`.
+- Notes: The proportional durable-test review passes independently of the implementation scorecard. Route the complete cumulative package, including this report and Round 12 evidence, to delivery. Do not reopen the implementation scorecard.

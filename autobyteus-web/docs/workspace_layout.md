@@ -29,7 +29,7 @@ Application-immersive routes still bypass the normal left navigation surfaces.
 - Narrow or short-height space: right tools open as a drawer; the center workspace remains the primary visible surface.
 - The center pane minimum target is defined by `WORKSPACE_CENTER_MIN_WIDTH_PX` in `utils/layout/responsiveLayoutPolicy.ts`.
 
-When constrained presentation hides a side surface, the workspace exposes semantic triggers rather than a generic top-level surface bar. The navigation trigger is labelled `Agents & teams`, the tools trigger is labelled `Tools`, and the structured empty state provides `Choose an agent or team` plus `Open runs/history` actions. These actions open the existing left navigation/history or right-tool surfaces and preserve the selected-run state.
+When constrained presentation hides a side surface, the workspace exposes semantic triggers rather than a generic top-level surface bar. The navigation trigger is labelled `Agents & teams`, the tools trigger is labelled `Tools` only when the effective right presentation is a drawer, and the structured empty state provides `Choose an agent or team` plus `Open runs/history` actions. These actions open the existing left navigation/history or right-tool surfaces and preserve the selected-run state. When the right presentation is a strip, the strip itself is the sole tools reopen affordance; do not duplicate it with a top `Tools` trigger.
 
 Do not reintroduce a positive `Work -> Runs -> Files -> Tools` row. The old generic row is retained only as a negative regression guard in the durable browser probe; Files remains part of the right-tool catalog.
 

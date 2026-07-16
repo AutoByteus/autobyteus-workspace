@@ -1,0 +1,10 @@
+Round 10 runtime setup
+2026-07-16T10:48:52Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit
+head=66600b898fd7f3bd90864faac6c76d2089ffab9d
+backend=127.0.0.1:13015
+frontend=127.0.0.1:13016
+data=/tmp/autobyteus-responsive-ux-audit-api-e2e-round10-fPXIjI
+backend env file=/tmp/autobyteus-responsive-ux-audit-api-e2e-round10-fPXIjI/.env
+frontend BACKEND_NODE_BASE_URL=http://127.0.0.1:13015
+probe=pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13016 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error

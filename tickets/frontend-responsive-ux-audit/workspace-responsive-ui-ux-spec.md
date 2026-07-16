@@ -115,6 +115,14 @@ It creates two competing navigation systems, makes `Work` look selectable while 
 3. If the right tools no longer fit beside the center, only the right tool presentation changes first.
 4. The user does not see an unexplained vertical icon strip or a new generic top surface bar.
 
+### UJ-010 — Resize the docked right tool panel
+
+1. User drags the right panel's existing divider toward the center to make the tool panel wider.
+2. The divider stops at the measured maximum that preserves the left effective surface, divider width, and the practical center minimum.
+3. The right tool panel remains docked and visible; the center does not disappear or collapse into an unusable remainder.
+4. No top `Tools` trigger or right strip appears merely because the drag reached its bound. The user can explicitly collapse the panel with its existing toggle if a strip/drawer is desired.
+5. A genuine viewport/container resize remains distinct: the composed policy may move right tools to strip/drawer when the available capacity changes, without mutating the user's width/visibility preference.
+
 ### UJ-004 — Open a narrow workspace with no selection
 
 1. User opens or resizes standard `/workspace` below the shell docking threshold.
@@ -177,6 +185,10 @@ The executable capacity and priority contract is defined in the design spec's `r
 
 The state must expose both the panel preference (`visible` or `hidden-by-user`) and the effective presentation (`docked`, `strip`, or `drawer`) with its source (`user` or `responsive`). No component may implement a separate `<1280px` left-collapse rule.
 
+### Docked right-panel resize contract
+
+The right-panel divider is a bounded resize interaction, not an implicit collapse command. While the right presentation is docked, its maximum width is derived from the current available horizontal capacity after the effective left surface, resize handles, and `centerMinWidth` are accounted for. The resize owner clamps the preferred/actual width at that bound. Dragging farther must not cause the composed policy to reinterpret the drag as a viewport transition, remove the right panel, or introduce a top `Tools` trigger. Only an explicit right-panel toggle or a genuine viewport/container resize may change the effective right presentation.
+
 ### Selected agent/team state
 
 - The selected agent/team identity and status remain in the center workspace header.
@@ -225,6 +237,7 @@ The implementation and browser validation must cover at least:
 - empty-state selection and run-history actions;
 - right tools drawer access and tab reachability;
 - right-strip state with no top `Tools` trigger and drawer-only state with exactly one semantic `Tools` trigger;
+- bounded right-panel drag at the maximum center-preserving width;
 - short-height recovery;
 - repeated resize across all states;
 - modest resize from large desktop where the left panel remains docked and right tools yield first;
@@ -241,5 +254,6 @@ These are design consequences for the reviewed package, not permission to patch 
 3. Keep the left panel docked by default through large-but-constrained states where left navigation plus a practical center still fit; let right tools yield first. Only the user collapse action changes it in wide/manual-collapse states, and automatic left strip/drawer behavior is limited to genuine center-protection states.
 4. Provide an explicit navigation/selection path when the left panel is in a strip/drawer state; do not rely on the ambiguous `Runs` label.
 5. Provide exactly one explicit right-tools reopen affordance: the visible right strip opens the drawer in strip state; render a semantic `Tools` trigger only for drawer-only state with no strip. Never render both for one effective state and never depend on an invisible right edge.
-6. Replace the empty center sentence with a structured empty state and actions.
-7. Preserve the existing right-tab work from `right-tool-tabs-ux-spec.md` and restore personal-branch typography/spacing before visual sign-off.
+6. Bound right-panel drag against measured available capacity and the practical center minimum; do not let a drag itself trigger a docked-to-drawer/strip transition.
+7. Replace the empty center sentence with a structured empty state and actions.
+8. Preserve the existing right-tab work from `right-tool-tabs-ux-spec.md` and restore personal-branch typography/spacing before visual sign-off.

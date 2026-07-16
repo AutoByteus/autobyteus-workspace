@@ -97,6 +97,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - UC-008: Responsive control/button ordering remains intentional, stable, and task-priority driven across wide, constrained, and narrow workspace modes.
 - UC-009: Responsive fixes are validated against a comprehensive viewport/interaction matrix rather than a single screenshot or breakpoint.
 - UC-010: The standard workspace preserves the original wide layout and gives users an explicit, understandable path to select/start an agent or team when side surfaces move into strips or drawers.
+- UC-011: Resizing the docked right tool panel keeps the right panel present and protects a practical center width; reaching the resize limit does not unexpectedly replace the panel with a drawer.
 
 ## Out of Scope
 
@@ -126,6 +127,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - FR-030: When all surfaces cannot remain docked, the policy must yield the right tool panel before collapsing the left selection/workspace panel, unless the user has explicitly collapsed the left panel or a short-height/narrow state requires a different presentation.
 - FR-031: A single composed responsive-policy boundary must resolve viewport capacity, left/right preferences, effective presentations, presentation sources, mode, and drawer/strip affordances for both the app shell and workspace; shell and workspace components must not independently resolve competing responsive states.
 - FR-032: The effective right presentation must determine its reopen affordance without ambiguity: docked means no external reopen trigger, strip means the strip is the sole direct trigger, and drawer means one semantic `Tools` trigger is rendered when no strip is visible. The standard workspace must never render both a right strip and a top `Tools` trigger for the same state.
+- FR-033: While the right tools are docked, dragging their resize handle must be bounded by the measured available horizontal capacity after the effective left surface, resize handle, and practical center minimum. Reaching that bound clamps the width and keeps the docked right panel and center visible; the drag must not silently switch the right panel to a strip/drawer or create a top `Tools` trigger. Responsive presentation changes remain owned by genuine viewport/container transitions or explicit panel-toggle actions.
 
 - FR-001: `/workspace` must not have any viewport-width band where the route mounts one workspace layout while CSS hides that same mounted layout and no alternative layout is visible.
 - FR-002: `/workspace` must use one authoritative responsive policy for shell/workspace surface presentation instead of independent breakpoint decisions in `pages/workspace.vue`, `WorkspaceDesktopLayout`, `WorkspaceMobileLayout`, and `layouts/default.vue`.
@@ -164,6 +166,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 - AC-031: The responsive policy tests and browser matrix demonstrate that left-panel collapse is driven by measured center/left feasibility and surface priority, not a blanket `<1280px` rule; the original desktop selection journey remains available until the layout genuinely requires a drawer/strip.
 - AC-032: Pure policy boundary tests cover the exact fit formula and phase order for wide, large-but-constrained, constrained, narrow, short-height, manual-left-hidden, and repeated-resize inputs, including preference preservation and `presentationSource` distinction.
 - AC-033: Browser/component coverage proves right-tool affordance exclusivity: wide/right-docked has no top `Tools` trigger; full-screen/manual right collapse renders the original right vertical strip with no top `Tools` row; drawer-only states render one semantic `Tools` trigger and no strip; activating either path opens the same right-tool drawer without changing the selected run.
+- AC-034: A resize interaction test drags the docked right handle toward the center beyond the available bound and proves the right panel remains rendered, the center remains at least the practical minimum, the width stops at the bound, and no strip/drawer/top `Tools` transition occurs. A separate viewport-resize test may still verify genuine responsive transition to drawer/strip and preference preservation.
 
 - AC-001: At `700x700` and `760x700`, `/workspace` shows visible workspace controls/content; it does not show only the black app header plus blank gray body.
 - AC-002: At `1440x900`, the current wide desktop layout remains materially unchanged: left panel docked, center workspace visible, and right tools docked by default.
@@ -282,6 +285,7 @@ Refined from the user's explicit confirmation of the original single-row right-t
 | FR-030 | UC-003, UC-004, UC-007, UC-010 |
 | FR-031 | UC-001, UC-003, UC-004, UC-005, UC-007, UC-010 |
 | FR-032 | UC-001, UC-002, UC-003, UC-004, UC-005, UC-010 |
+| FR-033 | UC-001, UC-003, UC-007, UC-011 |
 
 | Acceptance Criteria | Scenario Intent |
 | --- | --- |
@@ -297,3 +301,4 @@ Refined from the user's explicit confirmation of the original single-row right-t
 | AC-031 | Measured threshold and resize-priority validation. |
 | AC-032 | Composed policy formula, phase-order, and preference/source boundary coverage. |
 | AC-033 | Exactly-one right-tool reopen affordance across docked, strip, and drawer presentations. |
+| AC-034 | Bounded right-panel drag preserves docked right tools and practical center; only viewport/panel actions change presentation. |

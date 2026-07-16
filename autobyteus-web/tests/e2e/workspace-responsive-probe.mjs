@@ -29,6 +29,8 @@ const DEFAULT_VIEWPORTS = [
 
 const CANONICAL_TOOL_ORDER = ['Files', 'Team', 'Terminal', 'Activity', 'Token', 'Artifacts', 'Browser', 'VNC Viewer'];
 const CENTER_MIN_WIDTH = 480;
+const LEFT_PANEL_RESIZE_HANDLE_WIDTH = 6;
+const RIGHT_PANEL_RESIZE_HANDLE_WIDTH = 4;
 const ACCEPTABLE_NARROW_CENTER_MIN_WIDTH = 320;
 
 const getArg = (name, fallback = undefined) => {
@@ -260,6 +262,7 @@ async function collect(page, label) {
         main: elementInfo('main'),
         leftAside: elementInfo('aside'),
         adaptive: elementInfo('[data-test="workspace-adaptive-layout"]'),
+        centerRightFlow: elementInfo('[data-test="workspace-center-right-flow"]'),
         oldDesktop: elementInfo('[data-test="workspace-desktop-layout"]'),
         centerPane: elementInfo('[data-test="workspace-center-pane"]'),
         centerShell: elementInfo('[data-test="workspace-center-content-shell"]'),
@@ -636,6 +639,7 @@ async function validateRightResizeBoundInteraction(page, viewport) {
   }
 
   const failures = [];
+  const beforeState = await collect(page, 'right-resize-bound-before');
   const handle = await page.locator('[data-test="workspace-right-resize-handle"]').boundingBox();
   if (!handle) {
     return {
@@ -655,9 +659,22 @@ async function validateRightResizeBoundInteraction(page, viewport) {
   await page.waitForTimeout(350);
 
   const state = await collect(page, 'right-resize-bound-after');
+  const beforeWidth = beforeState.rects.rightPanel?.rect?.width ?? 0;
+  const flowWidth = beforeState.rects.centerRightFlow?.rect?.width ?? 0;
+  const expectedBoundWidth = Math.max(
+    0,
+    flowWidth - LEFT_PANEL_RESIZE_HANDLE_WIDTH / 2 - CENTER_MIN_WIDTH - RIGHT_PANEL_RESIZE_HANDLE_WIDTH,
+  );
+  const observedWidth = state.rects.rightPanel?.rect?.width ?? 0;
   if (!state.visibleState.rightPanel) failures.push('right-panel resize bound removed the docked right panel');
   if (state.rects.rightStrip?.visible) failures.push('right-panel resize bound rendered a right-tool strip');
   if (state.visibleState.toolsTrigger) failures.push('right-panel resize bound rendered a semantic Tools trigger');
+  if (observedWidth <= beforeWidth) {
+    failures.push(`right-panel resize bound did not increase panel width: before ${beforeWidth}px, after ${observedWidth}px`);
+  }
+  if (Math.abs(observedWidth - expectedBoundWidth) > 1) {
+    failures.push(`right-panel resize bound stopped at ${observedWidth}px instead of capacity-derived ${expectedBoundWidth}px`);
+  }
   if (!state.rects.centerShell?.visible || state.rects.centerShell.rect.width < 480) {
     failures.push(`right-panel resize bound left center below 480px: ${state.rects.centerShell?.rect?.width ?? 0}px`);
   }

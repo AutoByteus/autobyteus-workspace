@@ -42,6 +42,8 @@ The `Work` handler only closes overlays, `Runs` opens `AppLeftPanel`, and `Files
 
 The current implementation has a parallel right-surface defect. `WorkspaceAdaptiveLayout.vue` renders `RightSidebarStrip` when the effective right presentation is `strip`, but independently computes `showToolsTrigger` as `rightPanel.presentation !== 'docked'`. A user-collapsed right panel therefore renders both the visible right strip and a top `Tools` button. The strip already is the direct reopen affordance in the personal-branch layout, so this is a local implementation violation of the one-owned-right-surface invariant, not a reason to add another navigation model. The authoritative state must expose or deterministically derive `showRightToolsTrigger = (rightPanel.presentation === 'drawer')`; the strip state must produce `false`.
 
+The current implementation also regressed the original bounded-resize behavior. `useRightPanel.ts` now updates `preferredRightPanelWidth` with only a lower bound, so dragging the right divider left can grow the preferred width beyond the available workspace indefinitely. The current `responsiveLayoutPolicy` then receives that oversized width; once the left-docked/right-docked candidate no longer fits, it chooses a right drawer because the drawer consumes no horizontal width. `WorkspaceAdaptiveLayout.vue` consequently removes the docked right panel and expands the center, which the user experiences as the complete right side suddenly disappearing and a top `Tools` action appearing. The personal branch had a `workspacePanelContainerWidth` measurement and max-width clamp. The adaptive implementation must restore that bounded interaction using the approved `480px` practical center minimum, and it must feed the bounded actual dock width into the composed policy so a drag cannot itself trigger the docked-to-drawer transition.
+
 The app-shell policy has a second design defect: `APP_SHELL_DOCKED_MIN_WIDTH_PX = 1280` currently turns the left panel into a strip for every default-visible viewport below that number. This is too broad for the primary selection surface. The target policy must be capacity- and priority-driven: keep the left panel docked while left navigation plus a practical center fit, move right tools to strip/drawer first, and only then move left navigation to strip/drawer. Manual collapse and automatic responsive presentation remain separate state concepts.
 
 ## Authoritative Composed Responsive-Policy Contract
@@ -63,7 +65,7 @@ interface ResponsiveWorkspaceShellInput {
 }
 ```
 
-The adapter obtains `viewportWidth`/`viewportHeight` from the existing SSR-safe `useResponsiveElementRect()` window measurement and obtains the two preferences/widths from `useLeftPanel()` and `useRightPanel()`. No component passes a separately measured “workspace width” to a second resolver. The standard layout root occupies the viewport; the policy computes the center capacity after applying effective side presentations.
+The adapter obtains `viewportWidth`/`viewportHeight` from the existing SSR-safe `useResponsiveElementRect()` window measurement and obtains the two preferences/widths from `useLeftPanel()` and `useRightPanel()`. No component passes a separately measured “workspace width” to a second resolver. `WorkspaceAdaptiveLayout` may measure its own center-plus-right flow only to provide the bounded dock-resize limit to `useRightPanel`; that measurement is not a competing responsive-policy owner. The policy still receives one composed input and computes center capacity after applying effective side presentations.
 
 ### Policy constants and fit formula
 
@@ -158,15 +160,30 @@ The implementation may keep this as a pure policy output or use the exact equiva
 
 `hidden-by-user` is a preference value, not an automatic presentation. A user-collapsed desktop left panel therefore has `leftPanel.preference = 'hidden-by-user'`, `leftPanel.presentation = 'strip'`, and `presentationSource = 'user'`. An automatically adapted left panel has `preference = 'visible'`, `presentation = 'strip'` or `drawer`, and `presentationSource = 'responsive'`. This distinction must remain observable in tests and must not be lost in `layouts/default.vue`.
 
+### Bounded docked-right resize owner
+
+`WorkspaceAdaptiveLayout` owns the center-plus-right flow element and registers its current width with `useRightPanel` through a small `ResizeObserver`/cleanup adapter. `useRightPanel` computes:
+
+```text
+maxDockedRightWidth = max(
+  0,
+  centerRightFlowWidth - centerMinWidth - rightResizeHandleWidth,
+)
+actualRightPanelWidth = clamp(rawPreferredRightWidth, rightPanelMinWidth, maxDockedRightWidth)
+```
+
+The adapter passes `actualRightPanelWidth`—not an unbounded raw drag preference—as the right-width capacity input to `resolveResponsiveWorkspaceShellState`, and the renderer uses the same bounded value from the resolved state. This preserves one policy owner while ensuring a drag cannot make the policy believe that the docked panel is wider than the current flow can support. The raw preference may be retained for restoration after a genuine viewport/container expansion, but it must never make the current drag transition to drawer/strip. If the flow is too narrow even for a docked right panel, the composed viewport policy may still choose a responsive drawer/strip; that transition is caused by available layout capacity, not by an unbounded divider event.
+
 ### Composable and dependency map
 
 | Boundary | Responsibility | Inputs | Consumers | Forbidden behavior |
 |---|---|---|---|---|
 | `resolveResponsiveWorkspaceShellState` | Pure capacity/priority resolver | One composed input above | Policy tests and `useResponsiveWorkspaceShell` | No DOM, no component-specific breakpoint, no blanket `<1280px` left collapse |
-| `useResponsiveWorkspaceShell` | One SSR-safe viewport observer plus preference composition | `useLeftPanel`, `useRightPanel`, `useResponsiveElementRect()` | `layouts/default.vue` provider | Must not create separate shell/workspace policy branches |
+| `useResponsiveWorkspaceShell` | One SSR-safe viewport observer plus preference/actual-width composition | `useLeftPanel`, `useRightPanel`, `useResponsiveElementRect()` | `layouts/default.vue` provider | Must not create separate shell/workspace policy branches or pass an unbounded drag width |
 | `layouts/default.vue` | Render left/header surfaces and provide state | Resolved composed state | AppLeftPanel, LeftSidebarStrip, slot | Must not resolve a second policy or infer strip from raw viewport |
 | `WorkspaceAdaptiveLayout.vue` | Render center/right surfaces from provided state | Resolved composed state, active tab/drawer state | RightSideTabs, right strip/drawer, center views | Must not call an independent `resolveWorkspaceResponsiveState` |
-| `useLeftPanel` / `useRightPanel` | Store user preference and preferred width | User actions | Composed adapter and panel controls | Must not mutate preference when the resolver changes presentation |
+| `useLeftPanel` / `useRightPanel` | Store user preference and preferred width; bound docked resize against the measured center/right flow | User actions and measured workspace capacity | Composed adapter and panel controls | Must not mutate preference or trigger a responsive presentation change merely because a divider was dragged to its bound |
+| `WorkspaceAdaptiveLayout` resize adapter | Measure center-plus-right flow for the docked right-divider maximum | Local element size and `useRightPanel` bound setter | `useRightPanel` | Must not resolve effective presentation or introduce a second viewport policy |
 
 `useWorkspaceResponsiveLayout.ts` and `useAppShellResponsiveLayout.ts` are removed or reduced to non-resolving consumers during implementation; they must not remain as independent policy owners.
 

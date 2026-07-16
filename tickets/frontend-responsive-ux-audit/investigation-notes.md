@@ -496,3 +496,44 @@ The implementation should expose `showRightToolsTrigger` from the composed polic
 ### Supplemental artifact inventory update
 
 `workspace-responsive-ui-ux-spec.md` remains the intended-behavior authority for this clarification; its status is **Refined — architecture re-review required**, and approval applicability is **Required**. This investigation entry and the supplied screenshots are evidence; they do not replace the requirements or UI/UX supplement.
+
+## Right-panel divider drag disappearance investigation (2026-07-16)
+
+### User reproduction
+
+The user identified the trigger for the apparently random state: while the right tool panel is docked, they drag its divider leftward to make the right panel wider. After dragging far enough, the right panel suddenly disappears and the center expands; a top `Tools` action may appear. This is a normal supported interaction, not a test-only state or manual internal mutation. The supplied screenshot shows the original three-surface hierarchy immediately before/around the failure, with the right divider and docked right tabs visible:
+
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_fef102643b19__image.png`
+
+### Exact current source path
+
+In the current committed implementation:
+
+- `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` renders the right panel only when `isRightPanelVisible` and the composed state presentation is `docked`.
+- The same component passes `preferredRightPanelWidth` into the rendered policy state width.
+- `autobyteus-web/composables/useRightPanel.ts:initDragRightPanel` computes `startWidth + (startX - currentX)` and applies only `Math.max(..., MIN_RIGHT_PANEL_WIDTH)`. There is no maximum based on the available center/right flow.
+- `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` accepts the resulting oversized preferred width and uses it in `requiredWidth`. When the left-docked/right-docked candidate no longer fits, the right-first phase selects `right = 'drawer'` because a drawer consumes zero horizontal width.
+- `WorkspaceAdaptiveLayout.vue` then removes the docked right panel. If the effective state is drawer rather than strip, no right strip is rendered and the semantic top `Tools` trigger becomes the remaining reopen path.
+
+The causal chain is therefore:
+
+```text
+drag divider left
+  -> preferredRightPanelWidth grows without an available-space maximum
+  -> docked left + oversized docked right no longer fits
+  -> responsive policy selects right drawer
+  -> docked right panel is removed from the flex row
+  -> center expands; top Tools trigger may appear
+```
+
+This is why the user sees the complete right side vanish instead of merely reaching a stable maximum width. The responsive policy is reacting deterministically to an invalid/unbounded drag width; the defect is that the drag owner permits that input and the renderer treats the resulting policy transition as if it were a normal resize outcome.
+
+### Personal-branch comparison
+
+`origin/personal:autobyteus-web/composables/useRightPanel.ts` previously maintained `workspacePanelContainerWidth`, computed `maxRightPanelWidth`, and clamped the actual right width against the available container while preserving a center minimum. The adaptive refactor removed that container bound and retained only the lower width clamp. The approved adaptive design already names the intended bounded local spine (`drag start -> preferred width update -> clamp against policy maximum -> effective presentation stays docked only if center remains usable`), so this finding is an implementation defect against the existing design basis.
+
+### Required correction and boundary
+
+Restore a container-aware docked resize bound using the approved `480px` practical center minimum and the right resize handle width. `WorkspaceAdaptiveLayout` should register its center-plus-right flow width with `useRightPanel`; the panel owner should expose a bounded actual width; and the composed adapter should pass that bounded width to the policy rather than an unbounded raw drag preference. Dragging beyond the maximum must stop at the bound, keep the right panel docked, keep the center at least `480px`, and not create a strip/drawer/top `Tools` transition. Genuine viewport/container resizing and explicit panel toggles may still change the effective presentation through the composed policy.
+
+This is classified as a **Local Implementation Defect** (`FR-033`/`AC-034`), not a new `/mobile` question or a reason to weaken the measured right-tools-first policy. The user should never need to discover the responsive drawer by accidentally dragging a divider past the center-preserving limit.

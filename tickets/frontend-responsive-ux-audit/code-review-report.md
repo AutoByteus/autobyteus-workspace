@@ -687,6 +687,218 @@ No unresolved implementation-source findings remain. `CR-004` through `CR-010` a
 - Recommended Recipient: `api_e2e_engineer`
 - Notes: Route the cumulative package to current API/E2E. This approval does not constitute browser/API/E2E sign-off; if durable tests change during that stage and execution passes, return for proportional test-code review.
 
+## Round 18 Focused API/E2E Failure-Origin Review — FR-033 / AC-034
+
+### Failure Context And Scope
+
+- Reviewed the Round 10 API/E2E failure package against the approved FR-033/AC-034 contract and the current implementation at `HEAD` `66600b898fd7f3bd90864faac6c76d2089ffab9d`.
+- This is a focused failure-origin review, not a reopened full source scorecard and not a proportional durable-test review. API/E2E did not change production source or the durable probe in Round 10.
+- `RESP-E2E-010` is the root failure at `desktop-1280x800` and `wide-1440x900`: dragging the right divider beyond its bound removed the docked right panel and rendered the semantic `Tools` trigger. `RESP-E2E-011` is dependent/cascading evidence at `1280x800`; its docked-toggle, user-hidden-strip, and strip-reopen targets were absent only because the preceding resize had already switched the effective right presentation to `drawer`.
+- The run completed all `18` states, recorded `0` browser console-error states, passed the focused suite/build/syntax/diff checks, and cleaned up ports `13015`/`13016`. This is therefore not a setup, stale-assertion, console, or environment classification.
+
+### Approved-Behavior Confirmation
+
+- The failing scenario remains valid and reachable: a user can drag the right docked resize handle in the standard workspace, and FR-033/AC-034 requires the bound to preserve the docked right panel, keep the center at least `480px`, and avoid a strip/drawer/top-`Tools` transition at the approved wide sizes.
+- The current durable probe asserts that reviewed contract directly. It does not restore the superseded initial-fit assertion, reintroduce the generic surface row, or weaken the right-resize behavior.
+- The requirements and reviewed responsive-shell design remain sufficient and unambiguous for this failure. No `Design Impact` or `Requirement Gap` is indicated.
+
+### Failure-Origin Analysis
+
+The failure is an implementation-owned integration mismatch between the new measured-flow bound and the outer-viewport fit accounting:
+
+1. `WorkspaceAdaptiveLayout.vue` measures the `workspace-center-right-flow` element (`WorkspaceAdaptiveLayout.vue:14-18, 157-170`) and registers that width with `useRightPanel`.
+2. `useRightPanel.ts:26-35` then derives the actual maximum as `flowWidth - 480px - 4px`, and `useResponsiveWorkspaceShell.ts:24-35` supplies that bounded actual width to the composed resolver. This is the correct ownership spine in isolation.
+3. The measured flow is already after the left shell and its resize handle. In `layouts/default.vue:68-72` and `layouts/default.vue:182-190`, the left handle has `width: 6px` but `margin-left: -3px`; its effective flex-row contribution is therefore `3px`, leaving a `957px` center-plus-right flow at a `1280px` viewport after the `320px` left panel.
+4. The pure resolver still adds the full `LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX = 6px` for a docked-left candidate (`responsiveLayoutPolicy.ts:102-112`, constant at line `13`). Consequently, at `1280px`, the actual bound becomes `957 - 480 - 4 = 473px`, while the resolver's candidate requires `320 + 6 + 473 + 4 + 480 = 1283px`. At `1440px`, the corresponding values are `1117`, `633`, and `1443`; the same `3px` overage occurs.
+5. The resolver therefore legitimately rejects the docked/docked candidate under its own formula and falls through to a non-docked right presentation. The resulting `Tools` trigger and missing right panel are the observed consequence, not an unrelated responsive transition.
+
+The source evidence identifies a bounded fix: reconcile the effective left-handle geometry used by the flow measurement with the left-handle contribution used by the resolver. The owning implementation may either measure/register an equivalent capacity boundary or explicitly compensate for the handle's negative margin at the measurement-to-policy boundary, provided the single resolver remains authoritative and the `480px` center minimum/right-handle accounting is preserved. Changing the probe, forcing a drawer/docked state, or reducing the center minimum would be an invalid workaround.
+
+This is not a material Round 17 design-review failure: the current runtime evidence exposes a cross-component computed-CSS geometry mismatch that is not established by the isolated pure-policy and composable tests. The approved contract and the source ownership split remain sound; the implementation integration must now make their coordinate systems consistent.
+
+### Focused Finding
+
+| Finding | Severity | Affected contract | Evidence / origin | Required action | Classification / owner |
+| --- | --- | --- | --- | --- | --- |
+| `CR-011` | High | `FR-033` / `AC-034`; root scenario `RESP-E2E-010` | Round 10 Chrome evidence fails at both approved wide drag cases. `useRightPanel` bounds from measured center-plus-right flow, while `responsiveLayoutPolicy` adds a full `6px` left handle although the CSS handle contributes `3px` after its `-3px` margin. | Reconcile measured-flow and resolver handle accounting without weakening the center minimum, changing the catalog/presentation contract, or adding a second responsive policy. Add/retain focused regressions for both wide drag cases and genuine viewport transitions. | `Local Fix` → `implementation_engineer` |
+
+`RESP-E2E-011` is recorded as dependent evidence under `CR-011`, not a second implementation finding. After the fix, implementation source review and a fresh API/E2E run are required; only a passing run may return for proportional durable-test review.
+
+### Failure Evidence
+
+- Execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
+- Canonical result and summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`
+- Browser log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round10-workspace-responsive-probe.log`
+- Supporting checks: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round10-focused-nuxt-tests.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round10-server-build.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round10-probe-checks.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round10-cleanup-ports.log`
+
+### Routing
+
+- Do not route to `delivery_engineer` or to the proportional durable-test review.
+- Route the complete cumulative failure package and this updated report to `implementation_engineer` for the bounded `CR-011` local fix.
+- The implementation-owned fix must return through implementation-source review and then fresh API/E2E execution. If API/E2E passes, the changed durable probe must receive the separate proportional review before delivery.
+
+## Latest Authoritative Result (Round 18 Focused Failure-Origin Review)
+
+- Review Decision: `Fail` — focused failure-origin review identifies an implementation-owned defect.
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — the scenario is approved, reachable, and reproduced with clean runtime evidence.
+- Failure Origin: `Implementation-owned integration mismatch` (`CR-011`); the measured-flow clamp and resolver's left resize-handle accounting differ by `3px` at both required wide viewports.
+- Classification: `Local Fix`
+- Recommended Recipient: `implementation_engineer`
+- Notes: `RESP-E2E-010` is the root failure; `RESP-E2E-011` is dependent/cascading evidence. No requirements/design change or probe weakening is authorized. No proportional durable-test review is applicable until a corrected implementation passes fresh API/E2E.
+
+## Round 19 Implementation Re-review — CR-011 Geometry Fix
+
+### Review Scope And Basis
+
+- Reviewed current `HEAD` `648dad8a3e6312fd6352fd7dc7600fd4c27fbb1d` and the implementation handoff update for the bounded `CR-011` rework.
+- Rechecked the relevant requirements and reviewed design basis for `FR-033`/`AC-034`: a drag beyond the available right-panel bound must preserve the docked right panel, retain a practical `480px` center minimum, and must not itself trigger a strip/drawer/top-`Tools` presentation transition. The one-composed-resolver boundary remains authoritative.
+- Reviewed the complete bounded source path: `WorkspaceAdaptiveLayout.vue` flow measurement and renderer, `useRightPanel.ts` actual-width clamp, `useResponsiveWorkspaceShell.ts` resolver input, `responsiveLayoutPolicy.ts` fit constants/formula, and `layouts/default.vue` left-handle CSS. The current durable browser probe remains unchanged by this implementation rework and is downstream-owned for execution.
+- Current implementation-scoped evidence: the reported full focused suite passed `16` files / `76` tests; build, guards, localization audit, `git diff --check`, and probe syntax passed. I independently reran the two directly affected test files (`25` tests passed), `git diff --check`, and `node --check`. Only the existing KaTeX quirks-mode warning appeared; no missing router/route warnings were observed.
+
+### CR-011 Resolution
+
+| Contract / source invariant | Result | Evidence |
+| --- | --- | --- |
+| Measured flow and viewport policy use one geometry model | `Pass` | `WorkspaceAdaptiveLayout.vue:152-160` subtracts the effective `3px` overlap (`LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX / 2`) before registering the capacity boundary. The resolver continues to account for the full logical `6px` left handle. |
+| Center-preserving right-panel bound | `Pass` source | `useRightPanel.ts:26-35` continues to reserve the `480px` center minimum and `4px` right handle. At the previously failing widths, registration becomes `954px`/`1114px`, producing right bounds `470px`/`630px`; the resolver's docked candidate then fits exactly at `1280px`/`1440px`. |
+| Single policy ownership and presentation behavior | `Pass` | The fix changes only the measurement-to-`useRightPanel` boundary. It does not add a second resolver, force a presentation, mutate preferences, reduce the center minimum, or change the drawer-only `showToolsTrigger` condition. |
+| Renderer follows bounded actual width | `Pass` | `WorkspaceAdaptiveLayout.vue` still renders the docked panel from `rightPanelWidth`; the clamp remains the value supplied to `useResponsiveWorkspaceShell`. |
+| Resize lifecycle and other responsive behavior | `Pass` source / downstream pending | Existing `ResizeObserver` registration/cleanup and genuine viewport policy paths are unchanged. Current browser execution must prove both wide drag cases and the full responsive matrix. |
+
+### Source Review Finding Resolution
+
+- `CR-011` is **resolved in source**. The implementation directly addresses the observed `3px` CSS/layout mismatch using the shared logical handle constant and preserves the approved policy formula.
+- The focused regression retains docked-panel, no-strip/no-Tools, `480px` center, and bounded-width assertions. The source contract now also protects the overlap compensation expression.
+- No new implementation finding is raised. The fix is bounded, uses existing ownership, and does not alter the right-tool catalog, `/mobile` boundary, accessibility lifecycle, selected-run state, or semantic trigger ownership.
+
+### Review Scorecard (Round 19)
+
+- Overall source-review score: `9.6/10` (`96/100`)
+- The small remaining deduction is downstream validation only; it is not an unresolved source defect.
+
+| Priority | Category | Score | Basis | Remaining action |
+| --- | --- | ---: | --- | --- |
+| `1` | Data-flow spine and clarity | 9.7 | Flow measurement -> overlap compensation -> actual panel clamp -> single resolver -> renderer is explicit. | Verify the geometry in Chrome. |
+| `2` | Ownership and boundaries | 9.7 | Layout owns measurement; panel owns width clamp; resolver owns presentation. | Preserve the boundary. |
+| `3` | Interface clarity | 9.6 | Existing `setRightPanelWorkspaceWidth`/`rightPanelWidth` interface is reused without policy duplication. | Validate runtime timing. |
+| `4` | Separation of concerns | 9.5 | Nine-line local correction remains at the measurement boundary. | Avoid moving responsive decisions into the component. |
+| `5` | Shared structures and state tightness | 9.6 | Logical handle constant is reused; preferred and effective widths remain distinct. | None source-level. |
+| `6` | Naming and readability | 9.6 | `effectiveLeftHandleOverlap` and the explanatory comment make the CSS compensation explicit. | Keep CSS/policy relationship documented. |
+| `7` | API/E2E readiness | 9.1 | Focused tests, build, syntax, guards, and diff checks pass. | Run fresh current API/E2E. |
+| `8` | Runtime fidelity | 9.5 | Source arithmetic resolves both prior 3px failures without changing behavior outside the bound. | Prove 1280/1440 drag and real transitions in browser. |
+| `9` | Compatibility and legacy cleanup | 9.7 | No workaround, presentation forcing, legacy trigger, or probe weakening was introduced. | None source-level. |
+| `10` | Cleanup completeness | 9.4 | Handoff traces CR-011 and the change is isolated to source/test/handoff. | Complete downstream validation and docs delivery. |
+
+### Classification And Routing
+
+- `Pass` — implementation source review for the CR-011 rework.
+- `CR-011` is resolved; no requirement/design re-entry is needed.
+- Route the cumulative package to `api_e2e_engineer` for a fresh current-state run. Do not route to delivery or proportional durable-test review yet. If API/E2E passes, return for the separate proportional review of the changed durable probe.
+
+### Residual Risks
+
+- API/E2E must directly prove that the corrected bound keeps the docked right panel at `1280x800` and `1440x900`, keeps the center at least `480px`, and avoids a right presentation transition after the extreme drag.
+- API/E2E must also rerun genuine viewport transitions, right-tab scrolling/affordances, semantic strip/drawer ownership, `/mobile` isolation, and cleanup on current `HEAD`.
+- `vue-tsc` remains unavailable; the production Nuxt build is the available build/type confidence check.
+- Deep internal tool responsiveness and packaged Electron/native rendering remain downstream scope boundaries.
+
+## Latest Authoritative Result (Round 19 Implementation Re-review)
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Source Re-review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — the corrected source reconciles the observed CSS geometry while preserving the approved policy.
+- Score Summary: `9.6/10` (`96/100`); no unresolved implementation-source findings remain.
+- Finding Resolution: `CR-011` resolved.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: This is implementation-source approval only, not API/E2E sign-off. The durable probe remains eligible for proportional test-code review only after a fresh API/E2E Pass.
+
+## Round 17 Implementation Review — FR-033 / AC-034 Bounded Right Resize
+
+### Review Scope And Basis
+
+- Reviewed current `HEAD` `66600b898fd7f3bd90864faac6c76d2089ffab9d` and the updated implementation handoff for FR-033/AC-034.
+- Rechecked the cumulative responsive implementation against the requirements, `workspace-responsive-ui-ux-spec.md`, the design's bounded docked-right resize owner, and the prior Round 16 LID-001 source-review result.
+- Reviewed the production delta in `useRightPanel.ts`, `useResponsiveWorkspaceShell.ts`, and `WorkspaceAdaptiveLayout.vue`, the focused composable/adaptive-layout regressions, and the API/E2E-owned browser additions for downstream readiness. The browser probe remains outside this source-review sign-off and has not received API/E2E execution approval from this stage.
+- Implementation evidence: focused Nuxt/Vitest `16` files / `76` tests passed; build, `git diff --check`, and probe syntax passed. The existing KaTeX quirks-mode warning remains; no missing router/route warnings were reported.
+
+### Prior Finding Resolution
+
+| Finding | Result | Evidence |
+| --- | --- | --- |
+| `LID-001` | Remains resolved | The drawer-only `showToolsTrigger` condition and strip event ownership are unchanged. |
+| `CR-004` through `CR-010` | Remain resolved | The right-tab affordance, composed policy, adaptive actions, accessible drawers, short-height preference ordering, and left-shell sizing paths are not regressed by the bounded resize change. |
+
+### FR-033 / AC-034 Behavior Confirmation
+
+| Contract / behavior | Result | Evidence |
+| --- | --- | --- |
+| Bounded actual right-panel width | `Pass` | `useRightPanel` derives `maxRightPanelWidth = max(0, flowWidth - 480px - 4px)` and exposes `rightPanelWidth` as the clamped actual width. It preserves the normal `400px` minimum whenever the available maximum permits it and preserves the center bound when the flow is narrower. |
+| Drag cannot create an unbounded policy input | `Pass` | Drag updates are clamped before they update the width preference; `useResponsiveWorkspaceShell` passes `rightPanelWidth`, not the raw preferred width, to the single composed resolver. |
+| Renderer and policy use the same bounded width | `Pass` | `WorkspaceAdaptiveLayout` renders the docked right panel with `rightPanelWidth` and measures/registers its center-plus-right flow through a local `ResizeObserver`. The component does not resolve a competing responsive policy. |
+| Resize lifecycle and cleanup | `Pass` | The flow width is registered on mount, updated from `ResizeObserver`, disconnected on unmount, and cleared through `setRightPanelWorkspaceWidth(null)`. |
+| Drag-bound presentation stability | `Pass` source / downstream pending | Focused tests cover the bounded drag keeping the right panel docked, center style at `480px`, and no strip/top Tools trigger. The new browser probe covers wide `1280x800` and `1440x900` drag-beyond-bound journeys; current API/E2E execution remains required. |
+| LID-001 affordance ownership | `Pass` | The previous drawer-only Tools trigger condition is unchanged, and the bounded width path does not alter right strip/drawer event ownership or selected-run handling. |
+
+### Material Premise Validation
+
+- The failure premise is reachable through a supported user action: dragging the docked right divider left in the standard workspace. The prior live evidence established that an unbounded width preference could make the composed policy switch to a drawer and expose a top Tools action.
+- The current fix addresses that path at the width owner and feeds the bounded value through the existing composed boundary. No speculative recovery, compatibility, or second policy mechanism was added.
+
+### Focused Findings
+
+No unresolved implementation-source findings. The implementation follows the approved measurement -> bounded actual width -> composed resolver -> renderer spine, keeps the resize adapter local to `WorkspaceAdaptiveLayout`, and preserves LID-001 behavior.
+
+## Review Scorecard (Round 17)
+
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95`
+- Score calculation note: the source-review decision is `Pass`; the remaining deduction reflects required live browser/API/E2E validation, not an implementation-source defect.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.6 | Flow measurement -> right-panel bounded width -> composed policy -> adaptive rendering is explicit. | Browser evidence is downstream. | Execute the wide drag-bound matrix and genuine resize transitions. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.6 | The panel owns width bounds, the layout owns measurement, and the composed adapter remains the only effective-policy boundary. | No source-level issue remains. | Preserve this ownership split. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.5 | `setRightPanelWorkspaceWidth` and `rightPanelWidth` express the measurement/actual-width contract without adding a second resolver. | Runtime observer timing remains downstream evidence. | Validate resize and cleanup in the browser. |
+| `4` | `Separation of Concerns and File Placement` | 9.4 | The change is localized to the panel composable, adapter input, and layout measurement owner. | `WorkspaceAdaptiveLayout` remains a bounded coordinator. | Avoid moving policy decisions into the component. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | Raw preference, bounded actual width, and effective presentation remain distinct state concepts. | No source-level issue remains. | Preserve preference/effective-state separation. |
+| `6` | `Naming Quality and Local Readability` | 9.5 | `workspacePanelContainerWidth`, `maxRightPanelWidth`, `rightPanelWidth`, and `registerWorkspaceFlowWidth` make roles clear. | No source-level issue remains. | None beyond normal maintenance. |
+| `7` | `API/E2E Readiness` | 9.1 | Focused boundary tests, syntax, diff, and build checks pass; new browser assertions are explicit. | Current live execution has not run on this commit. | Route to `api_e2e_engineer`. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.4 | The implementation matches the bounded resize contract and keeps LID-001 trigger ownership unchanged. | Actual browser geometry and container resize remain unproven. | Run the full viewport matrix and both wide drag cases. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | No fallback, second policy path, or legacy trigger condition was introduced. | No source-level issue remains. | Keep the clean bounded path. |
+| `10` | `Cleanup Completeness` | 9.3 | Observer disconnect/clear behavior and handoff traceability are explicit. | API/E2E and delivery evidence remain outstanding. | Complete downstream validation and handoff. |
+
+## Findings (Round 17)
+
+No unresolved implementation-source findings. FR-033/AC-034 is resolved in the current source review.
+
+## Classification (Round 17)
+
+- `Pass` — the current implementation restores the bounded docked-right resize contract without creating a second responsive policy owner or regressing LID-001.
+
+## Recommended Recipient (Round 17)
+
+`api_e2e_engineer`
+
+## Residual Risks (Round 17)
+
+- This is source-review approval only; API/E2E must execute the current state before delivery.
+- The API/E2E-owned durable probe changed again and must receive a separate proportional test-code review after successful execution.
+- Browser validation must prove both wide drag-beyond-bound cases, center minimum, right-panel persistence, no strip/top Tools transition, genuine viewport resize behavior, existing right-tab contract, and `/mobile` isolation.
+- `vue-tsc` remains unavailable; the frontend build is the available build/type confidence check.
+- Deep internal tool responsiveness and packaged Electron/native rendering remain downstream scope boundaries.
+
+## Latest Authoritative Result (Round 17)
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `9.5/10` (`95/100`); no unresolved implementation-source findings remain.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation-source review.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: Route the cumulative package to current API/E2E. This approval does not constitute browser/API/E2E sign-off; if durable tests change during that stage and execution passes, return for proportional test-code review.
+
 ## Round 16 Implementation Review — Architecture Round 8 LID-001
 
 ### Review Scope And Basis
@@ -769,3 +981,12 @@ No unresolved implementation-source findings. LID-001 is resolved in the current
 - Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation-source review.
 - Recommended Recipient: `api_e2e_engineer`
 - Notes: Route the cumulative package to current API/E2E. This approval does not constitute browser/API/E2E sign-off; if durable tests change during that stage and execution passes, return for proportional test-code review.
+
+## Latest Authoritative Result (Round 19 Re-review — Canonical End Marker)
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Source Re-review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `9.6/10` (`96/100`); `CR-011` is resolved and no unresolved implementation-source findings remain.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: Fresh API/E2E is required on `648dad8a3e6312fd6352fd7dc7600fd4c27fbb1d`. This is not API/E2E or delivery sign-off; if execution passes, return for the separate proportional durable-probe review.
