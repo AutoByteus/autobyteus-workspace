@@ -366,6 +366,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(source).toContain('ref="workspaceFlowRef"');
     expect(source).toContain('new ResizeObserver');
     expect(source).toContain('setRightPanelWorkspaceWidth');
+    expect(source).toContain('LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX / 2');
     expect(source).toContain("width: rightPanelWidth + 'px'");
   });
 

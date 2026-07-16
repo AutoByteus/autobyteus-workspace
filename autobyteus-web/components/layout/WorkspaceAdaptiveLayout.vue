@@ -119,6 +119,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 import { useShellPrimaryNavigation } from '~/composables/useShellPrimaryNavigation';
+import { LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX } from '~/utils/layout/responsiveLayoutPolicy';
 
 defineProps<{
   showFileContent: boolean
@@ -149,8 +150,12 @@ const workspaceFlowRef = ref<HTMLElement | null>(null);
 let workspaceFlowResizeObserver: ResizeObserver | null = null;
 
 const registerWorkspaceFlowWidth = (width: number): void => {
-  if (width > 0) {
-    setRightPanelWorkspaceWidth(width);
+  const effectiveLeftHandleOverlap = LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX / 2;
+  if (width > effectiveLeftHandleOverlap) {
+    // The shell's 6px left handle overlaps the row by 3px (`margin-left: -3px`).
+    // Compensate before handing the capacity boundary to the resolver, which
+    // accounts for the full logical left resize handle in viewport space.
+    setRightPanelWorkspaceWidth(width - effectiveLeftHandleOverlap);
   }
 };
 

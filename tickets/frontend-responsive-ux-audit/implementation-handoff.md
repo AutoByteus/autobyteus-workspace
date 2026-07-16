@@ -34,6 +34,8 @@ Architecture review Round 8 approved the bounded LID-001 fix for right-tool reop
 
 The solution-design re-entry identified the bounded right-panel resize defect covered by FR-033/AC-034. This implementation restores a center-plus-right flow-width registration from `WorkspaceAdaptiveLayout` using a cleaned-up `ResizeObserver`, makes `useRightPanel.rightPanelWidth` the bounded actual width using the approved `480px` center minimum and `4px` right resize handle, and feeds that actual width into the single composed responsive adapter. The docked divider therefore stops at the center-preserving maximum instead of making the policy switch presentation because of an oversized drag input. The prior LID-001 drawer/strip trigger ownership fix remains unchanged.
 
+API/E2E Round 10 then reproduced CR-011: the measured flow already reflected the left shell handle's effective `3px` contribution (`width: 6px` with `margin-left: -3px`), while the pure resolver correctly retained the full logical `6px` left-handle accounting. The bounded fix now subtracts that `3px` overlap at the measurement-to-boundary registration, preserving the resolver's full left-handle and right-handle accounting while making the docked candidate fit exactly at the wide drag limit. No presentation forcing, center reduction, or probe weakening was introduced.
+
 ## What Changed
 
 - Replaced standard `/workspace` route-level desktop/mobile branching with one adaptive desktop-capability workspace layout.
@@ -58,6 +60,7 @@ The solution-design re-entry identified the bounded right-panel resize defect co
 - Made the left shell a definite full-height flex column and verified the real `AppLeftPanel` sections/history scroll owner in the drawer regression.
 - Made top `Tools` trigger ownership drawer-only so a visible user-owned right strip is never duplicated by a semantic trigger; added component/source and browser assertions for strip/drawer reopen behavior.
 - Restored the center-preserving right-panel resize bound: `WorkspaceAdaptiveLayout` observes its center-plus-right flow width, `useRightPanel` clamps actual width to `flow - 480px - 4px`, and the composed policy/render path consumes that bounded width.
+- Reconciled CR-011's measured-flow geometry: the resize adapter compensates the left handle's 3px negative-margin overlap before registration, so the single resolver's full 6px logical left-handle accounting and 4px right-handle accounting agree with the actual row.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -92,6 +95,7 @@ The solution-design re-entry identified the bounded right-panel resize defect co
 | Finding | Implementation path | Verification |
 | --- | --- | --- |
 | FR-033 / AC-034 bounded docked resize | `useRightPanel.ts` registers the center-plus-right flow width, computes `max(0, flowWidth - WORKSPACE_CENTER_MIN_WIDTH_PX - RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX)`, clamps drag updates and exposes bounded `rightPanelWidth`; `useResponsiveWorkspaceShell.ts` passes that actual width to the one composed resolver; `WorkspaceAdaptiveLayout.vue` observes/cleans up the flow width and renders the bounded actual width. | `useRightPanel.spec.ts` covers maximum, normal minimum, below-minimum center-preserving clamp, and drag clamping. `WorkspaceAdaptiveLayout.spec.ts` proves the docked panel remains visible with no strip/top trigger and retains a `480px` center minimum. `workspace-responsive-probe.mjs` adds wide-viewport drag-beyond-bound browser coverage for downstream execution. |
+| CR-011 geometry reconciliation | `WorkspaceAdaptiveLayout.vue` subtracts the effective `LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX / 2` overlap before calling `setRightPanelWorkspaceWidth`; the pure resolver retains its full logical left-handle constant, while `useRightPanel` retains the right-handle subtraction. | The adaptive source contract asserts the overlap compensation; focused unit/component/build/syntax checks pass. The unchanged durable browser drag scenarios at `1280x800` and `1440x900` are ready for fresh API/E2E execution. |
 
 ## Key Files Or Areas
 
