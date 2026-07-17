@@ -145,6 +145,30 @@ describe('MarkdownRenderer', () => {
     }));
   });
 
+  it('keeps incomplete absolute paths unchanged across links, prose, inline code, and fences', async () => {
+    const incompletePath = '/Users/normy/.../compaction-lifecycle-contract.md';
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: [
+          `[truncated](${incompletePath})`,
+          incompletePath,
+          `\`${incompletePath}\``,
+          `\`\`\`text\n${incompletePath}\n\`\`\``,
+        ].join('\n'),
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    expect(wrapper.findAll('[data-event-monitor-file-action-id]')).toHaveLength(0);
+    expect(wrapper.find('a').attributes('href')).toBe(incompletePath);
+    expect(wrapper.text()).toContain(incompletePath);
+    expect(wrapper.findAll('code').map((code) => code.text())).toContain(incompletePath);
+    expect(wrapper.find('pre code').text()).toBe(incompletePath);
+    expect(wrapper.emitted('file-path-action')).toBeUndefined();
+  });
+
   it('should render MermaidDiagram component for mermaid blocks', () => {
     // We rely on useMarkdownSegments to parse this. 
     // Since useMarkdownSegments is a real composable (not mocked here), 

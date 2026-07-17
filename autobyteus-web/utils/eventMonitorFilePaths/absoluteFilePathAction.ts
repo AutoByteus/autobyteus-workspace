@@ -72,6 +72,7 @@ export function findAbsoluteFilePathCodeCandidates(value: string): AbsoluteFileP
 
 const WINDOWS_ABSOLUTE_PATH = /^[A-Za-z]:[\\/]/;
 const TRAILING_PATH_PUNCTUATION = /[.,;:!?\]}\)>]+$/;
+const INCOMPLETE_PATH_COMPONENTS = new Set(['.', '..', '...', '…']);
 
 export function isAbsoluteFilePath(value: string): boolean {
   const candidate = value.trim();
@@ -84,7 +85,12 @@ export function normalizeAbsoluteFilePath(value: string): string | null {
     return null;
   }
 
-  const normalized = candidate.replace(/\\/g, '/');
+  const separatorNormalized = candidate.replace(/\\/g, '/');
+  if (separatorNormalized.split('/').some((component) => INCOMPLETE_PATH_COMPONENTS.has(component))) {
+    return null;
+  }
+
+  const normalized = separatorNormalized;
   if (normalized === '/') {
     return null;
   }
@@ -135,7 +141,12 @@ export function createAbsoluteFilePathAction(
   candidate: { rawCandidate: string; normalizedCandidate: string },
   sourceKind: AbsoluteFilePathSourceKind,
 ): AbsoluteFilePathAction | null {
-  const previewType = determineFilePreviewType(candidate.normalizedCandidate);
+  const normalizedCandidate = normalizeAbsoluteFilePath(candidate.normalizedCandidate);
+  if (!normalizedCandidate) {
+    return null;
+  }
+
+  const previewType = determineFilePreviewType(normalizedCandidate);
   if (previewType === 'Unsupported') {
     return null;
   }
@@ -143,9 +154,9 @@ export function createAbsoluteFilePathAction(
   return {
     id,
     rawCandidate: candidate.rawCandidate,
-    normalizedCandidate: candidate.normalizedCandidate,
+    normalizedCandidate,
     sourceKind,
-    displayLabel: displayNameForAbsoluteFilePath(candidate.normalizedCandidate),
+    displayLabel: displayNameForAbsoluteFilePath(normalizedCandidate),
     previewType,
   };
 }

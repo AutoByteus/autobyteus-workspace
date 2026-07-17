@@ -7,7 +7,7 @@
 - Branch: `codex/event-monitor-absolute-path-file-preview`
 - Base: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
 - Architecture review: **Pass, round 2**
-- Implementation status: **CR-F-006 local fix complete; resubmission required for implementation source review**
+- Implementation status: **Invalid-absolute-path local fix complete; resubmission required for implementation source review**
 
 ## Cumulative Reviewed Solution Package
 
@@ -19,6 +19,7 @@
 - Architecture review: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/design-review-report.md`
 - Implementation source review round 1: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/code-review-report.md`
 - User verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md`
+- Invalid absolute-path verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-invalid-absolute-path-report.md`
 - This implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/implementation-handoff.md`
 
 ## What Changed
@@ -53,12 +54,20 @@
 - Added `.lua` to the shared Text policy. `determineFileType('/tmp/script.lua')` now returns `Text`, action descriptors carry `previewType: 'Text'`, Event Monitor Markdown renders the Lua path action, and File Explorer routes it through the text reader rather than `Unsupported`.
 - Added policy, action, MarkdownRenderer, and File Explorer regressions for the Lua path. Archive/installer/binary refusal behavior remains unchanged.
 
+### Bounded local fix for invalid/truncated absolute paths
+
+- `normalizeAbsoluteFilePath()` now separator-normalizes POSIX and Windows candidates, rejects exact `.`/`..`/`...`/`…` components, and preserves ordinary complete names such as `release..notes.md`.
+- `createAbsoluteFilePathAction()` revalidates its normalized candidate before supported-type classification, so invalid candidates cannot be actionized even when called directly with a malformed candidate object.
+- Invalid raw Markdown links retain ordinary generic link rendering; invalid prose, inline-code, and fenced-code candidates remain source-faithful with no Event Monitor action. No filesystem existence check or render-time read was added.
+- Added table-driven normalizer/action coverage and renderer coverage for POSIX/Windows separators, all four invalid components, dotted complete filenames, and invalid link/prose/inline/fenced sources.
+
 ## Behavior Traceability
 
 | Behavior | Implemented path | Outcome |
 | --- | --- | --- |
 | BEH-001 — Event-Monitor-only absolute actions and source preservation | `utils/eventMonitorFilePaths/absoluteFilePathAction.ts`; `utils/fileExplorer/fileTypePolicy.ts`; `composables/useMarkdownSegments.ts`; `MarkdownRenderer.vue`; segment/feed capability transport | Opt-in only. Supported POSIX/Windows links, prose, inline code, and fences receive explicit keyboard-accessible actions; unsupported archive/installer/binary candidates remain literal copyable text/code. |
 | BEH-002 — Raw link destination and ordinary-link preservation | Raw `link_open` token metadata in `useMarkdownSegments`; ID lookup/delegation in `MarkdownRenderer.vue` | File actions never inspect browser-resolved `anchor.href`; HTTP(S) remains the existing external-link path; relative/non-file links remain ordinary Markdown. |
+| BEH-010 — Incomplete/placeholder absolute paths remain source-faithful | `normalizeAbsoluteFilePath()`; `createAbsoluteFilePathAction()`; `useMarkdownSegments.ts`; `MarkdownRenderer.spec.ts` | Exact `.`, `..`, `...`, and Unicode `…` components are rejected for POSIX/Windows candidates before type/action creation. Ordinary Markdown links remain generic links; prose/code remain unchanged and no Files action/read is initiated. |
 | BEH-003 — Shared transient read-only preview and dedupe | `fileExplorerContentActions.ts`; `fileExplorerState.ts`; `fileTypePolicy.ts`; `FileExplorerTabs.vue`; `FileViewer.vue` | Existing supported path tabs are reused/selected; Event Monitor intent forces preview, hides edit controls, and uses shared text/media/PDF/spreadsheet adapters. Unsupported candidates never enter this Event Monitor path. |
 | BEH-004 — Desktop idempotent Files selection | `useEventMonitorFilePreview.ts`; `useRightPanel.ts`; `useRightSideTabs.ts`; active tab focus marker in `FileExplorerTabs.vue` | `openRightPanel()` sets visible rather than toggling; Files is selected after the preview request; no overlay or focus trap is created. |
 | BEH-005 — Phone-first Files request/inline presentation | `types/mobileWork.ts`; `mobileWorkStore.ts`; `MobileFiles.vue`; `MobileFileViewer.vue` | Matching revision/context/workspace request selects the existing Mobile Files preview inline and read-only; stale/mismatched requests do nothing. |
@@ -142,6 +151,15 @@ All checks below were run in this task worktree before the temporary dependency 
 - ✅ Broader changed-chain plus Lua regression suite:
   - `pnpm --dir autobyteus-web exec vitest run utils/fileExplorer/__tests__/fileUtils.test.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts components/conversation/__tests__/AIMessage.spec.ts components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/mobile/__tests__/MobileFiles.spec.ts components/mobile/__tests__/MobileFileViewer.spec.ts stores/__tests__/mobileWorkStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts composables/__tests__/useRightPanel.spec.ts --reporter=dot`
   - Result: `14 files, 93 tests passed`.
+- ✅ Invalid-absolute-path regression suite:
+  - `pnpm --dir autobyteus-web exec vitest run utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts utils/fileExplorer/__tests__/fileUtils.test.ts stores/__tests__/fileExplorerNodeRouting.spec.ts --reporter=dot`
+  - Result: `4 files, 54 tests passed`.
+- ✅ Latest broader changed-chain plus invalid-path regression suite:
+  - Same 14-file changed-chain command above, with the updated normalizer/action/renderer tests.
+  - Result: `14 files, 106 tests passed`.
+- ✅ Invalid-path source checks:
+  - `git diff --check` on changed implementation/test paths passed.
+  - Table-driven policy coverage confirms no action for exact `.`, `..`, `...`, or Unicode `…` components across POSIX and Windows separators, while dotted complete filenames remain eligible.
 - ✅ Unsupported policy source checks:
   - `git diff --check` on changed implementation/test paths passed.
   - The pure policy classifies `.dmg`, `.zip`, installers, application bundles, and unknown binary extensions as `Unsupported`; supported text/media families remain action-eligible.
@@ -187,6 +205,6 @@ API/E2E owns independent executable coverage and environment validation after so
 
 ## Downstream Handoff Status
 
-- `code_reviewer`: **resubmission required — implementation source/structural review after the user-verification unsupported-preview fix and CR-F-001 through CR-F-005 fixes**.
+- `code_reviewer`: **resubmission required — implementation source/structural review after the invalid-absolute-path fix, CR-F-006, the user-verification unsupported-preview fix, and CR-F-001 through CR-F-005 fixes**.
 - `api_e2e_engineer`: **not yet run and no sign-off claimed**; begin only after source review passes.
 - `delivery_engineer`: **held; do not finalize or rebuild the delivery handoff until the user verifies the rebuilt Electron artifact**.

@@ -29,6 +29,28 @@ describe('absolute Event Monitor file path policy', () => {
     expect(normalizeAbsoluteFilePath('http://example.test/report.md')).toBeNull();
   });
 
+  it.each([
+    '/Users/normy/.../report.md',
+    '/tmp/../report.md',
+    '/tmp/./report.md',
+    '/tmp/…/report.md',
+    'C:\\Users\\normy\\...\\report.md',
+    'C:\\tmp\\..\\report.md',
+    'C:\\tmp\\.\\report.md',
+    'C:\\tmp\\…\\report.md',
+  ])('rejects incomplete path component %s', (candidate) => {
+    expect(normalizeAbsoluteFilePath(candidate)).toBeNull();
+  });
+
+  it.each([
+    '/Users/normy/release..notes.md',
+    '/Users/normy/release...notes.md',
+    'C:\\Users\\normy\\release..notes.md',
+    'C:\\Users\\normy\\release...notes.md',
+  ])('preserves complete filenames containing dots: %s', (candidate) => {
+    expect(normalizeAbsoluteFilePath(candidate)).not.toBeNull();
+  });
+
   it('keeps unambiguous literal-space code paths intact', () => {
     expect(findAbsoluteFilePathCodeCandidates('/tmp/my file.md\n[report](C:\\Work\\my report.md)')).toEqual([
       expect.objectContaining({
@@ -68,6 +90,11 @@ describe('absolute Event Monitor file path policy', () => {
       'installer-action',
       { rawCandidate: '/tmp/AutoByteus.dmg', normalizedCandidate: '/tmp/AutoByteus.dmg' },
       'prose',
+    )).toBeNull();
+    expect(createAbsoluteFilePathAction(
+      'incomplete-action',
+      { rawCandidate: '/Users/normy/.../report.md', normalizedCandidate: '/Users/normy/.../report.md' },
+      'markdown-link',
     )).toBeNull();
   });
 });
