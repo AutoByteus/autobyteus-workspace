@@ -1,0 +1,38 @@
+Finalization target integrated-state check
+2026-07-17T15:13:31Z
+TARGET_HEAD=419ad80ea92cd7f720e652cd1b03459a6c6a516e
+TICKET_HEAD=9855e3e8d1adab04780811e6f63eea876e2e90db
+COMMAND=pnpm --dir autobyteus-web exec vitest run components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts composables/__tests__/useMarkdownSegments.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts --reporter=dot
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+
+stderr | composables/__tests__/useMarkdownSegments.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/LeftSidebarStrip.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useMarkdownSegments.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/LeftSidebarStrip.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·······················
+
+ Test Files  3 passed (3)
+      Tests  23 passed (23)
+   Start at  17:13:34
+   Duration  6.43s (transform 3.23s, setup 16.75s, collect 198ms, tests 141ms, environment 818ms, prepare 511ms)
+

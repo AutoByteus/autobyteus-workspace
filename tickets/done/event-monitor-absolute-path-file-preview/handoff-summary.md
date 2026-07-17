@@ -64,6 +64,11 @@ The build is unsigned/not notarized (`identity explicitly is set to null`). Deli
 
 Ticket archival, branch finalization, tag creation, publication, and deployment are authorized and being performed from the preserved blocked-verification record. The unavailable authenticated, paired-mobile, packaged/native, Windows, and full visual checks remain explicitly recorded as residual evidence gaps; they are not represented as passed.
 
+- Archived ticket commit: `9855e3e8d1adab04780811e6f63eea876e2e90db`.
+- Ticket branch: pushed to `origin/codex/event-monitor-absolute-path-file-preview`.
+- Finalization target merge commit: `419ad80ea92cd7f720e652cd1b03459a6c6a516e`.
+- Finalization-target integrated-state check: 3 files / 23 tests passed; evidence `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-absolute-path-file-preview/evidence/delivery-finalization-integrated-check.log`.
+
 ## Cumulative Artifact Package
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/requirements.md`
