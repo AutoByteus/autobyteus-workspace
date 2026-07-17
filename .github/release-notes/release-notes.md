@@ -1,7 +1,8 @@
 ## What's New
-
-- Added a manually resizable Settings navigation separator so users can reclaim content width or restore the menu without changing sections or data.
+- Unified the responsive workspace shell across standard desktop routes while preserving route-aware navigation and workspace-only right tools.
 
 ## Improvements
+- Improved constrained-width strip and drawer discoverability, independent drawer focus/layer behavior, and native right-tool tab scrolling.
 
-- Matched the separator to the established Workspace gray interaction style, with accessible keyboard controls, zero-width recovery, and responsive focus handling.
+## Fixes
+- Fixed opposite-side strip hit targets and drawer backdrop dismissal behavior across narrow and constrained workspace layouts.
