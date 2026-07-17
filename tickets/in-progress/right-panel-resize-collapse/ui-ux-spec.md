@@ -10,8 +10,8 @@ Keep the right tools surface predictable: a user drag changes docked width, an e
 
 ## Related Requirements And Acceptance Criteria
 
-- Requirements: R-001–R-005
-- Acceptance criteria: AC-001–AC-006
+- Requirements: R-001–R-006
+- Acceptance criteria: AC-001–AC-007
 
 ## Users / Personas / Contexts
 
@@ -25,6 +25,7 @@ Keep the right tools surface predictable: a user drag changes docked width, an e
 | UXJ-001 | Desktop workspace | Left panel docked; right panel docked | Collapse left navigation, enlarge right dock | Left strip + center + right dock remain visible while compact floor fits | R-001, R-002, AC-001, AC-002 |
 | UXJ-002 | Desktop workspace | Left strip + right dock | Explicitly collapse right tools | Right strip is visible; selecting a tool redocks when capacity fits | R-004, AC-004 |
 | UXJ-003 | Constrained workspace | Any supported shell state | Use right tools when dock cannot fit | Right strip opens a transient drawer | R-003, AC-005 |
+| UXJ-004 | Any desktop drawer | Left or right drawer open | Retain workspace context while focusing the drawer | Lighter consistent scrim keeps underlying content recognizable | R-006, AC-007 |
 
 ## Journey Details
 
@@ -52,6 +53,14 @@ Keep the right tools surface predictable: a user drag changes docked width, an e
 3. The strip advertises `open-drawer` and remains the only visible right-side opener.
 4. Selecting a tool opens the existing modal drawer with focus restoration and no duplicate strip underneath.
 
+### UXJ-004 — Contextual drawer scrim
+
+1. User opens either the left navigation drawer or right tools drawer.
+2. The drawer remains the dominant bright surface.
+3. A consistent lighter scrim covers the non-drawer workspace at approximately 30% black opacity.
+4. The underlying conversation/workspace remains recognizable enough to preserve orientation; it is de-emphasized, not visually blacked out.
+5. Existing backdrop click, Escape, focus trapping, return-focus, and opposite-strip hit-target behavior remain unchanged.
+
 ## Screen / Surface / Component Inventory
 
 | Surface / Component | Purpose | Entry Conditions | Important States | Exit / Next Action |
@@ -59,7 +68,8 @@ Keep the right tools surface predictable: a user drag changes docked width, an e
 | `WorkspaceAdaptiveLayout` center/right flow | Owns center/right split and renders resolver result | Standard workspace route | Docked right panel, right strip, right drawer | Resize, collapse, tool selection, drawer close |
 | Right separator | Changes the right panel preferred width | Right panel docked | Hover, active drag, compact boundary | Width update; no presentation switch while fit |
 | `RightSidebarStrip` | Tool opener or explicit redock affordance | Resolver returns strip | `redock-panel`, `open-drawer` | Tool selection emits redock/open |
-| `WorkspaceRightToolDrawer` | Transient constrained tool surface | Strip activation is `open-drawer` | Open, focus-trapped, dismissible | Close returns focus to strip trigger |
+| `WorkspaceRightToolDrawer` | Transient constrained tool surface | Strip activation is `open-drawer` | Open, focus-trapped, dismissible, lighter contextual scrim | Close returns focus to strip trigger |
+| Left navigation drawer | Transient navigation surface | Left strip activation is `open-drawer` | Open, focus-trapped, dismissible, same lighter scrim | Close returns focus to navigation trigger |
 | `RightSideTabs` | Docked right tools and explicit collapse toggle | Right panel docked | Active tab, collapse control | Tab selection or explicit hide |
 
 ## Interaction And State-Transition Specification
@@ -71,7 +81,7 @@ Keep the right tools surface predictable: a user drag changes docked width, an e
 | Left strip + right dock, compact fail | Width decreases beyond compact capacity | Right strip appears | `rightPanel.presentation=strip`, activation `open-drawer` | Responsive yield only; user preference remains visible | Open drawer from tool strip |
 | Explicit right collapse, fitting | Click right collapse | Dock disappears; strip appears | `rightPanel.preference=hidden-by-user`, activation `redock-panel` | Visibility preference changes | Select a tool to redock |
 | Explicit right strip, select tool | Click a strip tool | Dock returns without overlay | `rightPanel.presentation=docked`; drawer absent | Visibility preference becomes visible | Use selected docked tool |
-| Responsive right strip | Click a strip tool | Backdrop and drawer appear | Drawer owns transient interaction | Focus is remembered/restored | Use tool, close drawer |
+| Responsive right strip | Click a strip tool | Lighter backdrop and drawer appear | Drawer owns transient interaction; workspace remains recognizable | Focus is remembered/restored | Use tool, close drawer |
 
 ## Markdown Wireframes / Visual Structure
 
@@ -109,6 +119,8 @@ No change to empty workspace state or navigation actions.
 
 A drawer opened by a true constraint remains dismissible through existing backdrop/Escape behavior. An incorrect responsive strip must not be used as a recovery path for a fitting user-sized dock.
 
+The scrim must not be so dark that the underlying workspace loses orientation. If a platform/theme changes the effective backdrop color, keep the visible darkness within the approved 25–35% black range.
+
 ### Disabled / Unavailable
 
 No new disabled state. Existing unavailable tabs remain governed by the right-tool catalog.
@@ -134,6 +146,14 @@ Not affected.
 
 No copy changes.
 
+## Drawer Scrim Visual Contract
+
+- Target: approximately 30% black over the underlying surface.
+- Acceptable range: 25–35% black opacity.
+- Apply consistently to left and right transient drawers.
+- Preserve the existing exception that persistent opposite-side strips may remain outside the backdrop hit-test region when they are intentionally actionable.
+- Do not remove the scrim entirely; the drawer must remain clearly modal.
+
 ## Data And API Dependencies
 
 No backend/API dependency. The UI consumes the existing responsive shell state and right-panel composable.
@@ -146,6 +166,7 @@ Visual restyling, tool ordering, mobile redesign, generic surface controls, and 
 
 - Exact viewport threshold is derived from current measured widths and constants, not a new fixed breakpoint.
 - Live browser validation is desirable but may require an available workspace fixture; pure policy/component coverage is required regardless.
+- The current implementation uses different left/right backdrop opacities; implementation should converge both owners on the lighter shared target.
 
 ## Approval Status
 

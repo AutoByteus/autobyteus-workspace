@@ -14,6 +14,8 @@
 - Preserved responsive right-strip/drawer fallback when that compact candidate does not fit.
 - Added exact compact-fit and compact-fail policy assertions, including `centerProtectionMode`.
 - Added rendered adaptive-layout coverage for the left-collapse plus right-resize journey, asserting dock persistence and absence of strip/drawer surfaces.
+- Standardized both existing transient drawer backdrops to `bg-black/30` (30% black) without changing drawer lifecycle or hit-test geometry.
+- Added source and rendered-class assertions for both scrims and synchronized the durable workspace layout documentation.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -24,12 +26,19 @@
 | BE-003 | Keep the responsive strip/drawer path only when compact capacity fails. | Same resolver fallback -> existing `resolveStripActivation()` -> `WorkspaceAdaptiveLayout` drawer lifecycle. | Implemented; compact-fail returns `strip`, `responsive-yield`, and `open-drawer`. |
 | BE-004 | Preserve explicit right-collapse redock semantics. | Existing `responsiveStripActivation.ts` and adaptive-layout redock path. | Preserved; existing rendered redock test remains green. |
 | BE-005 | Preserve automatic, narrow, short-height, left-adaptation, and accessibility paths. | Existing resolver guards and layout lifecycle; focused regression suites. | Preserved; all three focused suites pass. |
+| BE-006 | Keep both transient drawer scrims modal but lighter and consistent at approximately 30% black. | Existing `layouts/default.vue` left backdrop and `WorkspaceRightToolDrawer.vue` right backdrop. | Implemented as `bg-black/30`; backdrop dismissal, focus, z-order, and opposite-strip styles remain unchanged. |
 
 ## Key Files Or Areas
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/default.vue`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default-drawer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/docs/workspace_layout.md`
 
 ## Important Assumptions
 
@@ -49,7 +58,7 @@
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `No Refactor Needed`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: The single authoritative responsive policy now orders the compact user-sized candidate before the existing automatic left-hidden fallback; no new state, API, drawer path, or broad refactor was introduced.
+- Evidence / notes: The single authoritative responsive policy now orders the compact user-sized candidate before the existing automatic left-hidden fallback. The bounded AC-007 rework changes only existing backdrop classes and test/docs assertions; no new state, API, drawer path, or broad refactor was introduced.
 
 ## Legacy / Compatibility Removal Check
 
@@ -59,7 +68,7 @@
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes` — policy file is 499 non-empty lines; delta is below 220 lines.
-- Notes: The change reuses existing candidate and activation structures and keeps all drawer logic in its existing owner.
+- Notes: The change reuses existing candidate and activation structures and keeps all drawer logic in its existing owner. The scrim rework replaces two presentation classes directly; no compatibility styling path was retained.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -83,6 +92,9 @@
 - `pnpm -C autobyteus-web exec vitest run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts composables/__tests__/useRightPanel.spec.ts --reporter=dot`
   - Passed: 3 files, 50 tests.
   - Warnings: existing KaTeX quirks-mode warnings and non-Electron server initialization notices.
+- `pnpm -C autobyteus-web exec vitest run layouts/__tests__/default.spec.ts layouts/__tests__/default-drawer.spec.ts components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts utils/layout/__tests__/responsiveLayoutPolicy.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts composables/__tests__/useRightPanel.spec.ts --reporter=dot`
+  - Passed: 6 files, 65 tests, including AC-007 source/visual scrim assertions.
+  - Warnings: existing KaTeX quirks-mode warnings and non-Electron server initialization notices.
 - `git diff --check`
   - Passed.
 - Standalone `vue-tsc` typecheck
@@ -90,13 +102,13 @@
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: `WorkspaceAdaptiveLayout` center/right split; left user-hidden strip plus user-sized right resize; compact-fit dock and compact-fail strip behavior.
+- Affected surfaces / journeys: `WorkspaceAdaptiveLayout` center/right split; left user-hidden strip plus user-sized right resize; compact-fit dock and compact-fail strip behavior; left and right transient drawer scrims.
 - Approved UI/UX, interaction, requirement, or design references: `requirements.md` AC-001–AC-005, `ui-ux-spec.md` UXJ-001–UXJ-003, and `design-spec.md`.
-- Existing design system, shared components, and adjacent product surfaces reviewed: `WorkspaceAdaptiveLayout.vue`, `useResponsiveWorkspaceShell`, `useRightPanel`, `RightSidebarStrip`, existing drawer/redock lifecycle, and `docs/workspace_layout.md`.
+- Existing design system, shared components, and adjacent product surfaces reviewed: `WorkspaceAdaptiveLayout.vue`, `useResponsiveWorkspaceShell`, `useRightPanel`, `RightSidebarStrip`, `layouts/default.vue`, `WorkspaceRightToolDrawer.vue`, existing drawer/redock lifecycle, and `docs/workspace_layout.md`.
 - Project development / preview instructions and rendered surface used: Existing Vitest + Vue Test Utils shallow-render fixture for `WorkspaceAdaptiveLayout`; the focused component fixture exercises the production presentation and event ownership path.
-- States, layouts, viewports, and interactions inspected: 768x700 desktop boundary; left visibility collapse; right separator mousedown/mousemove/mouseup recording `user-sized`; docked panel at 200px center floor; no right strip or drawer.
+- States, layouts, viewports, and interactions inspected: 768x700 desktop boundary; left visibility collapse; right separator mousedown/mousemove/mouseup recording `user-sized`; docked panel at 200px center floor; no right strip or drawer; mounted left/right drawer backdrops with `bg-black/30` classes, backdrop dismissal, Escape, focus return, z-order, and opposite-strip style assertions.
 - Visual or interaction issues found and corrected: No in-scope rendered defects; the new journey confirms the incorrect strip/drawer is absent at compact fit.
-- Supporting evidence and remaining unverified states or limitations: Focused component test passed. Live browser/Electron visual inspection, narrow/short-height live states, and broader API/E2E execution remain downstream work.
+- Supporting evidence and remaining unverified states or limitations: Focused component/layout tests passed. Prior browser evidence remains valid for BE-001–BE-005; AC-007 browser/live visual validation and broader API/E2E execution remain downstream work.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 

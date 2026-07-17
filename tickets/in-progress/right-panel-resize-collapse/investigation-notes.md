@@ -7,7 +7,7 @@
 - Investigation Goal: Explain why a user-sized right panel changes from docked to a strip after the left navigation is collapsed, and define the smallest safe correction that preserves explicit collapse/redock behavior.
 - Scope Classification: `Small`
 - Scope Classification Rationale: The defect is in the shared responsive workspace policy and its focused layout tests; no backend, persistence, or cross-repository contract is involved.
-- Scope Summary: Preserve a deliberate right-panel resize intent when the left panel is user-collapsed; prevent a responsive strip/drawer fallback while a compact center floor still fits; retain the existing explicit right-panel collapse and genuinely constrained drawer behavior.
+- Scope Summary: Preserve a deliberate right-panel resize intent when the left panel is user-collapsed; prevent a responsive strip/drawer fallback while a compact center floor still fits; retain the existing explicit right-panel collapse and genuinely constrained drawer behavior; lighten and standardize both transient drawer scrims so underlying content remains visible.
 - Primary Questions To Resolve:
   - Which state transition turns the docked right panel into a strip?
   - Why does a click on the resulting strip open a drawer?
@@ -37,7 +37,7 @@ The user reports this supported desktop journey: maximize the application, colla
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/ui-ux-spec.md` | User journey and state-transition contract for docked, strip, and drawer presentations | Distinguishes user-sized resize, explicit collapse/redock, and responsive yield; includes supplied screenshot references | Requirements, design spec | R-001–R-005; AC-001–AC-006 | `Requirements-ready` | Intended behavior; approval follows the user request | Keep synchronized if architecture review changes the state contract |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/ui-ux-spec.md` | User journey and state-transition contract for docked, strip, and drawer presentations | Distinguishes user-sized resize, explicit collapse/redock, responsive yield, and lighter contextual scrims; includes supplied screenshot references | Requirements, design spec | R-001–R-006; AC-001–AC-007 | `Requirements-ready` | Intended behavior; approval follows the user request | Keep synchronized if architecture review changes the state contract |
 
 ## Source Log
 
@@ -60,6 +60,7 @@ The user reports this supported desktop journey: maximize the application, colla
 | 2026-07-17 | Setup | `pnpm -C autobyteus-web exec nuxi prepare` | Generate missing `.nuxt/tsconfig.json` | Nuxt types generated successfully | No |
 | 2026-07-17 | Test | `pnpm -C autobyteus-web exec vitest run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts composables/__tests__/useRightPanel.spec.ts --reporter=dot` | Establish current baseline | 3 files, 47 tests passed after Nuxt preparation; warnings were only KaTeX quirks-mode warnings | No |
 | 2026-07-17 | User evidence | Supplied screenshots `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_8482332e24b048f8b364a01db133b3e7/solution_designer_c57872615c404d48928a797b99956134/context_files/ctx_d77b8e3f6572__image.png`, `ctx_966f9d1594b8__image.png`, `ctx_ce0dc2de13cc__image.png`, `ctx_99de889f216d__image.png` | Confirm observed surface states | Screenshots show a normal docked right panel, collapsed strips, and a transient overlay drawer; they support the user journey but do not expose numeric widths | No |
+| 2026-07-17 | User feedback | Supplied screenshot `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_8482332e24b048f8b364a01db133b3e7/solution_designer_c57872615c404d48928a797b99956134/context_files/ctx_394804d3488f__image.png` and follow-up message | Validate backdrop readability | User confirms the underlying content is too dark and requests a lighter scrim that preserves visibility/context | Record as R-006 / AC-007; implementation must apply consistently left and right |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -69,6 +70,7 @@ The user reports this supported desktop journey: maximize the application, colla
 | BE-002 | User | User drags the right center/right separator | `WorkspaceAdaptiveLayout.vue` mousedown -> `useRightPanel.initDragRightPanel` -> `user-sized` intent + preferred width -> responsive resolver -> docked/strip presentation | Current right panel stays docked while policy candidate fits; after left collapse, the resolver can incorrectly choose a strip before honoring the user-sized 200px center floor | `useRightPanel.ts:86-118`; `responsiveLayoutPolicy.ts:381-448`; existing policy tests |
 | BE-003 | System/User | A responsive resolver emits a right strip and the user selects a tool | `resolveStripActivation` -> `RightSidebarStrip.selectTab` -> `WorkspaceAdaptiveLayout.openRightDrawer` -> `WorkspaceRightToolDrawer` | A strip with visible right preference is treated as responsive and opens an overlay drawer | `responsiveStripActivation.ts`; `RightSidebarStrip.vue`; `WorkspaceAdaptiveLayout.vue`; screenshot #4 |
 | BE-004 | User | User explicitly collapses the right panel from the docked tab surface | `RightSideTabs` toggle -> `useRightPanel.set/toggleRightPanel(false)` -> resolver -> user-hidden strip -> activation decision | When a dock candidate fits, the strip is a redock affordance and selecting a tool restores the docked panel rather than opening a drawer; a truly constrained state may still use a drawer | `RightSideTabs.vue`; `responsiveStripActivation.ts`; `WorkspaceAdaptiveLayout.spec.ts` |
+| BE-006 | User/System | User opens either transient left navigation or right tools drawer | Drawer owner renders a fixed backdrop beneath the drawer | Current left/right scrims are visually too dark and inconsistent (`bg-opacity-75` on the left, `bg-gray-900/50` on the right); underlying workspace remains technically visible but loses useful context | `layouts/default.vue`; `WorkspaceRightToolDrawer.vue`; supplied screenshot `ctx_394804d3488f__image.png` |
 
 ## Design Health Assessment Evidence
 
@@ -92,6 +94,8 @@ The user reports this supported desktop journey: maximize the application, colla
 | `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts` | Composes stores into resolver input | Passes actual width plus explicit intent | Preserve boundary; verify tests use the same actual-width semantics |
 | `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | Center/right DOM split, strip/drawer ownership | Correctly maps resolver presentation and strip activation to UI | Add/adjust journey coverage; no drawer workaround |
 | `autobyteus-web/components/layout/RightSidebarStrip.vue` | Right strip affordance | Correctly distinguishes `open-drawer` from `redock-panel` | Preserve contract |
+| `autobyteus-web/layouts/default.vue` | Left shell and left drawer backdrop | Uses a dark `bg-opacity-75` scrim | Standardize to the lighter shared drawer scrim target without changing the opposite-strip hit-test exception |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | Right drawer and backdrop | Uses `bg-gray-900/50`, making the workspace too dark beneath the drawer | Standardize to the same lighter scrim target |
 | `autobyteus-web/utils/layout/responsiveStripActivation.ts` | Strip activation policy | Correct for current input preference/presentation | No change expected |
 | `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts` | Pure policy coverage | Missing left-hidden + user-sized case | Add boundary cases around compact fit and failure |
 | `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` | Rendered shell behavior | Missing reported sequence | Add component assertion for docked persistence and explicit collapse redock |
@@ -137,6 +141,7 @@ An explicit right toggle changes `rightPanelPreference` to `hidden-by-user`. If 
 - The current code already has the correct concepts: user visibility preference, preferred/effective width, resize intent, center protection mode, and explicit strip activation.
 - The policy has a reachable product path to the incorrect state; no synthetic hidden-state mutation is needed. The user can reach it through the normal left collapse, right separator drag, and right strip tool click sequence.
 - The latest focused baseline is green: 47 tests across the three affected test suites.
+- The new UX feedback is a reachable visual behavior: both drawer owners render their backdrops during normal left/right strip activation, so scrim opacity is a user-visible requirement rather than a cosmetic implementation detail.
 
 ## Persisted Data Transition Evidence
 
@@ -165,4 +170,4 @@ An explicit right toggle changes `rightPanelPreference` to `hidden-by-user`. If 
 
 ## Notes For Architecture Reviewer
 
-The proposed change should stay inside the existing responsive policy owner. The key decision is to evaluate a user-sized right-docked candidate using the current left presentation (`strip` when the user collapsed left navigation) before the manual-left-collapse automatic 480px candidate. If it fits, preserve docked presentation and `user-override`; if it does not fit, retain the existing strip fallback. Explicit right collapse remains preference-driven and continues to redock when fit. No persisted-data, API, or broad refactor impact was found.
+The proposed change should stay inside the existing responsive policy and drawer presentation owners. The key decision is to evaluate a user-sized right-docked candidate using the current left presentation (`strip` when the user collapsed left navigation) before the manual-left-collapse automatic 480px candidate. If it fits, preserve docked presentation and `user-override`; if it does not fit, retain the existing strip fallback. Explicit right collapse remains preference-driven and continues to redock when fit. The new visual requirement is to standardize left and right drawer scrims at approximately 30% black (25–35% acceptable) so context remains visible; drawer lifecycle and hit testing remain unchanged. No persisted-data, API, or broad refactor impact was found.

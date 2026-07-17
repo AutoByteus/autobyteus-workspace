@@ -29,21 +29,22 @@ Preserve a deliberate user-sized right dock whenever the current left presentati
 | BE-003 | System/User | R-003; AC-003, AC-005 | Responsive resolver returns right strip | Visible preference maps strip to `open-drawer` | Keep only for compact-capacity failure; no drawer for fitting user-sized dock | DS-001, DS-003 |
 | BE-004 | User | R-004; AC-004 | Right-side collapse control | Hidden preference + fitting strip maps to `redock-panel` | Preserve explicit collapse/redock distinction | DS-001, DS-003 |
 | BE-005 | User/System | R-005; AC-006 | Automatic/narrow/short-height transitions | Existing focused suites pass | Preserve unrelated responsive states and drawer lifecycle | DS-001, DS-003 |
+| BE-006 | User/System | R-006; AC-007 | Left or right drawer opens | Left uses `bg-opacity-75`; right uses `bg-gray-900/50`; underlying content is too dark | Standardize both transient drawer scrims around 30% black while preserving modal behavior | DS-003 |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `ui-ux-spec.md` | User journeys and state transitions for docked, strip, and drawer | R-001–R-005; AC-001–AC-006 | Defines the intended precedence and explicit-collapse distinction | Requirements-ready; intended behavior based on user request |
+| `ui-ux-spec.md` | User journeys and state transitions for docked, strip, and drawer | R-001–R-006; AC-001–AC-007 | Defines the intended precedence, explicit-collapse distinction, and lighter contextual scrim | Requirements-ready; intended behavior based on user request |
 
 ## Task Design Health Assessment
 
 - Change posture: `Bug Fix` / `Behavior Change`
 - Current design issue found: `Yes`
-- Root cause classification: `Missing Invariant`
+- Root cause classification: `Missing Invariant` plus a bounded `Inconsistent Scrim Opacity` presentation defect
 - Refactor needed now: `No`
-- Evidence: The current state owner already records user-sized intent and the current policy already has compact-center support. Only candidate ordering omits the left-collapsed combination. Strip activation and drawer ownership are correct for their inputs.
-- Design response: Strengthen the existing resolver ordering and add boundary tests; do not add layout-local policy or drawer exceptions.
+- Evidence: The current state owner already records user-sized intent and the current policy already has compact-center support. Only candidate ordering omits the left-collapsed combination. Separately, `layouts/default.vue` uses `bg-opacity-75` while `WorkspaceRightToolDrawer.vue` uses `bg-gray-900/50`, making left/right transient surfaces inconsistent and too dark for the requested context-preserving UX. Strip activation and drawer ownership are correct for their inputs.
+- Design response: Strengthen the existing resolver ordering and add boundary tests; standardize only the two existing drawer backdrop classes to approximately 30% black; do not add layout-local policy or drawer exceptions.
 - Refactor rationale: Ownership, API shape, file placement, and state structures are healthy for this scope. A broader refactor would increase risk without addressing a second design defect.
 - Intentional deferrals and residual risk: No new live Electron fixture is designed here. If browser execution is unavailable, focused policy/component evidence must still cover the full state transition.
 
@@ -63,7 +64,7 @@ Preserve a deliberate user-sized right dock whenever the current left presentati
 - Physical-store, privacy/security, disposal/rebuild, and operational constraints: None.
 - Decision: `Not Affected`.
 - Decision rationale: No persisted shape changes and no migration boundary is needed.
-- Acceptance criteria or design constraints supported: R-001–R-005; AC-001–AC-006.
+- Acceptance criteria or design constraints supported: R-001–R-006; AC-001–AC-007.
 
 ## Data-Flow Spine Inventory
 
@@ -71,7 +72,7 @@ Preserve a deliberate user-sized right dock whenever the current left presentati
 | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 | Primary End-to-End | BE-001, BE-002, BE-003, BE-004 | User panel action / shell resize | Visible dock, strip, or drawer state | `resolveResponsiveWorkspaceShellState` | Captures the complete trigger-to-surface path and presentation precedence |
 | DS-002 | Bounded Local | BE-002 | Right separator mousedown/mousemove | Preferred/effective width + `user-sized` intent | `useRightPanel` | Preserves the existing resize state invariant feeding the resolver |
-| DS-003 | Return-Event | BE-003, BE-004 | Strip activation contract | Drawer open or redock completion | `WorkspaceAdaptiveLayout` + `RightSidebarStrip` | Proves why the incorrect strip becomes a drawer and why explicit collapse must redock |
+| DS-003 | Return-Event | BE-003, BE-004, BE-006 | Strip activation and drawer presentation contract | Drawer open, redock completion, or backdrop presentation | `WorkspaceAdaptiveLayout` + `RightSidebarStrip` + left/right drawer owners | Proves why the incorrect strip becomes a drawer, why explicit collapse must redock, and why both drawers preserve workspace context |
 
 ## Primary Execution Spine(s)
 
@@ -83,7 +84,7 @@ Preserve a deliberate user-sized right dock whenever the current left presentati
 | --- | --- | --- | --- | --- |
 | DS-001 | User actions update panel preferences/intent; the shell composes current capacity; the policy chooses the surface; the layout renders the result; strip activation carries the chosen interaction mode | Panel state, shell composition, responsive policy, adaptive layout, strip/drawer action | Responsive policy boundary | Measurement, focus lifecycle, tool tab selection |
 | DS-002 | Pointer drag starts from the rendered separator, records `user-sized`, and updates preferred width; the computed effective width is clamped against the measured flow | Right-panel resize state | `useRightPanel` | DOM listeners and ResizeObserver registration |
-| DS-003 | The resolver's presentation and preference produce either `redock-panel` or `open-drawer`; the strip emits the matching event and the layout owns the final surface transition | Strip activation, dock redock, transient drawer | `resolveStripActivation` plus layout | Focus restoration and selected tab state |
+| DS-003 | The resolver's presentation and preference produce either `redock-panel` or `open-drawer`; the strip emits the matching event, the layout owns the final surface transition, and each drawer owner renders the shared lighter scrim | Strip activation, dock redock, transient drawer, contextual scrim | `resolveStripActivation` plus layout and drawer owners | Focus restoration, selected tab state, backdrop opacity and hit testing |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -101,6 +102,7 @@ Preserve a deliberate user-sized right dock whenever the current left presentati
 - `responsiveLayoutPolicy.ts` owns capacity candidates, center-protection mode, presentation source, and the distinction between user-sized override and responsive yield.
 - `responsiveStripActivation.ts` owns the activation result for an already-selected strip presentation.
 - `WorkspaceAdaptiveLayout.vue` owns DOM rendering, drawer lifecycle, and redock command handling; it must not infer a different fit rule.
+- `layouts/default.vue` and `WorkspaceRightToolDrawer.vue` own the visual backdrop for their respective transient drawer surfaces; both must use the same lighter scrim contract and must not alter drawer lifecycle.
 
 ## Thin Entry Facades / Public Wrappers
 
@@ -133,6 +135,7 @@ The change only alters which presentation is selected at the compact-fit boundar
 | --- | --- | --- | --- | --- | --- |
 | Workspace flow measurement | DS-001, DS-002 | `useRightPanel` | Reports available center/right width via `ResizeObserver` | Left shell changes capacity without a right drag | Layout policy would become coupled to DOM measurement details |
 | Focus/drawer lifecycle | DS-003 | `WorkspaceAdaptiveLayout` / drawer owner | Modal focus, Escape, backdrop, return focus | Only true drawer states need transient interaction | Policy would be polluted with accessibility mechanics |
+| Drawer scrim presentation | DS-003 | Left/right drawer owners | Render the shared approximately 30% black backdrop while preserving modal layering | Keeps visual context without moving visual policy into the resolver | Capacity policy would become coupled to styling |
 | Tool selection | DS-003 | `RightSidebarStrip` / `useRightSideTabs` | Select active tool before emitting activation | Keeps selected tab stable through redock/drawer | Width policy would own catalog behavior |
 
 ## Ownership Boundaries
@@ -205,6 +208,8 @@ The authoritative presentation boundary is `resolveResponsiveWorkspaceShellState
 | `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | Responsive workspace shell | Presentation policy | Evaluate compact user-sized dock before manual-left automatic fallback | One resolver owns candidate ordering | `SurfaceCandidate`, constants |
 | `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts` | Responsive workspace shell | Policy tests | Fit/fail boundary and protection-mode assertions | Colocated pure policy coverage | Existing resolver input shape |
 | `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` | Workspace interaction surfaces | Rendered shell tests | Reported journey and explicit collapse redock | Colocated component behavior coverage | Existing stubs and stores |
+| `autobyteus-web/layouts/default.vue` | Workspace interaction surfaces | Left drawer owner | Reduce left backdrop darkness to the shared target | Existing left drawer presentation owner | Existing drawer lifecycle |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | Workspace interaction surfaces | Right drawer owner | Reduce right backdrop darkness to the shared target | Existing right drawer presentation owner | Existing drawer lifecycle |
 | `autobyteus-web/docs/workspace_layout.md` | Durable project docs | Layout contract | Document precedence and fallback | One durable behavior record | Existing terminology |
 
 ## Reusable Owned Structures Check
@@ -228,6 +233,8 @@ The authoritative presentation boundary is `resolveResponsiveWorkspaceShellState
 | `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | Responsive workspace shell | Authoritative policy | Reorder user-sized compact candidate before automatic manual-left fallback | All presentation fit policy remains centralized | Existing constants/types |
 | `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts` | Responsive workspace shell | Pure policy tests | Boundary and fallback regression cases | Keeps mathematical contract local | Existing policy input |
 | `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` | Workspace interaction surfaces | Adaptive layout | No unexpected strip/drawer and explicit redock journey | Proves DOM outcome and event mapping | Existing test stubs |
+| `autobyteus-web/layouts/default.vue` | Workspace interaction surfaces | Left drawer | Apply approximately 30% scrim | Existing left drawer owner | Existing drawer lifecycle |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | Workspace interaction surfaces | Right drawer | Apply approximately 30% scrim | Existing right drawer owner | Existing drawer lifecycle |
 | `autobyteus-web/docs/workspace_layout.md` | Durable docs | Layout contract | Explain user-sized precedence | Keeps long-lived behavior discoverable | Existing docs |
 
 ## Applied Patterns
@@ -243,6 +250,8 @@ The authoritative presentation boundary is `resolveResponsiveWorkspaceShellState
 | `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | File | Responsive policy | Add/reorder compact user-sized candidate selection | Existing authoritative fit boundary | Drawer or DOM logic |
 | `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts` | File | Policy tests | Add compact-fit, compact-fail, and explicit-hidden cases | Colocated pure behavior | Implementation branches |
 | `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` | File | Layout tests | Add rendered sequence checks | Colocated UI owner | Resolver math duplication |
+| `autobyteus-web/layouts/default.vue` | File | Left drawer owner | Use lighter shared backdrop opacity | Keeps left drawer presentation local | Right drawer implementation |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | File | Right drawer owner | Use lighter shared backdrop opacity | Keeps right drawer presentation local | Left drawer implementation |
 | `autobyteus-web/docs/workspace_layout.md` | File | Docs | Record updated behavior | Existing layout contract | Test-only details |
 
 ## Folder Boundary Check
@@ -280,6 +289,7 @@ Not used as a separate architecture boundary. The existing policy -> composition
 4. Add/adjust the adaptive layout journey test to prove dock persistence, absence of strip/drawer, and explicit right-collapse redock.
 5. Run focused tests and, if available, the browser responsive probe; inspect the diff for no duplicate policy.
 6. Update `autobyteus-web/docs/workspace_layout.md` to record the precedence and genuine-constraint fallback.
+7. Change both left and right drawer backdrops to the shared approximately 30% black target; verify drawer lifecycle and opposite-strip hit testing remain unchanged.
 
 No temporary compatibility seam is required. No obsolete code path should remain after the reorder.
 
@@ -288,12 +298,14 @@ No temporary compatibility seam is required. No obsolete code path should remain
 - Evaluating user-sized intent earlier gives explicit user resizing precedence over automatic protection, which matches the existing `user-override` concept.
 - The compact floor remains a hard capacity boundary; the design does not force an over-wide dock into a viewport that cannot support it.
 - Keeping activation unchanged avoids coupling width policy to drawer accessibility behavior.
+- A lighter shared scrim improves context without changing modality; separate backdrop owners remain responsible for rendering their own scrim.
 
 ## Risks
 
 - A resolver test that passes a preferred width instead of production effective width could assert a slightly different threshold. Add tests at both a compact-fit numeric boundary and a compact-fail boundary, and preserve the production composition input.
 - A full browser probe may not be available without a running workspace fixture. Focused executable coverage must not be skipped.
 - Updating documentation without clearly distinguishing explicit collapse from responsive yield could reintroduce the ambiguity; use the terminology in this spec.
+- A CSS opacity change can be visually subtle across themes; verify both drawer owners use the same target value and perform browser or screenshot validation when available.
 
 ## Guidance For Implementation
 
@@ -303,3 +315,4 @@ No temporary compatibility seam is required. No obsolete code path should remain
 - If the user-sized candidate fails, fall through to the existing left-hidden and responsive candidates so the existing drawer behavior remains available.
 - Add explicit assertions for `rightPanel.presentationSource`, `stripActivation`, and drawer absence/presence where relevant.
 - No persisted-data migration, API change, or UI restyle is required.
+- For scrims, use approximately 30% black (acceptable 25–35%) in both `layouts/default.vue` and `WorkspaceRightToolDrawer.vue`; do not change backdrop ownership, z-index, focus, or dismissal behavior.

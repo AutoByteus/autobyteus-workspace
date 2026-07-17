@@ -6,168 +6,132 @@
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/ui-ux-spec.md`
-- Current Review Round: `1`
-- Trigger: Initial architecture-review handoff from `solution_designer`
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
-- Current-State Evidence Basis: Base `origin/personal` at `894edc01d`; source inspection of the responsive policy, shell composition, right-panel state, strip activation, adaptive layout, and focused tests; recorded baseline of 3 files / 47 tests passing.
+- Current Review Round: `3`
+- Trigger: Upstream correction of ARCH-001 and ARCH-002
+- Prior Review Round Reviewed: `2`
+- Latest Authoritative Round: `3`
+- Current-State Evidence Basis: Current source at implementation commit `3fef8ad9c`; no scrim source rework has started. Prior source review and API/E2E evidence remain valid for BE-001–BE-005 only.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial package ready | N/A | None | Pass | Yes | Design is actionable without a new subsystem or state flag. |
+| 1 | Initial package | N/A | None | Pass | No | Original resize design passed. |
+| 2 | Added R-006 / AC-007 | None | ARCH-001, ARCH-002 | Fail | No | Package-record coherence gaps. |
+| 3 | Corrected upstream records | ARCH-001, ARCH-002 resolved | None | Pass | Yes | Local scrim rework is ready for implementation. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
-`N/A — initial review round.`
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 2 | ARCH-001 | Blocking package coherence | Resolved | Investigation supplement inventory now covers R-001–R-006 / AC-001–AC-007 and lighter-scrim purpose/status. | Accepted. |
+| 2 | ARCH-002 | Blocking design-record completeness | Resolved | Design maps BE-006 to DS-003, expands its narrative, and records `Inconsistent Scrim Opacity` beside `Missing Invariant`. | Accepted. |
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
-- Approved requirements / intended behavior understood: The user-sized right dock takes precedence over the opposite panel's automatic 480px protection when the current left presentation plus the 200px compact floor fits. Explicit right collapse remains preference-driven, and genuinely constrained responsive strips may still open the existing drawer.
-- Relevant existing behavior and evidence confirmed: `useRightPanel` records `user-sized` and supplies the effective width; `resolveResponsiveWorkspaceShellState` is the authoritative candidate selector; `resolveStripActivation` maps a visible responsive strip to `open-drawer` and a fitting hidden-by-user strip to `redock-panel`; `WorkspaceAdaptiveLayout` owns the rendered drawer/redock lifecycle.
-- Approved change, preserved behavior, and outside scope understood: Change is limited to responsive policy candidate ordering/selection and focused regression coverage. Automatic, narrow, short-height, left-adaptation, drawer accessibility, persistence, API, mobile, and styling behavior remain outside the change.
-- Remaining material ambiguity, if any: None that blocks implementation. The preferred/effective width distinction is identified as a test-boundary risk and is appropriately assigned to implementation/test review.
+- Overall Basis Status: `Confirmed`
+- Approved intent: Both transient drawer scrims target approximately 30% black opacity, with 25–35% accepted; the drawers remain modal and all dismissal, Escape, focus, return-focus, z-order, and opposite-strip behavior stays unchanged.
+- Current evidence: `layouts/default.vue` uses `bg-gray-900 bg-opacity-75`; `WorkspaceRightToolDrawer.vue` uses `bg-gray-900/50`; existing inline backdrop styles preserve opposite-strip hit targets.
+- Target path: Change only the two existing backdrop class declarations, add focused source/visual assertions, and retain existing drawer ownership/lifecycle.
+- Execution context: Prior API/E2E results passed the original BE-001–BE-005 boundary; AC-007 is correctly pending scrim implementation and downstream validation.
 
-| Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
-| --- | --- | --- | --- | --- | --- | --- |
-| BE-001 | User | Pass | Pass | Pass | Confirmed | Preserve the left user-hidden consuming strip. |
-| BE-002 | User | Pass | Pass | Pass | Confirmed | Evaluate current-left-presentation + user-sized right-dock candidate before the left-hidden automatic fallback. |
-| BE-003 | System/User | Pass | Pass | Pass | Confirmed | Prevent the incorrect fitting-resize strip; retain `open-drawer` for compact-fail responsive yield. |
-| BE-004 | User | Pass | Pass | Pass | Confirmed | Leave preference-driven `redock-panel`/`open-drawer` activation unchanged. |
-| BE-005 | User/System | Pass | Pass | Pass | Confirmed | Keep existing automatic, narrow, short-height, left-adaptation, and accessibility paths unchanged. |
+| Behavior ID | Design Alignment | Trigger / Current Evidence | Target Path Coherence | Status | Required Action |
+| --- | --- | --- | --- | --- | --- |
+| BE-001–BE-005 | Pass | Pass | Pass | Confirmed | Preserve previously reviewed implementation. |
+| BE-006 | Pass | Pass | Pass | Confirmed | Apply the shared ~30% black target in both existing drawer owners without lifecycle changes. |
 
 ## Supplemental Artifact Coherence Verdict
 
-| Artifact | Purpose And Scope Are Clear? (`Pass`/`Fail`) | Linked To Relevant Core Artifacts? (`Pass`/`Fail`) | Internally Complete? (`Pass`/`Fail`) | Consistent With Related Core Artifacts? (`Pass`/`Fail`) | Status And Approval Applicability Are Clear? (`Pass`/`Fail`) | Required Action |
+| Artifact | Purpose Clear? | Linked To Core Artifacts? | Internally Complete? | Consistent? | Status / Approval Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `ui-ux-spec.md` | Pass | Pass | Pass | Pass | Pass | None. It correctly distinguishes user-sized resize, explicit collapse/redock, and responsive yield. |
+| `ui-ux-spec.md` | Pass | Pass | Pass | Pass | Pass | None. UXJ-004 and AC-007 are integrated. |
 
 ## Task Design Health Assessment Verdict
 
-| Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Requirements and design classify this as a small bug fix / behavior change. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | The left-user-hidden branch in `responsiveLayoutPolicy.ts` applies the 480px floor and yields before the later user-sized branch; the normal drag path supplies `user-sized`. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Design states no broad refactor is needed. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Existing policy, state, activation, and rendering boundaries are coherent; the missing behavior is a single candidate-ordering invariant. | None. |
+| Assessment present for current posture | Pass | Bounded bug fix / behavior change is explicit. | None. |
+| Root causes explicit and evidence-backed | Pass | Design records the original `Missing Invariant` and the new `Inconsistent Scrim Opacity` defect with current source evidence. | None. |
+| Refactor posture explicit | Pass | No refactor needed. | None. |
+| Refactor decision supported | Pass | Existing two drawer owners and lifecycle are healthy; only classes and assertions need rework. | None. |
 
 ## Spine Inventory Verdict
 
-| Spine ID | Scope | Spine Is Readable? (`Pass`/`Fail`) | Narrative Is Clear? (`Pass`/`Fail`) | Facade Vs Governing Owner Is Clear? (`Pass`/`Fail`/`N/A`) | Main Domain Subject Naming Is Clear? (`Pass`/`Fail`) | Ownership Is Clear? (`Pass`/`Fail`) | Off-Spine Concerns Stay Off Main Line? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary end-to-end presentation path | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 | Right resize state path | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Strip activation and return-event path | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| Spine ID | Readable? | Narrative Clear? | Owner Clear? | Main Subject Naming Clear? | Ownership Clear? | Off-Spine Concerns Controlled? | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| DS-001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-003 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
+DS-003 now includes BE-006, both drawer owners, backdrop presentation, and preserved focus/hit-testing behavior.
 
 ## Boundary Encapsulation Verdict
 
-| Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
+| Boundary / Owner | Entry Clear? | Internal Mechanisms Internal? | Bypass Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Responsive presentation policy | Pass | Pass | Pass | Pass | `resolveResponsiveWorkspaceShellState()` remains the sole candidate/fit boundary; no layout workaround is proposed. |
-| Right-panel state | Pass | Pass | Pass | Pass | `useRightPanel()` owns preferred/effective width and resize intent. |
-| Strip/drawer lifecycle | Pass | Pass | Pass | Pass | Activation remains declarative; `WorkspaceAdaptiveLayout` owns drawer and redock commands. |
+| `layouts/default.vue` left drawer | Pass | Pass | Pass | Pass | Change backdrop style only. |
+| `WorkspaceRightToolDrawer.vue` right drawer | Pass | Pass | Pass | Pass | Change backdrop style only. |
+| `useAccessibleDrawer` lifecycle | Pass | Pass | Pass | Pass | Explicitly unchanged. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
-| Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Responsive policy | Pass | Pass | Pass | Pass | No DOM, drawer, or layout-local viewport rules are introduced. |
-| Shell composition | Pass | Pass | Pass | Pass | Composition passes state into policy without duplicating ordering. |
-| Adaptive layout / strip | Pass | Pass | Pass | Pass | No direct store mutation from the strip and no second fit rule. |
+`Pass — no policy, store, resolver, z-index, focus, or layout-local shortcut is proposed.`
 
 ## Interface Boundary Verdict
 
-| Interface / API / Query / Command / Method | Subject Is Clear? (`Pass`/`Fail`) | Responsibility Is Singular? (`Pass`/`Fail`) | Identity Shape Is Explicit? (`Pass`/`Fail`) | Generic Boundary Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) |
-| --- | --- | --- | --- | --- | --- |
-| `resolveResponsiveWorkspaceShellState(input)` | Pass | Pass | Pass | Low | Pass |
-| `useResponsiveWorkspaceShell()` | Pass | Pass | Pass | Low | Pass |
-| `resolveStripActivation(input)` | Pass | Pass | Pass | Low | Pass |
-| `useRightPanel().initDragRightPanel()` | Pass | Pass | Pass | Low | Pass |
+`Pass — no API, command, state, or interface boundary changes.`
 
 ## Existing Capability / Subsystem Reuse Verdict
 
-| Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Candidate ordering | Pass | Pass | N/A | Pass | Extend the existing responsive policy only. |
-| Strip activation and drawer behavior | Pass | Pass | N/A | Pass | Existing activation contract already explains both symptoms. |
-| Regression coverage | Pass | Pass | N/A | Pass | Colocated policy and adaptive-layout suites are the correct owners. |
+`Pass — reuse the existing drawer owners and accessibility lifecycle; no new abstraction is justified.`
 
 ## Subsystem / Capability-Area Allocation Verdict
 
-| Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Responsive workspace shell | Pass | Pass | Pass | Pass | Policy owns candidate fit, order, source, and protection mode. |
-| Right-panel layout state | Pass | Pass | Pass | Pass | Reused unchanged. |
-| Workspace interaction surfaces | Pass | Pass | Pass | Pass | Reused; only rendered regression coverage is added. |
+`Pass — presentation remains in the left/right drawer files; focused assertions remain colocated with existing layout tests.`
 
 ## Reusable Owned Structures Verdict
 
-| Repeated Structure / Logic | Extraction Need Was Evaluated? (`Pass`/`Fail`) | Shared File Choice Is Sound? (`Pass`/`Fail`/`N/A`) | Ownership Of Shared Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) |
-| --- | --- | --- | --- | --- |
-| `SurfaceCandidate` and existing fit math | Pass | Pass | Pass | Pass |
-| Strip activation input/contract | Pass | Pass | Pass | Pass |
+`Pass — no repeated logic or shared structure is added for two class-level changes.`
 
 ## Shared Structure / Data Model Tightness Verdict
 
-| Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Pass`/`Fail`) | Redundant Attributes Removed? (`Pass`/`Fail`) | Overlapping Representation Risk Is Controlled? (`Pass`/`Fail`) | Shared Core Vs Specialized Variant / Composition Decision Is Sound? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| `ResponsiveWorkspaceShellInput` | Pass | Pass | Pass | N/A | Pass | Existing explicit preference, width, and intent fields are sufficient. |
-| `SurfaceCandidate` | Pass | Pass | Pass | N/A | Pass | The design explicitly rejects a second candidate type or force-dock flag. |
-| In-memory panel state | Pass | Pass | Pass | N/A | Pass | No persisted schema or parallel state is proposed. |
+`N/A — no shared data, schema, or persisted model changes.`
 
 ## File Responsibility Mapping Verdict
 
-| File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | Pass | Pass | N/A | Pass | Single authoritative policy correction. |
-| `autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts` | Pass | Pass | N/A | Pass | Pure fit/order boundary coverage. |
-| `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` | Pass | Pass | N/A | Pass | DOM/event journey coverage. |
-| `autobyteus-web/docs/workspace_layout.md` | Pass | Pass | N/A | Pass | Durable contract update during delivery. |
+| File | Singular Responsibility? | Correct Owner? | Verdict | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-web/layouts/default.vue` | Pass | Pass | Pass | Left scrim declaration and existing hit-test style. |
+| `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue` | Pass | Pass | Pass | Right scrim declaration and existing drawer lifecycle. |
+| Focused tests | Pass | Pass | Pass | Source/visual assertions for AC-007. |
 
 ## Subsystem / Folder / File Placement Verdict
 
-| Path / Item | Target Placement Is Clear? (`Pass`/`Fail`) | Folder Matches Owning Boundary? (`Pass`/`Fail`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) |
-| --- | --- | --- | --- | --- |
-| `autobyteus-web/utils/layout` | Pass | Pass | Low | Pass |
-| `autobyteus-web/components/layout` | Pass | Pass | Low | Pass |
-| `autobyteus-web/docs` | Pass | Pass | Low | Pass |
+`Pass — all proposed files stay in existing layout/component owners and colocated tests.`
 
 ## Removal / Decommission Completeness Verdict
 
-| Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
-| --- | --- | --- | --- | --- | --- |
-| No obsolete production piece | Pass | N/A | Pass | Pass | Do not add or retain a drawer-suppression flag, duplicate forced-dock state, or alternate policy path. |
+`N/A — no obsolete production component or path is removed.`
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? (`Yes`/`No`) | Clean-Cut Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
-| --- | --- | --- | --- | --- |
-| Responsive layout policy | No | Pass | Pass | This is a direct behavior correction with existing fallback preserved; no legacy path is needed. |
-| Persisted panel state | No | Pass | Pass | State is session-memory only; no migration or compatibility reader is involved. |
+`Pass — no compatibility path, persisted data, migration, or legacy retention is involved.`
 
-## Persisted-Data Transition Verdict (When Applicable)
+## Persisted-Data Transition Verdict
 
-`N/A — the reviewed package establishes that affected panel preferences, widths, and resize intent are in-memory Vue refs. No schema, serialization, or migration boundary changes.`
+`N/A — CSS/class presentation only; the prior Not Affected decision remains valid.`
 
 ## Change / Refactor Safety Verdict
 
-| Area | Sequence Is Realistic? (`Pass`/`Fail`) | Temporary Seams Are Explicit? (`Pass`/`Fail`) | Cleanup / Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
-| --- | --- | --- | --- | --- |
-| Policy and regression change | Pass | Pass | Pass | Pass |
-| Documentation sync | Pass | Pass | Pass | Pass |
+`Pass — bounded class changes require no temporary seam and preserve all existing lifecycle code.`
 
 ## Example Adequacy Verdict
 
-| Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Compact-fit candidate ordering | Yes | Pass | Pass | Pass | The design includes the exact left-strip/right-dock/200px versus 480px contrast. |
-| Drawer classification | Yes | Pass | Pass | Pass | It explicitly preserves visible responsive `open-drawer` versus hidden fitting `redock-panel`. |
+`Pass — UXJ-004 clearly contrasts a dominant modal drawer with a recognizable underlying workspace.`
 
-## Material Premise Validation (Only When Needed)
+## Material Premise Validation
 
-`None. The review relies on the established normal product path: left collapse, right separator drag, policy resolution, and strip tool selection are all evidenced in current code and tests. No unsupported production, failure, or lifecycle premise is needed for the decision.`
+`None — both drawer paths are reachable and evidenced in current source.`
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -175,7 +139,7 @@
 
 ## Review Decision
 
-`Pass` — the upstream behavior basis is confirmed, the design is ready for implementation, and no in-scope machinery or finding depends on an unsupported material premise.
+`Pass` — the corrected design package is coherent and the new requirement is a local implementation rework. The prior resize implementation remains preserved; AC-007 must be proven after the scrim change through source review and API/E2E validation.
 
 ## Findings
 
@@ -191,12 +155,12 @@
 
 ## Residual Risks
 
-- Regression tests must cover the exact compact-fit boundary and the first failing width, asserting both presentation and `centerProtectionMode`.
-- Tests should preserve the production boundary's effective-width semantics; avoid accidentally proving only a preferred-width value if the composable clamps it before policy resolution.
-- Browser/Electron validation remains useful but is not a design blocker because the policy and component paths are evidenced and focused executable coverage is specified.
+- Use equivalent ~30% black classes for both backdrops, within the 25–35% requirement.
+- Add focused assertions for both scrim classes and verify backdrop dismissal, focus behavior, z-order, and opposite-strip hit testing are unchanged.
+- Re-run source review and API/E2E after the scrim rework; prior execution evidence does not prove AC-007.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Notes: The implementation may proceed with the cumulative reviewed solution package. Keep the user-sized current-left-presentation candidate before the manual-left automatic fallback, preserve the compact-fail strip/drawer path, and do not alter strip activation ownership.
+- Material-Premise Gate: `Pass`
+- Notes: Implementation rework may proceed. Preserve the existing right-panel resize fix and limit the new change to the two drawer backdrop owners plus proportional coverage/docs updates.
