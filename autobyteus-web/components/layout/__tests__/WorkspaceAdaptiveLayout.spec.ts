@@ -408,6 +408,9 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(source).not.toContain('openToolsSurface');
     expect(source).toContain('v-else-if="!isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip"');
     expect(source).toContain('@request-open="openRightDrawer"');
+    expect(source).toContain(':backdrop-style="rightDrawerBackdropStyle"');
+    expect(source).toContain('responsiveWorkspaceShellState.value.showLeftStrip');
+    expect(source).toContain('left: `${responsiveWorkspaceShellState.value.leftPanel.consumedWidth}px`');
     expect(source).toContain('ref="workspaceFlowRef"');
     expect(source).toContain('new ResizeObserver');
     expect(source).toContain('setRightPanelWorkspaceWidth');

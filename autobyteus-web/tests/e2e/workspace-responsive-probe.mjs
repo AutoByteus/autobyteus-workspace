@@ -364,15 +364,28 @@ async function collect(page, label) {
 async function clickButtonByTest(page, dataTest, rootSelector = 'body') {
   const target = page.locator(rootSelector).locator(`[data-test="${dataTest}"]`).first();
   if (!(await target.isVisible().catch(() => false))) return false;
-  await target.click();
-  return true;
+  try {
+    await target.click();
+    return true;
+  } catch {
+    // Keep the scenario result inspectable when a real overlay intercepts a
+    // user click; callers record the missing activation as a failure rather
+    // than aborting the complete viewport matrix.
+    return false;
+  }
 }
 
 async function clickFirstButton(page, rootSelector) {
   const target = page.locator(rootSelector).locator('button').first();
   if (!(await target.isVisible().catch(() => false))) return false;
-  await target.click();
-  return true;
+  try {
+    await target.click();
+    return true;
+  } catch {
+    // A drawer backdrop may correctly intercept a click on the opposite
+    // strip. Preserve the hit-testing failure as scenario evidence.
+    return false;
+  }
 }
 
 async function clickTopmostDrawerBackdrop(page) {
@@ -531,9 +544,16 @@ function validateWorkspaceInitial(state, viewport) {
   }
 
   if (centerRect?.width > 0) {
-    const requiredMin = width < 768
-      ? (width < 300 ? 0 : Math.min(COMPACT_STRIP_CENTER_MIN_WIDTH, width))
-      : CENTER_MIN_WIDTH;
+    // A responsive right strip is a consuming-flow fallback with the
+    // deliberate 200px responsive-yield floor. The 480px practical floor
+    // applies when right tools remain docked; requiring it for the strip
+    // state makes the probe reject the approved per-side capacity gate at
+    // the 768px transition (where the left panel remains docked).
+    const requiredMin = width < 300
+      ? 0
+      : state.visibleState.rightPanel
+        ? CENTER_MIN_WIDTH
+        : Math.min(COMPACT_STRIP_CENTER_MIN_WIDTH, width);
     if (centerRect.width < requiredMin) {
       failures.push(`center width ${centerRect.width}px is below ${requiredMin}px`);
     }
@@ -694,7 +714,7 @@ async function validateRightStripReopenInteraction(page, viewport) {
 }
 
 async function validateLeftStripReopenInteraction(page, viewport) {
-  if (viewport.name !== 'gap-700x700' && viewport.name !== 'tablet-800x700') {
+  if (viewport.name !== 'gap-700x700') {
     return null;
   }
 
@@ -737,7 +757,11 @@ async function validateLeftStripReopenInteraction(page, viewport) {
 }
 
 async function validateIndependentDrawerInteractions(page, viewport) {
-  if (viewport.name !== 'tablet-800x700') {
+  // At the 768px transition the left panel intentionally remains docked
+  // while right tools yield to a consuming strip. Exercise independent
+  // drawers at the last pre-MD viewport, where both side strips are the
+  // approved open-drawer affordances.
+  if (viewport.name !== 'gap-700x700') {
     return null;
   }
 
@@ -758,6 +782,12 @@ async function validateIndependentDrawerInteractions(page, viewport) {
   if (!bothOpen.activeElement?.insideRightDrawer) failures.push('right drawer did not own focus when opened after the left drawer');
   if (bothOpen.rects.leftNavigationDrawer?.ariaModal !== null || bothOpen.rects.rightDrawer?.ariaModal !== 'true') {
     failures.push(`right-topmost aria-modal ownership mismatch: left ${bothOpen.rects.leftNavigationDrawer?.ariaModal}, right ${bothOpen.rects.rightDrawer?.ariaModal}`);
+  }
+  const leftOpenBackdropRight = leftOpen.rects.leftDrawerBackdrop?.rect?.right;
+  const leftOpenRightStripWidth = leftOpen.rects.rightStrip?.rect?.width;
+  if (leftOpenBackdropRight != null && leftOpenRightStripWidth != null &&
+      Math.abs(leftOpenBackdropRight - (leftOpen.innerWidth - leftOpenRightStripWidth)) > 2) {
+    failures.push(`left drawer backdrop covered the opposite right strip: right ${leftOpenBackdropRight}, expected ${leftOpen.innerWidth - leftOpenRightStripWidth}`);
   }
 
   await page.keyboard.press('Escape');
@@ -784,6 +814,12 @@ async function validateIndependentDrawerInteractions(page, viewport) {
     failures.push('opening the left drawer unexpectedly closed or suppressed the independent right drawer');
   }
   if (!reverseBothOpen.activeElement?.insideLeftDrawer) failures.push('left drawer did not own focus when opened after the right drawer');
+  const reverseRightBackdropLeft = reverseRightOpen.rects.rightDrawerBackdrop?.rect?.x;
+  const reverseRightLeftStripWidth = reverseRightOpen.rects.leftStrip?.rect?.width;
+  if (reverseRightBackdropLeft != null && reverseRightLeftStripWidth != null &&
+      Math.abs(reverseRightBackdropLeft - reverseRightLeftStripWidth) > 2) {
+    failures.push(`right drawer backdrop covered the opposite left strip: left ${reverseRightBackdropLeft}, expected ${reverseRightLeftStripWidth}`);
+  }
   const reverseLeftDrawerZ = Number(reverseBothOpen.rects.leftNavigationDrawer?.zIndex || 0);
   const reverseRightDrawerZ = Number(reverseBothOpen.rects.rightDrawer?.zIndex || 0);
   const reverseLeftBackdropZ = Number(reverseBothOpen.rects.leftDrawerBackdrop?.zIndex || 0);

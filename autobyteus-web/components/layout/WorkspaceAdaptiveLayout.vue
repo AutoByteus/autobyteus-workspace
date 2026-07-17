@@ -86,6 +86,7 @@
       v-if="isRightDrawerOpen"
       :title="rightDrawerTitle"
       :width="rightDrawerWidth"
+      :backdrop-style="rightDrawerBackdropStyle"
       :return-focus-target="getRightStripFocusTarget"
       @close="closeRightDrawer"
     />
@@ -210,6 +211,15 @@ const rightDrawerTitle = computed(() => {
 
   return t('shell.workspaceSurfaces.tools');
 });
+
+const rightDrawerBackdropStyle = computed(() => ({
+  // The left strip remains a normal 50px flow item while right tools are
+  // transient. Keep it outside the right drawer backdrop's hit-test region
+  // so the opposite side can be opened with a real pointer interaction.
+  ...(responsiveWorkspaceShellState.value.showLeftStrip
+    ? { left: `${responsiveWorkspaceShellState.value.leftPanel.consumedWidth}px` }
+    : {}),
+}));
 
 const closeRightDrawer = (): void => {
   isRightDrawerOpen.value = false;

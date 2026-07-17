@@ -5,7 +5,7 @@
         v-if="showLeftDrawerBackdrop"
         data-test="app-left-drawer-backdrop"
         class="fixed inset-0 z-40 bg-gray-900 bg-opacity-75"
-        :style="{ zIndex: leftDrawerBackdropZIndex }"
+        :style="leftDrawerBackdropStyle"
         aria-hidden="true"
         @click="appLayoutStore.closeMobileMenu()"
       ></div>
@@ -82,6 +82,15 @@ const showLeftPanelSurface = computed(
 const showLeftDrawerBackdrop = computed(
   () => !isApplicationImmersive.value && showLeftDrawer.value,
 )
+const leftDrawerBackdropStyle = computed(() => ({
+  zIndex: leftDrawerBackdropZIndex.value,
+  // The workspace right strip is a normal 50px flow item, not an overlay.
+  // Keep that opposite-side opener outside this backdrop's hit-test region
+  // while the left drawer is open.
+  ...(route.path === '/workspace' && responsiveWorkspaceShellState.value.showRightStrip
+    ? { right: `${responsiveWorkspaceShellState.value.rightPanel.consumedWidth}px` }
+    : {}),
+}))
 const showLeftStrip = computed(
   () => !isApplicationImmersive.value
     && !showLeftDrawer.value

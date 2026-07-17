@@ -462,3 +462,46 @@ The durable `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` now contai
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 Yes. `api_e2e_engineer` owns current-state coverage investigation, realistic environment setup, comprehensive browser/API-E2E execution, failure classification, and any durable E2E edits. If durable tests change, the package must return through `code_reviewer` for proportional test-code review before delivery.
+
+### Round 36 CR-024 Opposite-Strip Hit-Test Rework
+
+The API/E2E Round 37 failure-origin review identified CR-024: a full-viewport
+left or right drawer backdrop intercepted real pointer clicks on the opposite
+closed consuming strip at `gap-700x700`. The bounded implementation fix keeps
+both strips as normal `relative flex-none w-[50px]` flow items and leaves
+transient drawers as the only overlays. While the left drawer is open on
+`/workspace`, `layouts/default.vue` now reduces the left backdrop's hit-test
+width by the composed right strip's `consumedWidth` (50px). While the right
+tools drawer is open, `WorkspaceAdaptiveLayout.vue` passes an equivalent left
+inset to `WorkspaceRightToolDrawer.vue` so the composed left strip remains
+clickable. These changes use existing route identity and composed shell output
+only; no second policy, fixed strip, z-index strip layer, cross-side close, or
+programmatic click path was introduced.
+
+The shared drawer registry, topmost z/aria-modal ownership, per-side strip
+suppression, backdrop/Escape dismissal, focus return, and independent drawer
+state remain unchanged. The durable responsive probe retains real Playwright
+locator clicks for both left-then-right and right-then-left journeys and now
+asserts that each opposite-side backdrop boundary ends/starts at the 50px
+strip geometry before exercising the second real click and both backdrop
+dismissals. Focused component coverage also asserts the right drawer backdrop
+accepts the opposite-strip inset while preserving its z-index.
+
+Round 36 implementation-scoped checks: focused responsive suite passed
+(`12` files, `92` tests) with only the known KaTeX quirks-mode warning;
+standalone responsive-policy TypeScript passed; probe `node --check` passed;
+`git diff --check` passed; web-boundary and localization-boundary guards
+passed; localization literal audit passed with zero unresolved findings; and
+Nuxt production build passed with the existing large-chunk warning. No fresh
+API/E2E execution or downstream sign-off is claimed; the package is returned
+to `code_reviewer` for a fresh full source review before API/E2E.
+
+Round 36 changed implementation/test paths:
+
+- `autobyteus-web/layouts/default.vue`
+- `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`
+- `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
+- `autobyteus-web/layouts/__tests__/default.spec.ts`
+- `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts`
+- `autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
+- `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`

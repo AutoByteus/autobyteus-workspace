@@ -2,7 +2,7 @@
   <div
     data-test="workspace-right-tool-drawer-backdrop"
     class="fixed inset-0 z-40 bg-gray-900/50"
-    :style="{ zIndex: drawerBackdropZIndex }"
+    :style="{ ...props.backdropStyle, zIndex: drawerBackdropZIndex }"
     aria-hidden="true"
     @click="emit('close')"
   ></div>
@@ -30,6 +30,7 @@ import RightSideTabs from './RightSideTabs.vue';
 const props = defineProps<{
   title: string
   width: number
+  backdropStyle?: Record<string, string>
   returnFocusTarget?: (origin?: HTMLElement | null) => HTMLElement | null
 }>();
 

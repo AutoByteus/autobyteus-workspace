@@ -117,4 +117,21 @@ describe('WorkspaceRightToolDrawer', () => {
     expect(document.activeElement).toBe(wrapper.get('[data-test="right-strip-remounted"]').element)
     wrapper.unmount()
   })
+
+  it('keeps the opposite consuming strip outside the backdrop hit-test region', async () => {
+    const wrapper = mount(WorkspaceRightToolDrawer, {
+      attachTo: document.body,
+      props: {
+        title: 'Tools',
+        width: 450,
+        backdropStyle: { left: '50px' },
+      },
+      global: { mocks: { $t: (key: string) => key } },
+    })
+
+    await nextTick()
+    expect(wrapper.get('[data-test="workspace-right-tool-drawer-backdrop"]').element.style.left).toBe('50px')
+    expect(wrapper.get('[data-test="workspace-right-tool-drawer-backdrop"]').element.style.zIndex).toBe('40')
+    wrapper.unmount()
+  })
 })
