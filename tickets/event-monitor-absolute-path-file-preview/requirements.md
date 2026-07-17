@@ -2,7 +2,7 @@
 
 ## Status
 
-Refined — design-ready pending architecture review
+Refined — post-implementation verification clarification pending local fix
 
 ## Goal / Problem Statement
 
@@ -17,7 +17,7 @@ The user-provided intake and reference screenshot are the requirements basis:
 
 | Behavior ID | Current Behavior | Desired Behavior | Preserved / Unchanged Behavior | Related Requirement / Acceptance-Criteria IDs |
 | --- | --- | --- | --- | --- |
-| BEH-001 | Markdown in Event Monitor text, thinking, inter-agent, and system-task segments is rendered by the shared `MarkdownRenderer`; absolute links are not file actions and bare absolute paths remain text. | In the central Event Monitor only, recognized POSIX and Windows absolute paths are explicit, keyboard-accessible open-file actions, including Markdown links, prose, inline code, and fenced code. | Other `MarkdownRenderer` consumers and non-absolute paths remain unchanged. | REQ-001/002/004/015; AC-001–005, AC-010, AC-016 |
+| BEH-001 | Markdown in Event Monitor text, thinking, inter-agent, and system-task segments is rendered by the shared `MarkdownRenderer`; absolute links are not file actions and bare absolute paths remain text. | In the central Event Monitor only, recognized POSIX and Windows absolute paths that belong to supported FileViewer families are explicit, keyboard-accessible open-file actions, including Markdown links, prose, inline code, and fenced code. Unsupported filename types remain source-faithful text/code without an action affordance. | Other `MarkdownRenderer` consumers and non-absolute paths remain unchanged. | REQ-001/002/004/015; AC-001–005, AC-010, AC-016 |
 | BEH-002 | Markdown HTTP(S) links are intercepted by `MarkdownRenderer` and opened externally; local-path link clicks do not enter a Files preview flow. | HTTP(S) links retain external-link behavior. A recognized filesystem link prevents browser navigation and invokes the file-preview action using the raw Markdown destination retained by the opt-in render model. | URL, data, blob, relative, and malformed links are not treated as local files. | REQ-003/013/015; AC-010, AC-016 |
 | BEH-003 | `fileExplorerContentActions.openFilePreview` deduplicates by path and uses shared file-type/viewer state, but its desktop host currently passes `readOnly=false` and leaves edit/preview controls available. | A clicked path resolves to a canonical locator before calling the existing preview owner; repeated opens select/reuse the existing tab in explicit read-only Event Monitor intent, with no edit controls for that action. | Existing user-opened tabs remain present; non-Event-Monitor opens retain their existing edit/preview behavior. | REQ-006/008/014; AC-006–009, AC-017 |
 | BEH-004 | Desktop right-panel state has a Files tab but only a toggle visibility API; phone-first mobile has a Files task but selecting the task alone does not select a requested file. | Explicit activation opens the desktop panel idempotently and selects Files, or issues a typed phone-first mobile preview request that selects the authorized file inside the Files task. Neither path creates an overlay/full-screen presentation for Event Monitor activation. | Center conversation, existing tabs, and legacy responsive mobile shell remain intact. | REQ-007/014; AC-007–009, AC-017 |
@@ -25,6 +25,8 @@ The user-provided intake and reference screenshot are the requirements basis:
 | BEH-006 | Embedded Electron IPC and `local-file://` serving accept renderer-supplied paths with only partial validation. | Trusted Electron boundaries revalidate absolute shape, existence, readability, and regular-file status before text or media bytes are returned. | Renderer never reads the filesystem directly; normal local preview ownership remains Electron main/preload. | REQ-009/011; AC-011–013 |
 | BEH-007 | Remote workspace content routes accept workspace-relative paths, reject absolute paths, and enforce workspace/root/file boundaries. | Browser/remote/mobile Event Monitor paths are opened only after client-side active-workspace containment mapping to a relative locator; server validation remains authoritative. | No unrestricted arbitrary absolute-path endpoint is introduced. | REQ-010/011; AC-012–014 |
 | BEH-008 | Structured Message references and Agent artifacts use their existing Artifacts ownership and are separate from incidental message text. | An incidental Event Monitor path opens Files as a transient read-only preview and does not create a Message reference, Agent artifact, Team Message reference, or persisted row. | Existing structured references and Agent artifact behavior remain unchanged. | REQ-012/013; AC-015 |
+
+| BEH-009 | User/System | The shared FileViewer supports only its documented text/Markdown/HTML/code, image, audio, video, PDF, CSV, and Excel families; unknown binaries are not previewable. | An Event Monitor path action candidate is classified by pure filename policy before rendering. | Unsupported `.zip`, `.dmg`, installer, archive, and other unrecognized binary paths remain visible/copyable but do not trigger Files, Electron text IPC, or workspace content reads. | REQ-016; AC-019 |
 
 
 ## Investigation Findings
@@ -42,6 +44,7 @@ The user-provided intake and reference screenshot are the requirements basis:
 | --- | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/task.md` | User-provided intake, scope, security requirements, and acceptance criteria | REQ-001–REQ-015 | AC-001–AC-018 | User-provided; treated as approved kickoff input | Authoritative scope and environment/security basis |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png` | UX reference screenshot | REQ-001, REQ-002, REQ-007 | AC-001, AC-003–AC-005 | N/A; evidence/reference only | Confirms full path text remains visible/copyable in the conversation |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md` | Post-build user verification and bounded local-fix evidence | REQ-016 | AC-019 | User-provided clarification; intended behavior approval applicable | Records that unsupported `.dmg`/`.zip` paths should not show an Event Monitor Files action |
 
 ## Design Health Assessment (Mandatory)
 
@@ -95,6 +98,7 @@ As specified in `task.md`: relative-path auto-linking; editing from message path
 - REQ-013: Existing Markdown math, Mermaid, syntax highlighting, image-resource resolution, HTTP(S) external-link behavior, text selection, copying, and ordinary non-Event-Monitor consumers must not regress.
 - REQ-014: The Event Monitor preview request must carry an explicit read-only/source intent. Desktop Files must hide editing controls and pass read-only to `FileViewer`; phone-first mobile must carry a typed workspace-relative pending request into `MobileFiles`, select the requested preview, and render it inline in the Files task without an overlay or automatic full-screen presentation. Reopening the same path reuses the existing preview identity.
 - REQ-015: When the Event Monitor capability is enabled, the Markdown render model must retain raw absolute link destinations and source kind/action IDs before sanitization. Sanitized HTML may contain only safe action IDs/attributes; the action event resolves its typed descriptor in the renderer and never classifies a browser-resolved `href`.
+- REQ-016: Event Monitor action eligibility must use the same pure supported-preview type policy as File Explorer. Unknown or unsupported binary/installer/archive types, including `.zip` and `.dmg`, remain source-faithful and copyable but do not render an Open-in-Files action or initiate any content read. Supported-looking paths may still fail safely at the trusted content boundary.
 
 ## Acceptance Criteria
 
@@ -116,6 +120,7 @@ As specified in `task.md`: relative-path auto-linking; editing from message path
 - AC-016: Existing Markdown rendering, math, Mermaid, highlighting, managed images, selection, and copying remain valid.
 - AC-017: On phone-first mobile, an Event Monitor activation selects the Files task, consumes a matching workspace-relative preview request, and displays the selected file through the existing read-only FileViewer inline within the Files task; it does not show the fixed full-screen/overlay presentation.
 - AC-018: Event Monitor desktop preview requests are explicitly read-only: the selected File Explorer tab hides edit/preview controls, passes `readOnly=true`, and repeated activation of a path does not create a duplicate or re-enable editing. Existing non-Event-Monitor file opens retain their current mode behavior.
+- AC-019: `.zip`, `.dmg`, installer, archive, and other unsupported binary paths shown in Event Monitor remain normal visible/copyable source text/code without an Open-in-Files action, panel switch, Electron text read, local-file URL, or workspace content request.
 
 ## Constraints / Dependencies
 
@@ -123,6 +128,7 @@ As specified in `task.md`: relative-path auto-linking; editing from message path
 - The path-action launcher must not directly read files or manipulate `fileExplorerState` internals outside the store API.
 - The phone-first bridge must use a typed pending preview request owned by `mobileWorkStore` and consumed by `MobileFiles`; the launcher must not reach `MobileFiles`' local `previewNode` directly.
 - The Event Monitor read-only intent must be represented by an explicit preview option/state, not inferred only from `mode='preview'`.
+- Event Monitor action eligibility and File Explorer routing must share one pure supported-preview type policy; unsupported paths are not actionized.
 - The implementation must use localized strings and pass the repository localization guards.
 - The supplied worktree branch remains isolated from `send-message-user-target`; expected finalization target is `personal`/`origin/personal`.
 
@@ -157,6 +163,7 @@ As specified in `task.md`: relative-path auto-linking; editing from message path
 - REQ-012–REQ-013 -> UC-007
 - REQ-014 -> UC-004, UC-005, UC-006
 - REQ-015 -> UC-001, UC-002, UC-003, UC-007
+- REQ-016 -> UC-007
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -167,7 +174,8 @@ As specified in `task.md`: relative-path auto-linking; editing from message path
 - AC-015 -> artifact/reference ownership scenarios.
 - AC-017 -> phone-first request/selection/inline-presentation scenario.
 - AC-018 -> desktop explicit read-only intent, repeat-open, and host-level controls scenario.
+- AC-019 -> unsupported-type action eligibility and no-read regression scenario.
 
 ## Approval Status
 
-User-requested implementation kickoff; intake `task.md` is treated as approved scope pending architecture review. Requirements refined from current-code investigation on 2026-07-17 and revised after architecture findings AR-F-001 through AR-F-004 on 2026-07-17; no additional user clarification is currently required. Architecture review round 1 failed for design impact; revised package is pending rerun.
+User-requested implementation kickoff; intake `task.md` is treated as approved scope pending architecture review. Requirements refined from current-code investigation and architecture findings AR-F-001 through AR-F-004 on 2026-07-17. A post-build user verification clarification on unsupported `.zip`/`.dmg` action eligibility was recorded on 2026-07-17 as a bounded local implementation fix; the approved high-level architecture remains unchanged.

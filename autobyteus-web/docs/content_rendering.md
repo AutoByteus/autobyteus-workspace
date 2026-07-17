@@ -88,6 +88,39 @@ transport/object-URL helpers so the paired mobile bearer credential is attached.
 Do not introduce unauthenticated static/iframe preview paths for protected
 workspace or team-reference content without a separate security design.
 
+### Event Monitor Absolute-Path Previews
+
+The central Event Monitor can opt into a scoped filesystem-path action capability
+through `MarkdownRenderer.vue`. This capability is intentionally not enabled for
+generic conversation, file-preview, task, team-reference, or other Markdown
+consumers. The Event Monitor feed passes typed action events through the segment
+chain to `useEventMonitorFilePreview`; rendering a message never opens a panel,
+checks filesystem state, or fetches bytes.
+
+The action policy recognizes POSIX and Windows drive-absolute paths in prose,
+raw Markdown link destinations, inline code, and fenced code. Sentence
+punctuation is excluded from prose candidates. Inline and fenced code remain
+literal and copyable; any action affordance is adjacent to the code text. Raw
+link destinations are retained before sanitization and resolved by a render-
+scoped action ID, so browser-resolved `href` values are never treated as file
+authorization. HTTP(S), relative paths, and ordinary non-Event-Monitor Markdown
+behavior retain their existing handling.
+
+On explicit click, Enter, or Space, the Event Monitor launcher opens the normal
+Files surface idempotently and requests the existing `FileViewer` path with an
+explicit `source: 'event-monitor'` and `readOnly: true` intent. Existing file
+tabs are reused by the File Explorer store, and no artifact/reference row or
+persisted record is created. Desktop previews preserve the center feed and
+focus the active file tab when a stable target is available. Phone-first
+previews are delivered as a typed pending request to `MobileFiles`, where the
+matching workspace/context request is rendered inline without Attach controls,
+an overlay, or automatic full-screen presentation.
+
+Runtime access remains environment-specific: embedded Electron may use the
+trusted local boundary, while browser/remote/mobile clients must map the host
+path inside the active workspace to a workspace-relative locator. Unmapped
+paths remain copyable and show a localized host-only/unavailable state.
+
 ## App-Wide Readability / Display Settings
 
 File explorer and artifact viewers intentionally follow the shared **Settings -> Display -> App font size** preference instead of maintaining a separate viewer-only font control.

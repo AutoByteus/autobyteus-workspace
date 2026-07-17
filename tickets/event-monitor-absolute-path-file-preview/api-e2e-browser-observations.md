@@ -1,36 +1,57 @@
 # API/E2E Browser Observations
 
-- Date: 2026-07-17 (Europe/Berlin)
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview`
-- Frontend: Nuxt dev renderer started with `BACKEND_NODE_BASE_URL=http://127.0.0.1:3318 pnpm --dir autobyteus-web exec nuxt dev --host 127.0.0.1 --port 3317`
-- Backend: isolated local server on `127.0.0.1:3318`, built from this worktree, with test fixture under `/tmp/autobyteus-event-monitor-api-e2e`.
-- Browser tabs: `a3778c` desktop route `/agents`; `79987a` phone-first route `/mobile`; `8b240a` negative route probe.
+## Current run
 
-## EVM-BROWSER-001 — Desktop dev renderer bootstrap
+- Source revision: `7140696c8b78c6bfbba2035aaa8868a68e1e05aa`
+- Validation round: API/E2E round 2
+- Date: 2026-07-17
+- Browser bridge: AutoByteus browser tools; engine version is not exposed by the bridge.
+- Desktop URL: `http://127.0.0.1:3317/` (redirected to `/agents`)
+- Mobile URL: `http://127.0.0.1:3317/mobile`
+- Backend proxy: `BACKEND_NODE_BASE_URL=http://127.0.0.1:3318`
+- Viewport reported by the browser bridge: 1090x738 for the desktop tab.
 
-- URL: `http://127.0.0.1:3317/`
-- Redirect/route: `/agents`
-- Observed after backend connection: navigation labels `Agents`, `Agent Teams`, `Skills`, `Memory`, `Nodes`, `Workspaces`, `Temp Workspace`, `Settings`; agent catalog rendered with `47 agents`; no loading/error overlay remained.
-- DOM script result: `url=http://127.0.0.1:3317/agents`, `overlays=0`, `focus=BODY`.
-- Screenshot: `/Users/normy/.autobyteus/browser-artifacts/a3778c-1784283048808.png`
-- Result: Pass for web app bootstrap and backend-configured renderer reachability. This does not prove an Event Monitor message journey because no agent run was started.
+## Desktop renderer bootstrap
 
-## EVM-BROWSER-002 — Mobile shell reachability
+The current-source Nuxt development renderer loaded `/agents` and exposed the normal desktop shell:
 
-- URL: `http://127.0.0.1:3317/mobile`
-- Observed text: `AUTOBYTEUS REMOTE ACCESS`, `Connect this phone`, pairing-link flow, `Pair this phone`, `Troubleshoot connection`.
-- DOM script result: `overlays=0`, `focus=BODY`, viewport reported by browser `1090x738`.
-- Screenshot: `/Users/normy/.autobyteus/browser-artifacts/79987a-1784283048864.png`
-- Result: Pass for the unauthenticated phone-first pairing shell reachability only. Event Monitor Files-task behavior is not reachable without a paired mobile session and was not fabricated.
+- navigation labels included Agents, Agent Teams, Skills, Memory, Nodes, Workspaces, and Settings;
+- Temp Workspace was visible;
+- the catalog reported 47 agents;
+- the DOM contained no role-dialog or fixed full-screen overlay (`0` observed);
+- the body had no visible error-class text in the sampled DOM state.
 
-## EVM-BROWSER-003 — Workspace navigation/negative route probe
+Supporting screenshot: `/Users/normy/.autobyteus/browser-artifacts/a39e65-1784287781544.png`.
 
-- Selecting the rendered `Temp Workspace` button succeeded without an app crash; the desktop shell remained on `/agents` with `Temp Workspace` visible and no overlay.
-- Direct navigation to `/workspace/temp_ws_default` produced the app's normal `Error 404 / Page not found` because no such Nuxt page exists; this was a route probe, not an application acceptance journey.
-- Result: Not tested for Event Monitor; no source failure inferred.
+The Nuxt dev log also emitted repeated Vite pre-transform errors for the generated `#app-manifest` import while warming the renderer. Despite those development-log errors, the requested `/agents` page rendered and the DOM assertions above passed. This is a renderer-environment observation, not Event Monitor/Files signoff.
 
-## Limitations
+## Phone-first shell bootstrap
 
-- The current project has no Playwright/browser E2E configuration or durable browser harness.
-- No authenticated agent run was started because doing so would require a live model/tool session and would create unrelated user data/process activity.
-- No full desktop Electron package was launched; browser evidence is renderer-only.
+The current-source Nuxt renderer loaded `/mobile` and displayed the pairing shell:
+
+- `AUTOBYTEUS REMOTE ACCESS`;
+- `Connect this phone`;
+- QR/pairing instructions;
+- `Paste pairing link`;
+- `THIS DEVICE NAME`;
+- `Pair this phone`;
+- `Troubleshoot connection`;
+- no role-dialog or fixed full-screen overlay (`0` observed).
+
+Supporting screenshot: `/Users/normy/.autobyteus/browser-artifacts/dfb45d-1784287792064.png`.
+
+No paired identity or mobile Files task was available. Therefore this proves only that the pairing shell is reachable, not phone-first request consumption, inline preview, stale/context rejection, or Attach suppression.
+
+## Not reached
+
+The browser run did not have a deterministic authenticated Event Monitor conversation or seeded agent run. It did not directly exercise:
+
+- Event Monitor-only path actions and passive content;
+- click, Enter, or Space activation;
+- supported text/media/PDF/spreadsheet FileViewer journeys;
+- repeat-open/dedupe, collapsed desktop panel, focus handoff, or overlay absence after an action;
+- active-workspace mapping/refusal through the authenticated client journey;
+- phone-first matching/stale request behavior;
+- packaged Electron preload/IPC/media protocol or Windows parsing.
+
+The run was intentionally not converted into model/tool activity solely to manufacture a fixture. Repository tests and live REST probes cover the available substitutes; the missing authenticated and paired sessions remain blockers for clean API/E2E signoff.

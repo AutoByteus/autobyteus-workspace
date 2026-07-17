@@ -12,7 +12,7 @@ Embedded local preview already uses Electron preload/main and the `local-file://
 
 ## Intended Change
 
-Add a default-off Event Monitor Markdown capability. When enabled only on the central monitor, the Markdown token/render model retains typed absolute-path descriptors before sanitization and emits safe action IDs/adjacent controls. The renderer resolves action IDs and emits an explicit event; it never classifies a browser-resolved `href`, reads a file, or reaches a store.
+Add a default-off Event Monitor Markdown capability. When enabled only on the central monitor, the Markdown token/render model retains typed absolute-path descriptors before sanitization and emits safe action IDs/adjacent controls. The action policy is gated by the same pure supported-preview type policy used by File Explorer: unsupported `.zip`, `.dmg`, installer, archive, and unknown binary paths remain source-faithful text/code and receive no Files action. The renderer resolves action IDs and emits an explicit event; it never classifies a browser-resolved `href`, reads a file, or reaches a store.
 
 Add an Event Monitor-owned preview launcher. It receives a typed action descriptor and the authoritative monitor context, resolves an embedded local locator or an active-workspace-relative remote locator, then calls the existing preview owner with an explicit read-only Event Monitor intent. Desktop activation uses idempotent panel open plus Files selection. Phone-first activation creates a typed pending preview request in `mobileWorkStore`; `MobileFiles` consumes a matching request after workspace resolution and renders the selected file inline in the Files task through the existing read-only `FileViewer`. The Event Monitor path never introduces an overlay or fixed full-screen presentation.
 
@@ -30,6 +30,7 @@ Strengthen the Electron main/protocol local byte boundary for both text and medi
 | BEH-006 | Contract/Security | Embedded local absolute reads require trusted validation; REQ-009/011, AC-011–013 | File bytes requested for an embedded absolute locator | Electron preload/main and local protocol serve current local previews with partial checks (`investigation-notes.md`, BEH-006) | Centralize absolute/existence/readable/regular checks in main-owned helper used by text IPC and media protocol | `fileExplorerContentActions -> preload -> Electron main/protocol -> FileViewer` (DS-002, DS-006) |
 | BEH-007 | Contract/Security | Remote/mobile absolute paths require active-workspace mapping and existing authorized relative route; REQ-010/011, AC-012–014 | File bytes requested for browser/remote/mobile locator | Server workspace routes reject absolute paths and enforce root/regular-file boundaries (`investigation-notes.md`, BEH-007) | Pure cross-platform client mapping supplies workspace-relative identity; server remains authoritative; no arbitrary absolute endpoint | `launcher -> workspace mapper -> fileExplorerContentActions -> REST/GraphQL workspace reader -> FileViewer` (DS-002, DS-005, DS-006) |
 | BEH-008 | Contract | Structured refs/artifacts stay separate; REQ-012/013, AC-015 | Any incidental Event Monitor path action | Dedicated artifact/reference owners do not currently receive incidental path text (`investigation-notes.md`, BEH-008) | No artifact/reference call, persistence, or structured Message mutation | Off-spine ownership guard around DS-001/DS-002 |
+| BEH-009 | User/System | Unsupported types remain ordinary source with no action/read; REQ-016, AC-019 | Path action eligibility is evaluated by pure filename/type policy | Current `determineFileType` falls back to Text for unknown extensions, while FileViewer has no archive/installer/binary adapters (`user-verification-unsupported-file-preview-report.md`) | Share an explicit supported-preview type policy; unsupported candidates produce no Event Monitor action and no content request | `path utility/useMarkdownSegments -> no action` (DS-003, DS-006) |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -37,6 +38,7 @@ Strengthen the Electron main/protocol local byte boundary for both text and medi
 | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/task.md` | Product intake, scope, security, accessibility, and acceptance contract | REQ-001–REQ-015; AC-001–AC-018 | Authoritative intended behavior and out-of-scope boundary | User-provided kickoff input; intended behavior approved pending architecture gate |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-reference.png` | UX reference for complete path visibility/copying | REQ-001–REQ-004/015; AC-001–AC-005 | Confirms the full path remains visible/copyable and an explanatory ellipsis is not source content | Evidence/reference only; approval N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md` | Post-build user verification and bounded local-fix evidence | REQ-016; AC-019 | Defines unsupported `.zip`/`.dmg` behavior after Electron verification | User clarification; intended behavior approval applicable |
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -57,6 +59,7 @@ Strengthen the Electron main/protocol local byte boundary for both text and medi
 - **Event Monitor read-only intent**: A transient open option that forces preview mode, hides edit controls, and passes `readOnly=true` without creating a second tab identity.
 - **Phone-first preview request**: A transient typed message in `mobileWorkStore` carrying an already mapped workspace-relative path and context identity to `MobileFiles`.
 - **Inline mobile presentation**: A viewer rendered inside the normal Files task surface, not a fixed element, modal, backdrop, or automatic full-screen overlay.
+- **Supported preview family**: One of the existing FileViewer families: recognized text/code/Markdown/HTML, image, audio, video, PDF, CSV, or Excel. Unknown binary/archive/installer types are unsupported.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -81,12 +84,12 @@ Strengthen the Electron main/protocol local byte boundary for both text and medi
 
 | Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | BEH-001–BEH-008 | Explicit activation of an Event Monitor path action | Selected shared read-only preview or localized refusal | Event Monitor launcher | Main user-visible flow across rendering, resolution, preview, and shell |
+| DS-001 | Primary End-to-End | BEH-001–BEH-009 | Explicit activation of an Event Monitor path action | Selected shared read-only preview or localized refusal | Event Monitor launcher | Main user-visible flow across rendering, resolution, preview, and shell |
 | DS-002 | Primary End-to-End | BEH-003/006/007 | Canonical locator | FileViewer adapter content/error | File Explorer preview owner plus trusted byte boundary | Carries the file identity without a second viewer or arbitrary endpoint |
-| DS-003 | Bounded Local | BEH-001/002 | Markdown source/tokens | Sanitized action-bearing HTML plus descriptor map | `useMarkdownSegments` and `MarkdownRenderer` | Retains raw destinations and code boundaries before sanitization |
+| DS-003 | Bounded Local | BEH-001/002/009 | Markdown source/tokens | Sanitized action-bearing HTML plus descriptor map | `useMarkdownSegments` and `MarkdownRenderer` | Retains raw destinations and code boundaries before sanitization and suppresses unsupported actions |
 | DS-004 | Bounded Local | BEH-004 | Accepted desktop preview | Visible right panel with Files selected | `useRightPanel`/`useRightSideTabs` | Makes activation idempotent rather than toggle-based |
 | DS-005 | Bounded Local | BEH-005 | Accepted phone-first workspace preview request | Mobile Files inline selected preview | `mobileWorkStore` and `MobileFiles` | Bridges global request to local `previewNode` without importing desktop state |
-| DS-006 | Return-Event | BEH-003/005/006/007/008 | Resolver/content result | Viewer loading/error/unavailable state | File Explorer/mobile viewer and launcher status owner | Localizes failure and prevents navigation/persistence side effects |
+| DS-006 | Return-Event | BEH-003/005/006/007/008/009 | Resolver/content result | Viewer loading/error/unavailable state | File Explorer/mobile viewer and launcher status owner | Localizes failure and prevents navigation/persistence side effects |
 
 ## Primary Execution Spine(s)
 
@@ -111,12 +114,13 @@ Strengthen the Electron main/protocol local byte boundary for both text and medi
 3. In-scope segment components — forward capability into `MarkdownRenderer`.
 4. `useMarkdownSegments` — token/render-model seam and descriptor retention.
 5. `MarkdownRenderer` — safe DOM/event boundary.
-6. `useEventMonitorFilePreview` — runtime mapping, read-only preview intent, shell routing, result status.
-7. `fileExplorerContentActions` — tab identity/load/type/read-only state.
-8. `useRightPanel`/`useRightSideTabs` — desktop shell.
-9. `mobileWorkStore`/`MobileFiles`/`MobileFileViewer` — phone-first request and inline selection.
-10. Electron main/protocol or server workspace reader — authoritative bytes.
-11. `FileViewer` — shared adapter rendering.
+6. `FileViewer`/file-type policy — supported preview-family eligibility and adapter routing.
+7. `useEventMonitorFilePreview` — runtime mapping, read-only preview intent, shell routing, result status.
+8. `fileExplorerContentActions` — tab identity/load/type/read-only state.
+9. `useRightPanel`/`useRightSideTabs` — desktop shell.
+10. `mobileWorkStore`/`MobileFiles`/`MobileFileViewer` — phone-first request and inline selection.
+11. Electron main/protocol or server workspace reader — authoritative bytes.
+12. `FileViewer` — shared adapter rendering.
 
 ## Ownership Map
 
@@ -124,7 +128,7 @@ Strengthen the Electron main/protocol local byte boundary for both text and medi
 - The feed, `AIMessage`, and segments own ordering/dispatch and only transport the typed capability.
 - `useMarkdownSegments` owns Markdown token processing and render descriptors. It has no Pinia, workspace, panel, Electron, or filesystem dependency.
 - `MarkdownRenderer` owns sanitized HTML display and event delegation. It maps DOM action IDs to its in-memory descriptor map and emits typed actions. It does not authorize or open files.
-- The pure path utility owns syntax/punctuation/source-kind classification; it makes no authorization claim.
+- The pure path utility owns syntax/punctuation/source-kind classification and supported-preview eligibility; it makes no authorization claim. The same supported-preview policy is consumed by `determineFileType` so action eligibility and viewer routing cannot disagree.
 - `useEventMonitorFilePreview` owns explicit activation orchestration, runtime selection, active-workspace mapping, read-only open options, desktop/mobile shell routing, and result status. It does not read bytes or mutate viewer arrays.
 - `fileExplorerContentActions` owns open-file identity, dedupe, type/load state, and explicit access intent. `FileExplorerTabs` owns host controls and passes that intent to `FileViewer`.
 - `mobileWorkStore` owns pending request lifecycle/revision; `MobileFiles` owns context matching, local preview selection, and inline/full-screen presentation choice; `MobileFileViewer` owns mobile viewer layout and adapter invocation.
@@ -254,7 +258,7 @@ The authoritative byte boundaries are Electron main/protocol for embedded local 
 | Need / Concern | Existing Capability Area / Subsystem | Decision (`Reuse`/`Extend`/`Create New`) | Why | If New, Why Existing Areas Are Not Right |
 | --- | --- | --- | --- | --- |
 | Markdown token/rendering | `useMarkdownSegments`/`MarkdownRenderer` | Extend | Existing owner has tokens/sanitization and generic external links | N/A |
-| Absolute path syntax | No safe opt-in policy | Create New | Pure feature policy must not be global Markdown or viewer logic | Generic Markdown has no Event Monitor context |
+| Absolute path syntax and supported-preview eligibility | No safe shared policy | Create New | Pure policy must serve both Event Monitor action gating and File Explorer type routing without I/O | Generic Markdown has no Event Monitor context and `determineFileType` currently conflates unknown with Text |
 | Preview/tab lifecycle | `fileExplorerContentActions` | Extend | Existing dedupe/load/type owner | N/A |
 | Desktop panel | `useRightPanel`/`useRightSideTabs` | Extend | Existing state owner needs idempotent command | N/A |
 | Phone-first request/selection | `mobileWorkStore`/`MobileFiles` | Extend | Existing task and local selection owners are correct | N/A |
@@ -267,7 +271,7 @@ The authoritative byte boundaries are Electron main/protocol for embedded local 
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Conversation Markdown capability | Token descriptor retention, safe decoration, action events | DS-003 | `useMarkdownSegments`, `MarkdownRenderer`, segment chain | Extend + create pure policy | Default-off |
+| Conversation Markdown capability | Token descriptor retention, safe decoration, action events, supported-type gating | DS-003 | `useMarkdownSegments`, `MarkdownRenderer`, segment chain | Extend + create pure policy | Default-off; unsupported candidates stop before action rendering |
 | Event Monitor orchestration | Runtime mapping, read-only preview, shell routing, refusal | DS-001/DS-004/DS-005/DS-006 | `AgentEventMonitor`, launcher | Create new feature composable | No bytes/viewer |
 | Desktop File Explorer | Preview access, tab identity, viewer host | DS-002/DS-004/DS-006 | File store/Tabs/Viewer | Extend | Explicit access intent |
 | Phone-first Mobile Files | Request consume, selected node, inline viewer | DS-005/DS-006 | mobile store/Files/viewer | Extend | No desktop imports |
@@ -317,7 +321,7 @@ The authoritative byte boundaries are Electron main/protocol for embedded local 
 
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-web/utils/eventMonitorFilePaths/absoluteFilePathAction.ts` | Markdown capability | Pure policy | `AbsoluteFilePathAction`, grammar/punctuation/source kind | Stable pure contract | Yes |
+| `autobyteus-web/utils/eventMonitorFilePaths/absoluteFilePathAction.ts` | Markdown capability | Pure policy | `AbsoluteFilePathAction`, grammar/punctuation/source kind, supported preview eligibility | Stable pure contract shared with File Explorer type policy | Yes |
 | `autobyteus-web/utils/fileExplorer/absoluteWorkspacePathMapping.ts` | Workspace mapping | Pure mapper | Cross-platform root containment and relative conversion | No host I/O | Workspace metadata |
 | `autobyteus-web/composables/useMarkdownSegments.ts` | Markdown capability | Token/render model | `MarkdownRenderModel.fileActions`; custom token render rules; DOMPurify attrs | Only current raw-token seam | Pure policy |
 | `autobyteus-web/components/conversation/segments/renderer/MarkdownRenderer.vue` | Markdown capability | Shared sanitized DOM boundary | ID lookup/delegation/localized action controls | Existing v-html/click owner | Render model |
@@ -347,7 +351,7 @@ The authoritative byte boundaries are Electron main/protocol for embedded local 
 
 | Path | Kind (`Folder`/`Module`/`File`) | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-web/utils/eventMonitorFilePaths/` | Folder | Markdown capability | Pure Event Monitor path action policy | Feature-scoped and default-off | Stores, shell, I/O |
+| `autobyteus-web/utils/eventMonitorFilePaths/` | Folder | Markdown capability | Pure path syntax and supported-preview action policy | Feature-scoped and default-off; shared by render gating and type routing | Stores, shell, I/O |
 | `autobyteus-web/utils/fileExplorer/absoluteWorkspacePathMapping.ts` | Module | Workspace mapping | Cross-platform advisory mapping | Beside existing file path utilities | Authorization/bytes |
 | `autobyteus-web/composables/useMarkdownSegments.ts` | File | Markdown token/render model | Raw destination/action descriptor seam, safe placeholders, sanitization | Current MarkdownIt/DOMPurify owner | Pinia/workspace/IPC |
 | `autobyteus-web/components/conversation/segments/renderer/MarkdownRenderer.vue` | File | Markdown DOM/event boundary | Render action IDs, localized controls, typed delegation | Current v-html owner | Preview orchestration |
@@ -383,6 +387,7 @@ The authoritative byte boundaries are Electron main/protocol for embedded local 
 | Fenced code | Render literal `<pre><code>...</code></pre>` followed by one button per recognized candidate | Inject action markup into the code string | Markdown examples and clipboard text remain faithful |
 | Mobile request | `requestFilePreview({contextKey, workspaceId, relativePath:'docs/a.md', source:'event-monitor', presentation:'inline'})` then `MobileFiles` consumes | `setActiveTab('files')` plus `fileExplorerStore.openFilePreview()` with no selected node | The mobile task has its own selection state |
 | Read-only repeat | Existing path tab is selected and its access intent becomes read-only for Event Monitor activation; no duplicate | Reuse preview mode but leave Edit button visible | The requested source cannot enter edit mode |
+| Unsupported type | `.zip`/`.dmg` remains literal/copyable with no Open in Files control and no read | Classify unknown extension as Text and call Electron text IPC | FileViewer has no archive/installer adapter; no-read is safer and matches the supported matrix |
 | Desktop open | `openRightPanel(); setActiveTab('files')` | `toggleRightPanel(); setActiveTab('files')` | Repeated activation cannot close the panel |
 | Remote security | Map contained absolute path to `docs/a.md`, then call workspace route | Send `/workspace/root/docs/a.md` to a raw endpoint | Server authorization remains authoritative |
 
@@ -397,6 +402,7 @@ The authoritative byte boundaries are Electron main/protocol for embedded local 
 | Preserve unchecked Electron media branch | Existing local-file users | Rejected for affected path | Shared main validator for text/media |
 | Raw absolute server endpoint | Avoid client mapping | Rejected | Active-workspace mapping + existing relative API |
 | Second mobile/viewer/artifact path | Could bypass host seams | Rejected | Existing `MobileFileViewer`/`FileViewer` with explicit presentation/read-only |
+| Unknown extension fallback to Text | Existing classifier uses a permissive fallback | Rejected | Shared supported-preview policy returns Unsupported and suppresses Event Monitor action |
 | Temporary dual props/events | Ease incremental plumbing | Rejected | One typed action, request, and access contract |
 
 ## Derived Layering (If Useful)
@@ -407,17 +413,19 @@ The mobile shell bridge is a specialized host path after the launcher, not a sec
 
 ## Change / Refactor Sequence
 
-1. Define `AbsoluteFilePathAction`, source-kind/path grammar, `EventMonitorPreviewLocator`, `FilePreviewAccessIntent`, and `MobileFilePreviewRequest`; add pure grammar/mapping tests.
-2. Extend `useMarkdownSegments` with an opt-in render option and concrete token traversal/custom render rules. Retain raw link destinations and action descriptors before DOMPurify; emit safe IDs and adjacent controls; add default-off and code-copy/token tests.
-3. Extend `MarkdownRenderer` to use descriptor IDs, localized native controls, and typed delegated action events. Thread the capability through `AgentConversationFeed`, `AIMessage`, and all four in-scope segments; add click/Enter/Space/passive tests.
-4. Implement the launcher with explicit monitor context/workspace identity, local vs workspace locator resolution, localized refusal result, and `openFilePreview` read-only options. Add desktop `openRightPanel` and Files selection.
-5. Extend File Explorer state/action/host to enforce Event Monitor read-only: hide controls, force preview, pass `readOnly=true`, and test repeat activation against existing user tabs.
-6. Extend `mobileWorkStore` with revisioned pending requests. Add `MobileFiles` matching/consume/selection and `MobileFileViewer` inline/attach props; ensure Event Monitor requests show the selected preview inline in Files task and stale/mismatched requests do nothing. Cover MobileWorkShell/remote route behavior.
-7. Strengthen Electron main validation for both text IPC and local media protocol. Add focused invalid/missing/directory/unreadable tests. Preserve server workspace-relative checks and add mapping/negative tests.
-8. Remove temporary aliases/inert in-scope expectations, run source review, then API/E2E/browser/mobile/Electron/server coverage. Record environment limitations honestly.
+1. Define `AbsoluteFilePathAction`, source-kind/path grammar, supported-preview eligibility, `EventMonitorPreviewLocator`, `FilePreviewAccessIntent`, and `MobileFilePreviewRequest`; add pure grammar/type/mapping tests.
+2. Make `determineFileType` and Event Monitor action policy consume the same supported-preview eligibility function; unknown binary/archive/installer extensions return `Unsupported` and produce no action. Add no-read regression tests.
+3. Extend `useMarkdownSegments` with an opt-in render option and concrete token traversal/custom render rules. Retain raw link destinations and action descriptors before DOMPurify; emit safe IDs and adjacent controls; add default-off and code-copy/token tests.
+4. Extend `MarkdownRenderer` to use descriptor IDs, localized native controls, and typed delegated action events. Thread the capability through `AgentConversationFeed`, `AIMessage`, and all four in-scope segments; add click/Enter/Space/passive tests.
+5. Implement the launcher with explicit monitor context/workspace identity, local vs workspace locator resolution, localized refusal result, and `openFilePreview` read-only options. Add desktop `openRightPanel` and Files selection.
+6. Extend File Explorer state/action/host to enforce Event Monitor read-only: hide controls, force preview, pass `readOnly=true`, and test repeat activation against existing user tabs.
+7. Extend `mobileWorkStore` with revisioned pending requests. Add `MobileFiles` matching/consume/selection and `MobileFileViewer` inline/attach props; ensure Event Monitor requests show the selected preview inline in Files task and stale/mismatched requests do nothing. Cover MobileWorkShell/remote route behavior.
+8. Strengthen Electron main validation for both text IPC and local media protocol. Add focused invalid/missing/directory/unreadable tests. Preserve server workspace-relative checks and add mapping/negative tests.
+9. Remove temporary aliases/inert in-scope expectations, run source review, then API/E2E/browser/mobile/Electron/server coverage. Record environment limitations honestly.
 
 ## Key Tradeoffs
 
+- **Supported-type gating instead of universal absolute-path actions**: Some files remain plain text, but the UI does not promise a viewer that does not exist and avoids binary reads.
 - **Opt-in token render model instead of post-render scan**: More Markdown plumbing, but raw destinations, code boundaries, sanitization, and generic consumer isolation are explicit.
 - **Typed mobile request instead of direct component access**: Adds transient store state, but it respects the phone-first component owner and handles mount/context timing.
 - **Explicit read-only access intent instead of preview mode inference**: Adds state/options, but prevents edit controls from leaking through the desktop host while preserving existing user opens.
@@ -435,15 +443,16 @@ The mobile shell bridge is a specialized host path after the launcher, not a sec
 6. Existing user tab can be opened in edit mode before an Event Monitor click. Mitigation: Event Monitor read-only access intent updates selected tab host state and hides controls; repeat-open tests.
 7. Electron media can bypass text validation. Mitigation: same main-owned validator for IPC and protocol.
 8. Client mapping can disagree with server root/case. Mitigation: platform-neutral pure tests and final server/native validation.
-9. Shared Markdown consumer scope can regress. Mitigation: default-off tests in file preview, artifact, and ordinary consumers.
+9. Unknown file-type policies can drift between action eligibility and viewer routing. Mitigation: one pure policy and table-driven tests.
+10. Shared Markdown consumer scope can regress. Mitigation: default-off tests in file preview, artifact, and ordinary consumers.
 
 ## Guidance For Implementation
 
 - Treat the three core artifacts plus the reviewed intake/screenshot as the complete package. The architecture report from round 1 remains evidence and must not be deleted.
 - Implement the token/render-model seam in `useMarkdownSegments`; do not attempt a post-render substring scan or use browser `href` as a filesystem identity.
-- Keep action IDs render-scoped and keep raw destinations in typed in-memory descriptors. The DOM may carry only safe IDs/attributes.
+- Keep action IDs render-scoped and keep raw destinations in typed in-memory descriptors. Gate descriptors/actions through the supported preview-family policy; `.zip`/`.dmg` must remain plain source. The DOM may carry only safe IDs/attributes.
 - Use native buttons/anchors and localized names. Event Monitor code controls must be outside literal code content.
 - Make `FilePreviewAccessIntent` and `MobileFilePreviewRequest` explicit in code and tests. Do not infer mobile selection from a global tab or access from `mode='preview'`.
 - Mobile Event Monitor requests use authorized relative paths only, are consumed by matching `MobileFiles`, and render inline with `allowAttach=false`; no desktop panel imports.
 - Do not perform filesystem/workspace I/O during Markdown rendering or message arrival. All failure details must be localized and non-destructive.
-- Before implementation handoff, demonstrate traceability for BEH-001–BEH-008 and AC-001–AC-018, then obtain a passing architecture review.
+- Before finalizing the local fix, demonstrate traceability for BEH-001–BEH-009 and AC-001–AC-019, including no action/no read for unsupported binaries. This bounded fix does not change the approved high-level architecture.

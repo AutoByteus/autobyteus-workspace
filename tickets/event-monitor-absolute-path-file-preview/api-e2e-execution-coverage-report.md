@@ -5,238 +5,258 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/requirements.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/task.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/task.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/code-review-report.md`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-coverage-investigation.md`
-- Current Execution Round: 1
-- Trigger: API/E2E execution after implementation-source review passed for commit `2a342a3fb`.
-- Prior Round Reviewed: None; initial execution round.
+- Current Execution Round: `2`
+- Trigger: Source review round 4 passed for `7140696c8b78c6bfbba2035aaa8868a68e1e05aa`; current source restores `.lua` in the shared supported code policy. Prior API/E2E artifacts were explicitly refreshed rather than reused as signoff.
+- Prior Round Reviewed: Round 1 execution for source `2a342a3fb`, result `Blocked` at 83%, with no authenticated Event Monitor run, paired mobile session, packaged Electron/media, or Windows host.
 - Latest Authoritative Round: This report.
+
+Round rules: Scenario IDs are reused for the same behaviors. No new API/E2E scenario was discovered; the current source change is a supported-file policy correction covered by implementation-owned durable tests.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Source review pass and downstream scenario list | N/A | No implementation/test failure; critical live journeys were unavailable after safe setup | Blocked | Yes | Focused/broad repository, server route, Electron validator, guards, and renderer bootstrap passed; Event Monitor/Files live journey and packaged Windows evidence remain unavailable. |
+| 1 | Prior source review pass for `2a342a3fb` | N/A | N/A | Blocked | No | Initial repository/live/browser refresh; critical auth/mobile/package/platform dependencies unavailable. |
+| 2 | Source review round 4 pass for `7140696c8b78c6bfbba2035aaa8868a68e1e05aa` | EVM-BROWSER-003 Event Monitor journey, EVM-BROWSER-004 phone-first request, EVM-DESKTOP-001 packaged/platform proof rechecked; still unavailable after safe setup. | None observed | Blocked | Yes | Current `.lua` policy and all changed-chain regressions rerun; live API and browser shell refreshed. |
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `api-e2e-coverage-investigation.md`.
-- Investigation completed before durable coverage changes or final execution: `Yes`.
-- Investigation plan followed: `Yes` — focused tests, broad chain/regression suites, server route, Electron validator/TypeScript, guards, isolated server/browser bootstrap, and cleanup were executed in the planned order. The browser route could not reach an authenticated Event Monitor run, so the report records that gap instead of fabricating success.
-- Existing coverage decisions revised during execution, with evidence: No durable coverage validity decision changed. The live server route was added as temporary evidence: relative content returned 200 and absolute/traversal paths returned 400.
-- Reroute required before or during execution: `No` for implementation/source; `Yes` for final API/E2E completion because required external/runtime dependencies are missing.
-- Notes: The repository has no browser E2E configuration. Temporary browser probes were used only for renderer/bootstrap evidence.
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-coverage-investigation.md`
+- Investigation completed before durable coverage changes or final execution: `Yes`
+- Investigation plan followed: `Yes`, with one fixture setup correction. The first relative live content request returned 404 because the fixture was initially placed one directory below the configured temp workspace root; the fixture was then placed at the documented root and the retry returned 200. This is recorded in `api-e2e-r2-live-api.log`, not hidden.
+- Existing coverage decisions revised during execution, with evidence: No. Existing implementation/API/E2E coverage remained valid; no API/E2E durable files changed.
+- Reroute required before or during execution: `No`
+- Notes: No implementation failure was observed. The final status is blocked by missing critical runtime dependencies, not by a failing current-source check.
 
 ## Compatibility / Legacy Scope Check
 
-- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`.
-- Compatibility-only or legacy-retention behavior observed in implementation: `No`.
-- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes` — new descriptors/intents/requests are transient in-memory state; no migration was added.
-- Durable coverage added or retained only for compatibility-only behavior: `No`.
-- If compatibility-related invalid scope was observed, reroute classification used: N/A.
-- Upstream recipient notified: Not yet; blocked result is being reported to the user with preserved evidence.
+- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
+- Compatibility-only or legacy-retention behavior observed in implementation: `No`
+- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `N/A` — ticket state is transient and no schema changed.
+- Durable coverage added or retained only for compatibility-only behavior: `No`
+- If compatibility-related invalid scope was observed, reroute classification used: N/A
+- Upstream recipient notified: N/A
 
 ## Changed Boundary And Evidence Matrix
 
 | Scenario ID | Behavior / Requirement / Acceptance-Criteria IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
 | --- | --- | --- | --- | --- | --- | --- |
-| EVM-REPO-001 | REQ-001–004/013/015; AC-001–005/010/016 | Path grammar, Markdown capability, action transport | Nuxt Vitest, 8 files/38 tests | Durable | Pass | `api-e2e-repository-focused.log`; changed focused suite. |
-| EVM-REPO-002 | REQ-006–008/011/014; AC-006–009/013/018 | File Explorer/FileViewer/read-only/dedupe/shell state | Nuxt Vitest, 18 files/87 tests | Durable | Pass | `api-e2e-repository-broad.log`; changed-chain/viewer/mobile/artifact/reference regression suite. |
-| EVM-REPO-003 | REQ-009/010/011; AC-011–014 | Trusted local routing and active-workspace mapping | Electron/Nuxt Vitest | Durable | Pass | `api-e2e-electron.log`, focused suite; browser-sentinel and media/text routing tests. |
-| EVM-REPO-004 | REQ-009; AC-011/013 | Trusted Electron validator compilation | Electron TypeScript project | Durable | Pass | `api-e2e-electron-tsc.log`. |
-| EVM-API-001 | REQ-010/011; AC-012–014 | Existing workspace-relative REST route and boundary refusal | Fastify inject | Durable | Pass | `api-e2e-server-route.log` (1 file/4 tests). |
-| EVM-API-002 | REQ-010/011; AC-012–014 | Real server workspace content route | Built local server at `127.0.0.1:3318` + `curl` | Live | Pass | `api-e2e-live-api.log`: relative fixture 200; absolute path 400; `../etc/passwd` 400. |
-| EVM-GUARD-001 | REQ-013; localization constraint | Localization literal/boundary guards and patch hygiene | Guard scripts + `git diff --check` | Durable | Pass | `api-e2e-guards.log`. |
-| EVM-BROWSER-001 | Renderer environment and desktop shell reachability; supports AC-007/016 indirectly | Nuxt desktop dev renderer with backend proxy | Browser tab `a3778c`, `/agents` | Browser | Pass (bootstrap only) | `api-e2e-browser-observations.md`; screenshot `/Users/normy/.autobyteus/browser-artifacts/a3778c-1784283048808.png`; zero overlay count and agent catalog rendered. |
-| EVM-BROWSER-002 | Mobile shell prerequisite for AC-017 | Phone-first web shell | Browser tab `79987a`, `/mobile` | Browser | Pass (pairing shell only) | `api-e2e-browser-observations.md`; screenshot `/Users/normy/.autobyteus/browser-artifacts/79987a-1784283048864.png`; pairing screen rendered with zero overlays. |
-| EVM-BROWSER-003 | AC-001–010/016–018 | Event Monitor action DOM, click/Enter/Space, passive arrival, desktop Files panel/focus/viewer | Browser with authenticated Event Monitor run | Browser | Blocked / Not Tested | No deterministic authenticated agent run or seeded Event Monitor conversation was available; no model run was started to avoid unrelated activity. |
-| EVM-BROWSER-004 | AC-006–009/017/018 | Phone-first pending request, inline read-only viewer, no Attach, stale/context behavior | Paired phone/mobile session | Browser | Blocked / Not Tested | No paired mobile session or deterministic mobile Files task fixture was available. |
-| EVM-DESKTOP-001 | REQ-009/011; AC-011–013 | Packaged Electron text/media protocol and local validation | Packaged Electron / native OS | Desktop | Blocked / Not Tested | macOS focused validator passed, but no packaged app smoke or Windows host was available; browser evidence cannot substitute for shell proof. |
-| EVM-REG-001 | REQ-012/013; AC-015/016 | Message references, Agent artifacts, ordinary Markdown, shared viewers | Existing component/regression tests | Durable | Pass | Included in `api-e2e-repository-broad.log`; no source/test failures. |
+| EVM-REPO-001 | BEH-009, REQ-016, AC-019; CR-F-006 `.lua` policy | Shared file type policy and Event Monitor action eligibility | Nuxt Vitest focused | Durable | Pass | `api-e2e-r2-focused.log`; 4 files/41 tests. |
+| EVM-REPO-002 | BEH-001/002; AC-001/002/003; `.lua` and unsupported source preservation | Markdown capability/action rendering | Nuxt Vitest focused and changed-chain | Durable | Pass | `api-e2e-r2-focused.log`, `api-e2e-r2-broad.log`. |
+| EVM-REPO-003 | BEH-003/004/006/009; AC-006/007/008/011/019 | File Explorer routing, no-read/no-URL unsupported behavior, viewer/panel state | Nuxt Vitest changed-chain and viewer regression | Durable | Pass | `api-e2e-r2-broad.log` (14 files/93 tests), `api-e2e-r2-broad-regression.log` (18 files/93 tests). |
+| EVM-REPO-004 | BEH-005/007/008; AC-012/013/014/015/017/018 | Mobile stale/context, workspace mapping, artifact/reference consumers | Nuxt Vitest changed-chain/regression | Durable | Pass | `api-e2e-r2-broad.log`, `api-e2e-r2-broad-regression.log`. |
+| EVM-ELECTRON-001 | BEH-006; REQ-011; AC-011 | Trusted local native file validator | Electron Vitest Node config | Desktop | Pass | `api-e2e-r2-electron.log`; 1 file/1 test. |
+| EVM-ELECTRON-002 | BEH-006; AC-011 | Electron TypeScript/native boundary compile | Electron `tsc` | Desktop | Pass | `api-e2e-r2-electron-tsc.log`; no diagnostics. |
+| EVM-API-001 | BEH-007; REQ-012/013; AC-012/013 | Built server health and authorized workspace-relative content | Isolated live REST | Live | Pass | `api-e2e-r2-live-api.log`; `/rest/health` 200 and fixture retry 200 `text/plain`. |
+| EVM-API-002 | BEH-007; REQ-012/013; AC-012/013 | Workspace containment refusal | Isolated live REST | Live | Pass | `api-e2e-r2-live-api.log`; encoded `/etc/passwd` and `../etc/passwd` both HTTP 400 with containment error. |
+| EVM-BROWSER-001 | BEH-004/008; AC-007/009/014/015 | Web-equivalent desktop shell bootstrap | Browser bridge `/agents` | Browser | Pass (bootstrap only) | `api-e2e-browser-observations.md`; `/Users/normy/.autobyteus/browser-artifacts/a39e65-1784287781544.png`; DOM had 47 agents and 0 overlays. |
+| EVM-BROWSER-002 | BEH-005; AC-017 | Phone route/pairing shell reachability | Browser bridge `/mobile` | Browser | Pass (pairing shell only) | `api-e2e-browser-observations.md`; `/Users/normy/.autobyteus/browser-artifacts/dfb45d-1784287792064.png`; 0 overlays. |
+| EVM-BROWSER-003 | BEH-001/003/004/009; AC-001–009/019 | Authenticated Event Monitor action, click/Enter/Space, passive, viewer/dedupe/focus/no-read | Browser bridge | Browser | Blocked | No deterministic authenticated Event Monitor run/session was available; alternatives are durable component tests and live route probes. |
+| EVM-BROWSER-004 | BEH-005; AC-017/018 | Phone-first matching/stale/context/inline/no-Attach | Paired mobile browser/device | Browser | Blocked | No paired mobile identity/session or project fixture was available. |
+| EVM-DESKTOP-001 | BEH-006; AC-011 | Packaged Electron text/media and Windows host behavior | Project desktop/package | Desktop | Blocked | Current-source packaged build was not relaunched by API/E2E; existing 29695 app is not owned; Windows host unavailable. |
+| EVM-REG-001 | BEH-008; REQ-015; AC-014/015 | References/artifacts and other Markdown consumers | 18-file regression suite | Durable | Pass | `api-e2e-r2-broad-regression.log`; 18 files/93 tests. |
 
 ## Additional Repository Coverage Execution
 
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm --dir autobyteus-web exec vitest run utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/mobile/__tests__/MobileFiles.spec.ts stores/__tests__/mobileWorkStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts electron/__tests__/localFileValidation.spec.ts components/mobile/__tests__/MobileFileViewer.spec.ts --reporter=dot` | Frontend worktree | Focused changed behavior | Pass | `api-e2e-repository-focused.log`; 8 files/38 tests. |
-| 2 | `pnpm --dir autobyteus-web exec vitest run ...` (18 listed changed-chain/viewer/artifact/reference files; exact command in investigation) | Frontend worktree | Integration/regression chain | Pass | `api-e2e-repository-broad.log`; 18 files/87 tests. |
-| 3 | `pnpm --dir autobyteus-web exec vitest run --config electron/vitest.config.ts electron/__tests__/localFileValidation.spec.ts --reporter=dot` | Electron config | Native validator | Pass | `api-e2e-electron.log`; 1 file/1 test. |
-| 4 | `pnpm --dir autobyteus-server-ts exec vitest run tests/unit/api/rest/workspaces.test.ts --reporter=dot` | Server worktree; offline dependencies installed for this worktree | Workspace route | Pass | `api-e2e-server-route.log`; 1 file/4 tests. |
-| 5 | `pnpm --dir autobyteus-web audit:localization-literals && pnpm --dir autobyteus-web guard:localization-boundary && pnpm --dir autobyteus-web guard:web-boundary && git diff --check` | Frontend/repo | Guards and patch hygiene | Pass | `api-e2e-guards.log`. |
-| 6 | `pnpm --dir autobyteus-web exec tsc -p electron/tsconfig.json --noEmit --pretty false` | Electron TS config | Native boundary compilation | Pass | `api-e2e-electron-tsc.log`. |
-| 7 | `pnpm --dir autobyteus-server-ts build` | Server build; output ignored | Build a local server for live route/browser proxy | Pass | `api-e2e-server-build.log`; built-in agent bootstrap smoke passed. |
+| 1 | `pnpm --dir autobyteus-web exec vitest run utils/fileExplorer/__tests__/fileUtils.test.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts --reporter=dot` | Nuxt Vitest | Current policy/action/renderer/routing and unsupported no-I/O | Pass: 4 files/41 tests | `api-e2e-r2-focused.log` |
+| 2 | `pnpm --dir autobyteus-web exec vitest run` over the 14 implementation-handoff changed-chain paths | Nuxt Vitest | Current source changed chain and mobile/viewer/panel regressions | Pass: 14 files/93 tests | `api-e2e-r2-broad.log` |
+| 3 | `pnpm --dir autobyteus-web exec vitest run` over the 18 segment/feed/viewer/mobile/artifact/reference paths | Nuxt Vitest | Broad consumer and artifact/reference regressions | Pass: 18 files/93 tests | `api-e2e-r2-broad-regression.log` |
+| 4 | `pnpm --dir autobyteus-web exec vitest run --config electron/vitest.config.ts electron/__tests__/localFileValidation.spec.ts --reporter=dot` | Electron Vitest | Native validator | Pass: 1 file/1 test | `api-e2e-r2-electron.log` |
+| 5 | `pnpm --dir autobyteus-server-ts exec vitest run tests/unit/api/rest/workspaces.test.ts --reporter=dot` | Server Vitest | Workspace route and containment negatives | Pass: 1 file/4 tests | `api-e2e-r2-server-route.log` |
+| 6 | `pnpm --dir autobyteus-server-ts build` | Server build | Built server and built-in-agent bootstrap | Pass | `api-e2e-r2-server-build.log` |
+| 7 | `pnpm --dir autobyteus-web exec tsc -p electron/tsconfig.json --noEmit --pretty false` | Electron TypeScript | Native compile | Pass | `api-e2e-r2-electron-tsc.log` |
+| 8 | `pnpm --dir autobyteus-web audit:localization-literals && pnpm --dir autobyteus-web guard:localization-boundary && pnpm --dir autobyteus-web guard:web-boundary && git diff --check` | Guards/repo root | Localization/web boundaries and diff hygiene | Pass | `api-e2e-r2-guards.log` |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | ---: | ---: | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 78% | 78% | 0 | Durable coverage plus live route/native/bootstrap evidence. | Critical Event Monitor/Files action journeys, viewer matrix, mobile request, and packaged Windows paths unproven. |
-| Changed-boundary execution directness | 82% | 82% | 0 | Pure policy, component/state chain, route, validator, and renderer bootstrap executed directly. | No mounted Event Monitor content or actual Electron packaged IPC/media request. |
-| Cross-boundary integration realism and mock gap | 82% | 82% | 0 | Live REST route and configured browser proxy; no arbitrary absolute endpoint observed. | Frontend launcher-to-preview and authenticated transport remain mocked/indirect. |
-| Environment, configuration, identity, and fixture fidelity | 78% | 78% | 0 | Task-owned ports/temp workspace and built server/browser bootstrap. | No paired identity; server startup used existing production SQLite path for migrations despite the task-owned data-dir; no pending migration/write observed. |
-| Failure, edge-case, lifecycle, and recovery evidence | 88% | 88% | 0 | Negative paths, Windows mapping, native regular-file validation, stale mobile tests, route negatives. | Live viewer failures, focus timing, passive stream, and async browser races remain indirect. |
-| User-surface, browser, and desktop-shell confidence | 78% | 78% | 0 | Desktop and phone shell screenshots/DOM observations with zero overlays. | Event Monitor/Files UI, collapsed panel/focus, mobile inline viewer, packaged Electron, Windows host unproven. |
-| Durable regression coverage quality and relevance | 95% | 95% | 0 | 8-file/38-test focused and 18-file/87-test broad passes; no durable test changes. | No durable browser harness. |
+| Requirement and acceptance-criteria proof | 82% | 82% | 0 | Current-source pure policy/action/renderer/no-read tests, route negatives, and native validator passed; browser/live shell did not reach Event Monitor. | Live actions/passive/viewers, phone-first, packaged Electron/media, and Windows remain unproven. |
+| Changed-boundary execution directness | 86% | 86% | 0 | `.lua` and unsupported policy changed chain executed directly in current-source tests; server and renderer bootstrapped. | No mounted Event Monitor action or packaged IPC/media request. |
+| Cross-boundary integration realism and mock gap | 82% | 82% | 0 | Built server, Fastify route, live health/content/negative probes, and configured Nuxt proxy were exercised. | Authenticated Event Monitor-to-Files transport remains indirect. |
+| Environment, configuration, identity, and fixture fidelity | 78% | 78% | 0 | Task-owned ports/data fixture and cleanup; documented build/start path used. | Inherited env selected public URL 29695 and existing production Prisma migration DB; no auth/paired identity. |
+| Failure, edge-case, lifecycle, and recovery evidence | 89% | 89% | 0 | Unsupported/`.lua`, negative path, traversal, stale mobile, validator, route, build, cleanup checks passed. | Live focus/passive/race/viewer failure states remain indirect. |
+| User-surface, browser, and desktop-shell confidence | 78% | 78% | 0 | `/agents` and `/mobile` shell DOM/screenshot bootstrap, native validator, and TS compile passed. | Event Monitor/Files, focus, inline mobile viewer, package, and Windows remain unproven. |
+| Durable regression coverage quality and relevance | 95% | 95% | 0 | Focused 4/41, changed-chain 14/93, and consumer regression 18/93 all passed; no API/E2E files changed. | No durable browser harness. |
 
-- Overall post-repository confidence: 83%.
-- Overall final confidence: 83%.
-- Calculation method: Simple average of 78, 82, 82, 78, 88, 78, and 95.
-- Confidence change produced by broader validation: Targeted live API and renderer bootstrap raised directness for those boundaries but did not close the critical Event Monitor/Files gap; scores therefore remain unchanged from the post-repository assessment.
+- Overall post-repository confidence: `84%`.
+- Overall final confidence: `84%`.
+- Calculation method: Simple average of 82, 86, 82, 78, 89, 78, and 95 = 84.29%, rounded down to 84%.
+- Confidence change produced by broader validation: Live API and browser bootstrap were refreshed, but no critical Event Monitor/mobile/package/platform path became reachable; scores remain unchanged.
 - Every critical acceptance criterion directly proven: `No`.
-- Any final applicable category below 90%: `Yes` — all except durable regression coverage quality/relevance.
+- Any final applicable category below 90%: `Yes` — requirement proof, changed-boundary directness, cross-boundary realism, environment fidelity, failure/lifecycle, and user-surface/desktop-shell.
 - Default final confidence target of 95% met: `No`.
-- Confidence-limiting residual risks: No authenticated Event Monitor run, paired mobile session, seeded Files viewer matrix, packaged Electron smoke, or Windows host.
+- Confidence-limiting residual risks: authenticated Event Monitor action/passive/viewer/focus/dedupe; paired mobile; full visual inspection; packaged Electron current-source text/media; Windows parsing/host; clean isolated server env/database fidelity.
 
 ## Broader Validation Decision And Execution
 
-- Decision and selected execution mode from the coverage investigation: `Blocked` after targeted Browser + Live API + focused Electron validation.
-- Material deviation from planned mode or rationale: Browser setup succeeded with an isolated built server, but the app only exposed the agent catalog and phone pairing shell; it did not expose a deterministic Event Monitor conversation. No agent/model run or paired session was started solely to force coverage.
-- Confidence gap or residual risk actually addressed: Desktop web bootstrap, backend proxy wiring, mobile pairing shell reachability, live workspace route success, absolute-path refusal, traversal refusal, localization guards, and trusted native validator.
-- If `Not Required`, direct evidence: N/A.
-- If `Blocked`, exact unavailable dependency or access and attempted alternatives: Required Event Monitor content/session with an authenticated run and required phone-first paired mobile session were unavailable. Alternatives attempted: focused component/state tests, broad changed-chain/viewer/artifact tests, pure mapping tests, Fastify inject route, isolated built-server `curl` probes, Nuxt desktop and `/mobile` browser bootstrap, and Electron validator/TypeScript checks. Packaged Windows validation is also unavailable on this macOS host.
-- Startup order, commands, and readiness results: built server (`api-e2e-server-build.log`) -> server `127.0.0.1:3318` with task-owned temp workspace -> frontend `BACKEND_NODE_BASE_URL=http://127.0.0.1:3318 ... --port 3317` -> curl readiness 200 -> browser tabs -> clean SIGINT shutdown. The server reported its Prisma migration database as the existing production path; no pending migrations or intentional data writes were observed, and task-owned temp workspace/browser/server processes were cleaned.
-- Environment choices that materially affected the run: macOS host, Node 22/pnpm workspace, Electron 42.4.1 dependency, desktop browser at 1090x738, no remote secrets/paired identity, isolated ports 3317/3318.
-- Seed data, fixtures, identities, authentication, permissions, or session state: Relative API fixture was created in the task-owned temp workspace; no authenticated user or paired mobile identity was created.
+- Decision and selected execution mode from the coverage investigation: `Blocked` after targeted Live API + Browser + repository Electron validation.
+- Material deviation from the planned mode or rationale: None in selected mode. The fixture was corrected after an initial 404 caused by placing it one directory below the configured root. Browser startup also emitted generated `#app-manifest` pre-transform warnings, but `/agents` and `/mobile` rendered and were inspected.
+- Confidence gap or residual risk actually addressed: Current-source server build/readiness, relative content success, absolute/traversal refusal, Nuxt proxy/desktop bootstrap, mobile pairing-shell reachability, native validator, and renderer overlay smoke were refreshed.
+- If `Not Required`, direct evidence that made broader validation unnecessary: N/A.
+- If `Blocked`, exact unavailable dependency or access and attempted alternatives: A safe deterministic authenticated Event Monitor run with seeded files, a paired mobile session, a current-source packaged Electron launch path, and a Windows host/runner were unavailable. Attempted alternatives: focused/broad current-source tests, server route tests, native validator/TypeScript, server build, live curl routes, Nuxt browser `/agents`/`/mobile`, DOM assertions, screenshots, and cleanup. No model/tool activity or unauthorized existing process was started/reused to fabricate coverage.
+- Startup order, commands, and readiness results: server build -> isolated server 3318 with task-owned temp data-dir -> `/rest/health` 200 -> relative/negative route probes -> Nuxt 3317 with backend proxy -> desktop/mobile browser tabs -> DOM/screenshot inspection -> tabs/processes/temp data cleaned. Existing 29695 process was not touched.
+- Environment choices that materially affected the run: macOS Apple Silicon; Node 22.21.1; pnpm 10.28.2; Nuxt 3.21.1; Vitest 3.2.4/4.0.18; Electron 42.4.1; browser desktop viewport 1090x738; no auth/paired identity. Inherited server env overrode task `.env` values for public URL and migration DB path.
+- Seed data, fixtures, identities, authentication, permissions, or session state: One task-owned `api-e2e-r2.txt` fixture; no authenticated or paired session.
 
 | Scenario / Journey Step | Expected Observable Result | Actual Observable Result | DOM / Screenshot / Log / API / Process Evidence | Result |
 | --- | --- | --- | --- | --- |
-| Start isolated backend | Server listens and exposes health/REST | `127.0.0.1:3318` listened; `/rest/health` returned 200 during run | `api-e2e-server-build.log`; `api-e2e-live-api.log`; server session output | Pass |
-| Read mapped relative workspace file | Existing relative route returns bytes | Fixture returned `event-monitor-live-fixture` with HTTP 200 text/plain | `api-e2e-live-api.log` | Pass |
-| Request arbitrary absolute workspace path | Boundary rejects and returns no host bytes | HTTP 400 with `Access denied: Path resolves outside the workspace boundary.` | `api-e2e-live-api.log` | Pass |
-| Request traversal path | Boundary rejects | HTTP 400 with same boundary error | `api-e2e-live-api.log` | Pass |
-| Start desktop browser renderer | App boots with configured backend and no error overlay | `/agents` rendered catalog, `47 agents`, workspace selector, zero modal overlays | `api-e2e-browser-observations.md`, desktop screenshot | Pass (bootstrap only) |
-| Start phone-first shell | Pairing screen is reachable without fabricated auth | `/mobile` rendered pairing instructions, zero modal overlays | `api-e2e-browser-observations.md`, mobile screenshot | Pass (pairing shell only) |
-| Activate Event Monitor path | Files selected, preview read-only, no overlay, center retained | No authenticated Event Monitor content/session was available | Missing dependency documented above | Blocked |
-| Consume phone-first pending request | Files task consumes matching request inline/no Attach | No paired mobile session or Files task fixture was available | Missing dependency documented above | Blocked |
+| Build current server | Dist server builds and bootstrap smoke completes | Build and built-in-agent bootstrap passed | `api-e2e-r2-server-build.log` | Pass |
+| Start isolated backend and health | Server listens at task port and health returns 200 | Server listened at 3318; `/rest/health` returned 200 | `api-e2e-r2-live-server.log`, `api-e2e-r2-live-api.log` | Pass |
+| Read mapped relative workspace file | Existing route returns fixture bytes | First request 404 due fixture placement error; after placing fixture at configured temp workspace root, retry returned HTTP 200 `text/plain` and expected fixture | `api-e2e-r2-live-api.log` | Pass after fixture correction |
+| Request arbitrary absolute path | Boundary refuses without host bytes | `/etc/passwd` returned HTTP 400 with `Access denied: Path resolves outside the workspace boundary.` | `api-e2e-r2-live-api.log` | Pass |
+| Request traversal path | Boundary refuses | `../etc/passwd` returned same HTTP 400 containment error | `api-e2e-r2-live-api.log` | Pass |
+| Start desktop renderer | Current Nuxt app renders desktop shell without modal overlay | `/agents` redirected/rendered; 47 agents, Temp Workspace, 0 sampled overlays | `api-e2e-browser-observations.md`, desktop screenshot, `api-e2e-r2-browser.log` | Pass (bootstrap only) |
+| Start phone-first shell | Pairing route is reachable and usable without fabricated auth | `/mobile` displayed pairing instructions/buttons and 0 sampled overlays | `api-e2e-browser-observations.md`, mobile screenshot | Pass (pairing shell only) |
+| Activate Event Monitor path | Correct action/Files/viewer/read-only/focus behavior | No authenticated Event Monitor run/session was available | Missing dependency; durable tests remain indirect | Blocked |
+| Consume phone-first request | Matching request presents inline/no Attach and stale requests are ignored | No paired mobile session/fixture available | Missing dependency; mobile durable tests remain indirect | Blocked |
+| Launch current-source packaged Electron | Trusted text/media protocol works in package | Current-source package was not launched by this stage; prior artifact is from an earlier integrated revision and is not current-source signoff | Existing 29695 process not owned; Delivery owns rebuild/package | Blocked |
+| Validate Windows host | Windows URL/filesystem behavior works | No Windows host/runner | POSIX mapping/validator tests only | Blocked |
 
 ## Desktop Application Validation
 
-- Validation approach executed and any deviation from investigation: Repository Electron validator, Electron TypeScript, server build, and browser renderer were run. No packaged application was launched because the required platform/package smoke path was not available without a full release build and Windows host.
-- Browser-tested web-equivalent behavior and evidence: Desktop `/agents` renderer and phone `/mobile` pairing shell booted successfully; this is not a claim of Event Monitor/Files journey validation. Evidence is in `api-e2e-browser-observations.md`.
-- Shell-specific or lifecycle behavior and evidence: Trusted local validator passed on macOS (`api-e2e-electron.log`); actual packaged preload/IPC/media protocol was not run. Windows parsing was only covered by repository mapping/policy tests, not a Windows host.
-- Effect on any already-running desktop application: `None`; the existing process on port 29695 was not stopped or reused. The isolated server/frontend processes were owned by this run and stopped cleanly.
-- Behavior not directly proven and confidence consequence: Packaged Electron text/media, Windows URL parsing, and desktop Event Monitor launch remain blocked; this keeps desktop/user-surface confidence below 90%.
+- Validation approach executed and any deviation from the investigation: Current-source repository Electron validator and TypeScript compile passed; browser dev renderer was used for web-equivalent shell bootstrap. No package relaunch was attempted because the existing Electron/server process on 29695 was not owned and the current `.lua` revision has not been rebuilt by this stage.
+- Browser-tested web-equivalent behavior and evidence: `/agents` and `/mobile` rendered with DOM/screenshot observations. This is not Event Monitor/Files journey signoff.
+- Shell-specific or lifecycle behavior and evidence: `localFileValidation.spec.ts` 1/1 and Electron TypeScript compile passed; packaged preload/IPC/media was not exercised. Windows remained unavailable.
+- Effect on any already-running desktop application: `None`; existing 29695 process was not stopped or reused.
+- Behavior not directly proven and confidence consequence: packaged text/media, Windows parsing, and actual Event Monitor launch remain blocked; desktop/user-surface confidence is 78%.
 
 ## Platform / Runtime Targets
 
-- Operating system / platform: macOS, Apple Silicon host.
-- Runtime and relevant framework versions: Node 22.21.1; pnpm 10.28.2; Nuxt 3.21.1; Vitest 3.2.4 web / 4.0.18 server; Electron dependency 42.4.1.
-- Browser / engine and version, when applicable: AutoByteus browser bridge; exact engine version not exposed by the bridge.
-- Device, viewport, locale, timezone, or accessibility settings: Desktop browser bridge reported 1090x738; locale/timezone default host context; no paired phone/device emulation was available.
+- Operating system / platform: macOS Apple Silicon.
+- Runtime and relevant framework versions: Node 22.21.1; pnpm 10.28.2; Nuxt 3.21.1; Vitest 3.2.4 web / 4.0.18 server; Electron 42.4.1; Prisma 5.22.0.
+- Browser / engine and version, when applicable: AutoByteus browser bridge; exact engine version not exposed.
+- Device, viewport, locale, timezone, or accessibility settings: Desktop browser bridge 1090x738; host locale/timezone context; no mobile device emulation or paired identity.
 
-## Lifecycle / Upgrade / Persisted-Data Checks
+## Lifecycle / Upgrade / Restart / Persisted-Data Checks
 
 - Approved persisted-data decision: `Not Affected`.
-- Representative existing data exercised: Existing artifact/reference/viewer and File Explorer tab behavior through durable component suites; no database schema transition.
-- Direct-use, discard/rebuild, or migration result and evidence: No migration required. Server test global setup created and then cleaned its temporary test database; isolated live server was stopped cleanly. The server startup log reported the production SQLite path for migrations despite the task data-dir; no pending migration or intentional write was observed, and this is recorded as an environment-fidelity residual risk.
+- Representative existing data exercised: Existing viewer, File Explorer, mobile, artifact/reference and server test data paths through durable suites; live task-owned workspace fixture.
+- Direct-use, discard/rebuild, or migration result and evidence: No ticket migration required. Server test setup applied current migrations to its temporary DB and the DB was removed. Isolated live server logged migration against the existing production SQLite path despite task `--data-dir`; no pending migration or intentional write was observed. This remains an environment-fidelity limitation, not ticket behavior proof.
 - Migration completion/recovery evidence, only when `Migration Required`: N/A.
 - Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`.
-- Residual untested persisted-data risk: None for the ticket's new transient UI state; environment DB-path behavior should be rechecked in any follow-up live session before reusing a server data directory.
+- Residual untested persisted-data risk: None for new transient UI state; clean isolated live server env/DB behavior should be corrected in any follow-up authenticated run.
 
 ## Tests Implemented Or Updated
 
 | Path / Scenario | Change | Requirement / Boundary | Execution Result | Notes |
 | --- | --- | --- | --- | --- |
-| None | None | No new durable API/E2E harness exists in this repository; current unit/component/server/Electron coverage remained valid. | N/A | Temporary browser and live API probes were used instead of adding a parallel framework. |
+| None | None | No durable API/E2E test file was changed in the current source fix or this API/E2E round. | N/A | Implementation-owned policy/action/renderer/routing tests were rerun, not authored by API/E2E. |
 
 ## Tests Removed As Stale Or Obsolete
 
-None. The current default-off generic Markdown and Event Monitor opt-in assertions are both valid; no stale coverage was removed.
+None.
 
 ## Durable Coverage Changed In The Codebase
 
 - Repository-resident durable coverage added, updated, or removed this round: `No`.
 - Paths added or updated: None.
 - Paths removed: None.
-- Added or updated paths attached for proportional test-code review: `Not Applicable`.
+- Added or updated paths attached for proportional test-code review: `Not Applicable` because API/E2E did not change durable test code.
 - Diff or repository evidence supplied for removed paths: N/A.
 
 ## Other Execution Artifacts
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `api-e2e-browser-observations.md` | Browser DOM/screenshot and environment observations | Retained | Canonical temporary-probe evidence for this report. |
-| `/Users/normy/.autobyteus/browser-artifacts/a3778c-1784283048808.png` | Desktop renderer screenshot | Retained externally | Supporting visual evidence; browser bridge artifact path. |
-| `/Users/normy/.autobyteus/browser-artifacts/79987a-1784283048864.png` | Phone pairing shell screenshot | Retained externally | Supporting visual evidence; no Event Monitor content. |
-| `api-e2e-live-api.log` | Live REST route responses | Retained | Relative success and absolute/traversal refusal. |
-| `api-e2e-server-build.log` | Built server and bootstrap smoke | Retained | Task-owned build evidence. |
-| `api-e2e-browser.log` | Nuxt dev-server log | Retained | Server output/log evidence; no user data. |
-| `api-e2e-repository-focused.log` | Focused Vitest result | Retained | 8 files/38 tests. |
-| `api-e2e-repository-broad.log` | Broad Vitest result | Retained | 18 files/87 tests. |
-| `api-e2e-server-route.log` | Server route Vitest result | Retained | 1 file/4 tests. |
-| `api-e2e-electron.log` | Electron validator result | Retained | 1 file/1 test. |
-| `api-e2e-electron-tsc.log` | Electron TypeScript result | Retained | No diagnostics. |
-| `api-e2e-guards.log` | Localization/web-boundary/diff checks | Retained | All passed. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-focused.log` | Focused current-source Vitest | Retained | 4 files/41 tests. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-broad.log` | Changed-chain current-source Vitest | Retained | 14 files/93 tests. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-broad-regression.log` | Consumer/viewer/artifact/reference Vitest | Retained | 18 files/93 tests. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-electron.log` | Native validator Vitest | Retained | 1 file/1 test. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-electron-tsc.log` | Electron TypeScript compile | Retained | No diagnostics. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-server-route.log` | Server route Vitest | Retained | 1 file/4 tests. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-server-build.log` | Server build/bootstrap | Retained | Build and built-in-agent smoke passed. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-live-server.log` | Isolated server process output | Retained | Port 3318; env/DB fidelity observation. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-live-api.log` | Live REST curl responses | Retained | Health, relative success after fixture correction, absolute/traversal refusal. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-r2-browser.log` | Nuxt dev renderer output | Retained | Shell rendered; generated `#app-manifest` warmup errors observed. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/api-e2e-browser-observations.md` | DOM/screenshot/browser observations | Retained | Current round canonical observations. |
+| `/Users/normy/.autobyteus/browser-artifacts/a39e65-1784287781544.png` | Desktop shell screenshot | Retained externally | `/agents` bootstrap only. |
+| `/Users/normy/.autobyteus/browser-artifacts/dfb45d-1784287792064.png` | Mobile pairing shell screenshot | Retained externally | `/mobile` pairing only. |
 
 ## Temporary Execution Methods / Scaffolding
 
 | Path / Method | Why Needed | Result / Evidence | Cleanup Result |
 | --- | --- | --- | --- |
-| Isolated built server on `127.0.0.1:3318` | Prove real workspace route behavior without reusing the existing process on 29695. | Pass for relative success and absolute/traversal refusal. | SIGINT clean shutdown; temp workspace removed. |
-| Nuxt dev renderer on `127.0.0.1:3317` with backend proxy | Prove web-equivalent shell bootstrap and inspect desktop/mobile routes. | Desktop catalog and phone pairing shell rendered. | SIGINT clean shutdown; browser tabs closed. |
-| Browser bridge tabs `a3778c`, `79987a`, `8b240a` | Temporary DOM/screenshot observations; no durable browser harness exists. | Desktop/mobile bootstrap pass; Event Monitor journey blocked; negative route returned normal 404. | All tabs closed. |
+| `/tmp/autobyteus-event-monitor-api-e2e-r2` with `.env` and temp workspace fixture | Isolate live server and workspace file route | Health/relative/negative route evidence | Removed after server SIGINT. |
+| Server process on 3318 | Real REST containment/read boundary | Health 200; relative 200 after fixture correction; absolute/traversal 400 | Stopped cleanly; existing 29695 untouched. |
+| Nuxt dev process on 3317 | Browser web-equivalent shell bootstrap | `/agents` and `/mobile` rendered | Stopped cleanly. |
+| Browser tabs `a39e65`, `dfb45d` | DOM/screenshot observations without a durable harness | Desktop/mobile bootstrap only | Closed successfully. |
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| Event Monitor stream/run identity | Existing component/store tests and source chain tests | No safe deterministic authenticated agent run fixture; starting an agent would create unrelated model/tool activity. | Passive-arrival and full action-to-preview journey remain indirect. |
-| Phone pairing/session | Existing MobileFiles/mobileWorkStore tests | No paired device/session or project-supported mobile fixture available. | Phone-first inline/no-Attach live behavior remains unproven. |
-| Windows filesystem/URL host | POSIX-host unit mapping/validator tests | Current host is macOS; no Windows runner/package. | Windows-native protocol parsing/packaged behavior remains unproven. |
-| Electron packaged app | Focused Electron validator + TS compile | Full package preparation is platform/release-oriented and not necessary to prove the local policy unit; no safe Windows package environment. | Preload/IPC/media protocol in packaged artifact remains unproven. |
+| Event Monitor stream/run identity | Existing component/store tests and source-chain suites | No safe deterministic authenticated fixture; starting a model/tool run would create unrelated activity. | Passive arrival and action-to-Files lifecycle remain indirect. |
+| Phone pairing/session | Existing mobile store/component tests and pairing-shell browser bootstrap | No paired device/session or project fixture. | Phone-first inline/no-Attach live behavior remains blocked. |
+| Windows filesystem/URL host | POSIX-host mapping and validator tests | Current host is macOS; no Windows runner. | Windows-native protocol/platform behavior remains blocked. |
+| Packaged Electron app | Electron validator, TypeScript compile, browser web-equivalent renderer | Current-source package was not rebuilt/launched by this stage; existing packaged process is not owned. | Preload/IPC/media protocol in current package remains blocked. |
+| Authenticated server context | Live unauthenticated route and mocked Fastify/unit coverage | No credentials/identity available. | Client/server authorization integration remains indirect. |
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
-Not applicable; this is execution round 1.
+| Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1 | EVM-BROWSER-003: authenticated Event Monitor action/passive/viewer journey unavailable | Blocked dependency | Still blocked; no safe deterministic authenticated run was available in round 2. | `api-e2e-browser-observations.md`; current durable tests/logs | Not an implementation failure. |
+| 1 | EVM-BROWSER-004: paired mobile request unavailable | Blocked dependency | Still blocked; pairing shell reached but no paired session existed. | `api-e2e-browser-observations.md` and mobile suites | Not an implementation failure. |
+| 1 | EVM-DESKTOP-001: packaged Electron/media/Windows unavailable | Blocked dependency | Still blocked; current-source package not relaunched and Windows host unavailable. | `api-e2e-r2-electron.log`, `api-e2e-r2-electron-tsc.log`, delivery artifact history | Existing 29695 process not owned/reused. |
+| 1 | Environment note: first live relative probe depended on fixture setup | Local execution/fixture issue | Corrected in current run by placing fixture at configured temp workspace root; retry passed 200. | `api-e2e-r2-live-api.log`, `api-e2e-r2-live-server.log` | No code reroute. |
 
 ## Result Summary
 
 | Result | Scenario IDs | Summary / Reason |
 | --- | --- | --- |
-| Pass | EVM-REPO-001, EVM-REPO-002, EVM-REPO-003, EVM-REPO-004, EVM-API-001, EVM-API-002, EVM-GUARD-001, EVM-BROWSER-001, EVM-BROWSER-002, EVM-REG-001 | Focused/broad durable checks, live server route, Electron validator/compile, guards, server/browser bootstrap passed. |
-| Blocked | EVM-BROWSER-003, EVM-BROWSER-004, EVM-DESKTOP-001 | No authenticated Event Monitor run or paired mobile session; no packaged Electron/Windows host. These are missing execution dependencies, not observed implementation failures. |
-| Not Tested | Complete supported viewer live matrix, Event Monitor passive live arrival, collapsed panel/focus handoff, repeat-open/read-only live UI | Not reachable without the blocked Event Monitor/Files session and seeded files. |
+| Pass | EVM-REPO-001, EVM-REPO-002, EVM-REPO-003, EVM-REPO-004, EVM-ELECTRON-001, EVM-ELECTRON-002, EVM-API-001, EVM-API-002, EVM-BROWSER-001, EVM-BROWSER-002, EVM-REG-001 | Current-source repository, server build/route/live boundary, native compile/validator, and reachable browser shell evidence passed. |
+| Blocked | EVM-BROWSER-003, EVM-BROWSER-004, EVM-DESKTOP-001 | Critical authenticated Event Monitor, paired mobile, packaged current-source Electron/media, and Windows evidence unavailable after safe setup and emulation. |
+| Not Tested | Live supported viewer matrix, live passive arrival, click/Enter/Space in mounted Event Monitor, repeat-open/dedupe/focus/collapsed panel, live mobile inline/no-Attach, packaged Electron media, Windows host | Not reachable without blocked runtime dependencies. |
+| Fail | None | No current-source implementation or test failure was observed. |
 
 ## Cleanup Performed
 
 | Resource / Process / Data | Ownership | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Nuxt dev process on port 3317 | This validation run | Sent SIGINT through owning exec session. | Stopped cleanly. |
-| Built server on port 3318 | This validation run | Sent SIGINT through owning exec session. | Server reported clean shutdown. |
-| Browser tabs `a3778c`, `79987a`, `8b240a` | This validation run | Closed through browser bridge. | Closed successfully. |
-| `/tmp/autobyteus-event-monitor-api-e2e` and live curl temp file | This validation run | Removed with task-owned Python cleanup. | Removed. |
-| `autobyteus-server-ts/tests/.tmp` database created by server Vitest global setup | This validation run | Removed after test completed. | Removed. |
-| Existing process on port 29695 | Not owned by this run | Not stopped or reused. | Unchanged. |
+| Nuxt dev process on port 3317 | This run | SIGINT through owning execution session. | Stopped. |
+| Built server on port 3318 | This run | SIGINT through owning execution session. | Stopped cleanly. |
+| Browser tabs `a39e65`, `dfb45d` | This run | Closed through browser bridge. | Closed. |
+| `/tmp/autobyteus-event-monitor-api-e2e-r2` | This run | Removed after server stop. | Removed. |
+| `autobyteus-server-ts/tests/.tmp` | This run | Removed after server route suite. | Removed. |
+| Existing packaged process on port 29695 | Not owned by this run | Not stopped, reset, or reused. | Unchanged. |
 
 ## Classification
 
-`Blocked` — the implementation and durable checks did not fail, but required supported runtime dependencies for critical live acceptance proof were unavailable after safe setup and focused emulation. The exact missing dependencies are an authenticated Event Monitor run/fixture, a paired phone-first mobile session/fixture, and a Windows/package-capable Electron validation environment.
+`Blocked` — the current-source implementation and all safely executable repository/live/bootstrap checks passed, but critical API/E2E acceptance proof cannot be completed without unavailable authenticated Event Monitor, paired mobile, packaged current-source Electron, and Windows dependencies. No implementation failure was observed and no code reroute is requested.
 
 ## Recommended Recipient
 
-User (blocked validation dependency request; preserve evidence and resume API/E2E when supplied). Do not route to code review until the missing critical runtime evidence is available and the final result can meet the confidence gate.
+User — provide a project-supported authenticated Event Monitor run/fixture, paired mobile session/fixture, and (for complete signoff) current-source packaged Electron launch plus Windows evidence. Per the API/E2E workflow, a blocked result is not sent to `code_reviewer` or `delivery_engineer`; the proportional durable-test review remains not applicable because API/E2E changed no durable tests.
 
 ## Evidence / Notes
 
-- No durable test files were changed by API/E2E, so the proportional test-code review path is not applicable yet.
-- The initial server route command was blocked because `autobyteus-server-ts/node_modules` was absent; `pnpm --dir autobyteus-server-ts install --offline --frozen-lockfile` restored the declared local dependencies, after which the route suite passed. This was environment setup, not a code failure.
-- The server startup log selected the existing production SQLite path for Prisma migrations even though the process used a task-owned data directory; no pending migration or intentional database write was observed. This is recorded as an environment-fidelity limitation and should be avoided in any resumed run by using an explicitly verified clean data directory.
-- Full browser/dev-renderer visual inspection of Event Monitor and Files remains outstanding exactly as the implementation handoff predicted; screenshots prove only the reachable desktop catalog and mobile pairing shell.
+- The current source revision was tested directly. Earlier round artifacts were not used as current signoff.
+- Focused current-source result: 4 files/41 tests.
+- Current changed-chain result: 14 files/93 tests.
+- Current broad consumer/viewer/artifact/reference result: 18 files/93 tests.
+- Native validator: 1 file/1 test; Electron TypeScript compile passed.
+- Server route: 1 file/4 tests; server build/bootstrap passed.
+- Guards and `git diff --check` passed.
+- Live health/relative/absolute/traversal probes passed after correcting fixture placement. The server log shows inherited environment selected the existing production Prisma migration DB and public URL despite `--data-dir`; no pending migration or intentional write was observed.
+- Browser `/agents` and `/mobile` bootstrap passed with 0 sampled overlays. The dev log emitted generated `#app-manifest` warmup errors; this is retained as an environment observation, not hidden or treated as a product failure.
+- A prior macOS ARM64 Electron artifact exists from an earlier integrated revision, but it is not current-source `.lua` signoff and was not claimed here.
+- No durable API/E2E test files were added, updated, or removed. Do not invoke proportional test-code review for this blocked round.
 
 ## Latest Authoritative Result
 
-- Result: `Blocked`.
-- Final validation confidence: `83%`.
-- Default `95%` confidence target met: `No`.
+- Result: `Blocked`
+- Final validation confidence: `84%`
+- Default `95%` confidence target met: `No`
 - Any final applicable confidence category below `90%`: `Yes` — requirement proof, changed-boundary directness, cross-boundary realism, environment fidelity, failure/lifecycle, and user-surface/desktop-shell.
-- Broader validation decision: `Blocked`.
-- Critical acceptance criteria lacking direct proof: AC-001–009 (live action/Files/viewer/dedupe/focus), AC-011 packaged trusted boundary, AC-012/013 live client/server failure path, AC-017 phone-first inline request, AC-018 live read-only repeat-open. Durable indirect coverage exists for portions of these criteria.
-- Required next recipient: `User` for exact missing dependencies; after completion, resume API/E2E and route a clean result to `code_reviewer` for proportional durable-test review.
-- Notes: Preserve all upstream artifacts and the reports/logs listed above. No implementation failure was observed; do not claim API/E2E Pass on the current evidence.
-
-## User-Directed Downstream Handoff Note
-
-The user requested that this technically-maximal partial validation package proceed so the downstream delivery stage can build the Electron artifact for user-led verification. The execution result remains truthfully `Blocked` for the unexercised authenticated Event Monitor, paired-mobile, packaged-Electron, and Windows scenarios; this note does not convert the result into a clean API/E2E Pass. Code review and delivery must preserve those residual verification requirements.
+- Broader validation decision: `Blocked`
+- Critical acceptance criteria lacking direct proof: live AC-001–009/018/019 Event Monitor action/viewer/dedupe/focus/no-read journey; AC-011 packaged trusted text/media boundary; AC-012/013 authenticated client/server mapping/authorization; AC-017 phone-first inline request; Windows platform behavior. Durable indirect coverage exists for portions of these criteria.
+- Required next recipient: `User` for exact missing runtime dependencies; after those are supplied and a clean API/E2E result is possible, route `Pass` to `code_reviewer` for the separate proportional durable-test review. There were no API/E2E durable test changes in this round.
+- Notes: Preserve all upstream artifacts and current round logs/observations. The blocked status is evidence-limited, not a claim that the implementation failed.

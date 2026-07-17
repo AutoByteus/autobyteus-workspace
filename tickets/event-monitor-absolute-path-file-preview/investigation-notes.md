@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Revised for architecture re-review; implementation remains blocked until pass
+- Current Status: Post-implementation user verification; bounded unsupported-type local fix is routed before delivery finalization
 - Investigation Goal: Verify whether the supplied Event Monitor absolute-path preview ticket is coherent in the current codebase, identify the real production paths and security owners, and produce a design-ready implementation boundary.
 - Scope Classification: Medium
 - Scope Classification Rationale: The visible interaction is local, but the change crosses shared Markdown capability plumbing, conversation-to-monitor propagation, file-preview state, right-panel/mobile navigation, and trusted desktop/remote path boundaries.
@@ -41,6 +41,7 @@ Assessment: the ticket is sound and actionable after one design clarification ma
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/task.md` | Intake and product contract | Scope, desired interaction, security, accessibility, and acceptance basis | Requirements, investigation, design | REQ-001–REQ-013; AC-001–AC-016 | Current | Defines intended behavior; user-approved kickoff input | Keep aligned if design review changes scope |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png` | Visual reference | Complete path remains visible in Event Monitor; explanatory ellipsis is not part of the path | Requirements, investigation, design | REQ-001–REQ-004; AC-001–AC-005 | Current | Evidence/reference; approval N/A | None |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md` | Post-build user verification and bounded local-fix evidence | Unsupported `.zip`/`.dmg` paths should remain source-faithful without an Open-in-Files action | Requirements, investigation, design | REQ-016; AC-019 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
 
 ## Source Log
 
@@ -206,6 +207,12 @@ The cumulative package now treats the following as stable IDs; current-state evi
 | BEH-006 | Trusted Electron local text/media boundary |
 | BEH-007 | Authorized workspace-relative remote/server boundary |
 | BEH-008 | Structured references/artifacts remain separate from incidental paths |
+
+## Post-Implementation User Verification — Unsupported File Types
+
+On 2026-07-17 the user inspected the built macOS Electron artifact and reported that `.dmg` and `.zip` paths in the Event Monitor display `Open ... in Files` controls even though the shared FileViewer has no archive/installer/binary adapters. The exact evidence and execution context are preserved in `user-verification-unsupported-file-preview-report.md` and the attached user image path recorded there.
+
+This is classified as a bounded implementation local fix, not a new cross-boundary design: the approved viewer matrix already limits supported families and requires safe unsupported handling. Current source evidence shows `determineFileType()` falls back to `Text` for every unknown extension, which makes action eligibility and viewer routing over-broad. The correction is to share a pure supported-preview policy, return `Unsupported` for unknown binary/archive/installer types, suppress the Event Monitor action, and avoid all content reads for those candidates. Supported-looking paths may still actionize and fail safely at the trusted content boundary when missing or unreadable.
 
 ## Notes For Architecture Reviewer
 
