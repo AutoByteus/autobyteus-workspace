@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { resolveResponsiveWorkspaceShellState } from '../responsiveLayoutPolicy'
+import {
+  LEFT_PANEL_STRIP_WIDTH_PX,
+  RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX,
+  USER_RESIZE_CENTER_MIN_WIDTH_PX,
+  resolveResponsiveWorkspaceShellState,
+} from '../responsiveLayoutPolicy'
 
 const resolve = (overrides: Partial<Parameters<typeof resolveResponsiveWorkspaceShellState>[0]> = {}) =>
   resolveResponsiveWorkspaceShellState({
@@ -80,6 +85,46 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.rightPanel.presentation).toBe('docked')
     expect(state.leftPanel.stripActivation).toBe('redock-panel')
     expect(state.showGenericSurfaceControls).toBe(false)
+  })
+
+  it('uses the compact center floor for a user-sized dock after left collapse', () => {
+    const viewportWidth = 768
+    const rightPanelWidth = viewportWidth
+      - LEFT_PANEL_STRIP_WIDTH_PX
+      - RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX
+      - USER_RESIZE_CENTER_MIN_WIDTH_PX
+    const state = resolve({
+      viewportWidth,
+      leftPanelPreference: 'hidden-by-user',
+      rightPanelPreferredWidth: rightPanelWidth,
+      rightPanelResizeIntent: 'user-sized',
+    })
+
+    expect(state.leftPanel.presentation).toBe('strip')
+    expect(state.rightPanel.presentation).toBe('docked')
+    expect(state.rightPanel.centerProtectionMode).toBe('user-override')
+    expect(state.rightPanel.effectiveCenterMinWidth).toBe(USER_RESIZE_CENTER_MIN_WIDTH_PX)
+    expect(state.rightPanel.stripActivation).toBeNull()
+  })
+
+  it('yields to the responsive right strip when the compact candidate first exceeds capacity', () => {
+    const viewportWidth = 768
+    const rightPanelWidth = viewportWidth
+      - LEFT_PANEL_STRIP_WIDTH_PX
+      - RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX
+      - USER_RESIZE_CENTER_MIN_WIDTH_PX
+    const state = resolve({
+      viewportWidth,
+      leftPanelPreference: 'hidden-by-user',
+      rightPanelPreferredWidth: rightPanelWidth + 1,
+      rightPanelResizeIntent: 'user-sized',
+    })
+
+    expect(state.leftPanel.presentation).toBe('strip')
+    expect(state.rightPanel.presentation).toBe('strip')
+    expect(state.rightPanel.centerProtectionMode).toBe('responsive-yield')
+    expect(state.rightPanel.effectiveCenterMinWidth).toBe(USER_RESIZE_CENTER_MIN_WIDTH_PX)
+    expect(state.rightPanel.stripActivation).toBe('open-drawer')
   })
 
   it('emits symmetric redock activation for fitting wide user strips', () => {

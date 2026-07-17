@@ -4,7 +4,7 @@
       <div
         v-if="showLeftDrawerBackdrop"
         data-test="app-left-drawer-backdrop"
-        class="fixed inset-0 z-40 bg-gray-900 bg-opacity-75"
+        class="fixed inset-0 z-40 bg-black/30"
         :style="leftDrawerBackdropStyle"
         aria-hidden="true"
         @click="appLayoutStore.closeMobileMenu()"

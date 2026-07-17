@@ -18,7 +18,9 @@ The non-immersive default-layout routes share one desktop-capability shell that 
 - **Strip**: constrained desktop or narrow windows keep the center workspace usable with a visible 50px edge affordance that remains a normal `flex-none` flow item.
 - **Drawer**: left/right drawers are transient interaction surfaces opened from their visible strip or shell navigation; they are not competing responsive policy presentations.
 
-Transient left and right drawers are independent modal side surfaces. Their shared
+Transient left and right drawers are independent modal side surfaces. Both use a
+consistent lighter approximately 30% black scrim so the underlying workspace
+remains recognizable while the drawer stays dominant. Their shared
 drawer-layer owner assigns matching backdrop and drawer z-indexes from open order,
 so both surfaces can remain open without their visual stacking and keyboard
 ownership drifting apart. Only the topmost drawer owns `Escape` and `Tab` handling
