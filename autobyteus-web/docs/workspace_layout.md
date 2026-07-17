@@ -1,11 +1,13 @@
 # Workspace Layout and Responsive Shell
 
-The standard `/workspace` route is a desktop-capability workspace that adapts to constrained browser, embedded-browser, and narrow-window sizes. It is not the phone/PWA remote-access product surface.
+The non-immersive default-layout routes share one desktop-capability shell that adapts to constrained browser, embedded-browser, and narrow-window sizes. `/workspace` adds the right-tools surface; it is not the phone/PWA remote-access product surface.
 
 ## Route Ownership
 
 - `pages/workspace.vue` mounts `components/layout/WorkspaceAdaptiveLayout.vue` for every standard workspace size.
 - The route no longer switches between separate desktop and mobile workspace layout components. Avoid reintroducing route-level desktop/mobile branches for `/workspace`; responsive behavior belongs in the shared shell/layout policy.
+- `layouts/default.vue` renders the shared left panel/strip/transient-drawer shell for every non-immersive default-layout route, including `/agents`, `/agent-teams`, and `/tools`. Its strip keeps route-aware active state and existing navigation meaning; only `/workspace` renders the right panel/strip/transient-drawer tools surface.
+- The default layout has no black responsive header, hamburger, breadcrumb trigger, or ordinary `showHeader` compatibility path. Route-owned page headers remain page concerns, not shell navigation fallbacks.
 - The true phone/PWA route remains `/mobile`, which renders `MobileRemoteAccessShell` through `pages/mobile.vue` with its own phone-first journey and feature gates.
 
 ## App Shell Left Navigation
@@ -25,7 +27,7 @@ remaining drawer or to the strip/navigation trigger that opened it.
 
 The left surface is a full-height flex column in both docked and drawer presentations. Its bounded content wrapper owns the `AppLeftPanel` scroll region, including the vertically scrollable run-history surface; do not replace that owner with a second shell-level history scroller.
 
-Application-immersive routes still bypass the normal left navigation surfaces.
+Application-immersive routes still bypass the normal left navigation surfaces through `appLayoutStore.hostShellPresentation`; `layout:false` routes such as `/mobile` bypass the default layout entirely.
 
 ## Workspace Center and Right Tools
 
@@ -56,7 +58,7 @@ as 900x700, the right strip remains visible and opens the transient drawer,
 the left strip ownership is retained, and no duplicate top `Tools` trigger is
 introduced.
 
-When constrained presentation hides a side surface, the workspace exposes semantic navigation actions rather than a generic top-level surface bar. The navigation trigger is labelled `Agents & teams`, and the structured empty state provides `Choose an agent or team` plus `Open runs/history` actions. These actions open the existing left navigation/history surface and preserve the selected-run state. The visible right strip is always the sole right-tools reopen affordance; clicking it opens the existing transient drawer, and standard `/workspace` must not add a top `Tools` trigger.
+When constrained presentation hides a side surface, the workspace exposes actions through the existing side-surface owners rather than a generic top-level surface bar. The structured empty state provides `Choose an agent or team` plus `Open runs/history` actions. These actions open or route through the existing left navigation/history surface and preserve selected-run state. The visible right strip is always the sole right-tools reopen affordance; clicking it opens the existing transient drawer, and standard `/workspace` must not add a top `Tools` trigger.
 
 Do not reintroduce a positive `Work -> Runs -> Files -> Tools` row. The old generic row is retained only as a negative regression guard in the durable browser probe; Files remains part of the right-tool catalog.
 

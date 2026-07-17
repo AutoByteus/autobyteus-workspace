@@ -113,7 +113,7 @@ describe('responsiveLayoutPolicy', () => {
 
       expect(state.mode).toBe('narrow')
       expect(state.isNarrow).toBe(true)
-      expect(state.showHeader).toBe(true)
+      expect(Object.prototype.hasOwnProperty.call(state, 'showHeader')).toBe(false)
       expect(state.leftPanel.presentation).toBe('strip')
       expect(state.leftPanel.stripBehavior).toBe('overlay')
       expect(state.rightPanel.presentation).toBe('strip')

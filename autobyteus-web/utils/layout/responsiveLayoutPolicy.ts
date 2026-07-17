@@ -69,7 +69,6 @@ export interface ResponsiveWorkspaceShellState {
   mode: WorkspaceResponsiveMode
   isNarrow: boolean
   isShortHeight: boolean
-  showHeader: boolean
   showGenericSurfaceControls: false
   leftPanel: ResponsiveLeftPanelState
   rightPanel: ResponsiveRightPanelState
@@ -281,7 +280,6 @@ const createState = (
     mode,
     isNarrow,
     isShortHeight,
-    showHeader: isNarrow,
     showGenericSurfaceControls: false,
     leftPanel: makeLeftPanelState(
       leftPreference,

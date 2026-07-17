@@ -959,6 +959,70 @@ function validateMobileRoute(state) {
   return failures;
 }
 
+async function validateGlobalDefaultLayoutRoutes(browser) {
+  const viewport = { name: 'global-default-routes-700x700', width: 700, height: 700 };
+  const routeExpectations = [
+    { path: '/agents', activeNavKey: 'agents' },
+    { path: '/agent-teams', activeNavKey: 'agentTeams' },
+    { path: '/tools', activeNavKey: null },
+  ];
+  const routeResults = [];
+  const failures = [];
+  const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: 1 });
+
+  try {
+    for (const expectation of routeExpectations) {
+      const routeFailures = [];
+      await page.goto(`${baseUrl}${expectation.path}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.waitForSelector('[data-test="workspace-left-navigation-strip"]', { state: 'visible', timeout: 20000 });
+      await page.waitForTimeout(300);
+
+      const initial = await collect(page, `global-default-${expectation.path.slice(1)}-initial`);
+      const shellBoundary = await page.evaluate((activeNavKey) => {
+        const activeButton = activeNavKey
+          ? document.querySelector(`[data-test="workspace-left-navigation-strip"] button[data-nav-key="${activeNavKey}"]`)
+          : null;
+        const headers = Array.from(document.querySelectorAll('header'));
+        return {
+          blackHeader: headers.some((header) => header.classList.contains('bg-gray-900')),
+          menuTrigger: Boolean(document.querySelector('[data-test="app-left-drawer-open"]')),
+          breadcrumbTrigger: Boolean(document.querySelector('[data-test="workspace-navigation-trigger"]')),
+          activeNav: Boolean(activeButton?.classList.contains('bg-gray-100')),
+        };
+      }, expectation.activeNavKey);
+
+      if (!initial.visibleState.leftStrip) routeFailures.push(`${expectation.path} did not render the shared left strip at narrow width`);
+      if (initial.visibleState.rightPanel || initial.visibleState.rightStrip || initial.visibleState.rightDrawer) {
+        routeFailures.push(`${expectation.path} inherited workspace-only right tools`);
+      }
+      if (initial.visibleState.adaptive) routeFailures.push(`${expectation.path} rendered the workspace adaptive layout outside /workspace`);
+      if (shellBoundary.blackHeader) routeFailures.push(`${expectation.path} rendered the legacy black responsive header`);
+      if (shellBoundary.menuTrigger) routeFailures.push(`${expectation.path} rendered the legacy hamburger trigger`);
+      if (shellBoundary.breadcrumbTrigger) routeFailures.push(`${expectation.path} rendered a breadcrumb navigation trigger`);
+      if (expectation.activeNavKey && !shellBoundary.activeNav) routeFailures.push(`${expectation.path} did not mark its left navigation item active`);
+
+      const opened = await clickFirstButton(page, '[data-test="workspace-left-navigation-strip"]');
+      await page.waitForTimeout(250);
+      const drawerState = await collect(page, `global-default-${expectation.path.slice(1)}-drawer-open`);
+      if (!opened || !drawerState.visibleState.leftNavigationDrawer) routeFailures.push(`${expectation.path} shared left strip did not open its transient drawer`);
+      if (drawerState.visibleState.leftStrip) routeFailures.push(`${expectation.path} left strip remained visible while its drawer was open`);
+
+      const closed = await clickButtonByTest(page, 'app-left-drawer-backdrop');
+      await page.waitForTimeout(250);
+      const closedState = await collect(page, `global-default-${expectation.path.slice(1)}-drawer-closed`);
+      if (!closed || closedState.visibleState.leftNavigationDrawer) routeFailures.push(`${expectation.path} shared left drawer did not dismiss from its backdrop`);
+      if (!closedState.visibleState.leftStrip) routeFailures.push(`${expectation.path} shared left strip did not return after drawer dismissal`);
+
+      routeResults.push({ route: expectation.path, initial, drawerState, closedState, shellBoundary, failures: routeFailures });
+      failures.push(...routeFailures);
+    }
+  } finally {
+    await page.close();
+  }
+
+  return { viewport, routeResults, failures };
+}
+
 const run = async () => {
   await ensureDir(outputDir);
   if (!executablePath) {
@@ -1056,6 +1120,16 @@ const run = async () => {
     } finally {
       await mobilePage.close();
     }
+
+    const globalDefaultLayoutRoutes = await validateGlobalDefaultLayoutRoutes(browser);
+    results.push({
+      viewport: globalDefaultLayoutRoutes.viewport,
+      route: 'global-default-layout-routes',
+      initial: globalDefaultLayoutRoutes.routeResults[0]?.initial ?? null,
+      interactions: globalDefaultLayoutRoutes.routeResults,
+      failures: globalDefaultLayoutRoutes.failures,
+    });
+    for (const failure of globalDefaultLayoutRoutes.failures) failures.push(`global-default-layout: ${failure}`);
   } finally {
     await browser.close();
   }

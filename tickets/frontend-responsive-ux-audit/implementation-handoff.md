@@ -18,9 +18,9 @@ After delivery integrated latest `origin/personal` at `456694fa8`, the base bran
 
 API/E2E Round 4 then identified a production tab-capacity defect (`CR-003`): the six/eight current right-tool tabs overflowed the visible docked/drawer tab-list bounds, leaving `VNC Viewer` clipped. The historical bounded wrapping attempt was superseded by the approved Round 4 single-row scrolling rework below. The canonical catalog and tab labels/order remain unchanged, including `Usage` after `Activity`.
 
-Architecture review Round 4 returned the wrapping fix as `Design Impact` and approved the single-row horizontal-scroll UX supplement. The wrapping path is superseded and has been removed. The current rework restores the personal-branch tab typography/spacing and fixed panel toggle, uses native horizontal overflow, conditionally renders visible edge fades and directional chevrons, and auto-scrolls active/focused tabs into view. The optional More menu is omitted because native scrolling remains sufficient as the primary interaction.
+Architecture review Round 4 returned the wrapping fix as `Design Impact` and approved the single-row horizontal-scroll UX supplement. The wrapping path is superseded and has been removed. **Historical note:** the intermediate implementation temporarily included conditional edge fades and directional chevrons. That custom layer was removed by the Round 32 reconciliation; the current contract uses native horizontal overflow, personal-branch tab typography/spacing, the fixed panel toggle, and active/focused-tab auto-scroll without custom overflow chrome. The optional More menu is omitted because native scrolling remains sufficient as the primary interaction.
 
-API/E2E Round 6 identified `CR-004`: the first scrolling implementation rendered its fade/chevron layer as ordinary descendants of the horizontal scroller, so the reverse affordance moved outside the visible tab-list at the right boundary. The bounded implementation fix keeps the real native scroll container but places the affordance layer in a sticky, width-neutral overlay flex item pinned to the scrollport. The left/right controls therefore remain visible and clickable while tabs scroll underneath them; no probe weakening or catalog change was made.
+API/E2E Round 6 identified `CR-004`: an intermediate scrolling implementation rendered its fade/chevron layer as ordinary descendants of the horizontal scroller. **Historical note:** that bounded sticky-overlay fix was later superseded by the Round 32 no-custom-chrome reconciliation. The current implementation keeps the real native scroll container, removes fades/chevrons and floating overflow controls, and relies on native scrolling plus active/focused-tab auto-scroll; no catalog change was made.
 
 Architecture review Round 5 approved the workspace-shell rework after resolving `DI-002`. The generic `Work / Runs / Files / Tools` row is removed from wide default, wide manual-left-collapse, and responsive fallback paths. The shell now preserves left navigation/history + center Work + right Files/tools ownership, uses measured left-capacity/right-yield policy, exposes the side strips as the semantic navigation/tools affordances, and renders an actionable no-selection empty state with agent/team and runs/history actions.
 
@@ -53,9 +53,9 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 - Removed the obsolete standard-route `WorkspaceMobileLayout.vue`, `useMobilePanels.ts`, and desktop-layout implementation/test path. `/mobile` remains independent.
 - Updated center headers for constrained action wrapping and synchronized frontend startup documentation with current backend/dev-proxy configuration.
 - Reconciled the durable order test with the integrated `usage` tool without changing the canonical source catalog, and removed the obsolete generic primary-surface catalog.
-- Reworked the superseded wrapping path into a single-row, natively horizontally scrollable right-tool tab header.
-- Restored personal-branch right-tab typography/spacing (`text-base`, `px-5`, `py-3`) and added conditional left/right edge fades and chevrons, accessible directional labels, reduced-motion-aware scrolling, and active/focused-tab auto-scroll while keeping the panel toggle outside the scroll viewport.
-- Pinned the fade/chevron layer to the scrollport with a width-neutral sticky overlay so reverse scrolling remains reachable at the right boundary.
+- Reworked the superseded wrapping path into the current single-row, natively horizontally scrollable right-tool tab header.
+- Restored personal-branch right-tab typography/spacing (`text-base`, `px-5`, `py-3`), retained reduced-motion-aware active/focused-tab auto-scroll, and kept the panel toggle outside the scroll viewport.
+- **Historical reconciliation:** removed the intermediate fade/chevron layer, directional controls, and other custom overflow chrome; native mouse, touchpad, touch, and keyboard scrolling are the current reachability contract.
 - Replaced the actionless center placeholder with an actionable empty state for choosing an agent/team and opening runs/history, retaining selected-run and panel-preference state through responsive presentation changes.
 - Changed shell capacity priority so the left panel remains docked while left navigation plus the practical center fit; right tools yield to a strip/drawer first, and manual left collapse is represented separately from responsive collapse.
 - Replaced the split app-shell/workspace policy paths with `resolveResponsiveWorkspaceShellState` plus the `useResponsiveWorkspaceShell` provider; the shell and workspace now consume one composed state without a blanket `<1280px` left-strip rule.
@@ -80,7 +80,7 @@ Architecture review Round 16 approved the route-scoped symmetric side-surface re
 | FR-006, FR-007, AC-007 | Legacy standard mobile fallback is removed; `/mobile` stays the phone/PWA owner | Removed `WorkspaceMobileLayout.vue` and `useMobilePanels.ts`; `pages/mobile.vue`/`MobileRemoteAccessShell` untouched by standard route | Pass; mobile isolation tests remain green. |
 | FR-008, FR-010, AC-006, FR-031, AC-032 | Height-aware side-surface presentation, composed policy ownership, and preference/effective-state/source separation | `resolveResponsiveWorkspaceShellState`; `useResponsiveWorkspaceShell`; `useLeftPanel`; `useRightPanel`; `layouts/default.vue` | Pass in policy/component coverage; browser matrix remains downstream-owned. |
 | FR-011, FR-014, FR-015, AC-008, AC-010, AC-013, AC-014, AC-015 | Durable policy/component coverage, header priority, and current local docs | Policy/order/layout/tab/right-panel/mobile/default-shell tests; `tests/e2e/workspace-responsive-probe.mjs`; `autobyteus-web/README.md`; workspace layout docs | Source and implementation-scoped checks pass. API/E2E execution of the current state is still required. |
-| FR-016, FR-017, FR-018, FR-019, FR-020, AC-016 through AC-021, AC-029 | Single-row right-tool header preserves personal-branch typography/spacing, supports native horizontal scrolling, exposes conditional discoverability, auto-reaches active/focused tabs, and keeps any More menu optional | `RightSideTabs.vue` configures `TabList`; `TabList.vue` owns scroll metrics, `overflow-x-auto`, sticky width-neutral edge-affordance overlay, reduced-motion behavior, and active/focus auto-scroll; `Tab.vue` owns role, personal-branch spacing/typography, hover/focus, and active underline; `workspaceSurfaceOrder.ts` remains order authority | Component/source implementation complete; CR-004 overlay and visual-density fixes are covered by focused regressions; current browser validation remains required. |
+| FR-016, FR-017, FR-018, FR-019, FR-020, AC-016 through AC-021, AC-029 | Single-row right-tool header preserves personal-branch typography/spacing, supports native horizontal scrolling, has no custom overflow-indicator chrome, auto-reaches active/focused tabs, and keeps any More menu optional | `RightSideTabs.vue` configures `TabList`; `TabList.vue` owns the real `overflow-x-auto` row, reduced-motion behavior, and active/focus auto-scroll; `Tab.vue` owns role, personal-branch spacing/typography, hover/focus, and active underline; `workspaceSurfaceOrder.ts` remains order authority | Component/source implementation complete; the Round 32 no-custom-chrome reconciliation and native-scroll regressions are covered by focused tests; current browser validation remains required. |
 | FR-021 through FR-031, AC-022 through AC-032 | Wide/manual-collapse hierarchy, composed measured left/right priority, visible side strips with transient drawers, actionable empty state, preference/source stability, and `/mobile` boundary | `resolveResponsiveWorkspaceShellState`; `useResponsiveWorkspaceShell`; `layouts/default.vue`; `WorkspaceAdaptiveLayout.vue`; `AppLeftPanel.vue`; `LeftSidebarStrip.vue`; `RightSidebarStrip.vue`; shell localization | Implemented with pure-policy/adaptive-layout/component coverage; current browser validation must verify repeated resize, strip actions, and wide visual non-regression. |
 | FR-033 through FR-036, AC-034, AC-035, AC-037 | Bounded right-divider lifecycle distinguishes automatic `480px`, explicit user-override `200px`, and responsive-yield `480px` while retaining user-sized intent and omitting duplicate top-level output fields | `useRightPanel.ts`; `useResponsiveWorkspaceShell.ts`; `responsiveLayoutPolicy.ts`; `WorkspaceAdaptiveLayout.vue`; `workspace-responsive-probe.mjs` | Implemented with pure policy, composable, adaptive-renderer, and durable drag regressions; API/E2E must verify shrink/recovery and wide drag behavior on a fresh runtime. |
 
@@ -235,7 +235,7 @@ Removed:
 ## Known Risks
 
 - Exact threshold/mode tuning and the comprehensive current-state browser matrix remain downstream validation responsibilities.
-- The current right-tool tab header remains one row with personal-branch typography/spacing and scrolls when needed; downstream API/E2E must validate the CR-004 pinned affordance layer plus native overflow, conditional fades/chevrons, active/focus auto-scroll, and reachability in docked and drawer modes at the full matrix.
+- The current right-tool tab header remains one row with personal-branch typography/spacing and native scrolling when needed; downstream API/E2E must validate the no-custom-chrome contract, active/focus auto-scroll, and reachability in docked and drawer modes at the full matrix. The historical CR-004 pinned affordance layer and fade/chevron behavior are not current requirements.
 - The workspace shell must be browser-validated for no generic row/header/top controls at wide default/manual collapse/narrow states, left/right strip reopen paths, actionable empty-state actions, measured left/right priority, repeated resize preference stability, and `/mobile` isolation.
 - The docked right divider must be browser-validated by dragging beyond its bound at wide sizes; the right panel must remain visible, the center must remain at least the applicable `200px` user-sized floor, and no strip/drawer/top Tools transition may occur merely because the bound was reached. Genuine viewport/container transitions must separately verify responsive `480px` yield and retained-intent recovery.
 - The shell-level adaptive layout verifies tool reachability and ordering but does not deeply validate every Terminal/Browser/VNC internal responsive state.
@@ -285,6 +285,41 @@ The durable probe now validates absence of custom overflow indicator chrome and 
 Round 32 implementation commit: `21ccb9515`.
 
 Round 32 checks: full responsive focused suite (13 files, 92 tests) passed with only the known KaTeX quirks-mode warning; standalone responsive-policy TypeScript, probe syntax, `git diff --check`, web-boundary guard, localization-boundary guard, localization literal audit, and Nuxt production build passed. API/E2E remains downstream-owned; no API/E2E sign-off is claimed.
+
+### Round 33 Global Default-Shell Rework
+
+Implementation commit: `1edd21e85`.
+
+Architecture Round 24 superseded the historical route-scoped default-layout
+header branch with a global non-immersive shell contract. `layouts/default.vue`
+now renders the composed left panel/strip/transient-drawer state for every
+default-layout route, without route-specific responsive policy, a black header,
+hamburger, breadcrumb trigger, or ordinary `showHeader` compatibility path.
+The left strip continues to use `useShellPrimaryNavigation` for route-aware
+active state and preserves existing navigation meaning on `/agents`,
+`/agent-teams`, `/tools`, and other default-layout routes. Only `/workspace`
+mounts `WorkspaceAdaptiveLayout`, so right tools remain workspace-only;
+`hostShellPresentation` and `/mobile` remain explicit shell boundaries.
+
+The pure policy output no longer includes the obsolete `showHeader` field, in
+line with FR-045/AC-045. The existing nested right-panel fields, strip
+activation contract, LID-003 mutual-exclusion gates, and no-indicator native
+right-tab implementation remain unchanged. Default-layout component coverage
+now exercises narrow `/agents`, `/agent-teams`, and `/tools` behavior, active
+strip state, no legacy header/hamburger, no workspace right tools, drawer focus
+entry/return, and workspace drawer behavior. The durable browser probe now
+adds a route journey for `/agents`, `/agent-teams`, and `/tools` at 700x700,
+checking the shared left strip, route-active state, no black header/hamburger/
+breadcrumb, no workspace right tools, and strip/drawer dismissal.
+
+Round 33 implementation-scoped checks: responsive focused suite (13 files, 93
+tests) passed with only the known KaTeX quirks-mode warning; standalone
+responsive-policy TypeScript, probe syntax, `git diff --check`, web-boundary
+guard, localization-boundary guard, localization literal audit, and Nuxt
+production build passed. A fresh browser/API-E2E run was not performed in this
+implementation stage; API/E2E remains downstream-owned and no API/E2E sign-off
+is claimed. The earlier implementation visual smoke report remains
+corroborating evidence, not current downstream coverage.
 
 ## Task Design Health Assessment Implementation Check
 

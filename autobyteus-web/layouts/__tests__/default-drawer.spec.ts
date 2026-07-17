@@ -27,7 +27,7 @@ describe('default layout drawer lifecycle', () => {
     document.body.innerHTML = ''
   })
 
-  it('opens the labelled left drawer, contains focus, and returns focus to the menu button', async () => {
+  it('uses the shared narrow strip on non-workspace routes and returns focus to its opener', async () => {
     const wrapper = mount(DefaultLayout, {
       attachTo: document.body,
       global: {
@@ -39,7 +39,6 @@ describe('default layout drawer lifecycle', () => {
         ],
         stubs: {
           Icon: true,
-          LeftSidebarStrip: { template: '<div data-test="left-strip-stub"></div>' },
           WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
         },
         mocks: {
@@ -54,9 +53,12 @@ describe('default layout drawer lifecycle', () => {
     await nextTick()
     await nextTick()
     await nextTick()
-    const opener = wrapper.get('[data-test="app-left-drawer-open"]').element as HTMLElement
+    expect(wrapper.find('header').exists()).toBe(false)
+    expect(wrapper.find('[data-test="app-left-drawer-open"]').exists()).toBe(false)
+    const opener = wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').element as HTMLElement
+    expect(opener.className).toContain('bg-gray-100')
     opener.focus()
-    await wrapper.get('[data-test="app-left-drawer-open"]').trigger('click')
+    await wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').trigger('click')
     await nextTick()
     await nextTick()
     await nextTick()
@@ -84,11 +86,14 @@ describe('default layout drawer lifecycle', () => {
     await nextTick()
 
     expect(wrapper.find('[data-test="app-left-navigation-drawer"]').exists()).toBe(false)
-    expect(document.activeElement).toBe(opener)
+    expect(document.activeElement).toBe(wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').element)
     wrapper.unmount()
   })
 
-  it('keeps workspace-only strips out of the retained default renderer on narrow agent routes', async () => {
+  it('keeps route-aware left navigation while excluding workspace-only right tools on /tools', async () => {
+    routeMock.path = '/tools'
+    routeMock.fullPath = '/tools'
+
     const wrapper = mount(DefaultLayout, {
       attachTo: document.body,
       global: {
@@ -115,9 +120,46 @@ describe('default layout drawer lifecycle', () => {
     await nextTick()
     await nextTick()
 
-    expect(wrapper.get('[data-test="app-left-drawer-open"]').exists()).toBe(true)
-    expect(wrapper.get('[data-test="app-left-panel-shell"]').exists()).toBe(true)
-    expect(wrapper.find('[data-test="workspace-left-navigation-strip"]').exists()).toBe(false)
+    expect(wrapper.find('header').exists()).toBe(false)
+    expect(wrapper.find('[data-test="app-left-drawer-open"]').exists()).toBe(false)
+    expect(wrapper.get('[data-test="workspace-left-navigation-strip"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false)
+    expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false)
+    wrapper.unmount()
+  })
+
+  it('marks the active agent-team route in the shared narrow strip', async () => {
+    routeMock.path = '/agent-teams'
+    routeMock.fullPath = '/agent-teams'
+
+    const wrapper = mount(DefaultLayout, {
+      attachTo: document.body,
+      global: {
+        plugins: [
+          createTestingPinia({
+            createSpy: vi.fn,
+            stubActions: false,
+          }),
+        ],
+        stubs: {
+          Icon: true,
+          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
+        },
+        mocks: {
+          $t: (key: string) => key,
+        },
+      },
+      slots: {
+        default: '<div data-test="workspace-slot"></div>',
+      },
+    })
+
+    await nextTick()
+    await nextTick()
+    await nextTick()
+
+    expect(wrapper.find('header').exists()).toBe(false)
+    expect(wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agent Teams"]').classes()).toContain('bg-gray-100')
     wrapper.unmount()
   })
 

@@ -1,24 +1,5 @@
 <template>
   <div class="isolate flex h-screen h-[100dvh] flex-col">
-    <header
-      v-if="!isApplicationImmersive && showResponsiveHeader"
-      class="z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4"
-    >
-      <div class="flex items-center">
-        <button
-          class="-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
-          data-test="app-left-drawer-open"
-          @click="appLayoutStore.toggleMobileMenu()"
-        >
-          <span class="sr-only">{{ $t('shell.layouts.default.open_menu') }}</span>
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-        <span class="ml-3 flex-shrink-0 font-semibold text-white">AutoByteus</span>
-      </div>
-    </header>
-
     <div class="relative flex flex-1 flex-row overflow-hidden">
       <div
         v-if="showLeftDrawerBackdrop"
@@ -81,21 +62,10 @@ import {
 
 const appLayoutStore = useAppLayoutStore()
 const route = useRoute()
-const { initDragLeftPanel, isLeftPanelVisible, setLeftPanelVisible } = useLeftPanel()
+const { initDragLeftPanel, setLeftPanelVisible } = useLeftPanel()
 const leftDrawerRef = ref<HTMLElement | null>(null)
 const { responsiveWorkspaceShellState } = useResponsiveWorkspaceShell()
 provide(RESPONSIVE_WORKSPACE_SHELL_KEY, responsiveWorkspaceShellState)
-
-// The standard workspace owns its navigation through the side panel/strip
-// surfaces. Other routes retain the default layout's existing responsive
-// header/navigation behavior. This is intentionally route-only; viewport
-// policy remains exclusively owned by useResponsiveWorkspaceShell().
-const isStandardWorkspaceRoute = computed(
-  () => route.path === '/workspace' || route.path.startsWith('/workspace/'),
-)
-const showResponsiveHeader = computed(
-  () => !isStandardWorkspaceRoute.value && responsiveWorkspaceShellState.value.showHeader,
-)
 
 const isApplicationImmersive = computed(
   () => appLayoutStore.hostShellPresentation === 'application_immersive',
@@ -103,36 +73,22 @@ const isApplicationImmersive = computed(
 
 const isLeftDocked = computed(() => responsiveWorkspaceShellState.value.leftPanel.presentation === 'docked')
 const showLeftDrawer = computed(
-  () => appLayoutStore.isMobileMenuOpen && (
-    isStandardWorkspaceRoute.value
-      ? responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'open-drawer'
-      : true
-  ),
+  () => appLayoutStore.isMobileMenuOpen
+    && responsiveWorkspaceShellState.value.leftPanel.stripActivation === 'open-drawer',
 )
 const showLeftPanelSurface = computed(
-  () => {
-    if (isApplicationImmersive.value) {
-      return false
-    }
-
-    return isStandardWorkspaceRoute.value
-      ? isLeftDocked.value || showLeftDrawer.value
-      : isLeftPanelVisible.value || showLeftDrawer.value
-  },
+  () => !isApplicationImmersive.value && (isLeftDocked.value || showLeftDrawer.value),
 )
 const showLeftDrawerBackdrop = computed(
   () => !isApplicationImmersive.value && showLeftDrawer.value,
 )
 const showLeftStrip = computed(
-  () => isStandardWorkspaceRoute.value
-    && !isApplicationImmersive.value
+  () => !isApplicationImmersive.value
     && !showLeftDrawer.value
     && responsiveWorkspaceShellState.value.showLeftStrip,
 )
 const showLeftPanelDragHandle = computed(
-  () => !isApplicationImmersive.value && (
-    isStandardWorkspaceRoute.value ? isLeftDocked.value : isLeftPanelVisible.value
-  ),
+  () => !isApplicationImmersive.value && isLeftDocked.value,
 )
 
 const getLeftStripFocusTarget = (origin?: HTMLElement | null): HTMLElement | null => {
@@ -166,18 +122,9 @@ const redockLeftPanel = (): void => {
 }
 
 const leftPanelClasses = computed(() => [
-  isStandardWorkspaceRoute.value
-    ? 'inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out'
-    : 'absolute inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow',
-  isStandardWorkspaceRoute.value
-    ? isLeftDocked.value
-      ? 'static translate-x-0 shadow'
-      : 'fixed shadow-2xl'
-    : '',
-  isStandardWorkspaceRoute.value
-    ? showLeftDrawer.value || isLeftDocked.value ? 'translate-x-0' : '-translate-x-full'
-    : appLayoutStore.isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full',
-  !isStandardWorkspaceRoute.value && !isLeftPanelVisible.value ? 'md:hidden' : '',
+  'inset-y-0 left-0 z-50 flex h-full flex-shrink-0 flex-col transform bg-white transition-transform duration-300 ease-in-out',
+  isLeftDocked.value ? 'static translate-x-0 shadow' : 'fixed shadow-2xl',
+  showLeftDrawer.value || isLeftDocked.value ? 'translate-x-0' : '-translate-x-full',
 ])
 
 const mainContentClasses = computed(() => [
@@ -205,9 +152,9 @@ watch(
 )
 
 watch(
-  () => [isStandardWorkspaceRoute.value, responsiveWorkspaceShellState.value.leftPanel.stripActivation] as const,
-  ([isWorkspaceRoute, stripActivation]) => {
-    if (isWorkspaceRoute && stripActivation !== 'open-drawer') {
+  () => responsiveWorkspaceShellState.value.leftPanel.stripActivation,
+  (stripActivation) => {
+    if (stripActivation !== 'open-drawer') {
       appLayoutStore.closeMobileMenu()
     }
   },
