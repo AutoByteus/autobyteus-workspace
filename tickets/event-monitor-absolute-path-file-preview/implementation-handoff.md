@@ -7,7 +7,7 @@
 - Branch: `codex/event-monitor-absolute-path-file-preview`
 - Base: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
 - Architecture review: **Pass, round 2**
-- Implementation status: **Invalid-path, compact-inline-action, and strip-Nodes-icon fixes complete; resubmission required for implementation source review**
+- Implementation status: **Invalid-path, compact-inline-action, strip-Nodes-icon, and label-only action fixes complete; resubmission required for implementation source review**
 
 ## Cumulative Reviewed Solution Package
 
@@ -22,6 +22,7 @@
 - Invalid absolute-path verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-invalid-absolute-path-report.md`
 - Inline file-link verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-inline-file-link-report.md`
 - Strip Nodes icon verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-strip-nodes-icon-report.md`
+- File-link visible-label verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-file-link-label-report.md`
 - This implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/implementation-handoff.md`
 
 ## What Changed
@@ -75,6 +76,13 @@
 - `LeftSidebarStrip.vue` now renders the existing nodes-network SVG shape for the shared `nodes` navigation item instead of passing the unregistered `autobyteus:nodes-network` name to Iconify.
 - The shared navigation capability gate, `Nodes` title/aria-label, and `/nodes` route ownership are unchanged. Added a strip regression asserting the visible `data-testid="nodes-network-icon"` SVG and preserved route test.
 
+### Bounded local fix for generated file-link visible labels
+
+- `MarkdownRenderer.vue` now supplies `action.displayLabel` as the generated inline link text, so prose, inline-code, and fenced-code actions show only the basename/file label rather than visible `Open ... in Files` wording.
+- Authored Markdown link labels remain exactly as authored. The delegated action ID/event, navigation prevention, keyboard activation, launcher, read-only preview, and all path/type/security/no-action behavior remain unchanged.
+- `applyFileActionAccessibility()` continues to apply the localized `Open <file> in Files` description as `aria-label` and the normalized full path as `title`; those remain non-visible metadata.
+- Updated composable and renderer assertions verify label-only visible text, absence of visible `Open`/`in Files`, retained accessibility metadata, and emitted typed actions.
+
 ## Behavior Traceability
 
 | Behavior | Implemented path | Outcome |
@@ -84,6 +92,7 @@
 | BEH-010 — Incomplete/placeholder absolute paths remain source-faithful | `normalizeAbsoluteFilePath()`; `createAbsoluteFilePathAction()`; `useMarkdownSegments.ts`; `MarkdownRenderer.spec.ts` | Exact `.`, `..`, `...`, and Unicode `…` components are rejected for POSIX/Windows candidates before type/action creation. Ordinary Markdown links remain generic links; prose/code remain unchanged and no Files action/read is initiated. |
 | BEH-011 — Supported Event Monitor file actions use compact inline links | `useMarkdownSegments.ts`; `MarkdownRenderer.vue`; `MarkdownRenderer.spec.ts`; `useMarkdownSegments.spec.ts` | Supported authored labels, bare paths, and inline code use underlined action anchors; fenced code keeps literal code unchanged with a compact adjacent link. No old bordered button markup remains. Same action IDs/events/launcher and keyboard behavior are preserved. |
 | BEH-012 — Nodes icon is visible in responsive strip mode | `LeftSidebarStrip.vue`; `LeftSidebarStrip.spec.ts`; shared `useShellPrimaryNavigation.ts` | Gated Nodes item renders the existing nodes-network SVG with `data-testid="nodes-network-icon"` and retains `/nodes` navigation; other icons remain Iconify-rendered. |
+| BEH-013 — Generated file-action links show label-only visible text | `MarkdownRenderer.vue`; `useMarkdownSegments.ts`; `MarkdownRenderer.spec.ts`; `useMarkdownSegments.spec.ts` | Generated Event Monitor links visibly contain only `action.displayLabel`; authored Markdown labels remain unchanged. Localized `Open <file> in Files` context remains in `aria-label`, and the normalized path remains in `title`; IDs/events/keyboard/launcher behavior are unchanged. |
 | BEH-003 — Shared transient read-only preview and dedupe | `fileExplorerContentActions.ts`; `fileExplorerState.ts`; `fileTypePolicy.ts`; `FileExplorerTabs.vue`; `FileViewer.vue` | Existing supported path tabs are reused/selected; Event Monitor intent forces preview, hides edit controls, and uses shared text/media/PDF/spreadsheet adapters. Unsupported candidates never enter this Event Monitor path. |
 | BEH-004 — Desktop idempotent Files selection | `useEventMonitorFilePreview.ts`; `useRightPanel.ts`; `useRightSideTabs.ts`; active tab focus marker in `FileExplorerTabs.vue` | `openRightPanel()` sets visible rather than toggling; Files is selected after the preview request; no overlay or focus trap is created. |
 | BEH-005 — Phone-first Files request/inline presentation | `types/mobileWork.ts`; `mobileWorkStore.ts`; `MobileFiles.vue`; `MobileFileViewer.vue` | Matching revision/context/workspace request selects the existing Mobile Files preview inline and read-only; stale/mismatched requests do nothing. |
@@ -185,6 +194,9 @@ All checks below were run in this task worktree before the temporary dependency 
 - ✅ Compact-inline-action and strip-icon focused suite:
   - `pnpm --dir autobyteus-web exec vitest run components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts composables/__tests__/useMarkdownSegments.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts --reporter=dot`
   - Result: `3 files, 23 tests passed`.
+- ✅ Label-only generated-link focused suite:
+  - `pnpm --dir autobyteus-web exec vitest run components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts composables/__tests__/useMarkdownSegments.spec.ts --reporter=dot`
+  - Result: `2 files, 15 tests passed`.
 - ✅ Combined invalid-path, inline-action, strip-icon, and File Explorer focused suite:
   - `pnpm --dir autobyteus-web exec vitest run utils/fileExplorer/__tests__/fileUtils.test.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts composables/__tests__/useMarkdownSegments.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts --reporter=dot`
   - Result: `6 files, 67 tests passed`.
@@ -195,6 +207,9 @@ All checks below were run in this task worktree before the temporary dependency 
   - `git diff --check` passed; rendered action controls are native anchors with no legacy `event-monitor-file-action` button class or `<button>` markup.
   - Component tests confirmed authored label, bare-path, inline-code, and fenced-code presentation; exact code text remains unchanged, and Enter/Space still emit the typed action event.
   - Strip test confirmed `data-testid="nodes-network-icon"` is visible inside the gated Nodes button and `/nodes` navigation remains unchanged.
+- ✅ Label-only action source checks:
+  - Generated prose/inline/fenced links visibly contain only the file label; tests assert no visible `Open` or `in Files` text.
+  - Renderer assertions confirm the localized `Open <file> in Files` value remains in `aria-label` and the normalized full path remains in `title`; click/Enter/Space emission remains covered.
 - ✅ Unsupported policy source checks:
   - `git diff --check` on changed implementation/test paths passed.
   - The pure policy classifies `.dmg`, `.zip`, installers, application bundles, and unknown binary extensions as `Unsupported`; supported text/media families remain action-eligible.
@@ -207,7 +222,7 @@ All checks below were run in this task worktree before the temporary dependency 
 
 ## Frontend Feedback Loop
 
-- Component-level rendering and interaction checks passed for the Markdown opt-in/default-off behavior, compact inline action anchors, authored/bare/code source preservation, action emission, mobile viewer presentation, File Explorer host states, and strip-mode Nodes SVG.
+- Component-level rendering and interaction checks passed for the Markdown opt-in/default-off behavior, compact label-only action anchors, authored/bare/code source preservation, accessibility metadata, action emission, mobile viewer presentation, File Explorer host states, and strip-mode Nodes SVG.
 - A full browser/dev-renderer visual inspection of the mounted desktop shell, collapsed-panel focus handoff, and phone viewport was not completed; no independent live browser surface was started. This remains an explicit downstream API/E2E validation item; no visual sign-off is claimed here.
 
 ## Known Risks / Downstream Validation Requirements
@@ -240,6 +255,6 @@ API/E2E owns independent executable coverage and environment validation after so
 
 ## Downstream Handoff Status
 
-- `code_reviewer`: **resubmission required — implementation source/structural review after the invalid-path, compact-inline-action, and strip-Nodes-icon fixes, CR-F-006, the user-verification unsupported-preview fix, and CR-F-001 through CR-F-005 fixes**.
+- `code_reviewer`: **resubmission required — implementation source/structural review after the invalid-path, compact-inline-action, strip-Nodes-icon, and label-only action fixes, CR-F-006, the user-verification unsupported-preview fix, and CR-F-001 through CR-F-005 fixes**.
 - `api_e2e_engineer`: **not yet run and no sign-off claimed**; begin only after source review passes.
 - `delivery_engineer`: **held; do not finalize or rebuild the delivery handoff until the user verifies the rebuilt Electron artifact**.

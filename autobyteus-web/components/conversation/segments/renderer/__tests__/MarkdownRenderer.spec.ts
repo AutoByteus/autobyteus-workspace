@@ -108,7 +108,7 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.findAll('[data-event-monitor-file-action-id]')).toHaveLength(2);
     expect(wrapper.findAll('.event-monitor-file-action')).toHaveLength(0);
     expect(wrapper.findAll('.event-monitor-file-action-link')).toHaveLength(2);
-    expect(wrapper.findAll('.event-monitor-file-action-link')[0].text()).toContain('Open');
+    expect(wrapper.findAll('.event-monitor-file-action-link')[0].text()).toBe('my file.md');
   });
 
   it('renders supported paths as compact inline links while preserving labels and source text', async () => {
@@ -133,7 +133,12 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.text()).toContain(inlinePath);
     expect(wrapper.findAll('code')[0].text()).toBe(inlinePath);
     expect(wrapper.find('pre code').text()).toBe(fencedPath);
-    expect(wrapper.findAll('.event-monitor-file-action-link')[3].text()).toContain('Open');
+    expect(controls[3].text()).toBe('fenced.csv');
+    expect(controls.every((control) => !control.text().includes('Open'))).toBe(true);
+    expect(controls.every((control) => !control.text().includes('in Files'))).toBe(true);
+    expect(controls[0].attributes('aria-label')).toContain('Open');
+    expect(controls[0].attributes('aria-label')).toContain('in Files');
+    expect(controls[0].attributes('title')).toBe('/tmp/compaction-lifecycle-contract.md');
     expect(wrapper.findAll('button')).toHaveLength(0);
   });
 

@@ -37,7 +37,7 @@ describe('useMarkdownSegments image resources', () => {
       undefined,
       {
         enableEventMonitorFileActions: true,
-        fileActionLabel: (action) => `Open ${action.displayLabel} in Files`,
+        fileActionLabel: (action) => action.displayLabel,
       },
     )
 
@@ -45,7 +45,9 @@ describe('useMarkdownSegments image resources', () => {
     expect(html).toContain('>report.md</a>')
     expect(html).toContain('>/tmp/prose.md</a>')
     expect(html).toContain('>/tmp/inline.txt</a>')
-    expect(html).toContain('>Open fenced.csv in Files</a>')
+    expect(html).toContain('>fenced.csv</a>')
+    expect(html).not.toContain('>Open ')
+    expect(html).not.toContain(' in Files</a>')
     expect(html).not.toContain('event-monitor-file-action"')
     expect(html).not.toContain('<button')
     expect(html).toContain('<code><a')

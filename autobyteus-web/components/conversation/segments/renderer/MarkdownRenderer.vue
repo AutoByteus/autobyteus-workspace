@@ -46,10 +46,7 @@ const { parsedSegments, managedImageSources, fileActions } = useMarkdownSegments
   imageResourceResolverRef,
   {
     enableEventMonitorFileActions: props.enableEventMonitorFileActions === true,
-    fileActionLabel: (action) => t(
-      'workspace.components.conversation.segments.renderer.MarkdownRenderer.open_file',
-      { file: action.displayLabel },
-    ),
+    fileActionLabel: (action) => action.displayLabel,
   },
 );
 const { resolvedUrlsBySource, errorsBySource } = useAuthorizedObjectUrlMap(
