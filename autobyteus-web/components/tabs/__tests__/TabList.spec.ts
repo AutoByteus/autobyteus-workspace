@@ -57,6 +57,40 @@ describe('TabList.vue', () => {
     }
   });
 
+  it('keeps the tab row single-line and natively horizontally scrollable', () => {
+    const wrapper = mount(TabList, {
+      props: {
+        tabs: sampleTabs,
+        selectedTab: 'Tab1',
+      },
+      global: {
+        stubs: { Tab: TabStub },
+      },
+    });
+
+    expect(wrapper.classes()).toContain('flex-nowrap');
+    expect(wrapper.classes()).toContain('overflow-x-auto');
+    expect(wrapper.classes()).not.toContain('flex-wrap');
+  });
+
+  it('keeps native overflow free of custom indicator chrome', () => {
+    const wrapper = mount(TabList, {
+      props: {
+        tabs: sampleTabs,
+        selectedTab: 'Tab1',
+      },
+      global: {
+        stubs: { Tab: TabStub },
+      },
+    });
+
+    expect(wrapper.find('[data-test="tab-list-affordance-layer"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="tab-list-left-fade"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="tab-list-right-fade"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="tab-list-scroll-left"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="tab-list-scroll-right"]').exists()).toBe(false);
+  });
+
   it('emits the select event with the correct tab name when a Tab is clicked', async () => {
     const wrapper = mount(TabList, {
       props: {

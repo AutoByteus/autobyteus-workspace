@@ -1,0 +1,6 @@
+backend_pid=10233
+frontend_pid=11216
+backend_url=http://127.0.0.1:13001
+frontend_url=http://127.0.0.1:13002
+data_dir=/tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data
+frontend_http_status=200

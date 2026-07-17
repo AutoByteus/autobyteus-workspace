@@ -74,7 +74,11 @@
         @mousedown="initPrimarySectionResize"
       ></div>
 
-      <section class="min-h-0 flex-1 border-b border-gray-200 bg-white">
+      <section
+        data-test="app-left-panel-run-history"
+        tabindex="-1"
+        class="min-h-0 flex-1 border-b border-gray-200 bg-white outline-none"
+      >
         <div class="h-full overflow-y-auto">
           <WorkspaceAgentRunsTreePanel
             @run-selected="onRunningRunSelected"

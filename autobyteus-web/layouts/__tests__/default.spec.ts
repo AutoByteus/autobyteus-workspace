@@ -16,8 +16,43 @@ describe('default layout source', () => {
     const content = readFileSync(filePath, 'utf-8')
 
     expect(content).toContain("hostShellPresentation === 'application_immersive'")
-    expect(content).toContain('v-if="!isApplicationImmersive"')
+    expect(content).toContain('v-if="showLeftPanelSurface"')
+    expect(content).toContain('v-if="showLeftDrawerBackdrop"')
+    expect(content).toContain(':style="leftDrawerBackdropStyle"')
+    expect(content).toContain("route.path === '/workspace' && responsiveWorkspaceShellState.value.showRightStrip")
+    expect(content).toContain('right: `${responsiveWorkspaceShellState.value.rightPanel.consumedWidth}px`')
+    expect(content).toContain('!isApplicationImmersive.value && (isLeftDocked.value || showLeftDrawer.value)')
+    expect(content).toContain('() => !isApplicationImmersive.value && showLeftDrawer.value')
+    expect(content).toContain('!isApplicationImmersive.value\n    && !showLeftDrawer.value\n    && responsiveWorkspaceShellState.value.showLeftStrip')
+    expect(content).toContain(':strip-activation="responsiveWorkspaceShellState.leftPanel.stripActivation!"')
+    expect(content).toContain('@request-redock="redockLeftPanel"')
+    expect(content).toContain('() => !isApplicationImmersive.value && isLeftDocked.value')
     expect(content).toContain("isApplicationImmersive.value ? 'bg-slate-950' : 'bg-blue-50'")
+    expect(content).toContain('useResponsiveWorkspaceShell()')
+    expect(content).toContain('provide(RESPONSIVE_WORKSPACE_SHELL_KEY, responsiveWorkspaceShellState)')
+    expect(content).not.toContain('useAppShellResponsiveLayout')
+    expect(content).not.toContain('isStandardWorkspaceRoute')
+  })
+
+  it('uses the shared left shell globally without a header compatibility path', () => {
+    const filePath = resolve(process.cwd(), 'layouts/default.vue')
+    const content = readFileSync(filePath, 'utf-8')
+
+    expect(content).toContain('responsiveWorkspaceShellState.value.leftPanel.stripActivation === \'open-drawer\'')
+    expect(content).not.toContain('<header')
+    expect(content).not.toContain('showResponsiveHeader')
+    expect(content).not.toContain('showHeader')
+    expect(content).not.toContain('app-left-drawer-open')
+    expect(content).toContain('!showLeftDrawer.value')
+    expect(content).not.toContain('window.innerWidth')
+    expect(content).not.toContain('WORKSPACE_MD_BREAKPOINT_PX')
+  })
+
+  it('keeps the dedicated mobile route outside the default layout boundary', () => {
+    const mobileContent = readFileSync(resolve(process.cwd(), 'pages/mobile.vue'), 'utf-8')
+
+    expect(mobileContent).toContain('layout: false')
+    expect(mobileContent).toContain('MobileRemoteAccessShell')
   })
 
 
@@ -26,6 +61,8 @@ describe('default layout source', () => {
     const content = readFileSync(filePath, 'utf-8')
 
     expect(content).toContain('flex-1 min-w-0 overflow-hidden')
+    expect(content).toContain('class="isolate flex h-screen')
+    expect(content).toContain("'relative flex-1 min-w-0 overflow-hidden w-full'")
   })
 
   it('closes mobile menu on route changes via watcher', () => {
@@ -35,5 +72,29 @@ describe('default layout source', () => {
     expect(content).toContain('watch(')
     expect(content).toContain('() => route.fullPath')
     expect(content).toContain('appLayoutStore.closeMobileMenu()')
+  })
+
+  it('gives the narrow left navigation drawer an accessible lifecycle without duplicate chrome', () => {
+    const filePath = resolve(process.cwd(), 'layouts/default.vue')
+    const content = readFileSync(filePath, 'utf-8')
+
+    expect(content).toContain(":role=\"showLeftDrawer ? 'dialog' : 'navigation'\"")
+    expect(content).toContain(':aria-modal="showLeftDrawer && leftDrawerIsTopmost ? \'true\' : undefined"')
+    expect(content).toContain(':aria-label="$t(\'shell.workspaceSurfaces.navigationDrawerTitle\')"')
+    expect(content).toContain('data-test="app-left-drawer-backdrop"')
+    expect(content).not.toContain('data-test="app-left-drawer-close"')
+    expect(content).not.toContain('left-navigation-drawer-title')
+    expect(content).toContain('useAccessibleDrawer')
+  })
+
+  it('gives the left shell and real panel a definite full-height flex scroll owner', () => {
+    const layoutContent = readFileSync(resolve(process.cwd(), 'layouts/default.vue'), 'utf-8')
+    const panelContent = readFileSync(resolve(process.cwd(), 'components/AppLeftPanel.vue'), 'utf-8')
+
+    expect(layoutContent).toContain('flex h-full flex-shrink-0 flex-col')
+    expect(layoutContent).toContain('class="min-h-0 flex-1 overflow-hidden"')
+    expect(panelContent).toContain('class="flex h-full w-full flex-col')
+    expect(panelContent).toContain('data-test="app-left-panel-run-history"')
+    expect(panelContent).toContain('class="h-full overflow-y-auto"')
   })
 })

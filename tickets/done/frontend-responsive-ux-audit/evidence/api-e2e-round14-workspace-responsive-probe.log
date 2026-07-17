@@ -1,0 +1,15 @@
+Round 14 browser probe 2026-07-16T19:20:53+02:00
+HEAD=efcc49e2aa5040d39a1842c61d01ac0db3938d30
+Command: pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13026 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error
+
+> autobyteus@1.4.14 test:e2e:workspace-responsive /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> node tests/e2e/workspace-responsive-probe.mjs -- --base-url http://127.0.0.1:13026 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error
+
+page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:13026/workspace
+Call log:
+[2m  - navigating to "http://127.0.0.1:13026/workspace", waiting until "domcontentloaded"[22m
+
+    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs:903:20) {
+  name: 'Error'
+}
+ ELIFECYCLE  Command failed with exit code 1.

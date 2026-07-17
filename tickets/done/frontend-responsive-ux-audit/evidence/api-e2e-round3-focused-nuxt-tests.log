@@ -1,0 +1,105 @@
+
+> autobyteus@1.3.73 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts utils/layout/__tests__/workspaceSurfaceOrder.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/tabs/__tests__/TabList.spec.ts composables/__tests__/useRightSideTabs.spec.ts composables/__tests__/useRightPanel.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts layouts/__tests__/default.spec.ts components/__tests__/AppLeftPanel.spec.ts components/__tests__/AppLeftPanel_v2.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/__tests__/AppLeftPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tabs/__tests__/TabList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/__tests__/AppLeftPanel_v2.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useRightPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/tabs/__tests__/TabList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/__tests__/AppLeftPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRightPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/__tests__/AppLeftPanel_v2.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/__tests__/AppLeftPanel.spec.ts (3 tests) 3ms
+ ✓ layouts/__tests__/default.spec.ts (4 tests) 3ms
+ ✓ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts (7 tests) 4ms
+ ✓ composables/__tests__/useRightPanel.spec.ts (3 tests) 83ms
+ ✓ components/tabs/__tests__/TabList.spec.ts (4 tests) 31ms
+ ✓ components/__tests__/AppLeftPanel_v2.spec.ts (3 tests) 48ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (15 tests) 171ms
+ ✓ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts (11 tests) 94ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (11 tests) 68ms
+stderr | utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useRightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useRightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/layout/__tests__/workspaceSurfaceOrder.spec.ts (3 tests) 2ms
+ ✓ composables/__tests__/useRightSideTabs.spec.ts (1 test) 2ms
+
+ Test Files  11 passed (11)
+      Tests  65 passed (65)
+   Start at  18:43:00
+   Duration  10.06s (transform 5.07s, setup 63.03s, collect 4.06s, tests 508ms, environment 4.32s, prepare 3.36s)
+
+
+focused_exit=0

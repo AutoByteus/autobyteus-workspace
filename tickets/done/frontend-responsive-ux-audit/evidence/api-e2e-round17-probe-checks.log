@@ -1,0 +1,6 @@
+$ node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+$ git diff --check -- autobyteus-web
+$ git diff --cached --check -- autobyteus-web
+Round 17 coverage reconciliation: current live first pass was green but the inspected result showed exerciseTabList only ran against docked right-panel state; the reviewed request requires native right-tab validation in drawer mode as well.
+Durable local fix: updated autobyteus-web/tests/e2e/workspace-responsive-probe.mjs to invoke the existing exerciseTabList against the reopened right drawer's native tab-list selector, preserving all existing one-row/ARIA/order/scroll/focus/selection checks.
+Initial result artifacts preserved as workspace-responsive-probe-results-initial.json, workspace-responsive-probe-summary-initial.json, and api-e2e-round17-workspace-responsive-probe-initial.log.

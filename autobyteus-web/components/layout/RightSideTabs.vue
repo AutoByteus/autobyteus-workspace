@@ -4,11 +4,15 @@
     <div class="flex items-center justify-between bg-white pt-2 pr-1 border-b border-gray-200">
       <TabList
         class="flex-1 min-w-0"
+        data-test="right-side-tab-list"
         :tabs="visibleTabs"
         :selected-tab="effectiveActiveTab"
+        :aria-label="$t('shell.rightTabs.ariaLabel')"
         @select="handleTabSelect"
       />
       <button 
+        v-if="showPanelToggle"
+        data-test="right-side-panel-toggle"
         @click="toggleRightPanel"
         class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors mr-2 flex-shrink-0"
         :title="$t('shell.components.layout.RightSideTabs.toggle_sidebar')"
@@ -28,7 +32,7 @@
         class="h-full min-h-0"
         data-test="right-side-files-panel"
       >
-        <FileExplorerLayout :active="isFilesTabActive" />
+        <FileExplorerLayout :active="isFilesTabActive" :layout="fileExplorerLayout" />
       </div>
       <div v-if="effectiveActiveTab === 'teamMembers'" class="h-full min-h-0">
         <TeamOverviewPanel />
@@ -79,7 +83,7 @@ import BrowserPanel from '~/components/workspace/tools/BrowserPanel.vue';
 import TokenUsageMeterPanel from '~/components/workspace/usage/TokenUsageMeterPanel.vue';
 
 const props = withDefaults(defineProps<{
-  mode?: 'desktop' | 'mobile-tools'
+  mode?: 'desktop' | 'drawer' | 'mobile-tools'
 }>(), {
   mode: 'desktop',
 });
@@ -93,6 +97,8 @@ const { toggleRightPanel } = useRightPanel();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
 const filesTabEnabled = computed(() => props.mode !== 'mobile-tools');
+const fileExplorerLayout = computed(() => props.mode === 'desktop' ? 'split' : 'stacked');
+const showPanelToggle = computed(() => props.mode === 'desktop');
 const visibleTabs = computed(() =>
   filesTabEnabled.value
     ? baseVisibleTabs.value

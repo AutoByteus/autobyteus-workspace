@@ -1,0 +1,85 @@
+$ pwd
+/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit
+$ git status --short --branch
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 12]
+ M autobyteus-web/docs/workspace_layout.md
+ M autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+ M tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+ M tickets/frontend-responsive-ux-audit/code-review-report.md
+ M tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+ M tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ M tickets/frontend-responsive-ux-audit/design-review-report.md
+ M tickets/frontend-responsive-ux-audit/design-spec.md
+ M tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ M tickets/frontend-responsive-ux-audit/handoff-summary.md
+ M tickets/frontend-responsive-ux-audit/investigation-notes.md
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1180x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-700x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-767x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/md-768x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-500x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-short-500x420.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-390x844.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-short-390x640.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-1024x768.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-900x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-short-800x420.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-639x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-640x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/wide-1440x900.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+ M tickets/frontend-responsive-ux-audit/requirements-doc.md
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-backend-rerun.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-cleanup-ports-final.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-frontend-rerun.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-runtime-setup.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-server-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-final.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-final2.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-rerun.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-rerun2.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-runtime-setup.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-server-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round4-fetch-and-merge.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round4-final-sanity-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round4-post-refresh-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round5-pre-refresh-state.log
+?? tickets/frontend-responsive-ux-audit/evidence/electron-build-final-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/electron-build-mac-arm64.log
+?? tickets/frontend-responsive-ux-audit/evidence/electron-build-runtime-verification-arm64.log
+?? tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md
+$ git branch --show-current
+codex/frontend-responsive-ux-audit
+$ git rev-parse HEAD
+5883ea8c3f316e05885f900a2178b92a5dedd346
+$ git rev-parse --abbrev-ref --symbolic-full-name @{u}
+origin/personal
+$ git rev-parse @{u}
+fbd7b6764bd43751956d69ffe22b943d06188444
+$ git log --oneline --decorate --left-right HEAD...@{u} -20
+< 5883ea8c3 (HEAD -> codex/frontend-responsive-ux-audit) fix(workspace): pin tab overflow controls to scrollport
+< 53a5a99fb docs(ticket): clarify right-tool tab rework handoff
+< 07048b52d fix(workspace): restore single-row scrolling tool tabs
+< 2db854afe chore(delivery): checkpoint responsive ux round5 before base refresh
+< bb3b2fe49 fix(workspace): wrap right tool tabs in constrained panels
+< 2c8345545 docs(ticket): record integrated order test fix
+< 9a9fa78d2 test(workspace): include integrated usage tab order
+< 456694fa8 merge origin/personal into frontend responsive ux audit (delivery round 3)
+< a1f12ef2f chore(delivery): checkpoint responsive ux validation before base refresh
+< f614a42cb docs(ticket): refresh responsive implementation handoff
+< f4c705855 merge origin/personal into frontend responsive ux audit
+< 031717407 chore(delivery): checkpoint responsive ux candidate before base refresh

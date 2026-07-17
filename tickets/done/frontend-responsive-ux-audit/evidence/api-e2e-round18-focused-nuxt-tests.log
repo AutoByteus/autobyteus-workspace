@@ -1,0 +1,135 @@
+
+> autobyteus@1.4.14 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts utils/layout/__tests__/workspaceSurfaceOrder.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts components/layout/__tests__/RightSidebarStrip.spec.ts components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/tabs/__tests__/TabList.spec.ts components/tabs/__tests__/Tab.spec.ts composables/__tests__/useAccessibleDrawer.spec.ts composables/__tests__/useRightPanel.spec.ts composables/__tests__/useRightSideTabs.spec.ts composables/__tests__/useShellPrimaryNavigation.spec.ts layouts/__tests__/default.spec.ts layouts/__tests__/default-drawer.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/tabs/__tests__/TabList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useAccessibleDrawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/LeftSidebarStrip.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default-drawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useRightPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSidebarStrip.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/LeftSidebarStrip.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRightPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useAccessibleDrawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default-drawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSidebarStrip.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/tabs/__tests__/TabList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useAccessibleDrawer.spec.ts (3 tests) 26ms
+ ✓ components/layout/__tests__/RightSidebarStrip.spec.ts (3 tests) 22ms
+ ✓ components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts (2 tests) 29ms
+ ✓ components/tabs/__tests__/TabList.spec.ts (5 tests) 36ms
+ ✓ composables/__tests__/useRightPanel.spec.ts (7 tests) 250ms
+ ✓ components/layout/__tests__/LeftSidebarStrip.spec.ts (7 tests) 155ms
+ ✓ layouts/__tests__/default-drawer.spec.ts (4 tests) 97ms
+ ✓ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts (24 tests) 199ms
+stderr | components/tabs/__tests__/Tab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | layouts/__tests__/default.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useRightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useShellPrimaryNavigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (12 tests) 81ms
+stdout | components/tabs/__tests__/Tab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | layouts/__tests__/default.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/tabs/__tests__/Tab.spec.ts (1 test) 13ms
+ ✓ layouts/__tests__/default.spec.ts (8 tests) 5ms
+stdout | composables/__tests__/useShellPrimaryNavigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/layout/__tests__/responsiveLayoutPolicy.spec.ts (15 tests) 8ms
+ ✓ composables/__tests__/useShellPrimaryNavigation.spec.ts (3 tests) 10ms
+ ✓ composables/__tests__/useRightSideTabs.spec.ts (2 tests) 4ms
+stdout | utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/layout/__tests__/workspaceSurfaceOrder.spec.ts (2 tests) 3ms
+
+ Test Files  15 passed (15)
+      Tests  98 passed (98)
+   Start at  07:37:27
+   Duration  11.33s (transform 6.87s, setup 73.44s, collect 8.14s, tests 935ms, environment 5.91s, prepare 4.49s)
+

@@ -1,0 +1,4169 @@
+[
+  {
+    "viewport": {
+      "name": "desktop-1440x900",
+      "width": 1440,
+      "height": 900
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/desktop-1440x900.png",
+    "consoleMessages": [
+      "log: Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    ],
+    "pageErrors": [],
+    "data": {
+      "href": "http://127.0.0.1:13002/workspace",
+      "innerWidth": 1440,
+      "innerHeight": 900,
+      "mediaMin640": true,
+      "mediaMin768": true,
+      "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $",
+      "header": {
+        "selector": "header",
+        "exists": true,
+        "display": "none",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden",
+        "text": "Open menuAutoByteus"
+      },
+      "aside": {
+        "selector": "aside",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 900
+        },
+        "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-full",
+        "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings"
+      },
+      "main": {
+        "selector": "main",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 1117,
+          "height": 900
+        },
+        "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $"
+      },
+      "desktopLayout": {
+        "selector": "[data-test=\"workspace-desktop-layout\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 1117,
+          "height": 900
+        },
+        "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $"
+      },
+      "mobileNavTextPresent": false,
+      "rightPanel": {
+        "selector": "[data-test=\"workspace-right-panel\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 990,
+          "y": 0,
+          "width": 450,
+          "height": 900
+        },
+        "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative",
+        "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $"
+      },
+      "centerShell": {
+        "selector": "[data-test=\"workspace-center-content-shell\"]",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 663,
+          "height": 900
+        },
+        "className": "relative flex-1 min-h-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin."
+      },
+      "visibleNodeSummaries": [
+        {
+          "tag": "header",
+          "test": null,
+          "text": "Open menuAutoByteus",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Open menu",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
+        },
+        {
+          "tag": "aside",
+          "test": null,
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 900
+          },
+          "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-fu"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 848
+          },
+          "className": "min-h-0 flex flex-1 flex-col"
+        },
+        {
+          "tag": "section",
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Skills Memory Nodes",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 240
+          },
+          "className": "flex-shrink-0 overflow-y-auto bg-white px-2 py-3"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agents",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 12,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 272,
+            "y": 13,
+            "width": 34,
+            "height": 34
+          },
+          "className": "absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent Teams",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 52,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Skills",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 92,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Memory",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 132,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Nodes",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 172,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 235,
+            "width": 320,
+            "height": 10
+          },
+          "className": "left-panel-section-resize-handle"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 284,
+            "y": 249,
+            "width": 24,
+            "height": 24
+          },
+          "className": "inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+        },
+        {
+          "tag": "button",
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 4,
+            "y": 281,
+            "width": 312,
+            "height": 32
+          },
+          "className": "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Settings",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 856,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "main",
+          "test": null,
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 1117,
+            "height": 900
+          },
+          "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-desktop-layout",
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 1117,
+            "height": 900
+          },
+          "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-center-content-shell",
+          "text": "Select or run an agent/team to begin.",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 663,
+            "height": 900
+          },
+          "className": "relative flex-1 min-h-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 986,
+            "y": 0,
+            "width": 4,
+            "height": 900
+          },
+          "className": "drag-handle"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-panel",
+          "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default ",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 990,
+            "y": 0,
+            "width": 450,
+            "height": 900
+          },
+          "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Files",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 994,
+            "y": 8,
+            "width": 74,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Terminal",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1068,
+            "y": 8,
+            "width": 103,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Activity",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1171,
+            "y": 8,
+            "width": 96,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Artifacts",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1267,
+            "y": 8,
+            "width": 104,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "VNC Viewer",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1371,
+            "y": 8,
+            "width": 128,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 1398,
+            "y": 18,
+            "width": 30,
+            "height": 30
+          },
+          "className": "p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors mr-2 flex-shrink-0"
+        },
+        {
+          "tag": "div",
+          "test": "right-side-tab-content-shell",
+          "text": "➜ Terminal initialized The default interactive shell is now zsh. To update your ",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 990,
+            "y": 58,
+            "width": 450,
+            "height": 842
+          },
+          "className": "flex-1 min-h-0 overflow-hidden relative"
+        }
+      ]
+    }
+  },
+  {
+    "viewport": {
+      "name": "desktop-1024x768",
+      "width": 1024,
+      "height": 768
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/desktop-1024x768.png",
+    "consoleMessages": [
+      "log: Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    ],
+    "pageErrors": [],
+    "data": {
+      "href": "http://127.0.0.1:13002/workspace",
+      "innerWidth": 1024,
+      "innerHeight": 768,
+      "mediaMin640": true,
+      "mediaMin768": true,
+      "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $",
+      "header": {
+        "selector": "header",
+        "exists": true,
+        "display": "none",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden",
+        "text": "Open menuAutoByteus"
+      },
+      "aside": {
+        "selector": "aside",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 768
+        },
+        "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-full",
+        "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings"
+      },
+      "main": {
+        "selector": "main",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 701,
+          "height": 768
+        },
+        "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $"
+      },
+      "desktopLayout": {
+        "selector": "[data-test=\"workspace-desktop-layout\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 701,
+          "height": 768
+        },
+        "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $"
+      },
+      "mobileNavTextPresent": false,
+      "rightPanel": {
+        "selector": "[data-test=\"workspace-right-panel\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 574,
+          "y": 0,
+          "width": 450,
+          "height": 768
+        },
+        "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative",
+        "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $"
+      },
+      "centerShell": {
+        "selector": "[data-test=\"workspace-center-content-shell\"]",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 247,
+          "height": 768
+        },
+        "className": "relative flex-1 min-h-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin."
+      },
+      "visibleNodeSummaries": [
+        {
+          "tag": "header",
+          "test": null,
+          "text": "Open menuAutoByteus",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Open menu",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
+        },
+        {
+          "tag": "aside",
+          "test": null,
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 768
+          },
+          "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-fu"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 716
+          },
+          "className": "min-h-0 flex flex-1 flex-col"
+        },
+        {
+          "tag": "section",
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Skills Memory Nodes",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 240
+          },
+          "className": "flex-shrink-0 overflow-y-auto bg-white px-2 py-3"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agents",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 12,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 272,
+            "y": 13,
+            "width": 34,
+            "height": 34
+          },
+          "className": "absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent Teams",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 52,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Skills",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 92,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Memory",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 132,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Nodes",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 172,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 235,
+            "width": 320,
+            "height": 10
+          },
+          "className": "left-panel-section-resize-handle"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 284,
+            "y": 249,
+            "width": 24,
+            "height": 24
+          },
+          "className": "inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+        },
+        {
+          "tag": "button",
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 4,
+            "y": 281,
+            "width": 312,
+            "height": 32
+          },
+          "className": "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Settings",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 724,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "main",
+          "test": null,
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 701,
+            "height": 768
+          },
+          "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-desktop-layout",
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 701,
+            "height": 768
+          },
+          "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-center-content-shell",
+          "text": "Select or run an agent/team to begin.",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 247,
+            "height": 768
+          },
+          "className": "relative flex-1 min-h-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 570,
+            "y": 0,
+            "width": 4,
+            "height": 768
+          },
+          "className": "drag-handle"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-panel",
+          "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default ",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 574,
+            "y": 0,
+            "width": 450,
+            "height": 768
+          },
+          "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Files",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 578,
+            "y": 8,
+            "width": 74,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Terminal",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 652,
+            "y": 8,
+            "width": 103,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Activity",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 755,
+            "y": 8,
+            "width": 96,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Artifacts",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 851,
+            "y": 8,
+            "width": 104,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "VNC Viewer",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 955,
+            "y": 8,
+            "width": 128,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 982,
+            "y": 18,
+            "width": 30,
+            "height": 30
+          },
+          "className": "p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors mr-2 flex-shrink-0"
+        },
+        {
+          "tag": "div",
+          "test": "right-side-tab-content-shell",
+          "text": "➜ Terminal initialized The default interactive shell is now zsh. To update your ",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 574,
+            "y": 58,
+            "width": 450,
+            "height": 710
+          },
+          "className": "flex-1 min-h-0 overflow-hidden relative"
+        }
+      ]
+    }
+  },
+  {
+    "viewport": {
+      "name": "narrow-desktop-800x700",
+      "width": 800,
+      "height": 700
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/narrow-desktop-800x700.png",
+    "consoleMessages": [
+      "log: Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    ],
+    "pageErrors": [],
+    "data": {
+      "href": "http://127.0.0.1:13002/workspace",
+      "innerWidth": 800,
+      "innerHeight": 700,
+      "mediaMin640": true,
+      "mediaMin768": true,
+      "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/ zsh`. For more details, please visit https://support.apple.com/kb/ HT208050. ~ $",
+      "header": {
+        "selector": "header",
+        "exists": true,
+        "display": "none",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden",
+        "text": "Open menuAutoByteus"
+      },
+      "aside": {
+        "selector": "aside",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 700
+        },
+        "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-full",
+        "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings"
+      },
+      "main": {
+        "selector": "main",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 477,
+          "height": 700
+        },
+        "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/ zsh`. For more details, please visit https://support.apple.com/kb/ HT208050. ~ $"
+      },
+      "desktopLayout": {
+        "selector": "[data-test=\"workspace-desktop-layout\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 477,
+          "height": 700
+        },
+        "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/ zsh`. For more details, please visit https://support.apple.com/kb/ HT208050. ~ $"
+      },
+      "mobileNavTextPresent": false,
+      "rightPanel": {
+        "selector": "[data-test=\"workspace-right-panel\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 527,
+          "y": 0,
+          "width": 273,
+          "height": 700
+        },
+        "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative",
+        "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/ zsh`. For more details, please visit https://support.apple.com/kb/ HT208050. ~ $"
+      },
+      "centerShell": {
+        "selector": "[data-test=\"workspace-center-content-shell\"]",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 200,
+          "height": 700
+        },
+        "className": "relative flex-1 min-h-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin."
+      },
+      "visibleNodeSummaries": [
+        {
+          "tag": "header",
+          "test": null,
+          "text": "Open menuAutoByteus",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Open menu",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
+        },
+        {
+          "tag": "aside",
+          "test": null,
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 700
+          },
+          "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-fu"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 648
+          },
+          "className": "min-h-0 flex flex-1 flex-col"
+        },
+        {
+          "tag": "section",
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Skills Memory Nodes",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 240
+          },
+          "className": "flex-shrink-0 overflow-y-auto bg-white px-2 py-3"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agents",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 12,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 272,
+            "y": 13,
+            "width": 34,
+            "height": 34
+          },
+          "className": "absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent Teams",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 52,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Skills",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 92,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Memory",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 132,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Nodes",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 172,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 235,
+            "width": 320,
+            "height": 10
+          },
+          "className": "left-panel-section-resize-handle"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 284,
+            "y": 249,
+            "width": 24,
+            "height": 24
+          },
+          "className": "inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+        },
+        {
+          "tag": "button",
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 4,
+            "y": 281,
+            "width": 312,
+            "height": 32
+          },
+          "className": "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Settings",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 656,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "main",
+          "test": null,
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 477,
+            "height": 700
+          },
+          "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-desktop-layout",
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 477,
+            "height": 700
+          },
+          "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-center-content-shell",
+          "text": "Select or run an agent/team to begin.",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 200,
+            "height": 700
+          },
+          "className": "relative flex-1 min-h-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 523,
+            "y": 0,
+            "width": 4,
+            "height": 700
+          },
+          "className": "drag-handle"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-panel",
+          "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default ",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 527,
+            "y": 0,
+            "width": 273,
+            "height": 700
+          },
+          "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Files",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 531,
+            "y": 8,
+            "width": 74,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Terminal",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 605,
+            "y": 8,
+            "width": 103,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Activity",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 708,
+            "y": 8,
+            "width": 96,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Artifacts",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 804,
+            "y": 8,
+            "width": 104,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "VNC Viewer",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 908,
+            "y": 8,
+            "width": 128,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 758,
+            "y": 18,
+            "width": 30,
+            "height": 30
+          },
+          "className": "p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors mr-2 flex-shrink-0"
+        },
+        {
+          "tag": "div",
+          "test": "right-side-tab-content-shell",
+          "text": "➜ Terminal initialized The default interactive shell is now zsh. To update your ",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 527,
+            "y": 58,
+            "width": 273,
+            "height": 642
+          },
+          "className": "flex-1 min-h-0 overflow-hidden relative"
+        }
+      ]
+    }
+  },
+  {
+    "viewport": {
+      "name": "gap-760x700",
+      "width": 760,
+      "height": 700
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/gap-760x700.png",
+    "consoleMessages": [
+      "log: Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    ],
+    "pageErrors": [],
+    "data": {
+      "href": "http://127.0.0.1:13002/workspace",
+      "innerWidth": 760,
+      "innerHeight": 700,
+      "mediaMin640": true,
+      "mediaMin768": false,
+      "bodyText": "Open menu AutoByteus Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+      "header": {
+        "selector": "header",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 760,
+          "height": 56
+        },
+        "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden",
+        "text": "Open menu AutoByteus"
+      },
+      "aside": {
+        "selector": "aside",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": -320,
+          "y": 56,
+          "width": 320,
+          "height": 644
+        },
+        "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-full",
+        "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings"
+      },
+      "main": {
+        "selector": "main",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 56,
+          "width": 760,
+          "height": 644
+        },
+        "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
+        "text": ""
+      },
+      "desktopLayout": {
+        "selector": "[data-test=\"workspace-desktop-layout\"]",
+        "exists": true,
+        "display": "none",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin.FilesTerminalActivityArtifactsVNC Viewer"
+      },
+      "mobileNavTextPresent": false,
+      "rightPanel": {
+        "selector": "[data-test=\"workspace-right-panel\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative",
+        "text": "FilesTerminalActivityArtifactsVNC Viewer"
+      },
+      "centerShell": {
+        "selector": "[data-test=\"workspace-center-content-shell\"]",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "relative flex-1 min-h-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin."
+      },
+      "visibleNodeSummaries": [
+        {
+          "tag": "header",
+          "test": null,
+          "text": "Open menu AutoByteus",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 760,
+            "height": 56
+          },
+          "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Open menu",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 12,
+            "y": 12,
+            "width": 32,
+            "height": 32
+          },
+          "className": "-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
+        },
+        {
+          "tag": "aside",
+          "test": null,
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 644
+          },
+          "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-fu"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 592
+          },
+          "className": "min-h-0 flex flex-1 flex-col"
+        },
+        {
+          "tag": "section",
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Skills Memory Nodes",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 240
+          },
+          "className": "flex-shrink-0 overflow-y-auto bg-white px-2 py-3"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agents",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 68,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent Teams",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 108,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Skills",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 148,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Memory",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 188,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Nodes",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 228,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 291,
+            "width": 320,
+            "height": 10
+          },
+          "className": "left-panel-section-resize-handle"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -36,
+            "y": 305,
+            "width": 24,
+            "height": 24
+          },
+          "className": "inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+        },
+        {
+          "tag": "button",
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -316,
+            "y": 337,
+            "width": 312,
+            "height": 32
+          },
+          "className": "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Settings",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 656,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "main",
+          "test": null,
+          "text": "Select or run an agent/team to begin.FilesTerminalActivityArtifactsVNC Viewer",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 56,
+            "width": 760,
+            "height": 644
+          },
+          "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-desktop-layout",
+          "text": "Select or run an agent/team to begin.FilesTerminalActivityArtifactsVNC Viewer",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-center-content-shell",
+          "text": "Select or run an agent/team to begin.",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "relative flex-1 min-h-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "drag-handle"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-panel",
+          "text": "FilesTerminalActivityArtifactsVNC Viewer",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Files",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Terminal",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Activity",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Artifacts",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "VNC Viewer",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors mr-2 flex-shrink-0"
+        },
+        {
+          "tag": "div",
+          "test": "right-side-tab-content-shell",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "flex-1 min-h-0 overflow-hidden relative"
+        }
+      ]
+    }
+  },
+  {
+    "viewport": {
+      "name": "gap-700x700",
+      "width": 700,
+      "height": 700
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/gap-700x700.png",
+    "consoleMessages": [
+      "log: Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    ],
+    "pageErrors": [],
+    "data": {
+      "href": "http://127.0.0.1:13002/workspace",
+      "innerWidth": 700,
+      "innerHeight": 700,
+      "mediaMin640": true,
+      "mediaMin768": false,
+      "bodyText": "Open menu AutoByteus Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+      "header": {
+        "selector": "header",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 700,
+          "height": 56
+        },
+        "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden",
+        "text": "Open menu AutoByteus"
+      },
+      "aside": {
+        "selector": "aside",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": -320,
+          "y": 56,
+          "width": 320,
+          "height": 644
+        },
+        "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-full",
+        "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings"
+      },
+      "main": {
+        "selector": "main",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 56,
+          "width": 700,
+          "height": 644
+        },
+        "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
+        "text": ""
+      },
+      "desktopLayout": {
+        "selector": "[data-test=\"workspace-desktop-layout\"]",
+        "exists": true,
+        "display": "none",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin.FilesTerminalActivityArtifactsVNC Viewer"
+      },
+      "mobileNavTextPresent": false,
+      "rightPanel": {
+        "selector": "[data-test=\"workspace-right-panel\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative",
+        "text": "FilesTerminalActivityArtifactsVNC Viewer"
+      },
+      "centerShell": {
+        "selector": "[data-test=\"workspace-center-content-shell\"]",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "relative flex-1 min-h-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin."
+      },
+      "visibleNodeSummaries": [
+        {
+          "tag": "header",
+          "test": null,
+          "text": "Open menu AutoByteus",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 700,
+            "height": 56
+          },
+          "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Open menu",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 12,
+            "y": 12,
+            "width": 32,
+            "height": 32
+          },
+          "className": "-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
+        },
+        {
+          "tag": "aside",
+          "test": null,
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 644
+          },
+          "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-fu"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 592
+          },
+          "className": "min-h-0 flex flex-1 flex-col"
+        },
+        {
+          "tag": "section",
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Skills Memory Nodes",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 240
+          },
+          "className": "flex-shrink-0 overflow-y-auto bg-white px-2 py-3"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agents",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 68,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent Teams",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 108,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Skills",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 148,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Memory",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 188,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Nodes",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 228,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 291,
+            "width": 320,
+            "height": 10
+          },
+          "className": "left-panel-section-resize-handle"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -36,
+            "y": 305,
+            "width": 24,
+            "height": 24
+          },
+          "className": "inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+        },
+        {
+          "tag": "button",
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -316,
+            "y": 337,
+            "width": 312,
+            "height": 32
+          },
+          "className": "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Settings",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 656,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "main",
+          "test": null,
+          "text": "Select or run an agent/team to begin.FilesTerminalActivityArtifactsVNC Viewer",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 56,
+            "width": 700,
+            "height": 644
+          },
+          "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-desktop-layout",
+          "text": "Select or run an agent/team to begin.FilesTerminalActivityArtifactsVNC Viewer",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-center-content-shell",
+          "text": "Select or run an agent/team to begin.",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "relative flex-1 min-h-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "drag-handle"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-panel",
+          "text": "FilesTerminalActivityArtifactsVNC Viewer",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Files",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Terminal",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Activity",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Artifacts",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "VNC Viewer",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors mr-2 flex-shrink-0"
+        },
+        {
+          "tag": "div",
+          "test": "right-side-tab-content-shell",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "flex-1 min-h-0 overflow-hidden relative"
+        }
+      ]
+    }
+  },
+  {
+    "viewport": {
+      "name": "mobile-639x700",
+      "width": 639,
+      "height": 700
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/mobile-639x700.png",
+    "consoleMessages": [
+      "log: Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    ],
+    "pageErrors": [],
+    "data": {
+      "href": "http://127.0.0.1:13002/workspace",
+      "innerWidth": 639,
+      "innerHeight": 700,
+      "mediaMin640": false,
+      "mediaMin768": false,
+      "bodyText": "Open menu AutoByteus Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Running Agent Running List Configuration No agents or teams running.",
+      "header": {
+        "selector": "header",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 639,
+          "height": 56
+        },
+        "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden",
+        "text": "Open menu AutoByteus"
+      },
+      "aside": {
+        "selector": "aside",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": -320,
+          "y": 56,
+          "width": 320,
+          "height": 644
+        },
+        "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-full",
+        "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings"
+      },
+      "main": {
+        "selector": "main",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 56,
+          "width": 639,
+          "height": 644
+        },
+        "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
+        "text": "Running Agent Running List Configuration No agents or teams running."
+      },
+      "desktopLayout": null,
+      "mobileNavTextPresent": true,
+      "rightPanel": null,
+      "centerShell": null,
+      "visibleNodeSummaries": [
+        {
+          "tag": "header",
+          "test": null,
+          "text": "Open menu AutoByteus",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 639,
+            "height": 56
+          },
+          "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Open menu",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 12,
+            "y": 12,
+            "width": 32,
+            "height": 32
+          },
+          "className": "-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
+        },
+        {
+          "tag": "aside",
+          "test": null,
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 644
+          },
+          "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-fu"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 592
+          },
+          "className": "min-h-0 flex flex-1 flex-col"
+        },
+        {
+          "tag": "section",
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Skills Memory Nodes",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 240
+          },
+          "className": "flex-shrink-0 overflow-y-auto bg-white px-2 py-3"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agents",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 68,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent Teams",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 108,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Skills",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 148,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Memory",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 188,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Nodes",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 228,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 291,
+            "width": 320,
+            "height": 10
+          },
+          "className": "left-panel-section-resize-handle"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -36,
+            "y": 305,
+            "width": 24,
+            "height": 24
+          },
+          "className": "inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+        },
+        {
+          "tag": "button",
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -316,
+            "y": 337,
+            "width": 312,
+            "height": 32
+          },
+          "className": "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Settings",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 656,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "main",
+          "test": null,
+          "text": "Running Agent Running List Configuration No agents or teams running.",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 56,
+            "width": 639,
+            "height": 644
+          },
+          "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Running",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 64,
+            "width": 91,
+            "height": 40
+          },
+          "className": "flex-shrink-0 py-2 px-4 rounded-md transition-colors whitespace-nowrap bg-blue-500 text-white"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 107,
+            "y": 64,
+            "width": 75,
+            "height": 40
+          },
+          "className": "flex-shrink-0 py-2 px-4 rounded-md transition-colors whitespace-nowrap bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all duration-200 focus:outline-none"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Running List",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 128,
+            "width": 308,
+            "height": 34
+          },
+          "className": "flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-colors border bg-white text-blue-600 border-gray-300 shadow-sm"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Configuration",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 324,
+            "y": 128,
+            "width": 308,
+            "height": 34
+          },
+          "className": "flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-colors border bg-transparent text-gray-500 border-transparent hover:bg-gray-200"
+        }
+      ]
+    }
+  },
+  {
+    "viewport": {
+      "name": "mobile-500x700",
+      "width": 500,
+      "height": 700
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/mobile-500x700.png",
+    "consoleMessages": [
+      "log: Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    ],
+    "pageErrors": [],
+    "data": {
+      "href": "http://127.0.0.1:13002/workspace",
+      "innerWidth": 500,
+      "innerHeight": 700,
+      "mediaMin640": false,
+      "mediaMin768": false,
+      "bodyText": "Open menu AutoByteus Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Running Agent Running List Configuration No agents or teams running.",
+      "header": {
+        "selector": "header",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 500,
+          "height": 56
+        },
+        "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden",
+        "text": "Open menu AutoByteus"
+      },
+      "aside": {
+        "selector": "aside",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": -320,
+          "y": 56,
+          "width": 320,
+          "height": 644
+        },
+        "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-full",
+        "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings"
+      },
+      "main": {
+        "selector": "main",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 56,
+          "width": 500,
+          "height": 644
+        },
+        "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
+        "text": "Running Agent Running List Configuration No agents or teams running."
+      },
+      "desktopLayout": null,
+      "mobileNavTextPresent": true,
+      "rightPanel": null,
+      "centerShell": null,
+      "visibleNodeSummaries": [
+        {
+          "tag": "header",
+          "test": null,
+          "text": "Open menu AutoByteus",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 500,
+            "height": 56
+          },
+          "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Open menu",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 12,
+            "y": 12,
+            "width": 32,
+            "height": 32
+          },
+          "className": "-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
+        },
+        {
+          "tag": "aside",
+          "test": null,
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 644
+          },
+          "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-fu"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 592
+          },
+          "className": "min-h-0 flex flex-1 flex-col"
+        },
+        {
+          "tag": "section",
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Skills Memory Nodes",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 56,
+            "width": 320,
+            "height": 240
+          },
+          "className": "flex-shrink-0 overflow-y-auto bg-white px-2 py-3"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agents",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 68,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent Teams",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 108,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Skills",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 148,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Memory",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 188,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Nodes",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 228,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": -320,
+            "y": 291,
+            "width": 320,
+            "height": 10
+          },
+          "className": "left-panel-section-resize-handle"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -36,
+            "y": 305,
+            "width": 24,
+            "height": 24
+          },
+          "className": "inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+        },
+        {
+          "tag": "button",
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -316,
+            "y": 337,
+            "width": 312,
+            "height": 32
+          },
+          "className": "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Settings",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": -312,
+            "y": 656,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "main",
+          "test": null,
+          "text": "Running Agent Running List Configuration No agents or teams running.",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 56,
+            "width": 500,
+            "height": 644
+          },
+          "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Running",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 64,
+            "width": 91,
+            "height": 40
+          },
+          "className": "flex-shrink-0 py-2 px-4 rounded-md transition-colors whitespace-nowrap bg-blue-500 text-white"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 107,
+            "y": 64,
+            "width": 75,
+            "height": 40
+          },
+          "className": "flex-shrink-0 py-2 px-4 rounded-md transition-colors whitespace-nowrap bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all duration-200 focus:outline-none"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Running List",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 128,
+            "width": 238,
+            "height": 34
+          },
+          "className": "flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-colors border bg-white text-blue-600 border-gray-300 shadow-sm"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Configuration",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 254,
+            "y": 128,
+            "width": 238,
+            "height": 34
+          },
+          "className": "flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-colors border bg-transparent text-gray-500 border-transparent hover:bg-gray-200"
+        }
+      ]
+    }
+  },
+  {
+    "viewport": {
+      "name": "short-1024x480",
+      "width": 1024,
+      "height": 480
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/short-1024x480.png",
+    "consoleMessages": [
+      "log: Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    ],
+    "pageErrors": [],
+    "data": {
+      "href": "http://127.0.0.1:13002/workspace",
+      "innerWidth": 1024,
+      "innerHeight": 480,
+      "mediaMin640": true,
+      "mediaMin768": true,
+      "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $",
+      "header": {
+        "selector": "header",
+        "exists": true,
+        "display": "none",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden",
+        "text": "Open menuAutoByteus"
+      },
+      "aside": {
+        "selector": "aside",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 480
+        },
+        "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-full",
+        "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings"
+      },
+      "main": {
+        "selector": "main",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 701,
+          "height": 480
+        },
+        "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $"
+      },
+      "desktopLayout": {
+        "selector": "[data-test=\"workspace-desktop-layout\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 701,
+          "height": 480
+        },
+        "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $"
+      },
+      "mobileNavTextPresent": false,
+      "rightPanel": {
+        "selector": "[data-test=\"workspace-right-panel\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 574,
+          "y": 0,
+          "width": 450,
+          "height": 480
+        },
+        "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative",
+        "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/zsh`. For more details, please visit https://support.appl e.com/kb/HT208050. ~ $"
+      },
+      "centerShell": {
+        "selector": "[data-test=\"workspace-center-content-shell\"]",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 247,
+          "height": 480
+        },
+        "className": "relative flex-1 min-h-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin."
+      },
+      "visibleNodeSummaries": [
+        {
+          "tag": "header",
+          "test": null,
+          "text": "Open menuAutoByteus",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Open menu",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
+        },
+        {
+          "tag": "aside",
+          "test": null,
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 480
+          },
+          "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-fu"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 428
+          },
+          "className": "min-h-0 flex flex-1 flex-col"
+        },
+        {
+          "tag": "section",
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Skills Memory Nodes",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 208
+          },
+          "className": "flex-shrink-0 overflow-y-auto bg-white px-2 py-3"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agents",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 12,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 272,
+            "y": 13,
+            "width": 34,
+            "height": 34
+          },
+          "className": "absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent Teams",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 52,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Skills",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 92,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Memory",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 132,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Nodes",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 172,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 203,
+            "width": 320,
+            "height": 10
+          },
+          "className": "left-panel-section-resize-handle"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 284,
+            "y": 217,
+            "width": 24,
+            "height": 24
+          },
+          "className": "inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+        },
+        {
+          "tag": "button",
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 4,
+            "y": 249,
+            "width": 312,
+            "height": 32
+          },
+          "className": "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Settings",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 436,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "main",
+          "test": null,
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 701,
+            "height": 480
+          },
+          "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-desktop-layout",
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 701,
+            "height": 480
+          },
+          "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-center-content-shell",
+          "text": "Select or run an agent/team to begin.",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 247,
+            "height": 480
+          },
+          "className": "relative flex-1 min-h-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 570,
+            "y": 0,
+            "width": 4,
+            "height": 480
+          },
+          "className": "drag-handle"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-panel",
+          "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default ",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 574,
+            "y": 0,
+            "width": 450,
+            "height": 480
+          },
+          "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Files",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 578,
+            "y": 8,
+            "width": 74,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Terminal",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 652,
+            "y": 8,
+            "width": 103,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Activity",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 755,
+            "y": 8,
+            "width": 96,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Artifacts",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 851,
+            "y": 8,
+            "width": 104,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "VNC Viewer",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 955,
+            "y": 8,
+            "width": 128,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 982,
+            "y": 18,
+            "width": 30,
+            "height": 30
+          },
+          "className": "p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors mr-2 flex-shrink-0"
+        },
+        {
+          "tag": "div",
+          "test": "right-side-tab-content-shell",
+          "text": "➜ Terminal initialized The default interactive shell is now zsh. To update your ",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 574,
+            "y": 58,
+            "width": 450,
+            "height": 422
+          },
+          "className": "flex-1 min-h-0 overflow-hidden relative"
+        }
+      ]
+    }
+  },
+  {
+    "viewport": {
+      "name": "short-800x420",
+      "width": 800,
+      "height": 420
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/short-800x420.png",
+    "consoleMessages": [
+      "log: Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    ],
+    "pageErrors": [],
+    "data": {
+      "href": "http://127.0.0.1:13002/workspace",
+      "innerWidth": 800,
+      "innerHeight": 420,
+      "mediaMin640": true,
+      "mediaMin768": true,
+      "bodyText": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/ zsh`. For more details, please visit https://support.apple.com/kb/ HT208050. ~ $",
+      "header": {
+        "selector": "header",
+        "exists": true,
+        "display": "none",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden",
+        "text": "Open menuAutoByteus"
+      },
+      "aside": {
+        "selector": "aside",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 420
+        },
+        "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-full",
+        "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings"
+      },
+      "main": {
+        "selector": "main",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 477,
+          "height": 420
+        },
+        "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/ zsh`. For more details, please visit https://support.apple.com/kb/ HT208050. ~ $"
+      },
+      "desktopLayout": {
+        "selector": "[data-test=\"workspace-desktop-layout\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 477,
+          "height": 420
+        },
+        "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/ zsh`. For more details, please visit https://support.apple.com/kb/ HT208050. ~ $"
+      },
+      "mobileNavTextPresent": false,
+      "rightPanel": {
+        "selector": "[data-test=\"workspace-right-panel\"]",
+        "exists": true,
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 527,
+          "y": 0,
+          "width": 273,
+          "height": 420
+        },
+        "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative",
+        "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default interactive shell is now zsh. To update your account to use zsh, please run `chsh -s /bin/ zsh`. For more details, please visit https://support.apple.com/kb/ HT208050. ~ $"
+      },
+      "centerShell": {
+        "selector": "[data-test=\"workspace-center-content-shell\"]",
+        "exists": true,
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1",
+        "rect": {
+          "x": 323,
+          "y": 0,
+          "width": 200,
+          "height": 420
+        },
+        "className": "relative flex-1 min-h-0 overflow-hidden",
+        "text": "Select or run an agent/team to begin."
+      },
+      "visibleNodeSummaries": [
+        {
+          "tag": "header",
+          "test": null,
+          "text": "Open menuAutoByteus",
+          "display": "none",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "z-30 flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-700 bg-gray-900 px-4 md:hidden"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Open menu",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "className": "-ml-1 p-1 text-gray-400 hover:text-white focus:outline-none"
+        },
+        {
+          "tag": "aside",
+          "test": null,
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace Settings",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 420
+          },
+          "className": "absolute inset-y-0 left-0 z-50 h-full flex-shrink-0 transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:shadow -translate-x-fu"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-sections",
+          "text": "Agents Agent Teams Skills Memory Nodes Workspaces Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 368
+          },
+          "className": "min-h-0 flex flex-1 flex-col"
+        },
+        {
+          "tag": "section",
+          "test": "app-left-panel-primary-nav",
+          "text": "Agents Agent Teams Skills Memory Nodes",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 148
+          },
+          "className": "flex-shrink-0 overflow-y-auto bg-white px-2 py-3"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agents",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 12,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors pr-12 text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 272,
+            "y": 13,
+            "width": 34,
+            "height": 34
+          },
+          "className": "absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Agent Teams",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 52,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Skills",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 92,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Memory",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 132,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Nodes",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 172,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "div",
+          "test": "app-left-panel-section-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 0,
+            "y": 143,
+            "width": 320,
+            "height": 10
+          },
+          "className": "left-panel-section-resize-handle"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 284,
+            "y": 157,
+            "width": 24,
+            "height": 24
+          },
+          "className": "inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+        },
+        {
+          "tag": "button",
+          "test": "workspace-row",
+          "text": "Temp Workspace",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 4,
+            "y": 189,
+            "width": 312,
+            "height": 32
+          },
+          "className": "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Settings",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 8,
+            "y": 376,
+            "width": 304,
+            "height": 36
+          },
+          "className": "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+        },
+        {
+          "tag": "main",
+          "test": null,
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 477,
+            "height": 420
+          },
+          "className": "relative z-0 flex-1 min-w-0 overflow-hidden w-full bg-blue-50"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-desktop-layout",
+          "text": "Select or run an agent/team to begin. Files Terminal Activity Artifacts VNC View",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 477,
+            "height": 420
+          },
+          "className": "hidden md:flex flex-1 relative space-x-0 min-h-0 min-w-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-center-content-shell",
+          "text": "Select or run an agent/team to begin.",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 323,
+            "y": 0,
+            "width": 200,
+            "height": 420
+          },
+          "className": "relative flex-1 min-h-0 overflow-hidden"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-resize-handle",
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 523,
+            "y": 0,
+            "width": 4,
+            "height": 420
+          },
+          "className": "drag-handle"
+        },
+        {
+          "tag": "div",
+          "test": "workspace-right-panel",
+          "text": "Files Terminal Activity Artifacts VNC Viewer ➜ Terminal initialized The default ",
+          "display": "flex",
+          "visibility": "visible",
+          "rect": {
+            "x": 527,
+            "y": 0,
+            "width": 273,
+            "height": 420
+          },
+          "className": "bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Files",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 531,
+            "y": 8,
+            "width": 74,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Terminal",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 605,
+            "y": 8,
+            "width": 103,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Activity",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 708,
+            "y": 8,
+            "width": 96,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "Artifacts",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 804,
+            "y": 8,
+            "width": 104,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "VNC Viewer",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 908,
+            "y": 8,
+            "width": 128,
+            "height": 48
+          },
+          "className": "tab-button relative px-5 py-3 font-medium text-base transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500/20 whitespace-nowra"
+        },
+        {
+          "tag": "button",
+          "test": null,
+          "text": "",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 758,
+            "y": 18,
+            "width": 30,
+            "height": 30
+          },
+          "className": "p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors mr-2 flex-shrink-0"
+        },
+        {
+          "tag": "div",
+          "test": "right-side-tab-content-shell",
+          "text": "➜ Terminal initialized The default interactive shell is now zsh. To update your ",
+          "display": "block",
+          "visibility": "visible",
+          "rect": {
+            "x": 527,
+            "y": 58,
+            "width": 273,
+            "height": 362
+          },
+          "className": "flex-1 min-h-0 overflow-hidden relative"
+        }
+      ]
+    }
+  }
+]

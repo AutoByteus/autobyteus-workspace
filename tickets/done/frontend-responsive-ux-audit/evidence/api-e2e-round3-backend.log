@@ -1,0 +1,466 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts
+App data directory: /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/.env
+Loading environment from: /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data
+DB DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+
+13 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:10233) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 18 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-07-15T16:39:25.079Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1784133565164,"pid":10233,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:13001"}
+[2026-07-15T16:39:25.164Z] [INFO] [server.runtime] Server listening on 127.0.0.1:13001
+[2026-07-15T16:39:25.165Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:13001
+Creating temp workspace at: /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-responsive-ux-audit-api-e2e-round3-server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-07-15T16:39:25.191Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'load_skill'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+Successfully registered tool definition: 'delegate_tasks'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-07-15T16:39:25.241Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 29 items.
+Pre-loaded 29 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=322
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=342
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=68
+Finished Autobyteus image model discovery. Total models registered: 12
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=70
+Finished Autobyteus audio model discovery. Total models registered: 8
+Discovering Ollama models from host: http://127.0.0.1:11434
+Finished Ollama discovery. Total models registered: 4
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 10
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+{"level":40,"time":1784133565958,"pid":10233,"hostname":"MacBookPro","reqId":"req-1","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.9937919974327087,"msg":"http request completed"}
+{"level":40,"time":1784133565971,"pid":10233,"hostname":"MacBookPro","reqId":"req-2","method":"GET","url":"/","statusCode":404,"elapsedMs":0.46116699278354645,"msg":"http request completed"}
+{"level":40,"time":1784133566992,"pid":10233,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2822909951210022,"msg":"http request completed"}
+{"level":40,"time":1784133567004,"pid":10233,"hostname":"MacBookPro","reqId":"req-4","method":"GET","url":"/","statusCode":404,"elapsedMs":0.22637499868869781,"msg":"http request completed"}
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+{"level":40,"time":1784133568025,"pid":10233,"hostname":"MacBookPro","reqId":"req-5","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.38041700422763824,"msg":"http request completed"}
+{"level":40,"time":1784133568040,"pid":10233,"hostname":"MacBookPro","reqId":"req-6","method":"GET","url":"/","statusCode":404,"elapsedMs":0.2303750067949295,"msg":"http request completed"}
+Finished Autobyteus discovery. Total models registered: 74
+Successfully fetched 109 models from LLMFactory.
+LLM models cache populated with 109 items.
+Pre-loaded 109 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 18 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4, AUTOBYTEUS=12
+Image models by runtime: api=6, autobyteus=12
+Image models cache populated with 18 items.
+Pre-loaded 18 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+Successfully fetched 12 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=8
+Audio models by runtime: api=4, autobyteus=8
+Audio models cache populated with 12 items.
+Pre-loaded 12 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1784133569060,"pid":10233,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.25120899081230164,"msg":"http request completed"}
+{"level":40,"time":1784133569072,"pid":10233,"hostname":"MacBookPro","reqId":"req-8","method":"GET","url":"/","statusCode":404,"elapsedMs":0.22245900332927704,"msg":"http request completed"}
+{"level":40,"time":1784133570098,"pid":10233,"hostname":"MacBookPro","reqId":"req-9","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.0404579937458038,"msg":"http request completed"}
+{"level":40,"time":1784133570110,"pid":10233,"hostname":"MacBookPro","reqId":"req-a","method":"GET","url":"/","statusCode":404,"elapsedMs":0.25495800375938416,"msg":"http request completed"}
+{"level":40,"time":1784133571134,"pid":10233,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.24708300828933716,"msg":"http request completed"}
+{"level":40,"time":1784133571147,"pid":10233,"hostname":"MacBookPro","reqId":"req-c","method":"GET","url":"/","statusCode":404,"elapsedMs":0.21416699886322021,"msg":"http request completed"}
+{"level":40,"time":1784133572173,"pid":10233,"hostname":"MacBookPro","reqId":"req-d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2448750138282776,"msg":"http request completed"}
+{"level":40,"time":1784133572186,"pid":10233,"hostname":"MacBookPro","reqId":"req-e","method":"GET","url":"/","statusCode":404,"elapsedMs":0.4339580088853836,"msg":"http request completed"}
+{"level":40,"time":1784133573211,"pid":10233,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2326660007238388,"msg":"http request completed"}
+{"level":40,"time":1784133573226,"pid":10233,"hostname":"MacBookPro","reqId":"req-g","method":"GET","url":"/","statusCode":404,"elapsedMs":0.22733299434185028,"msg":"http request completed"}
+{"level":40,"time":1784133574279,"pid":10233,"hostname":"MacBookPro","reqId":"req-h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.35329100489616394,"msg":"http request completed"}
+{"level":40,"time":1784133574292,"pid":10233,"hostname":"MacBookPro","reqId":"req-i","method":"GET","url":"/","statusCode":404,"elapsedMs":0.2077919989824295,"msg":"http request completed"}
+{"level":40,"time":1784133575318,"pid":10233,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2404160052537918,"msg":"http request completed"}
+{"level":40,"time":1784133575331,"pid":10233,"hostname":"MacBookPro","reqId":"req-k","method":"GET","url":"/","statusCode":404,"elapsedMs":0.20533399283885956,"msg":"http request completed"}
+{"level":40,"time":1784133576352,"pid":10233,"hostname":"MacBookPro","reqId":"req-l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.34233400225639343,"msg":"http request completed"}
+{"level":40,"time":1784133576364,"pid":10233,"hostname":"MacBookPro","reqId":"req-m","method":"GET","url":"/","statusCode":404,"elapsedMs":0.19145798683166504,"msg":"http request completed"}
+{"level":40,"time":1784133577390,"pid":10233,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.22312499582767487,"msg":"http request completed"}
+{"level":40,"time":1784133577403,"pid":10233,"hostname":"MacBookPro","reqId":"req-o","method":"GET","url":"/","statusCode":404,"elapsedMs":0.20954200625419617,"msg":"http request completed"}
+{"level":40,"time":1784133578429,"pid":10233,"hostname":"MacBookPro","reqId":"req-p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.23558300733566284,"msg":"http request completed"}
+{"level":40,"time":1784133578443,"pid":10233,"hostname":"MacBookPro","reqId":"req-q","method":"GET","url":"/","statusCode":404,"elapsedMs":0.21175000071525574,"msg":"http request completed"}
+{"level":40,"time":1784133579470,"pid":10233,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21595899760723114,"msg":"http request completed"}
+{"level":40,"time":1784133579485,"pid":10233,"hostname":"MacBookPro","reqId":"req-s","method":"GET","url":"/","statusCode":404,"elapsedMs":0.19729098677635193,"msg":"http request completed"}
+{"level":40,"time":1784133580512,"pid":10233,"hostname":"MacBookPro","reqId":"req-t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.24712499976158142,"msg":"http request completed"}
+{"level":40,"time":1784133580525,"pid":10233,"hostname":"MacBookPro","reqId":"req-u","method":"GET","url":"/","statusCode":404,"elapsedMs":0.19133299589157104,"msg":"http request completed"}
+{"level":40,"time":1784133581546,"pid":10233,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.36229099333286285,"msg":"http request completed"}
+{"level":40,"time":1784133581558,"pid":10233,"hostname":"MacBookPro","reqId":"req-w","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17766699194908142,"msg":"http request completed"}
+{"level":40,"time":1784133582583,"pid":10233,"hostname":"MacBookPro","reqId":"req-x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.35304200649261475,"msg":"http request completed"}
+{"level":40,"time":1784133582596,"pid":10233,"hostname":"MacBookPro","reqId":"req-y","method":"GET","url":"/","statusCode":404,"elapsedMs":0.34483300149440765,"msg":"http request completed"}
+{"level":40,"time":1784133583618,"pid":10233,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.22495800256729126,"msg":"http request completed"}
+{"level":40,"time":1784133583631,"pid":10233,"hostname":"MacBookPro","reqId":"req-10","method":"GET","url":"/","statusCode":404,"elapsedMs":0.18424999713897705,"msg":"http request completed"}
+{"level":40,"time":1784133584657,"pid":10233,"hostname":"MacBookPro","reqId":"req-11","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2105419933795929,"msg":"http request completed"}
+{"level":40,"time":1784133584669,"pid":10233,"hostname":"MacBookPro","reqId":"req-12","method":"GET","url":"/","statusCode":404,"elapsedMs":0.15425001084804535,"msg":"http request completed"}
+{"level":40,"time":1784133585698,"pid":10233,"hostname":"MacBookPro","reqId":"req-13","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.5672499984502792,"msg":"http request completed"}
+{"level":40,"time":1784133585710,"pid":10233,"hostname":"MacBookPro","reqId":"req-14","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1909170001745224,"msg":"http request completed"}
+{"level":40,"time":1784133586732,"pid":10233,"hostname":"MacBookPro","reqId":"req-15","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.22066600620746613,"msg":"http request completed"}
+{"level":40,"time":1784133586744,"pid":10233,"hostname":"MacBookPro","reqId":"req-16","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1661660075187683,"msg":"http request completed"}
+{"level":40,"time":1784133587767,"pid":10233,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21391600370407104,"msg":"http request completed"}
+{"level":40,"time":1784133587779,"pid":10233,"hostname":"MacBookPro","reqId":"req-18","method":"GET","url":"/","statusCode":404,"elapsedMs":0.14983399212360382,"msg":"http request completed"}
+{"level":40,"time":1784133588800,"pid":10233,"hostname":"MacBookPro","reqId":"req-19","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21137499809265137,"msg":"http request completed"}
+{"level":40,"time":1784133588811,"pid":10233,"hostname":"MacBookPro","reqId":"req-1a","method":"GET","url":"/","statusCode":404,"elapsedMs":0.16816700994968414,"msg":"http request completed"}
+{"level":40,"time":1784133589830,"pid":10233,"hostname":"MacBookPro","reqId":"req-1b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2142079919576645,"msg":"http request completed"}
+{"level":40,"time":1784133589842,"pid":10233,"hostname":"MacBookPro","reqId":"req-1c","method":"GET","url":"/","statusCode":404,"elapsedMs":0.15008299052715302,"msg":"http request completed"}
+{"level":40,"time":1784133590864,"pid":10233,"hostname":"MacBookPro","reqId":"req-1d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21245799958705902,"msg":"http request completed"}
+{"level":40,"time":1784133590877,"pid":10233,"hostname":"MacBookPro","reqId":"req-1e","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1888749897480011,"msg":"http request completed"}
+{"level":40,"time":1784133591901,"pid":10233,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21758399903774261,"msg":"http request completed"}
+{"level":40,"time":1784133591914,"pid":10233,"hostname":"MacBookPro","reqId":"req-1g","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17150001227855682,"msg":"http request completed"}
+{"level":40,"time":1784133592935,"pid":10233,"hostname":"MacBookPro","reqId":"req-1h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.220333993434906,"msg":"http request completed"}
+{"level":40,"time":1784133592949,"pid":10233,"hostname":"MacBookPro","reqId":"req-1i","method":"GET","url":"/","statusCode":404,"elapsedMs":0.282708004117012,"msg":"http request completed"}
+{"level":40,"time":1784133593970,"pid":10233,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.22133301198482513,"msg":"http request completed"}
+{"level":40,"time":1784133593983,"pid":10233,"hostname":"MacBookPro","reqId":"req-1k","method":"GET","url":"/","statusCode":404,"elapsedMs":0.20533400774002075,"msg":"http request completed"}
+{"level":40,"time":1784133595006,"pid":10233,"hostname":"MacBookPro","reqId":"req-1l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20591598749160767,"msg":"http request completed"}
+{"level":40,"time":1784133595018,"pid":10233,"hostname":"MacBookPro","reqId":"req-1m","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17675000429153442,"msg":"http request completed"}
+{"level":40,"time":1784133596042,"pid":10233,"hostname":"MacBookPro","reqId":"req-1n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20554199814796448,"msg":"http request completed"}
+{"level":40,"time":1784133596054,"pid":10233,"hostname":"MacBookPro","reqId":"req-1o","method":"GET","url":"/","statusCode":404,"elapsedMs":0.16599999368190765,"msg":"http request completed"}
+{"level":40,"time":1784133597075,"pid":10233,"hostname":"MacBookPro","reqId":"req-1p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20533399283885956,"msg":"http request completed"}
+{"level":40,"time":1784133597088,"pid":10233,"hostname":"MacBookPro","reqId":"req-1q","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17191699147224426,"msg":"http request completed"}
+{"level":40,"time":1784133598109,"pid":10233,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3194589912891388,"msg":"http request completed"}
+{"level":40,"time":1784133598121,"pid":10233,"hostname":"MacBookPro","reqId":"req-1s","method":"GET","url":"/","statusCode":404,"elapsedMs":0.2618750035762787,"msg":"http request completed"}
+{"level":40,"time":1784133599142,"pid":10233,"hostname":"MacBookPro","reqId":"req-1t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21412499248981476,"msg":"http request completed"}
+{"level":40,"time":1784133599157,"pid":10233,"hostname":"MacBookPro","reqId":"req-1u","method":"GET","url":"/","statusCode":404,"elapsedMs":0.21616698801517487,"msg":"http request completed"}
+{"level":40,"time":1784133600183,"pid":10233,"hostname":"MacBookPro","reqId":"req-1v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20520798861980438,"msg":"http request completed"}
+{"level":40,"time":1784133600195,"pid":10233,"hostname":"MacBookPro","reqId":"req-1w","method":"GET","url":"/","statusCode":404,"elapsedMs":0.15366700291633606,"msg":"http request completed"}
+{"level":40,"time":1784133601215,"pid":10233,"hostname":"MacBookPro","reqId":"req-1x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3237079977989197,"msg":"http request completed"}
+{"level":40,"time":1784133601229,"pid":10233,"hostname":"MacBookPro","reqId":"req-1y","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1961660087108612,"msg":"http request completed"}
+{"level":40,"time":1784133602252,"pid":10233,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20316700637340546,"msg":"http request completed"}
+{"level":40,"time":1784133602264,"pid":10233,"hostname":"MacBookPro","reqId":"req-20","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1811250001192093,"msg":"http request completed"}
+{"level":40,"time":1784133603285,"pid":10233,"hostname":"MacBookPro","reqId":"req-21","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2060829997062683,"msg":"http request completed"}
+{"level":40,"time":1784133603298,"pid":10233,"hostname":"MacBookPro","reqId":"req-22","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1991249918937683,"msg":"http request completed"}
+{"level":40,"time":1784133604319,"pid":10233,"hostname":"MacBookPro","reqId":"req-23","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21620900928974152,"msg":"http request completed"}
+{"level":40,"time":1784133604331,"pid":10233,"hostname":"MacBookPro","reqId":"req-24","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17308300733566284,"msg":"http request completed"}
+{"level":40,"time":1784133605352,"pid":10233,"hostname":"MacBookPro","reqId":"req-25","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2102919965982437,"msg":"http request completed"}
+{"level":40,"time":1784133605368,"pid":10233,"hostname":"MacBookPro","reqId":"req-26","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17887499928474426,"msg":"http request completed"}
+{"level":40,"time":1784133606389,"pid":10233,"hostname":"MacBookPro","reqId":"req-27","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.6666250079870224,"msg":"http request completed"}
+{"level":40,"time":1784133606401,"pid":10233,"hostname":"MacBookPro","reqId":"req-28","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1910420060157776,"msg":"http request completed"}
+{"level":40,"time":1784133607425,"pid":10233,"hostname":"MacBookPro","reqId":"req-29","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20462501049041748,"msg":"http request completed"}
+{"level":40,"time":1784133607439,"pid":10233,"hostname":"MacBookPro","reqId":"req-2a","method":"GET","url":"/","statusCode":404,"elapsedMs":0.21512499451637268,"msg":"http request completed"}
+{"level":40,"time":1784133608461,"pid":10233,"hostname":"MacBookPro","reqId":"req-2b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.1987920105457306,"msg":"http request completed"}
+{"level":40,"time":1784133608472,"pid":10233,"hostname":"MacBookPro","reqId":"req-2c","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17341700196266174,"msg":"http request completed"}
+{"level":40,"time":1784133609493,"pid":10233,"hostname":"MacBookPro","reqId":"req-2d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2226249873638153,"msg":"http request completed"}
+{"level":40,"time":1784133609505,"pid":10233,"hostname":"MacBookPro","reqId":"req-2e","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1862500011920929,"msg":"http request completed"}
+{"level":40,"time":1784133610528,"pid":10233,"hostname":"MacBookPro","reqId":"req-2f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21645799279212952,"msg":"http request completed"}
+{"level":40,"time":1784133610541,"pid":10233,"hostname":"MacBookPro","reqId":"req-2g","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17858301103115082,"msg":"http request completed"}
+{"level":40,"time":1784133611565,"pid":10233,"hostname":"MacBookPro","reqId":"req-2h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21183401346206665,"msg":"http request completed"}
+{"level":40,"time":1784133611577,"pid":10233,"hostname":"MacBookPro","reqId":"req-2i","method":"GET","url":"/","statusCode":404,"elapsedMs":0.19699999690055847,"msg":"http request completed"}
+{"level":40,"time":1784133612601,"pid":10233,"hostname":"MacBookPro","reqId":"req-2j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2026669979095459,"msg":"http request completed"}
+{"level":40,"time":1784133612613,"pid":10233,"hostname":"MacBookPro","reqId":"req-2k","method":"GET","url":"/","statusCode":404,"elapsedMs":0.14829199016094208,"msg":"http request completed"}
+{"level":40,"time":1784133613634,"pid":10233,"hostname":"MacBookPro","reqId":"req-2l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20762500166893005,"msg":"http request completed"}
+{"level":40,"time":1784133613645,"pid":10233,"hostname":"MacBookPro","reqId":"req-2m","method":"GET","url":"/","statusCode":404,"elapsedMs":0.16337500512599945,"msg":"http request completed"}
+{"level":40,"time":1784133614669,"pid":10233,"hostname":"MacBookPro","reqId":"req-2n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2022089958190918,"msg":"http request completed"}
+{"level":40,"time":1784133614682,"pid":10233,"hostname":"MacBookPro","reqId":"req-2o","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1984580010175705,"msg":"http request completed"}
+{"level":40,"time":1784133615713,"pid":10233,"hostname":"MacBookPro","reqId":"req-2p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2910420000553131,"msg":"http request completed"}
+{"level":40,"time":1784133615726,"pid":10233,"hostname":"MacBookPro","reqId":"req-2q","method":"GET","url":"/","statusCode":404,"elapsedMs":0.18424999713897705,"msg":"http request completed"}
+{"level":40,"time":1784133616752,"pid":10233,"hostname":"MacBookPro","reqId":"req-2r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20254099369049072,"msg":"http request completed"}
+{"level":40,"time":1784133616766,"pid":10233,"hostname":"MacBookPro","reqId":"req-2s","method":"GET","url":"/","statusCode":404,"elapsedMs":0.19141699373722076,"msg":"http request completed"}
+{"level":40,"time":1784133617791,"pid":10233,"hostname":"MacBookPro","reqId":"req-2t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20399999618530273,"msg":"http request completed"}
+{"level":40,"time":1784133617804,"pid":10233,"hostname":"MacBookPro","reqId":"req-2u","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1907080113887787,"msg":"http request completed"}
+{"level":40,"time":1784133618831,"pid":10233,"hostname":"MacBookPro","reqId":"req-2v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.24170899391174316,"msg":"http request completed"}
+{"level":40,"time":1784133618844,"pid":10233,"hostname":"MacBookPro","reqId":"req-2w","method":"GET","url":"/","statusCode":404,"elapsedMs":0.18549999594688416,"msg":"http request completed"}
+{"level":40,"time":1784133619867,"pid":10233,"hostname":"MacBookPro","reqId":"req-2x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20149999856948853,"msg":"http request completed"}
+{"level":40,"time":1784133619879,"pid":10233,"hostname":"MacBookPro","reqId":"req-2y","method":"GET","url":"/","statusCode":404,"elapsedMs":0.15529198944568634,"msg":"http request completed"}
+{"level":40,"time":1784133620903,"pid":10233,"hostname":"MacBookPro","reqId":"req-2z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20754200220108032,"msg":"http request completed"}
+{"level":40,"time":1784133620916,"pid":10233,"hostname":"MacBookPro","reqId":"req-30","method":"GET","url":"/","statusCode":404,"elapsedMs":0.18866600096225739,"msg":"http request completed"}
+{"level":40,"time":1784133621941,"pid":10233,"hostname":"MacBookPro","reqId":"req-31","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2079159915447235,"msg":"http request completed"}
+{"level":40,"time":1784133621952,"pid":10233,"hostname":"MacBookPro","reqId":"req-32","method":"GET","url":"/","statusCode":404,"elapsedMs":0.15541599690914154,"msg":"http request completed"}
+{"level":40,"time":1784133622976,"pid":10233,"hostname":"MacBookPro","reqId":"req-33","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.22241699695587158,"msg":"http request completed"}
+{"level":40,"time":1784133622992,"pid":10233,"hostname":"MacBookPro","reqId":"req-34","method":"GET","url":"/","statusCode":404,"elapsedMs":0.2017500102519989,"msg":"http request completed"}
+{"level":40,"time":1784133624019,"pid":10233,"hostname":"MacBookPro","reqId":"req-35","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.38108299672603607,"msg":"http request completed"}
+{"level":40,"time":1784133624037,"pid":10233,"hostname":"MacBookPro","reqId":"req-36","method":"GET","url":"/","statusCode":404,"elapsedMs":0.26775000989437103,"msg":"http request completed"}
+{"level":40,"time":1784133625063,"pid":10233,"hostname":"MacBookPro","reqId":"req-37","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2415419965982437,"msg":"http request completed"}
+{"level":40,"time":1784133625078,"pid":10233,"hostname":"MacBookPro","reqId":"req-38","method":"GET","url":"/","statusCode":404,"elapsedMs":0.18216700851917267,"msg":"http request completed"}
+{"level":40,"time":1784133626101,"pid":10233,"hostname":"MacBookPro","reqId":"req-39","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20624999701976776,"msg":"http request completed"}
+{"level":40,"time":1784133626114,"pid":10233,"hostname":"MacBookPro","reqId":"req-3a","method":"GET","url":"/","statusCode":404,"elapsedMs":0.2771660089492798,"msg":"http request completed"}
+{"level":40,"time":1784133627136,"pid":10233,"hostname":"MacBookPro","reqId":"req-3b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2014160007238388,"msg":"http request completed"}
+{"level":40,"time":1784133627151,"pid":10233,"hostname":"MacBookPro","reqId":"req-3c","method":"GET","url":"/","statusCode":404,"elapsedMs":0.20899999141693115,"msg":"http request completed"}
+{"level":40,"time":1784133628180,"pid":10233,"hostname":"MacBookPro","reqId":"req-3d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3274169862270355,"msg":"http request completed"}
+{"level":40,"time":1784133628196,"pid":10233,"hostname":"MacBookPro","reqId":"req-3e","method":"GET","url":"/","statusCode":404,"elapsedMs":0.20208299160003662,"msg":"http request completed"}
+{"level":40,"time":1784133629226,"pid":10233,"hostname":"MacBookPro","reqId":"req-3f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.1999169886112213,"msg":"http request completed"}
+{"level":40,"time":1784133629241,"pid":10233,"hostname":"MacBookPro","reqId":"req-3g","method":"GET","url":"/","statusCode":404,"elapsedMs":0.18620800971984863,"msg":"http request completed"}
+{"level":40,"time":1784133630277,"pid":10233,"hostname":"MacBookPro","reqId":"req-3h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20341598987579346,"msg":"http request completed"}
+{"level":40,"time":1784133630292,"pid":10233,"hostname":"MacBookPro","reqId":"req-3i","method":"GET","url":"/","statusCode":404,"elapsedMs":0.19383399188518524,"msg":"http request completed"}
+{"level":40,"time":1784133631329,"pid":10233,"hostname":"MacBookPro","reqId":"req-3j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.219666987657547,"msg":"http request completed"}
+{"level":40,"time":1784133631344,"pid":10233,"hostname":"MacBookPro","reqId":"req-3k","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1808749884366989,"msg":"http request completed"}
+{"level":40,"time":1784133632371,"pid":10233,"hostname":"MacBookPro","reqId":"req-3l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.21366599202156067,"msg":"http request completed"}
+{"level":40,"time":1784133632385,"pid":10233,"hostname":"MacBookPro","reqId":"req-3m","method":"GET","url":"/","statusCode":404,"elapsedMs":0.211667001247406,"msg":"http request completed"}
+{"level":40,"time":1784133633445,"pid":10233,"hostname":"MacBookPro","reqId":"req-3n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.19929100573062897,"msg":"http request completed"}
+{"level":40,"time":1784133633460,"pid":10233,"hostname":"MacBookPro","reqId":"req-3o","method":"GET","url":"/","statusCode":404,"elapsedMs":0.28595900535583496,"msg":"http request completed"}
+{"level":40,"time":1784133634487,"pid":10233,"hostname":"MacBookPro","reqId":"req-3p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.22658300399780273,"msg":"http request completed"}
+{"level":40,"time":1784133634499,"pid":10233,"hostname":"MacBookPro","reqId":"req-3q","method":"GET","url":"/","statusCode":404,"elapsedMs":0.16554200649261475,"msg":"http request completed"}
+{"level":40,"time":1784133635530,"pid":10233,"hostname":"MacBookPro","reqId":"req-3r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2035830020904541,"msg":"http request completed"}
+{"level":40,"time":1784133635543,"pid":10233,"hostname":"MacBookPro","reqId":"req-3s","method":"GET","url":"/","statusCode":404,"elapsedMs":0.15983299911022186,"msg":"http request completed"}
+{"level":40,"time":1784133636574,"pid":10233,"hostname":"MacBookPro","reqId":"req-3t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.3300829976797104,"msg":"http request completed"}
+{"level":40,"time":1784133636587,"pid":10233,"hostname":"MacBookPro","reqId":"req-3u","method":"GET","url":"/","statusCode":404,"elapsedMs":0.2070000022649765,"msg":"http request completed"}
+{"level":40,"time":1784133637613,"pid":10233,"hostname":"MacBookPro","reqId":"req-3v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2161249965429306,"msg":"http request completed"}
+{"level":40,"time":1784133637627,"pid":10233,"hostname":"MacBookPro","reqId":"req-3w","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17858301103115082,"msg":"http request completed"}
+{"level":40,"time":1784133638653,"pid":10233,"hostname":"MacBookPro","reqId":"req-3x","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20462501049041748,"msg":"http request completed"}
+{"level":40,"time":1784133638667,"pid":10233,"hostname":"MacBookPro","reqId":"req-3y","method":"GET","url":"/","statusCode":404,"elapsedMs":0.20229099690914154,"msg":"http request completed"}
+{"level":40,"time":1784133639692,"pid":10233,"hostname":"MacBookPro","reqId":"req-3z","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.19654199481010437,"msg":"http request completed"}
+{"level":40,"time":1784133639704,"pid":10233,"hostname":"MacBookPro","reqId":"req-40","method":"GET","url":"/","statusCode":404,"elapsedMs":0.20966701209545135,"msg":"http request completed"}
+{"level":40,"time":1784133640728,"pid":10233,"hostname":"MacBookPro","reqId":"req-41","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.19716699421405792,"msg":"http request completed"}
+{"level":40,"time":1784133640740,"pid":10233,"hostname":"MacBookPro","reqId":"req-42","method":"GET","url":"/","statusCode":404,"elapsedMs":0.14800000190734863,"msg":"http request completed"}
+{"level":40,"time":1784133641758,"pid":10233,"hostname":"MacBookPro","reqId":"req-43","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20066700875759125,"msg":"http request completed"}
+{"level":40,"time":1784133641770,"pid":10233,"hostname":"MacBookPro","reqId":"req-44","method":"GET","url":"/","statusCode":404,"elapsedMs":0.13954199850559235,"msg":"http request completed"}
+{"level":40,"time":1784133642794,"pid":10233,"hostname":"MacBookPro","reqId":"req-45","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.19862499833106995,"msg":"http request completed"}
+{"level":40,"time":1784133642807,"pid":10233,"hostname":"MacBookPro","reqId":"req-46","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1962919980287552,"msg":"http request completed"}
+{"level":40,"time":1784133643829,"pid":10233,"hostname":"MacBookPro","reqId":"req-47","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.19949999451637268,"msg":"http request completed"}
+{"level":40,"time":1784133643840,"pid":10233,"hostname":"MacBookPro","reqId":"req-48","method":"GET","url":"/","statusCode":404,"elapsedMs":0.13704198598861694,"msg":"http request completed"}
+{"level":40,"time":1784133644860,"pid":10233,"hostname":"MacBookPro","reqId":"req-49","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.20262499153614044,"msg":"http request completed"}
+{"level":40,"time":1784133644871,"pid":10233,"hostname":"MacBookPro","reqId":"req-4a","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17795899510383606,"msg":"http request completed"}
+{"level":40,"time":1784133645894,"pid":10233,"hostname":"MacBookPro","reqId":"req-4b","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.23725000023841858,"msg":"http request completed"}
+{"level":40,"time":1784133645907,"pid":10233,"hostname":"MacBookPro","reqId":"req-4c","method":"GET","url":"/","statusCode":404,"elapsedMs":0.2182919979095459,"msg":"http request completed"}
+{"level":40,"time":1784133646927,"pid":10233,"hostname":"MacBookPro","reqId":"req-4d","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.18458299338817596,"msg":"http request completed"}
+{"level":40,"time":1784133646939,"pid":10233,"hostname":"MacBookPro","reqId":"req-4e","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1692499965429306,"msg":"http request completed"}
+{"level":40,"time":1784133647961,"pid":10233,"hostname":"MacBookPro","reqId":"req-4f","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.18358299136161804,"msg":"http request completed"}
+{"level":40,"time":1784133647972,"pid":10233,"hostname":"MacBookPro","reqId":"req-4g","method":"GET","url":"/","statusCode":404,"elapsedMs":0.155582994222641,"msg":"http request completed"}
+{"level":40,"time":1784133648995,"pid":10233,"hostname":"MacBookPro","reqId":"req-4h","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.18916700780391693,"msg":"http request completed"}
+{"level":40,"time":1784133649008,"pid":10233,"hostname":"MacBookPro","reqId":"req-4i","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1766669899225235,"msg":"http request completed"}
+{"level":40,"time":1784133650036,"pid":10233,"hostname":"MacBookPro","reqId":"req-4j","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.27433300018310547,"msg":"http request completed"}
+{"level":40,"time":1784133650056,"pid":10233,"hostname":"MacBookPro","reqId":"req-4k","method":"GET","url":"/","statusCode":404,"elapsedMs":0.19174998998641968,"msg":"http request completed"}
+{"level":40,"time":1784133651089,"pid":10233,"hostname":"MacBookPro","reqId":"req-4l","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.19987499713897705,"msg":"http request completed"}
+{"level":40,"time":1784133651103,"pid":10233,"hostname":"MacBookPro","reqId":"req-4m","method":"GET","url":"/","statusCode":404,"elapsedMs":0.17670799791812897,"msg":"http request completed"}
+{"level":40,"time":1784133652130,"pid":10233,"hostname":"MacBookPro","reqId":"req-4n","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.1989160031080246,"msg":"http request completed"}
+{"level":40,"time":1784133652142,"pid":10233,"hostname":"MacBookPro","reqId":"req-4o","method":"GET","url":"/","statusCode":404,"elapsedMs":0.20541700720787048,"msg":"http request completed"}
+{"level":40,"time":1784133653169,"pid":10233,"hostname":"MacBookPro","reqId":"req-4p","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.2284580022096634,"msg":"http request completed"}
+{"level":40,"time":1784133653200,"pid":10233,"hostname":"MacBookPro","reqId":"req-4q","method":"GET","url":"/","statusCode":404,"elapsedMs":0.3474160134792328,"msg":"http request completed"}
+{"level":40,"time":1784133654229,"pid":10233,"hostname":"MacBookPro","reqId":"req-4r","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.19737499952316284,"msg":"http request completed"}
+{"level":40,"time":1784133654243,"pid":10233,"hostname":"MacBookPro","reqId":"req-4s","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1765419989824295,"msg":"http request completed"}
+{"level":40,"time":1784133655269,"pid":10233,"hostname":"MacBookPro","reqId":"req-4t","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.19087499380111694,"msg":"http request completed"}
+{"level":40,"time":1784133655286,"pid":10233,"hostname":"MacBookPro","reqId":"req-4u","method":"GET","url":"/","statusCode":404,"elapsedMs":0.1745000034570694,"msg":"http request completed"}
+{"level":40,"time":1784133656316,"pid":10233,"hostname":"MacBookPro","reqId":"req-4v","method":"GET","url":"/health","statusCode":404,"elapsedMs":0.1723330020904541,"msg":"http request completed"}
+{"level":40,"time":1784133656331,"pid":10233,"hostname":"MacBookPro","reqId":"req-4w","method":"GET","url":"/","statusCode":404,"elapsedMs":0.28504200279712677,"msg":"http request completed"}
+Created terminal session f92adc38-5a19-419f-9a5a-c065f0d6ea52 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: f92adc38-5a19-419f-9a5a-c065f0d6ea52
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session f92adc38-5a19-419f-9a5a-c065f0d6ea52
+Terminal WebSocket disconnected: f92adc38-5a19-419f-9a5a-c065f0d6ea52
+Created terminal session ac52d25c-49d7-4124-ab05-b9c97a808b07 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: ac52d25c-49d7-4124-ab05-b9c97a808b07
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session ac52d25c-49d7-4124-ab05-b9c97a808b07
+Terminal WebSocket disconnected: ac52d25c-49d7-4124-ab05-b9c97a808b07
+Created terminal session c4b14ae4-471f-456e-b322-65181e7aa11c using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c4b14ae4-471f-456e-b322-65181e7aa11c
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session c4b14ae4-471f-456e-b322-65181e7aa11c
+Terminal WebSocket disconnected: c4b14ae4-471f-456e-b322-65181e7aa11c
+Created terminal session 821e7df9-cc42-4055-98e7-ceda1f161fc4 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 821e7df9-cc42-4055-98e7-ceda1f161fc4
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 821e7df9-cc42-4055-98e7-ceda1f161fc4
+Terminal WebSocket disconnected: 821e7df9-cc42-4055-98e7-ceda1f161fc4
+Created terminal session 3763e1ca-e416-4f99-817c-86d75bb6c1d4 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3763e1ca-e416-4f99-817c-86d75bb6c1d4
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 3763e1ca-e416-4f99-817c-86d75bb6c1d4
+Terminal WebSocket disconnected: 3763e1ca-e416-4f99-817c-86d75bb6c1d4
+Created terminal session 0919a6fb-57fe-46c1-a835-358038e6e15b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 0919a6fb-57fe-46c1-a835-358038e6e15b
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 0919a6fb-57fe-46c1-a835-358038e6e15b
+Terminal WebSocket disconnected: 0919a6fb-57fe-46c1-a835-358038e6e15b
+Created terminal session a1cef1ee-6f76-4f80-917e-06de7d95fb87 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a1cef1ee-6f76-4f80-917e-06de7d95fb87
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session a1cef1ee-6f76-4f80-917e-06de7d95fb87
+Terminal WebSocket disconnected: a1cef1ee-6f76-4f80-917e-06de7d95fb87
+Created terminal session 3a592299-7111-4e5b-950d-2880b58b255b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3a592299-7111-4e5b-950d-2880b58b255b
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 3a592299-7111-4e5b-950d-2880b58b255b
+Terminal WebSocket disconnected: 3a592299-7111-4e5b-950d-2880b58b255b
+Created terminal session 1785dcec-e53d-4cfc-a29f-16dc5d964042 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 1785dcec-e53d-4cfc-a29f-16dc5d964042
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 1785dcec-e53d-4cfc-a29f-16dc5d964042
+Terminal WebSocket disconnected: 1785dcec-e53d-4cfc-a29f-16dc5d964042
+Created terminal session e052b054-6aab-4d6b-8c22-2bbd56c08d73 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: e052b054-6aab-4d6b-8c22-2bbd56c08d73
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session e052b054-6aab-4d6b-8c22-2bbd56c08d73
+Terminal WebSocket disconnected: e052b054-6aab-4d6b-8c22-2bbd56c08d73
+Created terminal session b68aa07e-2c73-4e0c-bb92-85b59551333f using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b68aa07e-2c73-4e0c-bb92-85b59551333f
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session b68aa07e-2c73-4e0c-bb92-85b59551333f
+Terminal WebSocket disconnected: b68aa07e-2c73-4e0c-bb92-85b59551333f
+Created terminal session 95c4071b-a461-4b42-a5e2-69e55530e423 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 95c4071b-a461-4b42-a5e2-69e55530e423
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 95c4071b-a461-4b42-a5e2-69e55530e423
+Terminal WebSocket disconnected: 95c4071b-a461-4b42-a5e2-69e55530e423
+Created terminal session 997f5dc4-8133-4d46-b5a5-86208cd18184 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 997f5dc4-8133-4d46-b5a5-86208cd18184
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 997f5dc4-8133-4d46-b5a5-86208cd18184
+Terminal WebSocket disconnected: 997f5dc4-8133-4d46-b5a5-86208cd18184
+Created terminal session c6e6a4ca-81a5-46cc-87f2-ad714a7e6452 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c6e6a4ca-81a5-46cc-87f2-ad714a7e6452
+Terminal websocket attached for cwd /Users/normy
+Created terminal session 989234cb-7c3f-49b9-92c8-0dd360071184 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 989234cb-7c3f-49b9-92c8-0dd360071184
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session c6e6a4ca-81a5-46cc-87f2-ad714a7e6452
+Terminal WebSocket disconnected: c6e6a4ca-81a5-46cc-87f2-ad714a7e6452
+Closed PTY session 989234cb-7c3f-49b9-92c8-0dd360071184
+Terminal WebSocket disconnected: 989234cb-7c3f-49b9-92c8-0dd360071184
+Created terminal session 010e124d-fe2f-43dd-8390-db1defbd16fe using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 010e124d-fe2f-43dd-8390-db1defbd16fe
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 010e124d-fe2f-43dd-8390-db1defbd16fe
+Terminal WebSocket disconnected: 010e124d-fe2f-43dd-8390-db1defbd16fe
+Created terminal session de3170bf-6b19-4161-9606-02b398f23e8c using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: de3170bf-6b19-4161-9606-02b398f23e8c
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session de3170bf-6b19-4161-9606-02b398f23e8c
+Terminal WebSocket disconnected: de3170bf-6b19-4161-9606-02b398f23e8c
+Created terminal session 85ad9000-39ef-494f-a99a-d9ecadc5482d using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 85ad9000-39ef-494f-a99a-d9ecadc5482d
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 85ad9000-39ef-494f-a99a-d9ecadc5482d
+Terminal WebSocket disconnected: 85ad9000-39ef-494f-a99a-d9ecadc5482d
+Created terminal session 3ea26c85-41e2-4831-ba93-277cf0a84c69 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3ea26c85-41e2-4831-ba93-277cf0a84c69
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 3ea26c85-41e2-4831-ba93-277cf0a84c69
+Terminal WebSocket disconnected: 3ea26c85-41e2-4831-ba93-277cf0a84c69
+[2026-07-15T16:44:09.017Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-07-15T16:44:09.244Z] [INFO] [server.runtime] Server closed cleanly.

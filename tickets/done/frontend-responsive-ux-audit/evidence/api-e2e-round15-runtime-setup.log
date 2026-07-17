@@ -1,0 +1,13 @@
+Round 15 runtime setup 2026-07-16T20:55:35+02:00
+HEAD=7eceffbd5935d95bc102f3deedebf70231addc4c
+Backend: session-owned built dist on 127.0.0.1:13029
+Frontend: session-owned Nuxt dev on 127.0.0.1:13030
+Data: /tmp/autobyteus-responsive-ux-audit-api-e2e-round15 (isolated SQLite)
+APP_ENV=test
+AUTOBYス
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:13029
+DB_TYPE=sqlite
+DATABASE_URL=file:/tmp/autobyteus-responsive-ux-audit-api-e2e-round15/db/test.db
+LOG_LEVEL=INFO
+PRISMA_LOG_QUERIES=0
+DISABLE_HTTP_REQUEST_LOGS=true

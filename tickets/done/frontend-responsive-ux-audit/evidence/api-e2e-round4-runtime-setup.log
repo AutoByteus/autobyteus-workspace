@@ -1,0 +1,3 @@
+data_dir=/tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data
+backend_url=http://127.0.0.1:13003
+frontend_url=http://127.0.0.1:13004

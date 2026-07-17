@@ -1,13 +1,21 @@
 import { computed, ref } from 'vue'
+import {
+  RIGHT_PANEL_DEFAULT_WIDTH_PX,
+  RIGHT_PANEL_MIN_WIDTH_PX,
+  RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX,
+  USER_RESIZE_CENTER_MIN_WIDTH_PX,
+  WORKSPACE_CENTER_MIN_WIDTH_PX,
+  type RightPanelResizeIntent,
+} from '~/utils/layout/responsiveLayoutPolicy'
 
-// Global state for right panel visibility and width to allow sharing across components
+// Global user preference for right panel visibility and width shared across workspace surfaces.
 const isRightPanelVisible = ref(true)
-const DEFAULT_RIGHT_PANEL_WIDTH = 450
-export const MIN_RIGHT_PANEL_WIDTH = 400
-export const MIN_WORKSPACE_CENTER_WIDTH = 200
-export const RIGHT_PANEL_RESIZE_HANDLE_WIDTH = 4
+
+export const DEFAULT_RIGHT_PANEL_WIDTH = RIGHT_PANEL_DEFAULT_WIDTH_PX
+export const MIN_RIGHT_PANEL_WIDTH = RIGHT_PANEL_MIN_WIDTH_PX
 
 const preferredRightPanelWidth = ref(DEFAULT_RIGHT_PANEL_WIDTH)
+const rightPanelResizeIntent = ref<RightPanelResizeIntent>('automatic')
 const workspacePanelContainerWidth = ref<number | null>(null)
 
 const sanitizeContainerWidth = (width: number | null | undefined): number | null => {
@@ -23,9 +31,13 @@ const maxRightPanelWidth = computed(() => {
     return Number.POSITIVE_INFINITY
   }
 
+  const centerMinWidth = rightPanelResizeIntent.value === 'user-sized'
+    ? USER_RESIZE_CENTER_MIN_WIDTH_PX
+    : WORKSPACE_CENTER_MIN_WIDTH_PX
+
   return Math.max(
     0,
-    workspacePanelContainerWidth.value - MIN_WORKSPACE_CENTER_WIDTH - RIGHT_PANEL_RESIZE_HANDLE_WIDTH,
+    workspacePanelContainerWidth.value - centerMinWidth - RIGHT_PANEL_RESIZE_HANDLE_WIDTH_PX,
   )
 })
 
@@ -44,23 +56,15 @@ const clampPreferredWidthForCurrentSpace = (width: number): number => {
   return Math.min(Math.max(safeWidth, MIN_RIGHT_PANEL_WIDTH), maxWidth)
 }
 
-const rightPanelWidth = computed(() => {
-  const maxWidth = maxRightPanelWidth.value
-
-  if (!Number.isFinite(maxWidth)) {
-    return Math.max(preferredRightPanelWidth.value, MIN_RIGHT_PANEL_WIDTH)
-  }
-
-  if (maxWidth < MIN_RIGHT_PANEL_WIDTH) {
-    return Math.max(0, Math.min(preferredRightPanelWidth.value, maxWidth))
-  }
-
-  return Math.min(Math.max(preferredRightPanelWidth.value, MIN_RIGHT_PANEL_WIDTH), maxWidth)
-})
+const rightPanelWidth = computed(() =>
+  clampPreferredWidthForCurrentSpace(preferredRightPanelWidth.value),
+)
 
 export function useRightPanel() {
   /**
-   * Toggles the visibility of the right panel.
+   * Toggles the user preference for right panel visibility.
+   * Responsive policy may still expose a strip/drawer affordance without
+   * overwriting this preference.
    */
   const toggleRightPanel = () => {
     isRightPanelVisible.value = !isRightPanelVisible.value
@@ -71,10 +75,13 @@ export function useRightPanel() {
     isRightPanelVisible.value = true
   }
 
+  const setRightPanelVisible = (visible: boolean) => {
+    isRightPanelVisible.value = visible
+  }
+
   /**
-   * Registers the current center/right workspace container width.
-   * The right panel keeps a preferred width, but the actual exposed width is
-   * clamped against this container so the center pane and splitter remain visible.
+   * Registers the center-plus-right flow width so the actual docked panel
+   * width protects the practical center minimum and resize handle.
    */
   const setRightPanelWorkspaceWidth = (width: number | null | undefined) => {
     workspacePanelContainerWidth.value = sanitizeContainerWidth(width)
@@ -91,6 +98,7 @@ export function useRightPanel() {
 
     const startX = event.clientX
     const startWidth = rightPanelWidth.value
+    rightPanelResizeIntent.value = 'user-sized'
 
     /**
      * Handles the mousemove event during dragging.
@@ -122,9 +130,12 @@ export function useRightPanel() {
 
   return {
     isRightPanelVisible,
+    preferredRightPanelWidth,
     rightPanelWidth,
+    rightPanelResizeIntent,
     toggleRightPanel,
     openRightPanel,
+    setRightPanelVisible,
     setRightPanelWorkspaceWidth,
     initDragRightPanel,
   }

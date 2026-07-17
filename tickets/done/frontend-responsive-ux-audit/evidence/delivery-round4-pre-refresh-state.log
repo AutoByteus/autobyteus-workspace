@@ -1,0 +1,57 @@
+$ pwd
+/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit
+$ git status --short --branch
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 8]
+ M tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+ M tickets/frontend-responsive-ux-audit/code-review-report.md
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1180x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-1024x768.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-900x700.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/wide-1440x900.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-backend-retry.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-frontend-retry.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-runtime-setup.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-server-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-workspace-responsive-probe-retry.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round4-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-audit-localization-literals.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-git-diff-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-guard-localization-boundary.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-guard-web-boundary.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-nuxt-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-probe-node-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-runtime-setup.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-server-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round5-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round3-post-integration-checks.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round4-pre-refresh-state.log
+$ git branch --show-current
+codex/frontend-responsive-ux-audit
+$ git rev-parse HEAD
+bb3b2fe499bf2310150884eb483db39982502f01
+$ git rev-parse --abbrev-ref --symbolic-full-name @{u}
+origin/personal
+$ git rev-parse @{u}
+fbd7b6764bd43751956d69ffe22b943d06188444
+$ git log --oneline --decorate --left-right HEAD...@{u} -20
+< bb3b2fe49 (HEAD -> codex/frontend-responsive-ux-audit) fix(workspace): wrap right tool tabs in constrained panels
+< 2c8345545 docs(ticket): record integrated order test fix
+< 9a9fa78d2 test(workspace): include integrated usage tab order
+< 456694fa8 merge origin/personal into frontend responsive ux audit (delivery round 3)
+< a1f12ef2f chore(delivery): checkpoint responsive ux validation before base refresh
+< f614a42cb docs(ticket): refresh responsive implementation handoff
+< f4c705855 merge origin/personal into frontend responsive ux audit
+< 031717407 chore(delivery): checkpoint responsive ux candidate before base refresh

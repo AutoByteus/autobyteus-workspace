@@ -1,0 +1,246 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts
+App data directory: /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff
+AppConfig instance created.
+Config file path: /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/.env
+Loading environment from: /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff
+DB DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/db
+LOGS DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/download
+MEMORY DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+
+17 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:66415) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 19 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-07-16T13:13:09.791Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1784207589867,"pid":66415,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:13023"}
+[2026-07-16T13:13:09.867Z] [INFO] [server.runtime] Server listening on 127.0.0.1:13023
+[2026-07-16T13:13:09.868Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:13023
+Creating temp workspace at: /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-07-16T13:13:09.885Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'load_skill'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=149
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=134
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-16T13:13:09.930Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 29 items.
+Pre-loaded 29 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=63
+Finished Autobyteus image model discovery. Total models registered: 12
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=68
+Finished Autobyteus audio model discovery. Total models registered: 8
+Discovering Ollama models from host: http://127.0.0.1:11434
+Finished Ollama discovery. Total models registered: 4
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 10
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Finished Autobyteus discovery. Total models registered: 74
+Successfully fetched 114 models from LLMFactory.
+LLM models cache populated with 114 items.
+Pre-loaded 114 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 19 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5, AUTOBYTEUS=12
+Image models by runtime: api=7, autobyteus=12
+Image models cache populated with 19 items.
+Pre-loaded 19 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+Successfully fetched 12 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=8
+Audio models by runtime: api=4, autobyteus=8
+Audio models cache populated with 12 items.
+Pre-loaded 12 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created terminal session 857836c9-c196-4e91-a082-90ffbb6cba98 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 857836c9-c196-4e91-a082-90ffbb6cba98
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 857836c9-c196-4e91-a082-90ffbb6cba98
+Terminal WebSocket disconnected: 857836c9-c196-4e91-a082-90ffbb6cba98
+Created terminal session 2fc914df-64cf-4f1f-b5b4-531906333aea using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 2fc914df-64cf-4f1f-b5b4-531906333aea
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 2fc914df-64cf-4f1f-b5b4-531906333aea
+Terminal WebSocket disconnected: 2fc914df-64cf-4f1f-b5b4-531906333aea
+Created terminal session 1b974a26-3bfb-4df6-9c39-d37041921f40 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 1b974a26-3bfb-4df6-9c39-d37041921f40
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 1b974a26-3bfb-4df6-9c39-d37041921f40
+Terminal WebSocket disconnected: 1b974a26-3bfb-4df6-9c39-d37041921f40
+Created terminal session 077b9f41-6332-4671-8871-6727eeb929ad using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 077b9f41-6332-4671-8871-6727eeb929ad
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 077b9f41-6332-4671-8871-6727eeb929ad
+Terminal WebSocket disconnected: 077b9f41-6332-4671-8871-6727eeb929ad
+Created terminal session 944740ec-5056-4517-b4ee-b8c08049c4b0 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 944740ec-5056-4517-b4ee-b8c08049c4b0
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 944740ec-5056-4517-b4ee-b8c08049c4b0
+Terminal WebSocket disconnected: 944740ec-5056-4517-b4ee-b8c08049c4b0
+Created terminal session 299ea0a9-7de2-41d5-9a66-eda54e8a45d0 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 299ea0a9-7de2-41d5-9a66-eda54e8a45d0
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 299ea0a9-7de2-41d5-9a66-eda54e8a45d0
+Terminal WebSocket disconnected: 299ea0a9-7de2-41d5-9a66-eda54e8a45d0
+Created terminal session 4d9eac6e-2d82-48b8-8f71-973ee7ed6123 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 4d9eac6e-2d82-48b8-8f71-973ee7ed6123
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 4d9eac6e-2d82-48b8-8f71-973ee7ed6123
+Terminal WebSocket disconnected: 4d9eac6e-2d82-48b8-8f71-973ee7ed6123
+Created terminal session 8f413d8b-68c7-42de-82c9-c537af1cce71 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 8f413d8b-68c7-42de-82c9-c537af1cce71
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 8f413d8b-68c7-42de-82c9-c537af1cce71
+Terminal WebSocket disconnected: 8f413d8b-68c7-42de-82c9-c537af1cce71
+Created terminal session b3ce18c9-2f85-4138-8c35-70d387c254c4 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b3ce18c9-2f85-4138-8c35-70d387c254c4
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session b3ce18c9-2f85-4138-8c35-70d387c254c4
+Terminal WebSocket disconnected: b3ce18c9-2f85-4138-8c35-70d387c254c4
+Created terminal session a6004529-f450-493f-b95c-0143b4368e40 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a6004529-f450-493f-b95c-0143b4368e40
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session a6004529-f450-493f-b95c-0143b4368e40
+Terminal WebSocket disconnected: a6004529-f450-493f-b95c-0143b4368e40
+[2026-07-16T13:15:08.343Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+[2026-07-16T13:15:08.467Z] [INFO] [server.runtime] Server closed cleanly.

@@ -1,0 +1,67 @@
+$ git fetch origin --prune
+$ git rev-parse HEAD origin/personal
+03171740725c223c0c956dfcb0e3bdc6ba6c9b40
+e2110cb256a3fdd0b2e18fecff796a338e414c22
+$ git log --oneline --decorate --left-right HEAD...origin/personal -20
+< 03171740 (HEAD -> codex/frontend-responsive-ux-audit) chore(delivery): checkpoint responsive ux candidate before base refresh
+> e2110cb2 (origin/personal, origin/HEAD, personal, codex/antigravity-cli-runtime-refresh) docs: record v1.3.73 release
+> 764a0bf8 (tag: v1.3.73) chore(release): bump workspace release version to 1.3.73
+> 6c779584 Merge branch 'codex/memory-sync-transparency-design' into personal
+> e0cc8a3b (origin/codex/memory-sync-transparency-design, codex/memory-sync-transparency-design) feat(memory-sync): clarify source operation feedback
+$ git merge --no-ff origin/personal -m "merge origin/personal into frontend responsive ux audit"
+Auto-merging autobyteus-web/package.json
+Merge made by the 'ort' strategy.
+ .github/release-notes/release-notes.md             |  15 +-
+ README.md                                          |   9 +
+ autobyteus-message-gateway/package.json            |   2 +-
+ autobyteus-server-ts/docker/README.md              |   5 +
+ autobyteus-server-ts/docs/features/memory_sync.md  |  51 ++-
+ .../src/api/graphql/types/memory-sync-schema.ts    |  26 +-
+ .../src/api/graphql/types/memory-sync.ts           |  13 +-
+ .../messaging-gateway/release-manifest.json        |  10 +-
+ .../source/memory-sync-connection-test-service.ts  |  76 ++++
+ .../e2e/memory-sync/memory-sync-api.e2e.test.ts    |  59 ++-
+ .../memory-sync-multiprocess.e2e.test.ts           |   2 +-
+ .../memory-sync/memory-sync-local-fixes.test.ts    |  70 ++++
+ .../components/settings/MemorySyncCard.vue         | 168 +++++++--
+ .../settings/__tests__/MemorySyncCard.spec.ts      | 233 ++++++++++++
+ autobyteus-web/docs/memory.md                      |  27 +-
+ .../localization/messages/en/memorySyncSettings.ts |  22 +-
+ .../messages/zh-CN/memorySyncSettings.ts           |  22 +-
+ autobyteus-web/package.json                        |   2 +-
+ autobyteus-web/stores/memorySyncStore.ts           | 119 +++++-
+ .../api-e2e-coverage-investigation.md              | 120 ++++++
+ .../api-e2e-execution-coverage-report.md           | 226 +++++++++++
+ .../memory-sync-transparency/code-review-report.md | 182 +++++++++
+ .../delivery-release-deployment-report.md          | 156 ++++++++
+ .../design-review-report.md                        | 217 +++++++++++
+ .../done/memory-sync-transparency/design-spec.md   | 416 +++++++++++++++++++++
+ .../memory-sync-transparency/docs-sync-report.md   |  66 ++++
+ .../memory-sync-transparency/handoff-summary.md    | 126 +++++++
+ .../implementation-handoff.md                      | 124 ++++++
+ .../investigation-notes.md                         | 172 +++++++++
+ .../done/memory-sync-transparency/release-notes.md |   7 +
+ .../done/memory-sync-transparency/requirements.md  | 151 ++++++++
+ .../memory-sync-transparency/experience-story.md   |  92 +++++
+ 32 files changed, 2896 insertions(+), 90 deletions(-)
+ create mode 100644 autobyteus-server-ts/src/memory-sync/source/memory-sync-connection-test-service.ts
+ create mode 100644 autobyteus-web/components/settings/__tests__/MemorySyncCard.spec.ts
+ create mode 100644 tickets/done/memory-sync-transparency/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/memory-sync-transparency/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/memory-sync-transparency/code-review-report.md
+ create mode 100644 tickets/done/memory-sync-transparency/delivery-release-deployment-report.md
+ create mode 100644 tickets/done/memory-sync-transparency/design-review-report.md
+ create mode 100644 tickets/done/memory-sync-transparency/design-spec.md
+ create mode 100644 tickets/done/memory-sync-transparency/docs-sync-report.md
+ create mode 100644 tickets/done/memory-sync-transparency/handoff-summary.md
+ create mode 100644 tickets/done/memory-sync-transparency/implementation-handoff.md
+ create mode 100644 tickets/done/memory-sync-transparency/investigation-notes.md
+ create mode 100644 tickets/done/memory-sync-transparency/release-notes.md
+ create mode 100644 tickets/done/memory-sync-transparency/requirements.md
+ create mode 100644 ui-prototypes/memory-sync-transparency/experience-story.md
+$ git rev-parse HEAD
+f4c705855cabff5d36bd9f7c2e123c8506bac375
+$ git status --short --branch
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 2]
+ M tickets/frontend-responsive-ux-audit/evidence/delivery-round2-checkpoint-commit.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round2-fetch-and-merge.log
