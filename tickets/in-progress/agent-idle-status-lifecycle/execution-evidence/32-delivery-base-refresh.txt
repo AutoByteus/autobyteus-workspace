@@ -1,0 +1,15 @@
+# Delivery base refresh
+checked_at_utc=2026-07-16T09:08:53Z
+ticket_branch=codex/agent-idle-status-lifecycle
+ticket_head=4b434659d9a9c12058e62055a1b98244a3b71795
+reviewed_checkpoint=4b434659d9a9c12058e62055a1b98244a3b71795
+bootstrap_origin_personal=fbd7b6764bd43751956d69ffe22b943d06188444
+latest_origin_personal=fbd7b6764bd43751956d69ffe22b943d06188444
+base_advanced=no
+ticket_contains_latest_base=yes
+behind=0 ahead=7
+integration_method=already_current
+new_base_commits_integrated=none
+round5_evidence_refresh=api_e2e_pass_97.7_and_round5_test_review_pass
+electron_user_test_build=pass_macos_arm64_personal_1.4.14
+verification_hold=active

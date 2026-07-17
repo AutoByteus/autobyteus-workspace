@@ -20,6 +20,19 @@ const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const describeAutoByteusTeamRuntime =
   process.env.RUN_LMSTUDIO_E2E === "1" ? describe : describe.skip;
 
+const buildRequiredToolChoiceLlmConfig = (
+  modelIdentifier: string,
+): Record<string, unknown> => {
+  const config: Record<string, unknown> = {
+    temperature: 0,
+    tool_choice: "required",
+  };
+  if (modelIdentifier.toLowerCase().includes("deepseek-v4")) {
+    config.extra_params = { thinking_type: "disabled" };
+  }
+  return config;
+};
+
 const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -450,10 +463,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
               skillAccessMode: "NONE",
               runtimeKind: "autobyteus",
               workspaceRootPath,
-              llmConfig: {
-                temperature: 0,
-                tool_choice: "required",
-              },
+              llmConfig: buildRequiredToolChoiceLlmConfig(llmModelIdentifier),
             },
             {
               memberName: "reviewer",

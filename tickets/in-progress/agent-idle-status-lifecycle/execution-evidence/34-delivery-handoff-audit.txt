@@ -1,0 +1,51 @@
+# Delivery handoff audit — Electron user-test build refresh
+checked_at_utc=2026-07-16T09:34:57Z
+
+## Integrated base
+origin_personal=fbd7b6764bd43751956d69ffe22b943d06188444
+ticket_head=4b434659d9a9c12058e62055a1b98244a3b71795
+behind=0 ahead=7
+base_current=pass
+
+## Diff and ownership
+tracked_diff_whitespace=pass
+untracked_delivery_text_whitespace=pass files=8
+production_source_diff_since_checkpoint=none
+round5_test_diff=autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+round5_test_diff_scope=pass
+generated_electron_outputs_ignored=pass
+
+## Cumulative artifact presence
+cumulative_artifact_presence=pass
+
+## Authoritative review and execution markers
+authoritative_round5_review=pass
+api_e2e_result=pass
+final_confidence=97.7%
+eight_cumulative_durable_paths_reviewed=pass
+unresolved_findings=none
+
+## Live and deterministic evidence markers
+delivery_smoke_38_of_38=pass
+live_autobyteus_standalone=pass
+live_autobyteus_team_restore=pass
+live_autobyteus_team_message=pass
+cleanup_and_secret_retention=pass
+
+## Electron user-test build
+electron_macos_arm64_personal_1.4.14=pass
+electron_runtime_42.4.1=pass
+dmg_integrity_and_sha256=pass
+zip_integrity_and_sha256=pass
+staged_terminal_spawn_probe=pass
+packaged_terminal_spawn_probe=pass
+local_signing=unsigned_expected
+interactive_launch=pending_user_after_existing_port_29695_owner_is_closed
+
+## Handoff state
+ticket_state=in_progress
+remote_ticket_branch=absent
+verification_hold=active
+remaining_material_residual=production-duration_retired-turn-ID_retention
+
+final_handoff_audit=pass

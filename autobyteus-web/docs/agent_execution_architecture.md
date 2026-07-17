@@ -918,12 +918,20 @@ rows.
 The backend can emit:
 
 - Explicit tool terminal lifecycle events (`TOOL_EXECUTION_FAILED`, `TOOL_DENIED`) for invocation-scoped failures.
-- A generic `ERROR` event for unrecoverable system/agent failures.
-- Explicit turn-scoped lifecycle events (`TURN_STARTED`, `TURN_COMPLETED`) for one accepted user turn.
+- A generic `ERROR` event for visible runtime/turn failures and diagnostics.
+  Additive `error_scope`, `error_effect`, and conditional `turn_id` fields
+  distinguish turn diagnostics from matching turn-terminal and runtime-terminal
+  evidence; an unclassified error has no lifecycle authority.
+- Explicit turn-scoped lifecycle events (`TURN_STARTED`, `TURN_COMPLETED`,
+  `TURN_INTERRUPTED`) for one accepted user turn.
 
 `AGENT_STATUS` is still run-scoped or team-member state. `TEAM_STATUS` is only
 aggregate team state. `TURN_COMPLETED` is now the preferred signal when a client
-needs to know that one exact turn has finished.
+needs to know that one exact turn has finished. Correlate terminal boundaries
+and turn-scoped errors by `turn_id`; delayed events for turn A must not settle a
+newer turn B. Ordinary segment/tool/inter-agent/todo/system-task activity is
+content/progress only and must not infer `running` or recover/reopen a terminal
+turn.
 
 `TOOL_LOG` is diagnostic-only and never the lifecycle authority for completion/failure.
 
