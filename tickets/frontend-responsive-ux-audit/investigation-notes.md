@@ -202,7 +202,7 @@ No external/public web sources were needed. Investigation used repository docs, 
 
 Date: 2026-07-16
 
-The code reviewer returned the package to solution design after the CR-003 implementation fix enabled multi-row wrapping in the right-tool header. The user confirmed that the original design is preferred: one horizontal row, preserved visual styling, horizontal scrolling as the primary interaction, lightweight overflow discoverability, and active-tab reachability.
+The code reviewer returned the package to solution design after the CR-003 implementation fix enabled multi-row wrapping in the right-tool header. The user confirmed that the original design is preferred: one horizontal row, preserved visual styling, horizontal scrolling as the primary interaction, no added edge fade or directional chevron, and active-tab reachability.
 
 ### New source and evidence consulted
 
@@ -211,29 +211,28 @@ The code reviewer returned the package to solution design after the CR-003 imple
 | autobyteus-web/components/layout/RightSideTabs.vue at current HEAD | The CR-003 fix passes wrap=true to TabList and therefore changes the header into a multi-row presentation. | This is a design-impact implementation state, not the revised target. |
 | autobyteus-web/components/tabs/TabList.vue at current HEAD | The current opt-in wrap prop switches from horizontal overflow to flex-wrap overflow-x-hidden. | The revised design must remove or reject this right-tool wrapping path and define a scrollable single-row owner. |
 | autobyteus-web/components/tabs/Tab.vue at current HEAD | Tab visual treatment contains compact spacing, typography, whitespace preservation, and active underline behavior that should be preserved. | Tab visual styling remains stable; overflow behavior belongs to the tab-list/header owner. |
-| autobyteus-web/tests/e2e/workspace-responsive-probe.mjs at current HEAD | The current browser assertion fails when any tab is outside the initial tab-list bounds. | Replace the initial-fit invariant with scrollability, discoverability, active-tab reachability, and canonical-order assertions. |
+| autobyteus-web/tests/e2e/workspace-responsive-probe.mjs at current HEAD | The current browser assertion fails when any tab is outside the initial tab-list bounds. | Replace the initial-fit invariant with native scrollability, active-tab reachability, and canonical-order assertions; do not turn custom fades/chevrons into a new required invariant. |
 | tickets/frontend-responsive-ux-audit/code-review-report.md, Round 8 and incoming Design Impact message | Source review passed the wrapping Local Fix, but the user later rejected wrapping as a visual/design change. | Previous CR-003 source pass is superseded for this behavior; architecture re-review is required before implementation resumes. |
 | User-provided original UI reference path from code review: /Users/normy/.codex/server-data/memory/agent_teams/software_engineering_team_835fd076ad177b4677a0993e12fb0fae39/context_files/ctx_1247f857a89b__image.png | The requested reference establishes the preferred single-row right-tool header design. The path was not available for local visual loading in this run, so the design clarification message is the authoritative readable evidence. | Preserve the original header contract rather than infer a new multi-row visual solution. |
 
 ### Revised evidence-backed conclusion
 
-The underlying failure remains real: the integrated tool catalog can exceed the initial visible header width in docked and drawer presentations. The failure is not proof that every tab must fit initially. A multi-row wrap repairs initial visibility by changing the established header design, while a scrollable single row preserves the original visual hierarchy and scales to future catalog growth. The target invariant is therefore: every available tab is reachable, active/focused tabs are brought into view, overflow is discoverable, and canonical order is preserved while the header remains one row.
+The underlying failure remains real: the integrated tool catalog can exceed the initial visible header width in docked and drawer presentations. The failure is not proof that every tab must fit initially. A multi-row wrap repairs initial visibility by changing the established header design, while a scrollable single row preserves the original visual hierarchy and scales to future catalog growth. The latest user decision further restores the personal-branch visual behavior by removing the added fade/chevron layer. The target invariant is therefore: every available tab is reachable through native horizontal scrolling, active/focused tabs are brought into view, canonical order is preserved, and the header remains one row without custom overflow-indicator chrome.
 
 ### Supplemental artifact inventory
 
 | Artifact | Purpose and scope | Status | Approval applicability | Related core artifacts |
 | --- | --- | --- | --- | --- |
-| right-tool-tabs-ux-spec.md | Defines single-row visual, scrolling, overflow-affordance, active-tab, accessibility, ownership, and validation behavior for right-tool tabs. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
+| right-tool-tabs-ux-spec.md | Defines the personal-branch single-row visual, native scrolling, active-tab, accessibility, ownership, and validation behavior for right-tool tabs; explicitly excludes added fade/chevron indicators. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
 | workspace-responsive-ui-ux-spec.md | Defines scenario-level workspace shell behavior: wide personal-branch hierarchy, symmetric left/right panel-strip-drawer ownership, route-scoped header suppression, non-workspace default-layout preservation, empty-state actions, accessibility, and `/mobile` isolation. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
 | comprehensive-responsive-ui-test-report.md | Historical responsive failure evidence and broad browser-matrix scope, including validation for symmetric strips and absence of header/top duplicate controls. | Evidence supplement, coherence-reconciled | N/A | Requirements doc, design spec |
 
 ### Open implementation questions for downstream design/implementation review
 
-- Whether the scroll chevron should scroll by one visible page or a fixed number of tabs can be tuned within the supplement interaction contract; it must remain secondary to native scrolling.
-- The exact fade gradient width and chevron opacity are visual tuning details, not permission to wrap the row.
-- If a More menu is not needed after the scroll affordances are implemented, it may be omitted without weakening the primary scroll contract.
+- No custom fade or chevron behavior remains an open implementation question; both are explicitly out of the standard right-tool header contract. The native scroll container and active-tab auto-scroll remain required.
+- If a More menu is not needed, it may remain omitted; it is not a substitute for native scrolling and is not part of the latest visual reset.
 
-## Live Visual Recheck — Font Fidelity and Tab Affordances
+## Historical Live Visual Recheck — Font Fidelity and Tab Affordances
 
 Date: 2026-07-16
 
@@ -256,20 +255,67 @@ The user reported that the built responsive workspace has smaller right-tool tab
 ### Findings
 
 - The personal branch Tab component uses the original text-base typography and px-5 py-3 spacing.
-- The current RightSideTabs explicitly passes density=compact.
-- The current compact density resolves to text-sm with px-2.5 py-2 spacing.
-- This source difference directly explains the user's smaller-font/smaller-spacing observation and violates the revised original-visual-fidelity requirement.
+- At the time of this live check, the current RightSideTabs/Tab path used compact density, resolving to text-sm with px-2.5 py-2 spacing; subsequent implementation work restored the current `Tab.vue` classes to the personal-branch text-base/px-5 py-3 values.
+- The historical source difference directly explained the user's smaller-font/smaller-spacing observation; it is retained as evidence, not as a new requirement in this latest chevron/fade-only change.
 - The current scroll implementation is functionally present: at a 705px browser viewport the right-tool tab list measured clientWidth 396px and scrollWidth 439px; clicking the right chevron moved scrollLeft to 37px and brought VNC Viewer fully into view.
 - The current right fade is present as a 32px white-to-transparent gradient, but it is weak against the white header.
 - The current right chevron is present as a 24px white 90%-opacity button with a gray glyph. The live screenshot confirms it is technically present but visually easy to miss, matching the user's concern.
 
-### Classification and routing implication
+### Historical classification and routing implication
 
-This is not a requirements gap. The revised right-tool-tabs-ux-spec.md already requires original spacing/typography, single-row scrollability, and discoverable conditional affordances. It is an implementation-owned visual regression/quality defect:
+The 2026-07-16 visual check was performed against the then-approved
+fade/chevron design. Its screenshot and geometry remain useful evidence of the
+current implementation, but its recommendation to retune those indicators is
+superseded by the user's later visual-reset decision below. The personal-branch
+typography/spacing regression remains implementation-owned; the removal of the
+custom indicators is now a design-impact change that must pass architecture
+review before implementation rework.
 
-1. Restore the personal-branch tab typography and spacing for the right-tool header while retaining the single-row overflow mechanics.
-2. Retune the fade and chevron so the overflow direction is visible without becoming visually heavy; preserve the fixed panel toggle and native scrolling.
-3. Return through source review and current browser/API-E2E validation after the bounded fix.
+## Latest User Decision — Restore Personal-Branch Right-Tab Overflow Behavior
+
+Date: 2026-07-17
+
+The user explicitly requested removal of the added chevron and edge-fading
+effect from the top-right tool-tab navigation. This is intentionally narrower
+than removing right-tab responsiveness: the single horizontal row, native
+mouse/touchpad/touch/keyboard scrolling, active/focused-tab auto-scroll,
+canonical order, personal-branch typography/spacing, active underline, and
+fixed panel toggle remain required. Only the custom overflow-indicator layer is
+removed.
+
+### Source comparison and root cause
+
+- `git show personal:autobyteus-web/components/tabs/TabList.vue` shows the
+  personal branch rendering a plain single-row, horizontally scrollable tab
+  container with no fade or scroll-button layer.
+- Current `autobyteus-web/components/tabs/TabList.vue` adds an
+  `affordance-layer`, conditional left/right gradient spans, overflow state
+  tracking, and left/right scroll buttons.
+- Current `autobyteus-web/components/layout/RightSideTabs.vue` opts into that
+  layer with `show-overflow-affordances` and supplies the chevron labels.
+- Therefore the visual difference is deliberate task-branch implementation,
+  originally requested by the earlier design package, rather than an
+  unexplained browser effect. The design package is responsible for
+  authorizing it and must now be reconciled; implementation must later remove
+  the opt-in and indicator rendering as one bounded cleanup.
+
+### Required target and boundaries
+
+1. Render no right-tab edge fade, directional chevron, floating scroll button,
+   or equivalent overflow-indicator layer at any scroll position.
+2. Preserve native horizontal scrolling and active/focused-tab reachability;
+   do not wrap the row, require all tabs to fit initially, or reduce the
+   personal-branch text scale to compensate.
+3. Preserve the fixed right-panel toggle and all `/workspace` strip/drawer
+   behavior already defined by the approved shell contract.
+4. Do not change `/mobile` or `components/mobile/*`; the request is limited to
+   the standard `/workspace` right-tool tab header.
+
+This is a requirements/design reconciliation because the earlier approved
+right-tool supplement required the indicators. The revised requirements,
+design spec, and right-tool supplement now mark their absence as normative and
+must return as a cumulative package through architecture review. No source,
+test, or API/E2E implementation sign-off is requested before that gate.
 
 ## Notes For Architect Reviewer
 

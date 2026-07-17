@@ -10,13 +10,13 @@
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md` (Round 32 `PASS`, Architecture Round 22 / DI-012, CR-022 with CR-020/CR-021/CR-018/CR-019 resolved)
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
-- Current execution round: `16`
-- Execution date: `2026-07-16`
+- Current execution round: `17`
+- Execution date: `2026-07-17`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit`
-- Branch / HEAD: `codex/frontend-responsive-ux-audit` / `63f487580e3c82e33e00b231436e30fce3b51cbe`
-- Trigger: Implementation source review Round 32 `PASS` for CR-022 at current HEAD `63f487580e3c82e33e00b231436e30fce3b51cbe`, parent `f8bbbaa55fa02421045afbc41e143c50b3f4b8a1`. Architecture Round 22 / DI-012 approves the shared ordered drawer registry as the sole owner of keyboard, focus, visual/backdrop, and modal ARIA topmost state, alongside effective `docked|strip` presentations, nested side `stripActivation` ownership, transient drawers, route-scoped workspace header suppression, and `/mobile` isolation. The current durable probe executes the full viewport, right-resize, strip activation, independent drawer, right-tab, route-scope, and mobile contracts.
+- Branch / HEAD: `codex/frontend-responsive-ux-audit` / `ff98ad19ead19823c03bc4e90c20623c238522cc`
+- Trigger: Implementation source review `PASS` for exact current HEAD `ff98ad19ead19823c03bc4e90c20623c238522cc` (parent `bc1b8368c`), Architecture Round 23 native right-tool tab scrolling. The current durable probe executes the full viewport, native docked/drawer right-tab, right-resize, strip activation, independent drawer, route-scope, and mobile contracts. This is API/E2E evidence, not delivery sign-off.
 - Prior round reviewed: Round 4 integrated-state failure at `2c8345545`; current browser evidence supersedes it.
-- Latest authoritative round: `Round 16`, current result `PASS`.
+- Latest authoritative round: `Round 17`, current result `PASS`.
 
 ## Round History
 
@@ -38,6 +38,7 @@
 | 14 | Code-review Round 25 CR-015 cleanup / Architecture Round 18 DI-010 | Fresh focused suite/build, current changed durable probe, full matrix, and console-error enforcement; reconciled one stale sequence-dependent wide redock expectation by resetting in-memory route/module state before the independent manual-collapse journey | None after bounded probe reconciliation | `Pass` | Yes | 18 states, 5/5 resize/strip interactions, 2 tab journeys / 14 snapshots, 0 failures, 0 browser console-error states; symmetric strips, route-scoped header suppression, wide redock, constrained drawer reopen, right tabs, and `/mobile` passed. |
 | 15 | Code-review Round 27 CR-016/CR-017 source PASS | Fresh focused suite/build, current upstream-changed durable probe, full matrix, and console-error enforcement | None | `Pass` | Yes | 18 states, 5/5 direct interactions, 2 tab journeys / 14 snapshots, 0 failures, 0 browser console-error states; fixed right drawer geometry, left local open/close without route navigation, strip/backdrop layering, right resize, right tabs, and `/mobile` passed. |
 | 16 | Code-review Round 32 CR-022 source PASS | Fresh focused suite/build, current upstream-changed probe, bounded collector/geometry reconciliation, full matrix, and console-error enforcement | None after bounded probe reconciliation | `Pass` | Yes | 18 states, 6/6 interaction records, 2 tab journeys / 14 snapshots, 0 failures, 0 browser console-error states; both independent drawer open orders, topmost aria-modal promotion, focus/Tab/Escape, hit-tested backdrop dismissal, right tabs, resize, route scope, and `/mobile` passed. |
+| 17 | Architecture Round 23 native right-tool tab scrolling source PASS at `ff98ad19e` | Fresh 14-file/94-test suite, backend build, full matrix, console-error enforcement, and bounded drawer-tab coverage reconciliation | Initial pass exposed missing drawer `exerciseTabList` invocation; bounded probe-only fix added the existing helper to the reopened drawer, then reran | `Pass` | Yes | 18 states, 6/6 clicked interaction records, 3 tab journeys / 18 snapshots, 0 failures, 0 browser console-error failures; native docked/drawer scroll, Files/VNC focus/selection, one-row/order/ARIA/underline, fixed toggle, resize/strips/drawers, independent layering/focus/Tab/Escape/aria-modal, route scope, and `/mobile` passed. |
 
 ## Investigation And Execution Basis
 
@@ -1194,3 +1195,43 @@ pnpm -C autobyteus-web test:e2e:workspace-responsive -- \
 
 - Result: `Pass`.
 - Send the complete cumulative package to `code_reviewer` for the required separate proportional durable-test review. Do not route directly to delivery.
+
+
+## Round 17 Current-State Execution Addendum (Latest Authoritative)
+
+### Execution package and repository checks
+
+- Exact worktree state: `ff98ad19ead19823c03bc4e90c20623c238522cc`; implementation source review PASS, Architecture Round 23 native right-tool tab scrolling.
+- Focused command: `pnpm -C autobyteus-web test:nuxt --run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts utils/layout/__tests__/workspaceSurfaceOrder.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts components/layout/__tests__/RightSidebarStrip.spec.ts components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/tabs/__tests__/TabList.spec.ts components/tabs/__tests__/Tab.spec.ts composables/__tests__/useAccessibleDrawer.spec.ts composables/__tests__/useRightPanel.spec.ts composables/__tests__/useRightSideTabs.spec.ts layouts/__tests__/default.spec.ts layouts/__tests__/default-drawer.spec.ts`. Result: `14 files / 94 tests passed`; only the known KaTeX quirks-mode warning. Evidence: `evidence/api-e2e-round17-focused-nuxt-tests.log`.
+- `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`, `git diff --check -- autobyteus-web`, and cached diff check passed. Evidence: `evidence/api-e2e-round17-probe-checks.log`.
+- `pnpm -C autobyteus-server-ts build` passed, including shared-package builds, Prisma generation, TypeScript build, managed-messaging assets, and built-in-agent bootstrap smoke. Evidence: `evidence/api-e2e-round17-server-build.log`.
+
+### Coverage reconciliation
+
+- The first live execution against the unchanged current probe passed `18` states but inspection showed only docked right-panel `exerciseTabList` journeys; the reopened right drawer had geometry collected but did not execute native scroll/focus/selection assertions. This was a durable API/E2E coverage gap, not a production failure.
+- Bounded local fix: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` now calls the existing `exerciseTabList` helper after the right-strip-to-drawer journey, using `[data-test="workspace-right-tool-drawer"] [data-test="right-side-tab-list"]`. No production source, requirements, or design changed; no approved assertion was weakened. Initial pass artifacts are retained as `workspace-responsive-probe-results-initial.json`, `workspace-responsive-probe-summary-initial.json`, and `api-e2e-round17-workspace-responsive-probe-initial.log`.
+
+### Fresh runtime and browser execution
+
+- Backend: fresh current-worktree build on `127.0.0.1:13033`, `APP_ENV=test`, isolated SQLite at `/tmp/autobyteus-responsive-ux-audit-api-e2e-round17/db/test.db`; all migrations applied.
+- Frontend: fresh Nuxt dev server on `127.0.0.1:13034`, all `BACKEND_*` endpoints pointed at the isolated backend. Readiness: backend root `404` listener response and frontend `/workspace` `200`.
+- Browser command: `pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13034 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error`.
+- Final browser outputs generated `2026-07-17T04:04:39.346Z`: `18` states (`17` `/workspace` viewports plus `/mobile`), `6/6` clicked interaction records, `3` tab-validation journeys with `18` snapshots, `0` failures, `18` collected browser console messages, and `0` console-error/pageerror/exception failures. Canonical JSON/summary: `probes/api-e2e/workspace-responsive-probe-results.json` and `workspace-responsive-probe-summary.json`. Command log: `evidence/api-e2e-round17-workspace-responsive-probe.log`.
+- Native right-tab evidence passed in both docked and drawer modes. Docked `1280x800` and `1440x900` used one-row lists with `scrollWidth=598`, `clientWidth=408`, `maxScrollLeft=190`, `scrollLeft=190` at the right boundary; drawer mode used `scrollWidth=598`, `clientWidth=396`, `maxScrollLeft=202`, `scrollLeft=202`. Both observed `flex-wrap: nowrap`, `overflow-x: auto`, `overflow-y: hidden`, `white-space: nowrap`, canonical `Files -> Terminal -> Activity -> Token -> Artifacts -> VNC Viewer` order, `role=tab`, `aria-selected`, active underline, no custom overflow chrome, Files selection/focus, and VNC focus/auto-scroll into view.
+- The right-strip-to-drawer path passed at `900x700` after user-hidden wide right tools; resize bound journeys passed at `1280x800` and `1440x900`; left strip open/close passed at `700x700`/`800x700`; independent drawer journeys passed in both orders with topmost focus/Tab/Escape/backdrop/`aria-modal` promotion and visual layering; route-scoped generic-row/header suppression, all responsive states, console enforcement, and `/mobile` isolation passed.
+- The probe's changed input-mode decision is explicit: no additional physical mouse/touchpad/touch horizontal-tab journey is required. The application owns no pointer/touch scrolling handler; the real native scroll container, deterministic `scrollLeft` movement, real focus/selection, and existing browser pointer/keyboard journeys directly cover the changed application boundary. Physical gesture momentum remains a low-risk browser-platform residual, not an acceptance gap.
+
+### Cleanup and confidence
+
+- Backend session `24321` and frontend session `81663` were stopped with SIGINT. Run-owned ports `13033` and `13034` were verified clear; no unrelated process was stopped. Evidence: `evidence/api-e2e-round17-cleanup-ports.log`. Nuxt shutdown emitted the known dev-only `#app-manifest` pre-transform diagnostic; the browser run itself recorded zero console-error failures under enforcement.
+- Final confidence scorecard: requirement/acceptance proof `100%`; changed-boundary directness `100%`; cross-boundary integration realism `96%`; environment/configuration/fixture fidelity `95%`; failure/edge/lifecycle/recovery `96%`; user-surface/browser confidence `98%`; durable regression coverage quality/relevance `97%`. Overall `97.4%` by simple average; no applicable category is below `90%`, and all critical web-equivalent acceptance criteria are directly exercised.
+- Broader validation decision: `Required`, executed with `Pass`. Residual uncertainty is limited to packaged Electron shell behavior, deep authenticated/internal tool workflows, and native device-specific scroll momentum outside this shell-focused boundary.
+
+### Durable coverage and routing
+
+| Path | API/E2E change | Result |
+| --- | --- | --- |
+| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | Updated to exercise the existing native right-tab contract in the reopened right drawer; no production source change | Passed current full matrix; requires proportional durable-test review |
+| Initial pass result JSON/summary/log | Preserved with `-initial` suffix for evidence of the coverage reconciliation | Historical within Round 17, not final sign-off |
+
+- Final result: `Pass`. The durable probe was changed by API/E2E and the cumulative package must be sent to `code_reviewer` for separate proportional test-code review. Do not route directly to delivery.

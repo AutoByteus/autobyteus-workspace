@@ -6,13 +6,13 @@ Refined
 
 ## Supplemental Artifacts
 
-- right-tool-tabs-ux-spec.md — intended right-tool tab-row interaction and visual contract for single-row horizontal scrolling, overflow discoverability, active-tab reachability, and accessibility. Status: Refined for architecture re-review. Approval applicability: Required because it defines user-visible behavior.
+- right-tool-tabs-ux-spec.md — intended right-tool tab-row interaction and visual contract for the personal-branch single-row header, native horizontal scrolling, active-tab reachability, and accessibility. It explicitly excludes added edge fades and directional chevrons. Status: Refined for architecture re-review. Approval applicability: Required because it defines user-visible behavior.
 - workspace-responsive-ui-ux-spec.md — scenario-level responsive workspace UX contract covering the wide personal-branch layout, symmetric left/right panel-strip-drawer states, wide manual re-docking versus constrained/narrow transient drawers, strip visual continuity, no duplicate drawer chrome/header navigation controls, empty-state selection, tool access, accessibility, and `/mobile` separation. Status: Refined for architecture re-review. Approval applicability: Required because it defines user-visible behavior.
 - comprehensive-responsive-ui-test-report.md — historical/live evidence for the responsive failure matrix and the durable browser-validation scope. Early generic-row, blanket-collapse, and drawer-only/top-Tools recommendations are explicitly superseded in the report; the refined guaranteed-strip requirements/design remain authoritative. Status: Evidence supplement, coherence-reconciled for architecture re-review. Approval applicability: N/A.
 
 ## Right-Tool Tab Design-Impact Follow-Up
 
-The current CR-003 implementation wraps the right-tool tabs to keep the expanded catalog visible. The user-confirmed target is instead the original single-row header with horizontal scrolling and lightweight overflow discoverability. The wrapping implementation and initial-fit browser assertion are not authoritative target behavior and must be revised only after this requirements/design update.
+The current CR-003 implementation wraps the right-tool tabs to keep the expanded catalog visible, and the later scrolling implementation adds edge fades and directional chevrons. The user-confirmed target is instead the original personal-branch single-row header with native horizontal scrolling but no added fade or chevron layer. The wrapping implementation, added visual affordances, and initial-fit browser assertion are not authoritative target behavior and must be revised only after this requirements/design update. Active-tab auto-scroll remains required so removing the added indicators does not reduce reachability.
 
 The tab-row contract is defined in right-tool-tabs-ux-spec.md and is part of the intended-behavior requirements basis for architecture re-review.
 
@@ -110,7 +110,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 
 - FR-016: Right-tool tabs in docked and drawer presentations must remain a single horizontal row with the original spacing, typography, active underline, and fixed panel-toggle affordance; the row must not wrap.
 - FR-017: When the right-tool tab catalog exceeds the available header width, the tab row must remain horizontally scrollable through native mouse, touchpad, touch, and keyboard interactions.
-- FR-018: Overflow discoverability must be conditional and lightweight: show a subtle edge fade and directional chevron only when undisclosed tabs exist, and update the direction/visibility after scrolling.
+- FR-018: The standard right-tool tab header must not add edge fades, directional chevrons, or another overflow-indicator layer. Native horizontal scrolling and active/focused-tab auto-scroll remain the reachability mechanisms when tabs exceed the visible width.
 - FR-019: Selecting or keyboard-focusing an offscreen right-tool tab must automatically scroll that tab into view without changing canonical tab order or panel preference state.
 - FR-020: An optional More menu may provide secondary direct tab selection, but it must not replace the visible scrollable tab row or become the only path to any tool.
 
@@ -156,7 +156,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 
 - AC-016: In docked and drawer right-tool presentations, the tabs render in one horizontal row with no multi-row wrapping; the original spacing, typography, active underline, and fixed panel-toggle affordance remain present.
 - AC-017: When the tab row overflows, a browser/component test can scroll it horizontally through mouse/touchpad-equivalent, touch, and keyboard paths; the test does not require all tabs to fit initially.
-- AC-018: Edge fades and directional chevrons appear only when additional tabs exist, point toward undisclosed content, and update or disappear at the relevant scroll boundaries.
+- AC-018: No edge fade, directional chevron, or overflow-indicator layer is rendered in the standard right-tool tab header, including at the initial, middle, and terminal scroll positions; the single row remains natively scrollable and offscreen active/focused tabs remain reachable.
 - AC-019: Activating or focusing an offscreen tab automatically brings it into the visible tab-list bounds in both docked and drawer presentations.
 - AC-020: The current expanded catalog, including Usage/Token and VNC Viewer when available, remains reachable and in canonical order through scrolling without changing the active underline or panel-toggle placement.
 - AC-021: If a More menu is implemented, it is a secondary shortcut and the visible scrollable tab row remains available as the primary interaction.
@@ -264,7 +264,7 @@ Rationale: The defect starts as a breakpoint bug but the required product-qualit
 
 ## Approval Status
 
-Refined from the user's explicit confirmation of the original single-row right-tool tab design, subsequent rejection of the full-screen `Work / Runs / Files / Tools` row and early left-panel auto-collapse, and the latest decision to make left and right side surfaces symmetric. Both `right-tool-tabs-ux-spec.md` and `workspace-responsive-ui-ux-spec.md` are intended-behavior supplements and require architecture re-review before implementation resumes. Architecture Review Round 6 approved FR-029/FR-030 and AC-030/AC-031 but returned DI-003 because the composed executable policy boundary was underspecified. FR-031/AC-032 and the exact resolver contract are now added. This revision strengthens FR-024/FR-032/FR-035/FR-037/FR-038/FR-039/FR-040 and AC-025/AC-033/AC-036/AC-038/AC-039/AC-040/AC-041: right tools use the guaranteed docked -> consuming strip -> overlay strip order, left and right strips are the sole compact side affordances, a fitting wide user-origin strip re-docks its panel while a constrained/narrow/responsive strip opens the corresponding temporary drawer, standard `/workspace` has no hamburger, breadcrumb trigger, duplicate `Agents & teams`, top `Tools`, generic surface row, or drawer-only right policy state, and the no-header rule is explicitly scoped so other default-layout routes retain their existing narrow navigation. The existing wrapping Local Fix, initial-fit browser assertion, generic four-surface-row behavior, blanket `<1280px` left collapse, duplicate right-strip-plus-top-Tools behavior, and unscoped global-header removal are superseded for their respective scopes.
+Refined from the user's explicit confirmation of the original single-row right-tool tab design, subsequent rejection of the full-screen `Work / Runs / Files / Tools` row and early left-panel auto-collapse, the decision to make left and right side surfaces symmetric, and the latest request to remove the added right-tab edge fade/chevron layer. Both `right-tool-tabs-ux-spec.md` and `workspace-responsive-ui-ux-spec.md` are intended-behavior supplements and require architecture re-review before implementation resumes. Architecture Review Round 6 approved FR-029/FR-030 and AC-030/AC-031 but returned DI-003 because the composed executable policy boundary was underspecified. FR-031/AC-032 and the exact resolver contract are now added. This revision strengthens FR-018/FR-024/FR-032/FR-035/FR-037/FR-038/FR-039/FR-040 and AC-018/AC-025/AC-033/AC-036/AC-038/AC-039/AC-040/AC-041/AC-042: right-tool tabs retain the personal-branch single-row/native-scroll behavior without custom fade or chevron indicators; right tools use the guaranteed docked -> consuming strip -> overlay strip order; left and right strips are the sole compact side affordances; a fitting wide user-origin strip re-docks its panel while a constrained/narrow/responsive strip opens the corresponding temporary drawer; standard `/workspace` has no hamburger, breadcrumb trigger, duplicate `Agents & teams`, top `Tools`, generic surface row, or drawer-only right policy state; and the no-header rule is explicitly scoped so other default-layout routes retain their existing narrow navigation. The existing wrapping Local Fix, added fade/chevron implementation, initial-fit browser assertion, generic four-surface-row behavior, blanket `<1280px` left collapse, duplicate right-strip-plus-top-Tools behavior, and unscoped global-header removal are superseded for their respective scopes.
 
 ### Latest strip-activation reconciliation
 
@@ -314,7 +314,7 @@ continuity additions; `/mobile` is excluded.
 | --- | --- |
 | AC-016 | Single-row right-tool tab-header visual contract. |
 | AC-017 | Horizontal overflow interaction across pointer, touch, and keyboard input. |
-| AC-018 | Conditional overflow discoverability affordances. |
+| AC-018 | Personal-branch visual continuity: no added fade/chevron while native scrolling and active-tab reachability remain available. |
 | AC-019 | Active/focused tab auto-scroll reachability. |
 | AC-020 | Expanded catalog reachability and order preservation. |
 | AC-021 | Optional More-menu non-replacement rule. |

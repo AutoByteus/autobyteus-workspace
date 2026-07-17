@@ -387,7 +387,7 @@ compact drag behavior cannot be lost at the state-to-renderer boundary.
 - Wide layout spacing, typography, and panel positions should match the personal branch unless a documented center-protection rule applies.
 - The generic top surface bar is not part of the wide layout.
 - The left collapse affordance remains in the left panel and is not replaced by an automatic mid-page collapse.
-- Right tool tabs retain the separate `right-tool-tabs-ux-spec.md` contract: one row, original typography/spacing, native horizontal scrolling, active-tab auto-scroll, conditional edge fades, directional chevron, and stable panel toggle.
+- Right tool tabs retain the separate `right-tool-tabs-ux-spec.md` contract: one row, original typography/spacing, native horizontal scrolling, active-tab auto-scroll, no added edge fade or directional chevron, and stable panel toggle.
 - Drawer/strip controls must be visually lightweight and semantically explicit; they must not look like a second application navigation hierarchy.
 - Left and right strips must remain visually/control-compatible with `origin/personal`; no leading menu button, breadcrumb, visible drawer title, separate close `X`, duplicate panel toggle, or strip-plus-drawer pair may appear in standard `/workspace`.
 

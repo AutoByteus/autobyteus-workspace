@@ -469,3 +469,72 @@ Implementation-source limits, architecture score categories, and forced test-fil
 - Current-round durable-test review result: `Pass`.
 - Recommended Recipient: `delivery_engineer`.
 - Notes: This is the separate proportional durable-test review and does not reopen the implementation scorecard. Route the complete cumulative package, including this report, Round 16 execution evidence, Round 32 source review, implementation handoff, current coverage/execution reports, current probe/results, and all still-relevant requirements/design artifacts to delivery.
+
+## Review Round 12 — Round 17 API/E2E Pass / Reopened-Drawer Tab Coverage
+
+### Review Meta
+
+- Review Round: `12`
+- Trigger: Successful API/E2E Round 17 after implementation-source Review Round 33 `Pass` for Architecture Round 23 native right-tool tab scrolling at exact HEAD `ff98ad19ead19823c03bc4e90c20623c238522cc`.
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`.
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`.
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md` (Round 33 `Pass`; this test review does not reopen the implementation scorecard).
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md` (Round 17 addendum).
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md` (Round 17 authoritative execution).
+- API/E2E Result: `Pass` — `18` states (`17` `/workspace` plus `/mobile`), `6/6` clicked interaction records, `3` right-tab validation journeys / `18` snapshots, `0` failures, and `0` browser console-error/pageerror/exception failures.
+- Final Validation Confidence: `97.4%` overall; no applicable category below `90%`.
+- Prior unresolved test-review findings rechecked: `TR-001` remains resolved; no other unresolved test-review findings.
+
+### Changed Durable Test Scope
+
+Temporary probes, logs, screenshots, generated JSON, and runtime artifacts are evidence, not durable test code under review. API/E2E made one bounded update to the existing durable browser probe after the first pass exposed a coverage gap: the right strip-to-drawer journey collected drawer geometry but did not invoke the existing tab-list contract helper for the reopened drawer.
+
+| Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | `Updated` (`12` insertions, `0` deletions relative to the implementation-reviewed source) | FR-016–FR-019 / AC-016–AC-019 native right-tool tab row, active/focused offscreen auto-scroll, and drawer-mode tab-list reachability; existing right-strip -> transient drawer path | One coherent responsive browser matrix for `/workspace` and `/mobile`, including side transitions, right-tab contracts, resize, drawer lifecycle, route scope, and `/mobile` isolation | Reuses `exerciseTabList`; invokes it only after the reopened right drawer is confirmed visible and records its checks in the interaction result. |
+
+- No durable test file changed: `No`.
+- Durable test source changed during this API/E2E round: `Yes`, one existing path.
+- Temporary execution artifacts reviewed only as evidence: Round 17 logs, results, summaries, initial-pass artifacts, screenshot, and cleanup records.
+
+### Validation Evidence Reviewed
+
+- Changed durable probe diff: `12` insertions and `0` deletions in `validateRightStripReopenInteraction`; no production source, requirements, design, or approved expectation changed.
+- Focused validation performed for this review: `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` passed; `git diff --check -- autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` passed.
+- Authoritative browser command used a fresh built backend on `127.0.0.1:13033` with `APP_ENV=test` and isolated SQLite, a fresh Nuxt frontend on `127.0.0.1:13034` with explicit `BACKEND_*` endpoints, headless Chrome, all `17` approved `/workspace` viewports plus `/mobile`, and `--fail-on-console-error`.
+- Authoritative browser evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-workspace-responsive-probe.log`.
+- Initial-pass evidence, retained for the coverage reconciliation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-workspace-responsive-probe-initial.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results-initial.json`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary-initial.json`.
+- Final canonical results: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`.
+- Final browser evidence directly proves the newly covered reopened drawer tab list in addition to the docked lists: one row, `flex-wrap: nowrap`, `overflow-x: auto`, `overflow-y: hidden`, `white-space: nowrap`, native scroll-position change, canonical order, `role=tab`/`aria-selected`, active underline, no custom chrome, Files selection/focus, and VNC focus/auto-scroll. Docked journeys ran at `1280x800`/`1440x900`; reopened drawer journey ran at `900x700`.
+- Repository evidence: `14` focused Nuxt files / `94` tests passed; fresh backend build, probe syntax, and diff checks passed. Evidence is recorded in the Round 17 coverage/execution package.
+- Cleanup evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-cleanup-ports.log` verifies run-owned ports `13033`/`13034` were cleared.
+
+### Proportional Test-Code Checks
+
+Implementation-source limits, architecture score categories, and forced test-file splitting are not applied to this review.
+
+| Check | Result (`Pass`/`Fail`/`N/A`) | Evidence / Notes |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | `Pass` | The change remains inside the existing named `validateRightStripReopenInteraction` journey and uses the existing `exerciseTabList` responsibility. The `tabValidation` result is returned alongside the drawer state and failures, so the reopened-drawer coverage is visible in the interaction record. |
+| Assertions prove approved requirements instead of incidental implementation details | `Pass` | The new call does not add brittle duplicate assertions; it reuses the established tab-list contract against the actual reopened drawer selector only after `rightDrawer.visible` is proven. This directly closes the discovered gap for FR-016–FR-019 / AC-016–AC-019 in drawer mode. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | `Pass` | The update reuses `exerciseTabList`, its existing collector/list-key selection, the existing drawer state, page, selectors, failure aggregation, and viewport/runtime setup. No duplicate browser setup or test helper was introduced. |
+| Test isolation and determinism are appropriate for the exercised boundary | `Pass` | The call is guarded by the confirmed visible drawer state, uses the existing deterministic `900x700` strip-to-drawer journey, and ran under isolated services/data with console-error enforcement and cleanup. It does not depend on a second browser session or external VNC service; VNC is focused rather than selected as documented. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | `Pass` | The durable file remains one coherent responsive workspace probe. The added drawer tab validation is the same right-tool surface responsibility, not an unrelated suite. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | `Pass` | The first pass's geometry-only coverage was not left as the final contract; the existing helper is now invoked for the reopened drawer. No approved assertion was weakened, removed, or disabled. Initial-pass artifacts remain evidence only. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | `Pass` | The investigation explicitly identifies the first-pass drawer-tab coverage gap and the bounded twelve-line reconciliation. The final run reports `3` tab-validation journeys / `18` snapshots and passes all drawer-mode native tab assertions. |
+
+### Findings
+
+| Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
+| --- | --- | --- | --- | --- |
+| None | N/A | The durable-test delta is focused, reuses the existing helper, closes a concrete drawer-mode coverage gap, preserves prior contracts, passed syntax/diff checks, and passed the authoritative rerun. | None. | N/A |
+
+### Latest Authoritative Result
+
+- Result: `Pass`.
+- Changed durable test paths reviewed: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`.
+- Unresolved finding IDs: `None` (`TR-001` remains resolved).
+- Current-round durable-test review result: `Pass`.
+- Final validation confidence: `97.4%`.
+- Recommended Recipient: `delivery_engineer`.
+- Notes: This is the separate proportional durable-test review and does not reopen the implementation scorecard. The complete cumulative package, including this report, Round 17 execution evidence, Round 33 source review, implementation handoff, current coverage/execution reports, current probe/results, and all still-relevant requirements/design artifacts may now proceed to delivery. Do not treat this report as a deployment or release sign-off.

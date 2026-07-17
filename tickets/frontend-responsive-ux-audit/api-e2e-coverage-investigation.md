@@ -9,10 +9,10 @@
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`
 - Implementation Live Visual Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`
-- Current Investigation Round: `15`
-- Trigger: Implementation source review Round 27 `PASS` for CR-016/CR-017 at current HEAD `7eceffbd5935d95bc102f3deedebf70231addc4c5` (parent `56ee3c3b0`). Architecture Round 18 / DI-010 remains the design authority: effective presentations are exactly `docked|strip`; side actions are nested strip activation state; drawers are local transient state. This round must execute the current probe and full browser matrix against a fresh backend/frontend/Chrome runtime.
+- Current Investigation Round: `17`
+- Trigger: Implementation source review `PASS` for exact current HEAD `ff98ad19ead19823c03bc4e90c20623c238522cc` (parent `bc1b8368c`), Architecture Round 23 native right-tool tab scrolling. The current round executes the refreshed durable probe and full browser matrix against a fresh backend/frontend/Chrome runtime; this is not delivery sign-off.
 - Prior Investigation Reviewed: `Round 1` historical API/E2E investigation in this same file path. Round 1 added/updated durable coverage and was later reviewed, but it is superseded as sign-off by implementation-owned Round 4 visual/source/probe changes.
-- Latest Authoritative Investigation: `Round 16`
+- Latest Authoritative Investigation: `Round 17`
 
 ## Current Requirement And Design Basis
 
@@ -692,3 +692,54 @@ Code review Round 4 is the latest authority. It passed the current implementatio
 
 - Result: `Pass`.
 - No production source, requirements, design, or durable probe source changed in Round 15. The current probe remains an upstream changed durable artifact and must receive the separate proportional test-code review; route the full cumulative package to `code_reviewer`. Do not route directly to delivery.
+
+
+## Round 17 Current-State Coverage Investigation Addendum
+
+### Trigger and review boundary
+
+- Exact implementation state under validation: `ff98ad19ead19823c03bc4e90c20623c238522cc` (`fix: restore native right-tool tab scrolling`), parent `bc1b8368c`.
+- Trigger: implementation-source review PASS from `code_reviewer`, Round 32 / Architecture Round 23. This source PASS is not API/E2E sign-off.
+- The current reviewed change restores the approved native single-row right-tool tab header: `TabList.vue` is the native horizontal scroll owner (`overflow-x-auto`, `flex-nowrap`, `whitespace-nowrap`), `Tab.vue` keeps compact tab semantics/active underline, and `RightSideTabs.vue` preserves the canonical catalog and fixed panel-toggle ownership. The broader reviewed responsive shell remains in scope: measured resize bounds and intent, route-scoped strips/transient drawers, independent left/right drawer registry/layers/focus/Tab/Escape/`aria-modal`, and `/mobile` isolation.
+- Current durable probe: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`. It already contains direct native scroll-position assertions, Files selection, Files/VNC focus and auto-scroll checks, one-row/order/ARIA/underline/toggle checks, responsive matrix checks, resize/strip/drawer journeys, and `/mobile` isolation.
+
+### Existing durable coverage validity and input-mode decision
+
+| Coverage / journey | Current decision | Basis and execution consequence |
+| --- | --- | --- |
+| Full 17-viewport `/workspace` matrix plus `/mobile` | `Still Valid` | It directly observes the reviewed adaptive shell at all approved narrow, threshold, constrained, short-height, docked, and wide states and the separate mobile route. Execute on a fresh backend/frontend/Chrome runtime with browser console-error enforcement. |
+| Native right-tab one-row/overflow/order/ARIA/active-underline/fixed-toggle contract | `Still Valid` | The probe now identifies the real `[data-test="right-side-tab-list"]` native scroll owner, checks computed `flex-wrap`, `overflow-x`, `white-space`, row count, scroll dimensions/position, tab roles/selection/focus/underline, and toggle stability. It no longer treats the superseded fade/chevron layer as required. |
+| Programmatic native scroll-position journey | `Still Valid` | Setting the actual scroll container's `scrollLeft` to a capacity-derived rightward position and observing the changed position proves that browser-native scroll owner/overflow path is live. It is deterministic and avoids relying on platform-specific gesture physics. |
+| Files click/selection and Files/VNC DOM focus journeys | `Still Valid` | The probe uses a real DOM click for Files selection and real element focus for both first and last tabs, then observes selection/focus and auto-scroll into the visible scrollport. This directly exercises the production focus/selection handlers and active-tab reachability without opening VNC's external WebSocket workflow. |
+| Strip, drawer, resize, Tab, Escape, backdrop, and route journeys | `Still Valid` | Existing probe uses browser pointer clicks for strips/backdrops/resizer and real keyboard `Tab`/`Escape` events for drawer lifecycle. Current independent drawer coverage verifies open order, topmost layer, focus return, reverse z-order, hit-tested backdrop dismissal, and `aria-modal` promotion. |
+| Additional mouse/touchpad/touch horizontal-tab gesture journey | `Not Required` | The changed TabList has no custom pointer/touch/mouse-wheel handler: it delegates horizontal scrolling to the browser's native overflow container. Deterministic `scrollLeft` movement plus real focus/selection and existing pointer/keyboard journeys directly prove the changed application boundary. A physical touchpad momentum or touch-swipe trace would add platform-specific browser behavior evidence but would not exercise an application-owned path, so it is residual native-browser risk rather than a material acceptance gap. |
+| Historical generic surface selectors/expectations | `Stale / Remove` from current expectations | The approved shell has no generic Work/Runs/Files/Tools row; semantic triggers/strips and actionable empty state are authoritative. The current probe already rejects the generic row and checks route-scoped semantic ownership. Do not restore or weaken generic-row expectations. |
+
+No durable probe edit was planned before the first execution. The first live pass exposed a coverage gap in the inspected result: `exerciseTabList` ran only for docked right-panel state, while the reviewed scope explicitly requires the native right-tab contract in drawer mode. The probe was therefore updated with a narrow API/E2E-owned change that invokes the same deterministic `exerciseTabList` helper against the reopened right drawer selector; no expectation was weakened and no production source changed. The initial pass artifacts are retained with `-initial` names. The reconciled probe was syntax-checked and rerun; the final result is authoritative. If any further live evidence contradicts the reviewed contract, reconcile only the stale assertion with evidence and return every durable change through proportional `code_reviewer` review; do not weaken native one-row scrollability, order, reachability, or `/mobile` isolation.
+
+### Round 17 execution setup
+
+- Fresh isolated backend: `autobyteus-server-ts/dist/app.js`, `APP_ENV=test`, SQLite data under `/tmp/autobyteus-responsive-ux-audit-api-e2e-round17/db`, `127.0.0.1:13033`.
+- Fresh frontend: Nuxt dev server bound to `127.0.0.1:13034` with all `BACKEND_*` endpoints pointed at the isolated backend.
+- Browser: repository `playwright-core` with discovered Google Chrome/Chromium executable.
+- Browser command must include `--fail-on-console-error`.
+- Evidence paths: `tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-*.log`; canonical browser JSON/summary remain under `tickets/frontend-responsive-ux-audit/probes/api-e2e/`.
+- Cleanup requirement: stop only the Round 17 processes, verify ports `13033` and `13034` are no longer listening, and record the result.
+
+### Round 17 planned evidence
+
+1. Run the current 14-file focused Nuxt suite reported by source review (94 tests expected by the review package).
+2. Run `node --check` for the durable probe and `git diff --check` for the web worktree.
+3. Build the backend from the exact current worktree.
+4. Start the isolated backend and Nuxt frontend, verify readiness, and execute the full browser probe.
+5. Inspect the fresh JSON for native scroll movement, Files/VNC focus-selection and auto-scroll, docked/drawer state, strips/drawers, resize bounds, independent drawer ownership, console messages, and `/mobile`.
+6. Stop services, verify cleanup, update the execution report and confidence scorecard, then route the cumulative package to `code_reviewer` for the separate proportional durable-test review.
+
+
+### Round 17 coverage reconciliation and final decision
+
+- The first Round 17 browser pass against the unchanged current probe passed `18` states, but result inspection showed only `2` tab-validation journeys: docked right panel at `1280x800` and `1440x900`. The right-strip-to-drawer path collected drawer tab geometry but did not invoke native scroll/focus/selection assertions.
+- This was classified as an API/E2E durable-coverage gap, not a production failure. The existing `exerciseTabList` helper already represented the approved contract, so the bounded fix added one call from `validateRightStripReopenInteraction` for the reopened right drawer's `[data-test="workspace-right-tool-drawer"] [data-test="right-side-tab-list"]`. The fix preserves all existing checks: one row, native overflow, order, ARIA, active underline, native scroll movement, Files selection/focus, VNC focus/auto-scroll, and no custom overflow chrome.
+- The final rerun passed `18` states (`17` `/workspace` viewports plus `/mobile`), `6/6` clicked interaction records, `3` tab-validation journeys with `18` snapshots, `0` failures, and `0` browser console-error failures under `--fail-on-console-error`. The drawer journey observed `clientWidth=396`, `scrollWidth=598`, `maxScrollLeft=202`, one row, native `overflow-x:auto`, and VNC focused/visible after auto-scroll at the right boundary.
+- Durable input decision remains `No additional physical mouse/touchpad/touch horizontal-tab journey required`: the changed TabList owns no pointer/touch handler; native browser overflow is directly proven by the real scroll container, while real focus/selection and existing pointer/keyboard drawer/strip journeys cover application-owned behavior.
+- Final durable decision: `Updated` in this round; the current probe path is API/E2E-owned and must return to `code_reviewer` for proportional test-code review before delivery.

@@ -646,10 +646,22 @@ async function validateRightStripReopenInteraction(page, viewport) {
   if (!drawerState.rects.rightDrawer?.visible) failures.push('right-tool strip reopen did not open the right tool drawer');
   if (drawerState.rects.rightStrip?.visible) failures.push('right drawer open state kept the right strip visible');
 
+  let tabValidation = null;
+  if (drawerState.rects.rightDrawer?.visible) {
+    tabValidation = await exerciseTabList(
+      page,
+      '[data-test="workspace-right-tool-drawer"] [data-test="right-side-tab-list"]',
+      drawerState,
+      'drawer',
+    );
+    failures.push(...tabValidation.failures);
+  }
+
   return {
     action: 'reopen right tools from user-hidden strip',
     clicked,
     state: drawerState,
+    tabValidation,
     failures,
   };
 }

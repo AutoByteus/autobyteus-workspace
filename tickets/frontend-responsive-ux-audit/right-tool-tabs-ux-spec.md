@@ -13,7 +13,13 @@
 
 This supplement defines the intended interaction and visual behavior of the right-tool tab header in standard /workspace. It applies to the right-tool tabs when rendered in both docked desktop panels and constrained/narrow drawers. It does not redesign the phone/PWA /mobile shell or the content inside Terminal, Browser, VNC, Files, or other tool panels.
 
-The original product design is a single horizontal tab row. When the available width cannot show every tab, the row remains a single row and becomes horizontally scrollable. Overflow is a discoverability and reachability concern, not a reason to wrap the header into multiple rows.
+The original product design is a single horizontal tab row. When the available width cannot show every tab, the row remains a single row and becomes horizontally scrollable. Overflow is a reachability concern, not a reason to wrap the header into multiple rows or add custom visual chrome.
+
+Latest revision (2026-07-17): the user explicitly chose the personal-branch
+visual behavior for this header, so the previously approved custom edge-fade
+and directional-chevron indicators are removed from the intended contract.
+This revision does not remove native scrolling or active-tab reachability, and
+it does not change `/mobile`.
 
 ## Visual Contract
 
@@ -21,7 +27,7 @@ The original product design is a single horizontal tab row. When the available w
 - Do not wrap tabs into a second row.
 - Preserve the original personal-branch tab spacing and typography (including its normal `text-base`/`px-5 py-3` visual scale), active blue underline, hover treatment, and fixed panel-toggle affordance. Do not apply a new compact density merely because the header is rendered in an adaptive layout; only a documented narrow drawer state may use a separate density treatment.
 - The tab row may use clipped or visually hidden native scrollbars, but it must remain a real horizontally scrollable container.
-- Scroll affordances are visually lightweight and must not compete with the tab labels or panel-toggle control.
+- Do not add overflow-indicator chrome to this header. The personal-branch tab row has no edge fade and no directional chevron; native scrolling and active/focused-tab auto-scroll provide reachability without adding another visual layer.
 
 ## Interaction Contract
 
@@ -38,16 +44,19 @@ The tab buttons remain individually focusable. Keyboard focus must not be trappe
 
 ### Overflow discoverability
 
-When hidden tab content exists:
+When hidden tab content exists, the header remains visually identical to the
+personal-branch header: it does not render an edge fade, directional chevron,
+floating scroll button, or other overflow-indicator layer. The tab row remains
+a real native horizontal scroll container, so users can use mouse wheel or
+shift-wheel, touchpad gestures, touch drag/swipe, and keyboard scrolling. This
+is an intentional return to the personal-branch interaction, not a removal of
+tab reachability.
 
-- show a subtle edge fade on the edge toward the undisclosed tabs;
-- show a small directional chevron near that edge;
-- at the initial left scroll position, the primary chevron points right;
-- after the row is scrolled right, the primary chevron points left so the user can return;
-- when undisclosed content remains in both directions, the corresponding edge indicators may both be shown, but they remain small and low-contrast;
-- hide fades and chevrons at the corresponding scroll boundary.
-
-Clicking a chevron scrolls the tab row by approximately one visible tab-list page while preserving the native scroll container as the primary mechanism. The chevron is an accelerator, not a separate navigation model.
+The absence of a custom indicator must not be “repaired” by wrapping the row,
+shrinking the personal typography, or requiring initial fit. Active and focused
+tabs remain programmatically scrolled into view, and the optional More menu
+remains a separate subordinate shortcut only if the product later chooses to
+add it.
 
 ### Active-tab reachability
 
@@ -105,18 +114,16 @@ same strip; the drawer must not add a second visual close control.
 
 ## Ownership and Component Boundaries
 
-- RightSideTabs owns the right-tool presentation configuration, fixed panel-toggle placement, active-tab context, and whether overflow affordances are enabled for this header.
-- TabList owns the single-row scroll container, scroll metrics, active/focused-tab auto-scroll, and lightweight edge affordance rendering for the configured tab row.
+- RightSideTabs owns the right-tool presentation configuration, fixed panel-toggle placement, and active-tab context. It must not enable or configure custom overflow indicators for this header.
+- TabList owns the single-row scroll container, scroll metrics, and active/focused-tab auto-scroll for the configured tab row. It must not render right-tool-specific fade, chevron, floating scroll button, or other overflow-indicator chrome.
 - Tab owns tab typography, spacing, focus treatment, hover treatment, and active underline. It does not calculate container overflow.
-- The workspace surface-order catalog remains the only source of tab ordering. Scroll affordances must not duplicate or reorder that catalog.
+- The workspace surface-order catalog remains the only source of tab ordering. Native scrolling and active-tab auto-scroll must not duplicate or reorder that catalog.
 - The generic tab-list API must not expose a right-tool-specific wrapped mode. If another product surface requires a different layout, it must make that responsibility explicit without enabling wrapping in this right-tool header.
 
 ## Accessibility and Semantics
 
 - The tab row keeps tab semantics and a usable keyboard focus order.
-- Chevron controls have accessible labels describing the direction of additional tabs.
-- Edge fades are decorative and must not be the only overflow signal.
-- Reduced-motion preferences must disable or shorten animated chevron/scroll transitions without disabling reachability.
+- Native horizontal scrolling and tab keyboard semantics must remain accessible without relying on a custom visual indicator. Reduced-motion preferences may make active/focused-tab auto-scroll non-animated without disabling reachability.
 - The panel-toggle control remains independently reachable and must not scroll out of the fixed header action area.
 - Strip continuity is validated against `origin/personal`: the right strip
   has no extra top trigger or drawer chrome, is the only visible compact
@@ -129,7 +136,7 @@ Durable component and browser coverage must verify:
 
 1. the right-tool tab row has one rendered row and horizontal overflow rather than wrapping;
 2. the original active underline and panel-toggle affordance remain present;
-3. overflow indicators appear only when additional tabs exist and update after scrolling;
+3. no edge fade, directional chevron, floating scroll button, or overflow-indicator layer appears at the initial, middle, or terminal scroll position;
 4. clicking or keyboard-focusing an offscreen tab brings it into view;
 5. all current tabs remain reachable in both docked and drawer presentations even when the initial viewport cannot show them all;
 6. canonical order remains stable while scrolling and across presentation changes;

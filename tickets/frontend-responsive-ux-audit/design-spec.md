@@ -2,7 +2,7 @@
 
 ## Supplemental Design Artifact
 
-right-tool-tabs-ux-spec.md is the authoritative task-specific UI/UX supplement for the right-tool tab header. It defines the approved single-row visual contract, horizontal scrolling, conditional edge fade/chevron discoverability, active-tab auto-scroll, keyboard/touch behavior, optional More-menu boundary, and validation obligations. It is intended behavior and requires architecture-review approval together with this design spec.
+right-tool-tabs-ux-spec.md is the authoritative task-specific UI/UX supplement for the right-tool tab header. It defines the approved personal-branch single-row visual contract, native horizontal scrolling, active-tab auto-scroll, keyboard/touch behavior, optional More-menu boundary, the explicit absence of added edge fades/chevrons, and validation obligations. It is intended behavior and requires architecture-review approval together with this design spec.
 
 `workspace-responsive-ui-ux-spec.md` is the authoritative scenario-level supplement for the standard workspace shell. It defines the personal-branch wide layout, symmetric left/right panel-strip-drawer states, no header navigation controls, empty-state selection/run actions, right-tool access, accessibility, and `/mobile` separation. It is intended behavior and requires architecture-review approval together with this design spec.
 
@@ -612,22 +612,22 @@ The current CR-003 Local Fix is not the target design. It enables a wrapped righ
 Required target behavior:
 
 - RightSideTabs renders one horizontal tab row in both docked and drawer modes.
-- The row preserves the existing spacing, typography, compact density, active underline, and fixed panel-toggle affordance.
+- The row preserves the existing personal-branch spacing, typography, active underline, and fixed panel-toggle affordance; no new compact density is introduced to compensate for overflow.
 - TabList provides a real horizontal overflow container and does not use a right-tool-specific wrapping mode.
 - Horizontal scrolling works through native mouse, touchpad, touch, and keyboard interactions.
-- A conditional edge fade and small directional chevron reveal undisclosed tabs without visually crowding the header. The affordance changes direction as the user scrolls and disappears at the relevant boundary.
+- The standard right-tool header adds no edge fade, directional chevron, or overflow-indicator layer. Native horizontal scrolling is intentionally the personal-branch interaction; active and focused tabs are brought into view programmatically so removing the added indicators does not reduce reachability.
 - Selecting or focusing an offscreen tab automatically scrolls it into view.
 - An optional More menu can offer secondary direct selection but cannot replace the visible scrollable row.
 - The right-tool catalog remains the sole authority for order; scrolling must not reorder a tab or remove its reachable path.
 
-The initial visible bounds are not a correctness boundary. Validation must prove scrollability, discoverability, active/focused-tab reachability, panel-toggle stability, and canonical order. It must not require every available tab to fit before the user scrolls.
+The initial visible bounds are not a correctness boundary. Validation must prove native scrollability, active/focused-tab reachability, absence of custom fade/chevron indicators, panel-toggle stability, and canonical order. It must not require every available tab to fit before the user scrolls.
 
 The current integrated catalog order remains Files -> Team when applicable -> Terminal -> Activity -> Usage/Token when available -> Artifacts -> Browser when available -> VNC Viewer. Scrolling changes only the visible window into this sequence, never the sequence itself.
 
 Ownership for this behavior is intentionally narrow:
 
 - RightSideTabs owns presentation configuration, active-tab context, fixed panel-toggle placement, and tool content.
-- TabList owns the single-row scroll container, scroll metrics, overflow affordances, and active/focused-tab auto-scroll.
+- TabList owns the single-row scroll container, scroll metrics, and active/focused-tab auto-scroll. It does not own or render right-tool fade/chevron overflow affordances.
 - Tab owns visual tab styling and focus treatment, but not container overflow or catalog order.
 - The workspace surface-order catalog remains the only source of tool order.
 
@@ -728,10 +728,10 @@ Mode invariants:
 | File / Boundary | Responsibility | Must Not Do |
 | --- | --- | --- |
 | RightSideTabs.vue | Configure the single-row right-tool header, preserve the fixed panel-toggle affordance, pass active context, and render tool content. | Wrap rows, duplicate catalog order, or require initial tab fit. |
-| TabList.vue | Own the horizontal scroll container, scroll metrics, edge fades/chevrons, keyboard/touch reachability, and active/focused-tab auto-scroll. | Decide right-tool order, panel visibility, or tool content. |
+| TabList.vue | Own the horizontal scroll container, scroll metrics, keyboard/touch reachability, and active/focused-tab auto-scroll; it must not render right-tool-specific fade/chevron indicators. | Decide right-tool order, panel visibility, tool content, or add overflow-indicator chrome. |
 | Tab.vue | Preserve spacing, typography, active underline, hover, and focus styling. | Calculate overflow or own scroll affordance state. |
 | workspaceSurfaceOrder.ts / useRightSideTabs | Provide canonical tool order and availability. | Change order by presentation mode or scroll position. |
-| workspace-responsive-probe.mjs | Assert one-row rendering, scrollability, affordance transitions, active-tab reachability, and order. | Require every tab to fit in initial visible bounds. |
+| workspace-responsive-probe.mjs | Assert one-row rendering, native scrollability, absence of custom fade/chevron indicators, active-tab reachability, and order. | Require every tab to fit in initial visible bounds or treat custom indicators as required. |
 
 ## Reusable Owned Structures Check
 
@@ -903,8 +903,8 @@ Layering follows ownership: route does not bypass the adaptive layout/policy and
 Right-tool tab design-impact sequence:
 
 1. Reconcile the current CR-003 wrapped implementation back to the approved single-row behavior before any new browser sign-off.
-2. Add a scrollable tab-row owner with conditional edge fade/chevron state and active/focused-tab auto-scroll while preserving existing tab visuals and the fixed panel toggle.
-3. Replace the initial-fit browser assertion with scrollability, discoverability, active-tab reachability, and canonical-order assertions in docked and drawer states.
+2. Add a scrollable tab-row owner with native horizontal scrolling and active/focused-tab auto-scroll while preserving existing tab visuals and the fixed panel toggle; omit the added edge fade/chevron layer.
+3. Replace the initial-fit browser assertion with native scrollability, active-tab reachability, absence of custom fade/chevron indicators, and canonical-order assertions in docked and drawer states.
 4. Re-run component/source review and then current API/E2E before delivery resumes.
 
 1. Replace the split shell/workspace policy functions with the pure `resolveResponsiveWorkspaceShellState` resolver and boundary tests covering the exact fit formula and phase order.
