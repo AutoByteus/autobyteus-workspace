@@ -9,6 +9,7 @@ import { markdownItPrism } from '~/utils/markdownItPrism'; // Keep using this fo
 import type { MarkdownImageResourceResolver } from '~/utils/markdownImageResource';
 import {
   createAbsoluteFilePathAction,
+  findAbsoluteFilePathCodeCandidates,
   findAbsoluteFilePathCandidates,
   normalizeAbsoluteFilePath,
   type AbsoluteFilePathAction,
@@ -30,6 +31,7 @@ export type MarkdownRenderModel = {
 
 export interface MarkdownSegmentOptions {
   enableEventMonitorFileActions?: boolean;
+  fileActionLabel?: (action: AbsoluteFilePathAction) => string;
 }
 
 const escapeHtml = (value: string): string => value
@@ -39,13 +41,11 @@ const escapeHtml = (value: string): string => value
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#39;');
 
-const actionButton = (actionId: string): string => (
-  `<button type="button" class="event-monitor-file-action" data-event-monitor-file-action-id="${escapeHtml(actionId)}" data-event-monitor-file-action-control="true">Open file</button>`
+const actionButton = (actionId: string, label: string): string => (
+  `<button type="button" class="event-monitor-file-action" data-event-monitor-file-action-id="${escapeHtml(actionId)}" data-event-monitor-file-action-control="true">${escapeHtml(label)}</button>`
 );
 
 const normalizeMarkdownLinkPath = (href: string): string | null => {
-  const direct = normalizeAbsoluteFilePath(href);
-  if (direct) return direct;
   try {
     return normalizeAbsoluteFilePath(decodeURIComponent(href));
   } catch {
@@ -124,8 +124,9 @@ export const useMarkdownSegments = (
       ? prismFenceRule(tokens, idx, options, env, self)
       : self.renderToken(tokens, idx, options);
     const actionIds = (token.meta?.eventMonitorFileActionIds || []) as string[];
+    const actionLabels = (token.meta?.eventMonitorFileActionLabels || {}) as Record<string, string>;
     return actionIds.length
-      ? `${rendered}<div class="event-monitor-file-actions">${actionIds.map(actionButton).join('')}</div>`
+      ? `${rendered}<div class="event-monitor-file-actions">${actionIds.map((actionId) => actionButton(actionId, actionLabels[actionId] || actionId)).join('')}</div>`
       : rendered;
   };
 
@@ -148,6 +149,12 @@ export const useMarkdownSegments = (
     };
 
     const tokens = md.parse(sourceString, {}); // Use the md without Prism for tokenizing
+    const fileActionLabel = (actionId: string): string => {
+      const action = fileActions[actionId];
+      return action
+        ? options.fileActionLabel?.(action) || action.displayLabel
+        : '';
+    };
 
     const resolver = imageResourceResolver?.value;
     const transformImageTokens = (nestedTokens: any[]): void => {
@@ -259,11 +266,17 @@ export const useMarkdownSegments = (
           token.children = decorateInlineTokens(token.children);
         }
         if (token.type === 'fence') {
-          const actionIds = findAbsoluteFilePathCandidates(token.content || '').map((candidate) => (
+          const actionIds = findAbsoluteFilePathCodeCandidates(token.content || '').map((candidate) => (
             registerFileAction(candidate, 'fenced-code')
           ));
           if (actionIds.length) {
-            token.meta = { ...(token.meta || {}), eventMonitorFileActionIds: actionIds };
+            token.meta = {
+              ...(token.meta || {}),
+              eventMonitorFileActionIds: actionIds,
+              eventMonitorFileActionLabels: Object.fromEntries(
+                actionIds.map((actionId) => [actionId, fileActionLabel(actionId)]),
+              ),
+            };
           }
         }
       }
@@ -281,13 +294,13 @@ export const useMarkdownSegments = (
       mdWithPrism.renderer.rules.event_monitor_file_action_text = (renderTokens, idx) => {
         const token = renderTokens[idx];
         const actionId = token.meta?.eventMonitorFileActionId as string;
-        return `${escapeHtml(token.content)}${actionButton(actionId)}`;
+        return `${escapeHtml(token.content)}${actionButton(actionId, fileActionLabel(actionId))}`;
       };
       mdWithPrism.renderer.rules.code_inline = (renderTokens, idx, renderOptions, env, self) => {
         const token = renderTokens[idx];
         const actionId = token.meta?.eventMonitorFileActionId as string | undefined;
         const rendered = `<code>${escapeHtml(token.content)}</code>`;
-        return actionId ? `${rendered}${actionButton(actionId)}` : rendered;
+        return actionId ? `${rendered}${actionButton(actionId, fileActionLabel(actionId))}` : rendered;
       };
     }
 

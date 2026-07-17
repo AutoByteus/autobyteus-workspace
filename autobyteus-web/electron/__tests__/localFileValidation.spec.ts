@@ -20,11 +20,11 @@ describe('trusted local preview validation', () => {
     await expect(validateReadableRegularFile(filePath)).resolves.toEqual({ ok: true, filePath });
     await expect(validateReadableRegularFile(root)).resolves.toEqual({
       ok: false,
-      error: 'The selected path is not a regular file.',
+      code: 'not-regular-file',
     });
     await expect(validateReadableRegularFile('relative/report.md')).resolves.toEqual({
       ok: false,
-      error: 'The file path must be an absolute path.',
+      code: 'invalid-path',
     });
   });
 });

@@ -21,6 +21,8 @@ import type {
   OpenFileState,
 } from '~/stores/fileExplorerState'
 import { buildWorkspaceContentUrl } from '~/utils/fileExplorer/workspaceResourceUrl'
+import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability'
+import { localFilePreviewError } from '~/utils/fileExplorer/localFileError'
 
 function isAbsoluteLocalPath(path: string): boolean {
   if (path.startsWith('/')) {
@@ -92,7 +94,11 @@ export const fileExplorerContentActions = {
       wsState.openFiles.push(newFileState)
       console.log('[FileExplorer] Pushed new initial file state:', JSON.parse(JSON.stringify(newFileState)))
 
-      if (windowNodeContextStore.isEmbeddedWindow && isAbsoluteLocalPath(filePath) && window.electronAPI) {
+      if (
+        windowNodeContextStore.isEmbeddedWindow
+        && isAbsoluteLocalPath(filePath)
+        && hasTrustedElectronLocalFileCapability()
+      ) {
         await this._loadLocalFile(newFileState, filePath)
       } else {
         this._loadWorkspaceOrExternalFile(newFileState, filePath, workspaceId, windowNodeContextStore)
@@ -111,16 +117,18 @@ export const fileExplorerContentActions = {
       try {
         const result = await window.electronAPI.readLocalTextFile(filePath)
         fileState.content = result.success ? result.content ?? '' : null
-        fileState.error = result.success ? null : result.error || 'Failed to read local file.'
+        fileState.error = result.success
+          ? null
+          : localFilePreviewError(result.errorCode || 'unavailable')
       } catch (error) {
-        fileState.error = error instanceof Error ? error.message : String(error)
+        fileState.error = localFilePreviewError('unavailable')
       }
     } else if (['Image', 'Audio', 'Video', 'Excel', 'PDF'].includes(fileState.type)) {
       fileState.url = buildLocalFileUrl(filePath)
       console.log(`[FileExplorer] Constructed local media URL: ${fileState.url}`)
     } else {
       console.warn(`[FileExplorer] Unsupported local file type "${fileState.type}" for "${filePath}".`)
-      fileState.error = 'Unsupported file type for local preview.'
+      fileState.error = localFilePreviewError('unsupported-type')
     }
     fileState.isLoading = false
   },
@@ -254,7 +262,7 @@ export const fileExplorerContentActions = {
         variables: { workspaceId, filePath },
         fetchPolicy: 'network-only',
       })
-      if (errors?.length) throw new Error(errors.map((error) => error.message).join(', '))
+      if (errors?.length) throw new Error(errors.map((error: { message: string }) => error.message).join(', '))
       const content = data?.fileContent ?? ''
       file.content = content
       file.isLoading = false
@@ -298,7 +306,7 @@ export const fileExplorerContentActions = {
       })
       if (errors?.length) {
         wsState.filesToIgnoreNextModify.delete(filePath)
-        throw new Error(errors.map((error) => error.message).join(', '))
+        throw new Error(errors.map((error: { message: string }) => error.message).join(', '))
       }
       if (!data?.writeFileContent) {
         wsState.filesToIgnoreNextModify.delete(filePath)

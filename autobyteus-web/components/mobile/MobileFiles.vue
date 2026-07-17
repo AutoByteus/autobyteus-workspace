@@ -303,31 +303,62 @@ async function consumeEventMonitorPreviewRequest(): Promise<void> {
   const request = mobileWorkStore.pendingFilePreviewRequest;
   const currentContext = props.context;
   const resolvedWorkspaceId = activeWorkspace.value?.workspaceId || '';
+  const clearRequest = (revision: number): void => {
+    mobileWorkStore.consumeFilePreviewRequest(revision);
+    if (previewRequestInFlightRevision.value === revision) {
+      previewRequestInFlightRevision.value = null;
+    }
+  };
   if (
-    !request ||
-    !currentContext ||
-    mobileWorkContextKey(currentContext) !== request.contextKey ||
-    !resolvedWorkspaceId ||
-    resolvedWorkspaceId !== request.workspaceId ||
-    previewRequestInFlightRevision.value === request.revision
+    !request
   ) {
+    previewRequestInFlightRevision.value = null;
     return;
   }
 
-  previewRequestInFlightRevision.value = request.revision;
-  previewPresentation.value = request.presentation;
-  previewAllowAttach.value = false;
-  previewNode.value = {
-    id: `event-monitor-${request.revision}`,
-    name: request.relativePath.split('/').filter(Boolean).at(-1) || request.relativePath,
-    path: request.relativePath,
-    is_file: true,
-    children: [],
-    childrenLoaded: true,
-  };
-  await mobileExplorer.openFileReadOnly(request.relativePath);
-  mobileWorkStore.consumeFilePreviewRequest(request.revision);
-  previewRequestInFlightRevision.value = null;
+  if (!currentContext || mobileWorkContextKey(currentContext) !== request.contextKey) {
+    clearRequest(request.revision);
+    return;
+  }
+  if (!resolvedWorkspaceId) {
+    if (mobileExplorer.resolutionStatus.value === 'resolving') return;
+    clearRequest(request.revision);
+    return;
+  }
+  if (resolvedWorkspaceId !== request.workspaceId || previewRequestInFlightRevision.value === request.revision) {
+    if (resolvedWorkspaceId !== request.workspaceId) {
+      clearRequest(request.revision);
+    }
+    return;
+  }
+
+  const requestRevision = request.revision;
+  previewRequestInFlightRevision.value = requestRevision;
+  try {
+    await mobileExplorer.openFileReadOnly(request.relativePath);
+  } finally {
+    const latestRequest = mobileWorkStore.pendingFilePreviewRequest;
+    const latestContext = props.context;
+    const latestWorkspaceId = activeWorkspace.value?.workspaceId || '';
+    const stillCurrent = latestRequest?.revision === requestRevision
+      && latestContext
+      && mobileWorkContextKey(latestContext) === request.contextKey
+      && latestWorkspaceId === request.workspaceId;
+
+    if (stillCurrent) {
+      previewPresentation.value = request.presentation;
+      previewAllowAttach.value = false;
+      previewNode.value = {
+        id: `event-monitor-${requestRevision}`,
+        name: request.relativePath.split('/').filter(Boolean).at(-1) || request.relativePath,
+        path: request.relativePath,
+        is_file: true,
+        children: [],
+        childrenLoaded: true,
+      };
+    }
+    clearRequest(requestRevision);
+  }
 }
 
 function openCrumb(index: number): void {

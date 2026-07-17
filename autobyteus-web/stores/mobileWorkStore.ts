@@ -199,6 +199,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
       ...current,
       focusedMemberRouteKey: normalizedMemberRouteKey,
     };
+    pendingFilePreviewRequest.value = null;
     rememberFocusedTeamMember(normalizedTeamRunId, normalizedMemberRouteKey);
     return true;
   }

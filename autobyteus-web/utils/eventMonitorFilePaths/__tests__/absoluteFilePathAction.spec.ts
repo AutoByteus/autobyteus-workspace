@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  findAbsoluteFilePathCodeCandidates,
   findAbsoluteFilePathCandidates,
   isAbsoluteFilePath,
   normalizeAbsoluteFilePath,
@@ -25,5 +26,18 @@ describe('absolute Event Monitor file path policy', () => {
   it('normalizes separators without authorizing the path', () => {
     expect(normalizeAbsoluteFilePath('C:\\Users\\name\\report.md')).toBe('C:/Users/name/report.md');
     expect(normalizeAbsoluteFilePath('http://example.test/report.md')).toBeNull();
+  });
+
+  it('keeps unambiguous literal-space code paths intact', () => {
+    expect(findAbsoluteFilePathCodeCandidates('/tmp/my file.md\n[report](C:\\Work\\my report.md)')).toEqual([
+      expect.objectContaining({
+        rawCandidate: '/tmp/my file.md',
+        normalizedCandidate: '/tmp/my file.md',
+      }),
+      expect.objectContaining({
+        rawCandidate: 'C:\\Work\\my report.md',
+        normalizedCandidate: 'C:/Work/my report.md',
+      }),
+    ]);
   });
 });

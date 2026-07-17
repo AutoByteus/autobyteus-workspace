@@ -7,7 +7,7 @@
 - Branch: `codex/event-monitor-absolute-path-file-preview`
 - Base: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
 - Architecture review: **Pass, round 2**
-- Implementation status: **Complete for implementation scope; ready for source code review**
+- Implementation status: **Local Fix complete; resubmitted for implementation source review**
 
 ## Cumulative Reviewed Solution Package
 
@@ -17,6 +17,7 @@
 - Intake/task context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/task.md`
 - Reference screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png`
 - Architecture review: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/design-review-report.md`
+- Implementation source review round 1: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/code-review-report.md`
 - This implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/implementation-handoff.md`
 
 ## What Changed
@@ -29,6 +30,14 @@
 - Added phone-first `MobileFilePreviewRequest` with revision/context/workspace matching. `MobileFiles` owns request consumption and selection; Event Monitor requests render the existing `MobileFileViewer` inline and suppress Attach. Manual mobile row taps retain their existing fullscreen/attach behavior.
 - Centralized trusted Electron absolute/existence/readability/regular-file validation for both text IPC and `local-file://` media requests.
 - Added localized English and Simplified Chinese action, host-availability, and preview-failure messages.
+
+### Local Fix round after implementation source review
+
+- CR-F-001: Local preview now requires the actual Electron `readLocalTextFile` bridge; the embedded-node sentinel alone routes through active-workspace containment mapping/refusal. File Explorer also refuses its local branch without the trusted bridge. Added text/media browser-sentinel regressions.
+- CR-F-002: Raw Markdown link destinations decode before canonical normalization, while the raw href remains in the action descriptor. Added encoded-space POSIX/Windows action tests.
+- CR-F-003: Fenced-code policy recognizes only unambiguous complete path lines and raw Markdown-link destinations, allowing literal spaces without changing rendered/copied code text. Added exact candidate/code-preservation tests.
+- CR-F-004: Mobile mismatched requests are consumed, team focus changes clear pending requests, async completion rechecks revision/context/workspace before committing selection, and in-flight state resets on every exit/completion path. Added context-switch and async stale-request tests.
+- CR-F-005: Action button labels are supplied by the localized render-time callback rather than an English HTML placeholder. Electron validation returns stable categories, and File Explorer maps those categories to localized failure messages instead of showing native OS errors.
 
 ## Behavior Traceability
 
@@ -54,6 +63,8 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/components/workspace/agent/AgentEventMonitor.vue`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/composables/useEventMonitorFilePreview.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/utils/fileExplorer/absoluteWorkspacePathMapping.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/utils/fileExplorer/localFileCapability.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/utils/fileExplorer/localFileError.ts`
 - Desktop preview and shell:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/stores/fileExplorerContentActions.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/stores/fileExplorerState.ts`
@@ -78,6 +89,8 @@
 - `autobyteus-web/utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts`
 - `autobyteus-web/electron/__tests__/localFileValidation.spec.ts`
 - `autobyteus-web/stores/__tests__/mobileWorkStore.spec.ts`
+- `autobyteus-web/stores/__tests__/fileExplorerNodeRouting.spec.ts`
+- `autobyteus-web/components/mobile/__tests__/MobileFiles.spec.ts`
 
 ## Implementation-Scoped Validation
 
@@ -86,11 +99,11 @@ All checks below were run in this task worktree before the temporary dependency 
 - ✅ `pnpm --dir autobyteus-web exec nuxt prepare`
   - Nuxt preparation passed; generated `.nuxt` output is ignored and no dependency symlinks remain in the worktree.
 - ✅ Focused Markdown/path/mobile component checks:
-  - `pnpm --dir autobyteus-web exec vitest run utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/mobile/__tests__/MobileFileViewer.spec.ts`
-  - Result: `4 files, 16 tests passed`.
+  - `pnpm --dir autobyteus-web exec vitest run utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/mobile/__tests__/MobileFileViewer.spec.ts components/mobile/__tests__/MobileFiles.spec.ts stores/__tests__/mobileWorkStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts electron/__tests__/localFileValidation.spec.ts`
+  - Result: `8 files, 38 tests passed`.
 - ✅ Broader changed-chain/store/file checks:
-  - `pnpm --dir autobyteus-web exec vitest run components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts components/conversation/__tests__/AIMessage.spec.ts components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/mobile/__tests__/MobileFiles.spec.ts stores/__tests__/mobileWorkStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts composables/__tests__/useRightPanel.spec.ts`
-  - Result: `9 files, 36 tests passed`.
+  - `pnpm --dir autobyteus-web exec vitest run components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts components/conversation/__tests__/AIMessage.spec.ts components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/mobile/__tests__/MobileFiles.spec.ts components/mobile/__tests__/MobileFileViewer.spec.ts stores/__tests__/mobileWorkStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts composables/__tests__/useRightPanel.spec.ts`
+  - Result: `11 files, 52 tests passed`.
 - ✅ Latest monitor/mobile regression rerun:
   - `pnpm --dir autobyteus-web exec vitest run stores/__tests__/mobileWorkStore.spec.ts components/mobile/__tests__/MobileFiles.spec.ts components/mobile/__tests__/MobileFileViewer.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts`
   - Result: `4 files, 19 tests passed`.
@@ -99,13 +112,23 @@ All checks below were run in this task worktree before the temporary dependency 
   - Result: `1 file, 1 test passed`.
 - ✅ `git diff --check`
   - Passed.
+- ✅ `pnpm --dir autobyteus-web audit:localization-literals`
+  - Passed with zero unresolved findings.
+- ✅ `pnpm --dir autobyteus-web guard:localization-boundary`
+  - Passed.
+- ✅ `pnpm --dir autobyteus-web guard:web-boundary`
+  - Passed.
+- ✅ `pnpm --dir autobyteus-web exec tsc -p electron/tsconfig.json --noEmit --pretty false`
+  - Passed.
+- ⚠️ `pnpm --dir autobyteus-web exec nuxi typecheck`
+  - Repository-wide baseline remains non-gating; after the local fix, no changed-scope diagnostics remained when filtering the output for this ticket's source/tests.
 - ⚠️ `pnpm --dir autobyteus-web exec tsc --noEmit --pretty false`
   - Attempted but non-gating: the repository's ordinary TypeScript invocation emitted a large pre-existing baseline set involving generated Nuxt/Vue module declarations and temporary dependency/type resolution. No changed-production-source-specific error remained after filtering the output during implementation, but this is not reported as a passing repository typecheck.
 
 ## Frontend Feedback Loop
 
 - Component-level rendering and interaction checks passed for the Markdown opt-in/default-off behavior, action emission, mobile viewer presentation, and File Explorer host states.
-- A full browser/dev-renderer visual inspection of the mounted desktop shell, collapsed-panel focus handoff, and phone viewport was not completed because the worktree dependencies/dev preview were unavailable after local checks and no independent live browser surface was started. This remains an explicit downstream API/E2E validation item; no visual sign-off is claimed here.
+- A full browser/dev-renderer visual inspection of the mounted desktop shell, collapsed-panel focus handoff, and phone viewport was not completed; no independent live browser surface was started. This remains an explicit downstream API/E2E validation item; no visual sign-off is claimed here.
 
 ## Known Risks / Downstream Validation Requirements
 
@@ -137,6 +160,6 @@ API/E2E owns independent executable coverage and environment validation after so
 
 ## Downstream Handoff Status
 
-- `code_reviewer`: **next owner — implementation source/structural review required**.
+- `code_reviewer`: **resubmission required — implementation source/structural review after CR-F-001 through CR-F-005 fixes**.
 - `api_e2e_engineer`: **not yet run and no sign-off claimed**; begin only after source review passes.
 - `delivery_engineer`: **not yet applicable**; requires API/E2E pass and proportional test-code review.

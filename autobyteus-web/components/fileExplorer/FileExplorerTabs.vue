@@ -24,7 +24,7 @@
           </div>
           <div v-else-if="activeFileData?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
             <strong class="font-bold">{{ $t('tools.components.fileExplorer.FileExplorerTabs.error') }}</strong>
-            <span class="block sm:inline">{{ activeFileData.error }}</span>
+            <span class="block sm:inline">{{ activeFileErrorMessage }}</span>
           </div>
           <div v-else-if="activeFileData" class="flex-1 bg-gray-50 rounded-lg overflow-hidden relative min-h-0">
             <FileViewer
@@ -32,7 +32,7 @@
               :file="activeFileData"
               :mode="activeFileDisplayMode"
               :loading="activeFileData.isLoading"
-              :error="activeFileData.error"
+              :error="activeFileErrorMessage"
               :read-only="activeFileIsReadOnly"
               @update:model-value="fileContent = $event"
               @save="handleSave"
@@ -167,8 +167,8 @@
           <p class="text-gray-600">Loading file content...</p>
         </div>
         <div v-else-if="activeFileData?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
-          <strong class="font-bold">Error!</strong>
-          <span class="block sm:inline">{{ activeFileData.error }}</span>
+          <strong class="font-bold">{{ $t('tools.components.fileExplorer.FileExplorerTabs.error') }}</strong>
+          <span class="block sm:inline">{{ activeFileErrorMessage }}</span>
         </div>
         <div v-else-if="activeFileData" class="flex-1 bg-gray-50 rounded-lg overflow-hidden relative min-h-0">
           <FileViewer
@@ -176,7 +176,7 @@
             :file="activeFileData"
             :mode="activeFileDisplayMode"
             :loading="activeFileData.isLoading"
-            :error="activeFileData.error"
+            :error="activeFileErrorMessage"
             :read-only="activeFileIsReadOnly"
             @update:model-value="fileContent = $event"
             @save="handleSave"
@@ -211,6 +211,8 @@ import { useWorkspaceStore } from '~/stores/workspace'
 import { useFileContentDisplayModeStore } from '~/stores/fileContentDisplayMode'
 import { getLanguage } from '~/utils/highlighting/languageDetector'
 import { Icon } from '@iconify/vue'
+import { useLocalization } from '~/composables/useLocalization'
+import { localFilePreviewErrorCode } from '~/utils/fileExplorer/localFileError'
 
 // Viewer components
 import FileViewer from '~/components/fileExplorer/FileViewer.vue'
@@ -218,6 +220,7 @@ import FileViewer from '~/components/fileExplorer/FileViewer.vue'
 const fileExplorerStore = useFileExplorerStore()
 const workspaceStore = useWorkspaceStore()
 const fileContentDisplayModeStore = useFileContentDisplayModeStore()
+const { t } = useLocalization()
 const { isZenMode } = storeToRefs(fileContentDisplayModeStore)
 
 const props = withDefaults(defineProps<{
@@ -235,6 +238,18 @@ const currentWorkspaceId = computed(() => props.workspaceId || workspaceStore.ac
 const openFiles = computed(() => currentWorkspaceId.value ? fileExplorerStore.getOpenFiles(currentWorkspaceId.value) : [])
 const activeFile = computed(() => currentWorkspaceId.value ? fileExplorerStore.getActiveFile(currentWorkspaceId.value) : null)
 const activeFileData = computed(() => currentWorkspaceId.value ? fileExplorerStore.getActiveFileData(currentWorkspaceId.value) : null)
+const localFileErrorMessageKey: Record<string, string> = {
+  'invalid-path': 'tools.components.fileExplorer.FileExplorerTabs.local_file_invalid_path',
+  unavailable: 'tools.components.fileExplorer.FileExplorerTabs.local_file_unavailable',
+  'not-regular-file': 'tools.components.fileExplorer.FileExplorerTabs.local_file_not_regular_file',
+  unreadable: 'tools.components.fileExplorer.FileExplorerTabs.local_file_unreadable',
+  'unsupported-type': 'tools.components.fileExplorer.FileExplorerTabs.local_file_unsupported_type',
+}
+const activeFileErrorMessage = computed(() => {
+  const error = activeFileData.value?.error
+  const code = localFilePreviewErrorCode(error)
+  return code ? t(localFileErrorMessageKey[code]) : error
+})
 
 const fileContent = ref<string | null>(null)
 const showSaveSuccess = ref(false)

@@ -390,14 +390,14 @@ function installIpcHandlers(): void {
     try {
       const validation = await validateReadableRegularFile(filePath);
       if (!validation.ok) {
-        return { success: false, error: validation.error };
+        return { success: false, errorCode: validation.code };
       }
       const content = await fs.readFile(validation.filePath, 'utf-8');
       return { success: true, content };
-    } catch (error) {
+    } catch {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error reading file',
+        errorCode: 'unavailable',
       };
     }
   });

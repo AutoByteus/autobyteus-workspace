@@ -19,6 +19,51 @@ export interface AbsoluteFilePathCandidate {
   end: number;
 }
 
+/**
+ * Code blocks can contain a complete path line or a literal Markdown-link
+ * destination with spaces. Prose remains whitespace-delimited so ordinary
+ * sentences are not reinterpreted as paths.
+ */
+export function findAbsoluteFilePathCodeCandidates(value: string): AbsoluteFilePathCandidate[] {
+  const candidates: AbsoluteFilePathCandidate[] = [];
+  const seen = new Set<string>();
+  const addCandidate = (rawCandidate: string, start: number): void => {
+    const normalizedCandidate = normalizeAbsoluteFilePath(rawCandidate);
+    if (!normalizedCandidate) return;
+    const key = `${start}:${rawCandidate}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    candidates.push({
+      rawCandidate,
+      normalizedCandidate,
+      start,
+      end: start + rawCandidate.length,
+    });
+  };
+
+  let lineStart = 0;
+  for (const line of value.split('\n')) {
+    const trimmedLine = line.trim();
+    if (trimmedLine) {
+      const leadingWhitespace = line.indexOf(trimmedLine);
+      addCandidate(trimmedLine, lineStart + leadingWhitespace);
+    }
+    lineStart += line.length + 1;
+  }
+
+  const markdownLinkDestination = /\]\(((?:\/[^\r\n)]*|[A-Za-z]:[\\/][^\r\n)]*))\)/g;
+  let match: RegExpExecArray | null;
+  while ((match = markdownLinkDestination.exec(value))) {
+    const rawDestination = match[1];
+    const rawCandidate = rawDestination.trim();
+    const leadingWhitespace = rawDestination.length - rawDestination.trimStart().length;
+    const start = match.index + match[0].indexOf(rawDestination) + leadingWhitespace;
+    addCandidate(rawCandidate, start);
+  }
+
+  return candidates.sort((left, right) => left.start - right.start);
+}
+
 const WINDOWS_ABSOLUTE_PATH = /^[A-Za-z]:[\\/]/;
 const TRAILING_PATH_PUNCTUATION = /[.,;:!?\]}\)>]+$/;
 

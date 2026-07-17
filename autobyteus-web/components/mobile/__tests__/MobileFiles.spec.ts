@@ -3,9 +3,10 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia, type Pinia } from 'pinia';
 import MobileFiles from '../MobileFiles.vue';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
+import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useWorkspaceStore, type WorkspaceInfo } from '~/stores/workspace';
 import { createDefaultWorkspaceFileExplorerState } from '~/stores/fileExplorerState';
-import type { MobileWorkContext } from '~/types/mobileWork';
+import { mobileWorkContextKey, type MobileWorkContext } from '~/types/mobileWork';
 import { createNodeIdToNodeDictionary } from '~/utils/fileExplorer/fileUtils';
 import { TreeNode } from '~/utils/fileExplorer/TreeNode';
 
@@ -58,8 +59,8 @@ function mountSubject(context: MobileWorkContext | null) {
       plugins: [pinia],
       stubs: {
         MobileFileViewer: {
-          props: ['node', 'workspaceId', 'fileState', 'openError'],
-          template: '<div data-testid="mobile-file-viewer-stub">{{ workspaceId }}:{{ node.path }}:{{ fileState?.type || "none" }}:{{ openError || "" }}</div>',
+          props: ['node', 'workspaceId', 'fileState', 'openError', 'presentation', 'allowAttach'],
+          template: '<div data-testid="mobile-file-viewer-stub"><button v-if="allowAttach" data-testid="mobile-file-attach">Attach</button>{{ workspaceId }}:{{ node.path }}:{{ fileState?.type || "none" }}:{{ openError || "" }}</div>',
         },
       },
     },
@@ -229,5 +230,95 @@ describe('MobileFiles', () => {
 
     expect(openFilePreview).toHaveBeenCalledWith('notes.md', 'workspace-1');
     expect(wrapper.get('[data-testid="mobile-file-viewer-stub"]').text()).toContain('workspace-1:notes.md:Text');
+  });
+
+  it('consumes a matching Event Monitor request and presents it inline without Attach', async () => {
+    const root = new TreeNode('project', '', false, [], 'root', true);
+    useWorkspaceStore().workspaces['workspace-1'] = makeWorkspace();
+    seedWorkspaceTree('workspace-1', root);
+    const fileExplorerStore = useFileExplorerStore();
+    vi.spyOn(fileExplorerStore, 'openFilePreview').mockImplementation(async (filePath, workspaceId) => {
+      const state = fileExplorerStore._getOrCreateWorkspaceState(workspaceId);
+      state.openFiles.push({
+        path: filePath,
+        type: 'Text',
+        mode: 'preview',
+        content: '# Notes',
+        url: null,
+        relativeResourceContext: { kind: 'workspace', workspaceId },
+        isLoading: false,
+        error: null,
+      });
+      state.activeFile = filePath;
+    });
+
+    const wrapper = mountSubject(workspaceContext);
+    await flushPromises();
+    useMobileWorkStore().requestFilePreview({
+      contextKey: mobileWorkContextKey(workspaceContext),
+      workspaceId: 'workspace-1',
+      relativePath: 'notes.md',
+      source: 'event-monitor',
+      readOnly: true,
+      presentation: 'inline',
+    });
+    await flushPromises();
+
+    expect(useMobileWorkStore().pendingFilePreviewRequest).toBeNull();
+    expect(wrapper.get('[data-testid="mobile-file-viewer-stub"]').text()).toContain('workspace-1:notes.md:Text');
+    expect(wrapper.find('[data-testid="mobile-file-attach"]').exists()).toBe(false);
+  });
+
+  it('clears a pending request when the mobile context changes before consumption', async () => {
+    const root = new TreeNode('project', '', false, [], 'root', true);
+    useWorkspaceStore().workspaces['workspace-1'] = makeWorkspace();
+    seedWorkspaceTree('workspace-1', root);
+    const wrapper = mountSubject(workspaceContext);
+    await flushPromises();
+
+    const store = useMobileWorkStore();
+    store.requestFilePreview({
+      contextKey: mobileWorkContextKey(workspaceContext),
+      workspaceId: 'workspace-1',
+      relativePath: 'stale.md',
+      source: 'event-monitor',
+      readOnly: true,
+      presentation: 'inline',
+    });
+    await wrapper.setProps({ context: runContext });
+    await flushPromises();
+
+    expect(store.pendingFilePreviewRequest).toBeNull();
+    expect(wrapper.find('[data-testid="mobile-file-viewer-stub"]').exists()).toBe(false);
+  });
+
+  it('does not commit a preview when context changes during async opening', async () => {
+    const root = new TreeNode('project', '', false, [], 'root', true);
+    useWorkspaceStore().workspaces['workspace-1'] = makeWorkspace();
+    seedWorkspaceTree('workspace-1', root);
+    const fileExplorerStore = useFileExplorerStore();
+    let resolveOpen!: () => void;
+    vi.spyOn(fileExplorerStore, 'openFilePreview').mockImplementation(() => new Promise<void>((resolve) => {
+      resolveOpen = resolve;
+    }));
+    const wrapper = mountSubject(workspaceContext);
+    await flushPromises();
+
+    const store = useMobileWorkStore();
+    store.requestFilePreview({
+      contextKey: mobileWorkContextKey(workspaceContext),
+      workspaceId: 'workspace-1',
+      relativePath: 'stale.md',
+      source: 'event-monitor',
+      readOnly: true,
+      presentation: 'inline',
+    });
+    await vi.waitFor(() => expect(resolveOpen).toBeTypeOf('function'));
+    await wrapper.setProps({ context: runContext });
+    resolveOpen();
+    await flushPromises();
+
+    expect(store.pendingFilePreviewRequest).toBeNull();
+    expect(wrapper.find('[data-testid="mobile-file-viewer-stub"]').exists()).toBe(false);
   });
 });

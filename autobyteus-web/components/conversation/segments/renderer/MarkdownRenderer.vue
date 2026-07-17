@@ -38,12 +38,19 @@ const emit = defineEmits<{
   (event: 'file-path-action', action: AbsoluteFilePathAction): void;
 }>();
 
+const { t } = useLocalization();
 const contentRef = computed(() => props.content);
 const imageResourceResolverRef = computed(() => props.imageResourceResolver);
 const { parsedSegments, managedImageSources, fileActions } = useMarkdownSegments(
   contentRef,
   imageResourceResolverRef,
-  { enableEventMonitorFileActions: props.enableEventMonitorFileActions === true },
+  {
+    enableEventMonitorFileActions: props.enableEventMonitorFileActions === true,
+    fileActionLabel: (action) => t(
+      'workspace.components.conversation.segments.renderer.MarkdownRenderer.open_file',
+      { file: action.displayLabel },
+    ),
+  },
 );
 const { resolvedUrlsBySource, errorsBySource } = useAuthorizedObjectUrlMap(
   () => managedImageSources.value,
@@ -52,7 +59,6 @@ const { resolvedUrlsBySource, errorsBySource } = useAuthorizedObjectUrlMap(
 const segments = computed(() => parsedSegments.value);
 
 const markdownRendererContainer = ref<HTMLElement | null>(null);
-const { t } = useLocalization();
 
 const applyManagedImageBindings = () => {
   const container = markdownRendererContainer.value;

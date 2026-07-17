@@ -71,6 +71,44 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.find('a').attributes('href')).toBe('#');
   });
 
+  it('decodes encoded POSIX and Windows link destinations while retaining source text', async () => {
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '[posix](/tmp/my%20file.md) [windows](C%3A%5CWork%5Cmy%20report.md)',
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    const controls = wrapper.findAll('[data-event-monitor-file-action-id]');
+    await controls[0].trigger('click');
+    await controls[1].trigger('click');
+    const actions = wrapper.emitted('file-path-action')?.map((entry) => entry[0] as { normalizedCandidate: string });
+    expect(actions).toEqual([
+      expect.objectContaining({ normalizedCandidate: '/tmp/my file.md' }),
+      expect.objectContaining({ normalizedCandidate: 'C:/Work/my report.md' }),
+    ]);
+    expect(wrapper.text()).toContain('posix');
+    expect(wrapper.text()).toContain('windows');
+  });
+
+  it('keeps fenced code text unchanged while exposing complete space-containing paths', async () => {
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '```text\n/tmp/my file.md\n[report](C:\\Work\\my report.md)\n```',
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    expect(wrapper.find('code').text()).toContain('/tmp/my file.md');
+    expect(wrapper.find('code').text()).toContain('[report](C:\\Work\\my report.md)');
+    expect(wrapper.findAll('[data-event-monitor-file-action-id]')).toHaveLength(2);
+    expect(wrapper.findAll('.event-monitor-file-action')[0].text()).toContain('Open');
+  });
+
   it('should render MermaidDiagram component for mermaid blocks', () => {
     // We rely on useMarkdownSegments to parse this. 
     // Since useMarkdownSegments is a real composable (not mocked here), 

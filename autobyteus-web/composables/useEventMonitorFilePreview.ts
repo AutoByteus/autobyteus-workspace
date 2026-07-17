@@ -5,6 +5,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absoluteWorkspacePathMapping';
+import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
 import { mobileWorkContextKey } from '~/types/mobileWork';
 
@@ -94,7 +95,7 @@ export function useEventMonitorFilePreview() {
       }
 
       let locator: EventMonitorPreviewLocator | null = null;
-      if (windowNodeContextStore.isEmbeddedWindow) {
+      if (windowNodeContextStore.isEmbeddedWindow && hasTrustedElectronLocalFileCapability()) {
         locator = { kind: 'local-absolute', workspaceId, path: action.normalizedCandidate };
       } else {
         const mappedLocator = mapAbsolutePathToWorkspaceRelative(action.normalizedCandidate, {
