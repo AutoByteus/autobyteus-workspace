@@ -1,0 +1,5 @@
+--- frontend readiness ---
+command=env BACKEND_NODE_BASE_URL=http://127.0.0.1:13045 BACKEND_GRAPHQL_URL=http://127.0.0.1:13045/graphql BACKEND_REST_URL=http://127.0.0.1:13045/rest BACKEND_WS_URL=ws://127.0.0.1:13045 BACKEND_AGENT_WS_URL=ws://127.0.0.1:13045/ws/agent BACKEND_AGENT_TEAM_WS_URL=ws://127.0.0.1:13045/ws/agent-team BACKEND_GRAPHQL_WS_URL=ws://127.0.0.1:13045/graphql BACKEND_TERMINAL_WS_URL=ws://127.0.0.1:13045/ws/terminal BACKEND_FILE_EXPLORER_WS_URL=ws://127.0.0.1:13045/ws/file-explorer pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 13046
+frontend_workspace_status=200
+response_bytes=1879
+note=Nuxt dev emitted existing transient #app-manifest pre-transform warnings; Vite server/Nitro built and route returned HTTP 200.

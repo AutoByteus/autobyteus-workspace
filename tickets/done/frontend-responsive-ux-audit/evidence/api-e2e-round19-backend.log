@@ -1,0 +1,4 @@
+--- backend readiness ---
+Fri Jul 17 08:03:12 UTC 2026
+listener_status=404
+pid=19211 status=Ss+ command=node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 13045 --data-dir /tmp/autobyteus-responsive-ux-audit-api-e2e-round19

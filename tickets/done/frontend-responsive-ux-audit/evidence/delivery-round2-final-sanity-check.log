@@ -1,0 +1,25 @@
+$ git diff --check
+$ rg stale public env docs
+$ git status --short --branch
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 2]
+ M tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ M tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ M tickets/frontend-responsive-ux-audit/evidence/delivery-round2-checkpoint-commit.log
+ M tickets/frontend-responsive-ux-audit/handoff-summary.md
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round2-docs-review.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round2-fetch-and-merge.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round2-final-sanity-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round2-post-integration-checks.log
+$ git log --oneline --decorate -6
+f4c70585 (HEAD -> codex/frontend-responsive-ux-audit) merge origin/personal into frontend responsive ux audit
+03171740 chore(delivery): checkpoint responsive ux candidate before base refresh
+e2110cb2 (origin/personal, origin/HEAD, personal, codex/antigravity-cli-runtime-refresh) docs: record v1.3.73 release
+764a0bf8 (tag: v1.3.73) chore(release): bump workspace release version to 1.3.73
+6c779584 Merge branch 'codex/memory-sync-transparency-design' into personal
+e0cc8a3b (origin/codex/memory-sync-transparency-design, codex/memory-sync-transparency-design) feat(memory-sync): clarify source operation feedback
+$ git diff --stat
+ .../delivery-release-deployment-report.md          |  72 ++++++----
+ .../docs-sync-report.md                            |  38 ++---
+ .../evidence/delivery-round2-checkpoint-commit.log | 158 +++++++++++++++++++++
+ .../handoff-summary.md                             |  40 ++++--
+ 4 files changed, 245 insertions(+), 63 deletions(-)

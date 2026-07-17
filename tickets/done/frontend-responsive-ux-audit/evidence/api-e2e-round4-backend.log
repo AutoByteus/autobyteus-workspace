@@ -1,0 +1,374 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts
+App data directory: /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/.env
+Loading environment from: /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:13003
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:13003
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data
+DB DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/db/test.db"
+
+SQLite database test.db created at file:/tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/db/test.db
+
+17 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:77636) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 18 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-07-15T17:05:27.619Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1784135127703,"pid":77636,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:13003"}
+[2026-07-15T17:05:27.703Z] [INFO] [server.runtime] Server listening on 127.0.0.1:13003
+[2026-07-15T17:05:27.704Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:13003
+Creating temp workspace at: /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-responsive-ux-audit-api-e2e-round4-server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-07-15T17:05:27.729Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'load_skill'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+Successfully registered tool definition: 'delegate_tasks'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=168
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=157
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-15T17:05:27.782Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 29 items.
+Pre-loaded 29 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=99
+Finished Autobyteus image model discovery. Total models registered: 12
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=103
+Finished Autobyteus audio model discovery. Total models registered: 8
+Discovering Ollama models from host: http://127.0.0.1:11434
+Finished Ollama discovery. Total models registered: 4
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 10
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Finished Autobyteus discovery. Total models registered: 74
+Successfully fetched 109 models from LLMFactory.
+LLM models cache populated with 109 items.
+Pre-loaded 109 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 18 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4, AUTOBYTEUS=12
+Image models by runtime: api=6, autobyteus=12
+Image models cache populated with 18 items.
+Pre-loaded 18 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+Successfully fetched 12 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=8
+Audio models by runtime: api=4, autobyteus=8
+Audio models cache populated with 12 items.
+Pre-loaded 12 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1784135178807,"pid":77636,"hostname":"MacBookPro","reqId":"req-9","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135178807,"pid":77636,"hostname":"MacBookPro","reqId":"req-9","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":4.402625024318695,"msg":"http request completed"}
+Created terminal session 20ec6b37-b9f0-4f95-b37a-b2458218de49 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 20ec6b37-b9f0-4f95-b37a-b2458218de49
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 20ec6b37-b9f0-4f95-b37a-b2458218de49
+Terminal WebSocket disconnected: 20ec6b37-b9f0-4f95-b37a-b2458218de49
+{"level":30,"time":1784135181939,"pid":77636,"hostname":"MacBookPro","reqId":"req-o","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135181939,"pid":77636,"hostname":"MacBookPro","reqId":"req-o","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.6037079989910126,"msg":"http request completed"}
+Created terminal session 0b8dd710-283e-4977-ae32-4c97477d3f16 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 0b8dd710-283e-4977-ae32-4c97477d3f16
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 0b8dd710-283e-4977-ae32-4c97477d3f16
+Terminal WebSocket disconnected: 0b8dd710-283e-4977-ae32-4c97477d3f16
+{"level":30,"time":1784135185084,"pid":77636,"hostname":"MacBookPro","reqId":"req-13","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135185084,"pid":77636,"hostname":"MacBookPro","reqId":"req-13","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.5152089893817902,"msg":"http request completed"}
+Created terminal session 13c765c7-fbf1-45bf-8bb8-b774ac3228c5 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 13c765c7-fbf1-45bf-8bb8-b774ac3228c5
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 13c765c7-fbf1-45bf-8bb8-b774ac3228c5
+Terminal WebSocket disconnected: 13c765c7-fbf1-45bf-8bb8-b774ac3228c5
+{"level":30,"time":1784135188236,"pid":77636,"hostname":"MacBookPro","reqId":"req-1g","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135188237,"pid":77636,"hostname":"MacBookPro","reqId":"req-1g","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.7885000109672546,"msg":"http request completed"}
+Created terminal session 50d8b117-c37f-4312-a025-2f17845bdfb4 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 50d8b117-c37f-4312-a025-2f17845bdfb4
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 50d8b117-c37f-4312-a025-2f17845bdfb4
+Terminal WebSocket disconnected: 50d8b117-c37f-4312-a025-2f17845bdfb4
+{"level":30,"time":1784135191344,"pid":77636,"hostname":"MacBookPro","reqId":"req-1t","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135191344,"pid":77636,"hostname":"MacBookPro","reqId":"req-1t","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.49183300137519836,"msg":"http request completed"}
+Created terminal session 97a2c1aa-7e40-41a8-abda-69743edf3fba using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 97a2c1aa-7e40-41a8-abda-69743edf3fba
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 97a2c1aa-7e40-41a8-abda-69743edf3fba
+Terminal WebSocket disconnected: 97a2c1aa-7e40-41a8-abda-69743edf3fba
+{"level":30,"time":1784135194554,"pid":77636,"hostname":"MacBookPro","reqId":"req-2a","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135194555,"pid":77636,"hostname":"MacBookPro","reqId":"req-2a","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.41600000858306885,"msg":"http request completed"}
+Created terminal session 9e0b5e0f-e261-4ec9-90ab-dcf92e8892c0 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 9e0b5e0f-e261-4ec9-90ab-dcf92e8892c0
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 9e0b5e0f-e261-4ec9-90ab-dcf92e8892c0
+Terminal WebSocket disconnected: 9e0b5e0f-e261-4ec9-90ab-dcf92e8892c0
+{"level":30,"time":1784135197688,"pid":77636,"hostname":"MacBookPro","reqId":"req-2n","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135197688,"pid":77636,"hostname":"MacBookPro","reqId":"req-2n","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.40104201436042786,"msg":"http request completed"}
+Created terminal session f3a39a71-6921-44c7-adc6-441e262a3128 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: f3a39a71-6921-44c7-adc6-441e262a3128
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session f3a39a71-6921-44c7-adc6-441e262a3128
+Terminal WebSocket disconnected: f3a39a71-6921-44c7-adc6-441e262a3128
+{"level":30,"time":1784135200888,"pid":77636,"hostname":"MacBookPro","reqId":"req-30","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135200888,"pid":77636,"hostname":"MacBookPro","reqId":"req-30","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.5533750057220459,"msg":"http request completed"}
+Created terminal session 150981d1-fd12-4f71-b6d2-9160907b94c9 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 150981d1-fd12-4f71-b6d2-9160907b94c9
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 150981d1-fd12-4f71-b6d2-9160907b94c9
+Terminal WebSocket disconnected: 150981d1-fd12-4f71-b6d2-9160907b94c9
+{"level":30,"time":1784135203621,"pid":77636,"hostname":"MacBookPro","reqId":"req-3c","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135203621,"pid":77636,"hostname":"MacBookPro","reqId":"req-3c","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.6755419969558716,"msg":"http request completed"}
+Created terminal session c30168cb-83c6-47bf-aa21-e126153f9cd5 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c30168cb-83c6-47bf-aa21-e126153f9cd5
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session c30168cb-83c6-47bf-aa21-e126153f9cd5
+Terminal WebSocket disconnected: c30168cb-83c6-47bf-aa21-e126153f9cd5
+{"level":30,"time":1784135206712,"pid":77636,"hostname":"MacBookPro","reqId":"req-3p","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135206712,"pid":77636,"hostname":"MacBookPro","reqId":"req-3p","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.5212500095367432,"msg":"http request completed"}
+Created terminal session 48641db5-e3c6-4410-9a80-eaf26b555357 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 48641db5-e3c6-4410-9a80-eaf26b555357
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 48641db5-e3c6-4410-9a80-eaf26b555357
+Terminal WebSocket disconnected: 48641db5-e3c6-4410-9a80-eaf26b555357
+{"level":30,"time":1784135209445,"pid":77636,"hostname":"MacBookPro","reqId":"req-41","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135209445,"pid":77636,"hostname":"MacBookPro","reqId":"req-41","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.34916597604751587,"msg":"http request completed"}
+Created terminal session 0c58c2c6-6862-4e05-a330-bd9e8da82661 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 0c58c2c6-6862-4e05-a330-bd9e8da82661
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 0c58c2c6-6862-4e05-a330-bd9e8da82661
+Terminal WebSocket disconnected: 0c58c2c6-6862-4e05-a330-bd9e8da82661
+{"level":30,"time":1784135212160,"pid":77636,"hostname":"MacBookPro","reqId":"req-4d","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135212160,"pid":77636,"hostname":"MacBookPro","reqId":"req-4d","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.38087499141693115,"msg":"http request completed"}
+Created terminal session cbfb1fa9-5741-41e2-83d5-775ebc2af966 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: cbfb1fa9-5741-41e2-83d5-775ebc2af966
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session cbfb1fa9-5741-41e2-83d5-775ebc2af966
+Terminal WebSocket disconnected: cbfb1fa9-5741-41e2-83d5-775ebc2af966
+{"level":30,"time":1784135214926,"pid":77636,"hostname":"MacBookPro","reqId":"req-4p","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135214926,"pid":77636,"hostname":"MacBookPro","reqId":"req-4p","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.34687498211860657,"msg":"http request completed"}
+Created terminal session 1d1dc85f-5f5a-43e9-a483-77152865a211 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 1d1dc85f-5f5a-43e9-a483-77152865a211
+Terminal websocket attached for cwd /Users/normy
+Created terminal session b9620fa4-1f0e-4223-822b-ffb2656dd14c using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b9620fa4-1f0e-4223-822b-ffb2656dd14c
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session b9620fa4-1f0e-4223-822b-ffb2656dd14c
+Terminal WebSocket disconnected: b9620fa4-1f0e-4223-822b-ffb2656dd14c
+Closed PTY session 1d1dc85f-5f5a-43e9-a483-77152865a211
+Terminal WebSocket disconnected: 1d1dc85f-5f5a-43e9-a483-77152865a211
+{"level":30,"time":1784135218088,"pid":77636,"hostname":"MacBookPro","reqId":"req-53","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135218089,"pid":77636,"hostname":"MacBookPro","reqId":"req-53","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.3461659848690033,"msg":"http request completed"}
+Created terminal session 628c4229-54e3-4857-a310-b3c6d38b5cab using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 628c4229-54e3-4857-a310-b3c6d38b5cab
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 628c4229-54e3-4857-a310-b3c6d38b5cab
+Terminal WebSocket disconnected: 628c4229-54e3-4857-a310-b3c6d38b5cab
+{"level":30,"time":1784135221294,"pid":77636,"hostname":"MacBookPro","reqId":"req-5g","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135221295,"pid":77636,"hostname":"MacBookPro","reqId":"req-5g","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.6093339920043945,"msg":"http request completed"}
+Created terminal session 1c0a8202-018b-4aaf-b394-f89b5b43dfef using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 1c0a8202-018b-4aaf-b394-f89b5b43dfef
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 1c0a8202-018b-4aaf-b394-f89b5b43dfef
+Terminal WebSocket disconnected: 1c0a8202-018b-4aaf-b394-f89b5b43dfef
+{"level":30,"time":1784135222615,"pid":77636,"hostname":"MacBookPro","reqId":"req-5t","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135222615,"pid":77636,"hostname":"MacBookPro","reqId":"req-5t","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.36779099702835083,"msg":"http request completed"}
+Created terminal session 4a33c0eb-2ff0-4d88-a1ce-538bda9af73b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 4a33c0eb-2ff0-4d88-a1ce-538bda9af73b
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 4a33c0eb-2ff0-4d88-a1ce-538bda9af73b
+Terminal WebSocket disconnected: 4a33c0eb-2ff0-4d88-a1ce-538bda9af73b
+{"level":30,"time":1784135224338,"pid":77636,"hostname":"MacBookPro","reqId":"req-65","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:430:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1784135224338,"pid":77636,"hostname":"MacBookPro","reqId":"req-65","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.35783299803733826,"msg":"http request completed"}
+Created terminal session 0134bf11-ccd9-4b18-a0ee-254671ec707a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 0134bf11-ccd9-4b18-a0ee-254671ec707a
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 0134bf11-ccd9-4b18-a0ee-254671ec707a
+Terminal WebSocket disconnected: 0134bf11-ccd9-4b18-a0ee-254671ec707a

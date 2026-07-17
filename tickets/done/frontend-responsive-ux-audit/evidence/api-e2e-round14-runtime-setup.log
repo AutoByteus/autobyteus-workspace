@@ -1,0 +1,11 @@
+Round 14 runtime setup 2026-07-16T19:20:31+02:00
+HEAD=efcc49e2aa5040d39a1842c61d01ac0db3938d30
+DATA=/tmp/autobyteus-responsive-ux-audit-api-e2e-round14-1784222431
+BACKEND_PORT=13025 FRONTEND_PORT=13026
+backend command: node autobyteus-server-ts/dist/app.js --data-dir /tmp/autobyteus-responsive-ux-audit-api-e2e-round14-1784222431 --host 127.0.0.1 --port 13025
+backend_pid=95945
+backend_ready_http=404 attempt=4
+frontend command: BACKEND_* endpoints -> http://127.0.0.1:13025; pnpm -C autobyteus-web dev --port 13026
+frontend_pid=95967
+frontend_ready_http=200 attempt=3
+runtime setup complete 2026-07-16T19:20:40+02:00

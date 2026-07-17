@@ -1,0 +1,74 @@
+DELIVERY ROUND 17 PRE-REFRESH STATE
+timestamp: 2026-07-17T04:10:21Z
+worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit
+branch: codex/frontend-responsive-ux-audit
+head: ff98ad19ead19823c03bc4e90c20623c238522cc
+head-short: ff98ad19e
+tracked remote base (before fetch): fbd7b6764bd43751956d69ffe22b943d06188444
+status:
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 41]
+ M autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+ M tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+ M tickets/frontend-responsive-ux-audit/code-review-report.md
+ M tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+ M tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ M tickets/frontend-responsive-ux-audit/design-review-report.md
+ M tickets/frontend-responsive-ux-audit/design-spec.md
+ M tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ M tickets/frontend-responsive-ux-audit/handoff-summary.md
+ M tickets/frontend-responsive-ux-audit/investigation-notes.md
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+ M tickets/frontend-responsive-ux-audit/requirements-doc.md
+ M tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md
+ M tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-probe-checks.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-runtime-setup.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-server-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-workspace-responsive-probe-initial.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round17-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round16-electron-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round16-fetch-and-merge.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round16-final-sanity-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round16-post-refresh-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round17-pre-refresh-state.log
+?? tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results-initial.json
+?? tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary-initial.json
+
+diff stat:
+ .../tests/e2e/workspace-responsive-probe.mjs       |   12 +
+ .../api-e2e-coverage-investigation.md              |   57 +-
+ .../api-e2e-execution-coverage-report.md           |   51 +-
+ .../api-e2e-test-review-report.md                  |   69 +
+ .../code-review-report.md                          |  196 ++
+ .../comprehensive-responsive-ui-test-report.md     |    4 +-
+ .../delivery-release-deployment-report.md          |   39 +-
+ .../design-review-report.md                        |   54 +-
+ .../frontend-responsive-ux-audit/design-spec.md    |   18 +-
+ .../docs-sync-report.md                            |   44 +-
+ .../handoff-summary.md                             |   69 +-
+ .../investigation-notes.md                         |   82 +-
+ .../probes/api-e2e/desktop-1280x800.png            |  Bin 38600 -> 37215 bytes
+ .../workspace-responsive-probe-results.json        | 1901 ++++++++++----------
+ .../workspace-responsive-probe-summary.json        |    2 +-
+ .../requirements-doc.md                            |   12 +-
+ .../right-tool-tabs-ux-spec.md                     |   43 +-
+ .../workspace-responsive-ui-ux-spec.md             |    2 +-
+ 18 files changed, 1570 insertions(+), 1085 deletions(-)
+
+recent commits:
+ff98ad19e fix: restore native right-tool tab scrolling
+bc1b8368c chore(delivery): checkpoint responsive ux round16 before base refresh
+63f487580 fix: expose one modal drawer owner
+f8bbbaa55 fix: align independent drawer visual layers
+d2cb35563 fix: keep independent workspace drawers modal-safe
+604be7b73 fix: preserve independent workspace drawer focus
+2f478f8ee fix(workspace): hide strips behind transient drawers
+367ea7853 chore(delivery): checkpoint responsive ux round15 before base refresh

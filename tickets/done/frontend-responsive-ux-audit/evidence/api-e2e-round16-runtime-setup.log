@@ -1,0 +1,13 @@
+Round 16 runtime setup
+HEAD=63f487580e3c82e33e00b231436e30fce3b51cbe
+backend=127.0.0.1:13031
+frontend=127.0.0.1:13032
+data=/tmp/autobyteus-responsive-ux-audit-api-e2e-round16
+Starting backend via node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 13031 --data-dir /tmp/autobyteus-responsive-ux-audit-api-e2e-round16
+Configured isolated backend .env with SQLite path and host.
+Restarting backend with explicit process environment override to guarantee isolated SQLite.
+Starting frontend with explicit BACKEND endpoints to 13031.
+Restarting frontend via direct Nuxt command with explicit port 13032.
+Readiness checks 2026-07-16T23:25:00+0200
+attempt=1 backend=404 frontend=200
+readiness: PASS

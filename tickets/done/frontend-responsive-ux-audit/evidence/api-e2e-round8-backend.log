@@ -1,0 +1,367 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts
+App data directory: /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg
+AppConfig instance created.
+Config file path: /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/.env
+Loading environment from: /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg
+DB DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/db
+LOGS DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/download
+MEMORY DIRECTORY: /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+
+17 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:52561) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 19 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-07-16T08:39:26.192Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1784191166257,"pid":52561,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:13011"}
+[2026-07-16T08:39:26.257Z] [INFO] [server.runtime] Server listening on 127.0.0.1:13011
+[2026-07-16T08:39:26.258Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:13011
+Creating temp workspace at: /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-responsive-ux-audit-api-e2e-round8-ofnpEg/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-07-16T08:39:26.273Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'load_skill'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=113
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=125
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-16T08:39:26.306Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 29 items.
+Pre-loaded 29 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=67
+Finished Autobyteus image model discovery. Total models registered: 12
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=70
+Finished Autobyteus audio model discovery. Total models registered: 8
+Discovering Ollama models from host: http://127.0.0.1:11434
+Finished Ollama discovery. Total models registered: 4
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 10
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Finished Autobyteus discovery. Total models registered: 74
+Successfully fetched 114 models from LLMFactory.
+LLM models cache populated with 114 items.
+Pre-loaded 114 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 19 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5, AUTOBYTEUS=12
+Image models by runtime: api=7, autobyteus=12
+Image models cache populated with 19 items.
+Pre-loaded 19 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+Successfully fetched 12 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=8
+Audio models by runtime: api=4, autobyteus=8
+Audio models cache populated with 12 items.
+Pre-loaded 12 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1784191183143,"pid":52561,"hostname":"MacBookPro","reqId":"req-1","method":"GET","url":"/health","statusCode":404,"elapsedMs":1.4801250100135803,"msg":"http request completed"}
+{"level":40,"time":1784191183152,"pid":52561,"hostname":"MacBookPro","reqId":"req-2","method":"GET","url":"/","statusCode":404,"elapsedMs":0.30070799589157104,"msg":"http request completed"}
+Created terminal session bd8a28bf-e626-486c-923d-537c857f2a01 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: bd8a28bf-e626-486c-923d-537c857f2a01
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session bd8a28bf-e626-486c-923d-537c857f2a01
+Terminal WebSocket disconnected: bd8a28bf-e626-486c-923d-537c857f2a01
+Created terminal session d6fdcf1f-0103-47d2-a98d-d86768ae520b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: d6fdcf1f-0103-47d2-a98d-d86768ae520b
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session d6fdcf1f-0103-47d2-a98d-d86768ae520b
+Terminal WebSocket disconnected: d6fdcf1f-0103-47d2-a98d-d86768ae520b
+Created terminal session 3277ea9d-6474-4524-b244-fd08bba7a705 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3277ea9d-6474-4524-b244-fd08bba7a705
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 3277ea9d-6474-4524-b244-fd08bba7a705
+Terminal WebSocket disconnected: 3277ea9d-6474-4524-b244-fd08bba7a705
+Created terminal session 345e4036-4a0b-4f05-b902-285746fd49b7 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 345e4036-4a0b-4f05-b902-285746fd49b7
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 345e4036-4a0b-4f05-b902-285746fd49b7
+Terminal WebSocket disconnected: 345e4036-4a0b-4f05-b902-285746fd49b7
+Created terminal session 4c6282e3-e6c5-41cf-8d23-6c9ddd8dcec9 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 4c6282e3-e6c5-41cf-8d23-6c9ddd8dcec9
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 4c6282e3-e6c5-41cf-8d23-6c9ddd8dcec9
+Terminal WebSocket disconnected: 4c6282e3-e6c5-41cf-8d23-6c9ddd8dcec9
+Created terminal session 1429ef90-014a-4837-9bad-0cfeacff6bd5 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 1429ef90-014a-4837-9bad-0cfeacff6bd5
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 1429ef90-014a-4837-9bad-0cfeacff6bd5
+Terminal WebSocket disconnected: 1429ef90-014a-4837-9bad-0cfeacff6bd5
+Created terminal session 74c1e391-0de4-46cb-b1b2-6cbf3dfb95c3 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 74c1e391-0de4-46cb-b1b2-6cbf3dfb95c3
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 74c1e391-0de4-46cb-b1b2-6cbf3dfb95c3
+Terminal WebSocket disconnected: 74c1e391-0de4-46cb-b1b2-6cbf3dfb95c3
+Created terminal session 9e6ad531-8515-4ab3-a2e4-d04c4f3b1c3d using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 9e6ad531-8515-4ab3-a2e4-d04c4f3b1c3d
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 9e6ad531-8515-4ab3-a2e4-d04c4f3b1c3d
+Terminal WebSocket disconnected: 9e6ad531-8515-4ab3-a2e4-d04c4f3b1c3d
+Created terminal session c3cf81b0-b789-4198-a818-dd4a77a18d13 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c3cf81b0-b789-4198-a818-dd4a77a18d13
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session c3cf81b0-b789-4198-a818-dd4a77a18d13
+Terminal WebSocket disconnected: c3cf81b0-b789-4198-a818-dd4a77a18d13
+Created terminal session b0730060-0296-4022-8757-c524ccde794a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b0730060-0296-4022-8757-c524ccde794a
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session b0730060-0296-4022-8757-c524ccde794a
+Terminal WebSocket disconnected: b0730060-0296-4022-8757-c524ccde794a
+Created terminal session f16da094-1e5c-4c2c-bb89-fd72d77b6f6a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: f16da094-1e5c-4c2c-bb89-fd72d77b6f6a
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session f16da094-1e5c-4c2c-bb89-fd72d77b6f6a
+Terminal WebSocket disconnected: f16da094-1e5c-4c2c-bb89-fd72d77b6f6a
+Created terminal session df3ecd94-2408-4937-92a4-eb20a35bd8b0 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: df3ecd94-2408-4937-92a4-eb20a35bd8b0
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session df3ecd94-2408-4937-92a4-eb20a35bd8b0
+Terminal WebSocket disconnected: df3ecd94-2408-4937-92a4-eb20a35bd8b0
+Created terminal session aad8074d-1e21-4972-b57b-8d72fc232b9f using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: aad8074d-1e21-4972-b57b-8d72fc232b9f
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session aad8074d-1e21-4972-b57b-8d72fc232b9f
+Terminal WebSocket disconnected: aad8074d-1e21-4972-b57b-8d72fc232b9f
+Created terminal session 5b3445a3-4201-4a65-8e74-7a86893a1900 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 5b3445a3-4201-4a65-8e74-7a86893a1900
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 5b3445a3-4201-4a65-8e74-7a86893a1900
+Terminal WebSocket disconnected: 5b3445a3-4201-4a65-8e74-7a86893a1900
+Created terminal session 6e24d58f-e6b4-4005-b6a9-12ebdfe2d54e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 6e24d58f-e6b4-4005-b6a9-12ebdfe2d54e
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 6e24d58f-e6b4-4005-b6a9-12ebdfe2d54e
+Terminal WebSocket disconnected: 6e24d58f-e6b4-4005-b6a9-12ebdfe2d54e
+Created terminal session 207619dd-313b-45ea-a59c-663df40f4fff using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 207619dd-313b-45ea-a59c-663df40f4fff
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 207619dd-313b-45ea-a59c-663df40f4fff
+Terminal WebSocket disconnected: 207619dd-313b-45ea-a59c-663df40f4fff
+Created terminal session 60fc3b10-d8c2-444c-832c-e7c5d3c1b2aa using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 60fc3b10-d8c2-444c-832c-e7c5d3c1b2aa
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 60fc3b10-d8c2-444c-832c-e7c5d3c1b2aa
+Terminal WebSocket disconnected: 60fc3b10-d8c2-444c-832c-e7c5d3c1b2aa
+Created terminal session c0dbffda-c241-4fa5-a76f-3a580ca3bf48 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c0dbffda-c241-4fa5-a76f-3a580ca3bf48
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session c0dbffda-c241-4fa5-a76f-3a580ca3bf48
+Terminal WebSocket disconnected: c0dbffda-c241-4fa5-a76f-3a580ca3bf48
+Created terminal session c5861437-41d1-4ac7-bb94-988b2f5c018a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c5861437-41d1-4ac7-bb94-988b2f5c018a
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session c5861437-41d1-4ac7-bb94-988b2f5c018a
+Terminal WebSocket disconnected: c5861437-41d1-4ac7-bb94-988b2f5c018a
+Created terminal session c9ed9776-e3d6-426e-8fee-934fe5ed56fe using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c9ed9776-e3d6-426e-8fee-934fe5ed56fe
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session c9ed9776-e3d6-426e-8fee-934fe5ed56fe
+Terminal WebSocket disconnected: c9ed9776-e3d6-426e-8fee-934fe5ed56fe
+Created terminal session 8a8964b3-fa9d-413c-833a-24291b71222a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 8a8964b3-fa9d-413c-833a-24291b71222a
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 8a8964b3-fa9d-413c-833a-24291b71222a
+Terminal WebSocket disconnected: 8a8964b3-fa9d-413c-833a-24291b71222a
+Created terminal session 7c0e1dfd-150f-4670-8813-d3608b7a6fe0 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 7c0e1dfd-150f-4670-8813-d3608b7a6fe0
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 7c0e1dfd-150f-4670-8813-d3608b7a6fe0
+Terminal WebSocket disconnected: 7c0e1dfd-150f-4670-8813-d3608b7a6fe0
+Created terminal session d5514831-7719-4b5f-a844-d61770c213af using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: d5514831-7719-4b5f-a844-d61770c213af
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session d5514831-7719-4b5f-a844-d61770c213af
+Terminal WebSocket disconnected: d5514831-7719-4b5f-a844-d61770c213af
+Created terminal session 35b549c1-37b6-49b8-8b46-01d1cc08a4c5 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 35b549c1-37b6-49b8-8b46-01d1cc08a4c5
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 35b549c1-37b6-49b8-8b46-01d1cc08a4c5
+Terminal WebSocket disconnected: 35b549c1-37b6-49b8-8b46-01d1cc08a4c5
+Created terminal session 930b0098-1e18-4dbc-9b66-b867235d5214 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 930b0098-1e18-4dbc-9b66-b867235d5214
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 930b0098-1e18-4dbc-9b66-b867235d5214
+Terminal WebSocket disconnected: 930b0098-1e18-4dbc-9b66-b867235d5214
+Created terminal session 5aff6418-ea43-472e-95c0-dc0e6ac7b2d7 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 5aff6418-ea43-472e-95c0-dc0e6ac7b2d7
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 5aff6418-ea43-472e-95c0-dc0e6ac7b2d7
+Terminal WebSocket disconnected: 5aff6418-ea43-472e-95c0-dc0e6ac7b2d7
+Created terminal session 65a165d1-8b84-4069-b007-9091c624c674 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 65a165d1-8b84-4069-b007-9091c624c674
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 65a165d1-8b84-4069-b007-9091c624c674
+Terminal WebSocket disconnected: 65a165d1-8b84-4069-b007-9091c624c674
+Created terminal session b1d109bb-33ed-4217-9b2d-ef089315d9f4 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b1d109bb-33ed-4217-9b2d-ef089315d9f4
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session b1d109bb-33ed-4217-9b2d-ef089315d9f4
+Terminal WebSocket disconnected: b1d109bb-33ed-4217-9b2d-ef089315d9f4
+Created terminal session 5c11037f-49c0-4ac5-a7ea-68e235c98ab1 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 5c11037f-49c0-4ac5-a7ea-68e235c98ab1
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 5c11037f-49c0-4ac5-a7ea-68e235c98ab1
+Terminal WebSocket disconnected: 5c11037f-49c0-4ac5-a7ea-68e235c98ab1
+Created terminal session f7ed129e-6d93-43ec-8682-a70d4fdf49e0 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: f7ed129e-6d93-43ec-8682-a70d4fdf49e0
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session f7ed129e-6d93-43ec-8682-a70d4fdf49e0
+Terminal WebSocket disconnected: f7ed129e-6d93-43ec-8682-a70d4fdf49e0
+Created terminal session 8d8f0013-9d80-4ce5-b841-0f146d8a1f69 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 8d8f0013-9d80-4ce5-b841-0f146d8a1f69
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 8d8f0013-9d80-4ce5-b841-0f146d8a1f69
+Terminal WebSocket disconnected: 8d8f0013-9d80-4ce5-b841-0f146d8a1f69
+Created terminal session c1635903-9ef8-4fa1-8a75-2a8a725207e5 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c1635903-9ef8-4fa1-8a75-2a8a725207e5
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session c1635903-9ef8-4fa1-8a75-2a8a725207e5
+Terminal WebSocket disconnected: c1635903-9ef8-4fa1-8a75-2a8a725207e5
+Created terminal session 5a66ff6c-51f5-439f-afcf-dfb048606eb8 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 5a66ff6c-51f5-439f-afcf-dfb048606eb8
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 5a66ff6c-51f5-439f-afcf-dfb048606eb8
+Terminal WebSocket disconnected: 5a66ff6c-51f5-439f-afcf-dfb048606eb8
+Created terminal session bc251865-73af-4cc9-a942-8620427cff79 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: bc251865-73af-4cc9-a942-8620427cff79
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session bc251865-73af-4cc9-a942-8620427cff79
+Terminal WebSocket disconnected: bc251865-73af-4cc9-a942-8620427cff79
+[2026-07-16T08:46:01.827Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...

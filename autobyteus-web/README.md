@@ -16,15 +16,22 @@ Desktop CI build setup instructions are documented in:
 
 ## Environment Setup
 
-Create a `.env` file in the root directory with the following variables:
+Create a `.env` file in the root directory with the following variables when the frontend should talk to a separately running backend. In local development, Nuxt's Vite proxy uses `BACKEND_NODE_BASE_URL` for `/graphql` and `/rest`, and the WebSocket endpoints default from the same backend base URL.
 
 ```env
-# GraphQL endpoint
-NUXT_PUBLIC_GRAPHQL_BASE_URL=http://localhost:8000/graphql
-# REST API endpoint
-NUXT_PUBLIC_REST_BASE_URL=http://localhost:8000/rest
-# WebSocket endpoint
-NUXT_PUBLIC_WS_BASE_URL=ws://localhost:8000/graphql
+# Backend node base URL used by the local dev proxy
+BACKEND_NODE_BASE_URL=http://localhost:8000
+
+# Optional explicit production endpoint overrides
+BACKEND_GRAPHQL_BASE_URL=http://localhost:8000/graphql
+BACKEND_REST_BASE_URL=http://localhost:8000/rest
+BACKEND_GRAPHQL_WS_ENDPOINT=ws://localhost:8000/graphql
+BACKEND_AGENT_WS_ENDPOINT=ws://localhost:8000/ws/agent
+BACKEND_TEAM_WS_ENDPOINT=ws://localhost:8000/ws/agent-team
+BACKEND_TRANSCRIPTION_WS_ENDPOINT=ws://localhost:8000/ws/transcribe
+BACKEND_TERMINAL_WS_ENDPOINT=ws://localhost:8000/ws/terminal
+BACKEND_FILE_EXPLORER_WS_ENDPOINT=ws://localhost:8000/ws/file-explorer
+
 # Feature Flags (Optional)
 ENABLE_APPLICATIONS=false
 ```
@@ -367,6 +374,16 @@ If your environment limits worker processes (e.g., containers):
 pnpm test:nuxt components/settings/__tests__/ProviderAPIKeyManager.spec.ts --run --pool threads --maxWorkers 1 --no-file-parallelism --no-isolate
 ```
 
+### Workspace Responsive Browser Probe
+
+The adaptive `/workspace` shell has a focused browser probe that verifies the standard workspace route across narrow, constrained, short-height, and wide viewports while also checking that `/mobile` remains isolated to the phone/PWA shell. Start a frontend/backend target first, then run:
+
+```bash
+pnpm test:e2e:workspace-responsive -- --base-url http://127.0.0.1:3000 --output-dir ../tickets/<ticket-name>/probes/api-e2e
+```
+
+The probe uses Chrome/Chromium through Playwright Core. If automatic discovery does not find a browser, pass `--browser-executable <path>` or set `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
+
 ## GraphQL Codegen
 
 Generate TypeScript types from GraphQL schema:
@@ -380,6 +397,7 @@ pnpm codegen
 - `pnpm dev`: Start development server (browser-based)
 - `pnpm build`: Build for web production
 - `pnpm test`: Run tests
+- `pnpm test:e2e:workspace-responsive`: Run the standard workspace responsive browser probe against a running frontend/backend target
 - `pnpm preview`: Preview web production build
 - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
 - `pnpm build:electron:linux`: Build desktop application for Linux host architecture

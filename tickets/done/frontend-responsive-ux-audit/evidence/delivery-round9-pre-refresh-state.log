@@ -1,0 +1,78 @@
+Delivery Round 9 pre-refresh state
+HEAD: e5b78e9d623bba13d8956dde8b7dee6909b24314
+Tracked base: fbd7b6764bd43751956d69ffe22b943d06188444
+
+Status before checkpoint:
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 19]
+ M autobyteus-web/docs/workspace_layout.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+ M tickets/frontend-responsive-ux-audit/code-review-report.md
+ M tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+ M tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ M tickets/frontend-responsive-ux-audit/design-review-report.md
+ M tickets/frontend-responsive-ux-audit/design-spec.md
+ M tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ M tickets/frontend-responsive-ux-audit/handoff-summary.md
+ M tickets/frontend-responsive-ux-audit/investigation-notes.md
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+ M tickets/frontend-responsive-ux-audit/requirements-doc.md
+ M tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-probe-checks.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-runtime-setup.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-server-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round9-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-electron-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-electron-runtime-verification.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-fetch-and-merge.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-final-sanity-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-post-refresh-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round9-electron-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round9-electron-launch-smoke.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round9-pre-refresh-state.log
+
+Changed paths:
+autobyteus-web/docs/workspace_layout.md
+tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+tickets/frontend-responsive-ux-audit/code-review-report.md
+tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+tickets/frontend-responsive-ux-audit/design-review-report.md
+tickets/frontend-responsive-ux-audit/design-spec.md
+tickets/frontend-responsive-ux-audit/docs-sync-report.md
+tickets/frontend-responsive-ux-audit/handoff-summary.md
+tickets/frontend-responsive-ux-audit/investigation-notes.md
+tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+tickets/frontend-responsive-ux-audit/requirements-doc.md
+tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md
+
+Diff stat:
+ autobyteus-web/docs/workspace_layout.md            |  17 +-
+ .../api-e2e-coverage-investigation.md              |  44 ++
+ .../api-e2e-execution-coverage-report.md           |  81 ++-
+ .../api-e2e-test-review-report.md                  |  51 +-
+ .../code-review-report.md                          |  83 +++
+ .../comprehensive-responsive-ui-test-report.md     |  14 +
+ .../delivery-release-deployment-report.md          | 164 ++---
+ .../design-review-report.md                        |  39 +-
+ .../frontend-responsive-ux-audit/design-spec.md    |  16 +
+ .../docs-sync-report.md                            |  84 ++-
+ .../handoff-summary.md                             | 162 +++--
+ .../investigation-notes.md                         |  65 ++
+ .../probes/api-e2e/desktop-1280x800.png            | Bin 52246 -> 42147 bytes
+ .../workspace-responsive-probe-results.json        | 743 +++++++++++++++++++--
+ .../workspace-responsive-probe-summary.json        |   2 +-
+ .../requirements-doc.md                            |  10 +-
+ .../workspace-responsive-ui-ux-spec.md             |  18 +-
+ 17 files changed, 1228 insertions(+), 365 deletions(-)

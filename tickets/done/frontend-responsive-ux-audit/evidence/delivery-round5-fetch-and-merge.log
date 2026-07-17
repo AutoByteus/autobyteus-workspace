@@ -1,0 +1,20 @@
+$ git fetch origin --prune
+$ git rev-parse HEAD origin/personal
+84486c48ec41c21e1e517310c3672b6af0cb1f20
+fbd7b6764bd43751956d69ffe22b943d06188444
+$ git log --oneline --decorate --left-right HEAD...origin/personal -20
+< 84486c48e (HEAD -> codex/frontend-responsive-ux-audit) chore(delivery): checkpoint responsive ux round7 before base refresh
+< 5883ea8c3 fix(workspace): pin tab overflow controls to scrollport
+< 53a5a99fb docs(ticket): clarify right-tool tab rework handoff
+< 07048b52d fix(workspace): restore single-row scrolling tool tabs
+< 2db854afe chore(delivery): checkpoint responsive ux round5 before base refresh
+< bb3b2fe49 fix(workspace): wrap right tool tabs in constrained panels
+< 2c8345545 docs(ticket): record integrated order test fix
+< 9a9fa78d2 test(workspace): include integrated usage tab order
+< 456694fa8 merge origin/personal into frontend responsive ux audit (delivery round 3)
+< a1f12ef2f chore(delivery): checkpoint responsive ux validation before base refresh
+< f614a42cb docs(ticket): refresh responsive implementation handoff
+< f4c705855 merge origin/personal into frontend responsive ux audit
+< 031717407 chore(delivery): checkpoint responsive ux candidate before base refresh
+$ git merge --no-ff origin/personal -m "merge origin/personal into frontend responsive ux audit (delivery round 5)"
+Already up to date.

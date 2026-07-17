@@ -1,0 +1,12 @@
+Round 16 probe checks 2026-07-16T23:22:39+0200
+HEAD=63f487580e3c82e33e00b231436e30fce3b51cbe
+node --check: PASS
+git diff --check autobyteus-web: PASS
+Round 16 probe reconciliation after first runtime attempt 2026-07-16T23:25:35+0200
+Finding: collect() referenced rightDrawer in activeElement.contains() without declaring it; this was a durable-probe runtime defect, not a production failure.
+node --check after probe fix: PASS
+git diff --check after probe fix: PASS
+Round 16 second probe reconciliation 2026-07-16T23:28:14+0200
+Findings reconciled: left-strip activation was checked on the conditionally unmounted post-open strip; independent hit-testing was attempted at 700px where 320px + 400px drawers cover the full width. The durable probe now checks activation before open and runs the independent-order hit-test at 800px, leaving an 80px backdrop gap.
+node --check after second probe fix: PASS
+git diff --check after second probe fix: PASS

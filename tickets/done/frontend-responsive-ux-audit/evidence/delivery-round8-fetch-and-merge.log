@@ -1,0 +1,13 @@
+Delivery Round 8 tracked-remote/base refresh
+Pre-refresh HEAD: 31abc363e7b77eb6d04025c262a77b17ecb8d3bf
+Pre-refresh origin/personal: fbd7b6764bd43751956d69ffe22b943d06188444
+
+$ git fetch origin --prune
+
+Post-fetch origin/personal: fbd7b6764bd43751956d69ffe22b943d06188444
+
+$ git merge --no-ff origin/personal -m "merge origin/personal into frontend responsive ux audit (delivery round 8)"
+Already up to date.
+
+Post-refresh HEAD: 31abc363e7b77eb6d04025c262a77b17ecb8d3bf
+Merge-base: fbd7b6764bd43751956d69ffe22b943d06188444

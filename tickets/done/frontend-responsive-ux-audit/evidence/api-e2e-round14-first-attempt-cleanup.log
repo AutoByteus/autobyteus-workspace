@@ -1,0 +1,3 @@
+Round 14 first setup cleanup
+
+The initial detached setup on ports 13025/13026 reported readiness but exited when the owning shell completed; the frontend then returned ERR_CONNECTION_REFUSED before browser execution. The detached backend/frontend PIDs were no longer present and lsof confirmed neither port was listening before the retry. No unrelated process was stopped.

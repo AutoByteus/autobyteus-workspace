@@ -1,0 +1,32 @@
+Delivery Round 8 final sanity check (final docs state)
+HEAD: 31abc363e7b77eb6d04025c262a77b17ecb8d3bf
+Base: fbd7b6764bd43751956d69ffe22b943d06188444
+PASS: git diff --check
+PASS: workspace doc has current composed/semantic/no-generic-row contract
+PASS: workspace doc has no stale independent policy ownership
+PASS: current delivery report state: tickets/frontend-responsive-ux-audit/docs-sync-report.md
+PASS: current delivery report state: tickets/frontend-responsive-ux-audit/handoff-summary.md
+PASS: current delivery report state: tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+PASS: base and Round 8 pass evidence recorded
+PASS: artifact exists: autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.dmg
+PASS: artifact exists: autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.zip
+PASS: artifact exists: tickets/frontend-responsive-ux-audit/evidence/delivery-round8-electron-build.log
+PASS: artifact exists: tickets/frontend-responsive-ux-audit/evidence/delivery-round8-electron-runtime-verification.log
+PASS: artifact exists: tickets/frontend-responsive-ux-audit/evidence/delivery-round8-final-sanity-check.log
+--- git status ---
+## codex/frontend-responsive-ux-audit...origin/personal [ahead 18]
+ M autobyteus-web/docs/workspace_layout.md
+ M tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ M tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ M tickets/frontend-responsive-ux-audit/handoff-summary.md
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-electron-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-electron-runtime-verification.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-fetch-and-merge.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-final-sanity-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round8-post-refresh-check.log
+--- git diff stat ---
+ autobyteus-web/docs/workspace_layout.md            |  17 ++-
+ .../delivery-release-deployment-report.md          | 164 +++++++--------------
+ .../docs-sync-report.md                            |  84 ++++++-----
+ .../handoff-summary.md                             | 162 ++++++++++----------
+ 4 files changed, 177 insertions(+), 250 deletions(-)

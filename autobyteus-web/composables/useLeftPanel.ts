@@ -1,14 +1,20 @@
 import { ref } from 'vue';
+import {
+  LEFT_PANEL_DEFAULT_WIDTH_PX,
+  LEFT_PANEL_MAX_WIDTH_PX,
+  LEFT_PANEL_MIN_WIDTH_PX,
+} from '~/utils/layout/responsiveLayoutPolicy';
 
 const isLeftPanelVisible = ref(true);
-const leftPanelWidth = ref(320);
-
-const MIN_LEFT_PANEL_WIDTH = 260;
-const MAX_LEFT_PANEL_WIDTH = 520;
+const leftPanelWidth = ref(LEFT_PANEL_DEFAULT_WIDTH_PX);
 
 export function useLeftPanel() {
   const toggleLeftPanel = (): void => {
     isLeftPanelVisible.value = !isLeftPanelVisible.value;
+  };
+
+  const setLeftPanelVisible = (visible: boolean): void => {
+    isLeftPanelVisible.value = visible;
   };
 
   const initDragLeftPanel = (event: MouseEvent): void => {
@@ -22,7 +28,7 @@ export function useLeftPanel() {
       try {
         const deltaX = e.clientX - startX;
         const nextWidth = startWidth + deltaX;
-        leftPanelWidth.value = Math.min(Math.max(nextWidth, MIN_LEFT_PANEL_WIDTH), MAX_LEFT_PANEL_WIDTH);
+        leftPanelWidth.value = Math.min(Math.max(nextWidth, LEFT_PANEL_MIN_WIDTH_PX), LEFT_PANEL_MAX_WIDTH_PX);
       } catch (error) {
         console.error('Error during left panel drag:', error);
       }
@@ -41,6 +47,7 @@ export function useLeftPanel() {
     isLeftPanelVisible,
     leftPanelWidth,
     toggleLeftPanel,
+    setLeftPanelVisible,
     initDragLeftPanel,
   };
 }

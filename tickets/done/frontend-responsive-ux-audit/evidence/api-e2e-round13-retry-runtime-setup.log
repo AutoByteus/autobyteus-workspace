@@ -1,0 +1,10 @@
+Round 13 retry runtime setup
+2026-07-16T13:13:01Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit
+head=4ca4d01530e9e0e72bd63f7ab2cd8846d17d4087
+backend=127.0.0.1:13023
+frontend=127.0.0.1:13024
+data=/tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff
+backend env file=/tmp/autobyteus-responsive-ux-audit-api-e2e-round13-retry-05a93eff/.env
+frontend BACKEND_NODE_BASE_URL=http://127.0.0.1:13023
+probe=pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13024 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error

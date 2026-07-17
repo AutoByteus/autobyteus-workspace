@@ -1,0 +1,767 @@
+{
+  "result": "Fail",
+  "jsonPath": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/workspace-responsive-probe-results.json",
+  "summaryPath": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/workspace-responsive-probe-summary.json",
+  "failures": [
+    "md-768x700: center width 395px is below 480px",
+    "tablet-800x700: center width 427px is below 480px",
+    "tablet-800x700: left navigation strip did not expose a clickable drawer affordance",
+    "tablet-800x700: left navigation strip did not open the navigation drawer",
+    "tablet-800x700: responsive left strip did not expose open-drawer activation",
+    "tablet-800x700: left navigation strip did not move focus into the opened drawer",
+    "tablet-800x700: left navigation drawer did not expose its backdrop dismissal",
+    "tablet-800x700: left drawer backdrop dismissal did not restore focus to the remounted strip",
+    "tablet-800x700: left navigation strip did not reopen after backdrop dismissal",
+    "tablet-800x700: left navigation strip reopen did not move focus into the drawer",
+    "tablet-800x700: left drawer Escape dismissal did not restore focus to the remounted strip",
+    "tablet-800x700: independent drawer test could not open the left drawer",
+    "tablet-800x700: left drawer was not open before opening the right drawer",
+    "tablet-800x700: opening the right drawer unexpectedly closed or suppressed the independent left drawer",
+    "tablet-800x700: right-topmost aria-modal ownership mismatch: left undefined, right true",
+    "tablet-800x700: right drawer Escape dismissal closed the independent left drawer",
+    "tablet-800x700: right drawer Escape dismissal did not return focus to the remaining left drawer",
+    "tablet-800x700: left drawer Escape dismissal did not restore focus to the left strip",
+    "tablet-800x700: reverse independent drawer journey could not open both sides",
+    "tablet-800x700: opening the left drawer unexpectedly closed or suppressed the independent right drawer",
+    "tablet-800x700: left drawer did not own focus when opened after the right drawer",
+    "tablet-800x700: reverse drawer visual layer does not match keyboard ownership: left drawer/backdrop 0/0, right 50/40",
+    "tablet-800x700: left-topmost aria-modal ownership mismatch: left undefined, right true",
+    "tablet-800x700: reverse topmost backdrop hit workspace-right-tool-drawer-backdrop instead of the left drawer backdrop",
+    "tablet-800x700: reverse left drawer backdrop dismissal closed the independent right drawer",
+    "tablet-800x700: reverse left drawer backdrop dismissal did not return focus to the remaining right drawer",
+    "tablet-800x700: remaining right backdrop hit nothing instead of the right drawer backdrop",
+    "tablet-800x700: reopen navigation from left strip target was not found",
+    "tablet-800x700: left navigation strip did not open the left navigation drawer",
+    "tablet-800x700: open independent left and right drawers in both directions target was not found",
+    "tablet-short-800x420: center width 427px is below 480px"
+  ],
+  "summary": [
+    {
+      "viewport": "phone-390x844",
+      "route": "/workspace",
+      "size": "390x844",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 0,
+        "width": 290,
+        "height": 844,
+        "right": 340,
+        "bottom": 844
+      },
+      "rightStripRect": {
+        "x": 340,
+        "y": 0,
+        "width": 50,
+        "height": 844,
+        "right": 390,
+        "bottom": 844
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/phone-390x844.png"
+    },
+    {
+      "viewport": "terminal-299x700",
+      "route": "/workspace",
+      "size": "299x700",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 0,
+        "width": 199,
+        "height": 700,
+        "right": 249,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 249,
+        "y": 0,
+        "width": 50,
+        "height": 700,
+        "right": 299,
+        "bottom": 700
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/terminal-299x700.png"
+    },
+    {
+      "viewport": "phone-short-390x640",
+      "route": "/workspace",
+      "size": "390x640",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 0,
+        "width": 290,
+        "height": 640,
+        "right": 340,
+        "bottom": 640
+      },
+      "rightStripRect": {
+        "x": 340,
+        "y": 0,
+        "width": 50,
+        "height": 640,
+        "right": 390,
+        "bottom": 640
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/phone-short-390x640.png"
+    },
+    {
+      "viewport": "narrow-500x700",
+      "route": "/workspace",
+      "size": "500x700",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 0,
+        "width": 400,
+        "height": 700,
+        "right": 450,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 450,
+        "y": 0,
+        "width": 50,
+        "height": 700,
+        "right": 500,
+        "bottom": 700
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/narrow-500x700.png"
+    },
+    {
+      "viewport": "narrow-short-500x420",
+      "route": "/workspace",
+      "size": "500x420",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 0,
+        "width": 400,
+        "height": 420,
+        "right": 450,
+        "bottom": 420
+      },
+      "rightStripRect": {
+        "x": 450,
+        "y": 0,
+        "width": 50,
+        "height": 420,
+        "right": 500,
+        "bottom": 420
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/narrow-short-500x420.png"
+    },
+    {
+      "viewport": "threshold-639x700",
+      "route": "/workspace",
+      "size": "639x700",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 0,
+        "width": 539,
+        "height": 700,
+        "right": 589,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 589,
+        "y": 0,
+        "width": 50,
+        "height": 700,
+        "right": 639,
+        "bottom": 700
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/threshold-639x700.png"
+    },
+    {
+      "viewport": "threshold-640x700",
+      "route": "/workspace",
+      "size": "640x700",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 0,
+        "width": 540,
+        "height": 700,
+        "right": 590,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 590,
+        "y": 0,
+        "width": 50,
+        "height": 700,
+        "right": 640,
+        "bottom": 700
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/threshold-640x700.png"
+    },
+    {
+      "viewport": "gap-700x700",
+      "route": "/workspace",
+      "size": "700x700",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 0,
+        "width": 600,
+        "height": 700,
+        "right": 650,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 650,
+        "y": 0,
+        "width": 50,
+        "height": 700,
+        "right": 700,
+        "bottom": 700
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/gap-700x700.png"
+    },
+    {
+      "viewport": "gap-767x700",
+      "route": "/workspace",
+      "size": "767x700",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 0,
+        "width": 667,
+        "height": 700,
+        "right": 717,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 717,
+        "y": 0,
+        "width": 50,
+        "height": 700,
+        "right": 767,
+        "bottom": 700
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/gap-767x700.png"
+    },
+    {
+      "viewport": "md-768x700",
+      "route": "/workspace",
+      "size": "768x700",
+      "failures": [
+        "center width 395px is below 480px"
+      ],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 395,
+        "height": 700,
+        "right": 718,
+        "bottom": 700
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 700,
+        "right": 320,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 718,
+        "y": 0,
+        "width": 50,
+        "height": 700,
+        "right": 768,
+        "bottom": 700
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/md-768x700.png"
+    },
+    {
+      "viewport": "tablet-800x700",
+      "route": "/workspace",
+      "size": "800x700",
+      "failures": [
+        "center width 427px is below 480px",
+        "left navigation strip did not expose a clickable drawer affordance",
+        "left navigation strip did not open the navigation drawer",
+        "responsive left strip did not expose open-drawer activation",
+        "left navigation strip did not move focus into the opened drawer",
+        "left navigation drawer did not expose its backdrop dismissal",
+        "left drawer backdrop dismissal did not restore focus to the remounted strip",
+        "left navigation strip did not reopen after backdrop dismissal",
+        "left navigation strip reopen did not move focus into the drawer",
+        "left drawer Escape dismissal did not restore focus to the remounted strip",
+        "independent drawer test could not open the left drawer",
+        "left drawer was not open before opening the right drawer",
+        "opening the right drawer unexpectedly closed or suppressed the independent left drawer",
+        "right-topmost aria-modal ownership mismatch: left undefined, right true",
+        "right drawer Escape dismissal closed the independent left drawer",
+        "right drawer Escape dismissal did not return focus to the remaining left drawer",
+        "left drawer Escape dismissal did not restore focus to the left strip",
+        "reverse independent drawer journey could not open both sides",
+        "opening the left drawer unexpectedly closed or suppressed the independent right drawer",
+        "left drawer did not own focus when opened after the right drawer",
+        "reverse drawer visual layer does not match keyboard ownership: left drawer/backdrop 0/0, right 50/40",
+        "left-topmost aria-modal ownership mismatch: left undefined, right true",
+        "reverse topmost backdrop hit workspace-right-tool-drawer-backdrop instead of the left drawer backdrop",
+        "reverse left drawer backdrop dismissal closed the independent right drawer",
+        "reverse left drawer backdrop dismissal did not return focus to the remaining right drawer",
+        "remaining right backdrop hit nothing instead of the right drawer backdrop",
+        "reopen navigation from left strip target was not found",
+        "left navigation strip did not open the left navigation drawer",
+        "open independent left and right drawers in both directions target was not found"
+      ],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 427,
+        "height": 700,
+        "right": 750,
+        "bottom": 700
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 700,
+        "right": 320,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 750,
+        "y": 0,
+        "width": 50,
+        "height": 700,
+        "right": 800,
+        "bottom": 700
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/tablet-800x700.png"
+    },
+    {
+      "viewport": "tablet-short-800x420",
+      "route": "/workspace",
+      "size": "800x420",
+      "failures": [
+        "center width 427px is below 480px"
+      ],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 427,
+        "height": 420,
+        "right": 750,
+        "bottom": 420
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 420,
+        "right": 320,
+        "bottom": 420
+      },
+      "rightStripRect": {
+        "x": 750,
+        "y": 0,
+        "width": 50,
+        "height": 420,
+        "right": 800,
+        "bottom": 420
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/tablet-short-800x420.png"
+    },
+    {
+      "viewport": "tablet-900x700",
+      "route": "/workspace",
+      "size": "900x700",
+      "failures": [],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 527,
+        "height": 700,
+        "right": 850,
+        "bottom": 700
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 700,
+        "right": 320,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 850,
+        "y": 0,
+        "width": 50,
+        "height": 700,
+        "right": 900,
+        "bottom": 700
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/tablet-900x700.png"
+    },
+    {
+      "viewport": "small-desktop-1024x768",
+      "route": "/workspace",
+      "size": "1024x768",
+      "failures": [],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 651,
+        "height": 768,
+        "right": 974,
+        "bottom": 768
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 768,
+        "right": 320,
+        "bottom": 768
+      },
+      "rightStripRect": {
+        "x": 974,
+        "y": 0,
+        "width": 50,
+        "height": 768,
+        "right": 1024,
+        "bottom": 768
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/small-desktop-1024x768.png"
+    },
+    {
+      "viewport": "small-desktop-short-1024x480",
+      "route": "/workspace",
+      "size": "1024x480",
+      "failures": [],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 651,
+        "height": 480,
+        "right": 974,
+        "bottom": 480
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 480,
+        "right": 320,
+        "bottom": 480
+      },
+      "rightStripRect": {
+        "x": 974,
+        "y": 0,
+        "width": 50,
+        "height": 480,
+        "right": 1024,
+        "bottom": 480
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/small-desktop-short-1024x480.png"
+    },
+    {
+      "viewport": "desktop-1180x800",
+      "route": "/workspace",
+      "size": "1180x800",
+      "failures": [],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 807,
+        "height": 800,
+        "right": 1130,
+        "bottom": 800
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320,
+        "bottom": 800
+      },
+      "rightStripRect": {
+        "x": 1130,
+        "y": 0,
+        "width": 50,
+        "height": 800,
+        "right": 1180,
+        "bottom": 800
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/desktop-1180x800.png"
+    },
+    {
+      "viewport": "desktop-1280x800",
+      "route": "/workspace",
+      "size": "1280x800",
+      "failures": [],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 505,
+        "height": 800,
+        "right": 828,
+        "bottom": 800
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320,
+        "bottom": 800
+      },
+      "rightRect": {
+        "x": 830,
+        "y": 0,
+        "width": 450,
+        "height": 800,
+        "right": 1280,
+        "bottom": 800
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts"
+      ],
+      "rightStripControls": [],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/desktop-1280x800.png"
+    },
+    {
+      "viewport": "wide-1440x900",
+      "route": "/workspace",
+      "size": "1440x900",
+      "failures": [],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 665,
+        "height": 900,
+        "right": 988,
+        "bottom": 900
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 900,
+        "right": 320,
+        "bottom": 900
+      },
+      "rightRect": {
+        "x": 990,
+        "y": 0,
+        "width": 450,
+        "height": 900,
+        "right": 1440,
+        "bottom": 900
+      },
+      "semanticTriggers": [],
+      "rightPanelControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts"
+      ],
+      "rightStripControls": [],
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/wide-1440x900.png"
+    },
+    {
+      "viewport": "mobile-route-390x844",
+      "route": "/mobile",
+      "size": "390x844",
+      "failures": [],
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "mobileShellVisible": true,
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19/probe/mobile-route-390x844.png"
+    },
+    {
+      "viewport": "global-default-routes-700x700",
+      "route": "global-default-layout-routes",
+      "size": "700x700",
+      "failures": [],
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": []
+    },
+    {
+      "viewport": "application-immersive-route-700x700",
+      "route": "/applications/:id",
+      "size": "700x700",
+      "failures": [],
+      "semanticTriggers": [],
+      "rightPanelControls": [],
+      "rightStripControls": []
+    }
+  ]
+}

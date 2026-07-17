@@ -1,0 +1,11 @@
+timestamp=2026-07-17T04:00:51Z
+head=ff98ad19ead19823c03bc4e90c20623c238522cc
+run_dir=/tmp/autobyteus-responsive-ux-audit-api-e2e-round17
+backend_port=13033
+frontend_port=13034
+browser=repository playwright-core discovery; probe uses --fail-on-console-error
+backend_command=APP_ENV=test AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:13033 DATABASE_URL=file:/tmp/autobyteus-responsive-ux-audit-api-e2e-round17/db/test.db DB_TYPE=sqlite LOG_LEVEL=INFO PRISMA_LOG_QUERIES=0 DISABLE_HTTP_REQUESTS=true node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 13033 --data-dir /tmp/autobyteus-responsive-ux-audit-api-e2e-round17
+frontend_command=explicit BACKEND_* endpoints to http://127.0.0.1:13033; pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 13034
+port_13033=free
+port_13034=free
+correction=the backend command used DISABLE_HTTP_REQUEST_LOGS=true; the earlier printed setup line contained a logging typo only.

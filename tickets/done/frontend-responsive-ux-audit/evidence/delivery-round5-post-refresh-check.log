@@ -1,0 +1,70 @@
+$ git rev-parse HEAD origin/personal
+84486c48ec41c21e1e517310c3672b6af0cb1f20
+fbd7b6764bd43751956d69ffe22b943d06188444
+$ git merge-base HEAD origin/personal
+fbd7b6764bd43751956d69ffe22b943d06188444
+$ git diff --name-only 5883ea8c3f316e05885f900a2178b92a5dedd346 HEAD
+autobyteus-web/docs/workspace_layout.md
+autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+tickets/frontend-responsive-ux-audit/code-review-report.md
+tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+tickets/frontend-responsive-ux-audit/design-review-report.md
+tickets/frontend-responsive-ux-audit/design-spec.md
+tickets/frontend-responsive-ux-audit/docs-sync-report.md
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-backend-rerun.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-backend.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-cleanup-ports-final.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-cleanup-ports.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-focused-nuxt-tests.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-frontend-rerun.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-frontend.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-runtime-setup.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-server-build.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-final.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-final2.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-rerun.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-rerun2.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-backend.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-cleanup-ports.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-focused-nuxt-tests.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-frontend.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-runtime-setup.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-server-build.log
+tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-workspace-responsive-probe.log
+tickets/frontend-responsive-ux-audit/evidence/delivery-round4-fetch-and-merge.log
+tickets/frontend-responsive-ux-audit/evidence/delivery-round4-final-sanity-check.log
+tickets/frontend-responsive-ux-audit/evidence/delivery-round4-post-refresh-check.log
+tickets/frontend-responsive-ux-audit/evidence/delivery-round5-pre-refresh-state.log
+tickets/frontend-responsive-ux-audit/evidence/electron-build-final-check.log
+tickets/frontend-responsive-ux-audit/evidence/electron-build-mac-arm64.log
+tickets/frontend-responsive-ux-audit/evidence/electron-build-runtime-verification-arm64.log
+tickets/frontend-responsive-ux-audit/handoff-summary.md
+tickets/frontend-responsive-ux-audit/investigation-notes.md
+tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1180x800.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-700x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-767x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/md-768x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-500x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-short-500x420.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-390x844.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-short-390x640.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-1024x768.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-900x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-short-800x420.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-639x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-640x700.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/wide-1440x900.png
+tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+tickets/frontend-responsive-ux-audit/requirements-doc.md
+tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md
+Result: origin/personal was already integrated; no new base commit was introduced by the Round 5 refresh.
+No additional base-triggered rerun required: API/E2E Round 7 passed at the current implementation/probe state before the delivery checkpoint, and the checkpoint captured only that validated source probe plus ticket artifacts/evidence; no base source changed.
+Authoritative executable result: API/E2E Round 7 Pass, 18 states (17 /workspace plus /mobile), 42/42 interactions, 28 tab-list checks, zero failures, zero browser console-error states, both boundary directions working, docked/drawer reachability and /mobile isolation passing.
+API/E2E evidence: tickets/frontend-responsive-ux-audit/evidence/api-e2e-round7-workspace-responsive-probe.log and tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md

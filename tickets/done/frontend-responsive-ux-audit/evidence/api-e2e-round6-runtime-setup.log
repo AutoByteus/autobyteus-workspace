@@ -1,0 +1,8 @@
+setup_at=2026-07-16T05:04:45Z
+data_dir=/tmp/autobyteus-responsive-ux-audit-api-e2e-round6-server-data
+APP_ENV=test
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:13007
+DB_TYPE=sqlite
+LOG_LEVEL=INFO
+PRISMA_LOG_QUERIES=0
+DISABLE_HTTP_REQUEST_LOGS=true

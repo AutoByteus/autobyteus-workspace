@@ -1,0 +1,9 @@
+{
+    "data": {
+        "applicationsCapability": {
+            "enabled": false,
+            "source": "SERVER_SETTING",
+            "scope": "BOUND_NODE"
+        }
+    }
+}

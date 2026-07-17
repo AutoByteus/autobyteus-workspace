@@ -1,5 +1,12 @@
 <template>
-  <div class="flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500">
+  <div
+    data-test="workspace-left-navigation-strip"
+    role="navigation"
+    :aria-label="$t('shell.workspaceSurfaces.navigationDrawerTitle')"
+    :data-strip-behavior="props.stripBehavior"
+    :data-strip-activation="props.stripActivation"
+    :class="stripClasses"
+  >
     <div class="flex flex-col space-y-2">
       <button
         v-for="item in primaryNavItems"
@@ -7,8 +14,10 @@
         type="button"
         class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
         :class="isPrimaryNavActive(item.key) ? 'bg-gray-100 text-gray-900' : ''"
+        :data-nav-key="item.key"
         :title="t(item.labelKey)"
-        @click="handlePrimaryClick(item.key)"
+        :aria-label="t(item.labelKey)"
+        @click="handlePrimaryClick(item.key, $event)"
       >
         <Icon :icon="item.icon" class="h-5 w-5" />
 
@@ -23,8 +32,10 @@
         type="button"
         class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
         :class="isSettingsActive ? 'bg-gray-100 text-gray-900' : ''"
+        data-nav-key="settings"
         :title="$t('shell.components.layout.LeftSidebarStrip.settings')"
-        @click="handleSettingsClick"
+        :aria-label="$t('shell.navigation.settings')"
+        @click="handleSettingsClick($event)"
       >
         <Icon icon="heroicons:cog-6-tooth" class="h-5 w-5" />
 
@@ -40,9 +51,11 @@
 import { Icon } from '@iconify/vue';
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
-import { useLeftPanel } from '~/composables/useLeftPanel';
+import { useAppLayoutStore } from '~/stores/appLayoutStore';
+import { rememberDrawerTrigger } from '~/composables/useAccessibleDrawer';
 import { useShellPrimaryNavigation, type ShellPrimaryNavKey } from '~/composables/useShellPrimaryNavigation';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
+import type { StripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
 
 const { t } = useLocalization();
 const {
@@ -54,14 +67,41 @@ const {
 
 const route = useRoute();
 const router = useRouter();
-const { isLeftPanelVisible, toggleLeftPanel } = useLeftPanel();
+const appLayoutStore = useAppLayoutStore();
+
+const props = withDefaults(defineProps<{
+  stripBehavior?: StripBehavior
+  stripActivation: StripActivation
+}>(), {
+  stripBehavior: 'consuming',
+});
+
+const stripClasses = computed(() =>
+  'relative flex h-full w-[50px] flex-none flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500',
+);
 
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
 
-const openLeftPanelIfCollapsed = (): void => {
-  if (!isLeftPanelVisible.value) {
-    toggleLeftPanel();
+const emit = defineEmits<{
+  (event: 'request-redock'): void
+}>();
+
+const activateStrip = (event?: MouseEvent): void => {
+  if (props.stripActivation === 'redock-panel') {
+    emit('request-redock');
+    return;
+  }
+
+  const trigger = event?.currentTarget instanceof HTMLElement
+    ? event.currentTarget
+    : document.activeElement;
+  rememberDrawerTrigger(trigger);
+
+  if (appLayoutStore.isMobileMenuOpen) {
+    appLayoutStore.closeMobileMenu();
+  } else {
+    appLayoutStore.openMobileMenu();
   }
 };
 const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
@@ -72,13 +112,23 @@ const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
   }
 };
 
-const handlePrimaryClick = async (key: ShellPrimaryNavKey): Promise<void> => {
-  openLeftPanelIfCollapsed();
+const handlePrimaryClick = async (key: ShellPrimaryNavKey, event: MouseEvent): Promise<void> => {
+  activateStrip(event);
+
+  if (props.stripActivation === 'open-drawer') {
+    return;
+  }
+
   await pushRoute(resolvePrimaryRoute(key));
 };
 
-const handleSettingsClick = async (): Promise<void> => {
-  openLeftPanelIfCollapsed();
+const handleSettingsClick = async (event: MouseEvent): Promise<void> => {
+  activateStrip(event);
+
+  if (props.stripActivation === 'open-drawer') {
+    return;
+  }
+
   await pushRoute('/settings');
 };
 

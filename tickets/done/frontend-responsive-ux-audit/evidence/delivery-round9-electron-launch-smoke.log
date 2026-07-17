@@ -1,0 +1,587 @@
+Electron launch smoke test (ELECTRON_RUN_AS_NODE unset)
+Started: 2026-07-16T09:23:22Z
+Bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+Isolated HOME: /tmp/autobyteus-electron-launch-round9-home-2298
+PID: 90988
+Alive after 12s; terminating smoke-test process
+Process wait exit: 0
+Runtime output:
+[2026-07-16T09:23:22.958Z] [INFO] [electron] Application started
+[2026-07-16T09:23:22.993Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-07-16T09:23:22.994Z] [INFO] [electron.server.app-data] Created app data directory: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data
+[2026-07-16T09:23:22.994Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/db
+[2026-07-16T09:23:22.994Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs
+[2026-07-16T09:23:22.994Z] [INFO] [electron.server.app-data] Created missing data directory: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/download
+[2026-07-16T09:23:23.108Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:62645
+[2026-07-16T09:23:23.230Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-07-16T09:23:23.230Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-07-16T09:23:23.230Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-07-16T09:23:23.230Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-16T09:23:23.230Z] [INFO] [electron.server.base-server-manager] App data directory: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data
+[2026-07-16T09:23:23.230Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-07-16T09:23:23.231Z] [INFO] [electron.server.app-data] Generated runtime .env at: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/.env
+[2026-07-16T09:23:23.231Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-07-16T09:23:23.231Z] [INFO] [electron.server.base-server-manager] Port 29695 is free.
+[2026-07-16T09:23:23.231Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+[2026-07-16T09:23:23.239Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-07-16T09:23:23.239Z] [INFO] [electron] Login shell PATH: /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.144.5-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0sWveJG:/Users/normy/.lmstudio/bin
+[2026-07-16T09:23:23.239Z] [INFO] [electron] Using PATH from login shell
+[2026-07-16T09:23:23.239Z] [INFO] [electron] Starting server with port: 29695
+[2026-07-16T09:23:23.239Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:29695
+[2026-07-16T09:23:23.239Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-16T09:23:23.239Z] [INFO] [electron] App data directory: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data
+[2026-07-16T09:23:23.239Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data
+[2026-07-16T09:23:23.240Z] [INFO] [electron] Server process spawned with PID: 90998
+[2026-07-16T09:23:23.361Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] App data directory: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] Config file path: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/.env
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/.env
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (0) from ../../../../../../../../../../../../tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/.env -- tip: ‚ö°Ô∏è secrets for agents: https://dotenvx.com/as2
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:29695
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-07-16T09:23:23.362Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:29695
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/db
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/download
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/memory
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-07-16T09:23:23.363Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'replace_in_file'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'insert_in_file'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-07-16T09:23:24.037Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-07-16T09:23:24.038Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'add_todo'
+[2026-07-16T09:23:24.038Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_todo_list'
+[2026-07-16T09:23:24.038Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_todo_list'
+[2026-07-16T09:23:24.038Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_todo_status'
+[2026-07-16T09:23:24.038Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-07-16T09:23:24.104Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-07-16T09:23:24.112Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-07-16T09:23:24.364Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-07-16T09:23:24.366Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/db/production.db"
+[2026-07-16T09:23:24.397Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/db/production.db
+[2026-07-16T09:23:24.406Z] [INFO] [electron.embedded-server.stdout] 17 migrations found in prisma/migrations
+[2026-07-16T09:23:24.410Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-07-16T09:23:24.415Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-07-16T09:23:24.419Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-07-16T09:23:24.420Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-07-16T09:23:24.421Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-07-16T09:23:24.422Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-07-16T09:23:24.423Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-07-16T09:23:24.429Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-07-16T09:23:24.430Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-07-16T09:23:24.434Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-07-16T09:23:24.435Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-07-16T09:23:24.436Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-07-16T09:23:24.440Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-07-16T09:23:24.441Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-07-16T09:23:24.444Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-07-16T09:23:24.450Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-07-16T09:23:24.452Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260203074245_init/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260208094000_add_external_channel_tables/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260209213000_remove_agent_conversation_tables/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260210101500_add_agent_avatar/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260210192000_add_agent_team_avatar/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260211214500_add_sync_columns_and_tombstones/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260212070000_remove_workflow_definition/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260309103000_add_channel_binding_launch_preset/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260310153000_add_channel_binding_team_definition_id/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260331102000_remove_channel_bindings_table/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260517090000_add_app_data_migration_records/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260624090000_add_token_usage_ledger_events/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260625193000_token_usage_component_pricing_explainability/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260629120000_add_token_usage_display_fields/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260702093000_token_usage_execution_address/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-07-16T09:23:24.466Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-07-16T09:23:24.571Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-16T09:23:24.575Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-07-16T09:23:24.575Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-07-16T09:23:24.606Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 49 items.
+[2026-07-16T09:23:24.611Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-16T09:23:24.622Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-16T09:23:24.635Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-07-16T09:23:24.636Z] [INFO] [electron.embedded-server.stdout] AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-07-16T09:23:24.636Z] [INFO] [electron.embedded-server.stdout] [2026-07-16T09:23:24.636Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-16T09:23:24.693Z] [ERROR] [electron.embedded-server.stderr] Failed to start server: Error: listen EADDRINUSE: address already in use 0.0.0.0:29695
+[2026-07-16T09:23:24.703Z] [INFO] [electron.server.base-server-manager] Server process exited with code 1
+[2026-07-16T09:23:24.703Z] [ERROR] [electron] ServerStatusManager: Server error: Error: Server process exited with code 1
+    at ChildProcess.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:330:36)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at Socket.<anonymous> (node:internal/child_process:481:11)
+    at Socket.emit (node:events:509:28)
+    at Pipe.<anonymous> (node:net:350:12)
+[2026-07-16T09:23:24.703Z] [INFO] [electron] ServerStatusManager: Emitting status change: error
+[2026-07-16T09:23:24.703Z] [ERROR] [electron.server.base-server-manager] Failed to start server: Error: Server process exited with code 1
+    at ChildProcess.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:330:36)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at Socket.<anonymous> (node:internal/child_process:481:11)
+    at Socket.emit (node:events:509:28)
+    at Pipe.<anonymous> (node:net:350:12)
+[2026-07-16T09:23:24.703Z] [ERROR] [electron] ServerStatusManager: Server error: Error: Server process exited with code 1
+    at ChildProcess.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:330:36)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at Socket.<anonymous> (node:internal/child_process:481:11)
+    at Socket.emit (node:events:509:28)
+    at Pipe.<anonymous> (node:net:350:12)
+[2026-07-16T09:23:24.703Z] [INFO] [electron] ServerStatusManager: Emitting status change: error
+[2026-07-16T09:23:24.703Z] [ERROR] [electron] ServerStatusManager: Server initialization failed: Error: Server process exited with code 1
+    at ChildProcess.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:330:36)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at Socket.<anonymous> (node:internal/child_process:481:11)
+    at Socket.emit (node:events:509:28)
+    at Pipe.<anonymous> (node:net:350:12)
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[90988:0716/112327.142228:INFO:CONSOLE:651] "serverStore: Initializing server config", source: file:///Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.CgeHLSAb.js (651)
+[90988:0716/112327.143927:INFO:CONSOLE:651] "serverStore: Log file path: /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/logs/app.log", source: file:///Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.CgeHLSAb.js (651)
+[90988:0716/112327.144914:INFO:CONSOLE:651] "serverStore: Received server status: [object Object]", source: file:///Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.CgeHLSAb.js (651)
+[90988:0716/112327.144958:INFO:CONSOLE:651] "serverStore: Updating server status with: [object Object]", source: file:///Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.CgeHLSAb.js (651)
+[90988:0716/112327.153611:INFO:CONSOLE:659] "ServerLoading: Component mounted with status: error", source: file:///Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/entry.CgeHLSAb.js (659)
+[2026-07-16T09:23:29.146Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-16T09:23:29.172Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-16T09:23:31.232Z] [INFO] [electron] [updater] Checking for update
+[2026-07-16T09:23:32.349Z] [INFO] [electron] [updater] Update for version 1.4.14 is not available (latest version: 1.4.14, downgrade is disallowed).
+[2026-07-16T09:23:34.901Z] [INFO] [electron.server.base-server-manager] Server is not running
+Application logs under isolated HOME:
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/memory/run_history_index.json
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/memory/run_history_index.json
+[]
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/memory/team_run_history_index.json
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/memory/team_run_history_index.json
+[]
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/agents/autobyteus-memory-compactor/agent.md
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/agents/autobyteus-memory-compactor/agent.md
+---
+name: Memory Compactor
+description: Summarizes earlier work so the same agent can continue later.
+category: memory
+role: working memory summarizer
+---
+
+You summarize earlier work so the same agent can continue later without rereading the full history.
+
+Keep the information that would let someone resume safely: the goal, current state, decisions and rationale, user preferences, constraints, important files or artifacts, implementation facts, validation results, open issues, and next actions.
+
+Omit chatter, repeated status updates, and details that will not help future continuation. Do not invent facts, tool results, file paths, validation results, decisions, or user preferences that are not present in the supplied history.
+
+Return one JSON object with these fields:
+- `episodic_summary`: what happened, why it matters, and the current state.
+- `critical_issues`: blockers, failures, risks, regressions, or important warnings.
+- `unresolved_work`: open questions, pending work, deferred work, and next actions.
+- `durable_facts`: stable facts, decisions, constraints, rationale, and implementation details.
+- `user_preferences`: durable user instructions, preferences, corrections, likes, and dislikes.
+- `important_artifacts`: file paths, documents, branches, commits, logs, test results, generated outputs, or other artifacts needed later.
+
+If a field has no relevant information, return an empty array for that field. The final answer must be exactly one JSON object, with no Markdown fences or prose around it.
+
+When manually given pasted history, infer the same fields from the content. If the user does not provide an explicit schema, use this shape:
+
+{
+  "episodic_summary": "string",
+  "critical_issues": [{ "fact": "string" }],
+  "unresolved_work": [{ "fact": "string" }],
+  "durable_facts": [{ "fact": "string" }],
+  "user_preferences": [{ "fact": "string" }],
+  "important_artifacts": [{ "fact": "string" }]
+}
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/agents/autobyteus-memory-compactor/agent-config.json
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/agents/autobyteus-memory-compactor/agent-config.json
+{
+  "toolNames": [],
+  "skillNames": [],
+  "inputProcessorNames": [],
+  "llmResponseProcessorNames": [],
+  "systemPromptProcessorNames": [],
+  "toolExecutionResultProcessorNames": [],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/agents/autobyteus-retrospective-skill-improver/agent.md
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/agents/autobyteus-retrospective-skill-improver/agent.md
+---
+name: Retrospective Skill Improver
+description: Improves configured durable skill packages from target run work-trace evidence.
+category: skill-improvement
+role: retrospective skill improver
+---
+
+You are the Retrospective Skill Improver, the worker agent for Skill Improvement.
+
+Your job is to read work trace evidence for the target run/agent and improve the listed editable skill packages when the trace reveals a reusable skill-guidance gap.
+
+The task message is authoritative for dynamic scope. It supplies the work trace manifest/root/file paths, editable skill package roots, package trees, target AgentRun id, and final message type. The task message and work trace manifest provide the target identity.
+
+Use the listed editable skill roots as your write scope. Treat each root as a skill package: `SKILL.md` is the entry file, and referenced files inside the same root may carry detailed guidance, examples, templates, or SOPs. Other repository areas are context for understanding the editable skills.
+
+When the trace yields a reusable skill-guidance gap, update the relevant skill files; otherwise explain that current guidance stands.
+
+After meaningful durable skill package file changes, send one `send_message_to` update using the `target_agent_run_id` and `message_type` supplied by the task message. The content should explain what durable skill guidance changed and why. `reference_files` should contain absolute paths for updated or directly relevant surviving files inside the editable skill roots.
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/agents/autobyteus-retrospective-skill-improver/agent-config.json
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/agents/autobyteus-retrospective-skill-improver/agent-config.json
+{
+  "toolNames": [
+    "run_bash",
+    "send_message_to"
+  ],
+  "skillNames": [
+    "retrospective-skill-improver"
+  ],
+  "inputProcessorNames": [],
+  "llmResponseProcessorNames": [],
+  "systemPromptProcessorNames": [],
+  "toolExecutionResultProcessorNames": [],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260703_drop_token_usage_legacy_path_columns-2026-07-16T09-23-24-521Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260703_drop_token_usage_legacy_path_columns-2026-07-16T09-23-24-521Z.log
+migrationId=20260703_drop_token_usage_legacy_path_columns
+displayName=Token usage legacy path columns drop
+statusSummary={"scannedCount":2,"migratedCount":2,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"token-usage-legacy-path-columns:prerequisite","status":"SKIPPED","message":"Execution-address backfill prerequisite status: SUCCEEDED."}
+{"itemId":"token-usage-legacy-path-columns:team_run_path_json","status":"MIGRATED","message":"Dropped obsolete token usage ledger column 'team_run_path_json'."}
+{"itemId":"token-usage-legacy-path-columns:member_path_json","status":"MIGRATED","message":"Dropped obsolete token usage ledger column 'member_path_json'."}
+{"itemId":"token-usage-legacy-path-columns:data-preservation","status":"SKIPPED","message":"Token usage ledger row count preserved: 0 -> 0."}
+{"itemId":"token-usage-legacy-path-columns:final-schema","status":"MIGRATED","message":"Final schema has 82 columns and excludes team_run_path_json, member_path_json."}
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260706_remove_global_skill_discovery_mode-2026-07-16T09-23-24-502Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260706_remove_global_skill_discovery_mode-2026-07-16T09-23-24-502Z.log
+migrationId=20260706_remove_global_skill_discovery_mode
+displayName=Remove global skill discovery mode migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260623_remove_self_evolution_run_metadata-2026-07-16T09-23-24-528Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260623_remove_self_evolution_run_metadata-2026-07-16T09-23-24-528Z.log
+migrationId=20260623_remove_self_evolution_run_metadata
+displayName=Remove self-evolution run metadata migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260521_team_run_history_index_v2-2026-07-16T09-23-24-548Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260521_team_run_history_index_v2-2026-07-16T09-23-24-548Z.log
+migrationId=20260521_team_run_history_index_v2
+displayName=Team run history index V2 migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260617_raw_trace_rotation_layout-2026-07-16T09-23-24-523Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260617_raw_trace_rotation_layout-2026-07-16T09-23-24-523Z.log
+migrationId=20260617_raw_trace_rotation_layout
+displayName=Raw trace rotation layout migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260703_token_usage_execution_address_backfill-2026-07-16T09-23-24-512Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260703_token_usage_execution_address_backfill-2026-07-16T09-23-24-512Z.log
+migrationId=20260703_token_usage_execution_address_backfill
+displayName=Token usage execution address backfill
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"token-usage-execution-address:task-record-index","status":"SKIPPED","message":"Scanned 0 task delegation records; indexed 0 task-team run addresses; conflicts 0."}
+{"itemId":"token-usage-execution-address:direct-member-backfills","status":"SKIPPED","message":"Direct member backfills: 0."}
+{"itemId":"token-usage-execution-address:task-team-corrections","status":"SKIPPED","message":"Task-team corrections: 0."}
+{"itemId":"token-usage-execution-address:task-agent-backfills","status":"SKIPPED","message":"Task-agent backfills: 0."}
+{"itemId":"token-usage-execution-address:already-addressed","status":"SKIPPED","message":"Already-addressed rows: 0."}
+{"itemId":"token-usage-execution-address:standalone-skips","status":"SKIPPED","message":"Standalone skips: 0."}
+{"itemId":"token-usage-execution-address:insufficient-data-skips","status":"SKIPPED","message":"Insufficient-data skips: 0. Reasons: none."}
+{"itemId":"token-usage-execution-address:failures","status":"SKIPPED","message":"Failures: 0."}
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260707_raw_trace_active_file_name-2026-07-16T09-23-24-526Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260707_raw_trace_active_file_name-2026-07-16T09-23-24-526Z.log
+migrationId=20260707_raw_trace_active_file_name
+displayName=Raw trace active file name migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260701_team_communication_projection_addresses-2026-07-16T09-23-24-508Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260701_team_communication_projection_addresses-2026-07-16T09-23-24-508Z.log
+migrationId=20260701_team_communication_projection_addresses
+displayName=Team communication projection address migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260517_team_run_metadata_member_tree-2026-07-16T09-23-24-505Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260517_team_run_metadata_member_tree-2026-07-16T09-23-24-505Z.log
+migrationId=20260517_team_run_metadata_member_tree
+displayName=Team run metadata member tree migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260521_run_history_index_v2-2026-07-16T09-23-24-568Z.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260521_run_history_index_v2-2026-07-16T09-23-24-568Z.log
+migrationId=20260521_run_history_index_v2
+displayName=Standalone run history index V2 migration
+statusSummary={"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0}
+error=
+details=
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/server.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/server.log
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 19 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-07-16T09:23:24.636Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Failed to start server: Error: listen EADDRINUSE: address already in use 0.0.0.0:29695
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/.env
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/.env
+APP_ENV=production
+LOG_LEVEL=INFO
+DB_TYPE=sqlite
+DATABASE_URL=file:/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/db/production.db
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:29695
+/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/db/production.db
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/db/production.db
+  "model_value" TEXT,
+  "ingestion_kind" TEXT NOT NULL,
+  "usage_scope" TEXT NOT NULL,
+  "snapshot_series_key" TEXT,
+  "previous_snapshot_event_id" TEXT,
+  "reported_input_tokens" INTEGER,
+  "reported_output_tokens" INTEGER,
+  "reported_total_tokens" INTEGER,
+  "accounting_input_tokens" INTEGER,
+  "accounting_outpuó%6??≠Ytabletoken_usage_leó6??≠tabletoken_usage_ñm6??¨itabletoken_usage_ledger_eventstoken_usage_ledger_events!CREATE TABLE "token_usage_ledger_events" (
+  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "usage_event_id" TEXT NOT NULL,
+  "idempotency_key" TEXT NOT NULL,
+  "observed_at" DATETIME NOT NULL,
+  "persisted_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "run_id" TEXT NOT NULL,
+  "turn_id" TEXT,
+  "llm_call_id" TEXT,
+  "call_sequence" INTEGER,
+  "root_team_run_id" TEXT,
+  "member_agent_run_id" TEXT,
+  "member_route_key" TEXT,
+  "agent_definition_id" TEXT,
+  "workspace_id" TEXT,
+  "task_agent_instance_id" TEXT,
+  "task_agent_run_id" TEXT,
+  "task_id" TEXT,
+  "runtime_kind" TEXT NOT NULL,
+  "model_provider" TEXT,
+  "model_identifier" TEXT,
+  "model_value" TEXT,
+  "ingestion_kind" TEXT NOT NULL,
+  "usage_scope" TEXT NOT NULL,
+  "snapshot_series_key" TEXT,
+  "previous_snapshot_event_id" TEXT,
+  "reported_input_tokens" INTEGER,
+  "reported_output_tokens" INTEGER,
+  "reported_total_tokens" INTEGER,
+  "accounting_input_tokens" INTEGER,
+  "accounting_output_tokens" INTEGER,
+  "accounting_total_tokens" INTEGER,
+  "cache_read_input_tokens" INTEGER,
+  "cache_creation_input_tokens" INTEGER,
+  "reasoning_output_tokens" INTEGER,
+  "billable_input_tokens" INTEGER,
+  "billable_output_tokens" INTEGER,
+  "raw_usage_json" TEXT,
+  "raw_event_json" TEXT,
+  "quality_flags_json" TEXT,
+  "cost_basis" TEXT,
+  "currency" TEXT,
+  "input_price_per_million" REAL,
+  "output_price_per_million" REAL,
+  "cached_input_read_price_per_million" REAL,
+  "cached_input_write_price_per_million" REAL,
+  "pricing_source" TEXT,
+  "pricing_status" TEXT NOT NULL,
+  "pricing_missing_reason" TEXT,
+  "pricing_snapshot_json" TEXT,
+  "estimated_api_input_cost" REAL,
+  "estimated_api_standard_input_cost" REAL,
+  "estimated_api_cache_read_input_cost" REAL,
+  "estimated_api_cache_creation_input_cost" REAL,
+  "estimated_api_output_cost" REAL,
+  "estimated_api_reasoning_output_cost" REAL,
+  "estimated_api_total_cost" REAL,
+  "api_cost_status" TEXT NOT NULL,
+  "latest_context_input_tokens" INTEGER,
+  "effective_context_budget_tokens" INTEGER,
+  "context_pressure_percent" REAL
+, "input_token_semantic" TEXT NOT NULL DEFAULT 'unknown', "standard_input_tokens" INTEGER, "cache_miss_input_tokens" INTEGER, "cache_creation_5m_input_tokens" INTEGER, "cache_creation_1h_input_tokens" INTEGER, "cache_state" TEXT NOT NULL DEFAULT 'unknown', "cached_input_write_5m_price_per_million" REAL, "cached_input_write_1h_price_per_million" REAL, "pricing_policy_key" TEXT, "selected_pricing_tier_id" TEXT, "missing_price_dimensions_json" TEXT, "estimated_api_cache_creation_5m_input_cost" REAL, "estimated_api_cache_creation_1h_input_cost" REAL, "latest_prompt_tokens" INTEGER, "effective_context_window_tokens" INTEGER, "context_window_usage_percent" REAL, "team_name" TEXT, "agent_name" TEXT, "run_summary" TEXT, "run_created_at" DATETIME, "member_name" TEXT, "execution_address_json" TEXT)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 û 8mùÆû                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Ç;Å?ÇQindextoken_usage_ledger_events_snapshot_series_key_run_id_observed_at_idxtoken_usage_ledger_events'CREATE INDEX "token_usage_ledger_events_snapshot_series_key_run_id_observed_at_idx" ON "token_usage_ledger_events"("snapshot_series_key", "run_id", "observed_at")Ål:Å?Ç#indextoken_usage_ledger_events_root_team_run_id_observed_at_idxtoken_usage_ledger_events&CREATE INDEX "token_usage_ledger_events_root_team_run_id_observed_at_idx" ON "token_usage_ledger_events"("root_team_run_id", "observed_at")ÅM9m?Å{indextoken_usage_ledger_events_run_id_observed_at_idxtoken_usage_ledger_events%CREATE INDEX "token_usage_ledger_events_run_id_observed_at_idx" ON "token_usage_ledger_events"("run_id", "observed_at")ÅH8g?Åwindextoken_usage_ledger_events_idempotency_key_keytoken_usage_ledger_events#CREATE UNIQUE INDEX "token_usage_ledger_events_idempotency_key_key" ON "token_usage_ledger_events"("idempotency_key")ÅE7e?Åsindextoken_usage_ledger_events_usage_event_id_keytoken_usage_ledger_events"CREATE UNIQUE INDEX "token_usage_ledger_events_usage_event_id_key" ON "token_usage_ledger_events"("usage_event_id")   M {ÛS	ŒM *   &   &   '   #   0   $   *   &   *   0   %                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Ç~
+ G_	Å1 ÇE3320260521_run_history_index_v2Standalone run history index V2 migrationSUCCEEDEDüj<Èüj<È{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0,"details":[]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260521_run_history_index_v2-2026-07-16T09-23-24-568Z.log2026-07-16 09:23:242026-07-16 09:23:24É	 QS	Å1 ÇO3320260521_team_run_history_index_v2Team run history index V2 migrationSUCCEEDEDüj<ËÚüj<È{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0,"details":[]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260521_team_run_history_index_v2-2026-07-16T09-23-24-548Z.log2026-07-16 09:23:242026-07-16 09:23:24É ce	Å1 Ça3320260623_remove_self_evolution_run_metadataRemove self-evolution run metadata migrationSUCCEEDEDüj<ËÔüj<ËÒ{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0,"details":[]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260623_remove_self_evolution_run_metadata-2026-07-16T09-23-24-528Z.log2026-07-16 09:23:242026-07-16 09:23:24É SU	Å1 ÇQ3320260707_raw_trace_active_file_nameRaw trace active file name migrationSUCCEEDEDüj<ËÏüj<ËÓ{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0,"details":[]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260707_raw_trace_active_file_name-2026-07-16T09-23-24-526Z.log2026-07-16 09:23:242026-07-16 09:23:24É QS	Å1 ÇO3320260617_raw_trace_rotation_layoutRaw trace rotation layout migrationSUCCEEDEDüj<ËÍüj<ËÎ{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0,"details":[]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260617_raw_trace_rotation_layout-2026-07-16T09-23-24-523Z.log2026-07-16 09:23:242026-07-16 09:23:24
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  Í `œ"é Í                                                                                                                                                                                                                        â! gU	çA Çe3320260703_drop_token_usage_legacy_path_columnsToken usage legacy path columns dropSUCCEEDEDüj<Ë·üj<ËÈ{"scannedCount":2,"migratedCount":2,"skippedCount":0,"failedCount":0,"details":[{"itemId":"token-usage-legacy-path-columns:prerequisite","status":"SKIPPED","message":"Execution-address backfill prerequisite status: SUCCEEDED."},{"itemId":"token-usage-legacy-path-columns:team_run_path_json","status":"MIGRATED","message":"Dropped obsolete token usage ledger column 'team_run_path_json'."},{"itemId":"token-usage-legacy-path-columns:member_path_json","status":"MIGRATED","message":"Dropped obsolete token usage ledger column 'member_path_json'."},{"itemId":"token-usage-legacy-path-columns:data-preservation","status":"SKIPPED","message":"Token usage ledger row count preserved: 0 -> 0."},{"itemId":"token-usage-legacy-path-columns:final-schema","status":"MIGRATED","message":"Final schema has 82 columns and excludes team_run_path_json, member_path_json."}]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260703_drop_token_usage_legacy_path_columns-2026-07-16T09-23-24-521Z.log2026-07-16 09:23:242026-07-16 09:23:24ã kY	ë Çi3320260703_token_usage_execution_address_backfillToken usage execution address backfillSUCCEEDEDüj<Ë›üj<Ë‡{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0,"details":[{"itemId":"token-usage-execution-address:task-record-index","status":"SKIPPED","message":"Scanned 0 task delegation records; indexed 0 task-team run addresses; conflicts 0."},{"itemId":"token-usage-execution-address:direct-member-backfills","status":"SKIPPED","message":"Direct member backfills: 0."},{"itemId":"token-usage-execution-address:task-team-corrections","status":"SKIPPED","message":"Task-team corrections: 0."},{"itemId":"token-usage-execution-address:task-agent-backfills","status":"SKIPPED","message":"Task-agent backfills: 0."},{"itemId":"token-usage-execution-address:already-addressed","status":"SKIPPED","message":"Already-addressed rows: 0."},{"itemId":"token-usage-execution-address:standalone-skips","status":"SKIPPED","message":"Standalone skips: 0."},{"itemId":"token-usage-execution-address:insufficient-data-skips","status":"SKIPPED","message":"Insufficient-data skips: 0. Reasons: none."},{"itemId":"token-usage-execution-address:failures","status":"SKIPPED","message":"Failures: 0."}]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260703_token_usage_execution_address_backfill-2026-07-16T09-23-24-512Z.log2026-07-16 09:23:242026-07-16 09:23:24É* mk	Å1 Çk3320260701_team_communication_projection_addressesTeam communication projection address migrationSUCCEEDEDüj<Ë⁄üj<Ë‹{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0,"details":[]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260701_team_communication_projection_addresses-2026-07-16T09-23-24-508Z.log2026-07-16 09:23:242026-07-16 09:23:24É Y[	Å1 ÇW3320260517_team_run_metadata_member_treeTeam run metadata member tree migrationSUCCEEDEDüj<Ëÿüj<Ë⁄{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0,"details":[]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260517_team_run_metadata_member_tree-2026-07-16T09-23-24-505Z.log2026-07-16 09:23:242026-07-16 09:23:24É ce	Å1 Ça3320260706_remove_global_skill_discovery_modeRemove global skill discovery mode migrationSUCCEEDEDüj<Ë”üj<Ë◊{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":0,"details":[]}/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/server-data/logs/app-data-migrations/20260706_remove_global_skill_discovery_mode-2026-07-16T09-23-24-502Z.log2026-07-16 09:23:242026-07-16 09:23:24/tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/logs/app.log
+--- /tmp/autobyteus-electron-launch-round9-home-2298/.autobyteus/logs/app.log
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260208094000_add_external_channel_tables/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260209213000_remove_agent_conversation_tables/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260210101500_add_agent_avatar/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260210192000_add_agent_team_avatar/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260211214500_add_sync_columns_and_tombstones/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260212070000_remove_workflow_definition/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260309103000_add_channel_binding_launch_preset/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260310153000_add_channel_binding_team_definition_id/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260331102000_remove_channel_bindings_table/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260517090000_add_app_data_migration_records/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260624090000_add_token_usage_ledger_events/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260625193000_token_usage_component_pricing_explainability/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260629120000_add_token_usage_display_fields/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]   ‚îî‚îÄ 20260702093000_token_usage_execution_address/
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout]     ‚îî‚îÄ migration.sql
+[2026-07-16T09:23:24.454Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-07-16T09:23:24.466Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-07-16T09:23:24.571Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-16T09:23:24.575Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 19 predefined settings
+[2026-07-16T09:23:24.575Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-07-16T09:23:24.606Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 49 items.
+[2026-07-16T09:23:24.611Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-16T09:23:24.622Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-16T09:23:24.635Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-07-16T09:23:24.636Z] [INFO] [electron.embedded-server.stdout] AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-07-16T09:23:24.636Z] [INFO] [electron.embedded-server.stdout] [2026-07-16T09:23:24.636Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-16T09:23:24.693Z] [ERROR] [electron.embedded-server.stderr] Failed to start server: Error: listen EADDRINUSE: address already in use 0.0.0.0:29695
+[2026-07-16T09:23:24.703Z] [INFO] [electron.server.base-server-manager] Server process exited with code 1
+[2026-07-16T09:23:24.703Z] [ERROR] [electron] ServerStatusManager: Server error: Error: Server process exited with code 1
+    at ChildProcess.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:330:36)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at Socket.<anonymous> (node:internal/child_process:481:11)
+    at Socket.emit (node:events:509:28)
+    at Pipe.<anonymous> (node:net:350:12)
+[2026-07-16T09:23:24.703Z] [INFO] [electron] ServerStatusManager: Emitting status change: error
+[2026-07-16T09:23:24.703Z] [ERROR] [electron.server.base-server-manager] Failed to start server: Error: Server process exited with code 1
+    at ChildProcess.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:330:36)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at Socket.<anonymous> (node:internal/child_process:481:11)
+    at Socket.emit (node:events:509:28)
+    at Pipe.<anonymous> (node:net:350:12)
+[2026-07-16T09:23:24.703Z] [ERROR] [electron] ServerStatusManager: Server error: Error: Server process exited with code 1
+    at ChildProcess.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:330:36)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at Socket.<anonymous> (node:internal/child_process:481:11)
+    at Socket.emit (node:events:509:28)
+    at Pipe.<anonymous> (node:net:350:12)
+[2026-07-16T09:23:24.703Z] [INFO] [electron] ServerStatusManager: Emitting status change: error
+[2026-07-16T09:23:24.703Z] [ERROR] [electron] ServerStatusManager: Server initialization failed: Error: Server process exited with code 1
+    at ChildProcess.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:330:36)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at Socket.<anonymous> (node:internal/child_process:481:11)
+    at Socket.emit (node:events:509:28)
+    at Pipe.<anonymous> (node:net:350:12)
+[2026-07-16T09:23:29.146Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-16T09:23:29.172Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-16T09:23:31.232Z] [INFO] [electron] [updater] Checking for update
+[2026-07-16T09:23:32.349Z] [INFO] [electron] [updater] Update for version 1.4.14 is not available (latest version: 1.4.14, downgrade is disallowed).
+[2026-07-16T09:23:34.901Z] [INFO] [electron.server.base-server-manager] Server is not running
+/tmp/autobyteus-electron-launch-round9-home-2298/Library/Caches/checkpoint-nodejs/signature
+--- /tmp/autobyteus-electron-launch-round9-home-2298/Library/Caches/checkpoint-nodejs/signature
+{
+  "signature": "081df0ec-14e2-47b2-8c73-0551469f31c0"
+}/tmp/autobyteus-electron-launch-round9-home-2298/Library/Caches/checkpoint-nodejs/prisma-bb6b3715
+--- /tmp/autobyteus-electron-launch-round9-home-2298/Library/Caches/checkpoint-nodejs/prisma-bb6b3715
+{
+  "last_reminder": 0,
+  "cached_at": 1784193805106,
+  "version": "5.22.0",
+  "cli_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/prisma/build/index.js",
+  "output": {
+    "product": "prisma",
+    "previous_version": "5.22.0",
+    "checkpoint_version": 4,
+    "local_timestamp_without_timezone": "2026-07-16T11:23:24Z",
+    "current_version": "7.8.0",
+    "current_release_date": 1776867418,
+    "client_event_id": "24c7586b-805e-4a7f-9891-6c4f0dd13903",
+    "current_download_url": "https://github.com/prisma/prisma",
+    "package": "prisma",
+    "release_tag": "latest",
+    "install_command": "npm install --save-dev prisma",
+    "schema_providers": [
+      "sqlite"
+    ],
+    "schema_preview_features": [],
+    "schema_generators_providers": [
+      "prisma-client-js"
+    ],
+    "current_changelog_url": "https://github.com/prisma/prisma",
+    "outdated": true,
+    "project_website": "https://prisma.io",
+    "alerts": []
+  }
+}Remaining matching processes:
+Finished: 2026-07-16T09:23:37Z

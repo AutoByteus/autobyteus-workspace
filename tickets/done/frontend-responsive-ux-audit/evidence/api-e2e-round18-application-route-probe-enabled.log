@@ -1,0 +1,64 @@
+{
+  "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+  "url": "http://127.0.0.1:13044/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+  "title": "",
+  "body": "← Back to applications\nLaunch setup\nBrief Studio\n\nExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\nDrafting Team\nRequired\n\nTeam resource used when Brief Studio launches a new drafting run.\n\nCURRENT SELECTION\n\nBrief Studio Team · Bundled · Agent team\n\nUsing manifest defaults only\n\nExecution resource\nUse manifest default · Brief Studio Team · Bundled · Agent team\nBrief Studio Team · Bundled · Agent team\nBible Study Group · Shared · Agent team\nClara Ocean Friends · Shared · Agent team\nJob Search Application Team · Shared · Agent team\nMarketing Team · Shared · Agent team\nMovie Maker · Shared · Agent team\nNested Classroom Test Team · Shared · Agent team\nPresentation_Chemie · Shared · Agent team\nSocratic Math Team · Shared · Agent team\nTutorial Video Creation Team · Shared · Agent team\nArticle Writing Team · Shared · Agent team\nClassroom Simulation Team · Shared · Agent team\nData2Story Team · Shared · Agent team\nKids Coloring Story Team · Shared · Agent team\nManga Video Studio Team · Shared · Agent team\nNarrated Presentation Video Team · Shared · Agent team\nNorthstar Operating Company · Shared · Agent team\nResearch Engineering Team · Shared · Agent team\nResearch To Deck Team · Shared · Agent team\nSoftware Engineering Team · Shared · Agent team\nSoftware Product Promo Video Team · Shared · Agent team\nSTORM Team · Shared · Agent team\nDefault runtime\nUse application default runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nOptional: save a preferred runtime for later launches from inside the application.\n\nDefault model\nSelect a default model\n\nOptional: save a preferred model for later application-owned launches.\n\nDefault workspace root\nLoaded workspaces\nCustom path\n\nEnter or browse for an absolute workspace root path to reuse during application-owned launches.\n\nOptional: save a workspace root path for later launches from inside the application.\n\nTeam member overrides\n\nEach member inherits the shared defaults unless you set a runtime or model override here.\n\nresearcher\n\nresearcher\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\n\nwriter\n\nwriter\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nMODEL OVERRIDE\nInherit global model\nSave setup\nReset changes\nConfirm launch setup before opening the app\n\nSave or reset launch setup changes before entering the application.\n\nEnter appl",
+  "tests": {
+    "application-setup-phase": true,
+    "application-immersive-phase": false,
+    "workspace-left-navigation-strip": true,
+    "app-left-navigation-drawer": false,
+    "workspace-adaptive-layout": false,
+    "application-pre-entry-gate": true
+  },
+  "buttons": [
+    "Agents",
+    "Agent Teams",
+    "Applications",
+    "Skills",
+    "Memory",
+    "Nodes",
+    "Settings",
+    "← Back to applications",
+    "Show technical details",
+    "Refresh setup",
+    "Select a default model",
+    "Loaded workspaces",
+    "Custom path",
+    "Inherit global model",
+    "Inherit global model",
+    "Save setup",
+    "Reset changes",
+    "Enter application"
+  ],
+  "msgs": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Checking server health at /rest/health"
+    }
+  ]
+}

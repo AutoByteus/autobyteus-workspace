@@ -101,7 +101,7 @@ describe('RightSideTabs', () => {
         VncViewer: { template: '<div class="vnc-stub" />' },
         FileExplorerLayout: {
           name: 'FileExplorerLayout',
-          props: ['active'],
+          props: ['active', 'layout'],
           template: '<div class="file-layout-stub" />',
         },
         ArtifactsTab: { template: '<div class="artifacts-stub" />' },
@@ -117,6 +117,16 @@ describe('RightSideTabs', () => {
     const shell = wrapper.get('[data-test="right-side-tab-content-shell"]');
     expect(shell.classes()).toContain('overflow-hidden');
     expect(shell.classes()).not.toContain('overflow-auto');
+  });
+
+  it('preserves personal tab styling defaults without custom overflow chrome', () => {
+    const wrapper = mountSubject();
+
+    const tabList = wrapper.getComponent({ name: 'TabList' });
+    expect(tabList.props('density')).toBeUndefined();
+    expect(tabList.props('showOverflowAffordances')).toBeUndefined();
+    expect(tabList.props('previousLabel')).toBeUndefined();
+    expect(tabList.props('nextLabel')).toBeUndefined();
   });
 
   it('does not switch to Artifacts when a touched file becomes newly visible', async () => {
@@ -154,6 +164,26 @@ describe('RightSideTabs', () => {
       { name: 'artifacts', label: 'Artifacts' },
     ]);
     expect(wrapper.find('.file-layout-stub').exists()).toBe(false);
+  });
+
+  it('uses stacked file explorer layout in drawer mode', () => {
+    activeTab.value = 'files';
+    visibleTabs.value = [
+      { name: 'files', label: 'Files' },
+      { name: 'terminal', label: 'Terminal' },
+    ];
+
+    const wrapper = mountSubject({ mode: 'drawer' });
+
+    const fileLayout = wrapper.getComponent({ name: 'FileExplorerLayout' });
+    expect(fileLayout.props('active')).toBe(true);
+    expect(fileLayout.props('layout')).toBe('stacked');
+  });
+
+  it('hides the docked-panel toggle in drawer mode', () => {
+    const wrapper = mountSubject({ mode: 'drawer' });
+
+    expect(wrapper.find('[data-test="right-side-panel-toggle"]').exists()).toBe(false);
   });
 
   it('keeps Files lazy before first selection even when Terminal is selected first', () => {
@@ -208,6 +238,7 @@ describe('RightSideTabs', () => {
 
     let fileLayout = wrapper.getComponent({ name: 'FileExplorerLayout' });
     expect(fileLayout.props('active')).toBe(true);
+    expect(fileLayout.props('layout')).toBe('split');
 
     activeTab.value = 'terminal';
     await nextTick();

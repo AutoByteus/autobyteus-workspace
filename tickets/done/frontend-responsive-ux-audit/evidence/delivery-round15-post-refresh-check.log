@@ -1,0 +1,53 @@
+Delivery Round 15 post-refresh integrated-state check
+timestamp=2026-07-16T19:07:55Z
+validated_implementation_head=7eceffbd5935d95bc102f3deedebf70231addc4c
+delivery_checkpoint=367ea78536b570b2220b18551381c1c2302522b2
+latest_tracked_base=fbd7b6764bd43751956d69ffe22b943d06188444
+merge_base=fbd7b6764bd43751956d69ffe22b943d06188444
+base_refresh=Already up to date; no new base commit introduced
+diff_from_validated_implementation_head:
+ autobyteus-web/docs/workspace_layout.md            |  22 +-
+ .../api-e2e-coverage-investigation.md              |  65 +-
+ .../api-e2e-execution-coverage-report.md           |  76 ++-
+ .../api-e2e-test-review-report.md                  |  69 ++
+ .../code-review-report.md                          | 416 +++++++++++
+ .../comprehensive-responsive-ui-test-report.md     |  36 +
+ .../delivery-release-deployment-report.md          |  43 +-
+ .../design-review-report.md                        |  49 +-
+ .../frontend-responsive-ux-audit/design-spec.md    |  38 ++
+ .../docs-sync-report.md                            |  48 +-
+ .../evidence/api-e2e-round15-backend.log           | 269 ++++++++
+ .../evidence/api-e2e-round15-cleanup-ports.log     |   4 +
+ .../api-e2e-round15-focused-nuxt-tests.log         | 180 +++++
+ .../evidence/api-e2e-round15-frontend.log          |  82 +++
+ .../evidence/api-e2e-round15-probe-checks.log      |   2 +
+ .../evidence/api-e2e-round15-runtime-setup.log     |  13 +
+ .../evidence/api-e2e-round15-server-build.log      |  56 ++
+ .../api-e2e-round15-workspace-responsive-probe.log | 633 +++++++++++++++++
+ .../evidence/delivery-round14-electron-build.log   | 680 ++++++++++++++++++
+ .../evidence/delivery-round14-fetch-and-merge.log  |   9 +
+ .../delivery-round14-final-sanity-check.log        |  22 +
+ .../delivery-round14-post-refresh-check.log        |  59 ++
+ .../delivery-round14-pre-refresh-state.log         |   9 +
+ .../handoff-summary.md                             |  54 +-
+ .../investigation-notes.md                         |  42 ++
+ .../probes/api-e2e/desktop-1280x800.png            | Bin 41131 -> 38715 bytes
+ .../probes/api-e2e/gap-700x700.png                 | Bin 20748 -> 20621 bytes
+ .../probes/api-e2e/gap-767x700.png                 | Bin 20965 -> 20876 bytes
+ .../probes/api-e2e/md-768x700.png                  | Bin 20601 -> 20511 bytes
+ .../probes/api-e2e/narrow-500x700.png              | Bin 19297 -> 19243 bytes
+ .../probes/api-e2e/narrow-short-500x420.png        | Bin 17756 -> 17682 bytes
+ .../probes/api-e2e/phone-390x844.png               | Bin 18569 -> 18513 bytes
+ .../probes/api-e2e/phone-short-390x640.png         | Bin 17794 -> 17744 bytes
+ .../probes/api-e2e/tablet-800x700.png              | Bin 20730 -> 20652 bytes
+ .../probes/api-e2e/tablet-short-800x420.png        | Bin 18910 -> 18837 bytes
+ .../probes/api-e2e/threshold-639x700.png           | Bin 20235 -> 20112 bytes
+ .../probes/api-e2e/threshold-640x700.png           | Bin 20265 -> 20142 bytes
+ .../workspace-responsive-probe-results.json        | 757 +++++++++++++++------
+ .../workspace-responsive-probe-summary.json        |   2 +-
+ .../requirements-doc.md                            |  16 +-
+ .../right-tool-tabs-ux-spec.md                     |  25 +-
+ .../workspace-responsive-ui-ux-spec.md             |  63 +-
+ 42 files changed, 3520 insertions(+), 319 deletions(-)
+git_diff_check:
+integrated_state_decision=No additional base-triggered executable rerun required. API/E2E Round 15 passed against implementation HEAD 7eceffbd; refresh introduced no base changes or effective source behavior. Delivery docs remain pending update.

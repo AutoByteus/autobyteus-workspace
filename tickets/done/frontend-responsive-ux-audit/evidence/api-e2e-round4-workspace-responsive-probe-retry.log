@@ -1,0 +1,569 @@
+
+> autobyteus@1.4.14 test:e2e:workspace-responsive /Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web
+> node tests/e2e/workspace-responsive-probe.mjs -- --base-url http://127.0.0.1:13004 --output-dir ../tickets/frontend-responsive-ux-audit/probes/api-e2e --fail-on-console-error
+
+{
+  "result": "Fail",
+  "jsonPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json",
+  "summaryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json",
+  "failures": [
+    "phone-390x844: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "phone-390x844: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "phone-short-390x640: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "phone-short-390x640: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "narrow-500x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "narrow-500x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "narrow-short-500x420: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "narrow-short-500x420: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "threshold-639x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "threshold-639x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "threshold-640x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "threshold-640x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "gap-700x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "gap-700x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "gap-767x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "gap-767x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "md-768x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "md-768x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-800x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-800x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-short-800x420: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-short-800x420: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-900x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "tablet-900x700: drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "small-desktop-1024x768: right panel tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "desktop-1180x800: right panel tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "desktop-1280x800: right panel tab \"VNC Viewer\" is clipped or outside the visible tab list",
+    "wide-1440x900: right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+  ],
+  "summary": [
+    {
+      "viewport": "phone-390x844",
+      "route": "/workspace",
+      "size": "390x844",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 0,
+        "y": 107,
+        "width": 390,
+        "height": 737,
+        "right": 390,
+        "bottom": 844
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-390x844.png"
+    },
+    {
+      "viewport": "phone-short-390x640",
+      "route": "/workspace",
+      "size": "390x640",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 0,
+        "y": 107,
+        "width": 390,
+        "height": 533,
+        "right": 390,
+        "bottom": 640
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/phone-short-390x640.png"
+    },
+    {
+      "viewport": "narrow-500x700",
+      "route": "/workspace",
+      "size": "500x700",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 0,
+        "y": 107,
+        "width": 500,
+        "height": 593,
+        "right": 500,
+        "bottom": 700
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-500x700.png"
+    },
+    {
+      "viewport": "narrow-short-500x420",
+      "route": "/workspace",
+      "size": "500x420",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 0,
+        "y": 107,
+        "width": 500,
+        "height": 313,
+        "right": 500,
+        "bottom": 420
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/narrow-short-500x420.png"
+    },
+    {
+      "viewport": "threshold-639x700",
+      "route": "/workspace",
+      "size": "639x700",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 0,
+        "y": 107,
+        "width": 639,
+        "height": 593,
+        "right": 639,
+        "bottom": 700
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-639x700.png"
+    },
+    {
+      "viewport": "threshold-640x700",
+      "route": "/workspace",
+      "size": "640x700",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 0,
+        "y": 107,
+        "width": 640,
+        "height": 593,
+        "right": 640,
+        "bottom": 700
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/threshold-640x700.png"
+    },
+    {
+      "viewport": "gap-700x700",
+      "route": "/workspace",
+      "size": "700x700",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 0,
+        "y": 107,
+        "width": 700,
+        "height": 593,
+        "right": 700,
+        "bottom": 700
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-700x700.png"
+    },
+    {
+      "viewport": "gap-767x700",
+      "route": "/workspace",
+      "size": "767x700",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 0,
+        "y": 107,
+        "width": 767,
+        "height": 593,
+        "right": 767,
+        "bottom": 700
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/gap-767x700.png"
+    },
+    {
+      "viewport": "md-768x700",
+      "route": "/workspace",
+      "size": "768x700",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 50,
+        "y": 51,
+        "width": 718,
+        "height": 649,
+        "right": 768,
+        "bottom": 700
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/md-768x700.png"
+    },
+    {
+      "viewport": "tablet-800x700",
+      "route": "/workspace",
+      "size": "800x700",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 50,
+        "y": 51,
+        "width": 750,
+        "height": 649,
+        "right": 800,
+        "bottom": 700
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-800x700.png"
+    },
+    {
+      "viewport": "tablet-short-800x420",
+      "route": "/workspace",
+      "size": "800x420",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 50,
+        "y": 51,
+        "width": 750,
+        "height": 369,
+        "right": 800,
+        "bottom": 420
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-short-800x420.png"
+    },
+    {
+      "viewport": "tablet-900x700",
+      "route": "/workspace",
+      "size": "900x700",
+      "failures": [
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list",
+        "drawer tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 50,
+        "y": 51,
+        "width": 800,
+        "height": 649,
+        "right": 850,
+        "bottom": 700
+      },
+      "rightStripRect": {
+        "x": 850,
+        "y": 51,
+        "width": 50,
+        "height": 649,
+        "right": 900,
+        "bottom": 700
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/tablet-900x700.png"
+    },
+    {
+      "viewport": "small-desktop-1024x768",
+      "route": "/workspace",
+      "size": "1024x768",
+      "failures": [
+        "right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 50,
+        "y": 51,
+        "width": 522,
+        "height": 717,
+        "right": 572,
+        "bottom": 768
+      },
+      "rightRect": {
+        "x": 574,
+        "y": 51,
+        "width": 450,
+        "height": 717,
+        "right": 1024,
+        "bottom": 768
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-1024x768.png"
+    },
+    {
+      "viewport": "small-desktop-short-1024x480",
+      "route": "/workspace",
+      "size": "1024x480",
+      "failures": [],
+      "centerRect": {
+        "x": 50,
+        "y": 51,
+        "width": 974,
+        "height": 429,
+        "right": 1024,
+        "bottom": 480
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-short-1024x480.png"
+    },
+    {
+      "viewport": "desktop-1180x800",
+      "route": "/workspace",
+      "size": "1180x800",
+      "failures": [
+        "right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 50,
+        "y": 51,
+        "width": 678,
+        "height": 749,
+        "right": 728,
+        "bottom": 800
+      },
+      "rightRect": {
+        "x": 730,
+        "y": 51,
+        "width": 450,
+        "height": 749,
+        "right": 1180,
+        "bottom": 800
+      },
+      "primaryControls": [
+        "Work",
+        "Runs",
+        "Files",
+        "Tools"
+      ],
+      "rightPanelControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1180x800.png"
+    },
+    {
+      "viewport": "desktop-1280x800",
+      "route": "/workspace",
+      "size": "1280x800",
+      "failures": [
+        "right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 505,
+        "height": 800,
+        "right": 828,
+        "bottom": 800
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 800,
+        "right": 320,
+        "bottom": 800
+      },
+      "rightRect": {
+        "x": 830,
+        "y": 0,
+        "width": 450,
+        "height": 800,
+        "right": 1280,
+        "bottom": 800
+      },
+      "primaryControls": [],
+      "rightPanelControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png"
+    },
+    {
+      "viewport": "wide-1440x900",
+      "route": "/workspace",
+      "size": "1440x900",
+      "failures": [
+        "right panel tab \"VNC Viewer\" is clipped or outside the visible tab list"
+      ],
+      "centerRect": {
+        "x": 323,
+        "y": 0,
+        "width": 665,
+        "height": 900,
+        "right": 988,
+        "bottom": 900
+      },
+      "leftRect": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 900,
+        "right": 320,
+        "bottom": 900
+      },
+      "rightRect": {
+        "x": 990,
+        "y": 0,
+        "width": 450,
+        "height": 900,
+        "right": 1440,
+        "bottom": 900
+      },
+      "primaryControls": [],
+      "rightPanelControls": [
+        "Files",
+        "Terminal",
+        "Activity",
+        "Token",
+        "Artifacts",
+        "VNC Viewer"
+      ],
+      "rightStripControls": [],
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/wide-1440x900.png"
+    },
+    {
+      "viewport": "mobile-route-390x844",
+      "route": "/mobile",
+      "size": "390x844",
+      "failures": [],
+      "primaryControls": [],
+      "rightPanelControls": [],
+      "rightStripControls": [],
+      "mobileShellVisible": true,
+      "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/mobile-route-390x844.png"
+    }
+  ]
+}
+ ELIFECYCLE  Command failed with exit code 1.

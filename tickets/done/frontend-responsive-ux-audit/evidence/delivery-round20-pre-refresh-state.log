@@ -1,0 +1,82 @@
+Delivery Round 20 pre-refresh state
+UTC 2026-07-17T08:46:24Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit
+branch=codex/frontend-responsive-ux-audit
+head=078c3fffbd465c0ad64a485cadcecec316b4daec
+tracked_base=origin/personal fbd7b6764bd43751956d69ffe22b943d06188444
+status:
+ M autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+ M tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+ M tickets/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+ M tickets/frontend-responsive-ux-audit/code-review-report.md
+ M tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+ M tickets/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ M tickets/frontend-responsive-ux-audit/design-review-report.md
+ M tickets/frontend-responsive-ux-audit/design-spec.md
+ M tickets/frontend-responsive-ux-audit/docs-sync-report.md
+ M tickets/frontend-responsive-ux-audit/handoff-summary.md
+ M tickets/frontend-responsive-ux-audit/investigation-notes.md
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+ M tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+ M tickets/frontend-responsive-ux-audit/requirements-doc.md
+ M tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md
+ M tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-application-capability-enable.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-application-capability.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-application-catalog.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-probe-checks.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-runtime-setup.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-server-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-workspace-responsive-probe-rerun.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-workspace-responsive-probe-rerun2.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-application-capability-enable.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-application-capability.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-application-catalog.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-backend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-cleanup-ports.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-focused-nuxt-tests.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-frontend.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-probe-checks.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-runtime-setup.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-server-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-workspace-responsive-probe-rerun.log
+?? tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-workspace-responsive-probe.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round18-electron-build.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round18-fetch-and-merge.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round18-final-sanity-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round18-post-refresh-check.log
+?? tickets/frontend-responsive-ux-audit/evidence/delivery-round20-pre-refresh-state.log
+diff-stat:
+ .../tests/e2e/workspace-responsive-probe.mjs       |   36 +-
+ .../api-e2e-coverage-investigation.md              |   91 +
+ .../api-e2e-execution-coverage-report.md           |  158 +
+ .../api-e2e-test-review-report.md                  |   68 +
+ .../code-review-report.md                          |  512 +++
+ .../comprehensive-responsive-ui-test-report.md     |   76 +-
+ .../delivery-release-deployment-report.md          |   39 +-
+ .../design-review-report.md                        |   44 +-
+ .../frontend-responsive-ux-audit/design-spec.md    |  134 +-
+ .../docs-sync-report.md                            |   39 +-
+ .../handoff-summary.md                             |   60 +-
+ .../investigation-notes.md                         |  108 +-
+ .../workspace-responsive-probe-results.json        | 4803 +++++++++++---------
+ .../workspace-responsive-probe-summary.json        |  155 +-
+ .../requirements-doc.md                            |   78 +-
+ .../right-tool-tabs-ux-spec.md                     |   12 +-
+ .../workspace-responsive-ui-ux-spec.md             |   91 +-
+ 17 files changed, 4055 insertions(+), 2449 deletions(-)
+recent-log:
+078c3fffb fix: preserve opposite strip hit targets
+b47b62743 fix: remove strip stacking layer
+e6b062f75 fix: keep responsive strips in flow
+28a3bb9e7 chore(delivery): checkpoint responsive ux round18 before base refresh
+d66c9cc8e fix: share responsive left shell across routes
+7ead9cbef chore(delivery): checkpoint responsive ux round17 before base refresh
+ff98ad19e fix: restore native right-tool tab scrolling
+bc1b8368c chore(delivery): checkpoint responsive ux round16 before base refresh

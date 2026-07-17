@@ -1,0 +1,10 @@
+timestamp=2026-07-17T05:38:18Z
+head=d66c9cc8ebfa7bb8ffe05267d8aec8c0f615fe06
+run_dir=/tmp/autobyteus-responsive-ux-audit-api-e2e-round18
+backend_port=13043
+frontend_port=13044
+probe=full 17 workspace viewports + /mobile + /agents + /agent-teams + /tools with --fail-on-console-error
+backend_command=APP_ENV=test AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:13043 DATABASE_URL=file:/tmp/autobyteus-responsive-ux-audit-api-e2e-round18/db/test.db DB_TYPE=sqlite LOG_LEVEL=INFO PRISMA_LOG_QUERIES=0 DISABLE_HTTP_REQUEST_LOGS=true node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 13043 --data-dir /tmp/autobyteus-responsive-ux-audit-api-e2e-round18
+frontend_command=explicit BACKEND_* endpoints to http://127.0.0.1:13043; pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 13044
+port_13043=free
+port_13044=free
