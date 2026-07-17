@@ -77,7 +77,7 @@ const props = withDefaults(defineProps<{
 });
 
 const stripClasses = computed(() =>
-  'relative z-[60] flex h-full w-[50px] flex-none flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500',
+  'relative flex h-full w-[50px] flex-none flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500',
 );
 
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));

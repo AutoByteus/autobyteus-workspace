@@ -49,7 +49,7 @@ const emit = defineEmits<{
 const { visibleTabs, activeTab, setActiveTab } = useRightSideTabs();
 
 const stripClasses = computed(() =>
-  'relative z-[60] flex h-full w-[50px] flex-none flex-col items-center border-l border-gray-200 bg-white py-4',
+  'relative flex h-full w-[50px] flex-none flex-col items-center border-l border-gray-200 bg-white py-4',
 );
 
 const selectTab = (tabName: TabName, event: MouseEvent) => {

@@ -61,8 +61,11 @@ describe('LeftSidebarStrip Component', () => {
     expect(wrapper.find('[data-test="workspace-left-strip-open"]').exists()).toBe(false)
     expect(wrapper.find('button[title="Agents"]').exists()).toBe(true)
     expect(wrapper.get('button[title="Agents"]').attributes('data-nav-key')).toBe('agents')
-    expect(wrapper.get('[data-test="workspace-left-navigation-strip"]').classes()).toContain('flex-none')
-    expect(wrapper.get('[data-test="workspace-left-navigation-strip"]').classes()).not.toContain('fixed')
+    const strip = wrapper.get('[data-test="workspace-left-navigation-strip"]')
+    expect(strip.classes()).toContain('relative')
+    expect(strip.classes()).toContain('flex-none')
+    expect(strip.classes()).not.toContain('fixed')
+    expect(strip.classes()).not.toContain('z-[60]')
   })
 
   it('hides Applications link when the capability is disabled', () => {

@@ -371,6 +371,23 @@ Round 34 changed implementation paths:
 - Focused policy, strip, and adaptive-layout tests under
   `utils/layout/__tests__` and `components/layout/__tests__`
 
+### Round 35 CR-023 Local Fix
+
+The source-review blocker CR-023 is resolved. Both closed strip roots now use
+only `relative flex h-full w-[50px] flex-none ...` flow styling; the stale
+`z-[60]` strip stacking class was removed from `LeftSidebarStrip.vue` and
+`RightSidebarStrip.vue`. Only the transient drawer/backdrop layer retains
+overlay positioning. Focused strip assertions now explicitly reject both
+`fixed` and `z-[60]` root classes while requiring `relative` and `flex-none`.
+
+Round 35 checks: full implementation-focused suite passed (`12` files,
+`92` tests); standalone responsive-policy TypeScript passed; probe syntax,
+`git diff --check`, web-boundary guard, localization-boundary guard, and
+localization literal audit passed; Nuxt production build passed with the
+existing large-chunk warning. No API/E2E execution or downstream sign-off is
+claimed. The package is returned to `code_reviewer` for a fresh full source
+review before API/E2E.
+
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Larger Requirement / Behavior Change / Responsive Layout Refactor`

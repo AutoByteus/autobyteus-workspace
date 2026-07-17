@@ -42,6 +42,7 @@ describe('RightSidebarStrip', () => {
     expect(strip.classes()).toContain('relative')
     expect(strip.classes()).toContain('flex-none')
     expect(strip.classes()).not.toContain('fixed')
+    expect(strip.classes()).not.toContain('z-[60]')
 
     await strip.get('button[aria-label="Files"]').trigger('click')
 
