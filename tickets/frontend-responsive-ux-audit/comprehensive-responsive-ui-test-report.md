@@ -16,8 +16,12 @@ authoritative target is the refined requirements,
 left/center/right desktop hierarchy, use measured capacity, yield right tools
 first, and use the left/right strips as the sole compact side affordances for
 their transient drawers rather than header controls or a generic surface row.
-The no-header rule is scoped to `/workspace`; other default-layout routes must
-retain their existing responsive header/navigation behavior.
+The current route contract is layout-scoped rather than workspace-only: every
+non-immersive route using `layouts/default.vue` shares the left
+panel/strip/transient-drawer shell and has no black responsive
+header/hamburger/breadcrumb navigation. `/workspace` additionally owns the
+right panel/strip/transient-drawer tools surface. `/mobile` is `layout:false`
+and immersive application presentations bypass the default-layout shell.
 
 This report records the expanded live investigation requested by the user for the current AutoByteus frontend responsive experience. The goal was not only to confirm the original blank-screen screenshot, but to test the whole `/workspace` responsive surface across phone-width, narrow, breakpoint, tablet, short-height, small-desktop, and wide-desktop sizes; capture the problems; and turn them into a UI improvement plan.
 
@@ -140,9 +144,11 @@ Implementation should not be accepted with only manual visual inspection. It sho
 - Surface-ownership tests confirming the wide left/center/right hierarchy, no duplicate generic surface row after manual collapse, explicit narrow navigation and right-strip affordances, empty-state selection actions, and canonical right-tool order.
 - Live browser/E2E responsive probe using the matrix in this report, with screenshots or traces for failures.
 - `/mobile` route remains separate and still renders `MobileRemoteAccessShell`.
-- Route-scoped shell checks: `/workspace` suppresses responsive header controls,
-  while a representative `/agents` or `/tools` default-layout route retains
-  its existing narrow header/navigation behavior.
+- Global default-layout shell checks: representative `/workspace`, `/agents`,
+  and `/tools` routes render the shared left panel/strip/transient-drawer shell
+  with no black responsive header, hamburger, or breadcrumb trigger;
+  `/workspace` additionally renders the right tools surfaces; immersive
+  presentations bypass the shell and `/mobile` remains `layout:false`.
 
 ## Design Impact
 
@@ -262,11 +268,14 @@ generic `Work / Runs / Files / Tools` row in standard `/workspace`. The
 existing `/mobile` route and `components/mobile/*` remain outside this probe
 and must continue to render independently.
 
-The header assertion is route-scoped: the same global `layouts/default.vue`
-must suppress the responsive hamburger/navigation only when the current route
-is standard `/workspace`; `/agents` or `/tools` must retain the existing
-`showHeader`-driven behavior. The route gate may inspect route identity but
-must not add another viewport breakpoint or responsive-policy resolver.
+The shell assertion is layout-scoped: the same global `layouts/default.vue`
+must render the shared left panel/strip/transient-drawer model for every
+non-immersive default-layout route, with no black responsive
+header/hamburger/breadcrumb path or `showHeader` compatibility branch.
+`/workspace` adds the right tools model; `/mobile` and immersive application
+presentations are explicit boundaries. The layout may inspect the existing
+immersive/layout boundary but must not add another viewport breakpoint or
+responsive-policy resolver.
 
 ### Hybrid strip activation validation (2026-07-16)
 

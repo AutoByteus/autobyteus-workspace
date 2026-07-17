@@ -969,6 +969,13 @@ async function validateGlobalDefaultLayoutRoutes(browser) {
   const routeResults = [];
   const failures = [];
   const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: 1 });
+  const consoleMessages = [];
+  page.on('console', (message) => {
+    consoleMessages.push({ type: message.type(), text: message.text() });
+  });
+  page.on('pageerror', (error) => {
+    consoleMessages.push({ type: 'pageerror', text: error.message });
+  });
 
   try {
     for (const expectation of routeExpectations) {
@@ -1017,10 +1024,127 @@ async function validateGlobalDefaultLayoutRoutes(browser) {
       failures.push(...routeFailures);
     }
   } finally {
+    if (failOnConsoleError) {
+      const consoleErrors = consoleMessages.filter((message) => message.type === 'error' || message.type === 'pageerror');
+      if (consoleErrors.length) failures.push(`global default route console errors: ${consoleErrors.map((message) => message.text).join(' | ')}`);
+    }
     await page.close();
   }
 
-  return { viewport, routeResults, failures };
+  return { viewport, routeResults, consoleMessages, failures };
+}
+
+async function validateApplicationImmersiveBoundary(browser) {
+  const viewport = { name: 'application-immersive-route-700x700', width: 700, height: 700 };
+  const failures = [];
+  const steps = [];
+  const consoleMessages = [];
+  const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: 1 });
+  page.on('console', (message) => {
+    consoleMessages.push({ type: message.type(), text: message.text() });
+  });
+  page.on('pageerror', (error) => {
+    consoleMessages.push({ type: 'pageerror', text: error.message });
+  });
+
+  try {
+    await page.goto(`${baseUrl}/applications`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.waitForTimeout(500);
+    if (/\/agents(?:\/|$)/.test(new URL(page.url()).pathname)) {
+      failures.push('/applications redirected to /agents; the isolated API/E2E runtime did not expose an enabled application catalog');
+      return { viewport, route: '/applications', steps, consoleMessages, failures };
+    }
+
+    const applicationCard = page.locator('button').filter({ has: page.locator('h3') }).first();
+    if (!(await applicationCard.isVisible().catch(() => false))) {
+      failures.push('/applications did not render a discoverable application card');
+      return { viewport, route: '/applications', steps, consoleMessages, failures };
+    }
+    const applicationName = await applicationCard.locator('h3').innerText();
+    await applicationCard.click();
+    await page.waitForSelector('[data-testid="application-setup-phase"]', { state: 'visible', timeout: 20000 });
+    await page.waitForSelector('[data-testid="application-pre-entry-gate"]', { state: 'visible', timeout: 20000 });
+    await page.waitForTimeout(500);
+    const setupState = await collect(page, 'application-setup-initial');
+    steps.push({ step: 'setup', applicationName, url: page.url(), state: setupState });
+    if (!setupState.visibleState.leftStrip) failures.push('application setup route did not retain the shared left navigation strip');
+    if (setupState.visibleState.adaptive || setupState.visibleState.rightPanel || setupState.visibleState.rightStrip || setupState.visibleState.rightDrawer) {
+      failures.push('application setup route inherited the workspace-only adaptive/right-tools surface');
+    }
+
+    // The bundled Brief Studio fixture requires a model-backed team setup. Use
+    // the first real model exposed by the current API catalog, then save the
+    // setup through the product UI before entering the immersive host.
+    const modelTrigger = page.getByRole('button', { name: 'Select a default model' });
+    if (await modelTrigger.isVisible().catch(() => false)) {
+      await modelTrigger.click();
+      await page.waitForTimeout(300);
+      const firstModel = page.locator('li.pl-6').first();
+      if (!(await firstModel.isVisible().catch(() => false))) {
+        failures.push('application setup exposed no selectable model for the required bundled team');
+      } else {
+        await firstModel.click();
+        await page.waitForTimeout(300);
+      }
+    }
+
+    const saveSetup = page.getByRole('button', { name: 'Save setup' });
+    if (await saveSetup.isVisible().catch(() => false) && !(await saveSetup.isDisabled().catch(() => true))) {
+      await saveSetup.click();
+      await page.waitForTimeout(700);
+    }
+
+    const enterApplication = page.getByRole('button', { name: 'Enter application' });
+    if (await enterApplication.isDisabled().catch(() => true)) {
+      const gateText = await page.locator('[data-testid="application-pre-entry-gate"]').innerText().catch(() => '');
+      failures.push(`application setup could not reach the immersive-entry gate: ${gateText.replace(/\s+/g, ' ').trim()}`);
+      return { viewport, route: '/applications/:id', steps, consoleMessages, failures };
+    }
+
+    await enterApplication.click();
+    await page.waitForSelector('[data-testid="application-immersive-phase"]', { state: 'visible', timeout: 20000 });
+    await page.waitForTimeout(700);
+    const immersiveState = await collect(page, 'application-immersive');
+    steps.push({ step: 'immersive', url: page.url(), state: immersiveState });
+    if (!immersiveState.rects?.main?.visible) {
+      failures.push('application immersive phase did not render its application host surface');
+    }
+    if (immersiveState.visibleState.leftStrip || immersiveState.visibleState.leftPanelShell || immersiveState.visibleState.adaptive || immersiveState.visibleState.rightPanel || immersiveState.visibleState.rightStrip || immersiveState.visibleState.rightDrawer) {
+      failures.push('application immersive phase leaked standard default-shell/adaptive/right-tool surfaces');
+    }
+    if (!(await page.locator('[data-testid="application-immersive-trigger"]').isVisible().catch(() => false))) {
+      failures.push('application immersive phase did not expose its host-controls trigger');
+    } else {
+      await page.getByTestId('application-immersive-trigger').click();
+      await page.waitForTimeout(100);
+      if (!(await page.getByTestId('application-immersive-control-panel').isVisible().catch(() => false))) {
+        failures.push('application immersive host-controls trigger did not open its control panel');
+      }
+      await page.getByTestId('application-immersive-close').click();
+      await page.waitForTimeout(100);
+      if (await page.getByTestId('application-immersive-control-panel').isVisible().catch(() => false)) {
+        failures.push('application immersive host-controls close action did not close its control panel');
+      }
+      await page.getByTestId('application-immersive-trigger').click();
+      await page.waitForTimeout(100);
+    }
+
+    await page.getByTestId('application-immersive-exit').click();
+    await page.waitForURL((url) => url.pathname === '/applications', { timeout: 20000 });
+    await page.waitForTimeout(500);
+    const exitState = await collect(page, 'application-exit');
+    steps.push({ step: 'exit', url: page.url(), state: exitState });
+    if (!exitState.visibleState.leftStrip && !exitState.visibleState.leftAside) failures.push('application exit did not restore the shared default shell navigation');
+    if (exitState.visibleState.adaptive || exitState.visibleState.rightPanel || exitState.visibleState.rightStrip || exitState.visibleState.rightDrawer) failures.push('application exit retained immersive/workspace-only surfaces');
+  } finally {
+    if (failOnConsoleError) {
+      const consoleErrors = consoleMessages.filter((message) => message.type === 'error' || message.type === 'pageerror');
+      if (consoleErrors.length) failures.push(`application route console errors: ${consoleErrors.map((message) => message.text).join(' | ')}`);
+    }
+    await page.close();
+  }
+
+  return { viewport, route: '/applications/:id', steps, consoleMessages, failures };
 }
 
 const run = async () => {
@@ -1042,6 +1166,9 @@ const run = async () => {
         if (/error|warn|failed|graphql|apollo|websocket|workspace/i.test(text)) {
           consoleMessages.push({ type: message.type(), text });
         }
+      });
+      page.on('pageerror', (error) => {
+        consoleMessages.push({ type: 'pageerror', text: error.message });
       });
       const pageFailures = [];
       const screenshotPath = path.join(outputDir, `${viewport.name}.png`);
@@ -1093,7 +1220,7 @@ const run = async () => {
         }
 
         if (failOnConsoleError) {
-          const consoleErrors = consoleMessages.filter((message) => message.type === 'error');
+          const consoleErrors = consoleMessages.filter((message) => message.type === 'error' || message.type === 'pageerror');
           if (consoleErrors.length) pageFailures.push(`console errors: ${consoleErrors.map((message) => message.text).join(' | ')}`);
         }
 
@@ -1105,17 +1232,28 @@ const run = async () => {
     }
 
     const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    const mobileConsoleMessages = [];
+    mobilePage.on('console', (message) => {
+      mobileConsoleMessages.push({ type: message.type(), text: message.text() });
+    });
+    mobilePage.on('pageerror', (error) => {
+      mobileConsoleMessages.push({ type: 'pageerror', text: error.message });
+    });
     try {
       await mobilePage.goto(`${baseUrl}/mobile`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await mobilePage.waitForSelector('[data-testid="mobile-remote-access-shell"]', { state: 'visible', timeout: 20000 });
       await mobilePage.waitForTimeout(300);
       const mobileState = await collect(mobilePage, 'mobile-route');
       const mobileFailures = validateMobileRoute(mobileState);
+      if (failOnConsoleError) {
+        const consoleErrors = mobileConsoleMessages.filter((message) => message.type === 'error' || message.type === 'pageerror');
+        if (consoleErrors.length) mobileFailures.push(`console errors: ${consoleErrors.map((message) => message.text).join(' | ')}`);
+      }
       const mobileScreenshotPath = path.join(outputDir, 'mobile-route-390x844.png');
       if (screenshotMode === 'all' || (screenshotMode === 'failures' && mobileFailures.length > 0)) {
         await mobilePage.screenshot({ path: mobileScreenshotPath, fullPage: false });
       }
-      results.push({ viewport: { name: 'mobile-route-390x844', width: 390, height: 844 }, route: '/mobile', screenshot: mobileScreenshotPath, initial: mobileState, interactions: [], failures: mobileFailures });
+      results.push({ viewport: { name: 'mobile-route-390x844', width: 390, height: 844 }, route: '/mobile', screenshot: mobileScreenshotPath, consoleMessages: mobileConsoleMessages, initial: mobileState, interactions: [], failures: mobileFailures });
       for (const failure of mobileFailures) failures.push(`mobile-route-390x844: ${failure}`);
     } finally {
       await mobilePage.close();
@@ -1127,9 +1265,21 @@ const run = async () => {
       route: 'global-default-layout-routes',
       initial: globalDefaultLayoutRoutes.routeResults[0]?.initial ?? null,
       interactions: globalDefaultLayoutRoutes.routeResults,
+      consoleMessages: globalDefaultLayoutRoutes.consoleMessages,
       failures: globalDefaultLayoutRoutes.failures,
     });
     for (const failure of globalDefaultLayoutRoutes.failures) failures.push(`global-default-layout: ${failure}`);
+
+    const applicationImmersiveBoundary = await validateApplicationImmersiveBoundary(browser);
+    results.push({
+      viewport: applicationImmersiveBoundary.viewport,
+      route: applicationImmersiveBoundary.route,
+      initial: applicationImmersiveBoundary.steps[0]?.state ?? null,
+      interactions: applicationImmersiveBoundary.steps,
+      consoleMessages: applicationImmersiveBoundary.consoleMessages,
+      failures: applicationImmersiveBoundary.failures,
+    });
+    for (const failure of applicationImmersiveBoundary.failures) failures.push(`application-immersive: ${failure}`);
   } finally {
     await browser.close();
   }

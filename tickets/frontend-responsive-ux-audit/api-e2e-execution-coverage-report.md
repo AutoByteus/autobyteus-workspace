@@ -1235,3 +1235,82 @@ pnpm -C autobyteus-web test:e2e:workspace-responsive -- \
 | Initial pass result JSON/summary/log | Preserved with `-initial` suffix for evidence of the coverage reconciliation | Historical within Round 17, not final sign-off |
 
 - Final result: `Pass`. The durable probe was changed by API/E2E and the cumulative package must be sent to `code_reviewer` for separate proportional test-code review. Do not route directly to delivery.
+
+## Round 18 Current-State Execution Addendum (Latest Authoritative)
+
+### Execution Basis
+
+- Exact HEAD: `d66c9cc8ebfa7bb8ffe05267d8aec8c0f615fe06` (`fix: share responsive left shell across routes`), implementation-source review Round 34 `PASS`, Architecture Round 24 global default-shell rework.
+- Scope: fresh backend/frontend/Chrome validation for all 17 approved `/workspace` viewports plus `/mobile`, `/agents`, `/agent-teams`, `/tools`, the global default shell, `/workspace` right tools, responsive transitions, strip/drawer ownership, resize bounds, console/page-error enforcement, and an application setup -> immersive -> exit boundary journey.
+- The durable probe changed in this API/E2E stage. It adds the application immersive journey and page-error enforcement to all route classes; no production source or approved requirement/design behavior changed.
+
+### Repository And Runtime Checks
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Focused responsive Nuxt/Vitest suite | `15 files / 98 tests passed`; known KaTeX quirks-mode warning only | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-focused-nuxt-tests.log` |
+| `pnpm -C autobyteus-server-ts build` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-server-build.log` |
+| `node --check tests/e2e/workspace-responsive-probe.mjs` | `Pass` before and after the bounded probe update | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-probe-checks.log` |
+| `git diff --check` for the changed probe | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-probe-checks.log` |
+
+### Runtime Setup And Fixture
+
+- Backend: fresh current-worktree build at `http://127.0.0.1:13043`, launched with `APP_ENV=test`, `DB_TYPE=sqlite`, isolated `DATABASE_URL`, `AUTOBYTEUS_SERVER_HOST`, and data directory `/tmp/autobyteus-responsive-ux-audit-api-e2e-round18`.
+- Frontend: current Nuxt dev server at `http://127.0.0.1:13044`, with explicit `BACKEND_NODE_BASE_URL`, GraphQL, REST, WebSocket, and terminal/file endpoint variables targeting the isolated backend.
+- Readiness: backend root returned HTTP `404` from the live listener (expected no-root route); frontend `/workspace` returned HTTP `200`.
+- Application fixture setup: the fresh isolated backend initially reported applications capability disabled. A run-owned GraphQL `setApplicationsEnabled(enabled: true)` mutation enabled the deterministic bundled `Brief Studio` catalog entry; this changed only the isolated test database. Evidence: `evidence/api-e2e-round18-application-capability.log`, `api-e2e-round18-application-capability-enable.log`, and `api-e2e-round18-application-catalog.log`.
+- The application journey selected the first model exposed by the live API setup catalog and saved the required `draftingTeam` setup through the product UI before entering immersive mode. No production or shared data was touched.
+
+### Browser Matrix And Results
+
+- Authoritative command:
+
+```bash
+node tests/e2e/workspace-responsive-probe.mjs \
+  --base-url=http://127.0.0.1:13044 \
+  --output-dir=/tmp/autobyteus-responsive-ux-audit-api-e2e-round18/probe \
+  --screenshots=failures \
+  --fail-on-console-error
+```
+
+- Result: `Pass`; `17` `/workspace` viewport states + `/mobile` + 3 global default routes + 1 application immersive route result (`20` result records total), `0` failures, and zero `error`/`pageerror` entries under enforcement.
+- `/workspace` passed the adaptive/nonblank threshold and short-height matrix, primary surface reachability, canonical right-tab order/one-row/native overflow/ARIA/active underline/focus auto-scroll, docked/drawer tab paths, independent drawer stacking/focus/Tab/Escape/aria-modal/backdrop ownership, route-scoped semantic suppression, wide resize bounds, strip activation, and cleanup-relevant state transitions.
+- Wide resize remained bounded at the approved center floor in `1280x800` and `1440x900`; the current result retained the observed `750px`/`205px` and `910px`/`205px` right/center widths from the durable bound assertions.
+- `/agents`, `/agent-teams`, and `/tools` each rendered the shared left strip, active nav where applicable, no workspace-only right tools/adaptive layout, no legacy header/hamburger/breadcrumb, and passed strip -> transient drawer -> backdrop dismissal -> strip return.
+- `/mobile` rendered `MobileRemoteAccessShell` and did not render the standard adaptive workspace.
+- Application boundary passed: `/applications` discovered `Brief Studio`; setup rendered with the shared default shell and no workspace-only tools; saved setup enabled entry; immersive phase rendered the application host on the slate immersive surface with no left panel/strip, adaptive layout, right panel/strip/drawer, or generic workspace controls; host-controls trigger opened and closed its control panel; exit returned to `/applications` and restored the shared default shell.
+- Console enforcement: browser result JSON recorded no `error` or `pageerror` entries for any route class. Benign informational/debug messages and known Nuxt dev `#app-manifest` startup/shutdown diagnostics did not count as browser console errors. The backend log retains a prior exploratory empty-id application setup request from fixture discovery; it was not part of the authoritative valid-id probe journey and caused no browser assertion or console failure.
+
+### Cleanup
+
+- Backend session `11490` and frontend session `25622` were stopped with SIGINT. Ports `13043` and `13044` were verified closed. Headless Chrome contexts were closed by the probe. The isolated SQLite data remains outside the worktree as reproducibility evidence. Cleanup evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-cleanup-ports.log`.
+
+### Confidence Scorecard
+
+| Confidence Category | Score | Basis | Remaining Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 100% | Direct browser proof covers the global default shell, all approved responsive states, route scope, application immersive boundary, right tabs, drawers, strips, resize, and `/mobile`. | No material web-equivalent criterion remains unproven. |
+| Changed-boundary execution directness | 100% | Current source ran in Chrome against real backend/frontend services; setup, route transition, DOM geometry, focus, ARIA, scrolling, hit testing, and console behavior were observed. | Packaged Electron shell is not directly exercised. |
+| Cross-boundary integration realism and mock gap | 96% | Fresh backend build, isolated SQLite, live GraphQL/REST setup, Nuxt runtime, Chrome, real application bundle, and valid model/setup flow passed. | Deep authenticated internal tool workflows remain outside shell scope. |
+| Environment/configuration/identity/fixture fidelity | 95% | Run-owned ports/data, explicit endpoint wiring, capability setup mutation, deterministic bundled application, live model catalog, readiness, and cleanup all passed. | The application capability/model setup is an isolated-run fixture, not a production identity workflow. |
+| Failure/edge-case/lifecycle/recovery evidence | 96% | Narrow/short/wide/threshold states, both drawer orders, focus/Tab/Escape/backdrop promotion, application setup/immersive/exit, console enforcement, and cleanup passed. | Packaged restart/recovery and native gesture momentum remain out of scope. |
+| User-surface/browser/desktop-shell confidence | 98% | `20` result records, direct route journeys, geometry and interaction assertions, right-tab focus/scroll evidence, and zero browser console errors passed. | Native packaged shell is not directly exercised. |
+| Durable regression coverage quality and relevance | 96% | Updated probe directly enforces the new global routes, application immersive boundary, and page-error enforcement while retaining all prior contracts; final matrix passed. | Separate proportional review of the changed probe is still pending. |
+
+- Overall final confidence: `97.3%` (simple average of the seven applicable categories).
+- No applicable category is below `90%`; all critical web-equivalent acceptance criteria are directly exercised.
+- Broader validation decision: `Required`, executed with `Pass`.
+- Residual risk: packaged Electron/native shell behavior, deep authenticated/internal tool workflows, and device-specific native scroll momentum are not directly exercised; these are outside the approved current browser boundary and do not block this result.
+
+### Durable Coverage And Routing
+
+| Path | Round 18 status | Next route |
+| --- | --- | --- |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | Updated by API/E2E with the application immersive route journey and page-error enforcement; final current matrix passed. | `code_reviewer` proportional durable-test review. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` | Canonical current result, `Pass`, 17 viewport count, 20 route/state records, zero failures. | Retain as current evidence. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json` | Canonical current summary, zero failures. | Retain as current evidence. |
+
+### Result And Routing
+
+- Result: `Pass`.
+- Because the durable probe changed, return the full cumulative package to `code_reviewer` for separate proportional durable-test review. Do not route directly to delivery.

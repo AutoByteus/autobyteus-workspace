@@ -9,10 +9,10 @@
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md`
 - Implementation Live Visual Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-live-visual-report.md`
-- Current Investigation Round: `17`
-- Trigger: Implementation source review `PASS` for exact current HEAD `ff98ad19ead19823c03bc4e90c20623c238522cc` (parent `bc1b8368c`), Architecture Round 23 native right-tool tab scrolling. The current round executes the refreshed durable probe and full browser matrix against a fresh backend/frontend/Chrome runtime; this is not delivery sign-off.
+- Current Investigation Round: `18`
+- Trigger: Implementation source review Round 34 `PASS` for exact current HEAD `d66c9cc8ebfa7bb8ffe05267d8aec8c0f615fe06` (parent `7ead9cbef`), Architecture Round 24 global default-shell rework. The current round executes fresh `/workspace`, `/agents`, `/agent-teams`, `/tools`, immersive-application-boundary, `/mobile`, responsive, drawer, strip, resize, console, and cleanup journeys against a fresh backend/frontend/Chrome runtime; this is not delivery sign-off.
 - Prior Investigation Reviewed: `Round 1` historical API/E2E investigation in this same file path. Round 1 added/updated durable coverage and was later reviewed, but it is superseded as sign-off by implementation-owned Round 4 visual/source/probe changes.
-- Latest Authoritative Investigation: `Round 17`
+- Latest Authoritative Investigation: `Round 18`
 
 ## Current Requirement And Design Basis
 
@@ -743,3 +743,56 @@ No durable probe edit was planned before the first execution. The first live pas
 - The final rerun passed `18` states (`17` `/workspace` viewports plus `/mobile`), `6/6` clicked interaction records, `3` tab-validation journeys with `18` snapshots, `0` failures, and `0` browser console-error failures under `--fail-on-console-error`. The drawer journey observed `clientWidth=396`, `scrollWidth=598`, `maxScrollLeft=202`, one row, native `overflow-x:auto`, and VNC focused/visible after auto-scroll at the right boundary.
 - Durable input decision remains `No additional physical mouse/touchpad/touch horizontal-tab journey required`: the changed TabList owns no pointer/touch handler; native browser overflow is directly proven by the real scroll container, while real focus/selection and existing pointer/keyboard drawer/strip journeys cover application-owned behavior.
 - Final durable decision: `Updated` in this round; the current probe path is API/E2E-owned and must return to `code_reviewer` for proportional test-code review before delivery.
+
+
+## Round 18 Current-State Coverage Investigation Addendum
+
+### Trigger and changed boundaries
+
+- Exact implementation state: `d66c9cc8ebfa7bb8ffe05267d8aec8c0f615fe06` (`fix: share responsive left shell across routes`), parent `7ead9cbef`.
+- Upstream gate: implementation-source review Round 34 `PASS`, Architecture Round 24. The current source review confirms a global `layouts/default.vue` left panel/strip/transient-drawer owner for all non-immersive default-layout routes; route-aware strip active state; right tools mounted only by `/workspace`; one composed responsive policy/provider; nested right lifecycle/hybrid strip activation; independent drawer layering/focus; immersive application suppression; `/mobile` `layout:false`; and retained right-tab/native-scroll/resize behavior.
+- Non-blocking docs follow-up is recorded upstream: deleted `WorkspacePrimarySurfaceControls` test mention and stale implementation-handoff commit metadata. It does not alter current runtime expectations or block this stage.
+
+### Existing durable coverage validity
+
+| Scenario / boundary | Decision | Current evidence and execution plan |
+| --- | --- | --- |
+| Full 17 `/workspace` viewport matrix plus native right-tab, resize, strips, drawers, route scope, and `/mobile` | `Still Valid` | Existing probe remains the authoritative shell matrix; current HEAD adds no reason to weaken the one-row native scroll, drawer, resize, or mobile assertions. Execute unchanged except for any evidence-driven gap below. |
+| `/agents`, `/agent-teams`, `/tools` global default-layout route journeys | `Still Valid` | HEAD already adds `validateGlobalDefaultLayoutRoutes` to the durable probe at `700x700`, checking shared left strip, no workspace-only right tools, no adaptive workspace outside `/workspace`, no legacy header/hamburger/breadcrumb, active route state where applicable, strip-to-drawer, backdrop dismissal, and strip restoration. Execute it on fresh runtime with console enforcement. |
+| Immersive application boundary | `Needs Update` | The reviewed source/tests cover `hostShellPresentation === 'application_immersive'`, but the current durable probe has no application route journey. First discover whether the fresh isolated runtime exposes a deterministic application catalog/resource fixture. If a valid app can reach the setup gate, add a narrow durable journey for setup -> immersive host-shell suppression -> exit. If no safe deterministic app fixture is available, use the route/setup boundary plus focused application/layout tests as direct evidence and record the exact residual/blocked dependency; do not fabricate an immersive pass. |
+| `/mobile` isolation | `Still Valid` | Existing probe directly checks `MobileRemoteAccessShell` and absence of adaptive workspace; execute unchanged. |
+| Additional physical mouse/touchpad/touch input | `Not Required` unless a custom handler is found | The global shell change is DOM/CSS/presentation ownership; existing browser pointer clicks cover strips/backdrops/resizers and keyboard Tab/Escape cover drawers. Native right-tab scrolling remains browser-owned with no custom pointer/touch handler. |
+
+### Planned Round 18 runtime
+
+- Backend: fresh built `autobyteus-server-ts/dist/app.js`, `APP_ENV=test`, isolated SQLite data under `/tmp/autobyteus-responsive-ux-audit-api-e2e-round18`, port `13043`.
+- Frontend: fresh Nuxt dev server with explicit `BACKEND_*` endpoints, port `13044`.
+- Browser: repository Playwright Core with discovered Chrome/Chromium; `--fail-on-console-error`.
+- Planned evidence: `tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-*.log`, canonical results under `tickets/frontend-responsive-ux-audit/probes/api-e2e/`.
+- Cleanup: stop only Round 18 processes and verify ports `13043`/`13044` clear.
+
+### Planned repository checks
+
+1. Run the 15-file focused Nuxt suite (98 tests expected by source review), including `useShellPrimaryNavigation.spec.ts` and current default-layout regressions.
+2. Run current probe `node --check` and web diff checks.
+3. Build the backend from exact HEAD.
+4. Start isolated backend/frontend; discover application catalog and run the current full browser probe.
+5. If the existing probe lacks a safe immersive journey and runtime evidence warrants it, make only a bounded API/E2E probe update, rerun, and return through proportional durable-test review.
+6. Record results, confidence, residual immersive fixture risk, cleanup, and routing.
+
+## Round 18 Current-State Coverage Investigation Result (Latest Authoritative)
+
+### Coverage Reconciliation
+
+- Exact current HEAD: `d66c9cc8ebfa7bb8ffe05267d8aec8c0f615fe06` (`fix: share responsive left shell across routes`), with implementation-source review Round 34 `PASS` and Architecture Round 24 global default-shell rework approved.
+- Existing `/workspace` durable matrix, right-tab/native-scroll, resize-bound, strip/drawer/layer/focus, route-scope, and `/mobile` scenarios remained `Still Valid` and passed unchanged in behavior.
+- Existing `/agents`, `/agent-teams`, and `/tools` global-default-shell route journey remained valid and passed. It verified shared left-strip presence, active navigation where applicable, no workspace-only right tools/adaptive layout, no legacy black header/hamburger/breadcrumb, transient drawer open/close, and console-error enforcement.
+- The initial Round 18 investigation identified the immersive application boundary as `Needs Update` because no durable route journey existed. The isolated fresh backend exposed one deterministic `Brief Studio` catalog fixture after the run-owned `setApplicationsEnabled(enabled: true)` GraphQL setup mutation. The capability mutation and catalog response are retained in `evidence/api-e2e-round18-application-capability-enable.log` and `api-e2e-round18-application-catalog.log`.
+- Bounded API/E2E-owned durable coverage update: `workspace-responsive-probe.mjs` now discovers the first application card from `/applications`, uses the product's setup UI to choose the first API-provided model and save the required bundled-team setup, verifies setup/global-shell isolation, enters the immersive phase, verifies standard shell/adaptive/right-tool suppression and host-controls open/close, exits to `/applications`, and verifies default-shell restoration. The probe also adds `pageerror` collection and console-error enforcement to main `/workspace`, `/mobile`, global routes, and application route pages. No production source, requirement, design, or approved assertion was weakened.
+- The first updated probe run failed only because the new helper closed the immersive host-controls panel before attempting the exit action; this was a deterministic probe sequencing defect, not a product failure. The helper was corrected to reopen host controls before exit, then the complete matrix was rerun and passed. The final authoritative command output and JSON are retained at `evidence/api-e2e-round18-workspace-responsive-probe.log` and `probes/api-e2e/`; the setup and application interaction evidence remains separately retained.
+
+### Final Coverage Decision
+
+- Durable test decision: `Update Durable Coverage` completed for the newly required immersive application boundary and broader console/page-error enforcement. The changed probe must receive proportional durable-test review by `code_reviewer` before delivery.
+- Physical mouse/touchpad/touch horizontal-tab journey: `Not Required`. The implementation owns a native browser horizontal scroll container and no custom pointer/touch scrolling handler; the durable probe directly proves real `scrollLeft` movement, focus/selection auto-scroll, semantic tab activation, and browser mouse journeys. Native gesture momentum remains a low-risk browser-platform residual.
+- Packaged Electron/native shell: `Out Of Scope` for this web-equivalent API/E2E stage; source/package checks and browser renderer validation cover the approved ticket boundary.

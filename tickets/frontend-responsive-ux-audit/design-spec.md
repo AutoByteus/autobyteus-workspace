@@ -84,33 +84,36 @@ explicitly outside the approved standard `/workspace` design. The immediately
 previous revision also incorrectly kept the strip above the opened drawer;
 the current contract makes drawer and strip mutually exclusive.
 
-## Route-scoped shell boundary
+## Global default-layout shell boundary
 
-`layouts/default.vue` is global and must not be treated as a
-`/workspace`-only file. The composed responsive adapter therefore retains the
-existing `showHeader` compatibility signal for routes that use the default
-layout. `layouts/default.vue` computes a route-scoped
-`isStandardWorkspaceRoute` (`/workspace` and any supported `/workspace/...`
-child route) and applies the following boundary:
+`layouts/default.vue` is the global desktop shell and must not be treated as a
+`/workspace`-only file. It consumes one composed responsive state for the left
+panel/strip/transient-drawer presentation on every non-immersive route that
+uses the default layout. It does not retain a `showHeader` compatibility field
+or render the old black responsive header/hamburger/breadcrumb path. The
+workspace route additionally consumes the right tools presentation.
 
 | Route scope | Header/navigation behavior | State owner |
 | --- | --- | --- |
-| Standard `/workspace` | Ignore `showHeader`; render the symmetric left/right panel-strip-transient-drawer model and no responsive hamburger, breadcrumb, top `Agents & teams`, top `Tools`, or generic surface row. | Composed workspace shell state plus route gate in `default.vue` |
-| Other routes using `layouts/default.vue` (including `/agents`, `/agent-teams`, `/applications`, `/media`, `/memory`, `/nodes`, `/skills`, and `/tools`) | Preserve the existing responsive header/hamburger and navigation behavior driven by `showHeader`; do not inherit the workspace-only suppression. | Existing default-layout shell behavior and the shared compatibility signal |
+| Non-immersive routes using `layouts/default.vue` (including `/workspace`, `/agents`, `/agent-teams`, `/applications`, `/media`, `/memory`, `/nodes`, `/skills`, and `/tools`) | Render the shared left panel/strip/transient-drawer shell with route-aware active navigation and no black responsive header, hamburger, or breadcrumb trigger. `/workspace` additionally renders the right panel/strip/transient-drawer tools model with no generic surface row or top Tools trigger. | Composed shell state plus global renderer in `default.vue` |
+| Immersive application presentation | Hide the global navigation shell while the application owns its immersive surface. | `appLayoutStore.hostShellPresentation` boundary |
 | `/mobile` | `layout:false`; render `MobileRemoteAccessShell` without the default layout or workspace adapter. | Dedicated mobile route |
 
-The route gate is consumption logic, not a second responsive-policy owner:
-`default.vue` may branch on route identity, but it must not measure the
-viewport, add a breakpoint, or resolve a competing workspace state. The
-workspace resolver remains the sole capacity/priority owner.
+The immersive/layout boundary is consumption logic, not a second
+responsive-policy owner: `default.vue` must not measure the viewport, add a
+breakpoint, or resolve a competing state. The composed resolver remains the
+sole capacity/priority owner for the global left shell and workspace right
+tools.
 
 ## Current-State Read
 
-The standard `/workspace` route currently has no single responsive-layout owner.
+The global default-layout shell and standard `/workspace` route currently have
+one partially shared adapter but inconsistent renderer ownership for the left
+navigation surface.
 
 Current path:
 
-`Browser viewport -> layouts/default.vue app shell -> pages/workspace.vue route selector -> WorkspaceDesktopLayout or WorkspaceMobileLayout -> side-panel composables/components`
+`Browser viewport -> layouts/default.vue global shell -> route content (workspace or management page) -> shared left panel/strip/drawer plus workspace right surfaces where applicable`
 
 Current ownership problems:
 
@@ -272,7 +275,6 @@ interface ResponsiveWorkspaceShellState {
   mode: WorkspaceResponsiveMode
   isNarrow: boolean
   isShortHeight: boolean
-  showHeader: boolean
   showGenericSurfaceControls: false
   leftPanel: ResponsiveLeftPanelState
   rightPanel: ResponsiveRightPanelState
@@ -287,11 +289,12 @@ responsive presentation in the composed output. `leftPanel.presentation` and
 `stripActivation = 'open-drawer'` identifies when the local drawer may be
 opened. `stripBehavior` is `null` for a docked panel and is required for a
 strip. `stripActivation` is `null` for a docked panel and is required for a
-strip. The standard workspace ignores the shared responsive header signal;
-`showHeader` is retained only as the shared default-layout compatibility signal
-for non-workspace routes; it is ignored when `isStandardWorkspaceRoute` is
-true. It is not a workspace surface or a second workspace breakpoint
-decision.
+strip. There is no ordinary header-visibility field in the composed output. The
+default-layout renderer always consumes the global left panel/strip/drawer
+state, while immersive application presentation and `layout:false` routes are
+explicit shell boundaries outside that renderer. Header suppression is
+therefore a structural shell invariant, not a route-specific compatibility
+signal or a second breakpoint decision.
 
 #### Output authority and renderer contract
 
@@ -354,12 +357,12 @@ left and right sides remain independent: opening one side's drawer hides only
 that side's strip and does not hide or relabel the other side. Each drawer
 returns focus to its own restored strip.
 
-For the global default layout, this rule is route-scoped. On `/workspace`,
-`default.vue` ignores `showHeader` and suppresses the responsive hamburger and
-header navigation. On non-workspace routes that use the default layout,
-`default.vue` continues to consume `showHeader` and renders the existing
-narrow header/navigation behavior. The route check is a render gate only; it
-does not call a second resolver or introduce a viewport breakpoint.
+For the global default layout, the left renderer uses the same rule on every
+non-immersive default-layout route: docked panel when fitting, the unchanged
+left strip while closed, and the left drawer as the sole surface while open.
+`/workspace` additionally renders the right tools policy. The route/layout
+check only excludes `layout:false` and immersive presentations; it does not
+call a second resolver or introduce a viewport breakpoint.
 
 The right-tools affordance contract is:
 
@@ -421,7 +424,7 @@ This preserves one policy owner while distinguishing retained user intent from e
 |---|---|---|---|---|
 | `resolveResponsiveWorkspaceShellState` | Pure capacity/priority resolver | One composed input above | Policy tests and `useResponsiveWorkspaceShell` | No DOM, no component-specific breakpoint, no blanket `<1280px` left collapse |
 | `useResponsiveWorkspaceShell` | One SSR-safe viewport observer plus preference/actual-width composition | `useLeftPanel`, `useRightPanel`, `useResponsiveElementRect()` | `layouts/default.vue` provider | Must not create separate shell/workspace policy branches or pass an unbounded drag width |
-| `layouts/default.vue` | Route-scoped shell renderer and state provider | Resolved composed state plus route identity | AppLeftPanel, LeftSidebarStrip, slot | Must gate workspace-only header suppression by route; preserve `showHeader` behavior for other default-layout routes; must not resolve a second policy or infer strip from raw viewport |
+| `layouts/default.vue` | Global default-layout shell renderer and state provider | Resolved composed state plus immersive/layout boundary | AppLeftPanel, LeftSidebarStrip, slot | Must render the shared left panel/strip/drawer for every non-immersive default-layout route, remove the black header/hamburger path, and must not resolve a second policy or infer strip from raw viewport |
 | `WorkspaceAdaptiveLayout.vue` | Render center/right surfaces from provided state | Resolved composed state, active tab/drawer state | RightSideTabs, consuming/overlay right strip, transient right drawer, center views | Must not call an independent `resolveWorkspaceResponsiveState` or render a top Tools trigger |
 | `useLeftPanel` / `useRightPanel` | Store user preference and preferred width; bound docked resize against the measured center/right flow | User actions and measured workspace capacity | Composed adapter and panel controls | Must not mutate preference or trigger a responsive presentation change merely because a divider was dragged to its bound |
 | `WorkspaceAdaptiveLayout` resize adapter | Measure center-plus-right flow for the docked right-divider maximum | Local element size and `useRightPanel` bound setter | `useRightPanel` | Must not resolve effective presentation or introduce a second viewport policy |
@@ -432,10 +435,12 @@ This preserves one policy owner while distinguishing retained user intent from e
 
 Pure policy tests must cover at least:
 
-Route/component/browser coverage must additionally assert that `/workspace`
-suppresses the default-layout responsive header controls, a representative
-default-layout route such as `/agents` or `/tools` retains its existing narrow
-header/navigation behavior, and `/mobile` remains `layout:false` with
+Route/component/browser coverage must additionally assert that representative
+non-immersive default-layout routes (`/workspace`, `/agents`, and `/tools`)
+render the shared left panel/strip/transient-drawer shell without black
+responsive header controls, hamburger, or breadcrumb navigation; `/workspace`
+also renders the right tools surfaces; immersive application presentations
+bypass the shell; and `/mobile` remains `layout:false` with
 `MobileRemoteAccessShell`.
 
 | Scenario | Input shape | Required result |
@@ -703,7 +708,7 @@ Mode invariants:
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| App shell layout | Left panel/strip/drawer effective presentation | DS-001, DS-003, DS-004 | App shell presentation | Extend | Modify `layouts/default.vue` and `useLeftPanel`; remove standard workspace header navigation. |
+| App shell layout | Global left panel/strip/drawer effective presentation | DS-001, DS-003, DS-004 | App shell presentation | Extend | Modify `layouts/default.vue` and `useLeftPanel`; remove the default-layout black header/navigation path and share the strip across route content. |
 | Standard workspace layout | Center + right tools adaptive presentation | DS-001, DS-002, DS-003, DS-004 | Workspace adaptive layout | Extend/Rename | Rename `WorkspaceDesktopLayout` to adaptive or clearly refactor responsibility. |
 | Responsive policy | Pure mode decisions and thresholds | DS-001, DS-003 | App shell and workspace layout | Create New | Keep framework-independent for unit tests. |
 | Workspace surface navigation | Surface ownership and right-tool order; explicit drawer/strip triggers where needed | DS-001, DS-002 | App shell + workspace adaptive layout | Extend existing shell/right-tab owners | Prevents navigation ownership from being duplicated per layout. |
@@ -759,8 +764,8 @@ Mode invariants:
 | `autobyteus-web/utils/layout/__tests__/workspaceSurfaceOrder.spec.ts` or equivalent | Workspace surface navigation | Order/ownership coverage | Verifies left/center/right ownership, semantic trigger labels, and canonical tool ordering including contextual Team item. | Makes navigation ownership durable without requiring a duplicate surface bar. | N/A |
 | `autobyteus-web/composables/layout/useResponsiveElementRect.ts` | Responsive policy | Measurement helper | SSR-safe element measurement and cleanup. | Shared but non-policy. | N/A |
 | `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts` | Responsive policy | Composed responsive adapter | Provides the one resolved shell/workspace state to `layouts/default.vue` and `WorkspaceAdaptiveLayout.vue`. | Keeps both renderers declarative without separate capacity calculations. | Uses policy state. |
-| `autobyteus-web/layouts/default.vue` | App shell layout | Route-scoped shell renderer | For `/workspace`, render left panel/strip/drawer and suppress responsive header navigation; for other default-layout routes, preserve the existing `showHeader`-driven header/navigation behavior. | Existing global shell owner remains safe for non-workspace routes while workspace receives its approved model. | Uses app shell adapter and route identity only; no second policy. |
-| `autobyteus-web/layouts/__tests__/default.spec.ts` and `default-drawer.spec.ts` | App shell layout | Route/component coverage | Assert `/workspace` header suppression and a representative non-workspace route's existing header/drawer behavior, plus `/mobile` route isolation at the page boundary. | Makes the global-layout route boundary executable before browser validation. | N/A |
+| `autobyteus-web/layouts/default.vue` | App shell layout | Global shell renderer | Render the left panel/strip/drawer for every non-immersive default-layout route, with route-aware navigation and no black responsive header/hamburger/breadcrumb. Render workspace right surfaces only through the workspace layout. | One global owner removes competing responsive navigation models. | Uses the composed shell adapter and immersive/layout boundary only; no second policy. |
+| `autobyteus-web/layouts/__tests__/default.spec.ts`, `default-drawer.spec.ts`, and route fixtures | App shell layout | Route/component coverage | Assert shared left panel/strip/drawer behavior on representative `/workspace`, `/agents`, and `/tools` routes, no legacy header controls, immersive bypass, and `/mobile` route isolation at the page boundary. | Makes the global-layout contract executable before browser validation. | N/A |
 | `autobyteus-web/composables/useLeftPanel.ts` | App shell layout | Left preference owner | Preserve user left-panel visibility/width; expose preference actions separate from effective policy. | Existing state owner remains. | Uses policy presentation types. |
 | `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | Standard workspace layout | Standard workspace layout owner | Render center and right tools across wide/constrained/narrow modes. | Name matches expanded responsibility. | Uses workspace adapter, right panel. |
 | `autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts` | Standard workspace layout | Component coverage | Verify wide docked, constrained collapse/drawer, no blank root, and center shell presence. | Replaces/renames desktop layout tests. | N/A |
@@ -849,7 +854,7 @@ Forbidden:
 | `autobyteus-web/composables/layout/` | Folder | Composed layout adapter | Vue lifecycle wrapper for the single viewport measurement/policy boundary. | Existing composable pattern. | Business/data fetching or a second policy. |
 | `autobyteus-web/composables/layout/useResponsiveElementRect.ts` | File | Measurement helper | `ResizeObserver` lifecycle. | Reusable infrastructure. | Breakpoint policy. |
 | `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts` | File | Composed layout adapter | One viewport observer, preference composition, policy invocation, and provided effective shell/workspace state. | Keeps both renderers thin and makes capacity ownership singular. | Must not contain business/data fetching. |
-| `autobyteus-web/layouts/default.vue` | File | App shell renderer | Render left panel/strip/drawer by effective presentation; omit responsive workspace header navigation and hamburger. | Existing shell location. | Workspace center/right tool policy. |
+| `autobyteus-web/layouts/default.vue` | File | App shell renderer | Render the left panel/strip/drawer by effective presentation for every non-immersive default-layout route; remove black responsive header, hamburger, and breadcrumb navigation. | Existing global shell location. | Workspace center/right tool policy and immersive/layout:false boundaries. |
 | `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | File | Standard workspace layout | Center/right adaptive rendering. | Existing layout component area. | Phone/PWA mobile route logic. |
 | `autobyteus-web/pages/workspace.vue` | File | Route facade | Route setup + mount adaptive layout. | Existing page route. | Breakpoint/matchMedia component selection. |
 | `autobyteus-web/pages/mobile.vue` | File | Mobile route | Existing phone/PWA shell. | Existing route. | Standard workspace layout. |

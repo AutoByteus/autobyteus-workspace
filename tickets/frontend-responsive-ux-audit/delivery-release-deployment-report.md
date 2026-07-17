@@ -3,16 +3,16 @@
 ## Release / Publication / Deployment Scope
 
 - No production release, publication, version bump, tag, deployment, or remote publication was requested or performed in this pass.
-- Delivery processed the Round 16 reviewed package, refreshed the recorded base, synchronized durable workspace documentation, and rebuilt the local Apple Silicon Electron test package.
+- Delivery processed the Round 17 reviewed package, refreshed the recorded base, reconciled stale ticket-history language, and rebuilt the local Apple Silicon Electron test package.
 - Repository finalization remains gated on explicit user verification.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Validated implementation HEAD: `63f487580e3c82e33e00b231436e30fce3b51cbe`
-- Delivery checkpoint: `bc1b8368c5b428dabcc2fe03917e60bc9f380fdd`
-- API/E2E Round 16: `Pass`, `97.1%` confidence, 18 states, 6/6 direct interactions, 2 right-tab journeys / 14 snapshots, zero failures, and zero browser console-error states.
+- Validated implementation HEAD: `ff98ad19ead19823c03bc4e90c20623c238522cc`
+- Delivery checkpoint: `7ead9cbef15ad84587b7e9699fa579f196020bf0`
+- API/E2E Round 17: `Pass`, `97.4%` confidence, 18 states, 6/6 interactions, 3 right-tab journeys / 18 snapshots, zero failures, and zero browser console-error/pageerror/exception failures.
 - Proportional durable-test review: `Pass`, no findings; prior TR-001 remains resolved.
 - Current status: `Awaiting explicit user verification`.
 
@@ -22,18 +22,18 @@
 - Latest tracked remote base reference checked: `origin/personal @ fbd7b6764bd43751956d69ffe22b943d06188444`.
 - Base advanced since bootstrap or previous refresh: `No`.
 - New base commits integrated into the ticket branch: `No`.
-- Local checkpoint commit result: `Completed` — `bc1b8368c5b428dabcc2fe03917e60bc9f380fdd` (`chore(delivery): checkpoint responsive ux round16 before base refresh`).
+- Local checkpoint commit result: `Completed` — `7ead9cbef15ad84587b7e9699fa579f196020bf0` (`chore(delivery): checkpoint responsive ux round17 before base refresh`).
 - Integration method: `Already current` after `git fetch origin --prune`; the merge check used `git merge --no-ff origin/personal` and returned `Already up to date`.
 - Integration result: `Completed`.
 - Post-integration executable checks rerun: `No`.
 - Post-integration verification result: `Passed`.
-- No-rerun rationale: Round 16 API/E2E had already passed against exact implementation HEAD `63f487580`; the latest tracked base was already an ancestor and the refresh introduced no effective source behavior.
+- No-rerun rationale: Round 17 API/E2E had already passed against exact implementation HEAD `ff98ad19`; the latest tracked base was already an ancestor and the refresh introduced no effective source behavior.
 - Delivery edits started only after integrated state was current: `Yes`.
 - Handoff state current with latest tracked remote base: `Yes`.
 - Refresh evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round16-pre-refresh-state.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round16-fetch-and-merge.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round16-post-refresh-check.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round17-pre-refresh-state.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round17-fetch-and-merge.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round17-post-refresh-check.log`
 - Blocker: None for handoff; finalization is intentionally held for user verification.
 
 ## User Verification
@@ -48,7 +48,8 @@
 
 - Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/docs-sync-report.md`
 - Docs sync result: `Updated`.
-- Docs updated: `autobyteus-web/docs/workspace_layout.md` now records independent left/right transient drawers, shared ordered modal-layer ownership, topmost keyboard/focus behavior, `aria-modal` semantics, and conditional strip unmount/remount behavior.
+- Docs updated: `tickets/frontend-responsive-ux-audit/implementation-handoff.md` now explicitly marks the intermediate fade/chevron sticky overlay implementation as historical and superseded by the current native-scroll/no-custom-chrome contract.
+- Canonical project docs: `autobyteus-web/docs/workspace_layout.md` required no new change because it already accurately describes the current contract.
 - No-impact rationale for other docs: README, architecture, runtime setup, remote access, Terminal, agent integration, Electron packaging, and release docs remain accurate because their durable contracts were not changed.
 
 ## Ticket State Transition
@@ -123,15 +124,15 @@
 - `git fetch origin --prune`: passed.
 - `git merge --no-ff origin/personal`: already up to date; no conflicts.
 - Merge-base check: `fbd7b6764bd43751956d69ffe22b943d06188444`.
-- Round 16 API/E2E: passed with 97.1% confidence; fresh services, isolated data, cleanup, and browser console-error guard passed in upstream evidence.
+- Round 17 API/E2E: passed with 97.4% confidence; fresh services, isolated data, cleanup, and browser console-error/pageerror/exception guards passed in upstream evidence.
 - Proportional durable-test review: passed with no findings.
 - `git diff --check`: passed after integration and delivery-owned documentation/report updates.
-- `NO_TIMESTAMP=1 pnpm -C autobyteus-web build:electron:mac -- --arm64`: passed from implementation HEAD `63f487580`.
-- Electron build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round16-electron-build.log`.
+- `NO_TIMESTAMP=1 pnpm -C autobyteus-web build:electron:mac -- --arm64`: passed from implementation HEAD `ff98ad19`.
+- Electron build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round17-electron-build.log`.
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.dmg`.
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.14.zip`.
 - Electron launch/runtime verification: `Not performed by delivery`, per the user's explicit instruction not to test the already-running Electron instance.
-- Final static sanity evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round16-final-sanity-check.log`.
+- Final static sanity evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/delivery-round17-final-sanity-check.log`.
 
 ## Rollback Criteria
 
@@ -141,4 +142,4 @@
 
 ## Final Status
 
-`Awaiting explicit user verification.` The Round 16 reviewed package is integrated with the current tracked base, durable workspace documentation is synchronized to the independent modal-drawer behavior, and the unsigned ARM64 Electron package has been rebuilt for user testing. No Electron launch/runtime test was performed. Final commit, push, target-branch merge, release/deployment, archival, and cleanup remain intentionally gated.
+`Awaiting explicit user verification.` The Round 17 reviewed package is integrated with the current tracked base, stale historical fade/chevron language is explicitly reconciled in the ticket handoff record, and the unsigned ARM64 Electron package has been rebuilt for user testing. No Electron launch/runtime test was performed. Final commit, push, target-branch merge, release/deployment, archival, and cleanup remain intentionally gated.

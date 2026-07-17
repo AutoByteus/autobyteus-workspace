@@ -224,7 +224,7 @@ The underlying failure remains real: the integrated tool catalog can exceed the 
 | Artifact | Purpose and scope | Status | Approval applicability | Related core artifacts |
 | --- | --- | --- | --- | --- |
 | right-tool-tabs-ux-spec.md | Defines the personal-branch single-row visual, native scrolling, active-tab, accessibility, ownership, and validation behavior for right-tool tabs; explicitly excludes added fade/chevron indicators. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
-| workspace-responsive-ui-ux-spec.md | Defines scenario-level workspace shell behavior: wide personal-branch hierarchy, symmetric left/right panel-strip-drawer ownership, route-scoped header suppression, non-workspace default-layout preservation, empty-state actions, accessibility, and `/mobile` isolation. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
+| workspace-responsive-ui-ux-spec.md | Defines scenario-level desktop shell/workspace behavior: wide personal-branch hierarchy, global default-layout left panel/strip/drawer ownership, workspace right panel/strip/drawer ownership, no black responsive header, immersive/route boundaries, empty-state actions, accessibility, and `/mobile` isolation. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
 | comprehensive-responsive-ui-test-report.md | Historical responsive failure evidence and broad browser-matrix scope, including validation for symmetric strips and absence of header/top duplicate controls. | Evidence supplement, coherence-reconciled | N/A | Requirements doc, design spec |
 
 ### Open implementation questions for downstream design/implementation review
@@ -727,34 +727,87 @@ This is an intended-behavior design change covered by FR-024, FR-032,
 FR-035, FR-037 and AC-025, AC-033, AC-036, AC-038. It requires architecture
 re-review before implementation changes resume.
 
-### Route-scoped header reconciliation (2026-07-16)
+### Historical Route-scoped header reconciliation (2026-07-16; superseded)
 
 Architecture Review Round 15 identified that `layouts/default.vue` is a
 global default-layout boundary, not a workspace-only renderer. The previous
 package correctly prohibited the responsive header/hamburger for standard
-`/workspace` but incorrectly removed `showHeader` from the shared shell
-contract without defining what happens on other default-layout routes.
+`/workspace` but preserved the old responsive header for other default-layout
+routes. The user's later global-shell decision supersedes that preservation.
 
 The revised route contract is:
 
 | Route | Required behavior |
 | --- | --- |
-| `/workspace` (and supported workspace child routes) | Ignore the shared `showHeader` compatibility signal; render the symmetric left/right panel-strip-transient-drawer model with no responsive hamburger, breadcrumb, top `Agents & teams`, top `Tools`, or generic surface row. |
-| `/agents`, `/agent-teams`, `/applications`, `/media`, `/memory`, `/nodes`, `/skills`, `/tools` | Preserve the existing default-layout responsive header/navigation behavior driven by `showHeader`. |
+| `/workspace` (and supported workspace child routes) | Render the symmetric left/right panel-strip-transient-drawer model with no responsive header, hamburger, breadcrumb, top `Agents & teams`, top `Tools`, or generic surface row. |
+| `/agents`, `/agent-teams`, `/applications`, `/media`, `/memory`, `/nodes`, `/skills`, `/tools` | Use the same global left panel/strip/transient-drawer model; preserve route content and active navigation, but do not render the old responsive header/navigation layer. |
 | `/mobile` | Remains `layout:false` and renders `MobileRemoteAccessShell`; it does not pass through the default layout. |
 
-`default.vue` may gate the shared header on route identity, but it must not
-measure the viewport, introduce a new breakpoint, or resolve another workspace
-policy. The workspace resolver remains the sole capacity/priority owner. The
-requirements now add FR-039/AC-040 and the core/supplement design specs add
-route-scoped source/component/browser assertions for `/workspace`, a
-representative `/agents` or `/tools` route, and `/mobile` isolation.
+`default.vue` must not measure the viewport, introduce a new breakpoint, or
+resolve another workspace policy. It consumes the one composed shell state for
+the global left presentation. The requirements now add FR-039 and
+FR-043–FR-045 with AC-040 and AC-043–AC-045; the core/supplement design specs
+add source/component/browser assertions for `/workspace`, representative
+`/agents` and `/tools` routes, immersive applications, and `/mobile`
+isolation.
 
 The reviewer also recorded LID-002: the current `LeftSidebarStrip` still
 toggles left-panel preference rather than following the now-required
 capacity-aware activation output. This remains a local implementation defect
 for later source review: a fitting wide user-origin strip must re-dock, while
 a constrained/responsive strip must open the transient left drawer.
+
+### Global default-layout shell decision (2026-07-17)
+
+The user confirmed that the left strip should replace the black responsive
+header/hamburger on all non-immersive routes using `layouts/default.vue`, not
+only `/workspace`. This is architecturally consistent because `AppLeftPanel`
+is already rendered by the global layout and `LeftSidebarStrip` already owns
+the shell's primary navigation destinations. The change reuses that owner
+instead of creating page-specific narrow navigation.
+
+#### Current source path
+
+- `layouts/default.vue` currently owns `AppLeftPanel`, the black header, the
+  `app-left-drawer-open` hamburger, and the left drawer.
+- The current `showLeftStrip` condition is gated by
+  `isStandardWorkspaceRoute`, so `/agents`, `/agent-teams`, `/tools`, and
+  other default-layout routes keep the old header/drawer path at narrow
+  widths instead of using the shared strip.
+- `useResponsiveWorkspaceShell` already composes the left preference,
+  preferred width, viewport measurement, and policy output for the layout;
+  extending consumption to the global left shell does not require another
+  breakpoint or resolver.
+- `/mobile` is `layout:false`; application immersive mode explicitly hides the
+  shell, so both remain clean boundaries.
+
+#### Approved target
+
+```text
+default-layout route content -> global default.vue shell
+  wide:       full AppLeftPanel
+  constrained: LeftSidebarStrip while closed
+  narrow:      LeftSidebarStrip while closed
+  activated:   AppLeftPanel as the sole transient left drawer
+
+/workspace additionally:
+  center workspace + right panel -> right strip -> right tools drawer
+```
+
+The left strip retains route-aware active state and navigation meaning. A wide
+fitting user-origin strip re-docks; a constrained/narrow/responsive strip opens
+the drawer. Drawer navigation may route to the selected destination, while
+backdrop/Escape closes it and restores the strip without mutating preference.
+No default-layout route renders the black responsive header, hamburger, or
+breadcrumb trigger. No new global right strip is implied for pages that do not
+own workspace tools.
+
+This is a design-impact change rather than a local layout condition because it
+changes the global shell output contract and removes the `showHeader`
+compatibility path. Implementation must update `layouts/default.vue`, the
+policy output type, route/component/browser assertions, and obsolete header
+localization/tests together. `/mobile` and immersive application behavior must
+remain isolated.
 
 ### Symmetric side-strip simplification (2026-07-16)
 
@@ -770,15 +823,17 @@ right panel -> right strip -> right tools drawer
 The left strip owns compact access to Agents, Agent Teams, workspaces, and run
 history. The right strip owns compact access to Files and the tool catalog.
 When a side is docked, its panel replaces its strip. When a side is not
-docked, its strip remains visible, consumes flow width when possible, or uses
-an edge overlay when necessary. Activating the strip opens that side's
-transient drawer; the drawer is not a separate responsive policy state.
+docked and its drawer is closed, its strip remains visible, consumes flow
+width when possible, or uses an edge overlay when necessary. Activating the
+strip either re-docks a fitting wide user-collapsed panel or opens that side's
+transient drawer; while open, the drawer is the sole visible side surface.
+The drawer is not a separate responsive policy state.
 
 ### Source evidence consulted
 
 | Source | Current behavior/evidence | Design consequence |
 | --- | --- | --- |
-| `autobyteus-web/layouts/default.vue` | Standard shell still renders a black responsive header and `data-test="app-left-drawer-open"` hamburger when `responsiveWorkspaceShellState.showHeader` is true. | The reviewed implementation must remove the workspace header/hamburger navigation path; the left strip becomes the compact owner. |
+| `autobyteus-web/layouts/default.vue` | The global default-layout shell still renders a black responsive header and `data-test="app-left-drawer-open"` hamburger when `responsiveWorkspaceShellState.showHeader` is true, and only exposes the strip on standard workspace. | The reviewed implementation must remove the default-layout header/hamburger navigation path and make the left strip the shared compact owner for every non-immersive default-layout route. |
 | `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | Standard workspace still renders `WorkspacePrimarySurfaceControls` for constrained/left-non-docked states. | Decommission that generic row from standard `/workspace`; side strips and empty-state actions own compact access. |
 | `autobyteus-web/components/layout/LeftSidebarStrip.vue` | Existing left strip already exposes primary shell destinations and panel toggle behavior. | Reuse and make it the sole left compact affordance, with explicit drawer semantics and no companion top button. |
 | `autobyteus-web/components/layout/RightSidebarStrip.vue` | Existing right strip already renders canonical tool icons and opens the right drawer. | Reuse as the sole right compact affordance in consuming and overlay variants. |

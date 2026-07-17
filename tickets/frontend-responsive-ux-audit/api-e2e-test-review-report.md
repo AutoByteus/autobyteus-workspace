@@ -538,3 +538,73 @@ Implementation-source limits, architecture score categories, and forced test-fil
 - Final validation confidence: `97.4%`.
 - Recommended Recipient: `delivery_engineer`.
 - Notes: This is the separate proportional durable-test review and does not reopen the implementation scorecard. The complete cumulative package, including this report, Round 17 execution evidence, Round 33 source review, implementation handoff, current coverage/execution reports, current probe/results, and all still-relevant requirements/design artifacts may now proceed to delivery. Do not treat this report as a deployment or release sign-off.
+
+## Review Round 13 — Round 18 API/E2E Pass / Global Shell and Immersive Application Boundary
+
+### Review Meta
+
+- Review Round: `13`
+- Trigger: Successful API/E2E Round 18 after implementation-source Review Round 34 `Pass` for Architecture Round 24 global default-shell sharing at exact implementation HEAD `d66c9cc8ebfa7bb8ffe05267d8aec8c0f615fe06`.
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`.
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`.
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/code-review-report.md` (Round 34 `Pass`; this test review does not reopen the implementation scorecard).
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md`.
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md` (Round 18 addendum/result).
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md` (Round 18 authoritative execution).
+- API/E2E Result Reviewed: `Pass` — `20` result records (`17` `/workspace` viewports, `/mobile`, three global default-layout routes, and one application immersive route), `0` failures, and zero browser `error`/`pageerror` failures under enforcement.
+- Final Validation Confidence: `97.3%` overall; no applicable category below `90%`.
+- Prior proportional test-review findings rechecked: `TR-001` remains resolved; no other unresolved findings.
+
+### Changed Durable Test Scope
+
+Temporary probes, logs, screenshots, generated JSON, and runtime artifacts remain evidence, not durable test code under review. API/E2E made one bounded update to the existing responsive browser probe; no production source, requirements, or design artifact changed in this round.
+
+| Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | `Updated` (`153` insertions, `3` deletions relative to the implementation-reviewed source) | Architecture Round 24 global default-shell route coverage; immersive application setup -> host-shell suppression -> exit restoration; route-wide browser page-error enforcement; retained responsive workspace, `/mobile`, drawer, strip, tab, and resize contracts | One cohesive responsive/browser boundary probe spanning `/workspace`, shared default-layout routes, immersive application route, and `/mobile` | Adds `validateApplicationImmersiveBoundary`, records route-class console/pageerror messages, and preserves the existing matrix/helpers rather than adding a parallel test runner. |
+
+- Durable test source changed during this API/E2E round: `Yes`, one existing path.
+- Durable test paths reviewed: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`.
+- Temporary execution artifacts reviewed only as evidence: Round 18 runtime/build/probe/application/cleanup logs, canonical results and summary, and retained first-attempt evidence.
+
+### Validation Evidence Reviewed
+
+- Changed durable probe diff: `153` insertions and `3` deletions; the additions are limited to the global-route console/pageerror collector, the application boundary journey, pageerror enforcement for the existing workspace/mobile pages, and result aggregation. No approved assertion was weakened or removed.
+- Focused validation performed for this review: `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` passed; `git diff --check -- autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` passed.
+- Authoritative browser execution used a fresh built backend on `127.0.0.1:13043`, isolated SQLite under `/tmp/autobyteus-responsive-ux-audit-api-e2e-round18`, a Nuxt frontend on `127.0.0.1:13044`, explicit backend endpoints, headless Chrome, all `17` approved `/workspace` viewports plus `/mobile`, `/agents`, `/agent-teams`, `/tools`, and `--fail-on-console-error`.
+- Authoritative browser evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-workspace-responsive-probe.log`.
+- Application setup/capability evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-capability.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-capability-enable.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-catalog.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-immersive-interaction.log`.
+- Canonical results: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`.
+- The application journey used the isolated run's enabled bundled Brief Studio catalog and selected a live API-provided model through the setup UI before entering immersive mode. The initial sequencing defect (closing host controls before Exit) was corrected by reopening the control panel before the Exit locator; the final full matrix passed and the initial evidence remains retained in the execution package.
+- Repository evidence: `15` focused Nuxt files / `98` tests passed; fresh backend build passed; evidence is recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-focused-nuxt-tests.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-server-build.log`.
+- Cleanup evidence verifies run-owned ports `13043`/`13044` closed: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round18-cleanup-ports.log`.
+
+### Proportional Test-Code Checks
+
+Implementation-source limits, architecture score categories, and forced test-file splitting are not applied to this review.
+
+| Check | Result (`Pass`/`Fail`/`N/A`) | Evidence / Notes |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | `Pass` | The new `validateApplicationImmersiveBoundary` helper has a focused setup -> immersive -> host-controls -> exit responsibility. Existing `validateGlobalDefaultLayoutRoutes` and the `/workspace`/`/mobile` matrix remain separately named and are aggregated without hiding their route/state records. |
+| Assertions prove approved requirements instead of incidental implementation details | `Pass` | The journey uses real Playwright locator navigation/clicks and stable phase/control test IDs, checks route identity, shared-shell/right-tools visibility, immersive host presence, control-panel open/close, and default-shell restoration. The application card/model selection are setup prerequisites for the real bundled fixture; the requirement assertions use route, phase, semantic, and `data-testid` contracts rather than page-JavaScript button clicks. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | `Pass` | The update reuses the existing `collect`, visible-state model, browser/context lifecycle, route result aggregation, and current interaction helpers. The isolated capability mutation and live model catalog are documented environment setup, while the durable probe performs the application setup through the product UI; no second test runner or duplicate backend fixture was introduced. |
+| Test isolation and determinism are appropriate for the exercised boundary | `Pass` | The final run used run-owned backend/frontend ports, isolated SQLite, an explicitly enabled deterministic bundled Brief Studio fixture, the live API model catalog, bounded selector waits, console/pageerror enforcement, and verified cleanup. A missing catalog is recorded as an explicit failure rather than silently skipped, and the initial control-panel sequencing defect was fixed and rerun. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | `Pass` | The file remains one shell-focused responsive browser probe. Global default routes and the application immersive boundary are direct route-boundary coverage for the same responsive shell ownership change, not unrelated product workflows. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | `Pass` | The new route journey adds coverage identified as `Needs Update` in the investigation; pageerror checks are applied to workspace, mobile, global, and application pages; no prior approved assertion was removed or disabled. Retained initial-run artifacts are evidence only. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | `Pass` | The investigation records the immersive boundary as the missing durable scenario, the bounded probe update, the corrected sequencing attempt, and the final decision. The canonical result contains `20` records with zero failures and zero browser error/pageerror failures, matching the execution report. |
+
+### Findings
+
+| Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
+| --- | --- | --- | --- | --- |
+| None | N/A | The durable-test delta is focused, uses the existing probe ownership/helpers, directly covers the previously identified global/immersive boundary gap, extends error enforcement across route classes, preserves prior contracts, passes syntax/diff checks, and passed the authoritative isolated browser rerun. | None. | N/A |
+
+### Latest Authoritative Result
+
+- Result: `Pass`.
+- Changed durable test paths reviewed: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`.
+- Unresolved finding IDs: `None` (`TR-001` remains resolved).
+- Current-round durable-test review result: `Pass`.
+- Final validation confidence: `97.3%`.
+- Recommended Recipient: `delivery_engineer`.
+- Notes: This is the separate proportional durable-test review and does not reopen the implementation scorecard. The complete cumulative package, including this report, Round 18 execution evidence, Round 34 source review, implementation handoff, current coverage/execution reports, current probe/results, and all still-relevant requirements/design artifacts may now proceed to delivery. This report is not a deployment or release sign-off.

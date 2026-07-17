@@ -1,0 +1,3 @@
+$ node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+$ git diff --check -- autobyteus-web
+$ git diff --cached --check -- autobyteus-web

@@ -1,13 +1,29 @@
-# Standard Workspace Responsive UI/UX Specification
+# Desktop Shell and Standard Workspace Responsive UI/UX Specification
 
 ## Status and approval
 
 - Status: **Refined — architecture re-review required before implementation resumes**.
 - Approval applicability: **Required**. This document defines intended user-visible behavior.
-- Scope: the standard `/workspace` route in desktop browser, embedded-browser, and resizable desktop-window contexts.
-- Non-scope: the dedicated `/mobile` route and its Android/iOS wrapper experience.
+- Scope: the global desktop shell used by non-immersive routes with `layouts/default.vue`, including `/workspace`, `/agents`, `/agent-teams`, `/applications`, `/media`, `/memory`, `/nodes`, `/skills`, `/tools`, and supported default-layout pages in desktop browser, embedded-browser, and resizable desktop-window contexts.
+- Non-scope: the dedicated `/mobile` route and its Android/iOS wrapper experience, `layout:false` routes, and explicitly immersive application presentations.
 
-This specification is the scenario-level authority for the workspace shell. It complements `right-tool-tabs-ux-spec.md`; it does not replace the requirements doc, investigation notes, or design spec.
+This specification is the scenario-level authority for the global desktop shell and standard workspace surfaces. It complements `right-tool-tabs-ux-spec.md`; it does not replace the requirements doc, investigation notes, or design spec.
+
+### Global left-shell decision
+
+`layouts/default.vue` owns the left navigation panel for the default-layout
+routes. The same owner renders the personal-branch left strip whenever the
+panel is non-docked and its drawer is closed, and renders the left navigation
+drawer as the sole left surface while open. This applies to `/workspace` and
+non-workspace default-layout routes alike. The route page supplies content and
+active-route meaning; it does not create a second narrow navigation model.
+
+The black responsive header, hamburger, and breadcrumb navigation trigger are
+removed from this desktop shell. A wide fitting user-origin strip re-docks the
+panel; a constrained/narrow/responsive strip opens the transient drawer. The
+drawer may navigate to the selected destination, and dismissal restores the
+strip without mutating panel preference. `/mobile` and immersive application
+presentations remain explicit shell boundaries.
 
 ### Right-tools simplification decision
 
@@ -82,14 +98,13 @@ or made non-visual during implementation rework. `/mobile` and
 
 ### Global default-layout route boundary
 
-The no-header-control rule applies only to standard `/workspace`. The global
-`layouts/default.vue` must preserve its existing responsive header/navigation
-behavior for other routes that use it, including `/agents`, `/agent-teams`,
-`/applications`, `/media`, `/memory`, `/nodes`, `/skills`, and `/tools`.
-`default.vue` may use route identity to decide whether to consume the shared
-`showHeader` signal, but it must not add a second viewport policy or resolver.
-The dedicated `/mobile` route remains `layout:false` and does not pass through
-this boundary.
+All non-immersive routes using `layouts/default.vue` consume the shared left
+panel/strip/transient-drawer state. `default.vue` does not emit or consume a
+`showHeader` compatibility signal and does not render the old responsive
+header. `/workspace` additionally consumes the right-tools panel/strip/drawer
+state; other pages keep their route content without inheriting a right-tools
+surface. `layout:false` routes such as `/mobile` and immersive application
+presentations do not pass through this shell boundary.
 
 ## Product mental model
 
@@ -157,11 +172,13 @@ The exact pixel thresholds remain owned by the responsive policy. The following 
 
 | State | Entry condition | Left surface | Center | Right surface | Top controls | Required user affordances |
 |---|---|---|---|---|---|---|
-| Wide default | Enough width and height for the canonical split | AppLeftPanel docked | Full work surface | RightSideTabs docked | No generic surface bar or hamburger/Agents/Tools buttons | Left panel navigation; right panel tabs and fixed toggle |
+| Wide default workspace | Enough width and height for the canonical split | AppLeftPanel docked | Full work surface | RightSideTabs docked | No black responsive header, generic surface bar, hamburger, or Agents/Tools buttons | Left panel navigation; right panel tabs and fixed toggle |
+| Wide default non-workspace route | Default-layout route with sufficient width | AppLeftPanel docked | Route-owned page content | Route-owned content; no workspace right-tools surface | No black responsive header, hamburger, or breadcrumb trigger | Left panel navigation and route content controls |
 | Wide with user collapse | User clicked the left-panel collapse affordance | LeftSidebarStrip is the unchanged personal-branch strip; activation restores the full panel while it fits | Same center position and content | RightSideTabs remains docked when it fits | No generic surface bar or header navigation | Left strip has the original navigation controls; right tabs remain directly usable |
-| Large-but-constrained desktop | Full three-pane split no longer fits, but left panel + practical center still fit | AppLeftPanel remains docked | Center remains usable | Right tools yield first to a consuming right strip when left + center + strip fit; otherwise the strip becomes an edge overlay | No `Work / Runs / Files / Tools` bar and no top `Tools` button | Existing left selection/workspace journey remains directly visible |
-| Constrained desktop | Left panel plus practical center no longer fit, or a short/narrow state requires overlay | With the drawer closed, the unchanged personal-branch left strip (consuming or overlay) is visible; activation opens the transient left navigation drawer, which hides the strip until dismissal | Center is prioritized and remains usable | With the drawer closed, the unchanged personal-branch right strip uses a consuming strip where possible and an overlay strip otherwise; activation opens the transient drawer, which hides the strip until dismissal | No `Work / Runs / Files / Tools` bar, hamburger, breadcrumb, top `Agents & teams`, or top `Tools` button | Existing strip controls are the only visible compact affordances while drawers are closed; empty state includes selection/run actions |
+| Large-but-constrained desktop workspace | Full three-pane split no longer fits, but left panel + practical center still fit | AppLeftPanel remains docked | Center remains usable | Right tools yield first to a consuming right strip when left + center + strip fit; otherwise the strip becomes an edge overlay | No `Work / Runs / Files` bar, black header, hamburger, breadcrumb, or top `Tools` button | Existing left selection/workspace journey remains directly visible |
+| Constrained desktop workspace | Left panel plus practical center no longer fit, or a short/narrow state requires overlay | With the drawer closed, the unchanged personal-branch left strip (consuming or overlay) is visible; activation opens the transient left navigation drawer, which hides the strip until dismissal | Center is prioritized and remains usable | With the drawer closed, the unchanged personal-branch right strip uses a consuming strip where possible and an overlay strip otherwise; activation opens the transient drawer, which hides the strip until dismissal | No `Work / Runs / Files` bar, black header, hamburger, breadcrumb, top `Agents & teams`, or top `Tools` button | Existing strip controls are the only visible compact affordances while drawers are closed; empty state includes selection/run actions |
 | Narrow standard workspace | Desktop browser window is below the shell docking threshold | With the drawer closed, the unchanged personal-branch left strip remains visible as an edge overlay; activating it opens AppLeftPanel as the sole left drawer surface until dismissal | Center work surface remains mounted and reachable | With the drawer closed, the unchanged personal-branch right-tools strip remains visible as an edge overlay; activating it opens the full right tab drawer as the sole right surface until dismissal | No generic four-item surface bar or header navigation controls | No added drawer title/close chrome; existing strips have accessible names when closed; empty state includes selection/run actions |
+| Narrow default non-workspace route | Default-layout route below the shell docking threshold | With the drawer closed, the unchanged personal-branch left strip remains visible as an edge overlay; activating it opens AppLeftPanel as the sole left drawer surface until dismissal | Route-owned page content remains mounted and scrollable | Route-owned content; no workspace right-tools surface | No black header, hamburger, or breadcrumb trigger | Strip navigation retains active route state and drawer destinations remain usable |
 | Short-height window | Height is too small for stable stacked/docked panels | Left strip while its drawer is closed, or left drawer alone while open | Center remains the priority surface | Right strip while its drawer is closed, or right drawer alone while open | No controls that consume a disproportionate vertical band | Both hidden surfaces have a visible recovery path; no clipped-only state |
 | `/mobile` route | Phone/PWA route | MobileRemoteAccessShell | Mobile route content | Mobile route content | Owned by mobile product design | No dependency on standard workspace policy |
 
@@ -411,9 +428,12 @@ The implementation and browser validation must cover at least:
 - repeated resize across all states;
 - modest resize from large desktop where the left panel remains docked and right tools yield first;
 - `/mobile` isolation.
-- route-scoped header assertions: `/workspace` has no responsive header
-  controls, while `/agents` or `/tools` retains the existing default-layout
-  narrow navigation, and `/mobile` remains isolated.
+- global default-layout shell assertions: `/workspace`, `/agents`, `/agent-teams`,
+  and `/tools` use the shared left panel/strip/transient-drawer shell and have
+  no black responsive header, hamburger, or breadcrumb trigger; `/workspace`
+  additionally owns the right panel/strip/transient-drawer tools surface;
+  `/mobile` remains isolated and immersive application presentations bypass
+  the default layout.
 - personal-branch strip continuity: both strip renderers retain the original
   control inventory in wide, consuming, overlay, constrained, and narrow
   states; source/component/browser assertions reject the added
@@ -435,9 +455,12 @@ These are design consequences for the reviewed package, not permission to patch 
 6. Bound right-panel drag against measured available capacity and the practical center minimum; do not let a drag itself trigger a docked-to-drawer/strip transition.
 7. Distinguish automatic `480px` center protection from the explicit user-sized `200px` divider override in the composed state and resize owner.
 8. Order right-tool presentations as docked, then consuming strip, then overlay strip; do not render a top Tools trigger in standard `/workspace`.
-9. Route-scope the default-layout header change: ignore `showHeader` only for
-   `/workspace`, preserve it for other default-layout routes, and keep
-   `/mobile` outside the default layout.
+9. Make the default layout the sole owner of the shared left shell: remove the
+   black responsive header, hamburger, breadcrumb, and ordinary `showHeader`
+   compatibility path for every non-immersive route using `layouts/default.vue`.
+   Keep `/workspace` right-tool rendering inside the workspace layout; keep
+   `/mobile` outside the default layout and preserve the explicit immersive
+   application shell boundary.
 10. Replace the empty center sentence with a structured empty state and actions.
 11. Preserve the existing right-tab work from `right-tool-tabs-ux-spec.md` and restore personal-branch typography/spacing before visual sign-off.
 12. Reuse the personal-branch left/right strip markup and control inventory;
