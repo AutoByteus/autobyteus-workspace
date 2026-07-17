@@ -276,6 +276,16 @@ Focused lifecycle assertions cover left-then-right and right-then-left modal own
 
 Round 31 checks: full responsive focused suite (13 files, 92 tests), standalone responsive-policy TypeScript, probe syntax, and `git diff --check` passed; only the known KaTeX quirks-mode warning remains in focused tests. API/E2E remains downstream-owned; no API/E2E sign-off is claimed.
 
+### Round 32 Local-Fix Trace
+
+Right-tool tab reconciliation: removed the `TabList` affordance layer, edge fades, directional chevron buttons, overflow-page scrolling, and the `RightSideTabs` opt-in props/labels. The tab list remains a single native `overflow-x-auto`/`flex-nowrap` row with the personal `Tab` typography, spacing, active underline, focus behavior, selected/focused auto-scroll, canonical catalog order, and fixed docked panel toggle outside the scroll owner. Removed the now-unused overflow-indicator localization labels and synchronized `docs/workspace_layout.md` with the no-custom-chrome contract.
+
+The durable probe now validates absence of custom overflow indicator chrome and exercises native horizontal scroll position changes plus selected/focused offscreen tab reachability for both docked and drawer tab lists. Existing LID-003 side visibility gates remain in place: left strip is hidden while its drawer is open and right strip is hidden while its drawer is open; `/mobile` remains untouched.
+
+Round 32 implementation commit: `21ccb9515`.
+
+Round 32 checks: full responsive focused suite (13 files, 92 tests) passed with only the known KaTeX quirks-mode warning; standalone responsive-policy TypeScript, probe syntax, `git diff --check`, web-boundary guard, localization-boundary guard, localization literal audit, and Nuxt production build passed. API/E2E remains downstream-owned; no API/E2E sign-off is claimed.
+
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Larger Requirement / Behavior Change / Responsive Layout Refactor`

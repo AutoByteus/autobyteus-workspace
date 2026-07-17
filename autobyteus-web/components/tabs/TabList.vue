@@ -4,49 +4,7 @@
     v-bind="attrs"
     role="tablist"
     class="relative flex min-w-0 flex-nowrap items-end overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 bg-white px-1 no-scrollbar"
-    @scroll="updateOverflowState"
   >
-    <div
-      v-if="showLeftOverflow || showRightOverflow"
-      data-test="tab-list-affordance-layer"
-      class="tab-list-affordance-layer"
-    >
-      <span
-        v-if="showLeftOverflow"
-        data-test="tab-list-left-fade"
-        aria-hidden="true"
-        class="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-slate-500/30 via-white/95 to-transparent"
-      />
-      <span
-        v-if="showRightOverflow"
-        data-test="tab-list-right-fade"
-        aria-hidden="true"
-        class="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-slate-500/30 via-white/95 to-transparent"
-      />
-      <button
-        v-if="showLeftOverflow"
-        type="button"
-        data-test="tab-list-scroll-left"
-        class="pointer-events-auto absolute left-0 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-slate-700/85 text-lg font-semibold leading-none text-white shadow-md transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-        :aria-label="previousLabel"
-        :title="previousLabel"
-        @click="scrollByPage(-1)"
-      >
-        <span aria-hidden="true" class="text-lg leading-none">‹</span>
-      </button>
-      <button
-        v-if="showRightOverflow"
-        type="button"
-        data-test="tab-list-scroll-right"
-        class="pointer-events-auto absolute right-0 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-slate-700/85 text-lg font-semibold leading-none text-white shadow-md transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-        :aria-label="nextLabel"
-        :title="nextLabel"
-        @click="scrollByPage(1)"
-      >
-        <span aria-hidden="true" class="text-lg leading-none">›</span>
-      </button>
-    </div>
-
     <Tab
       v-for="tab in tabs"
       :key="tab.name"
@@ -62,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue';
 import Tab from './Tab.vue';
 
 defineOptions({ inheritAttrs: false });
@@ -72,17 +30,10 @@ interface TabInfo {
   label?: string;
 }
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   tabs: TabInfo[];
   selectedTab: string;
-  showOverflowAffordances?: boolean;
-  previousLabel?: string;
-  nextLabel?: string;
-}>(), {
-  showOverflowAffordances: false,
-  previousLabel: '',
-  nextLabel: '',
-});
+}>();
 
 const emit = defineEmits<{
   (event: 'select', tabName: string): void;
@@ -90,33 +41,10 @@ const emit = defineEmits<{
 
 const attrs = useAttrs();
 const scrollContainer = ref<HTMLElement | null>(null);
-const canScrollLeft = ref(false);
-const canScrollRight = ref(false);
-const hasHorizontalOverflow = ref(false);
 const prefersReducedMotion = ref(false);
-
-const showLeftOverflow = computed(() =>
-  props.showOverflowAffordances && hasHorizontalOverflow.value && canScrollLeft.value,
-);
-const showRightOverflow = computed(() =>
-  props.showOverflowAffordances && hasHorizontalOverflow.value && canScrollRight.value,
-);
 
 let resizeObserver: ResizeObserver | null = null;
 let reducedMotionMediaQuery: MediaQueryList | null = null;
-
-const updateOverflowState = (): void => {
-  const container = scrollContainer.value;
-  if (!container) return;
-
-  const maxScrollLeft = Math.max(0, container.scrollWidth - container.clientWidth);
-  const currentScrollLeft = Math.max(0, container.scrollLeft);
-  const epsilon = 1;
-
-  hasHorizontalOverflow.value = maxScrollLeft > epsilon;
-  canScrollLeft.value = currentScrollLeft > epsilon;
-  canScrollRight.value = currentScrollLeft < maxScrollLeft - epsilon;
-};
 
 const scrollTo = (left: number): void => {
   const container = scrollContainer.value;
@@ -131,14 +59,6 @@ const scrollTo = (left: number): void => {
   } else {
     container.scrollLeft = targetLeft;
   }
-};
-
-const scrollByPage = (direction: -1 | 1): void => {
-  const container = scrollContainer.value;
-  if (!container) return;
-
-  const pageSize = Math.max(container.clientWidth * 0.8, 1);
-  scrollTo(container.scrollLeft + direction * pageSize);
 };
 
 const findTabElement = (tabName: string): HTMLElement | null => {
@@ -176,7 +96,6 @@ const updateReducedMotionPreference = (): void => {
 
 const refreshAfterLayoutChange = (): void => {
   nextTick(() => {
-    updateOverflowState();
     scrollTabIntoView(props.selectedTab);
   });
 };
@@ -193,7 +112,6 @@ watch(() => props.selectedTab, (tabName) => {
 watch(() => props.tabs, refreshAfterLayoutChange, { deep: true });
 
 onMounted(() => {
-  updateOverflowState();
   window.addEventListener('resize', refreshAfterLayoutChange);
 
   if (typeof ResizeObserver !== 'undefined' && scrollContainer.value) {
@@ -220,18 +138,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Keep the affordance layer pinned to the scrollport while tabs move natively. */
-.tab-list-affordance-layer {
-  position: sticky;
-  left: 0;
-  z-index: 10;
-  align-self: stretch;
-  flex: 0 0 100%;
-  width: 100%;
-  margin-right: -100%;
-  pointer-events: none;
-}
-
 /* Hide the native scrollbar without removing native horizontal scrolling. */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

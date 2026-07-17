@@ -16,6 +16,13 @@ The standard `/workspace` route is a desktop-capability workspace that adapts to
 - **Strip**: constrained desktop or narrow windows keep the center workspace usable with a visible edge affordance; the strip may consume flow width or become a fixed overlay.
 - **Drawer**: left/right drawers are transient interaction surfaces opened from their visible strip or shell navigation; they are not competing responsive policy presentations.
 
+Transient left and right drawers are independent modal side surfaces. Their shared
+drawer-layer owner assigns matching backdrop and drawer z-indexes from open order,
+so both surfaces can remain open without their visual stacking and keyboard
+ownership drifting apart. Only the topmost drawer owns `Escape` and `Tab` handling
+and exposes `aria-modal="true"`; closing or unmounting it returns focus to the
+remaining drawer or to the strip/navigation trigger that opened it.
+
 The left surface is a full-height flex column in both docked and drawer presentations. Its bounded content wrapper owns the `AppLeftPanel` scroll region, including the vertically scrollable run-history surface; do not replace that owner with a second shell-level history scroller.
 
 Application-immersive routes still bypass the normal left navigation surfaces.
@@ -27,6 +34,7 @@ Application-immersive routes still bypass the normal left navigation surfaces.
 - Wide/enough space: right tools remain docked and resizable.
 - Constrained desktop/tablet space: right tools collapse to a consuming strip or fixed edge-overlay strip before the center pane falls below its practical minimum.
 - Narrow or short-height space: right tools remain discoverable as an edge-overlay strip; clicking it opens the transient right-tool drawer while the center workspace remains mounted.
+- While a transient drawer is open, its corresponding strip is conditionally unmounted so the drawer is the sole active surface for that side; dismissal remounts the strip and restores focus through the drawer lifecycle.
 - The center pane minimum target is defined by `WORKSPACE_CENTER_MIN_WIDTH_PX` in `utils/layout/responsiveLayoutPolicy.ts`.
 
 The docked right panel uses the measured center-plus-right flow width as its
@@ -67,14 +75,32 @@ Right-tool order is also centralized there and should remain:
 presentation for the right-tool catalog in the docked panel and transient
 drawer. The right strip exposes the same catalog as an accessible icon affordance
 and opens that drawer. The tab row may overflow horizontally but must not wrap
-into a second row. Directional edge fades/chevrons expose undisclosed tabs,
-active and focused tabs auto-scroll into view, and the fixed panel toggle stays
-outside the scrolling region.
+into a second row. Native mouse, touchpad, touch, and keyboard scrolling remain
+the only overflow interaction; active and focused tabs auto-scroll into view,
+and the fixed panel toggle stays outside the scrolling region. No edge fades,
+directional chevrons, floating scroll buttons, or equivalent custom overflow
+indicator chrome is rendered at any scroll position.
 
 Historical delivery note: an earlier delivery iteration described an opt-in
 wrapped multi-row `TabList` presentation. That language is superseded by the
 approved `right-tool-tabs-ux-spec.md` contract and the current implementation;
 do not reintroduce wrapping into this right-tool header.
+
+## Transient Drawer Ownership and Accessibility
+
+`useAccessibleDrawer()` is the shared lifecycle owner for the standard workspace
+left-navigation and right-tools drawers. It maintains a small ordered registry of
+open drawers rather than coupling the two panel stores. Each drawer owns its
+backdrop and side surface, traps `Tab` focus within itself while topmost, closes
+on `Escape`, and receives initial focus when opened. A lower drawer remains
+available in the registry when an independent drawer opens above it, and regains
+keyboard/focus ownership when the topmost drawer closes.
+
+The left drawer is rendered by `layouts/default.vue`; the right-tools drawer is
+rendered by `WorkspaceAdaptiveLayout.vue` and `WorkspaceRightToolDrawer.vue`.
+Both use dialog semantics only while transient, keep the center workspace mounted,
+and must not leave an interactive strip underneath an open drawer. Preserve the
+side-specific focus resolver because a strip may be remounted during dismissal.
 
 ## `/mobile` Boundary
 

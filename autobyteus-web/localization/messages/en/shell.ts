@@ -99,8 +99,6 @@ const shellMessages = {
   'shell.rightTabs.browser': 'Browser',
   'shell.rightTabs.vncViewer': 'VNC Viewer',
   'shell.rightTabs.ariaLabel': 'Workspace tools',
-  'shell.rightTabs.scrollPrevious': 'Show previous tabs',
-  'shell.rightTabs.scrollNext': 'Show more tabs',
   'shell.mobile.configuration': 'Configuration',
   'shell.mobile.running': 'Running',
   'shell.mobile.files': 'Files',

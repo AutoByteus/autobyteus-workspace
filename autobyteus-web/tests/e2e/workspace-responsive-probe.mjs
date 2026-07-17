@@ -210,13 +210,6 @@ async function collect(page, label) {
       activeUnderline: Boolean(button.querySelector('.bg-blue-600')),
     });
 
-    const affordanceDetails = (button) => button ? ({
-      visible: visible(button),
-      rect: rect(button),
-      ariaLabel: button.getAttribute('aria-label') || '',
-      title: button.getAttribute('title') || '',
-    }) : null;
-
     const tabListDetails = (tabList) => {
       if (!tabList) return null;
       const style = getComputedStyle(tabList);
@@ -242,10 +235,9 @@ async function collect(page, label) {
         hasHorizontalOverflow: tabList.scrollWidth > tabList.clientWidth + 1,
         rowTops: uniqueRowTops,
         tabs: tabButtons.map(tabButtonDetails),
-        leftFade: affordanceDetails(tabList.querySelector('[data-test="tab-list-left-fade"]')),
-        rightFade: affordanceDetails(tabList.querySelector('[data-test="tab-list-right-fade"]')),
-        leftChevron: affordanceDetails(tabList.querySelector('[data-test="tab-list-scroll-left"]')),
-        rightChevron: affordanceDetails(tabList.querySelector('[data-test="tab-list-scroll-right"]')),
+        customOverflowChrome: Boolean(tabList.querySelector(
+          '[data-test="tab-list-affordance-layer"], [data-test="tab-list-left-fade"], [data-test="tab-list-right-fade"], [data-test="tab-list-scroll-left"], [data-test="tab-list-scroll-right"]',
+        )),
       };
     };
 
@@ -405,29 +397,6 @@ async function clickTopmostDrawerBackdrop(page) {
   return point.dataTest;
 }
 
-async function clickTabAffordance(page, rootSelector, dataTest) {
-  return await page.evaluate(({ selector, test }) => {
-    const root = document.querySelector(selector);
-    const button = root?.querySelector(`[data-test="${test}"]`);
-    if (!button) return false;
-    const style = getComputedStyle(button);
-    const buttonRect = button.getBoundingClientRect();
-    const rootRect = root.getBoundingClientRect();
-    if (
-      style.display === 'none' ||
-      style.visibility === 'hidden' ||
-      buttonRect.width <= 0 ||
-      buttonRect.height <= 0 ||
-      buttonRect.left < rootRect.left ||
-      buttonRect.right > rootRect.right ||
-      buttonRect.top < rootRect.top ||
-      buttonRect.bottom > rootRect.bottom
-    ) return false;
-    button.click();
-    return true;
-  }, { selector: rootSelector, test: dataTest });
-}
-
 async function focusTabAndCollect(page, rootSelector, tabName, label, click = false) {
   const found = await page.evaluate(({ selector, name, shouldClick }) => {
     const root = document.querySelector(selector);
@@ -477,13 +446,21 @@ async function exerciseTabList(page, rootSelector, initialState, context) {
   checks.reset = reset;
   failures.push(...validateTabListContract(reset, `${context} reset`));
 
-  const rightClicked = await clickTabAffordance(page, rootSelector, 'tab-list-scroll-right');
-  await page.waitForTimeout(700);
+  const nativeScrollResult = await page.evaluate((selector) => {
+    const root = document.querySelector(selector);
+    if (!root) return { found: false, scrollLeft: 0 };
+    const maxScrollLeft = Math.max(0, root.scrollWidth - root.clientWidth);
+    const targetLeft = Math.min(maxScrollLeft, Math.max(root.clientWidth * 0.8, 1));
+    root.scrollLeft = targetLeft;
+    root.dispatchEvent(new Event('scroll'));
+    return { found: true, scrollLeft: root.scrollLeft };
+  }, rootSelector);
+  await page.waitForTimeout(150);
   const afterRightState = await collect(page, `${context}-tab-after-right`);
   const afterRight = afterRightState[listKey];
   checks.afterRight = afterRight;
-  if (!rightClicked) failures.push(`${context} right overflow control was not clickable`);
-  if (afterRight.scrollLeft <= reset.scrollLeft + 1) failures.push(`${context} right overflow control did not advance the native scroll position`);
+  if (!nativeScrollResult.found) failures.push(`${context} tab-list native scroll owner was not found`);
+  if (afterRight.scrollLeft <= reset.scrollLeft + 1) failures.push(`${context} native horizontal scrolling did not advance the scroll position`);
   failures.push(...validateTabListContract(afterRight, `${context} after right scroll`));
 
   const firstFocused = await focusTabAndCollect(page, rootSelector, 'files', `${context}-tab-first-focused`);
@@ -516,16 +493,6 @@ async function exerciseTabList(page, rootSelector, initialState, context) {
   // no VNC service is part of this deterministic workspace fixture, so the
   // selection path is covered by Files above while console-error enforcement
   // remains enabled for all browser runs.
-  const leftBefore = lastFocus.scrollLeft;
-  const leftClicked = await clickTabAffordance(page, rootSelector, 'tab-list-scroll-left');
-  await page.waitForTimeout(700);
-  const afterLeftState = await collect(page, `${context}-tab-after-left`);
-  const afterLeft = afterLeftState[listKey];
-  checks.afterLeft = afterLeft;
-  if (!leftClicked) failures.push(`${context} left overflow control was not clickable`);
-  if (afterLeft.scrollLeft >= leftBefore - 1) failures.push(`${context} left overflow control did not reverse the native scroll position`);
-  failures.push(...validateTabListContract(afterLeft, `${context} after left scroll`));
-
   if (context === 'docked' && initialState.panelToggle?.visible && lastFocusState.panelToggle?.rect) {
     const initialToggle = initialState.panelToggle.rect;
     const finalToggle = lastFocusState.panelToggle.rect;
@@ -905,6 +872,7 @@ function validateTabListContract(tabList, context) {
   if (tabList.styles.overflowY !== 'hidden') failures.push(`${context} tab-list exposes vertical overflow`);
   if (tabList.styles.whiteSpace !== 'nowrap') failures.push(`${context} tab-list does not preserve one-row whitespace`);
   if (tabList.rowTops.length > 1) failures.push(`${context} tab-list renders multiple tab rows`);
+  if (tabList.customOverflowChrome) failures.push(`${context} tab-list renders custom overflow indicator chrome`);
 
   const tabs = tabList.tabs.filter((tab) => tab.rendered);
   const labels = tabs.map((tab) => tab.label);
@@ -920,29 +888,6 @@ function validateTabListContract(tabList, context) {
   }
   if (tabs.some((tab) => tab.ariaSelected !== 'true' && tab.ariaSelected !== 'false')) {
     failures.push(`${context} tab-list has a tab without aria-selected semantics`);
-  }
-
-  const atStart = tabList.scrollLeft <= 1;
-  const atEnd = tabList.scrollLeft >= tabList.maxScrollLeft - 1;
-  const leftVisible = Boolean(tabList.leftChevron?.visible);
-  const rightVisible = Boolean(tabList.rightChevron?.visible);
-  const leftFadeVisible = Boolean(tabList.leftFade?.visible);
-  const rightFadeVisible = Boolean(tabList.rightFade?.visible);
-
-  if (!tabList.hasHorizontalOverflow) {
-    if (leftVisible || rightVisible || leftFadeVisible || rightFadeVisible) {
-      failures.push(`${context} shows overflow affordances without hidden tab content`);
-    }
-  } else {
-    if (atStart && (leftVisible || leftFadeVisible)) failures.push(`${context} shows a left overflow affordance at the left boundary`);
-    if (atStart && !atEnd && (!rightVisible || !rightFadeVisible)) failures.push(`${context} hides the right overflow affordance at the left boundary`);
-    if (atEnd && (rightVisible || rightFadeVisible)) failures.push(`${context} shows a right overflow affordance at the right boundary`);
-    if (atEnd && !atStart && (!leftVisible || !leftFadeVisible)) failures.push(`${context} hides the left overflow affordance at the right boundary`);
-    if (!atStart && !atEnd && (!leftVisible || !rightVisible || !leftFadeVisible || !rightFadeVisible)) {
-      failures.push(`${context} does not update both overflow affordances in the middle scroll position`);
-    }
-    if (leftVisible && !tabList.leftChevron.ariaLabel) failures.push(`${context} left overflow control has no accessible label`);
-    if (rightVisible && !tabList.rightChevron.ariaLabel) failures.push(`${context} right overflow control has no accessible label`);
   }
 
   return failures;
