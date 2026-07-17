@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/ui-ux-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/api-e2e-coverage-investigation.md`
 - Current Execution Round: `1`
 - Trigger: Coverage investigation completed after implementation source review pass for commit `3fef8ad9c`.
 - Prior Round Reviewed: `N/A`
@@ -54,7 +54,7 @@
 | --- | --- | --- | --- | --- | --- |
 | 1 | `pnpm -C autobyteus-web exec vitest run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts composables/__tests__/useRightPanel.spec.ts --reporter=dot` | Worktree root; Nuxt prepared | Direct changed policy/component/composable behavior | Pass | 3 files, 50 tests passed; KaTeX/server-init warnings only. |
 | 2 | `pnpm -C autobyteus-web test:nuxt -- --run --reporter=dot` | Worktree root | Broad frontend regression | Fail (unrelated) | 361 passed, 4 failed, 1 skipped; exact failures recorded in coverage investigation. |
-| 3 | `pnpm exec node tests/e2e/workspace-responsive-probe.mjs --base-url http://127.0.0.1:13002 --output-dir tickets/in-progress/right-panel-resize-collapse/probes/api-e2e --screenshots=failures --fail-on-console-error` | `autobyteus-web`, Nuxt dev server on 13002 | Live responsive matrix and drawer/resize journeys | Fail (environment) | JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/in-progress/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json`; no layout assertion failures, but backend `localhost:8000` unavailable and application fixture absent. |
+| 3 | `pnpm exec node tests/e2e/workspace-responsive-probe.mjs --base-url http://127.0.0.1:13002 --output-dir tickets/done/right-panel-resize-collapse/probes/api-e2e --screenshots=failures --fail-on-console-error` | `autobyteus-web`, Nuxt dev server on 13002 | Live responsive matrix and drawer/resize journeys | Fail (environment) | JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json`; no layout assertion failures, but backend `localhost:8000` unavailable and application fixture absent. |
 | 4 | Temporary Playwright Chromium journey: `/tmp/right-panel-journey.mjs` | Nuxt dev server 13002; Chrome headless 1280x800 | Exact left collapse -> right resize sequence | Pass | Initial 320/505/450; after collapse left strip; after drag center 205/right 1023; right panel visible; right strip/drawer absent. |
 | 5 | `git diff --check` | Worktree root | Patch hygiene | Pass | No whitespace errors. |
 | 6 | `pnpm -C autobyteus-web exec vue-tsc --noEmit` | Worktree root | Typecheck | Blocked / unavailable | `vue-tsc` is not installed in package, as reported upstream. |
@@ -136,9 +136,9 @@ None.
 
 | Artifact Path | Type / Purpose | Retained / Temporary | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/in-progress/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json` | Browser matrix machine-readable evidence | Retained | Includes failures and per-viewport state. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/in-progress/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-summary.json` | Browser matrix summary | Retained | Summary and failure list. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/in-progress/right-panel-resize-collapse/probes/api-e2e/*.png` | Browser screenshots | Retained | Failure screenshots from probe run. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json` | Browser matrix machine-readable evidence | Retained | Includes failures and per-viewport state. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-summary.json` | Browser matrix summary | Retained | Summary and failure list. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/*.png` | Browser screenshots | Retained | Failure screenshots from probe run. |
 | `/tmp/right-panel-journey.mjs`, `/tmp/right-panel-journey.png` | Focused live probe | Temporary | Not repository-resident; method and output summarized here. |
 
 ## Dependencies Mocked Or Emulated
@@ -197,3 +197,92 @@ After the original execution completed, the upstream requirements/design/UI-UX a
 - Failing / unproven scenario: `E2E-RPC-008` — `AC-007` drawer scrim opacity and visual context.
 - Required recipient: `solution_designer` reset point; do not route to successful proportional test review yet.
 - Current authoritative outcome: `Blocked pending upstream scope/design resolution`.
+
+## Execution Round 2 — AC-007 Revalidation (Latest Authoritative)
+
+### Round History
+
+| Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2 | Source review passed commit `6cdbc5e76`; revalidate new AC-007 | Prior AC-007 scope-drift block | None | Pass | Yes | Both drawer scrims and preserved modal lifecycle passed live browser checks. |
+
+### Prior Failure Resolution Check
+
+| Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1 | AC-007 unproven after upstream scope drift | Design Impact / Requirement Gap | Resolved by implementation commit `6cdbc5e76`, source review pass, focused 6-file/65-test pass, and live browser proof | `ac007-browser-results.json`; current code-review report | Original BE-001–BE-005 evidence remains valid. |
+
+### AC-007 Execution Evidence
+
+| Scenario ID | Requirement / Boundary | Execution Surface | Expected | Observed | Result |
+| --- | --- | --- | --- | --- | --- |
+| E2E-RPC-008A | AC-007 left drawer scrim | Headless Chrome, Nuxt dev, 700x700 | `bg-black/30`, computed black alpha 0.3, z40 backdrop, z50 drawer, focus inside drawer, Escape return | Class `bg-black/30`; `rgba(0, 0, 0, 0.3)`; z40/z50; focus and Escape restoration passed | Pass |
+| E2E-RPC-008B | AC-007 right drawer scrim | Headless Chrome, Nuxt dev, 700x700 | Same lighter scrim and preserved lifecycle | Class `bg-black/30`; `rgba(0, 0, 0, 0.3)`; z40/z50; focus and Escape restoration passed | Pass |
+
+### Additional Repository Coverage Execution (Round 2)
+
+| Order | Command | Working Directory / Configuration | Boundary / Scenario | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `pnpm -C autobyteus-web exec vitest run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts composables/__tests__/useRightPanel.spec.ts layouts/__tests__/default.spec.ts layouts/__tests__/default-drawer.spec.ts components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts --reporter=dot` | Worktree root | BE-001–BE-006 policy, renderer, and scrim owners | Pass | 6 files, 65 tests. |
+| 2 | `node /tmp/right-panel-ac007.mjs` | Nuxt dev server `127.0.0.1:13002`; Chrome headless; 700x700 | E2E-RPC-008A/B live scrim and lifecycle | Pass | Retained JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/ac007-browser-results.json`; screenshot `/tmp/right-panel-ac007.png`. |
+| 3 | `git diff --check` | Worktree root | Patch hygiene | Pass | No whitespace errors. |
+
+### Final Confidence Scorecard — Round 2
+
+| Category | Post-Repository | Final | Change | Final Evidence | Residual Uncertainty |
+| --- | ---: | ---: | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 90% | 97% | +7 | AC-007 source/runtime and live browser proof added to prior AC evidence. | Backend-seeded non-layout routes. |
+| Changed-boundary execution directness | 90% | 97% | +7 | Both backdrop owners directly exercised in browser with computed CSS. | Not packaged Electron. |
+| Cross-boundary integration realism and mock gap | 75% | 92% | +17 | Real Nuxt DOM, actual clicks, focus, Escape, computed styles. | Backend unavailable; no API changed. |
+| Environment/configuration/fixture fidelity | 85% | 92% | +7 | Correct local Nuxt setup and deterministic no-selection fixture. | Backend health/application seed unavailable. |
+| Failure/edge/lifecycle/recovery evidence | 88% | 95% | +7 | Both drawers, Escape/return focus, prior backdrop/drawer/redock/narrow/short paths. | No Electron lifecycle. |
+| User-surface/browser/desktop-shell confidence | 78% | 97% | +19 | Live Chrome verifies scrim alpha, hierarchy, and lifecycle. | Electron shell not launched. |
+| Durable regression coverage quality/relevance | 96% | 97% | +1 | 6-file/65-test implementation coverage passed; no new durable tests here. | Proportional review pending. |
+
+- Overall final confidence: `95.3%` (simple average).
+- Every critical acceptance criterion directly proven: `Yes`.
+- Final applicable category below 90%: `No`.
+- Default final confidence target met: `Yes` for changed scope.
+
+### Durable Coverage Changed In The Codebase
+
+- Repository-resident durable coverage changed upstream this round: `Yes`.
+- Paths added/updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default-drawer.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
+- Paths removed: None.
+- Added/updated paths attached for proportional test-code review: `Yes`.
+
+### Other Execution Artifacts
+
+| Artifact Path | Type / Purpose | Retained / Temporary | Notes |
+| --- | --- | --- | --- |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/ac007-browser-results.json` | AC-007 machine-readable browser result | Retained | Both computed scrims and lifecycle observations. |
+| `/tmp/right-panel-ac007.mjs` | Focused browser harness | Temporary | No repository source change; method recorded above. |
+| `/tmp/right-panel-ac007.png` | Supporting screenshot | Temporary | Live drawer state capture. |
+
+### Cleanup Round 2
+
+- Nuxt dev server started by this run on `127.0.0.1:13002`: stopped with Ctrl-C.
+- Playwright browser/context: closed.
+- No account, seed data, or persistent state created.
+
+### Result Summary (Latest Authoritative)
+
+| Result | Scenario IDs | Summary |
+| --- | --- | --- |
+| Pass | E2E-RPC-001–005, E2E-RPC-008A/B | Original responsive behavior plus new left/right 30% scrim behavior and lifecycle passed. |
+| Not Tested / Out Of Scope | E2E-RPC-006–007 | No API or Electron shell boundary changed. |
+| Environment-limited residual | Full-suite unrelated failures and backend-dependent routes | Preserved from Round 1; no changed-scope failure. |
+
+### Latest Authoritative Result
+
+- Result: `Pass`
+- Final validation confidence: `95.3%`
+- Default 95% target met: `Yes` for changed scope
+- Any final applicable category below 90%: `No`
+- Broader validation: `Required — Browser — completed`
+- Critical acceptance criteria lacking direct proof: `None`
+- Required next recipient: `code_reviewer` for proportional test-code review of the three updated durable test files.
+- Notes: Prior unrelated full-suite/backend limitations remain preserved and do not block the changed frontend boundary.

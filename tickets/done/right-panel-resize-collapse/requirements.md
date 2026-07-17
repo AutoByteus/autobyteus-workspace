@@ -29,7 +29,7 @@ Full evidence and production paths are recorded in `investigation-notes.md`.
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `tickets/in-progress/right-panel-resize-collapse/ui-ux-spec.md` | UI/UX journey and state-transition contract | R-001–R-006 | AC-001–AC-007 | `Requirements-ready`; intended behavior based on user request | Defines docked/strip/drawer states, explicit collapse versus responsive yield, the reported interaction sequence, and contextual lighter scrims |
+| `tickets/done/right-panel-resize-collapse/ui-ux-spec.md` | UI/UX journey and state-transition contract | R-001–R-006 | AC-001–AC-007 | `Requirements-ready`; intended behavior based on user request | Defines docked/strip/drawer states, explicit collapse versus responsive yield, the reported interaction sequence, and contextual lighter scrims |
 
 ## Design Health Assessment
 

@@ -2,13 +2,13 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/ui-ux-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/code-review-report.md`
 - Current Investigation Round: `1`
 - Trigger: Implementation source review passed for commit `3fef8ad9c`; downstream API/E2E validation requested.
 - Prior Investigation Reviewed: `N/A`
@@ -104,7 +104,7 @@ None. No existing scenario asserts the old incorrect behavior; the implementatio
 | 1 | `pnpm -C autobyteus-web exec vitest run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts composables/__tests__/useRightPanel.spec.ts --reporter=dot` | Worktree root; Nuxt prepared | Direct policy, rendered state, resize intent | Planned | To be recorded after rerun. |
 | 2 | `pnpm -C autobyteus-web test:nuxt -- --run` | Worktree root; full Nuxt suite | Frontend regression across affected package | Planned | To be recorded after run. |
 | 3 | `pnpm -C autobyteus-web exec vitest run --config electron/vitest.config.ts --reporter=dot` | Worktree root | Shell regression sanity; no changed shell boundary | Planned | To be recorded after run. |
-| 4 | `pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13002 --output-dir tickets/in-progress/right-panel-resize-collapse/probes/api-e2e --screenshots=failures --fail-on-console-error` | Worktree root with dev server | Live browser responsive workspace and drawers | Planned | To be recorded after run. |
+| 4 | `pnpm -C autobyteus-web test:e2e:workspace-responsive -- --base-url http://127.0.0.1:13002 --output-dir tickets/done/right-panel-resize-collapse/probes/api-e2e --screenshots=failures --fail-on-console-error` | Worktree root with dev server | Live browser responsive workspace and drawers | Planned | To be recorded after run. |
 
 ## Post-Repository Confidence Scorecard (Initial Plan)
 
@@ -240,3 +240,39 @@ During post-execution artifact reconciliation, the upstream requirements/design/
 - Reroute Required Before Validation Execution: `Yes`
 - Recommended Recipient: `solution_designer`
 - Notes: Preserve this report and browser evidence, but do not hand off as a successful final API/E2E package until the revised scrim requirement is implemented, source-reviewed, and revalidated.
+
+## AC-007 Revalidation Round 2 (Authoritative)
+
+Trigger: implementation source review passed commit `6cdbc5e76` for the newly approved lighter transient drawer scrim behavior.
+
+- Current requirement basis now includes `BE-006` / `R-006` / `AC-007`: left and right drawer backdrops must use the shared lighter approximately 30% black scrim (25–35%), while dismissal, Escape, focus trap/return, z-order, and opposite-strip hit testing remain unchanged.
+- Focused repository execution independently passed: 6 files / 65 tests, including both drawer owners and source/runtime class assertions.
+- Targeted live browser execution independently passed at 700x700 using the real Nuxt renderer and headless Chrome. Both strips were opened into their drawers. Both backdrops computed to `rgba(0, 0, 0, 0.3)` with class `bg-black/30`, z-index 40; drawers remained z-index 50. Left Escape dismissal and right Escape dismissal both closed the drawer and restored focus to the originating strip.
+- No API/backend boundary is involved. The prior full-suite failures and backend-dependent full probe failures remain unrelated/environment-limited evidence; prior BE-001–BE-005 browser evidence remains valid.
+- Durable coverage decision: upstream implementation added proportional source/runtime assertions in `layouts/__tests__/default.spec.ts`, `layouts/__tests__/default-drawer.spec.ts`, and `components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`; no additional API/E2E test file is needed.
+
+## Final Confidence After AC-007 Revalidation
+
+| Confidence Category | Score | Support | Remaining Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 97% | AC-001–AC-006 prior direct evidence plus AC-007 focused/runtime/browser proof. | Backend-seeded non-layout routes remain unavailable. |
+| Changed-boundary execution directness | 97% | Source/runtime assertions and real browser computed styles/interactions directly exercise both scrim owners. | Not packaged Electron. |
+| Cross-boundary integration realism and mock gap | 92% | Real Nuxt renderer, actual strip clicks, computed CSS, Escape/focus lifecycle. | Backend API unavailable but not changed. |
+| Environment, configuration, identity, and fixture fidelity | 92% | Correct Nuxt root/port, installed deps, deterministic no-selection workspace fixture. | Backend health/application seed unavailable. |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | Both scrim states, Escape/return focus, prior backdrop/drawer/redock/narrow/short paths. | No Electron lifecycle run. |
+| User-surface, browser, and desktop-shell confidence | 97% | Headless Chrome proves both live backdrop styles and modal surface hierarchy. | Electron shell untouched and not directly launched. |
+| Durable regression coverage quality and relevance | 97% | Six-file/65-test source/runtime set passed and is proportional; no extra durable tests required here. | Proportional test-code review remains downstream. |
+
+- Overall final confidence for current package: `95.3%` (simple average).
+- Every critical acceptance criterion directly proven: `Yes`.
+- Applicable categories below 90%: `No`.
+- Default clean-confidence target met: `Yes` for the changed scope; unrelated backend/full-suite limitations remain explicitly recorded.
+
+## Investigation Decision (Latest Authoritative)
+
+- Proceed To API/E2E Execution: `Yes — AC-007 revalidation completed`
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No` in this role; upstream durable source/runtime tests are included for proportional review.
+- Final confidence: `95.3%`
+- Broader validation decision: `Required — Browser — completed`
+- Reroute Required Before Validation Execution: `No`
+- Recommended Recipient: `code_reviewer` for proportional test-code review.

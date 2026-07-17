@@ -22,7 +22,7 @@ The user reports this supported desktop journey: maximize the application, colla
 
 - Project Type: `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse`
 - Current Branch: `codex/right-panel-resize-collapse`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse`
 - Bootstrap Base Branch: `origin/personal`
@@ -37,7 +37,7 @@ The user reports this supported desktop journey: maximize the application, colla
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/in-progress/right-panel-resize-collapse/ui-ux-spec.md` | User journey and state-transition contract for docked, strip, and drawer presentations | Distinguishes user-sized resize, explicit collapse/redock, responsive yield, and lighter contextual scrims; includes supplied screenshot references | Requirements, design spec | R-001–R-006; AC-001–AC-007 | `Requirements-ready` | Intended behavior; approval follows the user request | Keep synchronized if architecture review changes the state contract |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/ui-ux-spec.md` | User journey and state-transition contract for docked, strip, and drawer presentations | Distinguishes user-sized resize, explicit collapse/redock, responsive yield, and lighter contextual scrims; includes supplied screenshot references | Requirements, design spec | R-001–R-006; AC-001–AC-007 | `Requirements-ready` | Intended behavior; approval follows the user request | Keep synchronized if architecture review changes the state contract |
 
 ## Source Log
 
