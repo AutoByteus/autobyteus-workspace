@@ -267,6 +267,28 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 200px');
   });
 
+  it('keeps the user-sized right dock after collapsing the left panel at the compact boundary', async () => {
+    setViewport(768, 700);
+    const leftPanel = useLeftPanel();
+    const rightPanel = useRightPanel();
+    leftPanel.setLeftPanelVisible(false);
+    rightPanel.setRightPanelWorkspaceWidth(768);
+    rightPanel.initDragRightPanel(new MouseEvent('mousedown', { clientX: 1000 }));
+    dispatchMouseMove(1000);
+    dispatchMouseUp();
+
+    const wrapper = await mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: 'left-collapse-resize' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    expect(rightPanel.rightPanelResizeIntent.value).toBe('user-sized');
+    expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-right-tool-drawer"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 200px');
+  });
+
   it('renders RunConfigPanel for selected run when config view mode is active', async () => {
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'agent', selectedRunId: '123' },
