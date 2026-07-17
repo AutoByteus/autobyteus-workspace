@@ -221,4 +221,4 @@ Before implementation, the receiving team should explicitly decide and document:
 
 ## Reference
 
-- User screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png`
+- User screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png`

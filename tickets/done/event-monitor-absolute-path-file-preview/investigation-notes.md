@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Post-implementation user verification; bounded unsupported-type, invalid-path, inline-link, and strip-icon local fixes are routed before delivery finalization
+- Current Status: Post-implementation user verification; bounded unsupported-type, invalid-path, inline-link, strip-icon, and visible-label local fixes are routed before delivery finalization
 - Investigation Goal: Verify whether the supplied Event Monitor absolute-path preview ticket is coherent in the current codebase, identify the real production paths and security owners, and produce a design-ready implementation boundary.
 - Scope Classification: Medium
 - Scope Classification Rationale: The visible interaction is local, but the change crosses shared Markdown capability plumbing, conversation-to-monitor propagation, file-preview state, right-panel/mobile navigation, and trusted desktop/remote path boundaries.
@@ -24,7 +24,7 @@ Assessment: the ticket is sound and actionable after one design clarification ma
 
 - Project Type: Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview`
 - Current Branch: `codex/event-monitor-absolute-path-file-preview`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview`
 - Bootstrap Base Branch: `origin/personal`
@@ -39,12 +39,13 @@ Assessment: the ticket is sound and actionable after one design clarification ma
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/task.md` | Intake and product contract | Scope, desired interaction, security, accessibility, and acceptance basis | Requirements, investigation, design | REQ-001–REQ-013; AC-001–AC-016 | Current | Defines intended behavior; user-approved kickoff input | Keep aligned if design review changes scope |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png` | Visual reference | Complete path remains visible in Event Monitor; explanatory ellipsis is not part of the path | Requirements, investigation, design | REQ-001–REQ-004; AC-001–AC-005 | Current | Evidence/reference; approval N/A | None |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md` | Post-build user verification and bounded local-fix evidence | Unsupported `.zip`/`.dmg` paths should remain source-faithful without an Open-in-Files action | Requirements, investigation, design | REQ-016; AC-019 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-invalid-absolute-path-report.md` | User verification evidence and pure syntax-guard decision | Placeholder/truncated `/.../` destinations must remain original and receive no Files action | Requirements, investigation, design | REQ-017; AC-020 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-inline-file-link-report.md` | User verification evidence and approved inline-link UX decision | Supported paths should use inline link-style actions instead of bulky buttons | Requirements, investigation, design | REQ-018; AC-021 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-strip-nodes-icon-report.md` | User verification evidence and strip icon rendering decision | Nodes icon must be visible in strip mode | Requirements, investigation, design | REQ-019; AC-022 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/task.md` | Intake and product contract | Scope, desired interaction, security, accessibility, and acceptance basis | Requirements, investigation, design | REQ-001–REQ-013; AC-001–AC-016 | Current | Defines intended behavior; user-approved kickoff input | Keep aligned if design review changes scope |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png` | Visual reference | Complete path remains visible in Event Monitor; explanatory ellipsis is not part of the path | Requirements, investigation, design | REQ-001–REQ-004; AC-001–AC-005 | Current | Evidence/reference; approval N/A | None |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md` | Post-build user verification and bounded local-fix evidence | Unsupported `.zip`/`.dmg` paths should remain source-faithful without an Open-in-Files action | Requirements, investigation, design | REQ-016; AC-019 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/user-verification-invalid-absolute-path-report.md` | User verification evidence and pure syntax-guard decision | Placeholder/truncated `/.../` destinations must remain original and receive no Files action | Requirements, investigation, design | REQ-017; AC-020 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/user-verification-inline-file-link-report.md` | User verification evidence and approved inline-link UX decision | Supported paths should use inline link-style actions instead of bulky buttons | Requirements, investigation, design | REQ-018; AC-021 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/user-verification-strip-nodes-icon-report.md` | User verification evidence and strip icon rendering decision | Nodes icon must be visible in strip mode | Requirements, investigation, design | REQ-019; AC-022 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/user-verification-file-link-label-report.md` | User verification evidence and visible-label cleanup decision | Generated links should show only the file label, not redundant action words | Requirements, investigation, design | REQ-020; AC-023 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
 
 ## Source Log
 
@@ -206,6 +207,13 @@ The user also reported that the Nodes icon is missing in strip mode. Investigati
 
 This is a bounded presentation/local shell fix with no new cross-boundary design.
 
+## Post-Implementation User Verification — Visible File-Link Label
+
+After the inline-link implementation, the user confirmed the presentation is substantially better but reported that generated links still visibly say `Open <file> in Files`. The user prefers only the clickable file label, matching the reference image. Current source evidence shows `MarkdownRenderer.vue` supplies the localized `open_file` string as the generated visible action label, while the same string is also used for `aria-label`; the bounded correction is to use `action.displayLabel` for visible generated links while retaining the localized descriptive accessibility metadata.
+
+This is a presentation-only local fix. The same action ID, typed event, keyboard activation, launcher, read-only preview, path/type/security policy, and generic Markdown behavior remain unchanged. Evidence is preserved in `user-verification-file-link-label-report.md`.
+
+
 Exact sources consulted for this clarification:
 
 - `autobyteus-web/composables/useMarkdownSegments.ts`: `actionButton()` currently creates the bordered prose/code control; Markdown-link actions already use an anchor with a render-scoped action ID.
@@ -245,6 +253,7 @@ The cumulative package now treats the following as stable IDs; current-state evi
 | BEH-010 | Incomplete/placeholder absolute paths remain original without action/read |
 | BEH-011 | Supported Event Monitor path actions use compact inline link-style affordances |
 | BEH-012 | Nodes icon is visible in responsive strip mode |
+| BEH-013 | Generated inline file actions show only the file label visibly |
 
 ## Post-Implementation User Verification — Unsupported File Types
 

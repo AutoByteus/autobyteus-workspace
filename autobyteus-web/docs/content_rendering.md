@@ -106,6 +106,19 @@ scoped action ID, so browser-resolved `href` values are never treated as file
 authorization. HTTP(S), relative paths, and ordinary non-Event-Monitor Markdown
 behavior retain their existing handling.
 
+Path recognition rejects incomplete or placeholder components such as `.`, `..`,
+`...`, and the Unicode ellipsis `…` before action/type classification. Complete
+dotted filenames such as `release...notes.md` remain eligible. This keeps
+truncated examples source-faithful and inert without rejecting legitimate
+filenames.
+
+Supported Event Monitor actions render as compact inline native links rather
+than bordered buttons. Generated links show the file's display label/basename;
+authored Markdown link labels remain authored. The render-scoped action ID,
+delegated click/Enter/Space activation, localized accessibility metadata, focus
+visibility, and fenced-code copy/source boundaries remain unchanged. Fenced-code
+actions are rendered beside, not inside, the copied code text.
+
 On explicit click, Enter, or Space, the Event Monitor launcher opens the normal
 Files surface idempotently and requests the existing `FileViewer` path with an
 explicit `source: 'event-monitor'` and `readOnly: true` intent. Existing file
@@ -131,6 +144,11 @@ workspace fetch, or panel switch. A supported-looking path that is missing,
 unreadable, a directory, or otherwise invalid follows the normal localized
 viewer failure state instead; type ineligibility and runtime failure are
 separate outcomes.
+
+The compact left navigation strip keeps the capability-gated Nodes entry and
+`/nodes` route. In strip mode it renders the existing visible nodes-network SVG
+shape directly, matching the expanded navigation icon instead of relying on an
+unregistered icon name.
 
 ## App-Wide Readability / Display Settings
 

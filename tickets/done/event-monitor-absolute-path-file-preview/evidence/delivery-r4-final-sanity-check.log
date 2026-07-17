@@ -1,0 +1,31 @@
+Delivery final sanity check
+2026-07-17T14:15:41Z
+HEAD=5a72303bfbd65233f4048fb926bae85fb0af2689
+BASE=75a4c97f26d1c33152a97940938124bf271e2653
+UNMERGED_PATHS
+git diff --check
+ARTIFACTS
+-rw-r--r--@ 1 normy  staff   383M Jul 17 16:09 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.16.dmg
+-rw-r--r--@ 1 normy  staff   379M Jul 17 16:11 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.16.zip
+97fe6245eb5c54949c264cddbde66c0b13a4c657c244b321db908c98cc52639f  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.16.dmg
+b8f1db323c6b9ac1ebd1b3d130e84510353db9f8a69749b8a5578b5084cb0a60  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.16.zip
+REPORT_ASSERTIONS
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:15:- Trigger: Implementation-source review round 6 passed for `46b9b8e13a477ebaaa006a8a814679416b7b4707`. The current source adds compact inline native Event Monitor action anchors and restores the visible strip-mode Nodes SVG under BEH-011/REQ-018/AC-021 and BEH-012/REQ-019/AC-022.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:16:- Prior Round Reviewed: round 3 execution for source `a0d374fad6b4173c74066509ff87d2341627a110`, result `Blocked` at 85%, with authenticated Event Monitor, paired mobile, packaged Electron/media, Windows, and full visual gaps retained.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:28:| 4 | Source review round 6 pass for `46b9b8e13a477ebaaa006a8a814679416b7b4707` | EVM-BROWSER-003, EVM-BROWSER-004, EVM-DESKTOP-001 rechecked; BEH-011/AC-021 compact inline actions and BEH-012/AC-022 strip Nodes SVG directly rerun. | None observed | Blocked | Yes | 3/23, 6/67, 16/119, and 18/93 repository passes; live API, browser shell, Electron validator/TS, server build/route, and guards passed. Critical runtime gaps remain. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:53:| EVM-REPO-002 | BEH-001/002/011; REQ-018; AC-001/002/003/021 | Markdown capability/action rendering, compact inline anchors, authored labels, source/code fidelity, keyboard contract | Nuxt Vitest focused/combined/changed-chain | Durable | Pass | `api-e2e-r4-focused.log` (3 files/23 tests); `api-e2e-r4-combined.log`; `api-e2e-r4-broad.log`. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:89:| Requirement and acceptance-criteria proof | 84% | 84% | 0 | Current policy/action/renderer/no-read tests cover invalid components, complete dotted names, compact inline anchors, strip Nodes behavior, route negatives, mobile/viewer regressions, and native validator. | Live Event Monitor action/passive/viewer, phone-first, packaged Electron/media, and Windows acceptance paths are not direct. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:98:- Overall final confidence: `85%`.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:100:- Confidence change produced by broader validation: Current source live API and browser bootstrap were refreshed; compact inline and strip-mode tests were directly rerun. No critical authenticated Event Monitor/mobile/package/platform path became reachable.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:125:| Validate compact inline action/strip Nodes | Native compact anchor and visible gated Nodes SVG are rendered with stable semantics | Direct durable tests passed; live Event Monitor/strip DOM was not mounted (`/agents` is desktop-expanded) | `api-e2e-r4-focused.log`, `api-e2e-r4-combined.log`, browser observations | Pass (durable only) |
+tickets/event-monitor-absolute-path-file-preview/handoff-summary.md:5:- Delivery status: **Ready for user-led verification; finalization/release held**.
+tickets/event-monitor-absolute-path-file-preview/handoff-summary.md:14:- Event Monitor absolute-path actions reject incomplete or placeholder components `.`, `..`, `...`, and Unicode `…`; complete dotted filenames remain eligible and source-faithful.
+tickets/event-monitor-absolute-path-file-preview/handoff-summary.md:15:- Supported Event Monitor actions are compact inline clickable native links, not bulky bordered buttons. Delegated click/Enter/Space activation, focus metadata, localization, and fenced-code copy/source boundaries remain intact.
+tickets/event-monitor-absolute-path-file-preview/handoff-summary.md:23:- API/E2E Round 4: **Blocked**, 85% confidence. Direct repository, server, live REST, shell bootstrap, Electron validator/TypeScript, and guard evidence passed; no implementation failure was observed.
+tickets/event-monitor-absolute-path-file-preview/handoff-summary.md:42:Result: **Build completed**. The artifact includes the incomplete-path rejection, inline-link, and strip-mode Nodes fixes from current source.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:8:- API/E2E Round 4: **Blocked at 85%**. No clean API/E2E Pass is claimed.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:10:- Repository finalization, release, publication, deployment, and cleanup remain held until explicit user verification.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:16:- Current user-visible fixes included: reject `.`, `..`, `...`, and `…` path components; compact inline Event Monitor links; strip-mode Nodes SVG.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:85:- API/E2E: Blocked at 85%; authoritative report `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/done/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md`.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:103:**Current Electron artifact rebuilt successfully and is ready for user-led verification. API/E2E remains Blocked at 85%; finalization, archival, release, publication, deployment, and cleanup remain held.**
+FINAL_SANITY=PASS

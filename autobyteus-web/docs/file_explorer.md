@@ -144,6 +144,16 @@ audio, video, PDF, CSV, and Excel content. Failure states stay in the normal
 Files/viewer status surface and do not navigate the application or rewrite the
 original Event Monitor content.
 
+Incomplete placeholder components (`.`, `..`, `...`, and `…`) are rejected
+before a preview action is created, including on POSIX and Windows paths.
+Complete dotted filenames remain valid. Supported actions use compact inline
+clickable links showing the generated file label/basename while preserving
+authored Markdown labels, with the existing delegated click/Enter/Space behavior
+and non-visible accessibility metadata; fenced code controls stay outside the
+copied code text. The left navigation strip's
+capability-gated Nodes item uses the existing nodes-network SVG and continues to
+route to `/nodes`.
+
 Action eligibility and `determineFileType()` use the shared
 `utils/fileExplorer/fileTypePolicy.ts` allowlist so the Event Monitor cannot
 offer a preview action for a type that the shared viewer cannot render.

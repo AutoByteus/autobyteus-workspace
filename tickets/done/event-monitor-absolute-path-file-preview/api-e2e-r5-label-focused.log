@@ -1,0 +1,20 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useMarkdownSegments.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+···············
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  16:35:28
+   Duration  5.02s (transform 2.83s, setup 8.66s, collect 80ms, tests 97ms, environment 368ms, prepare 306ms)
+

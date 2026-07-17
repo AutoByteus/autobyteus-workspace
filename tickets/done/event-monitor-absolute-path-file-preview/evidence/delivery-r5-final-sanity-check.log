@@ -1,0 +1,10 @@
+Delivery Electron rebuild final sanity check
+2026-07-17T15:02:20Z
+HEAD=b59c7668637efdb9e910c3c8c0ff91466198e8f8
+BASE=75a4c97f26d1c33152a97940938124bf271e2653
+ARTIFACTS
+-rw-r--r--@ 1 normy  staff   383M Jul 17 16:55 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.16.dmg
+-rw-r--r--@ 1 normy  staff   379M Jul 17 16:57 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.16.zip
+40a0d3c3a1af39e52189f5b4c0520cdf23fdcbdf17d6ad6a433e3bc4c290a8d2  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.16.dmg
+5a55ba22b9479bed01319da76def97e5ff552b1d1a6fb40ad4ca3db646aea3be  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.16.zip
+FINAL_SANITY=PASS
