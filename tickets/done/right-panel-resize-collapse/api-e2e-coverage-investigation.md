@@ -2,13 +2,13 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/code-review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/code-review-report.md`
 - Current Investigation Round: `1`
 - Trigger: Implementation source review passed for commit `3fef8ad9c`; downstream API/E2E validation requested.
 - Prior Investigation Reviewed: `N/A`
@@ -46,7 +46,7 @@ The reviewed change must preserve a user-owned left 50px strip while honoring a 
 
 ## Project Execution Discovery
 
-- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse`
+- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Project type and runtime stack: Nuxt 3 / Vue 3 / Vitest / Vue Test Utils / Playwright Core browser probe; Electron shell exists but is not changed.
 - Conflicting, missing, or unclear instructions: `vue-tsc` is not installed in `autobyteus-web`; browser probe requires a separately running frontend target and a discoverable Chrome/Chromium executable.
 - Required environment variables or secrets available: `N/A` for repository tests; no secret or account needed for local workspace fixture.

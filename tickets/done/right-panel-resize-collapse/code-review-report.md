@@ -3,21 +3,21 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/requirements.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/requirements.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
 - Current Review Round: `2`
 - Trigger: Bounded AC-007 implementation rework handoff for commit `6cdbc5e76`
 - Prior Review Round Reviewed: `1`
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/implementation-handoff.md`
-- Coverage Investigation Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/implementation-handoff.md`
+- Coverage Investigation Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/api-e2e-execution-coverage-report.md`
 - Failing Scenario IDs: `E2E-RPC-008 / AC-007` was previously unproven because the requirement was added after the original execution; it is now implemented and requires revalidation.
 - Exact Failing Commands / Execution Mode: Prior browser/full-suite results are recorded upstream; this review reran the focused six-file Vitest command, not the browser workflow.
-- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-summary.json`
+- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-summary.json`
 
 ## Round History
 
@@ -36,12 +36,12 @@
 
 - Changed implementation and behavior reviewed: AC-007 / BE-006 drawer scrim standardization, plus confirmation that the prior resize-precedence implementation remains intact.
 - Files / areas reviewed:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/default.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default-drawer.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/docs/workspace_layout.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/default.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/__tests__/default.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/__tests__/default-drawer.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/workspace_layout.md`
   - Prior changed policy/layout source and tests, verified unchanged relative to the reviewed resize implementation.
 - Explicit exclusions: API/E2E execution and browser visual validation after AC-007, full-suite failure-origin ownership, Electron packaging/IPC, and delivery finalization.
 
@@ -120,7 +120,7 @@ Changed test files are excluded from implementation-source size thresholds. The 
 
 - Docs impact: `Yes`
 - Why: The durable workspace layout contract now records the shared lighter scrim behavior, and `autobyteus-web/docs/workspace_layout.md` was synchronized in this implementation rework.
-- Files or areas likely affected: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/docs/workspace_layout.md`; no further implementation-doc correction is required by this review.
+- Files or areas likely affected: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/workspace_layout.md`; no further implementation-doc correction is required by this review.
 
 ## Material Premise Validation (Only When Needed)
 

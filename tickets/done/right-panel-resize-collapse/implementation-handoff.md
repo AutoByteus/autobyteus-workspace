@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-spec.md`
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/design-spec.md`
+- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/design-review-report.md`
 
 ## What Changed
 
@@ -30,15 +30,15 @@
 
 ## Key Files Or Areas
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/default.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default-drawer.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/docs/workspace_layout.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/default.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/__tests__/default.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/__tests__/default-drawer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/workspace_layout.md`
 
 ## Important Assumptions
 
@@ -81,7 +81,7 @@
 
 ## Environment Or Dependency Notes
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/right-panel-resize-collapse`
 - Base: `origin/personal` at `894edc01d`
 - Existing dependencies and Nuxt test preparation were already available from investigation setup.

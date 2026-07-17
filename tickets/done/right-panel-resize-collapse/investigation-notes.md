@@ -21,10 +21,10 @@ The user reports this supported desktop journey: maximize the application, colla
 ## Environment Discovery / Bootstrap Context
 
 - Project Type: `Git`
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse`
 - Current Branch: `codex/right-panel-resize-collapse`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin personal` succeeded before worktree creation.
 - Task Branch: `codex/right-panel-resize-collapse`
@@ -37,14 +37,14 @@ The user reports this supported desktop journey: maximize the application, colla
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/ui-ux-spec.md` | User journey and state-transition contract for docked, strip, and drawer presentations | Distinguishes user-sized resize, explicit collapse/redock, responsive yield, and lighter contextual scrims; includes supplied screenshot references | Requirements, design spec | R-001–R-006; AC-001–AC-007 | `Requirements-ready` | Intended behavior; approval follows the user request | Keep synchronized if architecture review changes the state contract |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/ui-ux-spec.md` | User journey and state-transition contract for docked, strip, and drawer presentations | Distinguishes user-sized resize, explicit collapse/redock, responsive yield, and lighter contextual scrims; includes supplied screenshot references | Requirements, design spec | R-001–R-006; AC-001–AC-007 | `Requirements-ready` | Intended behavior; approval follows the user request | Keep synchronized if architecture review changes the state contract |
 
 ## Source Log
 
 | Date | Source Type | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
 | 2026-07-17 | Command | `git fetch origin personal` | Refresh the tracked base before task isolation | `origin/personal` refreshed successfully | No |
-| 2026-07-17 | Command | `git worktree add -b codex/right-panel-resize-collapse /Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse origin/personal` | Establish isolated task workspace | Dedicated branch/worktree created from `894edc01d` | No |
+| 2026-07-17 | Command | `git worktree add -b codex/right-panel-resize-collapse /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Establish isolated task workspace | Dedicated branch/worktree created from `894edc01d` | No |
 | 2026-07-17 | Code | `autobyteus-web/composables/useRightPanel.ts` | Trace right-panel visibility, width, and drag state | `initDragRightPanel()` marks `rightPanelResizeIntent` as `user-sized` and stores preferred width; `rightPanelWidth` is an actual clamped display width | No |
 | 2026-07-17 | Code | `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts` | Trace policy inputs | Production resolver receives `rightPanelWidth.value` plus the `user-sized` intent; left/right preferences are derived from the panel stores | No |
 | 2026-07-17 | Code | `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts:378-448` | Inspect presentation ordering | The `leftIsUserHidden` branch runs before the user-sized branch and only attempts a full 480px center dock; if it fails, it selects a right strip using the 200px fallback. The later user-sized dock branch is unreachable for this left-collapsed path | Yes: design a reorder/specialized candidate path |

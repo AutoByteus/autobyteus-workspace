@@ -4,11 +4,11 @@
 
 - Review Round: `1`
 - Trigger: Successful AC-007 API/E2E revalidation for commit `6cdbc5e76`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/requirements.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/api-e2e-coverage-investigation.md`
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/api-e2e-execution-coverage-report.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/requirements.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/api-e2e-coverage-investigation.md`
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/api-e2e-execution-coverage-report.md`
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `95.3%`; all critical AC-001–AC-007 directly proven and no applicable category below 90%.
 - Prior unresolved test-review findings rechecked: `N/A — initial test-code review round.`
@@ -17,9 +17,9 @@
 
 | Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default.spec.ts` | Updated | BE-006 / R-006 / AC-007 | Source-level contract checks for the shared default-layout left scrim | Asserts the exact `bg-black/30` class and removes the obsolete `bg-opacity-75` contract. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default-drawer.spec.ts` | Updated | BE-006 / R-006 / AC-007 | Mounted left drawer lifecycle and rendered backdrop | Asserts rendered class/z-index while retaining focus, dismissal, and layout lifecycle coverage. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts` | Updated | BE-006 / R-006 / AC-007 | Mounted right drawer lifecycle and rendered backdrop | Asserts rendered class/z-index while retaining Escape, focus return, backdrop dismissal, and opposite-strip geometry coverage. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/__tests__/default.spec.ts` | Updated | BE-006 / R-006 / AC-007 | Source-level contract checks for the shared default-layout left scrim | Asserts the exact `bg-black/30` class and removes the obsolete `bg-opacity-75` contract. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/__tests__/default-drawer.spec.ts` | Updated | BE-006 / R-006 / AC-007 | Mounted left drawer lifecycle and rendered backdrop | Asserts rendered class/z-index while retaining focus, dismissal, and layout lifecycle coverage. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts` | Updated | BE-006 / R-006 / AC-007 | Mounted right drawer lifecycle and rendered backdrop | Asserts rendered class/z-index while retaining Escape, focus return, backdrop dismissal, and opposite-strip geometry coverage. |
 
 - No durable test file changed: `No`
 

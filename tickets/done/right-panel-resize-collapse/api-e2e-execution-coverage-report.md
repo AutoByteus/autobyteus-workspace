@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/tickets/done/right-panel-resize-collapse/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/ui-ux-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/right-panel-resize-collapse/api-e2e-coverage-investigation.md`
 - Current Execution Round: `1`
 - Trigger: Coverage investigation completed after implementation source review pass for commit `3fef8ad9c`.
 - Prior Round Reviewed: `N/A`
@@ -54,7 +54,7 @@
 | --- | --- | --- | --- | --- | --- |
 | 1 | `pnpm -C autobyteus-web exec vitest run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts composables/__tests__/useRightPanel.spec.ts --reporter=dot` | Worktree root; Nuxt prepared | Direct changed policy/component/composable behavior | Pass | 3 files, 50 tests passed; KaTeX/server-init warnings only. |
 | 2 | `pnpm -C autobyteus-web test:nuxt -- --run --reporter=dot` | Worktree root | Broad frontend regression | Fail (unrelated) | 361 passed, 4 failed, 1 skipped; exact failures recorded in coverage investigation. |
-| 3 | `pnpm exec node tests/e2e/workspace-responsive-probe.mjs --base-url http://127.0.0.1:13002 --output-dir tickets/done/right-panel-resize-collapse/probes/api-e2e --screenshots=failures --fail-on-console-error` | `autobyteus-web`, Nuxt dev server on 13002 | Live responsive matrix and drawer/resize journeys | Fail (environment) | JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json`; no layout assertion failures, but backend `localhost:8000` unavailable and application fixture absent. |
+| 3 | `pnpm exec node tests/e2e/workspace-responsive-probe.mjs --base-url http://127.0.0.1:13002 --output-dir tickets/done/right-panel-resize-collapse/probes/api-e2e --screenshots=failures --fail-on-console-error` | `autobyteus-web`, Nuxt dev server on 13002 | Live responsive matrix and drawer/resize journeys | Fail (environment) | JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json`; no layout assertion failures, but backend `localhost:8000` unavailable and application fixture absent. |
 | 4 | Temporary Playwright Chromium journey: `/tmp/right-panel-journey.mjs` | Nuxt dev server 13002; Chrome headless 1280x800 | Exact left collapse -> right resize sequence | Pass | Initial 320/505/450; after collapse left strip; after drag center 205/right 1023; right panel visible; right strip/drawer absent. |
 | 5 | `git diff --check` | Worktree root | Patch hygiene | Pass | No whitespace errors. |
 | 6 | `pnpm -C autobyteus-web exec vue-tsc --noEmit` | Worktree root | Typecheck | Blocked / unavailable | `vue-tsc` is not installed in package, as reported upstream. |
@@ -136,9 +136,9 @@ None.
 
 | Artifact Path | Type / Purpose | Retained / Temporary | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json` | Browser matrix machine-readable evidence | Retained | Includes failures and per-viewport state. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-summary.json` | Browser matrix summary | Retained | Summary and failure list. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/*.png` | Browser screenshots | Retained | Failure screenshots from probe run. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-results.json` | Browser matrix machine-readable evidence | Retained | Includes failures and per-viewport state. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/workspace-responsive-probe-summary.json` | Browser matrix summary | Retained | Summary and failure list. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/*.png` | Browser screenshots | Retained | Failure screenshots from probe run. |
 | `/tmp/right-panel-journey.mjs`, `/tmp/right-panel-journey.png` | Focused live probe | Temporary | Not repository-resident; method and output summarized here. |
 
 ## Dependencies Mocked Or Emulated
@@ -224,7 +224,7 @@ After the original execution completed, the upstream requirements/design/UI-UX a
 | Order | Command | Working Directory / Configuration | Boundary / Scenario | Result | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | 1 | `pnpm -C autobyteus-web exec vitest run utils/layout/__tests__/responsiveLayoutPolicy.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts composables/__tests__/useRightPanel.spec.ts layouts/__tests__/default.spec.ts layouts/__tests__/default-drawer.spec.ts components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts --reporter=dot` | Worktree root | BE-001–BE-006 policy, renderer, and scrim owners | Pass | 6 files, 65 tests. |
-| 2 | `node /tmp/right-panel-ac007.mjs` | Nuxt dev server `127.0.0.1:13002`; Chrome headless; 700x700 | E2E-RPC-008A/B live scrim and lifecycle | Pass | Retained JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/ac007-browser-results.json`; screenshot `/tmp/right-panel-ac007.png`. |
+| 2 | `node /tmp/right-panel-ac007.mjs` | Nuxt dev server `127.0.0.1:13002`; Chrome headless; 700x700 | E2E-RPC-008A/B live scrim and lifecycle | Pass | Retained JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/ac007-browser-results.json`; screenshot `/tmp/right-panel-ac007.png`. |
 | 3 | `git diff --check` | Worktree root | Patch hygiene | Pass | No whitespace errors. |
 
 ### Final Confidence Scorecard — Round 2
@@ -248,9 +248,9 @@ After the original execution completed, the upstream requirements/design/UI-UX a
 
 - Repository-resident durable coverage changed upstream this round: `Yes`.
 - Paths added/updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/layouts/__tests__/default-drawer.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/__tests__/default.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/layouts/__tests__/default-drawer.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts`
 - Paths removed: None.
 - Added/updated paths attached for proportional test-code review: `Yes`.
 
@@ -258,7 +258,7 @@ After the original execution completed, the upstream requirements/design/UI-UX a
 
 | Artifact Path | Type / Purpose | Retained / Temporary | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resize-collapse/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/ac007-browser-results.json` | AC-007 machine-readable browser result | Retained | Both computed scrims and lifecycle observations. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/right-panel-resize-collapse/probes/api-e2e/ac007-browser-results.json` | AC-007 machine-readable browser result | Retained | Both computed scrims and lifecycle observations. |
 | `/tmp/right-panel-ac007.mjs` | Focused browser harness | Temporary | No repository source change; method recorded above. |
 | `/tmp/right-panel-ac007.png` | Supporting screenshot | Temporary | Live drawer state capture. |
 
