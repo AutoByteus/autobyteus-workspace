@@ -142,9 +142,13 @@ export const useMarkdownSegments = (
     const registerFileAction = (
       candidate: { rawCandidate: string; normalizedCandidate: string },
       sourceKind: AbsoluteFilePathAction['sourceKind'],
-    ): string => {
+    ): string | null => {
       const id = `event-monitor-file-action-${nextFileActionId++}`;
-      fileActions[id] = createAbsoluteFilePathAction(id, candidate, sourceKind);
+      const action = createAbsoluteFilePathAction(id, candidate, sourceKind);
+      if (!action) {
+        return null;
+      }
+      fileActions[id] = action;
       return id;
     };
 
@@ -193,13 +197,16 @@ export const useMarkdownSegments = (
           const href = child.attrGet?.('href') || '';
           const normalizedCandidate = normalizeMarkdownLinkPath(href);
           if (normalizedCandidate) {
-            child.meta = {
-              ...(child.meta || {}),
-              eventMonitorFileActionId: registerFileAction(
-                { rawCandidate: href.trim(), normalizedCandidate },
-                'markdown-link',
-              ),
-            };
+            const actionId = registerFileAction(
+              { rawCandidate: href.trim(), normalizedCandidate },
+              'markdown-link',
+            );
+            if (actionId) {
+              child.meta = {
+                ...(child.meta || {}),
+                eventMonitorFileActionId: actionId,
+              };
+            }
           }
           linkDepth += 1;
           decorated.push(child);
@@ -215,13 +222,16 @@ export const useMarkdownSegments = (
         if (child.type === 'code_inline' && linkDepth === 0) {
           const normalizedCandidate = normalizeAbsoluteFilePath(child.content || '');
           if (normalizedCandidate) {
-            child.meta = {
-              ...(child.meta || {}),
-              eventMonitorFileActionId: registerFileAction(
-                { rawCandidate: child.content.trim(), normalizedCandidate },
-                'inline-code',
-              ),
-            };
+            const actionId = registerFileAction(
+              { rawCandidate: child.content.trim(), normalizedCandidate },
+              'inline-code',
+            );
+            if (actionId) {
+              child.meta = {
+                ...(child.meta || {}),
+                eventMonitorFileActionId: actionId,
+              };
+            }
           }
           decorated.push(child);
           continue;
@@ -238,12 +248,20 @@ export const useMarkdownSegments = (
           continue;
         }
 
+        const supportedCandidates = candidates.flatMap((candidate) => {
+          const actionId = registerFileAction(candidate, 'prose');
+          return actionId ? [{ candidate, actionId }] : [];
+        });
+        if (!supportedCandidates.length) {
+          decorated.push(child);
+          continue;
+        }
+
         let cursor = 0;
-        for (const candidate of candidates) {
+        for (const { candidate, actionId } of supportedCandidates) {
           if (candidate.start > cursor) {
             decorated.push({ ...child, type: 'text', content: child.content.slice(cursor, candidate.start) });
           }
-          const actionId = registerFileAction(candidate, 'prose');
           decorated.push({
             ...child,
             type: 'event_monitor_file_action_text',
@@ -268,7 +286,7 @@ export const useMarkdownSegments = (
         if (token.type === 'fence') {
           const actionIds = findAbsoluteFilePathCodeCandidates(token.content || '').map((candidate) => (
             registerFileAction(candidate, 'fenced-code')
-          ));
+          )).filter((actionId): actionId is string => Boolean(actionId));
           if (actionIds.length) {
             token.meta = {
               ...(token.meta || {}),

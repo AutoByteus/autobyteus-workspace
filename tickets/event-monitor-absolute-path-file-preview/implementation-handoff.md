@@ -7,7 +7,7 @@
 - Branch: `codex/event-monitor-absolute-path-file-preview`
 - Base: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
 - Architecture review: **Pass, round 2**
-- Implementation status: **Local Fix complete; resubmitted for implementation source review**
+- Implementation status: **User-verification local fix complete; resubmission required for implementation source review**
 
 ## Cumulative Reviewed Solution Package
 
@@ -18,6 +18,7 @@
 - Reference screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png`
 - Architecture review: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/design-review-report.md`
 - Implementation source review round 1: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/code-review-report.md`
+- User verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md`
 - This implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/implementation-handoff.md`
 
 ## What Changed
@@ -39,16 +40,23 @@
 - CR-F-004: Mobile mismatched requests are consumed, team focus changes clear pending requests, async completion rechecks revision/context/workspace before committing selection, and in-flight state resets on every exit/completion path. Added context-switch and async stale-request tests.
 - CR-F-005: Action button labels are supplied by the localized render-time callback rather than an English HTML placeholder. Electron validation returns stable categories, and File Explorer maps those categories to localized failure messages instead of showing native OS errors.
 
+### Bounded local fix after user Electron verification
+
+- Added the pure `determineFilePreviewType()` policy in `utils/fileExplorer/fileTypePolicy.ts`, with the shared FileViewer family allowlist and deliberate `Unsupported` result for unknown extensions, archives, installers, application bundles, and binary artifacts.
+- Routed `determineFileType()` through the shared policy and retained the existing FileViewer `Unsupported` state for non-Event-Monitor callers. Unsupported routing does not call text IPC, construct a local-file URL, or request workspace content.
+- Gated `createAbsoluteFilePathAction()` and all Markdown token action registration on the shared policy. Supported descriptors now carry `previewType`; unsupported candidates remain source-faithful text/code with no action ID/control. Generic Markdown remains default-off.
+- Added regressions for `.dmg`, `.zip`, installers, archives, binary/unknown extensions, supported text/media families, exact fenced-code preservation, default-off rendering, and no-read/no-URL/no-workspace-fetch routing.
+
 ## Behavior Traceability
 
 | Behavior | Implemented path | Outcome |
 | --- | --- | --- |
-| BEH-001 — Event-Monitor-only absolute actions and source preservation | `utils/eventMonitorFilePaths/absoluteFilePathAction.ts`; `composables/useMarkdownSegments.ts`; `MarkdownRenderer.vue`; segment/feed capability transport | Opt-in only. POSIX/Windows links, prose, inline code, and fences receive explicit keyboard-accessible actions; literal code/text remains copyable. |
+| BEH-001 — Event-Monitor-only absolute actions and source preservation | `utils/eventMonitorFilePaths/absoluteFilePathAction.ts`; `utils/fileExplorer/fileTypePolicy.ts`; `composables/useMarkdownSegments.ts`; `MarkdownRenderer.vue`; segment/feed capability transport | Opt-in only. Supported POSIX/Windows links, prose, inline code, and fences receive explicit keyboard-accessible actions; unsupported archive/installer/binary candidates remain literal copyable text/code. |
 | BEH-002 — Raw link destination and ordinary-link preservation | Raw `link_open` token metadata in `useMarkdownSegments`; ID lookup/delegation in `MarkdownRenderer.vue` | File actions never inspect browser-resolved `anchor.href`; HTTP(S) remains the existing external-link path; relative/non-file links remain ordinary Markdown. |
-| BEH-003 — Shared transient read-only preview and dedupe | `fileExplorerContentActions.ts`; `fileExplorerState.ts`; `FileExplorerTabs.vue`; `FileViewer.vue` | Existing path tab is reused/selected; Event Monitor intent forces preview, hides edit controls, and uses shared text/media/PDF/spreadsheet adapters. |
+| BEH-003 — Shared transient read-only preview and dedupe | `fileExplorerContentActions.ts`; `fileExplorerState.ts`; `fileTypePolicy.ts`; `FileExplorerTabs.vue`; `FileViewer.vue` | Existing supported path tabs are reused/selected; Event Monitor intent forces preview, hides edit controls, and uses shared text/media/PDF/spreadsheet adapters. Unsupported candidates never enter this Event Monitor path. |
 | BEH-004 — Desktop idempotent Files selection | `useEventMonitorFilePreview.ts`; `useRightPanel.ts`; `useRightSideTabs.ts`; active tab focus marker in `FileExplorerTabs.vue` | `openRightPanel()` sets visible rather than toggling; Files is selected after the preview request; no overlay or focus trap is created. |
 | BEH-005 — Phone-first Files request/inline presentation | `types/mobileWork.ts`; `mobileWorkStore.ts`; `MobileFiles.vue`; `MobileFileViewer.vue` | Matching revision/context/workspace request selects the existing Mobile Files preview inline and read-only; stale/mismatched requests do nothing. |
-| BEH-006 — Trusted embedded local boundary | `electron/localFileValidation.ts`; `electron/main.ts` | Text IPC and local media protocol reject non-absolute, missing, unreadable, directory, and invalid paths before bytes are returned. |
+| BEH-006 — Trusted embedded local boundary | `fileTypePolicy.ts`; `fileExplorerContentActions.ts`; `electron/localFileValidation.ts`; `electron/main.ts` | Unsupported types stop before local text/media routing; supported types still reach the trusted boundary, which rejects non-absolute, missing, unreadable, directory, and invalid paths before bytes are returned. |
 | BEH-007 — Active-workspace-only remote/mobile mapping | `utils/fileExplorer/absoluteWorkspacePathMapping.ts`; `useEventMonitorFilePreview.ts`; existing workspace-relative File Explorer routes | Remote/mobile paths outside the active/context workspace return localized host-availability status; no arbitrary absolute-path endpoint is introduced. |
 | BEH-008 — References/artifacts remain separate | No artifact/reference/persistence calls in the action or preview path | Incidental Event Monitor paths are transient File Explorer state only; structured Message references and Agent artifacts are untouched. |
 
@@ -65,6 +73,7 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/utils/fileExplorer/absoluteWorkspacePathMapping.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/utils/fileExplorer/localFileCapability.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/utils/fileExplorer/localFileError.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/utils/fileExplorer/fileTypePolicy.ts`
 - Desktop preview and shell:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/stores/fileExplorerContentActions.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/stores/fileExplorerState.ts`
@@ -90,6 +99,7 @@
 - `autobyteus-web/electron/__tests__/localFileValidation.spec.ts`
 - `autobyteus-web/stores/__tests__/mobileWorkStore.spec.ts`
 - `autobyteus-web/stores/__tests__/fileExplorerNodeRouting.spec.ts`
+- `autobyteus-web/utils/fileExplorer/__tests__/fileUtils.test.ts`
 - `autobyteus-web/components/mobile/__tests__/MobileFiles.spec.ts`
 
 ## Implementation-Scoped Validation
@@ -120,8 +130,14 @@ All checks below were run in this task worktree before the temporary dependency 
   - Passed.
 - ✅ `pnpm --dir autobyteus-web exec tsc -p electron/tsconfig.json --noEmit --pretty false`
   - Passed.
+- ✅ User-verification unsupported-preview regression suite:
+  - `pnpm --dir autobyteus-web exec vitest run utils/fileExplorer/__tests__/fileUtils.test.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts --reporter=dot`
+  - Result: `4 files, 39 tests passed`.
+- ✅ Unsupported policy source checks:
+  - `git diff --check` on changed implementation/test paths passed.
+  - The pure policy classifies `.dmg`, `.zip`, installers, application bundles, and unknown binary extensions as `Unsupported`; supported text/media families remain action-eligible.
 - ⚠️ `pnpm --dir autobyteus-web exec nuxi typecheck`
-  - Repository-wide baseline remains non-gating; after the local fix, no changed-scope diagnostics remained when filtering the output for this ticket's source/tests.
+  - Attempted after the local fix; repository-wide process exceeded the Node heap limit before diagnostics were emitted. This is not reported as a passing repository typecheck; focused Vitest compilation and execution passed.
 - ⚠️ `pnpm --dir autobyteus-web exec tsc --noEmit --pretty false`
   - Attempted but non-gating: the repository's ordinary TypeScript invocation emitted a large pre-existing baseline set involving generated Nuxt/Vue module declarations and temporary dependency/type resolution. No changed-production-source-specific error remained after filtering the output during implementation, but this is not reported as a passing repository typecheck.
 
@@ -160,6 +176,6 @@ API/E2E owns independent executable coverage and environment validation after so
 
 ## Downstream Handoff Status
 
-- `code_reviewer`: **resubmission required — implementation source/structural review after CR-F-001 through CR-F-005 fixes**.
+- `code_reviewer`: **resubmission required — implementation source/structural review after the user-verification unsupported-preview fix and CR-F-001 through CR-F-005 fixes**.
 - `api_e2e_engineer`: **not yet run and no sign-off claimed**; begin only after source review passes.
-- `delivery_engineer`: **not yet applicable**; requires API/E2E pass and proportional test-code review.
+- `delivery_engineer`: **held; do not finalize or rebuild the delivery handoff until the user verifies the rebuilt Electron artifact**.

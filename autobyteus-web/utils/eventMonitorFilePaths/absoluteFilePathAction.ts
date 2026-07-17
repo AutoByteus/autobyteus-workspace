@@ -1,3 +1,8 @@
+import {
+  determineFilePreviewType,
+  type SupportedFileDataType,
+} from '~/utils/fileExplorer/fileTypePolicy';
+
 export type AbsoluteFilePathSourceKind =
   | 'markdown-link'
   | 'prose'
@@ -10,6 +15,7 @@ export interface AbsoluteFilePathAction {
   normalizedCandidate: string;
   sourceKind: AbsoluteFilePathSourceKind;
   displayLabel: string;
+  previewType: SupportedFileDataType;
 }
 
 export interface AbsoluteFilePathCandidate {
@@ -128,12 +134,18 @@ export function createAbsoluteFilePathAction(
   id: string,
   candidate: { rawCandidate: string; normalizedCandidate: string },
   sourceKind: AbsoluteFilePathSourceKind,
-): AbsoluteFilePathAction {
+): AbsoluteFilePathAction | null {
+  const previewType = determineFilePreviewType(candidate.normalizedCandidate);
+  if (previewType === 'Unsupported') {
+    return null;
+  }
+
   return {
     id,
     rawCandidate: candidate.rawCandidate,
     normalizedCandidate: candidate.normalizedCandidate,
     sourceKind,
     displayLabel: displayNameForAbsoluteFilePath(candidate.normalizedCandidate),
+    previewType,
   };
 }

@@ -120,4 +120,18 @@ describe('fileExplorerStore node routing behavior', () => {
     );
     expect(wsState.openFiles[0].url?.startsWith('local-file://')).toBe(false);
   });
+
+  it('does not read, construct a URL, or fetch workspace content for Unsupported files', async () => {
+    windowNodeContextStoreMock.isEmbeddedWindow = true;
+    determineFileTypeMock.mockResolvedValue('Unsupported');
+    const store = useFileExplorerStore();
+
+    await store.openFile('/tmp/archive.zip', 'ws-1');
+
+    const wsState = store._getOrCreateWorkspaceState('ws-1');
+    expect(wsState.openFiles[0].type).toBe('Unsupported');
+    expect(wsState.openFiles[0].url).toBeNull();
+    expect(window.electronAPI.readLocalTextFile).not.toHaveBeenCalled();
+    expect(apolloClientMock.query).not.toHaveBeenCalled();
+  });
 });

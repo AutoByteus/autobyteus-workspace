@@ -1,5 +1,6 @@
 import { TreeNode } from '~/utils/fileExplorer/TreeNode'
 import type { FileSystemChangeEvent, AddChange, DeleteChange, RenameChange, MoveChange, ModifyChange } from '~/types/fileSystemChangeTypes'
+import { determineFilePreviewType, type FileDataType } from '~/utils/fileExplorer/fileTypePolicy'
 
 export function getFilePathsFromFolder(node: TreeNode): string[] {
   const filePaths: string[] = []
@@ -14,42 +15,8 @@ export function getFilePathsFromFolder(node: TreeNode): string[] {
   return filePaths
 }
 
-export async function determineFileType(filePath: string): Promise<'Text' | 'Image' | 'Audio' | 'Video' | 'Excel' | 'PDF'> {
-  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
-  const audioExtensions = ['.mp3', '.wav', '.m4a', '.flac', '.ogg', '.aac'];
-  const videoExtensions = ['.mp4', '.mov', '.avi', '.mkv', '.webm'];
-  const excelExtensions = ['.xlsx', '.xls', '.xlsm', '.csv'];
-  const lowercasePath = filePath.toLowerCase();
-  
-  for (const ext of imageExtensions) {
-    if (lowercasePath.endsWith(ext)) {
-      return 'Image';
-    }
-  }
-
-  for (const ext of audioExtensions) {
-    if (lowercasePath.endsWith(ext)) {
-      return 'Audio';
-    }
-  }
-
-  for (const ext of videoExtensions) {
-    if (lowercasePath.endsWith(ext)) {
-      return 'Video';
-    }
-  }
-
-  for (const ext of excelExtensions) {
-    if (lowercasePath.endsWith(ext)) {
-      return 'Excel';
-    }
-  }
-
-  if (lowercasePath.endsWith('.pdf')) {
-    return 'PDF';
-  }
-  
-  return 'Text';
+export async function determineFileType(filePath: string): Promise<FileDataType> {
+  return determineFilePreviewType(filePath)
 }
 
 export function findNodeById(root: TreeNode, id: string): TreeNode | null {

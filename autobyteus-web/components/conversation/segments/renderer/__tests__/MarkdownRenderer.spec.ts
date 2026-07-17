@@ -109,6 +109,23 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.findAll('.event-monitor-file-action')[0].text()).toContain('Open');
   });
 
+  it('keeps unsupported archive, installer, and binary paths source-faithful without actions', async () => {
+    const source = '/tmp/archive.zip /tmp/installer.dmg /tmp/setup.pkg /tmp/payload.bin /tmp/unknown.custom';
+    const fencedSource = '```text\n/tmp/archive.tar.gz\n/tmp/application.app\n```';
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: `${source}\n\n${fencedSource}`,
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    expect(wrapper.findAll('[data-event-monitor-file-action-id]')).toHaveLength(0);
+    expect(wrapper.text()).toContain(source);
+    expect(wrapper.find('code').text()).toBe('/tmp/archive.tar.gz\n/tmp/application.app');
+  });
+
   it('should render MermaidDiagram component for mermaid blocks', () => {
     // We rely on useMarkdownSegments to parse this. 
     // Since useMarkdownSegments is a real composable (not mocked here), 

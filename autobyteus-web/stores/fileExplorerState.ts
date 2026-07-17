@@ -1,8 +1,10 @@
 import { TreeNode } from '~/utils/fileExplorer/TreeNode'
 import { createNodeIdToNodeDictionary } from '~/utils/fileExplorer/fileUtils'
 import type { RecentStructuralChangeEcho } from '~/utils/fileExplorer/stateSync'
+import type { FileDataType } from '~/utils/fileExplorer/fileTypePolicy'
 
-export type FileDataType = 'Text' | 'Image' | 'Audio' | 'Video' | 'Excel' | 'PDF' | 'Unsupported'
+export type { FileDataType } from '~/utils/fileExplorer/fileTypePolicy'
+
 
 export type FileOpenMode = 'edit' | 'preview'
 
