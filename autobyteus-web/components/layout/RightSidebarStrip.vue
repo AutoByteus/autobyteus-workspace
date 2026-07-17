@@ -32,10 +32,10 @@ import { useRightSideTabs, type TabName } from '~/composables/useRightSideTabs';
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import { rememberDrawerTrigger } from '~/composables/useAccessibleDrawer';
-import type { RightStripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
+import type { StripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
 
 const props = withDefaults(defineProps<{
-  stripBehavior?: RightStripBehavior
+  stripBehavior?: StripBehavior
   stripActivation: StripActivation
 }>(), {
   stripBehavior: 'consuming',
@@ -48,9 +48,9 @@ const emit = defineEmits<{
 
 const { visibleTabs, activeTab, setActiveTab } = useRightSideTabs();
 
-const stripClasses = computed(() => props.stripBehavior === 'overlay'
-  ? 'fixed inset-y-0 right-0 z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4 shadow-lg'
-  : 'relative z-[60] flex h-full w-[50px] flex-col items-center border-l border-gray-200 bg-white py-4');
+const stripClasses = computed(() =>
+  'relative z-[60] flex h-full w-[50px] flex-none flex-col items-center border-l border-gray-200 bg-white py-4',
+);
 
 const selectTab = (tabName: TabName, event: MouseEvent) => {
   setActiveTab(tabName);

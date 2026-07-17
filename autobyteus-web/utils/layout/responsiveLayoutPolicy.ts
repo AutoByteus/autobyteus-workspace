@@ -9,7 +9,7 @@ export type PanelPreference = 'visible' | 'hidden-by-user'
 // layout, never an effective resolver output.
 export type ResponsivePresentation = 'docked' | 'strip'
 export type RightPanelPresentation = 'docked' | 'strip'
-export type RightStripBehavior = 'consuming' | 'overlay'
+export type StripBehavior = 'consuming'
 export type StripActivation = 'redock-panel' | 'open-drawer'
 export type PresentationSource = 'user' | 'responsive'
 export type RightPanelResizeIntent = 'automatic' | 'user-sized'
@@ -50,13 +50,13 @@ export interface ResponsiveSurfaceState {
 
 export interface ResponsiveLeftPanelState extends Omit<ResponsiveSurfaceState, 'presentation'> {
   presentation: 'docked' | 'strip'
-  stripBehavior: RightStripBehavior | null
+  stripBehavior: StripBehavior | null
   stripActivation: StripActivation | null
 }
 
 export interface ResponsiveRightPanelState extends Omit<ResponsiveSurfaceState, 'presentation'> {
   presentation: RightPanelPresentation
-  stripBehavior: RightStripBehavior | null
+  stripBehavior: StripBehavior | null
   stripActivation: StripActivation | null
   resizeIntent: RightPanelResizeIntent
   centerProtectionMode: CenterProtectionMode
@@ -110,25 +110,25 @@ const sanitizePresentationWidth = (
 const leftConsumedWidth = (
   presentation: 'docked' | 'strip',
   preferredWidth: number,
-  stripBehavior: RightStripBehavior | undefined,
+  _stripBehavior: StripBehavior | undefined,
 ): number => {
   if (presentation === 'docked') {
     return preferredWidth
   }
 
-  return stripBehavior === 'overlay' ? 0 : LEFT_PANEL_STRIP_WIDTH_PX
+  return LEFT_PANEL_STRIP_WIDTH_PX
 }
 
 const rightConsumedWidth = (
   presentation: RightPanelPresentation,
   preferredWidth: number,
-  stripBehavior: RightStripBehavior | undefined,
+  _stripBehavior: StripBehavior | undefined,
 ): number => {
   if (presentation === 'docked') {
     return preferredWidth
   }
 
-  return stripBehavior === 'overlay' ? 0 : RIGHT_PANEL_STRIP_WIDTH_PX
+  return RIGHT_PANEL_STRIP_WIDTH_PX
 }
 
 const requiredWidth = (
@@ -175,7 +175,7 @@ const makeLeftPanelState = (
   preference: PanelPreference,
   presentation: 'docked' | 'strip',
   preferredWidth: number,
-  stripBehavior: RightStripBehavior | undefined,
+  stripBehavior: StripBehavior | undefined,
   stripActivation: StripActivation | null,
 ): ResponsiveLeftPanelState => ({
   preference,
@@ -183,7 +183,7 @@ const makeLeftPanelState = (
   presentationSource: sourceFor(preference, presentation),
   consumedWidth: leftConsumedWidth(presentation, preferredWidth, stripBehavior),
   preferredWidth,
-  stripBehavior: presentation === 'strip' ? stripBehavior ?? 'overlay' : null,
+  stripBehavior: presentation === 'strip' ? stripBehavior ?? 'consuming' : null,
   stripActivation,
 })
 
@@ -205,7 +205,7 @@ const makeRightPanelState = (
     candidate.rightStripBehavior,
   ),
   preferredWidth,
-  stripBehavior: candidate.right === 'strip' ? candidate.rightStripBehavior ?? 'overlay' : null,
+  stripBehavior: candidate.right === 'strip' ? candidate.rightStripBehavior ?? 'consuming' : null,
   stripActivation,
   resizeIntent,
   centerProtectionMode,
@@ -316,17 +316,15 @@ const findCandidate = (
   centerMinWidth,
 )) ?? null
 
-const rightStripCandidates = (left: 'docked' | 'strip', leftStripBehavior?: RightStripBehavior): SurfaceCandidate[] => [
+const rightStripCandidates = (left: 'docked' | 'strip', leftStripBehavior?: StripBehavior): SurfaceCandidate[] => [
   { left, leftStripBehavior, right: 'strip', rightStripBehavior: 'consuming' },
-  { left, leftStripBehavior, right: 'strip', rightStripBehavior: 'overlay' },
 ]
 
 const leftStripCandidates = (
   right: RightPanelPresentation,
-  rightStripBehavior?: RightStripBehavior,
+  rightStripBehavior?: StripBehavior,
 ): SurfaceCandidate[] => [
   { left: 'strip', leftStripBehavior: 'consuming', right, rightStripBehavior },
-  { left: 'strip', leftStripBehavior: 'overlay', right, rightStripBehavior },
 ]
 
 export const resolveResponsiveWorkspaceShellState = (
@@ -351,11 +349,11 @@ export const resolveResponsiveWorkspaceShellState = (
   )
   const isNarrow = viewportWidth > 0 && viewportWidth < WORKSPACE_MD_BREAKPOINT_PX
   const isShortHeight = !isNarrow && viewportHeight > 0 && viewportHeight <= WORKSPACE_SHORT_HEIGHT_MAX_PX
-  const responsiveMode: CenterProtectionMode = resizeIntent === 'user-sized'
-    ? 'responsive-yield'
-    : 'automatic'
-
   if (isNarrow) {
+    const narrowCenterMinWidth = viewportWidth < LEFT_PANEL_STRIP_WIDTH_PX + RIGHT_PANEL_STRIP_WIDTH_PX + USER_RESIZE_CENTER_MIN_WIDTH_PX
+      ? 0
+      : USER_RESIZE_CENTER_MIN_WIDTH_PX
+
     return createState(
       viewportWidth,
       viewportHeight,
@@ -364,13 +362,13 @@ export const resolveResponsiveWorkspaceShellState = (
       leftPreferredWidth,
       rightPreferredWidth,
       resizeIntent,
-      responsiveMode,
-      WORKSPACE_CENTER_MIN_WIDTH_PX,
+      'responsive-yield',
+      narrowCenterMinWidth,
       {
         left: 'strip',
-        leftStripBehavior: 'overlay',
+        leftStripBehavior: 'consuming',
         right: 'strip',
-        rightStripBehavior: 'overlay',
+        rightStripBehavior: 'consuming',
       },
       true,
       false,
@@ -383,27 +381,21 @@ export const resolveResponsiveWorkspaceShellState = (
   // Manual left collapse remains a user-owned strip and is resolved before
   // automatic capacity phases. Right tools still follow docked -> strip.
   if (leftIsUserHidden) {
-    const manualCandidates: SurfaceCandidate[] = rightPreference === 'hidden-by-user'
-      ? [
-          ...leftStripCandidates('strip', 'consuming'),
-          ...leftStripCandidates('strip', 'overlay'),
-        ]
-      : isShortHeight
-        ? [
-            ...leftStripCandidates('strip', 'consuming'),
-            ...leftStripCandidates('strip', 'overlay'),
-          ]
-        : [
-            ...leftStripCandidates('docked'),
-            ...leftStripCandidates('strip', 'consuming'),
-            ...leftStripCandidates('strip', 'overlay'),
-          ]
-    const candidate = findCandidate(
+    const manualDockedRightCandidate = rightPreference === 'visible' && !isShortHeight
+      ? findCandidate(
+          viewportWidth,
+          leftPreferredWidth,
+          rightPreferredWidth,
+          WORKSPACE_CENTER_MIN_WIDTH_PX,
+          leftStripCandidates('docked'),
+        )
+      : null
+    const candidate = manualDockedRightCandidate ?? findCandidate(
       viewportWidth,
       leftPreferredWidth,
       rightPreferredWidth,
-      WORKSPACE_CENTER_MIN_WIDTH_PX,
-      manualCandidates,
+      USER_RESIZE_CENTER_MIN_WIDTH_PX,
+      leftStripCandidates('strip', 'consuming'),
     )
 
     if (candidate) {
@@ -415,8 +407,10 @@ export const resolveResponsiveWorkspaceShellState = (
         leftPreferredWidth,
         rightPreferredWidth,
         resizeIntent,
-        responsiveMode,
-        WORKSPACE_CENTER_MIN_WIDTH_PX,
+        manualDockedRightCandidate ? 'automatic' : 'responsive-yield',
+        manualDockedRightCandidate
+          ? WORKSPACE_CENTER_MIN_WIDTH_PX
+          : USER_RESIZE_CENTER_MIN_WIDTH_PX,
         candidate,
         false,
         isShortHeight,
@@ -455,19 +449,15 @@ export const resolveResponsiveWorkspaceShellState = (
 
   // Keep the left selection surface while it and the practical center fit.
   // The right strip is always the first responsive right-tools fallback.
-  const leftDockedCandidates: SurfaceCandidate[] = rightPreference === 'hidden-by-user'
-    ? rightStripCandidates(leftDocked)
-    : [
-        ...(!isShortHeight ? [{ left: leftDocked, right: 'docked' as const }] : []),
-        ...rightStripCandidates(leftDocked),
-      ]
-  const leftDockedCandidate = findCandidate(
-    viewportWidth,
-    leftPreferredWidth,
-    rightPreferredWidth,
-    WORKSPACE_CENTER_MIN_WIDTH_PX,
-    leftDockedCandidates,
-  )
+  const leftDockedCandidate = !isShortHeight && rightPreference === 'visible'
+    ? findCandidate(
+        viewportWidth,
+        leftPreferredWidth,
+        rightPreferredWidth,
+        WORKSPACE_CENTER_MIN_WIDTH_PX,
+        [{ left: leftDocked, right: 'docked' }],
+      )
+    : null
 
   if (leftDockedCandidate) {
     return createState(
@@ -478,7 +468,7 @@ export const resolveResponsiveWorkspaceShellState = (
       leftPreferredWidth,
       rightPreferredWidth,
       resizeIntent,
-      responsiveMode,
+      'automatic',
       WORKSPACE_CENTER_MIN_WIDTH_PX,
       leftDockedCandidate,
       false,
@@ -486,23 +476,48 @@ export const resolveResponsiveWorkspaceShellState = (
     )
   }
 
-  // Only after the left-docked candidates fail may the left selection surface
-  // adapt. Right tools remain a consuming/overlay strip in every candidate.
-  const leftAdaptiveCandidates: SurfaceCandidate[] = [
-    ...leftStripCandidates('strip', 'consuming'),
-    ...leftStripCandidates('strip', 'overlay'),
-  ]
+  const rightStripCandidate = findCandidate(
+    viewportWidth,
+    leftPreferredWidth,
+    rightPreferredWidth,
+    USER_RESIZE_CENTER_MIN_WIDTH_PX,
+    rightStripCandidates(leftDocked),
+  )
+
+  if (rightStripCandidate) {
+    return createState(
+      viewportWidth,
+      viewportHeight,
+      leftPreference,
+      rightPreference,
+      leftPreferredWidth,
+      rightPreferredWidth,
+      resizeIntent,
+      'responsive-yield',
+      USER_RESIZE_CENTER_MIN_WIDTH_PX,
+      rightStripCandidate,
+      false,
+      isShortHeight,
+    )
+  }
+
+  // Only after the left-docked and right-strip candidates fail may the left
+  // selection surface adapt. Both closed strips remain consuming flow items.
+  const leftAdaptiveCandidates: SurfaceCandidate[] = leftStripCandidates('strip', 'consuming')
+  const adaptiveCenterMinWidth = viewportWidth < LEFT_PANEL_STRIP_WIDTH_PX + RIGHT_PANEL_STRIP_WIDTH_PX + USER_RESIZE_CENTER_MIN_WIDTH_PX
+    ? 0
+    : USER_RESIZE_CENTER_MIN_WIDTH_PX
   const leftAdaptiveCandidate = findCandidate(
     viewportWidth,
     leftPreferredWidth,
     rightPreferredWidth,
-    WORKSPACE_CENTER_MIN_WIDTH_PX,
+    adaptiveCenterMinWidth,
     leftAdaptiveCandidates,
   ) ?? {
     left: 'strip',
-    leftStripBehavior: 'overlay' as const,
+    leftStripBehavior: 'consuming' as const,
     right: 'strip',
-    rightStripBehavior: 'overlay' as const,
+    rightStripBehavior: 'consuming' as const,
   }
 
   return createState(
@@ -513,8 +528,8 @@ export const resolveResponsiveWorkspaceShellState = (
     leftPreferredWidth,
     rightPreferredWidth,
     resizeIntent,
-    responsiveMode,
-    WORKSPACE_CENTER_MIN_WIDTH_PX,
+    'responsive-yield',
+    adaptiveCenterMinWidth,
     leftAdaptiveCandidate,
     false,
     isShortHeight,

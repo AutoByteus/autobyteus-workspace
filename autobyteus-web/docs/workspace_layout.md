@@ -15,7 +15,7 @@ The non-immersive default-layout routes share one desktop-capability shell that 
 `layouts/default.vue` owns the outer app shell. It provides the shared `useResponsiveWorkspaceShell()` state, which composes viewport capacity, left/right panel preferences, preferred widths, effective presentations, and presentation sources through the single `resolveResponsiveWorkspaceShellState()` policy boundary:
 
 - **Docked**: wide desktop space keeps the full left panel visible and resizable.
-- **Strip**: constrained desktop or narrow windows keep the center workspace usable with a visible edge affordance; the strip may consume flow width or become a fixed overlay.
+- **Strip**: constrained desktop or narrow windows keep the center workspace usable with a visible 50px edge affordance that remains a normal `flex-none` flow item.
 - **Drawer**: left/right drawers are transient interaction surfaces opened from their visible strip or shell navigation; they are not competing responsive policy presentations.
 
 Transient left and right drawers are independent modal side surfaces. Their shared
@@ -34,8 +34,8 @@ Application-immersive routes still bypass the normal left navigation surfaces th
 `WorkspaceAdaptiveLayout.vue` consumes the shared composed shell state and presents the right tools according to measured space, user visibility preference, and the center-width preservation policy.
 
 - Wide/enough space: right tools remain docked and resizable.
-- Constrained desktop/tablet space: right tools collapse to a consuming strip or fixed edge-overlay strip before the center pane falls below its practical minimum.
-- Narrow or short-height space: right tools remain discoverable as an edge-overlay strip; clicking it opens the transient right-tool drawer while the center workspace remains mounted.
+- Constrained desktop/tablet space: right tools collapse to a consuming 50px strip before the center pane falls below its practical minimum; left navigation yields to a second consuming strip only when that candidate is required.
+- Narrow or short-height space: right tools remain discoverable as a consuming flow strip; clicking it opens the transient right-tool drawer while the center workspace remains mounted. Only the drawer may overlay content, and below 300px the dual-strip terminal state may use a zero center floor without removing either 50px strip reservation.
 - While a transient drawer is open, its corresponding strip is conditionally unmounted so the drawer is the sole active surface for that side; dismissal remounts the strip and restores focus through the drawer lifecycle.
 - The center pane minimum target is defined by `WORKSPACE_CENTER_MIN_WIDTH_PX` in `utils/layout/responsiveLayoutPolicy.ts`.
 

@@ -9,6 +9,7 @@ const { chromium } = require('playwright-core');
 
 const DEFAULT_VIEWPORTS = [
   { name: 'phone-390x844', width: 390, height: 844 },
+  { name: 'terminal-299x700', width: 299, height: 700 },
   { name: 'phone-short-390x640', width: 390, height: 640 },
   { name: 'narrow-500x700', width: 500, height: 700 },
   { name: 'narrow-short-500x420', width: 500, height: 420 },
@@ -32,7 +33,7 @@ const CENTER_MIN_WIDTH = 480;
 const USER_RESIZE_CENTER_MIN_WIDTH = 200;
 const LEFT_PANEL_RESIZE_HANDLE_WIDTH = 6;
 const RIGHT_PANEL_RESIZE_HANDLE_WIDTH = 4;
-const ACCEPTABLE_NARROW_CENTER_MIN_WIDTH = 320;
+const COMPACT_STRIP_CENTER_MIN_WIDTH = USER_RESIZE_CENTER_MIN_WIDTH;
 
 const getArg = (name, fallback = undefined) => {
   const prefixed = `--${name}=`;
@@ -530,9 +531,35 @@ function validateWorkspaceInitial(state, viewport) {
   }
 
   if (centerRect?.width > 0) {
-    const requiredMin = width < 768 ? Math.min(ACCEPTABLE_NARROW_CENTER_MIN_WIDTH, width) : CENTER_MIN_WIDTH;
+    const requiredMin = width < 768
+      ? (width < 300 ? 0 : Math.min(COMPACT_STRIP_CENTER_MIN_WIDTH, width))
+      : CENTER_MIN_WIDTH;
     if (centerRect.width < requiredMin) {
       failures.push(`center width ${centerRect.width}px is below ${requiredMin}px`);
+    }
+  }
+
+  const leftStripRect = state.rects.leftStrip?.rect;
+  const rightStripRect = state.rects.rightStrip?.rect;
+  const mainRect = state.rects.main?.rect;
+  const flowRect = state.rects.centerRightFlow?.rect;
+  if (state.rects.leftStrip?.visible) {
+    if (state.rects.leftStrip.position !== 'relative' || leftStripRect?.width !== 50) {
+      failures.push('left navigation strip is not a 50px consuming flow item');
+    }
+    if (mainRect && leftStripRect && leftStripRect.right > mainRect.x + 1) {
+      failures.push('left navigation strip overlaps the main content flow');
+    }
+  }
+  if (state.rects.rightStrip?.visible) {
+    if (state.rects.rightStrip.position !== 'relative' || rightStripRect?.width !== 50) {
+      failures.push('right tools strip is not a 50px consuming flow item');
+    }
+    if (flowRect && rightStripRect && rightStripRect.right > flowRect.right + 1) {
+      failures.push('right tools strip extends outside the center-right flow');
+    }
+    if (centerRect && rightStripRect && centerRect.right > rightStripRect.x + 1) {
+      failures.push('right tools strip overlaps the center pane');
     }
   }
 
@@ -545,10 +572,10 @@ function validateWorkspaceInitial(state, viewport) {
     if (state.visibleState.rightPanel) failures.push('narrow standard workspace unexpectedly keeps right panel docked');
     if (state.visibleState.semanticTriggers || state.visibleState.navigationTrigger) failures.push('narrow workspace renders duplicate top navigation controls');
     if (!state.rects.leftStrip?.visible) failures.push('narrow workspace lacks the left-edge navigation strip');
-    if (state.rects.leftStrip?.stripBehavior !== 'overlay') failures.push('narrow workspace left strip is not an edge overlay');
+    if (state.rects.leftStrip?.stripBehavior !== 'consuming') failures.push('narrow workspace left strip is not a consuming flow item');
     if (state.rects.leftStrip?.stripActivation !== 'open-drawer') failures.push('narrow workspace left strip does not expose open-drawer activation');
     if (!state.rects.rightStrip?.visible) failures.push('narrow workspace lacks the right-edge tools strip');
-    if (state.rects.rightStrip?.stripBehavior !== 'overlay') failures.push('narrow workspace right strip is not an edge overlay');
+    if (state.rects.rightStrip?.stripBehavior !== 'consuming') failures.push('narrow workspace right strip is not a consuming flow item');
     if (state.rects.rightStrip?.stripActivation !== 'open-drawer') failures.push('narrow workspace right strip does not expose open-drawer activation');
   }
 

@@ -321,6 +321,56 @@ implementation stage; API/E2E remains downstream-owned and no API/E2E sign-off
 is claimed. The earlier implementation visual smoke report remains
 corroborating evidence, not current downstream coverage.
 
+### Round 34 Strip-Flow No-Occlusion Rework
+
+Architecture Round 25 approved the final closed-strip geometry: effective
+responsive presentations remain `docked | strip`, `StripBehavior` is exactly
+`consuming`, and every closed non-docked side surface reserves a 50px normal
+flex-flow item. The implementation removed the historical overlay candidate
+and behavior branches from `responsiveLayoutPolicy.ts` and narrowed the
+public behavior type to `StripBehavior = 'consuming'`. The resolver now keeps
+the exact right-tools-first phases: automatic docked/docked protection at
+480px, consuming right-strip yielding at the compact 200px floor, then
+consuming dual strips when left adaptation is required. Narrow dual strips use
+the same 200px compact floor, with a 0px floor only for the terminal viewport
+below 300px; both 50px strips remain in flow in that state.
+
+`LeftSidebarStrip.vue` and `RightSidebarStrip.vue` now render as
+`relative flex-none w-[50px]` flow items with no fixed-strip branch. The
+transient drawers remain the only fixed/overlay surfaces, and their per-side
+visibility gates, activation contract, no-indicator native right-tab row,
+route-scoped global default shell, and `/mobile` isolation are unchanged.
+The durable browser probe now includes a below-300px terminal viewport and
+asserts strip position/width, center-to-strip non-overlap, flow containment,
+consuming behavior, and the compact/terminal center floors. Component and pure
+policy tests cover consuming classes, canonical candidate order, narrow and
+terminal geometry, and the compact responsive-yield floor.
+
+Round 34 implementation-scoped checks: focused responsive suite passed
+(`12` files, `92` tests); the affected policy/strip/adaptive subset passed
+(`4` files, `49` tests); standalone responsive-policy TypeScript passed;
+probe `node --check` passed; `git diff --check` passed; web-boundary and
+localization-boundary guards passed; localization literal audit passed with
+zero findings; and the Nuxt production build passed. Known warnings remain
+the KaTeX quirks-mode warning, localization module-type warning, and existing
+large-chunk build warnings. An isolated dev-server visual smoke attempt was
+blocked by the existing Nuxt `#app-manifest` transform error, so no new
+browser visual/API-E2E sign-off is claimed; current executable validation
+remains downstream-owned by `api_e2e_engineer`.
+
+Round 34 changed implementation paths:
+
+- `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
+- `autobyteus-web/utils/layout/responsiveStripActivation.ts`
+- `autobyteus-web/components/layout/LeftSidebarStrip.vue`
+- `autobyteus-web/components/layout/RightSidebarStrip.vue`
+- `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`
+- `autobyteus-web/layouts/default.vue`
+- `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`
+- `autobyteus-web/docs/workspace_layout.md`
+- Focused policy, strip, and adaptive-layout tests under
+  `utils/layout/__tests__` and `components/layout/__tests__`
+
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Larger Requirement / Behavior Change / Responsive Layout Refactor`

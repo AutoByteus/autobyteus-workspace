@@ -44,18 +44,19 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.rightPanel.presentationSource).toBe('responsive')
   })
 
-  it('uses an overlay right strip when the consuming strip cannot fit', () => {
+  it('keeps the right strip in flow with the compact center floor', () => {
     const state = resolve({ viewportWidth: 820, viewportHeight: 700 })
 
     expect(state.leftPanel.presentation).toBe('docked')
     expect(state.rightPanel.presentation).toBe('strip')
-    expect(state.rightPanel.stripBehavior).toBe('overlay')
-    expect(state.rightPanel.consumedWidth).toBe(0)
+    expect(state.rightPanel.stripBehavior).toBe('consuming')
+    expect(state.rightPanel.consumedWidth).toBe(50)
+    expect(state.rightPanel.effectiveCenterMinWidth).toBe(200)
     expect(state.rightPanel.stripActivation).toBe('open-drawer')
   })
 
-  it('adapts the left surface only after consuming and overlay right alternatives fail', () => {
-    const state = resolve({ viewportWidth: 800, viewportHeight: 700 })
+  it('adapts the left surface only after the consuming right strip cannot fit', () => {
+    const state = resolve({ viewportWidth: 768, viewportHeight: 700, leftPanelPreferredWidth: 520 })
 
     expect(state.mode).toBe('constrained')
     expect(state.leftPanel.presentation).toBe('strip')
@@ -63,7 +64,7 @@ describe('responsiveLayoutPolicy', () => {
     expect(state.leftPanel.stripBehavior).toBe('consuming')
     expect(state.rightPanel.presentation).toBe('strip')
     expect(state.rightPanel.stripBehavior).toBe('consuming')
-    expect(state.rightPanel.effectiveCenterMinWidth).toBe(480)
+    expect(state.rightPanel.effectiveCenterMinWidth).toBe(200)
     expect(state.leftPanel.stripActivation).toBe('open-drawer')
     expect(state.rightPanel.stripActivation).toBe('open-drawer')
   })
@@ -91,7 +92,8 @@ describe('responsiveLayoutPolicy', () => {
 
   it('changes user strip activation to open-drawer while constrained and restores redock on recovery', () => {
     const leftShrunk = resolve({
-      viewportWidth: 800,
+      viewportWidth: 768,
+      leftPanelPreferredWidth: 520,
       leftPanelPreference: 'hidden-by-user',
     })
     const rightShrunk = resolve({
@@ -107,7 +109,7 @@ describe('responsiveLayoutPolicy', () => {
     expect(rightRecovered.rightPanel.stripActivation).toBe('redock-panel')
   })
 
-  it('uses a left drawer and overlay right strip at the narrow standard-workspace boundary', () => {
+  it('uses consuming left and right strips at the narrow standard-workspace boundary', () => {
     for (const width of [390, 639, 640, 700, 767]) {
       const state = resolve({ viewportWidth: width, viewportHeight: 700 })
 
@@ -115,15 +117,29 @@ describe('responsiveLayoutPolicy', () => {
       expect(state.isNarrow).toBe(true)
       expect(Object.prototype.hasOwnProperty.call(state, 'showHeader')).toBe(false)
       expect(state.leftPanel.presentation).toBe('strip')
-      expect(state.leftPanel.stripBehavior).toBe('overlay')
+      expect(state.leftPanel.stripBehavior).toBe('consuming')
       expect(state.rightPanel.presentation).toBe('strip')
-      expect(state.rightPanel.stripBehavior).toBe('overlay')
-      expect(state.rightPanel.consumedWidth).toBe(0)
+      expect(state.rightPanel.stripBehavior).toBe('consuming')
+      expect(state.leftPanel.consumedWidth).toBe(50)
+      expect(state.rightPanel.consumedWidth).toBe(50)
+      expect(state.rightPanel.effectiveCenterMinWidth).toBe(200)
       expect(state.leftPanel.stripActivation).toBe('open-drawer')
       expect(state.rightPanel.stripActivation).toBe('open-drawer')
       expect(state.showLeftStrip).toBe(true)
       expect(state.showRightStrip).toBe(true)
     }
+  })
+
+  it('allows only the terminal below-300px state to remove the center floor', () => {
+    const state = resolve({ viewportWidth: 299, viewportHeight: 700 })
+
+    expect(state.leftPanel.presentation).toBe('strip')
+    expect(state.leftPanel.stripBehavior).toBe('consuming')
+    expect(state.leftPanel.consumedWidth).toBe(50)
+    expect(state.rightPanel.presentation).toBe('strip')
+    expect(state.rightPanel.stripBehavior).toBe('consuming')
+    expect(state.rightPanel.consumedWidth).toBe(50)
+    expect(state.rightPanel.effectiveCenterMinWidth).toBe(0)
   })
 
   it('yields right tools to a consuming strip in short-height windows', () => {
@@ -205,7 +221,7 @@ describe('responsiveLayoutPolicy', () => {
 
     expect(state.rightPanel.resizeIntent).toBe('user-sized')
     expect(state.rightPanel.centerProtectionMode).toBe('responsive-yield')
-    expect(state.rightPanel.effectiveCenterMinWidth).toBe(480)
+    expect(state.rightPanel.effectiveCenterMinWidth).toBe(200)
     expect(state.rightPanel.presentation).toBe('strip')
     expect(state.rightPanel.stripBehavior).toBe('consuming')
   })

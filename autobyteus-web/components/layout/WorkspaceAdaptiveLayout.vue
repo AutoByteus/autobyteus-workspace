@@ -75,7 +75,7 @@
       <RightSidebarStrip
         v-else-if="!isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip"
         data-test="workspace-right-tool-strip"
-        :strip-behavior="responsiveWorkspaceShellState.rightPanel.stripBehavior ?? 'overlay'"
+        :strip-behavior="responsiveWorkspaceShellState.rightPanel.stripBehavior ?? 'consuming'"
         :strip-activation="responsiveWorkspaceShellState.rightPanel.stripActivation!"
         @request-open="openRightDrawer"
         @request-redock="redockRightPanel"

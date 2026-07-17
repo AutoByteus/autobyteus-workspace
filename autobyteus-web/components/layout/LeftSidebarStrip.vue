@@ -55,7 +55,7 @@ import { useAppLayoutStore } from '~/stores/appLayoutStore';
 import { rememberDrawerTrigger } from '~/composables/useAccessibleDrawer';
 import { useShellPrimaryNavigation, type ShellPrimaryNavKey } from '~/composables/useShellPrimaryNavigation';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
-import type { RightStripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
+import type { StripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
 
 const { t } = useLocalization();
 const {
@@ -70,15 +70,15 @@ const router = useRouter();
 const appLayoutStore = useAppLayoutStore();
 
 const props = withDefaults(defineProps<{
-  stripBehavior?: RightStripBehavior
+  stripBehavior?: StripBehavior
   stripActivation: StripActivation
 }>(), {
   stripBehavior: 'consuming',
 });
 
-const stripClasses = computed(() => props.stripBehavior === 'overlay'
-  ? 'fixed inset-y-0 left-0 z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500 shadow-lg'
-  : 'relative z-[60] flex h-full w-[50px] flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500');
+const stripClasses = computed(() =>
+  'relative z-[60] flex h-full w-[50px] flex-none flex-col items-center border-r border-gray-200 bg-white py-4 text-gray-500',
+);
 
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));

@@ -34,7 +34,7 @@
 
       <div v-else-if="showLeftStrip">
         <LeftSidebarStrip
-          :strip-behavior="responsiveWorkspaceShellState.leftPanel.stripBehavior ?? 'overlay'"
+          :strip-behavior="responsiveWorkspaceShellState.leftPanel.stripBehavior ?? 'consuming'"
           :strip-activation="responsiveWorkspaceShellState.leftPanel.stripActivation!"
           @request-redock="redockLeftPanel"
         />
@@ -128,8 +128,8 @@ const leftPanelClasses = computed(() => [
 ])
 
 const mainContentClasses = computed(() => [
-  // Keep the main content out of a nested stacking context so the fixed
-  // strips/drawers and both shell backdrops share the root overlay layer.
+  // Keep the main content shrink-safe; only transient drawers/backdrops use
+  // the root overlay layer while closed strips remain normal flow items.
   'relative flex-1 min-w-0 overflow-hidden w-full',
   isApplicationImmersive.value ? 'bg-slate-950' : 'bg-blue-50',
 ])

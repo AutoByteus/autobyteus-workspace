@@ -239,7 +239,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     );
 
     expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
-    expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 480px');
+    expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 200px');
   });
 
   it('keeps the docked right panel visible when a drag reaches the center-preserving bound', async () => {
@@ -289,7 +289,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(wrapper.find('workspace-center-loading-overlay-stub').exists()).toBe(true);
   });
 
-  it('uses a visible right strip without header or top navigation controls', async () => {
+  it('uses a visible consuming right strip without header or top navigation controls', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'agent', selectedRunId: '123' },
@@ -297,12 +297,12 @@ describe('WorkspaceAdaptiveLayout', () => {
     });
 
     expect(wrapper.find('[data-test="workspace-semantic-surface-triggers"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="workspace-right-tool-strip"]').attributes('data-strip-behavior')).toBe('overlay');
+    expect(wrapper.get('[data-test="workspace-right-tool-strip"]').attributes('data-strip-behavior')).toBe('consuming');
     expect(wrapper.find('[data-test="workspace-center-content-shell"]').exists()).toBe(true);
   });
 
   it('keeps the left navigation docked at 1024 while right tools yield', async () => {
-    setViewport(1024, 768);
+    setViewport(800, 700);
     mockClientWidth = 704;
     mockClientHeight = 768;
 
@@ -317,7 +317,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('switches right tools to a consuming strip before adapting the left panel at constrained widths', async () => {
-    setViewport(800, 700);
+    setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: '456' },
       workspaceCenterView: { mode: 'chat' },
@@ -331,7 +331,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('uses the right strip as the sole reopen affordance for a user-hidden right panel', async () => {
-    setViewport(1024, 768);
+    setViewport(800, 700);
     useRightPanel().setRightPanelVisible(false);
 
     const wrapper = await mountComponent({
@@ -372,7 +372,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(rightPanel.isRightPanelVisible.value).toBe(true);
   });
 
-  it('uses the overlay right strip as the sole narrow reopen affordance', async () => {
+  it('uses the consuming right strip as the sole narrow reopen affordance', async () => {
     setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: 'run-drawer' },
@@ -380,7 +380,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     });
 
     expect(wrapper.find('[data-test="workspace-right-tool-strip"]').exists()).toBe(true);
-    expect(wrapper.get('[data-test="workspace-right-tool-strip"]').attributes('data-strip-behavior')).toBe('overlay');
+    expect(wrapper.get('[data-test="workspace-right-tool-strip"]').attributes('data-strip-behavior')).toBe('consuming');
     expect(wrapper.find('[data-test="workspace-tools-trigger"]').exists()).toBe(false);
 
     await wrapper.get('[data-test="workspace-right-tool-strip"]').trigger('click');
@@ -486,7 +486,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('opens right tools from the strip while preserving selection', async () => {
-    setViewport(800, 700);
+    setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: 'run-2' },
       workspaceCenterView: { mode: 'chat' },
@@ -503,7 +503,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('keeps left and right transient drawers independently open', async () => {
-    setViewport(800, 700);
+    setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: null, selectedRunId: null },
       workspaceCenterView: { mode: 'chat' },
@@ -522,7 +522,7 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('keeps the left drawer independent when opened after right tools', async () => {
-    setViewport(800, 700);
+    setViewport(700, 700);
     const wrapper = await mountComponent({
       agentSelection: { selectedType: null, selectedRunId: null },
       workspaceCenterView: { mode: 'chat' },

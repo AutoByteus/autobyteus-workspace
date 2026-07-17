@@ -14,10 +14,8 @@ vi.mock('~/composables/useRightSideTabs', () => ({
 }))
 
 describe('RightSidebarStrip', () => {
-  it.each([
-    ['consuming', false],
-    ['overlay', true],
-  ] as const)('renders the %s strip as the sole drawer affordance', async (stripBehavior, isOverlay) => {
+  it('renders the consuming strip as a normal flow item and the sole drawer affordance', async () => {
+    const stripBehavior = 'consuming' as const
     mocks.activeTab = ref('terminal')
     mocks.visibleTabs = ref([
       { name: 'files', label: 'Files' },
@@ -41,8 +39,9 @@ describe('RightSidebarStrip', () => {
 
     const strip = wrapper.get('[data-test="workspace-right-tool-strip-surface"]')
     expect(strip.attributes('data-strip-behavior')).toBe(stripBehavior)
-    expect(strip.classes()).toContain(isOverlay ? 'fixed' : 'flex')
-    expect(strip.classes()).not.toContain(isOverlay ? 'static' : 'fixed')
+    expect(strip.classes()).toContain('relative')
+    expect(strip.classes()).toContain('flex-none')
+    expect(strip.classes()).not.toContain('fixed')
 
     await strip.get('button[aria-label="Files"]').trigger('click')
 

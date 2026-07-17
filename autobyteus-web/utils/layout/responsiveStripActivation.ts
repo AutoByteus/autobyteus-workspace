@@ -1,15 +1,15 @@
 import type {
   PanelPreference,
   RightPanelPresentation,
-  RightStripBehavior,
+  StripBehavior,
   StripActivation,
 } from './responsiveLayoutPolicy'
 
 export interface SurfaceCandidate {
   left: 'docked' | 'strip'
   right: RightPanelPresentation
-  leftStripBehavior?: RightStripBehavior
-  rightStripBehavior?: RightStripBehavior
+  leftStripBehavior?: StripBehavior
+  rightStripBehavior?: StripBehavior
 }
 
 export interface StripActivationInput {
