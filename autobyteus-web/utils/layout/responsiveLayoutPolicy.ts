@@ -378,9 +378,18 @@ export const resolveResponsiveWorkspaceShellState = (
   const leftIsUserHidden = leftPreference === 'hidden-by-user'
   const leftDocked = 'docked' as const
 
-  // Manual left collapse remains a user-owned strip and is resolved before
-  // automatic capacity phases. Right tools still follow docked -> strip.
+  // Manual left collapse remains a user-owned strip. A user-sized right dock
+  // gets the compact center floor before the automatic 480px fallback.
   if (leftIsUserHidden) {
+    const userSizedDockedRightCandidate = rightPreference === 'visible' && !isShortHeight && resizeIntent === 'user-sized'
+      ? findCandidate(
+          viewportWidth,
+          leftPreferredWidth,
+          rightPreferredWidth,
+          USER_RESIZE_CENTER_MIN_WIDTH_PX,
+          leftStripCandidates('docked'),
+        )
+      : null
     const manualDockedRightCandidate = rightPreference === 'visible' && !isShortHeight
       ? findCandidate(
           viewportWidth,
@@ -390,7 +399,7 @@ export const resolveResponsiveWorkspaceShellState = (
           leftStripCandidates('docked'),
         )
       : null
-    const candidate = manualDockedRightCandidate ?? findCandidate(
+    const candidate = userSizedDockedRightCandidate ?? manualDockedRightCandidate ?? findCandidate(
       viewportWidth,
       leftPreferredWidth,
       rightPreferredWidth,
@@ -407,8 +416,14 @@ export const resolveResponsiveWorkspaceShellState = (
         leftPreferredWidth,
         rightPreferredWidth,
         resizeIntent,
-        manualDockedRightCandidate ? 'automatic' : 'responsive-yield',
-        manualDockedRightCandidate
+        userSizedDockedRightCandidate
+          ? 'user-override'
+          : manualDockedRightCandidate
+            ? 'automatic'
+            : 'responsive-yield',
+        userSizedDockedRightCandidate
+          ? USER_RESIZE_CENTER_MIN_WIDTH_PX
+          : manualDockedRightCandidate
           ? WORKSPACE_CENTER_MIN_WIDTH_PX
           : USER_RESIZE_CENTER_MIN_WIDTH_PX,
         candidate,
@@ -418,8 +433,6 @@ export const resolveResponsiveWorkspaceShellState = (
     }
   }
 
-  // A deliberate user-sized dock is the only state allowed to use the
-  // compact 200px center floor. Responsive presentation never erases intent.
   if (!isShortHeight && resizeIntent === 'user-sized' && rightPreference === 'visible') {
     const userSizedCandidate = findCandidate(
       viewportWidth,
@@ -447,8 +460,6 @@ export const resolveResponsiveWorkspaceShellState = (
     }
   }
 
-  // Keep the left selection surface while it and the practical center fit.
-  // The right strip is always the first responsive right-tools fallback.
   const leftDockedCandidate = !isShortHeight && rightPreference === 'visible'
     ? findCandidate(
         viewportWidth,
@@ -501,8 +512,6 @@ export const resolveResponsiveWorkspaceShellState = (
     )
   }
 
-  // Only after the left-docked and right-strip candidates fail may the left
-  // selection surface adapt. Both closed strips remain consuming flow items.
   const leftAdaptiveCandidates: SurfaceCandidate[] = leftStripCandidates('strip', 'consuming')
   const adaptiveCenterMinWidth = viewportWidth < LEFT_PANEL_STRIP_WIDTH_PX + RIGHT_PANEL_STRIP_WIDTH_PX + USER_RESIZE_CENTER_MIN_WIDTH_PX
     ? 0

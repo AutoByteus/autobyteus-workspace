@@ -1,7 +1,7 @@
 <template>
   <div
     data-test="workspace-right-tool-drawer-backdrop"
-    class="fixed inset-0 z-40 bg-gray-900/50"
+    class="fixed inset-0 z-40 bg-black/30"
     :style="{ ...props.backdropStyle, zIndex: drawerBackdropZIndex }"
     aria-hidden="true"
     @click="emit('close')"

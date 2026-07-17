@@ -82,6 +82,8 @@ describe('default layout source', () => {
     expect(content).toContain(':aria-modal="showLeftDrawer && leftDrawerIsTopmost ? \'true\' : undefined"')
     expect(content).toContain(':aria-label="$t(\'shell.workspaceSurfaces.navigationDrawerTitle\')"')
     expect(content).toContain('data-test="app-left-drawer-backdrop"')
+    expect(content).toContain('class="fixed inset-0 z-40 bg-black/30"')
+    expect(content).not.toContain('bg-opacity-75')
     expect(content).not.toContain('data-test="app-left-drawer-close"')
     expect(content).not.toContain('left-navigation-drawer-title')
     expect(content).toContain('useAccessibleDrawer')
