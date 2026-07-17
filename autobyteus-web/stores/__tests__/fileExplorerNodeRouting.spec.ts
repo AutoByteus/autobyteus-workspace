@@ -134,4 +134,16 @@ describe('fileExplorerStore node routing behavior', () => {
     expect(window.electronAPI.readLocalTextFile).not.toHaveBeenCalled();
     expect(apolloClientMock.query).not.toHaveBeenCalled();
   });
+
+  it('routes supported Lua code through the text reader instead of Unsupported', async () => {
+    windowNodeContextStoreMock.isEmbeddedWindow = true;
+    determineFileTypeMock.mockResolvedValue('Text');
+    const store = useFileExplorerStore();
+
+    await store.openFile('/tmp/script.lua', 'ws-1');
+
+    const wsState = store._getOrCreateWorkspaceState('ws-1');
+    expect(wsState.openFiles[0].type).toBe('Text');
+    expect(window.electronAPI.readLocalTextFile).toHaveBeenCalledWith('/tmp/script.lua');
+  });
 });

@@ -126,6 +126,25 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.find('code').text()).toBe('/tmp/archive.tar.gz\n/tmp/application.app');
   });
 
+  it('renders supported Lua code paths as Event Monitor actions', async () => {
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '/tmp/script.lua',
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    const actionControl = wrapper.get('[data-event-monitor-file-action-id]');
+    await actionControl.trigger('click');
+
+    expect(wrapper.emitted('file-path-action')?.[0]?.[0]).toEqual(expect.objectContaining({
+      normalizedCandidate: '/tmp/script.lua',
+      previewType: 'Text',
+    }));
+  });
+
   it('should render MermaidDiagram component for mermaid blocks', () => {
     // We rely on useMarkdownSegments to parse this. 
     // Since useMarkdownSegments is a real composable (not mocked here), 

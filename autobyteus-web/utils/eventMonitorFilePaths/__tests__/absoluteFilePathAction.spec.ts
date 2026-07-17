@@ -45,6 +45,7 @@ describe('absolute Event Monitor file path policy', () => {
   it('creates actions only for FileViewer-supported families and carries the type', () => {
     const supportedCases = [
       ['/tmp/readme.md', 'Text'],
+      ['/tmp/preview.lua', 'Text'],
       ['/tmp/screenshot.png', 'Image'],
       ['/tmp/recording.mp3', 'Audio'],
       ['/tmp/demo.mp4', 'Video'],

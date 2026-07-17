@@ -52,6 +52,7 @@ const TEXT_EXTENSIONS = new Set([
   '.scss',
   '.sass',
   '.less',
+  '.lua',
   '.json',
   '.json5',
   '.jsonc',

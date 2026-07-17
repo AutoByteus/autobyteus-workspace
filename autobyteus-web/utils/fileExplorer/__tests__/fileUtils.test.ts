@@ -86,6 +86,7 @@ describe('fileUtils', () => {
     it('should classify recognized text and extensionless text files as Text', async () => {
         expect(await determineFileType('src/component.ts')).toBe('Text');
         expect(await determineFileType('docs/index.html')).toBe('Text');
+        expect(await determineFileType('scripts/preview.lua')).toBe('Text');
         expect(await determineFileType('README')).toBe('Text');
     });
   })

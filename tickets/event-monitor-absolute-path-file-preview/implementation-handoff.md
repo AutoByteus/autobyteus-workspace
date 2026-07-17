@@ -7,7 +7,7 @@
 - Branch: `codex/event-monitor-absolute-path-file-preview`
 - Base: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
 - Architecture review: **Pass, round 2**
-- Implementation status: **User-verification local fix complete; resubmission required for implementation source review**
+- Implementation status: **CR-F-006 local fix complete; resubmission required for implementation source review**
 
 ## Cumulative Reviewed Solution Package
 
@@ -46,6 +46,12 @@
 - Routed `determineFileType()` through the shared policy and retained the existing FileViewer `Unsupported` state for non-Event-Monitor callers. Unsupported routing does not call text IPC, construct a local-file URL, or request workspace content.
 - Gated `createAbsoluteFilePathAction()` and all Markdown token action registration on the shared policy. Supported descriptors now carry `previewType`; unsupported candidates remain source-faithful text/code with no action ID/control. Generic Markdown remains default-off.
 - Added regressions for `.dmg`, `.zip`, installers, archives, binary/unknown extensions, supported text/media families, exact fenced-code preservation, default-off rendering, and no-read/no-URL/no-workspace-fetch routing.
+
+### Bounded local fix for implementation review CR-F-006
+
+- Compared the shared Text policy against the existing `MobileFiles.vue` Markdown/code filter. Every existing code-family extension is present in the shared policy; `.lua` was the omitted supported family.
+- Added `.lua` to the shared Text policy. `determineFileType('/tmp/script.lua')` now returns `Text`, action descriptors carry `previewType: 'Text'`, Event Monitor Markdown renders the Lua path action, and File Explorer routes it through the text reader rather than `Unsupported`.
+- Added policy, action, MarkdownRenderer, and File Explorer regressions for the Lua path. Archive/installer/binary refusal behavior remains unchanged.
 
 ## Behavior Traceability
 
@@ -132,10 +138,15 @@ All checks below were run in this task worktree before the temporary dependency 
   - Passed.
 - ✅ User-verification unsupported-preview regression suite:
   - `pnpm --dir autobyteus-web exec vitest run utils/fileExplorer/__tests__/fileUtils.test.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts --reporter=dot`
-  - Result: `4 files, 39 tests passed`.
+  - Result: `4 files, 41 tests passed`.
+- ✅ Broader changed-chain plus Lua regression suite:
+  - `pnpm --dir autobyteus-web exec vitest run utils/fileExplorer/__tests__/fileUtils.test.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts components/conversation/__tests__/AIMessage.spec.ts components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/mobile/__tests__/MobileFiles.spec.ts components/mobile/__tests__/MobileFileViewer.spec.ts stores/__tests__/mobileWorkStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts composables/__tests__/useRightPanel.spec.ts --reporter=dot`
+  - Result: `14 files, 93 tests passed`.
 - ✅ Unsupported policy source checks:
   - `git diff --check` on changed implementation/test paths passed.
   - The pure policy classifies `.dmg`, `.zip`, installers, application bundles, and unknown binary extensions as `Unsupported`; supported text/media families remain action-eligible.
+- ✅ Existing supported-code matrix comparison:
+  - Compared the extension alternatives in `MobileFiles.vue:isMarkdownOrCodePath()` against `fileTypePolicy.ts`; result: no missing extensions after adding `.lua` (including both `yaml` and `yml`).
 - ⚠️ `pnpm --dir autobyteus-web exec nuxi typecheck`
   - Attempted after the local fix; repository-wide process exceeded the Node heap limit before diagnostics were emitted. This is not reported as a passing repository typecheck; focused Vitest compilation and execution passed.
 - ⚠️ `pnpm --dir autobyteus-web exec tsc --noEmit --pretty false`
