@@ -121,6 +121,17 @@ trusted local boundary, while browser/remote/mobile clients must map the host
 path inside the active workspace to a workspace-relative locator. Unmapped
 paths remain copyable and show a localized host-only/unavailable state.
 
+Action eligibility and File Explorer type routing share the pure
+`utils/fileExplorer/fileTypePolicy.ts` policy. Supported text/code/Markdown/HTML
+families (including `.lua`) and the established image, audio, video, PDF, CSV,
+and Excel families may produce an Event Monitor action. ZIP/DMG/PKG/application
+bundles, archives, generic binaries, and unknown extensions remain literal
+source-faithful content with no Files affordance, filesystem read, media URL,
+workspace fetch, or panel switch. A supported-looking path that is missing,
+unreadable, a directory, or otherwise invalid follows the normal localized
+viewer failure state instead; type ineligibility and runtime failure are
+separate outcomes.
+
 ## App-Wide Readability / Display Settings
 
 File explorer and artifact viewers intentionally follow the shared **Settings -> Display -> App font size** preference instead of maintaining a separate viewer-only font control.

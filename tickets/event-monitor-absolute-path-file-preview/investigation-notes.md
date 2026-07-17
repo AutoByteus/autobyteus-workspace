@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Post-implementation user verification; bounded unsupported-type local fix is routed before delivery finalization
+- Current Status: Post-implementation user verification; bounded unsupported-type, invalid-path, inline-link, and strip-icon local fixes are routed before delivery finalization
 - Investigation Goal: Verify whether the supplied Event Monitor absolute-path preview ticket is coherent in the current codebase, identify the real production paths and security owners, and produce a design-ready implementation boundary.
 - Scope Classification: Medium
 - Scope Classification Rationale: The visible interaction is local, but the change crosses shared Markdown capability plumbing, conversation-to-monitor propagation, file-preview state, right-panel/mobile navigation, and trusted desktop/remote path boundaries.
@@ -42,6 +42,9 @@ Assessment: the ticket is sound and actionable after one design clarification ma
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/task.md` | Intake and product contract | Scope, desired interaction, security, accessibility, and acceptance basis | Requirements, investigation, design | REQ-001–REQ-013; AC-001–AC-016 | Current | Defines intended behavior; user-approved kickoff input | Keep aligned if design review changes scope |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png` | Visual reference | Complete path remains visible in Event Monitor; explanatory ellipsis is not part of the path | Requirements, investigation, design | REQ-001–REQ-004; AC-001–AC-005 | Current | Evidence/reference; approval N/A | None |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md` | Post-build user verification and bounded local-fix evidence | Unsupported `.zip`/`.dmg` paths should remain source-faithful without an Open-in-Files action | Requirements, investigation, design | REQ-016; AC-019 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-invalid-absolute-path-report.md` | User verification evidence and pure syntax-guard decision | Placeholder/truncated `/.../` destinations must remain original and receive no Files action | Requirements, investigation, design | REQ-017; AC-020 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-inline-file-link-report.md` | User verification evidence and approved inline-link UX decision | Supported paths should use inline link-style actions instead of bulky buttons | Requirements, investigation, design | REQ-018; AC-021 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-strip-nodes-icon-report.md` | User verification evidence and strip icon rendering decision | Nodes icon must be visible in strip mode | Requirements, investigation, design | REQ-019; AC-022 | Current | User clarification; intended behavior approval applicable | Implementation local fix and revalidation |
 
 ## Source Log
 
@@ -182,6 +185,37 @@ No persisted data transition is required because the requested preview state is 
 - The server-side active workspace mapping can differ from client-disclosed root spelling (separator/case differences on Windows); comparison must be platform-neutral and server rejection remains authoritative.
 - Local media preview must not use an unvalidated `local-file://` path; protocol/IPC design needs a focused security review and tests.
 
+## Post-Implementation User Verification — Invalid/Truncated Paths
+
+On 2026-07-17 the user supplied a second Electron screenshot showing a Markdown link destination shaped like `/Users/normy/autobyteus_org/.../compaction-lifecycle-contract.md`. The existing supported-type gate correctly recognizes `.md`, but the pure absolute-path normalizer still accepts the literal `...` component, so the Event Monitor emits an `Open ... in Files` action for an incomplete display placeholder. The durable evidence and intended behavior are recorded in `user-verification-invalid-absolute-path-report.md`.
+
+This is a bounded implementation local fix, not a new architecture boundary. The shared normalizer is the correct policy owner because raw Markdown links, prose, inline code, and fenced code all reach action creation through it. Reject exact `.`/`..`/`...`/`…` path components without probing the filesystem; preserve the original source rendering and suppress the Event Monitor action. Ordinary names containing dots remain eligible when their path components are otherwise complete.
+
+### Current Verification Source Log
+
+- 2026-07-17 — `git log --oneline --decorate -12`: current task HEAD is `ce9303994`; the supported-file-type fix is present in `66185f725`, with a follow-up Lua text-family correction in `7140696c8`.
+- 2026-07-17 — `sed -n '73,150p' autobyteus-web/utils/eventMonitorFilePaths/absoluteFilePathAction.ts`: `normalizeAbsoluteFilePath()` rejects non-absolute, NUL, and root candidates but does not yet reject placeholder dot components.
+- 2026-07-17 — `sed -n '1,180p' autobyteus-web/utils/fileExplorer/fileTypePolicy.ts`: unknown extensions resolve to `Unsupported`; supported-type gating is already centralized.
+- 2026-07-17 — user reference image `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_ef49d45255034cdf9b4c0411c380cfd1/solution_designer_f8adb9ecc8844afca985ef2b4b0996c2/context_files/ctx_de4a2d806820__image.png`: literal `/.../` placeholder received the special Files action.
+
+## Post-Implementation User Verification — Inline Link And Strip Nodes Icon
+
+The user approved replacing the bulky bordered `Open ... in Files` button with a compact inline underlined action matching the supplied file-link reference. The existing Markdown action IDs, typed event, launcher, read-only preview, and security boundaries remain the owners; only the action presentation and focused render tests change. Authored Markdown labels remain visible, bare paths remain visible/copyable, and invalid/unsupported candidates stay ordinary text.
+
+The user also reported that the Nodes icon is missing in strip mode. Investigation confirms `useShellPrimaryNavigation` exposes the Nodes item with custom icon name `autobyteus:nodes-network`, `AppLeftPanel.vue` already renders the correct nodes-network SVG inline, but `LeftSidebarStrip.vue` sends the unregistered custom name directly to Iconify. The bounded fix is to reuse the existing inline SVG (preferably through a small shared icon component) in the strip and add a visible-icon regression test; capability gating and `/nodes` navigation remain unchanged. Evidence is preserved in `user-verification-inline-file-link-report.md` and `user-verification-strip-nodes-icon-report.md`.
+
+This is a bounded presentation/local shell fix with no new cross-boundary design.
+
+Exact sources consulted for this clarification:
+
+- `autobyteus-web/composables/useMarkdownSegments.ts`: `actionButton()` currently creates the bordered prose/code control; Markdown-link actions already use an anchor with a render-scoped action ID.
+- `autobyteus-web/components/conversation/segments/renderer/MarkdownRenderer.vue`: existing delegated pointer/keyboard action handling and typed `file-path-action` emission can be reused.
+- `autobyteus-web/composables/useShellPrimaryNavigation.ts`: Nodes item, capability gate, route, and `SHELL_NODES_NETWORK_ICON` identity.
+- `autobyteus-web/components/AppLeftPanel.vue`: existing inline nodes-network SVG and `data-testid="nodes-network-icon"`.
+- `autobyteus-web/components/layout/LeftSidebarStrip.vue`: direct Iconify rendering of the unregistered custom Nodes icon name; no strip SVG fallback.
+- `autobyteus-web/components/layout/__tests__/LeftSidebarStrip.spec.ts`: existing Nodes inventory/route tests but no visible-icon assertion.
+
+
 ## Architecture Review Round 1 Findings And Resolution Basis
 
 Architecture review round 1 failed on 2026-07-17 with design-impact findings AR-F-001 through AR-F-004. The broad boundaries were confirmed sound; the following concrete corrections are now incorporated in `requirements.md` and `design-spec.md`:
@@ -207,6 +241,10 @@ The cumulative package now treats the following as stable IDs; current-state evi
 | BEH-006 | Trusted Electron local text/media boundary |
 | BEH-007 | Authorized workspace-relative remote/server boundary |
 | BEH-008 | Structured references/artifacts remain separate from incidental paths |
+| BEH-009 | Unsupported preview types remain source-faithful without action/read |
+| BEH-010 | Incomplete/placeholder absolute paths remain original without action/read |
+| BEH-011 | Supported Event Monitor path actions use compact inline link-style affordances |
+| BEH-012 | Nodes icon is visible in responsive strip mode |
 
 ## Post-Implementation User Verification — Unsupported File Types
 

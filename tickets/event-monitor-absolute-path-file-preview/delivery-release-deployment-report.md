@@ -2,141 +2,127 @@
 
 ## Release / Publication / Deployment Scope
 
-- Scope for this delivery turn: integrate the latest tracked `personal` base, synchronize durable documentation, and produce a local Apple Silicon Electron artifact for user-led verification.
-- Repository finalization, branch push, merge into `personal`, tag creation, publication, deployment, and cleanup are **not in progress** because explicit user verification has not yet been received and the authoritative API/E2E execution remains `Blocked` at 83% confidence.
+- Scope: refresh the current source package, verify the integrated state, rebuild the macOS ARM64 Electron artifact, synchronize durable docs, and hand off for user-led verification.
+- API/E2E Round 2 remains **Blocked at 84%**. No API/E2E Pass or proportional durable-test review Pass is claimed.
+- Repository finalization, release, publication, deployment, and cleanup remain held until explicit user verification.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/handoff-summary.md`
-- Handoff summary status: `Updated`
-- Notes: The summary records the integrated HEAD, build outputs and checksums, canonical docs changes, exact residual user-led scenarios, and the finalization hold.
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/handoff-summary.md`
+- Status: `Updated`.
+- Current source review: Pass at `7140696c8b78c6bfbba2035aaa8868a68e1e05aa`; delivery checkpoint is `ce9303994c2e23e912b2a427053e1ab67053a76c`.
 
 ## Initial Delivery Integration Refresh
 
-- Bootstrap base reference: `origin/personal @ fbd7b6764bd43751956d69ffe22b943d06188444`.
-- Latest tracked remote base reference checked: `origin/personal @ 894edc01d93844bcaeb01dda96c369c899c92c85`.
-- Base advanced since bootstrap or previous refresh: `Yes`.
-- New base commits integrated into the ticket branch: `Yes` — merge commit `a7a7b8b6e1ad0360f0240dd580938bef3a8c434b`; parents `e6f4cc0f0c2ebdb7d376164c82d5f4082f10c272` and `894edc01d93844bcaeb01dda96c369c899c92c85`.
-- Local checkpoint commit result: `Completed` — `e6f4cc0f0c2ebdb7d376164c82d5f4082f10c272`.
-- Integration method: `Merge`.
+- Bootstrap base: `origin/personal @ fbd7b6764bd43751956d69ffe22b943d06188444`.
+- Latest tracked base checked: `origin/personal @ 894edc01d93844bcaeb01dda96c369c899c92c85`.
+- Base advanced since bootstrap or prior refresh: `No` for this delivery round; the prior latest-base merge is already included.
+- New base commits integrated this round: `No`; branch was already current with the recorded base.
+- Local checkpoint: `Completed` — `ce9303994c2e23e912b2a427053e1ab67053a76c`.
+- Integration method: `Already current` after `git fetch origin personal`.
 - Integration result: `Completed`.
-- Post-integration executable checks rerun: `Yes`.
-- Post-integration verification result: `Passed` — `pnpm --dir autobyteus-web exec vitest run composables/__tests__/useRightPanel.spec.ts --reporter=dot`, 1 file / 7 tests.
-- Delivery edits started only after integrated state was current: `Yes`.
-- Handoff state current with latest tracked remote base: `Yes` at the time of docs/build checks; no remote refresh after user verification has been performed because verification is pending.
-- Integration evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/evidence/delivery-post-integration-check.log`.
+- Post-refresh executable check: `Passed` — 4 files / 41 tests using the current policy/action/Markdown/routing suite.
+- Post-refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/evidence/delivery-r2-post-refresh-check.log`.
+- Delivery-owned edits started only after integrated state was current: `Yes`.
+- Handoff state current with latest tracked base: `Yes` at the time of this handoff.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`.
-- Initial verification reference: `Pending; user was directed to inspect the local Electron artifact and exercise the residual scenarios.`
-- Renewed verification required after later re-integration: `No` — no user verification has yet been received.
-- Renewed verification received: `Not needed`.
-- Renewed verification reference: `Not applicable`.
+- Initial explicit completion/verification received: `No`.
+- Verification context: Earlier user-led verification identified unsupported `.dmg`/`.zip` actions; the bounded fix is now source-reviewed and rebuilt.
+- Renewed verification required after the bounded local fix: `Yes`.
+- Renewed verification received: `No`; pending user verification of the rebuilt artifact and the listed residual journeys.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/docs-sync-report.md`
-- Docs sync result: `Updated`.
-- Docs updated:
-  - `autobyteus-web/docs/content_rendering.md`
-  - `autobyteus-web/docs/file_explorer.md`
-  - `autobyteus-web/docs/electron_packaging.md`
-- No-impact rationale (if applicable): Not applicable; the feature introduces a durable cross-boundary runtime/security contract.
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/docs-sync-report.md`
+- Result: `Updated`.
+- Canonical docs updated: `autobyteus-web/docs/content_rendering.md`, `autobyteus-web/docs/file_explorer.md`.
+- `autobyteus-web/docs/electron_packaging.md` reviewed; no additional change needed.
+- Durable update: shared supported-preview policy, `.lua` support, and unsupported archive/installer/binary no-I/O behavior.
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No` — held for explicit user verification.
-- Archived ticket path: Not yet created; current ticket path remains `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/`.
+- Moved to `tickets/done/<ticket-name>`: `No`.
+- Current ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/`.
+- Reason: explicit user verification is pending.
 
 ## Version / Tag / Release Commit
 
-- No version bump, release commit, or tag was created by this delivery turn. The integrated base already reports workspace version `1.4.15`; the local artifact is labeled `1.4.15`, but this is not a release or publication sign-off.
+- No version bump, release commit, or tag created.
+- The artifact uses the existing workspace version `1.4.15`; this is not a release sign-off.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/requirements.md` and `investigation-notes.md`.
+- Bootstrap context: recorded in `requirements.md` and `investigation-notes.md`.
 - Ticket branch: `codex/event-monitor-absolute-path-file-preview`.
-- Ticket branch commit result: `Not started after delivery-owned docs edits; waiting for explicit user verification`.
-- Ticket branch push result: `Not started; waiting for explicit user verification`.
-- Finalization target remote: `origin`.
-- Finalization target branch: `personal`.
-- Target advanced after user verification: `Not applicable; user verification pending`.
-- Delivery-owned edits protected before re-integration: `Completed` by the pre-refresh checkpoint and merge.
-- Re-integration before final merge result: `Not started; user verification pending`.
-- Target branch update result: `Not started; user verification pending`.
-- Merge into target result: `Not started; user verification pending`.
-- Push target branch result: `Not started; user verification pending`.
-- Repository finalization status: `Blocked` pending explicit user verification.
-- Blocker: The required user completion/verification signal has not been received; upstream API/E2E also remains blocked for the listed native/authenticated/mobile scenarios.
+- Ticket branch commit/push: Not started after the current delivery-owned updates; held for user verification.
+- Finalization target: `origin/personal` / branch `personal`.
+- Target refresh after user verification: Not applicable yet.
+- Target merge/push/finalization: Not started.
+- Status: `Blocked` pending explicit verification and the unresolved API/E2E residuals.
 
 ## Release / Publication / Deployment
 
 - Applicable: `No` for this turn; only a local verification artifact was requested.
-- Method: `Other` — local `electron-builder` artifact build through the documented frontend script.
-- Method reference / command: `NO_TIMESTAMP=1 pnpm -C autobyteus-web build:electron:mac -- --arm64`.
-- Release/publication/deployment result: `Not required` before user verification.
-- Release notes handoff result: `Not required`.
-- Blocker (if applicable): No publication or deployment was attempted.
+- Method: `Other` — documented local Electron build command.
+- Command: `NO_TIMESTAMP=1 pnpm -C autobyteus-web build:electron:mac -- --arm64`.
+- Result: `Not required` before user verification.
+- Release notes: `Not required`.
+- No publication or deployment was attempted.
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview`.
-- Worktree cleanup result: `Blocked` — preserve the worktree and artifact while user-led verification is pending.
-- Worktree prune result: `Not required`.
-- Local ticket branch cleanup result: `Blocked` — preserve the branch until finalization.
-- Remote branch cleanup result: `Not required`.
-- Blocker: User verification hold.
+- Worktree cleanup: `Blocked`; preserve the current artifact and ticket worktree.
+- Ticket branch cleanup: `Blocked`; preserve until finalization.
+- Remote branch cleanup: `Not required`.
 
 ## Escalation / Reroute
 
-- Classification: `Unclear` only for finalization status; no implementation reroute is requested.
-- Recommended recipient: `User` for explicit completion/verification and any remaining live/runtime scenario results.
-- Why final handoff could not complete: Finalization and release actions are intentionally prohibited until the user verifies the built artifact and the residual acceptance journeys.
+- Recommended recipient: `User` for verification results.
+- Required residual verification: authenticated Event Monitor -> Files journeys; paired mobile session; current packaged Electron text/media; Windows host; and full Event Monitor/Files browser visual inspection.
+- If a new implementation/package defect is found, route it to `implementation_engineer` as a bounded local fix and repeat source review/API/E2E.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `No` — no release/publication is in scope yet.
-- Archived release notes artifact used for release/publication: `Not applicable`.
-- Release notes status: `Not required`.
+- Release notes created: `No`.
+- Status: `Not required` until release is explicitly authorized after verification.
 
 ## Deployment Steps
 
-1. No deployment was performed.
-2. The local macOS ARM64 Electron artifact was built successfully and is available for user-led verification.
-3. After explicit user verification, refresh `origin/personal` again before any finalization; if the base advanced, reintegrate and rerun the required check before obtaining renewed verification when the handoff changes.
+1. Rebuilt the current macOS ARM64 artifact.
+2. Await user-led verification; do not launch or claim packaged/native sign-off from this delivery stage.
+3. After explicit verification, refresh the finalization target again before any archival, merge, push, release, or deployment.
 
 ## Environment Or Persisted-Data Transition Notes
 
-- Approved persisted-data decision: `Not Affected` / no migration required; new action descriptors, read-only intents, and mobile requests are transient in-memory state.
-- Delivery action required: `None`.
-- Result and evidence: No migration or persisted-data transformation was introduced. The Electron build prepared the bundled server/package path only. Upstream execution recorded no intentional database write and retained its environment-fidelity note.
-- Migration completion, validation, recovery, and rollout evidence, only when `Migration Required`: `Not applicable`.
+- Persisted-data decision: `Not Affected`; the action descriptor, preview intent, and mobile request are transient.
+- Delivery action: `None`.
+- No migration or persisted-data transformation was introduced.
 
 ## Verification Checks
 
-- `git fetch origin personal`: passed; `origin/personal` resolved to `894edc01d93844bcaeb01dda96c369c899c92c85`.
-- Latest-base merge: passed as `a7a7b8b6e`; one `useRightPanel.ts` conflict was resolved by preserving both APIs.
-- Post-integration focused check: passed, 1 file / 7 tests; evidence `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/evidence/delivery-post-integration-check.log`.
-- `NO_TIMESTAMP=1 pnpm -C autobyteus-web build:electron:mac -- --arm64`: passed; evidence `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/evidence/delivery-electron-build.log`.
-- Build outputs:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.dmg`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.zip`
-- SHA-256:
-  - DMG `118fed3143041b1e683c8892fb9392e630735aa8fb2b10180660b53e8c9cf1a6`
-  - ZIP `0971ea8f5b54ea1ac698231b14e4f529c5a6bf497fec7fc995a0ac33f9b28c8c`
-- `git diff --check`: passed after docs edits; evidence `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/evidence/delivery-final-sanity-check.log`.
-- Canonical docs anchor sanity check and non-empty artifact checks: passed; same final sanity evidence.
-- API/E2E authoritative result: `Blocked`, 83%; this report does not convert it to `Pass`.
-- Packaged Electron launch/runtime, authenticated Event Monitor, paired phone-first mobile, and Windows host checks: not performed by delivery; preserved for user-led verification.
+- `git fetch origin personal`: passed; `origin/personal` is `894edc01d`.
+- Branch/base state: current; merge-base equals `origin/personal`.
+- Post-refresh focused test: passed, 4 files / 41 tests.
+- Current source review: Pass, commit `7140696c8`.
+- Current Electron build: passed; evidence `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/evidence/delivery-r2-electron-build.log`.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.dmg`.
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.zip`.
+- SHA-256 DMG: `854c0c8ae05cd55bfa025e2711181d03d0057104bb87e333695a3863f8b4c6aa`.
+- SHA-256 ZIP: `fce6115605bd9850862bc217ce03dc16bd5cb8992f46f9c88d5b8da40909fffc`.
+- API/E2E Round 2: `Blocked`, 84%; no implementation failure observed, but no clean pass claimed.
+- Proportional API/E2E test review: not completed/signoff not claimed; no durable API/E2E test files changed.
+- Packaged launch/runtime and Windows validation: not performed by delivery; user-led residuals remain.
+- Build output is unsigned/not notarized; electron-builder reported `identity explicitly is set to null`.
+- Final sanity evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/evidence/delivery-r2-final-sanity-check.log`.
 
 ## Rollback Criteria
 
-- If user verification finds a packaging/build defect, preserve logs and route a packaging local fix to `implementation_engineer`; do not finalize.
-- If user verification finds an Event Monitor/Files behavior defect, preserve scenario IDs and route through the established source review and API/E2E path.
-- If Windows/native or packaged IPC/media validation remains unavailable, keep the package in verification hold; do not claim a clean API/E2E pass or release readiness.
-- No production rollout occurred, so no deployment rollback is applicable.
+- If user verification finds unsupported-type regression, packaging defect, or viewer mismatch, preserve the exact scenario and route a bounded local fix; do not finalize.
+- If packaged/native or Windows checks remain unavailable, retain the blocked status and do not claim release readiness.
+- No production deployment occurred; no deployment rollback is applicable.
 
 ## Final Status
 
-`Ready for user-led verification; finalization, archival, repository finalization, publication, and deployment are held.`
+`Current Electron artifact rebuilt successfully; ready for user-led verification. Finalization, archival, release, publication, deployment, and cleanup remain held.`

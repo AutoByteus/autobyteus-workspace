@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/electron
+
+·
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  15:39:54
+   Duration  317ms (transform 31ms, setup 0ms, collect 27ms, tests 5ms, environment 0ms, prepare 80ms)
+

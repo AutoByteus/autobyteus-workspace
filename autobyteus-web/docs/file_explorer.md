@@ -144,6 +144,16 @@ audio, video, PDF, CSV, and Excel content. Failure states stay in the normal
 Files/viewer status surface and do not navigate the application or rewrite the
 original Event Monitor content.
 
+Action eligibility and `determineFileType()` use the shared
+`utils/fileExplorer/fileTypePolicy.ts` allowlist so the Event Monitor cannot
+offer a preview action for a type that the shared viewer cannot render.
+Supported code/text families include the existing `.lua` family. Archive,
+installer, application-bundle, generic-binary, and unknown extensions such as
+`.zip`, `.dmg`, and `.pkg` remain visible and copyable but do not create an
+action, open a tab, read text, construct `local-file://`, or request workspace
+content. This pure filename decision is separate from validation of a
+supported-looking path at the trusted native/server boundary.
+
 ### FileExplorer.vue
 
 Main container component for the file browser panel:
