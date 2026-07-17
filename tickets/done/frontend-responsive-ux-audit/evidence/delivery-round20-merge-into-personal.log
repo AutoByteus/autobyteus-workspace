@@ -1,0 +1,893 @@
+Delivery Round 20 merge ticket branch into personal
+UTC 2026-07-17T09:55:38Z
+target_worktree=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+target_branch=personal
+target_pre_merge=fbd7b6764bd43751956d69ffe22b943d06188444
+ticket_remote=3aef4eb2d26f5a7fed2962638d4bda5a45db5a2a
+target status before merge:
+?? .article-work/
+?? .local-build-logs/
+?? docs/articles/
+?? tickets/in-progress/app-store-publishing-pipeline-investigation/
+merge command:
+Merge made by the 'ort' strategy.
+ autobyteus-web/ARCHITECTURE.md                     |     1 +
+ autobyteus-web/README.md                           |    32 +-
+ autobyteus-web/components/AppLeftPanel.vue         |     6 +-
+ .../components/fileExplorer/FileExplorerLayout.vue |    31 +-
+ .../components/layout/LeftSidebarStrip.vue         |    74 +-
+ autobyteus-web/components/layout/RightSideTabs.vue |    10 +-
+ .../components/layout/RightSidebarStrip.vue        |    59 +-
+ .../components/layout/WorkspaceAdaptiveLayout.vue  |   307 +
+ .../components/layout/WorkspaceDesktopLayout.vue   |   129 -
+ .../components/layout/WorkspaceMobileLayout.vue    |   185 -
+ .../components/layout/WorkspaceRightToolDrawer.vue |    51 +
+ .../layout/__tests__/LeftSidebarStrip.spec.ts      |    90 +-
+ .../layout/__tests__/RightSideTabs.spec.ts         |    33 +-
+ .../layout/__tests__/RightSidebarStrip.spec.ts     |    76 +
+ .../__tests__/WorkspaceAdaptiveLayout.spec.ts      |   545 +
+ .../__tests__/WorkspaceDesktopLayout.spec.ts       |   175 -
+ .../__tests__/WorkspaceRightToolDrawer.spec.ts     |   137 +
+ autobyteus-web/components/tabs/Tab.vue             |    23 +-
+ autobyteus-web/components/tabs/TabList.vue         |   136 +-
+ .../components/tabs/__tests__/Tab.spec.ts          |    21 +
+ .../components/tabs/__tests__/TabList.spec.ts      |    34 +
+ .../workspace/agent/AgentWorkspaceView.vue         |     6 +-
+ .../workspace/team/TeamWorkspaceView.vue           |     4 +-
+ .../__tests__/useAccessibleDrawer.spec.ts          |   225 +
+ .../composables/__tests__/useRightPanel.spec.ts    |    72 +-
+ .../composables/layout/useResponsiveElementRect.ts |    37 +
+ .../layout/useResponsiveWorkspaceShell.ts          |    51 +
+ autobyteus-web/composables/useAccessibleDrawer.ts  |   230 +
+ autobyteus-web/composables/useLeftPanel.ts         |    17 +-
+ autobyteus-web/composables/useMobilePanels.ts      |    17 -
+ autobyteus-web/composables/useRightPanel.ts        |    59 +-
+ autobyteus-web/composables/useRightSideTabs.ts     |    43 +-
+ .../docs/agent_integration_minimal_bridge.md       |    11 +-
+ autobyteus-web/docs/remote_access.md               |     2 +-
+ autobyteus-web/docs/terminal.md                    |     2 +-
+ autobyteus-web/docs/workspace_layout.md            |   136 +
+ .../layouts/__tests__/default-drawer.spec.ts       |   229 +
+ autobyteus-web/layouts/__tests__/default.spec.ts   |    63 +-
+ autobyteus-web/layouts/default.vue                 |   150 +-
+ autobyteus-web/localization/messages/en/shell.ts   |    17 +
+ .../localization/messages/zh-CN/shell.ts           |    17 +
+ autobyteus-web/package.json                        |     3 +-
+ autobyteus-web/pages/workspace.vue                 |    37 +-
+ .../tests/e2e/workspace-responsive-probe.mjs       |  1426 ++
+ .../__tests__/responsiveLayoutPolicy.spec.ts       |   240 +
+ .../layout/__tests__/workspaceSurfaceOrder.spec.ts |    31 +
+ .../utils/layout/responsiveLayoutPolicy.ts         |   537 +
+ .../utils/layout/responsiveStripActivation.ts      |    47 +
+ .../utils/layout/workspaceSurfaceOrder.ts          |    38 +
+ .../api-e2e-coverage-investigation.md              |   889 +
+ .../api-e2e-execution-coverage-report.md           |  1474 ++
+ .../api-e2e-test-review-report.md                  |   678 +
+ .../code-review-report.md                          |  4377 +++++
+ .../comprehensive-responsive-ui-test-report.md     |   401 +
+ .../delivery-release-deployment-report.md          |   144 +
+ .../design-review-report.md                        |   459 +
+ .../frontend-responsive-ux-audit/design-spec.md    |   971 ++
+ .../docs-sync-report.md                            |    66 +
+ .../api-e2e-audit-localization-literals.log        |     5 +
+ .../evidence/api-e2e-build.log                     |   213 +
+ .../evidence/api-e2e-focused-nuxt-tests.log        |    80 +
+ .../evidence/api-e2e-git-diff-check.log            |     0
+ .../api-e2e-guard-localization-boundary.log        |     5 +
+ .../evidence/api-e2e-guard-web-boundary.log        |     5 +
+ .../evidence/api-e2e-round10-backend.log           |   281 +
+ .../evidence/api-e2e-round10-cleanup-ports.log     |     5 +
+ .../api-e2e-round10-focused-nuxt-tests.log         |   143 +
+ .../evidence/api-e2e-round10-frontend.log          |    78 +
+ .../evidence/api-e2e-round10-probe-checks.log      |     2 +
+ .../evidence/api-e2e-round10-runtime-setup.log     |    10 +
+ .../evidence/api-e2e-round10-server-build.log      |    54 +
+ .../api-e2e-round10-workspace-responsive-probe.log |   470 +
+ .../evidence/api-e2e-round11-backend.log           |   294 +
+ .../evidence/api-e2e-round11-cleanup-ports.log     |     5 +
+ .../api-e2e-round11-focused-nuxt-tests.log         |   143 +
+ .../evidence/api-e2e-round11-frontend.log          |    98 +
+ .../evidence/api-e2e-round11-probe-checks.log      |     2 +
+ .../evidence/api-e2e-round11-runtime-setup.log     |    10 +
+ .../evidence/api-e2e-round11-server-build.log      |    54 +
+ .../api-e2e-round11-workspace-responsive-probe.log |   446 +
+ .../evidence/api-e2e-round12-backend.log           |   281 +
+ .../evidence/api-e2e-round12-cleanup-ports.log     |     5 +
+ .../api-e2e-round12-focused-nuxt-tests.log         |   143 +
+ .../evidence/api-e2e-round12-frontend.log          |    32 +
+ .../evidence/api-e2e-round12-probe-checks.log      |     2 +
+ .../evidence/api-e2e-round12-runtime-setup.log     |    10 +
+ .../evidence/api-e2e-round12-server-build.log      |    54 +
+ .../api-e2e-round12-workspace-responsive-probe.log |   446 +
+ .../evidence/api-e2e-round13-backend.log           |   256 +
+ .../api-e2e-round13-first-attempt-cleanup.log      |     5 +
+ .../api-e2e-round13-focused-nuxt-tests.log         |   143 +
+ .../evidence/api-e2e-round13-frontend.log          |    98 +
+ .../evidence/api-e2e-round13-probe-checks.log      |     2 +
+ .../evidence/api-e2e-round13-retry-backend.log     |   246 +
+ .../api-e2e-round13-retry-cleanup-ports.log        |     5 +
+ .../evidence/api-e2e-round13-retry-frontend.log    |    32 +
+ .../api-e2e-round13-retry-runtime-setup.log        |    10 +
+ .../evidence/api-e2e-round13-runtime-setup.log     |    10 +
+ .../evidence/api-e2e-round13-server-build.log      |    54 +
+ ...2e-round13-workspace-responsive-probe-final.log |   540 +
+ .../api-e2e-round13-workspace-responsive-probe.log |   547 +
+ .../evidence/api-e2e-round14-backend.log           |   262 +
+ .../evidence/api-e2e-round14-cleanup-ports.log     |     3 +
+ ...2e-round14-final-workspace-responsive-probe.log |   633 +
+ .../api-e2e-round14-first-attempt-cleanup.log      |     3 +
+ .../evidence/api-e2e-round14-frontend.log          |    82 +
+ .../evidence/api-e2e-round14-probe-checks.log      |     2 +
+ .../evidence/api-e2e-round14-retry-backend.log     |   279 +
+ .../evidence/api-e2e-round14-retry-frontend.log    |    16 +
+ .../api-e2e-round14-retry-runtime-setup.log        |     9 +
+ ...2e-round14-retry-workspace-responsive-probe.log |   644 +
+ .../evidence/api-e2e-round14-runtime-setup.log     |    11 +
+ .../evidence/api-e2e-round14-server-build.log      |    56 +
+ .../api-e2e-round14-workspace-responsive-probe.log |    15 +
+ .../evidence/api-e2e-round15-backend.log           |   269 +
+ .../evidence/api-e2e-round15-cleanup-ports.log     |     4 +
+ .../api-e2e-round15-focused-nuxt-tests.log         |   180 +
+ .../evidence/api-e2e-round15-frontend.log          |    82 +
+ .../evidence/api-e2e-round15-probe-checks.log      |     2 +
+ .../evidence/api-e2e-round15-runtime-setup.log     |    13 +
+ .../evidence/api-e2e-round15-server-build.log      |    56 +
+ .../api-e2e-round15-workspace-responsive-probe.log |   633 +
+ .../evidence/api-e2e-round16-backend.log           |   282 +
+ .../evidence/api-e2e-round16-cleanup-ports.log     |     4 +
+ .../api-e2e-round16-focused-nuxt-tests.log         |   122 +
+ .../evidence/api-e2e-round16-frontend.log          |    78 +
+ .../evidence/api-e2e-round16-probe-checks.log      |    12 +
+ .../evidence/api-e2e-round16-runtime-setup.log     |    13 +
+ .../evidence/api-e2e-round16-server-build.log      |    57 +
+ .../api-e2e-round16-workspace-responsive-probe.log |  1301 ++
+ .../evidence/api-e2e-round17-backend.log           |   282 +
+ .../evidence/api-e2e-round17-cleanup-ports.log     |     3 +
+ .../api-e2e-round17-focused-nuxt-tests.log         |   127 +
+ .../evidence/api-e2e-round17-frontend.log          |    78 +
+ .../evidence/api-e2e-round17-probe-checks.log      |     6 +
+ .../evidence/api-e2e-round17-runtime-setup.log     |    11 +
+ .../evidence/api-e2e-round17-server-build.log      |    54 +
+ ...-round17-workspace-responsive-probe-initial.log |   630 +
+ .../api-e2e-round17-workspace-responsive-probe.log |   630 +
+ ...i-e2e-round18-application-capability-enable.log |     9 +
+ .../api-e2e-round18-application-capability.log     |     9 +
+ .../api-e2e-round18-application-catalog.log        |    18 +
+ ...e-round18-application-immersive-interaction.log |   127 +
+ ...e2e-round18-application-route-probe-enabled.log |    64 +
+ .../api-e2e-round18-application-route-probe.log    |   150 +
+ .../evidence/api-e2e-round18-backend.log           |   316 +
+ .../evidence/api-e2e-round18-cleanup-ports.log     |    11 +
+ .../api-e2e-round18-focused-nuxt-tests.log         |   135 +
+ .../evidence/api-e2e-round18-frontend.log          |    78 +
+ .../evidence/api-e2e-round18-probe-checks.log      |     3 +
+ .../evidence/api-e2e-round18-runtime-setup.log     |    10 +
+ .../evidence/api-e2e-round18-server-build.log      |    54 +
+ .../api-e2e-round18-workspace-responsive-probe.log |   644 +
+ ...i-e2e-round19-application-capability-enable.log |     2 +
+ .../api-e2e-round19-application-capability.log     |     2 +
+ .../api-e2e-round19-application-catalog.log        |     2 +
+ .../evidence/api-e2e-round19-backend.log           |     4 +
+ .../evidence/api-e2e-round19-cleanup-ports.log     |     8 +
+ .../api-e2e-round19-focused-nuxt-tests.log         |    71 +
+ .../evidence/api-e2e-round19-frontend.log          |     5 +
+ .../evidence/api-e2e-round19-probe-checks.log      |     4 +
+ .../evidence/api-e2e-round19-runtime-setup.log     |     8 +
+ .../evidence/api-e2e-round19-server-build.log      |    54 +
+ ...2e-round19-workspace-responsive-probe-rerun.log |    32 +
+ ...e-round19-workspace-responsive-probe-rerun2.log |   735 +
+ .../api-e2e-round19-workspace-responsive-probe.log |   767 +
+ .../api-e2e-round2-audit-localization-literals.log |     9 +
+ .../evidence/api-e2e-round2-build.log              |   220 +
+ .../evidence/api-e2e-round2-cleanup-ports.log      |     2 +
+ .../evidence/api-e2e-round2-focused-nuxt-tests.log |   103 +
+ .../evidence/api-e2e-round2-git-diff-check.log     |     0
+ .../api-e2e-round2-guard-localization-boundary.log |     5 +
+ .../evidence/api-e2e-round2-guard-web-boundary.log |     5 +
+ .../evidence/api-e2e-round2-probe-node-check.log   |     0
+ .../api-e2e-round2-workspace-responsive-probe.log  |   490 +
+ ...i-e2e-round20-application-capability-enable.log |     2 +
+ .../api-e2e-round20-application-capability.log     |     2 +
+ .../api-e2e-round20-application-catalog.log        |     2 +
+ .../evidence/api-e2e-round20-backend.log           |     5 +
+ .../evidence/api-e2e-round20-cleanup-ports.log     |     8 +
+ .../api-e2e-round20-focused-nuxt-tests.log         |   107 +
+ .../evidence/api-e2e-round20-frontend.log          |     4 +
+ .../evidence/api-e2e-round20-probe-checks.log      |     4 +
+ .../evidence/api-e2e-round20-runtime-setup.log     |    10 +
+ .../evidence/api-e2e-round20-server-build.log      |    54 +
+ ...2e-round20-workspace-responsive-probe-rerun.log |   701 +
+ .../api-e2e-round20-workspace-responsive-probe.log |   715 +
+ .../api-e2e-round3-audit-localization-literals.log |    11 +
+ .../evidence/api-e2e-round3-backend-final.log      |   333 +
+ .../evidence/api-e2e-round3-backend-postbuild.log  |   170 +
+ .../evidence/api-e2e-round3-backend.log            |   466 +
+ .../evidence/api-e2e-round3-build.log              |   222 +
+ .../evidence/api-e2e-round3-cleanup-ports.log      |     1 +
+ .../evidence/api-e2e-round3-focused-nuxt-tests.log |   105 +
+ .../evidence/api-e2e-round3-frontend-final.log     |    16 +
+ .../evidence/api-e2e-round3-frontend-postbuild.log |   142 +
+ .../evidence/api-e2e-round3-frontend.log           |    94 +
+ .../evidence/api-e2e-round3-git-diff-check.log     |     2 +
+ .../api-e2e-round3-guard-localization-boundary.log |     7 +
+ .../evidence/api-e2e-round3-guard-web-boundary.log |     7 +
+ .../evidence/api-e2e-round3-probe-node-check.log   |     2 +
+ .../evidence/api-e2e-round3-runtime-pids.log       |     6 +
+ ...e2e-round3-workspace-responsive-probe-final.log |   492 +
+ ...-workspace-responsive-probe-postbuild-retry.log |   549 +
+ ...round3-workspace-responsive-probe-postbuild.log |   549 +
+ .../api-e2e-round3-workspace-responsive-probe.log  |   492 +
+ .../evidence/api-e2e-round4-backend-retry.log      |   285 +
+ .../evidence/api-e2e-round4-backend.log            |   374 +
+ .../evidence/api-e2e-round4-cleanup-ports.log      |     3 +
+ .../evidence/api-e2e-round4-focused-nuxt-tests.log |   105 +
+ .../evidence/api-e2e-round4-frontend-retry.log     |    16 +
+ .../evidence/api-e2e-round4-frontend.log           |    16 +
+ .../evidence/api-e2e-round4-runtime-setup.log      |     3 +
+ .../evidence/api-e2e-round4-server-build.log       |    54 +
+ ...e2e-round4-workspace-responsive-probe-retry.log |   569 +
+ .../api-e2e-round4-workspace-responsive-probe.log  |   606 +
+ .../api-e2e-round5-audit-localization-literals.log |     9 +
+ .../evidence/api-e2e-round5-backend.log            |   342 +
+ .../evidence/api-e2e-round5-cleanup-ports.log      |     3 +
+ .../evidence/api-e2e-round5-focused-nuxt-tests.log |   103 +
+ .../evidence/api-e2e-round5-frontend.log           |    82 +
+ .../evidence/api-e2e-round5-git-diff-check.log     |     0
+ .../api-e2e-round5-guard-localization-boundary.log |     5 +
+ .../evidence/api-e2e-round5-guard-web-boundary.log |     5 +
+ .../evidence/api-e2e-round5-nuxt-build.log         |   220 +
+ .../evidence/api-e2e-round5-probe-node-check.log   |     0
+ .../evidence/api-e2e-round5-runtime-setup.log      |     8 +
+ .../evidence/api-e2e-round5-server-build.log       |    54 +
+ .../api-e2e-round5-workspace-responsive-probe.log  |   495 +
+ .../evidence/api-e2e-round6-backend-rerun.log      |   496 +
+ .../evidence/api-e2e-round6-backend.log            |   292 +
+ .../api-e2e-round6-cleanup-ports-final.log         |     3 +
+ .../evidence/api-e2e-round6-cleanup-ports.log      |     3 +
+ .../evidence/api-e2e-round6-focused-nuxt-tests.log |   103 +
+ .../evidence/api-e2e-round6-frontend-rerun.log     |    12 +
+ .../evidence/api-e2e-round6-frontend.log           |    82 +
+ .../evidence/api-e2e-round6-runtime-setup.log      |     8 +
+ .../evidence/api-e2e-round6-server-build.log       |    54 +
+ ...e2e-round6-workspace-responsive-probe-final.log |   713 +
+ ...2e-round6-workspace-responsive-probe-final2.log |   649 +
+ ...e2e-round6-workspace-responsive-probe-rerun.log |   804 +
+ ...2e-round6-workspace-responsive-probe-rerun2.log |   769 +
+ .../api-e2e-round6-workspace-responsive-probe.log  |   817 +
+ .../evidence/api-e2e-round7-backend.log            |   286 +
+ .../evidence/api-e2e-round7-cleanup-ports.log      |     3 +
+ .../evidence/api-e2e-round7-focused-nuxt-tests.log |   103 +
+ .../evidence/api-e2e-round7-frontend.log           |    78 +
+ .../evidence/api-e2e-round7-runtime-setup.log      |     8 +
+ .../evidence/api-e2e-round7-server-build.log       |    54 +
+ .../api-e2e-round7-workspace-responsive-probe.log  |   495 +
+ .../evidence/api-e2e-round8-backend.log            |   367 +
+ .../evidence/api-e2e-round8-cleanup-ports.log      |     5 +
+ .../evidence/api-e2e-round8-focused-nuxt-tests.log |   143 +
+ .../evidence/api-e2e-round8-frontend.log           |    12 +
+ .../evidence/api-e2e-round8-runtime-setup.log      |    10 +
+ .../evidence/api-e2e-round8-server-build.log       |    54 +
+ ...e2e-round8-workspace-responsive-probe-final.log |   446 +
+ .../api-e2e-round8-workspace-responsive-probe.log  |   462 +
+ .../evidence/api-e2e-round9-backend.log            |   281 +
+ .../evidence/api-e2e-round9-cleanup-ports.log      |     5 +
+ .../evidence/api-e2e-round9-focused-nuxt-tests.log |   143 +
+ .../evidence/api-e2e-round9-frontend.log           |    78 +
+ .../evidence/api-e2e-round9-probe-checks.log       |     2 +
+ .../evidence/api-e2e-round9-runtime-setup.log      |    10 +
+ .../evidence/api-e2e-round9-server-build.log       |    54 +
+ .../api-e2e-round9-workspace-responsive-probe.log  |   446 +
+ .../api-e2e-workspace-responsive-probe.log         |   490 +
+ .../evidence/delivery-docs-sanity-check.log        |    35 +
+ .../evidence/delivery-final-sanity-check.log       |    59 +
+ .../delivery-initial-fetch-and-base-check.log      |    33 +
+ .../evidence/delivery-round10-electron-build.log   |   689 +
+ .../delivery-round10-final-sanity-check.log        |    21 +
+ .../evidence/delivery-round12-electron-build.log   |   680 +
+ .../evidence/delivery-round12-fetch-and-merge.log  |     9 +
+ .../delivery-round12-final-sanity-check.log        |    22 +
+ .../delivery-round12-post-refresh-check.log        |    57 +
+ .../delivery-round12-pre-refresh-state.log         |     9 +
+ .../evidence/delivery-round13-electron-build.log   |   680 +
+ .../evidence/delivery-round13-fetch-and-merge.log  |     9 +
+ .../delivery-round13-final-sanity-check.log        |    25 +
+ .../delivery-round13-post-refresh-check.log        |    55 +
+ .../delivery-round13-pre-refresh-state.log         |     9 +
+ .../evidence/delivery-round14-electron-build.log   |   680 +
+ .../evidence/delivery-round14-fetch-and-merge.log  |     9 +
+ .../delivery-round14-final-sanity-check.log        |    22 +
+ .../delivery-round14-post-refresh-check.log        |    59 +
+ .../delivery-round14-pre-refresh-state.log         |     9 +
+ .../evidence/delivery-round15-electron-build.log   |   689 +
+ .../evidence/delivery-round15-fetch-and-merge.log  |     9 +
+ .../delivery-round15-final-sanity-check.log        |    28 +
+ .../delivery-round15-post-refresh-check.log        |    53 +
+ .../delivery-round15-pre-refresh-state.log         |     9 +
+ .../evidence/delivery-round16-electron-build.log   |   679 +
+ .../evidence/delivery-round16-fetch-and-merge.log  |     8 +
+ .../delivery-round16-final-sanity-check.log        |    31 +
+ .../delivery-round16-post-refresh-check.log        |    20 +
+ .../delivery-round16-pre-refresh-state.log         |    76 +
+ .../evidence/delivery-round17-electron-build.log   |   680 +
+ .../evidence/delivery-round17-fetch-and-merge.log  |     8 +
+ .../delivery-round17-final-sanity-check.log        |    31 +
+ .../delivery-round17-post-refresh-check.log        |    22 +
+ .../delivery-round17-pre-refresh-state.log         |    74 +
+ .../evidence/delivery-round18-electron-build.log   |   679 +
+ .../evidence/delivery-round18-fetch-and-merge.log  |     8 +
+ .../delivery-round18-final-sanity-check.log        |    31 +
+ .../delivery-round18-post-refresh-check.log        |    19 +
+ .../delivery-round18-pre-refresh-state.log         |    73 +
+ .../evidence/delivery-round2-checkpoint-commit.log |   159 +
+ .../evidence/delivery-round2-docs-review.log       |    34 +
+ .../evidence/delivery-round2-fetch-and-merge.log   |    67 +
+ .../delivery-round2-final-sanity-check.log         |    25 +
+ .../delivery-round2-post-integration-checks.log    |   111 +
+ .../evidence/delivery-round2-pre-refresh-state.log |    57 +
+ .../evidence/delivery-round20-electron-build.log   |   701 +
+ .../evidence/delivery-round20-fetch-and-merge.log  |    10 +
+ .../delivery-round20-final-sanity-check.log        |    28 +
+ .../delivery-round20-final-target-refresh.log      |     8 +
+ .../delivery-round20-finalization-precommit.log    |    18 +
+ .../delivery-round20-post-refresh-check.log        |    17 +
+ .../delivery-round20-pre-refresh-state.log         |    82 +
+ .../evidence/delivery-round20-ticket-push.log      |    19 +
+ .../evidence/delivery-round3-fetch-and-merge.log   |    14 +
+ .../delivery-round3-post-integration-checks.log    |   169 +
+ .../evidence/delivery-round3-pre-refresh-state.log |    86 +
+ .../evidence/delivery-round4-fetch-and-merge.log   |    16 +
+ .../delivery-round4-final-sanity-check.log         |    32 +
+ .../delivery-round4-post-refresh-check.log         |    46 +
+ .../evidence/delivery-round4-pre-refresh-state.log |    57 +
+ .../evidence/delivery-round5-electron-build.log    |   689 +
+ ...livery-round5-electron-runtime-verification.log |     8 +
+ .../evidence/delivery-round5-fetch-and-merge.log   |    20 +
+ .../delivery-round5-final-sanity-check.log         |    32 +
+ .../delivery-round5-post-refresh-check.log         |    70 +
+ .../evidence/delivery-round5-pre-refresh-state.log |    85 +
+ .../evidence/delivery-round8-electron-build.log    |   679 +
+ ...livery-round8-electron-runtime-verification.log |     8 +
+ .../evidence/delivery-round8-fetch-and-merge.log   |    13 +
+ .../delivery-round8-final-sanity-check.log         |    32 +
+ .../delivery-round8-post-refresh-check.log         |    67 +
+ .../evidence/delivery-round8-pre-refresh-state.log |   132 +
+ .../evidence/delivery-round9-electron-build.log    |   679 +
+ .../delivery-round9-electron-launch-smoke.log      |   587 +
+ .../evidence/delivery-round9-fetch-and-merge.log   |    13 +
+ .../delivery-round9-post-refresh-check.log         |    47 +
+ .../evidence/delivery-round9-pre-refresh-state.log |    78 +
+ .../evidence/electron-build-final-check.log        |    15 +
+ .../evidence/electron-build-mac-arm64.log          |   685 +
+ .../electron-build-runtime-verification-arm64.log  |    15 +
+ ...ner-right-tabs-current-705x752-after-scroll.png |   Bin 0 -> 27463 bytes
+ ...er-right-tabs-current-705x752-before-scroll.png |   Bin 0 -> 81859 bytes
+ .../solution-designer-right-tabs-live-check.md     |    67 +
+ ...signer-workspace-current-narrow-empty-state.png |   Bin 0 -> 28263 bytes
+ .../handoff-summary.md                             |   103 +
+ .../implementation-handoff.md                      |   507 +
+ .../implementation-live-visual-report.md           |    42 +
+ .../investigation-notes.md                         |  1068 ++
+ .../probes/api-e2e/desktop-1180x800.png            |   Bin 0 -> 33513 bytes
+ .../probes/api-e2e/desktop-1280x800.png            |   Bin 0 -> 37215 bytes
+ .../probes/api-e2e/gap-700x700.png                 |   Bin 0 -> 22104 bytes
+ .../probes/api-e2e/gap-767x700.png                 |   Bin 0 -> 20876 bytes
+ .../probes/api-e2e/md-768x700.png                  |   Bin 0 -> 20511 bytes
+ .../probes/api-e2e/mobile-route-390x844.png        |   Bin 0 -> 45929 bytes
+ .../probes/api-e2e/narrow-500x700.png              |   Bin 0 -> 19243 bytes
+ .../probes/api-e2e/narrow-short-500x420.png        |   Bin 0 -> 17682 bytes
+ .../probes/api-e2e/phone-390x844.png               |   Bin 0 -> 18513 bytes
+ .../probes/api-e2e/phone-short-390x640.png         |   Bin 0 -> 17744 bytes
+ .../probes/api-e2e/small-desktop-1024x768.png      |   Bin 0 -> 32871 bytes
+ .../api-e2e/small-desktop-short-1024x480.png       |   Bin 0 -> 30350 bytes
+ .../probes/api-e2e/tablet-800x700.png              |   Bin 0 -> 20629 bytes
+ .../probes/api-e2e/tablet-900x700.png              |   Bin 0 -> 31390 bytes
+ .../probes/api-e2e/tablet-short-800x420.png        |   Bin 0 -> 18837 bytes
+ .../probes/api-e2e/threshold-639x700.png           |   Bin 0 -> 20112 bytes
+ .../probes/api-e2e/threshold-640x700.png           |   Bin 0 -> 20142 bytes
+ .../probes/api-e2e/wide-1440x900.png               |   Bin 0 -> 56311 bytes
+ ...workspace-responsive-probe-results-initial.json | 12425 ++++++++++++++
+ .../workspace-responsive-probe-results.json        | 16195 +++++++++++++++++++
+ ...workspace-responsive-probe-summary-initial.json |   625 +
+ .../workspace-responsive-probe-summary.json        |   700 +
+ .../current-responsive-ui-results.json             | 12319 ++++++++++++++
+ .../comprehensive/desktop-1180x800-initial.png     |   Bin 0 -> 42905 bytes
+ .../comprehensive/desktop-1280x800-initial.png     |   Bin 0 -> 43217 bytes
+ .../comprehensive/gap-700x700-after-hamburger.png  |   Bin 0 -> 16942 bytes
+ .../probes/comprehensive/gap-700x700-initial.png   |   Bin 0 -> 5035 bytes
+ .../comprehensive/gap-767x700-after-hamburger.png  |   Bin 0 -> 18573 bytes
+ .../probes/comprehensive/gap-767x700-initial.png   |   Bin 0 -> 5195 bytes
+ .../probes/comprehensive/md-768x700-initial.png    |   Bin 0 -> 40317 bytes
+ .../probes/comprehensive/mobile-route-390x844.png  |   Bin 0 -> 45923 bytes
+ .../narrow-500x700-after-hamburger.png             |   Bin 0 -> 18116 bytes
+ .../comprehensive/narrow-500x700-initial.png       |   Bin 0 -> 12895 bytes
+ .../narrow-short-500x420-after-hamburger.png       |   Bin 0 -> 13272 bytes
+ .../comprehensive/narrow-short-500x420-initial.png |   Bin 0 -> 11617 bytes
+ .../phone-390x844-after-hamburger.png              |   Bin 0 -> 17449 bytes
+ .../probes/comprehensive/phone-390x844-initial.png |   Bin 0 -> 13090 bytes
+ .../phone-short-390x640-after-hamburger.png        |   Bin 0 -> 16375 bytes
+ .../comprehensive/phone-short-390x640-initial.png  |   Bin 0 -> 12249 bytes
+ .../comprehensive/probe-current-responsive-ui.mjs  |   208 +
+ .../probes/comprehensive/probe-summary-latest.json |   913 ++
+ .../probes/comprehensive/recheck-phone-390x844.png |   Bin 0 -> 13090 bytes
+ .../small-desktop-1024x768-initial.png             |   Bin 0 -> 43095 bytes
+ .../small-desktop-short-1024x480-initial.png       |   Bin 0 -> 40565 bytes
+ .../comprehensive/tablet-800x700-initial.png       |   Bin 0 -> 40675 bytes
+ .../comprehensive/tablet-900x700-initial.png       |   Bin 0 -> 40884 bytes
+ .../comprehensive/tablet-short-800x420-initial.png |   Bin 0 -> 36143 bytes
+ .../threshold-639x700-after-hamburger.png          |   Bin 0 -> 19379 bytes
+ .../comprehensive/threshold-639x700-initial.png    |   Bin 0 -> 13332 bytes
+ .../threshold-640x700-after-hamburger.png          |   Bin 0 -> 16393 bytes
+ .../comprehensive/threshold-640x700-initial.png    |   Bin 0 -> 4825 bytes
+ .../probes/comprehensive/wide-1440x900-initial.png |   Bin 0 -> 45546 bytes
+ .../probes/desktop-1024x768.png                    |   Bin 0 -> 43095 bytes
+ .../probes/desktop-1440x900.png                    |   Bin 0 -> 45546 bytes
+ .../probes/gap-700x700.png                         |   Bin 0 -> 5035 bytes
+ .../probes/gap-760x700.png                         |   Bin 0 -> 5195 bytes
+ .../implementation-live/desktop-1180x800.png       |   Bin 0 -> 36332 bytes
+ .../implementation-live/desktop-1280x800.png       |   Bin 0 -> 43407 bytes
+ .../probes/implementation-live/gap-700x700.png     |   Bin 0 -> 11800 bytes
+ .../probes/implementation-live/gap-767x700.png     |   Bin 0 -> 11886 bytes
+ .../interaction-screens/phone-after-files.png      |   Bin 0 -> 21628 bytes
+ .../interaction-screens/phone-after-runs.png       |   Bin 0 -> 15386 bytes
+ .../interaction-screens/phone-after-tools.png      |   Bin 0 -> 24824 bytes
+ .../interaction-screens/phone-initial.png          |   Bin 0 -> 11385 bytes
+ .../small-desktop-after-runs.png                   |   Bin 0 -> 38264 bytes
+ .../interaction-screens/small-desktop-initial.png  |   Bin 0 -> 34201 bytes
+ .../probes/implementation-live/md-768x700.png      |   Bin 0 -> 11810 bytes
+ .../implementation-live/mobile-route-390x844.png   |   Bin 0 -> 45923 bytes
+ .../probes/implementation-live/narrow-500x700.png  |   Bin 0 -> 11140 bytes
+ .../implementation-live/narrow-short-500x420.png   |   Bin 0 -> 9883 bytes
+ .../probes/implementation-live/phone-390x844.png   |   Bin 0 -> 11333 bytes
+ .../implementation-live/phone-short-390x640.png    |   Bin 0 -> 10521 bytes
+ .../implementation-live/small-desktop-1024x768.png |   Bin 0 -> 35846 bytes
+ .../small-desktop-short-1024x480.png               |   Bin 0 -> 11324 bytes
+ .../probes/implementation-live/tablet-800x700.png  |   Bin 0 -> 11872 bytes
+ .../probes/implementation-live/tablet-900x700.png  |   Bin 0 -> 13326 bytes
+ .../implementation-live/tablet-short-800x420.png   |   Bin 0 -> 10495 bytes
+ .../implementation-live/threshold-639x700.png      |   Bin 0 -> 11438 bytes
+ .../implementation-live/threshold-640x700.png      |   Bin 0 -> 11517 bytes
+ .../probes/implementation-live/wide-1440x900.png   |   Bin 0 -> 45793 bytes
+ .../workspace-responsive-probe-results.json        | 14798 +++++++++++++++++
+ .../workspace-responsive-probe-summary.json        |   485 +
+ .../probes/mobile-500x700.png                      |   Bin 0 -> 12895 bytes
+ .../probes/mobile-639x700.png                      |   Bin 0 -> 13332 bytes
+ .../probes/narrow-desktop-800x700.png              |   Bin 0 -> 40675 bytes
+ .../probes/probe-responsive.mjs                    |   104 +
+ .../probes/responsive-probe-results.json           |  4169 +++++
+ .../probes/short-1024x480.png                      |   Bin 0 -> 40596 bytes
+ .../probes/short-800x420.png                       |   Bin 0 -> 36143 bytes
+ .../frontend-responsive-ux-audit/release-notes.md  |     8 +
+ .../requirements-doc.md                            |   443 +
+ .../right-tool-tabs-ux-spec.md                     |   150 +
+ .../workspace-responsive-ui-ux-spec.md             |   486 +
+ 449 files changed, 126474 insertions(+), 711 deletions(-)
+ create mode 100644 autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue
+ delete mode 100644 autobyteus-web/components/layout/WorkspaceDesktopLayout.vue
+ delete mode 100644 autobyteus-web/components/layout/WorkspaceMobileLayout.vue
+ create mode 100644 autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue
+ create mode 100644 autobyteus-web/components/layout/__tests__/RightSidebarStrip.spec.ts
+ create mode 100644 autobyteus-web/components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+ delete mode 100644 autobyteus-web/components/layout/__tests__/WorkspaceDesktopLayout.spec.ts
+ create mode 100644 autobyteus-web/components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts
+ create mode 100644 autobyteus-web/components/tabs/__tests__/Tab.spec.ts
+ create mode 100644 autobyteus-web/composables/__tests__/useAccessibleDrawer.spec.ts
+ create mode 100644 autobyteus-web/composables/layout/useResponsiveElementRect.ts
+ create mode 100644 autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts
+ create mode 100644 autobyteus-web/composables/useAccessibleDrawer.ts
+ delete mode 100644 autobyteus-web/composables/useMobilePanels.ts
+ create mode 100644 autobyteus-web/docs/workspace_layout.md
+ create mode 100644 autobyteus-web/layouts/__tests__/default-drawer.spec.ts
+ create mode 100755 autobyteus-web/tests/e2e/workspace-responsive-probe.mjs
+ create mode 100644 autobyteus-web/utils/layout/__tests__/responsiveLayoutPolicy.spec.ts
+ create mode 100644 autobyteus-web/utils/layout/__tests__/workspaceSurfaceOrder.spec.ts
+ create mode 100644 autobyteus-web/utils/layout/responsiveLayoutPolicy.ts
+ create mode 100644 autobyteus-web/utils/layout/responsiveStripActivation.ts
+ create mode 100644 autobyteus-web/utils/layout/workspaceSurfaceOrder.ts
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/code-review-report.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/delivery-release-deployment-report.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/design-review-report.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/design-spec.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/docs-sync-report.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-audit-localization-literals.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-git-diff-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-guard-localization-boundary.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-guard-web-boundary.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round10-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round10-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round10-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round10-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round10-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round10-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round10-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round10-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round11-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round11-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round11-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round11-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round11-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round11-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round11-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round11-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round12-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round12-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round12-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round12-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round12-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round12-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round12-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round12-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-first-attempt-cleanup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-retry-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-retry-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-retry-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-retry-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-workspace-responsive-probe-final.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round13-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-final-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-first-attempt-cleanup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-retry-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-retry-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-retry-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-retry-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round14-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round15-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round15-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round15-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round15-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round15-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round15-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round15-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round15-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round16-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round16-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round16-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round16-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round16-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round16-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round16-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round16-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round17-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round17-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round17-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round17-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round17-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round17-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round17-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round17-workspace-responsive-probe-initial.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round17-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-capability-enable.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-capability.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-catalog.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-immersive-interaction.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-route-probe-enabled.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-application-route-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round18-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-application-capability-enable.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-application-capability.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-application-catalog.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-workspace-responsive-probe-rerun.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-workspace-responsive-probe-rerun2.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round19-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round2-audit-localization-literals.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round2-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round2-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round2-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round2-git-diff-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round2-guard-localization-boundary.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round2-guard-web-boundary.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round2-probe-node-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round2-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-application-capability-enable.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-application-capability.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-application-catalog.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-workspace-responsive-probe-rerun.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round20-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-audit-localization-literals.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-backend-final.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-backend-postbuild.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-frontend-final.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-frontend-postbuild.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-git-diff-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-guard-localization-boundary.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-guard-web-boundary.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-probe-node-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-runtime-pids.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe-final.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe-postbuild-retry.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe-postbuild.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round3-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-backend-retry.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-frontend-retry.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-workspace-responsive-probe-retry.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round4-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-audit-localization-literals.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-git-diff-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-guard-localization-boundary.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-guard-web-boundary.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-nuxt-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-probe-node-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round5-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-backend-rerun.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-cleanup-ports-final.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-frontend-rerun.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-final.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-final2.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-rerun.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe-rerun2.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round6-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round7-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round7-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round7-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round7-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round7-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round7-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round7-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round8-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round8-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round8-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round8-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round8-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round8-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round8-workspace-responsive-probe-final.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round8-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round9-backend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round9-cleanup-ports.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round9-focused-nuxt-tests.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round9-frontend.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round9-probe-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round9-runtime-setup.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round9-server-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-round9-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/api-e2e-workspace-responsive-probe.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-docs-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-initial-fetch-and-base-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round10-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round10-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round12-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round12-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round12-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round12-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round12-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round13-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round13-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round13-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round13-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round13-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round14-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round14-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round14-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round14-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round14-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round15-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round15-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round15-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round15-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round15-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round16-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round16-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round16-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round16-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round16-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round17-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round17-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round17-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round17-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round17-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round18-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round18-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round18-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round18-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round18-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round2-checkpoint-commit.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round2-docs-review.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round2-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round2-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round2-post-integration-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round2-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round20-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round20-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round20-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round20-final-target-refresh.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round20-finalization-precommit.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round20-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round20-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round20-ticket-push.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round3-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round3-post-integration-checks.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round3-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round4-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round4-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round4-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round4-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round5-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round5-electron-runtime-verification.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round5-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round5-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round5-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round5-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round8-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round8-electron-runtime-verification.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round8-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round8-final-sanity-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round8-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round8-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round9-electron-build.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round9-electron-launch-smoke.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round9-fetch-and-merge.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round9-post-refresh-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/delivery-round9-pre-refresh-state.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/electron-build-final-check.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/electron-build-mac-arm64.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/electron-build-runtime-verification-arm64.log
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/solution-designer-right-tabs-current-705x752-after-scroll.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/solution-designer-right-tabs-current-705x752-before-scroll.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/solution-designer-right-tabs-live-check.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/evidence/solution-designer-workspace-current-narrow-empty-state.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/handoff-summary.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/implementation-handoff.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/implementation-live-visual-report.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/investigation-notes.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/desktop-1180x800.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/desktop-1280x800.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/gap-700x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/gap-767x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/md-768x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/mobile-route-390x844.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/narrow-500x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/narrow-short-500x420.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/phone-390x844.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/phone-short-390x640.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-1024x768.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/small-desktop-short-1024x480.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/tablet-800x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/tablet-900x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/tablet-short-800x420.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/threshold-639x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/threshold-640x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/wide-1440x900.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results-initial.json
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary-initial.json
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/current-responsive-ui-results.json
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/desktop-1180x800-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/desktop-1280x800-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/gap-700x700-after-hamburger.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/gap-700x700-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/gap-767x700-after-hamburger.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/gap-767x700-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/md-768x700-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/mobile-route-390x844.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/narrow-500x700-after-hamburger.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/narrow-500x700-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/narrow-short-500x420-after-hamburger.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/narrow-short-500x420-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/phone-390x844-after-hamburger.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/phone-390x844-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/phone-short-390x640-after-hamburger.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/phone-short-390x640-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/probe-current-responsive-ui.mjs
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/probe-summary-latest.json
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/recheck-phone-390x844.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/small-desktop-1024x768-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/small-desktop-short-1024x480-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/tablet-800x700-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/tablet-900x700-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/tablet-short-800x420-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/threshold-639x700-after-hamburger.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/threshold-639x700-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/threshold-640x700-after-hamburger.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/threshold-640x700-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/comprehensive/wide-1440x900-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/desktop-1024x768.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/desktop-1440x900.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/gap-700x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/gap-760x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/desktop-1180x800.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/desktop-1280x800.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/gap-700x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/gap-767x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/phone-after-files.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/phone-after-runs.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/phone-after-tools.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/phone-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/small-desktop-after-runs.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/interaction-screens/small-desktop-initial.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/md-768x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/mobile-route-390x844.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/narrow-500x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/narrow-short-500x420.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/phone-390x844.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/phone-short-390x640.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/small-desktop-1024x768.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/small-desktop-short-1024x480.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/tablet-800x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/tablet-900x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/tablet-short-800x420.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/threshold-639x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/threshold-640x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/wide-1440x900.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/workspace-responsive-probe-results.json
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/implementation-live/workspace-responsive-probe-summary.json
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/mobile-500x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/mobile-639x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/narrow-desktop-800x700.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/probe-responsive.mjs
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/responsive-probe-results.json
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/short-1024x480.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/probes/short-800x420.png
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/release-notes.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/requirements-doc.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md
+ create mode 100644 tickets/done/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md
+target_post_merge=d59a79bdb2a5f19ba0ea264c5476f4d9cfee9dbe
+merge-base with ticket:
+3aef4eb2d26f5a7fed2962638d4bda5a45db5a2a
+target status after merge:
+?? .article-work/
+?? .local-build-logs/
+?? docs/articles/
+?? tickets/in-progress/app-store-publishing-pipeline-investigation/
