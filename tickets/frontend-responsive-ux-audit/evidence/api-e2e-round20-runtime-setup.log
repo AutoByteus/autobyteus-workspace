@@ -1,0 +1,10 @@
+Round20 runtime setup
+HEAD=078c3fffbd465c0ad64a485cadcecec316b4daec
+BASE_PARENT=b47b6274313f4b5447b73a03cf8e9a796198ee89
+RUN_DIR=/tmp/autobyteus-responsive-ux-audit-api-e2e-round20
+BACKEND_PORT=13055
+FRONTEND_PORT=13056
+DATABASE_URL=file:/tmp/autobyteus-responsive-ux-audit-api-e2e-round20/db/test.db
+BACKEND_COMMAND=env APP_ENV=test AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:13055 DB_TYPE=sqlite DATABASE_URL=file:/tmp/autobyteus-responsive-ux-audit-api-e2e-round20/db/test.db LOG_LEVEL=INFO PRISMA_LOG_QUERIES=0 DISABLE_HTTP_REQUEST_LOGS=true node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 13055 --data-dir /tmp/autobyteus-responsive-ux-audit-api-e2e-round20
+FRONTEND_COMMAND=explicit BACKEND_* endpoints to http://127.0.0.1:13055, pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 13056
+BROWSER_COMMAND=node autobyteus-web/tests/e2e/workspace-responsive-probe.mjs --base-url=http://127.0.0.1:13056 --output-dir=/tmp/autobyteus-responsive-ux-audit-api-e2e-round20/probe --screenshots=failures --fail-on-console-error

@@ -101,7 +101,8 @@ apply unchanged.
 
 The right strip itself remains the original personal-branch strip: the same
 tool icons, order, spacing, visual weight, and side affordance are used in
-docked-adjacent, consuming, overlay, constrained, and narrow states. Only the
+docked-adjacent, constrained, and narrow states. Every closed non-docked state
+uses the same 50px consuming flow strip; there is no overlay-strip variant. Only the
 activation result changes with capacity (`redock-panel` when a wide
 user-origin dock fits; `open-drawer` otherwise). Do not prepend a `Tools`
 button, add a visible drawer title, add a separate close `X`, or render a
@@ -142,7 +143,8 @@ Durable component and browser coverage must verify:
 6. canonical order remains stable while scrolling and across presentation changes;
 7. wide desktop spacing and typography remain materially unchanged;
 8. no assertion requires every tab to fit inside the initial visible bounds.
-9. the consuming and overlay right strips retain the personal-branch icon
-   inventory and do not render a top `Tools` trigger, visible drawer title,
-   separate close `X`, duplicate panel toggle, or simultaneous strip-plus-
-   drawer state.
+9. every closed non-docked right strip retains the personal-branch icon
+   inventory as a 50px consuming flow item and does not render a top `Tools`
+   trigger, visible drawer title, separate close `X`, or duplicate panel
+   toggle; an open drawer is drawer-only and never renders simultaneously with
+   its originating strip.

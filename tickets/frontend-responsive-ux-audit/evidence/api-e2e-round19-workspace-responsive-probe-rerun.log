@@ -1,0 +1,32 @@
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="workspace-right-tool-strip"]').locator('button').first()[22m
+[2m    - locator resolved to <button type="button" title="Files" aria-label="Files" data-tab-name="files" class="p-2 rounded-md hover:bg-gray-100 transition-colors relative group">…</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div aria-hidden="true" data-test="app-left-drawer-backdrop" class="fixed inset-0 z-40 bg-gray-900 bg-opacity-75"></div> intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div aria-hidden="true" data-test="app-left-drawer-backdrop" class="fixed inset-0 z-40 bg-gray-900 bg-opacity-75"></div> intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    58 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <div aria-hidden="true" data-test="app-left-drawer-backdrop" class="fixed inset-0 z-40 bg-gray-900 bg-opacity-75"></div> intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at clickFirstButton (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs:374:16)
+    at async validateIndependentDrawerInteractions (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs:760:24)
+    at async run (/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs:1249:46) {
+  name: 'TimeoutError'
+}

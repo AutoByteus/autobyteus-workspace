@@ -1,0 +1,8 @@
+Round19 cleanup
+frontend_session=49642 SIGINT exit=1 (Nuxt dev shutdown)
+backend_session=83782 SIGINT exit=0 (clean shutdown)
+browser=Playwright chromium closed by probe finally block
+isolated_data=/tmp/autobyteus-responsive-ux-audit-api-e2e-round19 retained outside worktree for evidence
+port_13045=closed
+port_13046=closed
+canonical_probe_results=updated_from_round19_rerun2_failure

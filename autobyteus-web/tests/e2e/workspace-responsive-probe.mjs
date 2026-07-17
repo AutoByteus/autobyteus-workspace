@@ -704,11 +704,25 @@ async function validateRightStripReopenInteraction(page, viewport) {
     failures.push(...tabValidation.failures);
   }
 
+  const rightBackdropTarget = await clickTopmostDrawerBackdrop(page);
+  await page.waitForTimeout(250);
+  const rightBackdropDismissed = await collect(page, 'right-strip-reopen-backdrop-dismissed');
+  if (rightBackdropTarget !== 'workspace-right-tool-drawer-backdrop') {
+    failures.push(`right drawer backdrop hit ${rightBackdropTarget || 'nothing'} instead of the right drawer backdrop`);
+  }
+  if (rightBackdropDismissed.rects.rightDrawer?.visible) {
+    failures.push('right drawer backdrop dismissal did not close the right drawer');
+  }
+  if (!rightBackdropDismissed.activeElement?.insideRightStrip) {
+    failures.push('right drawer backdrop dismissal did not restore focus to the right strip');
+  }
+
   return {
     action: 'reopen right tools from user-hidden strip',
     clicked,
     state: drawerState,
     tabValidation,
+    backdropDismissal: rightBackdropDismissed,
     failures,
   };
 }
@@ -831,13 +845,23 @@ async function validateIndependentDrawerInteractions(page, viewport) {
     failures.push(`left-topmost aria-modal ownership mismatch: left ${reverseBothOpen.rects.leftNavigationDrawer?.ariaModal}, right ${reverseBothOpen.rects.rightDrawer?.ariaModal}`);
   }
 
-  const reverseBackdropTarget = await clickTopmostDrawerBackdrop(page);
+  // With both full-height drawers open, their surfaces cover the complete
+  // viewport, so no backdrop pixel is physically exposed. Dismiss the
+  // reverse-order topmost drawer with Escape, then hit-test the remaining
+  // drawer's inset backdrop. Standalone left/right backdrop journeys above
+  // cover each side's direct pointer dismissal.
+  await page.keyboard.press('Escape');
   await page.waitForTimeout(250);
-  const reverseLeftDismissed = await collect(page, 'independent-drawers-reverse-left-backdrop');
-  if (reverseBackdropTarget !== 'app-left-drawer-backdrop') failures.push(`reverse topmost backdrop hit ${reverseBackdropTarget || 'nothing'} instead of the left drawer backdrop`);
-  if (reverseLeftDismissed.rects.leftNavigationDrawer?.visible) failures.push('reverse topmost left drawer backdrop dismissal did not close the left drawer');
-  if (!reverseLeftDismissed.rects.rightDrawer?.visible) failures.push('reverse left drawer backdrop dismissal closed the independent right drawer');
-  if (!reverseLeftDismissed.activeElement?.insideRightDrawer) failures.push('reverse left drawer backdrop dismissal did not return focus to the remaining right drawer');
+  const reverseLeftDismissedByEscape = await collect(page, 'independent-drawers-reverse-left-escape');
+  if (reverseLeftDismissedByEscape.rects.leftNavigationDrawer?.visible) {
+    failures.push('reverse topmost left drawer Escape dismissal did not close the left drawer');
+  }
+  if (!reverseLeftDismissedByEscape.rects.rightDrawer?.visible) {
+    failures.push('reverse left drawer Escape dismissal closed the independent right drawer');
+  }
+  if (!reverseLeftDismissedByEscape.activeElement?.insideRightDrawer) {
+    failures.push('reverse left drawer Escape dismissal did not return focus to the remaining right drawer');
+  }
 
   const remainingBackdropTarget = await clickTopmostDrawerBackdrop(page);
   await page.waitForTimeout(250);

@@ -1,6 +1,7 @@
 {
-  "generatedAt": "2026-07-17T08:38:01.794Z",
   "result": "Pass",
+  "jsonPath": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/workspace-responsive-probe-results.json",
+  "summaryPath": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/workspace-responsive-probe-summary.json",
   "failures": [],
   "summary": [
     {

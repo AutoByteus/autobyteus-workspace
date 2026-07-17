@@ -1,0 +1,4 @@
+Round20 frontend readiness
+session=73490
+frontend_workspace_status=200
+note=Nuxt dev emitted existing transient #app-manifest pre-transform warnings; Vite/Nitro built and route returned HTTP 200.

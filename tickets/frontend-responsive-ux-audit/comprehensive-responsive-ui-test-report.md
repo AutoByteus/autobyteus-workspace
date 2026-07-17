@@ -14,8 +14,10 @@ fallback is historical and superseded. The
 authoritative target is the refined requirements,
 `design-spec.md`, and `workspace-responsive-ui-ux-spec.md`: preserve the
 left/center/right desktop hierarchy, use measured capacity, yield right tools
-first, and use the left/right strips as the sole compact side affordances for
-their transient drawers rather than header controls or a generic surface row.
+first, and use the left/right strips as 50px consuming flow items and the sole
+compact side affordances for their transient drawers rather than header
+controls or a generic surface row. A fixed overlay is reserved for the open
+transient drawer, never a closed strip.
 The current route contract is layout-scoped rather than workspace-only: every
 non-immersive route using `layouts/default.vue` shares the left
 panel/strip/transient-drawer shell and has no black responsive
@@ -91,7 +93,7 @@ Issue flags were derived from visible DOM facts, not from source-code assumption
 | P1 | Center workspace crushed at `768-1024px` | `md-768x700`, `tablet-800x700`, `tablet-900x700`, `small-desktop-1024x768` | Left panel remains `320px` docked and right panel remains docked/clamped, leaving center `200-247px`. | Policy collapses/re-presents side surfaces before center falls below practical target; use strip/drawer/sheet modes. |
 | P1 | Right tool tabs are truncated or unavailable in constrained docked panel | `md-768x700`, `tablet-800x700`, `tablet-900x700` | Only first tabs are readable/reachable in the cramped header; some tools are cut or icon-only. | Right tools share canonical order across docked tabs, rail/strip, and drawer/sheet; all available tools remain reachable. |
 | P1 | Left panel consumes too much width at tablet/small desktop widths | `768-1024px` family | `layouts/default.vue` keeps full `320px` left panel docked at `md+`. | Shell policy has effective left presentation separate from user preference: docked only when space supports it; otherwise strip/drawer. |
-| P2 | Short-height windows keep full docked panes | `800x420`, `1024x480` | Full-height left and right panes remain docked with little vertical recovery; important nav/history/tool controls can be clipped. | Height-aware policy chooses compact/overlay presentations and keeps required controls recoverable. |
+| P2 | Short-height windows keep full docked panes | `800x420`, `1024x480` | Full-height left and right panes remain docked with little vertical recovery; important nav/history/tool controls can be clipped. | Height-aware policy chooses compact consuming flow strips while drawers are closed and keeps required controls recoverable. |
 | P2 | Responsive button/control order is accidental | All non-wide modes | Below `640px`, order comes from `WorkspaceMobileLayout`; at `md+`, order comes from right-tab implementation and physical clipping. | **Superseded early recommendation:** the report previously proposed a primary `Work, Runs, Files, Tools` row. The approved contract preserves desktop ownership (left navigation/history, center Work, right tools) and defines semantic compact triggers; only the right-tool tab order remains canonical: `Files, Team, Terminal, Activity, Artifacts, Browser, VNC`. |
 | P2 | Developer startup docs are stale | Manual setup | `autobyteus-web/README.md` documents `NUXT_PUBLIC_*`, while current Nuxt config uses `BACKEND_*`/dev proxy. | Delivery docs update after implementation or as part of final docs sync. |
 
@@ -111,9 +113,9 @@ Issue flags were derived from visible DOM facts, not from source-code assumption
 The target should not be a simple `mobile` vs `desktop` branch. It should be a measured adaptive standard workspace:
 
 - `Wide / full docked`: preserve current good desktop layout when there is enough measured space for left panel, usable center, and right tools. The observed current desktop starts becoming acceptable around `1180px+`, but implementation should derive this from center-width preservation rather than a single viewport constant.
-- `Constrained desktop / tablet`: **Superseded early threshold recommendation:** the earlier draft said to auto-collapse the left panel across roughly `768-1179px`. The approved policy uses measured capacity and right-tools-first yielding: keep left navigation docked while left plus a practical center fit; choose right docked, then consuming strip, then overlay strip; adapt the left surface only when necessary.
-- `Narrow standard workspace`: below `768px`, still render standard `/workspace` capabilities, not `WorkspaceMobileLayout`. Keep left and right edge-overlay strips visible; responsive strip activation opens the corresponding temporary navigation/tools drawer. Do not create a generic `Work -> Runs -> Files -> Tools` row or header navigation controls, and keep direct empty-state selection/history actions.
-- `Short height`: at roughly `<=480px` height, prefer compact/overlay side surfaces and preserve recoverable controls rather than full-height docked side panels.
+- `Constrained desktop / tablet`: **Superseded early threshold recommendation:** the earlier draft said to auto-collapse the left panel across roughly `768-1179px`. The approved policy uses measured capacity and right-tools-first yielding: keep left navigation docked while left plus a compact center fit; choose right docked, then a 50px consuming strip; adapt the left surface only when necessary. Both strips remain in flow.
+- `Narrow standard workspace`: below `768px`, still render standard `/workspace` capabilities, not `WorkspaceMobileLayout`. Keep left and right 50px consuming strips in flow; responsive strip activation opens the corresponding temporary navigation/tools drawer and hides that strip until dismissal. Do not create a generic `Work -> Runs -> Files -> Tools` row or header navigation controls, and keep direct empty-state selection/history actions.
+- `Short height`: at roughly `<=480px` height, prefer compact consuming flow strips while drawers are closed and preserve recoverable controls rather than full-height docked side panels.
 - `Phone/PWA`: keep `/mobile` separate and untouched.
 
 ### Control ordering
@@ -190,7 +192,7 @@ const showToolsTrigger = computed(() =>
 )
 ```
 
-The same template renders `RightSidebarStrip` when `showRightStrip` is true. A user-collapsed right panel has effective presentation `strip`, so both branches are active. The strip already opens the right tool drawer through `RightSidebarStrip.vue`; treating every non-docked state as requiring a top trigger creates two affordances for one surface. The earlier local-fix proposal to conditionally render the top trigger for `presentation === 'drawer'` is now superseded by the guaranteed-strip decision: remove the top trigger branch entirely and test docked = fixed toggle only, consuming strip = strip only, overlay strip = edge strip only.
+The same template renders `RightSidebarStrip` when `showRightStrip` is true. A user-collapsed right panel has effective presentation `strip`, so both branches are active. The strip already opens the right tool drawer through `RightSidebarStrip.vue`; treating every non-docked state as requiring a top trigger creates two affordances for one surface. The earlier local-fix proposal to conditionally render the top trigger for `presentation === 'drawer'` is now superseded by the no-occlusion decision: remove the top trigger branch entirely and test docked = fixed toggle only, consuming strip = 50px flow item only, and open drawer = drawer-only.
 
 This is a local implementation defect, not a reason to change the `/mobile` wrapper or reintroduce the generic `Work / Runs / Files / Tools` row. The requirements/design basis now records this as FR-032/AC-033 and requires architecture re-review before the bounded implementation fix.
 
@@ -206,26 +208,25 @@ The first bounded-resize implementation used the automatic `480px` center target
 
 ### Right-strip-first desktop fallback clarification (2026-07-16)
 
-The earlier policy could produce a top `Tools` button when the center became narrower because its non-narrow right-first candidates tried `right=drawer` before `right=strip`. The user prefers the original desktop right-edge strip: if left navigation, the automatic `480px` center target, and the `50px` right strip fit, the right strip must be selected first. The later allowance for drawer-only/top Tools when the strip cannot fit is superseded; the strip now switches to an edge overlay. This is covered by FR-035/FR-037 and AC-036/AC-038, with policy/component/browser assertions for `docked -> consuming strip -> overlay strip` ordering.
+The earlier policy could produce a top `Tools` button when the center became narrower because its non-narrow right-first candidates tried `right=drawer` before `right=strip`. The user prefers the original desktop right-edge strip: if left navigation, the automatic `480px` center target, and the `50px` right strip fit, the right strip must be selected first. The later allowance for drawer-only/top Tools when the strip cannot fit is superseded; the strip remains a 50px flow item and the center floor may lower to 0px only in the terminal dual-strip state. This is covered by FR-035/FR-037/FR-046/FR-047 and AC-036/AC-038/AC-046/AC-047, with policy/component/browser assertions for `docked -> consuming strip` ordering and non-overlap.
 
-### Guaranteed right-strip simplification (2026-07-16)
+### Historical guaranteed right-strip simplification (2026-07-16; superseded by strip-flow contract)
 
 The user confirmed that a separate top `Tools` button is not needed for the
 standard workspace. The implementation-ready target is now:
 
 - right tools docked while the measured layout permits;
 - a consuming `50px` right strip when it fits in flow;
-- the same right strip as a fixed edge overlay when the 50px flow candidate
-  cannot fit; and
+- the same right strip remains a 50px consuming flow item even when the compact center floor cannot fit; the terminal center floor may be 0px; and
 - the existing right-tools drawer opened by the strip.
 
 There is no standard `/workspace` drawer-only state and no top `Tools`
 trigger. This is simpler than maintaining both a strip and a drawer-only
 trigger, preserves the center surface, and prevents the duplicate affordance
 observed in the live screenshots. `/mobile` remains a separate route. Durable
-validation must assert strip visibility, overlay transition stability,
-selected-run preservation, and absence of the top trigger at desktop,
-embedded, short-height, and narrow standard-workspace sizes.
+validation must assert 50px flow-strip geometry, strip/content non-overlap,
+selected-run preservation, drawer-only open state, and absence of the top trigger
+at desktop, embedded, short-height, and narrow standard-workspace sizes.
 
 ### DI-006 output/renderer authority clarification (2026-07-16)
 
@@ -242,14 +243,15 @@ Durable coverage must assert all three policy/render paths:
 
 - automatic: nested effective floor `480px` and intent `automatic`;
 - user override: nested effective floor `200px` and intent `user-sized`;
-- responsive yield: nested effective floor `480px`, mode `responsive-yield`,
-  and retained intent `user-sized`.
+- responsive yield: nested effective floor `200px` for consuming-strip flow
+  (or terminal `0px`), mode `responsive-yield`, and retained intent
+  `user-sized`.
 
 Tests must also assert that no duplicate top-level fields are emitted or
 consumed. This closes the state-to-renderer ambiguity without adding another
 responsive policy owner and remains independent of `/mobile`.
 
-### Symmetric side-strip validation (2026-07-16; activation contract superseded below)
+### Historical symmetric side-strip validation (2026-07-16; superseded by strip-flow contract)
 
 The latest product decision changes the compact access contract on both sides
 of standard `/workspace`. The browser/component target is now:
@@ -260,7 +262,7 @@ right panel -> right strip -> right tools drawer
 ```
 
 Coverage must prove that a docked panel replaces its strip, every non-docked
-side keeps a visible consuming or edge-overlay strip, and activation follows
+side keeps a visible 50px consuming strip in flow, and activation follows
 the capacity-aware hybrid contract recorded below. It must also assert absence of
 `app-left-drawer-open`, a responsive hamburger, breadcrumb navigation,
 `WorkspacePrimarySurfaceControls`, top `Agents & teams`, top `Tools`, and the
@@ -359,3 +361,41 @@ same policy output and restore the strip or docked panel without changing the
 stored preference. No visible close button or extra drawer control is needed.
 Coverage must assert left and right mutual exclusion in constrained and narrow
 browser states, plus restoration after dismissal and no cross-side impact.
+
+### Strip-flow no-occlusion finding (2026-07-17)
+
+The latest Electron validation found a geometry defect after the earlier
+drawer/strip mutual-exclusion work: when the shell is constrained, a closed
+strip sits over the page or center edge instead of taking layout space. The
+user supplied these current-build views:
+
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_e384adcd0ede__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_2ba42ba53ae4__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_f5f6cfbc8969__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_013210eb513d__image.png`
+
+Source inspection explains the observation. `responsiveLayoutPolicy.ts`
+currently allows `stripBehavior = 'overlay'`, reports `consumedWidth = 0`,
+and forces that mode in its narrow branch or fallback candidates.
+`layouts/default.vue` and `WorkspaceAdaptiveLayout.vue` place the corresponding
+strip components in fixed `z-[60]` wrappers, while their main/center flex items
+start at the row edge. The strip is therefore removed from layout flow and
+painted above route content. This occurs on `/agents`/`/agent-teams` through
+the global shell and on `/workspace` through both side renderers.
+
+This is a new design-impact finding, not a request to accept the screenshots as
+the target. The revised target and validation oracle are:
+
+| Surface | Closed strip | Center/page geometry | Open drawer |
+| --- | --- | --- | --- |
+| Default-layout left shell | 50px consuming flex item | Page content begins after the strip; no intersection | Fixed transient drawer only; left strip hidden |
+| `/workspace` right tools | 50px consuming flex item | Center is laid out between left/right surfaces | Fixed transient drawer only; right strip hidden |
+| Terminal dual-strip state below 300px | Both 50px strips remain in flow | Effective center floor may be 0px, but strips never overlap | Same drawer-only rule |
+
+Policy/component tests must assert `stripBehavior = 'consuming'` for every
+closed strip, `consumedWidth = 50`, no fixed strip positioning, and direct use
+of nested `rightPanel.effectiveCenterMinWidth`. Browser geometry coverage must
+exercise `/agents`, `/agent-teams`, and `/workspace` at constrained/narrow
+widths and prove `leftStrip.right <= page/center.left` and
+`rightStrip.left >= center.right`; it must also cover the terminal below-300px
+case and drawer-only mutual exclusion. The change does not modify `/mobile`.

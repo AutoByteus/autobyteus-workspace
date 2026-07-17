@@ -3863,3 +3863,515 @@ Source review passes against exact HEAD `d66c9cc8ebfa7bb8ffe05267d8aec8c0f615fe0
 - Recommended Recipient: `api_e2e_engineer`
 - Unresolved finding IDs: `None` (non-blocking docs follow-ups are recorded under Docs-Impact and Residual Risks).
 - Notes: Full fresh source review completed from the complete current implementation path at exact HEAD `d66c9cc8ebfa7bb8ffe05267d8aec8c0f615fe06`; fresh implementation checks passed; no API/E2E sign-off is claimed.
+
+## Review Round Meta — Round 35
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md` (Architecture Round 25: Pass)
+- Supplemental Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md` (Round 34 strip-flow handoff)
+- Current Review Round: `35`
+- Trigger: Requested full fresh source/structural review of Architecture Round 25 strip-flow no-occlusion implementation at exact HEAD `e6b062f755a0e365ea32e1cc10f1cf6e34816b0c` (`e6b062f75`), parent `28a3bb9e76097fa25e8e9cf23805e51ff568e9b9`.
+- Prior Review Round Reviewed: `34` (`d66c9cc8e`, global default-shell review), plus all earlier implementation findings and architecture rounds in this canonical report.
+- Latest Authoritative Round: `35`
+- Coverage Investigation / Execution Reports: `N/A` for this pre-API/E2E implementation review; no current-head browser sign-off is claimed.
+- Failing Scenario IDs: `None` — this is a source-contract finding, not an API/E2E failure.
+
+### Round History — Round 35
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 35 | Architecture Round 25 strip-flow no-occlusion implementation rework | Round 34 had no implementation finding; its stale documentation follow-up and all prior shell, drawer, activation, route, native-tab, and mobile contracts were re-read from the complete current path. | Yes — `CR-023` | Fail / Local Fix | No | Fresh full review found that both closed strip roots retain the superseded `z-[60]` stacking class despite the approved no-fixed/no-z-index strip contract. |
+
+### Prior Findings Resolution Check — Round 35
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 34 | None | N/A | No prior implementation finding remains unresolved. | Round 34 report and complete current source path re-read. | The previously recorded stale deleted-test/handoff-documentation follow-up remains non-blocking docs work and is recorded below. |
+
+## Review Scope — Round 35
+
+This was a full review from the complete implementation path, not a delta-only review. I re-read the requirements, investigation notes, design and UX supplements, Architecture Round 25 decision, implementation handoff, and the current production spine:
+
+`viewport / preference / measured-width input -> useResponsiveWorkspaceShell -> resolveResponsiveWorkspaceShellState -> nested docked|strip + consuming + activation output -> layouts/default.vue left flow renderer and /workspace WorkspaceAdaptiveLayout right flow renderer -> strip redock/open-drawer event -> panel preference or local transient drawer -> drawer mutual exclusion/focus/layer lifecycle`.
+
+Reviewed implementation and structural scope:
+
+- `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
+- `autobyteus-web/utils/layout/responsiveStripActivation.ts`
+- `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts`
+- `autobyteus-web/composables/useLeftPanel.ts` and `autobyteus-web/composables/useRightPanel.ts`
+- `autobyteus-web/layouts/default.vue`
+- `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`
+- `autobyteus-web/components/layout/LeftSidebarStrip.vue`
+- `autobyteus-web/components/layout/RightSidebarStrip.vue`
+- `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
+- `autobyteus-web/composables/useAccessibleDrawer.ts`
+- `autobyteus-web/components/AppLeftPanel.vue`, `pages/workspace.vue`, representative global default-layout pages, immersive application pages, and `pages/mobile.vue`
+- Changed policy, shell, strip, adaptive, drawer, tab, and layout tests
+- `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`
+- `autobyteus-web/docs/workspace_layout.md` and the cumulative implementation handoff for durable-record consistency
+
+Explicit exclusions: API/E2E execution, live browser sign-off, backend behavior, unrelated delivery-era unstaged ticket/report edits, and unrelated page features outside the responsive shell contract.
+
+## Upstream Behavior And Production-Path Basis Confirmation — Round 35
+
+- Approved behavior basis: `Confirmed`.
+- Architecture Round 25 basis: `Confirmed`. FR-046/FR-047, AC-046/AC-047, DS-016, and the design-review residual explicitly require every closed non-docked strip to be a single 50px normal flex-flow item, exclude fixed/z-index strip positioning, and allow only an open transient drawer to overlay.
+- Intended right-first policy and terminal exception: `Confirmed`. The current resolver removes the overlay behavior/type/candidates, uses `consumedWidth = 50`, preserves right-tools-first yielding, uses the compact 200px center floor, and lowers only the terminal below-300px dual-strip center floor to 0.
+- Renderer gates: `Confirmed`. The current default/adaptive renderers hide a side's strip while that side's transient drawer is open; the drawer remains fixed/overlay and the closed strips are rendered in the shell/workspace flow.
+- Current mismatch: `Contradicted` only for the strip root stacking contract. The actual closed strip roots still contain `z-[60]` in `LeftSidebarStrip.vue:80` and `RightSidebarStrip.vue:52`.
+- Material premise status: `Confirmed`; this finding does not depend on an unsupported scenario. It follows directly from the approved Round 25 source obligation to remove fixed/z-index strip classes and from the current `z-[60]` source lines.
+
+| Behavior ID | Current Status | Current Implementation Path And Evidence | Contradicting Supported Evidence |
+| --- | --- | --- | --- |
+| FR-046, FR-047, AC-046, AC-047, DS-016 | `Contradicted` | The policy and geometry assertions now describe consuming 50px strips, and both strip roots are `relative flex ... flex-none w-[50px]`. | `LeftSidebarStrip.vue:80` and `RightSidebarStrip.vue:52` retain `z-[60]`; Architecture Round 25 explicitly requires removal of fixed/z-index strip classes. |
+| FR-035, FR-037, FR-038, FR-040, FR-041 | `Confirmed` | Resolver candidate order and nested activation remain explicit; renderer gates preserve per-side strip/drawer mutual exclusion and preference-preserving open-drawer behavior. | None found. |
+| FR-039, FR-043–FR-045, AC-040, AC-043–AC-045 | `Confirmed` | The global default shell remains shared across non-immersive default-layout routes; `/workspace` alone mounts right tools, immersive application presentation bypasses it, and `/mobile` remains independent. | None found. |
+| FR-016–FR-020 and AC-016–AC-021 | `Confirmed` | Native right-tab row, canonical order, focus/selection auto-scroll, fixed toggle, and no custom indicator layer remain unchanged. | None found. |
+
+## Structural / Design Checks — Round 35
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Complete data-flow spine and lifecycle traced | Pass | The policy/provider/renderer/strip/drawer path was re-read end to end for both sides and global route boundaries. | None. |
+| Single responsive-policy ownership preserved | Pass | `useResponsiveWorkspaceShell` is the only adapter and `resolveResponsiveWorkspaceShellState` is the only effective presentation resolver. | None. |
+| Right-tools-first phase ordering and compact/terminal floors | Pass | Candidate construction and policy tests show docked -> consuming right strip -> consuming dual strips, with 200px compact protection and 0 only below 300px. | None. |
+| Closed strips are normal 50px flow items | Partial / Fail | `relative`, `flex-none`, and `w-[50px]` are present, and the probe asserts position/width/bounds, but both strip roots also retain `z-[60]`. | Resolve `CR-023`; remove root `z-[60]` classes and add focused assertions that closed strip roots do not carry the superseded stacking class. |
+| Only transient drawers overlay | Partial | Drawer/backdrop classes are the intended fixed layer, and strip/drawer gates are correct; the strip roots nevertheless retain a superseded high stacking class. | Resolve `CR-023` and re-run source review. |
+| Hybrid activation and preference lifecycle | Pass | `redock-panel` restores panel preference; `open-drawer` opens local transient state without mutating hidden preference. | None. |
+| Global default shell / workspace-only right tools / immersive/mobile boundaries | Pass | Current layout and route sources preserve the approved shared left shell and explicit `/workspace`, immersive, and `/mobile` boundaries. | None. |
+| Drawer accessibility, independent state, and mutual exclusion | Pass | Shared ordered drawer registry remains the lifecycle owner; corresponding strips are gated while drawers are open. | None at source gate. |
+| Test alignment and readiness | Partial | Focused source tests, policy TypeScript, probe syntax, diff checks, guards, localization audit, and build pass. The current strip tests assert no `fixed` but do not assert removal of `z-[60]`, so they missed the approved source obligation. | Update strip tests with the bounded fix; API/E2E remains blocked until the source review passes. |
+| Dead/obsolete behavior cleanup | Partial / Fail | Overlay type/candidates and fixed strip branches were removed, but the previous z60 strip-layer mechanism remains on both closed strip roots. | Remove the obsolete root stacking class; preserve only intentional local tooltip layering if needed. |
+
+## Source File Size And Structure Audit — Round 35
+
+Implementation-source thresholds apply only to changed implementation-source files in the current commit. Tests, durable probes, docs, and generated output are excluded.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard Limit | `>220` Delta | Ownership / Placement | Preliminary Classification |
+| --- | ---: | --- | --- | --- | --- |
+| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | 490 | Pass | Pass — 147 added lines in this established pure policy boundary | Pass — single responsive policy owner | Healthy size; current finding is contract cleanup, not size pressure |
+| `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | 262 | Pass | Pass | Pass — workspace center/right owner | Healthy |
+| `autobyteus-web/layouts/default.vue` | 165 | Pass | Pass | Pass — global left shell owner | Healthy |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | 118 | Pass | Pass | Pass — personal left strip owner; root class contains the finding | Rework required for `CR-023` |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | 76 | Pass | Pass | Pass — personal right strip owner; root class contains the finding | Rework required for `CR-023` |
+| `autobyteus-web/utils/layout/responsiveStripActivation.ts` | 41 | Pass | Pass | Pass — activation contract helper | Healthy |
+
+No source-size threshold is exceeded. The issue is a concrete approved-behavior mismatch, not a hypothetical future concern.
+
+## Legacy / Backward-Compatibility Verdict — Round 35
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| Superseded overlay presentation/type/candidates removed | Pass | Current policy no longer exposes overlay strip behavior or candidates. |
+| No compatibility renderer or second responsive policy retained | Pass | Global shell/workspace ownership remains clean. |
+| Historical strip stacking mechanism removed completely | Fail | `z-[60]` remains on both closed strip roots, even though Round 25 explicitly superseded the above-backdrop layering rule by making the open drawer the sole visible surface. |
+| Persisted-data transition handling | Pass / N/A | This is in-memory presentation state only; no migration applies. |
+
+## Docs-Impact Verdict — Round 35
+
+- Docs impact: `Yes`, non-blocking to the implementation finding but still required before final delivery.
+- `autobyteus-web/docs/workspace_layout.md:118` still names the deleted `WorkspacePrimarySurfaceControls.spec.ts`; the current implementation handoff also contains historical overlay terminology and Round 34 check-count/trace prose. These records should be synchronized after source/API/E2E gates, but they are not the reason for the current source failure.
+- The current implementation handoff says the strips are `relative flex-none w-[50px]` but does not disclose the retained `z-[60]` classes; after the bounded fix, the source and durable records should agree.
+
+## Review Scorecard — Round 35
+
+- Overall score (`/10`): `8.89`
+- Overall score (`/100`): `88.9`
+- Score calculation note: simple average of the ten category scores below. The score is below the clean-pass target because the current source still violates the approved closed-strip stacking contract; no API/E2E sign-off is implied.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.1 | The viewport/preference/policy/renderer/drawer spines are clear for both side surfaces. | Closed-strip visual-layer ownership is not fully cleaned up. | Remove the stale strip stacking layer and preserve drawer-only overlay ownership. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.0 | Policy, preferences, shell/workspace renderers, and drawer registry retain clear owners. | `z-[60]` is leftover coordination from the prior strip-above-backdrop behavior. | Keep stacking ownership in the drawer registry/drawer surfaces only. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.0 | `StripBehavior = consuming` and explicit activation are narrow and coherent. | The class contract does not fully express the new no-z-index strip boundary. | Add a focused source/component assertion for the root classes. |
+| `4` | `Separation of Concerns and File Placement` | 9.0 | Files remain correctly placed and the policy/renderers are not duplicated. | The strip components still carry obsolete layer styling. | Remove only the obsolete root layer class; retain local tooltip styling where justified. |
+| `5` | `Shared-Structure / Data-Model Tightness` | 8.9 | The state model is materially tightened to one consuming behavior and nested side lifecycle fields. | Visual contract and state contract are slightly out of sync. | Align root strip classes with the consuming-flow state. |
+| `6` | `Naming Quality and Local Readability` | 8.9 | Current policy and activation names accurately describe behavior. | The retained `z-[60]` makes the strip's visual role ambiguous, and durable docs contain historical terminology. | Remove the class and clean docs during delivery sync. |
+| `7` | `API/E2E Readiness` | 8.9 | Reviewer rerun: 12 files / 91 tests passed; policy TypeScript, syntax, diff checks, guards, audit, and build passed. | Browser execution is downstream-owned and source review is currently blocked by `CR-023`. | Fix the source contract, then run fresh API/E2E. |
+| `8` | `Runtime Correctness and Behavioral Fidelity` | 8.8 | Policy geometry and per-side drawer gates are coherent. | A closed strip still creates an unnecessary high stacking context contrary to the approved no-occlusion contract. | Remove `z-[60]` from both roots and validate the full matrix. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 8.8 | Historical overlay candidates and branches are gone. | The old above-backdrop strip-layer class remains. | Remove the superseded root stacking behavior rather than retaining it as compatibility styling. |
+| `10` | `Cleanup Completeness` | 8.5 | Most obsolete behavior was removed and tests were updated. | `z-[60]` remains in both strips; one deleted-test docs reference remains. | Resolve `CR-023`; delivery then cleans durable docs. |
+
+## Findings — Round 35
+
+| Finding ID | Severity | Behavior / Contract | Evidence | Impact | Required Bounded Action | Owner |
+| --- | --- | --- | --- | --- | --- | --- |
+| `CR-023` | Moderate source-contract blocker | FR-046/FR-047, AC-046/AC-047, DS-016, and Architecture Round 25 residual: every closed non-docked strip is a normal 50px flow item with no fixed/z-index strip positioning; only a transient drawer may overlay. | `autobyteus-web/components/layout/LeftSidebarStrip.vue:80` and `autobyteus-web/components/layout/RightSidebarStrip.vue:52` both retain `relative z-[60] ...`. The same architecture report explicitly requires removal of fixed/z-index strip classes, and LID-003 now hides the strip while its drawer is open. | The implementation still carries the superseded above-backdrop/high-stacking strip mechanism and does not fully satisfy the approved strip-flow no-occlusion source contract, even though the current geometry can remain non-overlapping. | Remove root `z-[60]` from both strip class strings, keep `relative flex h-full w-[50px] flex-none ...`, add focused assertions that the closed strip root has no fixed/z-index positioning, rerun implementation checks, and return for full source review before API/E2E. | `implementation_engineer` |
+
+### Finding Classification — Round 35
+
+- Classification: `Local Fix`
+- Owning specialist: `implementation_engineer`
+- Reason: The approved behavior is explicit and the source defect is a bounded two-component class cleanup with proportional test updates; no requirement or architecture clarification is needed.
+- API/E2E routing: blocked until the owning fix passes a new full source review. Do not route this package directly to `api_e2e_engineer`.
+
+## Recommended Recipient — Round 35
+
+`implementation_engineer`
+
+Please apply the bounded `CR-023` source fix at the current worktree/branch, update the strip source assertions, and refresh `implementation-handoff.md`. The implementation handoff and this report are the authoritative current artifacts. After the fix, the complete package must return for another full source review; only a source PASS should route to `api_e2e_engineer`.
+
+## Residual Risks — Round 35
+
+- `CR-023` is unresolved: the two closed strip roots retain `z-[60]` despite the approved no-z-index strip contract.
+- API/E2E has not run against `e6b062f755a0e365ea32e1cc10f1cf6e34816b0c`; no browser, console, environment, or cleanup sign-off is claimed.
+- After source repair, API/E2E must validate the full matrix, terminal `299x700`, flow geometry/non-overlap, right-first yielding, drawer-only overlay, route/global shell boundaries, independent drawer focus/layering, native tabs, `/mobile`, and cleanup.
+- `vue-tsc` is unavailable and full generated Nuxt TypeScript remains uncompleted due to the previously recorded Node heap exhaustion; standalone policy TypeScript and the Nuxt build pass.
+- Existing KaTeX quirks-mode, localization module-type, and Rollup chunk-size warnings remain non-blocking.
+- Delivery/docs sync still needs to remove the stale deleted-test coverage bullet and clean historical handoff wording after the source/API/E2E gates.
+
+## Latest Authoritative Result — Round 35
+
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — the finding is directly grounded in the approved Round 25 source contract and current source lines; no unsupported lifecycle premise was used.
+- Score Summary: `8.89/10` (`88.9/100`); source gate fails because `CR-023` remains unresolved.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E source review.
+- Recommended Recipient: `implementation_engineer`
+- Unresolved finding IDs: `CR-023`
+- Notes: Complete fresh source/structural review performed from the full cumulative package at exact HEAD `e6b062f755a0e365ea32e1cc10f1cf6e34816b0c`; reviewer checks passed aside from the source-contract finding. API/E2E is blocked until a new source review passes.
+
+## Review Round Meta — Round 36
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/design-review-report.md` (Architecture Round 25: Pass)
+- Supplemental Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/right-tool-tabs-ux-spec.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/workspace-responsive-ui-ux-spec.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/comprehensive-responsive-ui-test-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/implementation-handoff.md` (Round 35 CR-023 rework)
+- Current Review Round: `36`
+- Trigger: Requested a complete fresh source/structural review, not a delta-only review, after the bounded CR-023 implementation fix at exact HEAD `b47b6274313f4b5447b73a03cf8e9a796198ee89` (`b47b62743`), parent `e6b062f755a0e365ea32e1cc10f1cf6e34816b0c`.
+- Prior Review Round Reviewed: `35` (`e6b062f75`, source-contract blocker `CR-023`), plus all earlier implementation findings and architecture rounds in this canonical report.
+- Latest Authoritative Round: `36`
+- Coverage Investigation / Execution Reports: `N/A` for this pre-API/E2E implementation review; no current-head browser sign-off is claimed.
+- Failing Scenario IDs: `None` — the prior source-contract finding is resolved and no new implementation finding was identified.
+
+### Round History — Round 36
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 36 | CR-023 bounded removal of the closed-strip stacking layer | `CR-023` and all prior shell, policy, drawer, activation, route-boundary, native-tab, and `/mobile` contracts were re-read from the complete current implementation path. | None | Pass | Yes | Both closed strip roots now use only the approved relative/flex/flex-none flow classes; no production root carries the superseded `z-[60]` class. |
+
+### Prior Findings Resolution Check — Round 36
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 35 | `CR-023` | Moderate source-contract blocker | Resolved | `LeftSidebarStrip.vue` and `RightSidebarStrip.vue` roots at current HEAD are `relative flex h-full w-[50px] flex-none ...`; current strip tests explicitly reject `fixed` and `z-[60]`. | The remaining `z-50` classes are confined to hover tooltip children, not the strip roots or a strip positioning layer. |
+
+No earlier implementation finding remains unresolved. The stale deleted-test documentation reference and historical handoff terminology remain non-blocking delivery/docs follow-ups, not source-gate findings.
+
+## Review Scope — Round 36
+
+This was a full fresh review from the complete cumulative package, not a delta-only inspection. I re-read the requirements doc, investigation notes, design spec, both intended-behavior supplements, comprehensive test report, Architecture Round 25 decision, implementation handoff, and prior code-review history. I then traced the current production spine end to end:
+
+`viewport / preference / measured-width input -> useResponsiveWorkspaceShell -> resolveResponsiveWorkspaceShellState -> nested docked|strip + consuming + activation output -> layouts/default.vue left flow renderer and /workspace WorkspaceAdaptiveLayout right flow renderer -> strip redock/open-drawer event -> panel preference or local transient drawer -> shared drawer focus/layer lifecycle`.
+
+Reviewed implementation and structural scope:
+
+- `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts`
+- `autobyteus-web/utils/layout/responsiveStripActivation.ts`
+- `autobyteus-web/composables/layout/useResponsiveWorkspaceShell.ts`
+- `autobyteus-web/composables/useLeftPanel.ts` and `autobyteus-web/composables/useRightPanel.ts`
+- `autobyteus-web/layouts/default.vue`
+- `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue`
+- `autobyteus-web/components/layout/LeftSidebarStrip.vue`
+- `autobyteus-web/components/layout/RightSidebarStrip.vue`
+- `autobyteus-web/components/layout/WorkspaceRightToolDrawer.vue`
+- `autobyteus-web/composables/useAccessibleDrawer.ts`
+- `autobyteus-web/components/AppLeftPanel.vue`, `pages/workspace.vue`, representative `/agents`, `/agent-teams`, `/tools`, application/immersive paths, and `pages/mobile.vue`
+- Current policy, shell, strip, adaptive, drawer, tab, layout, and component tests
+- `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`
+- `autobyteus-web/docs/workspace_layout.md` and the cumulative implementation handoff for durable-record consistency
+
+Explicit exclusions: API/E2E execution, live browser sign-off, backend behavior, unrelated delivery-era unstaged ticket/report edits, and unrelated page features outside the reviewed responsive shell contract.
+
+## Upstream Behavior And Production-Path Basis Confirmation — Round 36
+
+- Approved behavior basis: `Confirmed`.
+- Architecture Round 25 no-occlusion basis: `Confirmed`. FR-046/FR-047, AC-046/AC-047, DS-016, and the design-review residual require every closed non-docked strip to be a single 50px normal flex-flow item, with no fixed/z-index strip positioning; only an open transient drawer may overlay.
+- Policy contract: `Confirmed`. The current resolver exposes only `docked | strip`, only `StripBehavior = consuming`, uses `consumedWidth = 50`, preserves right-tools-first yielding, uses the compact 200px center floor, and permits a 0px floor only in the terminal below-300px dual-strip state.
+- Renderer contract: `Confirmed`. Both closed strip roots are normal relative/flex-none 50px items. The left/right drawer renderers remain the only fixed/overlay surfaces and each side hides its originating strip while its drawer is open.
+- CR-023 prior mismatch: `Resolved`. The two superseded `z-[60]` root classes are absent at current HEAD; the remaining `z-50` classes are child hover-tooltip layers and do not establish a strip root stacking layer.
+- Material premise status: `Confirmed`; this pass is grounded in the approved requirements/design contract and current source, with no unsupported runtime premise.
+
+| Behavior ID | Current Status | Current Implementation Path And Evidence | Contradicting Supported Evidence |
+| --- | --- | --- | --- |
+| FR-046, FR-047, AC-046, AC-047, DS-016 | `Confirmed` | Policy and renderers use consuming 50px strips; both roots are `relative flex h-full w-[50px] flex-none`; no root `fixed` or `z-[60]` class remains. | None found. |
+| FR-035, FR-037, FR-038, FR-040, FR-041 | `Confirmed` | Resolver candidate order and nested activation remain explicit; per-side renderer gates preserve strip/drawer mutual exclusion and open-drawer preference semantics. | None found. |
+| FR-039, FR-043–FR-045, AC-040, AC-043–AC-045 | `Confirmed` | The global default shell remains shared across non-immersive default-layout routes; `/workspace` alone mounts right tools, immersive application presentation bypasses it, and `/mobile` remains independent. | None found. |
+| FR-016–FR-020 and AC-016–AC-021 | `Confirmed` | Native right-tab row, canonical order, focus/selection auto-scroll, fixed toggle, and no custom indicator layer remain intact. | None found. |
+
+## Structural / Design Checks — Round 36
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Complete data-flow spine and lifecycle traced | Pass | The full policy/provider/renderer/strip/drawer path was re-read for both sides and global route boundaries. | None. |
+| Single responsive-policy ownership preserved | Pass | `useResponsiveWorkspaceShell` is the only adapter and `resolveResponsiveWorkspaceShellState` is the only effective presentation resolver. | None. |
+| Right-tools-first phase ordering and compact/terminal floors | Pass | Candidate construction and policy tests show docked -> consuming right strip -> consuming dual strips, with 200px compact protection and 0 only below 300px. | None. |
+| Closed strips are normal 50px flow items | Pass | Both roots are relative/flex-none/w50 with no root fixed or z60 class; policy reports consuming and geometry contracts remain present. | None. |
+| Only transient drawers overlay | Pass | Drawer/backdrop classes are the intended fixed layer; strips are hidden while drawers are open and no strip root owns a stacking layer. | None. |
+| Hybrid activation and preference lifecycle | Pass | `redock-panel` restores panel preference; `open-drawer` opens local transient state without mutating hidden preference. | None. |
+| Global default shell / workspace-only right tools / immersive/mobile boundaries | Pass | Current layout and route sources preserve the approved shared left shell and explicit `/workspace`, immersive, and `/mobile` boundaries. | None. |
+| Drawer accessibility, independent state, and mutual exclusion | Pass | Shared ordered drawer registry remains the lifecycle owner; corresponding strips are gated while drawers are open. | None at source gate. |
+| Test alignment and readiness | Pass | Current focused source suite passed; strip tests explicitly reject the superseded root classes; policy TypeScript, probe syntax, diff checks, guards, localization audit, and build passed. | API/E2E still required downstream. |
+| Dead/obsolete behavior cleanup | Pass | Overlay type/candidates, fixed strip branches, and the historical root stacking class are absent from current production source. | None. |
+
+## Source File Size And Structure Audit — Round 36
+
+Implementation-source thresholds apply only to implementation-source files in the reviewed current path. Tests, durable probes, docs, and generated output are excluded from the source-size gate.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard Limit | `>220` Delta | Ownership / Placement | Classification |
+| --- | ---: | --- | --- | --- | --- |
+| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts` | 490 | Pass | Pass | Single responsive policy owner | Healthy |
+| `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | 262 | Pass | Pass | Workspace center/right owner | Healthy |
+| `autobyteus-web/layouts/default.vue` | 165 | Pass | Pass | Global left shell owner | Healthy |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | 118 | Pass | Pass | Personal left strip owner | Healthy after CR-023 |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | 76 | Pass | Pass | Personal right strip owner | Healthy after CR-023 |
+| `autobyteus-web/utils/layout/responsiveStripActivation.ts` | 41 | Pass | Pass | Activation contract helper | Healthy |
+
+No source-size threshold is exceeded. The current implementation fix is a bounded class cleanup and does not introduce a second policy, renderer, or compatibility path.
+
+## Legacy / Backward-Compatibility Verdict — Round 36
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| Superseded overlay presentation/type/candidates removed | Pass | Current policy no longer exposes overlay strip behavior or candidates. |
+| No compatibility renderer or second responsive policy retained | Pass | Global shell/workspace ownership remains clean. |
+| Historical strip stacking mechanism removed | Pass | Closed strip roots no longer carry `z-[60]`; only transient drawer surfaces carry fixed/overlay stacking. |
+| Persisted-data transition handling | Pass / N/A | This is in-memory presentation state only; no migration applies. |
+
+## Docs-Impact Verdict — Round 36
+
+- Docs impact: `Yes`, non-blocking to the source gate and required before final delivery.
+- `autobyteus-web/docs/workspace_layout.md:118` still names the deleted `WorkspacePrimarySurfaceControls.spec.ts`.
+- The cumulative implementation handoff and historical report entries retain prior-round overlay terminology and superseded check-count prose. They remain useful history, but the delivery sync should keep the latest authoritative wording and current evidence counts clear.
+- The current implementation handoff says 12 files / 92 tests; the exact reviewer command for the listed 12 files produced 12 files / 91 tests, all passing. This is an evidence-count discrepancy, not a source or behavior failure; delivery/API-E2E records should use the exact emitted count.
+
+## Review Scorecard — Round 36
+
+- Overall score (`/10`): `9.30`
+- Overall score (`/100`): `93.0`
+- Score calculation note: simple average of the ten category scores below. All mandatory source categories meet the clean-pass threshold; the remaining deductions are proportional to unexecuted downstream validation and documented cleanup follow-ups.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | The viewport/preference/policy/renderer/drawer spines are clear for both side surfaces. | The long cumulative history requires careful artifact synchronization. | Keep the latest handoff/report entries authoritative and concise. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Policy, preferences, shell/workspace renderers, strip activation, and drawer registry have distinct owners. | Cross-route shell and workspace-only right-tool boundaries remain complex. | Preserve the single provider/resolver and explicit immersive/mobile gates. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | `StripBehavior = consuming` and explicit `redock-panel`/`open-drawer` activation are narrow and coherent. | The broader cumulative API surface is large. | Continue using nested side outputs without aliases or compatibility fields. |
+| `4` | `Separation of Concerns and File Placement` | 9.4 | Layout policy, renderer, strip, drawer, and accessibility responsibilities remain separated. | A few historical docs still describe superseded behavior. | Sync durable docs after downstream validation. |
+| `5` | `Shared-Structure / Data-Model Tightness` | 9.4 | One consuming strip behavior and nested right-panel lifecycle state are used consistently. | No new implementation weakness found; deductions reflect cumulative complexity. | Keep `rightPanel.effectiveCenterMinWidth` as the renderer authority. |
+| `6` | `Naming Quality and Local Readability` | 9.2 | Current names accurately describe consuming flow strips and transient drawers. | Historical handoff wording and the emitted test-count discrepancy reduce record clarity. | Correct the durable records during delivery sync. |
+| `7` | `API/E2E Readiness` | 9.0 | Fresh implementation checks pass and the source gate is clear. | No current-head browser/API/E2E execution was performed by this reviewer. | Route to `api_e2e_engineer` for fresh matrix execution. |
+| `8` | `Runtime Correctness and Behavioral Fidelity` | 9.3 | Current code preserves policy geometry, drawer-only overlays, activation, independent state, and route boundaries. | Browser execution remains downstream evidence. | Validate terminal below-300px flow and full route/interaction matrix downstream. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | Overlay candidates, fixed strip branches, and the superseded root stacking class are removed. | The historical docs still mention old behavior in prior-round entries. | Preserve history while clearly marking it superseded. |
+| `10` | `Cleanup Completeness` | 9.0 | The CR-023 source cleanup and proportional assertions are complete. | Deleted-test docs reference and evidence-count discrepancy remain. | Resolve docs/evidence cleanup before final delivery. |
+
+## Findings — Round 36
+
+`None.` The prior `CR-023` source-contract blocker is resolved. No new implementation-source or structural finding met the threshold for a Local Fix, Design Impact, Requirement Gap, or Unclear route.
+
+### Finding Classification — Round 36
+
+- Classification: `Pass`
+- Material premise gate: `Pass`; the approved architecture and current source are coherent and directly reviewable.
+- API/E2E routing: source gate passed; route the cumulative package to `api_e2e_engineer` for fresh execution. API/E2E must not be treated as complete based on this source review.
+
+## Recommended Recipient — Round 36
+
+`api_e2e_engineer`
+
+Please run fresh API/E2E coverage against exact current HEAD `b47b6274313f4b5447b73a03cf8e9a796198ee89`, including the approved strip-flow geometry/non-overlap matrix, terminal `299x700` state, route/global shell boundaries, drawer-only overlay and per-side gating, independent drawer focus/layering, native tabs, `/mobile` isolation, and cleanup. If the durable probe changes, return for proportional test-code review before delivery.
+
+## Reviewer Verification Evidence — Round 36
+
+- Focused source suite command: `pnpm -C autobyteus-web exec vitest run` over the 12 listed responsive policy/shell/strip/drawer/tab/layout files — `12` files / `91` tests passed. The implementation handoff's `12` / `92` claim is recorded above as a non-blocking evidence-count discrepancy; no test failed.
+- Standalone policy TypeScript: `pnpm -C autobyteus-web exec tsc --noEmit --skipLibCheck --target ES2020 --module ESNext --moduleResolution Bundler utils/layout/responsiveLayoutPolicy.ts` — passed.
+- Probe syntax: `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` — passed.
+- Repository hygiene: `git diff --check` and `git diff --cached --check` — passed.
+- Boundary/audit checks: `guard:web-boundary`, `guard:localization-boundary`, and `audit:localization-literals` — passed with zero unresolved findings; existing module-type warning only.
+- Nuxt production build: `pnpm -C autobyteus-web build` — passed; existing large Rollup chunk warning only.
+- Current production search: no `RightStripBehavior`, overlay strip candidate, fixed strip root, or `z-[60]` production class remains; within the strip components, `z-50` occurs only on the two strip-child hover tooltips, while drawer/backdrop layers intentionally use their own `z-40`/`z-50` surfaces.
+- Source-size audit: no reviewed implementation source file exceeds the 500-line hard limit; no current change introduces an oversized source file or second owner.
+
+## Residual Risks — Round 36
+
+- API/E2E has not run against `b47b6274313f4b5447b73a03cf8e9a796198ee89`; no browser, console, environment, or cleanup sign-off is claimed by this reviewer.
+- Downstream execution must validate the full strip-flow geometry and non-overlap matrix, right-first yielding, terminal `299x700` behavior, drawer-only overlay, route/global shell boundaries, independent drawer focus/layering, native tabs, `/mobile`, and cleanup.
+- `vue-tsc` remains unavailable and full generated Nuxt TypeScript remains uncompleted due to the previously recorded Node heap exhaustion; standalone policy TypeScript and the Nuxt build pass.
+- Existing KaTeX quirks-mode, localization module-type, and Rollup chunk-size warnings remain non-blocking.
+- Delivery/docs sync still needs to remove the stale deleted-test reference and reconcile the latest handoff/report test counts without rewriting historical rounds.
+
+## Latest Authoritative Result — Round 36
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — the prior CR-023 contract is directly resolved in current source; no unsupported runtime premise was used.
+- Score Summary: `9.30/10` (`93.0/100`); all mandatory source categories meet the clean-pass threshold.
+- Failure Origin (when applicable): `N/A` — this is a pre-API/E2E implementation review.
+- Recommended Recipient: `api_e2e_engineer`
+- Unresolved finding IDs: `None` (non-blocking docs/evidence follow-ups are recorded above).
+- Notes: Full fresh source/structural review completed from the complete cumulative package at exact HEAD `b47b6274313f4b5447b73a03cf8e9a796198ee89`; current implementation checks passed; API/E2E remains downstream-owned and required.
+
+## Round 37 Focused API/E2E Failure-Origin Review — R19-DRAWER-HITTEST-001
+
+### Failure Context And Scope
+
+- Reviewed API/E2E Round 19 against the approved responsive-shell package and exact current implementation `HEAD` `b47b6274313f4b5447b73a03cf8e9a796198ee89`.
+- This is a focused failure-origin review, not a reopened full source scorecard and not a proportional durable-test review. API/E2E changed only the durable probe for this run; no production source, requirements, or design artifact changed.
+- The clean run completed `21` result records (`18` workspace viewport entries including terminal `299x700`, `/mobile`, `/agents`, `/agent-teams`, `/tools`, and the application immersive journey). Repository checks, fixture setup, console/page-error enforcement, service cleanup, and port cleanup passed.
+- The root failure is `R19-DRAWER-HITTEST-001` at `gap-700x700`: the left drawer opens, but a real Playwright click on the still-visible opposite right-strip Files control is intercepted by the full-screen left drawer backdrop. The reverse order is symmetric. `R19-DRAWER-HITTEST-002` through `R19-DRAWER-HITTEST-015` are dependent/cascading failures caused by the second drawer never opening; they are not separate root findings.
+
+### Approved-Behavior Confirmation
+
+- The scenario is valid and reachable. At `700x700`, the approved policy exposes both consuming 50px strips with `open-drawer` activation; the current shared drawer design preserves independent left/right transient state and requires either opening order to remain operable.
+- The approved side-surface contract still requires the opened side's strip to be hidden, while the opposite side remains a closed strip and must retain its own user-operable compact affordance. The independent drawer lifecycle requires real focus, Tab/Escape, aria-modal, layer, and backdrop behavior after that second activation.
+- API/E2E's reconciliation is valid, not stale or weakened: it moved the independent journey from `800x700`, where the left panel is intentionally docked, to `700x700`, where both strips are policy-selected; it replaced programmatic bypasses with real Playwright pointer clicks and records pointer interception instead of aborting the matrix.
+- No `Design Impact`, `Requirement Gap`, or `Unclear` condition is indicated. The failure is a concrete renderer/backdrop hit-testing mismatch against the already-reviewed independent-side lifecycle.
+
+### Failure-Origin Analysis
+
+1. At `gap-700x700`, the browser observes the center from `x=50` to `x=650` and the right strip from `x=650` to `x=700`; both strips are normal flow items as required by CR-023/FR-046.
+2. Activating the left strip opens the left transient drawer. `layouts/default.vue:5-11` renders `app-left-drawer-backdrop` as `fixed inset-0` with z-index `40`, and `layouts/default.vue:124-127` renders the left drawer as a fixed z-index `50` surface. The right drawer is still closed, so its right strip remains rendered by `WorkspaceAdaptiveLayout.vue:75-82`.
+3. The right strip root intentionally has no fixed positioning or root stacking class after CR-023 (`RightSidebarStrip.vue:52`). It therefore remains below the full-viewport left backdrop for pointer hit-testing. The real Playwright click is correctly rejected by the browser as intercepted by `app-left-drawer-backdrop`, so the second drawer is never registered in `useAccessibleDrawer`.
+4. The reverse order has the same geometry: the full-viewport right backdrop covers the still-visible left flow strip. The shared registry, aria-modal ownership, focus promotion, and backdrop-layer assertions cannot be exercised because the second user action is blocked before those code paths run.
+
+The source and browser evidence agree on an implementation-owned integration mismatch: the CR-023 removal correctly eliminated strip overlay/z-index behavior for no-occlusion, but the drawer backdrops still claim the entire viewport's pointer surface. The implementation does not provide a hit-testable lane for the opposite closed strip. This is not a console, selector, startup, fixture, or cross-side state-mutation failure.
+
+### Focused Finding
+
+| Finding | Severity | Affected contract | Evidence / origin | Required bounded action | Classification / owner |
+| --- | --- | --- | --- | --- | --- |
+| `CR-024` | High / implementation blocking | `FR-039` / `AC-039`, `FR-041` / `AC-042`, and the approved independent drawer open-order lifecycle | Round 19 real Playwright evidence at `gap-700x700` shows `app-left-drawer-backdrop` intercepting the right-strip Files click; reverse order is symmetrically blocked. Current source pairs full `fixed inset-0 z-40` backdrops with normal flow strips that have no overlay layer. | Preserve CR-023: closed strips must remain normal 50px consuming flow items with no fixed/z-index root and drawers must remain the only overlay surfaces. Adjust the transient backdrop/pointer-layer geometry or equivalent renderer ownership so the opposite closed strip remains genuinely hit-testable in both open orders while center/backdrop dismissal, drawer-only same-side visibility, shared topmost z/aria-modal/focus behavior, and Escape/backdrop dismissal remain intact. Do not reintroduce `z-[60]` strip roots, fixed strips, a second resolver, cross-side closes, or programmatic click bypasses. Add source/component/browser regressions for both real second-strip clicks and both backdrop dismissals. | `Local Fix` -> `implementation_engineer` |
+
+`R19-DRAWER-HITTEST-002` through `R19-DRAWER-HITTEST-015` are recorded as dependent evidence under `CR-024`, not independent implementation findings. After the bounded fix, the package must return through implementation-source review and fresh API/E2E execution; only a passing run may proceed to proportional durable-test review.
+
+### Failure Evidence
+
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-coverage-investigation.md`
+- API/E2E execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/api-e2e-execution-coverage-report.md`
+- Failed browser log: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-workspace-responsive-probe-rerun2.log`
+- Durable probe: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`
+- Relevant production sources: `layouts/default.vue`, `components/layout/WorkspaceAdaptiveLayout.vue`, `components/layout/LeftSidebarStrip.vue`, `components/layout/RightSidebarStrip.vue`, `components/layout/WorkspaceRightToolDrawer.vue`, and `composables/useAccessibleDrawer.ts`.
+- Cleanup evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round19-cleanup-ports.log`
+
+### Routing
+
+- Do not route to `delivery_engineer` or to proportional durable-test review.
+- Route the complete cumulative failure package and this updated report to `implementation_engineer` for bounded `CR-024` rework.
+- The implementation fix must return through a fresh full source review and then fresh API/E2E. If API/E2E passes, return for the separate proportional review of any durable-probe changes.
+
+## Latest Authoritative Result — Round 37 Focused Failure-Origin Review
+
+- Review Decision: `Fail` — focused failure-origin review identifies an implementation-owned current-runtime defect.
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — the scenario is supported, reachable in the approved 700px state, and reproduced with clean real-pointer evidence.
+- Failure Origin: `Implementation-owned integration mismatch` (`CR-024`); full-viewport fixed backdrops intercept the opposite normal-flow strip, so the independent second drawer cannot be opened by user pointer input.
+- Classification: `Local Fix`
+- Recommended Recipient: `implementation_engineer`
+- Unresolved finding IDs: `CR-024` (dependent failures `R19-DRAWER-HITTEST-002` through `-015` are cascades).
+- Notes: The prior Round 36 source PASS remains valid for the CR-023 class contract, but the current package is not API/E2E-passed. No requirements/design change or probe weakening is authorized. Fresh source review and API/E2E are required after the implementation fix.
+
+## Round 38 Full Implementation-Source Review — CR-024 Rework
+
+### Review Context And Fresh-Scope Rule
+
+- Review entry point: `Implementation Review`.
+- This is a fresh full source/structural review, not a delta review. The complete current implementation spine and cumulative approved artifact package were reread from requirements through design, architecture review, implementation handoff, current production renderers/composables/policy, focused tests, and the durable probe.
+- Exact current HEAD: `078c3fffb` (`fix: preserve opposite strip hit targets`), parent `b47b62743`.
+- The review includes the prior unresolved `CR-024` failure-origin finding, the complete CR-023 consuming-flow contract, global default-shell boundaries, drawer lifecycle/independence, right-tab contract, route/immersive/mobile boundaries, and the current CR-024 implementation/test changes.
+- API/E2E execution is intentionally excluded from this source gate. No browser or API/E2E sign-off is claimed here.
+
+### Reviewed Artifact Chain And Behavior Basis
+
+- Requirements: `requirements-doc.md`, including FR-039/AC-039, FR-041/AC-042, FR-046/AC-046, and FR-047/AC-047.
+- Intended-behavior supplements: `workspace-responsive-ui-ux-spec.md` and `right-tool-tabs-ux-spec.md`.
+- Technical context/evidence: `investigation-notes.md` and `comprehensive-responsive-ui-test-report.md`.
+- Architecture approval: `design-review-report.md`, Architecture Round 25 strip-flow/no-occlusion approval, plus the recorded CR-024 failure-origin classification.
+- Implementation trace: `implementation-handoff.md`, including the CR-024 opposite-strip hit-test rework.
+- Current production spine: `layouts/default.vue` -> shared responsive state/left shell; `/workspace` -> `WorkspaceAdaptiveLayout.vue` -> right strip/drawer; `responsiveLayoutPolicy.ts` -> consuming-flow geometry; `useResponsiveWorkspaceShell.ts` -> single policy adapter; `useAccessibleDrawer.ts` -> shared layer/focus/keyboard lifecycle; `WorkspaceRightToolDrawer.vue` and both strip renderers.
+- Current durable boundary: `tests/e2e/workspace-responsive-probe.mjs` and its real-pointer independent-drawer journey.
+
+### CR-024 Resolution Review
+
+The prior runtime defect was valid: a full-screen fixed z-40 backdrop intercepted the opposite normal-flow 50px strip, so the second independent drawer could not be opened by a real pointer. The current source resolves that integration mismatch without violating the approved flow geometry:
+
+1. `layouts/default.vue:5-11,85-93` keeps the left backdrop fixed/overlayed but, only on `/workspace` and only when the composed state exposes a right strip, applies `right = rightPanel.consumedWidth` so the actual opposite strip lane remains hit-testable.
+2. `WorkspaceAdaptiveLayout.vue:75-92,215-222` keeps the right strip in normal flow and passes a corresponding `left = leftPanel.consumedWidth` inset to `WorkspaceRightToolDrawer` when the composed state exposes a left strip.
+3. `WorkspaceRightToolDrawer.vue:1-17,30-35` preserves the drawer as the only fixed side surface and keeps the registry-owned backdrop z-index last in the style merge, so the new geometry cannot override modal layer ownership.
+4. Both strips remain `relative flex h-full w-[50px] flex-none` roots with no fixed positioning or `z-[60]` layer. The change does not add a second resolver, a breakpoint, a cross-side close, or a programmatic click bypass.
+5. The same-side visibility gates remain intact: the left strip is hidden while the left transient drawer is open, and the right strip is hidden while the right transient drawer is open. The opposite closed strip remains available for the independent open-order journey.
+6. The shared drawer registry still owns ordered drawer/backdrop z-index, topmost keyboard/aria-modal ownership, and focus promotion/return. The inset only changes pointer coverage outside the opposite strip; it does not alter drawer registration or dismissal ownership.
+
+This is a bounded implementation-level renderer/backdrop integration fix against the already-approved behavior. No new design impact, requirement gap, or unsupported lifecycle premise was found.
+
+### Full Production-Path Structural Review
+
+| Review area | Result | Evidence / conclusion |
+| --- | --- | --- |
+| Responsive data-flow spine | Pass | Viewport and panel preferences enter the single `resolveResponsiveWorkspaceShellState` path; nested consumed widths/activation/effective floor are consumed by the shell and workspace renderers. CR-024 derives only from that composed state. |
+| Ownership and boundaries | Pass | `default.vue` owns global left shell/backdrop geometry; `WorkspaceAdaptiveLayout.vue` owns workspace right drawer/backdrop geometry; `WorkspaceRightToolDrawer.vue` owns drawer presentation; `useAccessibleDrawer` owns shared ordered modal lifecycle. No duplicated policy or cross-side preference mutation was added. |
+| Strip-flow/no-occlusion contract | Pass | Closed strips remain normal 50px consuming flow items. Only transient drawers/backdrops are fixed overlays. CR-024 leaves the opposite strip lane outside backdrop hit-testing instead of restoring strip stacking. |
+| Drawer independence and modal lifecycle | Pass | Per-side strip suppression, independent open state, registry ordering, z-index pairing, `aria-modal`, Escape/Tab ownership, focus promotion, and focus return remain in the existing shared lifecycle. |
+| Route and host-shell boundaries | Pass | The left inset is route-scoped to exact `/workspace`; right drawer exists only in `WorkspaceAdaptiveLayout`; immersive host presentation and `/mobile` remain outside the standard shell path. |
+| Right-tool contract | Pass | Right strip remains the sole constrained reopen affordance; drawer uses existing `RightSideTabs`, no visible duplicate title/close control, and native no-indicator tab scrolling remains unchanged. |
+| Legacy/compatibility cleanup | Pass | No fixed strip root, `z-[60]` strip root, overlay strip candidate/type, generic top surface row, second responsive resolver, or old responsive header path was reintroduced. |
+| Test readiness | Pass | Focused source regressions assert both inset ownership/boundaries and preserve real Playwright pointer clicks for both open orders and both backdrop dismissals. Browser execution remains required downstream. |
+
+### Source-Size And Structural Pressure Audit — Round 38
+
+Effective non-empty implementation-source lines remain within the review guardrails: `responsiveLayoutPolicy.ts` 490, `WorkspaceAdaptiveLayout.vue` 271, `layouts/default.vue` 174, `useAccessibleDrawer.ts` 193, `WorkspaceRightToolDrawer.vue` 49, `LeftSidebarStrip.vue` 118, and `RightSidebarStrip.vue` 76. No current implementation source exceeds the 500-line hard limit, and no changed source introduces a new oversized owner or compatibility branch.
+
+### Implementation-Scoped Verification — Round 38
+
+- Focused responsive source suite: `12` files / `92` tests passed. The handoff count is confirmed at this HEAD; only the known KaTeX quirks-mode warning appeared.
+- Standalone responsive-policy TypeScript check passed.
+- `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` passed.
+- `git diff --check` and `git diff --cached --check` passed.
+- `guard:web-boundary` and `guard:localization-boundary` passed.
+- Localization literal audit passed with zero unresolved findings; the existing module-type warning remains non-blocking.
+- Nuxt production build passed; only the existing large Rollup chunk warning remains.
+- Full generated Nuxt TypeScript/`vue-tsc` remains unavailable or resource-blocked as recorded in the cumulative handoff; the production build and standalone policy check provide the available implementation type/build evidence.
+
+### Docs And Evidence Follow-Ups
+
+- Docs impact remains non-blocking for this source gate: `autobyteus-web/docs/workspace_layout.md:118` still names the deleted `WorkspacePrimarySurfaceControls.spec.ts`.
+- Cumulative historical handoff/report terminology and older round counts remain useful history but should be clearly superseded during delivery synchronization. The current Round 38 focused command emitted the confirmed `12`/`92` count.
+
+### Review Scorecard — Round 38
+
+- Overall score: `9.40/10` (`94.0/100`).
+- All mandatory source/architecture categories remain at or above `9.0`; no implementation finding is open.
+
+| Priority | Category | Score | Rationale |
+| --- | --- | ---: | --- |
+| 1 | Data-flow spine inventory and clarity | 9.5 | The composed state supplies exact consumed-width boundaries to the two renderer owners, and the independent drawer lifecycle remains legible. |
+| 2 | Ownership clarity and boundary encapsulation | 9.6 | CR-024 places each inset at the renderer that owns the corresponding backdrop without adding policy duplication or cross-side state coupling. |
+| 3 | API/interface clarity | 9.4 | `backdropStyle` is a narrow optional presentation input and the existing nested responsive contract remains authoritative. |
+| 4 | Separation of concerns and file placement | 9.4 | Shell, workspace, drawer, strip, policy, and lifecycle responsibilities remain separated; no geometry workaround leaked into the policy. |
+| 5 | Shared-structure/data-model tightness | 9.4 | The fix reuses `consumedWidth` rather than inventing a second strip-width constant or layout calculation. |
+| 6 | Naming and local readability | 9.3 | `rightDrawerBackdropStyle` and `leftDrawerBackdropStyle` describe the behavior clearly; cumulative historical terminology still needs docs cleanup. |
+| 7 | API/E2E readiness | 9.0 | Source checks pass, but the repaired real-pointer journey still requires fresh downstream browser execution. |
+| 8 | Runtime correctness and behavioral fidelity | 9.4 | Source geometry now preserves both opposite-strip hit targets while retaining drawer-only overlays and independent modal ownership; browser confirmation remains outstanding. |
+| 9 | No legacy retention/backward compatibility | 9.5 | No fixed/z-index strip roots, overlay states, second resolver, or generic fallback returned. |
+| 10 | Cleanup completeness | 9.0 | CR-024 source/test cleanup is complete; the stale deleted-test docs reference and historical record synchronization remain delivery follow-ups. |
+
+### Findings And Routing — Round 38
+
+`None.` `CR-024` is resolved in this fresh full source review. No Design Impact, Requirement Gap, Unclear, or bounded implementation finding remains open. The current package is source-approved only and must proceed to fresh API/E2E execution.
+
+### Latest Authoritative Result — Round 38
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate: `Pass` — approved independent drawer behavior is reachable, and the source geometry uses existing composed strip widths without unsupported assumptions.
+- Failure Origin: `N/A` — this is a pre-API/E2E implementation review.
+- Resolved finding: `CR-024`.
+- Recommended Recipient: `api_e2e_engineer`.
+- Unresolved finding IDs: `None`.
+- Notes: Fresh full source/structural review completed against exact HEAD `078c3fffb`; implementation checks passed; API/E2E remains required and downstream-owned. If the durable probe changes during execution, return for separate proportional test-code review before delivery.

@@ -608,3 +608,71 @@ Implementation-source limits, architecture score categories, and forced test-fil
 - Final validation confidence: `97.3%`.
 - Recommended Recipient: `delivery_engineer`.
 - Notes: This is the separate proportional durable-test review and does not reopen the implementation scorecard. The complete cumulative package, including this report, Round 18 execution evidence, Round 34 source review, implementation handoff, current coverage/execution reports, current probe/results, and all still-relevant requirements/design artifacts may now proceed to delivery. This report is not a deployment or release sign-off.
+
+## Review Round 14 — Round 20 API/E2E Pass / CR-024 Durable-Test Review
+
+### Review Meta
+
+- Review entry point: `Successful API/E2E proportional durable-test review`.
+- This is a focused test-code review of the current durable probe change; it does not reopen the implementation source scorecard or redesign the approved behavior.
+- Exact implementation HEAD: `078c3fffb` (`fix: preserve opposite strip hit targets`).
+- API/E2E result reviewed: `Pass` — `21` result records (`18` workspace viewport entries including terminal `299x700`, `/mobile`, `/agents`, `/agent-teams`, `/tools`, and the application setup/immersive/exit journey), `0` failures, and `0` browser console/pageerror failures.
+- Final confidence: `97.3%`; no applicable category below `90%`.
+- Upstream source review: `code-review-report.md`, Round 38 `Pass`, CR-024 resolved.
+- Prior proportional findings rechecked: `TR-001` remains resolved; no other unresolved test-review finding exists.
+
+### Changed Durable-Test Scope
+
+Temporary probes, logs, screenshots, generated JSON, and runtime artifacts are evidence only. The current API/E2E stage updated one durable test path:
+
+| Durable test path | Change | Related behavior | Coherent responsibility |
+| --- | --- | --- | --- |
+| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | `Updated` (`30` insertions, `6` deletions relative to exact source-reviewed HEAD) | CR-024 opposite-strip hit testing, standalone right-drawer backdrop dismissal/focus return, and reverse independent drawer dismissal/lifecycle | One cohesive responsive browser matrix for workspace shell, drawers/strips, right tabs, routes, application boundary, and `/mobile` isolation |
+
+The delta has two bounded purposes:
+
+1. It adds a real Playwright hit-tested right-drawer backdrop dismissal and verifies drawer closure plus focus restoration to the right strip, complementing the existing left standalone path.
+2. It replaces the physically impossible reverse-order attempt to hit a backdrop while both full-height drawer surfaces cover the viewport. The reverse topmost left drawer is dismissed with real Escape, focus promotion to the remaining right drawer is asserted, and the remaining right drawer's inset backdrop is then hit-tested and dismissed. Reverse z-order, `aria-modal`, focus, strip suppression, and both-open assertions remain active.
+
+The first Round 20 run's six stale-path failures are retained as evidence. The reconciliation removes an impossible pointer target, not an approved behavior assertion; no production source, requirements, design, or implementation expectation changed.
+
+### Validation Evidence Reviewed
+
+- Current durable probe diff reviewed directly: `30` additions / `6` deletions; no production source changed in this API/E2E round.
+- `node --check autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` passed.
+- `git diff --check -- autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` passed.
+- Authoritative browser evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-workspace-responsive-probe-rerun.log`.
+- Initial stale-path evidence retained at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-workspace-responsive-probe.log`.
+- Canonical current results: `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-summary.json`.
+- Fresh execution used isolated backend/frontend services on ports `13055`/`13056`, isolated SQLite/data, Google Chrome with real Playwright pointer/keyboard actions, application fixture setup, `--fail-on-console-error`, and verified port/Chromium cleanup at `/Users/normy/autobyteus_org/autobyteus-worktrees/frontend-responsive-ux-audit/tickets/frontend-responsive-ux-audit/evidence/api-e2e-round20-cleanup-ports.log`.
+- Execution directly passed both real second-strip clicks, CR-024 inset geometry, standalone left/right backdrop dismissal, reverse Escape promotion, remaining inset-backdrop dismissal, full matrix, application boundary, native tabs, terminal flow, and `/mobile` isolation.
+
+### Proportional Test-Code Checks
+
+Implementation-source size thresholds, architecture score categories, and forced test-file splitting are not applied to this review.
+
+| Check | Result | Evidence / assessment |
+| --- | --- | --- |
+| Scenario organization and names make intent clear | `Pass` | The right standalone dismissal remains inside the clearly named `validateRightStripReopenInteraction`; the reverse order remains inside `validateIndependentDrawerInteractions` with explicit `reverse-left-escape` and remaining-backdrop states. |
+| Assertions prove approved behavior rather than incidental implementation details | `Pass` | The added right path asserts a real hit-tested backdrop identity, closure, and focus return to the remounted strip. The reverse change preserves independent-open, topmost z/ARIA/focus, Escape promotion, and final inset-backdrop dismissal while removing only an unreachable hit-test expectation. |
+| Fixtures, setup, helpers, and data builders are reused appropriately | `Pass` | The delta reuses `clickTopmostDrawerBackdrop`, `collect`, existing locator click helpers, viewport sequencing, state/failure aggregation, and current runtime fixtures. No duplicate browser/server setup or synthetic DOM click was added. |
+| Isolation and determinism are appropriate for this boundary | `Pass` | The standalone and reverse journeys use fixed approved viewport states, explicit real pointer/keyboard interactions, guarded waits, and the isolated Round 20 runtime. The authoritative rerun passed with console/pageerror enforcement and cleanup. |
+| File remains coherent and navigable | `Pass` | The existing single responsive probe owns shell, drawer, strip, tab, route, application-boundary, and mobile-browser contracts. These changes remain within the drawer/strip lifecycle responsibility and do not warrant a new file. |
+| No stale, duplicated, disabled, or compatibility-only tests remain | `Pass` | The impossible both-open backdrop click was replaced with an evidence-backed Escape-then-remaining-backdrop sequence; standalone backdrop coverage was strengthened rather than removed. The initial failed run remains evidence only, not an executable stale expectation. |
+| Durable coverage agrees with investigation and execution evidence | `Pass` | Round 20 coverage/execution reports identify exactly these two bounded probe changes and explain the union-of-full-height-drawers geometry. The final canonical result records `21` records and zero failures/error-page failures, matching the reviewed execution. |
+
+### Findings
+
+| Finding ID | Test path / scenario | Evidence | Required action | Classification / owner |
+| --- | --- | --- | --- | --- |
+| None | N/A | The durable-test delta is focused, directly proves CR-024 and the retained drawer lifecycle, removes only an impossible physical hit-test path, passes syntax/diff checks, and passed the authoritative rerun. | None. | N/A |
+
+### Latest Authoritative Result
+
+- Result: `Pass`.
+- Changed durable test path reviewed: `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs`.
+- Unresolved finding IDs: `None` (`TR-001` remains resolved).
+- Current-round proportional test-review result: `Pass`.
+- Final validation confidence: `97.3%`.
+- Recommended recipient: `delivery_engineer`.
+- Notes: This is the separate durable-test review and does not reopen the implementation scorecard. The cumulative package may proceed to delivery, including this report, Round 20 coverage/execution reports and final evidence, Round 38 source review, implementation handoff, current probe/results, and all still-relevant requirements/design artifacts. This is not deployment or release sign-off.

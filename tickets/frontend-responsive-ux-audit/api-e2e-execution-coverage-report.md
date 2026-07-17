@@ -1314,3 +1314,161 @@ node tests/e2e/workspace-responsive-probe.mjs \
 
 - Result: `Pass`.
 - Because the durable probe changed, return the full cumulative package to `code_reviewer` for separate proportional durable-test review. Do not route directly to delivery.
+
+## Round 19 Current-Head Execution Addendum (Failure — Latest Authoritative)
+
+### Execution basis
+
+- Exact HEAD: `b47b6274313f4b5447b73a03cf8e9a796198ee89` (`fix: remove strip stacking layer`), parent `e6b062f755a0e365ea32e1cc10f1cf6e34816b0c`.
+- Upstream source gate: implementation-source/structural review Round 36 `PASS`, CR-023 resolved. The reviewed contract requires normal relative/flex-none 50px consuming strips, transient drawer-only overlays, per-side activation gates, independent drawer state/layer/focus semantics, native tabs, route boundaries, terminal geometry, and `/mobile` isolation.
+- Browser runtime: fresh built backend on `127.0.0.1:13045`, fresh Nuxt dev frontend on `127.0.0.1:13046`, isolated SQLite/data under `/tmp/autobyteus-responsive-ux-audit-api-e2e-round19`, repository Playwright Core with discovered Google Chrome executable. Applications capability was enabled only in the run-owned database through `setApplicationsEnabled(enabled: true)`; the live catalog exposed the deterministic `Brief Studio` fixture.
+
+### Repository and setup evidence
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Focused responsive Nuxt/Vitest suite | `12 files / 91 tests passed`; known KaTeX quirks-mode warning only | `evidence/api-e2e-round19-focused-nuxt-tests.log` |
+| Backend build | `Pass` | `evidence/api-e2e-round19-server-build.log` |
+| Probe syntax, responsive-policy TypeScript, web diff checks | `Pass` | `evidence/api-e2e-round19-probe-checks.log` |
+| Backend readiness | `Pass`, root listener HTTP 404; all migrations applied | `evidence/api-e2e-round19-backend.log` |
+| Frontend readiness | `Pass`, `/workspace` HTTP 200; known Nuxt dev `#app-manifest` transient diagnostics only | `evidence/api-e2e-round19-frontend.log` |
+| Application capability/catalog | `Pass`, `Brief Studio` available in isolated runtime | `evidence/api-e2e-round19-application-capability-enable.log`, `api-e2e-round19-application-capability.log`, `api-e2e-round19-application-catalog.log` |
+
+### Browser execution
+
+Authoritative final rerun command:
+
+```bash
+node autobyteus-web/tests/e2e/workspace-responsive-probe.mjs \
+  --base-url=http://127.0.0.1:13046 \
+  --output-dir=/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe \
+  --screenshots=failures \
+  --fail-on-console-error
+```
+
+Evidence: `evidence/api-e2e-round19-workspace-responsive-probe-rerun2.log`. The first unchanged-probe run is retained at `evidence/api-e2e-round19-workspace-responsive-probe.log`; the intermediate probe crash before error-recording hardening is retained at `evidence/api-e2e-round19-workspace-responsive-probe-rerun.log`.
+
+- Final result: `Fail`; `18` `/workspace` viewport entries (including `terminal-299x700`), `/mobile`, the 3 global default routes, and the application setup/immersive/exit route were exercised (`21` result records); `16` failures, all on the independent-drawer scenario at `gap-700x700`; zero browser `error`/`pageerror` failures under `--fail-on-console-error`.
+- Terminal and flow evidence passed: `299x700` measured left strip `50px`, center `199px`, right strip `50px`, all in bounds with no overlap. At `768x700` and `800x700`, the updated probe correctly accepts the approved consuming right-strip responsive-yield floor: centers measured `395px` and `427px` (>=200px), with docked left panel `320px`, left-handle overlap compensation, and right strip `50px` in the center-right flow.
+- Wide bound evidence passed: `1280x800` stopped at right panel `750px` with center `205px`; `1440x900` stopped at right panel `910px` with center `205px`. Right tabs, route/global shell boundaries, application immersive suppression/restoration, `/mobile` isolation, strip geometry, and console enforcement passed.
+
+### Failure origin and scenario IDs
+
+Primary failure: `R19-DRAWER-HITTEST-001` (`FR-039`/`AC-039`, `FR-041`/`AC-042`, `DS-010`) — at `gap-700x700`, the real Playwright click on the visible right-strip Files button after opening the left drawer was intercepted by the fixed `app-left-drawer-backdrop` (`z-40`). The opposite reverse order is symmetrically blocked by the right drawer backdrop. Because the second drawer never opens through the user-visible hit-tested path, dependent assertions report missing second drawer focus, `aria-modal` promotion, Escape return, visual layer ordering, and backdrop ownership (`R19-DRAWER-HITTEST-002` through `R19-DRAWER-HITTEST-015`). These are not independent new failures: they are the observable cascade of the primary hit-test/layer defect.
+
+Preliminary classification: `Implementation-owned current runtime/layering failure` in the CR-023 strip-flow rework boundary. The current normal-flow strips no longer sit above a transient opposite-side backdrop, so the approved independent drawer journey is not reachable by real user pointer input. This conflicts with the reviewed supported independent-drawer contract and must receive focused failure-origin review. No browser console errors or backend/frontend startup failures explain the result.
+
+### Cleanup
+
+- Frontend session `49642` and backend session `83782` received SIGINT; backend exited cleanly after migrations/runtime work; Playwright Chromium closed through probe cleanup.
+- Ports `13045` and `13046` were verified closed. Isolated data remains outside the worktree for forensic reproducibility. Evidence: `evidence/api-e2e-round19-cleanup-ports.log`.
+
+### Confidence scorecard (pre-failure routing)
+
+| Confidence category | Score | Basis | Remaining uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 78% | Direct proof passed terminal/flow, tabs, resize, route boundaries, immersive boundary, mobile, and console contracts, but independent drawer open-order reachability is a critical acceptance failure. | Drawer visual/hit-test and promotion semantics remain unproven in current runtime. |
+| Changed-boundary execution directness | 88% | Exact current production source ran through fresh backend/frontend/Chrome; the failing hit-test is direct, but independent second-drawer behavior cannot complete. | Implementation fix/retest required. |
+| Cross-boundary integration realism and mock gap | 96% | Fresh backend, isolated SQLite, Nuxt runtime, live GraphQL capability/catalog, and Chrome passed the broader shell matrix. | Deep authenticated tool workflows remain out of scope. |
+| Environment/configuration/fixture fidelity | 95% | Run-owned data/ports, explicit endpoints, migrations, deterministic application fixture, readiness, and cleanup passed. | None material for the failure. |
+| Failure/edge/lifecycle/recovery evidence | 82% | Both attempted open orders and hit-tested backdrop probing exposed the failure; dependent focus/ARIA/layer assertions could not pass. | Re-run after implementation ownership fix. |
+| User-surface/browser/desktop-shell confidence | 84% | 21 route/state records and direct Chrome geometry/interaction evidence passed except the critical independent drawer journey. | Packaged Electron shell and fixed hit-test path remain unproven. |
+| Durable regression coverage quality/relevance | 90% | Probe remains requirement-aligned and was narrowly reconciled for the current consuming-strip gate; it now records overlay interception rather than aborting. | Changed probe requires proportional review after the failure-origin fix and passing rerun. |
+
+Overall pre-routing confidence: `87.6%` (simple average); below the clean-pass threshold because a critical independent-drawer criterion failed.
+
+### Durable coverage and routing
+
+| Path | Round 19 status | Next route |
+| --- | --- | --- |
+| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | Updated by API/E2E to reconcile the 768px consuming-strip center floor, move independent drawers to a viewport where both strips are actually exposed, and record intercepted clicks without aborting the matrix. | `code_reviewer` focused failure-origin review; after implementation fix and passing rerun, proportional durable-test review. |
+| `tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` / `summary.json` | Canonical current failure result from Round19 rerun2: 21 records, 16 failures, zero console errors. | Retain as failure evidence. |
+
+### Result and routing decision
+
+- Result: `Fail`.
+- Route to `code_reviewer` for focused failure-origin review with exact primary scenario `R19-DRAWER-HITTEST-001`, dependent cascade IDs `R19-DRAWER-HITTEST-002..015`, and the complete cumulative package. Do not route to delivery or claim UX/API/E2E sign-off.
+
+## Round 20 Current-Head Execution Addendum (Pass — Latest Authoritative)
+
+### Execution basis and setup
+
+- Exact HEAD: `078c3fffb` (`fix: preserve opposite strip hit targets`), parent `b47b62743`.
+- Upstream source gate: implementation/source review Round 38 `PASS`, CR-024 resolved. The implementation applies `rightPanel.consumedWidth` to the left drawer backdrop's right inset and `leftPanel.consumedWidth` to the right drawer backdrop's left inset, preserving real pointer access to the opposite normal-flow strip.
+- Fresh backend: current-worktree built `autobyteus-server-ts/dist/app.js` at `127.0.0.1:13055`, isolated SQLite under `/tmp/autobyteus-responsive-ux-audit-api-e2e-round20`.
+- Fresh frontend: Nuxt dev at `127.0.0.1:13056`, explicit `BACKEND_*` endpoints targeting the isolated backend.
+- Browser: repository Playwright Core with discovered Google Chrome executable; `--fail-on-console-error` enabled.
+- Applications capability was enabled only in the run-owned backend; the deterministic `Brief Studio` catalog was available and the setup -> immersive -> exit journey completed.
+
+### Repository and environment evidence
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Focused responsive Nuxt/Vitest suite | `12 files / 92 tests passed`; known KaTeX quirks-mode warning only | `evidence/api-e2e-round20-focused-nuxt-tests.log` |
+| Backend build | `Pass` | `evidence/api-e2e-round20-server-build.log` |
+| Probe node syntax, responsive-policy TypeScript, web diff checks | `Pass` | `evidence/api-e2e-round20-probe-checks.log` |
+| Backend readiness and migrations | `Pass`, root HTTP 404 listener; 17 migrations applied | `evidence/api-e2e-round20-backend.log` |
+| Frontend readiness | `Pass`, `/workspace` HTTP 200; known transient Nuxt `#app-manifest` diagnostics only | `evidence/api-e2e-round20-frontend.log` |
+| Application capability/catalog | `Pass`, isolated `Brief Studio` fixture | `evidence/api-e2e-round20-application-capability-enable.log`, `api-e2e-round20-application-capability.log`, `api-e2e-round20-application-catalog.log` |
+
+### Coverage reconciliation
+
+The first Round 20 probe run passed the CR-024 second-strip clicks and inset geometry, but failed six reverse backdrop assertions because it attempted to hit-test a backdrop while both full-height drawer surfaces covered the viewport. This is not an exposed user-click target in that simultaneous geometry. The bounded API/E2E fix:
+
+- Added a real Playwright right-drawer backdrop click/dismissal/focus-return check to the standalone right-strip -> drawer journey; the left standalone path already had the equivalent real backdrop click.
+- In the reverse independent order, dismisses the topmost left drawer with real Escape, verifies focus promotion to the remaining right drawer, then hit-tests and dismisses the remaining right drawer's inset backdrop. The probe retains reverse z-order, `aria-modal`, focus, and both-open state assertions.
+- No product source, requirements, design, or approved user behavior changed. The intermediate failing run remains at `evidence/api-e2e-round20-workspace-responsive-probe.log`; the final rerun is authoritative at `evidence/api-e2e-round20-workspace-responsive-probe-rerun.log`.
+
+### Browser execution
+
+Authoritative command:
+
+```bash
+node autobyteus-web/tests/e2e/workspace-responsive-probe.mjs \
+  --base-url=http://127.0.0.1:13056 \
+  --output-dir=/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe \
+  --screenshots=failures \
+  --fail-on-console-error
+```
+
+- Result: `Pass`.
+- Matrix: `18` `/workspace` viewport entries including `terminal-299x700`, plus `/mobile`, 3 global default routes (`/agents`, `/agent-teams`, `/tools`), and 1 application setup/immersive/exit route (`21` result records total).
+- Failures: `0`; browser `error`/`pageerror` entries under enforcement: `0`.
+- Real second-strip clicks: left -> right and right -> left both opened independent drawers; the opposite side remained pointer reachable through the composed backdrop inset. Both-open states verified topmost drawer focus, z-order, `aria-modal` promotion, and per-side strip suppression.
+- Backdrop dismissals: left standalone backdrop dismissal passed with focus restoration to the left strip; right standalone backdrop dismissal passed with focus restoration to the right strip; reverse remaining-right inset backdrop dismissal passed after Escape promotion from the left topmost drawer.
+- Inset/non-occlusion evidence: at `700x700`, the left-open state measured left backdrop right edge `650`, leaving the right strip `[650,700]`; the both-open state measured left backdrop `[0,650]` and right backdrop `[50,700]`; the reverse path's right-open state used the symmetric left-strip inset. Assertions passed in both orders.
+- Terminal/flow: `299x700` measured left strip `50px`, center `199px`, right strip `50px`, with no overlap. At `768x700` center was `395px` and at `800x700` `427px`, both above the approved 200px responsive-yield floor for consuming right strips.
+- Native tabs: docked and drawer paths passed one-row `nowrap`, native `overflow-x:auto`, canonical order, ARIA selection, active underline, Files selection/focus, VNC focus/auto-scroll, fixed-toggle stability, and no custom overflow chrome. Three tab journeys produced `18` snapshots.
+- Wide resize: `1280x800` bounded at right panel `750px` / center `205px`; `1440x900` bounded at right panel `910px` / center `205px`.
+- Global/application/mobile: global shared-shell route checks, application immersive suppression/restoration, and `/mobile` isolation passed.
+
+### Cleanup
+
+- Frontend session `73490` and backend session `28802` received SIGINT; backend exited cleanly and Chromium closed through probe cleanup.
+- Ports `13055` and `13056` were verified closed. Isolated data remains outside the worktree for reproducibility. Evidence: `evidence/api-e2e-round20-cleanup-ports.log`.
+
+### Confidence scorecard
+
+| Confidence category | Score | Basis | Remaining uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 100% | Direct browser proof covers CR-024 inset access, both second-strip clicks, drawer focus/layer/ARIA/keyboard/backdrop lifecycles, full matrix, routes, application boundary, native tabs, resize, and `/mobile`. | No material web-equivalent criterion remains unproven. |
+| Changed-boundary execution directness | 100% | Exact current production source ran in fresh backend/frontend/Chrome; pointer hit testing, geometry, focus, layer, ARIA, keyboard, and route transitions were observed. | Packaged Electron shell is not directly exercised. |
+| Cross-boundary integration realism and mock gap | 96% | Fresh built backend, isolated SQLite, live GraphQL capability/catalog, Nuxt, application fixture, and Chrome passed. | Deep authenticated/internal tool workflows remain out of scope. |
+| Environment/configuration/identity/fixture fidelity | 95% | Run-owned ports/data, explicit endpoints, migrations, deterministic bundled application, model setup, readiness, and cleanup passed. | The application fixture is isolated rather than a production identity workflow. |
+| Failure/edge-case/lifecycle/recovery evidence | 98% | Both drawer orders, inset edge conditions, standalone and remaining-drawer backdrop dismissal, Escape/Tab/focus promotion, terminal/short/wide states, application exit, console enforcement, and cleanup passed. | Native device gesture momentum and packaged restart remain out of scope. |
+| User-surface/browser/desktop-shell confidence | 98% | 21 result records, direct Chrome pointer/keyboard journeys, geometry, ARIA/layer assertions, right-tab snapshots, and zero browser console errors passed. | Native packaged shell is not directly exercised. |
+| Durable regression coverage quality/relevance | 94% | Probe directly enforces CR-024 inset/second-strip/backdrop behavior and all retained shell contracts; final rerun passed. | Separate proportional review of the changed probe is required. |
+
+Overall confidence: `97.3%` (simple average); no applicable category below `90%`; all critical web-equivalent criteria directly passed.
+
+### Durable coverage and routing
+
+| Path | Round 20 status | Next route |
+| --- | --- | --- |
+| `autobyteus-web/tests/e2e/workspace-responsive-probe.mjs` | Updated by API/E2E to add right standalone backdrop dismissal and use a reachable reverse remaining-backdrop path; final current matrix passed. | `code_reviewer` proportional durable-test review. |
+| `tickets/frontend-responsive-ux-audit/probes/api-e2e/workspace-responsive-probe-results.json` / `summary.json` | Canonical current pass from Round20 rerun: 21 records, zero failures, zero console errors. | Retain as current evidence. |
+
+### Result and routing decision
+
+- Result: `Pass`.
+- Because durable browser coverage changed during this stage, route the complete cumulative package to `code_reviewer` for separate proportional test-code review before delivery. Do not route directly to delivery.

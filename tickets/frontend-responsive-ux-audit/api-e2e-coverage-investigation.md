@@ -796,3 +796,94 @@ No durable probe edit was planned before the first execution. The first live pas
 - Durable test decision: `Update Durable Coverage` completed for the newly required immersive application boundary and broader console/page-error enforcement. The changed probe must receive proportional durable-test review by `code_reviewer` before delivery.
 - Physical mouse/touchpad/touch horizontal-tab journey: `Not Required`. The implementation owns a native browser horizontal scroll container and no custom pointer/touch scrolling handler; the durable probe directly proves real `scrollLeft` movement, focus/selection auto-scroll, semantic tab activation, and browser mouse journeys. Native gesture momentum remains a low-risk browser-platform residual.
 - Packaged Electron/native shell: `Out Of Scope` for this web-equivalent API/E2E stage; source/package checks and browser renderer validation cover the approved ticket boundary.
+
+## Round 19 Current-State Coverage Investigation Addendum
+
+### Trigger and changed boundaries
+
+- Exact implementation state under validation: `b47b6274313f4b5447b73a03cf8e9a796198ee89` (`fix: remove strip stacking layer`), parent `e6b062f755a0e365ea32e1cc10f1cf6e34816b0c`.
+- Upstream gate: implementation-source/structural review Round 36 `PASS`, score 9.30/10. CR-023 removes fixed/stacked strip roots and makes both closed strip roots relative, `h-full`, `w-[50px]`, `flex-none` consuming-flow items; drawer/backdrop layers remain transient and side-local. The source review found no implementation findings. The implementation review's 12-file/91-test versus handoff 12-file/92-test count discrepancy is non-blocking evidence metadata and will be rechecked only as repository evidence.
+- Changed runtime boundaries: narrow terminal-width consuming-flow geometry and non-overlap, global default-shell route ownership, per-side strip/drawer activation gates, right-tools-first center/right flow, independent drawer layers/focus, native right tabs, resize bounds, immersive application suppression, and `/mobile` isolation.
+
+### Coverage validity and execution plan
+
+| Scenario / boundary | Decision | Evidence and plan |
+| --- | --- | --- |
+| Full `/workspace` matrix including `terminal-299x700` | `Still Valid` | The current durable probe includes the 299px terminal viewport and validates visible adaptive content, per-side 50px relative consuming strips, center/right flow bounds, and no overlap. Execute unchanged. |
+| Flow geometry / non-overlap | `Still Valid` | `collect()` captures left/right strip, main, center, and center-right-flow rectangles; `validateWorkspaceInitial()` checks relative roots, 50px width, consuming behavior, left/main and right/flow/center non-overlap. Execute with fresh browser geometry. |
+| Global default routes `/agents`, `/agent-teams`, `/tools` and application boundary | `Still Valid` | Current probe already verifies shared left strip, no workspace-only tools/adaptive layout, active nav, drawer lifecycle, `/mobile`, and application setup/immersive/exit. Execute unchanged. |
+| Drawer-only overlays / per-side activation gates | `Still Valid` | Current probe checks strip activation metadata, transient drawer reachability, independent open orders, topmost focus/ARIA/layering, Escape/Tab/backdrop dismissal, and no strip while its drawer is open. Execute unchanged. |
+| Native right tabs, resize, `/mobile`, console/error enforcement | `Still Valid` | Existing durable assertions directly exercise native scroll/focus/selection/order/ARIA, wide resize capacity, `/mobile` isolation, and console/pageerror enforcement. Execute unchanged. |
+| Additional durable coverage | `No update planned before execution` | Current probe already contains the new terminal/flow assertions from this HEAD. If live evidence shows a stale expectation, make only a bounded API/E2E-owned reconciliation and route the changed probe for proportional review. |
+| Physical touchpad/touch horizontal scroll | `Not Required` | Native overflow remains browser-owned with no custom gesture handler; deterministic native `scrollLeft` plus real focus/selection and pointer/keyboard journeys remain direct evidence. |
+
+### Round 19 planned executable validation
+
+1. Run the current focused responsive Nuxt/Vitest suite, fresh backend build, probe syntax, and `git diff --check`.
+2. Start run-owned built backend on `127.0.0.1:13045` and Nuxt frontend on `127.0.0.1:13046` with isolated SQLite under `/tmp/autobyteus-responsive-ux-audit-api-e2e-round19` and explicit backend endpoints.
+3. Execute the current durable browser probe with all 18 `/workspace` viewport entries (including `terminal-299x700`), `/mobile`, global routes, application boundary, `--fail-on-console-error`, and cleanup evidence.
+4. Inspect terminal/flow geometry, route/global shell boundaries, strip/drawer gates, independent layering/focus, native tabs, resize bounds, console/pageerror output, and canonical JSON/summary.
+5. Stop only run-owned processes, verify ports closed, update the canonical execution report and confidence, and route a passing package to `code_reviewer` only if the durable probe changes.
+
+## Round 19 Coverage Reconciliation and Failure Addendum
+
+### Durable coverage reconciliation after first live run
+
+The first Round 19 live run used the unchanged probe and exposed two stale assumptions made obsolete by the approved consuming-strip policy introduced before exact HEAD `b47b6274313f4b5447b73a03cf8e9a796198ee89`:
+
+1. `validateWorkspaceInitial()` required a 480px center at every viewport >=768px. At `768x700`, `800x700`, and `800x420`, the approved right-first constrained state is a docked left panel plus a consuming 50px right strip with the responsive-yield 200px center floor; observed centers were 395px, 427px, and 427px respectively. This was a stale probe expectation, not a runtime geometry overlap: the 320px left panel, 6px left handle, 200px minimum floor, and 50px right strip fit the available flow.
+2. The independent left/right drawer journey was scoped to `tablet-800x700`, where the approved per-side gate keeps the left panel docked and exposes no left strip. The journey was moved to `gap-700x700`, the last pre-MD viewport where both side strips expose `open-drawer`, preserving the supported independent-drawer scenario rather than weakening it.
+
+The probe also now records real pointer interception instead of aborting the complete matrix when a backdrop blocks an opposite-strip click. These are bounded API/E2E-owned validity/reliability fixes; no production source, requirements, or design artifact changed. The updated probe passed node syntax and diff checks before rerun.
+
+### Final live validity classification
+
+| Scenario | Decision | Evidence |
+| --- | --- | --- |
+| Terminal `299x700`, strip-flow geometry/non-overlap, route/global shell boundaries, right tabs, resize, `/mobile`, console enforcement | `Pass` | All non-drawer scenarios passed in the final rerun; 18 `/workspace` viewports, `/mobile`, global default routes, and immersive application route produced zero console/pageerror failures. |
+| Center floor at 768/800 constrained transitions | `Pass` after stale expectation reconciliation | `md-768x700` center 395px and `tablet-800x700` center 427px are above the approved 200px responsive-yield floor; left docked/right strip geometry remained non-overlapping. |
+| Independent left/right drawer open orders and hit-tested opposite-strip reachability | `Fail` | At `gap-700x700`, the left drawer opens, then a real Playwright click on the visible right-strip button is intercepted by `app-left-drawer-backdrop`. The reverse order has the symmetric interception. The current closed strips are normal flow items without the removed `z-[60]` layer, while the drawer backdrop is fixed `z-40`; this is a current runtime hit-testing/layer ownership failure, not a probe-only selector failure. |
+
+### Round 19 execution routing decision
+
+The final rerun is `Fail` for the independent-drawer acceptance scenarios `FR-039`/`AC-039` and `FR-041`/`AC-042`/`DS-010` (both open orders, topmost focus/layer/backdrop/modal promotion). Primary scenario ID: `R19-DRAWER-HITTEST-001`; dependent cascade IDs: `R19-DRAWER-HITTEST-002` through `R19-DRAWER-HITTEST-015`. The exact Playwright locator failure is retained in `evidence/api-e2e-round19-workspace-responsive-probe-rerun2.log`; the first full-matrix stale-expectation evidence remains in `evidence/api-e2e-round19-workspace-responsive-probe.log`.
+
+Per the workflow, preserve the complete current failure package and route to `code_reviewer` for focused failure-origin review. Do not route to delivery. If implementation rework makes the fresh hit-tested open orders pass, the updated durable probe must receive proportional test-code review before delivery.
+
+## Round 20 Current-State Coverage Investigation Addendum
+
+### Trigger and changed boundaries
+
+- Exact implementation state under validation: `078c3fffb` (`fix: preserve opposite strip hit targets`), parent `b47b62743`.
+- Upstream gate: implementation/source review Round 38 `PASS`, CR-024 resolved. The fix applies composed consumed-width insets to each opposite-side drawer backdrop so the visible normal-flow strip remains a real pointer target; it does not restore strip stacking, fixed strip roots, programmatic click bypasses, cross-side close, or a second policy.
+- Required current browser proof: both independent drawer open orders using real Playwright pointer clicks, inset/non-occlusion geometry, both backdrop dismissals, focus/Tab/Escape/registry z-order/`aria-modal` promotion, full 18-entry `/workspace` matrix including `terminal-299x700`, global routes, application setup/immersive/exit, `/mobile` isolation, console enforcement, and cleanup.
+
+### Existing coverage validity
+
+| Scenario / boundary | Decision | Evidence and execution consequence |
+| --- | --- | --- |
+| Real second-strip clicks in both drawer orders | `Still Valid` | The existing independent journey uses Playwright locator clicks (not DOM `click()`/force), and the prior Round19 failure is preserved as the exact regression target. Execute unchanged. |
+| Backdrop inset/non-occlusion geometry | `Still Valid` | The current probe now records the left backdrop right edge against the right strip width and the right backdrop left edge against the left strip width in both open orders. Execute and inspect those measurements. |
+| Drawer focus/layer/`aria-modal`, Escape/Tab, both backdrop dismissals | `Still Valid` | Existing probe validates topmost ownership, promotion after dismissal, exact focus return, hit-tested backdrop identity, reverse visual z-order, and no strip while its drawer is open. Execute unchanged. |
+| 18 viewport `/workspace` matrix, terminal/flow geometry, native tabs, resize bounds | `Still Valid` | Current probe retains the Round19 approved 200px responsive-yield floor for consuming strips, 480px docked floor, terminal 299px geometry, native right-tab contract, and wide capacity-derived drag assertions. Execute unchanged. |
+| Global default routes, application immersive boundary, `/mobile`, console/pageerror enforcement | `Still Valid` | Current probe directly exercises shared global shell ownership, application setup/immersive/exit suppression/restoration, `/mobile` layout isolation, and error enforcement. Execute unchanged. |
+| Additional mouse/touchpad/touch gesture | `Not Required` | No custom gesture handler changed; real pointer click, keyboard, focus, hit-test, and native overflow assertions are direct for this boundary. |
+
+### Planned Round 20 execution
+
+1. Run the current 12-file focused Nuxt suite, probe syntax, policy TypeScript, and web diff checks.
+2. Build and start a fresh isolated backend on `127.0.0.1:13055` and Nuxt frontend on `127.0.0.1:13056` with isolated SQLite/data under `/tmp/autobyteus-responsive-ux-audit-api-e2e-round20`.
+3. Enable the deterministic application capability in the run-owned backend, confirm the Brief Studio catalog, then execute the full current browser probe with `--fail-on-console-error`.
+4. Inspect both real second-strip clicks, inset geometry, backdrop dismissal/focus promotion, all route and viewport records, and console/pageerror output.
+5. Stop only run-owned services, verify ports clear, update the canonical execution report, and route a passing package to `code_reviewer` for proportional review because the durable probe remains cumulatively API/E2E-changed; route failures to focused failure-origin review.
+
+## Round 20 Coverage Reconciliation and Final Decision
+
+The first Round 20 run against the unchanged Round19 probe passed both real second-strip clicks and the new CR-024 inset checks, but failed only because `clickTopmostDrawerBackdrop()` attempted to hit-test a backdrop while both full-height drawers covered the entire 700px viewport. There is no exposed backdrop pixel in that simultaneous state: the left/right drawer surfaces span the viewport as a union. This was classified as a stale/overstrong probe path, not a CR-024 implementation failure, because standalone left and right backdrop dismissal remained the direct user journey and the registry/keyboard path already exercises topmost promotion.
+
+Bounded API/E2E-owned reconciliation:
+- Added a real Playwright right-drawer backdrop dismissal to the existing right-strip -> drawer journey, complementing the existing left-drawer backdrop dismissal.
+- Changed the reverse independent order to dismiss the topmost left drawer with real Escape, then hit-test and dismiss the remaining right drawer's inset backdrop. The probe still validates reverse z-order, `aria-modal` ownership, focus promotion, and exact focus restoration; it no longer demands an impossible backdrop hit where no backdrop pixel is exposed.
+- No production source, requirements, or design behavior changed or weakened. The updated probe passed node syntax and diff checks before the final rerun.
+
+Final Round 20 decision: `Pass` after coverage reconciliation. The durable probe changed during this API/E2E stage and must return to `code_reviewer` for the separate proportional durable-test review before delivery.

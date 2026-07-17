@@ -1,7 +1,25 @@
 {
-  "generatedAt": "2026-07-17T08:38:01.794Z",
-  "result": "Pass",
-  "failures": [],
+  "result": "Fail",
+  "jsonPath": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/workspace-responsive-probe-results.json",
+  "summaryPath": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/workspace-responsive-probe-summary.json",
+  "failures": [
+    "gap-700x700: independent drawer test could not open the right drawer while left was open",
+    "gap-700x700: opening the right drawer unexpectedly closed or suppressed the independent left drawer",
+    "gap-700x700: right drawer did not own focus when opened after the left drawer",
+    "gap-700x700: right-topmost aria-modal ownership mismatch: left true, right undefined",
+    "gap-700x700: right drawer Escape dismissal closed the independent left drawer",
+    "gap-700x700: right drawer Escape dismissal did not return focus to the remaining left drawer",
+    "gap-700x700: reverse independent drawer journey could not open both sides",
+    "gap-700x700: opening the left drawer unexpectedly closed or suppressed the independent right drawer",
+    "gap-700x700: left drawer did not own focus when opened after the right drawer",
+    "gap-700x700: reverse drawer visual layer does not match keyboard ownership: left drawer/backdrop 0/0, right 50/40",
+    "gap-700x700: left-topmost aria-modal ownership mismatch: left undefined, right true",
+    "gap-700x700: reverse topmost backdrop hit workspace-right-tool-drawer-backdrop instead of the left drawer backdrop",
+    "gap-700x700: reverse left drawer backdrop dismissal closed the independent right drawer",
+    "gap-700x700: reverse left drawer backdrop dismissal did not return focus to the remaining right drawer",
+    "gap-700x700: remaining right backdrop hit nothing instead of the right drawer backdrop",
+    "gap-700x700: open independent left and right drawers in both directions target was not found"
+  ],
   "summary": [
     {
       "viewport": "phone-390x844",
@@ -34,7 +52,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/phone-390x844.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/phone-390x844.png"
     },
     {
       "viewport": "terminal-299x700",
@@ -67,7 +85,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/terminal-299x700.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/terminal-299x700.png"
     },
     {
       "viewport": "phone-short-390x640",
@@ -100,7 +118,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/phone-short-390x640.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/phone-short-390x640.png"
     },
     {
       "viewport": "narrow-500x700",
@@ -133,7 +151,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/narrow-500x700.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/narrow-500x700.png"
     },
     {
       "viewport": "narrow-short-500x420",
@@ -166,7 +184,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/narrow-short-500x420.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/narrow-short-500x420.png"
     },
     {
       "viewport": "threshold-639x700",
@@ -199,7 +217,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/threshold-639x700.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/threshold-639x700.png"
     },
     {
       "viewport": "threshold-640x700",
@@ -232,13 +250,30 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/threshold-640x700.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/threshold-640x700.png"
     },
     {
       "viewport": "gap-700x700",
       "route": "/workspace",
       "size": "700x700",
-      "failures": [],
+      "failures": [
+        "independent drawer test could not open the right drawer while left was open",
+        "opening the right drawer unexpectedly closed or suppressed the independent left drawer",
+        "right drawer did not own focus when opened after the left drawer",
+        "right-topmost aria-modal ownership mismatch: left true, right undefined",
+        "right drawer Escape dismissal closed the independent left drawer",
+        "right drawer Escape dismissal did not return focus to the remaining left drawer",
+        "reverse independent drawer journey could not open both sides",
+        "opening the left drawer unexpectedly closed or suppressed the independent right drawer",
+        "left drawer did not own focus when opened after the right drawer",
+        "reverse drawer visual layer does not match keyboard ownership: left drawer/backdrop 0/0, right 50/40",
+        "left-topmost aria-modal ownership mismatch: left undefined, right true",
+        "reverse topmost backdrop hit workspace-right-tool-drawer-backdrop instead of the left drawer backdrop",
+        "reverse left drawer backdrop dismissal closed the independent right drawer",
+        "reverse left drawer backdrop dismissal did not return focus to the remaining right drawer",
+        "remaining right backdrop hit nothing instead of the right drawer backdrop",
+        "open independent left and right drawers in both directions target was not found"
+      ],
       "centerRect": {
         "x": 50,
         "y": 0,
@@ -265,7 +300,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/gap-700x700.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/gap-700x700.png"
     },
     {
       "viewport": "gap-767x700",
@@ -298,7 +333,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/gap-767x700.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/gap-767x700.png"
     },
     {
       "viewport": "md-768x700",
@@ -339,7 +374,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/md-768x700.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/md-768x700.png"
     },
     {
       "viewport": "tablet-800x700",
@@ -380,7 +415,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/tablet-800x700.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/tablet-800x700.png"
     },
     {
       "viewport": "tablet-short-800x420",
@@ -421,7 +456,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/tablet-short-800x420.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/tablet-short-800x420.png"
     },
     {
       "viewport": "tablet-900x700",
@@ -462,7 +497,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/tablet-900x700.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/tablet-900x700.png"
     },
     {
       "viewport": "small-desktop-1024x768",
@@ -503,7 +538,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/small-desktop-1024x768.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/small-desktop-1024x768.png"
     },
     {
       "viewport": "small-desktop-short-1024x480",
@@ -544,7 +579,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/small-desktop-short-1024x480.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/small-desktop-short-1024x480.png"
     },
     {
       "viewport": "desktop-1180x800",
@@ -585,7 +620,7 @@
         "Artifacts",
         "VNC Viewer"
       ],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/desktop-1180x800.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/desktop-1180x800.png"
     },
     {
       "viewport": "desktop-1280x800",
@@ -625,7 +660,7 @@
         "Artifacts"
       ],
       "rightStripControls": [],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/desktop-1280x800.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/desktop-1280x800.png"
     },
     {
       "viewport": "wide-1440x900",
@@ -665,7 +700,7 @@
         "Artifacts"
       ],
       "rightStripControls": [],
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/wide-1440x900.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/wide-1440x900.png"
     },
     {
       "viewport": "mobile-route-390x844",
@@ -676,7 +711,7 @@
       "rightPanelControls": [],
       "rightStripControls": [],
       "mobileShellVisible": true,
-      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round20-rerun/probe/mobile-route-390x844.png"
+      "screenshot": "/tmp/autobyteus-responsive-ux-audit-api-e2e-round19-rerun2/probe/mobile-route-390x844.png"
     },
     {
       "viewport": "global-default-routes-700x700",

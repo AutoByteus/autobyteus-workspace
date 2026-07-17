@@ -6,19 +6,40 @@ right-tool-tabs-ux-spec.md is the authoritative task-specific UI/UX supplement f
 
 `workspace-responsive-ui-ux-spec.md` is the authoritative scenario-level supplement for the standard workspace shell. It defines the personal-branch wide layout, symmetric left/right panel-strip-drawer states, no header navigation controls, empty-state selection/run actions, right-tool access, accessibility, and `/mobile` separation. It is intended behavior and requires architecture-review approval together with this design spec.
 
+## Strip-flow no-occlusion design impact (2026-07-17)
+
+The latest live evidence shows that the current effective `overlay` strip
+state is not acceptable: the policy reports zero consumed width and the shell
+renderers position the strip fixed above the route or workspace center. This
+causes the left strip to clip `/agents` and `/agent-teams` content and causes
+both strips to cover the `/workspace` center at constrained widths.
+
+This revision removes `overlay` from `StripBehavior` and from the effective
+policy output. The resolver has one closed-strip behavior: `consuming`, with a
+50px flex reservation. Docked candidates protect 480px automatically or 200px
+after an explicit user resize; responsive consuming-strip candidates protect
+200px, and a terminal state below `300px` may use a 0px center floor solely so
+both 50px strips remain in flow. `WorkspaceAdaptiveLayout` and the default
+layout must render the strips as `relative`/`flex-none` flow items and consume
+the canonical nested `rightPanel.effectiveCenterMinWidth`; only an open
+transient drawer may be fixed/overlayed, and its matching strip is hidden.
+This is a design-impact follow-up requiring architecture re-review. `/mobile`
+and `components/mobile/*` remain unchanged.
+
 ## Right-tools simplification decision
 
 The previous `docked -> strip -> drawer` right-tools fallback with a
 drawer-only top `Tools` trigger is superseded by the user's confirmed design:
 standard `/workspace`, while the transient right drawer is closed, has a
-visible right-edge tools strip whenever the right tabs are not docked. The strip
-consumes `50px` when the horizontal flow can spare it and becomes a fixed edge
-overlay (`consumedWidth = 0`) when that width cannot fit. A wide user-origin
-strip re-docks the right panel when it fits; a constrained, narrow, or
-responsive-yield strip opens the existing right-tools drawer, which becomes
-the sole visible right surface while open. The drawer is transient interaction
-state, not a responsive right presentation and never requires a separate top
-`Tools` button. `/mobile` and its Android/iOS wrapper remain unchanged.
+visible right-edge tools strip whenever the right tabs are not docked. The
+closed strip always consumes `50px` in the horizontal flow, including at
+constrained and narrow widths; it never becomes a fixed strip over the center.
+A wide user-origin strip re-docks the right panel when it fits; a constrained,
+narrow, or responsive-yield strip opens the existing right-tools drawer, which
+becomes the sole visible right surface while open. The drawer is transient
+interaction state, not a responsive right presentation and never requires a
+separate top `Tools` button. `/mobile` and its Android/iOS wrapper remain
+unchanged.
 
 ## Symmetric side-surface contract
 
@@ -37,8 +58,9 @@ for that side. While open, the transient drawer is the sole visible surface
 for that side. Activation is
 capacity-aware: a wide strip created by explicit user collapse re-docks its
 full panel when that panel fits; a constrained, narrow, or responsive-yield
-strip opens that side's temporary drawer. A strip may consume flow width when
-it fits or become an edge overlay when it cannot.
+strip opens that side's temporary drawer. Every closed strip consumes its fixed
+`50px` width in the flow. Only a transient drawer may be a fixed/overlay
+surface, and its matching strip is hidden while the drawer is open.
 
 The standard workspace does not render a responsive hamburger, breadcrumb
 navigation trigger, top `Agents & teams` button, top `Tools` button, or generic
@@ -141,11 +163,11 @@ The current branch adds a second navigation hierarchy. `WorkspaceAdaptiveLayout.
 
 The `Work` handler only closes overlays, `Runs` opens `AppLeftPanel`, and `Files`/`Tools` open `WorkspaceRightToolDrawer`. Those handlers expose implementation wiring rather than a coherent user mental model. The target therefore removes the generic row from every standard workspace state, keeps left navigation/history as the selection/run owner, makes the left and right strips the explicit compact triggers (`redock-panel` when a fitting user-origin panel is collapsed, `open-drawer` for constrained/responsive state), and replaces the center-only placeholder with actionable empty-state controls. See `workspace-responsive-ui-ux-spec.md` and the live evidence in investigation notes.
 
-The current implementation has a parallel right-surface defect. `WorkspaceAdaptiveLayout.vue` renders `RightSidebarStrip` when the effective right presentation is `strip`, but independently computes `showToolsTrigger` as `rightPanel.presentation !== 'docked'`. A user-collapsed right panel therefore renders both the visible right strip and a top `Tools` button. The strip already is the direct reopen affordance in the personal-branch layout. The refactor removes this branch entirely: `WorkspaceAdaptiveLayout` must not expose or derive `showRightToolsTrigger`; the visible consuming/overlay strip is the sole standard `/workspace` right-tools affordance.
+The current implementation has a parallel right-surface defect. `WorkspaceAdaptiveLayout.vue` renders `RightSidebarStrip` when the effective right presentation is `strip`, but independently computes `showToolsTrigger` as `rightPanel.presentation !== 'docked'`. A user-collapsed right panel therefore renders both the visible right strip and a top `Tools` button. The strip already is the direct reopen affordance in the personal-branch layout. The refactor removes this branch entirely: `WorkspaceAdaptiveLayout` must not expose or derive `showRightToolsTrigger`; the visible consuming strip is the sole standard `/workspace` right-tools affordance.
 
 The current implementation also regressed the original bounded-resize behavior. `useRightPanel.ts` initially updated `preferredRightPanelWidth` with only a lower bound, so dragging the right divider left could grow the preferred width beyond the available workspace indefinitely. The current implementation now clamps against the approved `480px` center target, which fixes the disappearance but is stricter than the personal branch: the personal branch allowed an explicit user drag to reduce the center to roughly `200px`. The revised design therefore distinguishes automatic responsive protection (`480px`) from a deliberate user-sized right-panel override (`200px`). The adaptive implementation must keep the bounded actual dock width and resize mode in the composed state: an explicit drag can preserve the docked right panel down to the personal-branch compact floor, while automatic viewport adaptation still uses the practical center target and may yield right tools. Neither mode may let the right panel disappear merely because the divider reached its bound.
 
-The app-shell policy has a second design defect: `APP_SHELL_DOCKED_MIN_WIDTH_PX = 1280` currently turns the left panel into a strip for every default-visible viewport below that number. This is too broad for the primary selection surface. The target policy must be capacity- and priority-driven: keep the left panel docked while left navigation plus a practical center fit, move right tools to a consuming/overlay strip first, and only then move left navigation to strip/drawer. Manual collapse and automatic responsive presentation remain separate state concepts.
+The app-shell policy has a second design defect: `APP_SHELL_DOCKED_MIN_WIDTH_PX = 1280` currently turns the left panel into a strip for every default-visible viewport below that number. This is too broad for the primary selection surface. The target policy must be capacity- and priority-driven: keep the left panel docked while left navigation plus a practical center fit, move right tools to a consuming strip first, and only then move left navigation to strip/drawer. Manual collapse and automatic responsive presentation remain separate state concepts.
 
 ## Authoritative Composed Responsive-Policy Contract
 
@@ -205,16 +227,13 @@ requiredWidth(left, right) =
 fits(left, right) = viewportWidth >= requiredWidth(left, right)
 ```
 
-`leftConsumedWidth` is the preferred left width for `docked`, the 50px strip width for a consuming `strip`, and zero for an overlay `strip`. `rightConsumedWidth` follows the same rule. A left or right drawer is transient and does not consume horizontal center capacity. The result is a feasibility decision, not a promise that every tool's internal content is 480px wide.
+`leftConsumedWidth` is the preferred left width for `docked` and the 50px strip width for a consuming `strip`. `rightConsumedWidth` follows the same rule. A left or right drawer is transient and does not consume horizontal center capacity. If the compact floor cannot fit, the resolver may lower the center floor to `0px` in its terminal state, but it never makes a strip fixed or removes its 50px reservation. The result is a feasibility decision, not a promise that every tool's internal content is 480px wide.
 
 For the revised right-tools contract, `rightPanel.presentation = 'strip'`
-has two render behaviors rather than two policy surfaces:
-
-- `stripBehavior = 'consuming'`: the strip consumes `RIGHT_STRIP_WIDTH =
-  50px` and participates in the fit formula;
-- `stripBehavior = 'overlay'`: the strip is fixed to the right edge with
-  `consumedWidth = 0` when the 50px flow candidate cannot fit. The center
-  remains mounted and reserves only the renderer's safe edge inset as needed.
+has one render behavior: `stripBehavior = 'consuming'`. It consumes
+`RIGHT_STRIP_WIDTH = 50px`, participates in the fit formula, and is rendered as
+a normal flex item. There is no effective overlay-strip state or second
+closed-strip behavior.
 
 The right drawer is opened by a responsive/constrained strip and is not passed
 to `requiredWidth` as a `right = drawer` candidate. A wide user-origin strip
@@ -227,15 +246,15 @@ it is not an effective responsive right-panel presentation.
 The resolver applies these phases in this exact order:
 
 1. **Normalize preferences and dimensions.** `hidden-by-user` is preserved as preference data; it is never rewritten by the policy.
-2. **Narrow precedence.** If `viewportWidth < NARROW_WIDTH`, use a left edge-overlay navigation strip and a right edge-overlay tools strip. The center remains mounted; activating either responsive strip opens its corresponding temporary drawer. No panel is auto-docked and no header navigation control or generic surface-control row is rendered. The user preferences still determine whether each drawer is initially open/closed, not whether either capability exists. Both strips report `stripActivation = 'open-drawer'`.
+2. **Narrow precedence.** If `viewportWidth < NARROW_WIDTH`, use a left consuming navigation strip and a right consuming tools strip in the same flow row. The center remains mounted between them; activating either responsive strip opens its corresponding temporary drawer, which hides that strip until dismissal. No panel is auto-docked and no header navigation control or generic surface-control row is rendered. Both strips report `stripActivation = 'open-drawer'`.
 3. **Manual-left precedence for desktop widths.** If the left preference is `hidden-by-user`, expose the left strip with `presentationSource: 'user'`. If the current measured capacity can fit the left docked candidate, report `stripActivation = 'redock-panel'`; otherwise report `stripActivation = 'open-drawer'`. Do not reinterpret it as an automatic responsive collapse or show a generic surface bar. The same activation rule applies symmetrically to a hidden-by-user right panel.
 4. **Honor an explicit user-sized dock before responsive yielding.** For a non-narrow, non-short-height state with `rightPanelResizeIntent = 'user-sized'` and a visible right preference, first test `left=docked, right=docked` with `centerFloor = USER_RESIZE_CENTER_MIN_WIDTH = 200`. If it fits, return `centerProtectionMode = 'user-override'`; this is the preserved personal-branch manual geometry.
-5. **Apply responsive protection without erasing intent.** If the user-sized dock does not fit, or the state is short-height, retain the input intent but use `centerFloor = CENTER_MIN_WIDTH = 480` for responsive phases and return `centerProtectionMode = 'responsive-yield'` whenever a side surface adapts.
-6. **Short-height right-tools yield.** For non-narrow `viewportHeight <= SHORT_HEIGHT`, prefer a consuming right strip where it fits, then an edge-overlay strip, before changing the left presentation. Keep the left panel docked if the applicable responsive candidate fits; otherwise continue to the horizontal fit phases.
+5. **Apply responsive protection without erasing intent.** If the user-sized dock does not fit, or the state is short-height, retain the input intent and use `480px` while a docked candidate is tested, then `200px` for consuming-strip candidates. Return `centerProtectionMode = 'responsive-yield'` whenever a side surface adapts.
+6. **Short-height right-tools yield.** For non-narrow `viewportHeight <= SHORT_HEIGHT`, prefer a consuming right strip before changing the left presentation. Keep the left panel docked if the applicable candidate fits; otherwise continue to the horizontal fit phases.
 7. **Try the canonical wide split.** With a visible left preference and right visible preference, use `left=docked, right=docked` when `fits(leftDocked, rightDocked, centerFloor = 480)`.
-8. **Yield right tools first, preferring the desktop strip.** If the canonical split does not fit, try `left=docked, right=strip` with the responsive `480px` floor. If the strip fits, it consumes `50px` and the result is `large-constrained`; because this is responsive yielding, report `stripActivation = 'open-drawer'`. If the strip does not fit in flow, retain the right strip as an edge overlay with `consumedWidth = 0` and `stripActivation = 'open-drawer'`; do not replace it with a drawer-only state or top `Tools` trigger.
-9. **Only then adapt the left surface.** If left docked plus a consuming right strip and the practical center do not fit, use `left=strip` with `presentationSource: 'responsive'`; choose consuming or overlay strip behavior from the same measured capacity and report `stripActivation = 'open-drawer'`. The right strip remains consuming when possible and overlay otherwise. This is the first phase that may automatically remove the full left selection panel.
-10. **Return explicit effective state.** Include mode, effective left presentation, left strip behavior and activation (`consuming`/`overlay`, `redock-panel`/`open-drawer`), right presentation (`docked` or `strip`), right strip behavior and activation, retained preferences and resize intent, effective center-protection mode/floor, presentation sources (`user` or `responsive`), consumed widths, and `showGenericSurfaceControls: false`. The left and right drawer open/closed states remain local transient interaction state and are not policy output.
+8. **Yield right tools first, preferring the flow strip.** If the canonical split does not fit, try `left=docked, right=strip` with the compact `200px` floor. If it fits, the strip consumes `50px` and the result is `large-constrained`; because this is responsive yielding, report `stripActivation = 'open-drawer'`. If the two-strip compact candidate is still infeasible, lower the center floor to `0px` only in the terminal below-`300px` state; never remove the strip's flow reservation or replace it with a fixed strip, drawer-only state, or top `Tools` trigger.
+9. **Only then adapt the left surface.** If left docked plus a consuming right strip and the compact center do not fit, use `left=strip` with `presentationSource: 'responsive'`; the left strip is consuming and reports `stripActivation = 'open-drawer'`. The right strip remains consuming. This is the first phase that may automatically remove the full left selection panel.
+10. **Return explicit effective state.** Include mode, effective left presentation, left strip behavior and activation (`consuming`, `redock-panel`/`open-drawer`), right presentation (`docked` or `strip`), right strip behavior and activation, retained preferences and resize intent, effective center-protection mode/floor, presentation sources (`user` or `responsive`), consumed widths, and `showGenericSurfaceControls: false`. The left and right drawer open/closed states remain local transient interaction state and are not policy output.
 
 ### Output state
 
@@ -243,7 +262,7 @@ The resolver applies these phases in this exact order:
 type ResponsivePresentation = 'docked' | 'strip'
 type PresentationSource = 'user' | 'responsive'
 type WorkspaceResponsiveMode = 'wide' | 'large-constrained' | 'constrained' | 'narrow' | 'short-height'
-type StripBehavior = 'consuming' | 'overlay'
+type StripBehavior = 'consuming'
 type StripActivation = 'redock-panel' | 'open-drawer'
 
 interface ResponsiveSurfaceState {
@@ -310,7 +329,9 @@ renderers from reading different values during a user-sized override.
   (`automatic`, `user-override`, or `responsive-yield`).
 - `rightPanel.effectiveCenterMinWidth` is the one canonical floor used by
   renderers and width calculations for the current resolved state: `480px`
-  for `automatic`/`responsive-yield`, `200px` for `user-override`.
+  for an automatic docked candidate, `200px` for a user-sized dock or a
+  responsive consuming-strip candidate, and `0px` only for a terminal
+  dual-strip flow state below `300px`.
 - `rightPanel.preferredWidth` is the normalized right-dock width preference;
   it is not a second center-floor or resize-intent representation.
 
@@ -330,7 +351,7 @@ Required authority assertions are:
 | --- | --- | --- |
 | Automatic initial state | `rightPanel.resizeIntent = 'automatic'`, `centerProtectionMode = 'automatic'`, `effectiveCenterMinWidth = 480` | `centerPaneStyle.minWidth` uses `rightPanel.effectiveCenterMinWidth`; no top-level duplicate is read or emitted |
 | Explicit user-sized dock fits | `rightPanel.resizeIntent = 'user-sized'`, `centerProtectionMode = 'user-override'`, `effectiveCenterMinWidth = 200` | Center and docked-right sizing honor `200px`; the right panel remains docked and no strip/top Tools transition is caused by the bound |
-| Responsive yield after shrink | `rightPanel.resizeIntent = 'user-sized'`, `centerProtectionMode = 'responsive-yield'`, `effectiveCenterMinWidth = 480` | Center sizing and dependent dock/strip feasibility honor `480px`; consuming/overlay right strip is rendered without erasing retained intent |
+| Responsive yield after shrink | `rightPanel.resizeIntent = 'user-sized'`, `centerProtectionMode = 'responsive-yield'`, `effectiveCenterMinWidth = 200` (or terminal `0`) | Center sizing and dependent dock/strip feasibility honor the canonical compact/terminal floor; the consuming right strip remains in flow without erasing retained intent |
 
 These are output-shape invariants, not optional aliases. Policy tests must
 assert the nested values and absence of duplicate top-level fields; component
@@ -342,9 +363,9 @@ The symmetric side-surface renderer contract is:
 | Effective side presentation | Strip behavior | Strip activation | Visible strip | Action | Header/top trigger |
 | --- | --- | --- | ---: | --- | --- |
 | `leftPanel = docked` | N/A | N/A | No left strip | Existing left-panel collapse affordance | None |
-| `leftPanel = strip` | `consuming` or `overlay` | `redock-panel` when user-origin and fitting; otherwise `open-drawer` | Yes | Re-dock fitting user-collapsed panel, otherwise open temporary navigation drawer | No hamburger, breadcrumb, or top `Agents & teams` |
+| `leftPanel = strip` | `consuming` | `redock-panel` when user-origin and fitting; otherwise `open-drawer` | Yes | Re-dock fitting user-collapsed panel, otherwise open temporary navigation drawer | No hamburger, breadcrumb, or top `Agents & teams` |
 | `rightPanel = docked` | N/A | N/A | No right strip | Existing fixed right-panel toggle | None |
-| `rightPanel = strip` | `consuming` or `overlay` | `redock-panel` when user-origin and fitting; otherwise `open-drawer` | Yes | Re-dock fitting user-collapsed panel, otherwise open temporary tools drawer | No top `Tools` |
+| `rightPanel = strip` | `consuming` | `redock-panel` when user-origin and fitting; otherwise `open-drawer` | Yes | Re-dock fitting user-collapsed panel, otherwise open temporary tools drawer | No top `Tools` |
 
 The table describes the closed transient-drawer state. While a local
 transient drawer is open, the corresponding `Visible strip` value is
@@ -370,7 +391,6 @@ The right-tools affordance contract is:
 |---|---|---:|---:|---|
 | `docked` | N/A | No | Never | Existing fixed panel toggle |
 | `strip` | `consuming` | Yes | Never | Right strip; fitting user-origin activation re-docks, responsive activation opens the transient drawer |
-| `strip` | `overlay` | Yes | Never | Fixed right-edge strip; constrained/responsive activation opens the transient drawer; a recovered user-origin strip may re-dock when it fits |
 
 `WorkspaceAdaptiveLayout` must not render `WorkspacePrimarySurfaceControls`
 for right-tools access and must not define a `showToolsTrigger` branch. The
@@ -386,7 +406,7 @@ top Tools trigger.”
 |---|---|---|---:|
 | Initial/default | `automatic` | `automatic` | `480px` |
 | Post-drag while the requested dock still fits | `user-sized` | `user-override` | `200px` |
-| Viewport shrunk below the user-sized dock capacity | `user-sized` | `responsive-yield` | `480px` for strip/overlay feasibility |
+| Viewport shrunk below the user-sized dock capacity | `user-sized` | `responsive-yield` | `200px` for consuming-strip feasibility, or terminal `0px` below 300px |
 | Viewport recovered and the user-sized dock fits again | `user-sized` | `user-override` | `200px` |
 
 The resolver never mutates the retained intent when it applies responsive protection. This explicit separation prevents one two-value mode from being mistaken for both user intent and the current effective layout protection.
@@ -412,11 +432,11 @@ The adapter passes `actualRightPanelWidth`—not an unbounded raw drag preferenc
 
 1. On initial/default input, use `centerFloor = 480` and `centerProtectionMode = automatic`.
 2. When a divider drag commits, `useRightPanel` retains `rightPanelResizeIntent = user-sized` and bounds the width against `centerFloor = 200`. If the left-docked/right-docked candidate fits at that floor, return docked with `centerProtectionMode = user-override` and an effective center minimum of `200`.
-3. On viewport/container shrink, keep the input intent and raw width unchanged. First test the user-sized dock at `200`; if it no longer fits, do not erase the intent. Re-run the responsive phases with `centerFloor = 480`, prefer a consuming strip before an overlay strip, and return `centerProtectionMode = responsive-yield` with `presentationSource = responsive`.
-4. On viewport/container recovery, use the retained user-sized input again. If the docked candidate fits at `200`, return to docked/user-override; otherwise remain in the responsive consuming/overlay strip state. No explicit reset of user intent is implied by a temporary responsive transition.
+3. On viewport/container shrink, keep the input intent and raw width unchanged. First test the user-sized dock at `200`; if it no longer fits, do not erase the intent. Re-run the responsive phases with a `200px` consuming-strip floor, and use `0px` only for the terminal dual-strip state below `300px`; return `centerProtectionMode = responsive-yield` with `presentationSource = responsive`.
+4. On viewport/container recovery, use the retained user-sized input again. If the docked candidate fits at `200`, return to docked/user-override; otherwise remain in the responsive consuming-strip state. No explicit reset of user intent is implied by a temporary responsive transition.
 5. The resolver emits `rightPanel.resizeIntent`, `rightPanel.centerProtectionMode`, `rightPanel.effectiveCenterMinWidth`, and `rightPanel.stripBehavior` together. `WorkspaceAdaptiveLayout` maps `centerPaneStyle.minWidth` and every post-resolution dock/strip-feasibility calculation to `rightPanel.effectiveCenterMinWidth`. There is no top-level `centerMinWidth` or `rightPanelResizeIntent` output field, alias, top `Tools` trigger, or drawer-only right fallback.
 
-This preserves one policy owner while distinguishing retained user intent from effective transition protection. A drag cannot make the policy believe that the docked panel is wider than the current flow can support, and a viewport shrink cannot permanently erase the personal-branch sizing choice. If the flow is too narrow for the consuming strip, the composed policy switches the strip to overlay; that transition is caused by available layout capacity, not by an unbounded divider event.
+This preserves one policy owner while distinguishing retained user intent from effective transition protection. A drag cannot make the policy believe that the docked panel is wider than the current flow can support, and a viewport shrink cannot permanently erase the personal-branch sizing choice. If the flow is too narrow for the compact center floor, the composed policy lowers the center floor to `0px` only in the terminal dual-strip state; it never switches a strip to a fixed surface. That terminal behavior is caused by available layout capacity, not by an unbounded divider event.
 
 ### Composable and dependency map
 
@@ -425,7 +445,7 @@ This preserves one policy owner while distinguishing retained user intent from e
 | `resolveResponsiveWorkspaceShellState` | Pure capacity/priority resolver | One composed input above | Policy tests and `useResponsiveWorkspaceShell` | No DOM, no component-specific breakpoint, no blanket `<1280px` left collapse |
 | `useResponsiveWorkspaceShell` | One SSR-safe viewport observer plus preference/actual-width composition | `useLeftPanel`, `useRightPanel`, `useResponsiveElementRect()` | `layouts/default.vue` provider | Must not create separate shell/workspace policy branches or pass an unbounded drag width |
 | `layouts/default.vue` | Global default-layout shell renderer and state provider | Resolved composed state plus immersive/layout boundary | AppLeftPanel, LeftSidebarStrip, slot | Must render the shared left panel/strip/drawer for every non-immersive default-layout route, remove the black header/hamburger path, and must not resolve a second policy or infer strip from raw viewport |
-| `WorkspaceAdaptiveLayout.vue` | Render center/right surfaces from provided state | Resolved composed state, active tab/drawer state | RightSideTabs, consuming/overlay right strip, transient right drawer, center views | Must not call an independent `resolveWorkspaceResponsiveState` or render a top Tools trigger |
+| `WorkspaceAdaptiveLayout.vue` | Render center/right surfaces from provided state | Resolved composed state, active tab/drawer state | RightSideTabs, consuming right strip, transient right drawer, center views | Must not call an independent `resolveWorkspaceResponsiveState` or render a top Tools trigger |
 | `useLeftPanel` / `useRightPanel` | Store user preference and preferred width; bound docked resize against the measured center/right flow | User actions and measured workspace capacity | Composed adapter and panel controls | Must not mutate preference or trigger a responsive presentation change merely because a divider was dragged to its bound |
 | `WorkspaceAdaptiveLayout` resize adapter | Measure center-plus-right flow for the docked right-divider maximum | Local element size and `useRightPanel` bound setter | `useRightPanel` | Must not resolve effective presentation or introduce a second viewport policy |
 
@@ -447,19 +467,19 @@ bypass the shell; and `/mobile` remains `layout:false` with
 |---|---|---|
 | Wide default | Large width/height, both preferences visible | Left docked, right docked, no generic controls |
 | Large-but-constrained | Enough for left + center + consuming right strip, not left + center + right dock | Left docked, right strip with `stripBehavior = consuming`, source responsive; no top Tools trigger |
-| Constrained | Not enough for left + center + consuming right strip | Left strip with `stripBehavior = consuming` or `overlay` opening a transient navigation drawer; right strip with `stripBehavior = consuming` or `overlay`, center minimum preserved |
+| Constrained | Not enough for left + center + consuming right strip | Left strip with `stripBehavior = consuming` opening a transient navigation drawer; right strip with `stripBehavior = consuming`, center compact floor preserved |
 | Manual left collapse | Wide width, left preference hidden-by-user | Left strip, source user, `stripActivation = redock-panel` while the left dock fits; activating it restores the visible preference and full panel; if capacity is constrained, activation becomes `open-drawer` |
-| Narrow | Width below 768, any panel preferences | Left and right edge-overlay strips with transient drawers; no header navigation or generic controls |
-| Short-height | Height <=480, width >=768 | Right tools yield to consuming/overlay strip before left; left remains docked if horizontal fit permits |
+| Narrow | Width below 768, any panel preferences | Left and right consuming strips in flow with transient drawers; no header navigation or generic controls |
+| Short-height | Height <=480, width >=768 | Right tools yield to consuming strip before left; left remains docked if horizontal fit permits |
 | User-sized right resize | Wide/constrained width with `rightPanelResizeIntent = 'user-sized'` | Right remains docked while the center is at least 200px; effective center floor records the explicit override; no top Tools trigger or strip appears merely from the drag |
-| User-sized below compact floor | User-sized input cannot preserve 200px center | Right tools re-present through the normal consuming/overlay strip policy; selected run and resize mode remain coherent |
+| User-sized below compact floor | User-sized input cannot preserve 200px center | Right tools re-present through the consuming-strip policy; selected run and resize mode remain coherent; terminal dual-strip flow may lower the center floor to 0px |
 | Repeated resize | Same preferences across wide -> constrained -> wide | Effective modes change, preferences remain unchanged, wide returns to prior preference |
 
 Right-tool presentation coverage must additionally assert: docked has no top
 Tools trigger and exposes the existing panel toggle; consuming strip has a
-visible strip with no top trigger; overlay strip has a visible edge strip with
-no top trigger; fitting user-origin activation re-docks, while constrained or
-responsive activation opens the same transient drawer.
+visible 50px flow strip with no top trigger; fitting user-origin activation
+re-docks, while constrained or responsive activation opens the same transient
+drawer and hides the strip until dismissal.
 
 ## Intended Change
 
@@ -558,7 +578,7 @@ High-level target:
 ## Ownership Map
 
 - Responsive policy owner: owns threshold constants, pure decision functions, and invariant that no viewport band can produce no visible workspace layout.
-- App shell presentation: owns whether left navigation/history is docked or strip (consuming/overlay), maps `redock-panel` to preference restoration and `open-drawer` to transient drawer state; it must not decide workspace center/right tool layout or render a responsive header navigation control.
+- App shell presentation: owns whether left navigation/history is docked or strip (consuming), maps `redock-panel` to preference restoration and `open-drawer` to transient drawer state; it must not decide workspace center/right tool layout or render a responsive header navigation control.
 - Workspace adaptive layout: owns center/right workspace split, constrained/narrow tool presentation, and reuse of center workspace content.
 - Left panel composable: owns user preference for left panel visibility/width; the composed responsive adapter owns effective presentation and source without overwriting preference.
 - Right panel composable: owns user preference for right panel visibility/width; the composed responsive adapter owns effective docked/strip presentation, source, and strip activation without overwriting preference. The transient right drawer is opened only by an `open-drawer` strip action and is not a policy presentation.
@@ -584,7 +604,7 @@ High-level target:
 ## Return Or Event Spine(s) (If Applicable)
 
 - `window resize / element ResizeObserver -> measured dimensions -> pure responsive policy -> effective shell/workspace presentation -> Vue render update`
-- `panel toggle/drag -> user preference state -> responsive policy recomputes effective presentation/activation -> docked/consuming-strip/overlay-strip UI updates; redock-panel -> visible preference/docked panel; open-drawer -> transient drawer without preference mutation`
+- `panel toggle/drag -> user preference state -> responsive policy recomputes effective presentation/activation -> docked/consuming-strip/strip UI updates; redock-panel -> visible preference/docked panel; open-drawer -> transient drawer without preference mutation`
 
 ## Bounded Local / Internal Spines (If Applicable)
 
@@ -592,7 +612,7 @@ High-level target:
   - `drag start -> user-sized mode -> preferred width update -> clamp against the 200px explicit floor (or 480px automatic floor) -> effective presentation stays docked until the applicable floor cannot fit`
   - Matters because width drag should preserve the personal-branch compact geometry without creating an accidental drawer transition, while automatic adaptation still protects the larger practical center.
 - Parent owner: `useLeftPanel`
-  - `toggle/collapse action -> user preference -> responsive effective mode/activation -> docked/strip/overlay presentation -> redock-panel restores visible preference or open-drawer opens temporary navigation without preference mutation`
+  - `toggle/collapse action -> user preference -> responsive effective mode/activation -> docked/consuming-strip presentation -> redock-panel restores visible preference or open-drawer opens temporary navigation without preference mutation`
   - Matters because constrained auto-collapse must not permanently erase the user's wide desktop choice and a wide manual strip must restore the original docked journey.
 - Parent owner: responsive measurement composable
   - `mount -> observe element/window -> update dimensions -> cleanup on unmount`
@@ -677,10 +697,10 @@ The implementation should derive actual modes from measured container space and 
 | --- | --- | --- | --- |
 | Wide / full docked | Enough measured width for left panel + practical center + right tools; current no-flag probe starts around `1180x800` | Preserve current good desktop: left docked, center primary, right tools docked; no generic surface bar. | None; preserve non-regression. |
 | Wide / user-collapsed | User explicitly collapses left panel while the wide split still fits | Left becomes the existing strip; center and right tabs remain in the same hierarchy; no generic surface bar. | New current regression where left non-docked state triggers `Work / Runs / Files / Tools`. |
-| Large-but-constrained desktop | Full three-pane split no longer fits, but left panel + practical center still fit | Keep left docked; right tools yield to consuming/overlay strip first; center remains first-class. | Broad `<1280px` left auto-collapse removes the selection surface too early. |
-| Constrained desktop/tablet | Left panel plus practical center no longer fit, especially around `768-1024px` | Left becomes consuming/overlay responsive strip that opens its navigation drawer; right tools become consuming/overlay responsive strip; center remains first-class. | `320px` left + `200-247px` center + cramped right panel. |
-| Narrow standard workspace | Below `md` or any container too narrow for docked split | Center remains mounted with left and right edge-overlay responsive strips; each opens its corresponding temporary drawer; empty state supplies agent/team and run/history actions; tools use canonical order. | Legacy `WorkspaceMobileLayout` `Running/Agent` model, blank `640-767px` band, hamburger/header triggers, and ambiguous four-surface row. |
-| Short-height | Height around `<=480px` or content area too short for full docked panes | Prefer compact/overlay side surfaces; keep primary controls recoverable by scroll/drawer/overflow. | Full-height docked left/right panes clipping useful controls. |
+| Large-but-constrained desktop | Full three-pane split no longer fits, but left panel + practical center still fit | Keep left docked; right tools yield to consuming strip first; center remains first-class. | Broad `<1280px` left auto-collapse removes the selection surface too early. |
+| Constrained desktop/tablet | Left panel plus practical center no longer fit, especially around `768-1024px` | Left becomes consuming responsive strip that opens its navigation drawer; right tools become consuming responsive strip; center remains first-class. | `320px` left + `200-247px` center + cramped right panel. |
+| Narrow standard workspace | Below `md` or any container too narrow for docked split | Center remains mounted with left and right consuming responsive strips; each opens its corresponding temporary drawer; empty state supplies agent/team and run/history actions; tools use canonical order. | Legacy `WorkspaceMobileLayout` `Running/Agent` model, blank `640-767px` band, hamburger/header triggers, and ambiguous four-surface row. |
+| Short-height | Height around `<=480px` or content area too short for full docked panes | Prefer consuming flow strips while drawers are closed; keep primary controls recoverable by scroll/drawer/overflow. | Full-height docked left/right panes clipping useful controls. |
 | Phone/PWA route | Explicit `/mobile` route | Existing `MobileRemoteAccessShell`. | No change; avoid using `/mobile` components as `/workspace` fallback. |
 
 Mode invariants:
@@ -723,7 +743,7 @@ Mode invariants:
 | `composables/layout/useResponsiveElementRect.ts` | Responsive policy | Measurement helper | SSR-safe `ResizeObserver` wrapper returning element rect. | Shared by app shell/workspace without policy decisions. | N/A |
 | `composables/layout/useResponsiveWorkspaceShell.ts` | Responsive policy | Composed responsive adapter | Observes viewport once, combines left/right preferences, calls the single composed resolver, and provides effective state to shell/workspace renderers. | Eliminates independent shell/workspace policy branches. | Uses policy types and panel preference owners. |
 | `utils/layout/workspaceSurfaceOrder.ts` or equivalent catalog | Workspace surface navigation | Surface ownership/order owner | Defines canonical right-tool order and semantic trigger availability; does not require a generic top-level surface row. | Makes tool ownership/order testable without duplicating left/right navigation. | Uses policy/surface types. |
-| `components/layout/WorkspaceAdaptiveLayout.vue` | Standard workspace layout | Adaptive workspace layout owner | Renders center, right tools, consuming/overlay right strip, transient right drawer, loading overlay, and empty-state actions using policy; never renders header/top navigation triggers or a top Tools trigger. | Current `WorkspaceDesktopLayout` responsibility expands beyond desktop without adding duplicate navigation. | Uses existing center/tool components. |
+| `components/layout/WorkspaceAdaptiveLayout.vue` | Standard workspace layout | Adaptive workspace layout owner | Renders center, right tools, consuming right strip, transient right drawer, loading overlay, and empty-state actions using policy; never renders header/top navigation triggers or a top Tools trigger. | Current `WorkspaceDesktopLayout` responsibility expands beyond desktop without adding duplicate navigation. | Uses existing center/tool components. |
 | `pages/workspace.vue` | Route entry | Thin route facade | Mount adaptive layout and route setup effects only. | Removes breakpoint ownership from route. | N/A |
 | `composables/useRightPanel.ts` | Standard workspace layout | Right panel preference and bounded-resize owner | Store visibility/width preference, expose automatic versus user-sized mode, and clamp actual dock width against measured center/right capacity. | Existing global state owner for right panel; restores personal-branch divider behavior without becoming a responsive policy owner. | Must not independently choose docked/strip or render a top Tools trigger. |
 | `composables/useLeftPanel.ts` | App shell layout | Left panel preference owner | Store user visible/preferred width and combine with shell effective presentation. | Existing global state owner for left panel. | Uses policy types. |
@@ -789,7 +809,7 @@ Mode invariants:
 | --- | --- | --- | --- | --- |
 | `responsiveLayoutPolicy.ts` | Threshold constants, fit formula, phase-ordered composed mode calculation | `useResponsiveWorkspaceShell`, policy tests | Components hard-code `640`, `768`, `1280`, or independent `md:hidden`/`hidden md:flex` branch visibility; shell/workspace resolve separate states | Add explicit composed state output or capacity input to this policy boundary. |
 | `WorkspaceAdaptiveLayout.vue` | Center/right presentation, tool drawer/strip rendering | `pages/workspace.vue` | Route mounts separate desktop/mobile standard workspace components | Add props/state to adaptive layout. |
-| `useRightPanel.ts` | Right panel preference and bounded resize | Right tool renderers and composed adapter | Components compute separate right-panel collapse from raw width or pass unbounded drag width | Expose bounded actual width and resize mode; effective docked/consuming-strip/overlay-strip presentation remains composed-policy-owned. |
+| `useRightPanel.ts` | Right panel preference and bounded resize | Right tool renderers and composed adapter | Components compute separate right-panel collapse from raw width or pass unbounded drag width | Expose bounded actual width and resize mode; effective docked/consuming-strip/strip presentation remains composed-policy-owned. |
 | `useLeftPanel.ts` / shell adapter | Left panel preference and effective presentation | `layouts/default.vue`, `LeftSidebarStrip`, `AppLeftPanel` | Shell CSS alone forces full docked left panel at all `md+` widths | Add explicit shell presentation state. |
 | `/mobile` route | Phone/PWA shell and mobile feature gates | Mobile clients | `/workspace` uses `/mobile` components as fallback | Improve adaptive standard workspace instead. |
 
@@ -878,8 +898,8 @@ Forbidden:
 | Standard route layout | `/workspace.vue -> <WorkspaceAdaptiveLayout />` | `/workspace.vue -> v-if isDesktop ? Desktop : Mobile` | Prevents route/component breakpoint drift. |
 | Narrow surface access | Responsive left/right strips open their temporary drawers; wide user-origin strips re-dock fitting panels; empty-state actions cover selection/history | `Work -> Runs -> Files -> Tools`, hamburger, or top `Agents & teams`/`Tools` buttons alongside left/right surfaces | Keeps ownership understandable and avoids duplicate/ambiguous navigation. |
 | Tool order | `Files -> Team(if team) -> Terminal -> Activity -> Artifacts -> Browser -> VNC` | Different tab/drawer orders per breakpoint | Keeps muscle memory across responsive modes. |
-| Breakpoint/capacity policy | `resolveResponsiveWorkspaceShellState({ viewportWidth: 1024, viewportHeight: 768, leftPanelPreference: 'visible', rightPanelPreference: 'visible', rightPanelResizeIntent: 'automatic', ... }) -> { mode: 'large-constrained', leftPanel: { presentation: 'docked' }, rightPanel: { presentation: 'strip', stripBehavior: 'consuming', resizeIntent: 'automatic', centerProtectionMode: 'automatic', effectiveCenterMinWidth: 480 } }` because `320 + 480 + 50 + 6 = 856 <= 1024`; the output has no top-level center-floor/resize-intent aliases and no top Tools trigger | Component A uses `640`, component B uses `md`, component C uses `window.innerWidth < 768`, or shell/workspace resolve independently; or a drawer/top Tools fallback replaces a fitting strip; or the renderer reads a top-level duplicate | Explains one composed owner, canonical nested effective-floor authority, right-strip guarantee, and right-tools-first priority. |
-| Constrained width | `Left strip + center + right consuming/overlay strip` | `320px left + 200px center + 273px right` | Protects center usability while preserving a visible right-tools affordance. |
+| Breakpoint/capacity policy | `resolveResponsiveWorkspaceShellState({ viewportWidth: 1024, viewportHeight: 768, leftPanelPreference: 'visible', rightPanelPreference: 'visible', rightPanelResizeIntent: 'automatic', ... }) -> { mode: 'large-constrained', leftPanel: { presentation: 'docked' }, rightPanel: { presentation: 'strip', stripBehavior: 'consuming', resizeIntent: 'automatic', centerProtectionMode: 'responsive-yield', effectiveCenterMinWidth: 200 } }` because `320 + 200 + 50 + 6 = 576 <= 1024`; the output has no top-level center-floor/resize-intent aliases and no top Tools trigger | Component A uses `640`, component B uses `md`, component C uses `window.innerWidth < 768`, or shell/workspace resolve independently; or a drawer/top Tools fallback replaces a fitting strip; or the renderer reads a top-level duplicate | Explains one composed owner, canonical nested effective-floor authority, right-strip guarantee, right-tools-first priority, and no strip/content overlap. |
+| Constrained width | `Left consuming strip + center + right consuming strip` | `50px left + 200px center + 50px right = 300px` | Protects the center from strip occlusion while preserving both side affordances in flow. |
 | Mobile boundary | `/mobile -> MobileRemoteAccessShell` | `/workspace -> WorkspaceMobileLayout -> subset tabs` | Keeps phone/PWA product separate. |
 | Responsive validation | Probe `390`, `640`, `700`, `768`, `800`, `900`, `1024`, `1180+`, short-height, and `/mobile` boundary | Validate only `700x700` or only a wide desktop screenshot | Prevents fixing one breakpoint while missing adjacent UX failures. |
 
@@ -916,8 +936,8 @@ Right-tool tab design-impact sequence:
 2. Reconcile the surface ownership model: left navigation/history owns selection and runs, the center owns Work, and the right surface owns Files/tools. Remove the generic four-surface row as a universal responsive fallback and add tests for the semantic trigger/ownership contract.
 3. Add `useResponsiveWorkspaceShell` as the one SSR-safe viewport adapter; compose left/right preference refs and provide the resolved state to shell/workspace renderers.
 4. Keep `useRightPanel` and `useLeftPanel` as preference/width owners only. Do not let either independently compute effective responsive presentation.
-5. Update `layouts/default.vue` and `WorkspaceAdaptiveLayout.vue` to consume the composed state. Preserve the left panel while left navigation plus a practical center fit; move right tools first, and auto-collapse/overlay the left panel only after that capacity is exhausted, without overwriting wide-desktop preference or treating manual collapse as permission to show a new top bar.
-6. Rename/refactor `WorkspaceDesktopLayout.vue` to `WorkspaceAdaptiveLayout.vue`; remove root `hidden md:flex`; render center surface always, preserve the wide left/center/right hierarchy, render the left/right strips as the only compact side triggers with structured empty-state actions, and render right tools as docked or consuming/overlay strip based on policy/catalog. Wire `redock-panel` to the existing panel-visible action and `open-drawer` to the corresponding transient drawer without changing preference.
+5. Update `layouts/default.vue` and `WorkspaceAdaptiveLayout.vue` to consume the composed state. Preserve the left panel while left navigation plus a practical center fit; move right tools first, and adapt the left panel to a consuming flow strip only after that capacity is exhausted, without overwriting wide-desktop preference or treating manual collapse as permission to show a new top bar.
+6. Rename/refactor `WorkspaceDesktopLayout.vue` to `WorkspaceAdaptiveLayout.vue`; remove root `hidden md:flex`; render center surface always, preserve the wide left/center/right hierarchy, render the left/right strips as the only compact side triggers with structured empty-state actions, and render right tools as docked or consuming strip based on policy/catalog. Wire `redock-panel` to the existing panel-visible action and `open-drawer` to the corresponding transient drawer without changing preference.
 7. Modify `pages/workspace.vue` to remove `isDesktop`, `matchMedia`, `WorkspaceMobileLayout` import, and route-level branching; always mount the adaptive layout.
 8. Remove/decommission `WorkspaceMobileLayout.vue`, `useMobilePanels.ts`, and unused localization keys/tests if no references remain.
 9. Update component/source tests for the new adaptive layout, no-blank behavior, wide manual-collapse non-regression, empty-state actions, explicit drawer reachability, and stable right-tool ordering.

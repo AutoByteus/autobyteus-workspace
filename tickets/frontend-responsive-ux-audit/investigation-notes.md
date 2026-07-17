@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Complete for solution design; expanded with comprehensive live responsive viewport/interaction testing after the user requested a broader testing-led investigation; ready for architecture re-review.
+- Current Status: Complete for solution design; expanded with comprehensive live responsive viewport/interaction testing and the 2026-07-17 strip-flow no-occlusion finding; ready for architecture re-review.
 - Investigation Goal: Read setup documentation, start backend/frontend, reproduce responsive workspace failures at narrowed/shortened viewport sizes, inspect implementation ownership, and produce design-ready requirements plus a responsive-layout design spec.
 - Scope Classification (`Small`/`Medium`/`Large`): Large
 - Scope Classification Rationale: Affects the app shell, workspace route, desktop/mobile layout selection, left-side navigation/history panel, right-side tool panel, and responsive coverage. No backend domain change is required.
@@ -223,8 +223,8 @@ The underlying failure remains real: the integrated tool catalog can exceed the 
 
 | Artifact | Purpose and scope | Status | Approval applicability | Related core artifacts |
 | --- | --- | --- | --- | --- |
-| right-tool-tabs-ux-spec.md | Defines the personal-branch single-row visual, native scrolling, active-tab, accessibility, ownership, and validation behavior for right-tool tabs; explicitly excludes added fade/chevron indicators. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
-| workspace-responsive-ui-ux-spec.md | Defines scenario-level desktop shell/workspace behavior: wide personal-branch hierarchy, global default-layout left panel/strip/drawer ownership, workspace right panel/strip/drawer ownership, no black responsive header, immersive/route boundaries, empty-state actions, accessibility, and `/mobile` isolation. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec |
+| right-tool-tabs-ux-spec.md | Defines the personal-branch single-row visual, native scrolling, active-tab, accessibility, ownership, and validation behavior for right-tool tabs; explicitly excludes added fade/chevron indicators and defines the closed right strip as one 50px consuming-flow behavior with no overlay-strip variant. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec, no-occlusion evidence |
+| workspace-responsive-ui-ux-spec.md | Defines scenario-level desktop shell/workspace behavior: wide personal-branch hierarchy, global default-layout left panel/strip/drawer ownership, workspace right panel/strip/drawer ownership, 50px consuming flow strips with no strip/content occlusion, no black responsive header, immersive/route boundaries, empty-state actions, accessibility, and `/mobile` isolation. | Refined for architecture re-review | Required; defines intended user-visible behavior | Requirements doc, design spec, no-occlusion evidence |
 | comprehensive-responsive-ui-test-report.md | Historical responsive failure evidence and broad browser-matrix scope, including validation for symmetric strips and absence of header/top duplicate controls. | Evidence supplement, coherence-reconciled | N/A | Requirements doc, design spec |
 
 ### Open implementation questions for downstream design/implementation review
@@ -470,13 +470,12 @@ requiredWidth = left consumed width + right consumed width + center minimum
 fits = viewport width >= requiredWidth
 ```
 
-Phase order is authoritative: narrow edge-overlay strip precedence; preserve
+Phase order is authoritative: narrow consuming-strip precedence; preserve
 user-hidden left strip on desktop; short-height right-tools yield; try both
-docked; try left docked/right consuming strip; try left docked/right overlay
-strip; only then adapt the left surface and choose the right strip behavior. A
-drawer is opened only as transient local interaction from an `open-drawer`
-strip action. A visible left panel is therefore not automatically stripped
-merely because the viewport is below `1280px`.
+docked; try left docked/right consuming strip; only then adapt the left surface
+to a consuming strip. A drawer is opened only as transient local interaction
+from an `open-drawer` strip action. A visible left panel is therefore not
+automatically stripped merely because the viewport is below `1280px`.
 
 The output distinguishes `preference: hidden-by-user` from effective
 `presentation: docked|strip` and `presentationSource: user/responsive`, with
@@ -551,10 +550,10 @@ The earlier intermediate package proposed this executable invariant:
 That intermediate correction is superseded. The implementation must remove
 `showRightToolsTrigger` and the top trigger branch entirely. The current
 executable invariant is: docked = fixed panel toggle only; consuming strip =
-strip only; overlay strip = edge strip only. Both strip variants open the same
-transient drawer without changing selected-run state. Component/browser
+50px flow strip only; open drawer = drawer only. The consuming strip opens the
+transient drawer without changing selected-run state, and component/browser
 coverage must assert that every non-docked standard-workspace state has a
-visible strip and no top Tools trigger.
+visible flow strip and no top Tools trigger.
 
 ### Supplemental artifact inventory update
 
@@ -667,7 +666,7 @@ left=docked, right=strip
 
 When docked tools no longer fit, the policy therefore selects `drawer` whenever `left=docked + centerMin + drawer` fits, even if the right strip would be the more discoverable desktop fallback. `WorkspaceAdaptiveLayout.vue` correctly shows a semantic top Tools trigger for drawer-only state, so the visible result is the top Tools button in the supplied screenshot. This is not the earlier `presentation !== 'docked'` duplicate-trigger defect; the current condition is already `presentation === 'drawer'`. The new issue is the policy's fallback priority.
 
-### Revised intended behavior
+### Historical revised intended behavior (superseded by strip-flow contract)
 
 The earlier intermediate package defined the non-narrow priority as:
 
@@ -675,11 +674,11 @@ The earlier intermediate package defined the non-narrow priority as:
 docked -> strip -> drawer
 ```
 
-If left navigation, the practical automatic center target (`480px`), and the `50px` right strip fit, the right strip must be rendered and it is the sole right-tools reopen affordance. The earlier allowance for a drawer/top `Tools` trigger when the strip candidate could not fit is now superseded: the strip switches to an edge overlay instead. The current approved priority is `docked -> consuming strip -> overlay strip` for standard `/workspace`.
+If left navigation, the practical center target and the `50px` right strip fit, the right strip must be rendered and it is the sole right-tools reopen affordance. The later no-occlusion correction supersedes the former fixed-strip fallback: the strip remains consuming and the center floor lowers to the compact/terminal value as needed. The current priority is `docked -> consuming strip` for standard `/workspace`.
 
 This is added as FR-035/AC-036 and requires architecture re-review together with the manual resize-mode clarification. It does not change `/mobile`, the right-tab catalog, or the rule that a visible strip and top Tools trigger must never appear together.
 
-## Right-tools top-trigger removal and guaranteed strip (2026-07-16)
+## Historical right-tools top-trigger removal and guaranteed strip (2026-07-16; superseded by strip-flow contract)
 
 ### User decision
 
@@ -694,9 +693,9 @@ as the direct tool-selection affordance.
 - Right tools remain docked while the measured center and side surfaces fit.
 - When the docked right panel no longer fits, the policy returns a visible
   right strip. The strip consumes `50px` when that flow candidate fits.
-- When the 50px strip cannot fit, the same strip becomes a fixed right-edge
-  overlay with `consumedWidth = 0`; it does not disappear and does not create
-  a top `Tools` button.
+- When the compact center floor cannot fit, the same strip remains a 50px
+  consuming flow item; a terminal center floor of `0px` is allowed below 300px
+  and it does not create a top `Tools` button.
 - Clicking any strip item opens the existing transient right-tools drawer.
   Drawer open/closed state is local interaction state, not a responsive right
   presentation.
@@ -710,18 +709,17 @@ reopen affordances. The revised contract has two policy presentations
 (`docked`, `strip`) and one interaction overlay (the drawer). It removes
 `showRightToolsTrigger`, removes drawer-only right fallback ordering, and
 eliminates the possibility of a strip/button duplicate. The composed policy
-still owns whether the strip consumes flow width or overlays it, while
+still owns the consuming flow width, while
 `WorkspaceAdaptiveLayout` owns only transient drawer open/close state.
 
 ### Capacity evidence
 
-With the approved automatic center target, left docked + center + right strip
-requires approximately `320 + 480 + 50 + 6 = 856px`. If that does not fit,
-the right strip can become an overlay; if left navigation also cannot remain
-docked, the policy adapts the left surface before ever removing the right
-tools affordance. This keeps the center mounted across ordinary desktop,
-embedded, and narrow standard-workspace widths without relying on an absolute
-"truly narrow" breakpoint.
+With the compact consuming-strip target, left docked + center + right strip
+requires `320 + 200 + 50 + 6 = 576px`. If that does not fit, the policy adapts
+the left surface while keeping every closed strip in flow; below `300px`, the
+terminal center floor may be `0px`. This keeps the center mounted across
+ordinary desktop, embedded, and narrow standard-workspace widths without
+relying on a fixed strip or an absolute "truly narrow" breakpoint.
 
 This is an intended-behavior design change covered by FR-024, FR-032,
 FR-035, FR-037 and AC-025, AC-033, AC-036, AC-038. It requires architecture
@@ -836,7 +834,7 @@ The drawer is not a separate responsive policy state.
 | `autobyteus-web/layouts/default.vue` | The global default-layout shell still renders a black responsive header and `data-test="app-left-drawer-open"` hamburger when `responsiveWorkspaceShellState.showHeader` is true, and only exposes the strip on standard workspace. | The reviewed implementation must remove the default-layout header/hamburger navigation path and make the left strip the shared compact owner for every non-immersive default-layout route. |
 | `autobyteus-web/components/layout/WorkspaceAdaptiveLayout.vue` | Standard workspace still renders `WorkspacePrimarySurfaceControls` for constrained/left-non-docked states. | Decommission that generic row from standard `/workspace`; side strips and empty-state actions own compact access. |
 | `autobyteus-web/components/layout/LeftSidebarStrip.vue` | Existing left strip already exposes primary shell destinations and panel toggle behavior. | Reuse and make it the sole left compact affordance, with explicit drawer semantics and no companion top button. |
-| `autobyteus-web/components/layout/RightSidebarStrip.vue` | Existing right strip already renders canonical tool icons and opens the right drawer. | Reuse as the sole right compact affordance in consuming and overlay variants. |
+| `autobyteus-web/components/layout/RightSidebarStrip.vue` | Existing right strip already renders canonical tool icons and opens the right drawer. | Reuse as the sole 50px consuming-flow compact affordance. |
 | `/mobile` and `components/mobile/*` | Dedicated Android/iOS/PWA shell remains separate. | No changes to the phone wrapper or its components. |
 
 ### Revised UI/UX decision and review consequence
@@ -846,7 +844,7 @@ navigation trigger, top `Agents & teams` button, top `Tools` button, and
 generic `Work / Runs / Files / Tools` row in standard `/workspace`. This is a
 design-impact change because it alters shell composition and the policy output:
 the composed state must expose left/right `docked` or `strip` presentations
-with consuming/overlay behavior, while both drawers remain transient
+with consuming-flow behavior, while both drawers remain transient
 interaction state. FR-038 and AC-039, plus the scenario supplement, record the
 contract and its cross-side assertions. Implementation remains paused pending
 architecture review of this revised package.
@@ -1014,3 +1012,57 @@ The package must return through architecture review before implementation
 changes; after approval, source/component/browser coverage must assert mutual
 exclusion for both sides, restoration after dismissal, and no cross-side
 regression.
+### Strip-flow no-occlusion finding (2026-07-17)
+
+#### User evidence
+
+The user tested the latest Electron build on both standard `/workspace` and
+global default-layout pages. In constrained widths, the left and right strips
+remain visible but visually cover the left/right edge of the page or center
+instead of narrowing the center. The retained evidence paths are:
+
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_e384adcd0ede__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_2ba42ba53ae4__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_f5f6cfbc8969__image.png`
+- `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_835fd076ad954653b8ce99d7367f98ef/solution_designer_b6ccc40d7bf745b1acf4763200b4d5b8/context_files/ctx_013210eb513d__image.png`
+
+#### Source and geometry diagnosis
+
+| Boundary | Current behavior | Why it overlaps | Required target |
+| --- | --- | --- | --- |
+| `responsiveLayoutPolicy.ts` | `stripBehavior` permits `overlay`, with `consumedWidth = 0`; the narrow branch and fallback candidates select it | The resolver tells renderers that the strip consumes no horizontal capacity | Effective closed-strip behavior is only `consuming`, with 50px consumed width |
+| `layouts/default.vue` + `LeftSidebarStrip.vue` | Global left strip uses fixed edge positioning and `z-[60]` in the overlay state | The main route content starts at the row edge, underneath the fixed strip | Left strip is a `relative flex-none w-[50px]` flow item |
+| `WorkspaceAdaptiveLayout.vue` + `RightSidebarStrip.vue` | Right strip uses the same fixed edge positioning in the overlay state | The center starts beneath the strip; the right strip paints over it | Right strip is a `relative flex-none w-[50px]` flow item |
+
+This is a new missing geometry invariant, classified as Design Impact / shared
+renderer-policy boundary issue. It is separate from the already-approved
+drawer/strip mutual-exclusion state: drawers may remain fixed transient
+overlays, but closed strips must never be fixed overlays. The global shell and
+workspace flow must consume strip width before laying out route/center content.
+
+#### Revised capacity contract
+
+- Docked automatic candidates protect the practical `480px` center target.
+- A deliberate user-sized dock retains its `200px` personal-branch floor.
+- Consuming-strip candidates use a `200px` compact center floor.
+- Two consuming strips plus the compact floor require `300px`; below that,
+  the terminal effective center floor may be `0px`, while both strips still
+  consume 50px in flow.
+- The canonical renderer field remains nested
+  `rightPanel.effectiveCenterMinWidth`; no top-level alias is introduced.
+- Open transient drawers hide their corresponding strips and are the sole
+  overlay surface for that side. `/mobile` and `components/mobile/*` remain
+  unchanged.
+
+#### Validation obligations
+
+Policy/component tests must assert that every closed strip resolves to
+`stripBehavior = 'consuming'`, `consumedWidth = 50`, and no fixed-position
+strip class. `WorkspaceAdaptiveLayout` must read the nested effective center
+floor directly. Browser coverage must exercise `/agents`, `/agent-teams`, and
+`/workspace` at constrained/narrow widths and assert that the left strip's
+right edge is no greater than page/center content's left edge and the right
+strip's left edge is no less than center content's right edge. A below-300px
+terminal flow case and drawer-only mutual exclusion are required. These are
+new FR-046/FR-047 and AC-046/AC-047 obligations and require architecture
+re-review before implementation source changes.
