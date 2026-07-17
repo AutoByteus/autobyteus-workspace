@@ -1,10 +1,18 @@
-## What's New
-- Preserved a user-sized right workspace panel as docked after left navigation is collapsed whenever the compact layout still fits.
+# AutoByteus 1.4.17
 
-## Improvements
-- Kept responsive strip/drawer fallback for genuinely constrained widths while preserving explicit right-panel redocking behavior.
-- Standardized left and right transient drawer scrims to a lighter approximately 30% black overlay so workspace context remains recognizable.
+## What's New
+
+- Added explicit Event Monitor absolute-path previews through the existing read-only Files/FileViewer surfaces.
+- Added compact inline Event Monitor file links with generated display labels while preserving authored Markdown labels and accessibility metadata.
+- Restored the visible Nodes network icon in compact left-navigation strip mode.
 
 ## Fixes
-- Fixed the left-collapse plus right-resize path from opening an unnecessary right tools strip and drawer when a compact dock still fits.
-- Preserved drawer dismissal, Escape handling, focus trapping/return, z-order, and opposite-strip hit-target behavior.
+
+- Reject incomplete or placeholder path components such as `.`, `..`, `...`, and `…` while preserving legitimate dotted filenames.
+- Keep unsupported archives, installers, application bundles, generic binaries, and unknown extensions literal and inert with no preview I/O.
+- Preserve read-only, deduplicated, workspace-aware desktop/mobile preview routing and existing viewer ownership.
+
+## Verification Notes
+
+- Current-source repository, server, live REST, browser bootstrap/strip, Electron validator/TypeScript, and guard checks passed.
+- API/E2E Round 5 remains **Blocked at 85%** because authenticated Event Monitor, paired mobile, packaged/native runtime, Windows, and full visual journeys were unavailable. These residual gaps are preserved in the archived delivery report and are not represented as passed.
