@@ -117,6 +117,53 @@ flowchart TD
 
 ## Core Components
 
+### Event Monitor Preview Requests
+
+Incidental absolute paths in the central Event Monitor use the existing Files
+surface as a transient, read-only preview; they do not become Message
+references, Agent artifacts, or persisted File Explorer records. The
+Event-Monitor-owned `useEventMonitorFilePreview` launcher is the only
+coordination point for this action. It resolves the runtime locator, calls
+`fileExplorerStore.openFilePreview(...)` with an explicit read-only access
+intent, opens the desktop right panel/selects Files idempotently, and leaves
+the center conversation in place. Reopening a path selects the existing tab
+instead of creating a duplicate, while normal user-opened tabs remain intact.
+
+The runtime locator rules are deliberately different by environment:
+
+| Runtime | Locator / behavior |
+| --- | --- |
+| Embedded Electron | The trusted Electron bridge may open an absolute local path. Main-process text IPC and `local-file://` media validation recheck absolute shape, existence, readability, and regular-file status. |
+| Browser / remote | The path must be contained by the active workspace root and converted to a workspace-relative locator before the existing authorized content route is used. Unmapped paths remain copyable and show localized host-only/unavailable status without a content request. |
+| Phone-first `/mobile` | The path must map to the selected run/team/workspace context. A revisioned request carries context, workspace, relative path, read-only intent, and inline presentation; `MobileFiles` rejects stale or mismatched requests and consumes only the current one. |
+
+Path recognition is opt-in to the Event Monitor Markdown renderer and passive
+output is inert. Explicit pointer or keyboard activation is required. The
+request uses the shared `FileViewer` adapters for text/Markdown/HTML, image,
+audio, video, PDF, CSV, and Excel content. Failure states stay in the normal
+Files/viewer status surface and do not navigate the application or rewrite the
+original Event Monitor content.
+
+Incomplete placeholder components (`.`, `..`, `...`, and `…`) are rejected
+before a preview action is created, including on POSIX and Windows paths.
+Complete dotted filenames remain valid. Supported actions use compact inline
+clickable links showing the generated file label/basename while preserving
+authored Markdown labels, with the existing delegated click/Enter/Space behavior
+and non-visible accessibility metadata; fenced code controls stay outside the
+copied code text. The left navigation strip's
+capability-gated Nodes item uses the existing nodes-network SVG and continues to
+route to `/nodes`.
+
+Action eligibility and `determineFileType()` use the shared
+`utils/fileExplorer/fileTypePolicy.ts` allowlist so the Event Monitor cannot
+offer a preview action for a type that the shared viewer cannot render.
+Supported code/text families include the existing `.lua` family. Archive,
+installer, application-bundle, generic-binary, and unknown extensions such as
+`.zip`, `.dmg`, and `.pkg` remain visible and copyable but do not create an
+action, open a tab, read text, construct `local-file://`, or request workspace
+content. This pure filename decision is separate from validation of a
+supported-looking path at the trusted native/server boundary.
+
 ### FileExplorer.vue
 
 Main container component for the file browser panel:

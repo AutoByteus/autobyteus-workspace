@@ -11,7 +11,11 @@
     </button>
     <transition name="fade-slide">
       <div v-if="showContent" class="think-content">
-        <MarkdownRenderer :content="content" />
+        <MarkdownRenderer
+          :content="content"
+          :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+          @file-path-action="emit('file-path-action', $event)"
+        />
       </div>
     </transition>
   </div>
@@ -21,8 +25,15 @@
 import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
+import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
-const props = defineProps<{ content: string }>();
+const props = withDefaults(defineProps<{
+  content: string;
+  enableEventMonitorFileActions?: boolean;
+}>(), { enableEventMonitorFileActions: false });
+const emit = defineEmits<{
+  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+}>();
 const showContent = ref(false);
 
 const toggle = () => {

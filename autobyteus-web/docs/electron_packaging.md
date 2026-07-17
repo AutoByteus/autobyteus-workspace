@@ -154,6 +154,25 @@ Methods:
 - Blocks unintended navigations and new windows for security
 - Registers custom `local-file://` protocol for secure local media access
 
+#### Trusted Local File Preview Boundary
+
+Event Monitor absolute-path previews may use local Electron access only after
+explicit user activation and only when the trusted `electronAPI` bridge is
+present. The renderer does not read the filesystem directly. Both the
+`read-local-text-file` IPC handler and the `local-file://` protocol call the
+shared `electron/localFileValidation.ts` boundary, which rejects malformed or
+non-absolute paths and revalidates existence, regular-file status, and read
+access immediately before text or media bytes are returned. Validation failures
+are returned as stable local-preview error codes so the renderer can show a
+localized, non-destructive Files state rather than native OS error text.
+
+This boundary is separate from browser/remote workspace access. A browser or
+Phone Access client must first map a recognized host path into the active
+workspace and use the existing authorized relative content route; it must not
+send an arbitrary absolute path to the server. The `local-file://` protocol is
+not an authorization mechanism for remote clients and must not be exposed as an
+unvalidated renderer URL path.
+
 ### IPC Handlers
 
 | Handler                | Purpose                          |

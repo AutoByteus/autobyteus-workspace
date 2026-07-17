@@ -17,6 +17,7 @@ import shellMessages from './shell';
 import generatedSkillsMessages from './skills.generated';
 import skillsMessages from './skills';
 import toolsMessages from './tools.generated';
+import toolsLocalMessages from './tools';
 import generatedWorkspaceMessages from './workspace.generated';
 import workspaceMessages from './workspace';
 import type { TranslationCatalog } from '../../runtime/types';
@@ -41,6 +42,7 @@ const zhCnMessages: TranslationCatalog = {
   ...generatedSkillsMessages,
   ...skillsMessages,
   ...toolsMessages,
+  ...toolsLocalMessages,
   ...generatedWorkspaceMessages,
   ...workspaceMessages,
 };

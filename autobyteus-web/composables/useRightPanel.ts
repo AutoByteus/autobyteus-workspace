@@ -70,6 +70,11 @@ export function useRightPanel() {
     isRightPanelVisible.value = !isRightPanelVisible.value
   }
 
+  /** Opens the panel without toggling a currently visible panel closed. */
+  const openRightPanel = () => {
+    isRightPanelVisible.value = true
+  }
+
   const setRightPanelVisible = (visible: boolean) => {
     isRightPanelVisible.value = visible
   }
@@ -129,6 +134,7 @@ export function useRightPanel() {
     rightPanelWidth,
     rightPanelResizeIntent,
     toggleRightPanel,
+    openRightPanel,
     setRightPanelVisible,
     setRightPanelWorkspaceWidth,
     initDragRightPanel,

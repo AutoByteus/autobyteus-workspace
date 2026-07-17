@@ -58,7 +58,12 @@ interface Window {
     ) => Promise<{ success: boolean; error?: string; content?: string; filePath?: string }>;
     readLocalTextFile: (
       filePath: string,
-    ) => Promise<{ success: boolean; error?: string; content?: string }>;
+    ) => Promise<{
+      success: boolean;
+      error?: string;
+      errorCode?: 'invalid-path' | 'unavailable' | 'not-regular-file' | 'unreadable';
+      content?: string;
+    }>;
 
     getPlatform: () => Promise<'win32' | 'linux' | 'darwin'>;
     getAppLocale: () => Promise<string>;

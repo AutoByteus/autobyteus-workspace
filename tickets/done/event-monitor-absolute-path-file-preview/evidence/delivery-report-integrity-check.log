@@ -1,0 +1,24 @@
+Delivery report integrity check
+HEAD a7a7b8b6e1ad0360f0240dd580938bef3a8c434b
+OK tickets/event-monitor-absolute-path-file-preview/requirements.md
+OK tickets/event-monitor-absolute-path-file-preview/investigation-notes.md
+OK tickets/event-monitor-absolute-path-file-preview/design-spec.md
+OK tickets/event-monitor-absolute-path-file-preview/task.md
+OK tickets/event-monitor-absolute-path-file-preview/event-monitor-absolute-path-reference.png
+OK tickets/event-monitor-absolute-path-file-preview/design-review-report.md
+OK tickets/event-monitor-absolute-path-file-preview/implementation-handoff.md
+OK tickets/event-monitor-absolute-path-file-preview/code-review-report.md
+OK tickets/event-monitor-absolute-path-file-preview/api-e2e-coverage-investigation.md
+OK tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md
+OK tickets/event-monitor-absolute-path-file-preview/api-e2e-test-review-report.md
+OK tickets/event-monitor-absolute-path-file-preview/docs-sync-report.md
+OK tickets/event-monitor-absolute-path-file-preview/handoff-summary.md
+OK tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md
+
+$ git diff --check
+
+No unmerged paths:
+OK
+
+Finalization hold status:
+ticket remains in tickets/event-monitor-absolute-path-file-preview; no push/merge/tag/deploy performed.

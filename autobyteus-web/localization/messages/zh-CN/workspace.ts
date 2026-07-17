@@ -1,6 +1,12 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.open_file":
+    "在文件中打开 {{file}}",
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host":
+    "此文件仅在主机工作区中可用。",
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
+    "无法打开文件预览。",
   "workspace.components.workspace.config.RunConfigPanel.runTeamButton":
     "运行团队",
   "workspace.components.workspace.config.RunConfigPanel.runAgentButton":
