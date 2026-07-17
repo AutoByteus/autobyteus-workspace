@@ -1,6 +1,12 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.open_file":
+    "Open {{file}} in Files",
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host":
+    "This file is available only on the host workspace.",
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
+    "The file preview could not be opened.",
   "workspace.components.workspace.config.RunConfigPanel.runTeamButton":
     "Run Team",
   "workspace.components.workspace.config.RunConfigPanel.runAgentButton":

@@ -35,6 +35,42 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.html()).toContain('<h1>Hello World</h1>');
   });
 
+  it('keeps the generic renderer inert and enables scoped file actions only when opted in', async () => {
+    const generic = mount(MarkdownRenderer, {
+      props: { content: '/tmp/result.md' },
+      global: { plugins: [pinia] },
+    });
+    expect(generic.find('[data-event-monitor-file-action-id]').exists()).toBe(false);
+
+    const monitor = mount(MarkdownRenderer, {
+      props: {
+        content: '[result.md](/tmp/result.md) and `/tmp/inline.txt`\n\n```text\n/tmp/fenced.csv\n```',
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+    expect(monitor.findAll('[data-event-monitor-file-action-id]')).toHaveLength(3);
+    expect(monitor.text()).toContain('/tmp/inline.txt');
+    expect(monitor.text()).toContain('/tmp/fenced.csv');
+    expect(monitor.find('code').text()).toBe('/tmp/inline.txt');
+  });
+
+  it('emits the raw-token action on explicit click without classifying anchor.href', async () => {
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '[report.md](/Users/name/report.md), /tmp/result.png',
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    const controls = wrapper.findAll('[data-event-monitor-file-action-id]');
+    await controls[0].trigger('click');
+    const action = wrapper.emitted('file-path-action')?.[0]?.[0] as { normalizedCandidate: string };
+    expect(action.normalizedCandidate).toBe('/Users/name/report.md');
+    expect(wrapper.find('a').attributes('href')).toBe('#');
+  });
+
   it('should render MermaidDiagram component for mermaid blocks', () => {
     // We rely on useMarkdownSegments to parse this. 
     // Since useMarkdownSegments is a real composable (not mocked here), 

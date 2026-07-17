@@ -6,6 +6,11 @@ export type FileDataType = 'Text' | 'Image' | 'Audio' | 'Video' | 'Excel' | 'PDF
 
 export type FileOpenMode = 'edit' | 'preview'
 
+export type FilePreviewAccessIntent = {
+  source: 'event-monitor'
+  readOnly: true
+}
+
 export type FileRelativeResourceContext = {
   kind: 'workspace'
   workspaceId: string
@@ -15,6 +20,7 @@ export interface OpenFileState {
   path: string
   type: FileDataType
   mode: FileOpenMode
+  accessIntent?: FilePreviewAccessIntent | null
   content: string | null
   url: string | null
   relativeResourceContext: FileRelativeResourceContext | null

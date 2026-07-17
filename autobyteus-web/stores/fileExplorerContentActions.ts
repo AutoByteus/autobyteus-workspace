@@ -15,7 +15,11 @@ import {
   remapOpenFolderPaths,
   remapPrefixedPath,
 } from '~/utils/fileExplorer/stateSync'
-import type { FileOpenMode, OpenFileState } from '~/stores/fileExplorerState'
+import type {
+  FileOpenMode,
+  FilePreviewAccessIntent,
+  OpenFileState,
+} from '~/stores/fileExplorerState'
 import { buildWorkspaceContentUrl } from '~/utils/fileExplorer/workspaceResourceUrl'
 
 function isAbsoluteLocalPath(path: string): boolean {
@@ -36,16 +40,36 @@ const isPathInDeletedScope = (filePath: string, deletedPath: string): boolean =>
   return filePath === normalizedDeletedPath || filePath.startsWith(`${normalizedDeletedPath}/`)
 }
 
+const buildLocalFileUrl = (filePath: string): string => {
+  const normalized = filePath.replace(/\\/g, '/')
+  const segments = normalized.split('/')
+  const encoded = segments.map((segment, index) => (
+    index === 0 && /^[A-Za-z]:$/.test(segment) ? segment : encodeURIComponent(segment)
+  )).join('/')
+  return `local-file://${encoded}`
+}
+
 export const fileExplorerContentActions = {
   async openFile(this: any, filePath: string, workspaceId: string) {
     return this._openFileWithMode(filePath, 'edit', workspaceId)
   },
 
-  async openFilePreview(this: any, filePath: string, workspaceId: string) {
-    return this._openFileWithMode(filePath, 'preview', workspaceId)
+  async openFilePreview(
+    this: any,
+    filePath: string,
+    workspaceId: string,
+    options?: { accessIntent?: FilePreviewAccessIntent },
+  ) {
+    return this._openFileWithMode(filePath, 'preview', workspaceId, options)
   },
 
-  async _openFileWithMode(this: any, filePath: string, mode: FileOpenMode, workspaceId: string) {
+  async _openFileWithMode(
+    this: any,
+    filePath: string,
+    mode: FileOpenMode,
+    workspaceId: string,
+    options?: { accessIntent?: FilePreviewAccessIntent },
+  ) {
     console.log(`[FileExplorer] Opening file: ${filePath}`)
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     const windowNodeContextStore = useWindowNodeContextStore()
@@ -57,7 +81,8 @@ export const fileExplorerContentActions = {
       const newFileState: OpenFileState = {
         path: filePath,
         type: fileType,
-        mode,
+        mode: options?.accessIntent ? 'preview' : mode,
+        accessIntent: options?.accessIntent ?? null,
         content: null,
         url: null,
         relativeResourceContext: null,
@@ -73,7 +98,8 @@ export const fileExplorerContentActions = {
         this._loadWorkspaceOrExternalFile(newFileState, filePath, workspaceId, windowNodeContextStore)
       }
     } else {
-      existingFile.mode = mode
+      existingFile.accessIntent = options?.accessIntent ?? null
+      existingFile.mode = options?.accessIntent ? 'preview' : mode
     }
 
     wsState.activeFile = filePath
@@ -90,7 +116,7 @@ export const fileExplorerContentActions = {
         fileState.error = error instanceof Error ? error.message : String(error)
       }
     } else if (['Image', 'Audio', 'Video', 'Excel', 'PDF'].includes(fileState.type)) {
-      fileState.url = `local-file://${filePath}`
+      fileState.url = buildLocalFileUrl(filePath)
       console.log(`[FileExplorer] Constructed local media URL: ${fileState.url}`)
     } else {
       console.warn(`[FileExplorer] Unsupported local file type "${fileState.type}" for "${filePath}".`)
@@ -144,7 +170,7 @@ export const fileExplorerContentActions = {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     const file = wsState.openFiles.find((entry: OpenFileState) => entry.path === filePath)
     if (file) {
-      file.mode = mode
+      file.mode = file.accessIntent?.readOnly ? 'preview' : mode
     }
   },
 

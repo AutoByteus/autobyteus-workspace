@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import type { ContextAttachment } from '~/types/conversation';
-import type { MobileRunSetupIntent, MobileRunSetupIntentRequest, MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
+import type {
+  MobileFilePreviewRequest,
+  MobileRunSetupIntent,
+  MobileRunSetupIntentRequest,
+  MobileTaskTab,
+  MobileWorkContext,
+} from '~/types/mobileWork';
 import { preferredTabForMobileContext } from '~/types/mobileWork';
 
 const normalizeMobileTaskTab = (tab: MobileTaskTab | string | null | undefined): MobileTaskTab => (
@@ -18,6 +24,8 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
   const focusedMemberRouteKeyByTeamRunId = ref<Record<string, string>>({});
   const runSetupIntent = ref<MobileRunSetupIntent | null>(null);
   const nextRunSetupRevision = ref(0);
+  const pendingFilePreviewRequest = ref<MobileFilePreviewRequest | null>(null);
+  const nextFilePreviewRevision = ref(0);
 
   const draftContextAttachmentCount = computed(() => draftContextAttachments.value.length);
 
@@ -25,6 +33,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     currentContext.value = context;
     activeTab.value = normalizeMobileTaskTab(tab ?? preferredTabForMobileContext(context));
     runSetupIntent.value = null;
+    pendingFilePreviewRequest.value = null;
   }
 
   function setActiveTab(tab: MobileTaskTab | string): void {
@@ -45,6 +54,23 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
   function consumeRunSetupIntent(revision: number): void {
     if (runSetupIntent.value?.revision === revision) {
       runSetupIntent.value = null;
+    }
+  }
+
+  function requestFilePreview(request: Omit<MobileFilePreviewRequest, 'revision'>): MobileFilePreviewRequest {
+    nextFilePreviewRevision.value += 1;
+    const nextRequest: MobileFilePreviewRequest = {
+      ...request,
+      revision: nextFilePreviewRevision.value,
+    };
+    pendingFilePreviewRequest.value = nextRequest;
+    activeTab.value = 'files';
+    return nextRequest;
+  }
+
+  function consumeFilePreviewRequest(revision: number): void {
+    if (pendingFilePreviewRequest.value?.revision === revision) {
+      pendingFilePreviewRequest.value = null;
     }
   }
 
@@ -181,6 +207,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     currentContext.value = null;
     activeTab.value = 'chat';
     runSetupIntent.value = null;
+    pendingFilePreviewRequest.value = null;
     clearDraftContextAttachments();
     pendingTeamRunAttachmentsByTeamRunId.value = {};
   }
@@ -192,11 +219,14 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     pendingTeamRunAttachmentsByTeamRunId,
     focusedMemberRouteKeyByTeamRunId,
     runSetupIntent,
+    pendingFilePreviewRequest,
     draftContextAttachmentCount,
     selectContext,
     setActiveTab,
     requestRunSetup,
     consumeRunSetupIntent,
+    requestFilePreview,
+    consumeFilePreviewRequest,
     addDraftContextAttachment,
     removeDraftContextAttachment,
     clearDraftContextAttachments,

@@ -44,4 +44,23 @@ describe('mobileWorkStore', () => {
 
     expect(store.activeTab).toBe('chat');
   });
+
+  it('hands off one revisioned Event Monitor preview request to Mobile Files', () => {
+    const store = useMobileWorkStore();
+    store.selectContext(agentRunContext);
+
+    const request = store.requestFilePreview({
+      contextKey: 'agent-run:run-1',
+      workspaceId: 'workspace-1',
+      relativePath: 'docs/report.md',
+      source: 'event-monitor',
+      readOnly: true,
+      presentation: 'inline',
+    });
+
+    expect(store.activeTab).toBe('files');
+    expect(store.pendingFilePreviewRequest).toEqual(request);
+    store.consumeFilePreviewRequest(request.revision);
+    expect(store.pendingFilePreviewRequest).toBeNull();
+  });
 });

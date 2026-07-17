@@ -19,6 +19,8 @@
             <TextSegment
               v-if="segment.type === 'text'"
               :content="segment.content"
+              :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+              @file-path-action="emit('file-path-action', $event)"
             />
             <WriteFileCommandSegment
               v-else-if="segment.type === 'write_file'"
@@ -38,6 +40,8 @@
             <ThinkSegment
               v-else-if="segment.type === 'think'"
               :content="segment.content"
+              :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+              @file-path-action="emit('file-path-action', $event)"
             />
             <ToolCallSegment
               v-else-if="segment.type === 'tool_call'"
@@ -47,11 +51,15 @@
             <SystemTaskNotificationSegment
               v-else-if="segment.type === 'system_task_notification'"
               :segment="segment"
+              :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+              @file-path-action="emit('file-path-action', $event)"
             />
             <InterAgentMessageSegment
               v-else-if="segment.type === 'inter_agent_message'"
               :segment="segment"
               :sender-display-name="resolveInterAgentSenderDisplayName(segment.senderAgentRunId)"
+              :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+              @file-path-action="emit('file-path-action', $event)"
             />
             <MediaSegment
               v-else-if="segment.type === 'media'"
@@ -81,6 +89,7 @@ import InterAgentMessageSegment from '~/components/conversation/segments/InterAg
 import MediaSegment from '~/components/conversation/segments/MediaSegment.vue';
 import ErrorSegment from '~/components/conversation/segments/ErrorSegment.vue';
 import EditFileCommandSegment from '~/components/conversation/segments/EditFileCommandSegment.vue';
+import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 const props = defineProps<{
   message: AIMessage;
@@ -89,6 +98,11 @@ const props = defineProps<{
   agentAvatarUrl?: string | null;
   interAgentSenderNameById?: Record<string, string>;
   messageIndex: number;
+  enableEventMonitorFileActions?: boolean;
+}>();
+
+const emit = defineEmits<{
+  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
 }>();
 
 const avatarLoadError = ref(false);

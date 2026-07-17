@@ -32,6 +32,7 @@ import { registerBrowserShellIpcHandlers } from './browser/register-browser-shel
 import { BrowserBridgeAuthRegistry } from './browser/browser-bridge-auth-registry';
 import { WorkspaceShellWindow } from './shell/workspace-shell-window';
 import { WorkspaceShellWindowRegistry } from './shell/workspace-shell-window-registry';
+import { validateReadableRegularFile } from './localFileValidation';
 
 const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
@@ -387,10 +388,11 @@ function installIpcHandlers(): void {
 
   ipcMain.handle('read-local-text-file', async (_event, filePath: string) => {
     try {
-      if (!fsSync.existsSync(filePath)) {
-        return { success: false, error: 'File does not exist' };
+      const validation = await validateReadableRegularFile(filePath);
+      if (!validation.ok) {
+        return { success: false, error: validation.error };
       }
-      const content = await fs.readFile(filePath, 'utf-8');
+      const content = await fs.readFile(validation.filePath, 'utf-8');
       return { success: true, content };
     } catch (error) {
       return {
@@ -469,11 +471,21 @@ function installAppLifecycleHandlers(): void {
 }
 
 function installProtocols(): void {
-  protocol.handle('local-file', (request) => {
+  protocol.handle('local-file', async (request) => {
     try {
       const requestUrl = new URL(request.url);
-      const filePath = path.normalize(decodeURIComponent(requestUrl.pathname));
-      return net.fetch(pathToFileURL(filePath).toString());
+      let filePath = decodeURIComponent(requestUrl.pathname);
+      if (/^[A-Za-z]$/.test(requestUrl.hostname)) {
+        filePath = `${requestUrl.hostname}:${filePath}`;
+      }
+      if (process.platform === 'win32' && /^\/[A-Za-z]:[\\/]/.test(filePath)) {
+        filePath = filePath.slice(1);
+      }
+      const validation = await validateReadableRegularFile(filePath);
+      if (!validation.ok) {
+        return new Response(null, { status: 404 });
+      }
+      return net.fetch(pathToFileURL(validation.filePath).toString());
     } catch (error) {
       logger.error(`[local-file protocol] Error handling request ${request.url}:`, error);
       return new Response(null, { status: 404 });

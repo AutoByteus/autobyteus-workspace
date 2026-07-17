@@ -66,6 +66,11 @@ export function useRightPanel() {
     isRightPanelVisible.value = !isRightPanelVisible.value
   }
 
+  /** Opens the panel without toggling a currently visible panel closed. */
+  const openRightPanel = () => {
+    isRightPanelVisible.value = true
+  }
+
   /**
    * Registers the current center/right workspace container width.
    * The right panel keeps a preferred width, but the actual exposed width is
@@ -119,6 +124,7 @@ export function useRightPanel() {
     isRightPanelVisible,
     rightPanelWidth,
     toggleRightPanel,
+    openRightPanel,
     setRightPanelWorkspaceWidth,
     initDragRightPanel,
   }

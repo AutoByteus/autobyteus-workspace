@@ -26,6 +26,8 @@
               :agent-avatar-url="agentAvatarUrl"
               :inter-agent-sender-name-by-id="interAgentSenderNameById"
               :message-index="item.messageIndex"
+              :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+              @file-path-action="emit('file-path-action', $event)"
             />
           </div>
 
@@ -57,6 +59,7 @@ import type { CompactionActivity } from '~/stores/agentActivityStore';
 import UserMessage from '~/components/conversation/UserMessage.vue';
 import AIMessage from '~/components/conversation/AIMessage.vue';
 import CompactionStatusRow from '~/components/workspace/agent/CompactionStatusRow.vue';
+import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 const props = withDefaults(defineProps<{
   conversation: Conversation;
@@ -67,11 +70,17 @@ const props = withDefaults(defineProps<{
   compactionActivities?: CompactionActivity[];
   showTokenCosts?: boolean;
   showTotalUsage?: boolean;
+  enableEventMonitorFileActions?: boolean;
 }>(), {
   compactionActivities: () => [],
   showTokenCosts: true,
   showTotalUsage: true,
+  enableEventMonitorFileActions: false,
 });
+
+const emit = defineEmits<{
+  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+}>();
 
 type ConversationMessage = Conversation['messages'][number];
 

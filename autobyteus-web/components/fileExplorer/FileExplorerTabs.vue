@@ -19,7 +19,7 @@
 
         <!-- Main content -->
         <div v-else class="flex-1 flex flex-col min-h-0">
-          <div v-if="activeFileData?.isLoading" class="flex-1 text-center py-4 flex items-center justify-center">
+          <div v-if="activeFileData?.isLoading" class="flex-1 text-center py-4 flex items-center justify-center" role="status" aria-live="polite">
             <p class="text-gray-600">{{ $t('tools.components.fileExplorer.FileExplorerTabs.loading_file_content') }}</p>
           </div>
           <div v-else-if="activeFileData?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
@@ -30,15 +30,15 @@
             <FileViewer
               v-if="activeFileData"
               :file="activeFileData"
-              :mode="activeFileMode"
+              :mode="activeFileDisplayMode"
               :loading="activeFileData.isLoading"
               :error="activeFileData.error"
-              :read-only="false"
+              :read-only="activeFileIsReadOnly"
               @update:model-value="fileContent = $event"
               @save="handleSave"
               class="h-full w-full flex-1 min-h-0 overflow-auto"
             />
-            <template v-if="activeFileData.type === 'Text' && activeFile && activeFileMode === 'edit'">
+            <template v-if="activeFileData.type === 'Text' && activeFile && activeFileDisplayMode === 'edit' && !activeFileIsReadOnly">
               <div v-if="saveContentError" class="absolute bottom-2 left-2 text-red-600 bg-white px-2 py-1 rounded shadow">
                 {{ saveContentError }}
               </div>
@@ -80,6 +80,7 @@
             :key="file"
             @click="setActiveFile(file)"
             @contextmenu.prevent="showContextMenu($event, file)"
+            :data-event-monitor-active-file-tab="file === activeFile ? 'true' : undefined"
             tabindex="0"
             @keyup.enter="setActiveFile(file)"
             class="group relative flex items-center gap-2 px-1 py-2.5 text-sm font-medium border-b-2 transition-all duration-150 focus:outline-none whitespace-nowrap"
@@ -105,7 +106,7 @@
       <!-- Right Side Controls -->
       <div class="flex items-center gap-1 pr-2 shrink-0">
         <!-- Edit/Preview Group -->
-        <div v-if="activeFileData?.type === 'Text' && isPreviewableText" class="flex items-center gap-1 border-r border-gray-200 pr-1 mr-1">
+        <div v-if="activeFileData?.type === 'Text' && isPreviewableText && !activeFileIsReadOnly" class="flex items-center gap-1 border-r border-gray-200 pr-1 mr-1">
            <button
             class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
             :class="activeFileMode === 'edit'
@@ -162,7 +163,7 @@
       </div>
 
       <div v-else class="flex-1 flex flex-col min-h-0">
-        <div v-if="activeFileData?.isLoading" class="flex-1 text-center py-4 flex items-center justify-center">
+        <div v-if="activeFileData?.isLoading" class="flex-1 text-center py-4 flex items-center justify-center" role="status" aria-live="polite">
           <p class="text-gray-600">Loading file content...</p>
         </div>
         <div v-else-if="activeFileData?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
@@ -173,15 +174,15 @@
           <FileViewer
             v-if="activeFileData"
             :file="activeFileData"
-            :mode="activeFileMode"
+            :mode="activeFileDisplayMode"
             :loading="activeFileData.isLoading"
             :error="activeFileData.error"
-            :read-only="false"
+            :read-only="activeFileIsReadOnly"
             @update:model-value="fileContent = $event"
             @save="handleSave"
             class="h-full w-full flex-1 min-h-0 overflow-auto"
           />
-          <template v-if="activeFileData.type === 'Text' && activeFile && activeFileMode === 'edit'">
+          <template v-if="activeFileData.type === 'Text' && activeFile && activeFileDisplayMode === 'edit' && !activeFileIsReadOnly">
             <div v-if="saveContentError" class="absolute bottom-2 left-2 text-red-600 bg-white px-2 py-1 rounded shadow">
               {{ saveContentError }}
             </div>
@@ -268,6 +269,8 @@ const isPreviewableText = computed(() => {
 })
 
 const activeFileMode = computed(() => activeFileData.value?.mode ?? 'edit')
+const activeFileIsReadOnly = computed(() => activeFileData.value?.accessIntent?.readOnly === true)
+const activeFileDisplayMode = computed(() => activeFileIsReadOnly.value ? 'preview' : activeFileMode.value)
 const isActiveZenMode = computed(() => props.active && isZenMode.value)
 const toggleZenMode = () => fileContentDisplayModeStore.toggleZenMode()
 

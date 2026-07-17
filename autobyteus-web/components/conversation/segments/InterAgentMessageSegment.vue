@@ -33,7 +33,11 @@
           <span class="font-medium text-slate-600 dark:text-slate-300">From {{ displaySender }}:</span>
         </p>
         <div class="inter-agent-content min-w-0">
-          <MarkdownRenderer :content="segment.content" />
+          <MarkdownRenderer
+            :content="segment.content"
+            :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+            @file-path-action="emit('file-path-action', $event)"
+          />
         </div>
       </div>
       <button
@@ -73,10 +77,15 @@
 import { computed, ref } from 'vue';
 import type { InterAgentMessageSegment } from '~/types/segments';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
+import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   segment: InterAgentMessageSegment;
   senderDisplayName?: string;
+  enableEventMonitorFileActions?: boolean;
+}>(), { enableEventMonitorFileActions: false });
+const emit = defineEmits<{
+  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
 }>();
 const showDetails = ref(false);
 

@@ -134,6 +134,8 @@
       :context="context"
       :file-state="previewFileState"
       :open-error="previewOpenError"
+      :presentation="previewPresentation"
+      :allow-attach="previewAllowAttach"
       @close="previewNode = null"
     />
   </section>
@@ -148,6 +150,8 @@ import {
   type MobileWorkspaceFileNode,
 } from '~/composables/mobile/useMobileWorkspaceFileExplorer';
 import type { MobileWorkContext } from '~/types/mobileWork';
+import { mobileWorkContextKey } from '~/types/mobileWork';
+import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -162,6 +166,9 @@ const { getVisibleContextAttachments } = useMobileFileContextCoordinator();
 const search = ref('');
 const folderStack = ref<MobileWorkspaceFileNode[]>([]);
 const previewNode = ref<MobileWorkspaceFileNode | null>(null);
+const previewPresentation = ref<'fullscreen' | 'inline'>('fullscreen');
+const previewAllowAttach = ref(true);
+const previewRequestInFlightRevision = ref<number | null>(null);
 const lastAttachmentCount = ref(0);
 const deepSearch = ref(false);
 const showFilters = ref(false);
@@ -270,6 +277,7 @@ const emptyMessage = computed(() => {
 });
 const previewFileState = computed(() => previewNode.value ? mobileExplorer.getOpenFileState(previewNode.value.path) : null);
 const previewOpenError = computed(() => previewNode.value ? mobileExplorer.getFileOpenError(previewNode.value.path) : null);
+const mobileWorkStore = useMobileWorkStore();
 const isSearchLoading = mobileExplorer.isSearchLoading;
 const searchError = mobileExplorer.searchError;
 const resolveWorkspaceForContext = mobileExplorer.resolveWorkspaceForContext;
@@ -279,6 +287,8 @@ const getFolderError = mobileExplorer.getFolderError;
 async function openNode(node: MobileWorkspaceFileNode): Promise<void> {
   if (node.is_file) {
     lastAttachmentCount.value = getVisibleContextAttachments(props.context).length;
+    previewPresentation.value = 'fullscreen';
+    previewAllowAttach.value = true;
     previewNode.value = node;
     await mobileExplorer.openFileReadOnly(node.path);
     return;
@@ -287,6 +297,37 @@ async function openNode(node: MobileWorkspaceFileNode): Promise<void> {
   if (loaded) {
     folderStack.value = [...folderStack.value, node];
   }
+}
+
+async function consumeEventMonitorPreviewRequest(): Promise<void> {
+  const request = mobileWorkStore.pendingFilePreviewRequest;
+  const currentContext = props.context;
+  const resolvedWorkspaceId = activeWorkspace.value?.workspaceId || '';
+  if (
+    !request ||
+    !currentContext ||
+    mobileWorkContextKey(currentContext) !== request.contextKey ||
+    !resolvedWorkspaceId ||
+    resolvedWorkspaceId !== request.workspaceId ||
+    previewRequestInFlightRevision.value === request.revision
+  ) {
+    return;
+  }
+
+  previewRequestInFlightRevision.value = request.revision;
+  previewPresentation.value = request.presentation;
+  previewAllowAttach.value = false;
+  previewNode.value = {
+    id: `event-monitor-${request.revision}`,
+    name: request.relativePath.split('/').filter(Boolean).at(-1) || request.relativePath,
+    path: request.relativePath,
+    is_file: true,
+    children: [],
+    childrenLoaded: true,
+  };
+  await mobileExplorer.openFileReadOnly(request.relativePath);
+  mobileWorkStore.consumeFilePreviewRequest(request.revision);
+  previewRequestInFlightRevision.value = null;
 }
 
 function openCrumb(index: number): void {
@@ -339,6 +380,16 @@ watch(() => activeWorkspace.value?.workspaceId, () => {
   deepSearch.value = false;
   activeDiscoveryFilter.value = 'all';
 });
+
+watch(
+  [
+    () => mobileWorkStore.pendingFilePreviewRequest,
+    () => activeWorkspace.value?.workspaceId || '',
+    () => props.context ? mobileWorkContextKey(props.context) : '',
+  ],
+  () => { void consumeEventMonitorPreviewRequest(); },
+  { immediate: true, deep: true },
+);
 
 onBeforeUnmount(clearSearchDebounce);
 </script>

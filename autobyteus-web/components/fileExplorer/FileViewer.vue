@@ -1,7 +1,7 @@
 <template>
   <div class="h-full w-full overflow-hidden relative">
     <!-- Loading State -->
-    <div v-if="loading" class="flex-1 h-full flex items-center justify-center text-gray-400">{{ $t('tools.components.fileExplorer.FileViewer.loading_content') }}</div>
+    <div v-if="loading" class="flex-1 h-full flex items-center justify-center text-gray-400" role="status" aria-live="polite">{{ $t('tools.components.fileExplorer.FileViewer.loading_content') }}</div>
 
     <!-- Error State -->
     <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
