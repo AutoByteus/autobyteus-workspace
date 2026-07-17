@@ -106,7 +106,53 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.find('code').text()).toContain('/tmp/my file.md');
     expect(wrapper.find('code').text()).toContain('[report](C:\\Work\\my report.md)');
     expect(wrapper.findAll('[data-event-monitor-file-action-id]')).toHaveLength(2);
-    expect(wrapper.findAll('.event-monitor-file-action')[0].text()).toContain('Open');
+    expect(wrapper.findAll('.event-monitor-file-action')).toHaveLength(0);
+    expect(wrapper.findAll('.event-monitor-file-action-link')).toHaveLength(2);
+    expect(wrapper.findAll('.event-monitor-file-action-link')[0].text()).toContain('Open');
+  });
+
+  it('renders supported paths as compact inline links while preserving labels and source text', async () => {
+    const inlinePath = '/tmp/inline.txt';
+    const fencedPath = '/tmp/fenced.csv';
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: `[compaction-lifecycle-contract.md](/tmp/compaction-lifecycle-contract.md)\n\n${inlinePath}\n\n\`${inlinePath}\`\n\n\`\`\`text\n${fencedPath}\n\`\`\``,
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    const controls = wrapper.findAll('[data-event-monitor-file-action-id]');
+    expect(controls).toHaveLength(4);
+    expect(wrapper.findAll('.event-monitor-file-action')).toHaveLength(0);
+    expect(controls.every((control) => control.element.tagName === 'A')).toBe(true);
+    expect(wrapper.find('a').text()).toBe('compaction-lifecycle-contract.md');
+    expect(controls[1].text()).toBe(inlinePath);
+    expect(controls[2].text()).toBe(inlinePath);
+    expect(wrapper.text()).toContain(inlinePath);
+    expect(wrapper.findAll('code')[0].text()).toBe(inlinePath);
+    expect(wrapper.find('pre code').text()).toBe(fencedPath);
+    expect(wrapper.findAll('.event-monitor-file-action-link')[3].text()).toContain('Open');
+    expect(wrapper.findAll('button')).toHaveLength(0);
+  });
+
+  it('keeps inline file links keyboard accessible for Enter and Space', async () => {
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '/tmp/keyboard.md',
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    const control = wrapper.get('[data-event-monitor-file-action-id]');
+    await control.trigger('keydown', { key: 'Enter' });
+    await control.trigger('keydown', { key: ' ' });
+
+    expect(wrapper.emitted('file-path-action')).toHaveLength(2);
+    expect(wrapper.findAll('.event-monitor-file-action')).toHaveLength(0);
   });
 
   it('keeps unsupported archive, installer, and binary paths source-faithful without actions', async () => {

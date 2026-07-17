@@ -7,7 +7,7 @@
 - Branch: `codex/event-monitor-absolute-path-file-preview`
 - Base: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
 - Architecture review: **Pass, round 2**
-- Implementation status: **Invalid-absolute-path local fix complete; resubmission required for implementation source review**
+- Implementation status: **Invalid-path, compact-inline-action, and strip-Nodes-icon fixes complete; resubmission required for implementation source review**
 
 ## Cumulative Reviewed Solution Package
 
@@ -20,6 +20,8 @@
 - Implementation source review round 1: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/code-review-report.md`
 - User verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md`
 - Invalid absolute-path verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-invalid-absolute-path-report.md`
+- Inline file-link verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-inline-file-link-report.md`
+- Strip Nodes icon verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/user-verification-strip-nodes-icon-report.md`
 - This implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/tickets/event-monitor-absolute-path-file-preview/implementation-handoff.md`
 
 ## What Changed
@@ -61,6 +63,18 @@
 - Invalid raw Markdown links retain ordinary generic link rendering; invalid prose, inline-code, and fenced-code candidates remain source-faithful with no Event Monitor action. No filesystem existence check or render-time read was added.
 - Added table-driven normalizer/action coverage and renderer coverage for POSIX/Windows separators, all four invalid components, dotted complete filenames, and invalid link/prose/inline/fenced sources.
 
+### Bounded local fix for compact inline Event Monitor file actions
+
+- Replaced the bulky bordered `Open ... in Files` button markup with a compact underlined native anchor carrying the same render-scoped action ID and delegated typed event path.
+- Authored Markdown link labels remain the visible anchor text; bare prose paths and inline-code paths wrap only the recognized literal path text; fenced-code actions remain adjacent to the unchanged rendered code so source selection/copy stays faithful.
+- Preserved `href="#"`, `role="button"`, keyboard Enter/Space delegation, navigation prevention, localized accessibility/title application, and the existing Event Monitor launcher/read-only preview path. Generic Markdown remains default-off and invalid/unsupported candidates remain action-free.
+- Added composable and MarkdownRenderer regressions for compact anchor markup, label/path preservation, no old bordered button class, code preservation, click/keyboard activation, and default-off behavior.
+
+### Bounded local fix for strip-mode Nodes icon
+
+- `LeftSidebarStrip.vue` now renders the existing nodes-network SVG shape for the shared `nodes` navigation item instead of passing the unregistered `autobyteus:nodes-network` name to Iconify.
+- The shared navigation capability gate, `Nodes` title/aria-label, and `/nodes` route ownership are unchanged. Added a strip regression asserting the visible `data-testid="nodes-network-icon"` SVG and preserved route test.
+
 ## Behavior Traceability
 
 | Behavior | Implemented path | Outcome |
@@ -68,6 +82,8 @@
 | BEH-001 — Event-Monitor-only absolute actions and source preservation | `utils/eventMonitorFilePaths/absoluteFilePathAction.ts`; `utils/fileExplorer/fileTypePolicy.ts`; `composables/useMarkdownSegments.ts`; `MarkdownRenderer.vue`; segment/feed capability transport | Opt-in only. Supported POSIX/Windows links, prose, inline code, and fences receive explicit keyboard-accessible actions; unsupported archive/installer/binary candidates remain literal copyable text/code. |
 | BEH-002 — Raw link destination and ordinary-link preservation | Raw `link_open` token metadata in `useMarkdownSegments`; ID lookup/delegation in `MarkdownRenderer.vue` | File actions never inspect browser-resolved `anchor.href`; HTTP(S) remains the existing external-link path; relative/non-file links remain ordinary Markdown. |
 | BEH-010 — Incomplete/placeholder absolute paths remain source-faithful | `normalizeAbsoluteFilePath()`; `createAbsoluteFilePathAction()`; `useMarkdownSegments.ts`; `MarkdownRenderer.spec.ts` | Exact `.`, `..`, `...`, and Unicode `…` components are rejected for POSIX/Windows candidates before type/action creation. Ordinary Markdown links remain generic links; prose/code remain unchanged and no Files action/read is initiated. |
+| BEH-011 — Supported Event Monitor file actions use compact inline links | `useMarkdownSegments.ts`; `MarkdownRenderer.vue`; `MarkdownRenderer.spec.ts`; `useMarkdownSegments.spec.ts` | Supported authored labels, bare paths, and inline code use underlined action anchors; fenced code keeps literal code unchanged with a compact adjacent link. No old bordered button markup remains. Same action IDs/events/launcher and keyboard behavior are preserved. |
+| BEH-012 — Nodes icon is visible in responsive strip mode | `LeftSidebarStrip.vue`; `LeftSidebarStrip.spec.ts`; shared `useShellPrimaryNavigation.ts` | Gated Nodes item renders the existing nodes-network SVG with `data-testid="nodes-network-icon"` and retains `/nodes` navigation; other icons remain Iconify-rendered. |
 | BEH-003 — Shared transient read-only preview and dedupe | `fileExplorerContentActions.ts`; `fileExplorerState.ts`; `fileTypePolicy.ts`; `FileExplorerTabs.vue`; `FileViewer.vue` | Existing supported path tabs are reused/selected; Event Monitor intent forces preview, hides edit controls, and uses shared text/media/PDF/spreadsheet adapters. Unsupported candidates never enter this Event Monitor path. |
 | BEH-004 — Desktop idempotent Files selection | `useEventMonitorFilePreview.ts`; `useRightPanel.ts`; `useRightSideTabs.ts`; active tab focus marker in `FileExplorerTabs.vue` | `openRightPanel()` sets visible rather than toggling; Files is selected after the preview request; no overlay or focus trap is created. |
 | BEH-005 — Phone-first Files request/inline presentation | `types/mobileWork.ts`; `mobileWorkStore.ts`; `MobileFiles.vue`; `MobileFileViewer.vue` | Matching revision/context/workspace request selects the existing Mobile Files preview inline and read-only; stale/mismatched requests do nothing. |
@@ -95,6 +111,10 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/components/fileExplorer/FileExplorerTabs.vue`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/components/fileExplorer/FileViewer.vue`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/composables/useRightPanel.ts`
+- Inline Event Monitor action and strip presentation:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/composables/useMarkdownSegments.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/components/conversation/segments/renderer/MarkdownRenderer.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/components/layout/LeftSidebarStrip.vue`
 - Phone-first mobile:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/types/mobileWork.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web/stores/mobileWorkStore.ts`
@@ -109,6 +129,8 @@
 ## Durable Tests Added / Updated
 
 - `autobyteus-web/components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts`
+- `autobyteus-web/composables/__tests__/useMarkdownSegments.spec.ts`
+- `autobyteus-web/components/layout/__tests__/LeftSidebarStrip.spec.ts`
 - `autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts`
 - `autobyteus-web/utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts`
 - `autobyteus-web/electron/__tests__/localFileValidation.spec.ts`
@@ -160,6 +182,19 @@ All checks below were run in this task worktree before the temporary dependency 
 - ✅ Invalid-path source checks:
   - `git diff --check` on changed implementation/test paths passed.
   - Table-driven policy coverage confirms no action for exact `.`, `..`, `...`, or Unicode `…` components across POSIX and Windows separators, while dotted complete filenames remain eligible.
+- ✅ Compact-inline-action and strip-icon focused suite:
+  - `pnpm --dir autobyteus-web exec vitest run components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts composables/__tests__/useMarkdownSegments.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts --reporter=dot`
+  - Result: `3 files, 23 tests passed`.
+- ✅ Combined invalid-path, inline-action, strip-icon, and File Explorer focused suite:
+  - `pnpm --dir autobyteus-web exec vitest run utils/fileExplorer/__tests__/fileUtils.test.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts composables/__tests__/useMarkdownSegments.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts --reporter=dot`
+  - Result: `6 files, 67 tests passed`.
+- ✅ Broader changed-chain plus inline-action/strip-icon regression suite:
+  - Same prior 14-file changed-chain command with `composables/__tests__/useMarkdownSegments.spec.ts` and `components/layout/__tests__/LeftSidebarStrip.spec.ts` included.
+  - Result: `16 files, 119 tests passed`.
+- ✅ Inline-action and strip source checks:
+  - `git diff --check` passed; rendered action controls are native anchors with no legacy `event-monitor-file-action` button class or `<button>` markup.
+  - Component tests confirmed authored label, bare-path, inline-code, and fenced-code presentation; exact code text remains unchanged, and Enter/Space still emit the typed action event.
+  - Strip test confirmed `data-testid="nodes-network-icon"` is visible inside the gated Nodes button and `/nodes` navigation remains unchanged.
 - ✅ Unsupported policy source checks:
   - `git diff --check` on changed implementation/test paths passed.
   - The pure policy classifies `.dmg`, `.zip`, installers, application bundles, and unknown binary extensions as `Unsupported`; supported text/media families remain action-eligible.
@@ -172,7 +207,7 @@ All checks below were run in this task worktree before the temporary dependency 
 
 ## Frontend Feedback Loop
 
-- Component-level rendering and interaction checks passed for the Markdown opt-in/default-off behavior, action emission, mobile viewer presentation, and File Explorer host states.
+- Component-level rendering and interaction checks passed for the Markdown opt-in/default-off behavior, compact inline action anchors, authored/bare/code source preservation, action emission, mobile viewer presentation, File Explorer host states, and strip-mode Nodes SVG.
 - A full browser/dev-renderer visual inspection of the mounted desktop shell, collapsed-panel focus handoff, and phone viewport was not completed; no independent live browser surface was started. This remains an explicit downstream API/E2E validation item; no visual sign-off is claimed here.
 
 ## Known Risks / Downstream Validation Requirements
@@ -205,6 +240,6 @@ API/E2E owns independent executable coverage and environment validation after so
 
 ## Downstream Handoff Status
 
-- `code_reviewer`: **resubmission required — implementation source/structural review after the invalid-absolute-path fix, CR-F-006, the user-verification unsupported-preview fix, and CR-F-001 through CR-F-005 fixes**.
+- `code_reviewer`: **resubmission required — implementation source/structural review after the invalid-path, compact-inline-action, and strip-Nodes-icon fixes, CR-F-006, the user-verification unsupported-preview fix, and CR-F-001 through CR-F-005 fixes**.
 - `api_e2e_engineer`: **not yet run and no sign-off claimed**; begin only after source review passes.
 - `delivery_engineer`: **held; do not finalize or rebuild the delivery handoff until the user verifies the rebuilt Electron artifact**.

@@ -19,7 +19,26 @@
         :aria-label="t(item.labelKey)"
         @click="handlePrimaryClick(item.key, $event)"
       >
-        <Icon :icon="item.icon" class="h-5 w-5" />
+        <svg
+          v-if="item.key === 'nodes'"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-5 w-5"
+          aria-hidden="true"
+          data-testid="nodes-network-icon"
+        >
+          <rect x="9" y="3" width="6" height="6" rx="1.5" />
+          <rect x="4" y="15" width="6" height="6" rx="1.5" />
+          <rect x="14" y="15" width="6" height="6" rx="1.5" />
+          <path d="M12 9v3" />
+          <path d="M7 15v-1a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1" />
+        </svg>
+        <Icon v-else :icon="item.icon" class="h-5 w-5" />
 
         <div class="absolute left-full ml-2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible z-50">
           {{ t(item.labelKey) }}

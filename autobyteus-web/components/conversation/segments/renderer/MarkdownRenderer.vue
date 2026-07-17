@@ -198,34 +198,28 @@ watch(
   margin: 0.2em 0 0.35em;
 }
 
-.markdown-renderer-segments .event-monitor-file-action {
-  display: inline-flex;
-  align-items: center;
-  margin-inline-start: 0.5rem;
-  border: 1px solid rgb(99 102 241 / 0.35);
-  border-radius: 0.375rem;
-  padding: 0.125rem 0.375rem;
-  color: rgb(67 56 202);
-  background: rgb(238 242 255);
-  font-size: 0.75rem;
-  line-height: 1.25rem;
-  vertical-align: baseline;
+.markdown-renderer-segments .event-monitor-file-action-link {
+  color: rgb(55 65 81);
+  cursor: pointer;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
 }
 
-.markdown-renderer-segments .event-monitor-file-action:hover {
-  background: rgb(224 231 255);
+.markdown-renderer-segments .event-monitor-file-action-link:hover {
+  color: rgb(17 24 39);
 }
 
-.markdown-renderer-segments .event-monitor-file-action:focus-visible {
+.markdown-renderer-segments .event-monitor-file-action-link:focus-visible {
   outline: 2px solid rgb(99 102 241);
   outline-offset: 2px;
 }
 
-.markdown-renderer-segments .event-monitor-file-actions {
+.markdown-renderer-segments .event-monitor-file-action-links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.375rem;
-  margin-top: 0.375rem;
+  margin-top: 0.25rem;
 }
 
 .markdown-renderer-segments .md-panel {

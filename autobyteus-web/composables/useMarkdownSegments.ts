@@ -41,8 +41,8 @@ const escapeHtml = (value: string): string => value
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#39;');
 
-const actionButton = (actionId: string, label: string): string => (
-  `<button type="button" class="event-monitor-file-action" data-event-monitor-file-action-id="${escapeHtml(actionId)}" data-event-monitor-file-action-control="true">${escapeHtml(label)}</button>`
+const actionLink = (actionId: string, label: string): string => (
+  `<a href="#" role="button" class="event-monitor-file-action-link" data-event-monitor-file-action-id="${escapeHtml(actionId)}" data-event-monitor-file-action-control="true">${escapeHtml(label)}</a>`
 );
 
 const normalizeMarkdownLinkPath = (href: string): string | null => {
@@ -126,7 +126,7 @@ export const useMarkdownSegments = (
     const actionIds = (token.meta?.eventMonitorFileActionIds || []) as string[];
     const actionLabels = (token.meta?.eventMonitorFileActionLabels || {}) as Record<string, string>;
     return actionIds.length
-      ? `${rendered}<div class="event-monitor-file-actions">${actionIds.map((actionId) => actionButton(actionId, actionLabels[actionId] || actionId)).join('')}</div>`
+      ? `${rendered}<div class="event-monitor-file-action-links">${actionIds.map((actionId) => actionLink(actionId, actionLabels[actionId] || actionId)).join('')}</div>`
       : rendered;
   };
 
@@ -307,18 +307,20 @@ export const useMarkdownSegments = (
         if (!actionId) {
           return self.renderToken(renderTokens, idx, renderOptions);
         }
-        return `<a href="#" role="button" data-event-monitor-file-action-id="${escapeHtml(actionId)}" data-event-monitor-file-action-control="true">`;
+        return `<a href="#" role="button" class="event-monitor-file-action-link" data-event-monitor-file-action-id="${escapeHtml(actionId)}" data-event-monitor-file-action-control="true">`;
       };
       mdWithPrism.renderer.rules.event_monitor_file_action_text = (renderTokens, idx) => {
         const token = renderTokens[idx];
         const actionId = token.meta?.eventMonitorFileActionId as string;
-        return `${escapeHtml(token.content)}${actionButton(actionId, fileActionLabel(actionId))}`;
+        return actionLink(actionId, token.content);
       };
       mdWithPrism.renderer.rules.code_inline = (renderTokens, idx, renderOptions, env, self) => {
         const token = renderTokens[idx];
         const actionId = token.meta?.eventMonitorFileActionId as string | undefined;
         const rendered = `<code>${escapeHtml(token.content)}</code>`;
-        return actionId ? `${rendered}${actionButton(actionId, fileActionLabel(actionId))}` : rendered;
+        return actionId
+          ? `<code>${actionLink(actionId, token.content)}</code>`
+          : rendered;
       };
     }
 
