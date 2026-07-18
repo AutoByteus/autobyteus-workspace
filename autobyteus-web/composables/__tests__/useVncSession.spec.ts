@@ -12,7 +12,7 @@ interface MockRfbInstance {
   emit: (event: string, detail?: any) => void;
 }
 
-vi.mock('~/lib/novnc/core/rfb', () => {
+vi.mock('@novnc/novnc', () => {
   class MockRFB {
     viewOnly = true;
     resizeSession = false;

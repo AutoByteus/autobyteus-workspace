@@ -51,6 +51,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@iconify/vue": "^5.0.0",
     "@mdit/plugin-katex": "^0.23.2",
+    "@novnc/novnc": "1.7.0-g7c36fab",
     "@nuxt/schema": "^3.21.0",
     "@types/crypto-js": "^4.2.2",
     "@types/prismjs": "^1.26.4",

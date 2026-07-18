@@ -1,5 +1,5 @@
 import { computed, ref, shallowRef, unref, watch } from 'vue';
-import RFB from '~/lib/novnc/core/rfb';
+import RFB from '@novnc/novnc';
 
 interface VncSessionOptions {
   url: string | { value: string };
@@ -140,14 +140,6 @@ export function useVncSession(options: VncSessionOptions) {
       const sessionRfb = new RFB(container.value, url.value, {
         credentials: { password: password.value },
         shared: true,
-        scaleViewport: true,
-        resizeSession: fullscreenFitEnabled.value,
-        viewOnly: viewOnly.value,
-        qualityLevel: 6,
-        compressionLevel: 0,
-        clipViewport: false,
-        showDotCursor: true,
-        background: '#1e1e1e',
       });
 
       rfb.value = sessionRfb;
