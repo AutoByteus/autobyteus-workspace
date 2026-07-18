@@ -191,6 +191,7 @@ export const applyProjectionToTeamMemberContext = (params: {
   });
   params.memberContext.state.runId = memberRunId;
   params.memberContext.state.conversation = conversation;
+  params.memberContext.state.resetEventMonitorPresentationRevision();
   applyMemberOrHistoryStatusSnapshot(
     params.memberContext,
     params.isActive

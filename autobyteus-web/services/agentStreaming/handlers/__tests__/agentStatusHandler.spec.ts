@@ -22,7 +22,8 @@ const mockActivityStore = {
   setToolActivityResult: vi.fn(),
   addToolActivityLog: vi.fn(),
   getToolActivities: vi.fn(() => []),
-  upsertCompactionActivity: vi.fn(),
+  getCompactionActivities: vi.fn(() => []),
+  upsertCompactionActivity: vi.fn(() => true),
 };
 
 vi.mock('~/stores/agentActivityStore', () => ({

@@ -20,6 +20,7 @@ import type {
 } from '../protocol/messageTypes';
 import { findOrCreateAIMessage } from './segmentHandler';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
+import type { EventMonitorPresentationMutation } from '~/services/eventMonitor/recentEventMonitorWindow';
 
 /**
  * Handle INTER_AGENT_MESSAGE event.
@@ -27,11 +28,33 @@ import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 export function handleInterAgentMessage(
   payload: InterAgentMessagePayload,
   context: AgentContext
-): void {
+): EventMonitorPresentationMutation {
+  const messageId = payload.message_id?.trim() || '';
+  if (messageId) {
+    for (const message of context.conversation.messages) {
+      if (message.type !== 'ai') continue;
+      const existing = message.segments.find(
+        (segment): segment is InterAgentMessageSegment =>
+          segment.type === 'inter_agent_message' && segment.messageId === messageId,
+      );
+      if (!existing) continue;
+      const changed = existing.senderAgentRunId !== payload.sender_agent_id
+        || existing.recipientRoleName !== payload.recipient_role_name
+        || existing.content !== payload.content
+        || existing.messageType !== payload.message_type;
+      if (!changed) return 'none';
+      existing.senderAgentRunId = payload.sender_agent_id;
+      existing.recipientRoleName = payload.recipient_role_name;
+      existing.content = payload.content;
+      existing.messageType = payload.message_type;
+      return 'changed';
+    }
+  }
   const aiMessage = findOrCreateAIMessage(context);
   
   const segment: InterAgentMessageSegment = {
     type: 'inter_agent_message',
+    ...(messageId ? { messageId } : {}),
     senderAgentRunId: payload.sender_agent_id,
     recipientRoleName: payload.recipient_role_name,
     content: payload.content,
@@ -39,6 +62,7 @@ export function handleInterAgentMessage(
   };
   
   aiMessage.segments.push(segment);
+  return 'changed';
 }
 
 /**

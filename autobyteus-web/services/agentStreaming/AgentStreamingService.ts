@@ -36,6 +36,10 @@ import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecut
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { applyLiveRuntimeActivityProjectionRepair } from '~/services/runStatus/agentRuntimeStatusState';
+import {
+  commitRecentEventMonitorMutation,
+  type EventMonitorPresentationMutation,
+} from '~/services/eventMonitor/recentEventMonitorWindow';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -259,74 +263,78 @@ export class AgentStreamingService {
       applyLiveRuntimeActivityProjectionRepair(context);
     }
 
+    let presentationEffect: EventMonitorPresentationMutation = 'none';
+    const mergeEffect = (effect: EventMonitorPresentationMutation): void => {
+      if (effect === 'changed') presentationEffect = 'changed';
+    };
     switch (message.type) {
       case 'SEGMENT_START':
-        handleSegmentStart(message.payload, context);
+        presentationEffect = handleSegmentStart(message.payload, context);
         break;
 
       case 'SEGMENT_CONTENT':
-        handleSegmentContent(message.payload, context);
+        presentationEffect = handleSegmentContent(message.payload, context);
         break;
 
       case 'SEGMENT_END':
-        handleSegmentEnd(message.payload, context);
+        presentationEffect = handleSegmentEnd(message.payload, context);
         break;
 
       case 'EXTERNAL_USER_MESSAGE':
-        handleExternalUserMessage(message.payload, context);
+        presentationEffect = handleExternalUserMessage(message.payload, context);
         break;
 
       case 'TOOL_APPROVAL_REQUESTED':
-        handleToolApprovalRequested(message.payload, context);
+        presentationEffect = handleToolApprovalRequested(message.payload, context);
         break;
 
       case 'TOOL_APPROVED':
-        handleToolApproved(message.payload, context);
+        presentationEffect = handleToolApproved(message.payload, context);
         break;
 
       case 'TOOL_DENIED':
-        handleToolDenied(message.payload, context);
+        presentationEffect = handleToolDenied(message.payload, context);
         break;
 
       case 'TOOL_EXECUTION_STARTED':
-        handleToolExecutionStarted(message.payload, context);
+        presentationEffect = handleToolExecutionStarted(message.payload, context);
         break;
 
       case 'TOOL_EXECUTION_SUCCEEDED':
-        handleToolExecutionSucceeded(message.payload, context);
+        presentationEffect = handleToolExecutionSucceeded(message.payload, context);
         void handleBrowserToolExecutionSucceeded(message.payload);
         break;
 
       case 'TOOL_EXECUTION_FAILED':
-        handleToolExecutionFailed(message.payload, context);
+        presentationEffect = handleToolExecutionFailed(message.payload, context);
         break;
 
       case 'TOOL_EXECUTION_INTERRUPTED':
-        handleToolExecutionInterrupted(message.payload, context);
+        presentationEffect = handleToolExecutionInterrupted(message.payload, context);
         break;
 
       case 'TOOL_LOG':
-        handleToolLog(message.payload, context);
+        presentationEffect = handleToolLog(message.payload, context);
         break;
 
       case 'AGENT_STATUS':
-        handleAgentStatus(message.payload, context);
+        presentationEffect = handleAgentStatus(message.payload, context);
         break;
 
       case 'AGENT_COMMAND_ACK':
         if (message.payload.status) {
-          handleAgentStatus(message.payload.status, context);
+          mergeEffect(handleAgentStatus(message.payload.status, context));
         }
         if (!message.payload.accepted) {
-          handleError({
+          mergeEffect(handleError({
             code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
             message: message.payload.message ?? 'Agent command was not accepted.',
-          }, context);
+          }, context));
         }
         break;
 
       case 'COMPACTION_STATUS':
-        handleCompactionStatus(message.payload, context);
+        presentationEffect = handleCompactionStatus(message.payload, context);
         break;
 
       case 'TOKEN_USAGE_UPDATED':
@@ -337,15 +345,15 @@ export class AgentStreamingService {
         break;
 
       case 'TURN_COMPLETED':
-        handleTurnCompleted(message.payload, context);
+        presentationEffect = handleTurnCompleted(message.payload, context);
         break;
 
       case 'TURN_INTERRUPTED':
-        handleTurnInterrupted(message.payload, context);
+        presentationEffect = handleTurnInterrupted(message.payload, context);
         break;
 
       case 'ASSISTANT_COMPLETE':
-        handleAssistantComplete(message.payload, context);
+        presentationEffect = handleAssistantComplete(message.payload, context);
         break;
 
       case 'TODO_LIST_UPDATE':
@@ -353,11 +361,11 @@ export class AgentStreamingService {
         break;
 
       case 'ERROR':
-        handleError(message.payload, context);
+        presentationEffect = handleError(message.payload, context);
         break;
 
       case 'SYSTEM_TASK_NOTIFICATION':
-        handleSystemTaskNotification(message.payload, context);
+        presentationEffect = handleSystemTaskNotification(message.payload, context);
         break;
 
       case 'ARTIFACT_PERSISTED':
@@ -374,5 +382,6 @@ export class AgentStreamingService {
       default:
         console.warn('Unhandled message type:', (message as any).type);
     }
+    commitRecentEventMonitorMutation(context, presentationEffect);
   }
 }

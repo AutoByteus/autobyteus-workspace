@@ -17,6 +17,23 @@ const toTimestamp = (value?: string | null): Date => {
 
 const normalizeIdentity = (value?: string | null): string => value?.trim() || '';
 
+const attachmentsEqual = (
+  left: UserMessage['contextFilePaths'],
+  right: UserMessage['contextFilePaths'],
+): boolean => {
+  const leftAttachments = left ?? [];
+  const rightAttachments = right ?? [];
+  if (leftAttachments.length !== rightAttachments.length) return false;
+  return leftAttachments.every((attachment, index) => {
+    const next = rightAttachments[index];
+    if (!next) return false;
+    const keys = new Set([...Object.keys(attachment), ...Object.keys(next)]);
+    return [...keys].every((key) =>
+      (attachment as unknown as Record<string, unknown>)[key]
+        === (next as unknown as Record<string, unknown>)[key]);
+  });
+};
+
 const findExistingMessageIndex = (
   messages: AgentContext['conversation']['messages'],
   messageId: string,
@@ -65,7 +82,7 @@ export const upsertUserMessageByIdentity = (input: {
   context: AgentContext;
   userMessage: UserMessage;
   preserveExistingContextFilesWhenIncomingEmpty?: boolean;
-}): void => {
+}): boolean => {
   const { context, userMessage, preserveExistingContextFilesWhenIncomingEmpty = false } = input;
   const existingIndex = findExistingMessageIndex(
     context.conversation.messages,
@@ -83,12 +100,21 @@ export const upsertUserMessageByIdentity = (input: {
         ? existingContextFilePaths
         : incomingContextFilePaths;
 
-    context.conversation.messages[existingIndex] = {
+    const nextMessage: UserMessage = {
       ...existing,
       ...userMessage,
       contextFilePaths,
     };
+    const changed = existing.type !== 'user'
+      || existing.text !== nextMessage.text
+      || existing.timestamp.getTime() !== nextMessage.timestamp.getTime()
+      || existing.messageId !== nextMessage.messageId
+      || existing.dedupeKey !== nextMessage.dedupeKey
+      || !attachmentsEqual(existingContextFilePaths, contextFilePaths);
+    if (changed) context.conversation.messages[existingIndex] = nextMessage;
+    return changed;
   } else {
     context.conversation.messages.push(userMessage);
+    return true;
   }
 };

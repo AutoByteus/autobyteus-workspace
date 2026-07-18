@@ -262,4 +262,40 @@ describe('AgentConversationFeed', () => {
     expect(wrapper.text()).not.toContain('Compaction queued');
   });
 
+  it('shows a keyboard-native jump action only for a post-baseline visible revision while non-pinned', async () => {
+    const conversation = {
+      id: 'run-scroll',
+      createdAt: '2026-03-07T00:00:00.000Z',
+      updatedAt: '2026-03-07T00:00:00.000Z',
+      messages: [{ type: 'user', text: 'first', timestamp: new Date() }],
+    } as any;
+    const wrapper = mount(AgentConversationFeed, {
+      props: { conversation, presentationRevision: 0 },
+      attachTo: document.body,
+      global: {
+        stubs: { UserMessage: { template: '<div />' } },
+        mocks: { $t: () => 'New activity · Jump to latest' },
+      },
+    });
+    const feed = wrapper.get('[data-testid="agent-conversation-feed"]');
+    Object.defineProperties(feed.element, {
+      scrollHeight: { configurable: true, value: 1000 },
+      clientHeight: { configurable: true, value: 400 },
+      scrollTop: { configurable: true, writable: true, value: 100 },
+    });
+    await feed.trigger('scroll');
+
+    await wrapper.setProps({ presentationRevision: 1 });
+    const jump = wrapper.get('button');
+    expect(jump.text()).toBe('New activity · Jump to latest');
+
+    await jump.trigger('click');
+    expect(wrapper.find('button').exists()).toBe(false);
+    expect((feed.element as HTMLElement).scrollTop).toBe(1000);
+
+    await wrapper.setProps({ presentationRevision: 0 });
+    expect(wrapper.find('button').exists()).toBe(false);
+    wrapper.unmount();
+  });
+
 });

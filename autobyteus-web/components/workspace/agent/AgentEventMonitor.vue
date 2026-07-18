@@ -8,6 +8,7 @@
       :agent-avatar-url="agentAvatarUrl"
       :inter-agent-sender-name-by-id="interAgentSenderNameById"
       :compaction-activities="compactionActivities"
+      :presentation-revision="presentationRevision"
     />
 
     <div class="shrink-0">
@@ -31,6 +32,7 @@ const props = defineProps<{
   agentAvatarUrl?: string | null;
   interAgentSenderNameById?: Record<string, string>;
   beforeSend?: () => void | Promise<void>;
+  presentationRevision?: number;
 }>();
 
 const activityStore = useAgentActivityStore();

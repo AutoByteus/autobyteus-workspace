@@ -38,6 +38,7 @@ export class AgentRunState {
   public conversation: Conversation;
   public agent_tool_invocation_counts = new Map<string, number>();
   public compactionStatus: AgentCompactionStatus | null = null;
+  public eventMonitorPresentationRevision = 0;
 
   constructor(initialId: string, initialConversation: Conversation) {
     this.runId = initialId;
@@ -59,6 +60,14 @@ export class AgentRunState {
   public promoteTemporaryId(permanentId: string): void {
     this.runId = permanentId;
     this.conversation.id = permanentId;
+  }
+
+  public markEventMonitorPresentationChanged(): void {
+    this.eventMonitorPresentationRevision += 1;
+  }
+
+  public resetEventMonitorPresentationRevision(): void {
+    this.eventMonitorPresentationRevision = 0;
   }
 
   public generateUniqueInvocationId(toolName: string, args: Record<string, any>): string {

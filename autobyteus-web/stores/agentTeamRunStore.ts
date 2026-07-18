@@ -42,6 +42,7 @@ import {
 import {
   reconcileTeamContextMemberRunIdsFromBackend,
 } from '~/services/runHydration/teamRunMemberIdentityReconciler';
+import { commitRecentEventMonitorMutation } from '~/services/eventMonitor/recentEventMonitorWindow';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -435,6 +436,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
             messageId,
             dedupeKey,
           });
+          commitRecentEventMonitorMutation(finalFocusedMember, 'changed');
           finalFocusedMember.state.conversation.updatedAt = new Date().toISOString();
         }
 

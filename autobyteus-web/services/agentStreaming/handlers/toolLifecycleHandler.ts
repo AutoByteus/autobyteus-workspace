@@ -52,6 +52,46 @@ import {
   updateToolActivityStatus,
   upsertActivityFromToolSegment,
 } from './toolActivityProjection';
+import type { EventMonitorPresentationMutation } from '~/services/eventMonitor/recentEventMonitorWindow';
+
+const presentationValuesEqual = (left: unknown, right: unknown): boolean => {
+  if (Object.is(left, right)) return true;
+  if (left instanceof Date && right instanceof Date) return left.getTime() === right.getTime();
+  if (Array.isArray(left) && Array.isArray(right)) {
+    return left.length === right.length && left.every((value, index) => presentationValuesEqual(value, right[index]));
+  }
+  if (left && right && typeof left === 'object' && typeof right === 'object') {
+    const leftRecord = left as Record<string, unknown>;
+    const rightRecord = right as Record<string, unknown>;
+    const keys = new Set([...Object.keys(leftRecord), ...Object.keys(rightRecord)]);
+    return [...keys].every((key) => presentationValuesEqual(leftRecord[key], rightRecord[key]));
+  }
+  return false;
+};
+
+const captureToolPresentation = (segment: ToolLifecycleSegment | null): Record<string, unknown> | null => segment
+  ? {
+      type: segment.type,
+      toolName: segment.toolName,
+      arguments: { ...segment.arguments },
+      status: segment.status,
+      approvalTarget: segment.approvalTarget ? { ...segment.approvalTarget } : null,
+      logs: [...segment.logs],
+      result: segment.result,
+      error: segment.error,
+      ...('rawContent' in segment ? { rawContent: segment.rawContent } : {}),
+      ...('path' in segment ? { path: segment.path } : {}),
+      ...('originalContent' in segment ? { originalContent: segment.originalContent } : {}),
+      ...('command' in segment ? { command: segment.command } : {}),
+    }
+  : null;
+
+const effectFromToolMutation = (
+  before: Record<string, unknown> | null,
+  segment: ToolLifecycleSegment,
+): EventMonitorPresentationMutation => presentationValuesEqual(before, captureToolPresentation(segment))
+  ? 'none'
+  : 'changed';
 
 const resolveToolSegmentById = (
   context: AgentContext,
@@ -180,12 +220,14 @@ const mergeArguments = (
 export function handleToolApprovalRequested(
   payload: ToolApprovalRequestedPayload,
   context: AgentContext,
-): void {
+): EventMonitorPresentationMutation {
   const parsed = parseToolApprovalRequestedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_APPROVAL_REQUESTED', payload);
-    return;
+    return 'none';
   }
+
+  const before = captureToolPresentation(resolveToolSegmentById(context, parsed.invocationId));
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -210,14 +252,17 @@ export function handleToolApprovalRequested(
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'awaiting-approval');
   }
+  return effectFromToolMutation(before, segment);
 }
 
-export function handleToolApproved(payload: ToolApprovedPayload, context: AgentContext): void {
+export function handleToolApproved(payload: ToolApprovedPayload, context: AgentContext): EventMonitorPresentationMutation {
   const parsed = parseToolApprovedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_APPROVED', payload);
-    return;
+    return 'none';
   }
+
+  const before = captureToolPresentation(resolveToolSegmentById(context, parsed.invocationId));
 
   const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
 
@@ -230,14 +275,17 @@ export function handleToolApproved(payload: ToolApprovedPayload, context: AgentC
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'approved');
   }
+  return effectFromToolMutation(before, segment);
 }
 
-export function handleToolDenied(payload: ToolDeniedPayload, context: AgentContext): void {
+export function handleToolDenied(payload: ToolDeniedPayload, context: AgentContext): EventMonitorPresentationMutation {
   const parsed = parseToolDeniedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_DENIED', payload);
-    return;
+    return 'none';
   }
+
+  const before = captureToolPresentation(resolveToolSegmentById(context, parsed.invocationId));
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -259,17 +307,20 @@ export function handleToolDenied(payload: ToolDeniedPayload, context: AgentConte
     updateToolActivityStatus(context, parsed.invocationId, 'denied');
     setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
+  return effectFromToolMutation(before, segment);
 }
 
 export function handleToolExecutionStarted(
   payload: ToolExecutionStartedPayload,
   context: AgentContext,
-): void {
+): EventMonitorPresentationMutation {
   const parsed = parseToolExecutionStartedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_STARTED', payload);
-    return;
+    return 'none';
   }
+
+  const before = captureToolPresentation(resolveToolSegmentById(context, parsed.invocationId));
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -292,17 +343,20 @@ export function handleToolExecutionStarted(
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'executing');
   }
+  return effectFromToolMutation(before, segment);
 }
 
 export function handleToolExecutionSucceeded(
   payload: ToolExecutionSucceededPayload,
   context: AgentContext,
-): void {
+): EventMonitorPresentationMutation {
   const parsed = parseToolExecutionSucceededPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_SUCCEEDED', payload);
-    return;
+    return 'none';
   }
+
+  const before = captureToolPresentation(resolveToolSegmentById(context, parsed.invocationId));
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -324,17 +378,20 @@ export function handleToolExecutionSucceeded(
     updateToolActivityStatus(context, parsed.invocationId, 'success');
     setToolActivityResult(context, parsed.invocationId, segment.result, null);
   }
+  return effectFromToolMutation(before, segment);
 }
 
 export function handleToolExecutionFailed(
   payload: ToolExecutionFailedPayload,
   context: AgentContext,
-): void {
+): EventMonitorPresentationMutation {
   const parsed = parseToolExecutionFailedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_FAILED', payload);
-    return;
+    return 'none';
   }
+
+  const before = captureToolPresentation(resolveToolSegmentById(context, parsed.invocationId));
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -356,17 +413,20 @@ export function handleToolExecutionFailed(
     updateToolActivityStatus(context, parsed.invocationId, 'error');
     setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
+  return effectFromToolMutation(before, segment);
 }
 
 export function handleToolExecutionInterrupted(
   payload: ToolExecutionInterruptedPayload,
   context: AgentContext,
-): void {
+): EventMonitorPresentationMutation {
   const parsed = parseToolExecutionInterruptedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_INTERRUPTED', payload);
-    return;
+    return 'none';
   }
+
+  const before = captureToolPresentation(resolveToolSegmentById(context, parsed.invocationId));
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -388,18 +448,22 @@ export function handleToolExecutionInterrupted(
     updateToolActivityStatus(context, parsed.invocationId, 'interrupted');
     setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
+  return effectFromToolMutation(before, segment);
 }
 
-export function handleToolLog(payload: ToolLogPayload, context: AgentContext): void {
+export function handleToolLog(payload: ToolLogPayload, context: AgentContext): EventMonitorPresentationMutation {
   const parsed = parseToolLogPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_LOG', payload);
-    return;
+    return 'none';
   }
+
+  const before = captureToolPresentation(resolveToolSegmentById(context, parsed.invocationId));
 
   const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
 
   appendLog(segment, parsed.logEntry);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
   addToolActivityLog(context, parsed.invocationId, parsed.logEntry);
+  return effectFromToolMutation(before, segment);
 }

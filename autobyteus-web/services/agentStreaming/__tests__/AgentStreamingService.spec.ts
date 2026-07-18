@@ -50,6 +50,10 @@ describe('AgentStreamingService', () => {
                 compactionStatus: null,
                 currentStatus: AgentStatus.Idle,
                 canInterrupt: false,
+                eventMonitorPresentationRevision: 0,
+                markEventMonitorPresentationChanged() {
+                    this.eventMonitorPresentationRevision += 1;
+                },
             },
             conversation: mockConversation,
             isSending: false,
@@ -325,5 +329,26 @@ describe('AgentStreamingService', () => {
             compactionTaskId: 'compaction-task-1',
             errorMessage: null,
         }));
+    });
+
+    it('increments the visible presentation revision once for actual center changes and not for no-op traffic', () => {
+        (service as any).dispatchMessage({ type: 'CONNECTED', payload: {} }, mockAgentContext);
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(0);
+
+        const start = {
+            type: 'SEGMENT_START',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
+        };
+        (service as any).dispatchMessage(start, mockAgentContext);
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
+
+        (service as any).dispatchMessage(start, mockAgentContext);
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
+
+        (service as any).dispatchMessage({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
+        }, mockAgentContext);
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
     });
 });

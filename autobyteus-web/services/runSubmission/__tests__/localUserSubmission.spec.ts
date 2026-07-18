@@ -7,6 +7,10 @@ import {
 
 const buildContext = () => ({
   state: {
+    eventMonitorPresentationRevision: 0,
+    markEventMonitorPresentationChanged() {
+      this.eventMonitorPresentationRevision += 1;
+    },
     conversation: {
       messages: [] as any[],
       updatedAt: '2026-05-17T00:00:00.000Z',
@@ -15,6 +19,9 @@ const buildContext = () => ({
   requirement: 'draft text',
   contextFilePaths: [{ kind: 'workspace_path', id: 'draft', locator: '/tmp/draft.txt', displayName: 'draft.txt', type: 'Text' }],
   isSending: false,
+  get conversation() {
+    return this.state.conversation;
+  },
 }) as any;
 
 describe('localUserSubmission', () => {

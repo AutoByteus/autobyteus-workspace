@@ -8,6 +8,7 @@
       :agent-avatar-url="focusedMemberAvatarUrl"
       :inter-agent-sender-name-by-id="interAgentSenderNameById"
       :before-send="beforeSend"
+      :presentation-revision="focusedMember?.state.eventMonitorPresentationRevision"
       class="min-h-0 flex-1 overflow-hidden"
     >
       <template #composerContext>

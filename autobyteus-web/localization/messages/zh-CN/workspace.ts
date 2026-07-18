@@ -176,6 +176,8 @@ const messages = {
     "获取工件内容失败",
   "workspace.components.workspace.agent.ArtifactList.agent_artifacts":
     "智能体产物",
+  "workspace.components.workspace.agent.AgentConversationFeed.jump_to_latest":
+    "有新动态 · 跳到最新",
   "workspace.components.workspace.tools.Terminal.retry_workspace_load":
     "重试加载工作区",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":

@@ -186,6 +186,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
         };
         existing.state.runId = options.runId;
         existing.state.conversation = options.conversation;
+        existing.state.resetEventMonitorPresentationRevision();
         const shouldPreserveSubscribedLiveStatus = existing.isSubscribed && nextStatus === AgentStatus.Running;
         applyMemberOrHistoryStatusSnapshot(existing, nextStatus, {
           preserveLiveInterrupt: shouldPreserveSubscribedLiveStatus,

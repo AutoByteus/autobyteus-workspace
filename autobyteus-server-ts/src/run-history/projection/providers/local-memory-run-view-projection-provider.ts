@@ -8,6 +8,7 @@ import type {
 } from "../run-projection-types.js";
 import { buildRunProjectionBundleFromEvents } from "../run-projection-utils.js";
 import { buildHistoricalReplayEvents } from "../transformers/raw-trace-to-historical-replay-events.js";
+import { selectRecentReplayEvents } from "../recent-run-projection-policy.js";
 
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -41,11 +42,12 @@ export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvid
       includeEpisodic: false,
       includeSemantic: false,
       includeRawTraces: true,
-      includeArchive: true,
+      includeArchive: false,
     });
+    const replayEvents = buildHistoricalReplayEvents(view.rawTraces ?? []);
     return buildRunProjectionBundleFromEvents(
       input.source.runId,
-      buildHistoricalReplayEvents(view.rawTraces ?? []),
+      selectRecentReplayEvents(replayEvents),
     );
   }
 }

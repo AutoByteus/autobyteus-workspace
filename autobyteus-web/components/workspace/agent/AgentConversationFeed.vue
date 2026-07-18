@@ -1,11 +1,12 @@
 <template>
-  <div
-    :id="conversationScrollContainerId"
-    class="h-full min-h-0 overflow-y-auto overscroll-contain"
-    data-testid="agent-conversation-feed"
-    @scroll="handleConversationScroll"
-  >
-    <div class="rounded-xl bg-white">
+  <div class="relative h-full min-h-0">
+    <div
+      :id="conversationScrollContainerId"
+      class="h-full min-h-0 overflow-y-auto overscroll-contain"
+      data-testid="agent-conversation-feed"
+      @scroll="handleConversationScroll"
+    >
+      <div class="rounded-xl bg-white">
       <div
         v-for="item in feedItems"
         :key="item.key"
@@ -39,24 +40,36 @@
 
         <CompactionStatusRow v-else :activity="item.activity" />
       </div>
+      </div>
+
+      <div
+        v-if="showTotalUsage && totalUsage.totalTokens > 0"
+        class="text-xs text-gray-500 font-medium mt-2 text-right"
+      >
+        Total: {{ totalUsage.totalTokens }} tokens / ${{ totalUsage.totalCost.toFixed(4) }}
+      </div>
     </div>
 
-    <div
-      v-if="showTotalUsage && totalUsage.totalTokens > 0"
-      class="text-xs text-gray-500 font-medium mt-2 text-right"
-    >
-      Total: {{ totalUsage.totalTokens }} tokens / ${{ totalUsage.totalCost.toFixed(4) }}
+    <div v-if="hasUnseenActivity" class="pointer-events-none absolute inset-x-0 bottom-3 z-10 flex justify-center px-3">
+      <button
+        type="button"
+        class="pointer-events-auto min-h-10 rounded-full border border-indigo-200 bg-white px-4 py-2 text-sm font-medium text-indigo-700 shadow-md transition hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+        @click="jumpToLatest"
+      >
+        {{ $t('workspace.components.workspace.agent.AgentConversationFeed.jump_to_latest') }}
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, getCurrentInstance, onMounted, onUpdated, ref, watch } from 'vue';
+import { computed, getCurrentInstance, nextTick, onMounted, onUpdated, ref, watch } from 'vue';
 import type { Conversation } from '~/types/conversation';
 import type { CompactionActivity } from '~/stores/agentActivityStore';
 import UserMessage from '~/components/conversation/UserMessage.vue';
 import AIMessage from '~/components/conversation/AIMessage.vue';
 import CompactionStatusRow from '~/components/workspace/agent/CompactionStatusRow.vue';
+import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
 
 const props = withDefaults(defineProps<{
   conversation: Conversation;
@@ -67,84 +80,27 @@ const props = withDefaults(defineProps<{
   compactionActivities?: CompactionActivity[];
   showTokenCosts?: boolean;
   showTotalUsage?: boolean;
+  presentationRevision?: number;
 }>(), {
   compactionActivities: () => [],
   showTokenCosts: true,
   showTotalUsage: true,
+  presentationRevision: 0,
 });
 
 type ConversationMessage = Conversation['messages'][number];
-
-type MessageFeedItem = {
-  kind: 'message';
-  key: string;
-  message: ConversationMessage;
-  messageIndex: number;
-  timestampMs: number;
-  originalOrder: number;
-};
-
-type CompactionFeedItem = {
-  kind: 'compaction';
-  key: string;
-  activity: CompactionActivity;
-  timestampMs: number;
-  originalOrder: number;
-};
-
-type FeedItem = MessageFeedItem | CompactionFeedItem;
 
 const runId = computed(() => props.runId || props.conversation.id);
 const instanceUid = getCurrentInstance()?.uid ?? Math.floor(Math.random() * 1_000_000);
 const conversationScrollContainerId = computed(() => `agent-conversation-scroll-${runId.value}-${instanceUid}`);
 const shouldStickToBottom = ref(true);
+const hasUnseenActivity = ref(false);
+const revisionBaseline = ref(props.presentationRevision);
 const NEAR_BOTTOM_THRESHOLD_PX = 40;
-
-const toTimestampMs = (value: Date | string | number | null | undefined): number => {
-  if (value instanceof Date) {
-    const time = value.getTime();
-    return Number.isFinite(time) ? time : 0;
-  }
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value;
-  }
-  if (typeof value === 'string') {
-    const parsed = Date.parse(value);
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-  return 0;
-};
-
-const isCenterFeedCompactionActivity = (activity: CompactionActivity): boolean =>
-  Boolean(activity.centerTimelineTimestamp) &&
-  (activity.phase === 'started' || activity.phase === 'completed' || activity.phase === 'failed');
-
-const feedItems = computed<FeedItem[]>(() => {
-  const messageItems: MessageFeedItem[] = props.conversation.messages.map((message, index) => ({
-    kind: 'message',
-    key: `message-${message.timestamp}-${message.type}-${index}`,
-    message,
-    messageIndex: index,
-    timestampMs: toTimestampMs(message.timestamp),
-    originalOrder: index * 2,
-  }));
-
-  const compactionItems: CompactionFeedItem[] = props.compactionActivities
-    .filter(isCenterFeedCompactionActivity)
-    .map((activity, index) => ({
-      kind: 'compaction',
-      key: `compaction-${activity.activityId}`,
-      activity,
-      timestampMs: toTimestampMs(activity.centerTimelineTimestamp),
-      originalOrder: (props.conversation.messages.length + index) * 2 + 1,
-    }));
-
-  return [...messageItems, ...compactionItems].sort((left, right) => {
-    const timeDelta = left.timestampMs - right.timestampMs;
-    if (timeDelta !== 0) return timeDelta;
-    return left.originalOrder - right.originalOrder;
-  });
-});
+const feedItems = computed(() => buildRecentEventMonitorPresentation(
+  props.conversation,
+  props.compactionActivities,
+));
 
 const getConversationScrollContainer = (): HTMLElement | null => {
   if (typeof document === 'undefined') return null;
@@ -163,12 +119,20 @@ const updatePinnedStateFromScrollPosition = (el?: HTMLElement | null) => {
   const target = el ?? getConversationScrollContainer();
   if (!target) return;
   shouldStickToBottom.value = isNearBottom(target);
+  if (shouldStickToBottom.value) hasUnseenActivity.value = false;
 };
 
 const scrollToBottom = () => {
   const el = getConversationScrollContainer();
   if (!el) return;
   el.scrollTop = el.scrollHeight;
+};
+
+const jumpToLatest = () => {
+  shouldStickToBottom.value = true;
+  hasUnseenActivity.value = false;
+  scrollToBottom();
+  updatePinnedStateFromScrollPosition();
 };
 
 const handleConversationScroll = (event: Event) => {
@@ -192,6 +156,26 @@ onUpdated(() => {
 
 watch(() => [props.conversation.id, props.runId], () => {
   shouldStickToBottom.value = true;
+  hasUnseenActivity.value = false;
+  revisionBaseline.value = props.presentationRevision;
+  void nextTick(jumpToLatest);
+});
+
+watch(() => props.presentationRevision, (revision) => {
+  if (revision <= revisionBaseline.value) {
+    revisionBaseline.value = revision;
+    hasUnseenActivity.value = false;
+    return;
+  }
+  revisionBaseline.value = revision;
+  if (shouldStickToBottom.value) {
+    void nextTick(() => {
+      scrollToBottom();
+      updatePinnedStateFromScrollPosition();
+    });
+    return;
+  }
+  hasUnseenActivity.value = true;
 });
 
 const formatTokenCost = (message: ConversationMessage) => {
@@ -211,7 +195,9 @@ const formatTokenCost = (message: ConversationMessage) => {
 const totalUsage = computed(() => {
   let totalTokens = 0;
   let totalCost = 0;
-  props.conversation.messages.forEach((message) => {
+  feedItems.value.forEach((item) => {
+    if (item.kind !== 'message') return;
+    const message = item.message;
     if (message.type === 'user') {
       if (message.promptTokens) {
         totalTokens += message.promptTokens;

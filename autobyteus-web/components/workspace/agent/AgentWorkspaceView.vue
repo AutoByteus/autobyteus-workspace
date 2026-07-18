@@ -20,13 +20,6 @@
       </div>
       
       <div class="flex flex-shrink-0 items-center gap-1 sm:gap-2">
-        <CopyButton 
-          v-if="selectedAgent" 
-          :text-to-copy="conversationText" 
-          :label="$t('workspace.components.workspace.agent.AgentWorkspaceView.copy_full_conversation')"
-          class="h-10 w-10 inline-flex items-center justify-center rounded-full p-0 text-gray-500 hover:bg-gray-100"
-        />
-        <!-- Separator removed -->
         <WorkspaceHeaderActions
           @new-agent="createNewAgent"
           @edit-config="openSelectedRunConfig"
@@ -42,6 +35,7 @@
         :run-id="selectedAgent.state.runId"
         :agent-name="selectedAgent.config.agentDefinitionName"
         :agent-avatar-url="selectedAgent.config.agentAvatarUrl"
+        :presentation-revision="selectedAgent.state.eventMonitorPresentationRevision"
         class="h-full"
       >
         <template #composerContext>
@@ -59,7 +53,6 @@ import { computed, onMounted, ref, watch } from 'vue';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
-import CopyButton from '~/components/common/CopyButton.vue';
 import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue';
 import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -142,19 +135,6 @@ const skillImprovementTarget = computed<SkillImprovementComposerCtaTarget | null
 
 watch(selectedAgentAvatarUrl, () => {
   headerAvatarLoadError.value = false;
-});
-
-const conversationText = computed(() => {
-  if (!selectedAgent.value) return '';
-  return selectedAgent.value.state.conversation.messages
-    .map(m => {
-      // Changed 'Agent' to 'Assistant' to match LLM chat templates
-      const role = m.type === 'user' ? 'User' : 'Assistant';
-      // Ensure text exists
-      const content = m.text || ''; 
-      return `${role}:\n${content}`;
-    })
-    .join('\n\n');
 });
 
 const createNewAgent = () => {

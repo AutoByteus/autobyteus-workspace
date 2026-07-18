@@ -59,13 +59,14 @@ describe('AgentEventMonitor.vue', () => {
         interAgentSenderNameById: {
           'member-1': 'Professor',
         },
+        presentationRevision: 7,
       },
       global: {
         stubs: {
           AgentUserInputForm: { template: '<div data-testid="agent-input-stub" />' },
           AgentConversationFeed: {
             name: 'AgentConversationFeed',
-            props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById', 'compactionActivities'],
+            props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById', 'compactionActivities', 'presentationRevision'],
             template: '<div data-testid="agent-feed-stub" />',
           },
         },
@@ -80,6 +81,7 @@ describe('AgentEventMonitor.vue', () => {
     expect(feed.props('agentAvatarUrl')).toBe('https://example.com/slide-narrator.png');
     expect(feed.props('interAgentSenderNameById')).toEqual({ 'member-1': 'Professor' });
     expect(feed.props('compactionActivities')).toEqual(compactionActivityRows);
+    expect(feed.props('presentationRevision')).toBe(7);
     expect(compactionActivities).toHaveBeenCalledWith('agent-42');
     expect(wrapper.find('[data-testid="agent-input-stub"]').exists()).toBe(true);
   });

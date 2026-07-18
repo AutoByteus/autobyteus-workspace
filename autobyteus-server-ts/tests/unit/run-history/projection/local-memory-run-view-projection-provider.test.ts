@@ -75,7 +75,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       includeEpisodic: false,
       includeSemantic: false,
       includeRawTraces: true,
-      includeArchive: true,
+      includeArchive: false,
     });
     expect(projection.runId).toBe("server-run-1");
     expect(projection.conversation).toHaveLength(2);
@@ -126,5 +126,59 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
     expect(projection.conversation).toEqual([
       expect.objectContaining({ content: "from local memory", role: "user" }),
     ]);
+  });
+
+  it("reconstructs all active lifecycle evidence before selecting the newest 100 events", async () => {
+    const rawTraces = [
+      { traceType: "user", content: "oldest", turnId: "old", seq: 1, ts: 1 },
+      {
+        traceType: "tool_call",
+        toolCallId: "call-before-window",
+        toolName: "run_bash",
+        toolArgs: { command: "pwd" },
+        turnId: "t0",
+        seq: 2,
+        ts: 2,
+      },
+      ...Array.from({ length: 98 }, (_, index) => ({
+        traceType: "user",
+        content: `message-${index}`,
+        turnId: `t${index + 1}`,
+        seq: index + 3,
+        ts: index + 3,
+      })),
+      {
+        traceType: "tool_result",
+        toolCallId: "call-before-window",
+        toolResult: { stdout: "/tmp" },
+        turnId: "t0",
+        seq: 101,
+        ts: 101,
+      },
+      { traceType: "user", content: "newest", turnId: "t101", seq: 102, ts: 102 },
+    ];
+    const getRunMemoryView = vi.fn().mockReturnValue({ rawTraces });
+    const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
+      getRunMemoryView,
+    } as never);
+
+    const projection = await provider.buildProjection({
+      source: {
+        runId: "server-run-1",
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        workspaceRootPath: "/tmp/workspace",
+        memoryDir: null,
+        platformRunId: null,
+        metadata: createMetadata(),
+      },
+    });
+
+    expect(projection.conversation).toHaveLength(100);
+    expect(projection.conversation[0]).toEqual(expect.objectContaining({
+      invocationId: "call-before-window",
+      toolName: "run_bash",
+      toolResult: { stdout: "/tmp" },
+    }));
+    expect(projection.conversation.at(-1)).toEqual(expect.objectContaining({ content: "newest" }));
   });
 });

@@ -27,52 +27,57 @@ import {
   handleFileChange,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
+import {
+  commitRecentEventMonitorMutation,
+  type EventMonitorPresentationMutation,
+} from '~/services/eventMonitor/recentEventMonitorWindow';
 
 export const dispatchGenericTeamMemberMessage = (
   message: ServerMessage,
   memberContext: AgentContext,
 ): void => {
   memberContext.conversation.updatedAt = new Date().toISOString();
+  let presentationEffect: EventMonitorPresentationMutation = 'none';
   switch (message.type) {
     case 'SEGMENT_START':
-      handleSegmentStart(message.payload, memberContext);
+      presentationEffect = handleSegmentStart(message.payload, memberContext);
       break;
     case 'SEGMENT_CONTENT':
-      handleSegmentContent(message.payload, memberContext);
+      presentationEffect = handleSegmentContent(message.payload, memberContext);
       break;
     case 'SEGMENT_END':
-      handleSegmentEnd(message.payload, memberContext);
+      presentationEffect = handleSegmentEnd(message.payload, memberContext);
       break;
     case 'TOOL_APPROVAL_REQUESTED':
-      handleToolApprovalRequested(message.payload, memberContext);
+      presentationEffect = handleToolApprovalRequested(message.payload, memberContext);
       break;
     case 'TOOL_APPROVED':
-      handleToolApproved(message.payload, memberContext);
+      presentationEffect = handleToolApproved(message.payload, memberContext);
       break;
     case 'TOOL_DENIED':
-      handleToolDenied(message.payload, memberContext);
+      presentationEffect = handleToolDenied(message.payload, memberContext);
       break;
     case 'TOOL_EXECUTION_STARTED':
-      handleToolExecutionStarted(message.payload, memberContext);
+      presentationEffect = handleToolExecutionStarted(message.payload, memberContext);
       break;
     case 'TOOL_EXECUTION_SUCCEEDED':
-      handleToolExecutionSucceeded(message.payload, memberContext);
+      presentationEffect = handleToolExecutionSucceeded(message.payload, memberContext);
       void handleBrowserToolExecutionSucceeded(message.payload);
       break;
     case 'TOOL_EXECUTION_FAILED':
-      handleToolExecutionFailed(message.payload, memberContext);
+      presentationEffect = handleToolExecutionFailed(message.payload, memberContext);
       break;
     case 'TOOL_EXECUTION_INTERRUPTED':
-      handleToolExecutionInterrupted(message.payload, memberContext);
+      presentationEffect = handleToolExecutionInterrupted(message.payload, memberContext);
       break;
     case 'TOOL_LOG':
-      handleToolLog(message.payload, memberContext);
+      presentationEffect = handleToolLog(message.payload, memberContext);
       break;
     case 'AGENT_STATUS':
-      handleAgentStatus(message.payload, memberContext);
+      presentationEffect = handleAgentStatus(message.payload, memberContext);
       break;
     case 'COMPACTION_STATUS':
-      handleCompactionStatus(message.payload, memberContext);
+      presentationEffect = handleCompactionStatus(message.payload, memberContext);
       break;
     case 'TOKEN_USAGE_UPDATED':
       handleTokenUsageUpdated(message.payload, memberContext);
@@ -80,31 +85,31 @@ export const dispatchGenericTeamMemberMessage = (
     case 'TURN_STARTED':
       break;
     case 'TURN_COMPLETED':
-      handleTurnCompleted(message.payload, memberContext);
+      presentationEffect = handleTurnCompleted(message.payload, memberContext);
       break;
     case 'TURN_INTERRUPTED':
-      handleTurnInterrupted(message.payload, memberContext);
+      presentationEffect = handleTurnInterrupted(message.payload, memberContext);
       break;
     case 'ASSISTANT_COMPLETE':
-      handleAssistantComplete(message.payload, memberContext);
+      presentationEffect = handleAssistantComplete(message.payload, memberContext);
       break;
     case 'EXTERNAL_USER_MESSAGE':
-      handleExternalUserMessage(message.payload, memberContext);
+      presentationEffect = handleExternalUserMessage(message.payload, memberContext);
       break;
     case 'MEMBER_INPUT_MESSAGE':
-      handleMemberInputMessage(message.payload, memberContext);
+      presentationEffect = handleMemberInputMessage(message.payload, memberContext);
       break;
     case 'TODO_LIST_UPDATE':
       handleTodoListUpdate(message.payload, memberContext);
       break;
     case 'ERROR':
-      handleError(message.payload, memberContext);
+      presentationEffect = handleError(message.payload, memberContext);
       break;
     case 'INTER_AGENT_MESSAGE':
-      handleInterAgentMessage(message.payload, memberContext);
+      presentationEffect = handleInterAgentMessage(message.payload, memberContext);
       break;
     case 'SYSTEM_TASK_NOTIFICATION':
-      handleSystemTaskNotification(message.payload, memberContext);
+      presentationEffect = handleSystemTaskNotification(message.payload, memberContext);
       break;
     case 'FILE_CHANGE':
       handleFileChange(message.payload, memberContext);
@@ -114,4 +119,5 @@ export const dispatchGenericTeamMemberMessage = (
     default:
       console.warn('Unhandled team message type:', (message as any).type);
   }
+  commitRecentEventMonitorMutation(memberContext, presentationEffect);
 };

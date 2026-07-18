@@ -156,6 +156,11 @@ describe('AgentWorkspaceView', () => {
     expect(wrapper.find('[data-test="token-usage-header-chip"]').exists()).toBe(false);
   });
 
+  it('does not render the removed conversation copy control', () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find('[data-test="copy-button"]').exists()).toBe(false);
+  });
+
   it('falls back to definition avatar URL in header when context avatar is missing', () => {
     state.activeRun = buildAgentContext({
       config: {
