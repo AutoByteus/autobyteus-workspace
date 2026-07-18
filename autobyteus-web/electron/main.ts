@@ -1,9 +1,9 @@
-import { app, BrowserWindow, dialog, ipcMain, net, protocol, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import * as fsSync from 'fs';
 import * as fs from 'fs/promises';
 import isDev from 'electron-is-dev';
 import * as path from 'path';
-import { pathToFileURL, URL } from 'url';
+import { pathToFileURL } from 'url';
 import type {
   NodeProfile,
   NodeRegistryChange,
@@ -33,6 +33,12 @@ import { BrowserBridgeAuthRegistry } from './browser/browser-bridge-auth-registr
 import { WorkspaceShellWindow } from './shell/workspace-shell-window';
 import { WorkspaceShellWindowRegistry } from './shell/workspace-shell-window-registry';
 import { validateReadableRegularFile } from './localFileValidation';
+import {
+  installLocalFileProtocol,
+  registerLocalFileProtocolScheme,
+} from './local-file-protocol/local-file-protocol';
+
+registerLocalFileProtocolScheme();
 
 const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
@@ -470,29 +476,6 @@ function installAppLifecycleHandlers(): void {
   });
 }
 
-function installProtocols(): void {
-  protocol.handle('local-file', async (request) => {
-    try {
-      const requestUrl = new URL(request.url);
-      let filePath = decodeURIComponent(requestUrl.pathname);
-      if (/^[A-Za-z]$/.test(requestUrl.hostname)) {
-        filePath = `${requestUrl.hostname}:${filePath}`;
-      }
-      if (process.platform === 'win32' && /^\/[A-Za-z]:[\\/]/.test(filePath)) {
-        filePath = filePath.slice(1);
-      }
-      const validation = await validateReadableRegularFile(filePath);
-      if (!validation.ok) {
-        return new Response(null, { status: 404 });
-      }
-      return net.fetch(pathToFileURL(validation.filePath).toString());
-    } catch (error) {
-      logger.error(`[local-file protocol] Error handling request ${request.url}:`, error);
-      return new Response(null, { status: 404 });
-    }
-  });
-}
-
 async function bootstrap(): Promise<void> {
   nodeRegistrySnapshot = loadNodeRegistrySnapshot(app.getPath('userData'));
   saveNodeRegistrySnapshot(app.getPath('userData'), nodeRegistrySnapshot);
@@ -514,7 +497,7 @@ async function bootstrap(): Promise<void> {
   installServerStatusFanout();
   installAppLifecycleHandlers();
 
-  installProtocols();
+  installLocalFileProtocol();
 
   openNodeWindow(EMBEDDED_NODE_ID);
   appUpdater.startAutoCheck();
