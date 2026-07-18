@@ -2,13 +2,15 @@
 
 ## Status
 
-User verification is complete and repository finalization plus release `v1.4.18` are in progress. The ticket has been archived to `tickets/done/replace-vendored-novnc/`; ticket-branch commit/push, target merge/push, release, and cleanup are recorded below as they complete.
+User verification, repository finalization, and release `v1.4.18` are complete. The ticket is archived at `tickets/done/replace-vendored-novnc/`. Release workflows were triggered by the fresh tag push; the messaging-gateway workflow completed successfully and the other four workflows were still running at the retained observation point.
 
 ## Worktree / Branch / Target
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc`
 - Ticket branch: `codex/replace-vendored-novnc`
-- Current reviewed HEAD: `ba703f842d79dfab03f4c15add73396acdc247a9`
+- Reviewed implementation HEAD: `ba703f842d79dfab03f4c15add73396acdc247a9`
+- Final ticket commit: `431e5e8ea6e2b47611d5a75f84ed9a96f553ad0a`
+- Release commit/tag target: `c92491e50f1be3f5cfc1e31274ccbfc497e1779b` / `v1.4.18`
 - Finalization target: `origin/personal` / local `personal`
 - Bootstrap base: `origin/personal` at `dbc83fdb51c1e158b5707c219dd8574dc49fa493`
 - Latest tracked base refresh: `git fetch origin personal --prune` on 2026-07-18; `origin/personal` remained `dbc83fdb51c1e158b5707c219dd8574dc49fa493`.
@@ -40,7 +42,7 @@ User verification is complete and repository finalization plus release `v1.4.18`
 ### Durable Documentation
 
 - Updated `autobyteus-web/docs/electron_packaging.md` with the exact provider/pin rationale, canonical notice lifecycle, packaging preflight/resource mapping, and atomic provider-upgrade checklist.
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/docs-sync-report.md`
 
 ## Authoritative Review And API/E2E Gates
 
@@ -67,16 +69,14 @@ User verification is complete and repository finalization plus release `v1.4.18`
 
 Delivery evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/probes/delivery/novnc-package-contract.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/probes/delivery/build-electron-mac.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/probes/delivery/packaged-notice-verification.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/probes/delivery/novnc-package-contract.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/probes/delivery/build-electron-mac.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/probes/delivery/packaged-notice-verification.log`
 
-## Testable Package Artifacts
+## Local Verification Package Artifacts
 
-- Unsigned app bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.17.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.17.zip`
-- Packaging note: The local build is unsigned because no signing identity was configured. macOS may require right-click → Open or equivalent local security approval.
+- The delivery-stage app bundle, DMG, and ZIP were unsigned `1.4.17` verification builds made before the release bump. Their exact notice validation is retained in `probes/delivery/packaged-notice-verification.log`.
+- Those generated binaries are intentionally not archived in Git and are removed with the dedicated ticket worktree. Published `v1.4.18` artifacts are owned by the tag-triggered release workflows.
 
 ## Residual Risks / Known Unrelated Baselines
 
@@ -91,7 +91,7 @@ Delivery evidence:
 - Approved persisted-data decision: `Not Affected`.
 - Migration/rebuild action: None.
 - Deployment: Not applicable.
-- Release/version/tag: `1.4.18` / `v1.4.18` requested; finalization in progress.
+- Release/version/tag: `1.4.18` / `v1.4.18` completed; the tag resolves to release commit `c92491e50f1be3f5cfc1e31274ccbfc497e1779b`.
 
 ## User Verification And Release Request
 
@@ -99,22 +99,32 @@ Delivery evidence:
 - Target refresh after verification: `origin/personal` remained `dbc83fdb51c1e158b5707c219dd8574dc49fa493`; no re-integration or renewed verification was required.
 - Ticket archival: Completed before the final ticket-branch commit.
 - Requested release: Next patch version `1.4.18`, tag `v1.4.18`.
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/release-notes.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/release-notes.md`
 
-Finalization order: commit and push the ticket branch, fast-forward `personal` from the refreshed target, push `personal`, run the documented release helper for `1.4.18`, record the tag/workflow result, then remove the dedicated ticket worktree and branches when safe.
+## Finalization / Publication Result
+
+- Ticket branch commit/push: Completed at `431e5e8ea6e2b47611d5a75f84ed9a96f553ad0a`.
+- Target integration: `personal` was fast-forwarded and pushed without conflict.
+- Release preparation: `bash scripts/desktop-release.sh release 1.4.18 --branch release/replace-vendored-novnc-v1.4.18 --release-notes tickets/done/replace-vendored-novnc/release-notes.md --no-push` completed.
+- Release changes: both release package versions are `1.4.18`; curated notes and the managed messaging release manifest were synchronized.
+- Publication: release commit `c92491e50f1be3f5cfc1e31274ccbfc497e1779b` was pushed to `origin/personal`, then annotated tag `v1.4.18` was pushed. Remote branch and tag targets were verified.
+- GitHub release: `v1.4.18` was published at `2026-07-18T18:42:15Z`.
+- Fresh tag workflows: messaging gateway `success`; Desktop, Android, iOS, and Server Docker `in_progress` at the retained observation. No manual duplicate dispatch was made.
+- Retained release evidence: `release-v1.4.18.log`, `release-publication-v1.4.18.json`, and `release-workflow-status-v1.4.18.json`.
+- Cleanup: Dedicated ticket/release worktrees and local/remote task branches are removed after the final delivery-record commit; unrelated untracked content in the main worktree is preserved.
 
 ## Key Artifacts
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/requirements.md`
-- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/investigation-notes.md`
-- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/proposed-design.md`
-- Upstream evaluation: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/upstream-novnc-evaluation.md`
-- Design review: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/implementation-handoff.md`
-- Source review: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/code-review-report.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/api-e2e-coverage-investigation.md`
-- Execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/api-e2e-execution-coverage-report.md`
-- Test-code review: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/api-e2e-test-review-report.md`
-- Historical delivery reroute: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/delivery-reroute-report.md`
-- Docs sync: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/docs-sync-report.md`
-- Delivery report: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/release-deployment-report.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/requirements.md`
+- Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/investigation-notes.md`
+- Design: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/proposed-design.md`
+- Upstream evaluation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/upstream-novnc-evaluation.md`
+- Design review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/implementation-handoff.md`
+- Source review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/code-review-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/api-e2e-coverage-investigation.md`
+- Execution report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/api-e2e-execution-coverage-report.md`
+- Test-code review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/api-e2e-test-review-report.md`
+- Historical delivery reroute: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/delivery-reroute-report.md`
+- Docs sync: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/docs-sync-report.md`
+- Delivery report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/release-deployment-report.md`

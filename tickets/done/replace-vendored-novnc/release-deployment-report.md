@@ -2,11 +2,11 @@
 
 ## Release / Publication / Deployment Scope
 
-User verification has been received and the user explicitly requested repository finalization plus a new release. Scope now includes ticket archival, final ticket-branch commit/push, merge into `personal`, release notes, the documented desktop release helper for version `1.4.18`, tag `v1.4.18`, release-workflow observation, and safe ticket worktree/branch cleanup.
+User verification was received and the user explicitly requested repository finalization plus a new release. Ticket archival, ticket-branch commit/push, fast-forward integration into `personal`, version `1.4.18`, annotated tag `v1.4.18`, publication, initial rollout observation, and safe task-worktree/branch cleanup are complete.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Records the current reviewed HEAD, unchanged integrated base, runtime/dependency/notice changes, authoritative review gates, actual package verification, residual risks/baselines, testable unsigned artifacts, and the required explicit user-verification request.
 
@@ -36,7 +36,7 @@ User verification has been received and the user explicitly requested repository
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/electron_packaging.md`
 - No-impact rationale (if applicable): N/A. Durable provider/notice/upgrade knowledge required promotion.
@@ -44,48 +44,62 @@ User verification has been received and the user explicitly requested repository
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc`
 
 ## Version / Tag / Release Commit
 
-Planned release version: `1.4.18`
-Planned release tag: `v1.4.18`
-Release helper: `pnpm release 1.4.18 -- --release-notes tickets/done/replace-vendored-novnc/release-notes.md`
+- Release version: `1.4.18`
+- Annotated release tag: `v1.4.18`
+- Final ticket commit: `431e5e8ea6e2b47611d5a75f84ed9a96f553ad0a`
+- Release commit/tag target: `c92491e50f1be3f5cfc1e31274ccbfc497e1779b`
+- Annotated tag object: `06ac9ad2b9ee061fe06e7e0f7efae6ed2f0db2da`
+- Release helper: `bash scripts/desktop-release.sh release 1.4.18 --branch release/replace-vendored-novnc-v1.4.18 --release-notes tickets/done/replace-vendored-novnc/release-notes.md --no-push`
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/investigation-notes.md`
 - Ticket branch: `codex/replace-vendored-novnc`
-- Ticket branch commit result: In progress. Existing reviewed commits are `4ae4733637bc3d471051783b29894dad0d0e3c28`, `7fe03f83e869d5badbf10a35d2898a185c190116`, and `ba703f842d79dfab03f4c15add73396acdc247a9`; the final commit will add durable API/E2E, docs, delivery, evidence, and archived-ticket state.
-- Ticket branch push result: In progress.
+- Ticket branch commit result: `Completed` at `431e5e8ea6e2b47611d5a75f84ed9a96f553ad0a`; it preserves the reviewed implementation, durable coverage, docs, retained evidence, and archived ticket package.
+- Ticket branch push result: `Completed` to `origin/codex/replace-vendored-novnc` before cleanup.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No` — `origin/personal` remained `dbc83fdb51c1e158b5707c219dd8574dc49fa493`.
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`; the ticket branch still contains the latest tracked target.
-- Target branch update result: Not started.
-- Merge into target result: Not started.
-- Push target branch result: Not started.
-- Repository finalization status: `In progress`
+- Target branch update result: Local `personal` matched refreshed `origin/personal` at `dbc83fdb51c1e158b5707c219dd8574dc49fa493` before integration.
+- Merge into target result: `Completed` by conflict-free fast-forward to final ticket commit `431e5e8ea6e2b47611d5a75f84ed9a96f553ad0a`.
+- Push target branch result: `Completed`; ticket commit was pushed, followed by release commit `c92491e50f1be3f5cfc1e31274ccbfc497e1779b`.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: `Release Script`
-- Method reference / command: `pnpm release 1.4.18 -- --release-notes tickets/done/replace-vendored-novnc/release-notes.md`
-- Release/publication/deployment result: `In progress`
-- Release notes handoff result: `In progress`
+- Method reference / command: `bash scripts/desktop-release.sh release 1.4.18 --branch release/replace-vendored-novnc-v1.4.18 --release-notes tickets/done/replace-vendored-novnc/release-notes.md --no-push`, followed by explicit `git push origin HEAD:personal` and `git push origin v1.4.18`.
+- Release/publication/deployment result: `Completed`. The helper bumped `autobyteus-web` and `autobyteus-message-gateway` to `1.4.18`, synchronized curated release notes and the managed messaging release manifest, made release commit `c92491e50f1be3f5cfc1e31274ccbfc497e1779b`, and created annotated tag `v1.4.18`. Remote `personal` and tag targets were verified after push.
+- Release notes handoff result: `Completed`; the archived ticket release notes were passed directly to the documented helper and synchronized to `.github/release-notes/release-notes.md`.
+- GitHub release result: `Published` at `2026-07-18T18:42:15Z` (`https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.18`).
+- Tag-triggered workflow observation:
+  - Release Messaging Gateway run `29656304783`: `completed/success`.
+  - Desktop Release run `29656304823`: `in_progress`.
+  - Android APK Release run `29656304814`: `in_progress`.
+  - iOS App Store Connect Release run `29656304804`: `in_progress`.
+  - Server Docker Release run `29656304807`: `in_progress`.
+- Dispatch decision: No manual workflow dispatch was made because the fresh tag push triggered all applicable workflows.
+- Evidence: `release-v1.4.18.log`, `release-publication-v1.4.18.json`, and `release-workflow-status-v1.4.18.json`.
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc`
-- Worktree cleanup result: `Not required` before finalization
-- Worktree prune result: `Not required` before finalization
-- Local ticket branch cleanup result: `Not required` before finalization
-- Remote branch cleanup result: `Not required` before finalization
-- Blocker (if applicable): Cleanup must not occur before user verification and successful repository finalization.
+- Temporary release worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-replace-vendored-novnc-v1.4.18`
+- Worktree cleanup result: `Completed after final delivery-record commit`; both task-owned worktrees were removed without touching unrelated worktrees.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` for `codex/replace-vendored-novnc` and `release/replace-vendored-novnc-v1.4.18`.
+- Remote branch cleanup result: `Completed` for `origin/codex/replace-vendored-novnc`; no remote release branch was created.
+- Main-worktree preservation: Unrelated untracked `.article-work/`, `.local-build-logs/`, `docs/articles/`, and `tickets/in-progress/app-store-publishing-pipeline-investigation/` were left intact.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -94,7 +108,7 @@ N/A. The prior MPL-2.0 packaging reroute is resolved, user verification is compl
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `No` — the release was requested together with finalization after verification.
-- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/done/replace-vendored-novnc/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/replace-vendored-novnc/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
@@ -125,8 +139,8 @@ Known unrelated baselines remain recorded truthfully: four untouched full-Nuxt a
 
 ## Rollback Criteria
 
-Before repository finalization, rollback is simply not proceeding with archival/commit/push/merge. After finalization, revert the ticket merge on `personal` if runtime or packaging verification regresses. The old vendored provider must not be restored as an emergency fallback; a provider rollback must preserve one official package path and matching versioned notice/provenance.
+Repository finalization and tag publication are complete. If runtime or packaging verification regresses, revert the noVNC ticket changes on `personal` and prepare a deliberate successor patch release; do not move or reuse published tag `v1.4.18`. The old vendored provider must not be restored as an emergency fallback: any provider rollback must preserve one official package path and matching versioned notice/provenance.
 
 ## Final Status
 
-`User verified; repository finalization and release v1.4.18 are in progress.`
+`Completed — user verified; repository finalized; v1.4.18 published; initial workflow rollout observed; task worktrees and branches cleaned.`
