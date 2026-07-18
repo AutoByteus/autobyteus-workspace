@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  NO_VNC_ELECTRON_REQUIRED_NOTICE_FILES,
   NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
   NO_VNC_THIRD_PARTY_NOTICE_PACKAGING,
 } from '../../build/scripts/noVncThirdPartyNotice';
@@ -77,12 +78,19 @@ describe('noVNC package integration contract', () => {
     const upstreamMpl = readFileSync(path.join(packageRoot, 'docs', 'LICENSE.MPL-2.0'), 'utf8').trim();
     const upstreamPakoLicense = readFileSync(path.join(packageRoot, 'vendor', 'pako', 'LICENSE'), 'utf8').trim();
     const desktopBuildSource = readFileSync(path.join(webRoot, 'build', 'scripts', 'build.ts'), 'utf8');
+    const genericNuxtConfigSource = readFileSync(path.join(webRoot, 'nuxt.config.ts'), 'utf8');
+    const electronNuxtConfigSource = readFileSync(path.join(webRoot, 'nuxt.electron.config.ts'), 'utf8');
 
     expect(NO_VNC_THIRD_PARTY_NOTICE_PACKAGING).toEqual({
       sourcePath: `public/THIRD_PARTY_NOTICES/noVNC-${EXACT_VERSION}.txt`,
-      webOutputPath: `dist/public/THIRD_PARTY_NOTICES/noVNC-${EXACT_VERSION}.txt`,
+      genericWebOutputPath: `dist/public/THIRD_PARTY_NOTICES/noVNC-${EXACT_VERSION}.txt`,
+      electronRendererOutputPath: `dist/renderer/THIRD_PARTY_NOTICES/noVNC-${EXACT_VERSION}.txt`,
       desktopOutputPath: `THIRD_PARTY_NOTICES/noVNC-${EXACT_VERSION}.txt`,
     });
+    expect(NO_VNC_ELECTRON_REQUIRED_NOTICE_FILES).toEqual([
+      NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.sourcePath,
+      NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.electronRendererOutputPath,
+    ]);
     expect(NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE).toEqual({
       from: NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.sourcePath,
       to: NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.desktopOutputPath,
@@ -99,6 +107,8 @@ describe('noVNC package integration contract', () => {
     expect(desktopBuildSource).toMatch(
       /extraResources:\s*\[[\s\S]*NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE[\s\S]*\],\s*publish:/,
     );
-    expect(desktopBuildSource).toContain('NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.webOutputPath');
+    expect(desktopBuildSource).toContain('for (const filePath of NO_VNC_ELECTRON_REQUIRED_NOTICE_FILES)');
+    expect(genericNuxtConfigSource).toContain("publicDir: 'dist/public'");
+    expect(electronNuxtConfigSource).toContain("publicDir: 'dist/renderer'");
   });
 });

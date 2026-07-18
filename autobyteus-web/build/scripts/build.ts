@@ -5,8 +5,8 @@ import * as path from 'path'
 import { execSync } from 'child_process'
 import { existsSync } from 'fs'
 import {
+  NO_VNC_ELECTRON_REQUIRED_NOTICE_FILES,
   NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
-  NO_VNC_THIRD_PARTY_NOTICE_PACKAGING,
 } from './noVncThirdPartyNotice'
 
 // Load environment variables from .env.local (for Apple credentials)
@@ -422,11 +422,7 @@ async function main(): Promise<void> {
     // Generate icons first
     await generateIcons()
 
-    const requiredNoVncNoticeFiles = [
-      NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.sourcePath,
-      NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.webOutputPath,
-    ]
-    for (const filePath of requiredNoVncNoticeFiles) {
+    for (const filePath of NO_VNC_ELECTRON_REQUIRED_NOTICE_FILES) {
       if (!existsSync(filePath)) {
         throw new Error(`Missing required noVNC third-party notice for packaging: ${filePath}`)
       }
