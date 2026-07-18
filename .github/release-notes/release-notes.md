@@ -1,18 +1,19 @@
-# AutoByteus 1.4.17
+# Release Notes — Official noVNC Package Integration
 
-## What's New
+## Improvements
 
-- Added explicit Event Monitor absolute-path previews through the existing read-only Files/FileViewer surfaces.
-- Added compact inline Event Monitor file links with generated display labels while preserving authored Markdown labels and accessibility metadata.
-- Restored the visible Nodes network icon in compact left-navigation strip mode.
+- Replaced the copied noVNC implementation tree with the official package-root `@novnc/novnc` provider, pinned to an exact upstream build for reproducible behavior.
+- Preserved VNC authentication, connection lifecycle, View Only/Interactive modes, maximize/Escape behavior, remote resize, and automatic bidirectional clipboard support.
+- Added focused package, session-lifecycle, and real VNC/browser regression coverage.
 
-## Fixes
+## Licensing and Packaging
 
-- Reject incomplete or placeholder path components such as `.`, `..`, `...`, and `…` while preserving legitimate dotted filenames.
-- Keep unsupported archives, installers, application bundles, generic binaries, and unknown extensions literal and inert with no preview I/O.
-- Preserve read-only, deduplicated, workspace-aware desktop/mobile preview routing and existing viewer ownership.
+- Added a canonical noVNC third-party notice with exact package/source provenance, MPL-2.0 terms, and embedded-component attribution.
+- Included the notice in normal web output, Electron renderer output, the packaged desktop application, ZIP, and DMG.
+- Added build preflight and durable contract coverage to prevent provider version, clipboard behavior, notice, or packaging-path drift.
 
-## Verification Notes
+## Validation
 
-- Current-source repository, server, live REST, browser bootstrap/strip, Electron validator/TypeScript, and guard checks passed.
-- API/E2E Round 5 remains **Blocked at 85%** because authenticated Event Monitor, paired mobile, packaged/native runtime, Windows, and full visual journeys were unavailable. These residual gaps are preserved in the archived delivery report and are not represented as passed.
+- Authoritative API/E2E validation passed at 96.9% confidence, including retained real Chrome/TigerVNC/websockify coverage.
+- A complete unsigned macOS Electron build passed, and the exact notice bytes/hash were verified in the generated renderer, app bundle, ZIP, and DMG.
+- User verification completed before repository finalization and release.
