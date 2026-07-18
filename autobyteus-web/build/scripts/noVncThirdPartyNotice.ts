@@ -1,0 +1,12 @@
+export const NO_VNC_THIRD_PARTY_NOTICE_FILE = 'noVNC-1.7.0-g7c36fab.txt'
+
+export const NO_VNC_THIRD_PARTY_NOTICE_PACKAGING = {
+  sourcePath: `public/THIRD_PARTY_NOTICES/${NO_VNC_THIRD_PARTY_NOTICE_FILE}`,
+  webOutputPath: `dist/public/THIRD_PARTY_NOTICES/${NO_VNC_THIRD_PARTY_NOTICE_FILE}`,
+  desktopOutputPath: `THIRD_PARTY_NOTICES/${NO_VNC_THIRD_PARTY_NOTICE_FILE}`,
+} as const
+
+export const NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE = {
+  from: NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.sourcePath,
+  to: NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.desktopOutputPath,
+} as const

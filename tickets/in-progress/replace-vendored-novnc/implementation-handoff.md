@@ -115,3 +115,51 @@
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 Yes. Implementation-scoped unit, package, lock, type-delta, and production-generation checks are complete, but API/E2E still owns environment discovery, durable broader coverage decisions, real VNC/browser execution, bidirectional clipboard validation, execution confidence scoring, and evidence.
+
+## Delivery Packaging Local Fix — 2026-07-18
+
+### Trigger And Classification
+
+- Trigger: Delivery's MPL-2.0 packaging verification in `/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/in-progress/replace-vendored-novnc/delivery-reroute-report.md` found that the installed exact package carried required license/provenance material but neither tracked project notices nor generated/desktop packaging retained it.
+- Classification: Bounded `Local Fix / implementation_engineer` as requested by delivery. This fixes distributable packaging only; it does not alter provider identity, VNC runtime behavior, session ownership, or persisted data.
+
+### Local-Fix Changes
+
+- Added the single canonical tracked artifact `autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` for the exact runtime dependency. It records the exact package/version, package author, 2022 noVNC authorship notice, MPL-2.0 status, official repository, exact commit and corresponding-source/archive locations, upstream `LICENSE.txt`, upstream `AUTHORS`, bundled DES attribution, bundled pako MIT notice, and the full upstream MPL-2.0 text.
+- Added `autobyteus-web/build/scripts/noVncThirdPartyNotice.ts` as the one packaging-path authority for the canonical source, generated web output, and desktop resource destination.
+- Extended `autobyteus-web/build/scripts/build.ts` so Electron packages the canonical file as `resources/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` and fails before packaging if either the tracked source or generated Nuxt copy is absent. Existing `dist/**/*` packaging continues to carry the frontend copy.
+- Extended `autobyteus-web/tests/integration/novnc-package-contract.integration.test.ts` so exact dependency author/license/repository drift, notice omission/content drift, source/commit drift, or web/desktop packaging mapping drift fails focused durable coverage.
+- No vendored runtime source, provider fallback, alias, deep import, runtime wrapper, or clipboard/session behavior was introduced.
+
+### Local-Fix Behavior Trace
+
+| Behavior ID | Local-Fix Outcome | Implementation Path | Result |
+| --- | --- | --- | --- |
+| `BEH-003` | Preserve the exact automatic-clipboard provider without changing its owner or source. | Exact dependency remains unchanged; notice only records its copyright/license/source obligations. | Preserved; no runtime source changed. |
+| `BEH-004` | Make distributable dependency handling complete and drift-detectable. | Canonical public notice -> Nuxt `dist/public` output -> existing Electron `dist/**/*`, plus explicit Electron `extraResources` destination and preflight; focused contract test. | Implemented. Frontend and desktop packaging inputs now retain the exact license/provenance artifact. |
+
+### Local Implementation Checks
+
+- `pnpm -C autobyteus-web test:nuxt tests/integration/novnc-package-contract.integration.test.ts --run` — Pass; 1 file / 4 tests after the local fix.
+- Focused noVNC set (`useVncSession`, layout, host parser, package contract) — Pass; 4 files / 36 tests. This is implementation-scoped evidence, not a replacement for the previously completed API/E2E stage.
+- `pnpm -C autobyteus-web generate` — Pass; 3,552 modules transformed and `dist/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` generated.
+- Canonical/generated notice byte assertion — Pass; both files are 26,305 bytes with SHA-256 `399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3`.
+- `pnpm -C autobyteus-web transpile-build` — Pass; the desktop build configuration and notice packaging contract compile.
+- Compiled packaging assertion — Pass; source `public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` maps to web output `dist/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` and Electron resource `THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt`.
+- `git diff --check` — Pass with the intentionally uncommitted downstream API/E2E package preserved.
+- Changed implementation source guardrail — Pass; `build.ts` remains at 453 effective non-empty lines (below 500), and the new packaging authority is 10 effective non-empty lines.
+
+### Frontend Rendered-Result Check
+
+Not Applicable for this local fix. It adds a distributable legal text asset and build/package wiring; no application markup, styling, controls, labels, session interaction, or rendered VNC behavior changed. Nuxt generation and exact output-byte comparison validate the affected frontend artifact path. The earlier live VNC/browser evidence remains unchanged but must pass through the required downstream revalidation route after source review.
+
+### Preserved Downstream State And Revalidation
+
+- Delivery confirmed the refreshed base remained `dbc83fdb51c1e158b5707c219dd8574dc49fa493`; no integration commit was required.
+- The previously passed 97.1% API/E2E result, 4-file/35-test evidence, live VNC browser/service journey, cleanup evidence, proportional test-code review, four unrelated full-Nuxt assertion failures, reports, and retained probe files were preserved in the working tree. The focused count is now 36 because the package contract gained one notice/packaging case.
+- Per the requested flow, this packaging fix returns to `code_reviewer` for implementation-source review, then to `api_e2e_engineer` for coverage/execution revalidation before delivery resumes.
+
+### Remaining Risks
+
+- Exact development-build pinning and future ambient-declaration drift remain unchanged.
+- Any future noVNC dependency upgrade must update the canonical versioned notice and packaging contract from the new upstream package/license/source evidence; the focused test intentionally fails until that review occurs.

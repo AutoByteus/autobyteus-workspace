@@ -3,6 +3,11 @@ import { generateIcons } from './generateIcons'
 import * as dotenv from 'dotenv'
 import * as path from 'path'
 import { execSync } from 'child_process'
+import { existsSync } from 'fs'
+import {
+  NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
+  NO_VNC_THIRD_PARTY_NOTICE_PACKAGING,
+} from './noVncThirdPartyNotice'
 
 // Load environment variables from .env.local (for Apple credentials)
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
@@ -239,7 +244,8 @@ const options: Configuration = {
     {
       from: "build/icons",
       to: "icons"
-    }
+    },
+    NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE
   ],
   publish: updaterPublishConfig,
   // Default artifact name pattern
@@ -416,6 +422,16 @@ async function main(): Promise<void> {
     // Generate icons first
     await generateIcons()
 
+    const requiredNoVncNoticeFiles = [
+      NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.sourcePath,
+      NO_VNC_THIRD_PARTY_NOTICE_PACKAGING.webOutputPath,
+    ]
+    for (const filePath of requiredNoVncNoticeFiles) {
+      if (!existsSync(filePath)) {
+        throw new Error(`Missing required noVNC third-party notice for packaging: ${filePath}`)
+      }
+    }
+
     const requiredServerFiles = [
       'package.json',
       'dist/app.js',
@@ -423,14 +439,14 @@ async function main(): Promise<void> {
     ]
     for (const file of requiredServerFiles) {
       const filePath = `resources/server/${file}`
-      if (!require('fs').existsSync(filePath)) {
+      if (!existsSync(filePath)) {
         throw new Error(`Missing required server file for packaging: ${filePath}`)
       }
     }
     const requiredServerDirs = ['dist', 'prisma', 'node_modules']
     for (const dir of requiredServerDirs) {
       const dirPath = `resources/server/${dir}`
-      if (!require('fs').existsSync(dirPath)) {
+      if (!existsSync(dirPath)) {
         throw new Error(`Missing required server directory for packaging: ${dirPath}`)
       }
     }
