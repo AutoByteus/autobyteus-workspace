@@ -1,0 +1,32 @@
+
+> autobyteus@1.4.17 dev /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web
+> nuxt dev --host 0.0.0.0 --port 65520
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+
+              █▀▀▀▀▀▀▀████▀▀▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▄▄█▀█▀█▀█ █▀▀▀█ █
+              █ █   █ █ ▀██▄▄ ▄▄█ █   █ █
+              █ ▀▀▀▀▀ █▀█▀▄ █▀█▀█ ▀▀▀▀▀ █
+              █▀▀███▀▀▀█▀▄ ▀▀▄  ███▀▀████
+              █ ██▄▄▀▀█▄▄▀█▄▀█ ▄▄▀▀▄ ▄ ▀█
+              █   ▄█ ▀█▀ █▄▀█▀▄ ▀▀█▄▄██ █
+              █ ▄█▀ █▀█ ▄█▄  ▄ █▀█▀█▀█ ▀█
+              █ █ ▄▄▄▀▀▄  █▄▀▄█ ▀▀▀ █ █▄█
+              █▀▀▀▀▀▀▀█ ▀▀  █▄▄ █▀█ ▀▄█▀█
+              █ █▀▀▀█ █▄ ▄▄▄▀█▀ ▀▀▀ ▀▀▄██
+              █ █   █ ███▄▄▄█▀██▀▄▄█▄▀▄ █
+              █ ▀▀▀▀▀ █ ▄ ▀██   █ ▄▄▀██ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
+  ➜ Local:    http://0.0.0.0:65520/
+  ➜ Network:  http://192.168.6.112:65520/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 46ms
+✔ Vite server built in 718ms
+[nitro] ✔ Nuxt Nitro server built in 646ms
+ℹ Vite client warmed up in 1ms

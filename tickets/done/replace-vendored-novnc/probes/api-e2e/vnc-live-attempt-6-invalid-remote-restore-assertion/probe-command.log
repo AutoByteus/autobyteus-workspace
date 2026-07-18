@@ -1,0 +1,14 @@
+
+> autobyteus@1.4.17 test:e2e:vnc-live /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web
+> node tests/e2e/vnc-live-probe.mjs -- --base-url http://127.0.0.1:65520 --vnc-container codex-replace-vendored-novnc-1784365696-49026 --vnc-display :100 --expect-host 127.0.0.1:65519 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/in-progress/replace-vendored-novnc/probes/api-e2e/vnc-live
+
+{
+  "result": "Fail",
+  "failures": [
+    {
+      "message": "Timed out waiting for VNC-LIVE-001-003 restored remote resize; lastValue=null",
+      "stack": "Error: Timed out waiting for VNC-LIVE-001-003 restored remote resize; lastValue=null\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/tests/e2e/vnc-live-probe.mjs:100:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/tests/e2e/vnc-live-probe.mjs:250:28"
+    }
+  ]
+}
+ ELIFECYCLE  Command failed with exit code 1.

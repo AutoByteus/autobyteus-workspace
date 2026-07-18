@@ -1,0 +1,9 @@
+HEAD=ba703f842d79dfab03f4c15add73396acdc247a9
+origin_personal=dbc83fdb51c1e158b5707c219dd8574dc49fa493
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt bytes=26305 sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+autobyteus-web/dist/renderer/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt bytes=26305 sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt bytes=26305 sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+AutoByteus.app/Contents/Resources/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt
+autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.17.zip::AutoByteus.app/Contents/Resources/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt bytes=26305 sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.17.dmg::AutoByteus.app/Contents/Resources/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt bytes=26305 sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+result=PASS

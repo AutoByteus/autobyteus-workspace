@@ -1,0 +1,27 @@
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+
+Xvnc TigerVNC 1.12.0 - built 2024-01-23 19:20
+Copyright (C) 1999-2021 TigerVNC Team and many others (see README.rst)
+See https://www.tigervnc.org for information on TigerVNC.
+Underlying X server release 12101004, X.Org
+
+
+Sat Jul 18 09:01:07 2026
+ vncext:      VNC extension running!
+ vncext:      Listening for VNC connections on all interface(s), port 5901
+ vncext:      created VNC server for screen 0
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaabf6331e0 for event 2
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaabf6331e0 for event 3
+
+Sat Jul 18 09:01:26 2026
+ Connections: accepted: 127.0.0.1::35610
+ SConnection: Client needs protocol version 3.8
+ SConnection: Client requests security type VncAuth(2)
+ SConnection: AuthFailureException: Authentication failure
+ VNCSConnST:  closing 127.0.0.1::35610: Authentication failure
+ EncodeManager: Framebuffer updates: 0
+ EncodeManager:   Total: 0 rects, 0 pixels
+ EncodeManager:          0 B (1:nan ratio)
+ Connections: closed: 127.0.0.1::35610
+ ComparingUpdateTracker: 0 pixels in / 0 pixels out
+ ComparingUpdateTracker: (1:nan ratio)

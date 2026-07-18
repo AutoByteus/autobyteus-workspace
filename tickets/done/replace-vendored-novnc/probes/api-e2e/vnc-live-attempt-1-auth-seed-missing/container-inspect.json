@@ -1,0 +1,273 @@
+[
+    {
+        "Id": "bfdf92803ad28db9a8334b2f5211521990b342199d0023ade2750fdac75c7a21",
+        "Created": "2026-07-18T09:01:02.056982549Z",
+        "Path": "/usr/local/bin/entrypoint.sh",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 93917,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-07-18T09:01:02.118723091Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:a194fb17e0e0c5dd5bc92079e3ed941ba0e7722b04efd498386369297c8d2b41",
+        "ResolvConfPath": "/var/lib/docker/containers/bfdf92803ad28db9a8334b2f5211521990b342199d0023ade2750fdac75c7a21/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/bfdf92803ad28db9a8334b2f5211521990b342199d0023ade2750fdac75c7a21/hostname",
+        "HostsPath": "/var/lib/docker/containers/bfdf92803ad28db9a8334b2f5211521990b342199d0023ade2750fdac75c7a21/hosts",
+        "LogPath": "/var/lib/docker/containers/bfdf92803ad28db9a8334b2f5211521990b342199d0023ade2750fdac75c7a21/bfdf92803ad28db9a8334b2f5211521990b342199d0023ade2750fdac75c7a21-json.log",
+        "Name": "/codex-replace-vendored-novnc-1784365261-42127",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": [
+            "d291cd46d9ac1dfb92c379a42c9e0e2d5fdb2b364f3c420bc1a25784ea1ce95e",
+            "9f3ebfccab0661d790c37e0bd87e5d854049cba8750c898b01030fc902427488"
+        ],
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {
+                "6081/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "64994"
+                    }
+                ],
+                "8000/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "64993"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": true,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": [
+                "CAP_SYS_ADMIN"
+            ],
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": [
+                "seccomp=unconfined"
+            ],
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": null,
+            "Name": ""
+        },
+        "Mounts": [],
+        "Config": {
+            "Hostname": "bfdf92803ad2",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "5900/tcp": {},
+                "6080/tcp": {},
+                "6081/tcp": {},
+                "8000/tcp": {},
+                "9223/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+                "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+                "AUTOBYTEUS_SERVER_PORT=8000",
+                "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:64993",
+                "AUTOBYTEUS_VNC_SERVER_PASSWORD=codex-vnc-secret",
+                "APP_ENV=production",
+                "DB_TYPE=sqlite",
+                "AUTOBYTEUS_SKIP_SYNC=1",
+                "AUTOBYTEUS_VNC_SERVER_HOSTS=127.0.0.1:64994",
+                "LOG_LEVEL=INFO",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "USER_UID=1000",
+                "USER_GID=1000",
+                "IMAGE_VARIANT=default",
+                "DEBIAN_FRONTEND=noninteractive",
+                "DISPLAY=:99",
+                "SCREEN_RESOLUTION=1920x1080x24",
+                "XDG_RUNTIME_DIR=/run/user/1000",
+                "GTK_IM_MODULE=fcitx",
+                "QT_IM_MODULE=fcitx",
+                "XMODIFIERS=@im=fcitx",
+                "SDL_IM_MODULE=fcitx",
+                "LANG=en_US.UTF-8",
+                "LANGUAGE=en_US:en",
+                "LC_ALL=en_US.UTF-8",
+                "NODE_ENV=production",
+                "BROWSER=/usr/local/bin/open-vnc-browser-url.sh",
+                "HOME=/root"
+            ],
+            "Cmd": null,
+            "Image": "autobyteus/autobyteus-server:latest",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": [
+                "/usr/local/bin/entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": {
+                "com.autobyteus.api-e2e-owner": "replace-vendored-novnc",
+                "org.opencontainers.image.version": "22.04"
+            },
+            "StopTimeout": 1
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "efaf979e7f032941a6a7219a2b5bb1fda05d1d86ee47ed1f359780e1c25c13c1",
+            "SandboxKey": "/var/run/docker/netns/efaf979e7f03",
+            "Ports": {
+                "6081/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "64994"
+                    }
+                ],
+                "8000/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "64993"
+                    }
+                ]
+            },
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "fe:fa:58:0b:98:d0",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "8a8cf992fe6dde9ef7f565f5239a5a7033672c240c342792782d93647d0e03e4",
+                    "EndpointID": "31c52a48ec56eaf618b2aff7cb8d93cf3c68e96fbe25302dbf31e2ebba5aec53",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.10",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:5ed3bc8f7685660364809b60363890c82312e18c8b2bd121ff7201923ecad594",
+            "size": 8995,
+            "platform": {
+                "architecture": "arm64",
+                "os": "linux"
+            }
+        }
+    }
+]

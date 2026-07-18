@@ -1,0 +1,14 @@
+
+> autobyteus@1.4.17 test:e2e:vnc-live /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web
+> node tests/e2e/vnc-live-probe.mjs -- --base-url http://127.0.0.1:65223 --vnc-container codex-replace-vendored-novnc-1784365537-45322 --vnc-display :100 --expect-host 127.0.0.1:65222 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/in-progress/replace-vendored-novnc/probes/api-e2e/vnc-live
+
+{
+  "result": "Fail",
+  "failures": [
+    {
+      "message": "VNC-LIVE-004-denied: expected denied permissions, observed {\"read\":\"prompt\",\"write\":\"granted\"}",
+      "stack": "Error: VNC-LIVE-004-denied: expected denied permissions, observed {\"read\":\"prompt\",\"write\":\"granted\"}\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/tests/e2e/vnc-live-probe.mjs:307:13"
+    }
+  ]
+}
+ ELIFECYCLE  Command failed with exit code 1.

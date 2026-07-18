@@ -1,0 +1,8 @@
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: personal
+Artifact base name: AutoByteus_personal
+Requested architecture: ARM64
+Updater publish config: [{"provider":"github","owner":"AutoByteUs","repo":"AutoByteUs"}]
+Starting electron-builder...
+Build completed: [ 'intercepted-electron-builder' ]

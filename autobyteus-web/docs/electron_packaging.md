@@ -283,6 +283,7 @@ const options: Configuration = {
   extraResources: [
     { from: "resources/server", to: "server" },
     { from: "build/icons", to: "icons" },
+    NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
   ],
   // Platform-specific configurations...
 };
@@ -324,6 +325,56 @@ When the Electron baseline changes:
 - rebuild native modules for the target Electron ABI before packaging;
 - run focused Electron tests plus at least one desktop package smoke build before
   claiming release readiness.
+
+### noVNC Runtime and Third-Party Notice Packaging
+
+The VNC viewer uses the official package-root `@novnc/novnc` export rather than a
+checked-in provider source tree. The dependency is intentionally pinned to exact
+development build `1.7.0-g7c36fab` because that build preserves the approved
+automatic asynchronous clipboard behavior. Do not replace it with stable
+`1.7.0`, a floating tag/range, a deep import, or a local fallback without a
+separate behavior review.
+
+`public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` is the canonical
+distributable notice for this exact provider build. It contains the upstream
+notice, authorship and embedded-component attribution, the MPL-2.0 text, and
+links to the exact corresponding source commit and archive.
+
+The notice has three packaging projections owned by
+`build/scripts/noVncThirdPartyNotice.ts`:
+
+- normal Nuxt generation copies it to
+  `dist/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt`;
+- Electron generation copies it to
+  `dist/renderer/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt`;
+- electron-builder copies the canonical source into the packaged application's
+  `THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` resource path.
+
+The desktop build preflight requires both the canonical source and the generated
+Electron renderer copy before invoking electron-builder. The `extraResources`
+mapping deliberately uses the canonical source, so the application resource is
+not coupled to a Nuxt output directory while the preflight still proves that the
+Electron renderer distribution contains the same notice.
+
+Treat every noVNC provider upgrade as one atomic change. Update and verify all of
+the following together:
+
+1. the exact dependency version and root workspace lockfile integrity;
+2. the package-root import contract and the narrow ambient declaration in
+   `types/novnc.d.ts` (remove the local declaration if upstream eventually ships
+   sufficient root types; never keep two type authorities);
+3. required clipboard behavior and the absence of a vendored/deep/fallback
+   provider path;
+4. the versioned notice filename, package/commit provenance, corresponding-source
+   links, upstream license contents, and helper constants;
+5. generic web, Electron renderer, and packaged application notice outputs; and
+6. `tests/integration/novnc-package-contract.integration.test.ts`, focused VNC
+   lifecycle coverage, Nuxt generation, and a desktop package smoke build.
+
+Do not move to a future stable noVNC release merely because its version is newer.
+First prove that it contains the automatic clipboard path represented by the
+currently selected upstream build, or explicitly redesign and approve clipboard
+ownership before changing the pin.
 
 ### Build Commands
 

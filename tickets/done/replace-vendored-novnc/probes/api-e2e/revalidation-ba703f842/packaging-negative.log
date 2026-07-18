@@ -1,0 +1,9 @@
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: personal
+Artifact base name: AutoByteus_personal
+Requested architecture: ARM64
+Updater publish config: [{"provider":"github","owner":"AutoByteUs","repo":"AutoByteUs"}]
+Build process failed: Error: Missing required noVNC third-party notice for packaging: dist/renderer/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt
+    at main (/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/build/dist/build.js:400:23)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)

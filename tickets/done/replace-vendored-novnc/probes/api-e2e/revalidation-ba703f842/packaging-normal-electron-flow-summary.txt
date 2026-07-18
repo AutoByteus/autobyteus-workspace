@@ -1,0 +1,9 @@
+scenario=VNC-PKG-DESKTOP-001
+flow_exit=0
+renderer_notice_present=true
+public_notice_absent=true
+electron_builder_called=true
+notice_extra_resource_matches=1
+publish=never
+target=mac-arm64(enum-3)-dmg+zip
+scenario_result=Pass

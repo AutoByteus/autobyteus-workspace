@@ -1,0 +1,71 @@
+
+> autobyteus@1.4.17 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/integration/novnc-package-contract.integration.test.ts composables/__tests__/useVncSession.spec.ts components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts utils/__tests__/vncHosts.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web
+
+stderr | utils/__tests__/vncHosts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/novnc-package-contract.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useVncSession.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useVncSession.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/novnc-package-contract.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/vncHosts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/vncHosts.spec.ts (3 tests) 3ms
+ ✓ tests/integration/novnc-package-contract.integration.test.ts (3 tests) 7ms
+stdout | composables/__tests__/useVncSession.spec.ts > useVncSession > temporarily enables control mode to request initial remote resize
+[vncSession] container set { width: 1200, height: 800 }
+[vncSession] connecting {
+  url: 'ws://localhost:6080/websockify',
+  container: { width: 1200, height: 800 }
+}
+[vncSession] connected
+[vncSession] status -> connected
+
+stdout | composables/__tests__/useVncSession.spec.ts > useVncSession > restores fullscreen-fit strategy after the initial resize handshake
+[vncSession] container set { width: 1400, height: 900 }
+[vncSession] connecting {
+  url: 'ws://localhost:6080/websockify',
+  container: { width: 1400, height: 900 }
+}
+[vncSession] connected
+[vncSession] status -> connected
+
+stdout | composables/__tests__/useVncSession.spec.ts > useVncSession > constructs the public RFB boundary with configured credentials and shared-session behavior
+[vncSession] container set { width: 1200, height: 800 }
+[vncSession] connecting { url: 'ws://localhost:6080', container: { width: 1200, height: 800 } }
+
+stdout | composables/__tests__/useVncSession.spec.ts > useVncSession > constructs the public RFB boundary with configured credentials and shared-session behavior
+[vncSession] status -> connecting
+
+ ✓ composables/__tests__/useVncSession.spec.ts (4 tests) 11ms
+ ✓ components/layout/__tests__/WorkspaceAdaptiveLayout.spec.ts (25 tests) 138ms
+
+ Test Files  4 passed (4)
+      Tests  35 passed (35)
+   Start at  11:10:55
+   Duration  6.58s (transform 3.32s, setup 20.82s, collect 661ms, tests 160ms, environment 1.10s, prepare 735ms)

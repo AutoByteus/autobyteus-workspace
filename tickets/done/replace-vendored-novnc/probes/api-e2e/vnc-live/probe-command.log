@@ -1,0 +1,83 @@
+
+> autobyteus@1.4.17 test:e2e:vnc-live /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web
+> node tests/e2e/vnc-live-probe.mjs -- --base-url http://127.0.0.1:49351 --vnc-container codex-replace-vendored-novnc-1784366099-67147 --vnc-display :100 --expect-host 127.0.0.1:49350 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/in-progress/replace-vendored-novnc/probes/api-e2e/vnc-live
+
+{
+  "result": "Pass",
+  "scenarios": {
+    "VNC-LIVE-001-003": {
+      "result": "Pass",
+      "permissionStates": {
+        "read": "granted",
+        "write": "granted"
+      },
+      "initialCanvas": {
+        "x": 1047,
+        "y": 112.5,
+        "width": 336,
+        "height": 252
+      },
+      "initialRemote": {
+        "width": 1024,
+        "height": 768,
+        "text": "1024x768"
+      },
+      "maximizedRemote": {
+        "width": 1438,
+        "height": 898,
+        "text": "1438x898"
+      },
+      "localToRemoteText": "autobyteus-local-to-remote-1784366116905",
+      "observedRemoteClipboard": "autobyteus-local-to-remote-1784366116905",
+      "remoteToLocalText": "autobyteus-remote-to-local-1784366116978",
+      "observedBrowserClipboard": "autobyteus-remote-to-local-1784366116978",
+      "webSockets": [
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:49351/_nuxt/?token=EEou5Yc3hKHp",
+          "framesSent": 0,
+          "framesReceived": 1,
+          "closed": false
+        },
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:49349/ws/terminal/352a3051-7301-41f6-ac8f-f6f4bd95e34a",
+          "framesSent": 0,
+          "framesReceived": 1,
+          "closed": false
+        },
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:49350/",
+          "framesSent": 13,
+          "framesReceived": 7,
+          "closed": true
+        },
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:49350/",
+          "framesSent": 23,
+          "framesReceived": 12,
+          "closed": false
+        }
+      ]
+    },
+    "VNC-LIVE-004-denied": {
+      "result": "Pass",
+      "permissionStates": {
+        "read": "denied",
+        "write": "denied"
+      },
+      "readAttempt": "NotAllowedError: Failed to execute 'readText' on 'Clipboard': Read permission denied."
+    },
+    "VNC-LIVE-004-unsupported": {
+      "result": "Pass",
+      "clipboardType": "undefined"
+    }
+  },
+  "evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/tickets/in-progress/replace-vendored-novnc/probes/api-e2e/vnc-live/vnc-live-results.json"
+}

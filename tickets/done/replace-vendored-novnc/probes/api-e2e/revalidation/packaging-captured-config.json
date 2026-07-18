@@ -1,0 +1,36 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web",
+  "publish": "never",
+  "files": [
+    "dist/**/*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "resources/server",
+      "to": "server"
+    },
+    {
+      "from": "build/icons",
+      "to": "icons"
+    },
+    {
+      "from": "public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt",
+      "to": "THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt"
+    }
+  ],
+  "targets": [
+    {
+      "platform": "mac",
+      "architectures": [
+        {
+          "arch": "3",
+          "targetNames": [
+            "dmg",
+            "zip"
+          ]
+        }
+      ]
+    }
+  ]
+}

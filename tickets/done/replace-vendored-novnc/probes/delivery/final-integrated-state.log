@@ -1,0 +1,23 @@
+timestamp=2026-07-18T10:48:22Z
+head=ba703f842d79dfab03f4c15add73396acdc247a9
+origin_personal=dbc83fdb51c1e158b5707c219dd8574dc49fa493
+ahead_behind=3	0
+git_diff_check=PASS
+task_labelled_containers:
+dmg_validation_mounts:
+package_artifacts=present
+working_tree:
+ M autobyteus-web/composables/__tests__/useVncSession.spec.ts
+ M autobyteus-web/docs/electron_packaging.md
+ M autobyteus-web/package.json
+?? autobyteus-web/tests/e2e/vnc-live-probe.mjs
+?? tickets/in-progress/replace-vendored-novnc/api-e2e-coverage-investigation.md
+?? tickets/in-progress/replace-vendored-novnc/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/replace-vendored-novnc/api-e2e-test-review-report.md
+?? tickets/in-progress/replace-vendored-novnc/code-review-report.md
+?? tickets/in-progress/replace-vendored-novnc/delivery-reroute-report.md
+?? tickets/in-progress/replace-vendored-novnc/docs-sync-report.md
+?? tickets/in-progress/replace-vendored-novnc/handoff-summary.md
+?? tickets/in-progress/replace-vendored-novnc/probes/
+?? tickets/in-progress/replace-vendored-novnc/release-deployment-report.md
+result=PASS
