@@ -156,19 +156,33 @@ describe('local-file response policy', () => {
     ]);
   });
 
-  it('preserves POSIX backslashes, spaces, Unicode, percent signs, hashes, and Windows drive URL shape', async () => {
-    const filePath = await createTemporaryFile('视频\\name 100%#1.mp4', 'video');
+  it('preserves spaces, Unicode, percent signs, hashes, and Windows drive URL shape', async () => {
+    const filePath = await createTemporaryFile('视频 100%#1.mp4', 'video');
     const fileUrl = buildLocalFileUrl(filePath);
 
     const response = await createLocalFileResponse(new Request(fileUrl));
 
-    expect(fileUrl).toContain('%5C');
     expect(parseLocalFileUrl(fileUrl, process.platform)).toBe(filePath);
     expect(response.status).toBe(200);
     expect(await response.text()).toBe('video');
     expect(parseLocalFileUrl('local-file://local/C:/Media/My%20Video%25%231.mp4', 'win32'))
       .toBe('C:/Media/My Video%#1.mp4');
   });
+
+  it.skipIf(process.platform === 'win32')(
+    'serves a real POSIX file whose filename contains a literal backslash',
+    async () => {
+      const filePath = await createTemporaryFile('video\\name.mp4', 'posix-video');
+      const fileUrl = buildLocalFileUrl(filePath);
+
+      const response = await createLocalFileResponse(new Request(fileUrl));
+
+      expect(fileUrl).toContain('%5C');
+      expect(parseLocalFileUrl(fileUrl, process.platform)).toBe(filePath);
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe('posix-video');
+    },
+  );
 });
 
 type FakeHandleHarness = {
