@@ -18,13 +18,15 @@
 
 - Preserved the first implementation's one-owner Electron protocol lifecycle, validation-first full/single-range responses, cancel-safe byte stream, clean removal of `net.fetch(file:)`, localized accessible VideoPlayer failure/Retry state, and package dependencies.
 - Added one shared renderer/main local-file URL codec. It builds only `local-file://local/<encoded absolute pathname>` and parses only the normalized fixed-authority current identity for the active platform.
+- Resolved source-review `CR-002`: the builder now identifies Windows-drive input before separator normalization, normalizes backslashes only for Windows paths, and preserves legal POSIX backslashes as `%5C` so the decoded path remains byte-for-byte the selected filesystem identity.
 - Replaced both renderer inline serializers with the shared builder and replaced the Electron response-local legacy decoder with the shared strict parser. The protocol owner imports the shared scheme constant.
 - Added an isolated context-hydration migration for exact canonical input and valid legacy empty-authority POSIX / drive-authority Windows locators. Wrong, opaque, adorned, malformed, or non-absolute local-file input becomes the specialized current `unsupported_local_file` variant.
 - Made current context presentation refuse preview/open for unsupported metadata and render its label in `UserMessage.vue` as a non-interactive chip. Valid attachment presentation remains unchanged.
 - Replaced the old type-only streaming partition with one `planContextAttachmentSubmission` owner. Both run stores retain the full current attachment array in the local user message while passing only eligible locators to the existing executable WebSocket arrays.
 - Replaced empty-only member-echo preservation with identity-matched merging that refreshes incoming executable attachments and retains/dedupes existing non-executable items for empty and mixed echoes. External-user replacement remains incoming-authoritative.
 - No protocol compatibility decoder, metadata-only transport, server/runtime schema change, `file://` producer, Blob transport, server route, fallback, or alternate local-file handler was added.
-- Current development commit: `cdeb0aafb3b9b224b9c767552477681adaec7172` (`fix(web): canonicalize local file attachment playback`).
+- Current local-fix commit: `09fe48665332e83a106853855412a26579f9a710` (`fix(web): preserve POSIX backslashes in local file URLs`).
+- Revised implementation parent: `cdeb0aafb3b9b224b9c767552477681adaec7172` (`fix(web): canonicalize local file attachment playback`).
 - Preserved first implementation commit: `f60718a63d8551bb31bc26913a3154dc0614bc95` (`fix: enable local video preview playback`).
 
 ## Reviewed Behavior Implementation Trace
@@ -33,7 +35,7 @@
 | --- | --- | --- | --- |
 | BEH-001 | Supported local video uses a stable standard+stream identity and retains native controls/playback behavior. | `fileExplorerContentActions.ts -> shared/localFileUrl.ts -> VideoPlayer.vue -> local-file-protocol.ts -> local-file-response.ts -> validateReadableRegularFile -> file-byte-stream.ts` | Implemented. File Explorer now emits the proven fixed authority; existing response/stream/player owners are preserved. Real Electron metadata/play/pause/seek remains downstream validation. |
 | BEH-002 | Resource/decode failure remains a localized accessible alert with a fresh Retry attempt and URL-change recovery. | `useAuthorizedObjectUrl -> VideoPlayer.vue -> localization/messages/{en,zh-CN}/tools.ts` | Preserved unchanged apart from canonical URL fixtures. Focused component tests still pass. |
-| BEH-003 | One current handler identity reaches validation and truthful full/range delivery; invalid identities fail without bytes. | `shared/localFileUrl.parseLocalFileUrl -> local-file-response.ts -> localFileValidation.ts -> fs.open/stat -> file-byte-stream.ts` | Implemented. Empty/drive/wrong authorities and handler-visible query/fragment are no-byte `404`; valid current methods/ranges retain existing `200`/`206`/`405`/`416` policy. Direct parser tests cover credential/port defense without claiming Electron preserves those authored fields. |
+| BEH-003 | One current handler identity reaches validation and truthful full/range delivery; invalid identities fail without bytes. | `shared/localFileUrl.parseLocalFileUrl -> local-file-response.ts -> localFileValidation.ts -> fs.open/stat -> file-byte-stream.ts` | Implemented. Empty/drive/wrong authorities and handler-visible query/fragment are no-byte `404`; valid current methods/ranges retain existing `200`/`206`/`405`/`416` policy. POSIX backslashes round-trip as `%5C`, while only Windows-drive separators normalize. A real macOS temporary file containing `\` in its filename is served through the response boundary. Direct parser tests cover credential/port defense without claiming Electron preserves those authored fields. |
 | BEH-004 | Existing binary/document/audio and embedded context-thumbnail routes use the same fixed identity; text and unrelated routing remain unchanged. | `fileExplorerContentActions.ts` and `contextAttachmentPresentation.ts` -> `buildLocalFileUrl`; existing viewer selection and text IPC/GraphQL paths | Implemented. Both derived producers now use the codec. Focused File Explorer and context-thumbnail tests pass; representative live audio/image/PDF/Excel remains downstream. |
 | BEH-005 | Valid legacy context locators transition before current use; unsupported locator metadata remains visible/removable/current-session-only but cannot preview/open or enter executable agent/team arrays/runtime media. Matching member echoes retain it; fresh reload may omit newly unsupported input. | `ContextFilePathInputArea/projection -> hydrateContextAttachment -> contextLocalFileLocatorMigration.ts -> ContextAttachment union -> contextAttachmentPresentation/UserMessage -> planContextAttachmentSubmission -> agentRunStore/agentTeamRunStore -> memberInputMessageHandler/userMessageProjection` | Implemented. Canonical input is idempotent; valid legacy POSIX/Windows becomes canonical `external_url`; unsupported becomes explicit non-executable current state. Mixed agent/team sends retain local metadata while sending valid arrays only. Empty/mixed identity-matched member echoes retain/dedupe unsupported state; external-user projection remains authoritative. No durable invalid-metadata transport was added, matching approved Option 1. |
 
@@ -107,6 +109,8 @@
 - Follow-up codec/migration/model/presentation set after drive-like POSIX-path correction — passed: 4 files / 17 tests.
 - `pnpm test:nuxt --run components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts` — passed: 1 file / 6 tests.
 - Focused Electron protocol/response/validator set — passed: 3 files / 14 tests.
+- Post-`CR-002` focused codec/migration/model/presentation rerun — passed: 4 files / 17 tests, including exact canonical and legacy POSIX `%5C` identities.
+- Post-`CR-002` focused Electron protocol/response/validator rerun — passed: 3 files / 14 tests, including a real macOS file whose filename contains a legal backslash.
 - `pnpm transpile-electron` — passed after final source changes.
 - `pnpm guard:web-boundary` — passed.
 - `pnpm guard:localization-boundary` — passed.
@@ -138,4 +142,4 @@ The reviewed required scenarios remain authoritative:
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-`Yes` — source/unit/transpile checks do not sign off AC-001 through AC-010. The `api_e2e_engineer` must independently rerun the required scenarios on commit `cdeb0aafb3b9b224b9c767552477681adaec7172`, decide durable broader coverage, record exact Electron authored/property/handler observations, and report confidence/residual risk after source review passes.
+`Yes` — source/unit/transpile checks do not sign off AC-001 through AC-010. The `api_e2e_engineer` must independently rerun the required scenarios on commit `09fe48665332e83a106853855412a26579f9a710`, decide durable broader coverage, record exact Electron authored/property/handler observations, and report confidence/residual risk after source review passes.
