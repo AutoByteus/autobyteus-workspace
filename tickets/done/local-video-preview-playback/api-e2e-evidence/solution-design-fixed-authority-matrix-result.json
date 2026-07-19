@@ -1,0 +1,354 @@
+{
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "fixturePath": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case Ünicode 100%# folder/Probe Case 100%# 数据.bin",
+  "rendererUrl": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+  "handlerRequests": [
+    {
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "probeOnlyTranslatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "responseStatus": 200
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "method": "GET",
+      "range": "bytes=2-5",
+      "parsed": {
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "probeOnlyTranslatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "responseStatus": 206
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "method": "GET",
+      "range": "bytes=-3",
+      "parsed": {
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "probeOnlyTranslatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "responseStatus": 206
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "method": "HEAD",
+      "range": null,
+      "parsed": {
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "probeOnlyTranslatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "responseStatus": 200
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "method": "POST",
+      "range": null,
+      "parsed": {
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "probeOnlyTranslatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "responseStatus": 405
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "method": "GET",
+      "range": "bytes=0-1,4-5",
+      "parsed": {
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "probeOnlyTranslatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "responseStatus": 416
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "method": "GET",
+      "range": "bytes=10-",
+      "parsed": {
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "probeOnlyTranslatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "responseStatus": 416
+    },
+    {
+      "url": "local-file://relative/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "hostname": "relative",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "responseStatus": 404
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Missing%20Case%20%25.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Missing%20Case%20%25.bin",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "probeOnlyTranslatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Missing%20Case%20%25.bin",
+      "responseStatus": 404
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder",
+        "port": "",
+        "username": "",
+        "search": "",
+        "hash": ""
+      },
+      "probeOnlyTranslatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder",
+      "responseStatus": 404
+    }
+  ],
+  "scenarios": [
+    {
+      "label": "full-get",
+      "request": {
+        "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "method": "GET",
+        "headers": {}
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-length": "10",
+          "content-type": "application/octet-stream"
+        },
+        "byteLength": 10,
+        "bytesHex": "00010203040506070809"
+      }
+    },
+    {
+      "label": "range-2-5",
+      "request": {
+        "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "method": "GET",
+        "headers": {
+          "Range": "bytes=2-5"
+        }
+      },
+      "response": {
+        "status": 206,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-length": "4",
+          "content-range": "bytes 2-5/10",
+          "content-type": "application/octet-stream"
+        },
+        "byteLength": 4,
+        "bytesHex": "02030405"
+      }
+    },
+    {
+      "label": "suffix-3",
+      "request": {
+        "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "method": "GET",
+        "headers": {
+          "Range": "bytes=-3"
+        }
+      },
+      "response": {
+        "status": 206,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-length": "3",
+          "content-range": "bytes 7-9/10",
+          "content-type": "application/octet-stream"
+        },
+        "byteLength": 3,
+        "bytesHex": "070809"
+      }
+    },
+    {
+      "label": "head",
+      "request": {
+        "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "method": "HEAD",
+        "headers": {}
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-length": "10",
+          "content-type": "application/octet-stream"
+        },
+        "byteLength": 0,
+        "bytesHex": ""
+      }
+    },
+    {
+      "label": "post",
+      "request": {
+        "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "method": "POST",
+        "headers": {}
+      },
+      "response": {
+        "status": 405,
+        "headers": {
+          "allow": "GET, HEAD",
+          "cache-control": "no-store"
+        },
+        "byteLength": 0,
+        "bytesHex": ""
+      }
+    },
+    {
+      "label": "malformed-multi-range",
+      "request": {
+        "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "method": "GET",
+        "headers": {
+          "Range": "bytes=0-1,4-5"
+        }
+      },
+      "response": {
+        "status": 416,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-range": "bytes */10",
+          "content-type": "application/octet-stream"
+        },
+        "byteLength": 0,
+        "bytesHex": ""
+      }
+    },
+    {
+      "label": "unsatisfiable",
+      "request": {
+        "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "method": "GET",
+        "headers": {
+          "Range": "bytes=10-"
+        }
+      },
+      "response": {
+        "status": 416,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-range": "bytes */10",
+          "content-type": "application/octet-stream"
+        },
+        "byteLength": 0,
+        "bytesHex": ""
+      }
+    },
+    {
+      "label": "wrong-authority",
+      "request": {
+        "url": "local-file://relative/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Probe%20Case%20100%25%23%20%E6%95%B0%E6%8D%AE.bin",
+        "method": "GET",
+        "headers": {}
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "cache-control": "no-store"
+        },
+        "byteLength": 0,
+        "bytesHex": ""
+      }
+    },
+    {
+      "label": "missing",
+      "request": {
+        "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Missing%20Case%20%25.bin",
+        "method": "GET",
+        "headers": {}
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "cache-control": "no-store"
+        },
+        "byteLength": 0,
+        "bytesHex": ""
+      }
+    },
+    {
+      "label": "directory",
+      "request": {
+        "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder",
+        "method": "GET",
+        "headers": {}
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "cache-control": "no-store"
+        },
+        "byteLength": 0,
+        "bytesHex": ""
+      }
+    }
+  ],
+  "result": "Complete"
+}

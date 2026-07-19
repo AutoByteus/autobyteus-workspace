@@ -9,7 +9,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { resolveRunnableModelIdentifier } from '~/utils/runLaunchPolicy';
-import { partitionContextAttachmentsForStreaming } from '~/utils/contextFiles/contextAttachmentSend';
+import { planContextAttachmentSubmission } from '~/utils/contextFiles/contextAttachmentSend';
 import {
   buildAgentDraftContextFileOwner,
   buildAgentFinalContextFileOwner,
@@ -181,15 +181,20 @@ export const useAgentRunStore = defineStore('agentRun', {
         if (!finalAgent) {
           throw new Error(`Agent run '${finalRunId}' not found after startup.`);
         }
-        finalizeLocalSubmissionAttachments(localSubmission, finalizedAttachments);
+        const submissionPlan = planContextAttachmentSubmission(finalizedAttachments);
+        finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
 
         const service = await this.ensureAgentStreamConnected(finalRunId);
-        const streamPayload = partitionContextAttachmentsForStreaming(finalizedAttachments);
         const messageId = createClientMessageId();
-        service.sendMessage(messageContent, streamPayload.contextFilePaths, streamPayload.imageUrls, {
-          messageId,
-          dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
-        });
+        service.sendMessage(
+          messageContent,
+          submissionPlan.executable.contextFilePaths,
+          submissionPlan.executable.imageUrls,
+          {
+            messageId,
+            dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
+          },
+        );
         preparedRunId = null;
         runHistoryStore.refreshTreeQuietly();
       } catch (error: any) {

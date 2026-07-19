@@ -78,7 +78,7 @@ describe('fileExplorerStore node routing behavior', () => {
 
     const wsState = store._getOrCreateWorkspaceState('ws-1');
     expect(wsState.openFiles).toHaveLength(1);
-    expect(wsState.openFiles[0].url).toBe('local-file:///tmp/screenshot.png');
+    expect(wsState.openFiles[0].url).toBe('local-file://local/tmp/screenshot.png');
   });
 
   it('uses the bound workspace route for an embedded sentinel without Electron', async () => {

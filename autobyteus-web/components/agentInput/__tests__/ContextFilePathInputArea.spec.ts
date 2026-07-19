@@ -152,7 +152,7 @@ describe('ContextFilePathInputArea', () => {
 
     const img = wrapper.find('img.context-image-thumbnail');
     expect(img.exists()).toBe(true);
-    expect(img.attributes('src')).toBe('local-file:///tmp/test-image.png');
+    expect(img.attributes('src')).toBe('local-file://local/tmp/test-image.png');
   });
 
   it('keeps async uploads with the member that started them when focus changes', async () => {

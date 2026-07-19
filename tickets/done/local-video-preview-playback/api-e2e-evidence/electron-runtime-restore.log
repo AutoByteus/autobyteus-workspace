@@ -1,0 +1,6 @@
+package_version=42.4.1
+ambient_ELECTRON_RUN_AS_NODE=1
+ambient_cli_output=v24.16.0
+normal_electron_cli_output=v42.4.1
+binary_path=/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/node_modules/.pnpm/electron@42.4.1/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron
+Note: ambient ELECTRON_RUN_AS_NODE=1 makes --version report embedded Node 24.16.0; clearing it reports Electron 42.4.1. Probe launches must use env -u ELECTRON_RUN_AS_NODE.

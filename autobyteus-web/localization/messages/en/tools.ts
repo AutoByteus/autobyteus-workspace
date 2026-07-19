@@ -11,6 +11,10 @@ const messages: TranslationCatalog = {
     'The local file cannot be read.',
   'tools.components.fileExplorer.FileExplorerTabs.local_file_unsupported_type':
     'This local file type cannot be previewed.',
+  'tools.components.fileExplorer.viewers.VideoPlayer.video_could_not_be_played':
+    'This video could not be played.',
+  'tools.components.fileExplorer.viewers.VideoPlayer.retry':
+    'Retry',
 };
 
 export default messages;

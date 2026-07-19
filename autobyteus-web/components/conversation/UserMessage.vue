@@ -23,6 +23,7 @@
           <ul class="mt-1 flex flex-wrap gap-2">
             <li v-for="item in displayedAttachments" :key="item.attachment.id">
               <button
+                v-if="item.isOpenable"
                 type="button"
                 :class="
                   item.previewUrl
@@ -42,6 +43,12 @@
                 />
                 <span v-else>{{ item.label }}</span>
               </button>
+              <span
+                v-else
+                class="message-attachment-chip inline-block max-w-full truncate rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-xs text-gray-600"
+              >
+                {{ item.label }}
+              </span>
             </li>
           </ul>
         </div>
@@ -81,6 +88,7 @@ const displayedAttachments = computed(() =>
   (props.message.contextFilePaths ?? []).map((attachment) => ({
     attachment,
     label: contextAttachmentPresentation.getDisplayLabel(attachment),
+    isOpenable: contextAttachmentPresentation.isOpenable(attachment),
     previewUrl: contextAttachmentPresentation.resolveImagePreviewUrl(attachment, {
       workspaceId: workspaceId.value,
       isEmbeddedElectronRuntime: isEmbeddedElectronRuntime.value,

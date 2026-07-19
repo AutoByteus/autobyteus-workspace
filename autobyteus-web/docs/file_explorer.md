@@ -133,7 +133,7 @@ The runtime locator rules are deliberately different by environment:
 
 | Runtime | Locator / behavior |
 | --- | --- |
-| Embedded Electron | The trusted Electron bridge may open an absolute local path. Main-process text IPC and `local-file://` media validation recheck absolute shape, existence, readability, and regular-file status. |
+| Embedded Electron | The trusted Electron bridge may open an absolute local path. Text uses the main-process read IPC boundary. Binary viewers use the shared canonical `local-file://local/<encoded-absolute-path>` codec and the default-session protocol boundary; both paths recheck absolute shape, existence, readability, and regular-file status immediately before bytes are returned. |
 | Browser / remote | The path must be contained by the active workspace root and converted to a workspace-relative locator before the existing authorized content route is used. Unmapped paths remain copyable and show localized host-only/unavailable status without a content request. |
 | Phone-first `/mobile` | The path must map to the selected run/team/workspace context. A revisioned request carries context, workspace, relative path, read-only intent, and inline presentation; `MobileFiles` rejects stale or mismatched requests and consumes only the current one. |
 
@@ -163,6 +163,33 @@ installer, application-bundle, generic-binary, and unknown extensions such as
 action, open a tab, read text, construct `local-file://`, or request workspace
 content. This pure filename decision is separate from validation of a
 supported-looking path at the trusted native/server boundary.
+
+#### Embedded Electron Local Binary Previews
+
+For embedded Electron, File Explorer and Event Monitor binary previews build
+canonical local locators through `shared/localFileUrl.ts`; viewer components do
+not interpolate or parse `local-file://` themselves. The Electron default
+session permits the request only from the exact current main frame of a live
+registered workspace-shell window. The protocol handler then revalidates the
+path and serves a MIME-correct full or single-range response with byte streaming
+and deterministic file-handle cleanup. The exact privilege, main-frame gate,
+status/header, and range contract is documented in
+[Electron Packaging and Server Management](./electron_packaging.md#trusted-local-file-preview-boundary).
+
+This one path intentionally serves images, audio, video, PDF.js XHR, and Excel
+Fetch. PDF and Excel must not be moved to a viewer-specific filesystem or IPC
+bypass, and renderer child frames must not acquire local-file bytes. Browser,
+remote-node, and Phone Access previews continue to use protected
+workspace-relative content routes instead of the Electron scheme.
+
+`VideoPlayer.vue` uses the native controls and the streamed response, so a
+supported file can load finite metadata, play/pause, and seek without first
+buffering the whole source into renderer memory. If authorization/resource
+loading or Chromium decoding fails, the player leaves the black `0:00` state
+and renders a localized accessible alert with **Retry**. Retry refreshes the
+resource resolver and remounts only the current media attempt; selecting a new
+URL also clears stale failure state. The preview never modifies, transcodes, or
+claims support for codecs outside the Chromium runtime shipped with the app.
 
 ### FileExplorer.vue
 

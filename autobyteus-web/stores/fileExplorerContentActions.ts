@@ -23,6 +23,7 @@ import type {
 import { buildWorkspaceContentUrl } from '~/utils/fileExplorer/workspaceResourceUrl'
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability'
 import { localFilePreviewError } from '~/utils/fileExplorer/localFileError'
+import { buildLocalFileUrl } from '~/shared/localFileUrl'
 
 function isAbsoluteLocalPath(path: string): boolean {
   if (path.startsWith('/')) {
@@ -40,15 +41,6 @@ const isPathInDeletedScope = (filePath: string, deletedPath: string): boolean =>
     return filePath === ''
   }
   return filePath === normalizedDeletedPath || filePath.startsWith(`${normalizedDeletedPath}/`)
-}
-
-const buildLocalFileUrl = (filePath: string): string => {
-  const normalized = filePath.replace(/\\/g, '/')
-  const segments = normalized.split('/')
-  const encoded = segments.map((segment, index) => (
-    index === 0 && /^[A-Za-z]:$/.test(segment) ? segment : encodeURIComponent(segment)
-  )).join('/')
-  return `local-file://${encoded}`
 }
 
 export const fileExplorerContentActions = {

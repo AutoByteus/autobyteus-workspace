@@ -1,3 +1,4 @@
+import type { WebFrameMain } from 'electron';
 import type { WorkspaceShellWindow } from './workspace-shell-window';
 
 export class WorkspaceShellWindowRegistry {
@@ -42,6 +43,21 @@ export class WorkspaceShellWindowRegistry {
 
   getNodeIdForShell(shellId: number): string | null {
     return this.shellsById.get(shellId)?.nodeId ?? null;
+  }
+
+  isOwnedMainFrame(webContentsId: number, frame: WebFrameMain): boolean {
+    const shell = this.getByShellId(webContentsId);
+    if (!shell || shell.isDestroyed() || frame.isDestroyed()) {
+      return false;
+    }
+
+    const webContents = shell.browserWindow.webContents;
+    if (webContents.id !== webContentsId || webContents.isDestroyed()) {
+      return false;
+    }
+
+    const mainFrame = webContents.mainFrame;
+    return !mainFrame.isDestroyed() && frame === mainFrame;
   }
 
   focusShell(shellId: number): boolean {

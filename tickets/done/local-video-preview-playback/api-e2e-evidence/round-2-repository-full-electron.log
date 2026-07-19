@@ -1,0 +1,86 @@
+COMMAND: pnpm test:electron --run
+WORKDIR: /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+UTC_START: 2026-07-19T04:50:31Z
+
+> autobyteus@1.4.17 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web/electron
+
+ ✓ __tests__/preload.spec.ts (1 test) 24ms
+stdout | server/__tests__/serverOutputLogging.spec.ts
+[2026-07-19T04:50:32.789Z] [INFO] [electron] Application started
+
+stdout | __tests__/logger.spec.ts
+[2026-07-19T04:50:32.789Z] [INFO] [electron] Application started
+
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (1 test) 8ms
+ ✓ updater/__tests__/appUpdater.spec.ts (8 tests) 34ms
+stdout | extensions/__tests__/managedExtensionService.spec.ts
+[2026-07-19T04:50:32.855Z] [INFO] [electron] Application started
+
+stdout | browser/__tests__/browser-tab-manager.spec.ts
+[2026-07-19T04:50:32.886Z] [INFO] [electron] Application started
+
+ ✓ __tests__/logger.spec.ts (3 tests) 119ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 149ms
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > aborts popup adoption when Electron provides popup webContents from a foreign session
+[2026-07-19T04:50:32.969Z] [WARN] [electron] Aborted popup browser child creation from 'b3904f' to 'https://accounts.google.com/o/oauth2/v2/auth': Popup webContents session does not match the Browser-owned session.
+
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > denies popup requests from sessions that are not attached to a shell
+[2026-07-19T04:50:32.969Z] [WARN] [electron] Blocked browser popup request from '6aa9a3' to 'https://accounts.google.com/o/oauth2/v2/auth': Popup requests require the opener session '6aa9a3' to be attached to a shell.
+
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > caps popup fan-out per opener session
+[2026-07-19T04:50:32.970Z] [WARN] [electron] Blocked browser popup request from '1fa240' to 'https://accounts.google.com/o/oauth2/v2/auth?attempt=overflow': Popup request limit reached for opener session '1fa240'.
+
+ ✓ local-file-protocol/__tests__/local-file-response.spec.ts (11 tests) 119ms
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 79ms
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 90ms
+stdout | browser/__tests__/browser-shell-controller.spec.ts
+[2026-07-19T04:50:33.075Z] [INFO] [electron] Application started
+
+ ✓ __tests__/rendererConsoleDiagnostics.spec.ts (3 tests) 5ms
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (8 tests) 8ms
+stdout | extensions/__tests__/voiceInputRuntimeService.spec.ts
+[2026-07-19T04:50:33.263Z] [INFO] [electron] Application started
+
+ ✓ extensions/__tests__/voiceInputRuntimeService.spec.ts (3 tests) 2ms
+ ✓ browser/__tests__/browser-runtime.spec.ts (1 test) 5ms
+ ✓ __tests__/localFileValidation.spec.ts (1 test) 31ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 10ms
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 10ms
+ ✓ browser/__tests__/browser-session-profile.spec.ts (2 tests) 4ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (1 test) 4ms
+stdout | __tests__/nodeRegistryStore.spec.ts
+[2026-07-19T04:50:33.501Z] [INFO] [electron] Application started
+
+ ✓ __tests__/nodeRegistryStore.spec.ts (4 tests) 3ms
+ ✓ local-file-protocol/__tests__/local-file-protocol.spec.ts (3 tests) 5ms
+ ✓ browser/__tests__/browser-view-factory.spec.ts (3 tests) 4ms
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (2 tests) 2ms
+ ✓ __tests__/appDataPaths.spec.ts (1 test) 2ms
+ ✓ extensions/__tests__/extensionCatalog.spec.ts (2 tests) 2ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (4 tests) 5ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+stdout | extensions/__tests__/managedExtensionService.realRelease.spec.ts
+[2026-07-19T04:50:33.896Z] [INFO] [electron] Application started
+
+ ↓ extensions/__tests__/managedExtensionService.realRelease.spec.ts (1 test | 1 skipped)
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+stdout | extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker
+[2026-07-19T04:50:34.261Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-07-19T04:50:34.261Z] [INFO] [electron] Login shell PATH: /Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.1/dist/node-gyp-bin:/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/node_modules/.bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.144.5-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0PEu1Fm:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+
+ ✓ extensions/__tests__/managedExtensionService.spec.ts (3 tests) 2495ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  1825ms
+   ✓ ManagedExtensionService > preserves enabled state and language mode across reinstall  493ms
+
+ Test Files  26 passed | 1 skipped (27)
+      Tests  112 passed | 1 skipped (113)
+   Start at  06:50:32
+   Duration  2.99s (transform 966ms, setup 0ms, collect 2.67s, tests 3.22s, environment 15ms, prepare 2.43s)
+
+EXIT_STATUS: 0
+UTC_END: 2026-07-19T04:50:35Z

@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "mode": "standard_stream",
+  "privileges": {
+    "standard": true,
+    "stream": true
+  },
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "pageUrl": "http://127.0.0.1:64421/probe"
+  },
+  "sources": [
+    {
+      "id": "exact",
+      "path": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "rawUrl": "local-file:///Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "seekTime": 120
+    },
+    {
+      "id": "url-significant",
+      "path": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case Ünicode 100%# folder/Video Case 100%# Copy.mp4",
+      "rawUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "seekTime": 120
+    }
+  ],
+  "handlerRequests": [
+    {
+      "source": "exact",
+      "url": "local-file://users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+        "hostname": "users",
+        "pathname": "/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "cache-control": "no-store"
+        }
+      }
+    },
+    {
+      "source": "url-significant",
+      "url": "local-file://users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+        "hostname": "users",
+        "pathname": "/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "cache-control": "no-store"
+        }
+      }
+    }
+  ],
+  "rendererResults": [
+    {
+      "rawUrl": "local-file:///Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "attributeSrc": "local-file:///Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "propertySrcBeforeLoad": "local-file://users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "events": [
+        {
+          "name": "loadstart",
+          "readyState": 0,
+          "networkState": 2,
+          "duration": "NaN",
+          "currentTime": 0,
+          "currentSrc": "local-file://users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "error",
+          "readyState": 0,
+          "networkState": 3,
+          "duration": "NaN",
+          "currentTime": 0,
+          "currentSrc": "local-file://users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": {
+            "code": 4,
+            "message": ""
+          }
+        }
+      ],
+      "propertySrcAfterLoad": "local-file://users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "currentSrcAfterLoad": "local-file://users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "metadata": {
+        "kind": "error"
+      },
+      "duration": "NaN",
+      "error": {
+        "code": 4,
+        "message": ""
+      },
+      "id": "exact"
+    },
+    {
+      "rawUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "attributeSrc": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "propertySrcBeforeLoad": "local-file://users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "events": [
+        {
+          "name": "loadstart",
+          "readyState": 0,
+          "networkState": 2,
+          "duration": "NaN",
+          "currentTime": 0,
+          "currentSrc": "local-file://users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "error",
+          "readyState": 0,
+          "networkState": 3,
+          "duration": "NaN",
+          "currentTime": 0,
+          "currentSrc": "local-file://users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": {
+            "code": 4,
+            "message": ""
+          }
+        }
+      ],
+      "propertySrcAfterLoad": "local-file://users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "currentSrcAfterLoad": "local-file://users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "metadata": {
+        "kind": "error"
+      },
+      "duration": "NaN",
+      "error": {
+        "code": 4,
+        "message": ""
+      },
+      "id": "url-significant"
+    }
+  ],
+  "rendererConsole": [
+    {
+      "level": 2,
+      "message": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged."
+    }
+  ],
+  "result": "Fail",
+  "finishedAt": "2026-07-18T08:37:52.728Z"
+}

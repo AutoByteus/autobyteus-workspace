@@ -1,0 +1,22 @@
+COMMAND: pnpm test:electron --run protocol registry response validator
+WORKDIR: /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+UTC_START: 2026-07-19T07:03:35Z
+
+> autobyteus@1.4.17 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/local-file-protocol/__tests__/local-file-protocol.spec.ts electron/shell/__tests__/workspace-shell-window-registry.spec.ts electron/local-file-protocol/__tests__/local-file-response.spec.ts electron/__tests__/localFileValidation.spec.ts
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web/electron
+
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 3ms
+ ✓ __tests__/localFileValidation.spec.ts (1 test) 4ms
+ ✓ local-file-protocol/__tests__/local-file-protocol.spec.ts (6 tests) 7ms
+ ✓ local-file-protocol/__tests__/local-file-response.spec.ts (11 tests) 80ms
+
+ Test Files  4 passed (4)
+      Tests  21 passed (21)
+   Start at  09:03:36
+   Duration  463ms (transform 169ms, setup 0ms, collect 248ms, tests 94ms, environment 0ms, prepare 302ms)
+
+EXIT_STATUS: 0
+UTC_END: 2026-07-19T07:03:36Z

@@ -1,0 +1,4 @@
+
+> autobyteus@1.4.17 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> tsc -p electron/tsconfig.json
+
