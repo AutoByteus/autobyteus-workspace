@@ -1,0 +1,16 @@
+git_diff_check=pass
+head=7fe03f83e869d5badbf10a35d2898a185c190116
+branch=codex/replace-vendored-novnc
+task_owned_containers=0
+negative_temp_fixtures=0
+active_packaging_harness_processes=0
+status_short:
+ M autobyteus-web/composables/__tests__/useVncSession.spec.ts
+ M autobyteus-web/package.json
+?? autobyteus-web/tests/e2e/vnc-live-probe.mjs
+?? tickets/in-progress/replace-vendored-novnc/api-e2e-coverage-investigation.md
+?? tickets/in-progress/replace-vendored-novnc/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/replace-vendored-novnc/api-e2e-test-review-report.md
+?? tickets/in-progress/replace-vendored-novnc/code-review-report.md
+?? tickets/in-progress/replace-vendored-novnc/delivery-reroute-report.md
+?? tickets/in-progress/replace-vendored-novnc/probes/

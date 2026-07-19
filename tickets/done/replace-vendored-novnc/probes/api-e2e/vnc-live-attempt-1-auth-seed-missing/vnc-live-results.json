@@ -1,0 +1,349 @@
+{
+  "startedAt": "2026-07-18T09:01:14.439Z",
+  "baseUrl": "http://127.0.0.1:64995",
+  "origin": "http://127.0.0.1:64995",
+  "vncContainer": "codex-replace-vendored-novnc-1784365261-42127",
+  "vncDisplay": ":100",
+  "expectedHost": "127.0.0.1:64994",
+  "expectedOwnerLabel": "replace-vendored-novnc",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "platform": "darwin-arm64",
+  "scenarios": {},
+  "browserEvents": [
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:64995/_nuxt/?token=SbYTVjcoWfJN",
+      "framesSent": 0,
+      "framesReceived": 3,
+      "closed": true
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/node_modules/.cache/vite/client/deps/dompurify.js?v=531db94d net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/node_modules/.cache/vite/client/deps/@mdit_plugin-katex.js?v=e780eb16 net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:warning",
+      "text": "[Vue Router warn]: uncaught error during route navigation:"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:error",
+      "text": "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:64995/_nuxt/pages/workspace.vue"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:error",
+      "text": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:64995/_nuxt/pages/workspace.vue"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:warning",
+      "text": "[Vue Router warn]: Unexpected error when starting the router: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:64995/_nuxt/pages/workspace.vue"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/node_modules/.cache/vite/client/deps/katex.js?v=d861823e net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:error",
+      "text": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:64995/_nuxt/pages/workspace.vue"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/fileExplorer/MonacoEditor.vue?vue&type=style&index=0&scoped=fcfd1944&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/fileExplorer/viewers/PdfViewer.vue?vue&type=style&index=0&scoped=d884336f&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/conversation/segments/renderer/MermaidDiagram.vue?vue&type=style&index=0&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/fileExplorer/viewers/ExcelViewer.vue?vue&type=style&index=0&scoped=59c1de1e&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/utils/eventMonitorFilePaths/absoluteFilePathAction.ts net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/node_modules/.cache/vite/client/deps/vue-pdf-embed.js?v=feb0f00d net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/node_modules/.cache/vite/client/deps/chunk-LQBIKZ6L.js?v=673a167e net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/fileExplorer/viewers/VideoPlayer.vue?vue&type=style&index=0&scoped=e3b44c61&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/node_modules/.pnpm/vue-pdf-embed@2.1.3_vue@3.5.28_typescript@5.9.3_/node_modules/vue-pdf-embed/dist/styles/annotationLayer.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/node_modules/.pnpm/vue-pdf-embed@2.1.3_vue@3.5.28_typescript@5.9.3_/node_modules/vue-pdf-embed/dist/styles/textLayer.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/conversation/ToolCallIndicator.vue?vue&type=style&index=0&scoped=5dd26201&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/node_modules/.cache/vite/client/deps/xlsx.js?v=e5801cb8 net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/utils/markdownItPrism.ts net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/node_modules/.cache/vite/client/deps/@monaco-editor_loader.js?v=8942f707 net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/pages/index.vue net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/fileExplorer/viewers/ImageViewer.vue?vue&type=style&index=0&scoped=0ffd1ee9&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/services/mermaidService.ts net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/fileExplorer/viewers/MarkdownPreviewer.vue?vue&type=style&index=0&scoped=7f873697&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/utils/toolDisplaySummary.ts net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/utils/remoteAccess/authorizedResourceUrl.ts net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/fileExplorer/viewers/AudioPlayer.vue?vue&type=style&index=0&scoped=6f84739e&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/node_modules/.cache/vite/client/deps/chunk-RZ55PUNP.js?v=673a167e net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:64995/_nuxt/components/fileExplorer/viewers/HtmlPreviewer.vue?vue&type=style&index=0&scoped=816273d4&lang.css net::ERR_ABORTED"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:64995/_nuxt/?token=SbYTVjcoWfJN",
+      "framesSent": 2,
+      "framesReceived": 16,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:64993/ws/terminal/2d16c921-7703-44c5-b7e6-5279221bf874"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:64993/ws/terminal/2d16c921-7703-44c5-b7e6-5279221bf874",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[VNC Viewer] hosts resolved [Object]"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:64994] container set {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[VNC Tile] mounted 127.0.0.1:64994 {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:64994] connecting {url: ws://127.0.0.1:64994, container: Object}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:64994] status -> connecting"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:64994/",
+      "framesSent": 3,
+      "framesReceived": 4,
+      "closed": true
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:error",
+      "text": "[vncSession 127.0.0.1:64994] security failure: Authentication failure {status: 1, reason: Authentication failure}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:error",
+      "text": "Failed when connecting: Security negotiation failed on security result (reason: Authentication failure)"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:error",
+      "text": "[vncSession 127.0.0.1:64994] disconnected with error: Disconnected unexpectedly {clean: false}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:64994] status -> disconnected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "failures": [
+    {
+      "message": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.vnc-viewer').locator('.vnc-tile').first().getByText('Connected to VNC server', { exact: true }) to be visible\u001b[22m\n",
+      "stack": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.vnc-viewer').locator('.vnc-tile').first().getByText('Connected to VNC server', { exact: true }) to be visible\u001b[22m\n\n    at locateAndOpenVnc (/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/tests/e2e/vnc-live-probe.mjs:184:68)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/tests/e2e/vnc-live-probe.mjs:222:30"
+    }
+  ],
+  "finishedAt": "2026-07-18T09:02:26.577Z",
+  "result": "Fail"
+}

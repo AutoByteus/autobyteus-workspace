@@ -1,0 +1,13 @@
+date_utc=2026-07-18T09:12:45Z
+os=ProductName:		macOS ProductVersion:		26.5.2 BuildVersion:		25F84
+arch=arm64
+node=v22.23.1
+pnpm=10.28.2
+docker_client=29.0.1
+docker_server=29.0.1
+chrome=Google Chrome 150.0.7871.127
+playwright_core=1.58.2
+nuxt=3.21.1
+novnc=1.7.0-g7c36fab
+server_image_id=sha256:a194fb17e0e0c5dd5bc92079e3ed941ba0e7722b04efd498386369297c8d2b41
+server_image_digest=["autobyteus/autobyteus-server@sha256:a194fb17e0e0c5dd5bc92079e3ed941ba0e7722b04efd498386369297c8d2b41"]

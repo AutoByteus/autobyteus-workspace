@@ -1,0 +1,3 @@
+
+> autobyteus@1.4.17 transpile-build /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web
+> tsc -p build/tsconfig.json

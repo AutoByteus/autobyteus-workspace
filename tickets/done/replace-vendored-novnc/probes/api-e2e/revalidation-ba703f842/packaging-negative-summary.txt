@@ -1,0 +1,7 @@
+scenario=VNC-PKG-PREFLIGHT-001
+negative_exit=1
+expected_missing=dist/renderer/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt
+canonical_source_present=true
+electron_builder_called=false
+negative_preflight=pass
+scenario_result=Pass

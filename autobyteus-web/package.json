@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.4.17",
+  "version": "1.4.18",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "Apache-2.0",
@@ -43,7 +43,8 @@
     "build:electron:mac": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac",
     "build:electron:linux:x64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=x64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --x64",
     "build:electron:linux:arm64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64",
-    "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs"
+    "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs",
+    "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -51,6 +52,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@iconify/vue": "^5.0.0",
     "@mdit/plugin-katex": "^0.23.2",
+    "@novnc/novnc": "1.7.0-g7c36fab",
     "@nuxt/schema": "^3.21.0",
     "@types/crypto-js": "^4.2.2",
     "@types/prismjs": "^1.26.4",

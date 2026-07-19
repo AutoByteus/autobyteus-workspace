@@ -1,0 +1,12 @@
+{
+  "NO_VNC_THIRD_PARTY_NOTICE_FILE": "noVNC-1.7.0-g7c36fab.txt",
+  "NO_VNC_THIRD_PARTY_NOTICE_PACKAGING": {
+    "sourcePath": "public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt",
+    "webOutputPath": "dist/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt",
+    "desktopOutputPath": "THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt"
+  },
+  "NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE": {
+    "from": "public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt",
+    "to": "THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt"
+  }
+}

@@ -1,0 +1,2 @@
+negative_exit=1
+negative_preflight=pass; electron_builder_not_called=true

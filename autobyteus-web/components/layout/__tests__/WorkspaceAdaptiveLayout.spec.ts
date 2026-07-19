@@ -36,7 +36,7 @@ vi.mock('~/components/tabs/Tab.vue', () => ({
 vi.mock('@xterm/xterm', () => ({
   Terminal: class {},
 }));
-vi.mock('~/lib/novnc/core/rfb', () => ({
+vi.mock('@novnc/novnc', () => ({
   default: class {},
 }));
 

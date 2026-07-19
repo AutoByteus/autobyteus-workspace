@@ -1,0 +1,6 @@
+canonical_bytes=26305
+generic_bytes=26305
+canonical_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+generic_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+generic_cmp=identical
+electron_renderer_notice_after_generic=absent
