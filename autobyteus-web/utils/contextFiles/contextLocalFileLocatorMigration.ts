@@ -11,6 +11,7 @@ export type ContextLocalFileLocatorMigration =
   | { kind: 'unsupported' };
 
 const LOCAL_FILE_PREFIX = /^local-file:/i;
+const LEGACY_POSIX_LOCATOR = /^local-file:\/\/(\/.*)$/;
 const WINDOWS_CANONICAL_PATHNAME = /^\/[A-Za-z]:\//;
 
 const decodePathname = (pathname: string): string | null => {
@@ -48,6 +49,15 @@ export const migrateContextLocalFileLocator = (
     return { kind: 'not_local' };
   }
 
+  const legacyPosixMatch = LEGACY_POSIX_LOCATOR.exec(locator);
+  if (legacyPosixMatch?.[1]) {
+    const decodedPathname = decodePathname(legacyPosixMatch[1]);
+    if (!decodedPathname || buildLegacyPosixLocator(decodedPathname) !== locator) {
+      return { kind: 'unsupported' };
+    }
+    return { kind: 'migrated', locator: buildLocalFileUrl(decodedPathname) };
+  }
+
   try {
     const parsedUrl = new URL(locator);
     if (
@@ -74,13 +84,6 @@ export const migrateContextLocalFileLocator = (
       return canonicalLocator === locator
         ? { kind: 'canonical', locator: canonicalLocator }
         : { kind: 'unsupported' };
-    }
-
-    if (!parsedUrl.hostname && decodedPathname.startsWith('/')) {
-      if (buildLegacyPosixLocator(decodedPathname) !== locator) {
-        return { kind: 'unsupported' };
-      }
-      return { kind: 'migrated', locator: buildLocalFileUrl(decodedPathname) };
     }
 
     const driveAuthorityMatch = /^local-file:\/\/([A-Za-z]):(\/.*)$/.exec(locator);
