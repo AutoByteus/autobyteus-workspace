@@ -5,8 +5,8 @@ import {
   createFileByteStream,
   type FileByteWindow,
 } from './file-byte-stream';
+import { parseLocalFileUrl } from '../../shared/localFileUrl';
 
-const LOCAL_FILE_PROTOCOL = 'local-file:';
 const CACHE_CONTROL_VALUE = 'no-store';
 
 type FullResponsePlan = {
@@ -29,29 +29,6 @@ type ResponsePlan = FullResponsePlan | PartialResponsePlan | UnsatisfiableRespon
 const emptyResponse = (status: number, headers?: HeadersInit): Response => (
   new Response(null, { status, headers })
 );
-
-export function decodeLocalFilePath(requestUrl: string): string | null {
-  try {
-    const parsedUrl = new URL(requestUrl);
-    if (parsedUrl.protocol !== LOCAL_FILE_PROTOCOL) {
-      return null;
-    }
-
-    let filePath = decodeURIComponent(parsedUrl.pathname);
-    if (parsedUrl.hostname) {
-      if (!/^[A-Za-z]$/.test(parsedUrl.hostname)) {
-        return null;
-      }
-      filePath = `${parsedUrl.hostname}:${filePath}`;
-    }
-    if (process.platform === 'win32' && /^\/[A-Za-z]:[\\/]/.test(filePath)) {
-      filePath = filePath.slice(1);
-    }
-    return filePath;
-  } catch {
-    return null;
-  }
-}
 
 function parseNonNegativeSafeInteger(value: string): number | null {
   if (!/^\d+$/.test(value)) {
@@ -124,7 +101,7 @@ function createContentHeaders(filePath: string): Headers {
 }
 
 export async function createLocalFileResponse(request: Request): Promise<Response> {
-  const filePath = decodeLocalFilePath(request.url);
+  const filePath = parseLocalFileUrl(request.url, process.platform);
   if (!filePath) {
     return emptyResponse(404, { 'Cache-Control': CACHE_CONTROL_VALUE });
   }

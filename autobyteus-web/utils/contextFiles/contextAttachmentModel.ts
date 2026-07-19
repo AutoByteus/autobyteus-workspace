@@ -4,6 +4,7 @@ import type {
   UploadedContextAttachment,
 } from '~/types/conversation';
 import type { DraftContextFileOwnerDescriptor } from '~/utils/contextFiles/contextFileOwner';
+import { migrateContextLocalFileLocator } from '~/utils/contextFiles/contextLocalFileLocatorMigration';
 
 const UPLOADED_DRAFT_AGENT_ROUTE = /^\/rest\/drafts\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_DRAFT_TEAM_ROUTE =
@@ -191,7 +192,7 @@ export const createUploadedContextAttachment = (input: {
   type: input.type,
 });
 
-export const createExternalUrlContextAttachment = (input: {
+const createExternalUrlContextAttachment = (input: {
   locator: string;
   type: ContextAttachmentType;
   displayName?: string;
@@ -211,6 +212,24 @@ export const hydrateContextAttachment = (input: {
 }): ContextAttachment => {
   const locator = input.locator.trim();
   const type = input.type ? inferContextAttachmentType(locator, input.type) : inferContextAttachmentType(locator);
+  const localFileMigration = migrateContextLocalFileLocator(locator);
+  if (localFileMigration.kind === 'canonical' || localFileMigration.kind === 'migrated') {
+    return createExternalUrlContextAttachment({
+      locator: localFileMigration.locator,
+      type,
+      displayName: input.displayName ?? getLocatorBasename(locator),
+    });
+  }
+  if (localFileMigration.kind === 'unsupported') {
+    return {
+      kind: 'unsupported_local_file',
+      id: locator,
+      locator,
+      displayName: input.displayName ?? getLocatorBasename(locator),
+      type,
+    };
+  }
+
   const uploaded = parseUploadedLocator(locator);
   if (uploaded) {
     return createUploadedContextAttachment({
@@ -229,8 +248,7 @@ export const hydrateContextAttachment = (input: {
     locator.startsWith('https://') ||
     locator.startsWith('/rest/') ||
     locator.startsWith('rest/') ||
-    locator.startsWith('file://') ||
-    locator.startsWith('local-file://')
+    locator.startsWith('file://')
   ) {
     return createExternalUrlContextAttachment({
       locator,
@@ -287,4 +305,5 @@ export const coerceDraftUploadedContextAttachment = (
 export const isImageContextAttachment = (attachment: ContextAttachment): boolean => attachment.type === 'Image';
 
 export const isBrowserOpenableContextAttachment = (attachment: ContextAttachment): boolean =>
-  attachment.kind !== 'workspace_path' || hasScheme(attachment.locator) || attachment.locator.startsWith('/');
+  attachment.kind !== 'unsupported_local_file'
+  && (attachment.kind !== 'workspace_path' || hasScheme(attachment.locator) || attachment.locator.startsWith('/'));

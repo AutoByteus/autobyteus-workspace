@@ -2,6 +2,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { UserMessage } from '~/types/conversation';
 import type { UserMessageProjectionPayload } from '../protocol/messageTypes';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import { isExecutableContextAttachment } from '~/utils/contextFiles/contextAttachmentSend';
 
 const toTimestamp = (value?: string | null): Date => {
   if (!value) {
@@ -64,9 +65,9 @@ export const buildUserMessageFromProjectionPayload = (
 export const upsertUserMessageByIdentity = (input: {
   context: AgentContext;
   userMessage: UserMessage;
-  preserveExistingContextFilesWhenIncomingEmpty?: boolean;
+  retainExistingNonExecutableContextFiles?: boolean;
 }): void => {
-  const { context, userMessage, preserveExistingContextFilesWhenIncomingEmpty = false } = input;
+  const { context, userMessage, retainExistingNonExecutableContextFiles = false } = input;
   const existingIndex = findExistingMessageIndex(
     context.conversation.messages,
     userMessage.messageId ?? '',
@@ -76,12 +77,9 @@ export const upsertUserMessageByIdentity = (input: {
     const existing = context.conversation.messages[existingIndex];
     const existingContextFilePaths = existing.type === 'user' ? existing.contextFilePaths ?? [] : [];
     const incomingContextFilePaths = userMessage.contextFilePaths ?? [];
-    const contextFilePaths =
-      preserveExistingContextFilesWhenIncomingEmpty &&
-      existingContextFilePaths.length > 0 &&
-      incomingContextFilePaths.length === 0
-        ? existingContextFilePaths
-        : incomingContextFilePaths;
+    const contextFilePaths = retainExistingNonExecutableContextFiles
+      ? mergeMemberEchoContextFiles(incomingContextFilePaths, existingContextFilePaths)
+      : incomingContextFilePaths;
 
     context.conversation.messages[existingIndex] = {
       ...existing,
@@ -91,4 +89,27 @@ export const upsertUserMessageByIdentity = (input: {
   } else {
     context.conversation.messages.push(userMessage);
   }
+};
+
+const getContextAttachmentIdentity = (
+  attachment: NonNullable<UserMessage['contextFilePaths']>[number],
+): string => attachment.id?.trim() || `${attachment.kind}:${attachment.locator}`;
+
+const mergeMemberEchoContextFiles = (
+  incoming: NonNullable<UserMessage['contextFilePaths']>,
+  existing: NonNullable<UserMessage['contextFilePaths']>,
+): NonNullable<UserMessage['contextFilePaths']> => {
+  const merged = [
+    ...incoming,
+    ...existing.filter((attachment) => !isExecutableContextAttachment(attachment)),
+  ];
+  const seen = new Set<string>();
+  return merged.filter((attachment) => {
+    const identity = getContextAttachmentIdentity(attachment);
+    if (seen.has(identity)) {
+      return false;
+    }
+    seen.add(identity);
+    return true;
+  });
 };

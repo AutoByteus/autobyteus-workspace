@@ -1,8 +1,8 @@
 import { protocol } from 'electron';
 import { logger } from '../logger';
 import { createLocalFileResponse } from './local-file-response';
+import { LOCAL_FILE_SCHEME } from '../../shared/localFileUrl';
 
-const LOCAL_FILE_SCHEME = 'local-file';
 const localFileProtocolLogger = logger.child('local-file-protocol');
 
 export function registerLocalFileProtocolScheme(): void {

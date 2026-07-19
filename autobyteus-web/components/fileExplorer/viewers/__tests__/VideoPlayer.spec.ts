@@ -62,19 +62,19 @@ describe('VideoPlayer media attempts', () => {
   });
 
   it('renders native controls without autoplay for an available source', () => {
-    resolvedUrl.value = 'local-file:///tmp/video.mp4';
-    const wrapper = mountSubject('local-file:///tmp/video.mp4');
+    resolvedUrl.value = 'local-file://local/tmp/video.mp4';
+    const wrapper = mountSubject('local-file://local/tmp/video.mp4');
     const video = wrapper.get('video');
 
-    expect(video.attributes('src')).toBe('local-file:///tmp/video.mp4');
+    expect(video.attributes('src')).toBe('local-file://local/tmp/video.mp4');
     expect(video.attributes()).toHaveProperty('controls');
     expect(video.attributes()).not.toHaveProperty('autoplay');
     expect(video.attributes('data-media-attempt')).toBe('0');
   });
 
   it('replaces a native media failure with a generic accessible Retry state', async () => {
-    resolvedUrl.value = 'local-file:///tmp/private-video.mp4';
-    const wrapper = mountSubject('local-file:///tmp/private-video.mp4');
+    resolvedUrl.value = 'local-file://local/tmp/private-video.mp4';
+    const wrapper = mountSubject('local-file://local/tmp/private-video.mp4');
 
     await wrapper.get('video').trigger('error');
 
@@ -97,8 +97,8 @@ describe('VideoPlayer media attempts', () => {
   });
 
   it('refreshes the resource and mounts a new media attempt on Retry', async () => {
-    resolvedUrl.value = 'local-file:///tmp/video.mp4';
-    const wrapper = mountSubject('local-file:///tmp/video.mp4');
+    resolvedUrl.value = 'local-file://local/tmp/video.mp4';
+    const wrapper = mountSubject('local-file://local/tmp/video.mp4');
     await wrapper.get('video').trigger('error');
 
     await wrapper.get('button').trigger('click');
@@ -109,15 +109,15 @@ describe('VideoPlayer media attempts', () => {
   });
 
   it('clears stale failure and starts a new attempt when the URL changes', async () => {
-    resolvedUrl.value = 'local-file:///tmp/first.mp4';
-    const wrapper = mountSubject('local-file:///tmp/first.mp4');
+    resolvedUrl.value = 'local-file://local/tmp/first.mp4';
+    const wrapper = mountSubject('local-file://local/tmp/first.mp4');
     await wrapper.get('video').trigger('error');
 
-    resolvedUrl.value = 'local-file:///tmp/second.mp4';
-    await wrapper.setProps({ url: 'local-file:///tmp/second.mp4' });
+    resolvedUrl.value = 'local-file://local/tmp/second.mp4';
+    await wrapper.setProps({ url: 'local-file://local/tmp/second.mp4' });
 
     const video = wrapper.get('video');
-    expect(video.attributes('src')).toBe('local-file:///tmp/second.mp4');
+    expect(video.attributes('src')).toBe('local-file://local/tmp/second.mp4');
     expect(video.attributes('data-media-attempt')).toBe('1');
     expect(wrapper.find('[role="alert"]').exists()).toBe(false);
   });

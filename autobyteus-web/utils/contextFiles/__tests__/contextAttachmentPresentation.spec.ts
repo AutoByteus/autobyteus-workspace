@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  createExternalUrlContextAttachment,
   createUploadedContextAttachment,
   createWorkspaceContextAttachment,
+  hydrateContextAttachment,
 } from '../contextAttachmentModel';
 import { contextAttachmentPresentation } from '../contextAttachmentPresentation';
 
@@ -67,7 +67,7 @@ describe('contextAttachmentPresentation.openAttachment', () => {
   });
 
   it('routes previewable external images into file preview when preferred', () => {
-    const attachment = createExternalUrlContextAttachment({
+    const attachment = hydrateContextAttachment({
       locator: 'https://cdn.example.com/image.png',
       displayName: 'image.png',
       type: 'Image',
@@ -83,6 +83,44 @@ describe('contextAttachmentPresentation.openAttachment', () => {
 
     expect(openFilePreview).toHaveBeenCalledWith('https://cdn.example.com/image.png', 'ws-1');
     expect(openWorkspaceFile).not.toHaveBeenCalled();
+    expect(openBrowserUrl).not.toHaveBeenCalled();
+  });
+
+  it('builds fixed-authority URLs for embedded absolute workspace images', () => {
+    const attachment = createWorkspaceContextAttachment('/Users/Normy/proof 100%#1.png', 'Image');
+
+    expect(contextAttachmentPresentation.resolveImagePreviewUrl(attachment, {
+      isEmbeddedElectronRuntime: true,
+    })).toBe('local-file://local/Users/Normy/proof%20100%25%231.png');
+  });
+
+  it('permits canonical external local-file URLs but never opens unsupported metadata', () => {
+    const canonical = hydrateContextAttachment({
+      locator: 'local-file://local/Users/Normy/proof%20100%25%231.png',
+      type: 'Image',
+    });
+    const unsupported = hydrateContextAttachment({
+      locator: 'local-file://opaque/image.png',
+      type: 'Image',
+    });
+
+    expect(contextAttachmentPresentation.isOpenable(canonical)).toBe(true);
+    expect(contextAttachmentPresentation.resolveImagePreviewUrl(canonical)).toBe(
+      'local-file://local/Users/Normy/proof%20100%25%231.png',
+    );
+    expect(contextAttachmentPresentation.isOpenable(unsupported)).toBe(false);
+    expect(contextAttachmentPresentation.resolveImagePreviewUrl(unsupported)).toBeNull();
+
+    contextAttachmentPresentation.openAttachment(unsupported, {
+      workspaceId: 'ws-1',
+      openWorkspaceFile,
+      openFilePreview,
+      openBrowserUrl,
+      preferFileViewerForPreviewableImages: true,
+    });
+
+    expect(openWorkspaceFile).not.toHaveBeenCalled();
+    expect(openFilePreview).not.toHaveBeenCalled();
     expect(openBrowserUrl).not.toHaveBeenCalled();
   });
 

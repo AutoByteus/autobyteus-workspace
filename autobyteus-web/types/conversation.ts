@@ -44,10 +44,19 @@ export type ExternalUrlContextAttachment = {
   type: ContextAttachmentType;
 };
 
+export type UnsupportedLocalFileContextAttachment = {
+  kind: 'unsupported_local_file';
+  id: string;
+  locator: string;
+  displayName: string;
+  type: ContextAttachmentType;
+};
+
 export type ContextAttachment =
   | WorkspaceContextAttachment
   | UploadedContextAttachment
-  | ExternalUrlContextAttachment;
+  | ExternalUrlContextAttachment
+  | UnsupportedLocalFileContextAttachment;
 
 export type ContextFilePath = ContextAttachment;
 

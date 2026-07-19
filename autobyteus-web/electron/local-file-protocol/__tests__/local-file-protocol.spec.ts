@@ -58,7 +58,7 @@ describe('local-file protocol lifecycle', () => {
     const handler = protocolMocks.handle.mock.calls[0][1] as (
       request: Request,
     ) => Promise<Response>;
-    const request = new Request('local-file:///tmp/video.mp4');
+    const request = new Request('local-file://local/tmp/video.mp4');
     await expect(handler(request)).resolves.toBe(expectedResponse);
     expect(protocolMocks.createLocalFileResponse).toHaveBeenCalledWith(request);
   });
@@ -70,7 +70,7 @@ describe('local-file protocol lifecycle', () => {
       request: Request,
     ) => Promise<Response>;
 
-    const response = await handler(new Request('local-file:///tmp/video.mp4'));
+    const response = await handler(new Request('local-file://local/tmp/video.mp4'));
 
     expect(response.status).toBe(404);
     expect(response.body).toBeNull();

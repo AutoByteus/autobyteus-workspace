@@ -5,6 +5,7 @@ import { useAgentContextsStore } from '../agentContextsStore';
 import { AgentStreamingService } from '~/services/agentStreaming';
 import { PrepareAgentRun } from '~/graphql/mutations/agentMutations';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
 const {
   mutateMock,
@@ -212,6 +213,36 @@ describe('agentRunStore', () => {
             messageId: expect.stringMatching(/^client_/),
             dedupeKey: expect.stringMatching(/^agent_run_input:perm-agent-id:client_/),
           }),
+        );
+    });
+
+    it('retains mixed unsupported metadata locally while sending only executable agent attachments', async () => {
+        const validFile = hydrateContextAttachment({ locator: '/tmp/spec.md', type: 'Markdown' });
+        const validImage = hydrateContextAttachment({ locator: 'https://cdn.example/proof.png', type: 'Image' });
+        const unsupportedImage = hydrateContextAttachment({
+          locator: 'local-file://opaque/image.png',
+          type: 'Image',
+        });
+        const unsupportedVideo = hydrateContextAttachment({
+          locator: 'local-file://opaque/video.mp4',
+          type: 'Video',
+        });
+        mockAgentContext.contextFilePaths = [validFile, unsupportedImage, validImage, unsupportedVideo];
+        const store = useAgentRunStore();
+
+        await store.sendUserInputAndSubscribe();
+
+        expect(mockAgentContext.state.conversation.messages[0].contextFilePaths).toEqual([
+          validFile,
+          unsupportedImage,
+          validImage,
+          unsupportedVideo,
+        ]);
+        expect(mockSendMessage).toHaveBeenCalledWith(
+          'do something',
+          ['/tmp/spec.md'],
+          ['https://cdn.example/proof.png'],
+          expect.objectContaining({ messageId: expect.stringMatching(/^client_/) }),
         );
     });
 

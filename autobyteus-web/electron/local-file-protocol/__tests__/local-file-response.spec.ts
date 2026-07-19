@@ -4,21 +4,10 @@ import type { FileHandle } from 'fs/promises';
 import * as os from 'os';
 import * as path from 'path';
 import { createFileByteStream } from '../file-byte-stream';
-import {
-  createLocalFileResponse,
-  decodeLocalFilePath,
-} from '../local-file-response';
+import { createLocalFileResponse } from '../local-file-response';
+import { buildLocalFileUrl, parseLocalFileUrl } from '../../../shared/localFileUrl';
 
 const temporaryPaths: string[] = [];
-
-const buildLocalFileUrl = (filePath: string): string => {
-  const normalized = filePath.replace(/\\/g, '/');
-  const segments = normalized.split('/');
-  const encoded = segments.map((segment, index) => (
-    index === 0 && /^[A-Za-z]:$/.test(segment) ? segment : encodeURIComponent(segment)
-  )).join('/');
-  return `local-file://${encoded}`;
-};
 
 const createTemporaryFile = async (
   name: string,
@@ -148,6 +137,9 @@ describe('local-file response policy', () => {
       new Request('https://example.com/video.mp4'),
       new Request('local-file:///%E0%A4%A'),
       new Request('local-file://relative/video.mp4'),
+      new Request('local-file://wrong/tmp/video.mp4'),
+      new Request(`${buildLocalFileUrl(filePath)}?download=1`),
+      new Request(`${buildLocalFileUrl(filePath)}#fragment`),
       new Request(buildLocalFileUrl(directoryPath)),
       new Request(buildLocalFileUrl(path.join(directoryPath, 'missing.mp4'))),
     ];
@@ -156,11 +148,12 @@ describe('local-file response policy', () => {
 
     expect(responses[0].status).toBe(405);
     expect(responses[0].headers.get('allow')).toBe('GET, HEAD');
-    expect(decodeLocalFilePath('local-file://relative/video.mp4')).toBeNull();
     for (const response of responses) {
       expect(response.body).toBeNull();
     }
-    expect(responses.slice(1).map((response) => response.status)).toEqual([404, 404, 404, 404, 404]);
+    expect(responses.slice(1).map((response) => response.status)).toEqual([
+      404, 404, 404, 404, 404, 404, 404, 404,
+    ]);
   });
 
   it('preserves spaces, Unicode, percent signs, hashes, and Windows drive URL shape', async () => {
@@ -170,7 +163,7 @@ describe('local-file response policy', () => {
 
     expect(response.status).toBe(200);
     expect(await response.text()).toBe('video');
-    expect(decodeLocalFilePath('local-file://C:/Media/My%20Video%25%231.mp4'))
+    expect(parseLocalFileUrl('local-file://local/C:/Media/My%20Video%25%231.mp4', 'win32'))
       .toBe('C:/Media/My Video%#1.mp4');
   });
 });
