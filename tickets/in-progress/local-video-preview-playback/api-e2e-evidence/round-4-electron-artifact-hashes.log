@@ -1,0 +1,5 @@
+canonical_attempt=2
+canonical_result_sha256=be811ef5d059926408ec54502835210a31f59f33b3109a498899994539a9b25c
+canonical_probe_log_sha256=220398fa1e2b903a2c5fbe75ac2e214ec71d15fd6fab4f51cf625d51841e8b99
+witness_summary_sha256=c7fcfb9c7e115a5674653bbb6dfe987c10a586be2aebd2473186c7cb4f60de16
+result=Pass scenarios=E2E-REG-001:Pass,E2E-PROTO-001:Pass,E2E-SEC-001:Pass,E2E-VID-001:Pass,E2E-VID-002:Pass,E2E-UI-001:Pass gateDecisions=54 handlerRequests=49

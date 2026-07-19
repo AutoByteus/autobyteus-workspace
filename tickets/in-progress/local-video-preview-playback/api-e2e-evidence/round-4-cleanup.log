@@ -1,0 +1,18 @@
+timestamp=2026-07-19T07:24:59Z
+fixture_root=/tmp/autobyteus-local-preview-round4.GU45fx
+fixture_root_existed_before=true
+port_43192_before_cleanup:
+probe_owned_open_files_before_cleanup:
+user_autobyteus_main_process_preserved:
+ 3405     1 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+source_video_hashes_before_cleanup:
+613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4
+5051a147ae47073072ee9d75092a4f1fd3df0cc510f58cd75b682b505cf549b3  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4
+fixture_root_exists_after=false
+port_43192_after_cleanup:
+temporary_source_page_exists_after=false
+reported_video_fds_after=0
+large_video_fds_after=0
+user_autobyteus_main_process_after:
+ 3405     1 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+git_diff_check:

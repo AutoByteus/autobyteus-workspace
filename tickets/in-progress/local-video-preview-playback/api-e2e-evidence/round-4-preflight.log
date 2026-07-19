@@ -1,0 +1,88 @@
+timestamp=2026-07-19T07:18:35Z
+head=99b8e465de6e6369fc101262db1af9b22f8c92a1
+branch=codex/local-video-preview-playback
+electron_version=
+reported_video_sha256=613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c
+large_video_sha256=5051a147ae47073072ee9d75092a4f1fd3df0cc510f58cd75b682b505cf549b3
+existing_electron_like_processes:
+683 /Library/SystemExtensions/9B38F61B-A3D5-4F32-B2C8-927C96107BF8/org.autobyteus.phoneavbridge.camera.extension.systemextension/Contents/MacOS/org.autobyteus.phoneavbridge.camera.extension
+3405 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+3407 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=network.mojom.NetworkService --lang=de --service-sandbox-type=network --user-data-dir=/Users/normy/Library/Application Support/autobyteus --shared-files --field-trial-handle=1718379636,r,2279435159167550102,2502865182363073638,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,13126785412271960665,9820430555275344577,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=31
+3410 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1784076128292376 --launch-time-ticks=329481892111 --shared-files --field-trial-handle=1718379636,r,2279435159167550102,2502865182363073638,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,13126785412271960665,9820430555275344577,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=64
+4013 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+4136 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=audio.mojom.AudioService --lang=de --service-sandbox-type=audio --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --shared-files --field-trial-handle=1718379636,r,2279435159167550102,2502865182363073638,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,13126785412271960665,9820430555275344577,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=65
+4138 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=video_capture.mojom.VideoCaptureService --lang=de --service-sandbox-type=none --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --shared-files --field-trial-handle=1718379636,r,2279435159167550102,2502865182363073638,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,13126785412271960665,9820430555275344577,4 --trace-process-track-uuid=3190708991934122588
+5618 /Applications/LM Studio.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler --no-rate-limit --no-upload-gzip --monitor-self-annotation=ptype=crashpad-handler --database=/Users/normy/Library/Application Support/LM Studio/Crashpad --annotation=_productName=LM Studio --annotation=_version=0.4.14+4 --annotation=plat=OS X --annotation=prod=Electron --annotation=ver=38.6.0 --handshake-fd=17
+10848 /Applications/Discord.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler --no-rate-limit --monitor-self-annotation=ptype=crashpad-handler --database=/Users/normy/Library/Application Support/discord/Crashpad --url=https://f.a.k/e --annotation=_productName=discord --annotation=_version=0.0.401 --annotation=plat=OS X --annotation=prod=Electron --annotation=ver=37.6.0 --handshake-fd=17
+22591 /Users/normy/.hermes/node/bin/node /Users/normy/2026-07-18-hackathon/autobyteus-server-ts/dist/application-engine/worker/application-worker-entry.js
+22598 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=9 --time-ticks-at-unix-epoch=-1784076128292376 --launch-time-ticks=333051858870 --shared-files --field-trial-handle=1718379636,r,2279435159167550102,2502865182363073638,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,13126785412271960665,9820430555275344577,4 --trace-process-track-uuid=3190708994745248135 --seatbelt-client=108
+29768 /bin/bash -lc set -o pipefail
+EVID=tickets/in-progress/local-video-preview-playback/api-e2e-evidence
+{
+  echo "timestamp=$(date -u +%FT%TZ)"
+  echo "head=$(git rev-parse HEAD)"
+  echo "branch=$(git branch --show-current)"
+  echo "electron_version=$(node -p \"require('./autobyteus-web/node_modules/electron/package.json').version\")"
+  echo "reported_video_sha256=$(shasum -a 256 /Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4 | awk '{print $1}')"
+  echo "large_video_sha256=$(shasum -a 256 /Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4 | awk '{print $1}')"
+  echo "existing_electron_like_processes:"
+  pgrep -afil 'AutoByteus|Electron|nuxt.*43192|round-4-electron-probe' || true
+  echo "port_43192_listeners:"
+  lsof -nP -iTCP:43192 -sTCP:LISTEN || true
+  echo "fixture_tools:"
+  command -v ffmpeg || true
+  python3 - <<'PY'
+for name in ['PIL','reportlab','openpyxl']:
+    try:
+        module=__import__(name)
+        print(f'{name}={getattr(module, "__version__", "available")}')
+    except Exception as e:
+        print(f'{name}=missing:{e}')
+PY
+} | tee "$EVID/round-4-preflight.log"
+30081 /bin/bash -lc set -o pipefail
+EVID=tickets/in-progress/local-video-preview-playback/api-e2e-evidence
+{
+  echo "timestamp=$(date -u +%FT%TZ)"
+  echo "head=$(git rev-parse HEAD)"
+  echo "branch=$(git branch --show-current)"
+  echo "electron_version=$(node -p \"require('./autobyteus-web/node_modules/electron/package.json').version\")"
+  echo "reported_video_sha256=$(shasum -a 256 /Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4 | awk '{print $1}')"
+  echo "large_video_sha256=$(shasum -a 256 /Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4 | awk '{print $1}')"
+  echo "existing_electron_like_processes:"
+  pgrep -afil 'AutoByteus|Electron|nuxt.*43192|round-4-electron-probe' || true
+  echo "port_43192_listeners:"
+  lsof -nP -iTCP:43192 -sTCP:LISTEN || true
+  echo "fixture_tools:"
+  command -v ffmpeg || true
+  python3 - <<'PY'
+for name in ['PIL','reportlab','openpyxl']:
+    try:
+        module=__import__(name)
+        print(f'{name}={getattr(module, "__version__", "available")}')
+    except Exception as e:
+        print(f'{name}=missing:{e}')
+PY
+} | tee "$EVID/round-4-preflight.log"
+32196 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=10 --time-ticks-at-unix-epoch=-1784076128292376 --launch-time-ticks=333699904199 --shared-files --field-trial-handle=1718379636,r,2279435159167550102,2502865182363073638,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,13126785412271960665,9820430555275344577,4 --trace-process-track-uuid=3190708995682289984 --seatbelt-client=108
+34530 /Applications/Visual Studio Code.app/Contents/MacOS/Code /Users/normy/.autobyteus/server-data/memory/agents/daily_assistant_07217644a14d4fac8379ed3c4d30201b/work_traces/work_trace_active.md
+34533 /Applications/Visual Studio Code.app/Contents/Frameworks/Electron Framework.framework/Helpers/chrome_crashpad_handler --no-rate-limit --monitor-self-annotation=ptype=crashpad-handler --database=/Users/normy/Library/Application Support/Code/Crashpad --url=appcenter://code?aid=de75e3cc-e22f-4f42-a03f-1409c21d8af8&uid=fb9e5282-7008-48d9-915b-ac192207afa8&iid=fb9e5282-7008-48d9-915b-ac192207afa8&sid=fb9e5282-7008-48d9-915b-ac192207afa8 --annotation=_companyName=Microsoft --annotation=_productName=VSCode --annotation=_version=1.128.0 --annotation=plat=OS X --annotation=prod=Electron --annotation=ver=42.5.0 --handshake-fd=21
+44104 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /Users/normy/.autobyteus/extensions/voice-input/runtime/voice_input_worker.py serve --backend mlx --model-path /Users/normy/.autobyteus/extensions/voice-input/models/whisper-small-mlx
+52102 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=gpu-process --user-data-dir=/Users/normy/Library/Application Support/autobyteus --gpu-preferences=SAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=1718379636,r,2279435159167550102,2502865182363073638,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,13126785412271960665,9820430555275344577,4 --trace-process-track-uuid=3190708998493415531 --seatbelt-client=45
+56129 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=8 --time-ticks-at-unix-epoch=-1784076128292376 --launch-time-ticks=330841309486 --shared-files --field-trial-handle=1718379636,r,2279435159167550102,2502865182363073638,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,13126785412271960665,9820430555275344577,4 --trace-process-track-uuid=3190708993808206286 --seatbelt-client=74
+60663 uv --directory /Users/normy/autobyteus_org/autobyteus_mcps/video-audio-mcp run server.py
+60664 /Users/normy/autobyteus_org/autobyteus_mcps/video-audio-mcp/.venv/bin/python3 server.py
+78668 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=14 --time-ticks-at-unix-epoch=-1784076128292376 --launch-time-ticks=365314240740 --shared-files --field-trial-handle=1718379636,r,2279435159167550102,2502865182363073638,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,13126785412271960665,9820430555275344577,4 --trace-process-track-uuid=3190708999430457380 --seatbelt-client=46
+83899 uv --directory /Users/normy/autobyteus_org/autobyteus_mcps/video-audio-mcp run server.py
+83900 /Users/normy/autobyteus_org/autobyteus_mcps/video-audio-mcp/.venv/bin/python3 server.py
+94307 /Users/normy/.hermes/node/bin/node /Users/normy/2026-07-18-hackathon/autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 8000 --data-dir /Users/normy/2026-07-18-hackathon/applications/evidence-desk/.local-web/autobyteus-data
+94451 /Users/normy/.hermes/node/bin/node /Users/normy/2026-07-18-hackathon/autobyteus-server-ts/dist/application-engine/worker/application-worker-entry.js
+port_43192_listeners:
+fixture_tools:
+/opt/homebrew/bin/ffmpeg
+PIL=11.3.0
+reportlab=4.5.1
+openpyxl=3.1.5
+
+corrected_electron_version=42.4.1
+fixture_root=/tmp/autobyteus-local-preview-round4.GU45fx
