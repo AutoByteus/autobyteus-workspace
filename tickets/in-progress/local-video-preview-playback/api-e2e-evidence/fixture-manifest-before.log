@@ -1,0 +1,17 @@
+fixture_root=/tmp/autobyteus-local-preview-api-e2e.bFm5Zm
+/tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe workbook.xlsx|15929|-rw-r--r--
+/tmp/autobyteus-local-preview-api-e2e.bFm5Zm/视频 100%#1.bin|10|-rw-r--r--
+/tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe notes.md|37|-rw-r--r--
+/tmp/autobyteus-local-preview-api-e2e.bFm5Zm/unreadable.bin|10|----------
+/tmp/autobyteus-local-preview-api-e2e.bFm5Zm/a-directory|64|drwxr-xr-x
+/tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe document.pdf|1369|-rw-r--r--
+/tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe image.png|77|-rw-r--r--
+/tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe audio.wav|264678|-rw-r--r--
+72ec9529b2ed67375cf341610a7bf0215b1ddcee0aceeedb7920a2122573ebf9  /tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe audio.wav
+025558abefb7f3ab16fde530e5c4ce20033f3d2b57ed8d351d78b8780333eb01  /tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe document.pdf
+ded91b73f3fe9575b09ef26bd2afbcd7200bd4b1c543676c31210923827efaf8  /tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe image.png
+1d7cb17dd0ddb3a4d50a1837fc66e8766dda067133c9fd0d31e17d41f4190c0d  /tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe notes.md
+b073a94e0a38d318318180eb61dc799c0c80c3618fa7698716f341f72ca93dfe  /tmp/autobyteus-local-preview-api-e2e.bFm5Zm/probe workbook.xlsx
+84d89877f0d4041efb6bf91a16f0248f2fd573e6af05c19f96bedb9f882f7882  /tmp/autobyteus-local-preview-api-e2e.bFm5Zm/视频 100%#1.bin
+/tmp/autobyteus-local-preview-api-e2e.bFm5Zm/unsupported video.mp4|11|-rw-r--r--
+f8a69ede5e62175fdb7dabb3dc7ef0b22d72e608aa5c3b836f2b18e1b86e1297  /tmp/autobyteus-local-preview-api-e2e.bFm5Zm/unsupported video.mp4

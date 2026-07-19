@@ -1,0 +1,526 @@
+{
+  "schemaVersion": 1,
+  "mode": "fixed_authority_standard_stream",
+  "privileges": {
+    "standard": true,
+    "stream": true
+  },
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "pageUrl": "http://127.0.0.1:64412/probe"
+  },
+  "sources": [
+    {
+      "id": "exact",
+      "path": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "rawUrl": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "seekTime": 120
+    },
+    {
+      "id": "url-significant",
+      "path": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case Ünicode 100%# folder/Video Case 100%# Copy.mp4",
+      "rawUrl": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "seekTime": 120
+    },
+    {
+      "id": "large",
+      "path": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "rawUrl": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "seekTime": 1800
+    }
+  ],
+  "handlerRequests": [
+    {
+      "source": "exact",
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4"
+      },
+      "response": {
+        "status": 206,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-length": "13620424",
+          "content-range": "bytes 0-13620423/13620424",
+          "content-type": "video/mp4"
+        }
+      },
+      "translatedRequestUrl": "local-file:///Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4"
+    },
+    {
+      "source": "url-significant",
+      "url": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4"
+      },
+      "response": {
+        "status": 206,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-length": "13620424",
+          "content-range": "bytes 0-13620423/13620424",
+          "content-type": "video/mp4"
+        }
+      },
+      "translatedRequestUrl": "local-file:///Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4"
+    },
+    {
+      "source": "large",
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4"
+      },
+      "response": {
+        "status": 206,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-length": "607568129",
+          "content-range": "bytes 0-607568128/607568129",
+          "content-type": "video/mp4"
+        }
+      },
+      "translatedRequestUrl": "local-file:///Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4"
+    },
+    {
+      "source": "large",
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525303808-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4"
+      },
+      "response": {
+        "status": 206,
+        "headers": {
+          "accept-ranges": "bytes",
+          "cache-control": "no-store",
+          "content-length": "82264321",
+          "content-range": "bytes 525303808-607568128/607568129",
+          "content-type": "video/mp4"
+        }
+      },
+      "translatedRequestUrl": "local-file:///Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4"
+    }
+  ],
+  "rendererResults": [
+    {
+      "rawUrl": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "attributeSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "propertySrcBeforeLoad": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "events": [
+        {
+          "name": "loadstart",
+          "readyState": 0,
+          "networkState": 2,
+          "duration": "NaN",
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "durationchange",
+          "readyState": 1,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "loadedmetadata",
+          "readyState": 1,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "play",
+          "readyState": 1,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "canplay",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 0.00016,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "playing",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 0.000182,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "pause",
+          "readyState": 1,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "seeking",
+          "readyState": 1,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "seeked",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "canplay",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120.000004,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "play",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120.000033,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        {
+          "name": "playing",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120.000066,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        }
+      ],
+      "propertySrcAfterLoad": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "currentSrcAfterLoad": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "metadata": {
+        "kind": "loadedmetadata"
+      },
+      "duration": 330.533333,
+      "error": null,
+      "playbackTime": 0.651493,
+      "seek": {
+        "kind": "seeked"
+      },
+      "seekedTime": 120,
+      "seekError": null,
+      "afterSeekPlaybackTime": 120.450977,
+      "id": "exact"
+    },
+    {
+      "rawUrl": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "attributeSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "propertySrcBeforeLoad": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "events": [
+        {
+          "name": "loadstart",
+          "readyState": 0,
+          "networkState": 2,
+          "duration": "NaN",
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "durationchange",
+          "readyState": 1,
+          "networkState": 2,
+          "duration": 330.533333,
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "loadedmetadata",
+          "readyState": 1,
+          "networkState": 2,
+          "duration": 330.533333,
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "play",
+          "readyState": 1,
+          "networkState": 2,
+          "duration": 330.533333,
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "canplay",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 0.000108,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "playing",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 0.00012,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "pause",
+          "readyState": 1,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "seeking",
+          "readyState": 1,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "seeked",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "canplay",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120.000031,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "play",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120.000064,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        },
+        {
+          "name": "playing",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 120.000099,
+          "currentSrc": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+          "error": null
+        }
+      ],
+      "propertySrcAfterLoad": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "currentSrcAfterLoad": "local-file://local/Users/normy/autobyteus-local-url-probe.eTsa4C/Case%20%C3%9Cnicode%20100%25%23%20folder/Video%20Case%20100%25%23%20Copy.mp4",
+      "metadata": {
+        "kind": "loadedmetadata"
+      },
+      "duration": 330.533333,
+      "error": null,
+      "playbackTime": 0.650478,
+      "seek": {
+        "kind": "seeked"
+      },
+      "seekedTime": 120,
+      "seekError": null,
+      "afterSeekPlaybackTime": 120.451388,
+      "id": "url-significant"
+    },
+    {
+      "rawUrl": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "attributeSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "propertySrcBeforeLoad": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "events": [
+        {
+          "name": "loadstart",
+          "readyState": 0,
+          "networkState": 2,
+          "duration": "NaN",
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "durationchange",
+          "readyState": 1,
+          "networkState": 2,
+          "duration": 2063.066667,
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "loadedmetadata",
+          "readyState": 1,
+          "networkState": 2,
+          "duration": 2063.066667,
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "play",
+          "readyState": 1,
+          "networkState": 2,
+          "duration": 2063.066667,
+          "currentTime": 0,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "canplay",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 2063.066667,
+          "currentTime": 0.000138,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "playing",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 2063.066667,
+          "currentTime": 0.000151,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "pause",
+          "readyState": 1,
+          "networkState": 1,
+          "duration": 2063.066667,
+          "currentTime": 1800,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "seeking",
+          "readyState": 1,
+          "networkState": 1,
+          "duration": 2063.066667,
+          "currentTime": 1800,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "seeked",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 2063.066667,
+          "currentTime": 1800,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "canplay",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 2063.066667,
+          "currentTime": 1800.000006,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "play",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 2063.066667,
+          "currentTime": 1800.00004,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        {
+          "name": "playing",
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 2063.066667,
+          "currentTime": 1800.000074,
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        }
+      ],
+      "propertySrcAfterLoad": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "currentSrcAfterLoad": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "metadata": {
+        "kind": "loadedmetadata"
+      },
+      "duration": 2063.066667,
+      "error": null,
+      "playbackTime": 0.651254,
+      "seek": {
+        "kind": "seeked"
+      },
+      "seekedTime": 1800,
+      "seekError": null,
+      "afterSeekPlaybackTime": 1800.450626,
+      "id": "large"
+    }
+  ],
+  "rendererConsole": [
+    {
+      "level": 2,
+      "message": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged."
+    }
+  ],
+  "result": "Pass",
+  "finishedAt": "2026-07-18T08:37:00.846Z"
+}

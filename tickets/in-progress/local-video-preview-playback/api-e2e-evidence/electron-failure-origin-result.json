@@ -1,0 +1,43 @@
+{
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "productionUrl": "local-file:///Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+  "nodeParsedProductionUrl": {
+    "href": "local-file:///Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+    "hostname": "",
+    "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4"
+  },
+  "handlerRequests": [
+    {
+      "url": "local-file://users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "hostname": "users",
+        "pathname": "/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4"
+      }
+    }
+  ],
+  "domOutcome": {
+    "kind": "alert",
+    "text": "This video could not be played.Retry",
+    "videoPresent": false,
+    "buttonText": "Retry"
+  },
+  "reproduction": {
+    "ticketScenarioResult": "Fail",
+    "expected": "finite metadata around 330.533333s",
+    "observed": {
+      "kind": "alert",
+      "text": "This video could not be played.Retry",
+      "videoPresent": false,
+      "buttonText": "Retry"
+    },
+    "canonicalizationMismatch": true
+  }
+}

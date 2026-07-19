@@ -5,211 +5,243 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/runtime-probe-evidence.md`
-- Current Review Round: `1`
-- Trigger: Initial architecture review after explicit requirements approval and completed solution package.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
-- Current-State Evidence Basis: Reviewed the four upstream artifacts; inspected the task-base implementations of `electron/main.ts`, `electron/localFileValidation.ts`, File Explorer local URL construction/routing, `VideoPlayer.vue`, `useAuthorizedObjectUrl.ts`, file-type policy, package/build configuration, localization/test locations, and existing validation tests; confirmed the Electron lifecycle and media-streaming contract against the [official Electron protocol API](https://www.electronjs.org/docs/latest/api/protocol/).
+- Supplemental Task Artifacts Reviewed:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/runtime-probe-evidence.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/url-identity-probe-evidence.md`
+- Current Review Round: `5`
+- Trigger: Explicit user approval resolving round-4 `AR-004`; the technically accepted round-4 design is unchanged.
+- Prior Review Round Reviewed: `4`
+- Latest Authoritative Round: `5`
+- Current-State Evidence Basis: Approved user decision as reported by the solution designer; cumulative requirements/investigation/design package; exact Electron 42.4.1 evidence; current web attachment model/submission/projection paths; server/runtime executable-context behavior; prior implementation, source-review, and API/E2E reports.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial review of approved package | N/A | None | Pass | Yes | Behavior basis, production paths, ownership, response contract, cleanup model, UI recovery, and validation plan are implementation-ready. |
+| 1 | Initial approved solution package | N/A | None | `Pass` | No | Superseded after realistic Electron execution exposed the standard-scheme URL-identity conflict. |
+| 2 | Revised fixed-authority package after `CR-001` | N/A | `AR-001`, `AR-002` | `Fail` / `Requirement Gap` | No | Required the raw external-locator transition and observable handler contract. |
+| 3 | Revised migration/current-model package | `AR-001`, `AR-002` | `AR-003` | `Fail` / `Design Impact` | No | Unsupported current state still entered executable attachment transport. |
+| 4 | Revised submission-plan/live-projection package | `AR-003` | `AR-004` | `Fail` / `Requirement Gap` | No | `AR-003` is technically resolved. The package introduced a visible current-session-only retention outcome for newly unsupported metadata without explicit user approval. |
+| 5 | Explicit user choice of Option 1 for newly unsupported metadata | `AR-004` | None | `Pass` | Yes | User approved current-session/live-echo retention with fresh-reload disappearance; valid attachment durability remains unchanged. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
-`N/A` — first review round.
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 2 | `AR-001` | High | `Remains Resolved` | Valid legacy raw locators transition through the isolated hydrator migration into current canonical state; historical records remain readable; the protocol remains current-only. | No regression in round 5. |
+| 2 | `AR-002` | High | `Remains Resolved` | Requirements and design retain the proven split between raw-ingress enforcement and normalized-handler guarantees. | No regression in round 5. |
+| 3 | `AR-003` | High | `Resolved` | DS-006 now reaches `planContextAttachmentSubmission`, both run stores, executable WebSocket arrays, local-message retention, identity-matched member echo, and historical reload. The plan excludes `unsupported_local_file` from both executable arrays regardless of type while preserving eligible routing. | The structural correction is bounded, owned, and actionable. |
+| 4 | `AR-004` | Medium | `Resolved` | Requirements record the two presented options and the user's 2026-07-18 response, “okayyy. lets og with option 1.” Investigation notes retain the decision source, and the design applies the approved current-session/live-echo plus fresh-reload lifecycle without changing valid locator durability. | No metadata-only transport is required; executable quarantine remains mandatory. |
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: Supported local videos must load finite metadata and support play, pause, and seek; video failures must become a localized accessible alert with Retry; the trusted regular-file validation boundary and unrelated preview routes remain intact.
-- Relevant existing behavior and evidence confirmed: The current renderer reaches `<video>` through the existing encoded `local-file://` path. The task-base main process installs only a post-ready handler, omits privileged scheme registration, validates through `validateReadableRegularFile`, and then discards the observed media Range by returning `net.fetch(file:)`. `VideoPlayer.vue` does not observe native media errors. Same-version runtime evidence proves the privilege and range/cancellation effects.
-- Approved change, preserved behavior, and outside scope understood: The design adds the minimum standard/streaming privileges, validation-first full/single-range responses, cancel-safe bounded file streaming, and viewer-local recovery. Codec additions, autoplay, transcoding, server transport, unrestricted `file://`, whole-file Blob buffering, and unrelated viewer refactors remain outside scope.
+- Approved requirements / intended behavior understood: The user explicitly approved supported-video metadata/play/pause/seek, accessible failure-with-Retry, and Option 1 for newly unsupported locator metadata: current-session/live-echo retention with fresh-reload disappearance. Valid legacy/canonical locator durability remains unchanged.
+- Relevant existing behavior and evidence confirmed: A non-media unsupported locator such as `local-file://opaque/note.txt` can currently pass the type-only `context_file_paths` path, remain a URL-valued `ContextFile`, avoid media normalization, and survive the message/projection lifecycle as metadata. The round-4 target deliberately stops that durable write.
+- Approved change, preserved behavior, and outside scope understood: The fixed-authority video/protocol behavior and executable-media quarantine are technically clear. No metadata-only web/server/core transport is in scope.
 - Remaining material ambiguity, if any: None.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | Pass | Pass | Pass | Confirmed | None. DS-001 spans selection through the protocol boundary and Chromium playback/seek outcome. |
-| BEH-002 | User | Pass | Pass | Pass | Confirmed | None. DS-002 and DS-003 define failure propagation and a genuinely fresh retry attempt. |
-| BEH-003 | Contract | Pass | Pass | Pass | Confirmed | None. DS-004 makes validation, range planning, byte-window ownership, and cleanup explicit. |
-| BEH-004 | Contract | Pass | Pass | Pass | Confirmed | None. DS-005 preserves shared-scheme consumers and the unchanged text path while requiring representative regression coverage. |
+| BEH-001 | User | Pass | Pass | Pass | Confirmed | None. |
+| BEH-002 | User | Pass | Pass | Pass | Confirmed | None. |
+| BEH-003 | Contract | Pass | Pass | Pass | Confirmed | None. |
+| BEH-004 | Contract | Pass | Pass | Pass | Confirmed | None. |
+| BEH-005 | User / persisted contract | Pass | Pass | Pass | Confirmed | None. |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `runtime-probe-evidence.md` | Pass | Pass | Pass | Pass | Pass | None. It is correctly treated as complete observed evidence with approval `N/A`, not as an intended-behavior supplement. |
+| `runtime-probe-evidence.md` | Pass | Pass | Pass | Pass | Pass | None. |
+| `url-identity-probe-evidence.md` | Pass | Pass | Pass | Pass | Pass | None. |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Requirements and design classify this as a bug fix with a bounded protocol/UI change. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | `Missing Invariant` is supported by current lifecycle code plus the Electron 42.4.1 privilege/range differential probes. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | `Refactor needed now: Yes`; the design rejects a flag-only patch and limits extraction to the local-file protocol capability. | None. |
-| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | The spec provides public/internal owners, dependency rules, file mapping, removals, sequence, tests, and realistic validation boundaries. | None. |
+| Assessment is present for the current task posture | Pass | Bug-fix posture and cumulative boundary/ownership causes are explicit. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | URL ownership, raw migration, and current submission eligibility are all tied to verified paths. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The bounded codec/migration/submission changes and preserved owners are explicit. | None. |
+| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | Spine, ownership, interfaces, files, sequence, removal, tests, and residual risks agree. | None. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Supported local-video selection through usable controls | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 | Media/resource failure return path | Pass | Pass | N/A — `VideoPlayer.vue` is the governing presentation owner. | Pass | Pass | Pass | Pass |
-| DS-003 | Retry through fresh media attempt | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-004 | Protocol request/response/resource lifecycle | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-005 | Preserved local non-video/audio preview path | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-001 | Supported local-video selection through playable/seekable controls | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-002 | Media/resource failure return | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-003 | Retry through a fresh media attempt | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-004 | Fixed-authority protocol request/resource lifecycle | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-005 | Preserved non-video/context-thumbnail resource paths | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-006 | Raw locator through migration, presentation, submission, live echo, runtime, and reload | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
+DS-006 spans the complete technical path, including the approved fresh-reload endpoint.
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Electron local-file protocol | Pass | Pass | Pass | Pass | `main.ts` uses only the pre-ready registration and post-ready installation entries; response/stream details remain internal. |
-| Local-file response policy | Pass | Pass | Pass | Pass | One installed handler delegates to the validation-first response owner; renderer and bootstrap bypasses are forbidden. |
-| Filesystem validation | Pass | Pass | Pass | Pass | `validateReadableRegularFile` remains the shared authoritative policy for protocol and text IPC. |
-| Video presentation/recovery | Pass | Pass | Pass | Pass | Attempt/error/retry state remains within `VideoPlayer.vue`; File Explorer state and protocol details do not leak across the boundary. |
+| Context locator migration via `hydrateContextAttachment` | Pass | Pass | Pass | Pass | Historical syntax stays isolated. |
+| Current submission eligibility via `planContextAttachmentSubmission` | Pass | Pass | Pass | Pass | One current-kind policy serves both stores. |
+| Identity-matched live projection merge | Pass | Pass | Pass | Pass | Member-input-only merge avoids external-user contamination. |
+| Shared local-file URL codec | Pass | Pass | Pass | Pass | Current wire identity only. |
+| Context presentation/openability | Pass | Pass | Pass | Pass | Unsupported state produces no resource action. |
+| Electron protocol / response / validation | Pass | Pass | Pass | Pass | Existing trusted boundaries remain intact. |
+| Video presentation/recovery | Pass | Pass | Pass | Pass | Preserve. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Electron bootstrap -> protocol owner | Pass | Pass | Pass | Pass | Bootstrap owns lifecycle placement only and must not retain URL/range/stream policy. |
-| Protocol -> response -> validator/stream/MIME | Pass | Pass | Pass | Pass | Response policy may reuse validation and transfer an opened handle to the stream owner exactly once. |
-| File-byte stream | Pass | Pass | Pass | Pass | It depends only on file-handle primitives and a tight byte window, not Electron/UI/policy. |
-| Renderer viewer | Pass | Pass | Pass | Pass | `VideoPlayer.vue` reuses the authorized-resource composable and localization without Node/Electron dependencies or alternate byte transport. |
+| Hydration -> migration -> current URL builder | Pass | Pass | Pass | Pass | Sound. |
+| Run stores -> submission plan -> unchanged streaming services | Pass | Pass | Pass | Pass | Stores coordinate once and do not duplicate eligibility. |
+| Member-input handler -> identity projection merge | Pass | Pass | Pass | Pass | External-user projection remains incoming-authoritative. |
+| Renderer producers -> shared codec | Pass | Pass | Pass | Pass | Sound. |
+| Protocol -> response -> codec/validator/stream/MIME | Pass | Pass | Pass | Pass | Sound. |
+| Viewer -> authorized resource resolver | Pass | Pass | Pass | Pass | Sound. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `registerLocalFileProtocolScheme(): void` | Pass | Pass | Pass | Low | Pass |
-| `installLocalFileProtocol(): void` | Pass | Pass | Pass | Low | Pass |
-| `createLocalFileResponse(request: Request): Promise<Response>` | Pass | Pass | Pass | Low | Pass |
-| `validateReadableRegularFile(filePath: string)` | Pass | Pass | Pass | Low | Pass |
-| `createFileByteStream(handle, { start, length })` | Pass | Pass | Pass | Low | Pass |
-| `VideoPlayer(url)` | Pass | Pass | Pass | Low | Pass |
+| `migrateContextLocalFileLocator` | Pass | Pass | Pass | Low | Pass |
+| `isExecutableContextAttachment` | Pass | Pass | Pass | Low | Pass |
+| `planContextAttachmentSubmission` | Pass | Pass | Pass | Low | Pass |
+| `upsertUserMessageByIdentity(...retainExistingNonExecutable...)` | Pass | Pass | Pass | Low | Pass |
+| `buildLocalFileUrl` / `parseLocalFileUrl` | Pass | Pass | Pass | Low | Pass |
+| Context presentation methods | Pass | Pass | Pass | Low | Pass |
+| Protocol lifecycle / response / validator / stream / VideoPlayer | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Trusted local-file validation | Pass | Pass | N/A | Pass | Existing validator remains authoritative and is not duplicated. |
-| Custom-scheme lifecycle/response | Pass | Pass | Pass | Pass | No existing cohesive owner exists; bounded extraction from broad `main.ts` is justified. |
-| MIME resolution | Pass | Pass | N/A | Pass | A direct web-package dependency follows an existing workspace dependency pattern and avoids a divergent allowlist map. |
-| Authorized remote/object resource resolution | Pass | Pass | N/A | Pass | Existing composable is retained; no alternate media path is introduced. |
-| Video recovery and localization | Pass | Pass | N/A | Pass | Existing viewer and deliberate localization catalogs are extended at their current ownership boundaries. |
+| Cross-process URL identity | Pass | Pass | Pass | Pass | Pure shared codec is justified. |
+| Legacy raw locator transition | Pass | Pass | Pass | Pass | Existing hydration convergence is correct. |
+| Current submission eligibility | Pass | Pass | Pass | Pass | Existing send projection file is the right owner. |
+| Local optimistic message and identity projection | Pass | Pass | N/A | Pass | Existing owners support bounded current-session retention. |
+| Existing streaming/server/runtime schemas | Pass | Pass | N/A | Pass | Keeping them executable-only avoids a hidden compatibility/media path. |
+| Validation/protocol/stream/viewer/MIME/localization | Pass | Pass | N/A | Pass | Preserve. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Electron local-file protocol | Pass | Pass | Pass | Pass | New focused capability area owns lifecycle, response, and resource depth. |
-| Electron local-file validation | Pass | Pass | Pass | Pass | Existing shared security owner remains separate. |
-| File Explorer viewers | Pass | Pass | Pass | Pass | `VideoPlayer.vue` owns ephemeral presentation/recovery state. |
-| Localization | Pass | Pass | Pass | Pass | English and Simplified Chinese deliberate catalogs are the correct extension points. |
-| Project documentation | Pass | Pass | Pass | Pass | Delivery-stage sync targets existing canonical Electron/File Explorer docs. |
+| Shared local-file URL contract | Pass | Pass | Pass | Pass | Sound. |
+| Context migration/model/presentation | Pass | Pass | Pass | Pass | Sound. |
+| Context submission and live projection | Pass | Pass | Pass | Pass | Sound. |
+| Executable WebSocket/server/runtime media | Pass | Pass | Pass | Pass | Preserved unchanged behind the client plan. |
+| Electron protocol/validation | Pass | Pass | Pass | Pass | Sound. |
+| Viewer/localization/docs | Pass | Pass | Pass | Pass | Sound. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| File byte window | Pass | Pass | Pass | Pass | `{ start, length }` is shared only between response planning and stream execution under the same protocol capability. |
-| Parsed response plan | Pass | N/A | Pass | Pass | Keeping the discriminated union private to response policy avoids empty generic indirection. |
-| Media attempt identity | Pass | N/A | Pass | Pass | A component-local scalar is sufficient; no store/global structure is justified. |
+| Current local-file URL codec | Pass | Pass | Pass | Pass | Sound. |
+| Raw locator migration result | Pass | Pass | Pass | Pass | Sound. |
+| Unsupported current attachment variant | Pass | Pass | Pass | Pass | Sound. |
+| Retained-versus-executable submission plan | Pass | Pass | Pass | Pass | Tight shared projection for agent/team paths. |
+| Identity-matched attachment merge | Pass | Pass | Pass | Pass | Kept with the existing upsert owner. |
+| File byte window / response plan / media attempt | Pass | Pass | Pass | Pass | Preserve. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `FileByteWindow { start, length }` | Pass | Pass | Pass | Pass | Inclusive end is derived; no parallel start/end/length representation. |
-| Private `full | partial | unsatisfiable` response plan | Pass | Pass | Pass | Pass | Discrimination prevents contradictory nullable status/range fields. |
+| Canonical local-file URL identity | Pass | Pass | Pass | Pass | Pass | One current wire representation. |
+| Locator migration result | Pass | Pass | Pass | Pass | Pass | Tight discriminated result. |
+| `UnsupportedLocalFileContextAttachment` | Pass | Pass | Pass | Pass | Pass | Specialized current state. |
+| `ContextAttachmentSubmissionPlan` | Pass | Pass | Pass | Pass | Pass | Retained and executable meanings are singular. |
+| `FileByteWindow` / private range plan | Pass | Pass | Pass | Pass | Pass | Sound. |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `electron/local-file-protocol/local-file-protocol.ts` | Pass | Pass | Pass | Pass | Public two-phase lifecycle only. |
-| `electron/local-file-protocol/local-file-response.ts` | Pass | Pass | Pass | Pass | One request-to-response policy; byte loop remains separate. |
-| `electron/local-file-protocol/file-byte-stream.ts` | Pass | Pass | Pass | Pass | One byte-window and file-handle lifecycle. |
-| `electron/main.ts` | Pass | Pass | Pass | Pass | Becomes a thin lifecycle caller for this capability. |
-| `VideoPlayer.vue` | Pass | Pass | N/A | Pass | Viewer-local media attempt and recovery state. |
-| Protocol/viewer test files | Pass | Pass | N/A | Pass | Tests are separated by lifecycle, response/resource, and UI-state subjects. |
-| Localization/package/docs files | Pass | Pass | N/A | Pass | Each extends its established catalog, dependency, or durable-doc contract. |
+| Shared codec and tests | Pass | Pass | Pass | Pass | Sound. |
+| Migration/model/presentation/UserMessage files | Pass | Pass | Pass | Pass | Sound. |
+| `contextAttachmentSend.ts` and tests | Pass | Pass | Pass | Pass | Correct replacement for type-only partition. |
+| Agent/team run stores and tests | Pass | Pass | Pass | Pass | Correct orchestration consumers. |
+| User-message projection/member handler and tests | Pass | Pass | Pass | Pass | Correct mixed-echo owner. |
+| File Explorer producer and tests | Pass | Pass | Pass | Pass | Sound. |
+| Protocol/response/stream/main files | Pass | Pass | Pass | Pass | Sound. |
+| VideoPlayer/localization/package/docs | Pass | Pass | N/A | Pass | Sound. |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `electron/local-file-protocol/` | Pass | Pass | Low | Pass | Three cohesive depths justify the focused folder without one-file-per-step fragmentation. |
-| `electron/main.ts` and `electron/localFileValidation.ts` | Pass | Pass | Low | Pass | Bootstrap is narrowed; shared validation remains at the established Electron boundary. |
-| `components/fileExplorer/viewers/VideoPlayer.vue` | Pass | Pass | Low | Pass | Failure/retry is a video-presentation concern. |
-| `localization/messages/*/tools.ts` | Pass | Pass | Low | Pass | Uses the existing deliberate non-generated override location. |
-| Canonical Electron/File Explorer docs | Pass | Pass | Low | Pass | Delivery owns the final validated documentation update. |
+| `shared/localFileUrl.ts` | Pass | Pass | Low | Pass | Correct renderer/main contract location. |
+| `utils/contextFiles/` migration/model/presentation/submission files | Pass | Pass | Low | Pass | Concrete context concerns remain separate. |
+| Run stores and agent-streaming handlers | Pass | Pass | Low | Pass | Existing orchestration/projection locations are reused. |
+| `electron/local-file-protocol/` | Pass | Pass | Low | Pass | Correct cohesive capability folder. |
+| Viewer/conversation/localization paths | Pass | Pass | Low | Pass | Sound. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Inline `installProtocols()` | Pass | Pass | Pass | Pass | Delete rather than retain a delegating wrapper. |
-| `net.fetch(file:)` local-file response branch | Pass | Pass | Pass | Pass | Replaced cleanly by validation-first response and byte-stream owners with no fallback. |
-| Handler-only dead imports | Pass | Pass | Pass | Pass | Explicit cleanup preserves unrelated `pathToFileURL` use. |
-| Silent failed `<video>` rendering | Pass | Pass | Pass | Pass | Replaced by current-attempt alert/Retry while preserving the no-source state. |
+| Inline protocol owner and `net.fetch(file:)` path | Pass | Pass | Pass | Pass | Preserve implemented removal. |
+| Inline URL serializers, response-local decoder, duplicated literal | Pass | Pass | Pass | Pass | Correct. |
+| Raw external local-file pass-through/public constructor/open affordance | Pass | Pass | Pass | Pass | Correct. |
+| Type-only submission partition | Pass | Pass | Pass | Pass | Replaced cleanly; no wrapper. |
+| Metadata-only server/runtime transport | Pass | Pass | Pass | Pass | Explicitly excluded under the user's approved Option-1 lifecycle. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Local-file response transport | No | Pass | Pass | Old `net.fetch(file:)` fallback and 200-only path are explicitly rejected. |
-| Renderer filesystem/media transport | No | Pass | Pass | No unrestricted `file://`, IPC bytes, Blob buffering, server route, or alternate media path is retained or added. |
-| Bootstrap wrapper | No | Pass | Pass | The obsolete inline installer is removed rather than preserved as compatibility indirection. |
+| Electron protocol/runtime parser | No | Pass | Pass | Current fixed-authority only. |
+| Context hydration migration | No | Pass | Pass | Historical recognition is isolated before current-model use. |
+| Derived URL producers and submission | No | Pass | Pass | One current builder and one current-kind plan. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| User-owned local preview files | `Not Affected` | Pass | Pass | N/A | Pass | The change is read-only transport plus ephemeral UI state; source bytes remain unchanged and no persistence/schema writer is added. |
+| Source files, workspace paths, and derived runtime URLs | `Not Affected` / directly usable | Pass | Pass | N/A | Pass | No source/store rewrite. |
+| Existing valid legacy and unsupported locator records | `Migration Required` | Pass | Pass | Pass | Pass | Pure hydration transition; historical records remain readable and unchanged. |
+| Newly submitted unsupported locator metadata | Approved client-session quarantine / no durable write | Pass | Pass | N/A | Pass | The user explicitly selected Option 1; valid attachment durability is unchanged. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Protocol capability extraction | Pass | Pass | Pass | Pass |
-| `main.ts` lifecycle cutover | Pass | Pass | Pass | Pass |
-| Video recovery/localization | Pass | Pass | Pass | Pass |
-| Validation and documentation follow-through | Pass | Pass | Pass | Pass |
-
-The sequence keeps no runtime dual path: new internal owners are implemented and tested before `main.ts` cuts over, then the obsolete branch/imports are removed in the same change.
+| Shared codec and renderer/protocol integration | Pass | Pass | Pass | Pass |
+| Context migration/model/presentation | Pass | Pass | Pass | Pass |
+| Submission plan, stores, and identity merge | Pass | Pass | Pass | Pass |
+| Preserved response/stream/VideoPlayer behavior | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Pre-ready registration / post-ready installation | Yes | Pass | Pass | Pass | Exact call ordering and the prohibited post-ready registration shape are shown. |
-| Partial/unsatisfiable range responses | Yes | Pass | Pass | Pass | Concrete byte/status/header/window examples remove implementation ambiguity. |
-| File-handle transfer and cancellation | Yes | Pass | Pass | Pass | The verified-failing generic adapter is contrasted with the required cancel-safe owner. |
-| Retry/remount | Yes | Pass | Pass | Pass | Fresh-element identity is contrasted with hiding the alert around a failed DOM node. |
+| Fixed POSIX/Windows identity | Yes | Pass | Pass | Pass | Clear. |
+| Legacy migration and unsupported presentation | Yes | Pass | Pass | Pass | Clear. |
+| Unsupported mixed submission/live echo/reload | Yes | Pass | Pass | Pass | The intended current-session versus fresh-reload lifecycle is explicit. |
+| Handler normalization, ranges, cleanup, Retry | Yes | Pass | Pass | Pass | Clear. |
 
 ## Material Premise Validation (Only When Needed)
 
-`None` — the lifecycle, range/seek, cancellation, native media failure, shared-scheme consumer, and retry premises used by the design are already established in the approved behavior map and current/same-version runtime evidence. No prospective finding or new machinery depends on a reviewer-invented production scenario.
+None for round 5. Prior `MP-AR-004` remains a valid reachable current-state witness, but its review consequence is resolved by the user's explicit Option-1 approval.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-`None`.
+None.
 
 ## Review Decision
 
-`Pass` — the upstream behavior basis is confirmed, the design is actionable in the current codebase, and no unresolved in-scope design issue or unsupported material premise prevents implementation.
+`Pass` — the complete approved behavior basis is confirmed; `AR-001` through `AR-004` are resolved; the design is actionable and ready for bounded implementation rework.
 
 ## Findings
 
-`None`.
+None.
 
 ## Classification
 
-`N/A` — passing review.
+`N/A — Pass`
 
 ## Recommended Recipient
 
@@ -217,15 +249,16 @@ The sequence keeps no runtime dual path: new internal owners are implemented and
 
 ## Residual Risks
 
-- The explicit byte-stream cancellation/cleanup contract must be exercised under Electron 42.4.1 or the packaged runtime. Unit tests are necessary but cannot satisfy AC-009 alone.
-- Windows drive-letter and URL-significant path handling can receive durable coverage on macOS, but live Windows execution remains unverified in this task environment.
-- Shipped Chromium codec support remains platform-dependent; the accessible generic viewer failure state is the approved containment, not a codec guarantee.
-- Because image, audio, PDF, Excel, and CSV share `local-file://`, representative audio and non-media regression evidence remains required before delivery.
-
-These are validation and platform risks already assigned to downstream coverage; none exposes a missing owner, interface, requirement, or fallback in the reviewed design.
+- Windows construction/parsing cannot be live-executed on this macOS host; explicit-platform cases and normal Windows validation remain required.
+- The `ContextAttachment` union and new submission plan need exhaustiveness/type coverage across model, upload/finalization, stores, presentation, projection, and UI.
+- Mixed identity-matched team echoes must retain one local unsupported item without contaminating unrelated/external-user messages.
+- Hydration migration must remain pure/idempotent; no historical parser may leak into current presentation/protocol/submission.
+- Future Electron normalization may differ; retain authored/resolved/handler witnesses.
+- After implementation rework and source review, preserve and rerun `E2E-PROTO-001`, `E2E-SEC-001`, `E2E-VID-001`, `E2E-VID-002`, `E2E-UI-001`, and `E2E-REG-001` under Electron 42.4.1.
+- Platform codec support remains bounded by shipped Chromium and contained by the approved viewer error state.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: Round 1 is authoritative. Proceed with the reviewed cumulative package; preserve the one protocol owner, existing validator boundary, clean-cut removal, and real-Electron validation requirements.
+- Notes: Round 5 supersedes round 4. `AR-001`, `AR-002`, `AR-003`, and `AR-004` are resolved. The cumulative reviewed package is ready for `implementation_engineer`.

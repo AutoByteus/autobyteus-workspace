@@ -1,0 +1,295 @@
+{
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "privileges": {
+    "standard": true,
+    "stream": true
+  },
+  "results": [
+    {
+      "id": "canonical",
+      "authored": "local-file://local/Users/Normy/Video%20100%25%231.mp4",
+      "beforeAppend": {
+        "attribute": "local-file://local/Users/Normy/Video%20100%25%231.mp4",
+        "property": "local-file://local/Users/Normy/Video%20100%25%231.mp4",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file://local/Users/Normy/Video%20100%25%231.mp4",
+        "property": "local-file://local/Users/Normy/Video%20100%25%231.mp4",
+        "currentSrc": "local-file://local/Users/Normy/Video%20100%25%231.mp4"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://local/Users/Normy/Video%20100%25%231.mp4",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "local",
+          "port": "",
+          "pathname": "/Users/Normy/Video%20100%25%231.mp4",
+          "search": "",
+          "hash": ""
+        }
+      ]
+    },
+    {
+      "id": "port",
+      "authored": "local-file://local:99/Users/Normy/Video.mp4",
+      "beforeAppend": {
+        "attribute": "local-file://local:99/Users/Normy/Video.mp4",
+        "property": "local-file://local/Users/Normy/Video.mp4",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file://local:99/Users/Normy/Video.mp4",
+        "property": "local-file://local/Users/Normy/Video.mp4",
+        "currentSrc": "local-file://local/Users/Normy/Video.mp4"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://local/Users/Normy/Video.mp4",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "local",
+          "port": "",
+          "pathname": "/Users/Normy/Video.mp4",
+          "search": "",
+          "hash": ""
+        }
+      ]
+    },
+    {
+      "id": "fragment",
+      "authored": "local-file://local/Users/Normy/Video.mp4#part",
+      "beforeAppend": {
+        "attribute": "local-file://local/Users/Normy/Video.mp4#part",
+        "property": "local-file://local/Users/Normy/Video.mp4#part",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file://local/Users/Normy/Video.mp4#part",
+        "property": "local-file://local/Users/Normy/Video.mp4#part",
+        "currentSrc": "local-file://local/Users/Normy/Video.mp4#part"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://local/Users/Normy/Video.mp4#part",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "local",
+          "port": "",
+          "pathname": "/Users/Normy/Video.mp4",
+          "search": "",
+          "hash": "#part"
+        }
+      ]
+    },
+    {
+      "id": "query",
+      "authored": "local-file://local/Users/Normy/Video.mp4?token=1",
+      "beforeAppend": {
+        "attribute": "local-file://local/Users/Normy/Video.mp4?token=1",
+        "property": "local-file://local/Users/Normy/Video.mp4?token=1",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file://local/Users/Normy/Video.mp4?token=1",
+        "property": "local-file://local/Users/Normy/Video.mp4?token=1",
+        "currentSrc": "local-file://local/Users/Normy/Video.mp4?token=1"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://local/Users/Normy/Video.mp4?token=1",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "local",
+          "port": "",
+          "pathname": "/Users/Normy/Video.mp4",
+          "search": "?token=1",
+          "hash": ""
+        }
+      ]
+    },
+    {
+      "id": "credentials",
+      "authored": "local-file://user:pass@local/Users/Normy/Credentials.mp4",
+      "beforeAppend": {
+        "attribute": "local-file://user:pass@local/Users/Normy/Credentials.mp4",
+        "property": "local-file://local/Users/Normy/Credentials.mp4",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file://user:pass@local/Users/Normy/Credentials.mp4",
+        "property": "local-file://local/Users/Normy/Credentials.mp4",
+        "currentSrc": "local-file://local/Users/Normy/Credentials.mp4"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://local/Users/Normy/Credentials.mp4",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "local",
+          "port": "",
+          "pathname": "/Users/Normy/Credentials.mp4",
+          "search": "",
+          "hash": ""
+        }
+      ]
+    },
+    {
+      "id": "username",
+      "authored": "local-file://user@local/Users/Normy/Username.mp4",
+      "beforeAppend": {
+        "attribute": "local-file://user@local/Users/Normy/Username.mp4",
+        "property": "local-file://local/Users/Normy/Username.mp4",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file://user@local/Users/Normy/Username.mp4",
+        "property": "local-file://local/Users/Normy/Username.mp4",
+        "currentSrc": "local-file://local/Users/Normy/Username.mp4"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://local/Users/Normy/Username.mp4",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "local",
+          "port": "",
+          "pathname": "/Users/Normy/Username.mp4",
+          "search": "",
+          "hash": ""
+        }
+      ]
+    },
+    {
+      "id": "uppercase-authority",
+      "authored": "local-file://LOCAL/Users/Normy/Uppercase.mp4",
+      "beforeAppend": {
+        "attribute": "local-file://LOCAL/Users/Normy/Uppercase.mp4",
+        "property": "local-file://local/Users/Normy/Uppercase.mp4",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file://LOCAL/Users/Normy/Uppercase.mp4",
+        "property": "local-file://local/Users/Normy/Uppercase.mp4",
+        "currentSrc": "local-file://local/Users/Normy/Uppercase.mp4"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://local/Users/Normy/Uppercase.mp4",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "local",
+          "port": "",
+          "pathname": "/Users/Normy/Uppercase.mp4",
+          "search": "",
+          "hash": ""
+        }
+      ]
+    },
+    {
+      "id": "wrong-authority",
+      "authored": "local-file://wrong/Users/Normy/Video.mp4",
+      "beforeAppend": {
+        "attribute": "local-file://wrong/Users/Normy/Video.mp4",
+        "property": "local-file://wrong/Users/Normy/Video.mp4",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file://wrong/Users/Normy/Video.mp4",
+        "property": "local-file://wrong/Users/Normy/Video.mp4",
+        "currentSrc": "local-file://wrong/Users/Normy/Video.mp4"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://wrong/Users/Normy/Video.mp4",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "wrong",
+          "port": "",
+          "pathname": "/Users/Normy/Video.mp4",
+          "search": "",
+          "hash": ""
+        }
+      ]
+    },
+    {
+      "id": "legacy-posix",
+      "authored": "local-file:///Users/Normy/Video.mp4",
+      "beforeAppend": {
+        "attribute": "local-file:///Users/Normy/Video.mp4",
+        "property": "local-file://users/Normy/Video.mp4",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file:///Users/Normy/Video.mp4",
+        "property": "local-file://users/Normy/Video.mp4",
+        "currentSrc": "local-file://users/Normy/Video.mp4"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://users/Normy/Video.mp4",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "users",
+          "port": "",
+          "pathname": "/Normy/Video.mp4",
+          "search": "",
+          "hash": ""
+        }
+      ]
+    },
+    {
+      "id": "legacy-windows-drive",
+      "authored": "local-file://C:/Media/Video.mp4",
+      "beforeAppend": {
+        "attribute": "local-file://C:/Media/Video.mp4",
+        "property": "local-file://c/Media/Video.mp4",
+        "currentSrc": ""
+      },
+      "outcome": "load",
+      "afterLoad": {
+        "attribute": "local-file://C:/Media/Video.mp4",
+        "property": "local-file://c/Media/Video.mp4",
+        "currentSrc": "local-file://c/Media/Video.mp4"
+      },
+      "handlerRequests": [
+        {
+          "url": "local-file://c/Media/Video.mp4",
+          "protocol": "local-file:",
+          "username": "",
+          "password": "",
+          "hostname": "c",
+          "port": "",
+          "pathname": "/Media/Video.mp4",
+          "search": "",
+          "hash": ""
+        }
+      ]
+    }
+  ]
+}

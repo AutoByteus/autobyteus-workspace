@@ -2,11 +2,12 @@
 
 ## Status And Applicability
 
-- Status: `Complete`
-- Purpose: Preserve the decisive runtime evidence for the reported file, Electron custom-scheme failure, privilege contract, playback, and byte-range seeking.
+- Status: `Complete — initial evidence retained; URL-identity conclusion corrected after API/E2E`
+- Purpose: Preserve the initial runtime evidence for the reported file, Electron custom-scheme failure, privilege contract, playback, and byte-range seeking, together with the limitation exposed by later realistic execution.
 - Scope: Investigation evidence only; this artifact does not define intended behavior.
 - Approval applicability: `N/A`
-- Core artifacts supported: `requirements.md`, `investigation-notes.md`, and the future `design-spec.md`
+- Core artifacts supported: `requirements.md`, `investigation-notes.md`, and `design-spec.md`
+- Corrective evidence: [url-identity-probe-evidence.md](./url-identity-probe-evidence.md) is authoritative for the renderer-to-handler URL identity and revised privilege/URL combination.
 
 ## Runtime And Source Identity
 
@@ -116,6 +117,12 @@ Observed on the reported file:
 {"event":"play-after-seek-success","duration":330.533333,"currentTime":120.531127,"error":null}
 ```
 
+### Limitation Discovered After Implementation
+
+This initial probe varied scheme privileges and range behavior but did not retain the authored renderer URL, media element's normalized `src`, and handler request URL together. It therefore proved that standard+stream plus correct `206` behavior can play/seek a file, but did **not** prove that the production triple-slash absolute-POSIX URL survives standard-scheme canonicalization.
+
+API/E2E later recorded the missing witness: Electron rewrites `local-file:///Users/...` to `local-file://users/...` before handler delivery. That contradicts preservation of the old URL shape. The corrected differential evidence and fixed-authority contract are retained in [url-identity-probe-evidence.md](./url-identity-probe-evidence.md).
+
 ## Large-File Cancellation/Range Probe
 
 Representative local MP4:
@@ -134,6 +141,8 @@ With `standard: true`, `stream: true`, correct `206` headers, and a byte-oriente
 
 A generic `Readable.toWeb(fs.createReadStream(...))` response failed the same cancellation/seek with `PIPELINE_ERROR_READ`; the implementation must therefore use a byte-oriented, cancellation-safe stream and verify file-handle cleanup.
 
+The corrective probe additionally tested the exact implemented range/stream response with `{ stream: true }` but without `standard`. It preserved the triple-slash URL and handled the reported 13 MB video, yet the 607 MB later-range seek still failed with `PIPELINE_ERROR_READ`. Retaining `standard: true` is therefore necessary for the approved large-file seek under Electron 42.4.1; the URL shape, rather than the privilege, must change.
+
 ## Official Contract Evidence
 
 Electron's official protocol documentation states:
@@ -147,4 +156,13 @@ Primary source: [Electron protocol API](https://www.electronjs.org/docs/latest/a
 
 ## Decisive Conclusion
 
-The application defect is in the Electron local-file protocol contract, not in the user's video. The current production path omits required pre-ready scheme registration and drops media range semantics. Correcting both makes the exact file load, play, and seek under Electron 42.4.1.
+The application defect is in the Electron local-file protocol contract, not in the user's video. The current base path omits required pre-ready streaming registration and drops media range semantics. Later API/E2E also proved that standard-scheme consumption is incompatible with the old `local-file:///absolute/path` identity.
+
+The corrected contract is:
+
+```text
+privileges: { standard: true, stream: true }
+URL:        local-file://local/<case-preserving encoded absolute path>
+```
+
+The fixed lowercase authority remains stable while the complete POSIX or Windows absolute path stays in `pathname`. Under Electron 42.4.1 this combination preserved uppercase and URL-significant path data, loaded/played/sought the exact video, completed a later-range seek to 1800 seconds in the large file, and preserved deterministic response/security statuses. See [url-identity-probe-evidence.md](./url-identity-probe-evidence.md).
