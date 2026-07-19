@@ -1,19 +1,19 @@
-# Release Notes — Official noVNC Package Integration
+# Release Notes — Local Video Preview Playback
 
-## Improvements
+## Fixes
 
-- Replaced the copied noVNC implementation tree with the official package-root `@novnc/novnc` provider, pinned to an exact upstream build for reproducible behavior.
-- Preserved VNC authentication, connection lifecycle, View Only/Interactive modes, maximize/Escape behavior, remote resize, and automatic bidirectional clipboard support.
-- Added focused package, session-lifecycle, and real VNC/browser regression coverage.
+- Fixed local videos in the Electron Files preview so supported media loads its duration and can play, pause, and seek instead of remaining black at `0:00`.
+- Added a clear localized failure state with **Retry** for missing, unreadable, or unsupported video content.
 
-## Licensing and Packaging
+## Compatibility and Security
 
-- Added a canonical noVNC third-party notice with exact package/source provenance, MPL-2.0 terms, and embedded-component attribution.
-- Included the notice in normal web output, Electron renderer output, the packaged desktop application, ZIP, and DMG.
-- Added build preflight and durable contract coverage to prevent provider version, clipboard behavior, notice, or packaging-path drift.
+- Preserved local image, audio, PDF, Excel, and text preview behavior while moving binary previews onto one canonical streamed local-file path.
+- Restricted local binary preview requests to the active registered desktop workspace-shell main frame; child frames, unregistered windows, and identity-less requests receive no file bytes.
+- Preserved valid legacy local-file attachments through automatic in-memory normalization and prevented unsupported local locators from being sent to runtime media execution.
 
 ## Validation
 
-- Authoritative API/E2E validation passed at 96.9% confidence, including retained real Chrome/TigerVNC/websockify coverage.
-- A complete unsigned macOS Electron build passed, and the exact notice bytes/hash were verified in the generated renderer, app bundle, ZIP, and DMG.
-- User verification completed before repository finalization and release.
+- All six required API/E2E scenarios passed at `98.1%` confidence, including real PDF.js XHR, Excel Fetch, video playback/seek/cancellation, failure/Retry recovery, migration/quarantine/reload behavior, and unauthorized-request denial.
+- After integrating the latest `personal` base, focused Nuxt tests passed (`16` files / `96` tests), focused Electron tests passed (`4` files / `21` tests), and Electron transpilation passed.
+- A local macOS ARM64 Electron app, DMG, and ZIP were built successfully with the README's unsigned/no-notarization command for hands-on verification.
+- User verification passed: opening a local video in the built Electron candidate worked as intended.
