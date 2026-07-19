@@ -1,0 +1,33 @@
+{
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "mode": "fetch-only",
+  "privileges": {
+    "standard": true,
+    "stream": true,
+    "supportFetchAPI": true
+  },
+  "pageUrl": "http://127.0.0.1:43191/api-e2e-local-preview",
+  "pdfUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20document.pdf",
+  "excelUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20workbook.xlsx",
+  "handlerRequests": [],
+  "renderer": {
+    "origin": "http://127.0.0.1:43191",
+    "pdfFetch": {
+      "error": "Failed to fetch"
+    },
+    "pdfXhr": {
+      "error": "xhr-error",
+      "status": 0
+    },
+    "excelFetch": {
+      "error": "Failed to fetch"
+    }
+  },
+  "outcome": "Fail"
+}

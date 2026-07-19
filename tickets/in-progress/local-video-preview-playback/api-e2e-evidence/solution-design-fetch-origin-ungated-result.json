@@ -1,0 +1,187 @@
+{
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "privileges": {
+    "standard": true,
+    "stream": true,
+    "supportFetchAPI": true,
+    "corsEnabled": true
+  },
+  "mode": "observe",
+  "requests": [
+    {
+      "url": "local-file://local/top-http-fetch.bin",
+      "method": "GET",
+      "headers": {
+        "accept": "*/*",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) AutoByteusLocalFileFetchOriginProbe/42.4.1 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36"
+      }
+    },
+    {
+      "url": "local-file://local/top-http-xhr.bin",
+      "method": "GET",
+      "headers": {
+        "accept": "*/*",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) AutoByteusLocalFileFetchOriginProbe/42.4.1 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36"
+      }
+    },
+    {
+      "url": "local-file://local/child-http.bin",
+      "method": "GET",
+      "headers": {
+        "accept": "*/*",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) AutoByteusLocalFileFetchOriginProbe/42.4.1 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36"
+      }
+    },
+    {
+      "url": "local-file://local/blob-child.bin",
+      "method": "GET",
+      "headers": {
+        "accept": "*/*",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) AutoByteusLocalFileFetchOriginProbe/42.4.1 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36"
+      }
+    },
+    {
+      "url": "local-file://local/top-file-fetch.bin",
+      "method": "GET",
+      "headers": {
+        "accept": "*/*",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) AutoByteusLocalFileFetchOriginProbe/42.4.1 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36"
+      }
+    },
+    {
+      "url": "local-file://local/top-file-xhr.bin",
+      "method": "GET",
+      "headers": {
+        "accept": "*/*",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) AutoByteusLocalFileFetchOriginProbe/42.4.1 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36"
+      }
+    }
+  ],
+  "webRequests": [
+    {
+      "url": "local-file://local/top-http-fetch.bin",
+      "method": "GET",
+      "webContentsId": 1,
+      "frameId": null,
+      "frameUrl": "http://127.0.0.1:59810/",
+      "parentFrameId": null,
+      "parentFrameUrl": null,
+      "resourceType": "xhr",
+      "referrer": "http://127.0.0.1:59810/",
+      "authorizedMainFrame": true,
+      "decision": "allow"
+    },
+    {
+      "url": "local-file://local/top-http-xhr.bin",
+      "method": "GET",
+      "webContentsId": 1,
+      "frameId": null,
+      "frameUrl": "http://127.0.0.1:59810/",
+      "parentFrameId": null,
+      "parentFrameUrl": null,
+      "resourceType": "xhr",
+      "referrer": "http://127.0.0.1:59810/",
+      "authorizedMainFrame": true,
+      "decision": "allow"
+    },
+    {
+      "url": "local-file://local/child-http.bin",
+      "method": "GET",
+      "webContentsId": 1,
+      "frameId": null,
+      "frameUrl": "http://127.0.0.1:59809/",
+      "parentFrameId": null,
+      "parentFrameUrl": "http://127.0.0.1:59810/",
+      "resourceType": "xhr",
+      "referrer": "http://127.0.0.1:59809/",
+      "authorizedMainFrame": false,
+      "decision": "allow"
+    },
+    {
+      "url": "local-file://local/blob-child.bin",
+      "method": "GET",
+      "webContentsId": 1,
+      "frameId": null,
+      "frameUrl": "blob:http://127.0.0.1:59810/71205bc7-5bba-4ff4-ac85-3675dfd8b65b",
+      "parentFrameId": null,
+      "parentFrameUrl": "http://127.0.0.1:59810/",
+      "resourceType": "xhr",
+      "referrer": "",
+      "authorizedMainFrame": false,
+      "decision": "allow"
+    },
+    {
+      "url": "local-file://local/top-file-fetch.bin",
+      "method": "GET",
+      "webContentsId": 1,
+      "frameId": null,
+      "frameUrl": "file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-fetch-origin-fpDBWa/shell.html",
+      "parentFrameId": null,
+      "parentFrameUrl": null,
+      "resourceType": "xhr",
+      "referrer": "",
+      "authorizedMainFrame": true,
+      "decision": "allow"
+    },
+    {
+      "url": "local-file://local/top-file-xhr.bin",
+      "method": "GET",
+      "webContentsId": 1,
+      "frameId": null,
+      "frameUrl": "file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-fetch-origin-fpDBWa/shell.html",
+      "parentFrameId": null,
+      "parentFrameUrl": null,
+      "resourceType": "xhr",
+      "referrer": "",
+      "authorizedMainFrame": true,
+      "decision": "allow"
+    }
+  ],
+  "renderer": {
+    "httpTop": {
+      "origin": "http://127.0.0.1:59810",
+      "viaFetch": {
+        "status": 200,
+        "bytes": 11
+      },
+      "viaXhr": {
+        "status": 200,
+        "bytes": 11
+      }
+    },
+    "httpChild": {
+      "frameOrigin": "http://127.0.0.1:59809",
+      "kind": "child-http",
+      "bytes": 11
+    },
+    "blobChild": {
+      "frameOrigin": "http://127.0.0.1:59810",
+      "kind": "blob-child",
+      "bytes": 11
+    },
+    "fileTop": {
+      "origin": "file://",
+      "href": "file:///var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-fetch-origin-fpDBWa/shell.html",
+      "viaFetch": {
+        "status": 200,
+        "bytes": 11
+      },
+      "viaXhr": {
+        "status": 200,
+        "bytes": 11
+      }
+    }
+  },
+  "outcome": "Complete",
+  "expected": {
+    "topHttpOrigin": "http://127.0.0.1:59810",
+    "childHttpOrigin": "http://127.0.0.1:59809",
+    "fileOrigin": "file://"
+  }
+}

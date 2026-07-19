@@ -11,17 +11,18 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/code-review-report.md`
-- Current Investigation Round: `2`
-- Trigger: Implementation-source review round 5 passed for implementation/test commit `02ca27faff5b0441488c2e1b1e65cd6cc2443c18`; API/E2E was asked to refresh coverage and realistic execution independently.
-- Prior Investigation Reviewed: `Yes — round 1 and its failure evidence were reviewed as historical baseline, not reused as current sign-off.`
-- Latest Authoritative Investigation: `Round 2`
+- Current Investigation Round: `3`
+- Trigger: Implementation-source review round 7 passed for implementation/test commit `b658f16b53e494a5649e3a72cc136fdf039ff8df`; CR-004 is resolved in source and API/E2E was asked for a fresh six-scenario post-fix run.
+- Prior Investigation Reviewed: `Yes — rounds 1 and 2 plus their failure evidence were reviewed as historical baseline, not reused as post-fix sign-off.`
+- Latest Authoritative Investigation: `Round 3`
 
 ## Round History
 
 | Round | Trigger | Result / Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- |
 | 1 | First implementation `f60718a63d8551bb31bc26913a3154dc0614bc95` | Broader validation required; execution failed | No | Real Electron 42.4.1 rewrote the old triple-slash URL to a hostname-bearing URL and valid POSIX files returned `404`. |
-| 2 | Reviewed fixed-authority implementation/test commit `02ca27faff5b0441488c2e1b1e65cd6cc2443c18` | Repository and realistic validation executed; Fail and reroute | Yes | The round-1 URL-identity failure is resolved and E2E-PROTO-001/E2E-VID-001/E2E-VID-002 pass, but actual scheme-registered Electron renderer hydration loses the first segment of a legacy POSIX locator before migration, failing AC-010. |
+| 2 | Reviewed fixed-authority implementation/test commit `02ca27faff5b0441488c2e1b1e65cd6cc2443c18` | Repository and realistic validation executed; Fail and reroute | No | The round-1 URL-identity failure was resolved and E2E-PROTO-001/E2E-VID-001/E2E-VID-002 passed, but actual scheme-registered Electron renderer hydration lost the first segment of a legacy POSIX locator before migration, failing AC-010. |
+| 3 | Reviewed raw legacy POSIX migration fix `b658f16b53e494a5649e3a72cc136fdf039ff8df` | Repository and realistic validation executed; Fail and reroute | Yes | The round-2 AC-010 failure is resolved and five scenarios pass, but the completed E2E-REG-001 journey proves that the reviewed `{ standard: true, stream: true }` privilege set blocks PDF XHR and Excel fetch before the handler. |
 
 ## Current Requirement And Design Basis
 
@@ -111,13 +112,13 @@ The source-review gate is Pass with no open findings. Live Windows remains unava
 | Path / Scenario | Current Assertion Or Intent | Related Requirement / Acceptance Criteria / Design | Validity Decision | Evidence | Action |
 | --- | --- | --- | --- | --- | --- |
 | `shared/__tests__/localFileUrl.spec.ts` | Fixed authority; POSIX/Windows build; significant-character and POSIX-backslash round trip; invalid current parser shapes | FR-001–002, FR-007 / AC-007, AC-009 | Still Valid | Matches reviewed codec contract and CR-002 resolution | Execute focused |
-| `electron/local-file-protocol/__tests__/local-file-protocol.spec.ts` | Exact privileges; one handler delegation; deterministic owner failure | FR-001, FR-005, FR-007 / AC-007, AC-009 | Still Valid | Exact lifecycle owner | Execute focused/full and supplement real Electron |
+| `electron/local-file-protocol/__tests__/local-file-protocol.spec.ts` | Exact privileges; one handler delegation; deterministic owner failure | FR-001, FR-005–007 / AC-007–009 | Needs Update after upstream revision | Its exact `{ standard: true, stream: true }` assertion matches the reviewed design but actual HTTP and packaged-file renderer origins cannot use fetch/XHR for the preserved PDF/Excel routes; differentials prove both `supportFetchAPI` and `corsEnabled` are required for all existing consumers | Do not edit under API/E2E; route Design Impact, then update the exact privilege assertion with reviewed source rework |
 | `electron/local-file-protocol/__tests__/local-file-response.spec.ts` | Full, closed/open/suffix/clamped, HEAD, 416 cases, method/URL/path rejection, significant paths, POSIX backslash, byte completion/cancel/error closure | FR-002, FR-005–007 / AC-003, AC-006–009 | Still Valid | Updated to shared fixed-authority builder; portable real response plus POSIX-only filename case | Execute focused/full and supplement real Electron bytes/URLs |
 | `electron/__tests__/localFileValidation.spec.ts` | Requires readable regular absolute file | FR-005 / AC-007 | Still Valid | Authoritative validator unchanged | Execute focused/full |
 | `components/fileExplorer/viewers/__tests__/VideoPlayer.spec.ts` | No-source; controls/no autoplay; accessible native/resource failure; Retry; URL reset | FR-003–004 / AC-001–005 | Still Valid | Direct real component state assertions | Execute focused/full and supplement native Electron media |
 | `stores/__tests__/fileExplorerNodeRouting.spec.ts` | Embedded local binary uses fixed authority; remote uses REST; text stays reader route | FR-006–007 / AC-008 | Still Valid | Updated producer assertion and preserved route contract | Execute focused/full |
 | `components/fileExplorer/__tests__/FileViewer.spec.ts`, `viewers/__tests__/ExcelViewer.spec.ts`, `composables/__tests__/useAuthorizedObjectUrl.spec.ts` | Viewer selection, Excel fetch, preserved source resolver | FR-004, FR-006 / AC-005, AC-008 | Still Valid | Preserved owners | Execute focused/full and supplement live viewers |
-| `utils/contextFiles/__tests__/contextLocalFileLocatorMigration.spec.ts` | Canonical idempotence; valid legacy POSIX/Windows; unsupported adorned/wrong/opaque/malformed; non-local unchanged | FR-005–007 / AC-007, AC-010 | Needs Update | Its Node/Nuxt URL environment does not model the registered `{ standard: true }` renderer parser: actual Electron rewrites `local-file:///tmp/...` to `local-file://tmp/...` before the implementation's `new URL(locator)`-based legacy recognition | After the source correction, add or adapt durable coverage so raw legacy POSIX recognition cannot silently depend on an unregistered custom-scheme `URL` parse; exact test placement belongs to implementation/review rework |
+| `utils/contextFiles/__tests__/contextLocalFileLocatorMigration.spec.ts` | Canonical idempotence; valid legacy POSIX/Windows; unsupported adorned/wrong/opaque/malformed; non-local unchanged; raw POSIX recognition before hostile ambient URL normalization | FR-005–007 / AC-007, AC-010 | Still Valid | CR-004 fix recognizes the exact authored raw lower-case empty-authority form before `new URL`; the new regression substitutes Electron's first-segment-as-host interpretation and still proves exact `%5C`, spaces, `%`, and `#` migration | Execute focused, then independently recheck in actual scheme-registered Electron renderer |
 | `utils/contextFiles/__tests__/contextAttachmentModel.spec.ts` | Current valid and unsupported variants; non-local unchanged | FR-005–007 / AC-010 | Still Valid | Direct current-model convergence | Execute focused |
 | `utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts` | Fixed embedded thumbnail URL; canonical local-file openability; unsupported never opens | FR-005–007 / AC-007–008, AC-010 | Still Valid | Presentation owner, no raw inference | Execute focused and supplement live renderer |
 | `utils/contextFiles/__tests__/contextAttachmentSend.spec.ts` | Retain all current metadata; exclude unsupported/blank; partition valid image/non-image | FR-005, FR-007 / AC-010 | Still Valid | Direct single submission owner | Execute focused |
@@ -137,7 +138,7 @@ None planned by API/E2E. Current implementation already added boundary-appropria
 
 ## Durable Coverage To Update
 
-The migration coverage needs an update with the bounded implementation rework. Actual Electron 42.4.1 proves the existing valid-legacy-POSIX assertion is environment-incomplete: it passes without privileged-scheme registration but production renderer parsing changes the locator before migration. API/E2E did not edit durable tests in this failed round; the implementation owner should couple the raw-boundary fix to a durable assertion that does not rely on the unregistered-scheme `URL` behavior.
+The CR-004 normalization-hostile migration regression is valid and actual Electron now confirms it. Separately, `local-file-protocol.spec.ts` must be updated only after upstream design revision because its exact two-privilege assertion protects a reviewed premise contradicted by E2E-REG-001. API/E2E did not change durable tests in this failed round.
 
 ## Durable Coverage To Remove
 
@@ -147,31 +148,31 @@ None.
 
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm test:nuxt --run` with 16 focused codec/migration/model/submission/presentation/UI/projection/hydration/routing/store/viewer files | `autobyteus-web` | E2E-SEC-001, E2E-UI-001, E2E-REG-001; AC-004–005, AC-007–008, AC-010 | Pass — 16 files / 95 tests | `api-e2e-evidence/round-2-repository-focused-nuxt.log` |
-| 2 | `pnpm test:electron --run electron/local-file-protocol/__tests__/local-file-protocol.spec.ts electron/local-file-protocol/__tests__/local-file-response.spec.ts electron/__tests__/localFileValidation.spec.ts` | `autobyteus-web` | E2E-PROTO-001/SEC-001; lifecycle, response matrix, validator, stream closure | Pass — 3 files / 15 tests | `api-e2e-evidence/round-2-repository-focused-electron.log` |
-| 3 | `pnpm transpile-electron`; `pnpm guard:web-boundary`; `pnpm guard:localization-boundary`; `pnpm audit:localization-literals`; duplicate/legacy searches; `git diff --check` | `autobyteus-web` / worktree | Executable output, boundary/locale policy, clean-cut removal | Pass — all commands/search assertions | `api-e2e-evidence/round-2-transpile-guards-searches.log` |
-| 4 | `pnpm test:electron --run` | `autobyteus-web` | Broader Electron regression | Pass — 26 files / 112 tests; one opt-in real-release test skipped | `api-e2e-evidence/round-2-repository-full-electron.log` |
-| 5 | `pnpm test:nuxt --run` | `autobyteus-web` | Broader Nuxt regression and baseline comparison | Affected scope Pass; command exit 1 from four historical unrelated failures — 371 files / 2020 tests passed; 4 failed; 1 skipped | `api-e2e-evidence/round-2-repository-full-nuxt.log` |
-| 6 | Focused rerun of the four failing full-suite files | `autobyteus-web` | Failure isolation and validity decision | Same four unrelated failures reproduced — 11 tests passed / 4 failed | `api-e2e-evidence/round-2-repository-failure-recheck.log` |
+| 1 | `pnpm test:nuxt --run` with the 16 focused codec/migration/model/submission/presentation/UI/projection/hydration/routing/store/viewer files | `autobyteus-web` | E2E-SEC-001, E2E-UI-001, E2E-REG-001; AC-004–005, AC-007–008, AC-010 | Pass — 16 files / 96 tests | `api-e2e-evidence/round-3-repository-focused-nuxt.log` |
+| 2 | `pnpm test:electron --run electron/local-file-protocol/__tests__/local-file-protocol.spec.ts electron/local-file-protocol/__tests__/local-file-response.spec.ts electron/__tests__/localFileValidation.spec.ts` | `autobyteus-web` | E2E-PROTO-001/SEC-001; lifecycle, response matrix, validator, stream closure | Pass — 3 files / 15 tests | `api-e2e-evidence/round-3-repository-focused-electron.log` |
+| 3 | `pnpm transpile-electron`; `pnpm guard:web-boundary`; `pnpm guard:localization-boundary`; `pnpm audit:localization-literals`; duplicate/legacy searches; `git diff --check` | `autobyteus-web` / worktree | Executable output, boundary/locale policy, clean-cut removal | Pass — all commands/search assertions | `api-e2e-evidence/round-3-transpile-guards-searches.log` |
+| 4 | `pnpm test:electron --run` | `autobyteus-web` | Broader Electron regression | Pass — 26 files / 112 tests; one opt-in real-release test skipped | `api-e2e-evidence/round-3-repository-full-electron.log` |
+| 5 | `pnpm test:nuxt --run` | `autobyteus-web` | Broader Nuxt regression and baseline comparison | Affected scope Pass; command exit 1 from the same four historical unrelated failures — 371 files / 2021 tests passed; 4 failed; 1 skipped | `api-e2e-evidence/round-3-repository-full-nuxt.log` |
+| 6 | Focused rerun of the four full-suite failures | `autobyteus-web` | Failure isolation and validity decision | Same four unrelated failures reproduced — 11 tests passed / 4 failed | `api-e2e-evidence/round-3-repository-failure-recheck.log` |
 
 ## Post-Repository Confidence Scorecard (Mandatory)
 
 | Confidence Category | Score | What Supports The Score | Remaining Uncertainty | Additional Validation That Could Improve It |
 | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 88% | 110 focused changed-boundary tests pass; durable assertions directly cover AC-004–008/010 policy | AC-001–003/009 and real native recovery/shared viewers remain indirect | Execute all six Electron/lifecycle scenarios |
-| Changed-boundary execution directness | 90% | Codec, response, validator, migration, plan, both stores, projection, and real components execute their production owners | Chromium normalization/media/stream is not repository-executed | Exact Electron 42.4.1 probe |
-| Cross-boundary integration realism and mock gap | 85% | Store/projection tests cross attachment owners and response tests use real temporary files | Renderer -> Chromium -> handler and native viewer integrations remain absent | Real protocol plus renderer journey |
-| Environment, configuration, identity, and fixture fidelity | 92% | Pinned Electron, transpiled exact source, real temp filesystem tests, and exact external fixtures are available | Runtime/version/hash witnesses have not yet been refreshed this round | Record exact runtime/manifests in Electron run |
-| Failure, edge-case, lifecycle, and recovery evidence | 90% | Ranges/methods/invalid paths/stream cancel/error and component Retry/URL reset all pass directly | Real cancellation/handle release and native failure/recovery remain unobserved | Broader executable journey |
-| User-surface, browser, and desktop-shell confidence | 82% | Mounted real Vue components pass semantic state assertions | No current-round Electron renderer/native media/document evidence | Electron renderer with actual components |
-| Durable regression coverage quality and relevance | 97% | 16 focused Nuxt files/95 tests and 3 Electron files/15 tests pass; full Electron passes; no stale or compatibility-only scenario identified | No live Windows durable execution; not a test-quality defect | Retain platform residual |
+| Requirement and acceptance-criteria proof | 90% | 111 focused changed-boundary tests pass, including the new normalization-hostile AC-010 regression; repository owners directly cover the policy matrix | Real scheme-registered legacy hydration and live representative shared viewers remain unproven post-fix | Execute all six Electron/lifecycle scenarios |
+| Changed-boundary execution directness | 92% | Codec, response, validator, raw migration, model, plan, both stores, projection, and real components execute production owners | Chromium renderer URL parsing/media/stream is not repository-executed | Exact Electron 42.4.1 probe |
+| Cross-boundary integration realism and mock gap | 86% | Store/projection tests cross attachment owners, response tests use real temp files, and the regression models hostile normalization | Actual renderer -> Chromium -> handler and native document/media integration remain absent | Real protocol plus renderer journey |
+| Environment, configuration, identity, and fixture fidelity | 93% | Pinned Electron, exact transpiled source, real filesystem response tests, and exact external fixtures are available | Runtime/version/hash witnesses have not yet been refreshed round 3 | Record exact runtime/manifests in Electron run |
+| Failure, edge-case, lifecycle, and recovery evidence | 91% | Ranges/methods/invalid paths/stream cancel/error, component Retry/URL reset, invalid migration cases, and hostile URL normalization all pass | Real cancellation/handle release and actual renderer migration/recovery remain unobserved post-fix | Broader executable journey |
+| User-surface, browser, and desktop-shell confidence | 83% | Mounted real Vue components pass semantic state assertions | No post-fix Electron renderer/native media/document evidence | Electron renderer with actual components |
+| Durable regression coverage quality and relevance | 98% | 16 focused Nuxt files/96 tests and 3 Electron files/15 tests pass; the prior missed premise now has a focused hostile-normalization regression; full Electron passes | Live Windows remains unavailable, not a durable-test defect | Retain platform residual |
 
-- Overall post-repository confidence: `89.1%`
-- Calculation method: Simple average `(88 + 90 + 85 + 92 + 90 + 82 + 97) / 7`.
-- Every critical acceptance criterion directly proven: `No — AC-001–003 and AC-009 require realistic Electron evidence.`
-- Any applicable category below `90%`: `Yes — requirement proof; cross-boundary integration realism; user-surface/desktop-shell confidence.`
+- Overall post-repository confidence: `90.4%`
+- Calculation method: Simple average `(90 + 92 + 86 + 93 + 91 + 83 + 98) / 7 = 90.4%`.
+- Every critical acceptance criterion directly proven: `No — AC-010 requires post-fix actual Electron proof and AC-008's representative shared-viewer journey was previously stopped.`
+- Any applicable category below `90%`: `Yes — cross-boundary integration realism and user-surface/browser/desktop-shell confidence.`
 - Default clean-confidence target of `95%` met: `No`
-- Material residual risks: real fixed-authority normalization, metadata/play/seek, large later-range/cancellation, native recovery, shared viewers, and the executable new-invalid fresh-load lifecycle remain unexecuted in this round. The full Nuxt command continues to have the same four unrelated baseline failures (`workspace-history-draft-send`, `MemoryHome`, `CodexFullAccessCard`, and `zhCnGlossaryConsistency`); each reproduced alone, while all changed-scope focused files passed.
+- Material residual risks: actual scheme-registered legacy POSIX convergence, current URL normalization, native media playback/recovery, large later-range/cancellation, message DOM/lifecycle, and representative shared viewers require fresh round-3 execution. The full Nuxt command continues to have the exact same four unrelated baseline failures (`workspace-history-draft-send`, `MemoryHome`, `CodexFullAccessCard`, and `zhCnGlossaryConsistency`); each reproduced alone, while all changed-scope focused files passed.
 
 ## Broader Validation Decision (Mandatory)
 
@@ -226,13 +227,13 @@ None.
 
 ## Ambiguities Or Reroute Triggers
 
-None at initial investigation time. Execution produced a current realistic failure:
+None at initial round-3 investigation time. Execution produced a current design-impact failure:
 
 | Finding | Affected Scenario / Requirement | Preliminary Classification | Required Workflow Recipient | Evidence |
 | --- | --- | --- | --- | --- |
-| Scheme-registered Electron renderer parses legacy POSIX `local-file:///tmp/...` as hostname `tmp` before `hydrateContextAttachment`; the intended raw legacy migration returns `unsupported_local_file` instead of the fixed-authority current locator | E2E-SEC-001, E2E-UI-001; FR-005, FR-007; AC-010 | `Local Fix` — likely bounded implementation-owned raw migration-boundary correction plus durable test update | `code_reviewer` for mandatory focused failure-origin review and final owner classification | `api-e2e-evidence/round-2-migration-failure-result.json`, `round-2-migration-failure-probe.log`, full `round-2-electron-result.json` |
+| The reviewed scheme privileges are exactly `{ standard: true, stream: true }`, but preserved PDF uses XHR and Excel uses fetch from the renderer. Electron 42.4.1 rejects both before `protocol.handle`; HTTP-origin and packaged-file-origin differentials show that `supportFetchAPI` alone is insufficient, `corsEnabled` alone permits XHR but not fetch, and both together permit PDF XHR/fetch and Excel fetch with exact handler `200` bytes. | E2E-REG-001; BEH-004; FR-001, FR-006; AC-008 | `Design Impact` — implementation matches explicit design guidance, while newly completed realistic evidence proves that premise cannot satisfy preserved viewers | `code_reviewer` for mandatory focused failure-origin review and authoritative routing | `round-3-electron-result.json`, `round-3-electron-probe.log`, `round-3-fetch-privilege-{fetch-only,cors-only,both}.{json,log}`, `round-3-file-origin-{base,both}.{json,log}` |
 
-## Execution-Time Investigation Update
+## Round-2 Historical Execution Update
 
 - Real Electron 42.4.1 resolved the round-1 current URL-identity defect: the fixed-authority current URL remains stable at authored attribute, renderer property/currentSrc, and handler request.
 - E2E-PROTO-001 passed the full/closed/open/suffix/clamped/HEAD/method/invalid-path matrix with exact status, headers, bytes, and deterministic zero-byte failures.
@@ -241,14 +242,25 @@ None at initial investigation time. Execution produced a current realistic failu
 - E2E-SEC-001 and E2E-UI-001 fail overall because their AC-010 migration/lifecycle scope includes valid legacy POSIX convergence. The preliminary protocol-only and raw-invalid subchecks passed, as did Windows-legacy migration, quarantine, executable exclusion, optimistic/echo retention, historical readability, and fresh-reload absence.
 - E2E-REG-001 remains Not Tested live because the probe stopped at the critical migration assertion before the representative real FileViewer audio/image/PDF/Excel/text phase. Its focused repository coverage passed.
 - Harness attempts 1 and 2 exposed and corrected probe-only cancellation/release observation weaknesses; attempt 3 is authoritative. No production source or durable test was changed by API/E2E.
-- The current result is `Fail`, not `Blocked`: direct expected-versus-observed evidence exists and cleanup completed.
+- The round-2 result was `Fail`, not `Blocked`: direct expected-versus-observed evidence existed and cleanup completed. It is historical context for round 3.
+
+## Round-3 Execution-Time Investigation Update
+
+- E2E-PROTO-001 passed again with exact full/closed/open/suffix/clamped/HEAD/method/invalid-path statuses, headers, bytes, no-byte failures, and stable significant-path identity.
+- E2E-SEC-001 passed. The exact legacy POSIX source is still parsed by Electron as first-segment hostname `tmp`, yet the corrected raw hydration now produces the canonical openable fixed-authority attachment. Canonical/Windows migration, invalid quarantine, executable exclusion, live echo, historical readability, fresh-reload absence, and no unsupported protocol request all pass.
+- E2E-VID-001 and E2E-VID-002 passed again: exact duration/play/pause/seek/recovery, large later ranges, continued playback, explicit cancellation, and descriptor release.
+- E2E-UI-001 passed, including missing/decode failure containment, localized accessible Retry, fresh media attempt, URL-change recovery, valid thumbnail, non-interactive unsupported chip, removal identity, and lifecycle state.
+- E2E-REG-001 failed only the completed PDF/Excel portion. Image (`8x6`), audio (`3s`, playback advanced), embedded/external thumbnail, and text (`Probe text OK`, zero protocol requests) passed. PDF rendered an error alert with response status `0`; Excel rendered `Failed to fetch`; neither request reached the production handler.
+- The production failure is not a fixture or HTTP-dev-only artifact. A packaged-file-origin differential reproduces all three fetch/XHR failures with the reviewed two privileges and passes them when both `supportFetchAPI` and `corsEnabled` are enabled. The HTTP-origin four-mode differential isolates why both flags are necessary for all preserved consumers.
+- No product source or durable test was changed by API/E2E. Temporary differential probes changed only privilege declarations inside isolated evidence processes.
+- The current result is `Fail`, not `Blocked`; direct expected-versus-observed evidence and a bounded privilege differential exist, and cleanup completed.
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `No — round-2 execution completed and stopped at a critical implementation failure`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No by API/E2E in this failed round; migration coverage needs update with implementation rework`
-- Post-repository confidence: `89.1%`
-- Broader validation decision: `Required — executed via Project Desktop Validation plus executable lifecycle probe; Fail`
+- Proceed To Further API/E2E Execution: `No — round-3 execution completed and found a critical preserved-viewer design failure`
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No by API/E2E in this failed round; exact lifecycle coverage needs update after reviewed design/source rework`
+- Post-repository confidence: `90.4%`
+- Broader validation decision: `Required — executed via Project Desktop Validation plus executable lifecycle/shared-viewer probe; Fail`
 - Reroute Required Before Further Validation Execution: `Yes`
 - Recommended Recipient If Reroute Required: `code_reviewer`
-- Notes: Preserve the six scenario IDs on rerun. Recheck E2E-SEC-001/E2E-UI-001 AC-010 first after classified rework, then complete E2E-REG-001 and rerun all currently passed critical scenarios for current sign-off.
+- Notes: Preserve all six scenario IDs. After reviewed privilege rework, recheck E2E-REG-001 first through both PDF XHR and Excel fetch, then rerun all six scenarios for current sign-off. Live Windows remains residual.

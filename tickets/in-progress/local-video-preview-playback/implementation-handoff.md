@@ -8,7 +8,8 @@
 - Supplemental task artifacts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/runtime-probe-evidence.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/url-identity-probe-evidence.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/design-review-report.md` (authoritative round 5 pass)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/fetch-capability-probe-evidence.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/design-review-report.md` (authoritative round 6 pass)
 - Current failure/review reports and retained execution context, not post-fix sign-off:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/code-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/api-e2e-coverage-investigation.md`
@@ -21,13 +22,17 @@
 - Resolved source-review `CR-002`: the builder now identifies Windows-drive input before separator normalization, normalizes backslashes only for Windows paths, and preserves legal POSIX backslashes as `%5C` so the decoded path remains byte-for-byte the selected filesystem identity.
 - Resolved source-review `CR-003`: the real-response fixture for spaces, Unicode, `%`, and `#` is again platform-neutral, while the real filename containing a literal POSIX backslash is isolated in an explicit `win32`-skipped test. Pure codec and migration `%5C` assertions remain cross-platform.
 - Resolved failure-origin finding `CR-004`: the isolated migration now recognizes the exact authored `local-file:///...` POSIX legacy shape before invoking the ambient `URL` implementation. It decodes once, verifies an exact legacy rebuild, and then delegates canonical construction to `buildLocalFileUrl`; malformed or adorned raw legacy input remains unsupported.
+- Implemented the reviewed `CR-005` correction as one inseparable protocol-boundary change: pre-ready registration now declares exactly `standard`, `stream`, `supportFetchAPI`, and `corsEnabled`; post-ready installation registers one default-session `local-file://*/*` `onBeforeRequest` gate before the one handler.
+- Added `WorkspaceShellWindowRegistry.isOwnedMainFrame` as the sole live identity query. It accepts only a registered, non-destroyed shell whose current non-destroyed `webContents.mainFrame` is the exact requesting frame. The protocol gate rejects missing identity before the query and cancels false/throwing results without reaching the handler.
+- Passed the live registry method as a bound predicate from `main.ts`; no shell enumeration, URL/origin comparison, path policy, viewer token, or browser-partition installation was added.
 - Replaced both renderer inline serializers with the shared builder and replaced the Electron response-local legacy decoder with the shared strict parser. The protocol owner imports the shared scheme constant.
 - Added an isolated context-hydration migration for exact canonical input and valid legacy empty-authority POSIX / drive-authority Windows locators. Wrong, opaque, adorned, malformed, or non-absolute local-file input becomes the specialized current `unsupported_local_file` variant.
 - Made current context presentation refuse preview/open for unsupported metadata and render its label in `UserMessage.vue` as a non-interactive chip. Valid attachment presentation remains unchanged.
 - Replaced the old type-only streaming partition with one `planContextAttachmentSubmission` owner. Both run stores retain the full current attachment array in the local user message while passing only eligible locators to the existing executable WebSocket arrays.
 - Replaced empty-only member-echo preservation with identity-matched merging that refreshes incoming executable attachments and retains/dedupes existing non-executable items for empty and mixed echoes. External-user replacement remains incoming-authoritative.
 - No protocol compatibility decoder, metadata-only transport, server/runtime schema change, `file://` producer, Blob transport, server route, fallback, or alternate local-file handler was added.
-- Current local-fix commit: `b658f16b53e494a5649e3a72cc136fdf039ff8df` (`fix(web): migrate raw legacy POSIX locators`).
+- Current local-fix commit: `0c9728b4a671526162c97b5a7999836f532aa3c9` (`fix(electron): authorize local files by main frame`).
+- Raw legacy migration parent: `b658f16b53e494a5649e3a72cc136fdf039ff8df` (`fix(web): migrate raw legacy POSIX locators`).
 - Portable response-test parent: `02ca27faff5b0441488c2e1b1e65cd6cc2443c18` (`test(electron): keep POSIX path fixture portable`).
 - POSIX identity source-fix parent: `09fe48665332e83a106853855412a26579f9a710` (`fix(web): preserve POSIX backslashes in local file URLs`).
 - Revised implementation parent: `cdeb0aafb3b9b224b9c767552477681adaec7172` (`fix(web): canonicalize local file attachment playback`).
@@ -37,10 +42,10 @@
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Supported local video uses a stable standard+stream identity and retains native controls/playback behavior. | `fileExplorerContentActions.ts -> shared/localFileUrl.ts -> VideoPlayer.vue -> local-file-protocol.ts -> local-file-response.ts -> validateReadableRegularFile -> file-byte-stream.ts` | Implemented. File Explorer now emits the proven fixed authority; existing response/stream/player owners are preserved. Real Electron metadata/play/pause/seek remains downstream validation. |
+| BEH-001 | Supported local video uses a stable standard streaming identity and retains native controls/playback behavior. | `fileExplorerContentActions.ts -> shared/localFileUrl.ts -> VideoPlayer.vue -> default-session main-frame gate -> local-file-protocol handler -> local-file-response.ts -> validateReadableRegularFile -> file-byte-stream.ts` | Implemented. File Explorer emits the fixed authority; a live workspace-shell main frame is required before the preserved response/stream/player owners. Round-3 video evidence passed on the parent commit; rerun on the gated commit remains downstream. |
 | BEH-002 | Resource/decode failure remains a localized accessible alert with a fresh Retry attempt and URL-change recovery. | `useAuthorizedObjectUrl -> VideoPlayer.vue -> localization/messages/{en,zh-CN}/tools.ts` | Preserved unchanged apart from canonical URL fixtures. Focused component tests still pass. |
-| BEH-003 | One current handler identity reaches validation and truthful full/range delivery; invalid identities fail without bytes. | `shared/localFileUrl.parseLocalFileUrl -> local-file-response.ts -> localFileValidation.ts -> fs.open/stat -> file-byte-stream.ts` | Implemented. Empty/drive/wrong authorities and handler-visible query/fragment are no-byte `404`; valid current methods/ranges retain existing `200`/`206`/`405`/`416` policy. POSIX backslashes round-trip as `%5C`, while only Windows-drive separators normalize. A real non-Windows temporary file containing `\` in its filename is served through the response boundary in an explicitly platform-conditional test; a separate cross-platform real response covers spaces, Unicode, `%`, and `#`. Direct parser tests cover credential/port defense without claiming Electron preserves those authored fields. |
-| BEH-004 | Existing binary/document/audio and embedded context-thumbnail routes use the same fixed identity; text and unrelated routing remain unchanged. | `fileExplorerContentActions.ts` and `contextAttachmentPresentation.ts` -> `buildLocalFileUrl`; existing viewer selection and text IPC/GraphQL paths | Implemented. Both derived producers now use the codec. Focused File Explorer and context-thumbnail tests pass; representative live audio/image/PDF/Excel remains downstream. |
+| BEH-003 | Only a live registered workspace-shell main frame may reach one current handler identity, validation, and truthful full/range delivery; unauthorized or invalid identities fail without bytes. | `defaultSession.webRequest.onBeforeRequest -> WorkspaceShellWindowRegistry.isOwnedMainFrame -> protocol.handle -> shared/localFileUrl.parseLocalFileUrl -> local-file-response.ts -> localFileValidation.ts -> fs.open/stat -> file-byte-stream.ts` | Implemented. Absent/unknown/destroyed/subframe identities cancel before the handler; the exact main frame proceeds. Empty/drive/wrong authorities and handler-visible query/fragment remain no-byte `404`; valid current methods/ranges retain existing `200`/`206`/`405`/`416` policy. POSIX backslashes and cross-platform significant characters remain covered. |
+| BEH-004 | Existing binary/document/audio and embedded context-thumbnail routes use the same fixed identity; unchanged PDF.js XHR and Excel Fetch can reach it only from the trusted shell main frame; text and unrelated routing remain unchanged. | `fileExplorerContentActions.ts/contextAttachmentPresentation.ts -> buildLocalFileUrl -> unchanged PdfViewer/ExcelViewer/media consumers -> default-session main-frame gate -> existing handler/response`; text remains IPC/GraphQL | Implemented. Exact Fetch/CORS privileges and pre-handler authorization were added only in the protocol lifecycle. `PdfViewer.vue`, `ExcelViewer.vue`, `authorizedTransport.ts`, renderer routing, and browser partition are source-unchanged. Real HTTP/file PDF/Excel plus child-frame denial remains downstream `E2E-REG-001`. |
 | BEH-005 | Valid legacy context locators transition before current use; unsupported locator metadata remains visible/removable/current-session-only but cannot preview/open or enter executable agent/team arrays/runtime media. Matching member echoes retain it; fresh reload may omit newly unsupported input. | `ContextFilePathInputArea/projection -> hydrateContextAttachment -> contextLocalFileLocatorMigration.ts -> ContextAttachment union -> contextAttachmentPresentation/UserMessage -> planContextAttachmentSubmission -> agentRunStore/agentTeamRunStore -> memberInputMessageHandler/userMessageProjection` | Implemented. Exact authored legacy POSIX syntax is classified before ambient URL normalization, while canonical input stays idempotent and valid legacy Windows remains supported. Valid legacy becomes canonical `external_url`; malformed/adorned/wrong/opaque input becomes explicit non-executable current state. Mixed agent/team sends retain local metadata while sending valid arrays only. Empty/mixed identity-matched member echoes retain/dedupe unsupported state; external-user projection remains authoritative. No durable invalid-metadata transport was added, matching approved Option 1. |
 
 ## Key Files Or Areas
@@ -52,24 +57,27 @@
 - Submission planning/coordinators: `utils/contextFiles/contextAttachmentSend.ts`, `stores/agentRunStore.ts`, `stores/agentTeamRunStore.ts`
 - Live echo projection: `services/agentStreaming/handlers/userMessageProjection.ts`, `memberInputMessageHandler.ts`
 - Renderer producer: `stores/fileExplorerContentActions.ts`
-- Electron current parser/lifecycle: `electron/local-file-protocol/local-file-response.ts`, `local-file-protocol.ts`, `electron/tsconfig.json`
+- Electron lifecycle/authorization: `electron/local-file-protocol/local-file-protocol.ts`, `electron/shell/workspace-shell-window-registry.ts`, and bound injection in `electron/main.ts`
+- Electron current parser/response: `electron/local-file-protocol/local-file-response.ts`, `electron/tsconfig.json`
 - Preserved protocol resources/viewer: `electron/local-file-protocol/file-byte-stream.ts`, `electron/localFileValidation.ts`, `components/fileExplorer/viewers/VideoPlayer.vue`
-- Focused new coverage: `shared/__tests__/localFileUrl.spec.ts`, `utils/contextFiles/__tests__/contextLocalFileLocatorMigration.spec.ts`, `contextAttachmentModel.spec.ts`, and `contextAttachmentSend.spec.ts`, plus updated store/projection/presentation/Electron/component suites.
+- Focused new coverage: `electron/shell/__tests__/workspace-shell-window-registry.spec.ts`, expanded `electron/local-file-protocol/__tests__/local-file-protocol.spec.ts`, `shared/__tests__/localFileUrl.spec.ts`, migration/model/submission tests, plus preserved store/projection/presentation/response/viewer suites.
 
 ## Important Assumptions
 
 - `hydrateContextAttachment` remains the supported convergence boundary for pasted and projected attachment locators; the external-URL constructor is now module-private so current local-file state cannot bypass that invariant through the public model API.
 - `ContextAttachment` objects produced by current application paths are authoritative current variants. Submission planning deliberately checks current kind rather than reparsing historical URL syntax.
-- The application continues to use Electron's default session and one main-module privileged scheme registration.
-- The unchanged `validateReadableRegularFile` remains the only filesystem authorization gate; the shared codec grants no file access.
+- The workspace shell continues to use Electron's default session; the browser runtime remains isolated in `persist:autobyteus-browser`. One main-module scheme registration and one default-session filtered listener/handler own local-file capability.
+- `WorkspaceShellWindowRegistry` authorizes only live requester identity. The unchanged `validateReadableRegularFile` remains the only filesystem authorization gate; neither registry nor shared codec grants file access.
 - Platform codec support is not expanded. Unsupported media remains contained by the existing generic VideoPlayer failure state.
 
 ## Known Risks
 
-- Round-2 Electron 42.4.1 evidence passed the canonical protocol/video/range/play/seek/cancellation paths but exposed the legacy POSIX hydration defect corrected by `b658f16b53e494a5649e3a72cc136fdf039ff8df`. The full required scenario set must be rerun on this revised commit; retained round-2 evidence is not post-fix sign-off.
+- Round-3 Electron 42.4.1 evidence passed protocol/security/video/migration and non-document regressions on the parent commit, then proved the former two-privilege descriptor blocked PDF.js XHR and Excel Fetch. Differential evidence proved the exact four privileges work but expose foreign/same-origin child frames when ungated. The current source implements the reviewed exact-main-frame gate; all round-3 evidence remains pre-fix context rather than sign-off.
+- Actual PDF.js and Excel requester identity must be re-proven from representative HTTP and packaged `file://` shell origins. Electron may report a null or destroyed frame during lifecycle transitions; the implementation fails closed.
+- Electron `webRequest` retains only the last listener for an event. The local-file lifecycle is now the sole repository `onBeforeRequest` owner; future default-session policy must compose here rather than overwrite it.
 - macOS cannot live-execute Windows filesystem semantics; `/C:/...` builder/parser/migration behavior has deterministic unit coverage only.
 - Electron may erase authored credential/port distinctions before the handler. Supported raw context ingress rejects them; the normalized handler applies the same exact authority/path parser and filesystem validator to what remains.
-- Representative local audio, image/PDF/Excel, embedded thumbnail, valid external local-file attachment, and text-route regression evidence is still required downstream.
+- Representative local PDF/Excel must pass first downstream, with explicit foreign-HTTP and same-origin Blob/actual HTML-preview denial; the remaining image/audio/thumbnail/text/protocol/video scenarios then rerun through the gate.
 - Newly unsupported metadata is intentionally current-session/live-echo state only and may disappear on fresh durable reload, per the user's approved Option 1. Any durable retention change requires a new product/schema decision.
 
 ## Task Design Health Assessment Implementation Check
@@ -79,7 +87,7 @@
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: The rework established the reviewed shared wire owner, isolated historical transition, current-kind submission owner, and identity-matched live merge instead of adding handler host guesses or store-local filters. No implementation finding contradicted the round-5 design.
+- Evidence / notes: Prior ownership corrections remain intact. The round-6 rework extends only the existing protocol lifecycle and live shell registry: capability/allow-cancel/ordering stay in the protocol owner, while exact live frame identity stays in the registry. Document viewers and byte delivery were not duplicated. No implementation finding contradicted the reviewed round-6 design.
 
 ## Legacy / Compatibility Removal Check
 
@@ -89,7 +97,7 @@
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: The response-local decoder, renderer inline serializers, old partition export, and empty-only echo flag are removed. The specialized unsupported variant does not loosen other attachment kinds. All changed implementation files remain below 500 effective non-empty lines; no changed implementation delta exceeded 220 lines. Existing larger coordinators stayed below the hard limit and received only bounded plan consumption changes.
+- Notes: The response-local decoder, renderer inline serializers, old partition export, and empty-only echo flag remain removed. No ungated four-privilege path or viewer-specific fallback exists. Changed implementation files remain below 500 effective non-empty lines (`local-file-protocol.ts` 57, registry 71, `main.ts` 454); no changed implementation delta exceeded 220 lines.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -103,7 +111,7 @@
 ## Environment Or Dependency Notes
 
 - Local implementation environment: macOS arm64; repository worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback`; pnpm workspace dependencies were already installed.
-- No package or lockfile change was required during round-5 rework. Existing direct `mime-types` and `@types/mime-types` ownership from the first implementation is preserved.
+- No package or lockfile change was required during round-6 rework. Existing direct `mime-types` and `@types/mime-types` ownership from the first implementation is preserved.
 - `electron/tsconfig.json` now includes `shared/localFileUrl.ts`; `pnpm transpile-electron` emits the process-neutral codec with Electron main code.
 - Branch was not refreshed or merged with the newer remote base; delivery owns final branch refresh/integrated-state validation.
 
@@ -120,6 +128,10 @@
 - Post-`CR-004` migration/model check — passed: 2 files / 8 tests, including the ambient URL reinterpretation regression.
 - Post-`CR-004` codec/migration/model/presentation check — passed: 4 files / 18 tests.
 - Post-`CR-004` Electron protocol/response/validator regression check — passed on macOS: 3 files / 15 tests.
+- Post-`CR-005` focused protocol/registry lifecycle check — passed: 2 files / 9 tests, covering the exact/no-extra descriptor, filter-before-handler order, main-frame allow, missing identity cancellation, registry rejection, exception fail-closed behavior, and registry lifecycle.
+- Post-`CR-005` preserved Nuxt codec/context/submission/projection/store/viewer check — passed: 16 files / 96 tests.
+- Post-`CR-005` Electron protocol/response/validator/registry check — passed: 4 files / 21 tests.
+- Post-`CR-005` full Electron unit suite — passed: 27 files / 118 tests; 1 optional real-release file/test skipped by its existing opt-in guard.
 - `pnpm transpile-electron` — passed after final source changes.
 - `pnpm guard:web-boundary` — passed.
 - `pnpm guard:localization-boundary` — passed.
@@ -136,19 +148,19 @@
 - Project development / preview instructions and rendered surface used: Focused Vue component tests mounted the real `UserMessage.vue`, `ContextFilePathInputArea`, and `VideoPlayer.vue` DOM and exercised click, preview-failure, Retry, URL-change, and unsupported-label states. The earlier implementation's real Nuxt/Chrome inspection of VideoPlayer failure/Retry remains applicable because that component was preserved.
 - States, layouts, viewports, and interactions inspected: valid uploaded thumbnail and workspace chip actions; thumbnail failure fallback; unsupported image-typed local-file attachment rendered without image/button/open action; existing VideoPlayer happy/error/Retry/URL-change states.
 - Visual or interaction issues found and corrected: Unsupported metadata now uses the adjacent chip visual language but neutral gray styling and no false “Open” title, button, image, or handler. Valid thumbnail/chip actions remain unchanged.
-- Supporting evidence and remaining unverified states or limitations: Component DOM/interaction evidence passed. `CR-003` changed test structure only; `CR-004` changed the migration boundary plus its unit coverage and introduced no rendered frontend styling or interaction change. A live application state containing the newly unsupported projected chip was not brought up in a browser during this bounded rework, so responsive/focus inspection of that exact new chip remains a downstream UI check. Post-fix real Electron migration/media/protocol behavior remains API/E2E-owned.
+- Supporting evidence and remaining unverified states or limitations: Component DOM/interaction evidence passed for the prior renderer changes. `CR-005` changes Electron capability/authorization and tests only; it makes no renderer DOM/style/interaction source change, so no new visual iteration was applicable. Focused `FileViewer`, `ExcelViewer`, `VideoPlayer`, and related transport tests passed. Real PDF.js render, Excel parse/render, main-frame identity, and child-frame denial cannot be established by unit mocks and remain API/E2E-owned.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 The reviewed required scenarios remain authoritative:
 
-1. `E2E-PROTO-001`: exact fixed-authority full/single-range method/header/byte matrix, invalid authority/query/fragment no-byte outcomes, and cleanup.
-2. `E2E-SEC-001`: raw context-ingress credential/port/query/fragment/wrong/opaque rejection, normalized-handler observations, unchanged validator, and absence of alternate transports.
-3. `E2E-VID-001`: exact/small supported video metadata, play, pause, seek, and continued playback under Electron 42.4.1/package.
-4. `E2E-VID-002`: larger video later-range seek, initial body cancellation, bounded memory/resource cleanup.
-5. `E2E-UI-001`: generic accessible failure/Retry plus unsupported attachment label/removal/non-openable chip, valid legacy canonicalization, mixed valid+unsupported submission, empty/mixed echo retention, and fresh-reload disappearance.
-6. `E2E-REG-001`: representative local audio, File Explorer image/PDF/Excel, embedded absolute workspace-image thumbnail, valid external local-file attachment, and unchanged text IPC/GraphQL routing.
+1. Run `E2E-REG-001` first: real PDF.js XHR and Excel Fetch from representative HTTP and packaged `file://` workspace-shell main frames; image/audio/thumbnail/text preservation; foreign-HTTP and same-origin Blob/actual HTML-preview child-frame denial before handler with zero bytes.
+2. `E2E-PROTO-001`: issue the exact fixed-authority full/single-range method/header/byte matrix from the authorized workspace-shell main frame, preserve invalid authority/query/fragment no-byte outcomes and cleanup, and separately prove identity-less main-process `net.fetch` is canceled without a test bypass.
+3. `E2E-SEC-001`: raw context-ingress credential/port/query/fragment/wrong/opaque rejection, normalized-handler observations, unchanged validator, child-frame/identity-less cancellation, and absence of alternate transports.
+4. `E2E-VID-001`: exact/small supported video metadata, play, pause, seek, and continued playback through the authorized frame under Electron 42.4.1/package.
+5. `E2E-VID-002`: larger video later-range seek, initial body cancellation, bounded memory/resource cleanup through the gate.
+6. `E2E-UI-001`: generic accessible failure/Retry plus unsupported attachment label/removal/non-openable chip, valid legacy canonicalization, mixed valid+unsupported submission, empty/mixed echo retention, and fresh-reload disappearance.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-`Yes` — source/unit/transpile checks do not sign off AC-001 through AC-010. The `api_e2e_engineer` must independently rerun the required scenarios on commit `b658f16b53e494a5649e3a72cc136fdf039ff8df`, including the exact legacy POSIX renderer hydration that failed in round 2, decide durable broader coverage, record exact Electron authored/property/handler observations, and report confidence/residual risk after source review passes.
+`Yes` — source/unit/transpile checks do not sign off AC-001 through AC-010. After source review passes, the `api_e2e_engineer` must run `E2E-REG-001` first and then the full six-scenario set on commit `0c9728b4a671526162c97b5a7999836f532aa3c9`. Evidence must distinguish allowed workspace-shell main-frame requests from canceled identity-less/subframe requests and must not bypass the production gate.
