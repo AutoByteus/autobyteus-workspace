@@ -1,0 +1,14 @@
+UTC_START: 2026-07-19T05:06:57Z
+CHECK: exact source hashes after execution
+613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4
+5051a147ae47073072ee9d75092a4f1fd3df0cc510f58cd75b682b505cf549b3  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4
+CHECK: API/E2E Electron processes before cleanup
+CHECK: Nuxt owned port before cleanup
+ACTION: scratch Nuxt page removed with apply_patch
+ACTION: restore temp permission and remove temp root with Python shutil
+fixture_root_exists=False
+CHECK: Nuxt owned port after cleanup
+CHECK: user AutoByteus application remains running and was not touched
+ 3405 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+CHECK: API/E2E processes absent
+UTC_END: 2026-07-19T05:07:00Z

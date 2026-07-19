@@ -1,0 +1,51 @@
+WORKDIR: /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+UTC_START: 2026-07-19T04:50:21Z
+COMMAND: pnpm transpile-electron
+
+> autobyteus@1.4.17 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+COMMAND: pnpm guard:web-boundary
+
+> autobyteus@1.4.17 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+COMMAND: pnpm guard:localization-boundary
+
+> autobyteus@1.4.17 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+COMMAND: pnpm audit:localization-literals
+
+> autobyteus@1.4.17 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:89058) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+SEARCH: obsolete production local-file triple slash
+NO_MATCH
+SEARCH: obsolete net.fetch file transport
+NO_MATCH
+SEARCH: shared current builder consumers
+shared/localFileUrl.ts:13:export const buildLocalFileUrl = (filePath: string): string => {
+shared/localFileUrl.ts:58:    return buildLocalFileUrl(filePath) === parsedUrl.toString() ? filePath : null;
+stores/fileExplorerContentActions.ts:119:      fileState.url = buildLocalFileUrl(filePath)
+stores/fileExplorerContentActions.ts:26:import { buildLocalFileUrl } from '~/shared/localFileUrl'
+utils/contextFiles/contextAttachmentPresentation.ts:49:    return buildLocalFileUrl(input.locator);
+utils/contextFiles/contextAttachmentPresentation.ts:4:import { buildLocalFileUrl, LOCAL_FILE_SCHEME, parseLocalFileUrl } from '~/shared/localFileUrl';
+utils/contextFiles/contextLocalFileLocatorMigration.ts:2:  buildLocalFileUrl,
+utils/contextFiles/contextLocalFileLocatorMigration.ts:73:      const canonicalLocator = buildLocalFileUrl(filePath);
+utils/contextFiles/contextLocalFileLocatorMigration.ts:83:      return { kind: 'migrated', locator: buildLocalFileUrl(decodedPathname) };
+utils/contextFiles/contextLocalFileLocatorMigration.ts:96:      return { kind: 'migrated', locator: buildLocalFileUrl(filePath) };
+SEARCH: migration isolated from electron
+NO_MATCH
+SEARCH: unsupported metadata has no server source or transport field
+NO_MATCH
+COMMAND: git diff --check
+COMMAND: git diff --cached --check
+UTC_END: 2026-07-19T04:50:24Z

@@ -1,0 +1,25 @@
+fixture_root=/tmp/autobyteus-local-preview-round2.mN3euH
+/tmp/autobyteus-local-preview-round2.mN3euH/probe workbook.xlsx|size=15929|mode=-rw-r--r--
+/tmp/autobyteus-local-preview-round2.mN3euH/unsupported video.mp4|size=11|mode=-rw-r--r--
+/tmp/autobyteus-local-preview-round2.mN3euH/probe notes.md|size=53|mode=-rw-r--r--
+/tmp/autobyteus-local-preview-round2.mN3euH/unreadable.bin|size=10|mode=----------
+/tmp/autobyteus-local-preview-round2.mN3euH/probe document.pdf|size=1375|mode=-rw-r--r--
+/tmp/autobyteus-local-preview-round2.mN3euH/Case Sensitive Ü%#/Video 100%#1\name.mp4|size=13620424|mode=-rw-r--r--
+/tmp/autobyteus-local-preview-round2.mN3euH/Case Sensitive Ü%#/视频 100%#1\name.bin|size=10|mode=-rw-r--r--
+/tmp/autobyteus-local-preview-round2.mN3euH/probe image.png|size=68|mode=-rw-r--r--
+/tmp/autobyteus-local-preview-round2.mN3euH/probe audio.wav|size=264678|mode=-rw-r--r--
+613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4
+5051a147ae47073072ee9d75092a4f1fd3df0cc510f58cd75b682b505cf549b3  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4
+\613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c  /tmp/autobyteus-local-preview-round2.mN3euH/Case Sensitive Ü%#/Video 100%#1\\name.mp4
+{
+    "format": {
+        "duration": "330.533333",
+        "size": "13620424"
+    }
+}
+{
+    "format": {
+        "duration": "3.000000",
+        "size": "264678"
+    }
+}
