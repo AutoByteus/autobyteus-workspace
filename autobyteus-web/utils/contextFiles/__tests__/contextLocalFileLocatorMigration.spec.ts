@@ -21,6 +21,12 @@ describe('migrateContextLocalFileLocator', () => {
       kind: 'canonical',
       locator: 'local-file://local/C%3A/Media/video.mp4',
     });
+    expect(migrateContextLocalFileLocator(
+      'local-file://local/Users/Normy/video%5Cname.mp4',
+    )).toEqual({
+      kind: 'canonical',
+      locator: 'local-file://local/Users/Normy/video%5Cname.mp4',
+    });
   });
 
   it('transforms valid legacy POSIX and Windows drive-authority locators once', () => {
@@ -35,6 +41,12 @@ describe('migrateContextLocalFileLocator', () => {
     )).toEqual({
       kind: 'migrated',
       locator: 'local-file://local/C:/Media/Video%20100%25%231.mp4',
+    });
+    expect(migrateContextLocalFileLocator(
+      'local-file:///Users/Normy/video%5Cname.mp4',
+    )).toEqual({
+      kind: 'migrated',
+      locator: 'local-file://local/Users/Normy/video%5Cname.mp4',
     });
   });
 

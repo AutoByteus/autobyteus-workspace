@@ -18,12 +18,19 @@ describe('localFileUrl', () => {
     );
   });
 
-  it('round trips case-sensitive Unicode and URL-significant paths', () => {
+  it('round trips case-sensitive Unicode and URL-significant POSIX paths exactly', () => {
     const posixPath = '/Users/Normy/视频 100%#1.mp4';
+    const posixBackslashPath = '/Users/Normy/video\\name.mp4';
     const posixDriveLikePath = '/C:/Media/video.mp4';
     const windowsPath = 'D:\\Media\\视频 100%#1.mp4';
 
     expect(parseLocalFileUrl(buildLocalFileUrl(posixPath), 'darwin')).toBe(posixPath);
+    expect(buildLocalFileUrl(posixBackslashPath)).toBe(
+      'local-file://local/Users/Normy/video%5Cname.mp4',
+    );
+    expect(parseLocalFileUrl(buildLocalFileUrl(posixBackslashPath), 'darwin')).toBe(
+      posixBackslashPath,
+    );
     expect(parseLocalFileUrl(buildLocalFileUrl(posixDriveLikePath), 'darwin')).toBe(posixDriveLikePath);
     expect(parseLocalFileUrl(buildLocalFileUrl(windowsPath), 'win32')).toBe(
       'D:/Media/视频 100%#1.mp4',

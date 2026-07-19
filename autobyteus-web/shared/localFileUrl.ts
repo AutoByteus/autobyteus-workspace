@@ -15,14 +15,14 @@ export const buildLocalFileUrl = (filePath: string): string => {
     throw new TypeError('A local-file URL requires an absolute path without null bytes.');
   }
 
-  const normalizedPath = filePath.replace(/\\/g, '/');
   if (WINDOWS_DRIVE_ABSOLUTE_PATH.test(filePath)) {
-    const encodedPath = encodePathSegments(normalizedPath).replace(/^([A-Za-z])%3A/, '$1:');
+    const normalizedWindowsPath = filePath.replace(/\\/g, '/');
+    const encodedPath = encodePathSegments(normalizedWindowsPath).replace(/^([A-Za-z])%3A/, '$1:');
     return `${LOCAL_FILE_SCHEME}://${LOCAL_FILE_AUTHORITY}/${encodedPath}`;
   }
 
   if (POSIX_ABSOLUTE_PATH.test(filePath)) {
-    return `${LOCAL_FILE_SCHEME}://${LOCAL_FILE_AUTHORITY}${encodePathSegments(normalizedPath)}`;
+    return `${LOCAL_FILE_SCHEME}://${LOCAL_FILE_AUTHORITY}${encodePathSegments(filePath)}`;
   }
 
   throw new TypeError('A local-file URL requires an absolute POSIX or Windows drive path.');
