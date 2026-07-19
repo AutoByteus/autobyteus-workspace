@@ -497,7 +497,9 @@ async function bootstrap(): Promise<void> {
   installServerStatusFanout();
   installAppLifecycleHandlers();
 
-  installLocalFileProtocol();
+  installLocalFileProtocol({
+    isOwnedMainFrame: shellWindowRegistry.isOwnedMainFrame.bind(shellWindowRegistry),
+  });
 
   openNodeWindow(EMBEDDED_NODE_ID);
   appUpdater.startAutoCheck();
