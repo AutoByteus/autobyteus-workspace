@@ -14,6 +14,7 @@ import {
   normalizeAbsoluteFilePath,
   resolveEventMonitorMarkdownFileDestination,
   type AbsoluteFilePathAction,
+  type AbsoluteFilePathActionCandidate,
 } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 export interface MarkdownSegment {
@@ -143,7 +144,7 @@ export const useMarkdownSegments = (
     let nextFileActionId = 0;
 
     const registerFileAction = (
-      candidate: { rawCandidate: string; normalizedCandidate: string },
+      candidate: AbsoluteFilePathActionCandidate,
       sourceKind: AbsoluteFilePathAction['sourceKind'],
     ): string | null => {
       const id = `event-monitor-file-action-${nextFileActionId++}`;

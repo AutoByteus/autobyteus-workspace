@@ -19,6 +19,12 @@ export interface AbsoluteFilePathAction {
   previewType: SupportedFileDataType;
 }
 
+export interface AbsoluteFilePathActionCandidate {
+  rawCandidate: string;
+  normalizedCandidate: string;
+  rawDestination?: string;
+}
+
 export type EventMonitorMarkdownFileDestination =
   | { kind: 'not-file' }
   | {
@@ -187,14 +193,18 @@ export function resolveEventMonitorMarkdownFileDestination(
   }
 
   const normalizedCandidate = normalizeAbsoluteFilePath(decodedCandidate);
-  if (!normalizedCandidate || determineFilePreviewType(normalizedCandidate) === 'Unsupported') {
+  if (!normalizedCandidate) {
+    return { kind: 'not-file' };
+  }
+  const previewType = determineFilePreviewType(normalizedCandidate);
+  if (previewType === 'Unsupported') {
     return { kind: 'not-file' };
   }
 
   return {
     kind: 'valid',
     normalizedCandidate,
-    previewType: determineFilePreviewType(normalizedCandidate),
+    previewType,
   };
 }
 
@@ -239,7 +249,7 @@ export function findAbsoluteFilePathCandidates(value: string): AbsoluteFilePathC
 
 export function createAbsoluteFilePathAction(
   id: string,
-  candidate: { rawCandidate: string; normalizedCandidate: string; rawDestination?: string },
+  candidate: AbsoluteFilePathActionCandidate,
   sourceKind: AbsoluteFilePathSourceKind,
 ): AbsoluteFilePathAction | null {
   const normalizedCandidate = normalizeAbsoluteFilePath(candidate.normalizedCandidate);

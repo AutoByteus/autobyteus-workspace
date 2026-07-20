@@ -142,3 +142,11 @@ Finalized predecessor package:
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 API/E2E must independently investigate and execute browser, remote/mobile, Electron/native, and realistic Event Monitor activation coverage after implementation source review passes. This handoff claims no API/E2E pass and no packaged-artifact verification.
+
+## Source Review Rework — CR-F-001
+
+- Code review finding: the URI action call supplied `rawDestination` through an inline object type that did not declare the optional field in `registerFileAction()`.
+- Bounded fix: added the exported `AbsoluteFilePathActionCandidate` input contract with `rawDestination?: string`; both `registerFileAction()` and `createAbsoluteFilePathAction()` now use that shared type, preserving raw provenance in the transient `AbsoluteFilePathAction`.
+- Changed-scope TypeScript check: `pnpm --dir autobyteus-web exec tsc -p /tmp/event-monitor-file-uri-changed-tsconfig.json --pretty false` — passed for `absoluteFilePathAction.ts` and `useMarkdownSegments.ts`.
+- Focused URI suites after the fix: 3 files, 58 tests passed (`absoluteFilePathAction.spec.ts`, `MarkdownRenderer.spec.ts`, `useMarkdownSegments.spec.ts`).
+- Full project `tsc --noEmit` still reports pre-existing repository-wide diagnostics, including unresolved Vue test-component modules; no diagnostics were reported for the changed production files in the filtered output. The focused changed-scope project excludes those unrelated tests and passes.
