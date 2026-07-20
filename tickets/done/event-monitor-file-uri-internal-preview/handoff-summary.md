@@ -47,6 +47,20 @@ Result: **Build completed**. The packaging log contains a non-fatal shell metada
 
 The artifact is unsigned/not notarized (`identity explicitly is set to null`). Delivery did not launch the package; packaged/native, Windows, and paired-mobile execution remain user-led limitations.
 
+### Latest rebuild for user testing
+
+After the power interruption, the ticket worktree was rebuilt from delivery
+revision `d6f1f7934029f4dda7602519bb35a89492cb43e6` with the same command. The
+production environment resolved the `personal` flavor and both archive checks
+passed.
+
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.20.dmg`
+  - SHA-256: `aeee3778a89b21845df27d0ae6391e568ae8421f03488e16adef505ec6b0ac65`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.20.zip`
+  - SHA-256: `f546b78fec1cf16d17214813e1e49cb55282dc5c222736061110ec3892a63cda`
+- Round-2 build and artifact verification log: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/evidence/delivery-electron-build-round-2.log`
+- DMG and ZIP blockmaps are adjacent to the artifacts.
+
 ## Documentation
 
 - Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/autobyteus-web/docs/content_rendering.md`.
@@ -75,3 +89,4 @@ The user-attested final-test artifact explicitly approves continuation. Delivery
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/user-verification-final-test-report.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/evidence/delivery-post-refresh-check.log`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/evidence/delivery-electron-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/evidence/delivery-electron-build-round-2.log`
