@@ -1,19 +1,13 @@
-# Release Notes — Local Video Preview Playback
+# Release Notes — Diagram Zoom Viewer
 
-## Fixes
+## What's New
 
-- Fixed local videos in the Electron Files preview so supported media loads its duration and can play, pause, and seek instead of remaining black at `0:00`.
-- Added a clear localized failure state with **Retry** for missing, unreadable, or unsupported video content.
+- Mermaid diagrams in conversations, team/task messages, and Markdown previews can now open in a large fitted viewer with zoom, pan, scrolling, fit-to-view, keyboard controls, and accessible dismissal.
+- Detailed diagrams use the available inline width while preserving their intrinsic proportions and avoiding page or message overflow.
 
-## Compatibility and Security
+## Improvements
 
-- Preserved local image, audio, PDF, Excel, and text preview behavior while moving binary previews onto one canonical streamed local-file path.
-- Restricted local binary preview requests to the active registered desktop workspace-shell main frame; child frames, unregistered windows, and identity-less requests receive no file bytes.
-- Preserved valid legacy local-file attachments through automatic in-memory normalization and prevented unsupported local locators from being sent to runtime media execution.
-
-## Validation
-
-- All six required API/E2E scenarios passed at `98.1%` confidence, including real PDF.js XHR, Excel Fetch, video playback/seek/cancellation, failure/Retry recovery, migration/quarantine/reload behavior, and unauthorized-request denial.
-- After integrating the latest `personal` base, focused Nuxt tests passed (`16` files / `96` tests), focused Electron tests passed (`4` files / `21` tests), and Electron transpilation passed.
-- A local macOS ARM64 Electron app, DMG, and ZIP were built successfully with the README's unsigned/no-notarization command for hands-on verification.
-- User verification passed: opening a local video in the built Electron candidate worked as intended.
+- Added a quiet top-right expand action that appears on hover or keyboard focus without adding a blank control row or shifting the diagram.
+- Kept the expand action visibly available and touch-safe on coarse-pointer, no-hover, narrow, and hybrid-input devices.
+- Standardized the viewer toolbar on four compact icon-only actions: zoom out, fit-to-view, zoom in, and close.
+- Preserved interactive Mermaid links, loading and error states, source replacement, focus restoration, background-scroll isolation, English/Simplified Chinese labels, and usability at narrow widths and increased text sizes.
