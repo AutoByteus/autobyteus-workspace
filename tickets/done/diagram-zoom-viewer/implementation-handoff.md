@@ -2,12 +2,12 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/proposed-design.md`
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/ui-ux-spec.md`
-- Design review report (Round 2 is authoritative): `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/design-review-report.md`
-- Prior review and downstream history retained across the visual reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/api-e2e-coverage-investigation.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/api-e2e-execution-coverage-report.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/api-e2e-test-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/proposed-design.md`
+- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/ui-ux-spec.md`
+- Design review report (Round 2 is authoritative): `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/design-review-report.md`
+- Prior review and downstream history retained across the visual reset: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/api-e2e-coverage-investigation.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/api-e2e-execution-coverage-report.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/api-e2e-test-review-report.md`
 
 ## What Changed
 
@@ -42,9 +42,9 @@
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/localization/messages/en/workspace.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/localization/messages/zh-CN/workspace.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/README.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/visual-evidence.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/hybrid-evidence.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/README.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/visual-evidence.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/hybrid-evidence.json`
 
 ## Important Assumptions
 

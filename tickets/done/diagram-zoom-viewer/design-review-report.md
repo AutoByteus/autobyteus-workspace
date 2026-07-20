@@ -4,10 +4,10 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/proposed-design.md`
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/ui-ux-spec.md`; the two user-supplied screenshots recorded as source evidence in the investigation notes
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/proposed-design.md`
+- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/ui-ux-spec.md`; the two user-supplied screenshots recorded as source evidence in the investigation notes
 - Current Review Round: `1`
 - Trigger: Initial architecture review after explicit user approval of the refined requirements and UI/UX supplement on 2026-07-20
 - Prior Review Round Reviewed: N/A
@@ -237,10 +237,10 @@ N/A — Pass.
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/proposed-design.md`
-- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/ui-ux-spec.md`; four user-provided screenshots inventoried in the investigation notes
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/proposed-design.md`
+- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/ui-ux-spec.md`; four user-provided screenshots inventoried in the investigation notes
 - Current Review Round: `2`
 - Trigger: User live Electron verification rejected the candidate's permanent normal-flow 44×44 expand row and uniquely wide visible Fit text pill, then explicitly approved hover/focus-adaptive inline chrome and four uniform icon-only viewer actions on 2026-07-20.
 - Prior Review Round Reviewed: `1`

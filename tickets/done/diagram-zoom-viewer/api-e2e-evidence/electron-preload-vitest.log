@@ -1,0 +1,14 @@
+
+> autobyteus@1.4.19 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web
+> vitest --config ./electron/vitest.config.ts electron/__tests__/preload.spec.ts --run --reporter=verbose
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/electron
+
+ ✓ __tests__/preload.spec.ts > electron preload > exposes locale and external-link methods through their main-process bridges 13ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  10:34:14
+   Duration  243ms (transform 36ms, setup 0ms, collect 17ms, tests 14ms, environment 0ms, prepare 51ms)
+

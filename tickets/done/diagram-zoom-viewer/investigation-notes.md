@@ -31,7 +31,7 @@ Reference screenshots:
 
 - Project Type: `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer`
 - Current Branch: `codex/diagram-zoom-viewer`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer`
 - Bootstrap Base Branch: `origin/personal`
@@ -47,7 +47,7 @@ Reference screenshots:
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/ui-ux-spec.md` | Define adaptive inline chrome, compact icon-only toolbar, diagram expansion, zoom/pan, dismissal, responsive states, accessibility, and rendered-quality evidence. | Intended user-visible behavior. | Requirements, design spec | REQ-001–REQ-010; AC-001–AC-018 | `Refined` | Approval required / user-directed revision approved 2026-07-20 | Re-review with architecture; keep aligned through rework. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/ui-ux-spec.md` | Define adaptive inline chrome, compact icon-only toolbar, diagram expansion, zoom/pan, dismissal, responsive states, accessibility, and rendered-quality evidence. | Intended user-visible behavior. | Requirements, design spec | REQ-001–REQ-010; AC-001–AC-018 | `Refined` | Approval required / user-directed revision approved 2026-07-20 | Re-review with architecture; keep aligned through rework. |
 
 ## Source Log
 

@@ -32,7 +32,7 @@ See the authoritative interaction and visual contract in [ui-ux-spec.md](./ui-ux
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/ui-ux-spec.md` | UI/UX specification for adaptive inline chrome, compact viewer controls, zoom/pan journeys, responsive states, and accessibility | REQ-001–REQ-010 | AC-001–AC-018 | `Refined` / user-directed revision on 2026-07-20 | Defines intended user-visible behavior and is part of the approved requirements basis. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/ui-ux-spec.md` | UI/UX specification for adaptive inline chrome, compact viewer controls, zoom/pan journeys, responsive states, and accessibility | REQ-001–REQ-010 | AC-001–AC-018 | `Refined` / user-directed revision on 2026-07-20 | Defines intended user-visible behavior and is part of the approved requirements basis. |
 
 ## Design Health Assessment (Mandatory)
 

@@ -28,6 +28,7 @@ flowchart TD
     subgraph "Markdown Rendering"
         MarkdownRenderer[MarkdownRenderer.vue]
         MermaidDiagram[MermaidDiagram.vue]
+        MermaidDiagramViewer[MermaidDiagramViewer.vue]
     end
 
     FileContentViewer -->|Code/Text| MonacoEditor
@@ -41,6 +42,7 @@ flowchart TD
 
     MarkdownPreviewer --> MarkdownRenderer
     MarkdownRenderer --> MermaidDiagram
+    MermaidDiagram --> MermaidDiagramViewer
 ```
 
 ## Supported File Types
@@ -224,14 +226,55 @@ graph TD;
 **Implementation Details:**
 
 1.  **Parsing**: `useMarkdownSegments.ts` detects code fences with the language `mermaid` or `mmd`.
-2.  **Rendering**: The `MermaidDiagram.vue` component receives the diagram text.
+2.  **Rendering**: The shared `MermaidDiagram.vue` component receives the diagram text. Its successful inline preview uses the available Markdown width without stretching beyond Mermaid's intrinsic maximum.
 3.  **Service**: `mermaidService.ts` wraps the `mermaid` library to initialize settings (theme, security) and generate the SVG.
+4.  **Inspection**: Every successful render provides one localized expand action as an absolute top-right overlay that reserves no diagram layout space. On hover-capable fine-pointer input it stays visually quiet at rest and appears when the preview is hovered or the control receives keyboard focus. On no-hover/coarse input, including a fine-primary device with any coarse secondary pointer, it stays visible with a touch-safe target. The action, or a primary click/tap on non-interactive diagram space, opens `MermaidDiagramViewer.vue` as a teleported modal. Loading and error states cannot open the viewer.
+
+The viewer mounts the current live SVG only once, initially fits the complete
+diagram to its canvas, and supports toolbar, keyboard, wheel/trackpad, pointer,
+touch, and native-scroll interaction. Its persistent toolbar contains exactly
+four uniform icon-only actions: zoom out, fit-to-view, zoom in, and close. The
+fit action uses the inward-corners counterpart to the inline outward-corners
+expand icon; localized names remain in `aria-label` and `title`, not visible
+button text. Fine-pointer desktop uses compact square controls, while no-hover,
+coarse/any-coarse, and narrow layouts retain uniform 44-pixel touch targets.
+Zoom is clamped from the fitted overview through 4x; fit-to-view returns to the
+overview and scroll origin. The modal traps focus, locks background scrolling,
+closes through its close action, backdrop, or `Escape`, and returns focus to the
+inline expand control. Controls remain reachable at narrow widths and increased
+app/browser text sizes.
+
+Mermaid links remain interactive rather than becoming expand or pan gestures.
+HTTP(S) anchors, including SVG `xlink:href` forms, use the shared
+`MarkdownRenderer.vue` external-link authority in both inline and expanded
+views. Other link schemes retain their native/sanitized behavior. A source
+change invalidates any open viewer and renders a fresh SVG, so stale diagram
+content and viewport state are not retained.
+
+The inline overlay remains in the successful-state tab order even when hidden
+at fine-pointer rest. Focus reveals it immediately, reduced-motion preferences
+remove decorative transition timing, and the capability fallback favors visible
+usable chrome whenever a coarse pointer is available.
+
+`MarkdownRenderer.vue` is reused by conversation, team/task, file-preview, and
+other rich-text surfaces. Mermaid inspection therefore belongs at this shared
+renderer boundary; consumers should not add diagram-specific modal state or
+reuse the image/gallery modal, whose raster URL, copy, download, and gallery
+contract is different.
 
 This architecture ensures that diagram rendering is:
 
 - **Fast**: Client-side only, no network requests to generate images.
 - **Secure**: Uses `securityLevel: 'loose'` but runs in the browser sandbox (note: 'loose' allows HTML in labels).
 - **Theme-aware**: Can adapt to the application's light/dark mode.
+
+Focused unit/component coverage is colocated under
+`components/conversation/segments/renderer/__tests__/`. The durable real-browser
+probe starts its own temporary Nuxt route and Chrome session, then removes both:
+
+```bash
+pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer
+```
 
 ## Related Documentation
 

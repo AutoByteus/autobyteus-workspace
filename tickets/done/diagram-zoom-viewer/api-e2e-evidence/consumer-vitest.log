@@ -1,0 +1,39 @@
+
+> autobyteus@1.4.19 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web
+
+stderr | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts > MarkdownPreviewer > builds a workspace resolver only from explicit file-preview identity 7ms
+ ✓ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts > MarkdownPreviewer > does not create a resolver without workspace identity 1ms
+ ✓ components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts > InterAgentMessageSegment > renders compact sender + content and hides metadata by default 15ms
+ ✓ components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts > InterAgentMessageSegment > prefers mapped sender display name over raw member id 4ms
+ ✓ components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts > InterAgentMessageSegment > uses teammate fallback for machine sender ids when no name mapping exists 4ms
+ ✓ components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts > InterAgentMessageSegment > keeps metadata in title tooltip only 2ms
+ ✓ components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts > InterAgentMessageSegment > renders chevron toggle with collapsed state by default 2ms
+ ✓ components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts > InterAgentMessageSegment > renders inline and block math with markdown renderer 11ms
+ ✓ components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts > InterAgentMessageSegment > keeps file path links intact without misrendering them as math 5ms
+ ✓ components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts > InterAgentMessageSegment > does not linkify raw absolute file paths in inter-agent message content 4ms
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  10:34:00
+   Duration  4.93s (transform 2.69s, setup 8.59s, collect 84ms, tests 57ms, environment 376ms, prepare 301ms)
+

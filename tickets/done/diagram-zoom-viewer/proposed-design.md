@@ -57,7 +57,7 @@ No parent, geometry, service, API, backend, store, persistence, image conversion
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/ui-ux-spec.md` | Defines adaptive inline chrome, icon-only toolbar, user journeys, responsive/input states, accessibility, and rendered-quality evidence | REQ-001–REQ-010; AC-001–AC-018 | Authoritative user-visible interaction contract for the bounded presentation rework | `Refined`; user-directed revision approved 2026-07-20; requires architecture re-review |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/done/diagram-zoom-viewer/ui-ux-spec.md` | Defines adaptive inline chrome, icon-only toolbar, user journeys, responsive/input states, accessibility, and rendered-quality evidence | REQ-001–REQ-010; AC-001–AC-018 | Authoritative user-visible interaction contract for the bounded presentation rework | `Refined`; user-directed revision approved 2026-07-20; requires architecture re-review |
 
 ## Task Design Health Assessment (Mandatory)
 
