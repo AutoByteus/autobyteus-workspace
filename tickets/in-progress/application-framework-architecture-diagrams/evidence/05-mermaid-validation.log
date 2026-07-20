@@ -1,0 +1,19 @@
+# Mermaid/JSDOM And Semantic Architecture Validation — authoritative rerun
+command=node .tmp-api-e2e-architecture.mjs
+PASS mermaid_block_1
+PASS mermaid_block_2
+PASS mermaid_block_3
+PASS mermaid_block_4
+PASS mermaid_block_5
+PASS mermaid_block_6
+PASS mermaid_block_7
+PASS mermaid_block_8
+PASS mermaid_block_9
+PASS mermaid_block_10
+PASS approved_gateway_label_count
+PASS no_obsolete_formal_gateway_label
+PASS browser_server_worker_boundaries
+PASS engine_orchestration_runtime_boundaries
+PASS platform_and_app_storage_boundaries
+PASS no_streaming_scope_explicit
+RESULT mermaid=10/10 semantic=6/6

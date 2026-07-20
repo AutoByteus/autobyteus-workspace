@@ -1,0 +1,68 @@
+# Harness note: this first inventory used unrelated merge commit d3b2e4e86 as the archive comparison base. The reviewed implementation commit 365750c9d has parent 29912db3b, so the archive failure below is a probe-configuration false positive. The authoritative rerun uses 29912db3b.
+
+# Final Clean-Cut / Preservation Inventory
+revision=ee410779955b234e4678c3c076bde728ff901f52 plus API/E2E test-harness/report artifacts
+
+== Obsolete exact owner symbol/path/title inventory ==
+PASS: no obsolete active symbol/path/title match.
+
+== Broader semantic owner-label inventory ==
+PASS: no stale gateway-only owner label.
+
+== Target owner presence ==
+autobyteus-application-sdk-contracts/README.md
+autobyteus-server-ts/docs/modules/README.md
+autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+autobyteus-server-ts/docs/modules/application_communication_model.md
+autobyteus-server-ts/docs/modules/application_engine.md
+autobyteus-server-ts/docs/modules/application_orchestration.md
+autobyteus-server-ts/docs/modules/application_sessions.md
+autobyteus-server-ts/docs/modules/application_storage.md
+autobyteus-server-ts/docs/modules/applications.md
+autobyteus-server-ts/src/api/rest/application-backends.ts
+autobyteus-server-ts/src/api/websocket/application-backend-notifications.ts
+autobyteus-server-ts/src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+autobyteus-server-ts/tests/unit/api/rest/application-backends-execution-resource-configurations.test.ts
+autobyteus-server-ts/tests/unit/api/rest/application-backends-prefix.test.ts
+autobyteus-server-ts/tests/unit/application-backend-api-gateway/application-backend-api-gateway-service.test.ts
+autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts
+autobyteus-web/docs/applications.md
+PASS: target owner family appears in the expected 20 active files.
+
+== Clean path cutover ==
+PASS absent: autobyteus-server-ts/src/application-backend-gateway
+PASS absent: autobyteus-server-ts/tests/unit/application-backend-gateway
+PASS absent: autobyteus-server-ts/docs/modules/application_backend_gateway.md
+PASS present: autobyteus-server-ts/src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts
+PASS present: autobyteus-server-ts/src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.ts
+PASS present: autobyteus-server-ts/tests/unit/application-backend-api-gateway/application-backend-api-gateway-service.test.ts
+PASS present: autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+
+== Public REST/WebSocket path preservation ==
+18:const APPLICATION_BACKEND_ROUTE_BASE = "/applications/:applicationId/backend";
+19:    "/ws/applications/:applicationId/backend/notifications",
+PASS: public route bases preserved.
+
+== Notification stream implementation preservation ==
+PASS: moved notification-stream source is byte-for-byte identical to base.
+
+== Contract/persistence/archive non-impact ==
+PASS: SDK contract source unchanged.
+PASS: no persistence/schema/migration production path changed.
+FAIL: finalized prior ticket package changed.
+
+== Ignored/generated output and diff hygiene ==
+PASS: ignored server dist has no tracked source entry.
+PASS: git diff --check.
+Worktree status:
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+?? autobyteus-web/.tmp-api-e2e-architecture.mjs
+?? tickets/in-progress/application-framework-architecture-diagrams/.tmp-link-check.py
+?? tickets/in-progress/application-framework-architecture-diagrams/api-e2e-coverage-investigation.md
+?? tickets/in-progress/application-framework-architecture-diagrams/code-review-report.md
+?? tickets/in-progress/application-framework-architecture-diagrams/evidence/
+
+FINAL_INVENTORY_RESULT=FAIL

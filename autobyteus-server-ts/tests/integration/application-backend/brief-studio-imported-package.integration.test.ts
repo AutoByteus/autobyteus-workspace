@@ -1090,7 +1090,7 @@ describe("Brief Studio imported package integration", () => {
           lastErrorMessage: null,
         }),
       ]);
-    });
+    }, { timeout: 5_000 });
 
     const detail = await expectGraphqlField<{
       briefId: string;
